@@ -79,6 +79,8 @@ void PianoClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const Midi
             this->componentsMap[newNote] = UniquePointer<PianoSequenceMapNoteComponent>(component);
             this->applyNoteBounds(component);
         }
+
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -95,6 +97,8 @@ void PianoClipComponent::onAddMidiEvent(const MidiEvent &event)
         this->addAndMakeVisible(component);
         this->applyNoteBounds(component);
         component->toFront(false);
+
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -109,6 +113,8 @@ void PianoClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         {
             this->componentsMap.erase(note);
         }
+
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -182,7 +188,8 @@ void PianoClipComponent::reloadTrackMap()
         }
     }
 
-    this->resized();
+    this->resized(); // Re-calculates children bounds
+    this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);
 }
 

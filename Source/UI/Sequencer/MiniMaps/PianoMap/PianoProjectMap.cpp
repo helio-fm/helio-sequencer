@@ -131,7 +131,7 @@ void PianoProjectMap::onRemoveMidiEvent(const MidiEvent &event)
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
-            if (const auto *deletedComponent = sequenceMap[note].get())
+            if (sequenceMap.contains(note))
             {
                 sequenceMap.erase(note);
             }
@@ -143,6 +143,7 @@ void PianoProjectMap::onAddClip(const Clip &clip)
 {
     const SequenceMap *referenceMap = nullptr;
     const auto *track = clip.getPattern()->getTrack();
+    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
     forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
     {
@@ -193,7 +194,7 @@ void PianoProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
 void PianoProjectMap::onRemoveClip(const Clip &clip)
 {
     this->setVisible(false);
-    if (const auto *deletedSequenceMap = this->patternMap[clip].get())
+    if (this->patternMap.contains(clip))
     {
         this->patternMap.erase(clip);
     }
@@ -240,7 +241,7 @@ void PianoProjectMap::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
         const auto &clip = *track->getPattern()->getUnchecked(i);
-        if (const auto *deletedMap = this->patternMap[clip].get())
+        if (this->patternMap.contains(clip))
         {
             this->patternMap.erase(clip);
         }

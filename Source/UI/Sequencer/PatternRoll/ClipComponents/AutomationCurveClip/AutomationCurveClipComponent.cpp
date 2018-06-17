@@ -419,7 +419,8 @@ void AutomationCurveClipComponent::reloadTrack()
             this->eventsHash[*autoEvent] = component;
         }
     }
-        
+
+    this->resized(); // Re-calculates children bounds
     this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);
 }

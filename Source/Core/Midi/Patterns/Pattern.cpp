@@ -303,7 +303,7 @@ bool Pattern::changeGroup(Array<Clip> &groupBefore, Array<Clip> &groupAfter, boo
             jassert(index >= 0);
             if (index >= 0)
             {
-                const auto changedClip = static_cast<Clip *>(this->clips[index]);
+                auto *changedClip = static_cast<Clip *>(this->clips[index]);
                 changedClip->applyChanges(newParams);
                 this->clips.remove(index, false);
                 this->clips.addSorted(*changedClip, changedClip);

@@ -565,8 +565,9 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
-            if (NoteComponent *deletedComponent = sequenceMap[note].get())
+            if (sequenceMap.contains(note))
             {
+                NoteComponent *deletedComponent = sequenceMap[note].get();
                 this->fader.fadeOut(deletedComponent, 150);
                 this->selection.deselect(deletedComponent);
                 sequenceMap.erase(note);
@@ -649,7 +650,7 @@ void PianoRoll::onRemoveClip(const Clip &clip)
 {
     HYBRID_ROLL_BULK_REPAINT_START
 
-    if (const auto *deletedSequenceMap = this->patternMap[clip].get())
+    if (this->patternMap.contains(clip))
     {
         this->patternMap.erase(clip);
     }
@@ -714,7 +715,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
         const auto &clip = *track->getPattern()->getUnchecked(i);
-        if (const auto *deletedMap = this->patternMap[clip].get())
+        if (this->patternMap.contains(clip))
         {
             this->patternMap.erase(clip);
         }

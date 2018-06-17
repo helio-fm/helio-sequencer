@@ -382,8 +382,6 @@ void AutomationStepsClipComponent::reloadTrack()
             
             component->setNextNeighbour(nextEventComponent);
             component->setPreviousNeighbour(previousEventComponent);
-
-            //this->updateSustainPedalComponent(component); // double call? see resized() later
             
             if (previousEventComponent)
             { previousEventComponent->setNextNeighbour(component); }
@@ -394,7 +392,8 @@ void AutomationStepsClipComponent::reloadTrack()
             this->eventsHash[*autoEvent] = component;
         }
     }
-        
+
+    this->resized(); // Re-calculates children bounds
     this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);
 }
