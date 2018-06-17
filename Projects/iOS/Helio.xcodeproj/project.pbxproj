@@ -2129,7 +2129,8 @@
 					"JucePlugin_Build_AUv3=0",
 					"JucePlugin_Build_RTAS=0",
 					"JucePlugin_Build_AAX=0",
-					"JucePlugin_Build_Standalone=0", );
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = ("../../ThirdParty/VST_SDK/VST3_SDK", "../Projucer/JuceLibraryCode", "../../ThirdParty/JUCE/modules", "../Projucer/JuceLibraryCode", "../../ThirdParty/VST_SDK/VST3_SDK", "../../ThirdParty/ASIO/common", "../../Source/", "../../Source/Core/", "../../Source/Core/App", "../../Source/Core/Audio", "../../Source/Core/Audio/BuiltIn", "../../Source/Core/Audio/Instruments", "../../Source/Core/Audio/Monitoring", "../../Source/Core/Audio/Transport", "../../Source/Core/Audio/Waveform", "../../Source/Core/Midi", "../../Source/Core/Midi/Patterns", "../../Source/Core/Midi/Sequences", "../../Source/Core/Midi/Sequences/Events", "../../Source/Core/Network", "../../Source/Core/Network/Requests", "../../Source/Core/Network/Models", "../../Source/Core/Network/Services", "../../Source/Core/Serialization", "../../Source/Core/Supervisor", "../../Source/Core/Configuration", "../../Source/Core/Configuration/Models", "../../Source/Core/Configuration/ResourceManagers", "../../Source/Core/Tree", "../../Source/Core/Tutorial", "../../Source/Core/Undo", "../../Source/Core/Undo/Actions", "../../Source/Core/VCS", "../../Source/Core/VCS/DiffLogic", "../../Source/UI/", "../../Source/UI/CodeEditor", "../../Source/UI/Menus", "../../Source/UI/Menus/Base", "../../Source/UI/Menus/SelectionMenus", "../../Source/UI/Common", "../../Source/UI/Common/AudioMonitors", "../../Source/UI/Common/Origami", "../../Source/UI/Console", "../../Source/UI/Dialogs", "../../Source/UI/Headline", "../../Source/UI/Input", "../../Source/UI/Pages/Instruments", "../../Source/UI/Pages/Instruments/Editor", "../../Source/UI/Pages/Intro", "../../Source/UI/Sequencer", "../../Source/UI/Sequencer/MiniMaps/AnnotationsMap", "../../Source/UI/Sequencer/Header", "../../Source/UI/Sequencer/Helpers", "../../Source/UI/Sequencer/PatternRoll", "../../Source/UI/Sequencer/PatternRoll/ClipComponents", "../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip", "../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip", "../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip", "../../Source/UI/Sequencer/PianoRoll", "../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap", "../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap", "../../Source/UI/Sequencer/MiniMaps/PianoMap", "../../Source/UI/Popups", "../../Source/UI/Popups/ChordBuilder", "../../Source/UI/Pages/Project", "../../Source/UI/Sequencer/Sidebars", "../../Source/UI/Pages/Settings", "../../Source/UI/Themes", "../../Source/UI/Tree", "../../Source/UI/Pages/VCS", "../../Source/UI/Pages/Workspace", "../../Source/UI/Pages/Workspace/Menu", "../../Source/UI/Pages/Workspace/Scroller", "$(inherited)");
 				INFOPLIST_FILE = Info-App.plist;
@@ -2138,6 +2139,7 @@
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../Resources/iOS/AudioBus\"");
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.peterrudenko.helio";
+				PRODUCT_NAME = "Helio";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "2";
 				USE_HEADERMAP = NO; }; name = Debug; };
@@ -2170,7 +2172,8 @@
 					"JucePlugin_Build_AUv3=0",
 					"JucePlugin_Build_RTAS=0",
 					"JucePlugin_Build_AAX=0",
-					"JucePlugin_Build_Standalone=0", );
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0", );
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = ("../../ThirdParty/VST_SDK/VST3_SDK", "../Projucer/JuceLibraryCode", "../../ThirdParty/JUCE/modules", "../Projucer/JuceLibraryCode", "../../ThirdParty/VST_SDK/VST3_SDK", "../../ThirdParty/ASIO/common", "../../Source/", "../../Source/Core/", "../../Source/Core/App", "../../Source/Core/Audio", "../../Source/Core/Audio/BuiltIn", "../../Source/Core/Audio/Instruments", "../../Source/Core/Audio/Monitoring", "../../Source/Core/Audio/Transport", "../../Source/Core/Audio/Waveform", "../../Source/Core/Midi", "../../Source/Core/Midi/Patterns", "../../Source/Core/Midi/Sequences", "../../Source/Core/Midi/Sequences/Events", "../../Source/Core/Network", "../../Source/Core/Network/Requests", "../../Source/Core/Network/Models", "../../Source/Core/Network/Services", "../../Source/Core/Serialization", "../../Source/Core/Supervisor", "../../Source/Core/Configuration", "../../Source/Core/Configuration/Models", "../../Source/Core/Configuration/ResourceManagers", "../../Source/Core/Tree", "../../Source/Core/Tutorial", "../../Source/Core/Undo", "../../Source/Core/Undo/Actions", "../../Source/Core/VCS", "../../Source/Core/VCS/DiffLogic", "../../Source/UI/", "../../Source/UI/CodeEditor", "../../Source/UI/Menus", "../../Source/UI/Menus/Base", "../../Source/UI/Menus/SelectionMenus", "../../Source/UI/Common", "../../Source/UI/Common/AudioMonitors", "../../Source/UI/Common/Origami", "../../Source/UI/Console", "../../Source/UI/Dialogs", "../../Source/UI/Headline", "../../Source/UI/Input", "../../Source/UI/Pages/Instruments", "../../Source/UI/Pages/Instruments/Editor", "../../Source/UI/Pages/Intro", "../../Source/UI/Sequencer", "../../Source/UI/Sequencer/MiniMaps/AnnotationsMap", "../../Source/UI/Sequencer/Header", "../../Source/UI/Sequencer/Helpers", "../../Source/UI/Sequencer/PatternRoll", "../../Source/UI/Sequencer/PatternRoll/ClipComponents", "../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip", "../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip", "../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip", "../../Source/UI/Sequencer/PianoRoll", "../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap", "../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap", "../../Source/UI/Sequencer/MiniMaps/PianoMap", "../../Source/UI/Popups", "../../Source/UI/Popups/ChordBuilder", "../../Source/UI/Pages/Project", "../../Source/UI/Sequencer/Sidebars", "../../Source/UI/Pages/Settings", "../../Source/UI/Themes", "../../Source/UI/Tree", "../../Source/UI/Pages/VCS", "../../Source/UI/Pages/Workspace", "../../Source/UI/Pages/Workspace/Menu", "../../Source/UI/Pages/Workspace/Scroller", "$(inherited)");
@@ -2181,6 +2184,7 @@
 				LLVM_LTO = YES;
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.peterrudenko.helio";
+				PRODUCT_NAME = "Helio";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "2";
 				USE_HEADERMAP = NO; }; name = Release; };
@@ -2610,7 +2614,7 @@
 					20E4F2BF17372BD18581F900,
 					AA515E9B05A3DDAAB41F5F79,
 					00D3065F64B0B1FD6AD61CD5, ); buildRules = ( ); dependencies = (  ); name = "Helio - App"; productName = Helio; productReference = E2C1A2859123A25065D73061; productType = "com.apple.product-type.application"; };
-		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0830; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
+		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0930; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
 	};
 	rootObject = 08DB4A16C7B3991E0F547761;
 }
