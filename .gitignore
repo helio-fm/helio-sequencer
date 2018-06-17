@@ -28,8 +28,12 @@ CMakeLists.txt
 
 build/
 Trash/
-ThirdParty/ASIO
-ThirdParty/VST_SDK
+ThirdParty/ASIO/asio
+ThirdParty/ASIO/common
+ThirdParty/ASIO/driver
+ThirdParty/ASIO/host
+ThirdParty/ASIO/*.pdf
+ThirdParty/ASIO/*.txt
 
 *.obj
 *.exe

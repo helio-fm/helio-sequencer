@@ -9,7 +9,6 @@ notifications:
 
 cache:
   directories:
-    - ${TRAVIS_BUILD_DIR}/ThirdParty/VST_SDK
     - ${TRAVIS_BUILD_DIR}/ThirdParty/ASIO
 
 branches:
@@ -52,11 +51,6 @@ matrix:
     - compiler: "gcc-6"
       addons: *gcc6
       env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
-
-before_install:
-  - pushd ThirdParty
-  - ./get_asio_and_vst_sdks.sh 
-  - popd
 
 script:
   - xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make'
