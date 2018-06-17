@@ -93,8 +93,7 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
     const Colour lineCol(this->findColour(ColourIDs::Roll::headerSnaps));
     g.setColour(lineCol);
-    g.drawHorizontalLine(1, 1.f, float(this->getWidth()));
-    g.drawHorizontalLine(2, 1.f, float(this->getWidth()));
+    g.fillRect(0.f, 1.f, float(this->getWidth()), 2.f);
     //[/UserPaint]
 }
 

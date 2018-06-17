@@ -67,11 +67,13 @@ SettingsPage::~SettingsPage()
 void SettingsPage::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
     g.fillAll (Colours::white);
 
     //[UserPaint] Add your own custom painting code here..
+#endif
     //[/UserPaint]
 }
 

@@ -106,33 +106,6 @@ bool BuiltInSynthAudioPlugin::hasEditor() const
 
 
 //===----------------------------------------------------------------------===//
-// Parameters
-//===----------------------------------------------------------------------===//
-
-int BuiltInSynthAudioPlugin::getNumParameters()
-{
-    return 0;
-}
-
-const String BuiltInSynthAudioPlugin::getParameterName(int parameterIndex)
-{
-    return "";
-}
-
-float BuiltInSynthAudioPlugin::getParameter(int parameterIndex)
-{
-    return 0.f;
-}
-
-const String BuiltInSynthAudioPlugin::getParameterText(int parameterIndex)
-{
-    return "";
-}
-
-void BuiltInSynthAudioPlugin::setParameter(int parameterIndex, float newValue) {}
-
-
-//===----------------------------------------------------------------------===//
 // Programs
 //===----------------------------------------------------------------------===//
 

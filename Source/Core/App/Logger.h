@@ -36,16 +36,18 @@ public:
 
 protected:
 
+#if JUCE_DEBUG
     void logMessage(const String &message) override
     {
-#if JUCE_DEBUG
         const ScopedWriteLock lock(this->logLock);
         this->log += message;
         this->log += newLine;
         Logger::outputDebugString(message);
         this->sendChangeMessage();
-#endif
     }
+#else
+    void logMessage(const String &) override {}
+#endif
 
 private:
 

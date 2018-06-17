@@ -97,9 +97,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
 #endif
 
     g.setColour(this->event.getTrackColour().interpolatedWith(Colours::white, 0.5f).withAlpha(0.5f));
-    g.drawHorizontalLine(2, 0.5f, float(this->getWidth()));
-    g.drawHorizontalLine(3, 0.5f, float(this->getWidth()));
-    //g.drawHorizontalLine(4, 0.5f, float(this->getWidth()));
+    g.fillRect(0.5f, 2.f, float(this->getWidth()) - 0.5f, 2.f);
 
     if (this->event.getDescription().isNotEmpty())
     {

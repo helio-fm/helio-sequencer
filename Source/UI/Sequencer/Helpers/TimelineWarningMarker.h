@@ -37,8 +37,6 @@ public:
                           HybridRoll &parentRoll,
                           float inititalBeatPosition);
 
-    ~TimelineWarningMarker() override;
-
     float getStartBeat() const noexcept;
     void setStartBeat(float startBeat);
 

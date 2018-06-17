@@ -94,6 +94,7 @@ public:
         explicit HorizontalDragHelper(TrackScroller &scrollerRef) :
             scroller(scrollerRef)
         {
+            this->setPaintingIsUnclipped(true);
             this->setInterceptsMouseClicks(true, false);
             this->setMouseClickGrabsKeyboardFocus(false);
             this->toBack();
@@ -116,22 +117,15 @@ public:
         void paint(Graphics &g) override
         {
             g.setColour(Colours::white.withAlpha(0.02f));
-            g.fillAll();
-            
-            //g.setColour(Colours::black.withAlpha(0.1f));
-            //g.drawVerticalLine(0, 0.f, float(this->getHeight()));
-            //g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
+            g.fillRect(this->getLocalBounds());
         }
         
         class MoveConstrainer : public ComponentBoundsConstrainer
         {
         public:
-            
             explicit MoveConstrainer(TrackScroller &scrollerRef) : scroller(scrollerRef) {}
-            
             void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
         private:
-            
             TrackScroller &scroller;
         };
         

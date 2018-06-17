@@ -230,10 +230,7 @@ void ClipComponent::paint(Graphics& g)
 
     if (this->selectedState)
     {
-        g.drawHorizontalLine(1, 1.f, float(this->getWidth() - 1));
-        g.drawHorizontalLine(2, 1.f, float(this->getWidth() - 1));
-        g.drawHorizontalLine(3, 1.f, float(this->getWidth() - 1));
-        g.drawHorizontalLine(4, 1.f, float(this->getWidth() - 1));
+        g.fillRect(1.f, 1.f, float(this->getWidth() - 2), 4.f);
         g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
     }
 

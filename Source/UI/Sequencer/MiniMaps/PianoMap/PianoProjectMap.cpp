@@ -175,9 +175,10 @@ void PianoProjectMap::onAddClip(const Clip &clip)
 
 void PianoProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-    if (auto *sequenceMap = this->patternMap[clip].release())
+    if (this->patternMap.contains(clip))
     {
         // Set new key for existing sequence map
+        auto *sequenceMap = this->patternMap[clip].release();
         this->patternMap.erase(clip);
         this->patternMap[newClip] = UniquePointer<SequenceMap>(sequenceMap);
 

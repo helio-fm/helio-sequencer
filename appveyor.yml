@@ -12,13 +12,9 @@ install:
 - ps: |
     cmd.exe /c 'git submodule update --init --recursive 2> $null'
 
-    $asioSdkSource = "http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip"
-    $asioSdkDestination = "ThirdParty\asiosdk2.3.zip"
-    Invoke-WebRequest $asioSdkSource -OutFile $asioSdkDestination
-
-    7z x $asioSdkDestination -oThirdParty
-
-    Rename-Item -path ThirdParty\ASIOSDK2.3 -newName ASIO
+    Push-Location ($PSScriptRoot + "\ThirdParty\ASIO\")
+    & ".\get_asio_sdk.ps1"
+    Pop-Location
 build:
   project: Projects\VisualStudio2015\Helio.sln
   verbosity: minimal

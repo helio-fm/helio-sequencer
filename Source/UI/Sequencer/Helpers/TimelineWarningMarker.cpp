@@ -25,20 +25,16 @@ TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel, HybridRo
       startBeat(inititalBeatPosition),
       endBeat(inititalBeatPosition + CLIPPING_MARKER_MIN_SIZE_IN_BEATS)
 {
+    this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
     this->setAlpha(0.f);
-
-    setSize (600, 400);
-}
-
-TimelineWarningMarker::~TimelineWarningMarker()
-{
 }
 
 void TimelineWarningMarker::paint (Graphics& g)
 {
-    g.fillAll(this->colour);
+    g.setColour(this->colour);
+    g.fillRect(this->getLocalBounds());
 }
 
 void TimelineWarningMarker::parentHierarchyChanged()

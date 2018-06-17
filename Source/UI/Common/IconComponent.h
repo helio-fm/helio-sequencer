@@ -39,9 +39,9 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    void setIconName(Icons::Id iconId)
+    void setIconName(Icons::Id id)
     {
-        this->iconId = iconId;
+        this->iconId = id;
         this->repaint();
     }
 

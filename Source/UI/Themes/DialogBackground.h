@@ -25,8 +25,10 @@ public:
     
     DialogBackground() : appearMode(true), alpha(0.f)
     {
-        this->startTimerHz(60);
         this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+        this->setWantsKeyboardFocus(false);
+        this->startTimerHz(60);
     }
     
     void handleCommandMessage(int commandId) override
@@ -45,7 +47,10 @@ public:
     { this->setSize(this->getParentWidth(), this->getParentHeight()); }
 
     void paint(Graphics &g) override
-    { g.fillAll(Colours::black.withAlpha(this->alpha)); }
+    {
+        g.setColour(Colours::black.withAlpha(this->alpha));
+        g.fillRect(this->getLocalBounds()); 
+    }
 
 private:
 

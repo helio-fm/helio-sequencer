@@ -48,18 +48,7 @@ public:
 
     AudioProcessorEditor *createEditor() override;
     bool hasEditor() const override;
-
-    //===------------------------------------------------------------------===//
-    // Parameters
-    //===------------------------------------------------------------------===//
-
-    int getNumParameters() override;
-    const String getParameterName(int parameterIndex) override;
-    const String getParameterText(int parameterIndex) override;
-
-    float getParameter(int parameterIndex) override;
-    void setParameter(int parameterIndex, float newValue) override;
-
+    
     //===------------------------------------------------------------------===//
     // Programs
     //===------------------------------------------------------------------===//
