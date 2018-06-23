@@ -55,16 +55,37 @@ ScriptDialog::ScriptDialog(Component &owner, Pattern *pattern, const Clip &clip)
 
 
     //[UserPreSize]
-    this->document.applyChanges("function transform(int position, int length,\n\
-                   int key, int period,\n\
-                   float velocity,\n\
-                   const float sequenceLength)\n{\n    period += 1;\n    velocity *= 0.75;\n}\n");
+    this->document.applyChanges("/*\n\
+    Any changes in key and time signatures will not take effect,\n\
+    they are only passed here to provide you a harmonic context.\n\
+*/\n\
+function transform(selection, keySignature, timeSignature)\n\
+{\n\
+    var scale = keySignature.scale;\n\
+    var n = timeSignature.numerator;\n\
+    var d = timeSignature.denominator;\n\
+\n\
+    for (int i = 0; i < selection.length; ++i)\n\
+    {\n\
+        var note = selection[i];\n\
+        var scaleKey = scale.getScaleKey(note.key);\n\
+        var barOffset = note.position % (d * n);\n\
+        if (scaleKey == 5 && barOffset != 0)\n\
+        {\n\
+            scaleKey++;\n\
+            note.key = scale.toChromatic(scaleKey);\n\
+        }\n\
+\n\
+        note.volume -= (Math.sine(note.position / 10) / 4);\n\
+        note.volume = Math.acos();\n\
+    }\n\
+}\n");
 
     this->codeEditor->setLineNumbersShown(false);
     this->codeEditor->setScrollbarThickness(2);
 
     this->codeEditor->setFont({ Font::getDefaultMonospacedFontName(), 14.f, Font::plain });
-    this->codeEditor->setTabSize(4, true);
+    this->codeEditor->setTabSize(2, true);
 
     this->okButton->setButtonText(TRANS("dialog::annotation::edit::apply"));
     this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
@@ -73,7 +94,7 @@ ScriptDialog::ScriptDialog(Component &owner, Pattern *pattern, const Clip &clip)
     this->document.addListener(this);
     //[/UserPreSize]
 
-    this->setSize(450, 220);
+    this->setSize(550, 350);
 
     //[Constructor]
     this->rebound();
@@ -129,8 +150,8 @@ void ScriptDialog::resized()
     //[/UserPreResize]
 
     background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    removeEventButton->setBounds(4, getHeight() - 4 - 48, 220, 48);
-    okButton->setBounds(getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
+    removeEventButton->setBounds(4, getHeight() - 4 - 48, 270, 48);
+    okButton->setBounds(getWidth() - 4 - 271, getHeight() - 4 - 48, 271, 48);
     separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     codeEditor->setBounds((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
@@ -308,12 +329,26 @@ struct JavaScriptTokeniserFunctions
             case 6: k = keywords6Char; break;
             case 7: k = keywords7Char; break;
             default:
-            {
                 if (tokenLength < 2 || tokenLength > 16) { return false; }
                 k = keywordsOther;
                 break;
-            }
         }
+
+        for (int i = 0; k[i] != 0; ++i)
+        {
+            if (token.compare(CharPointer_ASCII(k[i])) == 0) { return true; }
+        }
+
+        return false;
+    }
+
+    static bool isBuiltInClass(String::CharPointerType token, const int tokenLength) noexcept
+    {
+        static const char* const keywords[] =
+        { "Math", "JSON", nullptr };
+
+        if (tokenLength < 2 || tokenLength > 10) { return false; }
+        const char* const* k = keywords;
 
         for (int i = 0; k[i] != 0; ++i)
         {
@@ -343,6 +378,10 @@ struct JavaScriptTokeniserFunctions
             if (isReservedKeyword(String::CharPointerType(possibleIdentifier), tokenLength))
             {
                 return JavaScriptTokeniser::tokenType_keyword;
+            }
+            else if (isBuiltInClass(String::CharPointerType(possibleIdentifier), tokenLength))
+            {
+                return JavaScriptTokeniser::tokenType_builtInClass;
             }
         }
 
@@ -456,6 +495,7 @@ CodeEditorComponent::ColourScheme JavaScriptTokeniser::getDefaultColourScheme()
     cs.set("String", theme.findColour(ColourIDs::ScriptEditor::stringType));
     cs.set("Bracket", theme.findColour(ColourIDs::ScriptEditor::bracket));
     cs.set("Punctuation", theme.findColour(ColourIDs::ScriptEditor::punctuation));
+    cs.set("BuiltInClass", theme.findColour(ColourIDs::ScriptEditor::builtInClass));
     return cs;
 }
 
@@ -470,7 +510,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="Component &amp;owner, Pattern *pattern, const Clip &amp;clip"
                  variableInitialisers="clip(clip),&#10;pattern(pattern),&#10;ownerComponent(owner),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="450" initialHeight="220">
+                 fixedSize="1" initialWidth="550" initialHeight="350">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
@@ -486,10 +526,10 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
-              virtualName="" explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="..."
+              virtualName="" explicitFocusOrder="0" pos="4 4Rr 270 48" buttonText="..."
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="..."
+              explicitFocusOrder="0" pos="4Rr 4Rr 271 48" buttonText="..."
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"

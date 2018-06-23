@@ -126,5 +126,6 @@ namespace ColourIDs
         static const int stringType             = 0x2001407;
         static const int bracket                = 0x2001408;
         static const int punctuation            = 0x2001409;
+        static const int builtInClass           = 0x200140a;
     }
 } // namespace ColourIDs

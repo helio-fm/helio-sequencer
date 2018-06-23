@@ -398,7 +398,7 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
     const float w = this->barWidth * length / float(BEATS_PER_BAR);
     const float yPosition = float(this->getYPositionByKey(key));
 
-    return Rectangle<float> (float(x), yPosition + 1, w, float(this->rowHeight - 1));
+    return { float(x), yPosition + 1, w, float(this->rowHeight - 1) };
 }
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const

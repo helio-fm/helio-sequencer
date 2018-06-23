@@ -41,7 +41,8 @@ public:
         tokenType_float,
         tokenType_string,
         tokenType_bracket,
-        tokenType_punctuation
+        tokenType_punctuation,
+        tokenType_builtInClass,
     };
 
 private:
