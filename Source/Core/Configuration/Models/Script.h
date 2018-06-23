@@ -17,36 +17,44 @@
 
 #pragma once
 
-#include "Arpeggiator.h"
-#include "ResourceManager.h"
+#include "BaseResource.h"
 
-class ArpeggiatorsManager final : public ResourceManager
+class Script final : public BaseResource
 {
 public:
 
-    static ArpeggiatorsManager &getInstance()
-    {
-        static ArpeggiatorsManager Instance;
-        return Instance;
-    }
+    Script() = default;
+    Script(const String &name,
+        const Identifier &type,
+        const String &content);
 
-    inline const Array<Arpeggiator::Ptr> getArps() const
-    {
-        return this->getResources<Arpeggiator>();
-    }
+    using Ptr = ReferenceCountedObjectPtr<Script>;
 
-private:
+    String getName() const noexcept { return this->name; };
+
+    Script &operator=(const Script &other);
+    friend bool operator==(const Script &l, const Script &r);
     
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
-    
+
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
-    
-private:
+    void reset() override;
 
-    ArpeggiatorsManager();
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
 
+    String getResourceId() const override;
+    Identifier getResourceIdProperty() const override;
+
+protected:
+
+    String name;
+    Identifier type;
+    CodeDocument content;
+
+    JUCE_LEAK_DETECTOR(Script)
 };

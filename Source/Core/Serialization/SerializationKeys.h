@@ -197,6 +197,7 @@ namespace Serialization
     namespace Resources
     {
         static const Identifier scales = "scales";
+        static const Identifier scripts = "scripts";
         static const Identifier arpeggiators = "arpeggiators";
         static const Identifier translations = "translations";
         static const Identifier colourSchemes = "colourSchemes";
@@ -285,6 +286,22 @@ namespace Serialization
         static const Identifier pluralLiteral = "pluralLiteral";
         static const Identifier pluralForm = "pluralForm";
     }  // namespace Translations
+
+    namespace Scripts
+    {
+        static const Identifier script = "script";
+        static const Identifier scripts = "scripts";
+
+        static const Identifier name = "name";
+        static const Identifier type = "type";
+        static const Identifier content = "content";
+
+        namespace Types
+        {
+            static const Identifier sequenceTransform = "sequenceTransform";
+            // TODO more?
+        } // namespace Type
+    } // namespace Scripts
 
     namespace Arps
     {

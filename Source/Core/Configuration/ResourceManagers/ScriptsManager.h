@@ -17,22 +17,22 @@
 
 #pragma once
 
-#include "Arpeggiator.h"
+#include "Script.h"
 #include "ResourceManager.h"
 
-class ArpeggiatorsManager final : public ResourceManager
+class ScriptsManager final : public ResourceManager
 {
 public:
 
-    static ArpeggiatorsManager &getInstance()
+    static ScriptsManager &getInstance()
     {
-        static ArpeggiatorsManager Instance;
+        static ScriptsManager Instance;
         return Instance;
     }
 
-    inline const Array<Arpeggiator::Ptr> getArps() const
+    inline const Array<Script::Ptr> getScripts() const
     {
-        return this->getResources<Arpeggiator>();
+        return this->getResources<Script>();
     }
 
 private:
@@ -46,7 +46,7 @@ private:
     
 private:
 
-    ArpeggiatorsManager();
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
+    ScriptsManager();
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptsManager)
 
 };

@@ -27,6 +27,7 @@
 #include "HotkeySchemesManager.h"
 #include "ArpeggiatorsManager.h"
 #include "ScalesManager.h"
+#include "ScriptsManager.h"
 
 #include "HelioTheme.h"
 #include "PluginScanner.h"
@@ -264,6 +265,7 @@ void App::initialise(const String &commandLine)
         this->resourceManagers.set(Resources::colourSchemes, &ColourSchemesManager::getInstance());
         this->resourceManagers.set(Resources::hotkeySchemes, &HotkeySchemesManager::getInstance());
         this->resourceManagers.set(Resources::scales, &ScalesManager::getInstance());
+        this->resourceManagers.set(Resources::scripts, &ScriptsManager::getInstance());
 
         ResourceManagers::Iterator i(this->resourceManagers);
         while (i.next())

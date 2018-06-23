@@ -230,6 +230,8 @@
             <FILE id="ij3kI0" name="HotkeyScheme.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/HotkeyScheme.h"/>
             <FILE id="suUv9c" name="Scale.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Scale.cpp"/>
             <FILE id="ybmkDB" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Scale.h"/>
+            <FILE id="kgyKst" name="Script.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Script.cpp"/>
+            <FILE id="hQLSXp" name="Script.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Script.h"/>
             <FILE id="IYGH5g" name="Translation.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Translation.cpp"/>
             <FILE id="UNzZAk" name="Translation.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Translation.h"/>
           </GROUP>
@@ -253,6 +255,10 @@
             <FILE id="caFUMa" name="ScalesManager.cpp" compile="1" resource="0"
                   file="../../Source/Core/Configuration/ResourceManagers/ScalesManager.cpp"/>
             <FILE id="tksWZT" name="ScalesManager.h" compile="0" resource="0" file="../../Source/Core/Configuration/ResourceManagers/ScalesManager.h"/>
+            <FILE id="NRy8Ui" name="ScriptsManager.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/ResourceManagers/ScriptsManager.cpp"/>
+            <FILE id="W4McX5" name="ScriptsManager.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/ResourceManagers/ScriptsManager.h"/>
             <FILE id="j3ykPD" name="TranslationsManager.cpp" compile="1" resource="0"
                   file="../../Source/Core/Configuration/ResourceManagers/TranslationsManager.cpp"/>
             <FILE id="zrz77y" name="TranslationsManager.h" compile="0" resource="0"
