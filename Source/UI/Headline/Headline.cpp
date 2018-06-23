@@ -34,7 +34,8 @@
 
 Headline::Headline()
 {
-    addAndMakeVisible (navPanel = new HeadlineNavigationPanel());
+    this->navPanel.reset(new HeadlineNavigationPanel());
+    this->addAndMakeVisible(navPanel.get());
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, true);
@@ -42,7 +43,7 @@ Headline::Headline()
     this->setOpaque(true);
     //[/UserPreSize]
 
-    setSize (600, 34);
+    this->setSize(600, 34);
 
     //[Constructor]
     //[/Constructor]
@@ -81,7 +82,7 @@ void Headline::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    navPanel->setBounds (0, 0, 66, getHeight() - 0);
+    navPanel->setBounds(0, 0, 60, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -296,7 +297,7 @@ BEGIN_JUCER_METADATA
                  initialHeight="34">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="666c39451424e53c" memberName="navPanel" virtualName=""
-             explicitFocusOrder="0" pos="0 0 66 0M" sourceFile="HeadlineNavigationPanel.cpp"
+             explicitFocusOrder="0" pos="0 0 60 0M" sourceFile="HeadlineNavigationPanel.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

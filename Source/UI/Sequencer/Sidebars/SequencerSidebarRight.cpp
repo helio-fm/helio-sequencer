@@ -225,8 +225,6 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
             }
         }
 
-        // FIXME ïðè íàæàòèè ÷òî-òî ïðîèñõîäèò ñî çâóêîì, à èíäèêàòîð åäåò äàëüøå
-        // (ïîêà ïðîñòî îñòàíîâëþ âîñïðîèçâåäåíèå)
         this->project.getTransport().stopPlayback();
 
         if (selectedAnnotation != nullptr && TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS)
@@ -263,15 +261,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
     case CommandIDs::DragTool:
         this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
         break;
-
-    case CommandIDs::InsertSpaceTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
-        break;
-
-    case CommandIDs::WipeSpaceTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
-        break;
-
+        
     case CommandIDs::ScissorsTool:
         this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
         break;
@@ -285,8 +275,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
             }
             else
             {
-                // TODO ! move this menu item into selection menu and get rid of useless warning
-                //App::Layout().showTooltip(TRANS("warnings::emptyselection"));
+                App::Layout().showTooltip(TRANS("warnings::emptyselection"));
             }
         }
         break;
@@ -309,8 +298,6 @@ void SequencerSidebarRight::recreateMenu()
     const bool zoomMode = this->project.getEditMode().isMode(HybridRollEditMode::zoomMode);
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
     const bool wipeSpaceMode = this->project.getEditMode().isMode(HybridRollEditMode::wipeSpaceMode);
-    const bool insertSpaceMode = this->project.getEditMode().isMode(HybridRollEditMode::insertSpaceMode);
-    const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::scissorsMode);
 
 #if HELIO_MOBILE
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
@@ -322,21 +309,24 @@ void SequencerSidebarRight::recreateMenu()
 
     if (this->menuMode == PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::wipeSpaceTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
-        this->menu.add(MenuItem::item(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
+        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::TweakNotesVolume));
+        //this->menu.add(MenuItem::item(Icons::refactor, CommandIDs::RefactorNotes));
+        //this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ArpeggiateNotes));
+        //this->menu.add(MenuItem::item(Icons::script, CommandIDs::RunScriptTransform));
+
+        this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
+        this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
+        this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents));
+    }
+    else if (this->menuMode == PatternRollTools)
+    {
+        this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips));
+        this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteClips));
+        this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips));
     }
 
     this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
     this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
-
-    //this->menu.add(MenuItem::item(Icons::volumeUp, CommandIDs::TweakNotesVolume));
-    //this->menu.add(MenuItem::item(Icons::switcher, CommandIDs::MoveEventsToLayer));
-    //this->menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RefactorNotes));
-    //this->menu.add(MenuItem::item(Icons::arpeggiator, CommandIDs::ArpNotes));
-
-    //this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
-    //this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
-    //this->menu.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents));
 }
 
 //===----------------------------------------------------------------------===//
