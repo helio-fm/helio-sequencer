@@ -298,9 +298,45 @@ namespace Serialization
 
         namespace Types
         {
-            static const Identifier sequenceTransform = "sequenceTransform";
-            // TODO more?
-        } // namespace Type
+            // Receives current selection and harmonic context,
+            // should apply needed transformations to the selection object
+            static const Identifier transformSelection = "transformSelection";
+            // TODO what else types could be added?
+        }
+
+        namespace Api
+        {
+            namespace Note
+            {
+                static const Identifier key = "key";
+                static const Identifier position = "position";
+                static const Identifier length = "length";
+                static const Identifier volume = "volume";
+            }
+
+            namespace TimeSignature
+            {
+                static const Identifier position = "position";
+                static const Identifier numerator = "numerator";
+                static const Identifier denominator = "denominator";
+            }
+
+            namespace KeySignature
+            {
+                static const Identifier position = "position";
+                static const Identifier rootKey = "rootKey";
+                static const Identifier scale = "scale";
+            }
+
+            namespace Scale
+            {
+                static const Identifier name = "name";
+                static const Identifier basePeriod = "basePeriod";
+                static const Identifier getScaleKey = "getScaleKey";
+                static const Identifier getChromaticKey = "getChromaticKey";
+                static const Identifier hasKey = "hasKey";
+            }
+        }
     } // namespace Scripts
 
     namespace Arps
