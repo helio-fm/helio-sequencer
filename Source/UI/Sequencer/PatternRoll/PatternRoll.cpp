@@ -37,6 +37,7 @@
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "ModalDialogInput.h"
+#include "ScriptDialog.h"
 #include "SequencerOperations.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
@@ -584,7 +585,8 @@ void PatternRoll::handleCommandMessage(int commandId)
         if (this->selection.getNumSelected() > 0)
         {
             const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
-            this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
+            App::Layout().showModalComponentUnowned(new ScriptDialog(*this, clip.getPattern(), clip));
+            //this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
         }
         break;
     //case CommandIDs::BeatShiftLeft:
