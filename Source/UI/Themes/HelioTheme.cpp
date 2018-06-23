@@ -839,6 +839,22 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
+
+    // CodeEditorComponent and script highlighting scheme
+    this->setColour(CodeEditorComponent::backgroundColourId, s->getPrimaryGradientColourA().darker(0.35f));
+    this->setColour(CodeEditorComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.1f));
+    this->setColour(CodeEditorComponent::defaultTextColourId, s->getTextColour());
+
+    this->setColour(ColourIDs::ScriptEditor::comment, s->getTextColour().withMultipliedAlpha(0.5f));
+    this->setColour(ColourIDs::ScriptEditor::error, s->getTextColour().interpolatedWith(Colours::red, 0.75f));
+    this->setColour(ColourIDs::ScriptEditor::keyword, s->getTextColour().interpolatedWith(Colours::royalblue, 0.75f));
+    this->setColour(ColourIDs::ScriptEditor::identifier, s->getTextColour().interpolatedWith(Colours::darkgoldenrod, 0.35f));
+    this->setColour(ColourIDs::ScriptEditor::operatorToken, s->getTextColour().interpolatedWith(Colours::blue, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::integerType, s->getTextColour().interpolatedWith(Colours::blueviolet, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::floatType, s->getTextColour().interpolatedWith(Colours::darkmagenta, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::stringType, s->getTextColour().interpolatedWith(Colours::tomato, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::bracket, s->getTextColour().interpolatedWith(Colours::darkslateblue, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::punctuation, s->getTextColour().interpolatedWith(Colours::darkslateblue, 0.75f));
 }
 
 void HelioTheme::updateBackgroundRenders(bool force)

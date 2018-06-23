@@ -23,6 +23,7 @@
 
 //[MiscUserDefs]
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 ScriptDialog::ScriptDialog(Component &owner, Pattern *pattern, const Clip &clip)
@@ -443,30 +444,20 @@ int JavaScriptTokeniser::readNextToken(CodeDocument::Iterator& source)
 
 CodeEditorComponent::ColourScheme JavaScriptTokeniser::getDefaultColourScheme()
 {
-    static const CodeEditorComponent::ColourScheme::TokenType types[] =
-    {
-        { "Error",          Colour(0xffcc0000) },
-        { "Comment",        Colour(0xff3c3c3c) },
-        { "Keyword",        Colour(0xff0000cc) },
-        { "Operator",       Colour(0xff225500) },
-        { "Identifier",     Colour(0xff000000) },
-        { "Integer",        Colour(0xff880000) },
-        { "Float",          Colour(0xff885500) },
-        { "String",         Colour(0xff990099) },
-        { "Bracket",        Colour(0xff000055) },
-        { "Punctuation",    Colour(0xff004400) }
-    };
-
+    const auto &theme = LookAndFeel::getDefaultLookAndFeel();
     CodeEditorComponent::ColourScheme cs;
-    for (auto &t : types)
-    {
-        cs.set(t.name, Colour(t.colour));
-    }
-
+    cs.set("Error", theme.findColour(ColourIDs::ScriptEditor::error));
+    cs.set("Comment", theme.findColour(ColourIDs::ScriptEditor::comment));
+    cs.set("Keyword", theme.findColour(ColourIDs::ScriptEditor::keyword));
+    cs.set("Operator", theme.findColour(ColourIDs::ScriptEditor::operatorToken));
+    cs.set("Identifier", theme.findColour(ColourIDs::ScriptEditor::identifier));
+    cs.set("Integer", theme.findColour(ColourIDs::ScriptEditor::integerType));
+    cs.set("Float", theme.findColour(ColourIDs::ScriptEditor::floatType));
+    cs.set("String", theme.findColour(ColourIDs::ScriptEditor::stringType));
+    cs.set("Bracket", theme.findColour(ColourIDs::ScriptEditor::bracket));
+    cs.set("Punctuation", theme.findColour(ColourIDs::ScriptEditor::punctuation));
     return cs;
 }
-
-
 
 //[/MiscUserCode]
 
