@@ -50,23 +50,38 @@ static inline constexpr int getAudioMonitorHeight()
 SequencerSidebarLeft::SequencerSidebarLeft(ProjectTreeItem &project)
     : project(project)
 {
-    addAndMakeVisible (shadow = new LighterShadowUpwards());
-    addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
-    addAndMakeVisible (headShadow = new LighterShadowDownwards());
-    addAndMakeVisible (separator = new SeparatorHorizontal());
-    addAndMakeVisible (modeIndicatorSelector = new ModeIndicatorTrigger());
+    shadow.reset (new LighterShadowUpwards());
+    addAndMakeVisible (shadow.get());
+    headLine.reset (new SeparatorHorizontalReversed());
+    addAndMakeVisible (headLine.get());
+    headShadow.reset (new LighterShadowDownwards());
+    addAndMakeVisible (headShadow.get());
+    separator.reset (new SeparatorHorizontal());
+    addAndMakeVisible (separator.get());
+    modeIndicatorSelector.reset (new ModeIndicatorTrigger());
+    addAndMakeVisible (modeIndicatorSelector.get());
 
-    addAndMakeVisible (modeIndicator = new ModeIndicatorComponent (3));
+    modeIndicator.reset (new ModeIndicatorComponent (3));
+    addAndMakeVisible (modeIndicator.get());
 
-    addAndMakeVisible (switchPatternModeButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)));
+    switchPatternModeButton.reset (new MenuItemComponent (this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)));
+    addAndMakeVisible (switchPatternModeButton.get());
 
-    addAndMakeVisible (switchLinearModeButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)));
+    switchLinearModeButton.reset (new MenuItemComponent (this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)));
+    addAndMakeVisible (switchLinearModeButton.get());
 
+    listBox.reset (new ListBox());
+    addAndMakeVisible (listBox.get());
 
     //[UserPreSize]
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
+
+    this->recreateMenu();
+    this->listBox->setModel(this);
+    this->listBox->setMultipleSelectionEnabled(false);
+    this->listBox->setRowHeight(SEQUENCER_SIDEBAR_ROW_HEIGHT);
 
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
@@ -106,6 +121,7 @@ SequencerSidebarLeft::~SequencerSidebarLeft()
     modeIndicator = nullptr;
     switchPatternModeButton = nullptr;
     switchLinearModeButton = nullptr;
+    listBox = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -145,6 +161,7 @@ void SequencerSidebarLeft::resized()
     modeIndicator->setBounds (0, getHeight() - 4 - 5, getWidth() - 0, 5);
     switchPatternModeButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
     switchLinearModeButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
+    listBox->setBounds (0, 41, getWidth() - 0, getHeight() - 113);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -202,6 +219,53 @@ void SequencerSidebarLeft::setPatternMode()
     this->buttonFader.fadeIn(this->switchLinearModeButton, 200);
     this->buttonFader.fadeOut(this->switchPatternModeButton, 200);
 }
+
+//===----------------------------------------------------------------------===//
+// ListBoxModel
+//===----------------------------------------------------------------------===//
+
+void SequencerSidebarLeft::recreateMenu()
+{
+    this->menu.clear();
+    this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
+    this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
+}
+
+Component *SequencerSidebarLeft::refreshComponentForRow(int rowNumber,
+    bool isRowSelected, Component *existingComponentToUpdate)
+{
+    if (rowNumber >= this->menu.size())
+    {
+        return existingComponentToUpdate;
+    }
+
+    const MenuItem::Ptr itemDescription = this->menu[rowNumber];
+
+    if (existingComponentToUpdate != nullptr)
+    {
+        if (MenuItemComponent *row =
+            dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
+        {
+            row->setSelected(isRowSelected);
+            row->update(itemDescription);
+        }
+    }
+    else
+    {
+        MenuItemComponent *row =
+            new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
+        row->setSelected(isRowSelected);
+        return row;
+    }
+
+    return existingComponentToUpdate;
+}
+
+int SequencerSidebarLeft::getNumRows()
+{
+    return this->menu.size();
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -209,7 +273,7 @@ void SequencerSidebarLeft::setPatternMode()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="SequencerSidebarLeft" template="../../../Template"
-                 componentName="" parentClasses="public ModeIndicatorOwnerComponent"
+                 componentName="" parentClasses="public ModeIndicatorOwnerComponent, protected ListBoxModel"
                  constructorParams="ProjectTreeItem &amp;project" variableInitialisers="project(project)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="48" initialHeight="640">
@@ -238,6 +302,8 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="" id="bbe7f83219439c7f" memberName="switchLinearModeButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)"/>
+  <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
+                    explicitFocusOrder="0" pos="0 41 0M 113M" class="ListBox" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -299,7 +299,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
-void SequencerSidebarRight::recreateCommandDescriptions()
+void SequencerSidebarRight::recreateMenu()
 {
     this->menu.clear();
 
@@ -328,9 +328,6 @@ void SequencerSidebarRight::recreateCommandDescriptions()
 
     this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
     this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
-
-    this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
-    this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
 
     //this->menu.add(MenuItem::item(Icons::volumeUp, CommandIDs::TweakNotesVolume));
     //this->menu.add(MenuItem::item(Icons::switcher, CommandIDs::MoveEventsToLayer));
@@ -459,7 +456,7 @@ void SequencerSidebarRight::timerCallback()
 
 void SequencerSidebarRight::updateModeButtons()
 {
-    this->recreateCommandDescriptions();
+    this->recreateMenu();
     this->listBox->updateContent();
 }
 
@@ -471,14 +468,14 @@ void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu
 void SequencerSidebarRight::setLinearMode()
 {
     this->menuMode = PianoRollTools;
-    this->recreateCommandDescriptions();
+    this->recreateMenu();
     this->listBox->updateContent();
 }
 
 void SequencerSidebarRight::setPatternMode()
 {
     this->menuMode = PatternRollTools;
-    this->recreateCommandDescriptions();
+    this->recreateMenu();
     this->listBox->updateContent();
 }
 
