@@ -688,7 +688,7 @@ bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip 
 void NoteComponent::switchActiveSegmentToSelected(bool zoomToScope) const
 {
     auto *track = this->getNote().getSequence()->getTrack();
-    this->getRoll().setEditableScope(track, this->getClip(), zoomToScope);
+    this->roll.getProject().setEditableScope(track, this->getClip(), zoomToScope);
     if (zoomToScope)
     {
         this->getRoll().zoomOutImpulse(0.5f);

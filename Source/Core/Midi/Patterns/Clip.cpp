@@ -135,11 +135,12 @@ void Clip::reset()
 int Clip::compareElements(const Clip &first, const Clip &second)
 {
     if (&first == &second) { return 0; }
-    if (first.id == second.id) { return 0; }
 
     const float diff = first.beat - second.beat;
     const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return diffResult;
+    if (diffResult != 0) { return diffResult; }
+
+    return first.id.compare(second.id);
 }
 
 int Clip::compareElements(const Clip *const first, const Clip *const second)

@@ -169,21 +169,21 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
     this->linearLabel.reset(new Label(String(),
                                        TRANS("+")));
     this->addAndMakeVisible(linearLabel.get());
-    this->linearLabel->setFont(Font (24.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->linearLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     linearLabel->setJustificationType(Justification::centred);
     linearLabel->setEditable(false, false, false);
 
     this->multiLabel.reset(new Label(String(),
                                       TRANS("*")));
     this->addAndMakeVisible(multiLabel.get());
-    this->multiLabel->setFont(Font (24.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->multiLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     multiLabel->setJustificationType(Justification::centred);
     multiLabel->setEditable(false, false, false);
 
     this->sineLabel.reset(new Label(String(),
                                      TRANS("~")));
     this->addAndMakeVisible(sineLabel.get());
-    this->sineLabel->setFont(Font (24.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->sineLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     sineLabel->setJustificationType(Justification::centred);
     sineLabel->setEditable(false, false, false);
 
@@ -257,7 +257,7 @@ void NotesTuningPanel::resized()
     playButton->setBounds((getWidth() / 2) + 16, 198 - (48 / 2), 48, 48);
     sliderSineButton->setBounds((206 - (56 / 2)) + 56 / 2 - (56 / 2), 118 + 56 / 2 - (56 / 2), 56, 56);
     sineSlider->setBounds(206 - (56 / 2), 118, 56, 56);
-    linearLabel->setBounds((46 - (56 / 2)) + 56 / 2 - (30 / 2), 118 + 56 / 2 + -1 - (30 / 2), 30, 30);
+    linearLabel->setBounds((46 - (56 / 2)) + 56 / 2 - (30 / 2), 118 + 56 / 2 + -2 - (30 / 2), 30, 30);
     multiLabel->setBounds((126 - (56 / 2)) + 56 / 2 - (30 / 2), 118 + 56 / 2 + 2 - (30 / 2), 30, 30);
     sineLabel->setBounds((206 - (56 / 2)) + 56 / 2 - (30 / 2), 118 + 56 / 2 + -1 - (30 / 2), 30, 30);
     //[UserResized] Add your own custom resize handling here..
@@ -521,22 +521,22 @@ BEGIN_JUCER_METADATA
           textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <LABEL name="" id="2ef200f2e484c3e7" memberName="linearLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc -1Cc 30 30" posRelativeX="612822c144ea1163"
+         explicitFocusOrder="0" pos="0Cc -2Cc 30 30" posRelativeX="612822c144ea1163"
          posRelativeY="612822c144ea1163" labelText="+" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="24.00000000000000000000" kerning="0.00000000000000000000"
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
   <LABEL name="" id="434928c32f07c6b9" memberName="multiLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 2Cc 30 30" posRelativeX="645d4540b1ee1178"
          posRelativeY="645d4540b1ee1178" labelText="*" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="24.00000000000000000000" kerning="0.00000000000000000000"
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
   <LABEL name="" id="6fcffdd210c02711" memberName="sineLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc -1Cc 30 30" posRelativeX="bdc5e7b689607511"
          posRelativeY="bdc5e7b689607511" labelText="~" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="24.00000000000000000000" kerning="0.00000000000000000000"
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
