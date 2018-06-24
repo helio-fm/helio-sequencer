@@ -85,7 +85,7 @@ bool NoteComponent::canResize() const noexcept
 
 bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const
 {
-    return (modifiers.isAltDown() || modifiers.isRightButtonDown());
+    return (modifiers.isAltDown() || modifiers.isRightButtonDown()) && !this->isActive();
 }
 
 void NoteComponent::setQuickSelectLayerMode(bool value)
@@ -167,9 +167,10 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->shouldGoQuickSelectLayerMode(e.mods) && !this->isActive())
+    if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         this->switchActiveSegmentToSelected(e.mods.isAnyModifierKeyDown());
+        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
     
@@ -185,7 +186,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     if (e.mods.isRightButtonDown() &&
         this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -286,8 +286,10 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() &&
+        this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
