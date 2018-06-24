@@ -68,7 +68,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<HeadlineNavigationPanel> navPanel;
+    UniquePointer<HeadlineNavigationPanel> navPanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Headline)
 };

@@ -114,7 +114,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         return;
     }
     
-    const float bw = 5.f; // w / float(GENERIC_METER_NUM_BANDS);
+    const float bw = 4.f; // w / float(GENERIC_METER_NUM_BANDS);
     const float w = float(this->getWidth());
     const float h = float(this->getHeight());
     const uint32 timeNow = Time::getMillisecondCounter();
@@ -135,15 +135,17 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
 
     // Volume peaks:
 
-    const float lAlpha = (0.4f - this->lPeakBand->peakDecayColour) / 4.f;
+    const float lAlpha = (0.375f - this->lPeakBand->peakDecayColour) / 12.f;
     const float yPeakL = (h - this->lPeakBand->peak - 1.f);
     g.setColour(Colours::white.withAlpha(lAlpha));
-    g.drawHorizontalLine(int(yPeakL), 3.f, w / 2.f - 2.f);
+    g.fillRect(0.f, yPeakL, w / 2.f - 1.f, this->lPeakBand->peak);
+    g.drawHorizontalLine(int(yPeakL), 0.f, w / 2.f - 1.f);
 
-    const float rAlpha = (0.4f - this->rPeakBand->peakDecayColour) / 4.f;
+    const float rAlpha = (0.375f - this->rPeakBand->peakDecayColour) / 12.f;
     const float yPeakR = (h - this->rPeakBand->peak - 1.f);
     g.setColour(Colours::white.withAlpha(rAlpha));
-    g.drawHorizontalLine(int(yPeakR), w / 2.f + 2, w - 3.f);
+    g.fillRect(w / 2.f, yPeakR, w / 2.f - 1.f, this->rPeakBand->peak);
+    g.drawHorizontalLine(int(yPeakR), w / 2.f, w);
 
 #endif
 
@@ -161,7 +163,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         const float x = i * bw + 1.f;
         for (int j = int(h + 1); j > (h - this->bands[i]->value); j -= 2)
         {
-            g.drawHorizontalLine(j, x, x + bw - 2.f);
+            g.drawHorizontalLine(j, x, x + bw - 1.f);
         }
     }
 
@@ -170,7 +172,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         const float x = i * bw + 1.f;
         g.setColour(Colours::white.withAlpha(0.4f - this->bands[i]->peakDecayColour));
         const float peakH = (h - this->bands[i]->peak - 2.f);
-        g.drawHorizontalLine(int(peakH), x, x + bw - 2.f);
+        g.drawHorizontalLine(int(peakH), x, x + bw - 1.f);
     }
 
     // Show levels?

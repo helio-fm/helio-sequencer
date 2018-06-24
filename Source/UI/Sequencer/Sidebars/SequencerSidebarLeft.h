@@ -28,14 +28,18 @@ class AudioMonitor;
 
 #include "ComponentFader.h"
 #include "ModeIndicatorComponent.h"
+#include "MenuPanel.h"
 //[/Headers]
 
 #include "../../Themes/LighterShadowUpwards.h"
 #include "../../Themes/SeparatorHorizontalReversed.h"
 #include "../../Themes/LighterShadowDownwards.h"
 #include "../../Themes/SeparatorHorizontal.h"
+#include "../../Themes/LighterShadowUpwards.h"
+#include "../../Themes/LighterShadowDownwards.h"
 
-class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent
+class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
+                                   protected ListBoxModel
 {
 public:
 
@@ -69,6 +73,17 @@ private:
     ScopedPointer<GenericAudioMonitorComponent> genericMonitor;
     ScopedPointer<WaveformAudioMonitorComponent> waveformMonitor;
     ScopedPointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
+
+    //===------------------------------------------------------------------===//
+    // ListBoxModel
+    //===------------------------------------------------------------------===//
+
+    MenuPanel::Menu menu;
+    void recreateMenu();
+
+    int getNumRows() override;
+    Component *refreshComponentForRow(int, bool, Component *) override;
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
     //[/UserVariables]
 
     ScopedPointer<LighterShadowUpwards> shadow;
@@ -79,6 +94,7 @@ private:
     ScopedPointer<ModeIndicatorComponent> modeIndicator;
     ScopedPointer<MenuItemComponent> switchPatternModeButton;
     ScopedPointer<MenuItemComponent> switchLinearModeButton;
+    ScopedPointer<ListBox> listBox;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarLeft)
 };

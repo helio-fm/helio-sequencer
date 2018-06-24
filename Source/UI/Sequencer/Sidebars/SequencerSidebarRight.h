@@ -81,7 +81,7 @@ private:
 
     void updateModeButtons();
     void emitAnnotationsCallout(Component *newAnnotationsMenu);
-    void recreateCommandDescriptions();
+    void recreateMenu();
 
     //===------------------------------------------------------------------===//
     // ListBoxModel

@@ -154,15 +154,9 @@ void PopupButton::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    const float r = this->getRadiusDelta();
     const float d = 1.5f;
-
-    g.setGradientFill (ColourGradient (Colour (0x6effffff),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       Colours::white,
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (-55),
-                                       true));
-
+    const float r = this->getRadiusDelta();
+    g.setColour(this->findColour(Label::textColourId));
     g.drawEllipse(d + r,
                   d + r,
                   float(getWidth()) - (d * 2.f) - (r * 2.f),

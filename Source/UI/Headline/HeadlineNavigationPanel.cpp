@@ -33,11 +33,14 @@
 
 HeadlineNavigationPanel::HeadlineNavigationPanel()
 {
-    addAndMakeVisible (navigatePrevious = new IconButton (Icons::findByName(Icons::back, 20), CommandIDs::ShowPreviousPage));
+    this->navigatePrevious.reset(new IconButton(Icons::findByName(Icons::back, 20), CommandIDs::ShowPreviousPage));
+    this->addAndMakeVisible(navigatePrevious.get());
 
-    addAndMakeVisible (navigateNext = new IconButton (Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage));
+    this->navigateNext.reset(new IconButton(Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage));
+    this->addAndMakeVisible(navigateNext.get());
 
-    addAndMakeVisible (component = new HeadlineItemArrow());
+    this->component.reset(new HeadlineItemArrow());
+    this->addAndMakeVisible(component.get());
 
     //[UserPreSize]
     this->bgColour = this->findColour(ColourIDs::BackgroundB::fill);
@@ -45,7 +48,7 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (66, 32);
+    this->setSize(60, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -80,9 +83,9 @@ void HeadlineNavigationPanel::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    navigatePrevious->setBounds (2, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
-    navigateNext->setBounds (25, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
-    component->setBounds (getWidth() - 16, 0, 16, getHeight() - 0);
+    navigatePrevious->setBounds(0, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
+    navigateNext->setBounds(21, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
+    component->setBounds(getWidth() - 16, 0, 16, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -122,17 +125,17 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="HeadlineNavigationPanel"
                  template="../../Template" componentName="" parentClasses="public Component"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="66"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="60"
                  initialHeight="32">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="88e1e92c7548ba42" memberName="navigatePrevious" virtualName=""
-                    explicitFocusOrder="0" pos="2 -1Cc 25 32" class="IconButton"
+                    explicitFocusOrder="0" pos="0 -1Cc 25 32" class="IconButton"
                     params="Icons::findByName(Icons::back, 20), CommandIDs::ShowPreviousPage"/>
   <GENERICCOMPONENT name="" id="900658e63c264259" memberName="navigateNext" virtualName=""
-                    explicitFocusOrder="0" pos="25 -1Cc 25 32" class="IconButton"
+                    explicitFocusOrder="0" pos="21 -1Cc 25 32" class="IconButton"
                     params="Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage"/>
   <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
