@@ -191,7 +191,9 @@ Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const ValueTree &stat
             if (stateClip.getId() == changesClip.getId())
             {
                 foundInChanges = true;
-                if (stateClip.getBeat() != changesClip.getBeat())
+                if (stateClip.getKey() != changesClip.getKey() ||
+                    stateClip.getBeat() != changesClip.getBeat() ||
+                    stateClip.getVelocity() != changesClip.getVelocity())
                 {
                     changedClips.add(changesClip);
                 }

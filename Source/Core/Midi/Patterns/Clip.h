@@ -35,8 +35,12 @@ public:
     explicit Clip(WeakReference<Pattern> owner, float beatVal = 0.f);
 
     Pattern *getPattern() const noexcept;
+    int getKey() const noexcept;
     float getBeat() const noexcept;
+    float getVelocity() const noexcept;
     const String &getId() const noexcept;
+    const String &getKeyString() const noexcept;
+
     bool isValid() const noexcept;
 
     Colour getTrackColour() const noexcept;
@@ -46,6 +50,8 @@ public:
     Clip withParameters(const ValueTree &tree) const;
     Clip withBeat(float absPosition) const;
     Clip withDeltaBeat(float deltaPosition) const;
+    Clip withKey(int absKey) const;
+    Clip withDeltaKey(int deltaKey) const;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -76,10 +82,15 @@ private:
 
     WeakReference<Pattern> pattern;
 
+    int key;
     float beat;
-    String id;
+    float velocity;
 
+    String id;
     Id createId() const noexcept;
+
+    mutable String keyString;
+    void updateCaches() const;
 
     JUCE_LEAK_DETECTOR(Clip);
 };
