@@ -191,6 +191,10 @@
 
         // Edit selection
         { "receiver": "PatternRoll", "command": "RenameTrack", "key": "F2" },
+        { "receiver": "PatternRoll", "command": "ClipTransposeUp", "key": "+" },
+        { "receiver": "PatternRoll", "command": "ClipTransposeUp", "key": "Cursor Up" },
+        { "receiver": "PatternRoll", "command": "ClipTransposeDown", "key": "-" },
+        { "receiver": "PatternRoll", "command": "ClipTransposeDown", "key": "Cursor Down" },
         { "receiver": "PatternRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
         { "receiver": "PatternRoll", "command": "BeatShiftRight", "key": "Cursor Right" },
         { "receiver": "PatternRoll", "command": "BarShiftLeft", "key": "Shift + Cursor Left" },

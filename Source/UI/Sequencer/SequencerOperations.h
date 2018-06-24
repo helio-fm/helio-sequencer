@@ -93,4 +93,6 @@ struct SequencerOperations final
 struct PatternOperations final
 {
     static void deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint = true);
+
+    static void transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint = true);
 };

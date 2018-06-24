@@ -588,6 +588,12 @@ void PatternRoll::handleCommandMessage(int commandId)
             this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
         }
         break;
+    case CommandIDs::ClipTransposeUp:
+        PatternOperations::transposeClips(this->getLassoSelection(), 1);
+        break;
+    case CommandIDs::ClipTransposeDown:
+        PatternOperations::transposeClips(this->getLassoSelection(), -1);
+        break;
     //case CommandIDs::BeatShiftLeft:
     //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
     //    break;

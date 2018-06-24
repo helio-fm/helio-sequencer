@@ -1903,10 +1903,7 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Las
 
 void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint /*= true*/)
 {
-    if (selection.getNumSelected() == 0)
-    {
-        return;
-    }
+    if (selection.getNumSelected() == 0) { return; }
 
     OwnedArray<Array<Clip>> selections;
     for (int i = 0; i < selection.getNumSelected(); ++i)
@@ -1964,5 +1961,22 @@ void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem 
             //    }
             //}
         }
+    }
+}
+
+void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0) { return; }
+
+    Pattern *pattern = (selection.getFirstAs<ClipComponent>()->getClip().getPattern());
+    if (shouldCheckpoint)
+    {
+        pattern->checkpoint();
+    }
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        pattern->change(clip, clip.withDeltaKey(deltaKey), true);
     }
 }
