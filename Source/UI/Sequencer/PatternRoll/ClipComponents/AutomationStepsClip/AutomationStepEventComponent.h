@@ -24,7 +24,8 @@ class AutomationStepsClipComponent;
 
 #define STEP_EVENT_POINT_OFFSET (2.5f)
 #define STEP_EVENT_MIN_LENGTH_IN_BEATS (0.25f)
-#define STEP_EVENT_MARGIN (8.f)
+#define STEP_EVENT_MARGIN_TOP (16.f)
+#define STEP_EVENT_MARGIN_BOTTOM (16.f)
 #define STEP_EVENT_THICK_LINES 0
 
 class AutomationStepEventComponent final : public Component
@@ -64,11 +65,13 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void moved() override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
 
 private:
 
@@ -81,7 +84,8 @@ private:
     Rectangle<float> realBounds;
 
     ComponentDragger dragger;
-    bool draggingState;
+    bool isDragging;
+    bool isHighlighted;
 
     void recreateConnector();
 

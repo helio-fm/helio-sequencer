@@ -232,6 +232,8 @@ void ClipComponent::paint(Graphics& g)
     {
         g.fillRect(1.f, 1.f, float(this->getWidth() - 2), 4.f);
         g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
+        g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
+            this->getLocalBounds().reduced(4, 2), Justification::bottomLeft, false);
     }
 
     g.drawVerticalLine(0, 2.f, float(this->getHeight() - 1));

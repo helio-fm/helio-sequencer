@@ -24,17 +24,17 @@ AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationStepEvent
     AutomationStepEventComponent *c2, bool isEventTriggered) :
     component1(c1),
     component2(c2),
-    isTriggered(isEventTriggered),
-    draggingState(false),
     anchorBeat(0.f),
     anchorBeatChild1(0.f),
-    anchorBeatChild2(0.f)
+    anchorBeatChild2(0.f),
+    isDragging(false),
+    isEventTriggered(isEventTriggered),
+    isHighlighted(false)
 {
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
-    this->setMouseCursor(MouseCursor::CopyingCursor);
 }
 
 void AutomationStepEventsConnector::getPoints(float &x1, float &x2, float &y1, float &y2) const
@@ -67,20 +67,20 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
         return;
     }
 
-    const bool shouldRepaint = (this->isTriggered != isEventTriggered);
-    this->isTriggered = isEventTriggered;
+    const bool shouldRepaint = (this->isEventTriggered != isEventTriggered);
+    this->isEventTriggered = isEventTriggered;
 
     const float r = STEP_EVENT_POINT_OFFSET;
     float x1 = 0.f, x2 = 0.f, y1 = 0.f, y2 = 0.f;
     this->getPoints(x1, x2, y1, y2);
 
     const bool compact = this->anyAliveChild()->hasCompactMode();
-    const float top = r + STEP_EVENT_MARGIN + 1.f;
-    const float bottom = y2 - r - STEP_EVENT_MARGIN + 1.f;
+    const float top = r + STEP_EVENT_MARGIN_TOP;
+    const float bottom = y2 - r - STEP_EVENT_MARGIN_BOTTOM;
     this->realBounds = { jmin(x1, x2) + (compact ? (r + 1.f) : (r - 1.f)),
-        this->isTriggered ? bottom : top,
+        this->isEventTriggered ? bottom : top,
         fabsf(x1 - x2) - (compact ? r * 2.f : 1.f),
-        this->isTriggered ? top : bottom };
+        this->isEventTriggered ? top : bottom };
     
     this->setBounds(this->realBounds.toType<int>());
     
@@ -104,6 +104,11 @@ void AutomationStepEventsConnector::paint(Graphics &g)
 #if STEP_EVENT_THICK_LINES
         g.drawHorizontalLine(1, left, this->realBounds.getWidth() - 1.f);
 #endif
+
+        if (this->isHighlighted)
+        {
+            g.fillRect(this->getLocalBounds().withTop(this->getHeight() - 4));
+        }
     }
 }
 
@@ -116,13 +121,13 @@ void AutomationStepEventsConnector::mouseDown(const MouseEvent &e)
 {
     this->applyCursorForEvent(e);
 
-    if (this->hasDraggingMode(e))
+    if (e.mods.isLeftButtonDown() && !e.mods.isAnyModifierKeyDown())
     {
         this->anchorBeat =  this->anyAliveChild()->getEditor()->getBeatByXPosition(this->anyAliveChild()->getX());
         this->anchorBeatChild1 = this->component1 ? this->component1->getBeat() : 0.f;
         this->anchorBeatChild2 = this->component2 ? this->component2->getBeat() : 0.f;
         this->dragger.startDraggingComponent(this->anyAliveChild(), e);
-        this->draggingState = true;
+        this->isDragging = true;
     }
     else
     {
@@ -134,7 +139,7 @@ void AutomationStepEventsConnector::mouseDrag(const MouseEvent &e)
 {
     this->applyCursorForEvent(e);
 
-    if (this->draggingState)
+    if (this->isDragging)
     {
         this->dragger.dragComponent(this->anyAliveChild(), e, nullptr);
         float newRoundBeat = this->anyAliveChild()->getEditor()->getBeatByXPosition(this->anyAliveChild()->getX());
@@ -160,26 +165,33 @@ void AutomationStepEventsConnector::mouseUp(const MouseEvent &e)
 {
     this->applyCursorForEvent(e);
 
-    if (this->draggingState)
+    if (this->isDragging)
     {
-        this->draggingState = false;
+        this->isDragging = false;
     }
 }
 
-bool AutomationStepEventsConnector::hasDraggingMode(const MouseEvent &e) const
+void AutomationStepEventsConnector::mouseEnter(const MouseEvent &e)
 {
-    return ! e.mods.isAnyModifierKeyDown();
+    this->isHighlighted = true;
+    this->repaint();
+}
+
+void AutomationStepEventsConnector::mouseExit(const MouseEvent &e)
+{
+    this->isHighlighted = false;
+    this->repaint();
 }
 
 void AutomationStepEventsConnector::applyCursorForEvent(const MouseEvent &e)
 {
-    if (this->hasDraggingMode(e))
+    if (this->isDragging)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
     }
     else
     {
-        this->setMouseCursor(MouseCursor::CopyingCursor);
+        this->setMouseCursor(MouseCursor::NormalCursor);
     }
 }
 

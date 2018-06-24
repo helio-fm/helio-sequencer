@@ -42,6 +42,8 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
 
 private:
 
@@ -52,16 +54,17 @@ private:
     
     AutomationStepEventComponent *anyAliveChild() const;
     
-    bool hasDraggingMode(const MouseEvent &e) const;
     void applyCursorForEvent(const MouseEvent &e);
 
     ComponentDragger dragger;
     float anchorBeat;
     float anchorBeatChild1;
     float anchorBeatChild2;
-    bool draggingState;
-    
-    bool isTriggered;
+
+    bool isDragging;
+    bool isEventTriggered;
+    bool isHighlighted;
+
     Rectangle<float> realBounds;
     
     ComponentAnimator animator;
