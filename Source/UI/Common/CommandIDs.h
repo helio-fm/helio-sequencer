@@ -65,16 +65,9 @@ namespace CommandIDs
         MuteTrack                       = 0x1001,
         UnmuteTrack                     = 0x1002,
         RenameTrack                     = 0x1003,
-        SelectTrackColour               = 0x1005,
-        SelectTrackInstrument           = 0x1006,
-        SelectAllEvents                 = 0x1007,
-        SelectAllClips                  = 0x1008,
-        DuplicateTrackTo                = 0x1009,
-        NewTrackFromSelection           = 0x100a,
-
-        SetTrackColour                  = 0x100b, // more ids reserved for colours
-        SetTrackInstrument              = 0x1100, // more ids reserved for instruments
-        MoveTrackToProject              = 0x1500, // more ids reserved for projects
+        SelectAllEvents                 = 0x1004,
+        SelectAllClips                  = 0x1005,
+        NewTrackFromSelection           = 0x1006,
 
         // MidiRollCommandPanel
         DeleteEvents                    = 0x1601,
@@ -87,6 +80,9 @@ namespace CommandIDs
         CutClips                        = 0x1613,
         PasteClips                      = 0x1614,
         EditClip                        = 0x1615,
+
+        ClipTransposeUp                 = 0x1620,
+        ClipTransposeDown               = 0x1621,
 
         CursorTool                      = 0x1700,
         DrawTool                        = 0x1701,
@@ -150,9 +146,9 @@ namespace CommandIDs
         DeleteProjectConfirmed1         = 0x2062,
         DeleteProjectConfirmed2         = 0x2063,
 
-        RefactorTransposeUp             = 0x2070,
-        RefactorTransposeDown           = 0x2071,
-        RefactorRemoveOverlaps          = 0x2072,
+        ProjectTransposeUp              = 0x2070,
+        ProjectTransposeDown            = 0x2071,
+        ProjectRemoveOverlaps           = 0x2072,
 
         ProjectPatternEditor            = 0x2080,
         ProjectLinearEditor             = 0x2081,

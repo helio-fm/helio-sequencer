@@ -21,7 +21,7 @@ class MidiTrackTreeItem;
 
 #include "MenuPanel.h"
 
-class MidiTrackMenu : public MenuPanel
+class MidiTrackMenu final : public MenuPanel
 {
 public:
     
@@ -30,10 +30,9 @@ public:
     
 private:
     
-    void initDefaultCommands();
-    void initColorSelection();
-    void initProjectSelection();
-    void initInstrumentSelection();
+    void initDefaultMenu();
+    void initColorSelectionMenu();
+    void initInstrumentSelectionMenu();
 
     MidiTrackTreeItem &trackItem;
     

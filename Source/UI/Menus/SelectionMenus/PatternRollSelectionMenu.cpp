@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "PatternRollSelectionMenu.h"
+#include "ClipComponent.h"
 #include "App.h"
 #include "Lasso.h"
 #include "CommandIDs.h"
@@ -25,11 +26,22 @@
 PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)
 {
+    this->initDefaultMenu();
+}
+
+void PatternRollSelectionMenu::initDefaultMenu()
+{
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::EditClip,
         TRANS("menu::selection::clips::edit"))->
         disabledIf(lasso->getNumSelected() == 0)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
+        TRANS("menu::selection::clips::transpose::up")));
+
+    menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
+        TRANS("menu::selection::clips::transpose::down")));
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips,
         TRANS("menu::selection::clips::copy"))->closesMenu());
@@ -42,3 +54,4 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }
+
