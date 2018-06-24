@@ -50,28 +50,29 @@ static inline constexpr int getAudioMonitorHeight()
 SequencerSidebarLeft::SequencerSidebarLeft(ProjectTreeItem &project)
     : project(project)
 {
-    shadow.reset (new LighterShadowUpwards());
-    addAndMakeVisible (shadow.get());
-    headLine.reset (new SeparatorHorizontalReversed());
-    addAndMakeVisible (headLine.get());
-    headShadow.reset (new LighterShadowDownwards());
-    addAndMakeVisible (headShadow.get());
-    separator.reset (new SeparatorHorizontal());
-    addAndMakeVisible (separator.get());
-    modeIndicatorSelector.reset (new ModeIndicatorTrigger());
-    addAndMakeVisible (modeIndicatorSelector.get());
+    this->shadow.reset(new LighterShadowUpwards());
+    this->addAndMakeVisible(shadow.get());
+    this->headLine.reset(new SeparatorHorizontalReversed());
+    this->addAndMakeVisible(headLine.get());
+    this->headShadow.reset(new LighterShadowDownwards());
+    this->addAndMakeVisible(headShadow.get());
+    this->separator.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separator.get());
+    this->modeIndicatorSelector.reset(new ModeIndicatorTrigger());
+    this->addAndMakeVisible(modeIndicatorSelector.get());
 
-    modeIndicator.reset (new ModeIndicatorComponent (3));
-    addAndMakeVisible (modeIndicator.get());
+    this->modeIndicator.reset(new ModeIndicatorComponent(3));
+    this->addAndMakeVisible(modeIndicator.get());
 
-    switchPatternModeButton.reset (new MenuItemComponent (this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)));
-    addAndMakeVisible (switchPatternModeButton.get());
+    this->switchPatternModeButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)));
+    this->addAndMakeVisible(switchPatternModeButton.get());
 
-    switchLinearModeButton.reset (new MenuItemComponent (this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)));
-    addAndMakeVisible (switchLinearModeButton.get());
+    this->switchLinearModeButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)));
+    this->addAndMakeVisible(switchLinearModeButton.get());
 
-    listBox.reset (new ListBox());
-    addAndMakeVisible (listBox.get());
+    this->listBox.reset(new ListBox());
+    this->addAndMakeVisible(listBox.get());
+
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -97,7 +98,7 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectTreeItem &project)
     this->genericMonitor->setVisible(true);
     //[/UserPreSize]
 
-    setSize (48, 640);
+    this->setSize(48, 640);
 
     //[Constructor]
     //[/Constructor]
@@ -153,17 +154,23 @@ void SequencerSidebarLeft::resized()
     this->spectrogramMonitor->setTopLeftPosition(0, this->getHeight() - getAudioMonitorHeight());
     //[/UserPreResize]
 
-    shadow->setBounds (0, getHeight() - 71 - 6, getWidth() - 0, 6);
-    headLine->setBounds (0, 39, getWidth() - 0, 2);
-    headShadow->setBounds (0, 40, getWidth() - 0, 6);
-    separator->setBounds (0, getHeight() - 70 - 2, getWidth() - 0, 2);
-    modeIndicatorSelector->setBounds (0, getHeight() - 70, getWidth() - 0, 70);
-    modeIndicator->setBounds (0, getHeight() - 4 - 5, getWidth() - 0, 5);
-    switchPatternModeButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    switchLinearModeButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    listBox->setBounds (0, 41, getWidth() - 0, getHeight() - 113);
+    shadow->setBounds(0, getHeight() - 71 - 6, getWidth() - 0, 6);
+    headLine->setBounds(0, 39, getWidth() - 0, 2);
+    headShadow->setBounds(0, 40, getWidth() - 0, 6);
+    separator->setBounds(0, getHeight() - 70 - 2, getWidth() - 0, 2);
+    modeIndicatorSelector->setBounds(0, getHeight() - 70, getWidth() - 0, 70);
+    modeIndicator->setBounds(0, getHeight() - 4 - 5, getWidth() - 0, 5);
+    switchPatternModeButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
+    switchLinearModeButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
+    listBox->setBounds(0, 41, getWidth() - 0, getHeight() - 113);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
+}
+
+void SequencerSidebarLeft::handleCommandMessage (int commandId)
+{
+    //[UserCode_handleCommandMessage] -- Add your code here...
+    //[/UserCode_handleCommandMessage]
 }
 
 
@@ -209,15 +216,15 @@ void SequencerSidebarLeft::switchMonitorsAnimated(Component *oldOne, Component *
 void SequencerSidebarLeft::setLinearMode()
 {
     this->buttonFader.cancelAllAnimations(false);
-    this->buttonFader.fadeIn(this->switchPatternModeButton, 200);
-    this->buttonFader.fadeOut(this->switchLinearModeButton, 200);
+    this->buttonFader.fadeIn(this->switchPatternModeButton.get(), 200);
+    this->buttonFader.fadeOut(this->switchLinearModeButton.get(), 200);
 }
 
 void SequencerSidebarLeft::setPatternMode()
 {
     this->buttonFader.cancelAllAnimations(false);
-    this->buttonFader.fadeIn(this->switchLinearModeButton, 200);
-    this->buttonFader.fadeOut(this->switchPatternModeButton, 200);
+    this->buttonFader.fadeIn(this->switchLinearModeButton.get(), 200);
+    this->buttonFader.fadeOut(this->switchPatternModeButton.get(), 200);
 }
 
 //===----------------------------------------------------------------------===//
@@ -229,6 +236,7 @@ void SequencerSidebarLeft::recreateMenu()
     this->menu.clear();
     this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
     this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
+    this->menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip));
 }
 
 Component *SequencerSidebarLeft::refreshComponentForRow(int rowNumber,
@@ -277,6 +285,9 @@ BEGIN_JUCER_METADATA
                  constructorParams="ProjectTreeItem &amp;project" variableInitialisers="project(project)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="48" initialHeight="640">
+  <METHODS>
+    <METHOD name="handleCommandMessage (int commandId)"/>
+  </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/LighterShadowUpwards.cpp"

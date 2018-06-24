@@ -881,6 +881,10 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::SelectAllEvents:
         this->selectAll();
         break;
+    case CommandIDs::ZoomEntireClip:
+        this->setEditableScope(this->activeTrack, this->activeClip, true);
+        this->zoomOutImpulse(0.25f); // A bit of fancy animation
+        break;
     case CommandIDs::RenameTrack:
         if (auto trackNode = dynamic_cast<MidiTrackTreeItem *>(this->project.findPrimaryActiveItem()))
         {

@@ -35,8 +35,6 @@ class AudioMonitor;
 #include "../../Themes/SeparatorHorizontalReversed.h"
 #include "../../Themes/LighterShadowDownwards.h"
 #include "../../Themes/SeparatorHorizontal.h"
-#include "../../Themes/LighterShadowUpwards.h"
-#include "../../Themes/LighterShadowDownwards.h"
 
 class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
                                    protected ListBoxModel
@@ -56,6 +54,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void handleCommandMessage (int commandId) override;
 
     // Binary resources:
     static const char* gray1x1_png;
@@ -86,15 +85,15 @@ private:
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
     //[/UserVariables]
 
-    ScopedPointer<LighterShadowUpwards> shadow;
-    ScopedPointer<SeparatorHorizontalReversed> headLine;
-    ScopedPointer<LighterShadowDownwards> headShadow;
-    ScopedPointer<SeparatorHorizontal> separator;
-    ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
-    ScopedPointer<ModeIndicatorComponent> modeIndicator;
-    ScopedPointer<MenuItemComponent> switchPatternModeButton;
-    ScopedPointer<MenuItemComponent> switchLinearModeButton;
-    ScopedPointer<ListBox> listBox;
+    UniquePointer<LighterShadowUpwards> shadow;
+    UniquePointer<SeparatorHorizontalReversed> headLine;
+    UniquePointer<LighterShadowDownwards> headShadow;
+    UniquePointer<SeparatorHorizontal> separator;
+    UniquePointer<ModeIndicatorTrigger> modeIndicatorSelector;
+    UniquePointer<ModeIndicatorComponent> modeIndicator;
+    UniquePointer<MenuItemComponent> switchPatternModeButton;
+    UniquePointer<MenuItemComponent> switchLinearModeButton;
+    UniquePointer<ListBox> listBox;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarLeft)
 };

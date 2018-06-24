@@ -89,6 +89,8 @@
         // Navigation
         { "receiver": "PianoRoll", "command": "ZoomIn", "key": "Z" },
         { "receiver": "PianoRoll", "command": "ZoomOut", "key": "Shift + Z" },
+        { "receiver": "PianoRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
+        { "receiver": "PianoRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
 
         // Selection
         { "receiver": "PianoRoll", "command": "SelectAllEvents", "key": "Command + A" },
@@ -172,6 +174,8 @@
         // Navigation
         { "receiver": "PatternRoll", "command": "ZoomIn", "key": "Z" },
         { "receiver": "PatternRoll", "command": "ZoomOut", "key": "Shift + Z" },
+        { "receiver": "PatternRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
+        { "receiver": "PatternRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
 
         // Selection
         { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Command + A" },
@@ -186,8 +190,6 @@
         { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Edit selection
-        { "receiver": "PatternRoll", "command": "EditClip", "key": "Command + Tab" },
-        { "receiver": "PatternRoll", "command": "EditClip", "key": "Control + Tab" },
         { "receiver": "PatternRoll", "command": "RenameTrack", "key": "F2" },
         { "receiver": "PatternRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
         { "receiver": "PatternRoll", "command": "BeatShiftRight", "key": "Cursor Right" },

@@ -470,18 +470,18 @@ void HybridRoll::startSmoothZoom(const Point<float> &origin, const Point<float> 
     this->smoothZoomController->zoomRelative(origin, factor);
 }
 
-void HybridRoll::zoomInImpulse()
+void HybridRoll::zoomInImpulse(float factor)
 {
     const auto origin = this->getViewport().getLocalBounds().getCentre();
-    const Point<float> factor(0.15f, 0.05f);
-    this->startSmoothZoom(origin.toFloat(), factor);
+    const Point<float> f(0.15f * factor, 0.05f * factor);
+    this->startSmoothZoom(origin.toFloat(), f);
 }
 
-void HybridRoll::zoomOutImpulse()
+void HybridRoll::zoomOutImpulse(float factor)
 {
     const auto origin = this->getViewport().getLocalBounds().getCentre();
-    const Point<float> factor(-0.15f, -0.05f);
-    this->startSmoothZoom(origin.toFloat(), factor);
+    const Point<float> f(-0.15f * factor, -0.05f * factor);
+    this->startSmoothZoom(origin.toFloat(), f);
 }
 
 void HybridRoll::zoomToArea(float minBeat, float maxBeat)

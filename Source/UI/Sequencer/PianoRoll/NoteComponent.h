@@ -88,7 +88,7 @@ protected:
     Note groupScalingAnchor;
 
     bool belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept;
-    void switchActiveSegmentToSelected() const;
+    void switchActiveSegmentToSelected(bool zoomToScope) const;
 
     bool isInitializing() const;
     void startInitializing();

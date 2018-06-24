@@ -167,9 +167,9 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->shouldGoQuickSelectLayerMode(e.mods))
+    if (this->shouldGoQuickSelectLayerMode(e.mods) && !this->isActive())
     {
-        this->switchActiveSegmentToSelected();
+        this->switchActiveSegmentToSelected(e.mods.isAnyModifierKeyDown());
         return;
     }
     
@@ -683,10 +683,14 @@ bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip 
     return this->clip == clip && this->note.getSequence()->getTrack() == track;
 }
 
-void NoteComponent::switchActiveSegmentToSelected() const
+void NoteComponent::switchActiveSegmentToSelected(bool zoomToScope) const
 {
     auto *track = this->getNote().getSequence()->getTrack();
-    this->roll.getProject().setEditableScope(track, this->getClip());
+    this->getRoll().setEditableScope(track, this->getClip(), zoomToScope);
+    if (zoomToScope)
+    {
+        this->getRoll().zoomOutImpulse(0.5f);
+    }
 }
 
 //===----------------------------------------------------------------------===//

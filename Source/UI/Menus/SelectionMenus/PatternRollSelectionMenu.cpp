@@ -27,7 +27,7 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::EditClip,
+    menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::EditClip,
         TRANS("menu::selection::clips::edit"))->
         disabledIf(lasso->getNumSelected() == 0)->closesMenu());
 
