@@ -380,7 +380,8 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
     jassert(dynamic_cast<NoteComponent *>(mc));
     const auto *nc = static_cast<NoteComponent *>(mc);
-    return this->getEventBounds(nc->getKey(), nc->getBeat() + nc->getClip().getBeat(), nc->getLength());
+    return this->getEventBounds(nc->getKey() + nc->getClip().getKey(),
+        nc->getBeat() + nc->getClip().getBeat(), nc->getLength());
 }
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const

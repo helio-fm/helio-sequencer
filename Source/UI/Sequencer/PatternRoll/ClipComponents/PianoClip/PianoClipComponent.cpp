@@ -50,15 +50,7 @@ PianoClipComponent::~PianoClipComponent()
 void PianoClipComponent::resized()
 {
     this->componentHeight = float(this->getHeight()) / 128.f; // TODO remove hard-coded value
-    
-    this->setVisible(false);
-
-    for (const auto &e : this->componentsMap)
-    {
-        this->applyNoteBounds(e.second.get());
-    }
-
-    this->setVisible(true);
+    this->repositionAllChildren();
 }
 
 //===----------------------------------------------------------------------===//
@@ -115,6 +107,14 @@ void PianoClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         }
 
         this->roll.triggerBatchRepaintFor(this);
+    }
+}
+
+void PianoClipComponent::onChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+    if (oldClip == this->clip)
+    {
+        this->repositionAllChildren();
     }
 }
 
@@ -188,7 +188,7 @@ void PianoClipComponent::reloadTrackMap()
         }
     }
 
-    this->resized(); // Re-calculates children bounds
+    this->repositionAllChildren();
     this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);
 }
@@ -203,4 +203,16 @@ void PianoClipComponent::applyNoteBounds(PianoSequenceMapNoteComponent *nc)
     const float w = float(this->getWidth()) * (nc->getLength() / sequenceLength);
     const int y = this->getHeight() - int(key * this->componentHeight);
     nc->setRealBounds(x, y, jmax(1.f, w), 1);
+}
+
+void PianoClipComponent::repositionAllChildren()
+{
+    this->setVisible(false);
+
+    for (const auto &e : this->componentsMap)
+    {
+        this->applyNoteBounds(e.second.get());
+    }
+
+    this->setVisible(true);
 }
