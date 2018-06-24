@@ -146,7 +146,7 @@ ValueTree KeySignatureEvent::serialize() const noexcept
     ValueTree tree(Midi::keySignature);
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::key, this->rootKey, nullptr);
-    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
     tree.appendChild(this->scale->serialize(), nullptr);
     return tree;
 }

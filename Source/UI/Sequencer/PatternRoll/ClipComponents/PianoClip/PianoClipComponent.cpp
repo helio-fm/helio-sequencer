@@ -198,8 +198,9 @@ void PianoClipComponent::applyNoteBounds(PianoSequenceMapNoteComponent *nc)
     const auto *ns = nc->getNote().getSequence();
     const float sequenceLength = ns->getLengthInBeats();
     const float beat = nc->getBeat() - ns->getFirstBeat();
+    const auto key = jlimit(0, 128, nc->getKey() + this->clip.getKey());
     const float x = float(this->getWidth()) * (beat / sequenceLength);
     const float w = float(this->getWidth()) * (nc->getLength() / sequenceLength);
-    const int y = this->getHeight() - int(nc->getKey() * this->componentHeight);
+    const int y = this->getHeight() - int(key * this->componentHeight);
     nc->setRealBounds(x, y, jmax(1.f, w), 1);
 }

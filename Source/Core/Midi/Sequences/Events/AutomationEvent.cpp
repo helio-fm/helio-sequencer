@@ -255,7 +255,7 @@ ValueTree AutomationEvent::serialize() const noexcept
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::value, this->controllerValue, nullptr);
     tree.setProperty(Midi::curve, this->curvature, nullptr);
-    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
     return tree;
 }
 

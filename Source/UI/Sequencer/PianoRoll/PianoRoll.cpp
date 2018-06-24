@@ -200,9 +200,6 @@ void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack,
         this->zoomToArea(focusMinKey, focusMaxKey,
             focusMinBeat + this->activeClip.getBeat(),
             focusMaxBeat + this->activeClip.getBeat());
-
-        // TODO test usability:
-        //this->zoomOutImpulse();
     }
     else
     {
@@ -404,15 +401,15 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getRoundBeatByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
-    noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
-    noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
+    noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
+    noteNumber = jlimit(0, numRows - 1, noteNumber);
 }
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getFloorBeatByXPosition(x) - this->activeClip.getBeat();
-    noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
-    noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
+    noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
+    noteNumber = jlimit(0, numRows - 1, noteNumber);
 }
 
 int PianoRoll::getYPositionByKey(int targetKey) const
@@ -451,8 +448,8 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
     const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + firstBeat, 1.f);
 
-    const int deltaX = roundToInt(delta.getTopLeft().getX());
-    const int deltaY = roundToInt(delta.getTopLeft().getY() - this->getHeight() - 1);
+    const int deltaX = int(delta.getTopLeft().getX());
+    const int deltaY = int(delta.getTopLeft().getY() - this->getHeight() - 1);
     const Rectangle<int> selectionTranslated = selectionBounds.translated(deltaX, deltaY);
 
     const int vX = this->viewport.getViewPositionX();

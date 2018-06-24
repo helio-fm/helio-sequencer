@@ -633,7 +633,7 @@ float HybridRoll::getFloorBeatByXPosition(int x) const
     }
 
     const float beatNumber = roundBeat(targetX / this->barWidth * BEATS_PER_BAR + this->getFirstBeat());
-    return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
+    return jlimit(this->getFirstBeat(), this->getLastBeat(), beatNumber);
 }
 
 float HybridRoll::getRoundBeatByXPosition(int x) const
@@ -657,7 +657,7 @@ float HybridRoll::getRoundBeatByXPosition(int x) const
     }
 
     const float beatNumber = roundBeat(targetX / this->barWidth * BEATS_PER_BAR + this->getFirstBeat());
-    return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
+    return jlimit(this->getFirstBeat(), this->getLastBeat(), beatNumber);
 }
 
 void HybridRoll::setBarRange(float first, float last)

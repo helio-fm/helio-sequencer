@@ -128,7 +128,7 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
                                               const MouseWheelDetails &wheel)
 {
     const int forwardWheel =
-        roundToInt(wheel.deltaY * (wheel.isReversed ? -LISTBOX_DRAG_SPEED : LISTBOX_DRAG_SPEED));
+        int(wheel.deltaY * (wheel.isReversed ? -LISTBOX_DRAG_SPEED : LISTBOX_DRAG_SPEED));
     
     if (this->parentViewport != nullptr)
     {

@@ -286,7 +286,7 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     const int yHeight = (button.getHeight() - (yIndent * 2));
     const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
 
-    const int fontHeight = roundToInt(font.getHeight() * 0.5f);
+    const int fontHeight = int(font.getHeight() * 0.5f);
     //const int leftIndent  = hasImg ? button.getWidth() / 3 : fontHeight;
     const int leftIndent = fontHeight;
     const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));

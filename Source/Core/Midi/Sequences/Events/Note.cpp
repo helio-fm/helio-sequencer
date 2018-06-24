@@ -77,7 +77,7 @@ Note Note::withBeat(float newBeat) const noexcept
 Note Note::withKeyBeat(Key newKey, float newBeat) const noexcept
 {
     Note other(*this);
-    other.key = jmin(jmax(newKey, 0), 128);
+    other.key = jlimit(0, 128, newKey);
     other.beat = roundBeat(newBeat);
     return other;
 }
@@ -85,7 +85,7 @@ Note Note::withKeyBeat(Key newKey, float newBeat) const noexcept
 Note Note::withKeyLength(Key newKey, float newLength) const noexcept
 {
     Note other(*this);
-    other.key = jmin(jmax(newKey, 0), 128);
+    other.key = jlimit(0, 128, newKey);
     other.length = jmax(MIN_LENGTH, roundBeat(newLength));
     return other;
 }
@@ -100,7 +100,7 @@ Note Note::withDeltaBeat(float deltaPosition) const noexcept
 Note Note::withDeltaKey(Key deltaKey) const noexcept
 {
     Note other(*this);
-    other.key = jmin(jmax(other.key + deltaKey, 0), 128);
+    other.key = jlimit(0, 128, other.key + deltaKey);
     return other;
 }
 
@@ -121,7 +121,7 @@ Note Note::withDeltaLength(float deltaLength) const noexcept
 Note Note::withVelocity(float newVelocity) const noexcept
 {
     Note other(*this);
-    other.velocity = jmin(jmax(newVelocity, 0.0f), 1.0f);
+    other.velocity = jlimit(0.f, 1.f, newVelocity);
     return other;
 }
 
@@ -161,9 +161,9 @@ ValueTree Note::serialize() const noexcept
     ValueTree tree(Midi::note);
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::key, this->key, nullptr);
-    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Midi::length, roundToInt(this->length * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Midi::volume, roundToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
     return tree;
 }
 

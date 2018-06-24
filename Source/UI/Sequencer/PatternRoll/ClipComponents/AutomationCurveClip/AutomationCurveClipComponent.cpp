@@ -211,7 +211,7 @@ void AutomationCurveClipComponent::getRowsColsByMousePosition(int x, int y, floa
 
     targetBeat = this->roll.getRoundBeatByXPosition(xRoll) - this->clip.getBeat();
     targetValue = float(this->getAvailableHeight() - y - radius) / float(this->getAvailableHeight()); // flip upside down
-    targetValue = jmin(jmax(targetValue, 0.f), 1.f);
+    targetValue = jlimit(0.f, 1.f, targetValue);
 }
 
 AutomationCurveEventComponent *AutomationCurveClipComponent::getPreviousEventComponent(int indexOfSorted) const

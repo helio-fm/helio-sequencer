@@ -352,7 +352,7 @@ float KeySignaturesProjectMap<T>::getBeatByXPosition(int x) const
 {
     const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
     const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
-    return jmin(jmax(targetBeat, this->rollFirstBeat), this->rollLastBeat);
+    return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 
 template<typename T>

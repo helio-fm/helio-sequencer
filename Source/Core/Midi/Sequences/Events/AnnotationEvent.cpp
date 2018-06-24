@@ -118,7 +118,7 @@ ValueTree AnnotationEvent::serialize() const noexcept
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::text, this->description, nullptr);
     tree.setProperty(Midi::colour, this->colour.toString(), nullptr);
-    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
     return tree;
 }
 
