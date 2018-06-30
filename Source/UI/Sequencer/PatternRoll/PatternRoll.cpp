@@ -147,7 +147,6 @@ void PatternRoll::reloadRollContent()
         }
     }
 
-    this->resized();
     this->repaint(this->viewport.getViewArea());
 }
 
@@ -291,8 +290,6 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
                 this->addAndMakeVisible(clipComponent);
             }
         }
-
-        this->resized();
     }
 }
 
@@ -589,6 +586,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ClipTransposeUp:
+        // TODO! combine in one transaction if possible
         PatternOperations::transposeClips(this->getLassoSelection(), 1);
         break;
     case CommandIDs::ClipTransposeDown:

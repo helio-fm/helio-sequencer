@@ -30,8 +30,7 @@ PianoClipComponent::PianoClipComponent(ProjectTreeItem &project, MidiSequence *s
     ClipComponent(roll, clip),
     project(project),
     roll(roll),
-    sequence(sequence),
-    componentHeight(1.f)
+    sequence(sequence)
 {
     this->setPaintingIsUnclipped(true);
     this->reloadTrackMap();
@@ -49,7 +48,6 @@ PianoClipComponent::~PianoClipComponent()
 
 void PianoClipComponent::resized()
 {
-    this->componentHeight = float(this->getHeight()) / 128.f; // TODO remove hard-coded value
     this->repositionAllChildren();
 }
 
@@ -112,7 +110,7 @@ void PianoClipComponent::onRemoveMidiEvent(const MidiEvent &event)
 
 void PianoClipComponent::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
-    if (oldClip == this->clip)
+    if (this->clip == oldClip)
     {
         this->repositionAllChildren();
     }
@@ -170,8 +168,7 @@ void PianoClipComponent::reloadTrackMap()
 
     this->setVisible(false);
 
-    const auto &tracks = this->project.getTracks();
-    for (auto track : tracks)
+    for (auto *track : this->project.getTracks())
     {
         if (track->getSequence() != this->sequence) { continue; }
 
@@ -179,7 +176,7 @@ void PianoClipComponent::reloadTrackMap()
         {
             MidiEvent *event = track->getSequence()->getUnchecked(j);
 
-            if (Note *note = dynamic_cast<Note *>(event))
+            if (auto *note = dynamic_cast<Note *>(event))
             {
                 auto noteComponent = new PianoSequenceMapNoteComponent(*note);
                 this->componentsMap[*note] = UniquePointer<PianoSequenceMapNoteComponent>(noteComponent);
@@ -201,7 +198,8 @@ void PianoClipComponent::applyNoteBounds(PianoSequenceMapNoteComponent *nc)
     const auto key = jlimit(0, 128, nc->getKey() + this->clip.getKey());
     const float x = float(this->getWidth()) * (beat / sequenceLength);
     const float w = float(this->getWidth()) * (nc->getLength() / sequenceLength);
-    const int y = this->getHeight() - int(key * this->componentHeight);
+    const float h = float(this->getHeight());
+    const int y = int(h - key * h / 128.f);
     nc->setRealBounds(x, y, jmax(1.f, w), 1);
 }
 
