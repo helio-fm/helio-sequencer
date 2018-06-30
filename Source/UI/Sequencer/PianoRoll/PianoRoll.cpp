@@ -182,12 +182,13 @@ void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack,
     {
         const auto nc = e.second.get();
         const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
+        const auto key = nc->getKey() + activeClip.getKey();
         nc->setActive(isActive, true);
 
         if (shouldZoomToArea && isActive)
         {
-            focusMinKey = jmin(focusMinKey, nc->getKey());
-            focusMaxKey = jmax(focusMaxKey, nc->getKey());
+            focusMinKey = jmin(focusMinKey, key);
+            focusMaxKey = jmax(focusMaxKey, key);
             focusMinBeat = jmin(focusMinBeat, nc->getBeat());
             focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
         }
