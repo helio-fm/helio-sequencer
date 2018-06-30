@@ -85,10 +85,8 @@ float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, flo
     return cv1 + (easeIn + easeOut);
 }
 
-Array<MidiMessage> AutomationEvent::toMidiMessages() const
+void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const
 {
-    Array<MidiMessage> result;
-
     MidiMessage cc;
     const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();
 
@@ -104,7 +102,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
 
     const double startTime = round(this->beat * MS_PER_BEAT);
     cc.setTimeStamp(startTime);
-    result.add(cc);
+    outSequence.addEvent(cc, timeAdjustment);
 
     // add interpolated events, if needed
     const int indexOfThis = this->getSequence()->indexOfSorted(this);
@@ -118,7 +116,6 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
 
         while (interpolatedBeat < nextEvent->beat)
         {
-            const double interpolatedEventTs = round(interpolatedBeat * MS_PER_BEAT);
             const float factor = (interpolatedBeat - this->beat) / (nextEvent->beat - this->beat);
 
             const float interpolatedValue =
@@ -128,19 +125,20 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
             const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
             if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
             {
+                const double interpolatedTs = round((interpolatedBeat + clip.getBeat()) * MS_PER_BEAT);
                 if (isTempoTrack)
                 {
                     const auto tempo = int((1.f - interpolatedValue) * MS_PER_BEAT * 1000);
                     MidiMessage ci(MidiMessage::tempoMetaEvent(tempo));
-                    ci.setTimeStamp(interpolatedEventTs);
-                    result.add(ci);
+                    ci.setTimeStamp(interpolatedTs);
+                    outSequence.addEvent(ci, timeAdjustment);
                 }
                 else
                 {
                     MidiMessage ci(MidiMessage::controllerEvent(this->getTrackChannel(),
                         this->getTrackControllerNumber(), int(this->controllerValue * 127)));
-                    ci.setTimeStamp(interpolatedEventTs);
-                    result.add(ci);
+                    ci.setTimeStamp(interpolatedTs);
+                    outSequence.addEvent(ci, timeAdjustment);
                 }
 
                 lastAppliedValue = interpolatedValue;
@@ -149,8 +147,6 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
             interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
         }
     }
-
-    return result;
 }
 
 AutomationEvent AutomationEvent::copyWithNewId() const noexcept

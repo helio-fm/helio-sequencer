@@ -40,17 +40,20 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noex
     length(parametersToCopy.length),
     velocity(parametersToCopy.velocity) {}
 
-Array<MidiMessage> Note::toMidiMessages() const
+void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const
 {
-    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), this->key, velocity));
-    const double startTime = round(double(this->beat) * MS_PER_BEAT);
+    const auto finalKey = this->key + clip.getKey();
+    const auto finalVolume = this->velocity * clip.getVelocity();
+
+    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), finalKey, finalVolume));
+    const double startTime = round((this->beat + clip.getBeat()) * MS_PER_BEAT);
     eventNoteOn.setTimeStamp(startTime);
+    outSequence.addEvent(eventNoteOn, timeAdjustment);
 
-    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), this->key));
-    const double endTime = round(double(this->beat + this->length) * MS_PER_BEAT);
+    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), finalKey));
+    const double endTime = round((this->beat + this->length + clip.getBeat()) * MS_PER_BEAT);
     eventNoteOff.setTimeStamp(endTime);
-
-    return { eventNoteOn, eventNoteOff };
+    outSequence.addEvent(eventNoteOff, timeAdjustment);
 }
 
 Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept

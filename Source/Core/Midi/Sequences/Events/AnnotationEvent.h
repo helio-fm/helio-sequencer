@@ -32,7 +32,8 @@ public:
         const String &description = "",
         const Colour &newColour = Colours::white) noexcept;
     
-    Array<MidiMessage> toMidiMessages() const override;
+    void exportMessages(MidiMessageSequence &outSequence,
+        const Clip &clip, double timeAdjustment) const override;
     
     AnnotationEvent copyWithNewId() const noexcept;
     AnnotationEvent withDeltaBeat(float beatOffset) const noexcept;

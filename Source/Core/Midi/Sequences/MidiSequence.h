@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Clip.h"
 #include "MidiEvent.h"
 
 class ProjectTreeItem;
@@ -47,9 +48,10 @@ public:
     // Import/export
     //===------------------------------------------------------------------===//
 
-    MidiMessageSequence exportMidi() const;
     virtual void importMidi(const MidiMessageSequence &sequence) = 0;
-    
+    void exportMidi(MidiMessageSequence &outSequence,
+        const Clip &clip, double timeAdjustment) const;
+
     //===------------------------------------------------------------------===//
     // Track editing
     //===------------------------------------------------------------------===//
@@ -103,7 +105,9 @@ public:
     void notifyEventRemoved(const MidiEvent &event);
     void notifyEventRemovedPostAction();
 
-    void invalidateSequenceCache();
+    // TODO remove this or implement caching and benchmark to see if it's really needed:
+    void invalidateSequenceCache() const noexcept {}
+
     void updateBeatRange(bool shouldNotifyIfChanged);
 
     //===------------------------------------------------------------------===//
@@ -134,12 +138,7 @@ protected:
 
     OwnedArray<MidiEvent> midiEvents;
     mutable SparseHashSet<MidiEvent::Id, StringHash> usedEventIds;
-
-private:
-
-    mutable MidiMessageSequence cachedSequence;
-    mutable bool cacheIsOutdated;
-
+    
 private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence)

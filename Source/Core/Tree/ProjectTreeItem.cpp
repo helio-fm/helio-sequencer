@@ -842,24 +842,26 @@ void ProjectTreeItem::exportMidi(File &file) const
 {
     MidiFile tempFile;
     tempFile.setTicksPerQuarterNote(int(MS_PER_BEAT));
-    
+    static Clip noTransform;
+
     const auto &tracks = this->getTracks();
     for (const auto *track : tracks)
     {
+        MidiMessageSequence sequence;
+
         if (track->getPattern() != nullptr)
         {
             for (const auto *clip : track->getPattern()->getClips())
             {
-                MidiMessageSequence sequence(track->getSequence()->exportMidi());
-                const double clipOffset = round(double(clip->getBeat()) * MS_PER_BEAT);
-                sequence.addTimeToMessages(clipOffset);
-                tempFile.addTrack(sequence);
+                track->getSequence()->exportMidi(sequence, *clip, 0.0);
             }
         }
         else
         {
-            tempFile.addTrack(track->getSequence()->exportMidi());
+            track->getSequence()->exportMidi(sequence, noTransform, 0.0);
         }
+
+        tempFile.addTrack(sequence);
     }
     
     ScopedPointer<OutputStream> out(new FileOutputStream(file));

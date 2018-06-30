@@ -40,7 +40,8 @@ public:
          int keyVal = 0, float beatVal = 0.f,
          float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
-    Array<MidiMessage> toMidiMessages() const override;
+    void exportMessages(MidiMessageSequence &outSequence,
+        const Clip &clip, double timeAdjustment) const override;
     
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     Note withBeat(float newBeat) const noexcept;

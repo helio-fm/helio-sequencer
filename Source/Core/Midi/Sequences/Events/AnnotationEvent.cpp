@@ -42,11 +42,11 @@ AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
     description(parametersToCopy.description),
     colour(parametersToCopy.colour) {}
 
-Array<MidiMessage> AnnotationEvent::toMidiMessages() const
+void AnnotationEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const
 {
     MidiMessage event(MidiMessage::textMetaEvent(1, this->getDescription()));
-    event.setTimeStamp(round(this->beat * MS_PER_BEAT));
-    return { event };
+    event.setTimeStamp(round((this->beat + clip.getBeat()) * MS_PER_BEAT));
+    outSequence.addEvent(event, timeAdjustment);
 }
 
 AnnotationEvent AnnotationEvent::withDeltaBeat(float beatOffset) const noexcept

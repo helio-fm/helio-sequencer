@@ -96,7 +96,6 @@ String ResourceManager::getBuiltInResourceString() const
         return String::fromUTF8(data, dataSize);
     }
 
-    jassertfalse;
     return {};
 }
 

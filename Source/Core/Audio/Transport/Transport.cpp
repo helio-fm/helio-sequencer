@@ -730,7 +730,6 @@ MidiMessage Transport::findFirstTempoEvent()
     return MidiMessage::tempoMetaEvent(int(MS_PER_BEAT) * 1000);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Sequences management
 //===----------------------------------------------------------------------===//
@@ -740,38 +739,35 @@ void Transport::rebuildSequencesIfNeeded()
     if (this->sequencesAreOutdated)
     {
         this->sequences.clear();
-        
-        for (int i = 0; i < this->tracksCache.size(); ++i)
+        static Clip noTransform;
+        const double offset = -this->trackStartMs.get();
+
+        for (const auto *track : this->tracksCache)
         {
-            const auto *track = this->tracksCache.getUnchecked(i);
-            MidiMessageSequence midiMessages;
+            auto *instrument = this->linksCache[track->getTrackId()];
+            jassert(instrument != nullptr);
+
+            ScopedPointer<SequenceWrapper> wrapper(new SequenceWrapper());
+            wrapper->track = track->getSequence();
+            wrapper->currentIndex = 0;
+            wrapper->instrument = instrument;
+            wrapper->listener = &instrument->getProcessorPlayer().getMidiMessageCollector();
 
             if (track->getPattern() != nullptr)
             {
                 for (const auto *clip : track->getPattern()->getClips())
                 {
-                    const double clipOffset = round(double(clip->getBeat()) * MS_PER_BEAT);
-                    midiMessages.addSequence(track->getSequence()->exportMidi(),
-                        clipOffset - this->trackStartMs.get());
+                    wrapper->track->exportMidi(wrapper->midiMessages, *clip, offset);
                 }
             }
             else
             {
-                midiMessages.addSequence(track->getSequence()->exportMidi(),
-                    -this->trackStartMs.get());
+                wrapper->track->exportMidi(wrapper->midiMessages, noTransform, offset);
             }
 
-            if (midiMessages.getNumEvents() > 0)
+            if (wrapper->midiMessages.getNumEvents() > 0)
             {
-                Instrument *instrument = this->linksCache[track->getTrackId()];
-                jassert(instrument != nullptr);
-                auto wrapper = new SequenceWrapper();
-                wrapper->track = track->getSequence();
-                wrapper->midiMessages = midiMessages;
-                wrapper->currentIndex = 0;
-                wrapper->instrument = instrument;
-                wrapper->listener = &instrument->getProcessorPlayer().getMidiMessageCollector();
-                this->sequences.addWrapper(wrapper);
+                this->sequences.addWrapper(wrapper.release());
             }
         }
         
