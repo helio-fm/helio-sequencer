@@ -262,7 +262,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     }
     else if (e.mods.isMiddleButtonDown())
     {
-        this->note.getSequence()->checkpoint();
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
         forEachSelectedNote(selection, note)
         {

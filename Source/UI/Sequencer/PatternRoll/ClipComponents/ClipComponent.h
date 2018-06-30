@@ -33,7 +33,8 @@ public:
     enum State
     {
         None,
-        Dragging
+        Dragging,
+        Tuning
     };
 
     //===------------------------------------------------------------------===//
@@ -80,6 +81,13 @@ protected:
     Clip continueDragging(float deltaBeat);
     void endDragging();
 
+    void startTuning();
+    Clip continueTuning(const MouseEvent &e) const noexcept;
+    Clip continueTuningLinear(float delta) const noexcept;
+    Clip continueTuningMultiplied(float factor) const noexcept;
+    Clip continueTuningSine(float factor, float midline, float phase) const noexcept;
+    void endTuning();
+
     friend class PatternRoll;
 
     bool firstChangeDone;
@@ -88,7 +96,8 @@ protected:
 
     State state;
 
-    Colour headColour;
+    Colour headBrightColour;
+    Colour headDarkColour;
     Colour fillColour;
     Colour eventColour;
 

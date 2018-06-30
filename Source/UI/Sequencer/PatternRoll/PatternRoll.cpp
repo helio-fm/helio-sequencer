@@ -578,11 +578,16 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ClipTransposeUp:
-        // TODO! combine in one transaction if possible
         PatternOperations::transposeClips(this->getLassoSelection(), 1);
         break;
     case CommandIDs::ClipTransposeDown:
         PatternOperations::transposeClips(this->getLassoSelection(), -1);
+        break;
+    case CommandIDs::ClipVolumeUp:
+        PatternOperations::tuneClips(this->getLassoSelection(), 0.1f);
+        break;
+    case CommandIDs::ClipVolumeDown:
+        PatternOperations::tuneClips(this->getLassoSelection(), -0.1f);
         break;
     //case CommandIDs::BeatShiftLeft:
     //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);

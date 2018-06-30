@@ -52,6 +52,8 @@ public:
     Clip withDeltaBeat(float deltaPosition) const;
     Clip withKey(int absKey) const;
     Clip withDeltaKey(int deltaKey) const;
+    Clip withVelocity(float absVelocity) const;
+    Clip withDeltaVelocity(float deltaVelocity) const;
 
     //===------------------------------------------------------------------===//
     // Serializable

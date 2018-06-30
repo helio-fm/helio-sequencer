@@ -155,6 +155,20 @@ Clip Clip::withDeltaKey(int deltaKey) const
     return other;
 }
 
+Clip Clip::withVelocity(float absVelocity) const
+{
+    Clip other(*this);
+    other.velocity = jlimit(0.f, 1.f, absVelocity);
+    return other;
+}
+
+Clip Clip::withDeltaVelocity(float deltaVelocity) const
+{
+    Clip other(*this);
+    other.velocity = jlimit(0.f, 1.f, other.velocity + deltaVelocity);
+    return other;
+}
+
 ValueTree Clip::serialize() const
 {
     using namespace Serialization;

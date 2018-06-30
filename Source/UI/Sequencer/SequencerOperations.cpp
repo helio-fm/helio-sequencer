@@ -2004,9 +2004,34 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
         pattern->checkpoint(transactionId);
     }
 
+    // TODO change group at one time instead and checkpoint only if there are changes to come
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
         pattern->change(clip, clip.withDeltaKey(deltaKey), true);
+    }
+}
+
+void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0 || deltaVelocity == 0.f) { return; }
+
+    auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
+    const auto operationId = deltaVelocity > 0 ? CommandIDs::ClipVolumeUp : CommandIDs::ClipVolumeDown;
+    const auto &transactionId = generateTransactionId(operationId, selection);
+    const bool repeatsLastAction = pattern->getLastUndoDescription() == transactionId;
+
+    if (shouldCheckpoint && !repeatsLastAction)
+    {
+        pattern->checkpoint(transactionId);
+    }
+
+    // TODO change group at one time instead and checkpoint only if there are changes to come
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        pattern->change(clip, clip.withDeltaVelocity(deltaVelocity), true);
     }
 }

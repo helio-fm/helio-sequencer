@@ -83,6 +83,8 @@ namespace CommandIDs
 
         ClipTransposeUp                 = 0x1620,
         ClipTransposeDown               = 0x1621,
+        ClipVolumeUp                    = 0x1622,
+        ClipVolumeDown                  = 0x1623,
 
         CursorTool                      = 0x1700,
         DrawTool                        = 0x1701,

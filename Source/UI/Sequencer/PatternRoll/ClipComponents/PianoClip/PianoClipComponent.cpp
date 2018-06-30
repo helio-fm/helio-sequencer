@@ -112,7 +112,8 @@ void PianoClipComponent::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
     if (this->clip == oldClip)
     {
-        this->repositionAllChildren();
+        this->updateColours(); // transparency depends on clip velocity
+        this->repositionAllChildren(); // positions depend on key offset
     }
 }
 
