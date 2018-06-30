@@ -75,7 +75,7 @@ void NoteComponent::updateColours()
 
     this->colourLighter = this->colour.brighter(0.125f).withMultipliedAlpha(1.45f);
     this->colourDarker = this->colour.darker(0.175f).withMultipliedAlpha(1.45f);
-    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost ? 0.f : 0.8f);
+    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost ? 0.f : 0.45f);
 }
 
 bool NoteComponent::canResize() const noexcept
@@ -85,7 +85,7 @@ bool NoteComponent::canResize() const noexcept
 
 bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const
 {
-    return (modifiers.isAltDown() || modifiers.isRightButtonDown());
+    return (modifiers.isAltDown() || modifiers.isRightButtonDown()) && !this->isActive();
 }
 
 void NoteComponent::setQuickSelectLayerMode(bool value)
@@ -169,7 +169,8 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 {
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
-        this->switchActiveSegmentToSelected();
+        this->switchActiveSegmentToSelected(e.mods.isAnyModifierKeyDown());
+        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
     
@@ -185,7 +186,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     if (e.mods.isRightButtonDown() &&
         this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -262,7 +262,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     }
     else if (e.mods.isMiddleButtonDown())
     {
-        this->note.getSequence()->checkpoint();
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
         forEachSelectedNote(selection, note)
         {
@@ -286,8 +285,10 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() &&
+        this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -668,9 +669,11 @@ void NoteComponent::paint(Graphics &g)
 //#else
     const float sx = x1 + 2.f;
     const float sy = float(this->getHeight() - 4);
-    const float sw = jmax(0.f, (w - 4.f)) * this->getVelocity();
+    const float sw1 = jmax(0.f, (w - 4.f)) * this->note.getVelocity();
+    const float sw2 = jmax(0.f, (w - 4.f)) * this->note.getVelocity() * this->clip.getVelocity();
     g.setColour(this->colourVolume);
-    g.fillRect(sx, sy, sw, 3.f);
+    g.fillRect(sx, sy, sw1, 3.f);
+    g.fillRect(sx, sy, sw2, 3.f);
 //#endif
 }
 
@@ -683,10 +686,14 @@ bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip 
     return this->clip == clip && this->note.getSequence()->getTrack() == track;
 }
 
-void NoteComponent::switchActiveSegmentToSelected() const
+void NoteComponent::switchActiveSegmentToSelected(bool zoomToScope) const
 {
     auto *track = this->getNote().getSequence()->getTrack();
-    this->roll.getProject().setEditableScope(track, this->getClip());
+    this->roll.getProject().setEditableScope(track, this->getClip(), zoomToScope);
+    if (zoomToScope)
+    {
+        this->getRoll().zoomOutImpulse(0.5f);
+    }
 }
 
 //===----------------------------------------------------------------------===//

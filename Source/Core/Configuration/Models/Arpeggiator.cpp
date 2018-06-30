@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Arpeggiator.h"
-#include "SerializationKeys.h"
 #include "Note.h"
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
@@ -353,9 +352,9 @@ ValueTree Arpeggiator::Key::serialize() const
     ValueTree tree(Arps::key);
     tree.setProperty(Arps::Keys::key, this->key, nullptr);
     tree.setProperty(Arps::Keys::period, this->period, nullptr);
-    tree.setProperty(Arps::Keys::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Arps::Keys::length, roundToInt(this->length * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Arps::Keys::volume, roundToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    tree.setProperty(Arps::Keys::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Arps::Keys::length, int(this->length * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Arps::Keys::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
     return tree;
 }
 

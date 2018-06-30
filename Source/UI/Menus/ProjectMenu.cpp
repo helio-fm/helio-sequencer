@@ -100,7 +100,8 @@ void ProjectMenu::handleCommandMessage(int commandId)
             return;
         }
             
-        case CommandIDs::RefactorTransposeUp:
+        // TODO: change clips, don't transpose sequences!
+        case CommandIDs::ProjectTransposeUp:
         {
             Array<MidiTrack *> tracks = this->project.getTracks();
             bool didCheckpoint = false;
@@ -122,7 +123,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
         }
             return;
             
-        case CommandIDs::RefactorTransposeDown:
+        case CommandIDs::ProjectTransposeDown:
         {
             Array<MidiTrack *> tracks = this->project.getTracks();
             bool didCheckpoint = false;
@@ -450,14 +451,14 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
         }));
 
     menu.add(MenuItem::item(Icons::up,
-        CommandIDs::RefactorTransposeUp,
-        TRANS("menu::project::refactor::halftoneup")));
+        CommandIDs::ProjectTransposeUp,
+        TRANS("menu::project::transpose::up")));
 
     menu.add(MenuItem::item(Icons::down,
-        CommandIDs::RefactorTransposeDown,
-        TRANS("menu::project::refactor::halftonedown")));
+        CommandIDs::ProjectTransposeDown,
+        TRANS("menu::project::transpose::down")));
 
-    //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::refactor::cleanup")));
+    //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::cleanup")));
 
     const auto &tracks = this->project.findChildrenOfType<MidiTrackTreeItem>();
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();

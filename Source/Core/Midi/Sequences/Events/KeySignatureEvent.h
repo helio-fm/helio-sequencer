@@ -35,7 +35,8 @@ public:
         Note::Key key = 0) noexcept;
 
     String toString() const;
-    Array<MidiMessage> toMidiMessages() const override;
+    void exportMessages(MidiMessageSequence &outSequence,
+        const Clip &clip, double timeAdjustment) const override;
     
     KeySignatureEvent copyWithNewId() const noexcept;
     KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;

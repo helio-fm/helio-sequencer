@@ -21,7 +21,7 @@
 #include "MidiTrack.h"
 #include "SerializationKeys.h"
 
-Clip::Clip() : pattern(nullptr), beat(0.f)
+Clip::Clip() : pattern(nullptr), key(0), beat(0.f), velocity(1.f)
 {
     // needed for juce's Array to work
     //jassertfalse;
@@ -29,20 +29,33 @@ Clip::Clip() : pattern(nullptr), beat(0.f)
 
 Clip::Clip(const Clip &other) :
     pattern(other.pattern),
+    key(other.key),
     beat(other.beat),
-    id(other.id) {}
+    velocity(other.velocity),
+    id(other.id)
+{
+    this->updateCaches();
+}
 
 Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
     pattern(owner),
-    beat(roundBeat(beatVal))
+    key(0),
+    beat(roundBeat(beatVal)),
+    velocity(1.f)
 {
     id = this->createId();
+    this->updateCaches();
 }
 
 Clip::Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy) :
     pattern(owner),
+    key(parametersToCopy.key),
     beat(parametersToCopy.beat),
-    id(parametersToCopy.id) {}
+    velocity(parametersToCopy.velocity),
+    id(parametersToCopy.id) 
+{
+    this->updateCaches();
+}
 
 Pattern *Clip::getPattern() const noexcept
 {
@@ -50,14 +63,29 @@ Pattern *Clip::getPattern() const noexcept
     return this->pattern;
 }
 
+int Clip::getKey() const noexcept
+{
+    return this->key;
+}
+
 float Clip::getBeat() const noexcept
 {
     return this->beat;
 }
 
+float Clip::getVelocity() const noexcept
+{
+    return this->velocity;
+}
+
 const String &Clip::getId() const noexcept
 {
     return this->id;
+}
+
+const String &Clip::getKeyString() const noexcept
+{
+    return this->keyString;
 }
 
 bool Clip::isValid() const noexcept
@@ -111,11 +139,43 @@ Clip Clip::withDeltaBeat(float deltaPosition) const
     return other;
 }
 
+Clip Clip::withKey(int absKey) const
+{
+    Clip other(*this);
+    other.key = jlimit(-128, 128, absKey);
+    other.updateCaches();
+    return other;
+}
+
+Clip Clip::withDeltaKey(int deltaKey) const
+{
+    Clip other(*this);
+    other.key = jlimit(-128, 128, other.key + deltaKey);
+    other.updateCaches();
+    return other;
+}
+
+Clip Clip::withVelocity(float absVelocity) const
+{
+    Clip other(*this);
+    other.velocity = jlimit(0.f, 1.f, absVelocity);
+    return other;
+}
+
+Clip Clip::withDeltaVelocity(float deltaVelocity) const
+{
+    Clip other(*this);
+    other.velocity = jlimit(0.f, 1.f, other.velocity + deltaVelocity);
+    return other;
+}
+
 ValueTree Clip::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::clip);
-    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::key, this->key, nullptr);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
     tree.setProperty(Midi::id, this->id, nullptr);
     return tree;
 }
@@ -123,23 +183,31 @@ ValueTree Clip::serialize() const
 void Clip::deserialize(const ValueTree &tree)
 {
     using namespace Serialization;
+    this->key = tree.getProperty(Midi::key, 0);
     this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id, this->id);
+    const auto vol = float(tree.getProperty(Midi::volume, VELOCITY_SAVE_ACCURACY)) / VELOCITY_SAVE_ACCURACY;
+    this->velocity = jmax(jmin(vol, 1.f), 0.f);
+    this->updateCaches();
 }
 
 void Clip::reset()
 {
+    this->key = 0;
     this->beat = 0.f;
+    this->velocity = 1.f;
+    this->updateCaches();
 }
 
 int Clip::compareElements(const Clip &first, const Clip &second)
 {
     if (&first == &second) { return 0; }
-    if (first.id == second.id) { return 0; }
 
     const float diff = first.beat - second.beat;
     const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return diffResult;
+    if (diffResult != 0) { return diffResult; }
+
+    return first.id.compare(second.id);
 }
 
 int Clip::compareElements(const Clip *const first, const Clip *const second)
@@ -150,7 +218,10 @@ int Clip::compareElements(const Clip *const first, const Clip *const second)
 void Clip::applyChanges(const Clip &other)
 {
     jassert(this->id == other.id);
+    this->key = other.key;
     this->beat = other.beat;
+    this->velocity = other.velocity;
+    this->updateCaches();
 }
 
 HashCode Clip::hashCode() const noexcept
@@ -168,4 +239,20 @@ Clip::Id Clip::createId() const noexcept
     }
 
     return {};
+}
+
+void Clip::updateCaches() const
+{
+    if (this->key > 0)
+    {
+        this->keyString = " +" + String(this->key);
+    }
+    else if (this->key < 0)
+    {
+        this->keyString = String(this->key);
+    }
+    else
+    {
+        this->keyString = {};
+    }
 }

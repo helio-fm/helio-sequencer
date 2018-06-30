@@ -37,7 +37,7 @@
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "ModalDialogInput.h"
-#include "SequencerOperations.h"
+#include "PatternOperations.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
 #include "PianoClipComponent.h"
@@ -147,7 +147,6 @@ void PatternRoll::reloadRollContent()
         }
     }
 
-    this->resized();
     this->repaint(this->viewport.getViewArea());
 }
 
@@ -291,8 +290,6 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
                 this->addAndMakeVisible(clipComponent);
             }
         }
-
-        this->resized();
     }
 }
 
@@ -427,8 +424,6 @@ void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shoul
 
 void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
-    bool shouldInvalidateSelectionCache = false;
-
     for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
@@ -440,14 +435,8 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
-            shouldInvalidateSelectionCache = true;
             itemsFound.addIfNotAlreadyThere(component);
         }
-    }
-
-    if (shouldInvalidateSelectionCache)
-    {
-        this->selection.invalidateCache();
     }
 }
 
@@ -581,25 +570,37 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::deleteSelection(this->getLassoSelection(), this->project);
         break;
     case CommandIDs::EditClip:
+    case CommandIDs::ZoomEntireClip:
         if (this->selection.getNumSelected() > 0)
         {
             const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
             this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
         }
         break;
-    //case CommandIDs::BeatShiftLeft:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
-    //    break;
-    //case CommandIDs::BeatShiftRight:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
-    //    break;
-    //case CommandIDs::BarShiftLeft:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f);
-    //    break;
-    //case CommandIDs::BarShiftRight:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
-    //    break;
-
+    case CommandIDs::ClipTransposeUp:
+        PatternOperations::transposeClips(this->getLassoSelection(), 1);
+        break;
+    case CommandIDs::ClipTransposeDown:
+        PatternOperations::transposeClips(this->getLassoSelection(), -1);
+        break;
+    case CommandIDs::ClipVolumeUp:
+        PatternOperations::tuneClips(this->getLassoSelection(), 0.1f);
+        break;
+    case CommandIDs::ClipVolumeDown:
+        PatternOperations::tuneClips(this->getLassoSelection(), -0.1f);
+        break;
+    case CommandIDs::BeatShiftLeft:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
+        break;
+    case CommandIDs::BeatShiftRight:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
+        break;
+    case CommandIDs::BarShiftLeft:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f);
+        break;
+    case CommandIDs::BarShiftRight:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
+        break;
     case CommandIDs::EditModeDefault:
         this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
         break;

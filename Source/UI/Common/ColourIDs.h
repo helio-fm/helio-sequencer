@@ -113,4 +113,19 @@ namespace ColourIDs
         static const int fill                   = 0x2001300;
         static const int outline                = 0x2001301;
     }
+
+    namespace ScriptEditor
+    {
+        static const int error                  = 0x2001400;
+        static const int comment                = 0x2001401;
+        static const int keyword                = 0x2001402;
+        static const int identifier             = 0x2001403;
+        static const int operatorToken          = 0x2001404;
+        static const int integerType            = 0x2001405;
+        static const int floatType              = 0x2001406;
+        static const int stringType             = 0x2001407;
+        static const int bracket                = 0x2001408;
+        static const int punctuation            = 0x2001409;
+        static const int builtInClass           = 0x200140a;
+    }
 } // namespace ColourIDs

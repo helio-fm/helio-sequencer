@@ -29,6 +29,8 @@ public:
     
 private:
 
+    void initDefaultMenu();
+
     WeakReference<Lasso> lasso;
 
 };

@@ -35,7 +35,9 @@ public:
         float beatVal = 0.f,
         float controllerValue = 0.f) noexcept;
 
-    Array<MidiMessage> toMidiMessages() const override;
+    void exportMessages(MidiMessageSequence &outSequence,
+        const Clip &clip, double timeAdjustment) const override;
+
     static float interpolateEvents(float cv1, float cv2, float factor, float easing);
 
     AutomationEvent copyWithNewId() const noexcept;

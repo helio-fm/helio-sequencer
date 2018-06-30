@@ -37,11 +37,30 @@ class NotesTuningDiagram : public Component, private ChangeListener
 {
 public:
 
-    NotesTuningDiagram(NotesTuningPanel *parentPanel,
-                       const Lasso &targetSelection) :
+    NotesTuningDiagram(NotesTuningPanel *parentPanel, const Lasso &selection) :
         parent(parentPanel),
-        selection(targetSelection)
+        startBeat(SequencerOperations::findStartBeat(selection)),
+        endBeat(SequencerOperations::findEndBeat(selection))
     {
+        bool foundColour = false;
+        for (int i = 0; i < selection.getNumSelected(); ++i)
+        {
+            auto *mc = selection.getItemAs<MidiEventComponent>(i);
+            this->sortedSelection.addSorted(*mc, mc);
+
+            if (!foundColour && dynamic_cast<NoteComponent *>(mc))
+            {
+                foundColour = true;
+                this->colour = static_cast<NoteComponent *>(mc)->getNote()
+                    .getSequence()->getTrack()->getTrackColour()
+                    .interpolatedWith(Colours::white, 0.55f).withAlpha(0.55f);
+            }
+        }
+
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
+
         this->parent->addChangeListener(this);
     }
 
@@ -52,8 +71,12 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::white);
-        g.fillPath(this->path);
+        g.setColour(this->colour);
+        for (const auto &i : this->peaks) { g.fillRect(i); }
+        g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
+        g.drawVerticalLine(this->getWidth() - 1, 1.f, float(this->getHeight() - 1));
+        g.drawHorizontalLine(0, 1.f, float(this->getWidth() - 1));
+        g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
     }
 
     void resized() override
@@ -71,60 +94,32 @@ private:
 
     void updateDiagram()
     {
-        if (this->selection.getNumSelected() == 0)
+        this->peaks.clearQuick();
+        for (auto *i : this->sortedSelection)
         {
-            return;
-        }
-
-        const float startBeat = SequencerOperations::findStartBeat(this->selection);
-        const float endBeat = SequencerOperations::findEndBeat(this->selection);
-
-        Array<MidiEventComponent *> sortedSelection;
-
-        for (int i = 0; i < this->selection.getNumSelected(); ++i)
-        {
-            MidiEventComponent *mc = static_cast<MidiEventComponent *>(this->selection.getSelectedItem(i));
-            sortedSelection.addSorted(*mc, mc);
-        }
-
-        const float h = float(this->getHeight());
-
-        this->path.clear();
-        this->path.startNewSubPath(0.f, h);
-
-        for (auto i : sortedSelection)
-        {
-            if (NoteComponent *nc = dynamic_cast<NoteComponent *>(i))
+            if (auto *nc = dynamic_cast<NoteComponent *>(i))
             {
-                const float xAbsPosition = (nc->getNote().getBeat() - startBeat) / (endBeat - startBeat);
-                const int x = this->proportionOfWidth(xAbsPosition);
+                const float absPos = (nc->getBeat() - this->startBeat) / (this->endBeat - this->startBeat);
+                const float absLen = nc->getLength() / (this->endBeat - this->startBeat);
+                const int x = this->proportionOfWidth(absPos);
+                const int w = this->proportionOfWidth(absLen);
                 const int y = this->proportionOfHeight(1.f - nc->getNote().getVelocity());
-
-                //Logger::writeToLog(String(x) + " : " + String(y));
-                //this->path.quadraticTo(x, y, x, y);
-                this->path.lineTo(float(x), h);
-                this->path.lineTo(float(x), float(y));
-                this->path.lineTo(float(x + 1.5f), float(y));
-                this->path.lineTo(float(x + 1.5f), h);
+                const int h = this->proportionOfHeight(nc->getNote().getVelocity());
+                this->peaks.add({ x, y, w, h });
             }
         }
-
-        this->path.lineTo(float(this->getWidth()), h);
-        this->path.closeSubPath();
-
-//        this->path.setUsingNonZeroWinding(false);
-//        PathStrokeType stroke(1, PathStrokeType::beveled, PathStrokeType::butt);
-//        stroke.createStrokedPath(this->path, this->path);
     }
 
 private:
 
-    Path path;
+    const float startBeat;
+    const float endBeat;
+    Colour colour;
+
+    Array<Rectangle<int>> peaks;
+    Array<MidiEventComponent *> sortedSelection;
 
     SafePointer<NotesTuningPanel> parent;
-
-    const Lasso &selection;
-
 };
 
 //[/MiscUserDefs]
@@ -134,85 +129,79 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
       project(parentProject),
       hasMadeChanges(false)
 {
-    addAndMakeVisible (bg = new PanelBackgroundC());
-    addAndMakeVisible (sliderLinearButton = new PopupButton (false));
-    addAndMakeVisible (sliderMultiplyButton = new PopupButton (false));
-    addAndMakeVisible (volumeSliderMulti = new Slider (String()));
+    this->bg.reset(new PanelBackgroundC());
+    this->addAndMakeVisible(bg.get());
+    this->sliderLinearButton.reset(new PopupButton(false));
+    this->addAndMakeVisible(sliderLinearButton.get());
+    this->sliderMultiplyButton.reset(new PopupButton(false));
+    this->addAndMakeVisible(sliderMultiplyButton.get());
+    this->volumeSliderMulti.reset(new Slider(String()));
+    this->addAndMakeVisible(volumeSliderMulti.get());
     volumeSliderMulti->setRange (0, 10, 0);
-    volumeSliderMulti->setSliderStyle (Slider::RotaryHorizontalDrag);
+    volumeSliderMulti->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     volumeSliderMulti->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     volumeSliderMulti->addListener (this);
 
-    addAndMakeVisible (volumeSliderLinear = new Slider (String()));
+    this->volumeSliderLinear.reset(new Slider(String()));
+    this->addAndMakeVisible(volumeSliderLinear.get());
     volumeSliderLinear->setRange (0, 10, 0);
-    volumeSliderLinear->setSliderStyle (Slider::RotaryHorizontalDrag);
+    volumeSliderLinear->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     volumeSliderLinear->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     volumeSliderLinear->addListener (this);
 
-    addAndMakeVisible (tuningDiagram = new NotesTuningDiagram (this, this->roll.getLassoSelection()));
+    this->tuningDiagram.reset(new NotesTuningDiagram(this, this->roll.getLassoSelection()));
+    this->addAndMakeVisible(tuningDiagram.get());
 
-    addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (resetButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::reset, CommandIDs::ResetVolumeChanges)));
+    this->resetButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::reset, CommandIDs::ResetVolumeChanges)));
+    this->addAndMakeVisible(resetButton.get());
 
-    addAndMakeVisible (playButton = new PlayButton());
-    addAndMakeVisible (shadowDown = new ShadowDownwards());
-    addAndMakeVisible (sliderSineButton = new PopupButton (false));
-    addAndMakeVisible (sineSlider = new Slider (String()));
+    this->playButton.reset(new PlayButton());
+    this->addAndMakeVisible(playButton.get());
+    this->sliderSineButton.reset(new PopupButton(false));
+    this->addAndMakeVisible(sliderSineButton.get());
+    this->sineSlider.reset(new Slider(String()));
+    this->addAndMakeVisible(sineSlider.get());
     sineSlider->setRange (0, 10, 0);
-    sineSlider->setSliderStyle (Slider::RotaryHorizontalDrag);
+    sineSlider->setSliderStyle (Slider::RotaryHorizontalVerticalDrag);
     sineSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     sineSlider->addListener (this);
 
-    addAndMakeVisible (linearLabel = new Label (String(),
-                                                TRANS("+")));
-    linearLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    linearLabel->setJustificationType (Justification::centred);
-    linearLabel->setEditable (false, false, false);
+    this->linearLabel.reset(new Label(String(),
+                                       TRANS("+")));
+    this->addAndMakeVisible(linearLabel.get());
+    this->linearLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    linearLabel->setJustificationType(Justification::centred);
+    linearLabel->setEditable(false, false, false);
 
-    linearLabel->setBounds (18, 0, 56, 24);
+    this->multiLabel.reset(new Label(String(),
+                                      TRANS("*")));
+    this->addAndMakeVisible(multiLabel.get());
+    this->multiLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    multiLabel->setJustificationType(Justification::centred);
+    multiLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (multiLabel = new Label (String(),
-                                               TRANS("*")));
-    multiLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    multiLabel->setJustificationType (Justification::centred);
-    multiLabel->setEditable (false, false, false);
-
-    multiLabel->setBounds (98, 5, 56, 24);
-
-    addAndMakeVisible (sineLabel = new Label (String(),
-                                              TRANS("~")));
-    sineLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    sineLabel->setJustificationType (Justification::centred);
-    sineLabel->setEditable (false, false, false);
-
-    sineLabel->setBounds (178, 0, 56, 24);
+    this->sineLabel.reset(new Label(String(),
+                                     TRANS("~")));
+    this->addAndMakeVisible(sineLabel.get());
+    this->sineLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    sineLabel->setJustificationType(Justification::centred);
+    sineLabel->setEditable(false, false, false);
 
 
     //[UserPreSize]
-
-    this->grabKeyboardFocus();
-//    this->volumeSliderLinear->setVelocityBasedMode(true);
-//    this->volumeSliderMulti->setVelocityBasedMode(true);
-
     this->syncSliders();
-
-    //[/UserPreSize]
-
-    setSize (250, 240);
-
-    //[Constructor]
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    for (int i = 0; i < this->getNumChildComponents(); ++i)
-    {
-        Component *c = this->getChildComponent(i);
-        c->setFocusContainer(false);
-        c->setWantsKeyboardFocus(false);
-        c->setMouseClickGrabsKeyboardFocus(false);
-    }
+    this->linearLabel->setInterceptsMouseClicks(false, false);
+    this->multiLabel->setInterceptsMouseClicks(false, false);
+    this->sineLabel->setInterceptsMouseClicks(false, false);
+    //[/UserPreSize]
 
+    this->setSize(250, 222);
+
+    //[Constructor]
     this->project.getTransport().addTransportListener(this);
     //[/Constructor]
 }
@@ -232,10 +221,8 @@ NotesTuningPanel::~NotesTuningPanel()
     volumeSliderMulti = nullptr;
     volumeSliderLinear = nullptr;
     tuningDiagram = nullptr;
-    panel = nullptr;
     resetButton = nullptr;
     playButton = nullptr;
-    shadowDown = nullptr;
     sliderSineButton = nullptr;
     sineSlider = nullptr;
     linearLabel = nullptr;
@@ -260,18 +247,19 @@ void NotesTuningPanel::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    bg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    sliderLinearButton->setBounds (46 - (64 / 2), 56 - (64 / 2), 64, 64);
-    sliderMultiplyButton->setBounds (126 - (64 / 2), 56 - (64 / 2), 64, 64);
-    volumeSliderMulti->setBounds (126 - (64 / 2), 56 - (64 / 2), 64, 64);
-    volumeSliderLinear->setBounds (46 - (64 / 2), 56 - (64 / 2), 64, 64);
-    tuningDiagram->setBounds (0, 96, getWidth() - 0, 88);
-    panel->setBounds (0, 96, getWidth() - 0, 88);
-    resetButton->setBounds (85 - (58 / 2), 213 - (58 / 2), 58, 58);
-    playButton->setBounds (160 - (64 / 2), 214 - (64 / 2), 64, 64);
-    shadowDown->setBounds (0, 180, getWidth() - 0, 24);
-    sliderSineButton->setBounds (206 - (64 / 2), 56 - (64 / 2), 64, 64);
-    sineSlider->setBounds (206 - (64 / 2), 56 - (64 / 2), 64, 64);
+    bg->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
+    sliderLinearButton->setBounds((46 - (56 / 2)) + 56 / 2 - (56 / 2), 118 + 56 / 2 - (56 / 2), 56, 56);
+    sliderMultiplyButton->setBounds((126 - (56 / 2)) + 56 / 2 - (56 / 2), 118 + 56 / 2 - (56 / 2), 56, 56);
+    volumeSliderMulti->setBounds(126 - (56 / 2), 118, 56, 56);
+    volumeSliderLinear->setBounds(46 - (56 / 2), 118, 56, 56);
+    tuningDiagram->setBounds(8, 8, getWidth() - 16, 102);
+    resetButton->setBounds((getWidth() / 2) + -16 - 48, 197 - (48 / 2), 48, 48);
+    playButton->setBounds((getWidth() / 2) + 16, 198 - (48 / 2), 48, 48);
+    sliderSineButton->setBounds((206 - (56 / 2)) + 56 / 2 - (56 / 2), 118 + 56 / 2 - (56 / 2), 56, 56);
+    sineSlider->setBounds(206 - (56 / 2), 118, 56, 56);
+    linearLabel->setBounds((46 - (56 / 2)) + 56 / 2 - (30 / 2), 118 + 56 / 2 + -2 - (30 / 2), 30, 30);
+    multiLabel->setBounds((126 - (56 / 2)) + 56 / 2 - (30 / 2), 118 + 56 / 2 + 2 - (30 / 2), 30, 30);
+    sineLabel->setBounds((206 - (56 / 2)) + 56 / 2 - (30 / 2), 118 + 56 / 2 + -1 - (30 / 2), 30, 30);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -281,21 +269,21 @@ void NotesTuningPanel::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == volumeSliderMulti)
+    if (sliderThatWasMoved == volumeSliderMulti.get())
     {
         //[UserSliderCode_volumeSliderMulti] -- add your slider handling code here..
         this->syncVolumeMultiplied(sliderThatWasMoved);
         this->sendChangeMessage();
         //[/UserSliderCode_volumeSliderMulti]
     }
-    else if (sliderThatWasMoved == volumeSliderLinear)
+    else if (sliderThatWasMoved == volumeSliderLinear.get())
     {
         //[UserSliderCode_volumeSliderLinear] -- add your slider handling code here..
         this->syncVolumeLinear(sliderThatWasMoved);
         this->sendChangeMessage();
         //[/UserSliderCode_volumeSliderLinear]
     }
-    else if (sliderThatWasMoved == sineSlider)
+    else if (sliderThatWasMoved == sineSlider.get())
     {
         //[UserSliderCode_sineSlider] -- add your slider handling code here..
         this->syncVolumeSine(sliderThatWasMoved);
@@ -335,15 +323,15 @@ bool NotesTuningPanel::keyPressed (const KeyPress& key)
 
 void NotesTuningPanel::sliderDragStarted(Slider *slider)
 {
-    if (slider == this->volumeSliderMulti)
+    if (slider == this->volumeSliderMulti.get())
     {
         this->volumeAnchorMulti = float(this->volumeSliderMulti->getValue());
     }
-    else if (slider == this->volumeSliderLinear)
+    else if (slider == this->volumeSliderLinear.get())
     {
         this->volumeAnchorLinear = float(this->volumeSliderLinear->getValue());
     }
-    else if (slider == this->sineSlider)
+    else if (slider == this->sineSlider.get())
     {
         this->volumeAnchorSine = float(this->sineSlider->getValue());
     }
@@ -485,7 +473,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="ProjectTreeItem &amp;parentProject, PianoRoll &amp;targetRoll"
                  variableInitialisers="roll(targetRoll),&#10;project(parentProject),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="250" initialHeight="240">
+                 fixedSize="1" initialWidth="250" initialHeight="222">
   <METHODS>
     <METHOD name="keyPressed (const KeyPress&amp; key)"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
@@ -495,58 +483,58 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="a4c6c295088640a8" memberName="sliderLinearButton"
-             virtualName="" explicitFocusOrder="0" pos="46c 56c 64 64" sourceFile="../Popups/PopupButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="0Cc 0Cc 56 56" posRelativeX="612822c144ea1163"
+             posRelativeY="612822c144ea1163" sourceFile="../Popups/PopupButton.cpp"
              constructorParams="false"/>
   <JUCERCOMP name="" id="fd2a7dfd7daba8e3" memberName="sliderMultiplyButton"
-             virtualName="" explicitFocusOrder="0" pos="126c 56c 64 64" sourceFile="../Popups/PopupButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="0Cc 0Cc 56 56" posRelativeX="645d4540b1ee1178"
+             posRelativeY="645d4540b1ee1178" sourceFile="../Popups/PopupButton.cpp"
              constructorParams="false"/>
   <SLIDER name="" id="645d4540b1ee1178" memberName="volumeSliderMulti"
-          virtualName="" explicitFocusOrder="0" pos="126c 56c 64 64" min="0.00000000000000000000"
-          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalDrag"
+          virtualName="" explicitFocusOrder="0" pos="126c 118 56 56" min="0.00000000000000000000"
+          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="" id="612822c144ea1163" memberName="volumeSliderLinear"
-          virtualName="" explicitFocusOrder="0" pos="46c 56c 64 64" posRelativeX="901299ec4e766469"
+          virtualName="" explicitFocusOrder="0" pos="46c 118 56 56" posRelativeX="901299ec4e766469"
           posRelativeY="901299ec4e766469" min="0.00000000000000000000"
-          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalDrag"
+          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="808594cf08a73350" memberName="tuningDiagram" virtualName=""
-                    explicitFocusOrder="0" pos="0 96 0M 88" class="NotesTuningDiagram"
+                    explicitFocusOrder="0" pos="8 8 16M 102" class="NotesTuningDiagram"
                     params="this, this-&gt;roll.getLassoSelection()"/>
-  <JUCERCOMP name="" id="8013b7ac0b043720" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 96 0M 88" sourceFile="../Themes/FramePanel.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="resetButton" virtualName=""
-                    explicitFocusOrder="0" pos="85c 213c 58 58" class="MenuItemComponent"
+                    explicitFocusOrder="0" pos="-16Cr 197c 48 48" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::reset, CommandIDs::ResetVolumeChanges)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="160c 214c 64 64" sourceFile="../Common/PlayButton.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="shadowDown" id="e71c535b988926e8" memberName="shadowDown"
-             virtualName="" explicitFocusOrder="0" pos="0 180 0M 24" sourceFile="../Themes/ShadowDownwards.cpp"
+             explicitFocusOrder="0" pos="16C 198c 48 48" sourceFile="../Common/PlayButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="922ef78567538854" memberName="sliderSineButton" virtualName=""
-             explicitFocusOrder="0" pos="206c 56c 64 64" sourceFile="../Popups/PopupButton.cpp"
+             explicitFocusOrder="0" pos="0Cc 0Cc 56 56" posRelativeX="bdc5e7b689607511"
+             posRelativeY="bdc5e7b689607511" sourceFile="../Popups/PopupButton.cpp"
              constructorParams="false"/>
   <SLIDER name="" id="bdc5e7b689607511" memberName="sineSlider" virtualName=""
-          explicitFocusOrder="0" pos="206c 56c 64 64" posRelativeX="901299ec4e766469"
+          explicitFocusOrder="0" pos="206c 118 56 56" posRelativeX="901299ec4e766469"
           posRelativeY="901299ec4e766469" min="0.00000000000000000000"
-          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalDrag"
+          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalVerticalDrag"
           textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <LABEL name="" id="2ef200f2e484c3e7" memberName="linearLabel" virtualName=""
-         explicitFocusOrder="0" pos="18 0 56 24" labelText="+" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc -2Cc 30 30" posRelativeX="612822c144ea1163"
+         posRelativeY="612822c144ea1163" labelText="+" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
   <LABEL name="" id="434928c32f07c6b9" memberName="multiLabel" virtualName=""
-         explicitFocusOrder="0" pos="98 5 56 24" labelText="*" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 2Cc 30 30" posRelativeX="645d4540b1ee1178"
+         posRelativeY="645d4540b1ee1178" labelText="*" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
   <LABEL name="" id="6fcffdd210c02711" memberName="sineLabel" virtualName=""
-         explicitFocusOrder="0" pos="178 0 56 24" labelText="~" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc -1Cc 30 30" posRelativeX="bdc5e7b689607511"
+         posRelativeY="bdc5e7b689607511" labelText="~" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>

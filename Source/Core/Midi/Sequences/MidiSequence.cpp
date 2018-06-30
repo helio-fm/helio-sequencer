@@ -43,9 +43,7 @@ MidiSequence::MidiSequence(MidiTrack &parentTrack,
     track(parentTrack),
     eventDispatcher(dispatcher),
     lastStartBeat(0.f),
-    lastEndBeat(0.f),
-    cachedSequence(),
-    cacheIsOutdated(false) {}
+    lastEndBeat(0.f) {}
 
 void MidiSequence::sort()
 {
@@ -56,12 +54,17 @@ void MidiSequence::sort()
 }
 
 //===----------------------------------------------------------------------===//
-// Undoing // TODO move this to project interface
+// Undoing
 //===----------------------------------------------------------------------===//
 
-void MidiSequence::checkpoint() noexcept
+String MidiSequence::getLastUndoDescription() const
 {
-    this->getUndoStack()->beginNewTransaction({});
+    return this->getUndoStack()->getUndoDescription();
+}
+
+void MidiSequence::checkpoint(const String &transactionName) noexcept
+{
+    this->getUndoStack()->beginNewTransaction(transactionName);
 }
 
 void MidiSequence::undo()
@@ -90,31 +93,20 @@ void MidiSequence::clearUndoHistory()
 // Import/export
 //===----------------------------------------------------------------------===//
 
-MidiMessageSequence MidiSequence::exportMidi() const
+void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
+    const Clip &clip, double timeAdjustment) const
 {
     if (this->track.isTrackMuted())
     {
-        return {};
+        return;
     }
 
-    if (this->cacheIsOutdated)
+    for (const auto *event : this->midiEvents)
     {
-        this->cachedSequence.clear();
-
-        for (const auto *event : this->midiEvents)
-        {
-            for (auto &message : event->toMidiMessages())
-            {
-                this->cachedSequence.addEvent(message);
-            }
-        }
-
-        this->cachedSequence.updateMatchedPairs();
-        //this->cachedSequence.sort(); // will be sorted by caller
-        this->cacheIsOutdated = false;
+        event->exportMessages(outSequence, clip, timeAdjustment);
     }
 
-    return this->cachedSequence;
+    outSequence.updateMatchedPairs();
 }
 
 //===----------------------------------------------------------------------===//
@@ -172,31 +164,26 @@ UndoStack *MidiSequence::getUndoStack() const noexcept
 
 void MidiSequence::notifyEventChanged(const MidiEvent &e1, const MidiEvent &e2)
 {
-    this->cacheIsOutdated = true;
+    this->invalidateSequenceCache();
     this->eventDispatcher.dispatchChangeEvent(e1, e2);
 }
 
 void MidiSequence::notifyEventAdded(const MidiEvent &event)
 {
-    this->cacheIsOutdated = true;
+    this->invalidateSequenceCache();
     this->eventDispatcher.dispatchAddEvent(event);
 }
 
 void MidiSequence::notifyEventRemoved(const MidiEvent &event)
 {
-    this->cacheIsOutdated = true;
+    this->invalidateSequenceCache();
     this->eventDispatcher.dispatchRemoveEvent(event);
 }
 
 void MidiSequence::notifyEventRemovedPostAction()
 {
-    this->cacheIsOutdated = true;
+    this->invalidateSequenceCache();
     this->eventDispatcher.dispatchPostRemoveEvent(this);
-}
-
-void MidiSequence::invalidateSequenceCache()
-{
-    this->cacheIsOutdated = true;
 }
 
 void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)

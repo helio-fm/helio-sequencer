@@ -54,7 +54,7 @@ String KeySignatureEvent::toString() const
     return keyName + ", " + this->scale->getLocalizedName();
 }
 
-Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
+void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const
 {
     // Basically, we can have any non-standard scale here:
     // from "symmetrical nonatonic" or "chromatic permutated diatonic dorian"
@@ -76,8 +76,8 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
     const int flatsOrSharps = isMinor ? minorCircle[root] : majorCircle[root];
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
-    event.setTimeStamp(round(this->beat * MS_PER_BEAT));
-    return { event };
+    event.setTimeStamp(round((this->beat + clip.getBeat()) * MS_PER_BEAT));
+    outSequence.addEvent(event, timeAdjustment);
 }
 
 KeySignatureEvent KeySignatureEvent::withDeltaBeat(float beatOffset) const noexcept
@@ -146,7 +146,7 @@ ValueTree KeySignatureEvent::serialize() const noexcept
     ValueTree tree(Midi::keySignature);
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::key, this->rootKey, nullptr);
-    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
     tree.appendChild(this->scale->serialize(), nullptr);
     return tree;
 }

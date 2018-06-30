@@ -29,9 +29,7 @@ class MenuItemComponent;
 #include "../Themes/PanelBackgroundC.h"
 #include "../Popups/PopupButton.h"
 #include "../Popups/PopupButton.h"
-#include "../Themes/FramePanel.h"
 #include "../Common/PlayButton.h"
-#include "../Themes/ShadowDownwards.h"
 #include "../Popups/PopupButton.h"
 
 class NotesTuningPanel final : public Component,
@@ -93,21 +91,19 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundC> bg;
-    ScopedPointer<PopupButton> sliderLinearButton;
-    ScopedPointer<PopupButton> sliderMultiplyButton;
-    ScopedPointer<Slider> volumeSliderMulti;
-    ScopedPointer<Slider> volumeSliderLinear;
-    ScopedPointer<NotesTuningDiagram> tuningDiagram;
-    ScopedPointer<FramePanel> panel;
-    ScopedPointer<MenuItemComponent> resetButton;
-    ScopedPointer<PlayButton> playButton;
-    ScopedPointer<ShadowDownwards> shadowDown;
-    ScopedPointer<PopupButton> sliderSineButton;
-    ScopedPointer<Slider> sineSlider;
-    ScopedPointer<Label> linearLabel;
-    ScopedPointer<Label> multiLabel;
-    ScopedPointer<Label> sineLabel;
+    UniquePointer<PanelBackgroundC> bg;
+    UniquePointer<PopupButton> sliderLinearButton;
+    UniquePointer<PopupButton> sliderMultiplyButton;
+    UniquePointer<Slider> volumeSliderMulti;
+    UniquePointer<Slider> volumeSliderLinear;
+    UniquePointer<NotesTuningDiagram> tuningDiagram;
+    UniquePointer<MenuItemComponent> resetButton;
+    UniquePointer<PlayButton> playButton;
+    UniquePointer<PopupButton> sliderSineButton;
+    UniquePointer<Slider> sineSlider;
+    UniquePointer<Label> linearLabel;
+    UniquePointer<Label> multiLabel;
+    UniquePointer<Label> sineLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NotesTuningPanel)
 };

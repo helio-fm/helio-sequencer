@@ -20,7 +20,7 @@
 #include "Arpeggiator.h"
 #include "ResourceManager.h"
 
-class ArpeggiatorsManager : public ResourceManager
+class ArpeggiatorsManager final : public ResourceManager
 {
 public:
 

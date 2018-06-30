@@ -286,7 +286,7 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     const int yHeight = (button.getHeight() - (yIndent * 2));
     const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
 
-    const int fontHeight = roundToInt(font.getHeight() * 0.5f);
+    const int fontHeight = int(font.getHeight() * 0.5f);
     //const int leftIndent  = hasImg ? button.getWidth() / 3 : fontHeight;
     const int leftIndent = fontHeight;
     const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
@@ -681,6 +681,17 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
 
 void HelioTheme::initResources()
 {
+    Icons::initBuiltInImages();
+
+    if (Config::contains(Serialization::Config::lastUsedFont))
+    {
+        const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont);
+        Font lastUsedFont(lastUsedFontName, 0, 0);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(lastUsedFont);
+        return;
+    }
+
+    // Font search takes time, so only do it when no last used font is found in config
     Logger::writeToLog("Fonts search started");
     Array<Font> systemFonts;
     Font::findFonts(systemFonts);
@@ -720,8 +731,6 @@ void HelioTheme::initResources()
 
     Logger::writeToLog("Using font: " + this->textTypefaceCache->getName());
     Config::set(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
-
-    Icons::initBuiltInImages();
 }
 
 void HelioTheme::updateFont(const Font &font)
@@ -839,6 +848,23 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
+
+    // CodeEditorComponent and script highlighting scheme
+    this->setColour(CodeEditorComponent::backgroundColourId, s->getPrimaryGradientColourA().darker(0.35f));
+    this->setColour(CodeEditorComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.1f));
+    this->setColour(CodeEditorComponent::defaultTextColourId, s->getTextColour());
+
+    this->setColour(ColourIDs::ScriptEditor::comment, s->getTextColour().withMultipliedAlpha(0.5f));
+    this->setColour(ColourIDs::ScriptEditor::error, s->getTextColour().interpolatedWith(Colours::red, 0.75f));
+    this->setColour(ColourIDs::ScriptEditor::keyword, s->getTextColour().interpolatedWith(Colours::royalblue, 0.75f));
+    this->setColour(ColourIDs::ScriptEditor::identifier, s->getTextColour().interpolatedWith(Colours::darkgoldenrod, 0.3f));
+    this->setColour(ColourIDs::ScriptEditor::operatorToken, s->getTextColour().interpolatedWith(Colours::limegreen, 0.3f));
+    this->setColour(ColourIDs::ScriptEditor::integerType, s->getTextColour().interpolatedWith(Colours::blueviolet, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::floatType, s->getTextColour().interpolatedWith(Colours::darkmagenta, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::stringType, s->getTextColour().interpolatedWith(Colours::tomato, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::bracket, s->getTextColour().interpolatedWith(Colours::darkslateblue, 0.5f));
+    this->setColour(ColourIDs::ScriptEditor::punctuation, s->getTextColour().interpolatedWith(Colours::darkslateblue, 0.75f));
+    this->setColour(ColourIDs::ScriptEditor::builtInClass, s->getTextColour().interpolatedWith(Colours::blue, 0.75f));
 }
 
 void HelioTheme::updateBackgroundRenders(bool force)

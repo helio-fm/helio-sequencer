@@ -200,9 +200,6 @@ void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack,
         this->zoomToArea(focusMinKey, focusMaxKey,
             focusMinBeat + this->activeClip.getBeat(),
             focusMaxBeat + this->activeClip.getBeat());
-
-        // TODO test usability:
-        //this->zoomOutImpulse();
     }
     else
     {
@@ -383,7 +380,8 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
     jassert(dynamic_cast<NoteComponent *>(mc));
     const auto *nc = static_cast<NoteComponent *>(mc);
-    return this->getEventBounds(nc->getKey(), nc->getBeat() + nc->getClip().getBeat(), nc->getLength());
+    return this->getEventBounds(nc->getKey() + nc->getClip().getKey(),
+        nc->getBeat() + nc->getClip().getBeat(), nc->getLength());
 }
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
@@ -398,21 +396,21 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
     const float w = this->barWidth * length / float(BEATS_PER_BAR);
     const float yPosition = float(this->getYPositionByKey(key));
 
-    return Rectangle<float> (float(x), yPosition + 1, w, float(this->rowHeight - 1));
+    return { float(x), yPosition + 1, w, float(this->rowHeight - 1) };
 }
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getRoundBeatByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
-    noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
-    noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
+    noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
+    noteNumber = jlimit(0, numRows - 1, noteNumber);
 }
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getFloorBeatByXPosition(x) - this->activeClip.getBeat();
-    noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
-    noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
+    noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
+    noteNumber = jlimit(0, numRows - 1, noteNumber);
 }
 
 int PianoRoll::getYPositionByKey(int targetKey) const
@@ -451,8 +449,8 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
     const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + firstBeat, 1.f);
 
-    const int deltaX = roundToInt(delta.getTopLeft().getX());
-    const int deltaY = roundToInt(delta.getTopLeft().getY() - this->getHeight() - 1);
+    const int deltaX = int(delta.getTopLeft().getX());
+    const int deltaY = int(delta.getTopLeft().getY() - this->getHeight() - 1);
     const Rectangle<int> selectionTranslated = selectionBounds.translated(deltaX, deltaY);
 
     const int vX = this->viewport.getViewPositionX();
@@ -624,6 +622,11 @@ void PianoRoll::onAddClip(const Clip &clip)
 
 void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
+    if (this->activeClip == clip)
+    {
+        this->activeClip = newClip;
+    }
+
     if (auto *sequenceMap = this->patternMap[clip].release())
     {
         // Set new key for existing sequence map
@@ -760,8 +763,6 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
 
 void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
-    this->selection.invalidateCache();
-
     forEachEventComponent(this->patternMap, e)
     {
         const auto component = e.second.get();
@@ -881,6 +882,10 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::SelectAllEvents:
         this->selectAll();
         break;
+    case CommandIDs::ZoomEntireClip:
+        this->setEditableScope(this->activeTrack, this->activeClip, true);
+        this->zoomOutImpulse(0.25f); // A bit of fancy animation
+        break;
     case CommandIDs::RenameTrack:
         if (auto trackNode = dynamic_cast<MidiTrackTreeItem *>(this->project.findPrimaryActiveItem()))
         {
@@ -899,7 +904,8 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::PasteEvents:
     {
         this->deselectAll();
-        const float playheadBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
+        const auto playheadPos = this->project.getTransport().getSeekPosition();
+        const float playheadBeat = this->getBeatByTransportPosition(playheadPos) - this->activeClip.getBeat();
         SequencerOperations::pasteFromClipboard(App::Clipboard(), this->project, this->getActiveTrack(), playheadBeat);
     }
         break;

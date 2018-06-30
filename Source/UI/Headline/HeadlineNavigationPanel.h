@@ -51,9 +51,9 @@ private:
     Colour bgColour;
     //[/UserVariables]
 
-    ScopedPointer<IconButton> navigatePrevious;
-    ScopedPointer<IconButton> navigateNext;
-    ScopedPointer<HeadlineItemArrow> component;
+    UniquePointer<IconButton> navigatePrevious;
+    UniquePointer<IconButton> navigateNext;
+    UniquePointer<HeadlineItemArrow> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineNavigationPanel)
 };

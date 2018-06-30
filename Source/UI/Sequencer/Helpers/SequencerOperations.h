@@ -87,10 +87,4 @@ struct SequencerOperations final
         Scale::Ptr &outScale, Note::Key &outRootKey);
 
     static ScopedPointer<MidiTrackTreeItem> createPianoTrack(const Lasso &selection);
-
-};
-
-struct PatternOperations final
-{
-    static void deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint = true);
 };

@@ -228,7 +228,7 @@ bool UndoStack::perform (UndoAction *const newAction)
             }
             else
             {
-                actionSet = new ActionSet (this->project, newTransactionName);
+                actionSet = new ActionSet(this->project, newTransactionName);
                 transactions.insert (nextIndex, actionSet);
                 ++nextIndex;
             }
@@ -323,7 +323,7 @@ bool UndoStack::undo()
 
 bool UndoStack::redo()
 {
-    if (const ActionSet* const s = getNextSet())
+    if (const ActionSet *const s = this->getNextSet())
     {
         const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
         
@@ -351,7 +351,7 @@ String UndoStack::getUndoDescription() const
         return s->name;
     }
     
-    return String();
+    return {};
 }
 
 String UndoStack::getRedoDescription() const
@@ -361,7 +361,7 @@ String UndoStack::getRedoDescription() const
         return s->name;
     }
     
-    return String();
+    return {};
 }
 
 bool UndoStack::undoCurrentTransactionOnly()
@@ -369,7 +369,7 @@ bool UndoStack::undoCurrentTransactionOnly()
     return this->newTransaction ? false : this->undo();
 }
 
-void UndoStack::getActionsInCurrentTransaction (Array<const UndoAction *> &actionsFound) const
+void UndoStack::getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const
 {
     if (!this->newTransaction)
     {

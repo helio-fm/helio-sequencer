@@ -63,11 +63,11 @@ void TimeSignatureEvent::parseString(const String &data, int &numerator, int &de
 }
 
 
-Array<MidiMessage> TimeSignatureEvent::toMidiMessages() const
+void TimeSignatureEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const
 {
     MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->numerator, this->denominator));
-    event.setTimeStamp(round(this->beat * MS_PER_BEAT));
-    return { event };
+    event.setTimeStamp(round((this->beat + clip.getBeat()) * MS_PER_BEAT));
+    outSequence.addEvent(event, timeAdjustment);
 }
 
 TimeSignatureEvent TimeSignatureEvent::withDeltaBeat(float beatOffset) const noexcept
@@ -144,7 +144,7 @@ ValueTree TimeSignatureEvent::serialize() const noexcept
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::numerator, this->numerator, nullptr);
     tree.setProperty(Midi::denominator, this->denominator, nullptr);
-    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
     return tree;
 }
 

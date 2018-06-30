@@ -38,7 +38,8 @@ public:
 
     static void parseString(const String &data, int &numerator, int &denominator);
     
-    Array<MidiMessage> toMidiMessages() const override;
+    void exportMessages(MidiMessageSequence &outSequence,
+        const Clip &clip, double timeAdjustment) const override;
 
     TimeSignatureEvent copyWithNewId() const noexcept;
     TimeSignatureEvent withDeltaBeat(float beatOffset) const noexcept;

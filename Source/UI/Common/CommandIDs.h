@@ -65,16 +65,9 @@ namespace CommandIDs
         MuteTrack                       = 0x1001,
         UnmuteTrack                     = 0x1002,
         RenameTrack                     = 0x1003,
-        SelectTrackColour               = 0x1005,
-        SelectTrackInstrument           = 0x1006,
-        SelectAllEvents                 = 0x1007,
-        SelectAllClips                  = 0x1008,
-        DuplicateTrackTo                = 0x1009,
-        NewTrackFromSelection           = 0x100a,
-
-        SetTrackColour                  = 0x100b, // more ids reserved for colours
-        SetTrackInstrument              = 0x1100, // more ids reserved for instruments
-        MoveTrackToProject              = 0x1500, // more ids reserved for projects
+        SelectAllEvents                 = 0x1004,
+        SelectAllClips                  = 0x1005,
+        NewTrackFromSelection           = 0x1006,
 
         // MidiRollCommandPanel
         DeleteEvents                    = 0x1601,
@@ -88,24 +81,30 @@ namespace CommandIDs
         PasteClips                      = 0x1614,
         EditClip                        = 0x1615,
 
-        CursorTool                      = 0x2000,
-        DrawTool                        = 0x2001,
-        SelectionTool                   = 0x2002,
-        ZoomTool                        = 0x2003,
-        DragTool                        = 0x2004,
-        InsertSpaceTool                 = 0x2005,
-        WipeSpaceTool                   = 0x2006,
-        ScissorsTool                    = 0x2007,
+        ClipTransposeUp                 = 0x1620,
+        ClipTransposeDown               = 0x1621,
+        ClipVolumeUp                    = 0x1622,
+        ClipVolumeDown                  = 0x1623,
 
-        ZoomIn                          = 0x2008,
-        ZoomOut                         = 0x2009,
+        CursorTool                      = 0x1700,
+        DrawTool                        = 0x1701,
+        SelectionTool                   = 0x1702,
+        ZoomTool                        = 0x1703,
+        DragTool                        = 0x1704,
+        InsertSpaceTool                 = 0x1705,
+        WipeSpaceTool                   = 0x1706,
+        ScissorsTool                    = 0x1707,
 
-        Undo                            = 0x200a,
-        Redo                            = 0x200b,
+        ZoomIn                          = 0x1800,
+        ZoomOut                         = 0x1801,
+        ZoomEntireClip                  = 0x1802,
 
-        ArpeggiateNotes                 = 0x200e,
+        Undo                            = 0x1900,
+        Redo                            = 0x1901,
+
         RefactorNotes                   = 0x200c,
-        SplitNotes                      = 0x200d,
+        ScriptedTransform               = 0x200d,
+        ArpeggiateNotes                 = 0x200e,
         TweakNotesVolume                = 0x200f,
 
         ShowAnnotations                 = 0x2010,
@@ -149,9 +148,9 @@ namespace CommandIDs
         DeleteProjectConfirmed1         = 0x2062,
         DeleteProjectConfirmed2         = 0x2063,
 
-        RefactorTransposeUp             = 0x2070,
-        RefactorTransposeDown           = 0x2071,
-        RefactorRemoveOverlaps          = 0x2072,
+        ProjectTransposeUp              = 0x2070,
+        ProjectTransposeDown            = 0x2071,
+        ProjectRemoveOverlaps           = 0x2072,
 
         ProjectPatternEditor            = 0x2080,
         ProjectLinearEditor             = 0x2081,

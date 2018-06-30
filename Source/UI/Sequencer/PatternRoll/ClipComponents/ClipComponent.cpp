@@ -59,15 +59,16 @@ PatternRoll &ClipComponent::getRoll() const noexcept
 
 void ClipComponent::updateColours()
 {
-    jassert(clip.isValid());
+    jassert(this->clip.isValid());
     this->fillColour = Colours::black.withAlpha(0.2f);
-    this->headColour = Colours::white
+    this->headBrightColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
         .withAlpha(this->ghostMode ? 0.2f : 0.7f)
         .brighter(this->selectedState ? 0.25f : 0.f);
+    this->headDarkColour = this->headBrightColour.withAlpha(0.25f);
     this->eventColour = this->getClip().getTrackColour()
         .interpolatedWith(Colours::white, .35f)
-        .withAlpha(.55f);
+        .withAlpha(.15f + 0.5f * this->clip.getVelocity());
 }
 
 //===----------------------------------------------------------------------===//
@@ -98,6 +99,10 @@ const String &ClipComponent::getId() const noexcept
 // Component
 //===----------------------------------------------------------------------===//
 
+#define forEachSelectedClip(lasso, child) \
+    for (int _i = 0; _i < lasso.getNumSelected(); _i++) \
+        if (auto *child = dynamic_cast<ClipComponent *>(lasso.getSelectedItem(_i)))
+
 void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 {
     // signal to switch to piano roll and focus on a clip area
@@ -127,13 +132,18 @@ void ClipComponent::mouseDown(const MouseEvent &e)
     {
         this->dragger.startDraggingComponent(this, e);
 
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedClip(selection, clip)
         {
-            if (auto *cc = dynamic_cast<ClipComponent *>(selection.getSelectedItem(i)))
-            {
-                //if (selection.shouldDisplayGhostClips()) { cc->getRoll().showGhostClipFor(cc); }
-                cc->startDragging();
-            }
+            //if (selection.shouldDisplayGhostClips()) { clip->getRoll().showGhostClipFor(clip); }
+            clip->startDragging();
+        }
+    }
+    else if (e.mods.isMiddleButtonDown())
+    {
+        this->setMouseCursor(MouseCursor::UpDownResizeCursor);
+        forEachSelectedClip(selection, clip)
+        {
+            clip->startTuning();
         }
     }
 }
@@ -190,6 +200,25 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
             }
         }
     }
+    else if (this->state == Tuning)
+    {
+        this->checkpointIfNeeded();
+
+        for (const auto &s : selection.getGroupedSelections())
+        {
+            const auto trackSelection(s.second);
+            Array<Clip> groupBefore, groupAfter;
+
+            for (int i = 0; i < trackSelection->size(); ++i)
+            {
+                const auto *nc = static_cast<ClipComponent *>(trackSelection->getUnchecked(i));
+                groupBefore.add(nc->getClip());
+                groupAfter.add(nc->continueTuning(e));
+            }
+
+            getPattern(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+        }
+    }
 }
 
 void ClipComponent::mouseUp(const MouseEvent &e)
@@ -219,23 +248,46 @@ void ClipComponent::mouseUp(const MouseEvent &e)
             cc->endDragging();
         }
     }
+    else if (this->state == Tuning)
+    {
+        for (int i = 0; i < selection.getNumSelected(); i++)
+        {
+            auto *cc = static_cast<ClipComponent *>(selection.getSelectedItem(i));
+            cc->endTuning();
+        }
+
+        this->setMouseCursor(MouseCursor::NormalCursor);
+    }
 }
 
-void ClipComponent::paint(Graphics& g)
+void ClipComponent::paint(Graphics &g)
 {
+    const float w = float(this->getWidth());
+    const float h = float(this->getHeight());
+    const float v = this->clip.getVelocity();
+
     g.setColour(this->fillColour);
-    g.fillRect(1.f, 0.f, float(this->getWidth() - 2), float(this->getHeight()));
+    g.fillRect(1.f, 0.f, w - 2.f, h);
 
-    g.setColour(this->headColour);
-
+    const Rectangle<int> textBounds(4, 5, this->getWidth() - 8, this->getHeight() - 7);
+    g.setColour(this->headBrightColour);
+    
     if (this->selectedState)
     {
-        g.fillRect(1.f, 1.f, float(this->getWidth() - 2), 4.f);
-        g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
+        g.fillRect(1.f, 1.f, w - 2.f, 3.f);
+        g.drawHorizontalLine(this->getHeight() - 1, 1.f, w - 1.f);
+        const float wv = (w - 4.f) * v;
+        const float fs = ((w - 4.f) - wv) / 2.f;
+        g.drawHorizontalLine(5, 2.f + fs, w - fs - 2.f);
+        g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
+            textBounds, Justification::bottomLeft, false);
     }
 
-    g.drawVerticalLine(0, 2.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 1, 2.f, float(this->getHeight() - 1));
+    g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);
+
+    g.setColour(this->headDarkColour);
+    g.drawVerticalLine(0, 2.f, h - 1.f);
+    g.drawVerticalLine(this->getWidth() - 1, 2.f, h - 1.f);
 
     // Set colour to be used by all child events
     g.setColour(this->eventColour);
@@ -302,4 +354,32 @@ Clip ClipComponent::continueDragging(float deltaBeat)
 void ClipComponent::endDragging()
 {
     this->state = None;
+}
+
+//===----------------------------------------------------------------------===//
+// Velocity
+//===----------------------------------------------------------------------===//
+
+void ClipComponent::startTuning()
+{
+    this->firstChangeDone = false;
+    this->state = Tuning;
+    this->anchor = this->getClip();
+}
+
+Clip ClipComponent::continueTuningLinear(float delta) const noexcept
+{
+    const float newVelocity = (this->anchor.getVelocity() - delta);
+    return this->getClip().withVelocity(newVelocity);
+}
+
+Clip ClipComponent::continueTuning(const MouseEvent &e) const noexcept
+{
+    return this->continueTuningLinear(e.getDistanceFromDragStartY() / 250.0f);
+}
+
+void ClipComponent::endTuning()
+{
+    this->state = None;
+    this->roll.triggerBatchRepaintFor(this);
 }

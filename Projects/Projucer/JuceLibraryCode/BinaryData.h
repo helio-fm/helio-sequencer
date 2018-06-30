@@ -260,6 +260,9 @@ namespace BinaryData
     extern const char*   routing_svg;
     const int            routing_svgSize = 743;
 
+    extern const char*   script_svg;
+    const int            script_svgSize = 775;
+
     extern const char*   selectionTool_svg;
     const int            selectionTool_svgSize = 1639;
 
@@ -324,7 +327,7 @@ namespace BinaryData
     const int            zoomOut_svgSize = 790;
 
     extern const char*   zoomTool_svg;
-    const int            zoomTool_svgSize = 942;
+    const int            zoomTool_svgSize = 652;
 
     extern const char*   Noise_png;
     const int            Noise_pngSize = 317;
@@ -336,7 +339,7 @@ namespace BinaryData
     const int            ColourSchemes_jsonSize = 2753;
 
     extern const char*   HotkeySchemes_json;
-    const int            HotkeySchemes_jsonSize = 11432;
+    const int            HotkeySchemes_jsonSize = 11964;
 
     extern const char*   Scales_json;
     const int            Scales_jsonSize = 3563;
@@ -345,7 +348,7 @@ namespace BinaryData
     const int            Translations_jsonSize = 394369;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 112;
+    const int namedResourceListSize = 113;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
@@ -355,9 +358,9 @@ namespace BinaryData
 
     // If you provide the name of one of the binary resource variables above, this function will
     // return the corresponding data and its size (or a null pointer if the name isn't found).
-    const char* getNamedResource (const char* resourceNameUTF8, int& dataSizeInBytes) noexcept;
+    const char* getNamedResource (const char* resourceNameUTF8, int& dataSizeInBytes);
 
     // If you provide the name of one of the binary resource variables above, this function will
     // return the corresponding original, non-mangled filename (or a null pointer if the name isn't found).
-    const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8) noexcept;
+    const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8);
 }

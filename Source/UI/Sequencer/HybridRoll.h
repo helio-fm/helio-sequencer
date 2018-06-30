@@ -165,8 +165,8 @@ public:
     float getZoomFactorX() const override;
     float getZoomFactorY() const override;
 
-    void zoomInImpulse();
-    void zoomOutImpulse();
+    void zoomInImpulse(float factor = 1.f);
+    void zoomOutImpulse(float factor = 1.f);
     void zoomToArea(float minBeat, float maxBeat);
     void startSmoothZoom(const Point<float> &origin, const Point<float> &factor);
 

@@ -30,7 +30,7 @@ class Origami;
 class Headline;
 class Clip;
 
-#define SEQUENCER_SIDEBAR_WIDTH (50)
+#define SEQUENCER_SIDEBAR_WIDTH (44)
 #define SEQUENCER_SIDEBAR_ROW_HEIGHT (38)
 
 class SequencerLayout :

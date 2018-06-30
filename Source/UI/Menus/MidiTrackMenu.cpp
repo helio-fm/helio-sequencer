@@ -43,23 +43,20 @@
 MidiTrackMenu::MidiTrackMenu(MidiTrackTreeItem &parentLayer) :
     trackItem(parentLayer)
 {
-    this->initDefaultCommands();
+    this->initDefaultMenu();
 }
 
 void MidiTrackMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-        case CommandIDs::SelectTrackColour:
-            this->initColorSelection();
-        break;
-            
+        // TODO move to another command processor
         case CommandIDs::MuteTrack:
         {
             ProjectTreeItem *project = this->trackItem.getProject();
-            const String &layerId = this->trackItem.getSequence()->getTrackId();
+            const String &trackId = this->trackItem.getSequence()->getTrackId();
             project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, true));
+            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, trackId, true));
             this->dismiss();
         }
             break;
@@ -67,19 +64,11 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
         case CommandIDs::UnmuteTrack:
         {
             ProjectTreeItem *project = this->trackItem.getProject();
-            const String &layerId = this->trackItem.getSequence()->getTrackId();
+            const String &trackId = this->trackItem.getSequence()->getTrackId();
             project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, false));
+            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, trackId, false));
             this->dismiss();
         }
-            break;
-
-        case CommandIDs::SelectTrackInstrument:
-            this->initInstrumentSelection();
-            break;
-
-        case CommandIDs::DuplicateTrackTo:
-            this->initProjectSelection();
             break;
 
         case CommandIDs::DeleteTrack:
@@ -90,110 +79,83 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
             this->dismiss();
             return;
         }
-            
-        case CommandIDs::Back:
-            this->initDefaultCommands();
-            break;
-    }
-
-    const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
-    
-    if (commandId >= CommandIDs::SetTrackInstrument &&
-        commandId <= (CommandIDs::SetTrackInstrument + info.size()))
-    {
-        const int instrumentIndex = commandId - CommandIDs::SetTrackInstrument;
-        if (instrumentIndex >= 0 && instrumentIndex < info.size())
-        {
-            Logger::writeToLog(info[instrumentIndex]->getIdAndHash());
-            const String instrumentId = info[instrumentIndex]->getIdAndHash();
-            this->trackItem.getChangeInstrumentCallback()(instrumentId);
-            this->initDefaultCommands();
-            return;
-        }
-    }
-    
-    const StringPairArray colours(MenuPanel::getColoursList());
-    
-    if (commandId >= CommandIDs::SetTrackColour &&
-        commandId <= (CommandIDs::SetTrackColour + colours.size()))
-    {
-        const int colourIndex = (commandId - CommandIDs::SetTrackColour);
-        const String name(colours.getAllKeys()[colourIndex]);
-        const String colour(colours[name]);
-        this->trackItem.getChangeColourCallback()(colour);
-        this->initDefaultCommands();
-        return;
     }
 }
 
-void MidiTrackMenu::initDefaultCommands()
+void MidiTrackMenu::initDefaultMenu()
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS("menu::track::selectall"))->closesMenu());
-    cmds.add(MenuItem::item(Icons::colour, CommandIDs::SelectTrackColour, TRANS("menu::track::change::colour"))->withSubmenu());
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS("menu::track::selectall"))->closesMenu());
+    menu.add(MenuItem::item(Icons::colour, TRANS("menu::track::change::colour"))->withSubmenu()->withAction([this]()
+    {
+        this->initColorSelectionMenu();
+    }));
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     const int numInstruments = info.size();
-
     if (numInstruments > 1)
     {
-        cmds.add(MenuItem::item(Icons::instrument, CommandIDs::SelectTrackInstrument, TRANS("menu::track::change::instrument"))->withSubmenu());
+        menu.add(MenuItem::item(Icons::instrument, TRANS("menu::track::change::instrument"))->withSubmenu()->withAction([this]()
+        {
+            this->initInstrumentSelectionMenu();
+        }));
     }
     
-    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS("menu::track::rename"))->closesMenu());
     
-    //MainLayout &workspace = this->trackItem.getWorkspace();
-    //Array<ProjectTreeItem *> projects = workspace.getLoadedProjects();
-    //const int numProjects = projects.size();
-    
-    //if (numProjects > 1)
-    //{
-    //    cmds.add(MenuItem::item(Icons::copy, DuplicateTo, TRANS("menu::track::copytoproject"))->withSubmenu());
-    //}
-
     const bool canBeMuted = (dynamic_cast<PianoTrackTreeItem *>(&this->trackItem) != nullptr);
-    
     if (canBeMuted)
     {
         const bool muted = this->trackItem.isTrackMuted();
         
         if (muted)
         {
-            cmds.add(MenuItem::item(Icons::unmute, CommandIDs::UnmuteTrack, TRANS("menu::track::unmute")));
+            menu.add(MenuItem::item(Icons::unmute, CommandIDs::UnmuteTrack, TRANS("menu::track::unmute")));
         }
         else
         {
-            cmds.add(MenuItem::item(Icons::mute, CommandIDs::MuteTrack, TRANS("menu::track::mute")));
+            menu.add(MenuItem::item(Icons::mute, CommandIDs::MuteTrack, TRANS("menu::track::mute")));
         }
     }
     
-    cmds.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS("menu::track::delete")));
-    this->updateContent(cmds, MenuPanel::SlideRight);
+    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS("menu::track::delete")));
+    this->updateContent(menu, MenuPanel::SlideRight);
 }
 
-void MidiTrackMenu::initColorSelection()
+void MidiTrackMenu::initColorSelectionMenu()
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    {
+        this->initDefaultMenu();
+    }));
     
     const StringPairArray colours(MenuPanel::getColoursList());
-    
     for (int i = 0; i < colours.getAllKeys().size(); ++i)
     {
         const String name(colours.getAllKeys()[i]);
-        const Colour colour(Colour::fromString(colours[name]));
+        const String colourString(colours[name]);
+        const Colour colour(Colour::fromString(colourString));
         const bool isSelected = (colour == this->trackItem.getTrackColour());
-        cmds.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetTrackColour + i, name)->colouredWith(colour));
+        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, name)->
+            colouredWith(colour)->withAction([this, colourString]()
+        {
+            this->trackItem.getChangeColourCallback()(colourString);
+            this->initDefaultMenu();
+        }));
     }
 
-    this->updateContent(cmds, MenuPanel::SlideLeft);
+    this->updateContent(menu, MenuPanel::SlideLeft);
 }
 
-void MidiTrackMenu::initInstrumentSelection()
+void MidiTrackMenu::initInstrumentSelectionMenu()
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    {
+        this->initDefaultMenu();
+    }));
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->trackItem.getTrackInstrumentId());
@@ -202,26 +164,15 @@ void MidiTrackMenu::initInstrumentSelection()
     for (int i = 0; i < info.size(); ++i)
     {
         const bool isTicked = (info[i] == selectedInstrument);
-        cmds.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, CommandIDs::SetTrackInstrument + i, info[i]->getName()));
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, info[i]->getName())->withAction([this, instrument = info[i]]()
+        {
+            Logger::writeToLog(instrument->getIdAndHash());
+            const String instrumentId = instrument->getIdAndHash();
+            this->trackItem.getChangeInstrumentCallback()(instrumentId);
+            this->initDefaultMenu();
+            return;
+        }));
     }
     
-    this->updateContent(cmds, MenuPanel::SlideLeft);
-}
-
-void MidiTrackMenu::initProjectSelection()
-{
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
-
-    const ProjectTreeItem *currentProject = this->trackItem.getProject();
-    Array<ProjectTreeItem *> projects = App::Workspace().getLoadedProjects();
-    
-    for (int i = 0; i < projects.size(); ++i)
-    {
-        const bool isTicked = (projects[i] == currentProject);
-        cmds.add(MenuItem::item(isTicked ? Icons::apply :
-            Icons::project, CommandIDs::MoveTrackToProject + i, projects[i]->getName()));
-    }
-    
-    this->updateContent(cmds, MenuPanel::SlideLeft);
+    this->updateContent(menu, MenuPanel::SlideLeft);
 }

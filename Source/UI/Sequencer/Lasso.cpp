@@ -18,19 +18,36 @@
 #include "Common.h"
 #include "Lasso.h"
 
-Lasso::Lasso() : SelectedItemSet() {}
-Lasso::Lasso(const ItemArray &items) : SelectedItemSet(items) {}
-Lasso::Lasso(const SelectedItemSet &other) : SelectedItemSet(other) {}
+Lasso::Lasso() :
+    SelectedItemSet(),
+    random(Time::currentTimeMillis())
+{
+    this->invalidateCacheAndResetId();
+}
+
+Lasso::Lasso(const ItemArray &items) :
+    SelectedItemSet(items),
+    random(Time::currentTimeMillis())
+{
+    this->invalidateCacheAndResetId();
+}
+
+Lasso::Lasso(const SelectedItemSet &other) :
+    SelectedItemSet(other),
+    random(Time::currentTimeMillis())
+{
+    this->invalidateCacheAndResetId();
+}
 
 void Lasso::itemSelected(SelectableComponent *item)
 {
-    this->invalidateCache();
+    this->invalidateCacheAndResetId();
     item->setSelected(true);
 }
 
 void Lasso::itemDeselected(SelectableComponent *item)
 {
-    this->invalidateCache();
+    this->invalidateCacheAndResetId();
     item->setSelected(false);
 }
 
@@ -49,8 +66,9 @@ Rectangle<int> Lasso::getSelectionBounds() const noexcept
     return this->bounds;
 }
 
-void Lasso::invalidateCache()
+void Lasso::invalidateCacheAndResetId()
 {
+    this->id = this->random.nextInt64();
     this->selectionsCache.clear();
 }
 
@@ -67,6 +85,11 @@ const Lasso::Lasso::GroupedSelections &Lasso::getGroupedSelections() const
 bool Lasso::shouldDisplayGhostNotes() const noexcept
 {
     return (this->getNumSelected() <= 32); // just a sane limit
+}
+
+int64 Lasso::getId() const noexcept
+{
+    return this->id;
 }
 
 void Lasso::rebuildCache() const

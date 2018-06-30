@@ -36,10 +36,10 @@ public:
         this->setPaintingIsUnclipped(true);
     }
 
-    inline int getKey() const noexcept           { return this->note.getKey(); }
+    inline int getKey() const noexcept           { return jlimit(0, 128, this->note.getKey() + this->clip.getKey()); }
     inline float getBeat() const noexcept        { return this->note.getBeat() + this->clip.getBeat(); }
     inline float getLength() const noexcept      { return this->note.getLength(); }
-    inline float getVelocity() const noexcept    { return this->note.getVelocity(); }
+    inline float getVelocity() const noexcept    { return this->note.getVelocity() * this->clip.getVelocity(); }
     inline const Note &getNote() const noexcept  { return this->note; }
 
     inline void updateColour()

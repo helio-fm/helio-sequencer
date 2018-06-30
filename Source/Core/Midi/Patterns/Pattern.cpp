@@ -55,12 +55,12 @@ Pattern::Pattern(MidiTrack &parentTrack,
 // Accessors
 //===----------------------------------------------------------------------===//
 
-ProjectTreeItem *Pattern::getProject()
+ProjectTreeItem *Pattern::getProject() const noexcept
 {
     return this->eventDispatcher.getProject();
 }
 
-UndoStack *Pattern::getUndoStack()
+UndoStack *Pattern::getUndoStack() const noexcept
 {
     return this->eventDispatcher.getProject()->getUndoStack();
 }
@@ -109,16 +109,21 @@ void Pattern::sort()
 // Undoing // TODO move this to project interface
 //===----------------------------------------------------------------------===//
 
-void Pattern::checkpoint()
+String Pattern::getLastUndoDescription() const
 {
-    this->getUndoStack()->beginNewTransaction({});
+    return this->getUndoStack()->getUndoDescription();
+}
+
+void Pattern::checkpoint(const String &transactionName)
+{
+    this->getUndoStack()->beginNewTransaction(transactionName);
 }
 
 void Pattern::undo()
 {
     if (this->getUndoStack()->canUndo())
     {
-        this->checkpoint();
+        this->checkpoint({});
         this->getUndoStack()->undo();
     }
 }
@@ -129,11 +134,6 @@ void Pattern::redo()
     {
         this->getUndoStack()->redo();
     }
-}
-
-void Pattern::clearUndoHistory()
-{
-    this->getUndoStack()->clearUndoHistory();
 }
 
 //===----------------------------------------------------------------------===//

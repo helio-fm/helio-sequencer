@@ -24,13 +24,14 @@
 AutomationStepEventComponent::AutomationStepEventComponent(AutomationStepsClipComponent &parent,
     const AutomationEvent &targetEvent) :
     event(targetEvent),
-    editor(parent)
+    editor(parent),
+    isDragging(false),
+    isHighlighted(false)
 {
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();
-    this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
 
 void AutomationStepEventComponent::paint(Graphics &g)
@@ -49,10 +50,10 @@ void AutomationStepEventComponent::paint(Graphics &g)
     g.setColour(this->editor.getEventColour());
     const float r = STEP_EVENT_POINT_OFFSET;
     const float d = r * 2.f;
-    const float bottom = this->realBounds.getHeight() - r - STEP_EVENT_MARGIN + 1.f;
+    const float bottom = this->realBounds.getHeight() - r - STEP_EVENT_MARGIN_BOTTOM;
     const float left = this->realBounds.getX() - float(this->getX());
     const float right = jmax(left + 0.5f, this->realBounds.getWidth() - r);
-    const float top = r + STEP_EVENT_MARGIN + 1.f;
+    const float top = r + STEP_EVENT_MARGIN_TOP;
 
     if (this->event.isPedalDownEvent() && !prevDownState)
     {
@@ -95,6 +96,11 @@ void AutomationStepEventComponent::paint(Graphics &g)
 #endif
         g.fillEllipse(right - r, top - r, d, d);
     }
+
+    if (this->isHighlighted)
+    {
+        g.fillRect(0, this->getHeight() - 6, this->getWidth(), 4);
+    }
 }
 
 void AutomationStepEventComponent::moved()
@@ -108,32 +114,30 @@ void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
     {
         this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e);
-        this->draggingState = true;
+        this->isDragging = true;
     }
 }
 
 void AutomationStepEventComponent::mouseDrag(const MouseEvent &e)
 {
-    if (e.mods.isLeftButtonDown())
+    if (e.mods.isLeftButtonDown() && this->isDragging)
     {
-        if (this->draggingState)
-        {
-            this->setMouseCursor(MouseCursor::DraggingHandCursor);
-            this->dragger.dragComponent(this, e, nullptr);
-            float newRoundBeat = this->editor.getBeatByXPosition(this->getX() + this->getWidth());
-            this->drag(newRoundBeat);
-        }
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        this->dragger.dragComponent(this, e, nullptr);
+        float newRoundBeat = this->editor.getBeatByXPosition(this->getX() + this->getWidth());
+        this->drag(newRoundBeat);
     }
 }
 
 void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
 {
+    this->setMouseCursor(MouseCursor::NormalCursor);
+
     if (e.mods.isLeftButtonDown())
     {
-        if (this->draggingState)
+        if (this->isDragging)
         {
-            this->setMouseCursor(MouseCursor::PointingHandCursor);
-            this->draggingState = false;
+            this->isDragging = false;
         }
 
         if (e.getDistanceFromDragStart() < 2)
@@ -184,6 +188,18 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
     {
         this->editor.removeEventIfPossible(this->event);
     }
+}
+
+void AutomationStepEventComponent::mouseEnter(const MouseEvent &e)
+{
+    this->isHighlighted = true;
+    this->repaint();
+}
+
+void AutomationStepEventComponent::mouseExit(const MouseEvent &e)
+{
+    this->isHighlighted = false;
+    this->repaint();
 }
 
 void AutomationStepEventComponent::drag(float targetBeat)

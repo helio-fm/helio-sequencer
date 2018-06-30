@@ -26,9 +26,7 @@ public:
 
     explicit TrackScrollerScreen(TrackScroller &scrollerRef);
 
-    ~TrackScrollerScreen() override;
-
-    Rectangle<float> getRealBounds() const
+    Rectangle<float> getRealBounds() const noexcept
     {
         return this->realBounds;
     }
@@ -39,19 +37,14 @@ public:
         this->setBounds(this->realBounds.toType<int>());
     }
 
-    
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-
     void mouseDrag(const MouseEvent &e) override;
-
     void resized() override;
-
     void paint(Graphics &g) override;
-
 
     //===------------------------------------------------------------------===//
     // Constrainers
@@ -71,17 +64,15 @@ private:
     Rectangle<float> realBounds;
 
     void updatePan();
-
     void updateZoom();
 
     TrackScroller &scroller;
 
+    Colour colour;
     ComponentDragger dragger;
 
     ScopedPointer<ResizableBorderComponent> border;
-
     ScopedPointer<ComponentBoundsConstrainer> moveConstrainer;
-
     ScopedPointer<ComponentBoundsConstrainer> resizeConstrainer;
 
 };

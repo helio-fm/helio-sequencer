@@ -11697,7 +11697,7 @@ const char* A0v9_ogg = (const char*) temp_binary_data_2;
 namespace BinaryData
 {
 
-const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexcept
+const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 {
     unsigned int hash = 0;
     if (resourceNameUTF8 != 0)
@@ -11790,6 +11790,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x78a5cb74:  numBytes = 489; return reset_svg;
         case 0xb57c4000:  numBytes = 1018; return revision_svg;
         case 0x82fa7b6b:  numBytes = 743; return routing_svg;
+        case 0xcdd760f0:  numBytes = 775; return script_svg;
         case 0x756354e9:  numBytes = 1639; return selectionTool_svg;
         case 0x3df9b931:  numBytes = 1983; return selection_svg;
         case 0xf4c5be2a:  numBytes = 2282; return selectAll_svg;
@@ -11811,11 +11812,11 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x64a287ba:  numBytes = 25191; return workspace_svg;
         case 0xc82285fd:  numBytes = 942; return zoomIn_svg;
         case 0x86a456a0:  numBytes = 790; return zoomOut_svg;
-        case 0x100cd030:  numBytes = 942; return zoomTool_svg;
+        case 0x100cd030:  numBytes = 652; return zoomTool_svg;
         case 0xb3e40b64:  numBytes = 317; return Noise_png;
         case 0x9d3ca20d:  numBytes = 70; return Arpeggiators_json;
         case 0xaf771725:  numBytes = 2753; return ColourSchemes_json;
-        case 0x932a5b4b:  numBytes = 11432; return HotkeySchemes_json;
+        case 0x932a5b4b:  numBytes = 11964; return HotkeySchemes_json;
         case 0x67f906de:  numBytes = 3563; return Scales_json;
         case 0xe3299f05:  numBytes = 394369; return Translations_json;
         default: break;
@@ -11911,6 +11912,7 @@ const char* namedResourceList[] =
     "reset_svg",
     "revision_svg",
     "routing_svg",
+    "script_svg",
     "selectionTool_svg",
     "selection_svg",
     "selectAll_svg",
@@ -12027,6 +12029,7 @@ const char* originalFilenames[] =
     "reset.svg",
     "revision.svg",
     "routing.svg",
+    "script.svg",
     "selectionTool.svg",
     "selection.svg",
     "selectAll.svg",
@@ -12057,7 +12060,7 @@ const char* originalFilenames[] =
     "Translations.json"
 };
 
-const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8) noexcept
+const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)
 {
     for (unsigned int i = 0; i < (sizeof (namedResourceList) / sizeof (namedResourceList[0])); ++i)
     {
