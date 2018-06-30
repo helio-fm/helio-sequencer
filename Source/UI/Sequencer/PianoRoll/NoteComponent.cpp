@@ -669,7 +669,7 @@ void NoteComponent::paint(Graphics &g)
 //#else
     const float sx = x1 + 2.f;
     const float sy = float(this->getHeight() - 4);
-    const float sw = jmax(0.f, (w - 4.f)) * this->getVelocity();
+    const float sw = jmax(0.f, (w - 4.f)) * this->note.getVelocity() * this->clip.getVelocity();
     g.setColour(this->colourVolume);
     g.fillRect(sx, sy, sw, 3.f);
 //#endif

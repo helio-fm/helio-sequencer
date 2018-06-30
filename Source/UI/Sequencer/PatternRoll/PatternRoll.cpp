@@ -37,7 +37,7 @@
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "ModalDialogInput.h"
-#include "SequencerOperations.h"
+#include "PatternOperations.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
 #include "PianoClipComponent.h"
@@ -589,19 +589,18 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::ClipVolumeDown:
         PatternOperations::tuneClips(this->getLassoSelection(), -0.1f);
         break;
-    //case CommandIDs::BeatShiftLeft:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
-    //    break;
-    //case CommandIDs::BeatShiftRight:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
-    //    break;
-    //case CommandIDs::BarShiftLeft:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f);
-    //    break;
-    //case CommandIDs::BarShiftRight:
-    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
-    //    break;
-
+    case CommandIDs::BeatShiftLeft:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
+        break;
+    case CommandIDs::BeatShiftRight:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
+        break;
+    case CommandIDs::BarShiftLeft:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f);
+        break;
+    case CommandIDs::BarShiftRight:
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
+        break;
     case CommandIDs::EditModeDefault:
         this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
         break;

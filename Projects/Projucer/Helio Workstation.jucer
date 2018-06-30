@@ -1096,6 +1096,14 @@
                   file="../../Source/UI/Sequencer/Header/TrackStartIndicator.h"/>
           </GROUP>
           <GROUP id="{8144406F-1438-BE00-DA08-A94FC6424392}" name="Helpers">
+            <FILE id="BuB4fE" name="PatternOperations.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/PatternOperations.cpp"/>
+            <FILE id="LbPJ1x" name="PatternOperations.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/PatternOperations.h"/>
+            <FILE id="dTixQL" name="SequencerOperations.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/SequencerOperations.cpp"/>
+            <FILE id="Ef8Csi" name="SequencerOperations.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/SequencerOperations.h"/>
             <FILE id="ZJCh08" name="HybridRollExpandMark.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp"/>
             <FILE id="iM3cEX" name="HybridRollExpandMark.h" compile="0" resource="0"
@@ -1278,10 +1286,6 @@
                 file="../../Source/UI/Sequencer/SequencerLayout.cpp"/>
           <FILE id="ROIxEK" name="SequencerLayout.h" compile="0" resource="0"
                 file="../../Source/UI/Sequencer/SequencerLayout.h"/>
-          <FILE id="TJY2HW" name="SequencerOperations.cpp" compile="1" resource="0"
-                file="../../Source/UI/Sequencer/SequencerOperations.cpp"/>
-          <FILE id="WfVETJ" name="SequencerOperations.h" compile="0" resource="0"
-                file="../../Source/UI/Sequencer/SequencerOperations.h"/>
         </GROUP>
         <GROUP id="{F85E9949-99EB-1D99-18B7-41B94B555349}" name="Themes">
           <FILE id="O8SrxF" name="ComponentFader.cpp" compile="1" resource="0"
