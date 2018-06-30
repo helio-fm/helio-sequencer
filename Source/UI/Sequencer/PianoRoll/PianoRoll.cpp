@@ -622,6 +622,11 @@ void PianoRoll::onAddClip(const Clip &clip)
 
 void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
+    if (this->activeClip == clip)
+    {
+        this->activeClip = newClip;
+    }
+
     if (auto *sequenceMap = this->patternMap[clip].release())
     {
         // Set new key for existing sequence map
@@ -899,7 +904,8 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::PasteEvents:
     {
         this->deselectAll();
-        const float playheadBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
+        const auto playheadPos = this->project.getTransport().getSeekPosition();
+        const float playheadBeat = this->getBeatByTransportPosition(playheadPos) - this->activeClip.getBeat();
         SequencerOperations::pasteFromClipboard(App::Clipboard(), this->project, this->getActiveTrack(), playheadBeat);
     }
         break;

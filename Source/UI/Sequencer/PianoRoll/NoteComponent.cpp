@@ -75,7 +75,7 @@ void NoteComponent::updateColours()
 
     this->colourLighter = this->colour.brighter(0.125f).withMultipliedAlpha(1.45f);
     this->colourDarker = this->colour.darker(0.175f).withMultipliedAlpha(1.45f);
-    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost ? 0.f : 0.8f);
+    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost ? 0.f : 0.45f);
 }
 
 bool NoteComponent::canResize() const noexcept
@@ -669,9 +669,11 @@ void NoteComponent::paint(Graphics &g)
 //#else
     const float sx = x1 + 2.f;
     const float sy = float(this->getHeight() - 4);
-    const float sw = jmax(0.f, (w - 4.f)) * this->note.getVelocity() * this->clip.getVelocity();
+    const float sw1 = jmax(0.f, (w - 4.f)) * this->note.getVelocity();
+    const float sw2 = jmax(0.f, (w - 4.f)) * this->note.getVelocity() * this->clip.getVelocity();
     g.setColour(this->colourVolume);
-    g.fillRect(sx, sy, sw, 3.f);
+    g.fillRect(sx, sy, sw1, 3.f);
+    g.fillRect(sx, sy, sw2, 3.f);
 //#endif
 }
 
