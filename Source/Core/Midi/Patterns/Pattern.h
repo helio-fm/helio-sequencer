@@ -45,10 +45,10 @@ public:
     // Undoing
     //===------------------------------------------------------------------===//
 
-    void checkpoint();
+    String getLastUndoDescription() const;
+    void checkpoint(const String &transactionName = {});
     void undo();
     void redo();
-    void clearUndoHistory();
 
     //===------------------------------------------------------------------===//
     // Track editing
@@ -121,8 +121,8 @@ protected:
     float lastEndBeat;
     float lastStartBeat;
 
-    ProjectTreeItem *getProject();
-    UndoStack *getUndoStack();
+    ProjectTreeItem *getProject() const noexcept;
+    UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<Clip> clips;
     mutable SparseHashSet<Clip::Id, StringHash> usedClipIds;

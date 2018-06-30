@@ -424,8 +424,6 @@ void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shoul
 
 void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
-    bool shouldInvalidateSelectionCache = false;
-
     for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
@@ -437,14 +435,8 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
-            shouldInvalidateSelectionCache = true;
             itemsFound.addIfNotAlreadyThere(component);
         }
-    }
-
-    if (shouldInvalidateSelectionCache)
-    {
-        this->selection.invalidateCache();
     }
 }
 

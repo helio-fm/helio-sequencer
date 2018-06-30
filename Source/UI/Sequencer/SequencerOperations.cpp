@@ -35,6 +35,7 @@
 #include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "Transport.h"
+#include "CommandIDs.h"
 
 // все эти адские костыли нужны только затем, чтоб операции выполнялись послойно
 //===----------------------------------------------------------------------===//
@@ -264,6 +265,9 @@ bool applyAnnotationInsertions(const AnnotationChangeGroup &group, bool &didChec
 bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint)
 { return applyInsertions<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint); }
 
+//===----------------------------------------------------------------------===//
+// More helpers
+//===----------------------------------------------------------------------===//
 
 static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
 {
@@ -364,7 +368,21 @@ static float snappedBeat(float beat, float snapsPerBeat)
     return roundf(beat / snapsPerBeat) * snapsPerBeat;
 }
 
+// Transaction identifier, and why is it needed:
+// Some actions, like dragging notes around, are performed in a single undo transaction,
+// but, unlike mouse dragging (where it's clear when to start and when to end a transaction),
+// hotkey-handled actions will always do a checkpoint at every keypress, so that
+// pressing `cursor down` 5 times and `cursor up` 3 times will result in 8 undo actions,
+// (there only should be 2, for transposing events down and up accordingly).
+// So, Lasso class re-generates its random id every time it changes,
+// and some transform operations here will use that id, combined with operation id
+// to identify the transaction and see if the last one was exactly of the same type and target,
+// and checkpoint could be skipped.
 
+static String generateTransactionId(int commandId, const Lasso &selection)
+{
+    return String(commandId) + String(selection.getId());
+}
 
 void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
                                 float startBeat, float endBeat,
@@ -1602,10 +1620,14 @@ void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldChe
 void SequencerOperations::shiftKeyRelative(Lasso &selection,
     int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
-    if (selection.getNumSelected() == 0)
-    { return; }
+    if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
 
-    bool didCheckpoint = !shouldCheckpoint;
+    auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
+    const auto operationId = deltaKey > 0 ? CommandIDs::KeyShiftUp : CommandIDs::KeyShiftDown;
+    const auto &transactionId = generateTransactionId(operationId, selection);
+    const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
     
     for (const auto &s : selection.getGroupedSelections())
     {
@@ -1635,7 +1657,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
         {
             if (! didCheckpoint)
             {
-                pianoLayer->checkpoint();
+                pianoLayer->checkpoint(transactionId);
                 didCheckpoint = true;
             }
         }
@@ -1646,10 +1668,14 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
 
 void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
-    { return; }
+    if (selection.getNumSelected() == 0 || deltaBeat == 0) { return; }
 
-    bool didCheckpoint = !shouldCheckpoint;
+    auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
+    const auto operationId = deltaBeat > 0 ? CommandIDs::BeatShiftRight : CommandIDs::BeatShiftLeft;
+    const auto &transactionId = generateTransactionId(operationId, selection);
+    const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
     for (const auto &s : selection.getGroupedSelections())
     {
@@ -1673,7 +1699,7 @@ void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, b
         {
             if (! didCheckpoint)
             {
-                pianoLayer->checkpoint();
+                pianoLayer->checkpoint(transactionId);
                 didCheckpoint = true;
             }
         }
@@ -1966,12 +1992,16 @@ void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem 
 
 void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint /*= true*/)
 {
-    if (selection.getNumSelected() == 0) { return; }
+    if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
 
-    Pattern *pattern = (selection.getFirstAs<ClipComponent>()->getClip().getPattern());
-    if (shouldCheckpoint)
+    auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
+    const auto operationId = deltaKey > 0 ? CommandIDs::ClipTransposeUp : CommandIDs::ClipTransposeDown;
+    const auto &transactionId = generateTransactionId(operationId, selection);
+    const bool repeatsLastAction = pattern->getLastUndoDescription() == transactionId;
+
+    if (shouldCheckpoint && !repeatsLastAction)
     {
-        pattern->checkpoint();
+        pattern->checkpoint(transactionId);
     }
 
     for (int i = 0; i < selection.getNumSelected(); ++i)

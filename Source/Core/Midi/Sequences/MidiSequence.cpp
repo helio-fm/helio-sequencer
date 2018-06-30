@@ -56,12 +56,17 @@ void MidiSequence::sort()
 }
 
 //===----------------------------------------------------------------------===//
-// Undoing // TODO move this to project interface
+// Undoing
 //===----------------------------------------------------------------------===//
 
-void MidiSequence::checkpoint() noexcept
+String MidiSequence::getLastUndoDescription() const
 {
-    this->getUndoStack()->beginNewTransaction({});
+    return this->getUndoStack()->getUndoDescription();
+}
+
+void MidiSequence::checkpoint(const String &transactionName) noexcept
+{
+    this->getUndoStack()->beginNewTransaction(transactionName);
 }
 
 void MidiSequence::undo()

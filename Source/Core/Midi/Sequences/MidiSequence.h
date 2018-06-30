@@ -37,7 +37,8 @@ public:
     // Undoing
     //===------------------------------------------------------------------===//
 
-    void checkpoint() noexcept;
+    String getLastUndoDescription() const;
+    void checkpoint(const String &transactionName = {}) noexcept;
     void undo();
     void redo();
     void clearUndoHistory();

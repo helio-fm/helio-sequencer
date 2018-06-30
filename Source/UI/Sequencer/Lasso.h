@@ -54,16 +54,15 @@ public:
     void itemSelected(SelectableComponent *item) override;
     void itemDeselected(SelectableComponent *item) override;
 
+    int64 getId() const noexcept;
+    bool shouldDisplayGhostNotes() const noexcept;
     void needsToCalculateSelectionBounds() noexcept;
     Rectangle<int> getSelectionBounds() const noexcept;
     
+    // Grouped selections are selected events, split by track,
+    // so that is easier to perform undo/redo actions:
     using GroupedSelections = SparseHashMap<String, SelectionProxyArray::Ptr, StringHash>;
-
-    // Gets all selected events, split by track
-    // So that is easier to perform undo/redo actions
     const GroupedSelections &getGroupedSelections() const;
-    void invalidateCache();
-    bool shouldDisplayGhostNotes() const noexcept;
 
     template<typename T>
     T *getFirstAs() const
@@ -81,7 +80,14 @@ private:
 
     Rectangle<int> bounds;
     
+    // A random id which is used to distinguish one selection from another
+    // (collisions are still possible, but they are not critical,
+    // see SequencerOperations class for usage example)
+    mutable int64 id;
+    mutable Random random;
+
     mutable GroupedSelections selectionsCache;
+    void invalidateCacheAndResetId();
     void rebuildCache() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lasso)

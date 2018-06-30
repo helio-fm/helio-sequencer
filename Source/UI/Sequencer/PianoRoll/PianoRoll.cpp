@@ -758,8 +758,6 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
 
 void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
-    this->selection.invalidateCache();
-
     forEachEventComponent(this->patternMap, e)
     {
         const auto component = e.second.get();
