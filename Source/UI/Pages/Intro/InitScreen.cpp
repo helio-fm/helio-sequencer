@@ -117,7 +117,7 @@ void InitScreen::parentSizeChanged()
         this->rebound();
         // Debug png logos generator
         //this->startTimer(5000);
-        this->startTimer(10);
+        this->postCommandMessage(CommandIDs::InitWorkspace);
     }
     //[/UserCode_parentSizeChanged]
 }

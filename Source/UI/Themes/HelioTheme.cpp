@@ -681,6 +681,17 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
 
 void HelioTheme::initResources()
 {
+    Icons::initBuiltInImages();
+
+    if (Config::contains(Serialization::Config::lastUsedFont))
+    {
+        const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont);
+        Font lastUsedFont(lastUsedFontName, 0, 0);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(lastUsedFont);
+        return;
+    }
+
+    // Font search takes time, so only do it when no last used font is found in config
     Logger::writeToLog("Fonts search started");
     Array<Font> systemFonts;
     Font::findFonts(systemFonts);
@@ -720,8 +731,6 @@ void HelioTheme::initResources()
 
     Logger::writeToLog("Using font: " + this->textTypefaceCache->getName());
     Config::set(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
-
-    Icons::initBuiltInImages();
 }
 
 void HelioTheme::updateFont(const Font &font)

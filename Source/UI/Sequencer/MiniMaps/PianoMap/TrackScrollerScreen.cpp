@@ -22,8 +22,11 @@
 #define TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER 0
 
 TrackScrollerScreen::TrackScrollerScreen(TrackScroller &scrollerRef) :
-    scroller(scrollerRef)
+    scroller(scrollerRef),
+    colour(Colours::white.withAlpha(0.08f))
 {
+    this->setPaintingIsUnclipped(true);
+
     this->moveConstrainer = new ComponentBoundsConstrainer();
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
@@ -39,11 +42,6 @@ TrackScrollerScreen::TrackScrollerScreen(TrackScroller &scrollerRef) :
     this->border->setRepaintsOnMouseActivity(false);
 #endif
 }
-
-TrackScrollerScreen::~TrackScrollerScreen()
-{
-}
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -65,9 +63,8 @@ void TrackScrollerScreen::mouseDrag(const MouseEvent &e)
 
 void TrackScrollerScreen::paint(Graphics &g)
 {
-    g.setColour(Colours::white.withAlpha(0.07f));
-    //g.setColour(Colours::black.withAlpha(0.13f));
-    g.fillRoundedRectangle(0.f, 0.f, float(this->getWidth()), float(this->getHeight()), 2);
+    g.setColour(this->colour);
+    g.fillRect(this->getLocalBounds());
 }
 
 void TrackScrollerScreen::resized()
@@ -76,7 +73,6 @@ void TrackScrollerScreen::resized()
     this->border->setBounds(this->getLocalBounds());
 #endif
 }
-
 
 //===----------------------------------------------------------------------===//
 // Constrainers
