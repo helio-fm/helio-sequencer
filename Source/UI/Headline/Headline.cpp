@@ -27,9 +27,10 @@
 #include "MainWindow.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
+#include "SequencerLayout.h"
 
 #define HEADLINE_ITEMS_OVERLAP (16)
-#define HEADLINE_ROOT_X (50)
+#define HEADLINE_ROOT_X SEQUENCER_SIDEBAR_WIDTH
 //[/MiscUserDefs]
 
 Headline::Headline()

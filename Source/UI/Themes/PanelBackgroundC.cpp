@@ -122,8 +122,8 @@ void PanelBackgroundC::updateRender(HelioTheme &theme)
     }
 
     //const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int w = 512; // d.totalArea.getWidth() * int(d.scale);
-    const int h = 512; // d.totalArea.getHeight() * int(d.scale);
+    const int w = 128; // d.totalArea.getWidth() * int(d.scale);
+    const int h = 128; // d.totalArea.getHeight() * int(d.scale);
     //Logger::writeToLog("Rendering background with w:" + String(w) + ", h:" + String(h));
 
     Image render(Image::ARGB, w, h, true);
