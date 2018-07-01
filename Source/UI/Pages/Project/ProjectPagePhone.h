@@ -22,7 +22,7 @@
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundB.h"
-#include "../../Themes/LightShadowRightwards.h"
+#include "../../Themes/ShadowRightwards.h"
 #include "../../Themes/SeparatorHorizontalFading.h"
 #include "../../Themes/SeparatorHorizontalFading.h"
 #include "../../Themes/SeparatorHorizontalFading.h"
@@ -79,7 +79,7 @@ private:
     ScopedPointer<Component> level2;
     ScopedPointer<Label> licenseLabel;
     ScopedPointer<Label> licenseEditor;
-    ScopedPointer<LightShadowRightwards> shadow;
+    ScopedPointer<ShadowRightwards> shadow;
     ScopedPointer<SeparatorHorizontalFading> separator1;
     ScopedPointer<SeparatorHorizontalFading> separator2;
     ScopedPointer<SeparatorHorizontalFading> separator3;

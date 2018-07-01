@@ -44,7 +44,7 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
 
     titleLabel->setBounds (33, 5, 256, 21);
 
-    addAndMakeVisible (icon = new IconComponent (Icons::workspace));
+    addAndMakeVisible (icon = new IconComponent (Icons::helio));
 
     addAndMakeVisible (component = new HeadlineItemArrow());
 
@@ -226,7 +226,7 @@ BEGIN_JUCER_METADATA
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
                     explicitFocusOrder="0" pos="7 0Cc 32 32" class="IconComponent"
-                    params="Icons::workspace"/>
+                    params="Icons::helio"/>
   <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
              constructorParams=""/>

@@ -33,7 +33,7 @@ PanelBackgroundA::PanelBackgroundA()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->setOpaque(true);
@@ -55,29 +55,22 @@ PanelBackgroundA::~PanelBackgroundA()
 void PanelBackgroundA::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-#if 0
+    // Used in loading page, where caches are not available:
     //[/UserPrePaint]
-
-    g.fillAll (Colour (0xff373365));
 
     {
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0xff48358c), fillColour2 = Colour (0xff2d3e61);
+        Colour fillColour = Colour (0xff48358c);
         //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour = this->findColour(ColourIDs::BackgroundA::fill);
         //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
-                                       static_cast<float> ((getHeight() / 2)) - 0.0f + y,
-                                       fillColour2,
-                                       20.0f - 0.0f + x,
-                                       0.0f - 0.0f + y,
-                                       true));
+        g.setColour (fillColour);
         g.fillRect (x, y, width, height);
     }
 
     {
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0x1e48358c), fillColour2 = Colour (0x00000000);
+        Colour fillColour1 = Colour (0x1e272727), fillColour2 = Colour (0x00000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
@@ -91,26 +84,7 @@ void PanelBackgroundA::paint (Graphics& g)
     }
 
     //[UserPaint] Add your own custom painting code here..
-#endif
-
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    if (theme.getBgCache1().isValid())
-    {
-        Icons::drawImageRetinaAware(theme.getBgCache1(), g, this->getWidth() / 2, this->getHeight() / 2);
-    }
-    else
-    {
-        g.setGradientFill (ColourGradient (findColour(ColourIDs::BackgroundA::fillStart),
-                                           float((getWidth() / 2)), float((getHeight() / 2) + 25),
-                                           findColour(ColourIDs::BackgroundA::fillEnd),
-                                           20.0f, 0.0f,
-                                           true));
-
-        g.fillRect (this->getLocalBounds());
-
-        HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.f);
-    }
-
+    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.f);
     //[/UserPaint]
 }
 
@@ -125,41 +99,6 @@ void PanelBackgroundA::resized()
 
 
 //[MiscUserCode]
-
-void PanelBackgroundA::updateRender(HelioTheme &theme)
-{
-#if PANEL_A_HAS_PRERENDERED_BACKGROUND
-
-    if (theme.getBgCache1().isValid())
-    {
-        return;
-    }
-
-    const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int scale = int(d.scale);
-    const int w = d.totalArea.getWidth() * scale;
-    const int h = d.totalArea.getHeight() * scale;
-
-    Logger::writeToLog("Rendering background with w:" + String(w) + ", h:" + String(h));
-
-    Image render(Image::ARGB, w, h, true);
-    Graphics g(render);
-
-    g.setGradientFill (ColourGradient (theme.findColour(ColourIDs::BackgroundA::fillStart),
-                                       float((w / 2)), float((h / 2) + 25),
-                                       theme.findColour(ColourIDs::BackgroundA::fillEnd),
-                                       20.0f, 0.0f,
-                                       true));
-
-    g.fillAll();
-
-    HelioTheme::drawNoise(theme, g);
-
-    theme.getBgCache1() = render;
-
-#endif
-}
-
 //[/MiscUserCode]
 
 #if 0
@@ -170,10 +109,9 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="0"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ff373365">
-    <RECT pos="0 0 0M 0M" fill=" radial: 0C 0C, 20 0, 0=ff48358c, 1=ff2d3e61"
-          hasStroke="0"/>
-    <RECT pos="0 0 0M 0M" fill="linear: 75% 65%, 0 0%, 0=1e48358c, 1=0"
+  <BACKGROUND backgroundColour="0">
+    <RECT pos="0 0 0M 0M" fill="solid: ff48358c" hasStroke="0"/>
+    <RECT pos="0 0 0M 0M" fill="linear: 75% 65%, 0 0%, 0=1e272727, 1=0"
           hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>

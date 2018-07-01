@@ -1336,9 +1336,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
         return Image(Image::RGB, 1, 1, true);
     }
 
-    // Image patterns of width 128px take up to 5mb of ram (rows from 6 to 30)
-    // Width 256px == ~10Mb. Prerendered patterns are drawing fast asf.
-    Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
+    Image patternImage(Image::RGB, 16, height * ROWS_OF_TWO_OCTAVES, false);
     Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKey);

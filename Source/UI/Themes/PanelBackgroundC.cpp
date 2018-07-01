@@ -35,7 +35,7 @@ PanelBackgroundC::PanelBackgroundC()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->setOpaque(true);
@@ -60,28 +60,50 @@ void PanelBackgroundC::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0xff182135));
-
-    g.setGradientFill (ColourGradient (Colour (0xff28478b),
-                                       static_cast<float> (proportionOfWidth (1.0052f)), static_cast<float> (proportionOfHeight (0.0697f)),
-                                       Colour (0xff1e2a51),
-                                       static_cast<float> (proportionOfWidth (-0.1087f)), static_cast<float> (proportionOfHeight (0.8561f)),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0xff28478b), fillColour2 = Colour (0xff1e2a51);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (1.0052f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.0697f)) - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (proportionOfWidth (-0.1087f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.8561f)) - 0.0f + y,
                                        true));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x705f009a),
-                                       static_cast<float> (proportionOfWidth (0.0010f)), static_cast<float> (proportionOfHeight (0.3576f)),
-                                       Colour (0x3f220e7a),
-                                       static_cast<float> (proportionOfWidth (1.2686f)), static_cast<float> (proportionOfHeight (0.8279f)),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x705f009a), fillColour2 = Colour (0x3f220e7a);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.0010f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.3576f)) - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (proportionOfWidth (1.2686f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.8279f)) - 0.0f + y,
                                        true));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x1e48358c),
-                                       static_cast<float> (proportionOfWidth (0.8924f)), static_cast<float> (proportionOfHeight (0.9827f)),
-                                       Colour (0x00000000),
-                                       80.0f, static_cast<float> (proportionOfHeight (0.0000f)),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x1e48358c), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.8924f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.9827f)) - 0.0f + y,
+                                       fillColour2,
+                                       80.0f - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.0000f)) - 0.0f + y,
                                        false));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif
@@ -96,7 +118,7 @@ void PanelBackgroundC::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    this->bgCache = theme.getBgCache3();
+    this->bgCache = theme.getBgCache2();
     this->fillType = FillType(this->bgCache, {});
     //[/UserPreResize]
 
@@ -116,20 +138,20 @@ static void drawPanel(Graphics& g, HelioTheme &theme)
 
 void PanelBackgroundC::updateRender(HelioTheme &theme)
 {
-    if (theme.getBgCache3().isValid())
+    if (theme.getBgCache2().isValid())
     {
         return;
     }
 
     //const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int w = 512; // d.totalArea.getWidth() * int(d.scale);
-    const int h = 512; // d.totalArea.getHeight() * int(d.scale);
+    const int w = 128; // d.totalArea.getWidth() * int(d.scale);
+    const int h = 128; // d.totalArea.getHeight() * int(d.scale);
     //Logger::writeToLog("Rendering background with w:" + String(w) + ", h:" + String(h));
 
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
     drawPanel(g, theme);
-    theme.getBgCache3() = render;
+    theme.getBgCache2() = render;
 }
 
 //[/MiscUserCode]
@@ -142,7 +164,7 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="0" snapShown="1"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ff182135">
+  <BACKGROUND backgroundColour="0">
     <RECT pos="0 0 0M 0M" fill=" radial: 100.522% 6.973%, -10.867% 85.608%, 0=ff28478b, 1=ff1e2a51"
           hasStroke="0"/>
     <RECT pos="0 0 0M 0M" fill=" radial: 0.104% 35.757%, 126.855% 82.789%, 0=705f009a, 1=3f220e7a"

@@ -23,7 +23,7 @@
 
 BuiltInSynthFormat::BuiltInSynthFormat()
 {
-    BuiltInSynthPiano piano(true);
+    BuiltInSynthPiano piano;
     piano.fillInPluginDescription(this->pianoDescription);
 }
 

@@ -21,7 +21,7 @@
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundB.h"
-#include "../Themes/LightShadowRightwards.h"
+#include "../Themes/ShadowRightwards.h"
 
 class SettingsPage final : public Component
 {

@@ -233,6 +233,11 @@ void MainLayout::resized()
     {
         this->currentContent->setBounds(r);
     }
+
+    if (this->initScreen)
+    {
+        this->initScreen->setBounds(this->getLocalBounds());
+    }
 }
 
 void MainLayout::lookAndFeelChanged()

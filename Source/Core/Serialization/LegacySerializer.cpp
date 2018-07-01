@@ -298,6 +298,10 @@ static void processDeprecations(String &key, String &value)
     {
         key = Midi::volume.toString();
     }
+    else if (key == "val")
+    {
+        key = Midi::value.toString();
+    }
     else if (key == "Type")
     {
         value = toLowerCamelCase(value);

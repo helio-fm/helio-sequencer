@@ -202,16 +202,6 @@ public:
     void filesDropped(const StringArray &files, int insertIndex) override {}
 
     //===------------------------------------------------------------------===//
-    // Painting
-    //===------------------------------------------------------------------===//
-
-    Component *createItemComponent() override;
-    void paintItem(Graphics &g, int width, int height) override;
-    void paintOpenCloseButton(Graphics &, const Rectangle<float> &area,
-        Colour backgroundColour, bool isMouseOver) override;
-    int getItemHeight() const override;
-
-    //===------------------------------------------------------------------===//
     // Cleanup
     //===------------------------------------------------------------------===//
 

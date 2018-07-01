@@ -33,7 +33,7 @@ PanelBackgroundB::PanelBackgroundB()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->setOpaque(true);
@@ -52,33 +52,49 @@ PanelBackgroundB::~PanelBackgroundB()
     //[/Destructor]
 }
 
-void PanelBackgroundB::paint(Graphics& g)
+void PanelBackgroundB::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
 #if 0
     //[/UserPrePaint]
 
-    g.setGradientFill(ColourGradient(Colour(0xff48358c),
-        static_cast<float> ((getWidth() / 2)), 0.0f,
-        Colour(0xff2d3e61),
-        0.0f, static_cast<float> (proportionOfHeight(0.6500f)),
-        true));
-    g.fillRect(0, 0, getWidth() - 0, getHeight() - 0);
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0xff48358c), fillColour2 = Colour (0xff2d3e61);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.6500f)) - 0.0f + y,
+                                       true));
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill(ColourGradient(Colour(0x1e48358c),
-        static_cast<float> (proportionOfWidth(0.8924f)), static_cast<float> (proportionOfHeight(0.9827f)),
-        Colour(0x00000000),
-        80.0f, static_cast<float> (proportionOfHeight(0.0000f)),
-        false));
-    g.fillRect(0, 0, getWidth() - 0, getHeight() - 0);
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x1e48358c), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.8924f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.9827f)) - 0.0f + y,
+                                       fillColour2,
+                                       80.0f - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.0000f)) - 0.0f + y,
+                                       false));
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif
 
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    if (theme.getBgCache2().isValid())
+    if (theme.getBgCache1().isValid())
     {
-        g.setTiledImageFill(theme.getBgCache2(), 0, 0, 1.f);
+        g.setTiledImageFill(theme.getBgCache1(), 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());
     }
     else
@@ -104,15 +120,15 @@ void PanelBackgroundB::resized()
 
 void PanelBackgroundB::updateRender(HelioTheme &theme)
 {
-    if (theme.getBgCache2().isValid())
+    if (theme.getBgCache1().isValid())
     {
         return;
     }
 
     //const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
     //const int scale = int(d.scale);
-    const int w = 512; // d.totalArea.getWidth() * scale;
-    const int h = 512; // d.totalArea.getHeight() * scale;
+    const int w = 128; // d.totalArea.getWidth() * scale;
+    const int h = 128; // d.totalArea.getHeight() * scale;
     //Logger::writeToLog("Prerendering background with w:" + String(w) + ", h:" + String(h));
 
     Image render(Image::ARGB, w, h, true);
@@ -120,7 +136,7 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
     g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));
     g.fillAll();
     HelioTheme::drawNoise(theme, g, 0.5f);
-    theme.getBgCache2() = render;
+    theme.getBgCache1() = render;
 }
 
 //[/MiscUserCode]

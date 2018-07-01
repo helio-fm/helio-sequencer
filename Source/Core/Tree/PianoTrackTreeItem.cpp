@@ -20,7 +20,6 @@
 #include "PianoSequence.h"
 #include "ProjectTreeItem.h"
 #include "TreeItemChildrenSerializer.h"
-#include "TreeItemComponent.h"
 #include "Icons.h"
 #include "Pattern.h"
 

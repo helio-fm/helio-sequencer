@@ -156,7 +156,7 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
     licenseEditor->addListener (this);
 
     addAndMakeVisible (menuButton = new MenuButton());
-    addAndMakeVisible (shadow = new LightShadowRightwards());
+    addAndMakeVisible (shadow = new ShadowRightwards(Normal));
     addAndMakeVisible (revealLocationButton = new ImageButton (String()));
     revealLocationButton->addListener (this);
 
@@ -507,8 +507,8 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0Cc -16Rc 128 128" sourceFile="../../Common/MenuButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/LightShadowRightwards.cpp"
-             constructorParams=""/>
+             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/ShadowRightwards.cpp"
+             constructorParams="Normal"/>
   <IMAGEBUTTON name="" id="6ab32d6eda6c96a8" memberName="revealLocationButton"
                virtualName="" explicitFocusOrder="0" pos="-150 0 -150M 24" posRelativeX="e68c5a019e000a0b"
                posRelativeY="cf836ffeded76ad1" posRelativeW="e68c5a019e000a0b"

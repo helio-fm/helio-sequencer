@@ -50,16 +50,20 @@
 DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
     : workspace(parentWorkspace)
 {
-    addAndMakeVisible (component = new ShadowHorizontalFading());
-    addAndMakeVisible (listBox = new ListBox());
+    this->component.reset(new ShadowHorizontalFading());
+    this->addAndMakeVisible(component.get());
+    this->listBox.reset(new ListBox());
+    this->addAndMakeVisible(listBox.get());
 
-    addAndMakeVisible (separator1 = new SeparatorHorizontalFadingReversed());
-    addAndMakeVisible (separator2 = new SeparatorHorizontalFading());
+    this->separator1.reset(new SeparatorHorizontalFadingReversed());
+    this->addAndMakeVisible(separator1.get());
+    this->separator2.reset(new SeparatorHorizontalFading());
+    this->addAndMakeVisible(separator2.get());
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (450, 500);
+    this->setSize(450, 500);
 
     //[Constructor]
     this->listBox->setRowHeight(DEFAULT_RECENT_FILES_ROW_HEIGHT);
@@ -100,10 +104,10 @@ void DashboardMenu::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    component->setBounds (22, 2, getWidth() - 44, getHeight() - 4);
-    listBox->setBounds (48, 2, getWidth() - 96, getHeight() - 5);
-    separator1->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 3);
-    separator2->setBounds (0, getHeight() - 3, getWidth() - 2, 3);
+    component->setBounds(22, 2, getWidth() - 44, getHeight() - 4);
+    listBox->setBounds(48, 2, getWidth() - 96, getHeight() - 5);
+    separator1->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 3);
+    separator2->setBounds(0, getHeight() - 3, getWidth() - 2, 3);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -279,7 +283,7 @@ void DashboardMenu::paintListBoxItem(int rowNumber, Graphics &g,
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="WorkspaceMenu" template="../../../../Template"
+<JUCER_COMPONENT documentType="Component" className="DashboardMenu" template="../../../../Template"
                  componentName="" parentClasses="public Component, public ListBoxModel"
                  constructorParams="Workspace *parentWorkspace" variableInitialisers="workspace(parentWorkspace)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"

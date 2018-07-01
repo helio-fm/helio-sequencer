@@ -31,9 +31,9 @@ class AudioMonitor;
 #include "MenuPanel.h"
 //[/Headers]
 
-#include "../../Themes/LighterShadowUpwards.h"
+#include "../../Themes/ShadowDownwards.h"
 #include "../../Themes/SeparatorHorizontalReversed.h"
-#include "../../Themes/LighterShadowDownwards.h"
+#include "../../Themes/ShadowUpwards.h"
 #include "../../Themes/SeparatorHorizontal.h"
 
 class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
@@ -85,9 +85,9 @@ private:
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
     //[/UserVariables]
 
-    UniquePointer<LighterShadowUpwards> shadow;
+    UniquePointer<ShadowUpwards> shadow;
     UniquePointer<SeparatorHorizontalReversed> headLine;
-    UniquePointer<LighterShadowDownwards> headShadow;
+    UniquePointer<ShadowDownwards> headShadow;
     UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<ModeIndicatorTrigger> modeIndicatorSelector;
     UniquePointer<ModeIndicatorComponent> modeIndicator;

@@ -18,14 +18,15 @@
 #pragma once
 
 //[Headers]
+#include "ShadowComponent.h"
 //[/Headers]
 
 
-class ShadowRightwards final : public Component
+class ShadowRightwards final : public ShadowComponent
 {
 public:
 
-    ShadowRightwards();
+    ShadowRightwards(ShadowType type);
     ~ShadowRightwards();
 
     //[UserMethods]
@@ -38,6 +39,7 @@ public:
 private:
 
     //[UserVariables]
+    Colour lineColour;
     //[/UserVariables]
 
 

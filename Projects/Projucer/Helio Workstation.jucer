@@ -7,42 +7,20 @@
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
               cppLanguageStandard="14" usePrecompiledHeaders="0" precompiledHeaderFileName=""
               precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko"
-              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Popups/ChordBuilder&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree">
+              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Popups/ChordBuilder&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
-      <FILE id="x2W128" name="Icon.png" compile="0" resource="1" file="../../Resources/Icon.png"/>
-      <FILE id="jNTfQS" name="Logo.png" compile="0" resource="1" file="../../Resources/Logo.png"/>
-      <GROUP id="{B74C493F-BCE5-FAD1-F7F6-52E914E82683}" name="PianoSamples">
-        <FILE id="rkPpVF" name="A0v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A0v9.ogg"/>
-        <FILE id="rfwf2I" name="A1v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A1v9.ogg"/>
-        <FILE id="Ehn61q" name="A2v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A2v9.ogg"/>
-        <FILE id="Hy0bpY" name="A3v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A3v9.ogg"/>
-        <FILE id="I6Dn2o" name="A4v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A4v9.ogg"/>
-        <FILE id="Ecnpfi" name="A5v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A5v9.ogg"/>
-        <FILE id="fZXYDq" name="A6v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A6v9.ogg"/>
-        <FILE id="fz0cgd" name="A7v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/A7v9.ogg"/>
-        <FILE id="fefnhs" name="C1v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C1v9.ogg"/>
-        <FILE id="QRfpD0" name="C2v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C2v9.ogg"/>
-        <FILE id="mIK4KJ" name="C3v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C3v9.ogg"/>
-        <FILE id="OBgsf6" name="C4v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C4v9.ogg"/>
-        <FILE id="K78TJC" name="C5v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C5v9.ogg"/>
-        <FILE id="CJAvai" name="C6v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C6v9.ogg"/>
-        <FILE id="PHDD7B" name="C7v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C7v9.ogg"/>
-        <FILE id="re4Bzl" name="C8v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/C8v9.ogg"/>
-        <FILE id="AVpdbt" name="D#1v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/D#1v9.ogg"/>
-        <FILE id="Quo5mn" name="D#2v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/D#2v9.ogg"/>
-        <FILE id="FmsBGP" name="D#3v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/D#3v9.ogg"/>
-        <FILE id="O0y2lG" name="D#4v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/D#4v9.ogg"/>
-        <FILE id="Ptq6vG" name="D#5v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/D#5v9.ogg"/>
-        <FILE id="AobbEl" name="D#6v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/D#6v9.ogg"/>
-        <FILE id="FjCvpY" name="D#7v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/D#7v9.ogg"/>
-        <FILE id="rcNAG4" name="F#1v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#1v9.ogg"/>
-        <FILE id="xKNlUQ" name="F#2v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#2v9.ogg"/>
-        <FILE id="F1NAIe" name="F#3v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#3v9.ogg"/>
-        <FILE id="YvZXCI" name="F#4v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#4v9.ogg"/>
-        <FILE id="yxpgfH" name="F#5v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#5v9.ogg"/>
-        <FILE id="ptkotb" name="F#6v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#6v9.ogg"/>
-        <FILE id="U2cRzq" name="F#7v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#7v9.ogg"/>
+      <GROUP id="{566A42BA-3539-AB6F-C7F2-BD3408E4047E}" name="Samples">
+        <FILE id="oFLIK5" name="C2v9.flac" compile="0" resource="1" file="../../Resources/Samples/C2v9.flac"/>
+        <FILE id="bR4aWr" name="C3v9.flac" compile="0" resource="1" file="../../Resources/Samples/C3v9.flac"/>
+        <FILE id="DO6Vg4" name="C4v9.flac" compile="0" resource="1" file="../../Resources/Samples/C4v9.flac"/>
+        <FILE id="CgWd6Q" name="C5v9.flac" compile="0" resource="1" file="../../Resources/Samples/C5v9.flac"/>
+        <FILE id="fwuF4A" name="C6v9.flac" compile="0" resource="1" file="../../Resources/Samples/C6v9.flac"/>
+        <FILE id="XohXei" name="F#2v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#2v9.flac"/>
+        <FILE id="PN9TEw" name="F#3v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#3v9.flac"/>
+        <FILE id="QqMxL7" name="F#4v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#4v9.flac"/>
+        <FILE id="opCZld" name="F#5v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#5v9.flac"/>
+        <FILE id="Kr0vYK" name="F#6v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#6v9.flac"/>
       </GROUP>
       <GROUP id="{0B700B6F-60B4-647B-6D0F-7AD115ECD127}" name="Icons">
         <FILE id="rmCDvP" name="annotation.svg" compile="0" resource="1" file="../../Resources/Icons/annotation.svg"/>
@@ -68,6 +46,7 @@
         <FILE id="PjELEM" name="expand.svg" compile="0" resource="1" file="../../Resources/Icons/expand.svg"/>
         <FILE id="XzECGs" name="fail.svg" compile="0" resource="1" file="../../Resources/Icons/fail.svg"/>
         <FILE id="mgkKBL" name="forward.svg" compile="0" resource="1" file="../../Resources/Icons/forward.svg"/>
+        <FILE id="WO0LHL" name="helio.svg" compile="0" resource="1" file="../../Resources/Icons/helio.svg"/>
         <FILE id="Zn4gep" name="insertSpaceTool.svg" compile="0" resource="1"
               file="../../Resources/Icons/insertSpaceTool.svg"/>
         <FILE id="bpruBj" name="instrument.svg" compile="0" resource="1" file="../../Resources/Icons/instrument.svg"/>
@@ -125,7 +104,6 @@
         <FILE id="EcPJkd" name="volume.svg" compile="0" resource="1" file="../../Resources/Icons/volume.svg"/>
         <FILE id="CYlwe1" name="wipeSpaceTool.svg" compile="0" resource="1"
               file="../../Resources/Icons/wipeSpaceTool.svg"/>
-        <FILE id="reSgr3" name="workspace.svg" compile="0" resource="1" file="../../Resources/Icons/workspace.svg"/>
         <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
@@ -1006,8 +984,6 @@
             </GROUP>
             <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.cpp"/>
             <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.h"/>
-            <FILE id="yEomK8" name="LogoImage.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoImage.cpp"/>
-            <FILE id="PfeeZI" name="LogoImage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoImage.h"/>
             <FILE id="SATMyc" name="WorkspacePage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Workspace/WorkspacePage.cpp"/>
             <FILE id="ak0ZaE" name="WorkspacePage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/WorkspacePage.h"/>
@@ -1294,38 +1270,10 @@
                 file="../../Source/UI/Themes/ComponentFader.h"/>
           <FILE id="A9QahU" name="DialogBackground.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/DialogBackground.h"/>
-          <FILE id="Ysmboe" name="FontSerializer.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/FontSerializer.cpp"/>
-          <FILE id="ByVeKa" name="FontSerializer.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/FontSerializer.h"/>
           <FILE id="UTkx9C" name="HelioTheme.cpp" compile="1" resource="0" file="../../Source/UI/Themes/HelioTheme.cpp"/>
           <FILE id="OSxFyU" name="HelioTheme.h" compile="0" resource="0" file="../../Source/UI/Themes/HelioTheme.h"/>
           <FILE id="e3IJC6" name="Icons.cpp" compile="1" resource="0" file="../../Source/UI/Themes/Icons.cpp"/>
           <FILE id="cuElFX" name="Icons.h" compile="0" resource="0" file="../../Source/UI/Themes/Icons.h"/>
-          <FILE id="pWyeEN" name="LightShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowDownwards.cpp"/>
-          <FILE id="WWrfj6" name="LightShadowDownwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowDownwards.h"/>
-          <FILE id="bd8wIc" name="LightShadowLeftwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowLeftwards.cpp"/>
-          <FILE id="c2UOLi" name="LightShadowLeftwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowLeftwards.h"/>
-          <FILE id="XVIp2v" name="LightShadowRightwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowRightwards.cpp"/>
-          <FILE id="bOrny2" name="LightShadowRightwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowRightwards.h"/>
-          <FILE id="xPtl91" name="LightShadowUpwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowUpwards.cpp"/>
-          <FILE id="Y9JXQ8" name="LightShadowUpwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowUpwards.h"/>
-          <FILE id="t2AHRH" name="LighterShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LighterShadowDownwards.cpp"/>
-          <FILE id="HYJ18q" name="LighterShadowDownwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LighterShadowDownwards.h"/>
-          <FILE id="PyzEGt" name="LighterShadowUpwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LighterShadowUpwards.cpp"/>
-          <FILE id="n19TK2" name="LighterShadowUpwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LighterShadowUpwards.h"/>
           <FILE id="assiuD" name="FramePanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/FramePanel.cpp"/>
           <FILE id="jNvXXq" name="FramePanel.h" compile="0" resource="0" file="../../Source/UI/Themes/FramePanel.h"/>
           <FILE id="N4N3KP" name="DialogPanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/DialogPanel.cpp"/>
@@ -1362,55 +1310,31 @@
                 file="../../Source/UI/Themes/SeparatorVertical.cpp"/>
           <FILE id="seMoCv" name="SeparatorVertical.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorVertical.h"/>
-          <FILE id="gwNBw8" name="ShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
-          <FILE id="TdDFDM" name="ShadowDownwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowDownwards.h"/>
+          <FILE id="IwZtBU" name="ShadowComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowComponent.h"/>
           <FILE id="PLyGE8" name="ShadowHorizontalFading.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ShadowHorizontalFading.cpp"/>
           <FILE id="wFsvNz" name="ShadowHorizontalFading.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowHorizontalFading.h"/>
-          <FILE id="Lq4ri4" name="ShadowLeftwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowLeftwards.cpp"/>
-          <FILE id="pixHjS" name="ShadowLeftwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowLeftwards.h"/>
-          <FILE id="cRZXD1" name="ShadowRightwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowRightwards.cpp"/>
-          <FILE id="sQYyQn" name="ShadowRightwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowRightwards.h"/>
-          <FILE id="YeQLGJ" name="ShadowUpwards.cpp" compile="1" resource="0"
+          <FILE id="NJFPby" name="ShadowDownwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
+          <FILE id="HrHof7" name="ShadowDownwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowDownwards.h"/>
+          <FILE id="OdGiuU" name="ShadowUpwards.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ShadowUpwards.cpp"/>
-          <FILE id="sq9DiY" name="ShadowUpwards.h" compile="0" resource="0" file="../../Source/UI/Themes/ShadowUpwards.h"/>
+          <FILE id="we1eAI" name="ShadowUpwards.h" compile="0" resource="0" file="../../Source/UI/Themes/ShadowUpwards.h"/>
+          <FILE id="EzFp59" name="ShadowLeftwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/ShadowLeftwards.cpp"/>
+          <FILE id="RueS4b" name="ShadowLeftwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowLeftwards.h"/>
+          <FILE id="ls2wfl" name="ShadowRightwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/ShadowRightwards.cpp"/>
+          <FILE id="N1dgn4" name="ShadowRightwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowRightwards.h"/>
           <FILE id="mGKnp5" name="ViewportKineticSlider.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ViewportKineticSlider.cpp"/>
           <FILE id="KwsOCH" name="ViewportKineticSlider.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ViewportKineticSlider.h"/>
-        </GROUP>
-        <GROUP id="{ABACCBC4-F1DB-053A-7F98-A7950A5DE4B1}" name="Tree">
-          <FILE id="a4eprZ" name="TreeItemComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponent.cpp"/>
-          <FILE id="D0Nb6p" name="TreeItemComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponent.h"/>
-          <FILE id="bCoHzI" name="TreeItemComponentCompact.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponentCompact.cpp"/>
-          <FILE id="JhPAbR" name="TreeItemComponentCompact.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponentCompact.h"/>
-          <FILE id="k9S4ba" name="TreeItemComponentDefault.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponentDefault.cpp"/>
-          <FILE id="P2rw09" name="TreeItemComponentDefault.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponentDefault.h"/>
-          <FILE id="P8AjHQ" name="TreeItemMarkerDefault.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreeItemMarkerDefault.cpp"/>
-          <FILE id="ZvUke5" name="TreeItemMarkerDefault.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreeItemMarkerDefault.h"/>
-          <FILE id="ul1oWz" name="TreeItemMarkerCompact.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreeItemMarkerCompact.cpp"/>
-          <FILE id="XjRR1u" name="TreeItemMarkerCompact.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreeItemMarkerCompact.h"/>
-          <FILE id="QEQ5zH" name="TreeItemMenuButton.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreeItemMenuButton.cpp"/>
-          <FILE id="t0Y3yz" name="TreeItemMenuButton.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreeItemMenuButton.h"/>
         </GROUP>
         <FILE id="PkRsJW" name="MainLayout.cpp" compile="1" resource="0" file="../../Source/UI/MainLayout.cpp"/>
         <FILE id="hDwgZW" name="MainLayout.h" compile="0" resource="0" file="../../Source/UI/MainLayout.h"/>
@@ -1423,8 +1347,8 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="../../Projects/macOS" vstFolder="~/Code/Steinberg/VST3"
-               vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="x2W128"
-               smallIcon="x2W128" customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
+               vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
+               smallIcon="WO0LHL" customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
                documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override"
                postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8">
       <CONFIGURATIONS>
@@ -1454,8 +1378,9 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <XCODE_IPHONE targetFolder="../../Projects/iOS" vstFolder="~/Code/Steinberg/VST3"
-                  vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="" UIFileSharingEnabled="1"
-                  UIStatusBarHidden="1" smallIcon="" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override"
+                  vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
+                  UIFileSharingEnabled="1" UIStatusBarHidden="1" smallIcon="WO0LHL"
+                  extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override"
                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0&#10;HELIO_AUDIOBUS_SUPPORT=0"
                   customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;AudioComponents&lt;/key&gt;&#10;    &lt;array&gt;&#10;      &lt;dict&gt;&#10;        &lt;key&gt;manufacturer&lt;/key&gt;&#10;        &lt;string&gt;heli&lt;/string&gt;&#10;        &lt;key&gt;type&lt;/key&gt;&#10;        &lt;string&gt;auri&lt;/string&gt;&#10;        &lt;key&gt;subtype&lt;/key&gt;&#10;        &lt;string&gt;host&lt;/string&gt;&#10;        &lt;key&gt;name&lt;/key&gt;&#10;        &lt;string&gt;Helio: Host output&lt;/string&gt;&#10;        &lt;key&gt;version&lt;/key&gt;&#10;        &lt;integer&gt;1&lt;/integer&gt;&#10;      &lt;/dict&gt;&#10;    &lt;/array&gt;&#10;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;CFBundleIdentifier&lt;/key&gt;&#10;    &lt;string&gt;com.peterrudenko.helio&lt;/string&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;&#10;    &lt;key&gt;CFBundleURLTypes&lt;/key&gt;&#10;    &lt;array&gt;&#10;      &lt;dict&gt;&#10;        &lt;key&gt;CFBundleTypeRole&lt;/key&gt;&#10;        &lt;string&gt;Editor&lt;/string&gt;&#10;        &lt;key&gt;CFBundleURLName&lt;/key&gt;&#10;        &lt;string&gt;com.peterrudenko.helio&lt;/string&gt;&#10;        &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;&#10;        &lt;array&gt;&#10;          &lt;string&gt;helio&lt;/string&gt;&#10;          &lt;string&gt;helio-1.6.0.audiobus&lt;/string&gt;&#10;        &lt;/array&gt;&#10;      &lt;/dict&gt;&#10;    &lt;/array&gt;&#10;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
                   iosScreenOrientation="landscape" customXcodeResourceFolders=""
@@ -1491,8 +1416,8 @@
       </MODULEPATHS>
     </XCODE_IPHONE>
     <VS2015 targetFolder="../../Projects/VisualStudio2015" vstFolder="c:\Code\VST3"
-            vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="x2W128"
-            bigIcon="x2W128" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
+            vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="WO0LHL"
+            bigIcon="WO0LHL" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
             windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC">
       <CONFIGURATIONS>
@@ -1534,7 +1459,7 @@
     <VS2017 targetFolder="../../Projects/VisualStudio2017" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
             extraCompilerFlags="/FC" usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
             precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            smallIcon="x2W128" bigIcon="x2W128" toolset="v140_xp">
+            smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
@@ -1574,8 +1499,8 @@
       </MODULEPATHS>
     </VS2017>
     <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" vstFolder="~/Code/Steinberg/VST3"
-                vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="x2W128"
-                smallIcon="x2W128" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess"
+                vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
+                smallIcon="WO0LHL" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess"
                 cppLanguageStandard="-std=c++14" extraLinkerFlags="" usePrecompiledHeaders="1"
                 precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*">
       <CONFIGURATIONS>
@@ -1606,12 +1531,15 @@
     </LINUX_MAKE>
     <ANDROIDSTUDIO targetFolder="../../Projects/Android" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
                    androidSDKPath="~/Android/Sdk/" androidNDKPath="~/Android/Ndk/"
-                   androidActivityClass="com.peterrudenko.Helio" androidInternetNeeded="1"
-                   androidOtherPermissions="android.permission.WRITE_EXTERNAL_STORAGE android.permission.MODIFY_AUDIO_SETTINGS"
+                   androidActivityClass="fm.helio.workstation" androidInternetNeeded="1"
+                   androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
-                   smallIcon="x2W128" bigIcon="x2W128" androidScreenOrientation="landscape"
+                   smallIcon="WO0LHL" bigIcon="WO0LHL" androidScreenOrientation="landscape"
                    androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="14"
-                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0">
+                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0" cameraPermissionNeeded="0"
+                   microphonePermissionNeeded="0" androidBluetoothNeeded="0" androidInAppBilling="0"
+                   androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
+                   androidEnableRemoteNotifications="0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" androidArchitectures="armeabi x86" isDebug="1" optimisation="1"
                        targetName="Helio"/>
@@ -1652,7 +1580,7 @@
   </MODULES>
   <JUCEOPTIONS JUCE_ASIO="1" JUCE_WASAPI="1" JUCE_WASAPI_EXCLUSIVE="1" JUCE_DIRECTSOUND="1"
                JUCE_ALSA="1" JUCE_JACK="1" JUCE_USE_ANDROID_OPENSLES="1" JUCE_USE_CDREADER="0"
-               JUCE_USE_CDBURNER="0" JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="1"
+               JUCE_USE_CDBURNER="0" JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="0"
                JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0" JUCE_USE_WINDOWS_MEDIA_FORMAT="0"
                JUCE_CHECK_MEMORY_LEAKS="1" JUCE_USE_CURL="1" JUCE_USE_XSHM="1"
                JUCE_USE_XRENDER="0" JUCE_USE_XCURSOR="1" JUCE_WEB_BROWSER="0"

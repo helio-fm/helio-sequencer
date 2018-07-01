@@ -34,27 +34,29 @@
 
 InitScreen::InitScreen()
 {
-    addAndMakeVisible (bg = new PanelBackgroundA());
-    addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
-    addAndMakeVisible (headShadow = new LighterShadowDownwards());
-    addAndMakeVisible (gradient1 = new PanelBackgroundB());
+    this->bg.reset(new PanelBackgroundA());
+    this->addAndMakeVisible(bg.get());
+    this->headLine.reset(new SeparatorHorizontalReversed());
+    this->addAndMakeVisible(headLine.get());
+    this->headShadow.reset(new ShadowDownwards(Light));
+    this->addAndMakeVisible(headShadow.get());
+    this->gradient1.reset(new PanelBackgroundB());
+    this->addAndMakeVisible(gradient1.get());
 
     //[UserPreSize]
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainer(false);
+    this->setOpaque(true);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
-    
+
     // Debug png logos generator
     //const auto fader = new LogoFader(false);
     //this->addAndMakeVisible(fader);
     //fader->setBounds(0, 0, 400, 400);
-
-    this->setOpaque(true);
-    this->rebound();
-    this->toFront(false);
-    this->setAlwaysOnTop(true);
     //[/Constructor]
 }
 
@@ -88,10 +90,10 @@ void InitScreen::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    bg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    headLine->setBounds (0, 32, getWidth() - 0, 2);
-    headShadow->setBounds (0, 33, getWidth() - 0, 6);
-    gradient1->setBounds (-50, 0, getWidth() - -100, 32);
+    bg->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
+    headLine->setBounds(0, 32, getWidth() - 0, 2);
+    headShadow->setBounds(0, 33, getWidth() - 0, 6);
+    gradient1->setBounds(-50, 0, getWidth() - -100, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -99,27 +101,13 @@ void InitScreen::resized()
 void InitScreen::visibilityChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
-    //[/UserCode_visibilityChanged]
-}
-
-void InitScreen::parentHierarchyChanged()
-{
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
-    //[/UserCode_parentHierarchyChanged]
-}
-
-void InitScreen::parentSizeChanged()
-{
-    //[UserCode_parentSizeChanged] -- Add your code here...
     if (this->isVisible())
     {
-        this->rebound();
         // Debug png logos generator
         //this->startTimer(5000);
         this->postCommandMessage(CommandIDs::InitWorkspace);
     }
-    //[/UserCode_parentSizeChanged]
+    //[/UserCode_visibilityChanged]
 }
 
 void InitScreen::handleCommandMessage (int commandId)
@@ -151,12 +139,6 @@ void InitScreen::timerCallback()
     }
 }
 
-void InitScreen::rebound()
-{
-    //Logger::writeToLog("> " + String(this->getWidth()) + " : " + String(this->getHeight()));
-    this->setBounds(0, 0, this->getParentWidth(), this->getParentHeight());
-}
-
 //[/MiscUserCode]
 
 #if 0
@@ -169,10 +151,8 @@ BEGIN_JUCER_METADATA
                  snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="600"
                  initialHeight="400">
   <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="parentSizeChanged()"/>
-    <METHOD name="visibilityChanged()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
+    <METHOD name="visibilityChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="66a1a33f06322bfb" memberName="bg" virtualName=""
@@ -182,8 +162,8 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 32 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
-             explicitFocusOrder="0" pos="0 33 0M 6" sourceFile="../../Themes/LighterShadowDownwards.cpp"
-             constructorParams=""/>
+             explicitFocusOrder="0" pos="0 33 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
+             constructorParams="Light"/>
   <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
              explicitFocusOrder="0" pos="-50 0 -100M 32" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>

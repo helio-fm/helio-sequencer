@@ -32,7 +32,7 @@ ShadowHorizontalFading::ShadowHorizontalFading()
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (320, 320);
+    this->setSize(320, 320);
 
     //[Constructor]
     //[/Constructor]
@@ -53,22 +53,44 @@ void ShadowHorizontalFading::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x09000000),
-                                       128.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, 0.0f,
+    {
+        int x = 0, y = 0, width = 128, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x09000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       128.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
                                        false));
-    g.fillRect (0, 0, 128, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x09000000),
-                                       static_cast<float> (getWidth() - 128), 0.0f,
-                                       Colour (0x00000000),
-                                       static_cast<float> (getWidth()), 0.0f,
+    {
+        int x = getWidth() - 128, y = 0, width = 128, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x09000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (getWidth() - 128) - static_cast<float> (getWidth() - 128) + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (getWidth()) - static_cast<float> (getWidth() - 128) + x,
+                                       0.0f - 0.0f + y,
                                        false));
-    g.fillRect (getWidth() - 128, 0, 128, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0x09000000));
-    g.fillRect (128, 0, getWidth() - 256, getHeight() - 0);
+    {
+        int x = 128, y = 0, width = getWidth() - 256, height = getHeight() - 0;
+        Colour fillColour = Colour (0x09000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]

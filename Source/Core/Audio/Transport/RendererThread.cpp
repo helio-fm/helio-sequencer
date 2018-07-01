@@ -73,12 +73,6 @@ void RendererThread::startRecording(const File &file)
             const ScopedLock sl(this->writerLock);
             this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
         }
-        else if (file.getFileExtension().toLowerCase() == ".ogg")
-        {
-            OggVorbisAudioFormat oggVorbisFormat;
-            const ScopedLock sl(this->writerLock);
-            this->writer = oggVorbisFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
-        }
         else if (file.getFileExtension().toLowerCase() == ".flac")
         {
             FlacAudioFormat flacFormat;

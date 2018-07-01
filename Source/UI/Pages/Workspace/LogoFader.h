@@ -21,7 +21,7 @@ class LogoFader : public Component, private Timer
 {
 public:
 
-    explicit LogoFader(bool useOldLogo = true);
+    explicit LogoFader();
     ~LogoFader() override;
 
     void startFade();

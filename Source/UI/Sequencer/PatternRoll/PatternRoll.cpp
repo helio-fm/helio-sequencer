@@ -718,7 +718,7 @@ void PatternRoll::reset() {}
 
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
 {
-    const int width = 256;
+    const int width = 64;
     const int shadowHeight = PATTERN_ROLL_TRACK_HEADER_HEIGHT * 2;
     Image patternImage(Image::RGB, width, height, false);
     Graphics g(patternImage);

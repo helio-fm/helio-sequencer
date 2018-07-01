@@ -24,7 +24,7 @@
 #include "../../Themes/PanelBackgroundB.h"
 #include "StageComponent.h"
 #include "HistoryComponent.h"
-#include "../../Themes/LightShadowRightwards.h"
+#include "../../Themes/ShadowRightwards.h"
 
 class VersionControlEditorDefault final : public VersionControlEditor
 {
@@ -54,7 +54,7 @@ private:
     ScopedPointer<StageComponent> stageComponent;
     ScopedPointer<HistoryComponent> historyComponent;
     ScopedPointer<Component> anchor;
-    ScopedPointer<LightShadowRightwards> shadow;
+    ScopedPointer<ShadowRightwards> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VersionControlEditorDefault)
 };

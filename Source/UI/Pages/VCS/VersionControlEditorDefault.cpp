@@ -35,7 +35,7 @@ VersionControlEditorDefault::VersionControlEditorDefault(VersionControl &version
     addAndMakeVisible (historyComponent = new HistoryComponent (versionControl));
     addAndMakeVisible (anchor = new Component());
 
-    addAndMakeVisible (shadow = new LightShadowRightwards());
+    addAndMakeVisible (shadow = new ShadowRightwards(Normal));
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -133,8 +133,8 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="0 0 50.065% 8" class="Component"
                     params=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/LightShadowRightwards.cpp"
-             constructorParams=""/>
+             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/ShadowRightwards.cpp"
+             constructorParams="Normal"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

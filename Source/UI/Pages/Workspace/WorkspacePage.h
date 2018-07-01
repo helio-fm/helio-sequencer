@@ -30,18 +30,14 @@ class OpenGLSettings;
 class Log;
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundA.h"
-#include "../../Common/MenuButton.h"
-#include "../../Themes/LightShadowRightwards.h"
+#include "../../Themes/PanelBackgroundB.h"
 #include "Menu/DashboardMenu.h"
 
-class WorkspacePage  : public Component,
-                       public Button::Listener
+class WorkspacePage final : public Component
 {
 public:
 
-    WorkspacePage (MainLayout &workspaceRef);
-
+    WorkspacePage(MainLayout &workspaceRef);
     ~WorkspacePage();
 
     //[UserMethods]
@@ -49,9 +45,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
     void visibilityChanged() override;
-    void handleCommandMessage (int commandId) override;
 
 
 private:
@@ -62,12 +56,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundA> background;
-    ScopedPointer<MenuButton> menuButton;
-    ScopedPointer<LogoFader> logoImage;
-    ScopedPointer<LightShadowRightwards> shadow;
-    ScopedPointer<TextButton> settingsButton;
-    ScopedPointer<DashboardMenu> component;
+    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<LogoFader> logoImage;
+    UniquePointer<DashboardMenu> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkspacePage)
 };

@@ -30,8 +30,8 @@ WipeSpaceHelper::WipeSpaceHelper(HybridRoll &parentRoll)
       startBeat(0.f),
       endBeat(0.f)
 {
-    addAndMakeVisible (shadowR = new ShadowLeftwards());
-    addAndMakeVisible (shadowL = new ShadowRightwards());
+    addAndMakeVisible (shadowR = new ShadowLeftwards(Normal));
+    addAndMakeVisible (shadowL = new ShadowRightwards(Normal));
 
     //[UserPreSize]
     this->setAlpha(0.f);
@@ -145,10 +145,10 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="25000000"/>
   <JUCERCOMP name="" id="123c74cf94f9cec1" memberName="shadowR" virtualName=""
              explicitFocusOrder="0" pos="-3Rr 0 24 0M" sourceFile="../../Themes/ShadowLeftwards.cpp"
-             constructorParams=""/>
+             constructorParams="Normal"/>
   <JUCERCOMP name="" id="f606d7e3c14830e" memberName="shadowL" virtualName=""
              explicitFocusOrder="0" pos="-3 0 24 0M" sourceFile="../../Themes/ShadowRightwards.cpp"
-             constructorParams=""/>
+             constructorParams="Normal"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

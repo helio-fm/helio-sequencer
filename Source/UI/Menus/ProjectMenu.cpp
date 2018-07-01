@@ -59,10 +59,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
             this->proceedToRenderDialog("FLAC");
             return;
 
-        case CommandIDs::RenderToOGG:
-            this->proceedToRenderDialog("OGG");
-            return;
-
         case CommandIDs::RenderToWAV:
             this->proceedToRenderDialog("WAV");
             return;
@@ -425,10 +421,6 @@ void ProjectMenu::showRenderMenu()
     menu.add(MenuItem::item(Icons::render,
         CommandIDs::RenderToWAV,
         TRANS("menu::project::render::wav"))->disabledIf(noRender));
-
-    menu.add(MenuItem::item(Icons::render,
-        CommandIDs::RenderToOGG,
-        TRANS("menu::project::render::ogg"))->disabledIf(noRender));
 
     menu.add(MenuItem::item(Icons::render,
         CommandIDs::RenderToFLAC,

@@ -34,7 +34,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor)
 
     addAndMakeVisible (triggerButtton = new MobileComboBox::Trigger());
 
-    addAndMakeVisible (shadow = new LighterShadowDownwards());
+    addAndMakeVisible (shadow = new ShadowDownwards(Light));
     addAndMakeVisible (separator = new SeparatorHorizontalReversed());
     addAndMakeVisible (currentNameLabel = new Label (String(),
                                                      TRANS("...")));
@@ -245,8 +245,8 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="0Rr 0 32 32" class="MobileComboBox::Trigger"
                     params=""/>
   <JUCERCOMP name="" id="cdb9ae0975a381d3" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="1 33 2M 16" sourceFile="../Themes/LighterShadowDownwards.cpp"
-             constructorParams=""/>
+             explicitFocusOrder="0" pos="1 33 2M 16" sourceFile="../Themes/ShadowDownwards.cpp"
+             constructorParams="Light"/>
   <JUCERCOMP name="" id="a46de88ae4304986" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="1 32 2M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>

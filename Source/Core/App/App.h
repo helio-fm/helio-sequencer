@@ -127,8 +127,7 @@ private:
     enum RunMode
     {
         NORMAL,
-        PLUGIN_CHECK,
-        FONT_SERIALIZE
+        PLUGIN_CHECK
     };
 
     App::RunMode detectRunMode(const String &commandLine);

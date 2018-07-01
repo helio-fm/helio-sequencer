@@ -27,7 +27,6 @@ public:
     explicit AutomationTrackTreeItem(const String &name);
 
     Image getIcon() const noexcept override;
-    void paintItem(Graphics &g, int width, int height) override;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

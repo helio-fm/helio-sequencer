@@ -43,7 +43,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
 
-    addAndMakeVisible (icon = new IconComponent (Icons::workspace));
+    addAndMakeVisible (icon = new IconComponent (Icons::helio));
 
     addAndMakeVisible (content = new Component());
 
@@ -355,7 +355,7 @@ BEGIN_JUCER_METADATA
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
                     explicitFocusOrder="0" pos="7 16c 32 32" class="IconComponent"
-                    params="Icons::workspace"/>
+                    params="Icons::helio"/>
   <GENERICCOMPONENT name="" id="b986fd50e3b5b1c5" memberName="content" virtualName=""
                     explicitFocusOrder="0" pos="2 33 4M 34M" class="Component" params=""/>
 </JUCER_COMPONENT>

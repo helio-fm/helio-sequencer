@@ -19,41 +19,16 @@
 
 #include "BuiltInSynthAudioPlugin.h"
 
-struct GrandSample
-{
-    GrandSample() = default;
-
-    GrandSample(const String &keyName,
-        int lowKey, int highKey, int rootKey,
-        const void *sourceData, size_t sourceDataSize) :
-        name(keyName),
-        midiNoteForNormalPitch(rootKey)
-    {
-        for (int i = lowKey; i <= highKey; ++i)
-        { this->midiNotes.setBit(i); }
-
-        OggVorbisAudioFormat ogg;
-        this->reader = ogg.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
-    }
-
-    String name;
-    ScopedPointer<AudioFormatReader> reader;
-    BigInteger midiNotes;
-    int midiNoteForNormalPitch;
-    
-private:
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GrandSample)
-};
+// A lightweight piano sampler with the only purpose of providing a default instrument
+// that doesn't sound too much crappy when user opens the app at the very first time,
+// and doesn't have any custom instruments added yet.
+// So it's as simple and small as possible.
 
 class BuiltInSynthPiano : public BuiltInSynthAudioPlugin
 {
 public:
 
-    // @param empty: for creating a lightweight Helio instance
-    // needed only to fill the description
-    explicit BuiltInSynthPiano(bool empty = false);
-    ~BuiltInSynthPiano() override;
+    explicit BuiltInSynthPiano();
 
     const String getName() const override;
     void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
@@ -63,10 +38,6 @@ protected:
 
     void initVoices() override;
     void initSampler() override;
-    void initSamples();
 
-    OwnedArray<GrandSample> samples;
-    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynthPiano)
-
 };

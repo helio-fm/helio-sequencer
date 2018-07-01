@@ -31,8 +31,8 @@ InsertSpaceHelper::InsertSpaceHelper(HybridRoll &parentRoll)
       endBeat(0.f),
       endBeatAnchor(0.f)
 {
-    addAndMakeVisible (shadowL = new ShadowLeftwards());
-    addAndMakeVisible (shadowR = new ShadowRightwards());
+    addAndMakeVisible (shadowL = new ShadowLeftwards(Normal));
+    addAndMakeVisible (shadowR = new ShadowRightwards(Normal));
 
     //[UserPreSize]
     this->setAlpha(0.f);
@@ -175,10 +175,10 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <JUCERCOMP name="" id="123c74cf94f9cec1" memberName="shadowL" virtualName=""
              explicitFocusOrder="0" pos="0 0 25 0M" sourceFile="../../Themes/ShadowLeftwards.cpp"
-             constructorParams=""/>
+             constructorParams="Normal"/>
   <JUCERCOMP name="" id="f606d7e3c14830e" memberName="shadowR" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 24 0M" sourceFile="../../Themes/ShadowRightwards.cpp"
-             constructorParams=""/>
+             constructorParams="Normal"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

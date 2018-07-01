@@ -128,7 +128,7 @@ ProjectPagePhone::ProjectPagePhone(ProjectTreeItem &parentProject)
     licenseEditor->setEditable (true, true, false);
     licenseEditor->addListener (this);
 
-    addAndMakeVisible (shadow = new LightShadowRightwards());
+    addAndMakeVisible (shadow = new ShadowRightwards(Normal));
     addAndMakeVisible (separator1 = new SeparatorHorizontalFading());
     addAndMakeVisible (separator2 = new SeparatorHorizontalFading());
     addAndMakeVisible (separator3 = new SeparatorHorizontalFading());
@@ -410,8 +410,8 @@ BEGIN_JUCER_METADATA
          focusDiscardsChanges="0" fontname="Default serif font" fontsize="28"
          kerning="0" bold="0" italic="0" justification="9"/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/LightShadowRightwards.cpp"
-             constructorParams=""/>
+             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/ShadowRightwards.cpp"
+             constructorParams="Normal"/>
   <JUCERCOMP name="" id="ebc8bf954551fd8e" memberName="separator1" virtualName=""
              explicitFocusOrder="0" pos="-57Cc 31 300 4" posRelativeY="b93b5ef0dc95ee24"
              sourceFile="../../Themes/SeparatorHorizontalFading.cpp" constructorParams=""/>

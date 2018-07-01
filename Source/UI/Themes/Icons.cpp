@@ -65,7 +65,7 @@ void Icons::clearBuiltInImages()
 
 void Icons::initBuiltInImages()
 {
-    setIconForKey(workspace);
+    setIconForKey(helio);
     setIconForKey(project);
     setIconForKey(trackGroup);
     setIconForKey(pianoTrack);
@@ -206,7 +206,7 @@ static Image renderVector(Icons::Id id, int maxSize,
     Rectangle<int> area(0, 0, maxSize, maxSize);
     drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
     
-    if (id != Icons::workspace) // a hack -_-
+    if (id != Icons::helio) // a hack -_-
     {
 #if HELIO_DESKTOP
         GlowEffect glow;

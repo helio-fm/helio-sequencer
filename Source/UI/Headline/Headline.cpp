@@ -27,9 +27,10 @@
 #include "MainWindow.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
+#include "SequencerLayout.h"
 
 #define HEADLINE_ITEMS_OVERLAP (16)
-#define HEADLINE_ROOT_X (50)
+#define HEADLINE_ROOT_X SEQUENCER_SIDEBAR_WIDTH
 //[/MiscUserDefs]
 
 Headline::Headline()
@@ -65,7 +66,7 @@ void Headline::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    g.setFillType({ theme.getBgCache2(), {} });
+    g.setFillType({ theme.getBgCache1(), {} });
     g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 

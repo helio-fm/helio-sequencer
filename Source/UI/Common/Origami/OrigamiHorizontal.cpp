@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "OrigamiHorizontal.h"
-#include "LightShadowDownwards.h"
-#include "LightShadowUpwards.h"
+#include "ShadowDownwards.h"
+#include "ShadowUpwards.h"
 
 void OrigamiHorizontal::addFlexiblePage(Component *targetComponent)
 {
@@ -98,7 +98,7 @@ void OrigamiHorizontal::addShadowAtTheStart()
 {
     if (Page *page = this->pages.getLast())
     {
-        page->shadowAtStart = new LightShadowDownwards();
+        page->shadowAtStart = new ShadowDownwards(Normal);
         page->shadowAtStart->setSize(10, 10);
         page->shadowAtStart->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(page->shadowAtStart);
@@ -109,7 +109,7 @@ void OrigamiHorizontal::addShadowAtTheEnd()
 {
     if (Page *page = this->pages.getLast())
     {
-        page->shadowAtEnd = new LightShadowUpwards();
+        page->shadowAtEnd = new ShadowUpwards(Normal);
         page->shadowAtEnd->setSize(10, 10);
         page->shadowAtEnd->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(page->shadowAtEnd);
