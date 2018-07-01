@@ -207,6 +207,8 @@ void Pack::reset()
 
 void Pack::flush()
 {
+    // TODO: check for cache size and only flush it to the disk when it exceeds some limit
+    /*
     const ScopedLock lock(this->packStreamLock);
 
     TemporaryFile tempFile(this->packFile);
@@ -254,6 +256,7 @@ void Pack::flush()
     {
         jassertfalse;
     }
+    */
 }
 
 ValueTree Pack::createSerializedData(const DeltaDataHeader *header) const
