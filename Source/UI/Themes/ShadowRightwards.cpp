@@ -22,17 +22,18 @@
 #include "ShadowRightwards.h"
 
 //[MiscUserDefs]
+#include "ColourIDs.h"
 //[/MiscUserDefs]
 
-ShadowRightwards::ShadowRightwards()
+ShadowRightwards::ShadowRightwards(ShadowType type)
+    : ShadowComponent(type)
 {
 
     //[UserPreSize]
-    this->setInterceptsMouseClicks(false, false);
-    this->setPaintingIsUnclipped(true);
+    this->lineColour = this->findColour(ColourIDs::Common::borderLineDark);
     //[/UserPreSize]
 
-    setSize (40, 400);
+    this->setSize(40, 400);
 
     //[Constructor]
     //[/Constructor]
@@ -51,30 +52,59 @@ ShadowRightwards::~ShadowRightwards()
 void ShadowRightwards::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x25000000),
-                                       0.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       static_cast<float> (getWidth()), 0.0f,
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour1 = this->shadowColour;
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (getWidth()) - 0.0f + x,
+                                       0.0f - 0.0f + y,
                                        false));
-    g.fillRect (3, 0, getWidth() - 3, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x25000000),
-                                       0.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
+    {
+        int x = 0, y = 0, width = proportionOfWidth (0.5000f), height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour1 = this->shadowColour;
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
+                                       0.0f - 0.0f + y,
                                        false));
-    g.fillRect (3, 0, proportionOfWidth (0.5000f), getHeight() - 0);
-
-    g.setGradientFill (ColourGradient (Colour (0x01ffffff),
-                                       0.0f, 0.0f,
-                                       Colour (0x11ffffff),
-                                       3.0f, 0.0f,
-                                       false));
-    g.fillRect (0, 0, 3, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
+#endif
+
+    const float w = float(this->getWidth());
+    g.setGradientFill(ColourGradient(this->shadowColour,
+        0.f, 0.f,
+        Colours::transparentBlack,
+        w, 0.f, false));
+    g.fillRect(this->getLocalBounds());
+
+    g.setGradientFill(ColourGradient(this->shadowColour,
+        0.f, 0.0f,
+        Colours::transparentBlack,
+        w / 2.5f, 0.f, false));
+    g.fillRect(this->getLocalBounds());
+
+    g.setColour(this->lineColour);
+    g.drawVerticalLine(0, 0.f, float(this->getHeight()));
     //[/UserPaint]
 }
 
@@ -96,14 +126,13 @@ void ShadowRightwards::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ShadowRightwards" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="40" initialHeight="400">
+                 componentName="" parentClasses="public ShadowComponent" constructorParams="ShadowType type"
+                 variableInitialisers="ShadowComponent(type)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="40"
+                 initialHeight="400">
   <BACKGROUND backgroundColour="ffffff">
-    <RECT pos="3 0 3M 0M" fill="linear: 0 0, 0R 0, 0=25000000, 1=0" hasStroke="0"/>
-    <RECT pos="3 0 50% 0M" fill="linear: 0 0, 0C 0, 0=25000000, 1=0" hasStroke="0"/>
-    <RECT pos="0 0 3 0M" fill="linear: 0 0, 3 0, 0=1ffffff, 1=11ffffff"
-          hasStroke="0"/>
+    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0R 0, 0=15000000, 1=0" hasStroke="0"/>
+    <RECT pos="0 0 50% 0M" fill="linear: 0 0, 0C 0, 0=15000000, 1=0" hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

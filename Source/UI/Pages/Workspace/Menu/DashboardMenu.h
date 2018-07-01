@@ -68,10 +68,10 @@ private:
     Workspace *workspace;
     //[/UserVariables]
 
-    ScopedPointer<ShadowHorizontalFading> component;
-    ScopedPointer<ListBox> listBox;
-    ScopedPointer<SeparatorHorizontalFadingReversed> separator1;
-    ScopedPointer<SeparatorHorizontalFading> separator2;
+    UniquePointer<ShadowHorizontalFading> component;
+    UniquePointer<ListBox> listBox;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator1;
+    UniquePointer<SeparatorHorizontalFading> separator2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DashboardMenu)
 };

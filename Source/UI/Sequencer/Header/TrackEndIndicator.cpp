@@ -28,7 +28,7 @@
 TrackEndIndicator::TrackEndIndicator()
     : absPosition(0)
 {
-    addAndMakeVisible (shadow = new ShadowRightwards());
+    addAndMakeVisible (shadow = new ShadowRightwards(Normal));
 
     //[UserPreSize]
     this->shadow->setAlpha(0.7f);
@@ -110,7 +110,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="16000000"/>
   <JUCERCOMP name="" id="960dc35b494ac9d2" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="-2 0 12 0M" sourceFile="../../Themes/ShadowRightwards.cpp"
-             constructorParams=""/>
+             constructorParams="Normal"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

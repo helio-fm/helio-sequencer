@@ -23,7 +23,7 @@ class LogoFader;
 
 #include "../../Themes/PanelBackgroundA.h"
 #include "../../Themes/SeparatorHorizontalReversed.h"
-#include "../../Themes/LighterShadowDownwards.h"
+#include "../../Themes/ShadowDownwards.h"
 #include "../../Themes/PanelBackgroundB.h"
 
 class InitScreen final : public Component,
@@ -40,8 +40,6 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void visibilityChanged() override;
-    void parentHierarchyChanged() override;
-    void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
 
 
@@ -50,14 +48,13 @@ private:
     //[UserVariables]
 
     void timerCallback() override;
-    void rebound();
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundA> bg;
-    ScopedPointer<SeparatorHorizontalReversed> headLine;
-    ScopedPointer<LighterShadowDownwards> headShadow;
-    ScopedPointer<PanelBackgroundB> gradient1;
+    UniquePointer<PanelBackgroundA> bg;
+    UniquePointer<SeparatorHorizontalReversed> headLine;
+    UniquePointer<ShadowDownwards> headShadow;
+    UniquePointer<PanelBackgroundB> gradient1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InitScreen)
 };

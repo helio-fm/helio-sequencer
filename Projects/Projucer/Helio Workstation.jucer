@@ -11,20 +11,16 @@
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <GROUP id="{566A42BA-3539-AB6F-C7F2-BD3408E4047E}" name="Samples">
-        <FILE id="wFF4f4" name="C1v9.flac" compile="0" resource="1" file="../../Resources/Samples/C1v9.flac"/>
         <FILE id="oFLIK5" name="C2v9.flac" compile="0" resource="1" file="../../Resources/Samples/C2v9.flac"/>
         <FILE id="bR4aWr" name="C3v9.flac" compile="0" resource="1" file="../../Resources/Samples/C3v9.flac"/>
         <FILE id="DO6Vg4" name="C4v9.flac" compile="0" resource="1" file="../../Resources/Samples/C4v9.flac"/>
         <FILE id="CgWd6Q" name="C5v9.flac" compile="0" resource="1" file="../../Resources/Samples/C5v9.flac"/>
         <FILE id="fwuF4A" name="C6v9.flac" compile="0" resource="1" file="../../Resources/Samples/C6v9.flac"/>
-        <FILE id="XQe8jg" name="C7v9.flac" compile="0" resource="1" file="../../Resources/Samples/C7v9.flac"/>
-        <FILE id="ngvjpQ" name="F#1v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#1v9.flac"/>
         <FILE id="XohXei" name="F#2v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#2v9.flac"/>
         <FILE id="PN9TEw" name="F#3v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#3v9.flac"/>
         <FILE id="QqMxL7" name="F#4v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#4v9.flac"/>
         <FILE id="opCZld" name="F#5v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#5v9.flac"/>
         <FILE id="Kr0vYK" name="F#6v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#6v9.flac"/>
-        <FILE id="HyysAn" name="F#7v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#7v9.flac"/>
       </GROUP>
       <GROUP id="{0B700B6F-60B4-647B-6D0F-7AD115ECD127}" name="Icons">
         <FILE id="rmCDvP" name="annotation.svg" compile="0" resource="1" file="../../Resources/Icons/annotation.svg"/>
@@ -112,7 +108,6 @@
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
       </GROUP>
-      <FILE id="jNTfQS" name="Logo.png" compile="0" resource="1" file="../../Resources/Logo.png"/>
       <FILE id="aMBPbX" name="Noise.png" compile="0" resource="1" file="../../Resources/Noise.png"/>
       <FILE id="so7ZdZ" name="Arpeggiators.json" compile="0" resource="1"
             file="../../Resources/Arpeggiators.json"/>
@@ -989,8 +984,6 @@
             </GROUP>
             <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.cpp"/>
             <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.h"/>
-            <FILE id="yEomK8" name="LogoImage.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoImage.cpp"/>
-            <FILE id="PfeeZI" name="LogoImage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoImage.h"/>
             <FILE id="SATMyc" name="WorkspacePage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Workspace/WorkspacePage.cpp"/>
             <FILE id="ak0ZaE" name="WorkspacePage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/WorkspacePage.h"/>
@@ -1281,30 +1274,6 @@
           <FILE id="OSxFyU" name="HelioTheme.h" compile="0" resource="0" file="../../Source/UI/Themes/HelioTheme.h"/>
           <FILE id="e3IJC6" name="Icons.cpp" compile="1" resource="0" file="../../Source/UI/Themes/Icons.cpp"/>
           <FILE id="cuElFX" name="Icons.h" compile="0" resource="0" file="../../Source/UI/Themes/Icons.h"/>
-          <FILE id="pWyeEN" name="LightShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowDownwards.cpp"/>
-          <FILE id="WWrfj6" name="LightShadowDownwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowDownwards.h"/>
-          <FILE id="bd8wIc" name="LightShadowLeftwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowLeftwards.cpp"/>
-          <FILE id="c2UOLi" name="LightShadowLeftwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowLeftwards.h"/>
-          <FILE id="XVIp2v" name="LightShadowRightwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowRightwards.cpp"/>
-          <FILE id="bOrny2" name="LightShadowRightwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowRightwards.h"/>
-          <FILE id="xPtl91" name="LightShadowUpwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LightShadowUpwards.cpp"/>
-          <FILE id="Y9JXQ8" name="LightShadowUpwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LightShadowUpwards.h"/>
-          <FILE id="t2AHRH" name="LighterShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LighterShadowDownwards.cpp"/>
-          <FILE id="HYJ18q" name="LighterShadowDownwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LighterShadowDownwards.h"/>
-          <FILE id="PyzEGt" name="LighterShadowUpwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LighterShadowUpwards.cpp"/>
-          <FILE id="n19TK2" name="LighterShadowUpwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LighterShadowUpwards.h"/>
           <FILE id="assiuD" name="FramePanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/FramePanel.cpp"/>
           <FILE id="jNvXXq" name="FramePanel.h" compile="0" resource="0" file="../../Source/UI/Themes/FramePanel.h"/>
           <FILE id="N4N3KP" name="DialogPanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/DialogPanel.cpp"/>
@@ -1341,25 +1310,27 @@
                 file="../../Source/UI/Themes/SeparatorVertical.cpp"/>
           <FILE id="seMoCv" name="SeparatorVertical.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorVertical.h"/>
-          <FILE id="gwNBw8" name="ShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
-          <FILE id="TdDFDM" name="ShadowDownwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowDownwards.h"/>
+          <FILE id="IwZtBU" name="ShadowComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowComponent.h"/>
           <FILE id="PLyGE8" name="ShadowHorizontalFading.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ShadowHorizontalFading.cpp"/>
           <FILE id="wFsvNz" name="ShadowHorizontalFading.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowHorizontalFading.h"/>
-          <FILE id="Lq4ri4" name="ShadowLeftwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowLeftwards.cpp"/>
-          <FILE id="pixHjS" name="ShadowLeftwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowLeftwards.h"/>
-          <FILE id="cRZXD1" name="ShadowRightwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowRightwards.cpp"/>
-          <FILE id="sQYyQn" name="ShadowRightwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowRightwards.h"/>
-          <FILE id="YeQLGJ" name="ShadowUpwards.cpp" compile="1" resource="0"
+          <FILE id="NJFPby" name="ShadowDownwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
+          <FILE id="HrHof7" name="ShadowDownwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowDownwards.h"/>
+          <FILE id="OdGiuU" name="ShadowUpwards.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ShadowUpwards.cpp"/>
-          <FILE id="sq9DiY" name="ShadowUpwards.h" compile="0" resource="0" file="../../Source/UI/Themes/ShadowUpwards.h"/>
+          <FILE id="we1eAI" name="ShadowUpwards.h" compile="0" resource="0" file="../../Source/UI/Themes/ShadowUpwards.h"/>
+          <FILE id="EzFp59" name="ShadowLeftwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/ShadowLeftwards.cpp"/>
+          <FILE id="RueS4b" name="ShadowLeftwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowLeftwards.h"/>
+          <FILE id="ls2wfl" name="ShadowRightwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/ShadowRightwards.cpp"/>
+          <FILE id="N1dgn4" name="ShadowRightwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/ShadowRightwards.h"/>
           <FILE id="mGKnp5" name="ViewportKineticSlider.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ViewportKineticSlider.cpp"/>
           <FILE id="KwsOCH" name="ViewportKineticSlider.h" compile="0" resource="0"

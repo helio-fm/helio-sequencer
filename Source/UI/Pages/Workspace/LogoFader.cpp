@@ -17,24 +17,14 @@
 
 #include "Common.h"
 #include "LogoFader.h"
-
-#include "LogoImage.h"
 #include "SpectralLogo.h"
 
 #define DEFAULT_LOGO_SIZE 280
-#define OLD_LOGO_SIZE 400
 
-LogoFader::LogoFader(bool useOldLogo)
+LogoFader::LogoFader()
 {
-    if (useOldLogo) {
-        this->logoSize = OLD_LOGO_SIZE;
-        this->addAndMakeVisible(this->gfx = new LogoImage());
-    } else {
-        this->logoSize = DEFAULT_LOGO_SIZE;
-        this->addAndMakeVisible(this->gfx = new SpectralLogo());
-    }
-    
-    this->setSize(this->logoSize, this->logoSize);
+    this->addAndMakeVisible(this->gfx = new SpectralLogo());
+    this->setSize(DEFAULT_LOGO_SIZE, DEFAULT_LOGO_SIZE);
 }
 
 LogoFader::~LogoFader()
@@ -46,7 +36,7 @@ LogoFader::~LogoFader()
 
 void LogoFader::resized()
 {
-    this->gfx->setBounds(0, 0, this->logoSize, this->logoSize);
+    this->gfx->setBounds(this->getLocalBounds());
 }
 
 void LogoFader::startFade()
@@ -58,12 +48,8 @@ void LogoFader::startFade()
     this->startTimerHz(60);
 
     this->fader.animateComponent(&this->fadingDummy,
-                                 this->fadingDummy.getBounds(),
-                                 1.f,
-                                 2500,
-                                 false,
-                                 0.f,
-                                 0.f);
+        this->fadingDummy.getBounds(),
+        1.f, 2500, false, 0.f, 0.f);
 }
 
 void LogoFader::timerCallback()

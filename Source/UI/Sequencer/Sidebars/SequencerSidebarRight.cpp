@@ -63,7 +63,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
     addAndMakeVisible (listBox = new ListBox());
 
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
-    addAndMakeVisible (shadow = new LighterShadowUpwards());
+    addAndMakeVisible (shadow = new ShadowUpwards(Light));
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (totalTime = new Label (String(),
                                               TRANS("...")));
@@ -77,7 +77,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
     currentTime->setJustificationType (Justification::centred);
     currentTime->setEditable (false, false, false);
 
-    addAndMakeVisible (headShadow = new LighterShadowDownwards());
+    addAndMakeVisible (headShadow = new ShadowDownwards(Light));
     addAndMakeVisible (annotationsButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)));
 
     addAndMakeVisible (playButton = new PlayButton());
@@ -144,7 +144,7 @@ void SequencerSidebarRight::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    g.setFillType({ theme.getBgCache3(), {} });
+    g.setFillType({ theme.getBgCache2(), {} });
     g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 
@@ -490,8 +490,8 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/LighterShadowUpwards.cpp"
-             constructorParams=""/>
+             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
+             constructorParams="Light"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
@@ -506,8 +506,8 @@ BEGIN_JUCER_METADATA
          fontname="Default sans-serif font" fontsize="16.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
-             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/LighterShadowDownwards.cpp"
-             constructorParams=""/>
+             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
+             constructorParams="Light"/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)"/>

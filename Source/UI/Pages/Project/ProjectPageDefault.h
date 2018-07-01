@@ -23,7 +23,7 @@
 
 #include "../../Themes/PanelBackgroundB.h"
 #include "../../Common/MenuButton.h"
-#include "../../Themes/LightShadowRightwards.h"
+#include "../../Themes/ShadowRightwards.h"
 
 class ProjectPageDefault  : public ProjectPage,
                             public Label::Listener,
@@ -84,7 +84,7 @@ private:
     ScopedPointer<Label> licenseLabel;
     ScopedPointer<Label> licenseEditor;
     ScopedPointer<MenuButton> menuButton;
-    ScopedPointer<LightShadowRightwards> shadow;
+    ScopedPointer<ShadowRightwards> shadow;
     ScopedPointer<ImageButton> revealLocationButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectPageDefault)

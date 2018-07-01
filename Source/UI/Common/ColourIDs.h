@@ -88,8 +88,7 @@ namespace ColourIDs
 
     namespace BackgroundA
     {
-        static const int fillStart              = 0x2000800;
-        static const int fillEnd                = 0x2000801;
+        static const int fill                   = 0x2000800;
     }
 
     namespace BackgroundB

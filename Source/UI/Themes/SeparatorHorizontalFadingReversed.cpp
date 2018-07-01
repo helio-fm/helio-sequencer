@@ -32,7 +32,7 @@ SeparatorHorizontalFadingReversed::SeparatorHorizontalFadingReversed()
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (32, 32);
+    this->setSize(32, 32);
 
     //[Constructor]
     //[/Constructor]

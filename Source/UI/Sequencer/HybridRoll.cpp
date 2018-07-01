@@ -30,8 +30,8 @@
 #include "SelectionComponent.h"
 #include "ProjectTreeItem.h"
 
-#include "LightShadowDownwards.h"
-#include "LightShadowUpwards.h"
+#include "ShadowDownwards.h"
+#include "ShadowUpwards.h"
 
 #include "WipeSpaceHelper.h"
 #include "InsertSpaceHelper.h"
@@ -130,8 +130,8 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
 
-    this->topShadow = new LightShadowDownwards();
-    this->bottomShadow = new LightShadowUpwards();
+    this->topShadow = new ShadowDownwards(Normal);
+    this->bottomShadow = new ShadowUpwards(Normal);
 
     this->header = new HybridRollHeader(this->project.getTransport(), *this, this->viewport);
 

@@ -25,9 +25,9 @@ class ProjectTreeItem;
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontalReversed.h"
-#include "../../Themes/LighterShadowUpwards.h"
+#include "../../Themes/ShadowDownwards.h"
 #include "../../Themes/SeparatorHorizontal.h"
-#include "../../Themes/LighterShadowDownwards.h"
+#include "../../Themes/ShadowUpwards.h"
 #include "../../Common/PlayButton.h"
 
 class SequencerSidebarRight final : public Component,
@@ -124,11 +124,11 @@ private:
 
     ScopedPointer<ListBox> listBox;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
-    ScopedPointer<LighterShadowUpwards> shadow;
+    ScopedPointer<ShadowUpwards> shadow;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Label> totalTime;
     ScopedPointer<Label> currentTime;
-    ScopedPointer<LighterShadowDownwards> headShadow;
+    ScopedPointer<ShadowDownwards> headShadow;
     ScopedPointer<MenuItemComponent> annotationsButton;
     ScopedPointer<PlayButton> playButton;
 

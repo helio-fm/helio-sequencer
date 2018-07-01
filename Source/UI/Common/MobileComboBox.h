@@ -23,7 +23,7 @@
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
-#include "../Themes/LighterShadowDownwards.h"
+#include "../Themes/ShadowDownwards.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 
 class MobileComboBox  : public Component
@@ -83,7 +83,7 @@ private:
     ScopedPointer<PanelBackgroundC> background;
     ScopedPointer<MenuPanel> menu;
     ScopedPointer<MobileComboBox::Trigger> triggerButtton;
-    ScopedPointer<LighterShadowDownwards> shadow;
+    ScopedPointer<ShadowDownwards> shadow;
     ScopedPointer<SeparatorHorizontalReversed> separator;
     ScopedPointer<Label> currentNameLabel;
 

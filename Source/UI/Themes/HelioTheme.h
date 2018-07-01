@@ -142,7 +142,6 @@ public:
     
     inline Image &getBgCache1() noexcept { return this->bgCache1; }
     inline Image &getBgCache2() noexcept { return this->bgCache2; }
-    inline Image &getBgCache3() noexcept { return this->bgCache3; }
 
 protected:
     
@@ -154,7 +153,6 @@ protected:
     
     Image bgCache1;
     Image bgCache2;
-    Image bgCache3;
 
     JUCE_LEAK_DETECTOR(HelioTheme);
 

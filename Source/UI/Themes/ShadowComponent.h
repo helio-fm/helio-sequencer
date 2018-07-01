@@ -17,27 +17,40 @@
 
 #pragma once
 
-#include "BuiltInSynthAudioPlugin.h"
+enum ShadowType
+{
+    Normal,
+    Light
+};
 
-// A lightweight piano sampler with the only purpose of providing a default instrument
-// that doesn't sound too much crappy when user opens the app at the very first time,
-// and doesn't have any custom instruments added yet.
-// So it's as simple and small as possible.
-
-class BuiltInSynthPiano : public BuiltInSynthAudioPlugin
+class ShadowComponent : public Component
 {
 public:
 
-    explicit BuiltInSynthPiano();
+    ShadowComponent(ShadowType type)
+    {
+        this->setOpaque(false);
+        this->setWantsKeyboardFocus(false);
+        this->setPaintingIsUnclipped(true);
+        this->setMouseClickGrabsKeyboardFocus(false);
 
-    const String getName() const override;
-    void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
-    void reset() override;
+        switch (type)
+        {
+        case Normal:
+            this->shadowColour = Colour(0x16000000);
+            break;
+        case Light:
+            this->shadowColour = Colour(0x09000000);
+            break;
+        default:
+            this->shadowColour = Colours::transparentBlack;
+            break;
+        }
+    }
 
 protected:
 
-    void initVoices() override;
-    void initSampler() override;
+    Colour shadowColour;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynthPiano)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShadowComponent)
 };

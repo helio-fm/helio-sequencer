@@ -19,9 +19,6 @@
 
 //[Headers]
 class HelioTheme;
-
-// Used only in workspace page, so no prerendering
-#define PANEL_A_HAS_PRERENDERED_BACKGROUND 0
 //[/Headers]
 
 

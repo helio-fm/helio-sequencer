@@ -20,8 +20,26 @@
 #include "BinaryData.h"
 
 #define ATTACK_TIME (0.0)
-#define RELEASE_TIME (1.0)
-#define MAX_PLAY_TIME (5.0)
+#define RELEASE_TIME (0.5)
+#define MAX_PLAY_TIME (4.5)
+
+struct PianoSample final
+{
+    PianoSample() = default;
+    PianoSample(const PianoSample &other);
+    PianoSample(int lowKey, int highKey, int rootKey,
+        const char *sourceData, int sourceDataSize);
+
+    ScopedPointer<AudioFormatReader> createReader();
+
+    const char *sourceData;
+    int sourceDataSize;
+    String name;
+    BigInteger midiNotes;
+    int midiNoteForNormalPitch;
+
+    JUCE_LEAK_DETECTOR(PianoSample)
+};
 
 BuiltInSynthPiano::BuiltInSynthPiano()
 {
@@ -65,37 +83,52 @@ void BuiltInSynthPiano::initSampler()
 {
     this->synth.clearSounds();
 
-    OwnedArray<GrandSample> samples;
-    samples.add(new GrandSample("C1v9", 21, 27, 24, BinaryData::C1v9_flac, BinaryData::C1v9_flacSize));
-    samples.add(new GrandSample("F#1v9", 28, 33, 30, BinaryData::F1v9_flac, BinaryData::F1v9_flacSize));
+    Array<PianoSample> samples;
 
-    samples.add(new GrandSample("C2v9", 34, 39, 36, BinaryData::C2v9_flac, BinaryData::C2v9_flacSize));
-    samples.add(new GrandSample("F#2v9", 40, 45, 42, BinaryData::F2v9_flac, BinaryData::F2v9_flacSize));
+    samples.add({ 26, 39, 36, BinaryData::C2v9_flac, BinaryData::C2v9_flacSize });
+    samples.add({ 40, 45, 42, BinaryData::F2v9_flac, BinaryData::F2v9_flacSize });
 
-    samples.add(new GrandSample("C3v9", 46, 51, 48, BinaryData::C3v9_flac, BinaryData::C3v9_flacSize));
-    samples.add(new GrandSample("F#3v9", 52, 57, 54, BinaryData::F3v9_flac, BinaryData::F3v9_flacSize));
+    samples.add({ 46, 51, 48, BinaryData::C3v9_flac, BinaryData::C3v9_flacSize });
+    samples.add({ 52, 57, 54, BinaryData::F3v9_flac, BinaryData::F3v9_flacSize });
 
-    samples.add(new GrandSample("C4v9", 58, 63, 60, BinaryData::C4v9_flac, BinaryData::C4v9_flacSize));
-    samples.add(new GrandSample("F#4v9", 64, 69, 66, BinaryData::F4v9_flac, BinaryData::F4v9_flacSize));
+    samples.add({ 58, 63, 60, BinaryData::C4v9_flac, BinaryData::C4v9_flacSize });
+    samples.add({ 64, 69, 66, BinaryData::F4v9_flac, BinaryData::F4v9_flacSize });
 
-    samples.add(new GrandSample("C5v9", 70, 75, 72, BinaryData::C5v9_flac, BinaryData::C5v9_flacSize));
-    samples.add(new GrandSample("F#5v9", 76, 81, 78, BinaryData::F5v9_flac, BinaryData::F5v9_flacSize));
+    samples.add({ 70, 75, 72, BinaryData::C5v9_flac, BinaryData::C5v9_flacSize });
+    samples.add({ 76, 81, 78, BinaryData::F5v9_flac, BinaryData::F5v9_flacSize });
 
-    samples.add(new GrandSample("C6v9", 82, 87, 84, BinaryData::C6v9_flac, BinaryData::C6v9_flacSize));
-    samples.add(new GrandSample("F#6v9", 88, 93, 90, BinaryData::F6v9_flac, BinaryData::F6v9_flacSize));
+    samples.add({ 82, 87, 84, BinaryData::C6v9_flac, BinaryData::C6v9_flacSize });
+    samples.add({ 88, 100, 90, BinaryData::F6v9_flac, BinaryData::F6v9_flacSize });
 
-    samples.add(new GrandSample("C7v9", 94, 99, 96, BinaryData::C7v9_flac, BinaryData::C7v9_flacSize));
-    samples.add(new GrandSample("F#7v9", 100, 108, 102, BinaryData::F7v9_flac, BinaryData::F7v9_flacSize));
-
-    for (const auto &s : samples)
+    for (auto &s : samples)
     {
-        auto reader = s->createReader();
-        this->synth.addSound(new SamplerSound(s->name,
-            *reader,
-            s->midiNotes,
-            s->midiNoteForNormalPitch,
-            ATTACK_TIME,
-            RELEASE_TIME,
-            MAX_PLAY_TIME));
+        auto reader = s.createReader();
+        this->synth.addSound(new SamplerSound({}, *reader,
+            s.midiNotes, s.midiNoteForNormalPitch,
+            ATTACK_TIME, RELEASE_TIME, MAX_PLAY_TIME));
     }
+}
+
+PianoSample::PianoSample(const PianoSample &other) :
+    sourceData(other.sourceData),
+    sourceDataSize(other.sourceDataSize),
+    midiNoteForNormalPitch(other.midiNoteForNormalPitch),
+    midiNotes(other.midiNotes) {}
+
+PianoSample::PianoSample(int lowKey, int highKey,
+    int rootKey, const char *sourceData, int sourceDataSize) :
+    sourceData(sourceData),
+    sourceDataSize(sourceDataSize),
+    midiNoteForNormalPitch(rootKey)
+{
+    for (int i = lowKey; i <= highKey; ++i)
+    {
+        this->midiNotes.setBit(i);
+    }
+}
+
+juce::ScopedPointer<juce::AudioFormatReader> PianoSample::createReader()
+{
+    FlacAudioFormat flac;
+    return flac.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
 }
