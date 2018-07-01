@@ -20,8 +20,6 @@
 #include "AutomationSequence.h"
 #include "TreeItemChildrenSerializer.h"
 #include "Icons.h"
-#include "TreeItemComponentCompact.h"
-#include "TreeItemComponentDefault.h"
 #include "Pattern.h"
 
 using namespace Serialization::VCS;
@@ -51,11 +49,6 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
 Image AutomationTrackTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::automationTrack, HEADLINE_ICON_SIZE);
-}
-
-void AutomationTrackTreeItem::paintItem(Graphics &g, int width, int height)
-{
-    TreeItemComponentDefault::paintBackground(g, width, height, false, false);
 }
 
 //===----------------------------------------------------------------------===//

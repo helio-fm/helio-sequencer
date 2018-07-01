@@ -32,7 +32,6 @@
 #include "HelioTheme.h"
 #include "PluginScanner.h"
 #include "Config.h"
-#include "FontSerializer.h"
 
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
@@ -293,12 +292,6 @@ void App::initialise(const String &commandLine)
         this->checkPlugin(commandLine);
         this->quit();
     }
-    else if (this->runMode == App::FONT_SERIALIZE)
-    {
-        FontSerializer fs;
-        fs.run(commandLine);
-        this->quit();
-    }
 }
 
 void App::shutdown()
@@ -457,16 +450,10 @@ String App::getMacAddressList()
 
 App::RunMode App::detectRunMode(const String &commandLine)
 {
-    if (commandLine != "")
+    if (commandLine.isNotEmpty() &&
+        DocumentHelpers::getTempSlot(commandLine).existsAsFile())
     {
-        if (commandLine.contains("-F") && commandLine.contains("-f"))
-        {
-            return App::FONT_SERIALIZE;
-        }
-        if (DocumentHelpers::getTempSlot(commandLine).existsAsFile())
-        {
-            return App::PLUGIN_CHECK;
-        }
+        return App::PLUGIN_CHECK;
     }
 
     return App::NORMAL;

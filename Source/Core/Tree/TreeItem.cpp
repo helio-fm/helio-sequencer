@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "TreeItem.h"
-#include "TreeItemComponentDefault.h"
 #include "TreeItemChildrenSerializer.h"
 #include "SerializationKeys.h"
 #include "App.h"
@@ -251,45 +250,6 @@ void TreeItem::dispatchChangeTreeItemView()
 {
     this->sendChangeMessage(); // update listeners
     this->treeHasChanged(); // updates ownerView, if any
-}
-
-//===----------------------------------------------------------------------===//
-// Painting
-//===----------------------------------------------------------------------===//
-
-Component *TreeItem::createItemComponent()
-{
-    if (! this->itemShouldBeVisible)
-    {
-        return nullptr;
-    }
-    
-    return new TreeItemComponentDefault(*this);
-}
-
-void TreeItem::paintItem(Graphics &g, int width, int height)
-{
-    TreeItemComponentDefault::paintBackground(g, width, height, this->isSelected(), this->isMarkerVisible());
-}
-
-void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
-                                    Colour backgroundColour, bool isMouseOver)
-{
-    Path p;
-    p.addTriangle(0.0f, 0.0f, 1.0f, this->isOpen() ? 0.0f : 0.5f, this->isOpen() ? 0.5f : 0.0f, 1.0f);
-
-    g.setColour(backgroundColour.contrasting().withAlpha(isMouseOver ? 0.7f : 0.4f));
-    g.fillPath(p, p.getTransformToScaleToFit(area.reduced(1, area.getHeight() / 8), true));
-}
-
-int TreeItem::getItemHeight() const
-{
-    if (! this->itemShouldBeVisible)
-    {
-        return 0;
-    }
-
-    return TREE_ITEM_HEIGHT;
 }
 
 Font TreeItem::getFont() const noexcept
