@@ -8,101 +8,35 @@
 
 namespace BinaryData
 {
-    extern const char*   Icon_png;
-    const int            Icon_pngSize = 114208;
+    extern const char*   C2v9_flac;
+    const int            C2v9_flacSize = 130018;
 
-    extern const char*   Logo_png;
-    const int            Logo_pngSize = 375194;
+    extern const char*   C3v9_flac;
+    const int            C3v9_flacSize = 151477;
 
-    extern const char*   A0v9_ogg;
-    const int            A0v9_oggSize = 333823;
+    extern const char*   C4v9_flac;
+    const int            C4v9_flacSize = 157009;
 
-    extern const char*   A1v9_ogg;
-    const int            A1v9_oggSize = 318902;
+    extern const char*   C5v9_flac;
+    const int            C5v9_flacSize = 138241;
 
-    extern const char*   A2v9_ogg;
-    const int            A2v9_oggSize = 227999;
+    extern const char*   C6v9_flac;
+    const int            C6v9_flacSize = 158239;
 
-    extern const char*   A3v9_ogg;
-    const int            A3v9_oggSize = 219654;
+    extern const char*   F2v9_flac;
+    const int            F2v9_flacSize = 129377;
 
-    extern const char*   A4v9_ogg;
-    const int            A4v9_oggSize = 190751;
+    extern const char*   F3v9_flac;
+    const int            F3v9_flacSize = 153133;
 
-    extern const char*   A5v9_ogg;
-    const int            A5v9_oggSize = 131582;
+    extern const char*   F4v9_flac;
+    const int            F4v9_flacSize = 142885;
 
-    extern const char*   A6v9_ogg;
-    const int            A6v9_oggSize = 94852;
+    extern const char*   F5v9_flac;
+    const int            F5v9_flacSize = 128539;
 
-    extern const char*   A7v9_ogg;
-    const int            A7v9_oggSize = 53222;
-
-    extern const char*   C1v9_ogg;
-    const int            C1v9_oggSize = 312252;
-
-    extern const char*   C2v9_ogg;
-    const int            C2v9_oggSize = 311485;
-
-    extern const char*   C3v9_ogg;
-    const int            C3v9_oggSize = 225037;
-
-    extern const char*   C4v9_ogg;
-    const int            C4v9_oggSize = 221696;
-
-    extern const char*   C5v9_ogg;
-    const int            C5v9_oggSize = 220644;
-
-    extern const char*   C6v9_ogg;
-    const int            C6v9_oggSize = 88728;
-
-    extern const char*   C7v9_ogg;
-    const int            C7v9_oggSize = 59684;
-
-    extern const char*   C8v9_ogg;
-    const int            C8v9_oggSize = 57103;
-
-    extern const char*   D1v9_ogg;
-    const int            D1v9_oggSize = 325884;
-
-    extern const char*   D2v9_ogg;
-    const int            D2v9_oggSize = 307544;
-
-    extern const char*   D3v9_ogg;
-    const int            D3v9_oggSize = 221829;
-
-    extern const char*   D4v9_ogg;
-    const int            D4v9_oggSize = 210678;
-
-    extern const char*   D5v9_ogg;
-    const int            D5v9_oggSize = 179316;
-
-    extern const char*   D6v9_ogg;
-    const int            D6v9_oggSize = 95706;
-
-    extern const char*   D7v9_ogg;
-    const int            D7v9_oggSize = 68643;
-
-    extern const char*   F1v9_ogg;
-    const int            F1v9_oggSize = 303128;
-
-    extern const char*   F2v9_ogg;
-    const int            F2v9_oggSize = 285347;
-
-    extern const char*   F3v9_ogg;
-    const int            F3v9_oggSize = 225532;
-
-    extern const char*   F4v9_ogg;
-    const int            F4v9_oggSize = 204061;
-
-    extern const char*   F5v9_ogg;
-    const int            F5v9_oggSize = 164623;
-
-    extern const char*   F6v9_ogg;
-    const int            F6v9_oggSize = 84567;
-
-    extern const char*   F7v9_ogg;
-    const int            F7v9_oggSize = 66400;
+    extern const char*   F6v9_flac;
+    const int            F6v9_flacSize = 154079;
 
     extern const char*   annotation_svg;
     const int            annotation_svgSize = 360;
@@ -169,6 +103,9 @@ namespace BinaryData
 
     extern const char*   forward_svg;
     const int            forward_svgSize = 421;
+
+    extern const char*   helio_svg;
+    const int            helio_svgSize = 25191;
 
     extern const char*   insertSpaceTool_svg;
     const int            insertSpaceTool_svgSize = 981;
@@ -317,9 +254,6 @@ namespace BinaryData
     extern const char*   wipeSpaceTool_svg;
     const int            wipeSpaceTool_svgSize = 1093;
 
-    extern const char*   workspace_svg;
-    const int            workspace_svgSize = 25191;
-
     extern const char*   zoomIn_svg;
     const int            zoomIn_svgSize = 942;
 
@@ -345,10 +279,10 @@ namespace BinaryData
     const int            Scales_jsonSize = 3563;
 
     extern const char*   Translations_json;
-    const int            Translations_jsonSize = 394369;
+    const int            Translations_jsonSize = 271571;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 113;
+    const int namedResourceListSize = 91;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
