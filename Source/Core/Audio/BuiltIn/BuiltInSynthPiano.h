@@ -26,18 +26,24 @@ struct GrandSample
     GrandSample(const String &keyName,
         int lowKey, int highKey, int rootKey,
         const void *sourceData, size_t sourceDataSize) :
+        sourceData(sourceData),
+        sourceDataSize(sourceDataSize),
         name(keyName),
         midiNoteForNormalPitch(rootKey)
     {
         for (int i = lowKey; i <= highKey; ++i)
         { this->midiNotes.setBit(i); }
-
-        OggVorbisAudioFormat ogg;
-        this->reader = ogg.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
     }
 
+    ScopedPointer<AudioFormatReader> createReader()
+    {
+        FlacAudioFormat flac;
+        return flac.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
+    }
+
+    const void *sourceData;
+    size_t sourceDataSize;
     String name;
-    ScopedPointer<AudioFormatReader> reader;
     BigInteger midiNotes;
     int midiNoteForNormalPitch;
     
@@ -50,10 +56,7 @@ class BuiltInSynthPiano : public BuiltInSynthAudioPlugin
 {
 public:
 
-    // @param empty: for creating a lightweight Helio instance
-    // needed only to fill the description
-    explicit BuiltInSynthPiano(bool empty = false);
-    ~BuiltInSynthPiano() override;
+    explicit BuiltInSynthPiano();
 
     const String getName() const override;
     void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
@@ -63,10 +66,6 @@ protected:
 
     void initVoices() override;
     void initSampler() override;
-    void initSamples();
 
-    OwnedArray<GrandSample> samples;
-    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynthPiano)
-
 };

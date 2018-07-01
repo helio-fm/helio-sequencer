@@ -36,7 +36,7 @@ struct Icons final
     {
         empty,
 
-        workspace,
+        helio,
         project,
         trackGroup,
         pianoTrack,

@@ -505,7 +505,7 @@ void Instrument::deserialize(const ValueTree &tree)
                     this->addConnection(connectionInfo.sourceNodeId, connectionInfo.sourceChannel,
                                         connectionInfo.destinationNodeId, connectionInfo.destinationChannel);
                 }
-                                         
+
                 this->processorGraph->removeIllegalConnections();
                 this->sendChangeMessage();
             });
