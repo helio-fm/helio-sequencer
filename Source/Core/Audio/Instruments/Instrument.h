@@ -36,7 +36,8 @@ public:
 
     // midi tracks use this to identify their instruments
     String getIdAndHash() const;
-    
+    bool isValid() const noexcept;
+
     using InitializationCallback = Function<void(Instrument *)>;
     using AddNodeCallback = Function<void(AudioProcessorGraph::Node::Ptr)>;
 

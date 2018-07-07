@@ -171,6 +171,9 @@ void RendererThread::run()
         graph->setNonRealtime(true);
     }
 
+    // let processor graphs call handle their async updates
+    Thread::sleep(200);
+
     // step 3. render loop itself.
     sequences.seekToTime(0.0);
     

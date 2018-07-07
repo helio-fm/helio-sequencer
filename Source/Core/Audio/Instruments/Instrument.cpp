@@ -77,6 +77,10 @@ String Instrument::getIdAndHash() const
     return this->getInstrumentID() + this->getInstrumentHash();
 }
 
+bool Instrument::isValid() const noexcept
+{
+    return this->instrumentName.isNotEmpty();
+}
 
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
 {
@@ -420,6 +424,7 @@ void Instrument::reset()
 {
     PluginWindow::closeAllCurrentlyOpenWindows();
     this->processorGraph->clear();
+    this->instrumentName.clear();
     this->sendChangeMessage();
 }
 
@@ -462,8 +467,7 @@ void Instrument::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Audio::instrument) ?
         tree : tree.getChildWithName(Audio::instrument);
 
-    if (!root.isValid())
-    { return; }
+    if (!root.isValid() || root.getNumChildren() == 0) { return; }
 
     this->instrumentID = root.getProperty(Audio::instrumentId, this->instrumentID.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);

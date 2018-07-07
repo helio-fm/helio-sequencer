@@ -397,7 +397,7 @@ void AudioCore::deserialize(const ValueTree &tree)
     Logger::writeToLog("AudioCore::deserialize");
     using namespace Serialization;
 
-    // re-creates deviceManager's graph each time on de-serialization
+    // re-creates deviceManager's graph each time on deserialization
     this->reset();
 
     const auto root = tree.hasType(Audio::audioCore) ?
@@ -416,11 +416,19 @@ void AudioCore::deserialize(const ValueTree &tree)
     {
         for (const auto &instrumentNode : orchestra)
         {
-            Instrument *instrument = new Instrument(this->formatManager, "");
-            this->addInstrumentToDevice(instrument);
+            ScopedPointer<Instrument> instrument(new Instrument(this->formatManager, {}));
             instrument->deserialize(instrumentNode);
-            this->instruments.add(instrument);
+            if (instrument->isValid())
+            {
+                this->addInstrumentToDevice(instrument);
+                this->instruments.add(instrument.release());
+            }
         }
+    }
+
+    if (this->instruments.isEmpty())
+    {
+        this->initDefaultInstrument();
     }
 }
 

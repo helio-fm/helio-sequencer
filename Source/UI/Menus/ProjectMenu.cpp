@@ -203,15 +203,16 @@ void ProjectMenu::proceedToRenderDialog(const String &extension)
     const String safeRenderName = File::createLegalFileName(renderFileName);
 
 #if HELIO_DESKTOP
+    auto &project = this->project; // this menu might be dismissed at the point when dialog is created
     FileChooser fc(TRANS("dialog::render::caption"),
-                   File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
+        File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
     
     if (fc.browseForFileToSave(true))
     {
-        App::Layout().showModalComponentUnowned(new RenderDialog(this->project, fc.getResult(), extension));
+        App::Layout().showModalComponentUnowned(new RenderDialog(project, fc.getResult(), extension));
     }
 #else
-    App::Layout().showModalComponentUnowned(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
+    App::Layout().showModalComponentUnowned(new RenderDialog(project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     
     this->dismiss();

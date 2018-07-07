@@ -244,7 +244,8 @@ MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &na
     item->setTrackControllerNumber(controllerNumber, false);
     AutomationSequence *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
-    itemLayer->insert(AutomationEvent(itemLayer, 0, 0.5), false);
+    itemLayer->insert(AutomationEvent(itemLayer, 0.f, 0.5f), false);
+    itemLayer->insert(AutomationEvent(itemLayer, BEATS_PER_BAR, 0.5f), false);
     return item;
 }
 
