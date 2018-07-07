@@ -63,19 +63,16 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence)
 
 void TimeSignaturesSequence::silentImport(const MidiEvent &eventToImport)
 {
-    const TimeSignatureEvent &signature =
-        static_cast<const TimeSignatureEvent &>(eventToImport);
+    const auto &signature = static_cast<const TimeSignatureEvent &>(eventToImport);
 
-    if (this->usedEventIds.contains(signature.getId()))
+    if (!this->usedEventIds.contains(signature.getId()))
     {
         jassertfalse;
         return;
     }
 
-    TimeSignatureEvent *storedSignature = new TimeSignatureEvent(this, signature);
-    
+    auto *storedSignature = new TimeSignatureEvent(this, signature);
     this->midiEvents.addSorted(*storedSignature, storedSignature);
-    this->usedEventIds.insert(storedSignature->getId());
 
     this->updateBeatRange(false);
     this->invalidateSequenceCache();

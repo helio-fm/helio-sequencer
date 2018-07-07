@@ -77,20 +77,17 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence)
 
 void KeySignaturesSequence::silentImport(const MidiEvent &eventToImport)
 {
-    const KeySignatureEvent &signature =
-        static_cast<const KeySignatureEvent &>(eventToImport);
+    const auto &signature = static_cast<const KeySignatureEvent &>(eventToImport);
     jassert(signature.isValid());
 
-    if (this->usedEventIds.contains(signature.getId()))
+    if (!this->usedEventIds.contains(signature.getId()))
     {
         jassertfalse;
         return;
     }
 
-    const auto storedSignature = new KeySignatureEvent(this, signature);
-    
+    auto *storedSignature = new KeySignatureEvent(this, signature);
     this->midiEvents.addSorted(*storedSignature, storedSignature);
-    this->usedEventIds.insert(storedSignature->getId());
 
     this->updateBeatRange(false);
     this->invalidateSequenceCache();

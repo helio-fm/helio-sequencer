@@ -80,19 +80,17 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
 
 void PianoSequence::silentImport(const MidiEvent &eventToImport)
 {
-    const Note &note = static_cast<const Note &>(eventToImport);
+    const auto &note = static_cast<const Note &>(eventToImport);
     jassert(note.isValid());
 
-    if (this->usedEventIds.contains(note.getId()))
+    if (!this->usedEventIds.contains(note.getId()))
     {
         jassertfalse;
         return;
     }
 
-    const auto storedNote = new Note(this, note);
-    
+    auto *storedNote = new Note(this, note);
     this->midiEvents.addSorted(*storedNote, storedNote); // bottleneck warning
-    this->usedEventIds.insert(storedNote->getId());
 
     this->updateBeatRange(false);
     this->invalidateSequenceCache();

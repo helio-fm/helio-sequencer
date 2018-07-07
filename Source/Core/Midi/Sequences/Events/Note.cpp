@@ -20,11 +20,7 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-Note::Note() noexcept : MidiEvent(nullptr, MidiEvent::Note, 0.f)
-{
-    // needed for juce's Array to work
-    //jassertfalse;
-}
+Note::Note() noexcept : MidiEvent(nullptr, MidiEvent::Note, 0.f) {}
 
 Note::Note(WeakReference<MidiSequence> owner,
     int keyVal, float beatVal,

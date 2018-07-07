@@ -63,20 +63,17 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
 
 void AnnotationsSequence::silentImport(const MidiEvent &eventToImport)
 {
-    const AnnotationEvent &annotation =
-        static_cast<const AnnotationEvent &>(eventToImport);
+    const auto &annotation = static_cast<const AnnotationEvent &>(eventToImport);
     jassert(annotation.isValid());
 
-    if (this->usedEventIds.contains(annotation.getId()))
+    if (!this->usedEventIds.contains(annotation.getId()))
     {
         jassertfalse;
         return;
     }
 
-    AnnotationEvent *storedAnnotation = new AnnotationEvent(this, annotation);
-    
+    auto *storedAnnotation = new AnnotationEvent(this, annotation);
     this->midiEvents.addSorted(*storedAnnotation, storedAnnotation);
-    this->usedEventIds.insert(storedAnnotation->getId());
 
     this->updateBeatRange(false);
     this->invalidateSequenceCache();

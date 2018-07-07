@@ -63,19 +63,16 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
 
 void AutomationSequence::silentImport(const MidiEvent &eventToImport)
 {
-    const AutomationEvent &autoEvent =
-        static_cast<const AutomationEvent &>(eventToImport);
+    const auto &autoEvent = static_cast<const AutomationEvent &>(eventToImport);
 
-    if (this->usedEventIds.contains(autoEvent.getId()))
+    if (!this->usedEventIds.contains(autoEvent.getId()))
     {
         jassertfalse;
         return;
     }
 
-    const auto storedEvent = new AutomationEvent(this, autoEvent);
-    
+    auto *storedEvent = new AutomationEvent(this, autoEvent);
     this->midiEvents.addSorted(*storedEvent, storedEvent);
-    this->usedEventIds.insert(storedEvent->getId());
 
     this->updateBeatRange(false);
     this->invalidateSequenceCache();
