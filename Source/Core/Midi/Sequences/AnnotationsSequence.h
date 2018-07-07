@@ -31,13 +31,11 @@ public:
     // Import/export
     //===------------------------------------------------------------------===//
 
-    void importMidi(const MidiMessageSequence &sequence) override;
+    void importMidi(const MidiMessageSequence &sequence, short timeFormat) override;
 
     //===------------------------------------------------------------------===//
     // Undoable track editing
     //===------------------------------------------------------------------===//
-
-    void silentImport(const MidiEvent &eventToImport) override;
     
     MidiEvent *insert(const AnnotationEvent &annotationToCopy, bool undoable);
     bool remove(const AnnotationEvent &annotation, bool undoable);

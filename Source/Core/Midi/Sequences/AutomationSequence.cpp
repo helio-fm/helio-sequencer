@@ -32,7 +32,7 @@ AutomationSequence::AutomationSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
+void AutomationSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -41,15 +41,12 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
         const MidiMessage &message = sequence.getEventPointer(i)->message;
-        
         if (message.isController())
         {
-            const double startTimestamp = message.getTimeStamp() / MIDI_IMPORT_SCALE;
+            const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
             const int controllerValue = message.getControllerValue();
-            const float beat = float(startTimestamp);
-            
-            const AutomationEvent event(this, beat, float(controllerValue));
-            this->silentImport(event);
+            const AutomationEvent event(this, startBeat, float(controllerValue));
+            this->importMidiEvent<AutomationEvent>(event);
         }
     }
     
@@ -60,23 +57,6 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
-
-void AutomationSequence::silentImport(const MidiEvent &eventToImport)
-{
-    const auto &autoEvent = static_cast<const AutomationEvent &>(eventToImport);
-
-    if (!this->usedEventIds.contains(autoEvent.getId()))
-    {
-        jassertfalse;
-        return;
-    }
-
-    auto *storedEvent = new AutomationEvent(this, autoEvent);
-    this->midiEvents.addSorted(*storedEvent, storedEvent);
-
-    this->updateBeatRange(false);
-    this->invalidateSequenceCache();
-}
 
 MidiEvent *AutomationSequence::insert(const AutomationEvent &eventParams, bool undoable)
 {

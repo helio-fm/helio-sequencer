@@ -31,7 +31,7 @@ AnnotationsSequence::AnnotationsSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
+void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -40,16 +40,12 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
         const MidiMessage &message = sequence.getEventPointer(i)->message;
-
         if (message.isTextMetaEvent())
         {
             const String text = message.getTextFromTextMetaEvent();
-            const double startTimestamp = message.getTimeStamp() / MIDI_IMPORT_SCALE;
-            const float beat = float(startTimestamp);
-            
-            // bottleneck warning!
-            const AnnotationEvent annotation(this, beat, text, Colours::white);
-            this->silentImport(annotation);
+            const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
+            const AnnotationEvent annotation(this, startBeat, text, Colours::white);
+            this->importMidiEvent<AnnotationEvent>(annotation);
         }
     }
 
@@ -60,24 +56,6 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
-
-void AnnotationsSequence::silentImport(const MidiEvent &eventToImport)
-{
-    const auto &annotation = static_cast<const AnnotationEvent &>(eventToImport);
-    jassert(annotation.isValid());
-
-    if (!this->usedEventIds.contains(annotation.getId()))
-    {
-        jassertfalse;
-        return;
-    }
-
-    auto *storedAnnotation = new AnnotationEvent(this, annotation);
-    this->midiEvents.addSorted(*storedAnnotation, storedAnnotation);
-
-    this->updateBeatRange(false);
-    this->invalidateSequenceCache();
-}
 
 MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &eventParams, bool undoable)
 {

@@ -31,7 +31,7 @@ TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence)
+void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -40,16 +40,14 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence)
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
         const MidiMessage &message = sequence.getEventPointer(i)->message;
-
         if (message.isTimeSignatureMetaEvent())
         {
             int numerator = 0;
             int denominator = 0;
             message.getTimeSignatureInfo(numerator, denominator);
-            const double startTimestamp = message.getTimeStamp() / MIDI_IMPORT_SCALE;
-            const float beat = float(startTimestamp);
-            const TimeSignatureEvent signature(this, beat, numerator, denominator);
-            this->silentImport(signature);
+            const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
+            const TimeSignatureEvent signature(this, startBeat, numerator, denominator);
+            this->importMidiEvent<TimeSignatureEvent>(signature);
         }
     }
 
@@ -60,23 +58,6 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence)
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
-
-void TimeSignaturesSequence::silentImport(const MidiEvent &eventToImport)
-{
-    const auto &signature = static_cast<const TimeSignatureEvent &>(eventToImport);
-
-    if (!this->usedEventIds.contains(signature.getId()))
-    {
-        jassertfalse;
-        return;
-    }
-
-    auto *storedSignature = new TimeSignatureEvent(this, signature);
-    this->midiEvents.addSorted(*storedSignature, storedSignature);
-
-    this->updateBeatRange(false);
-    this->invalidateSequenceCache();
-}
 
 MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &eventParams, bool undoable)
 {

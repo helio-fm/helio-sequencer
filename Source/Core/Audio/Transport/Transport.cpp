@@ -727,7 +727,8 @@ MidiMessage Transport::findFirstTempoEvent()
         }
     }
     
-    return MidiMessage::tempoMetaEvent(int(MS_PER_BEAT) * 1000);
+    // return default 120 bpm (== 500 ms per quarter note)
+    return MidiMessage::tempoMetaEvent(500 * 1000);
 }
 
 //===----------------------------------------------------------------------===//

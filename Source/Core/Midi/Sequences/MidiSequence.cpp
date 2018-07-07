@@ -109,6 +109,22 @@ void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
     outSequence.updateMatchedPairs();
 }
 
+float MidiSequence::midiTicksToBeats(double ticks, int timeFormat) noexcept
+{
+    const double secsPerBeat = MS_PER_BEAT / 1000.0;
+
+    if (timeFormat < 0)
+    {
+        const double timeInSeconds = ticks / (-(timeFormat >> 8) * (timeFormat & 0xff));
+        return float(timeInSeconds * secsPerBeat * BEATS_PER_BAR);
+    }
+
+    const auto tickLen = 1.0 / (timeFormat & 0x7fff);
+    const auto secsPerTick = 0.5 * tickLen;
+    const double timeInSeconds = ticks * secsPerTick;
+    return float(timeInSeconds * secsPerBeat * BEATS_PER_BAR);
+}
+
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//

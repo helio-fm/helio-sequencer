@@ -30,7 +30,7 @@ KeySignaturesSequence::KeySignaturesSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence)
+void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -57,11 +57,11 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence)
                 const int rootKey = (n < 0) ?
                     (isMajor ? flatsMajor[n] : flatsMinor[n]) :
                     (isMajor ? sharpsMajor[n] : sharpsMinor[n]);
-                const double startTimestamp = message.getTimeStamp() / MIDI_IMPORT_SCALE;
+                const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
                 const KeySignatureEvent signature(this,
                     isMajor ? Scale::getNaturalMajorScale() : Scale::getNaturalMiniorScale(),
-                    float(startTimestamp), MIDDLE_C + rootKey);
-                this->silentImport(signature);
+                    startBeat, MIDDLE_C + rootKey);
+                this->importMidiEvent<KeySignatureEvent>(signature);
             }
         }
     }
@@ -74,24 +74,6 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence)
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
-
-void KeySignaturesSequence::silentImport(const MidiEvent &eventToImport)
-{
-    const auto &signature = static_cast<const KeySignatureEvent &>(eventToImport);
-    jassert(signature.isValid());
-
-    if (!this->usedEventIds.contains(signature.getId()))
-    {
-        jassertfalse;
-        return;
-    }
-
-    auto *storedSignature = new KeySignatureEvent(this, signature);
-    this->midiEvents.addSorted(*storedSignature, storedSignature);
-
-    this->updateBeatRange(false);
-    this->invalidateSequenceCache();
-}
 
 MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &eventParams, bool undoable)
 {

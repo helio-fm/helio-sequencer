@@ -595,31 +595,26 @@ void ProjectTreeItem::load(const ValueTree &tree)
     this->sequencerLayout->deserialize(root);
 }
 
-void ProjectTreeItem::importMidi(File &file)
+void ProjectTreeItem::importMidi(const File &file)
 {
     MidiFile tempFile;
     ScopedPointer<InputStream> in(new FileInputStream(file));
     const bool readOk = tempFile.readFrom(*in);
-    
+
     if (!readOk)
     {
         DBG("Midi file appears corrupted");
         return;
     }
     
-    if (tempFile.getTimeFormat() <= 0)
+    for (int i = 0; i < tempFile.getNumTracks(); i++)
     {
-        DBG("SMPTE format timing is not yet supported");
-        return;
-    }
-    
-    for (int trackNum = 0; trackNum < tempFile.getNumTracks(); trackNum++)
-    {
-        const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
-        const String trackName = "Track " + String(trackNum);
-        MidiTrackTreeItem *layer = new PianoTrackTreeItem(trackName);
-        this->addChildTreeItem(layer);
-        layer->importMidi(*currentTrack);
+        const MidiMessageSequence *currentTrack = tempFile.getTrack(i);
+        const String trackName = "Track " + String(i);
+        MidiTrackTreeItem *track = new PianoTrackTreeItem(trackName);
+        this->addChildTreeItem(track);
+        // TODO track->setTrackColour(random);
+        track->importMidi(*currentTrack, tempFile.getTimeFormat());
     }
     
     this->broadcastReloadProjectContent();
@@ -841,7 +836,7 @@ bool ProjectTreeItem::onDocumentExport(File &file)
 void ProjectTreeItem::exportMidi(File &file) const
 {
     MidiFile tempFile;
-    tempFile.setTicksPerQuarterNote(int(MS_PER_BEAT));
+    tempFile.setTicksPerQuarterNote(96);
     static Clip noTransform;
 
     const auto &tracks = this->getTracks();

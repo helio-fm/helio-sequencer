@@ -22,8 +22,6 @@
 #include "Icons.h"
 #include "Pattern.h"
 
-using namespace Serialization::VCS;
-
 AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name, Serialization::Core::automationTrack)
 {
@@ -32,6 +30,7 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
 
     this->vcsDiffLogic = new VCS::AutomationTrackDiffLogic(*this);
 
+    using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackMute));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackColour));
@@ -62,6 +61,7 @@ int AutomationTrackTreeItem::getNumDeltas() const
 
 VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
 {
+    using namespace Serialization::VCS;
     if (this->deltas[index]->hasType(AutoSequenceDeltas::eventsAdded))
     {
         const int numEvents = this->getSequence()->size();
@@ -94,6 +94,7 @@ VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
 
 ValueTree AutomationTrackTreeItem::serializeDeltaData(int deltaIndex) const
 {
+    using namespace Serialization::VCS;
     if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackPath))
     {
         return this->serializePathDelta();
@@ -134,6 +135,7 @@ VCS::DiffLogic *AutomationTrackTreeItem::getDiffLogic() const
 
 void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 {
+    using namespace Serialization::VCS;
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
@@ -224,42 +226,47 @@ void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
 
 ValueTree AutomationTrackTreeItem::serializePathDelta() const
 {
+    using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackPath);
-    tree.setProperty(Serialization::VCS::delta, this->getTrackName(), nullptr);
+    tree.setProperty(delta, this->getTrackName(), nullptr);
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeMuteDelta() const
 {
+    using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackMute);
-    tree.setProperty(Serialization::VCS::delta, this->getTrackMuteStateAsString(), nullptr);
+    tree.setProperty(delta, this->getTrackMuteStateAsString(), nullptr);
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeColourDelta() const
 {
+    using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackColour);
-    tree.setProperty(Serialization::VCS::delta, this->getTrackColour().toString(), nullptr);
+    tree.setProperty(delta, this->getTrackColour().toString(), nullptr);
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeInstrumentDelta() const
 {
+    using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackInstrument);
-    tree.setProperty(Serialization::VCS::delta, this->getTrackInstrumentId(), nullptr);
+    tree.setProperty(delta, this->getTrackInstrumentId(), nullptr);
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeControllerDelta() const
 {
+    using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackController);
-    tree.setProperty(Serialization::VCS::delta, this->getTrackControllerNumber(), nullptr);
+    tree.setProperty(delta, this->getTrackControllerNumber(), nullptr);
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeEventsDelta() const
 {
-    ValueTree tree(AutoSequenceDeltas::eventsAdded);
+    ValueTree tree(Serialization::VCS::AutoSequenceDeltas::eventsAdded);
 
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
@@ -273,14 +280,14 @@ ValueTree AutomationTrackTreeItem::serializeEventsDelta() const
 
 void AutomationTrackTreeItem::resetPathDelta(const ValueTree &state)
 {
-    jassert(state.hasType(MidiTrackDeltas::trackPath));
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
 void AutomationTrackTreeItem::resetMuteDelta(const ValueTree &state)
 {
-    jassert(state.hasType(MidiTrackDeltas::trackMute));
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackMute));
     const String &muteState(state.getProperty(Serialization::VCS::delta));
     const bool willMute = MidiTrack::isTrackMuted(muteState);
     
@@ -292,7 +299,7 @@ void AutomationTrackTreeItem::resetMuteDelta(const ValueTree &state)
 
 void AutomationTrackTreeItem::resetColourDelta(const ValueTree &state)
 {
-    jassert(state.hasType(MidiTrackDeltas::trackColour));
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
     const String &colourString(state.getProperty(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
@@ -304,27 +311,28 @@ void AutomationTrackTreeItem::resetColourDelta(const ValueTree &state)
 
 void AutomationTrackTreeItem::resetInstrumentDelta(const ValueTree &state)
 {
-    jassert(state.hasType(MidiTrackDeltas::trackInstrument));
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
     const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 
 void AutomationTrackTreeItem::resetControllerDelta(const ValueTree &state)
 {
-    jassert(state.hasType(MidiTrackDeltas::trackController));
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackController));
     const int ccNumber(state.getProperty(Serialization::VCS::delta));
     this->setTrackControllerNumber(ccNumber, false);
 }
 
 void AutomationTrackTreeItem::resetEventsDelta(const ValueTree &state)
 {
-    jassert(state.hasType(AutoSequenceDeltas::eventsAdded));
-
-    this->reset();
+    jassert(state.hasType(Serialization::VCS::AutoSequenceDeltas::eventsAdded));
     this->getSequence()->reset();
 
     forEachValueTreeChildWithType(state, e, Serialization::Midi::automationEvent)
     {
-        this->getSequence()->silentImport(AutomationEvent(this->getSequence()).withParameters(e));
+        this->getSequence()->checkoutEvent<AutomationEvent>(e);
     }
+
+    this->getSequence()->updateBeatRange(false);
+    this->getSequence()->invalidateSequenceCache();
 }

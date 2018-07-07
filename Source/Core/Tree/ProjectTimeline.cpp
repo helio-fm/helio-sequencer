@@ -74,8 +74,6 @@ public:
     ProjectTimeline &timeline;
 };
 
-using namespace Serialization::VCS;
-
 ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject, String trackName) :
     project(parentProject),
     annotationsTrackId(Uuid().toString()),
@@ -91,6 +89,7 @@ ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject, String trackNam
     this->keySignaturesTrack = new KeySignaturesTrack(*this);
     this->keySignaturesSequence = new KeySignaturesSequence(*this->keySignaturesTrack, *this);
 
+    using namespace Serialization::VCS;
     this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::annotationsAdded));
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::keySignaturesAdded));
@@ -139,6 +138,7 @@ int ProjectTimeline::getNumDeltas() const
 
 VCS::Delta *ProjectTimeline::getDelta(int index) const
 {
+    using namespace Serialization::VCS;
     if (this->deltas[index]->hasType(ProjectTimelineDeltas::annotationsAdded))
     {
         const int numEvents = this->annotationsSequence->size();
@@ -160,6 +160,7 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
 
 ValueTree ProjectTimeline::serializeDeltaData(int deltaIndex) const
 {
+    using namespace Serialization::VCS;
     if (this->deltas[deltaIndex]->hasType(ProjectTimelineDeltas::annotationsAdded))
     {
         return this->serializeAnnotationsDelta();
@@ -184,6 +185,7 @@ VCS::DiffLogic *ProjectTimeline::getDiffLogic() const
 
 void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
 {
+    using namespace Serialization::VCS;
     bool annotationsChanged = false;
     bool timeSignaturesChanged = false;
     bool keySignaturesChanged = false;
@@ -347,7 +349,7 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
 
 ValueTree ProjectTimeline::serializeAnnotationsDelta() const
 {
-    ValueTree tree(ProjectTimelineDeltas::annotationsAdded);
+    ValueTree tree(Serialization::VCS::ProjectTimelineDeltas::annotationsAdded);
 
     for (int i = 0; i < this->annotationsSequence->size(); ++i)
     {
@@ -360,19 +362,21 @@ ValueTree ProjectTimeline::serializeAnnotationsDelta() const
 
 void ProjectTimeline::resetAnnotationsDelta(const ValueTree &state)
 {
-    jassert(state.hasType(ProjectTimelineDeltas::annotationsAdded));
+    jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::annotationsAdded));
     this->annotationsSequence->reset();
 
     forEachValueTreeChildWithType(state, e, Serialization::Midi::annotation)
     {
-        this->annotationsSequence->silentImport(
-            AnnotationEvent(this->annotationsSequence.get()).withParameters(e));
+        this->annotationsSequence->checkoutEvent<AnnotationEvent>(e);
     }
+
+    this->annotationsSequence->updateBeatRange(false);
+    this->annotationsSequence->invalidateSequenceCache();
 }
 
 ValueTree ProjectTimeline::serializeTimeSignaturesDelta() const
 {
-    ValueTree tree(ProjectTimelineDeltas::timeSignaturesAdded);
+    ValueTree tree(Serialization::VCS::ProjectTimelineDeltas::timeSignaturesAdded);
 
     for (int i = 0; i < this->timeSignaturesSequence->size(); ++i)
     {
@@ -385,19 +389,21 @@ ValueTree ProjectTimeline::serializeTimeSignaturesDelta() const
 
 void ProjectTimeline::resetTimeSignaturesDelta(const ValueTree &state)
 {
-    jassert(state.hasType(ProjectTimelineDeltas::timeSignaturesAdded));
+    jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::timeSignaturesAdded));
     this->timeSignaturesSequence->reset();
     
     forEachValueTreeChildWithType(state, e, Serialization::Midi::timeSignature)
     {
-        this->timeSignaturesSequence->silentImport(
-            TimeSignatureEvent(this->timeSignaturesSequence.get()).withParameters(e));
+        this->timeSignaturesSequence->checkoutEvent<TimeSignatureEvent>(e);
     }
+
+    this->timeSignaturesSequence->updateBeatRange(false);
+    this->timeSignaturesSequence->invalidateSequenceCache();
 }
 
 ValueTree ProjectTimeline::serializeKeySignaturesDelta() const
 {
-    ValueTree tree(ProjectTimelineDeltas::keySignaturesAdded);
+    ValueTree tree(Serialization::VCS::ProjectTimelineDeltas::keySignaturesAdded);
 
     for (int i = 0; i < this->keySignaturesSequence->size(); ++i)
     {
@@ -410,12 +416,14 @@ ValueTree ProjectTimeline::serializeKeySignaturesDelta() const
 
 void ProjectTimeline::resetKeySignaturesDelta(const ValueTree &state)
 {
-    jassert(state.hasType(ProjectTimelineDeltas::keySignaturesAdded));
+    jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::keySignaturesAdded));
     this->keySignaturesSequence->reset();
 
     forEachValueTreeChildWithType(state, e, Serialization::Midi::keySignature)
     {
-        this->keySignaturesSequence->silentImport(
-            KeySignatureEvent(this->keySignaturesSequence.get()).withParameters(e));
+        this->keySignaturesSequence->checkoutEvent<KeySignatureEvent>(e);
     }
+
+    this->keySignaturesSequence->updateBeatRange(false);
+    this->keySignaturesSequence->invalidateSequenceCache();
 }

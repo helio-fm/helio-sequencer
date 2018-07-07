@@ -69,7 +69,7 @@ public:
     HybridRollEditMode &getEditMode() noexcept;
     HybridRoll *getLastFocusedRoll() const;
     
-    void importMidi(File &file);
+    void importMidi(const File &file);
     void exportMidi(File &file) const;
 
     Colour getColour() const noexcept override;

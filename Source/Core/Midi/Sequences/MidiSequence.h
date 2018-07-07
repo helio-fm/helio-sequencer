@@ -25,8 +25,6 @@ class ProjectEventDispatcher;
 class MidiTrack;
 class UndoStack;
 
-#define MIDI_IMPORT_SCALE 48
-
 class MidiSequence : public Serializable
 {
 public:
@@ -48,18 +46,51 @@ public:
     // Import/export
     //===------------------------------------------------------------------===//
 
-    virtual void importMidi(const MidiMessageSequence &sequence) = 0;
-    void exportMidi(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeAdjustment) const;
+    virtual void importMidi(const MidiMessageSequence &sequence, short timeFormat) = 0;
+    void exportMidi(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const;
+    static float midiTicksToBeats(double ticks, int timeFormat) noexcept;
 
     //===------------------------------------------------------------------===//
     // Track editing
     //===------------------------------------------------------------------===//
 
-    // This one is for import and checkout procedures.
-    // Does not notify anybody to prevent notification hell.
+    // Methods for import and checkout.
+    // Have different assumptions on event ids.
+    // Don't notify anybody to prevent notification hell.
     // Always call notifyLayerChanged() when you're done using it.
-    virtual void silentImport(const MidiEvent &eventToImport) = 0;
+
+    template<typename T>
+    void importMidiEvent(const MidiEvent &eventToImport)
+    {
+        const auto &event = static_cast<const T &>(eventToImport);
+        jassert(event.isValid());
+
+        if (!this->usedEventIds.contains(event.getId()))
+        {
+            jassertfalse;
+            return;
+        }
+
+        static T comparator;
+        this->midiEvents.addSorted(comparator, new T(this, event));
+    }
+
+    template<typename T>
+    void checkoutEvent(const ValueTree &parameters)
+    {
+        ScopedPointer<T> event(new T(this));
+        event->deserialize(parameters);
+
+        if (this->usedEventIds.contains(event->getId()))
+        {
+            jassertfalse;
+            return;
+        }
+
+        static T comparator;
+        this->usedEventIds.insert(event->getId());
+        this->midiEvents.addSorted(comparator, event.release());
+    }
 
     //===------------------------------------------------------------------===//
     // Accessors
