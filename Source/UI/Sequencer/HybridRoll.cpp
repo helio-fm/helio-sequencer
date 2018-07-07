@@ -1351,7 +1351,7 @@ void HybridRoll::onSeek(double absolutePosition,
     this->lastTransportPosition = absolutePosition;
 }
 
-void HybridRoll::onTempoChanged(double newTempo) {}
+void HybridRoll::onTempoChanged(double msPerQuarter) {}
 
 void HybridRoll::onTotalTimeChanged(double timeMs) {}
 

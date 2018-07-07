@@ -66,8 +66,8 @@ void PlayerThread::run()
     }
     
     const double totalTime = this->transport.getTotalTime();
-    const double startPositionInTime = round(absStartPosition * totalTime);
-    const double endPositionInTime = round(absEndPosition * totalTime);
+    const double startPositionInTime = absStartPosition * totalTime;
+    const double endPositionInTime = absEndPosition * totalTime;
     
     sequences.seekToTime(startPositionInTime);
     double prevTimeStamp = startPositionInTime;
@@ -263,5 +263,5 @@ void PlayerThread::run()
         }
     }
     
-    Logger::writeToLog("Never happens.");
+    jassertfalse;
 }

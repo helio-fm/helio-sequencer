@@ -400,7 +400,7 @@ void SequencerSidebarRight::onSeek(double absolutePosition,
     this->triggerAsyncUpdate();
 }
 
-void SequencerSidebarRight::onTempoChanged(double newTempo) {}
+void SequencerSidebarRight::onTempoChanged(double msPerQuarter) {}
 
 void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
 {

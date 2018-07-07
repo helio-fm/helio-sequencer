@@ -250,7 +250,7 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
 {
     this->rebuildSequencesIfNeeded();
     
-    const double targetFlatTime = round(this->getTotalTime() * absTrackPosition);
+    const double targetFlatTime = this->getTotalTime() * absTrackPosition;
     const auto sequencesToProbe(this->sequences.getAllFor(limitToLayer));
     
     for (const auto &seq : sequencesToProbe)
@@ -283,7 +283,7 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
     this->loopedMode = false;
 
     MidiMessageSequence fixedSequence(sequence);
-    const double startPositionInTime = round(this->getSeekPosition() * this->getTotalTime());
+    const double startPositionInTime = this->getSeekPosition() * this->getTotalTime();
     fixedSequence.addTimeToMessages(startPositionInTime);
 
     // using the last instrument (TODO something more clever in the future)
@@ -633,7 +633,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     const double seekBeat = double(this->projectFirstBeat.get()) +
         double(this->projectLastBeat.get() - this->projectFirstBeat.get()) * this->seekPosition.get(); // may be 0
 
-    //const double roundSeekBeat = round(seekBeat * 1000.0) / 1000.0;
     const double newBeatRange = (lastBeat - firstBeat); // may also be 0
     const double newSeekPosition = ((newBeatRange == 0.0) ? 0.0 : ((seekBeat - firstBeat) / newBeatRange));
     
@@ -674,7 +673,7 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     this->rebuildSequencesIfNeeded();
     this->sequences.seekToZeroIndexes();
     
-    const double targetTime = round(targetAbsPosition * this->getTotalTime());
+    const double targetTime = targetAbsPosition * this->getTotalTime();
     
     outTimeMs = 0.0;
     outTempo = 500.0; // default 120 BPM
@@ -687,9 +686,9 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     
     while (this->sequences.getNextMessage(wrapper))
     {
-        const double nextAbsPosition = (wrapper.message.getTimeStamp() / this->getTotalTime());
+        const double nextAbsPosition = wrapper.message.getTimeStamp() / this->getTotalTime();
         
-        // foundFirstTempoEvent нужен для того, чтоб темп до первого события был равен темпу на первом событии
+        // first tempo event sets the tempo all the way before it
         if (nextAbsPosition > targetAbsPosition && foundFirstTempoEvent) { break; }
         
         nextEventTimeDelta = outTempo * (wrapper.message.getTimeStamp() - prevTimestamp);

@@ -36,7 +36,7 @@ Playhead::Playhead(HybridRoll &parentRoll,
     playheadWidth(width + FREE_SPACE),
     lastCorrectPosition(0.0),
     timerStartTime(0.0),
-    tempo(1.0),
+    msPerQuarterNote(1.0),
     timerStartPosition(0.0),
     listener(movementListener)
 {
@@ -87,11 +87,11 @@ void Playhead::onSeek(double absolutePosition,
     }
 }
 
-void Playhead::onTempoChanged(double newTempo)
+void Playhead::onTempoChanged(double msPerQuarter)
 {
     //Logger::writeToLog("Playhead::onTempoChanged " + String(newTempo));
     SpinLock::ScopedLockType lock(this->anchorsLock);
-    this->tempo = jmax(newTempo, 0.01);
+    this->msPerQuarterNote = jmax(msPerQuarter, 0.01);
         
     if (this->isTimerRunning())
     {
@@ -230,7 +230,7 @@ void Playhead::tick()
     {
         SpinLock::ScopedLockType lock(this->anchorsLock);
         const double timeOffsetMs = Time::getMillisecondCounterHiRes() - this->timerStartTime;
-        const double positionOffset = (timeOffsetMs / this->transport.getTotalTime()) / this->tempo;
+        const double positionOffset = (timeOffsetMs / this->transport.getTotalTime()) / this->msPerQuarterNote;
         estimatedPosition = this->timerStartPosition + positionOffset;
     }
     
