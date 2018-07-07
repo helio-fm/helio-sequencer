@@ -136,7 +136,7 @@ Transport::Transport(OrchestraPit &orchestraPit) :
     trackStartMs(0.0),
     trackEndMs(0.0),
     sequencesAreOutdated(true),
-    totalTime(MS_PER_BEAT * 8.0),
+    totalTime(500.0 * 8.0),
     loopedMode(false),
     loopStart(0.0),
     loopEnd(0.0),
@@ -645,8 +645,8 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     //  2. compute (seekBeat - newFirstBeat) / (newLastBeat - newFirstBeat)
     //
     
-    this->trackStartMs = double(firstBeat) * MS_PER_BEAT;
-    this->trackEndMs = double(lastBeat) * MS_PER_BEAT;
+    this->trackStartMs = double(firstBeat);
+    this->trackEndMs = double(lastBeat);
     this->setTotalTime(this->trackEndMs.get() - this->trackStartMs.get());
     
     // real track total time changed
@@ -674,11 +674,10 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     this->rebuildSequencesIfNeeded();
     this->sequences.seekToZeroIndexes();
     
-    const double TPQN = MS_PER_BEAT; // ticks-per-quarter-note
     const double targetTime = round(targetAbsPosition * this->getTotalTime());
     
     outTimeMs = 0.0;
-    outTempo = 250.0 / TPQN; // default 240 BPM
+    outTempo = 500.0; // default 120 BPM
     
     double prevTimestamp = 0.0;
     double nextEventTimeDelta = 0.0;
@@ -691,11 +690,7 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
         const double nextAbsPosition = (wrapper.message.getTimeStamp() / this->getTotalTime());
         
         // foundFirstTempoEvent нужен для того, чтоб темп до первого события был равен темпу на первом событии
-        if (nextAbsPosition > targetAbsPosition &&
-            foundFirstTempoEvent)
-        {
-            break;
-        }
+        if (nextAbsPosition > targetAbsPosition && foundFirstTempoEvent) { break; }
         
         nextEventTimeDelta = outTempo * (wrapper.message.getTimeStamp() - prevTimestamp);
         outTimeMs += nextEventTimeDelta;
@@ -703,7 +698,7 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
         
         if (wrapper.message.isTempoMetaEvent())
         {
-            outTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f / TPQN;
+            outTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
             foundFirstTempoEvent = true;
         }
     }
@@ -758,12 +753,12 @@ void Transport::rebuildSequencesIfNeeded()
             {
                 for (const auto *clip : track->getPattern()->getClips())
                 {
-                    wrapper->track->exportMidi(wrapper->midiMessages, *clip, offset);
+                    wrapper->track->exportMidi(wrapper->midiMessages, *clip, offset, 1.0);
                 }
             }
             else
             {
-                wrapper->track->exportMidi(wrapper->midiMessages, noTransform, offset);
+                wrapper->track->exportMidi(wrapper->midiMessages, noTransform, offset, 1.0);
             }
 
             if (wrapper->midiMessages.getNumEvents() > 0)

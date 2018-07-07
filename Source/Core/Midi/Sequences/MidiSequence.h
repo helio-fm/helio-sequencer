@@ -46,9 +46,10 @@ public:
     // Import/export
     //===------------------------------------------------------------------===//
 
-    virtual void importMidi(const MidiMessageSequence &sequence, short timeFormat) = 0;
-    void exportMidi(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const;
     static float midiTicksToBeats(double ticks, int timeFormat) noexcept;
+    virtual void importMidi(const MidiMessageSequence &sequence, short timeFormat) = 0;
+    void exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
+        double timeAdjustment, double timeFactor) const;
 
     //===------------------------------------------------------------------===//
     // Track editing

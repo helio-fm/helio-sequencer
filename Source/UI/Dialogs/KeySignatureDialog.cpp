@@ -273,6 +273,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         // Play scale forward (and backward?)
         auto scaleKeys = this->scale->getUpScale();
         scaleKeys.addArray(this->scale->getDownScale());
+        const float timeFactor = 1.0; // MS_PER_BEAT;
 
         MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)
@@ -280,18 +281,18 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
             const int key = MIDDLE_C + this->key + scaleKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
-            const double startTime = double(i) * MS_PER_BEAT;
+            const double startTime = double(i) * timeFactor;
             eventNoteOn.setTimeStamp(startTime);
 
             MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
-            const double endTime = double(i + 0.5) * MS_PER_BEAT;
+            const double endTime = double(i + 0.5) * timeFactor;
             eventNoteOff.setTimeStamp(endTime);
 
             s.addEvent(eventNoteOn);
             s.addEvent(eventNoteOff);
         }
 
-        double timeOffset = double(scaleKeys.size() + 1.0) * MS_PER_BEAT;
+        double timeOffset = double(scaleKeys.size() + 1.0) * timeFactor;
 
         // Then play triad chord
         const auto triadKeys = scale->getTriad(Scale::Tonic, false);
@@ -300,11 +301,10 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
             const int key = MIDDLE_C + this->key + triadKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
-            const double startTime = double(i) * MS_PER_BEAT;
             eventNoteOn.setTimeStamp(timeOffset);
 
             MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
-            const double endTime = double(timeOffset + 0.5f) * MS_PER_BEAT;
+            const double endTime = double(timeOffset + 0.5f) * timeFactor;
             eventNoteOff.setTimeStamp(endTime);
 
             s.addEvent(eventNoteOn);

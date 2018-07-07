@@ -85,14 +85,18 @@ float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, flo
     return cv1 + (easeIn + easeOut);
 }
 
-void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const
+// Let's have max value as 1000 == 60 BPM, so that middle value would be exactly 120 BPM
+#define MAX_MS_PER_QUARTER_NOTE (1000)
+// TODO: logarithmic scale for BPM
+
+void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
 {
     MidiMessage cc;
     const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();
 
     if (isTempoTrack)
     {
-        cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * MS_PER_BEAT * 1000));
+        cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * MAX_MS_PER_QUARTER_NOTE * 1000));
     }
     else
     {
@@ -100,9 +104,9 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
             this->getTrackControllerNumber(),int(this->controllerValue * 127));
     }
 
-    const double startTime = round(this->beat * MS_PER_BEAT);
+    const double startTime = this->beat * timeFactor;
     cc.setTimeStamp(startTime);
-    outSequence.addEvent(cc, timeAdjustment);
+    outSequence.addEvent(cc, timeOffset);
 
     // add interpolated events, if needed
     const int indexOfThis = this->getSequence()->indexOfSorted(this);
@@ -110,7 +114,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
     if (!isOnOff && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
     {
         const auto *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
-        const double nextTime = nextEvent->beat * MS_PER_BEAT;
+        const double nextTime = nextEvent->beat * timeFactor;
         float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
         float lastAppliedValue = this->controllerValue;
 
@@ -125,20 +129,20 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
             const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
             if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
             {
-                const double interpolatedTs = round((interpolatedBeat + clip.getBeat()) * MS_PER_BEAT);
+                const double interpolatedTs = (interpolatedBeat + clip.getBeat()) * timeFactor;
                 if (isTempoTrack)
                 {
-                    const auto tempo = int((1.f - interpolatedValue) * MS_PER_BEAT * 1000);
+                    const auto tempo = int((1.f - interpolatedValue) * MAX_MS_PER_QUARTER_NOTE * 1000.0);
                     MidiMessage ci(MidiMessage::tempoMetaEvent(tempo));
                     ci.setTimeStamp(interpolatedTs);
-                    outSequence.addEvent(ci, timeAdjustment);
+                    outSequence.addEvent(ci, timeOffset);
                 }
                 else
                 {
                     MidiMessage ci(MidiMessage::controllerEvent(this->getTrackChannel(),
                         this->getTrackControllerNumber(), int(this->controllerValue * 127)));
                     ci.setTimeStamp(interpolatedTs);
-                    outSequence.addEvent(ci, timeAdjustment);
+                    outSequence.addEvent(ci, timeOffset);
                 }
 
                 lastAppliedValue = interpolatedValue;

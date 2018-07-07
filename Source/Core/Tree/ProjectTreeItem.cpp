@@ -836,7 +836,8 @@ bool ProjectTreeItem::onDocumentExport(File &file)
 void ProjectTreeItem::exportMidi(File &file) const
 {
     MidiFile tempFile;
-    tempFile.setTicksPerQuarterNote(96);
+    static const double midiClock = 960.0;
+    tempFile.setTicksPerQuarterNote(int(midiClock));
     static Clip noTransform;
 
     const auto &tracks = this->getTracks();
@@ -848,17 +849,22 @@ void ProjectTreeItem::exportMidi(File &file) const
         {
             for (const auto *clip : track->getPattern()->getClips())
             {
-                track->getSequence()->exportMidi(sequence, *clip, 0.0);
+                track->getSequence()->exportMidi(sequence, *clip, 0.0, midiClock);
             }
         }
         else
         {
-            track->getSequence()->exportMidi(sequence, noTransform, 0.0);
+            track->getSequence()->exportMidi(sequence, noTransform, 0.0, midiClock);
         }
 
         tempFile.addTrack(sequence);
     }
     
+    if (file.exists())
+    {
+        file.deleteFile();
+    }
+
     ScopedPointer<OutputStream> out(new FileOutputStream(file));
     tempFile.writeTo(*out);
 }
