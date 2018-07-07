@@ -78,7 +78,8 @@ public:
     template<typename T>
     void checkoutEvent(const ValueTree &parameters)
     {
-        ScopedPointer<T> event(new T(this));
+        static T empty;
+        ScopedPointer<T> event(new T(this, empty));
         event->deserialize(parameters);
 
         if (this->usedEventIds.contains(event->getId()))
