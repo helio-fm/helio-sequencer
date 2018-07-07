@@ -84,16 +84,16 @@ ValueTree Pack::createDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) cons
                 return this->createSerializedData(header);
             }
         }
+    }
 
-        // in-memory data
-        for (auto chunk : this->unsavedData)
+    // in-memory data
+    for (auto chunk : this->unsavedData)
+    {
+        if (/*chunk->itemId == itemId &&*/
+            chunk->deltaId == deltaId)
         {
-            if (/*chunk->itemId == itemId &&*/
-                chunk->deltaId == deltaId)
-            {
-                MemoryInputStream chunkDataStream(chunk->data, false);
-                return ValueTree::readFromStream(chunkDataStream);
-            }
+            MemoryInputStream chunkDataStream(chunk->data, false);
+            return ValueTree::readFromStream(chunkDataStream);
         }
     }
 
