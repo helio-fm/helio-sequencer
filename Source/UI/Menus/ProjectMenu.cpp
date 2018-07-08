@@ -20,7 +20,6 @@
 #include "ProjectTreeItem.h"
 #include "Icons.h"
 #include "App.h"
-#include "RenderDialog.h"
 #include "ModalDialogInput.h"
 #include "ModalDialogConfirmation.h"
 #include "PianoTrackTreeItem.h"
@@ -55,14 +54,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-        case CommandIDs::RenderToFLAC:
-            this->proceedToRenderDialog("FLAC");
-            return;
-
-        case CommandIDs::RenderToWAV:
-            this->proceedToRenderDialog("WAV");
-            return;
-        
         case CommandIDs::AddTempoController:
         {
             bool hasTempoTrack = false;
@@ -119,6 +110,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
         }
             return;
             
+        // TODO: change clips, don't transpose sequences!
         case CommandIDs::ProjectTransposeDown:
         {
             Array<MidiTrack *> tracks = this->project.getTracks();
@@ -139,28 +131,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
                 }
             }
         }
-            return;
-            
-        case CommandIDs::ImportMidi:
-            this->project.getDocument()->import("*.mid;*.midi");
-            this->dismiss();
-            return;
-
-        case CommandIDs::ExportMidi:
-        {
-#if JUCE_IOS
-            const String safeName = TreeItem::createSafeName(this->project.getName()) + ".mid";
-            File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
-            this->project.exportMidi(midiExport);
-            
-            App::Helio()->showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
-            App::Helio()->showModalComponent(new SuccessTooltip());
-#else
-            this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
-#endif
-            this->dismiss();
-            return;
-        }
+        return;
 
         case CommandIDs::UnloadProject:
             App::Workspace().unloadProjectById(this->project.getId());
@@ -195,29 +166,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
         }
     }
 }
-
-void ProjectMenu::proceedToRenderDialog(const String &extension)
-{
-    const File initialPath = File::getSpecialLocation(File::userMusicDirectory);
-    const String renderFileName = this->project.getName() + "." + extension.toLowerCase();
-    const String safeRenderName = File::createLegalFileName(renderFileName);
-
-#if HELIO_DESKTOP
-    auto &project = this->project; // this menu might be dismissed at the point when dialog is created
-    FileChooser fc(TRANS("dialog::render::caption"),
-        File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
-    
-    if (fc.browseForFileToSave(true))
-    {
-        App::Layout().showModalComponentUnowned(new RenderDialog(project, fc.getResult(), extension));
-    }
-#else
-    App::Layout().showModalComponentUnowned(new RenderDialog(project, initialPath.getChildFile(safeRenderName), extension));
-#endif
-    
-    this->dismiss();
-}
-
 ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
@@ -290,9 +238,8 @@ void ProjectMenu::showCreateItemsMenu(AnimationType animationType)
         }));
 
 #if HELIO_DESKTOP
-    menu.add(MenuItem::item(Icons::browse,
-        CommandIDs::ImportMidi,
-        TRANS("menu::project::import::midi")));
+    menu.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi,
+        TRANS("menu::project::import::midi"))->closesMenu());
 #endif
 
     menu.add(MenuItem::item(Icons::pianoTrack,
@@ -419,17 +366,14 @@ void ProjectMenu::showRenderMenu()
             this->showMainMenu(MenuPanel::SlideRight);
         }));
 
-    menu.add(MenuItem::item(Icons::render,
-        CommandIDs::RenderToWAV,
-        TRANS("menu::project::render::wav"))->disabledIf(noRender));
+    menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToWAV,
+        TRANS("menu::project::render::wav"))->disabledIf(noRender)->closesMenu());
 
-    menu.add(MenuItem::item(Icons::render,
-        CommandIDs::RenderToFLAC,
-        TRANS("menu::project::render::flac"))->disabledIf(noRender));
+    menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC,
+        TRANS("menu::project::render::flac"))->disabledIf(noRender)->closesMenu());
 
-    menu.add(MenuItem::item(Icons::commit,
-        CommandIDs::ExportMidi,
-        TRANS("menu::project::render::midi")));
+    menu.add(MenuItem::item(Icons::commit, CommandIDs::ExportMidi,
+        TRANS("menu::project::render::midi"))->closesMenu());
 
     this->updateContent(menu, MenuPanel::SlideLeft);
 }

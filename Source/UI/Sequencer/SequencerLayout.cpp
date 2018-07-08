@@ -36,7 +36,7 @@
 #include "OrigamiVertical.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
-#include "PanelBackgroundC.h"
+#include "RenderDialog.h"
 #include "App.h"
 #include "Workspace.h"
 #include "MainLayout.h"
@@ -425,10 +425,52 @@ void SequencerLayout::resized()
     this->rollToolsSidebar->resized();
 }
 
+
+void SequencerLayout::proceedToRenderDialog(const String &extension)
+{
+    const File initialPath = File::getSpecialLocation(File::userMusicDirectory);
+    const String renderFileName = this->project.getName() + "." + extension.toLowerCase();
+    const String safeRenderName = File::createLegalFileName(renderFileName);
+
+#if HELIO_DESKTOP
+    FileChooser fc(TRANS("dialog::render::caption"),
+        File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
+
+    if (fc.browseForFileToSave(true))
+    {
+        App::Layout().showModalComponentUnowned(new RenderDialog(this->project, fc.getResult(), extension));
+    }
+#else
+    App::Layout().showModalComponentUnowned(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
+#endif
+    }
+
 void SequencerLayout::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
+    case CommandIDs::ImportMidi:
+        this->project.getDocument()->import("*.mid;*.midi");
+        break;
+    case CommandIDs::ExportMidi:
+#if JUCE_IOS
+        const String safeName = TreeItem::createSafeName(this->project.getName()) + ".mid";
+        File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
+        this->project.exportMidi(midiExport);
+
+        App::Helio()->showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
+        App::Helio()->showModalComponent(new SuccessTooltip());
+#else
+        this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
+#endif
+        break;
+    case CommandIDs::RenderToFLAC:
+        this->proceedToRenderDialog("FLAC");
+        return;
+
+    case CommandIDs::RenderToWAV:
+        this->proceedToRenderDialog("WAV");
+        return;
     case CommandIDs::SwitchBetweenRolls:
         if (this->rollContainer->isPatternMode())
         {

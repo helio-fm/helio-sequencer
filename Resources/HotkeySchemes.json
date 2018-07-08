@@ -35,7 +35,14 @@
         { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Alt + 1" },
         { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Alt + 2" },
         { "receiver": "MainLayout", "command": "SwitchToVersioningMode", "key": "Alt + 3" },
+
         { "receiver": "SequencerLayout", "command": "SwitchBetweenRolls", "key": "Tab" },
+        { "receiver": "SequencerLayout", "command": "ExportMidi", "key": "Control + E" },
+        { "receiver": "SequencerLayout", "command": "ExportMidi", "key": "Command + E" },
+        { "receiver": "SequencerLayout", "command": "RenderToWAV", "key": "Control + R" },
+        { "receiver": "SequencerLayout", "command": "RenderToWAV", "key": "Command + R" },
+        { "receiver": "SequencerLayout", "command": "RenderToFLAC", "key": "Control + Shift + R" },
+        { "receiver": "SequencerLayout", "command": "RenderToFLAC", "key": "Command + Shift + R" },
 
         // ------------------------------------
         // Version control page
