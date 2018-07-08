@@ -61,22 +61,22 @@ void Translation::deserialize(const ValueTree &tree)
     {
         const String baseLiteral = pluralLiteral.getProperty(Translations::name);
 
-        StringPairArray formsAndTranslations;
+        auto *formsAndTranslations = new TranslationMap();
+        this->plurals[baseLiteral] = UniquePointer<TranslationMap>(formsAndTranslations);
+        
         forEachValueTreeChildWithType(pluralLiteral, pluralTranslation, Translations::translation)
         {
             const String translatedLiteral = pluralTranslation.getProperty(Translations::name);
             const String pluralForm = pluralTranslation.getProperty(Translations::pluralForm);
-            formsAndTranslations.set(pluralForm, translatedLiteral);
+            (*formsAndTranslations)[pluralForm] = translatedLiteral;
         }
-
-        this->plurals.set(baseLiteral, formsAndTranslations);
     }
 
     forEachValueTreeChildWithType(root, literal, Translations::literal)
     {
         const String literalName = literal.getProperty(Translations::name);
         const String translatedLiteral = literal.getProperty(Translations::translation);
-        this->singulars.set(literalName, translatedLiteral);
+        this->singulars[literalName] = translatedLiteral;
     }
 }
 
