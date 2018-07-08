@@ -39,6 +39,9 @@ public:
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
     static String getTimeString(const RelativeTime &relTime, bool includeMilliseconds = false);
+
+    // Returns microseconds per quarter note
+    static int getTempoByCV(float controllerValue) noexcept;
     
     //===------------------------------------------------------------------===//
     // Transport

@@ -24,20 +24,22 @@
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-FineTuningValueIndicator::FineTuningValueIndicator(float initialValue)
-    : value(initialValue)
+FineTuningValueIndicator::FineTuningValueIndicator(float initialValue, String suffix)
+    : value(initialValue),
+      suffix(suffix)
 {
-    addAndMakeVisible (valueLabel = new Label (String(),
-                                               TRANS("0.0")));
-    valueLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    valueLabel->setJustificationType (Justification::centred);
-    valueLabel->setEditable (false, false, false);
+    this->valueLabel.reset(new Label(String(),
+                                      TRANS("0.0")));
+    this->addAndMakeVisible(valueLabel.get());
+    this->valueLabel->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
+    valueLabel->setJustificationType(Justification::centred);
+    valueLabel->setEditable(false, false, false);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (64, 64);
+    this->setSize(64, 64);
 
     //[Constructor]
     //[/Constructor]
@@ -73,7 +75,7 @@ void FineTuningValueIndicator::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    valueLabel->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), getHeight() - 2 - 24, getWidth() - 8, 24);
+    valueLabel->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), getHeight() - 2 - 24, getWidth() - 0, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -83,12 +85,22 @@ void FineTuningValueIndicator::resized()
 
 #define NUM_DECIMAL_PLACES (3)
 
-void FineTuningValueIndicator::setValue(float newValue)
+void FineTuningValueIndicator::setValue(float newValue, float valueView)
 {
     if (this->value != newValue)
     {
         this->value = newValue;
-        this->valueLabel->setText(String(this->value, NUM_DECIMAL_PLACES), dontSendNotification);
+        this->valueLabel->setText(String(valueView, NUM_DECIMAL_PLACES) + this->suffix, dontSendNotification);
+        this->repaint();
+    }
+}
+
+void FineTuningValueIndicator::setValue(float newValue, int valueView)
+{
+    if (this->value != newValue)
+    {
+        this->value = newValue;
+        this->valueLabel->setText(String(valueView) + this->suffix, dontSendNotification);
         this->repaint();
     }
 }
@@ -106,14 +118,14 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="FineTuningValueIndicator"
                  template="../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="float initialValue" variableInitialisers="value(initialValue)"
+                 constructorParams="float initialValue, String suffix" variableInitialisers="value(initialValue)&#10;suffix(suffix)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="64" initialHeight="64">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="546fff7dc132314d" memberName="valueLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 2Rr 8M 24" labelText="0.0" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 2Rr 0M 24" labelText="0.0" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+         fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 

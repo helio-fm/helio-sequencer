@@ -47,37 +47,34 @@ void PlayerThread::run()
     ProjectSequences sequences = this->transport.getSequences();
     Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
     
-    double TPQN = MS_PER_BEAT; // ticks-per-quarter-note
     double nextEventTimeDelta = 0.0;
     
-    double tempoAtTheEndOfTrack = 0.0;
     double totalTimeMs = 0.0;
+    double tempoAtTheEndOfTrack = 0.0;
     this->transport.calcTimeAndTempoAt(1.0, totalTimeMs, tempoAtTheEndOfTrack);
     
     const double absStartPosition = this->transport.isLooped() ? this->transport.getLoopStart() : this->transport.getSeekPosition();
     const double absEndPosition = this->transport.isLooped() ? this->transport.getLoopEnd() : 1.0;
     
-    double msPerTick = 500.0 / TPQN; // default 120 BPM
     double currentTimeMs = 0.0;
-    this->transport.calcTimeAndTempoAt(absStartPosition,
-                                       currentTimeMs,
-                                       msPerTick);
+    double msPerQuarter = 0.0;
+    this->transport.calcTimeAndTempoAt(absStartPosition, currentTimeMs, msPerQuarter);
     
     if (this->broadcastMode)
     {
-        this->transport.broadcastTempoChanged(msPerTick);
+        this->transport.broadcastTempoChanged(msPerQuarter);
     }
     
     const double totalTime = this->transport.getTotalTime();
-    const double startPositionInTime = round(absStartPosition * totalTime);
-    const double endPositionInTime = round(absEndPosition * totalTime);
+    const double startPositionInTime = absStartPosition * totalTime;
+    const double endPositionInTime = absEndPosition * totalTime;
     
     sequences.seekToTime(startPositionInTime);
     double prevTimeStamp = startPositionInTime;
     
     // This hack is here to keep track of still playing events
     // to be able to send noteOff's when playback interrupts.
-    struct HoldingNote
+    struct HoldingNote final
     {
         int key;
         int channel;
@@ -136,7 +133,7 @@ void PlayerThread::run()
         // Handle playback from the last event to the end of track:
         if (!sequences.getNextMessage(wrapper))
         {
-            nextEventTimeDelta = msPerTick * (endPositionInTime - prevTimeStamp);
+            nextEventTimeDelta = msPerQuarter * (endPositionInTime - prevTimeStamp);
             const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
 
             // Give thread a chance to exit by checking at least once a, say, second
@@ -182,7 +179,7 @@ void PlayerThread::run()
         const double nextEventTimeStamp =
             shouldRewind ? endPositionInTime : wrapper.message.getTimeStamp();
 
-        nextEventTimeDelta = msPerTick * (nextEventTimeStamp - prevTimeStamp);
+        nextEventTimeDelta = msPerQuarter * (nextEventTimeStamp - prevTimeStamp);
         currentTimeMs += nextEventTimeDelta;
         prevTimeStamp = nextEventTimeStamp;
 
@@ -229,11 +226,11 @@ void PlayerThread::run()
             // Master tempo event is sent to everybody
             if (wrapper.message.isTempoMetaEvent())
             {
-                msPerTick = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f / TPQN;
+                msPerQuarter = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
 
                 if (this->broadcastMode)
                 {
-                    this->transport.broadcastTempoChanged(msPerTick);
+                    this->transport.broadcastTempoChanged(msPerQuarter);
                 }
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
@@ -247,7 +244,7 @@ void PlayerThread::run()
             
             if (wrapper.message.isNoteOn())
             {
-                holdingNotes.add(HoldingNote({key, channel, wrapper.listener}));
+                holdingNotes.add({ key, channel, wrapper.listener });
             }
             
             if (wrapper.message.isNoteOff())
@@ -266,5 +263,5 @@ void PlayerThread::run()
         }
     }
     
-    Logger::writeToLog("Never happens.");
+    jassertfalse;
 }

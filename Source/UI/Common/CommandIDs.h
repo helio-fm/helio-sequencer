@@ -128,10 +128,9 @@ namespace CommandIDs
         OpenProject                     = 0x2021,
         CreateNewProject                = 0x2022,
 
-        // ProjectCommandPanel
+        // ProjectMenu
         RenderToFLAC                    = 0x2030,
-        RenderToOGG                     = 0x2031,
-        RenderToWAV                     = 0x2032,
+        RenderToWAV                     = 0x2031,
 
         AddItemsMenu                    = 0x2040,
         AddItemsMenuBack                = 0x2041,

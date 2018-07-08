@@ -33,7 +33,7 @@ public:
         const Colour &newColour = Colours::white) noexcept;
     
     void exportMessages(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeAdjustment) const override;
+        const Clip &clip, double timeOffset, double timeFactor) const override;
     
     AnnotationEvent copyWithNewId() const noexcept;
     AnnotationEvent withDeltaBeat(float beatOffset) const noexcept;

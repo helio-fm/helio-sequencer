@@ -2340,6 +2340,7 @@
     <ClInclude Include="..\..\Source\Core\Audio\Monitoring\AudioMonitor.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Monitoring\SpectrumAnalyzer.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThread.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThreadPool.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\ProjectSequencesWrapper.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\RendererThread.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\Transport.h"/>

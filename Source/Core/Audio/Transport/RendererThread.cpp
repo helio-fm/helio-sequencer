@@ -113,7 +113,7 @@ bool RendererThread::isRecording() const
 // Thread
 //===----------------------------------------------------------------------===//
 
-struct RenderBuffer
+struct RenderBuffer final
 {
     Instrument *instrument;
     AudioSampleBuffer sampleBuffer;
@@ -126,26 +126,23 @@ void RendererThread::run()
     this->transport.rebuildSequencesIfNeeded();
     ProjectSequences sequences = this->transport.getSequences();
     const int bufferSize = 512;
-    const double TPQN = MS_PER_BEAT; // ticks-per-quarter-note
 
     // assuming that number of channels and sample rate is equal for all instruments
     const int numOutChannels = sequences.getNumOutputChannels();
     const int numInChannels = sequences.getNumInputChannels();
     const double sampleRate = sequences.getSampleRate();
     
-    double tempoAtTheEndOfTrack = 0.0;
     double totalTimeMs = 0.0;
+    double tempoAtTheEndOfTrack = 0.0;
     this->transport.calcTimeAndTempoAt(1.0, totalTimeMs, tempoAtTheEndOfTrack);
     
-    // грязный хак. calcTimeAndTempoAt считает темп для PlayerThread'а немного по-другому,
-    // чем нужно здесь. поэтому TPQN заменяю на 1000.
-    // рефакторить лень.
-    // когда-нибудь у меня будет куча времени и я все сделаю по-человечески.
-    const double lastFrame = totalTimeMs / 1000.0 * sampleRate;
-    
-    double msPerTick = this->transport.findFirstTempoEvent().getTempoSecondsPerQuarterNote();
+    double startTimeMs = 0.0;
+    double msPerQuarter = 0.0;
+    this->transport.calcTimeAndTempoAt(0.0, startTimeMs, msPerQuarter);
+    double secPerQuarter = msPerQuarter / 1000.0;
+
     double currentFrame = 0.0;
-    //double currentFrame = currentTimeMs / TPQN * sampleRate;
+    const double lastFrame = totalTimeMs / 1000.0 * sampleRate;
 
     // step 1. create a list of unique instruments with audio buffers for them.
     OwnedArray<RenderBuffer> subBuffers;
@@ -162,7 +159,7 @@ void RendererThread::run()
     }
 
     // step 2. release resources, prepare to play, etc.
-    for (auto subBuffer : subBuffers)
+    for (auto *subBuffer : subBuffers)
     {
         AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
         graph->setPlayConfigDetails(numInChannels, numOutChannels, sampleRate, bufferSize);
@@ -170,6 +167,9 @@ void RendererThread::run()
         graph->prepareToPlay(graph->getSampleRate(), bufferSize);
         graph->setNonRealtime(true);
     }
+
+    // let processor graphs call handle their async updates
+    Thread::sleep(200);
 
     // step 3. render loop itself.
     sequences.seekToTime(0.0);
@@ -180,15 +180,15 @@ void RendererThread::run()
     
     AudioSampleBuffer mixingBuffer(numOutChannels, bufferSize);
     
+    double lastEventTick = 0.0;
     double prevEventTimeStamp = 0.0;
-    double lastTick = 0.0;
-    double nextTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * msPerTick / TPQN;
-    double nextEventTick = lastTick + nextTickDelta;
+    double nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
+    double nextEventTick = lastEventTick + nextEventTickDelta;
 
     int messageFrame = int((nextEventTick * sampleRate) - currentFrame);
 
     // And here we go: send MidiStart
-    for (auto subBuffer : subBuffers)
+    for (auto *subBuffer : subBuffers)
     {
         subBuffer->midiBuffer.addEvent(MidiMessage::midiStart(), messageFrame);
     }
@@ -209,7 +209,7 @@ void RendererThread::run()
 
             if (nextMessage.message.isTempoMetaEvent())
             {
-                msPerTick = nextMessage.message.getTempoSecondsPerQuarterNote();
+                secPerQuarter = nextMessage.message.getTempoSecondsPerQuarterNote();
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 for (auto subBuffer : subBuffers)
@@ -219,7 +219,7 @@ void RendererThread::run()
             }
             else
             {
-                for (auto subBuffer : subBuffers)
+                for (auto *subBuffer : subBuffers)
                 {
                     if (nextMessage.instrument == subBuffer->instrument)
                     {
@@ -229,12 +229,12 @@ void RendererThread::run()
                 }
             }
 
-            lastTick += nextTickDelta;
+            lastEventTick += nextEventTickDelta;
             prevEventTimeStamp = nextMessage.message.getTimeStamp();
             
             hasNextMessage = sequences.getNextMessage(nextMessage);
-            nextTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * msPerTick / TPQN;
-            nextEventTick = lastTick + nextTickDelta;
+            nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
+            nextEventTick = lastEventTick + nextEventTickDelta;
         }
 
         // step 3b. call processBlock for every instrument.
@@ -262,7 +262,7 @@ void RendererThread::run()
                 mixingBuffer.addFrom(j, 0,
                     subBuffer->sampleBuffer, j, 0,
                     bufferSize,
-                    1.0f); // need to calc gain?
+                    1.0f);
             }
         }
 

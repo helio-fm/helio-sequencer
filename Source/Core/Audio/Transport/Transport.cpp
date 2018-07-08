@@ -31,104 +31,7 @@
 #include "AudioCore.h"
 #include "HybridRoll.h"
 #include "SerializationKeys.h"
-
-class PlayerThreadPool final
-{
-public:
-
-    PlayerThreadPool(Transport &transport, int poolSize = 5) :
-        transport(transport),
-        minPoolSize(poolSize)
-    {
-        for (int i = 0; i < poolSize; ++i)
-        {
-            this->players.add(new PlayerThread(transport));
-        }
-
-        this->currentPlayer = this->findNextFreePlayer();
-    }
-
-    ~PlayerThreadPool()
-    {
-        // Send exit signal to all threads before they are stopped forcefully,
-        // so that we don't have to wait for each one separately.
-        for (int i = 0; i < this->players.size(); ++i)
-        {
-            this->players.getUnchecked(i)->signalThreadShouldExit();
-        }
-    }
-
-    void startPlayback(bool shouldBroadcastTransportEvents = true)
-    {
-        if (this->currentPlayer->isThreadRunning())
-        {
-            this->currentPlayer->signalThreadShouldExit();
-            this->currentPlayer = findNextFreePlayer();
-        }
-
-        this->currentPlayer->startPlayback(shouldBroadcastTransportEvents);
-    }
-    
-    void stopPlayback()
-    {
-        if (this->currentPlayer->isThreadRunning())
-        {
-            // Just signal player to stop:
-            // it might be waiting for the next midi event, so it won't stop immediately
-            this->currentPlayer->signalThreadShouldExit();
-        }
-    }
-
-    bool isPlaying() const
-    {
-        return (this->currentPlayer->isThreadRunning() &&
-            !this->currentPlayer->threadShouldExit());
-    }
-
-private:
-
-    PlayerThread *findNextFreePlayer()
-    {
-        this->cleanup();
-
-        for (const auto player : this->players)
-        {
-            if (!player->isThreadRunning())
-            {
-                return player;
-            }
-        }
-
-        Logger::writeToLog("Warning: all playback threads are busy, adding one");
-        return this->players.add(new PlayerThread(transport));
-    }
-
-    void cleanup()
-    {
-        // Since all new players are added last,
-        // first ones are most likely to be stopped,
-        // so simply try to cleanup from the beginning until we meet a busy one:
-        while (this->players.size() > this->minPoolSize)
-        {
-            if (this->players.getFirst() == this->currentPlayer ||
-                this->players.getFirst()->isThreadRunning())
-            {
-                return;
-            }
-
-            Logger::writeToLog("Removing a stale playback thread");
-            this->players.remove(0);
-        }
-    }
-
-    Transport &transport;
-    int minPoolSize;
-
-    OwnedArray<PlayerThread> players;
-    PlayerThread *currentPlayer;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThreadPool)
-};
+#include "PlayerThreadPool.h"
 
 Transport::Transport(OrchestraPit &orchestraPit) :
     orchestra(orchestraPit),
@@ -136,7 +39,7 @@ Transport::Transport(OrchestraPit &orchestraPit) :
     trackStartMs(0.0),
     trackEndMs(0.0),
     sequencesAreOutdated(true),
-    totalTime(MS_PER_BEAT * 8.0),
+    totalTime(500.0 * 8.0),
     loopedMode(false),
     loopStart(0.0),
     loopEnd(0.0),
@@ -165,31 +68,15 @@ String Transport::getTimeString(double timeMs, bool includeMilliseconds)
 String Transport::getTimeString(const RelativeTime &relTime, bool includeMilliseconds)
 {
     String res;
-    
-    //if (relTime < RelativeTime(0))
     if (relTime.inSeconds() <= -1.0) // because '-0.0' is no cool
     {
-        //return "0:0";
         res = res + "-";
     }
-    
-    
-    //int n = std::abs(int(time.inHours()));
-    
-    //if (n > 0)
-    //{
-    //    res = res + String(n);
-    //}
-    
+
     int n = std::abs(int(relTime.inMinutes())) /*% 60*/;
-    
-    //if (n > 0)
-    {
-        res = res + String(n);
-    }
+    res = res + String(n);
     
     n = std::abs(int(relTime.inSeconds())) % 60;
-    //res = res + (res.isEmpty() ? "" : "'") + String(n) + "''";
     res = res + (res.isEmpty() ? "" : ":") + String(n);
     
     if (includeMilliseconds)
@@ -203,6 +90,13 @@ String Transport::getTimeString(const RelativeTime &relTime, bool includeMillise
     }
     
     return res;
+}
+
+int Transport::getTempoByCV(float controllerValue) noexcept
+{
+    const float maxMsPerQuarter = 250.f; // is 240 bpm (=250 ms-per-quarter) enough?
+    const float safeCV = jlimit(0.00005f, 0.99999f, controllerValue);
+    return int((1.f - AudioCore::fastLog2(safeCV)) * maxMsPerQuarter * 1000);
 }
 
 //===----------------------------------------------------------------------===//
@@ -250,7 +144,7 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
 {
     this->rebuildSequencesIfNeeded();
     
-    const double targetFlatTime = round(this->getTotalTime() * absTrackPosition);
+    const double targetFlatTime = this->getTotalTime() * absTrackPosition;
     const auto sequencesToProbe(this->sequences.getAllFor(limitToLayer));
     
     for (const auto &seq : sequencesToProbe)
@@ -283,7 +177,7 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
     this->loopedMode = false;
 
     MidiMessageSequence fixedSequence(sequence);
-    const double startPositionInTime = round(this->getSeekPosition() * this->getTotalTime());
+    const double startPositionInTime = this->getSeekPosition() * this->getTotalTime();
     fixedSequence.addTimeToMessages(startPositionInTime);
 
     // using the last instrument (TODO something more clever in the future)
@@ -633,7 +527,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     const double seekBeat = double(this->projectFirstBeat.get()) +
         double(this->projectLastBeat.get() - this->projectFirstBeat.get()) * this->seekPosition.get(); // may be 0
 
-    //const double roundSeekBeat = round(seekBeat * 1000.0) / 1000.0;
     const double newBeatRange = (lastBeat - firstBeat); // may also be 0
     const double newSeekPosition = ((newBeatRange == 0.0) ? 0.0 : ((seekBeat - firstBeat) / newBeatRange));
     
@@ -645,8 +538,8 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     //  2. compute (seekBeat - newFirstBeat) / (newLastBeat - newFirstBeat)
     //
     
-    this->trackStartMs = double(firstBeat) * MS_PER_BEAT;
-    this->trackEndMs = double(lastBeat) * MS_PER_BEAT;
+    this->trackStartMs = double(firstBeat);
+    this->trackEndMs = double(lastBeat);
     this->setTotalTime(this->trackEndMs.get() - this->trackStartMs.get());
     
     // real track total time changed
@@ -674,11 +567,10 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     this->rebuildSequencesIfNeeded();
     this->sequences.seekToZeroIndexes();
     
-    const double TPQN = MS_PER_BEAT; // ticks-per-quarter-note
-    const double targetTime = round(targetAbsPosition * this->getTotalTime());
+    const double targetTime = targetAbsPosition * this->getTotalTime();
     
     outTimeMs = 0.0;
-    outTempo = 250.0 / TPQN; // default 240 BPM
+    outTempo = 500.0; // default 120 BPM
     
     double prevTimestamp = 0.0;
     double nextEventTimeDelta = 0.0;
@@ -688,14 +580,10 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     
     while (this->sequences.getNextMessage(wrapper))
     {
-        const double nextAbsPosition = (wrapper.message.getTimeStamp() / this->getTotalTime());
+        const double nextAbsPosition = wrapper.message.getTimeStamp() / this->getTotalTime();
         
-        // foundFirstTempoEvent нужен для того, чтоб темп до первого события был равен темпу на первом событии
-        if (nextAbsPosition > targetAbsPosition &&
-            foundFirstTempoEvent)
-        {
-            break;
-        }
+        // first tempo event sets the tempo all the way before it
+        if (nextAbsPosition > targetAbsPosition && foundFirstTempoEvent) { break; }
         
         nextEventTimeDelta = outTempo * (wrapper.message.getTimeStamp() - prevTimestamp);
         outTimeMs += nextEventTimeDelta;
@@ -703,7 +591,7 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
         
         if (wrapper.message.isTempoMetaEvent())
         {
-            outTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f / TPQN;
+            outTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
             foundFirstTempoEvent = true;
         }
     }
@@ -727,7 +615,8 @@ MidiMessage Transport::findFirstTempoEvent()
         }
     }
     
-    return MidiMessage::tempoMetaEvent(int(MS_PER_BEAT) * 1000);
+    // return default 120 bpm (== 500 ms per quarter note)
+    return MidiMessage::tempoMetaEvent(500 * 1000);
 }
 
 //===----------------------------------------------------------------------===//
@@ -757,12 +646,12 @@ void Transport::rebuildSequencesIfNeeded()
             {
                 for (const auto *clip : track->getPattern()->getClips())
                 {
-                    wrapper->track->exportMidi(wrapper->midiMessages, *clip, offset);
+                    wrapper->track->exportMidi(wrapper->midiMessages, *clip, offset, 1.0);
                 }
             }
             else
             {
-                wrapper->track->exportMidi(wrapper->midiMessages, noTransform, offset);
+                wrapper->track->exportMidi(wrapper->midiMessages, noTransform, offset, 1.0);
             }
 
             if (wrapper->midiMessages.getNumEvents() > 0)

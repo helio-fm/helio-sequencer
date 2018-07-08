@@ -19,13 +19,11 @@
 
 #include "RadioButton.h"
 
-class KeySelector : public Component,
-    public RadioButtonListener
+class KeySelector final : public Component, public RadioButtonListener
 {
 public:
 
     KeySelector();
-    ~KeySelector();
 
     struct Listener
     {

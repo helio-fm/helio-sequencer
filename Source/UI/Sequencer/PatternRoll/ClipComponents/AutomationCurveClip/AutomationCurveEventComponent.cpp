@@ -21,13 +21,15 @@
 #include "AutomationCurveHelper.h"
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationSequence.h"
+#include "MidiTrack.h"
 
 AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClipComponent &parent,
-    const AutomationEvent &targetEvent) :
-    event(targetEvent),
-    anchor(targetEvent),
+    const AutomationEvent &event) :
+    event(event),
+    anchor(event),
     editor(parent),
-    draggingState(false)
+    draggingState(false),
+    controllerNumber(event.getTrackControllerNumber())
 {
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
@@ -37,6 +39,11 @@ AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClip
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();
+}
+
+bool AutomationCurveEventComponent::isTempoCurve() const noexcept
+{
+    return this->controllerNumber == MidiTrack::tempoController;
 }
 
 void AutomationCurveEventComponent::paint(Graphics &g)
@@ -90,7 +97,8 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 
             if (valueChanged && this->tuningIndicator == nullptr)
             {
-                this->tuningIndicator = new FineTuningValueIndicator(this->event.getControllerValue());
+                const float cv = this->event.getControllerValue();
+                this->tuningIndicator = new FineTuningValueIndicator(cv, this->isTempoCurve() ? " bpm" : "");
                 this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator);
                 this->fader.fadeIn(this->tuningIndicator, 200);
             }
@@ -108,7 +116,15 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 
             if (this->tuningIndicator != nullptr)
             {
-                this->tuningIndicator->setValue(this->event.getControllerValue());
+                const float cv = this->event.getControllerValue();
+                if (this->isTempoCurve())
+                {
+                    this->tuningIndicator->setValue(cv, this->event.getControllerValueAsBPM());
+                }
+                else
+                {
+                    this->tuningIndicator->setValue(cv, cv);
+                }
                 this->tuningIndicator->repositionToTargetAt(this, this->editor.getPosition());
             }
         }

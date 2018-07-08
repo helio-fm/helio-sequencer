@@ -33,7 +33,7 @@ PianoSequence::PianoSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void PianoSequence::importMidi(const MidiMessageSequence &sequence)
+void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -41,30 +41,22 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
-        const MidiMessage &messageOn = sequence.getEventPointer(i)->message;
-
+        const auto &messageOn = sequence.getEventPointer(i)->message;
         if (messageOn.isNoteOn())
         {
-            const double startTimestamp = messageOn.getTimeStamp() / MIDI_IMPORT_SCALE;
             const int key = messageOn.getNoteNumber();
             const float velocity = messageOn.getVelocity() / 128.f;
-            const float beat = float(startTimestamp);
-
-            // find corresponding note-off:
+            const float startBeat = MidiSequence::midiTicksToBeats(messageOn.getTimeStamp(), timeFormat);
             const int noteOffIndex = sequence.getIndexOfMatchingKeyUp(i);
-
             if (noteOffIndex > 0)
             {
                 const MidiMessage &messageOff = sequence.getEventPointer(noteOffIndex)->message;
-                const double endTimestamp = messageOff.getTimeStamp() / MIDI_IMPORT_SCALE;
-
-                if (endTimestamp > startTimestamp)
+                const float endBeat = MidiSequence::midiTicksToBeats(messageOff.getTimeStamp(), timeFormat);
+                if (endBeat > startBeat)
                 {
-                    const float length = float(endTimestamp - startTimestamp);
-
-                    // bottleneck warning
-                    const Note note(this, key, beat, length, velocity);
-                    this->silentImport(note);
+                    const float length = float(endBeat - startBeat);
+                    const Note note(this, key, startBeat, length, velocity);
+                    this->importMidiEvent<Note>(note);
                 }
             }
         }
@@ -75,28 +67,8 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
 }
 
 //===----------------------------------------------------------------------===//
-// Undo-able track editing
+// Undoable track editing
 //===----------------------------------------------------------------------===//
-
-void PianoSequence::silentImport(const MidiEvent &eventToImport)
-{
-    const Note &note = static_cast<const Note &>(eventToImport);
-    jassert(note.isValid());
-
-    if (this->usedEventIds.contains(note.getId()))
-    {
-        jassertfalse;
-        return;
-    }
-
-    const auto storedNote = new Note(this, note);
-    
-    this->midiEvents.addSorted(*storedNote, storedNote); // bottleneck warning
-    this->usedEventIds.insert(storedNote->getId());
-
-    this->updateBeatRange(false);
-    this->invalidateSequenceCache();
-}
 
 MidiEvent *PianoSequence::insert(const Note &eventParams, const bool undoable)
 {

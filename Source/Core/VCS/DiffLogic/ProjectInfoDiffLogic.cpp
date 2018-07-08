@@ -24,12 +24,12 @@
 using namespace VCS;
 using namespace Serialization::VCS;
 
-static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeLicense(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes);
 
-static DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes);
@@ -82,7 +82,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
         {
             if (myDelta->hasType(ProjectInfoDeltas::projectLicense))
             {
-                diff->applyDelta(createPathDiff(stateDeltaData, myDeltaData));
+                diff->applyDelta(createLicenseDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(ProjectInfoDeltas::projectTitle))
             {
@@ -129,7 +129,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
                 if (targetDelta->hasType(ProjectInfoDeltas::projectLicense))
                 {
                     ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
+                    ValueTree diffDeltaData = mergeLicense(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectTitle))
@@ -168,7 +168,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 // Diffs
 //===----------------------------------------------------------------------===//
 
-ValueTree mergePath(const ValueTree &state, const ValueTree &changes)
+ValueTree mergeLicense(const ValueTree &state, const ValueTree &changes)
 {
     return changes.createCopy();
 }
@@ -188,7 +188,7 @@ ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes)
     return changes.createCopy();
 }
 
-DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     res.delta = new Delta(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense);

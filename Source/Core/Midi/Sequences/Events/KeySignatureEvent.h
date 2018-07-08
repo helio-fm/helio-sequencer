@@ -36,7 +36,7 @@ public:
 
     String toString() const;
     void exportMessages(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeAdjustment) const override;
+        const Clip &clip, double timeOffset, double timeFactor) const override;
     
     KeySignatureEvent copyWithNewId() const noexcept;
     KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;

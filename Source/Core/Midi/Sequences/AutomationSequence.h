@@ -31,8 +31,6 @@ public:
     // Undoable track editing
     //===------------------------------------------------------------------===//
 
-    void silentImport(const MidiEvent &eventToImport) override;
-
     MidiEvent *insert(const AutomationEvent &autoEvent, bool undoable);
     bool remove(const AutomationEvent &autoEvent, bool undoable);
     bool change(const AutomationEvent &autoEvent,
@@ -49,7 +47,7 @@ public:
     // Import/export
     //===------------------------------------------------------------------===//
 
-    void importMidi(const MidiMessageSequence &sequence) override;
+    void importMidi(const MidiMessageSequence &sequence, short timeFormat) override;
 
     //===------------------------------------------------------------------===//
     // Serializable

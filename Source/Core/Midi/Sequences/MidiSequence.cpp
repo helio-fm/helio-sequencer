@@ -94,7 +94,7 @@ void MidiSequence::clearUndoHistory()
 //===----------------------------------------------------------------------===//
 
 void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
-    const Clip &clip, double timeAdjustment) const
+    const Clip &clip, double timeAdjustment, double timeFactor) const
 {
     if (this->track.isTrackMuted())
     {
@@ -103,10 +103,26 @@ void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
 
     for (const auto *event : this->midiEvents)
     {
-        event->exportMessages(outSequence, clip, timeAdjustment);
+        event->exportMessages(outSequence, clip, timeAdjustment, timeFactor);
     }
 
     outSequence.updateMatchedPairs();
+}
+
+float MidiSequence::midiTicksToBeats(double ticks, int timeFormat) noexcept
+{
+    const double secsPerQuarterNoteAt120BPM = 0.5;
+
+    if (timeFormat < 0)
+    {
+        const double timeInSeconds = ticks / (-(timeFormat >> 8) * (timeFormat & 0xff));
+        return float(timeInSeconds * secsPerQuarterNoteAt120BPM * BEATS_PER_BAR);
+    }
+
+    const auto tickLen = 1.0 / (timeFormat & 0x7fff);
+    const auto secsPerTick = 0.5 * tickLen;
+    const double timeInSeconds = ticks * secsPerTick;
+    return float(timeInSeconds * secsPerQuarterNoteAt120BPM * BEATS_PER_BAR);
 }
 
 //===----------------------------------------------------------------------===//

@@ -106,8 +106,6 @@ inline float roundf(float x)
 #   define HELIO_DESKTOP 1
 #endif
 
-#define MS_PER_BEAT 500.0
-
 // Beat is essentially a quarter-note
 #define BEATS_PER_BAR 4
 

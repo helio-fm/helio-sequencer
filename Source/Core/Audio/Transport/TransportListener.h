@@ -24,7 +24,7 @@ public:
     virtual ~TransportListener() {}
 
     virtual void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) = 0;
-    virtual void onTempoChanged(double newTempo) = 0;
+    virtual void onTempoChanged(double msPerQuarter) = 0;
     virtual void onTotalTimeChanged(double timeMs) = 0;
     virtual void onPlay() = 0;
     virtual void onStop() = 0;

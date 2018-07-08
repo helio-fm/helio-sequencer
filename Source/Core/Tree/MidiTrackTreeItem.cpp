@@ -94,9 +94,9 @@ void MidiTrackTreeItem::safeRename(const String &newName)
     this->setXPath(fixedName);
 }
 
-void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence)
+void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence, short timeFormat)
 {
-    this->sequence->importMidi(sequence);
+    this->sequence->importMidi(sequence, timeFormat);
 }
 
 //===----------------------------------------------------------------------===//

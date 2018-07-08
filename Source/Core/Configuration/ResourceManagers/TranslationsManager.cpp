@@ -118,34 +118,45 @@ String TranslationsManager::translate(const String &text)
 {
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
-    if (this->currentTranslation->singulars.containsKey(text))
+    if (this->currentTranslation->singulars.contains(text))
     {
-        return this->currentTranslation->singulars.getValue(text, text);
+        return this->currentTranslation->singulars[text];
     }
 
-    const auto &plurals = this->currentTranslation->plurals[text];
-    if (plurals.size() > 0)
+    if (this->currentTranslation->plurals.contains(text))
     {
-        return plurals.getAllValues()[0];
+        const auto *plurals = this->currentTranslation->plurals[text].get();
+        if (plurals->size() > 0)
+        {
+            return plurals->begin()->second;
+        }
     }
 
-    return this->fallbackTranslation->singulars.getValue(text, text);
+    if (this->fallbackTranslation->singulars.contains(text))
+    {
+        return this->fallbackTranslation->singulars[text];
+    }
+
+    return text;
 }
 
 String TranslationsManager::translate(const String &baseLiteral, int64 targetNumber)
 {
+    using namespace Serialization;
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
+
+    if (!this->currentTranslation->plurals.contains(baseLiteral))
+    {
+        return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
+    }
 
     //const double startTime = Time::getMillisecondCounterHiRes();
     const int64 absTargetNumber = (targetNumber > 0 ? targetNumber : -targetNumber);
 
     const String expessionToEvaluate =
-        Serialization::Translations::wrapperClassName +
-        "." +
-        Serialization::Translations::wrapperMethodName +
-        "(" +
-        this->currentTranslation->pluralEquation.replace(Serialization::Translations::metaSymbol, String(absTargetNumber)) +
-        ")";
+        Translations::wrapperClassName + "." +
+        Translations::wrapperMethodName + "(" +
+        this->currentTranslation->pluralEquation.replace(Translations::metaSymbol, String(absTargetNumber)) + ")";
 
     //Logger::writeToLog("expessionToEvaluate: " + expessionToEvaluate);
 
@@ -154,13 +165,17 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
 
     if (!result.failed())
     {
-        StringPairArray targetPlurals = this->currentTranslation->plurals[baseLiteral];
         const String pluralForm = this->equationResult;
+        auto *targetPlurals = this->currentTranslation->plurals[baseLiteral].get();
         //Logger::writeToLog("(Execution time: " + String (elapsedMs, 2) + " milliseconds): " + pluralForm);
-        return targetPlurals[pluralForm].replace(Serialization::Translations::metaSymbol, String(targetNumber));
+        const auto translation = targetPlurals->find(pluralForm);
+        if (translation != targetPlurals->end())
+        {
+            return translation->second.replace(Translations::metaSymbol, String(targetNumber));
+        }
     }
 
-    return baseLiteral.replace(Serialization::Translations::metaSymbol, String(targetNumber));
+    return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
 }
 
 //===----------------------------------------------------------------------===//

@@ -73,6 +73,9 @@ private:
     Point<int> clickOffset;
     bool draggingState;
 
+    const int controllerNumber;
+    bool isTempoCurve() const noexcept;
+
     void recreateConnector();
     void recreateHelper();
 

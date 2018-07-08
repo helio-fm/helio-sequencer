@@ -85,44 +85,11 @@ void RootTreeItem::safeRename(const String &newName)
 
 void RootTreeItem::importMidi(const File &file)
 {
-    MidiFile tempFile;
-    ScopedPointer<InputStream> in(new FileInputStream(file));
-    const bool readOk = tempFile.readFrom(*in);
-
-    if (!readOk)
-    {
-        DBG("Midi file appears corrupted");
-        return;
-    }
-
-    if (tempFile.getTimeFormat() <= 0)
-    {
-        DBG("SMPTE format timing is not yet supported");
-        return;
-    }
-
-    // важно.
-    tempFile.convertTimestampTicksToSeconds();
-
     ProjectTreeItem *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
     this->addChildTreeItem(project);
     this->addVCS(project);
-
-    for (int trackNum = 0; trackNum < tempFile.getNumTracks(); trackNum++)
-    {
-        const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
-        String trackName = "Track " + String(trackNum);
-        MidiTrackTreeItem *layer = this->addPianoTrack(project, trackName);
-        layer->importMidi(*currentTrack);
-    }
-
-    //this->addAutoLayer(project, "Tempo", 81);
-
-    // todo сохранить по умолчанию рядом - или куда?
-    project->broadcastChangeProjectBeatRange();
-    project->getDocument()->save();
+    project->importMidi(file);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Children
@@ -277,7 +244,8 @@ MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &na
     item->setTrackControllerNumber(controllerNumber, false);
     AutomationSequence *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
-    itemLayer->insert(AutomationEvent(itemLayer, 0, 0.5), false);
+    itemLayer->insert(AutomationEvent(itemLayer, 0.f, 0.5f), false);
+    itemLayer->insert(AutomationEvent(itemLayer, BEATS_PER_BAR, 0.5f), false);
     return item;
 }
 

@@ -737,6 +737,7 @@
 		8015D574DB5A1A4AA4A4F3CB = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SelectionComponent.h; path = ../../Source/UI/Sequencer/SelectionComponent.h; sourceTree = "SOURCE_ROOT"; };
 		80172CF73E1171F21223A619 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../Projucer/JuceLibraryCode/AppConfig.h; sourceTree = "SOURCE_ROOT"; };
 		8036860876900AF36E06FF02 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSettings.cpp; path = ../../Source/UI/Pages/Settings/AudioSettings.cpp; sourceTree = "SOURCE_ROOT"; };
+		80E4D81178BE3D1809845A9F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PlayerThreadPool.h; path = ../../Source/Core/Audio/Transport/PlayerThreadPool.h; sourceTree = "SOURCE_ROOT"; };
 		81D36278F0028B0649509527 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoteResizerRight.h; path = ../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.h; sourceTree = "SOURCE_ROOT"; };
 		81DAA00E693DCCDDB1E5FBE4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FatalErrorScreen.h; path = ../../Source/UI/Common/FatalErrorScreen.h; sourceTree = "SOURCE_ROOT"; };
 		8295B0B7CD954B1984A97530 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupMenuComponent.h; path = ../../Source/UI/Popups/PopupMenuComponent.h; sourceTree = "SOURCE_ROOT"; };
@@ -1229,6 +1230,7 @@
 		21CA376CE970208E0EC9EB29 = {isa = PBXGroup; children = (
 					ED46F90AE51E82C2F458956E,
 					66C9C62A8B6D5C60064300E7,
+					80E4D81178BE3D1809845A9F,
 					FFC0AD5CF137DF4C223496BC,
 					71BA638BD9EBFA2DEB108AB5,
 					14326F12D07C180450688F9E,

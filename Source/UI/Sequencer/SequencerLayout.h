@@ -75,6 +75,10 @@ public:
 
 private:
 
+    void proceedToRenderDialog(const String &extension);
+
+private:
+
     ProjectTreeItem &project;
     
     ScopedPointer<Viewport> pianoViewport;

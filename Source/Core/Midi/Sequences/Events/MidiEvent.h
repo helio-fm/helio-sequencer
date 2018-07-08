@@ -45,7 +45,7 @@ public:
     MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) noexcept;
 
     virtual void exportMessages(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeAdjustment) const = 0;
+        const Clip &clip, double timeOffset, double timeFactor) const = 0;
 
     //===------------------------------------------------------------------===//
     // Accessors

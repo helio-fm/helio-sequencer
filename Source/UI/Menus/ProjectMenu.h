@@ -47,7 +47,5 @@ private:
     ValueTree createPianoTrackTempate(const String &name, const String &instrumentId) const;
     ValueTree createAutoTrackTempate(const String &name, int controllerNumber,
         const String &instrumentId = "") const;
-    
-    void proceedToRenderDialog(const String &extension);
 
 };

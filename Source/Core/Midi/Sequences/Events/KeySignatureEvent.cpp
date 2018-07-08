@@ -54,7 +54,7 @@ String KeySignatureEvent::toString() const
     return keyName + ", " + this->scale->getLocalizedName();
 }
 
-void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeAdjustment) const
+void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
 {
     // Basically, we can have any non-standard scale here:
     // from "symmetrical nonatonic" or "chromatic permutated diatonic dorian"
@@ -76,8 +76,8 @@ void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence, const C
     const int flatsOrSharps = isMinor ? minorCircle[root] : majorCircle[root];
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
-    event.setTimeStamp(round((this->beat + clip.getBeat()) * MS_PER_BEAT));
-    outSequence.addEvent(event, timeAdjustment);
+    event.setTimeStamp((this->beat + clip.getBeat()) * timeFactor);
+    outSequence.addEvent(event, timeOffset);
 }
 
 KeySignatureEvent KeySignatureEvent::withDeltaBeat(float beatOffset) const noexcept

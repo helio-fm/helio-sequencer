@@ -20,7 +20,7 @@
 #include "MidiEvent.h"
 
 #define DEFAULT_ON_OFF_EVENT_STATE (false)
-#define CURVE_INTERPOLATION_STEP_BEAT (0.5f)
+#define CURVE_INTERPOLATION_STEP_BEAT (0.25f)
 #define CURVE_INTERPOLATION_THRESHOLD (0.0025f)
 
 class AutomationEvent final : public MidiEvent
@@ -36,7 +36,7 @@ public:
         float controllerValue = 0.f) noexcept;
 
     void exportMessages(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeAdjustment) const override;
+        const Clip &clip, double timeOffset, double timeFactor) const override;
 
     static float interpolateEvents(float cv1, float cv2, float factor, float easing);
 
@@ -52,6 +52,7 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
+    int getControllerValueAsBPM() const noexcept;
     float getControllerValue() const noexcept;
     float getCurvature() const noexcept;
     

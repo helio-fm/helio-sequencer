@@ -91,7 +91,7 @@ ValueTree ProjectInfo::serializeDeltaData(int deltaIndex) const
     }
 
     jassertfalse;
-    return ValueTree();
+    return {};
 }
 
 VCS::DiffLogic *ProjectInfo::getDiffLogic() const
@@ -164,8 +164,10 @@ void ProjectInfo::deserialize(const ValueTree &tree)
 
 void ProjectInfo::reset()
 {
-    this->author = "";
-    this->description = "";
+    this->author.clear();
+    this->description.clear();
+    this->license.clear();
+    this->initTimestamp = 0;
 }
 
 

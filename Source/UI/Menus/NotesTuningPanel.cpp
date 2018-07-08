@@ -446,7 +446,7 @@ void NotesTuningPanel::endTuning()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void NotesTuningPanel::onTempoChanged(double newTempo) {}
+void NotesTuningPanel::onTempoChanged(double msPerQuarter) {}
 void NotesTuningPanel::onTotalTimeChanged(double timeMs) {}
 void NotesTuningPanel::onSeek(double absolutePosition,
                               double currentTimeMs,
