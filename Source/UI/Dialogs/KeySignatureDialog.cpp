@@ -46,33 +46,44 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       hasMadeChanges(false),
       key(0)
 {
-    addAndMakeVisible (background = new DialogPanel());
-    addAndMakeVisible (comboPrimer = new MobileComboBox::Primer());
+    this->background.reset(new DialogPanel());
+    this->addAndMakeVisible(background.get());
+    this->comboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(comboPrimer.get());
 
-    addAndMakeVisible (messageLabel = new Label (String(),
-                                                 TRANS("...")));
-    messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    messageLabel->setJustificationType (Justification::centred);
-    messageLabel->setEditable (false, false, false);
+    this->messageLabel.reset(new Label(String(),
+                                        TRANS("...")));
+    this->addAndMakeVisible(messageLabel.get());
+    this->messageLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    messageLabel->setJustificationType(Justification::centred);
+    messageLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (removeEventButton = new TextButton (String()));
-    removeEventButton->setButtonText (TRANS("..."));
+    this->removeEventButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(removeEventButton.get());
+    removeEventButton->setButtonText(TRANS("..."));
     removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    removeEventButton->addListener (this);
+    removeEventButton->addListener(this);
 
-    addAndMakeVisible (okButton = new TextButton (String()));
-    okButton->setButtonText (TRANS("..."));
+    this->okButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(okButton.get());
+    okButton->setButtonText(TRANS("..."));
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    okButton->addListener (this);
+    okButton->addListener(this);
 
-    addAndMakeVisible (separatorH = new SeparatorHorizontal());
-    addAndMakeVisible (separatorV = new SeparatorVertical());
-    addAndMakeVisible (keySelector = new KeySelector());
+    this->separatorH.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separatorH.get());
+    this->separatorV.reset(new SeparatorVertical());
+    this->addAndMakeVisible(separatorV.get());
+    this->keySelector.reset(new KeySelector());
+    this->addAndMakeVisible(keySelector.get());
 
-    addAndMakeVisible (scaleEditor = new ScaleEditor());
+    this->scaleEditor.reset(new ScaleEditor());
+    this->addAndMakeVisible(scaleEditor.get());
 
-    addAndMakeVisible (playButton = new PlayButton());
-    addAndMakeVisible (scaleNameEditor = new TextEditor (String()));
+    this->playButton.reset(new PlayButton());
+    this->addAndMakeVisible(playButton.get());
+    this->scaleNameEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(scaleNameEditor.get());
     scaleNameEditor->setMultiLine (false);
     scaleNameEditor->setReturnKeyStartsNewLine (false);
     scaleNameEditor->setReadOnly (false);
@@ -123,7 +134,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     }
     //[/UserPreSize]
 
-    setSize (430, 260);
+    this->setSize(460, 260);
 
     //[Constructor]
     this->rebound();
@@ -193,27 +204,27 @@ void KeySignatureDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    comboPrimer->setBounds ((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
-    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 36);
-    removeEventButton->setBounds (4, getHeight() - 4 - 48, 210, 48);
-    okButton->setBounds (getWidth() - 4 - 211, getHeight() - 4 - 48, 211, 48);
-    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
-    separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
-    keySelector->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 58, getWidth() - 40, 34);
-    scaleEditor->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 108, getWidth() - 40, 34);
-    playButton->setBounds ((getWidth() / 2) + 170 - (40 / 2), 148, 40, 40);
-    scaleNameEditor->setBounds ((getWidth() / 2) + -20 - ((getWidth() - 100) / 2), 152, getWidth() - 100, 32);
+    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    comboPrimer->setBounds((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 36);
+    removeEventButton->setBounds(4, getHeight() - 4 - 48, 225, 48);
+    okButton->setBounds(getWidth() - 4 - 226, getHeight() - 4 - 48, 226, 48);
+    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
+    keySelector->setBounds((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 58, getWidth() - 40, 34);
+    scaleEditor->setBounds((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 108, getWidth() - 40, 34);
+    playButton->setBounds(getWidth() - 25 - 40, 148, 40, 40);
+    scaleNameEditor->setBounds((getWidth() / 2) + -20 - ((getWidth() - 100) / 2), 152, getWidth() - 100, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void KeySignatureDialog::buttonClicked (Button* buttonThatWasClicked)
+void KeySignatureDialog::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == removeEventButton)
+    if (buttonThatWasClicked == removeEventButton.get())
     {
         //[UserButtonCode_removeEventButton] -- add your button handler code here..
         if (this->addsNewEvent)
@@ -227,7 +238,7 @@ void KeySignatureDialog::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_removeEventButton]
     }
-    else if (buttonThatWasClicked == okButton)
+    else if (buttonThatWasClicked == okButton.get())
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
         if (this->scaleNameEditor->getText().isNotEmpty())
@@ -493,8 +504,8 @@ void KeySignatureDialog::textEditorFocusLost(TextEditor &)
 
     const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
     if (this->scaleNameEditor->getText().isNotEmpty() &&
-        focusedComponent != this->okButton &&
-        focusedComponent != this->removeEventButton)
+        focusedComponent != this->okButton.get() &&
+        focusedComponent != this->removeEventButton.get())
     {
         this->disappear();
     }
@@ -521,11 +532,11 @@ void KeySignatureDialog::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
                  constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(Scale::getDefaultScalesCache()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
+                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(ScalesManager::getInstance().getScales()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="430" initialHeight="260">
+                 fixedSize="1" initialWidth="460" initialHeight="260">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
@@ -534,7 +545,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
@@ -545,13 +557,13 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 36" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
-              virtualName="" explicitFocusOrder="0" pos="4 4Rr 210 48" buttonText="..."
+              virtualName="" explicitFocusOrder="0" pos="4 4Rr 225 48" buttonText="..."
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 211 48" buttonText="..."
+              explicitFocusOrder="0" pos="4Rr 4Rr 226 48" buttonText="..."
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
@@ -566,7 +578,7 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="2Cc 108 40M 34" class="ScaleEditor"
                     params=""/>
   <JUCERCOMP name="" id="a80d33e93bb4cadb" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="170Cc 148 40 40" sourceFile="../Common/PlayButton.cpp"
+             explicitFocusOrder="0" pos="25Rr 148 40 40" sourceFile="../Common/PlayButton.cpp"
              constructorParams=""/>
   <TEXTEDITOR name="" id="3f330f1d57714294" memberName="scaleNameEditor" virtualName=""
               explicitFocusOrder="0" pos="-20Cc 152 100M 32" initialText=""

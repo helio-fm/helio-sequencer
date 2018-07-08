@@ -33,17 +33,16 @@ class KeySignaturesSequence;
 #include "../Themes/SeparatorVertical.h"
 #include "../Common/PlayButton.h"
 
-class KeySignatureDialog  : public FadingDialog,
-                            public TextEditor::Listener,
-                            public ScaleEditor::Listener,
-                            public KeySelector::Listener,
-                            private Timer,
-                            public Button::Listener
+class KeySignatureDialog final : public FadingDialog,
+                                 public TextEditor::Listener,
+                                 public ScaleEditor::Listener,
+                                 public KeySelector::Listener,
+                                 private Timer,
+                                 public Button::Listener
 {
 public:
 
-    KeySignatureDialog (Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
-
+    KeySignatureDialog(Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
     ~KeySignatureDialog();
 
     //[UserMethods]
@@ -56,7 +55,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -100,17 +99,17 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<DialogPanel> background;
-    ScopedPointer<MobileComboBox::Primer> comboPrimer;
-    ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> removeEventButton;
-    ScopedPointer<TextButton> okButton;
-    ScopedPointer<SeparatorHorizontal> separatorH;
-    ScopedPointer<SeparatorVertical> separatorV;
-    ScopedPointer<KeySelector> keySelector;
-    ScopedPointer<ScaleEditor> scaleEditor;
-    ScopedPointer<PlayButton> playButton;
-    ScopedPointer<TextEditor> scaleNameEditor;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<MobileComboBox::Primer> comboPrimer;
+    UniquePointer<Label> messageLabel;
+    UniquePointer<TextButton> removeEventButton;
+    UniquePointer<TextButton> okButton;
+    UniquePointer<SeparatorHorizontal> separatorH;
+    UniquePointer<SeparatorVertical> separatorV;
+    UniquePointer<KeySelector> keySelector;
+    UniquePointer<ScaleEditor> scaleEditor;
+    UniquePointer<PlayButton> playButton;
+    UniquePointer<TextEditor> scaleNameEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureDialog)
 };

@@ -34,10 +34,6 @@ KeySelector::KeySelector()
     this->buttons.getFirst()->select();
 }
 
-KeySelector::~KeySelector()
-{
-}
-
 void KeySelector::resized()
 {
     int x = 0;
