@@ -85,9 +85,13 @@ float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, flo
     return cv1 + (easeIn + easeOut);
 }
 
-// Let's have max value as 1000 == 60 BPM, so that middle value would be exactly 120 BPM
+// Returns microseconds per quarter note
+static int controllerValueToTempo(float cv) noexcept
+{
+    // 1000 == 60 bpm, 2000 == 30 etc (TODO: logarithmic scale for BPM)
 #define MAX_MS_PER_QUARTER_NOTE (1000)
-// TODO: logarithmic scale for BPM
+    return int((1.f - cv) * MAX_MS_PER_QUARTER_NOTE * 1000);
+}
 
 void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
 {
@@ -96,12 +100,12 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
 
     if (isTempoTrack)
     {
-        cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * MAX_MS_PER_QUARTER_NOTE * 1000));
+        cc = MidiMessage::tempoMetaEvent(controllerValueToTempo(this->controllerValue));
     }
     else
     {
         cc = MidiMessage::controllerEvent(this->getTrackChannel(),
-            this->getTrackControllerNumber(),int(this->controllerValue * 127));
+            this->getTrackControllerNumber(), int(this->controllerValue * 127));
     }
 
     const double startTime = this->beat * timeFactor;
@@ -132,8 +136,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
                 const double interpolatedTs = (interpolatedBeat + clip.getBeat()) * timeFactor;
                 if (isTempoTrack)
                 {
-                    const auto tempo = int((1.f - interpolatedValue) * MAX_MS_PER_QUARTER_NOTE * 1000.0);
-                    MidiMessage ci(MidiMessage::tempoMetaEvent(tempo));
+                    MidiMessage ci(MidiMessage::tempoMetaEvent(controllerValueToTempo(interpolatedValue)));
                     ci.setTimeStamp(interpolatedTs);
                     outSequence.addEvent(ci, timeOffset);
                 }
@@ -206,6 +209,12 @@ AutomationEvent AutomationEvent::withParameters(const ValueTree &parameters) con
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
+
+int AutomationEvent::getControllerValueAsBPM() const noexcept
+{
+    const int msPerQuarterNote = controllerValueToTempo(this->controllerValue) / 1000;
+    return 60000 / jmax(1, msPerQuarterNote);
+}
 
 float AutomationEvent::getControllerValue() const noexcept
 {

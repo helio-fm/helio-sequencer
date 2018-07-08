@@ -95,7 +95,7 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
             {
                 if (this->tuningIndicator == nullptr)
                 {
-                    this->tuningIndicator = new FineTuningValueIndicator(this->event.getCurvature());
+                    this->tuningIndicator = new FineTuningValueIndicator(this->event.getCurvature(), "");
                     this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator);
                     this->fader.fadeIn(this->tuningIndicator, 200);
                 }
@@ -105,7 +105,8 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
 
                 if (this->tuningIndicator != nullptr)
                 {
-                    this->tuningIndicator->setValue(this->event.getCurvature());
+                    const float cv = this->event.getCurvature();
+                    this->tuningIndicator->setValue(cv, cv);
                     this->tuningIndicator->repositionToTargetAt(this, this->editor.getPosition());
                 }
             }
