@@ -177,6 +177,8 @@
             <FILE id="GH5xm4" name="PlayerThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/Transport/PlayerThread.cpp"/>
             <FILE id="Q7DJnB" name="PlayerThread.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/PlayerThread.h"/>
+            <FILE id="hQoXTL" name="PlayerThreadPool.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/Transport/PlayerThreadPool.h"/>
             <FILE id="TikoqY" name="ProjectSequencesWrapper.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/Transport/ProjectSequencesWrapper.h"/>
             <FILE id="MxQSLU" name="RendererThread.cpp" compile="1" resource="0"

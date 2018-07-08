@@ -85,14 +85,6 @@ float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, flo
     return cv1 + (easeIn + easeOut);
 }
 
-// Returns microseconds per quarter note
-static int controllerValueToTempo(float cv) noexcept
-{
-    // 1000 == 60 bpm, 2000 == 30 etc (TODO: logarithmic scale for BPM)
-#define MAX_MS_PER_QUARTER_NOTE (1000)
-    return int((1.f - cv) * MAX_MS_PER_QUARTER_NOTE * 1000);
-}
-
 void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
 {
     MidiMessage cc;
@@ -100,7 +92,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
 
     if (isTempoTrack)
     {
-        cc = MidiMessage::tempoMetaEvent(controllerValueToTempo(this->controllerValue));
+        cc = MidiMessage::tempoMetaEvent(Transport::getTempoByCV(this->controllerValue));
     }
     else
     {
@@ -136,7 +128,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
                 const double interpolatedTs = (interpolatedBeat + clip.getBeat()) * timeFactor;
                 if (isTempoTrack)
                 {
-                    MidiMessage ci(MidiMessage::tempoMetaEvent(controllerValueToTempo(interpolatedValue)));
+                    MidiMessage ci(MidiMessage::tempoMetaEvent(Transport::getTempoByCV(interpolatedValue)));
                     ci.setTimeStamp(interpolatedTs);
                     outSequence.addEvent(ci, timeOffset);
                 }
@@ -212,7 +204,7 @@ AutomationEvent AutomationEvent::withParameters(const ValueTree &parameters) con
 
 int AutomationEvent::getControllerValueAsBPM() const noexcept
 {
-    const int msPerQuarterNote = controllerValueToTempo(this->controllerValue) / 1000;
+    const int msPerQuarterNote = Transport::getTempoByCV(this->controllerValue) / 1000;
     return 60000 / jmax(1, msPerQuarterNote);
 }
 
