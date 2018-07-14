@@ -373,7 +373,7 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
 void HelioCallout::updateShape()
 {
     this->repaint();
-    this->background = Image::null;
+    this->background = {};
     this->outline.clear();
     
     const float innerBorderPadding = 3.f;

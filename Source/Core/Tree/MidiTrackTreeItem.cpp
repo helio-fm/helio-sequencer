@@ -44,7 +44,6 @@ MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type)
     id(Uuid().toString()),
     colour(Colours::white), // TODO random color from my set
     channel(1),
-    instrumentId(String::empty),
     controllerNumber(0),
     mute(false),
     solo(false)

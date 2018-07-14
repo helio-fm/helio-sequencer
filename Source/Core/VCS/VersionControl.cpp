@@ -496,12 +496,12 @@ void VersionControl::deserialize(const ValueTree &tree)
     
     if (! Revision::isEmpty(headRevision))
     {
-        const double t1 = Time::getMillisecondCounterHiRes();
+        //const double t1 = Time::getMillisecondCounterHiRes();
 
         this->head.pointTo(headRevision);
         //this->head.moveTo(headRevision);
 
-        const double t2 = Time::getMillisecondCounterHiRes();
+        //const double t2 = Time::getMillisecondCounterHiRes();
         //Logger::writeToLog("Building index done in " + String(t2 - t1) + "ms");
     }
 //#endif

@@ -152,16 +152,6 @@ void AudioPluginTreeItem::showPage()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-var AudioPluginTreeItem::getDragSourceDescription()
-{
-    return var::null;
-}
-
-bool AudioPluginTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
-{
-    return false;
-}
-
-void AudioPluginTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
-{
-}
+var AudioPluginTreeItem::getDragSourceDescription() { return {}; }
+bool AudioPluginTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) { return false; }
+void AudioPluginTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) {}

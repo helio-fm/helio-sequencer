@@ -110,7 +110,6 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
     if (!isOnOff && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
     {
         const auto *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
-        const double nextTime = nextEvent->beat * timeFactor;
         float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
         float lastAppliedValue = this->controllerValue;
 

@@ -87,8 +87,8 @@ void Delta::deserialize(const ValueTree &tree)
     this->vcsUuid = root.getProperty(Serialization::VCS::deltaId, this->vcsUuid.toString());
     this->type = root.getProperty(Serialization::VCS::deltaTypeId, undefinedDelta).toString();
 
-    const String descriptionName = root.getProperty(Serialization::VCS::deltaName, String::empty);
-    const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, String::empty);
+    const String descriptionName = root.getProperty(Serialization::VCS::deltaName, {});
+    const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, {});
     const int64 descriptionIntParam =
         root.getProperty(Serialization::VCS::deltaIntParam, String(DeltaDescription::defaultNumChanges));
     

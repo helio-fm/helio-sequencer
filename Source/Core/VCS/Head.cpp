@@ -409,7 +409,7 @@ bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
     if (this->state == nullptr)
     { return false; }
 
-    for (const auto item : changes)
+    for (const auto &item : changes)
     {
         this->resetChangedItemToState(item);
     }

@@ -93,8 +93,7 @@ SignInRow::~SignInRow()
 void SignInRow::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    if (0)
-    {
+#if 0
     //[/UserPrePaint]
 
     {
@@ -107,7 +106,7 @@ void SignInRow::paint (Graphics& g)
     }
 
     //[UserPaint] Add your own custom painting code here..
-    }
+#endif
     //[/UserPaint]
 }
 
