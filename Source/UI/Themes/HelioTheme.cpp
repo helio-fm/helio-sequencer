@@ -88,10 +88,8 @@ void HelioTheme::drawDashedRectangle(Graphics &g, const Rectangle<float> &r, con
                           r.getBottomLeft().getX(), r.getBottomLeft().getY());
     
     path = path.createPathWithRoundedCorners(cornerRadius);
-    
-    Array<float> dashes;
-    dashes.add(dashLength);
-    dashes.add(spaceLength);
+
+    static Array<float> dashes(dashLength, spaceLength);
     PathStrokeType(dashThickness, PathStrokeType::mitered, PathStrokeType::rounded)
     .createDashedStroke(path, path, dashes.getRawDataPointer(), dashes.size());
     
@@ -165,10 +163,7 @@ void HelioTheme::drawLasso(Graphics &g, Component &lassoComp)
     
     path = path.createPathWithRoundedCorners(cornersRound);
     
-    Array<float> dashes;
-    dashes.add(dashLength);
-    dashes.add(dashLength);
-
+    static Array<float> dashes(dashLength, dashLength);
     PathStrokeType(dashWidth).createDashedStroke(path, path, dashes.getRawDataPointer(), dashes.size());
     g.strokePath(path, PathStrokeType(dashWidth));
 }
@@ -792,7 +787,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // Helio colours:
 
     // Lasso
-    this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.15f));
+    this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.25f));
     this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.4f));
 
     // A hack for icon base colors

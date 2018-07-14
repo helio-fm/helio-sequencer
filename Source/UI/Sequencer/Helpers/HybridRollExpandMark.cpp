@@ -31,14 +31,15 @@ HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetB
       numBars(numBarsToTake),
       alpha(1.f)
 {
-    addAndMakeVisible (plusImage = new IconComponent (Icons::expand));
+    this->plusImage.reset(new IconComponent(Icons::expand));
+    this->addAndMakeVisible(plusImage.get());
 
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (256, 48);
+    this->setSize(256, 48);
 
     //[Constructor]
     this->startTimerHz(60);
@@ -72,7 +73,7 @@ void HybridRollExpandMark::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    plusImage->setBounds ((getWidth() / 2) - (16 / 2), (getHeight() / 2) - (16 / 2), 16, 16);
+    plusImage->setBounds((getWidth() / 2) - (16 / 2), (getHeight() / 2) - (16 / 2), 16, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }

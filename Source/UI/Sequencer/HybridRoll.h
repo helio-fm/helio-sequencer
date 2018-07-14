@@ -343,6 +343,7 @@ protected:
     bool isViewportDragEvent(const MouseEvent &e) const;
     bool isAddEvent(const MouseEvent &e) const;
     bool isLassoEvent(const MouseEvent &e) const;
+    bool isKnifeToolEvent(const MouseEvent &e) const;
 
     float firstBar;
     float lastBar;

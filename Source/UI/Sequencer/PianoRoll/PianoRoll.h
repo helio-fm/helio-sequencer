@@ -32,6 +32,7 @@ class NoteComponent;
 class PianoRollCellHighlighter;
 class PianoRollSelectionMenuManager;
 class HelperRectangle;
+class KnifeToolHelper;
 class Scale;
 
 #include "HybridRoll.h"
@@ -155,6 +156,7 @@ public:
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -188,6 +190,12 @@ private:
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void insertNewNoteAt(const MouseEvent &e);
+
+    ScopedPointer<KnifeToolHelper> knifeToolHelper;
+    HashMap<Note, UniquePointer<Component>> knifeIntersectionHelpers;
+    void startCuttingEvents(const MouseEvent &e);
+    void continueCuttingEvents(const MouseEvent &e);
+    void endCuttingEventsIfNeeded();
 
     NoteComponent *newNoteDragging;
     bool addNewNoteMode;

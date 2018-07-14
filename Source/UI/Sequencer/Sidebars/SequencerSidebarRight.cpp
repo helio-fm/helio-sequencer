@@ -263,7 +263,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         break;
         
     case CommandIDs::ScissorsTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
+        this->project.getEditMode().setMode(HybridRollEditMode::knifeMode);
         break;
 
     case CommandIDs::TweakNotesVolume:
@@ -297,7 +297,7 @@ void SequencerSidebarRight::recreateMenu()
     const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
     const bool zoomMode = this->project.getEditMode().isMode(HybridRollEditMode::zoomMode);
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
-    const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::scissorsMode);
+    const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::knifeMode);
 
 #if HELIO_MOBILE
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
@@ -306,6 +306,8 @@ void SequencerSidebarRight::recreateMenu()
     this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
     this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
     this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
+    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::ScissorsTool)->toggled(scissorsMode));
+    //this->menu.add(MenuItem::item(Icons::eraserTool, CommandIDs::EraserTool)->toggled(eraserMode));
 
     if (this->menuMode == PianoRollTools)
     {

@@ -94,6 +94,7 @@ namespace CommandIDs
         InsertSpaceTool                 = 0x1705,
         WipeSpaceTool                   = 0x1706,
         ScissorsTool                    = 0x1707,
+        EraserTool                      = 0x1708,
 
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,
@@ -191,7 +192,7 @@ namespace CommandIDs
         EditModeDraw                    = 0x4001,
         EditModePan                     = 0x4002,
         EditModeSelect                  = 0x4003,
-        EditModeScissors                = 0x4004,
+        EditModeKnife                   = 0x4004,
         
         BeatShiftLeft                   = 0x4050,
         BeatShiftRight                  = 0x4051,

@@ -23,13 +23,12 @@ class HybridRoll;
 //[/Headers]
 
 
-class HybridRollExpandMark  : public Component,
-                              private Timer
+class HybridRollExpandMark final : public Component,
+                                   private Timer
 {
 public:
 
-    HybridRollExpandMark (HybridRoll &parentRoll, float targetBar, int numBarsToTake);
-
+    HybridRollExpandMark(HybridRoll &parentRoll, float targetBar, int numBarsToTake);
     ~HybridRollExpandMark();
 
     //[UserMethods]
@@ -56,7 +55,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<IconComponent> plusImage;
+    UniquePointer<IconComponent> plusImage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HybridRollExpandMark)
 };

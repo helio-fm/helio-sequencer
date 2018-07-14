@@ -34,55 +34,62 @@ HybridRollEditMode::HybridRollEditMode(const HybridRollEditMode &other) :
 bool HybridRollEditMode::forbidsViewportDragging() const
 {
     return
-    this->isMode(HybridRollEditMode::drawMode) ||
-    this->isMode(HybridRollEditMode::selectionMode) ||
-    this->isMode(HybridRollEditMode::zoomMode);
+        this->isMode(HybridRollEditMode::drawMode) ||
+        this->isMode(HybridRollEditMode::selectionMode) ||
+        this->isMode(HybridRollEditMode::zoomMode);
 }
 
 bool HybridRollEditMode::forcesViewportDragging() const
 {
-    return
-    this->isMode(HybridRollEditMode::dragMode);
+    return this->isMode(HybridRollEditMode::dragMode);
 }
 
 bool HybridRollEditMode::forbidsViewportZooming() const
 {
-    return
-    (this->mode != HybridRollEditMode::zoomMode);
+    return !this->isMode(HybridRollEditMode::zoomMode);
 }
 
 bool HybridRollEditMode::forcesViewportZooming() const
 {
-    return
-    this->isMode(HybridRollEditMode::zoomMode);
+    return this->isMode(HybridRollEditMode::zoomMode);
 }
 
 bool HybridRollEditMode::forbidsSelectionMode() const
 {
     return
-    this->isMode(HybridRollEditMode::drawMode) ||
-    this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::dragMode);
+        this->isMode(HybridRollEditMode::drawMode) ||
+        this->isMode(HybridRollEditMode::zoomMode) ||
+        this->isMode(HybridRollEditMode::dragMode) ||
+        this->isMode(HybridRollEditMode::knifeMode);
 }
 
 bool HybridRollEditMode::forcesSelectionMode() const
 {
-    return
-    this->isMode(HybridRollEditMode::selectionMode);
+    return this->isMode(HybridRollEditMode::selectionMode);
 }
 
 bool HybridRollEditMode::forbidsAddingEvents() const
 {
     return
-    this->isMode(HybridRollEditMode::selectionMode) ||
-    this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::dragMode);
+        this->isMode(HybridRollEditMode::selectionMode) ||
+        this->isMode(HybridRollEditMode::zoomMode) ||
+        this->isMode(HybridRollEditMode::dragMode) ||
+        this->isMode(HybridRollEditMode::knifeMode);
 }
 
 bool HybridRollEditMode::forcesAddingEvents() const
 {
-    return
-    this->isMode(HybridRollEditMode::drawMode);
+    return this->isMode(HybridRollEditMode::drawMode);
+}
+
+bool HybridRollEditMode::forbidsCuttingEvents() const
+{
+    return !this->isMode(HybridRollEditMode::knifeMode);
+}
+
+bool HybridRollEditMode::forcesCuttingEvents() const
+{
+    return this->isMode(HybridRollEditMode::knifeMode);
 }
 
 bool HybridRollEditMode::shouldInteractWithChildren() const
@@ -97,7 +104,7 @@ bool HybridRollEditMode::shouldInteractWithChildren() const
         case selectionMode:
         case zoomMode:
         case dragMode:
-        case scissorsMode:
+        case knifeMode:
             return false;
             break;
     }
@@ -129,7 +136,7 @@ MouseCursor HybridRollEditMode::getCursor() const
             return MouseCursor::DraggingHandCursor;
             break;
             
-        case scissorsMode:
+        case knifeMode:
             return MouseCursor::CrosshairCursor;
             break;
     }

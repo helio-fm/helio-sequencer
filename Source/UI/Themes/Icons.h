@@ -93,6 +93,8 @@ struct Icons final
         zoomTool,
         dragTool,
         cropTool,
+        cutterTool,
+        eraserTool,
         stretchLeft,
         stretchRight,
         expand,

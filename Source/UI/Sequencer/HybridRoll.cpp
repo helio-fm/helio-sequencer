@@ -1076,6 +1076,8 @@ void HybridRoll::mouseUp(const MouseEvent &e)
 
 void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
+    // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
+
     const float &inititalSpeed = this->smoothZoomController->getInitialZoomSpeed();
     const float forwardWheel = wheel.deltaY * (wheel.isReversed ? -inititalSpeed : inititalSpeed);
     const float beatWidth = (this->barWidth / BEATS_PER_BAR);
@@ -1478,78 +1480,41 @@ void HybridRoll::hiResTimerCallback()
 
 bool HybridRoll::isViewportZoomEvent(const MouseEvent &e) const
 {
-    if (this->project.getEditMode().forbidsViewportZooming())
-    {
-        return false;
-    }
-
-    if (this->project.getEditMode().forcesViewportZooming())
-    {
-        return true;
-    }
-
-    // may add custom logic here
+    if (this->project.getEditMode().forbidsViewportZooming())   { return false; }
+    if (this->project.getEditMode().forcesViewportZooming())    { return true; }
     return false;
 }
 
 bool HybridRoll::isViewportDragEvent(const MouseEvent &e) const
 {
-    if (this->project.getEditMode().forbidsViewportDragging())
-    {
-        return false;
-    }
-
-    if (this->project.getEditMode().forcesViewportDragging())
-    {
-        return true;
-    }
-
-    if (e.source.isTouch())
-    {
-        return (e.mods.isLeftButtonDown());
-    }
-    
+    if (this->project.getEditMode().forbidsViewportDragging())  { return false; }
+    if (this->project.getEditMode().forcesViewportDragging())   { return true; }
+    if (e.source.isTouch())                                     { return e.mods.isLeftButtonDown(); }
     return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
 }
 
 bool HybridRoll::isAddEvent(const MouseEvent &e) const
 {
-    if (e.mods.isRightButtonDown())
-    {
-        return false;
-    }
-
-    if (this->project.getEditMode().forbidsAddingEvents())
-    {
-        return false;
-    }
-
-    if (this->project.getEditMode().forcesAddingEvents())
-    {
-        return true;
-    }
-
+    if (e.mods.isRightButtonDown())                         { return false; }
+    if (this->project.getEditMode().forbidsAddingEvents())  { return false; }
+    if (this->project.getEditMode().forcesAddingEvents())   { return true; }
     return false;
 }
 
 bool HybridRoll::isLassoEvent(const MouseEvent &e) const
 {
-    if (this->project.getEditMode().forbidsSelectionMode())
-    {
-        return false;
-    }
-
-    if (this->project.getEditMode().forcesSelectionMode())
-    {
-        return true;
-    }
-
-    if (e.source.isTouch())
-    {
-        return false;
-    }
-    
+    if (this->project.getEditMode().forbidsSelectionMode()) { return false; }
+    if (this->project.getEditMode().forcesSelectionMode())  { return true; }
+    if (e.source.isTouch())                                 { return false; }
     return e.mods.isLeftButtonDown();
+}
+
+bool HybridRoll::isKnifeToolEvent(const MouseEvent &e) const
+{
+    if (e.mods.isRightButtonDown())                         { return false; }
+    if (this->project.getEditMode().forbidsCuttingEvents()) { return false; }
+    if (this->project.getEditMode().forcesCuttingEvents())  { return true; }
+    return false;
 }
 
 void HybridRoll::resetDraggingAnchors()
@@ -1724,7 +1689,7 @@ void HybridRoll::updateChildrenPositions()
 }
 
 //===----------------------------------------------------------------------===//
-// ChangeListener
+// ChangeListener: edit mode changed
 //===----------------------------------------------------------------------===//
 
 void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)

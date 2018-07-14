@@ -112,12 +112,10 @@ public:
     inline int size() const noexcept
     { return this->midiEvents.size(); }
 
-    template<typename T>
-    inline T **begin() const noexcept
+    inline MidiEvent **begin() const noexcept
     { return this->midiEvents.begin(); }
     
-    template<typename T>
-    inline T **end() const noexcept
+    inline MidiEvent **end() const noexcept
     { return this->midiEvents.end(); }
     
     inline MidiEvent *getUnchecked(const int index) const noexcept

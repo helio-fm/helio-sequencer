@@ -30,6 +30,7 @@ void SelectionComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableC
 
     if (lassoSource != nullptr)
     {
+        // TODO remember absolute position, not pixels
         source = lassoSource;
         originalSelection = lassoSource->getLassoSelection().getItemArray();
         this->setSize(0, 0);

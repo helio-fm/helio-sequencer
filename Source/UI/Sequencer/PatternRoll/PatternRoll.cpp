@@ -613,7 +613,9 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeSelect:
         this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         break;
-
+    case CommandIDs::EditModeKnife:
+        this->project.getEditMode().setMode(HybridRollEditMode::knifeMode);
+        break;
     default:
         break;
     }

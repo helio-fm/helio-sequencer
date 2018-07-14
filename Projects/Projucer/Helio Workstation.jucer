@@ -39,10 +39,12 @@
         <FILE id="FGsAM4" name="cropTool.svg" compile="0" resource="1" file="../../Resources/Icons/cropTool.svg"/>
         <FILE id="eeLgJV" name="cursorTool.svg" compile="0" resource="1" file="../../Resources/Icons/cursorTool.svg"/>
         <FILE id="kqVbqH" name="cut.svg" compile="0" resource="1" file="../../Resources/Icons/cut.svg"/>
+        <FILE id="qhKsHT" name="cutterTool.svg" compile="0" resource="1" file="../../Resources/Icons/cutterTool.svg"/>
         <FILE id="qQqffF" name="down.svg" compile="0" resource="1" file="../../Resources/Icons/down.svg"/>
         <FILE id="TZOeiP" name="dragTool.svg" compile="0" resource="1" file="../../Resources/Icons/dragTool.svg"/>
         <FILE id="S0dKhu" name="drawTool.svg" compile="0" resource="1" file="../../Resources/Icons/drawTool.svg"/>
         <FILE id="pt25MQ" name="ellipsis.svg" compile="0" resource="1" file="../../Resources/Icons/ellipsis.svg"/>
+        <FILE id="u0J7QC" name="eraserTool.svg" compile="0" resource="1" file="../../Resources/Icons/eraserTool.svg"/>
         <FILE id="PjELEM" name="expand.svg" compile="0" resource="1" file="../../Resources/Icons/expand.svg"/>
         <FILE id="XzECGs" name="fail.svg" compile="0" resource="1" file="../../Resources/Icons/fail.svg"/>
         <FILE id="mgkKBL" name="forward.svg" compile="0" resource="1" file="../../Resources/Icons/forward.svg"/>
@@ -1043,6 +1045,21 @@
                   file="../../Source/UI/Sequencer/Header/TrackStartIndicator.h"/>
           </GROUP>
           <GROUP id="{8144406F-1438-BE00-DA08-A94FC6424392}" name="Helpers">
+            <FILE id="qsshHN" name="CutPointMark.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/CutPointMark.cpp"/>
+            <FILE id="OBROeR" name="CutPointMark.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Helpers/CutPointMark.h"/>
+            <FILE id="ZJCh08" name="HybridRollExpandMark.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp"/>
+            <FILE id="iM3cEX" name="HybridRollExpandMark.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h"/>
+            <FILE id="A5NXhb" name="KnifeToolHelper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp"/>
+            <FILE id="SQ41Eb" name="KnifeToolHelper.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/KnifeToolHelper.h"/>
+            <FILE id="NOqCjM" name="TimelineWarningMarker.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"/>
+            <FILE id="amNgBo" name="TimelineWarningMarker.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.h"/>
             <FILE id="BuB4fE" name="PatternOperations.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/PatternOperations.cpp"/>
             <FILE id="LbPJ1x" name="PatternOperations.h" compile="0" resource="0"
@@ -1051,14 +1068,6 @@
                   file="../../Source/UI/Sequencer/Helpers/SequencerOperations.cpp"/>
             <FILE id="Ef8Csi" name="SequencerOperations.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/SequencerOperations.h"/>
-            <FILE id="ZJCh08" name="HybridRollExpandMark.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp"/>
-            <FILE id="iM3cEX" name="HybridRollExpandMark.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h"/>
-            <FILE id="NOqCjM" name="TimelineWarningMarker.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"/>
-            <FILE id="amNgBo" name="TimelineWarningMarker.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.h"/>
           </GROUP>
           <GROUP id="{B0892F63-3E45-E55C-AC0C-2854CEBBAA2E}" name="PatternRoll">
             <GROUP id="{B0907F47-84ED-36AB-6C8C-C52ABB97E9A8}" name="ClipComponents">

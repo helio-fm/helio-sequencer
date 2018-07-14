@@ -38,6 +38,7 @@
 #include "Note.h"
 #include "NoteComponent.h"
 #include "HelperRectangle.h"
+#include "KnifeToolHelper.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
@@ -805,6 +806,10 @@ void PianoRoll::mouseDown(const MouseEvent &e)
         {
             this->insertNewNoteAt(e);
         }
+        else if (this->isKnifeToolEvent(e))
+        {
+            this->startCuttingEvents(e);
+        }
     }
 
     HybridRoll::mouseDown(e);
@@ -842,6 +847,10 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
             this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
         }
     }
+    else if (this->isKnifeToolEvent(e))
+    {
+        this->continueCuttingEvents(e);
+    }
 
     HybridRoll::mouseDrag(e);
 }
@@ -861,6 +870,8 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         this->setMouseCursor(this->project.getEditMode().getCursor());
         this->newNoteDragging = nullptr;
     }
+
+    this->endCuttingEventsIfNeeded();
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -976,8 +987,8 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeSelect:
         this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         break;
-    case CommandIDs::EditModeScissors:
-        this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
+    case CommandIDs::EditModeKnife:
+        this->project.getEditMode().setMode(HybridRollEditMode::knifeMode);
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         {
@@ -1116,6 +1127,69 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     this->addNote(draggingRow, draggingColumn, DEFAULT_NOTE_LENGTH, this->newNoteVolume);
 }
 
+void PianoRoll::startCuttingEvents(const MouseEvent &e)
+{
+    if (this->knifeToolHelper == nullptr)
+    {
+        this->knifeToolHelper = new KnifeToolHelper(*this);
+        this->addAndMakeVisible(this->knifeToolHelper);
+        this->knifeToolHelper->toBack();
+        this->knifeToolHelper->fadeIn();
+    }
+
+    this->knifeToolHelper->setStartPosition(e.position);
+    this->knifeToolHelper->setEndPosition(e.position);
+}
+
+void PianoRoll::continueCuttingEvents(const MouseEvent &event)
+{
+    if (this->knifeToolHelper != nullptr)
+    {
+        this->knifeToolHelper->setEndPosition(event.position);
+        this->knifeToolHelper->rebound();
+
+        bool addsPoint;
+        Point<float> intersection;
+        forEachEventComponent(this->patternMap, e)
+        {
+            addsPoint = false;
+            auto *nc = e.second.get();
+            if (nc->isActive())
+            {
+                const int h2 = nc->getHeight() / 2;
+                const Line<float> noteLine(nc->getPosition().translated(0, h2).toFloat(),
+                    nc->getPosition().translated(nc->getWidth(), h2).toFloat());
+
+                if (this->knifeToolHelper->getLine().intersects(noteLine, intersection))
+                {
+                    const float relativeCutBeat = this->getRoundBeatByXPosition(int(intersection.getX()))
+                        - this->activeClip.getBeat() - nc->getBeat();
+ 
+                    if (relativeCutBeat > 0.f && relativeCutBeat < nc->getLength())
+                    {
+                        addsPoint = true;
+                        this->knifeToolHelper->addOrUpdateCutPoint(nc, relativeCutBeat);
+                    }
+                }
+
+                if (!addsPoint)
+                {
+                    this->knifeToolHelper->removeCutPointIfExists(nc->getNote());
+                }
+            }
+        }
+    }
+}
+
+void PianoRoll::endCuttingEventsIfNeeded()
+{
+    if (this->knifeToolHelper != nullptr)
+    {
+        // TODO
+        this->knifeToolHelper = nullptr;
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // HybridRoll's legacy
 //===----------------------------------------------------------------------===//
@@ -1165,6 +1239,11 @@ void PianoRoll::handleAsyncUpdate()
     HybridRoll::handleAsyncUpdate();
 }
 
+void PianoRoll::changeListenerCallback(ChangeBroadcaster *source)
+{
+    this->endCuttingEventsIfNeeded();
+    HybridRoll::changeListenerCallback(source);
+}
 
 void PianoRoll::updateChildrenBounds()
 {

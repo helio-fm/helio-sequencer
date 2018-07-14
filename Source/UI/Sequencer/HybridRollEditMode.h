@@ -30,7 +30,7 @@ public:
         selectionMode                    = 0x03,
         zoomMode                         = 0x04,
         dragMode                         = 0x05,
-        scissorsMode                     = 0x06,
+        knifeMode                        = 0x06,
     };
     
     HybridRollEditMode();
@@ -47,6 +47,9 @@ public:
     
     bool forbidsAddingEvents() const;
     bool forcesAddingEvents() const;
+
+    bool forbidsCuttingEvents() const;
+    bool forcesCuttingEvents() const;
 
     bool shouldInteractWithChildren() const;
     MouseCursor getCursor() const;
