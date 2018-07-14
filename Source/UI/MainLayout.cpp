@@ -214,7 +214,7 @@ Rectangle<int> MainLayout::getPageBounds() const
     Rectangle<int> r(this->getLocalBounds());
     r.removeFromLeft(SEQUENCER_SIDEBAR_WIDTH);
     r.removeFromRight(SEQUENCER_SIDEBAR_WIDTH);
-    r.removeFromTop(this->headline->getHeight());
+    r.removeFromTop(HEADLINE_HEIGHT);
     return r;
 }
 
@@ -227,7 +227,7 @@ void MainLayout::resized()
     Rectangle<int> r(this->getLocalBounds());
     if (r.isEmpty()) { return; }
 
-    this->headline->setBounds(r.removeFromTop(this->headline->getHeight()));
+    this->headline->setBounds(r.removeFromTop(HEADLINE_HEIGHT));
 
     if (this->currentContent)
     {
@@ -252,7 +252,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
     // a piece of juce.
 #if HELIO_MOBILE
     return false;
-#endif
+#elif HELIO_DESKTOP
 
     if (Component::getNumCurrentlyModalComponents() > 0)
     {
@@ -289,6 +289,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
 #endif
     
     return false;
+#endif
 }
 
 bool MainLayout::keyStateChanged(bool isKeyDown)

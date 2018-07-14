@@ -37,6 +37,7 @@
 #include "NoteComponent.h"
 #include "ClipComponent.h"
 #include "RenderDialog.h"
+#include "SuccessTooltip.h"
 #include "App.h"
 #include "Workspace.h"
 #include "MainLayout.h"
@@ -262,6 +263,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
         App::Workspace().getAudioCore().getMonitor();
     
     this->pianoViewport = new Viewport("Viewport One");
+    this->pianoViewport->setScrollOnDragEnabled(false);
     this->pianoViewport->setInterceptsMouseClicks(false, true);
     this->pianoViewport->setScrollBarsShown(false, false);
     this->pianoViewport->setWantsKeyboardFocus(false);
@@ -272,6 +274,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
         *this->pianoViewport, clippingDetector);
 
     this->patternViewport = new Viewport("Viewport Two");
+    this->patternViewport->setScrollOnDragEnabled(false);
     this->patternViewport->setInterceptsMouseClicks(false, true);
     this->patternViewport->setScrollBarsShown(false, false);
     this->patternViewport->setWantsKeyboardFocus(false);
@@ -398,7 +401,7 @@ HybridRoll *SequencerLayout::getRoll() const
 
 bool SequencerLayout::isInterestedInFileDrag(const StringArray &files)
 {
-    File file = File(files.joinIntoString(String::empty, 0, 1));
+    File file = File(files.joinIntoString({}, 0, 1));
     return (file.hasFileExtension("mid") || file.hasFileExtension("midi"));
 }
 
@@ -407,7 +410,7 @@ void SequencerLayout::filesDropped(const StringArray &filenames,
 {
     if (isInterestedInFileDrag(filenames))
     {
-        String filename = filenames.joinIntoString(String::empty, 0, 1);
+        String filename = filenames.joinIntoString({}, 0, 1);
         Logger::writeToLog(filename);
         //importMidiFile(File(filename));
     }
@@ -454,12 +457,13 @@ void SequencerLayout::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ExportMidi:
 #if JUCE_IOS
-        const String safeName = TreeItem::createSafeName(this->project.getName()) + ".mid";
-        File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
-        this->project.exportMidi(midiExport);
-
-        App::Helio()->showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
-        App::Helio()->showModalComponent(new SuccessTooltip());
+        {
+            const String safeName = TreeItem::createSafeName(this->project.getName()) + ".mid";
+            File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
+            this->project.exportMidi(midiExport);
+            App::Layout().showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
+            App::Layout().showModalComponentUnowned(new SuccessTooltip());
+        }
 #else
         this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
 #endif

@@ -283,8 +283,9 @@ void App::initialise(const String &commandLine)
         
         // Desktop versions will be initialised by InitScreen component.
 #if HELIO_MOBILE
+        this->theme->updateBackgroundRenders();
         App::Workspace().init();
-        App::Layout().init();
+        App::Layout().show();
 #endif
     }
     else if (this->runMode == App::PLUGIN_CHECK)

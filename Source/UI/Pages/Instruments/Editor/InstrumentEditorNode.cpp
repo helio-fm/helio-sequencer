@@ -112,13 +112,12 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
                 App::Workspace().getTreeRoot()->
                 findChildrenOfType<InstrumentTreeItem>();
 
-            for (const auto instrumentTreeItem : instrumentTreeItems)
+            for (auto *instrumentTreeItem : instrumentTreeItems)
             {
-                if (instrumentTreeItem->getInstrument() == &this->instrument)
+                if (instrumentTreeItem->getInstrument() == this->instrument.get())
                 {
                     instrumentTreeItem->updateChildrenEditors();
-                    if (TreeItem *audioPluginTreeItem =
-                        instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
+                    if (auto *audioPluginTreeItem = instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
                     {
                         audioPluginTreeItem->setSelected(true, true);
                         return;
