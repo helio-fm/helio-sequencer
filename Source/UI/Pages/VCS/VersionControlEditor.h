@@ -17,27 +17,46 @@
 
 #pragma once
 
+//[Headers]
 class VersionControl;
+//[/Headers]
 
-class VersionControlEditor : public Component,
-                             public ChangeListener
+#include "../../Themes/PanelBackgroundB.h"
+#include "StageComponent.h"
+#include "HistoryComponent.h"
+#include "../../Themes/ShadowRightwards.h"
+
+class VersionControlEditor final : public Component,
+                                   public ChangeListener
 {
 public:
 
     VersionControlEditor(VersionControl &versionControl);
-    
-    virtual void updateState() = 0;
+    ~VersionControlEditor();
 
-    virtual void onStageSelectionChanged() = 0;
-    virtual void onHistorySelectionChanged() = 0;
+    //[UserMethods]
+    void updateState();
+    void onStageSelectionChanged();
+    void onHistorySelectionChanged();
+    //[/UserMethods]
 
-    void changeListenerCallback(ChangeBroadcaster *source) override;
+    void paint (Graphics& g) override;
+    void resized() override;
     void broughtToFront() override;
-    
-protected:
 
+
+private:
+
+    //[UserVariables]
     VersionControl &vcs;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+    //[/UserVariables]
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControlEditor)
+    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<StageComponent> stageComponent;
+    UniquePointer<HistoryComponent> historyComponent;
+    UniquePointer<Component> anchor;
+    UniquePointer<ShadowRightwards> shadow;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VersionControlEditor)
 };

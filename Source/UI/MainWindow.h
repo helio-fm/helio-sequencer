@@ -44,9 +44,6 @@ public:
     void setOpenGLRendererEnabled(bool shouldBeEnabled);
     static bool isOpenGLRendererEnabled() noexcept;
 
-    // the command manager object used to dispatch command events
-    ApplicationCommandManager commandManager;
-    
     //===------------------------------------------------------------------===//
     // Drag'n'drop
     //===------------------------------------------------------------------===//

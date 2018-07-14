@@ -131,6 +131,14 @@ inline float roundBeat(float beat)
             return nullptr; \
         }, this)
 
+// Implements compile-time FNV1a hash:
+constexpr uint32 fnv1a_32_val = 0x811c9dc5;
+constexpr uint64 fnv1a_32_prime = 0x1000193;
+inline constexpr uint32 CompileTimeHash(const char *const str, const uint32 value = fnv1a_32_val) noexcept
+{
+    return (str[0] == '\0') ? value : CompileTimeHash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a_32_prime);
+}
+
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//

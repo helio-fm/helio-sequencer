@@ -44,9 +44,42 @@ public:
     void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
     void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);
 
+    class AudioCallback final : public AudioIODeviceCallback, public MidiInputCallback
+    {
+    public:
+
+        AudioCallback() = default;
+
+        void setProcessor(AudioProcessor *processor);
+        MidiMessageCollector &getMidiMessageCollector() noexcept { return messageCollector; }
+
+        void audioDeviceIOCallback(const float **, int, float **, int, int) override;
+        void audioDeviceAboutToStart(AudioIODevice *) override;
+        void audioDeviceStopped() override;
+        void handleIncomingMidiMessage(MidiInput *, const MidiMessage&) override;
+
+    private:
+
+        AudioProcessor *processor = nullptr;
+        CriticalSection lock;
+        double sampleRate = 0;
+        int blockSize = 0;
+        bool isPrepared = false;
+
+        int numInputChans = 0;
+        int numOutputChans = 0;
+        HeapBlock<float *> channels;
+        AudioBuffer<float> tempBuffer;
+
+        MidiBuffer incomingMidi;
+        MidiMessageCollector messageCollector;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCallback)
+    };
+
     // gets connected to the audio-core device
-    AudioProcessorPlayer &getProcessorPlayer() noexcept
-    { return this->processorPlayer; }
+    AudioCallback &getProcessorPlayer() noexcept
+    { return this->audioCallback; }
 
     AudioProcessorGraph *getProcessorGraph() noexcept
     { return this->processorGraph; }
@@ -126,7 +159,7 @@ private:
 private:
 
     AudioPluginFormatManager &formatManager;
-    AudioProcessorPlayer processorPlayer;
+    Instrument::AudioCallback audioCallback;
     ScopedPointer<AudioProcessorGraph> processorGraph;
 
     ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;

@@ -125,7 +125,7 @@ void VCS::Revision::copyDeltas(ValueTree one, ValueTree another)
     }
 }
 
-MD5 Revision::calculateHash(ValueTree revision)
+uint32 Revision::calculateHash(ValueTree revision)
 {
     StringArray sum;
     for (int i = 0; i < revision.getNumProperties(); ++i)
@@ -147,7 +147,7 @@ MD5 Revision::calculateHash(ValueTree revision)
     }
 
     sum.sort(true);
-    return MD5(sum.joinIntoString("").toUTF8());
+    return CompileTimeHash(sum.joinIntoString("").toUTF8());
 }
 
 bool Revision::isEmpty(ValueTree revision)

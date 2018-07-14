@@ -24,7 +24,6 @@
 #include "Instrument.h"
 #include "SerializationKeys.h"
 #include "AudioMonitor.h"
-#include "AudiobusOutput.h"
 
 void AudioCore::initAudioFormats(AudioPluginFormatManager &formatManager)
 {
@@ -35,30 +34,15 @@ void AudioCore::initAudioFormats(AudioPluginFormatManager &formatManager)
 
 AudioCore::AudioCore()
 {
-    Logger::writeToLog("AudioCore::AudioCore");
-
     this->audioMonitor = new AudioMonitor();
     this->deviceManager.addAudioCallback(this->audioMonitor);
-
     AudioCore::initAudioFormats(this->formatManager);
-
-#if HELIO_AUDIOBUS_SUPPORT
-    AudiobusOutput::init();
-#endif
 }
 
 AudioCore::~AudioCore()
 {
-#if HELIO_AUDIOBUS_SUPPORT
-    AudiobusOutput::shutdown();
-#endif
-
     this->deviceManager.removeAudioCallback(this->audioMonitor);
     this->audioMonitor = nullptr;
-
-    //ScopedPointer<XmlElement> test(this->metaInstrument->serialize());
-    //DocumentReader::saveObfuscated(File("111.txt"), test);
-
     this->deviceManager.closeAudioDevice();
 }
 

@@ -48,8 +48,7 @@
 #include "ProjectInfo.h"
 #include "ProjectTimeline.h"
 #include "ProjectListener.h"
-#include "ProjectPageDefault.h"
-#include "ProjectPagePhone.h"
+#include "ProjectPage.h"
 #include "ProjectMenu.h"
 
 #include "HelioTheme.h"
@@ -265,16 +264,8 @@ void ProjectTreeItem::recreatePage()
     }
     
     this->sequencerLayout = new SequencerLayout(*this);
-    
-    if (App::isRunningOnPhone())
-    {
-        this->projectPage = new ProjectPagePhone(*this);
-    }
-    else
-    {
-        this->projectPage = new ProjectPageDefault(*this);
-    }
-    
+    this->projectPage = new ProjectPage(*this);
+
     this->broadcastChangeProjectBeatRange(); // let rolls update view ranges
     this->sequencerLayout->deserialize(layoutState);
 }

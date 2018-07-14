@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 
 #include "DashboardMenu.h"
-#include "PanelBackgroundA.h"
 #include "HelioTheme.h"
 #include "Icons.h"
 #include "IconComponent.h"

@@ -224,7 +224,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ColourSwatches_e2a4628.o \
   $(JUCE_OBJDIR)/CommandIDs_ca65c4df.o \
   $(JUCE_OBJDIR)/DraggingListBoxComponent_34f40031.o \
-  $(JUCE_OBJDIR)/FatalErrorScreen_2f541f02.o \
   $(JUCE_OBJDIR)/FineTuningComponentDragger_21c9d9e4.o \
   $(JUCE_OBJDIR)/FineTuningValueIndicator_c936e91f.o \
   $(JUCE_OBJDIR)/KeySelector_58be6196.o \
@@ -238,7 +237,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/SpectralLogo_f6755a41.o \
   $(JUCE_OBJDIR)/ViewportFitProxyComponent_a93fb792.o \
   $(JUCE_OBJDIR)/AnnotationDialog_bb76a597.o \
-  $(JUCE_OBJDIR)/AuthorizationDialog_ebcfd46b.o \
   $(JUCE_OBJDIR)/FadingDialog_905af7a1.o \
   $(JUCE_OBJDIR)/KeySignatureDialog_b4559c41.o \
   $(JUCE_OBJDIR)/ModalDialogConfirmation_23a5c174.o \
@@ -282,10 +280,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/OrchestraPitPage_52882f47.o \
   $(JUCE_OBJDIR)/InitScreen_afb02946.o \
   $(JUCE_OBJDIR)/ProjectPage_f686b2d5.o \
-  $(JUCE_OBJDIR)/ProjectPageDefault_85a13436.o \
-  $(JUCE_OBJDIR)/ProjectPagePhone_dd232ce3.o \
   $(JUCE_OBJDIR)/AudioSettings_716d894.o \
-  $(JUCE_OBJDIR)/AuthSettings_2b14161a.o \
   $(JUCE_OBJDIR)/ComponentsList_fad5fa03.o \
   $(JUCE_OBJDIR)/IntroSettingsWrapper_2fdb093.o \
   $(JUCE_OBJDIR)/LabeledSettingsWrapper_3ae3ca8c.o \
@@ -305,7 +300,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/RevisionTreeComponent_2b8f217e.o \
   $(JUCE_OBJDIR)/StageComponent_f36288f.o \
   $(JUCE_OBJDIR)/VersionControlEditor_c12aa262.o \
-  $(JUCE_OBJDIR)/VersionControlEditorDefault_7d881c09.o \
   $(JUCE_OBJDIR)/DashboardMenu_63751724.o \
   $(JUCE_OBJDIR)/CreateProjectRow_dcd38f6.o \
   $(JUCE_OBJDIR)/OpenProjectRow_a3f0b6c4.o \
@@ -402,9 +396,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/include_juce_audio_devices_477c5a4a.o \
   $(JUCE_OBJDIR)/include_juce_audio_formats_fa635d49.o \
   $(JUCE_OBJDIR)/include_juce_audio_processors_6c50941e.o \
-  $(JUCE_OBJDIR)/include_juce_audio_utils_a6c9a21e.o \
   $(JUCE_OBJDIR)/include_juce_core_9b124993.o \
-  $(JUCE_OBJDIR)/include_juce_cryptography_6acc0160.o \
   $(JUCE_OBJDIR)/include_juce_data_structures_eb02bd2b.o \
   $(JUCE_OBJDIR)/include_juce_events_23f77a4d.o \
   $(JUCE_OBJDIR)/include_juce_graphics_82dd76ff.o \
@@ -1000,11 +992,6 @@ $(JUCE_OBJDIR)/DraggingListBoxComponent_34f40031.o: ../../Source/UI/Common/Dragg
 	@echo "Compiling DraggingListBoxComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/FatalErrorScreen_2f541f02.o: ../../Source/UI/Common/FatalErrorScreen.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling FatalErrorScreen.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/FineTuningComponentDragger_21c9d9e4.o: ../../Source/UI/Common/FineTuningComponentDragger.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling FineTuningComponentDragger.cpp"
@@ -1068,11 +1055,6 @@ $(JUCE_OBJDIR)/ViewportFitProxyComponent_a93fb792.o: ../../Source/UI/Common/View
 $(JUCE_OBJDIR)/AnnotationDialog_bb76a597.o: ../../Source/UI/Dialogs/AnnotationDialog.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AnnotationDialog.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/AuthorizationDialog_ebcfd46b.o: ../../Source/UI/Dialogs/AuthorizationDialog.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AuthorizationDialog.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/FadingDialog_905af7a1.o: ../../Source/UI/Dialogs/FadingDialog.cpp
@@ -1290,24 +1272,9 @@ $(JUCE_OBJDIR)/ProjectPage_f686b2d5.o: ../../Source/UI/Pages/Project/ProjectPage
 	@echo "Compiling ProjectPage.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ProjectPageDefault_85a13436.o: ../../Source/UI/Pages/Project/ProjectPageDefault.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ProjectPageDefault.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ProjectPagePhone_dd232ce3.o: ../../Source/UI/Pages/Project/ProjectPagePhone.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ProjectPagePhone.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/AudioSettings_716d894.o: ../../Source/UI/Pages/Settings/AudioSettings.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioSettings.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/AuthSettings_2b14161a.o: ../../Source/UI/Pages/Settings/AuthSettings.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AuthSettings.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ComponentsList_fad5fa03.o: ../../Source/UI/Pages/Settings/ComponentsList.cpp
@@ -1403,11 +1370,6 @@ $(JUCE_OBJDIR)/StageComponent_f36288f.o: ../../Source/UI/Pages/VCS/StageComponen
 $(JUCE_OBJDIR)/VersionControlEditor_c12aa262.o: ../../Source/UI/Pages/VCS/VersionControlEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling VersionControlEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/VersionControlEditorDefault_7d881c09.o: ../../Source/UI/Pages/VCS/VersionControlEditorDefault.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling VersionControlEditorDefault.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/DashboardMenu_63751724.o: ../../Source/UI/Pages/Workspace/Menu/DashboardMenu.cpp
@@ -1890,19 +1852,9 @@ $(JUCE_OBJDIR)/include_juce_audio_processors_6c50941e.o: ../Projucer/JuceLibrary
 	@echo "Compiling include_juce_audio_processors.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/include_juce_audio_utils_a6c9a21e.o: ../Projucer/JuceLibraryCode/include_juce_audio_utils.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling include_juce_audio_utils.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/include_juce_core_9b124993.o: ../Projucer/JuceLibraryCode/include_juce_core.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling include_juce_core.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/include_juce_cryptography_6acc0160.o: ../Projucer/JuceLibraryCode/include_juce_cryptography.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling include_juce_cryptography.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_data_structures_eb02bd2b.o: ../Projucer/JuceLibraryCode/include_juce_data_structures.cpp

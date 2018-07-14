@@ -34,7 +34,7 @@ MenuButton::MenuButton()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (128, 128);
+    this->setSize(128, 128);
 
     //[Constructor]
     //[/Constructor]

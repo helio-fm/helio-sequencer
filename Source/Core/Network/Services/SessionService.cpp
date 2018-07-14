@@ -20,7 +20,6 @@
 
 #include "Config.h"
 
-#include "AuthorizationDialog.h"
 #include "HelioTheme.h"
 #include "App.h"
 

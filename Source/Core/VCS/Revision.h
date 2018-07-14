@@ -34,7 +34,7 @@ namespace VCS
         static void copyProperties(ValueTree one, ValueTree another);
         static void copyDeltas(ValueTree one, ValueTree another);
 
-        static MD5 calculateHash(ValueTree revision);
+        static uint32 calculateHash(ValueTree revision);
         static void incrementVersion(ValueTree revision);
         static void flush(ValueTree revision);
 

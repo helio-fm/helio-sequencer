@@ -24,14 +24,12 @@ class IconComponent;
 #include "CommandIDs.h"
 //[/Headers]
 
-#include "../../../Themes/SeparatorHorizontalFading.h"
 
-class OpenProjectRow  : public DraggingListBoxComponent
+class OpenProjectRow final : public DraggingListBoxComponent
 {
 public:
 
-    OpenProjectRow (Component &parentComponent, ListBox &parentListBox);
-
+    OpenProjectRow(Component &parentComponent, ListBox &parentListBox);
     ~OpenProjectRow();
 
     //[UserMethods]
@@ -52,9 +50,8 @@ private:
     Component &parent;
     //[/UserVariables]
 
-    ScopedPointer<IconComponent> newProjectImage;
-    ScopedPointer<Label> openProjectLabel;
-    ScopedPointer<SeparatorHorizontalFading> shadow;
+    UniquePointer<IconComponent> newProjectImage;
+    UniquePointer<Label> openProjectLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectRow)
 };

@@ -68,7 +68,7 @@ public:
     inline void incrementVersion()
     { this->historyMergeVersion += 1; }
 
-    MD5 calculateHash() const;
+    String calculateHash() const;
     void mergeWith(VersionControl &remoteHistory);
 
     //===------------------------------------------------------------------===//

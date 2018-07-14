@@ -50,18 +50,23 @@ using namespace VCS;
 StageComponent::StageComponent(VersionControl &versionControl)
     : vcs(versionControl)
 {
-    addAndMakeVisible (horizontalCenter = new Component());
+    this->horizontalCenter.reset(new Component());
+    this->addAndMakeVisible(horizontalCenter.get());
 
-    addAndMakeVisible (titleLabel = new Label (String(),
-                                               TRANS("vcs::stage::caption")));
-    titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType (Justification::centred);
-    titleLabel->setEditable (false, false, false);
+    this->titleLabel.reset(new Label(String(),
+                                      TRANS("vcs::stage::caption")));
+    this->addAndMakeVisible(titleLabel.get());
+    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    titleLabel->setJustificationType(Justification::centred);
+    titleLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (indicator = new ProgressIndicator());
+    this->indicator.reset(new ProgressIndicator());
+    this->addAndMakeVisible(indicator.get());
 
-    addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (changesList = new ListBox ("", this));
+    this->panel.reset(new FramePanel());
+    this->addAndMakeVisible(panel.get());
+    this->changesList.reset(new ListBox("", this));
+    this->addAndMakeVisible(changesList.get());
 
 
     //[UserPreSize]
@@ -76,7 +81,7 @@ StageComponent::StageComponent(VersionControl &versionControl)
     this->changesList->setRowHeight(VCS_STAGE_ROW_HEIGHT);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->updateList();
@@ -115,11 +120,11 @@ void StageComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    horizontalCenter->setBounds (0, 0, proportionOfWidth (0.5067f), 8);
-    titleLabel->setBounds (0, 0, getWidth() - 0, 26);
-    indicator->setBounds ((getWidth() / 2) - (32 / 2), (getHeight() / 2) - (32 / 2), 32, 32);
-    panel->setBounds (0, 35, getWidth() - 0, getHeight() - 35);
-    changesList->setBounds (1, 36, getWidth() - 2, getHeight() - 37);
+    horizontalCenter->setBounds(0, 0, proportionOfWidth (0.5071f), 8);
+    titleLabel->setBounds(0, 0, getWidth() - 0, 26);
+    indicator->setBounds((getWidth() / 2) - (32 / 2), (getHeight() / 2) - (32 / 2), 32, 32);
+    panel->setBounds(0, 35, getWidth() - 0, getHeight() - 35);
+    changesList->setBounds(1, 36, getWidth() - 2, getHeight() - 37);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -283,14 +288,14 @@ void StageComponent::startProgressAnimation()
 {
     this->fader.cancelAllAnimations(false);
     this->indicator->startAnimating();
-    this->fader.fadeIn(this->indicator, 200);
+    this->fader.fadeIn(this->indicator.get(), 200);
 }
 
 void StageComponent::stopProgressAnimation()
 {
     this->fader.cancelAllAnimations(false);
     this->indicator->stopAnimating();
-    this->fader.fadeOut(this->indicator, 200);
+    this->fader.fadeOut(this->indicator.get(), 200);
 }
 
 //===----------------------------------------------------------------------===//
@@ -406,7 +411,8 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
   <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="horizontalCenter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.71% 8" class="Component" params=""/>
+                    explicitFocusOrder="0" pos="0 0 50.746% 8" class="Component"
+                    params=""/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::stage::caption"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"

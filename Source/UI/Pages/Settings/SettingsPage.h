@@ -21,7 +21,6 @@
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundB.h"
-#include "../Themes/ShadowRightwards.h"
 
 class SettingsPage final : public Component
 {
@@ -42,9 +41,8 @@ private:
     //[UserVariables]
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundB> background;
-    ScopedPointer<Viewport> viewport;
-    ScopedPointer<Component> shadow;
+    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<Viewport> viewport;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsPage)
 };

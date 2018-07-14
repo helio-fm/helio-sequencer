@@ -30,7 +30,7 @@ String Config::getDeviceId()
         SystemStats::getOperatingSystemName() +
         SystemStats::getCpuVendor();
 
-    return MD5::fromUTF32(systemStats).toHexString();
+    return String(CompileTimeHash(systemStats.toUTF8()));
 }
 
 void Config::set(const Identifier &key, const var &value)

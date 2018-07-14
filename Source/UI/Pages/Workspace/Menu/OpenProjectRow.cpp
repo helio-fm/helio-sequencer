@@ -46,20 +46,23 @@ OpenProjectRow::OpenProjectRow(Component &parentComponent, ListBox &parentListBo
     : DraggingListBoxComponent(parentListBox.getViewport()),
       parent(parentComponent)
 {
-    addAndMakeVisible (newProjectImage = new IconComponent (Icons::browse));
+    this->newProjectImage.reset(new IconComponent(Icons::browse));
+    this->addAndMakeVisible(newProjectImage.get());
 
-    addAndMakeVisible (openProjectLabel = new Label (String(),
-                                                     TRANS("menu::workspace::project::open")));
-    openProjectLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    openProjectLabel->setJustificationType (Justification::centredLeft);
-    openProjectLabel->setEditable (false, false, false);
+    this->openProjectLabel.reset(new Label(String(),
+                                            TRANS("menu::workspace::project::open")));
+    this->addAndMakeVisible(openProjectLabel.get());
+    this->openProjectLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    openProjectLabel->setJustificationType(Justification::centredLeft);
+    openProjectLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (shadow = new SeparatorHorizontalFading());
+    openProjectLabel->setBounds(54, 23, 261, 24);
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (350, 56);
+    this->setSize(350, 56);
 
     //[Constructor]
     //[/Constructor]
@@ -72,7 +75,6 @@ OpenProjectRow::~OpenProjectRow()
 
     newProjectImage = nullptr;
     openProjectLabel = nullptr;
-    shadow = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -92,9 +94,7 @@ void OpenProjectRow::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    newProjectImage->setBounds (32 - (24 / 2), (getHeight() / 2) + 8 - (24 / 2), 24, 24);
-    openProjectLabel->setBounds (54, 23, 261, 24);
-    shadow->setBounds (22, 6, getWidth() - 44, 3);
+    newProjectImage->setBounds(32 - (24 / 2), (getHeight() / 2) + 8 - (24 / 2), 24, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -124,11 +124,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="8ebb161d0a976635" memberName="openProjectLabel" virtualName=""
          explicitFocusOrder="0" pos="54 23 261 24" labelText="menu::workspace::project::open"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="33"/>
-  <JUCERCOMP name="" id="ee264fb9c050a680" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="22 6 44M 3" sourceFile="../../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
+         fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

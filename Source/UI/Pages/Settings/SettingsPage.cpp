@@ -26,12 +26,13 @@
 
 SettingsPage::SettingsPage(Component *settingsList)
 {
-    addAndMakeVisible (background = new PanelBackgroundB());
-    addAndMakeVisible (viewport = new Viewport (String()));
+    this->background.reset(new PanelBackgroundB());
+    this->addAndMakeVisible(background.get());
+    this->viewport.reset(new Viewport(String()));
+    this->addAndMakeVisible(viewport.get());
     viewport->setScrollBarsShown (true, false);
     viewport->setScrollBarThickness (18);
 
-    addAndMakeVisible (shadow = new Component());
 
     //[UserPreSize]
     this->viewport->setViewedComponent(settingsList, false);
@@ -43,7 +44,7 @@ SettingsPage::SettingsPage(Component *settingsList)
 #endif
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->setWantsKeyboardFocus(true);
@@ -58,7 +59,6 @@ SettingsPage::~SettingsPage()
 
     background = nullptr;
     viewport = nullptr;
-    shadow = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -82,9 +82,8 @@ void SettingsPage::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    viewport->setBounds (20, 20, getWidth() - 40, getHeight() - 40);
-    shadow->setBounds (0, 0, 5, getHeight() - 0);
+    background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
+    viewport->setBounds(20, 20, getWidth() - 40, getHeight() - 40);
     //[UserResized] Add your own custom resize handling here..
     this->viewport->getViewedComponent()->
     setSize(this->viewport->getMaximumVisibleWidth(),
@@ -112,9 +111,6 @@ BEGIN_JUCER_METADATA
             explicitFocusOrder="0" pos="20 20 40M 40M" vscroll="1" hscroll="0"
             scrollbarThickness="18" contentType="0" jucerFile="" contentClass=""
             constructorParams=""/>
-  <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../Themes/LightShadowRightwards.cpp"
-             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -190,10 +190,6 @@
             <FILE id="JViiXj" name="TransportListener.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/Transport/TransportListener.h"/>
           </GROUP>
-          <FILE id="KENrya" name="AudiobusOutput.mm" compile="1" resource="0"
-                file="../../Source/Core/Audio/AudiobusOutput.mm"/>
-          <FILE id="Qaw0pn" name="AudiobusOutput.h" compile="0" resource="0"
-                file="../../Source/Core/Audio/AudiobusOutput.h"/>
           <FILE id="eGzL40" name="AudioCore.cpp" compile="1" resource="0" file="../../Source/Core/Audio/AudioCore.cpp"/>
           <FILE id="vlOPNw" name="AudioCore.h" compile="0" resource="0" file="../../Source/Core/Audio/AudioCore.h"/>
         </GROUP>
@@ -612,10 +608,6 @@
                 file="../../Source/UI/Common/DraggingListBoxComponent.cpp"/>
           <FILE id="FnBPxh" name="DraggingListBoxComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/DraggingListBoxComponent.h"/>
-          <FILE id="H2IV7e" name="FatalErrorScreen.cpp" compile="1" resource="0"
-                file="../../Source/UI/Common/FatalErrorScreen.cpp"/>
-          <FILE id="nq0jKL" name="FatalErrorScreen.h" compile="0" resource="0"
-                file="../../Source/UI/Common/FatalErrorScreen.h"/>
           <FILE id="thBDR2" name="FineTuningComponentDragger.cpp" compile="1"
                 resource="0" file="../../Source/UI/Common/FineTuningComponentDragger.cpp"/>
           <FILE id="bFxJCZ" name="FineTuningComponentDragger.h" compile="0" resource="0"
@@ -668,10 +660,6 @@
                 file="../../Source/UI/Dialogs/AnnotationDialog.cpp"/>
           <FILE id="aje40l" name="AnnotationDialog.h" compile="0" resource="0"
                 file="../../Source/UI/Dialogs/AnnotationDialog.h"/>
-          <FILE id="ajCqPG" name="AuthorizationDialog.cpp" compile="1" resource="0"
-                file="../../Source/UI/Dialogs/AuthorizationDialog.cpp"/>
-          <FILE id="WCRnDA" name="AuthorizationDialog.h" compile="0" resource="0"
-                file="../../Source/UI/Dialogs/AuthorizationDialog.h"/>
           <FILE id="LnmUma" name="FadingDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/FadingDialog.cpp"/>
           <FILE id="zCMR8o" name="FadingDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/FadingDialog.h"/>
@@ -863,24 +851,13 @@
             <FILE id="ADhqBV" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Intro/InitScreen.h"/>
           </GROUP>
           <GROUP id="{CD7DBE7C-598C-14E2-4231-52EADE7D3894}" name="Project">
-            <FILE id="BUD2Pz" name="ProjectPage.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.cpp"/>
-            <FILE id="fuC35e" name="ProjectPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.h"/>
-            <FILE id="DprHiC" name="ProjectPageDefault.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Project/ProjectPageDefault.cpp"/>
-            <FILE id="zrV2TC" name="ProjectPageDefault.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Project/ProjectPageDefault.h"/>
-            <FILE id="PYB3CE" name="ProjectPagePhone.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Project/ProjectPagePhone.cpp"/>
-            <FILE id="CDDrlz" name="ProjectPagePhone.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Project/ProjectPagePhone.h"/>
+            <FILE id="DprHiC" name="ProjectPage.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.cpp"/>
+            <FILE id="zrV2TC" name="ProjectPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.h"/>
           </GROUP>
           <GROUP id="{0EEB5CBD-36F3-CF43-20F0-227013D6ED65}" name="Settings">
             <FILE id="zErgDe" name="AudioSettings.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/AudioSettings.cpp"/>
             <FILE id="qPsjoy" name="AudioSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/AudioSettings.h"/>
-            <FILE id="a36Z1B" name="AuthSettings.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/AuthSettings.cpp"/>
-            <FILE id="zqmI1k" name="AuthSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/AuthSettings.h"/>
             <FILE id="sCV3Ea" name="ColourChangeButton.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/ColourChangeButton.h"/>
             <FILE id="V92mWI" name="ComponentsList.cpp" compile="1" resource="0"
@@ -955,14 +932,10 @@
                   file="../../Source/UI/Pages/VCS/StageComponent.cpp"/>
             <FILE id="XvSEqX" name="StageComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/VCS/StageComponent.h"/>
-            <FILE id="odoksk" name="VersionControlEditor.cpp" compile="1" resource="0"
+            <FILE id="LU2ItS" name="VersionControlEditor.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/VCS/VersionControlEditor.cpp"/>
-            <FILE id="S9QmXX" name="VersionControlEditor.h" compile="0" resource="0"
+            <FILE id="tjJByt" name="VersionControlEditor.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/VCS/VersionControlEditor.h"/>
-            <FILE id="LU2ItS" name="VersionControlEditorDefault.cpp" compile="1"
-                  resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorDefault.cpp"/>
-            <FILE id="tjJByt" name="VersionControlEditorDefault.h" compile="0"
-                  resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorDefault.h"/>
           </GROUP>
           <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Workspace">
             <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
@@ -1370,13 +1343,11 @@
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <XCODE_IPHONE targetFolder="../../Projects/iOS" vstFolder="~/Code/Steinberg/VST3"
@@ -1408,13 +1379,11 @@
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
     <VS2015 targetFolder="../../Projects/VisualStudio2015" vstFolder="c:\Code\VST3"
@@ -1449,9 +1418,7 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
@@ -1491,9 +1458,7 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
@@ -1522,13 +1487,11 @@
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <ANDROIDSTUDIO targetFolder="../../Projects/Android" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
@@ -1555,9 +1518,7 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
@@ -1570,9 +1531,7 @@
     <MODULES id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_core" showAllCode="1" useLocalCopy="0"/>
-    <MODULES id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>

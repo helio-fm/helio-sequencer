@@ -42,20 +42,23 @@
 HistoryComponent::HistoryComponent(VersionControl &owner)
     : vcs(owner)
 {
-    addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (revisionViewport = new Viewport());
+    this->panel.reset(new FramePanel());
+    this->addAndMakeVisible(panel.get());
+    this->revisionViewport.reset(new Viewport());
+    this->addAndMakeVisible(revisionViewport.get());
 
-    addAndMakeVisible (revisionTreeLabel = new Label (String(),
-                                                      TRANS("vcs::history::caption")));
-    revisionTreeLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    revisionTreeLabel->setJustificationType (Justification::centred);
-    revisionTreeLabel->setEditable (false, false, false);
+    this->revisionTreeLabel.reset(new Label(String(),
+                                             TRANS("vcs::history::caption")));
+    this->addAndMakeVisible(revisionTreeLabel.get());
+    this->revisionTreeLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    revisionTreeLabel->setJustificationType(Justification::centred);
+    revisionTreeLabel->setEditable(false, false, false);
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     //[/Constructor]
@@ -88,9 +91,9 @@ void HistoryComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    panel->setBounds (0, 35, getWidth() - 0, getHeight() - 35);
-    revisionViewport->setBounds (1, 36, getWidth() - 2, getHeight() - 37);
-    revisionTreeLabel->setBounds (0, 0, getWidth() - 0, 26);
+    panel->setBounds(0, 35, getWidth() - 0, getHeight() - 35);
+    revisionViewport->setBounds(1, 36, getWidth() - 2, getHeight() - 37);
+    revisionTreeLabel->setBounds(0, 0, getWidth() - 0, 26);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }

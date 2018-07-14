@@ -100,11 +100,11 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Component> horizontalCenter;
-    ScopedPointer<Label> titleLabel;
-    ScopedPointer<ProgressIndicator> indicator;
-    ScopedPointer<FramePanel> panel;
-    ScopedPointer<ListBox> changesList;
+    UniquePointer<Component> horizontalCenter;
+    UniquePointer<Label> titleLabel;
+    UniquePointer<ProgressIndicator> indicator;
+    UniquePointer<FramePanel> panel;
+    UniquePointer<ListBox> changesList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StageComponent)
 };

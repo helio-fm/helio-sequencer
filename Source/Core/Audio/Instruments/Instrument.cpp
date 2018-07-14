@@ -30,12 +30,12 @@ Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &na
     instrumentID()
 {
     this->processorGraph = new AudioProcessorGraph();
-    this->processorPlayer.setProcessor(this->processorGraph);
+    this->audioCallback.setProcessor(this->processorGraph);
 }
 
 Instrument::~Instrument()
 {
-    this->processorPlayer.setProcessor(nullptr);
+    this->audioCallback.setProcessor(nullptr);
     
     PluginWindow::closeAllCurrentlyOpenWindows();
 
@@ -69,7 +69,7 @@ String Instrument::getInstrumentHash() const
         instrumentId += nodeHash;
     }
     
-    return MD5(instrumentId.toUTF8()).toHexString();
+    return String(CompileTimeHash(instrumentId.toUTF8()));
 }
 
 String Instrument::getIdAndHash() const
@@ -675,9 +675,154 @@ void Instrument::configureNode(AudioProcessorGraph::Node::Ptr node,
                                       String(desc.numInputChannels) +
                                       String(desc.numOutputChannels));
     
-    const String nodeHash = MD5(descriptionString.toUTF8()).toHexString();
+    const String nodeHash = String(CompileTimeHash(descriptionString.toUTF8()));
     
     node->properties.set(Serialization::Audio::nodeHash, nodeHash);
     node->properties.set(Serialization::UI::positionX, x);
     node->properties.set(Serialization::UI::positionY, y);
+}
+
+void Instrument::AudioCallback::setProcessor(AudioProcessor *const newOne)
+{
+    if (this->processor != newOne)
+    {
+        if (newOne != nullptr && this->sampleRate > 0 && this->blockSize > 0)
+        {
+            newOne->setPlayConfigDetails(this->numInputChans, this->numOutputChans, this->sampleRate, this->blockSize);
+            newOne->setProcessingPrecision(AudioProcessor::singlePrecision);
+            newOne->prepareToPlay(this->sampleRate, this->blockSize);
+        }
+
+        AudioProcessor *oldOne;
+
+        {
+            const ScopedLock sl(lock);
+            oldOne = this->isPrepared ? this->processor : nullptr;
+            this->processor = newOne;
+            this->isPrepared = true;
+        }
+
+        if (oldOne != nullptr)
+        {
+            oldOne->releaseResources();
+        }
+    }
+}
+
+void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputChannelData,
+    const int numInputChannels, float **const outputChannelData,
+    const int numOutputChannels, const int numSamples)
+{
+    jassert(this->sampleRate > 0 && this->blockSize > 0);
+
+    this->incomingMidi.clear();
+    this->messageCollector.removeNextBlockOfMessages(this->incomingMidi, numSamples);
+    int totalNumChans = 0;
+
+    if (numInputChannels > numOutputChannels)
+    {
+        this->tempBuffer.setSize(numInputChannels - numOutputChannels, numSamples, false, false, true);
+
+        for (int i = 0; i < numOutputChannels; ++i)
+        {
+            this->channels[totalNumChans] = outputChannelData[i];
+            memcpy(this->channels[totalNumChans], inputChannelData[i], sizeof(float) * (size_t)numSamples);
+            ++totalNumChans;
+        }
+
+        for (int i = numOutputChannels; i < numInputChannels; ++i)
+        {
+            this->channels[totalNumChans] = this->tempBuffer.getWritePointer(i - numOutputChannels);
+            memcpy(this->channels[totalNumChans], inputChannelData[i], sizeof(float) * (size_t)numSamples);
+            ++totalNumChans;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < numInputChannels; ++i)
+        {
+            this->channels[totalNumChans] = outputChannelData[i];
+            memcpy(this->channels[totalNumChans], inputChannelData[i], sizeof(float) * (size_t)numSamples);
+            ++totalNumChans;
+        }
+
+        for (int i = numInputChannels; i < numOutputChannels; ++i)
+        {
+            this->channels[totalNumChans] = outputChannelData[i];
+            zeromem(this->channels[totalNumChans], sizeof(float) * (size_t)numSamples);
+            ++totalNumChans;
+        }
+    }
+
+    AudioBuffer<float> buffer(this->channels, totalNumChans, numSamples);
+
+    {
+        const ScopedLock sl(lock);
+
+        if (processor != nullptr)
+        {
+            const ScopedLock sl2(processor->getCallbackLock());
+
+            if (!this->processor->isSuspended())
+            {
+                this->processor->processBlock(buffer, this->incomingMidi);
+                return;
+            }
+        }
+    }
+
+    for (int i = 0; i < numOutputChannels; ++i)
+    {
+        FloatVectorOperations::clear(outputChannelData[i], numSamples);
+    }
+}
+
+void Instrument::AudioCallback::audioDeviceAboutToStart(AudioIODevice* const device)
+{
+    const auto newSampleRate = device->getCurrentSampleRate();
+    const auto newBlockSize = device->getCurrentBufferSizeSamples();
+    const auto numChansIn = device->getActiveInputChannels().countNumberOfSetBits();
+    const auto numChansOut = device->getActiveOutputChannels().countNumberOfSetBits();
+
+    const ScopedLock sl(lock);
+
+    this->sampleRate = newSampleRate;
+    this->blockSize = newBlockSize;
+    this->numInputChans = numChansIn;
+    this->numOutputChans = numChansOut;
+
+    this->messageCollector.reset(sampleRate);
+    this->channels.calloc(jmax(numChansIn, numChansOut) + 2);
+
+    if (this->processor != nullptr)
+    {
+        if (this->isPrepared)
+        {
+            this->processor->releaseResources();
+        }
+
+        auto *oldProcessor = this->processor;
+        this->setProcessor(nullptr);
+        this->setProcessor(oldProcessor);
+    }
+}
+
+void Instrument::AudioCallback::audioDeviceStopped()
+{
+    const ScopedLock sl(this->lock);
+
+    if (this->processor != nullptr && this->isPrepared)
+    {
+        this->processor->releaseResources();
+    }
+
+    this->sampleRate = 0.0;
+    this->blockSize = 0;
+    this->isPrepared = false;
+    this->tempBuffer.setSize(1, 1);
+}
+
+void Instrument::AudioCallback::handleIncomingMidiMessage(MidiInput *, const MidiMessage &message)
+{
+    this->messageCollector.addMessageToQueue(message);
 }

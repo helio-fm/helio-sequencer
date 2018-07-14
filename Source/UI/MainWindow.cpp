@@ -21,13 +21,12 @@
 #include "SequencerLayout.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "FatalErrorScreen.h"
 #include "HelioTheme.h"
 #include "BinaryData.h"
 #include "ColourSchemesManager.h"
 #include "App.h"
 
-class WorkspaceAndroidProxy : public Component
+class WorkspaceAndroidProxy final : public Component
 {
 public:
 

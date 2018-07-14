@@ -29,7 +29,6 @@
 #include "App.h"
 #include "MainLayout.h"
 #include "SessionService.h"
-#include "AuthorizationDialog.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
@@ -132,7 +131,7 @@ void DashboardMenu::handleCommandMessage (int commandId)
         if (!isLoggedIn)
         {
             this->listBox->updateContent();
-            App::Layout().showModalComponentUnowned(new AuthorizationDialog());
+            //App::Layout().showModalComponentUnowned(new AuthorizationDialog());
         }
         else
         {

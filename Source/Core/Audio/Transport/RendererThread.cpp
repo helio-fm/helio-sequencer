@@ -164,6 +164,8 @@ void RendererThread::run()
         AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
         graph->setPlayConfigDetails(numInChannels, numOutChannels, sampleRate, bufferSize);
         graph->releaseResources();
+        // TODO:
+        //graph->setProcessingPrecision(AudioProcessor::singlePrecision);
         graph->prepareToPlay(graph->getSampleRate(), bufferSize);
         graph->setNonRealtime(true);
     }
@@ -178,6 +180,7 @@ void RendererThread::run()
     bool hasNextMessage = sequences.getNextMessage(nextMessage);
     jassert(hasNextMessage);
     
+    // TODO: add double precision rendering someday (for processor graphs who support it)
     AudioSampleBuffer mixingBuffer(numOutChannels, bufferSize);
     
     double lastEventTick = 0.0;

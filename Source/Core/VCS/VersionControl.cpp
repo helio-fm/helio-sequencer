@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "App.h"
 #include "VersionControl.h"
-#include "VersionControlEditorDefault.h"
+#include "VersionControlEditor.h"
 #include "TrackedItem.h"
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
@@ -71,25 +71,19 @@ VersionControl::~VersionControl()
 
 VersionControlEditor *VersionControl::createEditor()
 {
-    //if (App::isRunningOnPhone())
-    //{
-    //    return new VersionControlEditorPhone(*this);
-    //}
-
-    return new VersionControlEditorDefault(*this);
+    return new VersionControlEditor(*this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Push-pull stuff
 //===----------------------------------------------------------------------===//
 
-MD5 VersionControl::calculateHash() const
+String VersionControl::calculateHash() const
 {
     // StringArray и sort - чтоб не зависеть от порядка чайлдов.
     StringArray ids(this->recursiveGetHashes(this->rootRevision));
     ids.sort(true);
-    return MD5(ids.joinIntoString("").toUTF8());
+    return String(CompileTimeHash(ids.joinIntoString("").toUTF8()));
 }
 
 StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
@@ -102,8 +96,8 @@ StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
         sum.addArray(this->recursiveGetHashes(child));
     }
 
-    const String revisionSum(Revision::calculateHash(revision).toHexString());
-    sum.add(revisionSum);
+    const uint32 revisionSum(Revision::calculateHash(revision));
+    sum.add(String(revisionSum));
     return sum;
 }
 

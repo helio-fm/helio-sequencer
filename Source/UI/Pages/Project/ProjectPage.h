@@ -17,28 +17,81 @@
 
 #pragma once
 
-class DocumentOwner;
+//[Headers]
 class ProjectTreeItem;
 
 #include "TransportListener.h"
+//[/Headers]
 
-class ProjectPage : public Component,
-                    protected TransportListener,
-                    protected ChangeListener
+#include "../../Themes/PanelBackgroundB.h"
+#include "../../Common/MenuButton.h"
+
+class ProjectPage final : public Component,
+                          protected TransportListener,
+                          protected ChangeListener,
+                          public Label::Listener,
+                          public Button::Listener
 {
 public:
 
     ProjectPage(ProjectTreeItem &parentProject);
-    ~ProjectPage() override;
-    
-    virtual void updateContent() = 0;
+    ~ProjectPage();
 
-protected:
-    
-    void changeListenerCallback(ChangeBroadcaster* source) override;
-    
+    //[UserMethods]
+    void updateContent();
+    //[/UserMethods]
+
+    void paint (Graphics& g) override;
+    void resized() override;
+    void labelTextChanged(Label* labelThatHasChanged) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
+    void handleCommandMessage (int commandId) override;
+
+
+private:
+
+    //[UserVariables]
+
     ProjectTreeItem &project;
     MidiKeyboardState state;
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+
+    //===----------------------------------------------------------------------===//
+    // TransportListener
+    //===----------------------------------------------------------------------===//
+
+    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onTempoChanged(double msPerQuarter) override {}
+    void onTotalTimeChanged(double timeMs) override;
+    void onPlay() override {}
+    void onStop() override {}
+
+    //[/UserVariables]
+
+    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<Label> projectTitleEditor;
+    UniquePointer<Label> projectTitleLabel;
+    UniquePointer<Label> authorEditor;
+    UniquePointer<Label> authorLabel;
+    UniquePointer<Label> descriptionEditor;
+    UniquePointer<Label> descriptionLabel;
+    UniquePointer<Label> locationLabel;
+    UniquePointer<Label> locationText;
+    UniquePointer<Label> contentStatsLabel;
+    UniquePointer<Label> contentStatsText;
+    UniquePointer<Label> vcsStatsLabel;
+    UniquePointer<Label> vcsStatsText;
+    UniquePointer<Label> startTimeLabel;
+    UniquePointer<Label> startTimeText;
+    UniquePointer<Label> lengthLabel;
+    UniquePointer<Label> lengthText;
+    UniquePointer<Component> level1;
+    UniquePointer<Component> level2;
+    UniquePointer<Label> licenseLabel;
+    UniquePointer<Label> licenseEditor;
+    UniquePointer<MenuButton> menuButton;
+    UniquePointer<ImageButton> revealLocationButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectPage)
 };

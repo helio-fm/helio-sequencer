@@ -70,7 +70,7 @@ void PanelBackgroundA::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0x1e272727), fillColour2 = Colour (0x00000000);
+        Colour fillColour1 = Colour (0x1e636363), fillColour2 = Colour (0x00000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (fillColour1,
@@ -111,7 +111,7 @@ BEGIN_JUCER_METADATA
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0">
     <RECT pos="0 0 0M 0M" fill="solid: ff48358c" hasStroke="0"/>
-    <RECT pos="0 0 0M 0M" fill="linear: 75% 65%, 0 0%, 0=1e272727, 1=0"
+    <RECT pos="0 0 0M 0M" fill="linear: 75% 65%, 0 0%, 0=1e636363, 1=0"
           hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>

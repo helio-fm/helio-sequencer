@@ -397,7 +397,6 @@
     <ClCompile Include="..\..\Source\UI\Common\ColourSwatches.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\CommandIDs.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\DraggingListBoxComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Common\FatalErrorScreen.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\FineTuningComponentDragger.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\FineTuningValueIndicator.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp"/>
@@ -411,7 +410,6 @@
     <ClCompile Include="..\..\Source\UI\Common\SpectralLogo.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\ViewportFitProxyComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\AnnotationDialog.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Dialogs\AuthorizationDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\FadingDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\KeySignatureDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.cpp"/>
@@ -455,10 +453,7 @@
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Intro\InitScreen.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPage.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPagePhone.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\AudioSettings.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\AuthSettings.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\IntroSettingsWrapper.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.cpp"/>
@@ -478,7 +473,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\StageComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\DashboardMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.cpp"/>
@@ -1020,54 +1014,6 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_android_BluetoothMidiDevicePairingDialogue.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_linux_AudioCDReader.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_linux_BluetoothMidiDevicePairingDialogue.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win_BluetoothMidiDevicePairingDialogue.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDBurner.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDReader.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_AbstractFifo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1354,27 +1300,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\juce_core.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_BlowFish.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_Primes.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_RSAKey.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_MD5.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_SHA256.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_Whirlpool.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.cpp">
@@ -2295,13 +2220,7 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_processors.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_utils.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_core.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_cryptography.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_data_structures.cpp">
@@ -2340,11 +2259,11 @@
     <ClInclude Include="..\..\Source\Core\Audio\Monitoring\AudioMonitor.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Monitoring\SpectrumAnalyzer.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThread.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThreadPool.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\ProjectSequencesWrapper.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\RendererThread.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\Transport.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\TransportListener.h"/>
-    <ClInclude Include="..\..\Source\Core\Audio\AudiobusOutput.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\AudioCore.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\BaseResource.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Arpeggiator.h"/>
@@ -2473,7 +2392,6 @@
     <ClInclude Include="..\..\Source\UI\Common\CommandIDs.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ComponentIDs.h"/>
     <ClInclude Include="..\..\Source\UI\Common\DraggingListBoxComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\FatalErrorScreen.h"/>
     <ClInclude Include="..\..\Source\UI\Common\FineTuningComponentDragger.h"/>
     <ClInclude Include="..\..\Source\UI\Common\FineTuningValueIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Common\KeySelector.h"/>
@@ -2493,7 +2411,6 @@
     <ClInclude Include="..\..\Source\UI\Common\SpectralLogo.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ViewportFitProxyComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\AnnotationDialog.h"/>
-    <ClInclude Include="..\..\Source\UI\Dialogs\AuthorizationDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\FadingDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\KeySignatureDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.h"/>
@@ -2547,10 +2464,7 @@
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Intro\InitScreen.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPage.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPagePhone.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\AuthSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ColourChangeButton.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\IntroSettingsWrapper.h"/>
@@ -2571,7 +2485,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\DashboardMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.h"/>
@@ -2910,19 +2823,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorParameterWithID.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorValueTreeState.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDBurner.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailBase.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_BluetoothMidiDevicePairingDialogue.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_AbstractFifo.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_Array.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_ArrayAllocationBase.h"/>
@@ -3055,13 +2955,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\zip\juce_GZIPDecompressorInputStream.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\zip\juce_ZipFile.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\juce_core.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_BlowFish.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_Primes.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_RSAKey.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_MD5.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_SHA256.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_Whirlpool.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\app_properties\juce_PropertiesFile.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\undomanager\juce_UndoableAction.h"/>

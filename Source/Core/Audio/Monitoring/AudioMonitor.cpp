@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
-#include "AudiobusOutput.h"
 
 #define AUDIO_MONITOR_SPECTRUM_SIZE                 512
 #define AUDIO_MONITOR_DEFAULT_SAMPLERATE            44100
@@ -126,11 +125,7 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
             this->asyncOversaturationWarning->triggerAsyncUpdate();
         }
     }
-    
-#if JUCE_IOS && HELIO_AUDIOBUS_SUPPORT
-    AudiobusOutput::process();
-#endif
-    
+
     for (int i = 0; i < numOutputChannels; ++i)
     {
         FloatVectorOperations::clear(outputChannelData[i], numSamples);

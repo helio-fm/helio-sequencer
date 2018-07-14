@@ -21,7 +21,6 @@
 #include "MainLayout.h"
 #include "Icons.h"
 #include "SerializationKeys.h"
-#include "AuthSettings.h"
 #include "AudioSettings.h"
 #include "UserInterfaceSettings.h"
 #include "TranslationSettings.h"
@@ -83,10 +82,6 @@ void SettingsTreeItem::recreatePage()
     const String untranslatedLanguageCaption(CharPointer_UTF8("Language / Sprache / Langue / Idioma / Lingua / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
     this->translationSettingsWrapper = new LabeledSettingsWrapper(this->translationSettings, untranslatedLanguageCaption);
     this->settingsList->addAndMakeVisible(this->translationSettingsWrapper);
-    
-    //this->authSettings = new AuthorizationSettings();
-    //this->authSettingsWrapper = new LabeledSettingsWrapper(this->authSettings, TRANS("settings::auth"));
-    //this->settingsList->addAndMakeVisible(this->authSettingsWrapper);
 
     this->uiSettings = new UserInterfaceSettings();
     this->uiSettingsWrapper = new LabeledSettingsWrapper(this->uiSettings, TRANS("settings::ui"));

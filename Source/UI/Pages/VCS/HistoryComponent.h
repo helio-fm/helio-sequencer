@@ -64,9 +64,9 @@ private:
     SafePointer<RevisionTreeComponent> revisionTree;
     //[/UserVariables]
 
-    ScopedPointer<FramePanel> panel;
-    ScopedPointer<Viewport> revisionViewport;
-    ScopedPointer<Label> revisionTreeLabel;
+    UniquePointer<FramePanel> panel;
+    UniquePointer<Viewport> revisionViewport;
+    UniquePointer<Label> revisionTreeLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HistoryComponent)
 };
