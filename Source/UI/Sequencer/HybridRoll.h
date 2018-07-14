@@ -30,8 +30,6 @@ class HybridRollHeader;
 class AutomationStepsSequenceMap;
 class Transport;
 class HybridRollListener;
-class WipeSpaceHelper;
-class InsertSpaceHelper;
 class TimelineWarningMarker;
 
 #include "ComponentFader.h"
@@ -245,7 +243,6 @@ public:
     //===------------------------------------------------------------------===//
 
     void longTapEvent(const MouseEvent &e) override;
-    void mouseMove(const MouseEvent &e) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
@@ -340,35 +337,12 @@ protected:
     void continueZooming(const MouseEvent &e);
     void endZooming();
     
-    
-    void initWipeSpaceHelper(int xPosition);
-    void updateWipeSpaceHelperIfNeeded(const MouseEvent &e);
-    void removeWipeSpaceHelper();
-
-    void startWipingSpace(const MouseEvent &e);
-    void continueWipingSpace(const MouseEvent &e);
-    void endWipingSpaceIfNeeded();
-    
-    ScopedPointer<WipeSpaceHelper> wipeSpaceHelper;
-
-    void initInsertSpaceHelper(int xPosition);
-    void updateInsertSpaceHelperIfNeeded(const MouseEvent &e);
-    void removeInsertSpaceHelper();
-    
-    void startInsertingSpace(const MouseEvent &e);
-    void continueInsertingSpace(const MouseEvent &e);
-    void endInsertingSpaceIfNeeded();
-    
-    ScopedPointer<InsertSpaceHelper> insertSpaceHelper;
-
     Lasso selection;
 
     bool isViewportZoomEvent(const MouseEvent &e) const;
     bool isViewportDragEvent(const MouseEvent &e) const;
     bool isAddEvent(const MouseEvent &e) const;
     bool isLassoEvent(const MouseEvent &e) const;
-    bool isWipeSpaceEvent(const MouseEvent &e) const;
-    bool isInsertSpaceEvent(const MouseEvent &e) const;
 
     float firstBar;
     float lastBar;

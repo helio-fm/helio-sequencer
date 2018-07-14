@@ -30,9 +30,7 @@ public:
         selectionMode                    = 0x03,
         zoomMode                         = 0x04,
         dragMode                         = 0x05,
-        insertSpaceMode                  = 0x06,
-        wipeSpaceMode                    = 0x07,
-        scissorsMode                     = 0x08,
+        scissorsMode                     = 0x06,
     };
     
     HybridRollEditMode();
@@ -49,12 +47,6 @@ public:
     
     bool forbidsAddingEvents() const;
     bool forcesAddingEvents() const;
-
-    bool forbidsSpaceWipe() const;
-    bool forcesSpaceWipe() const;
-
-    bool forbidsSpaceInsert() const;
-    bool forcesSpaceInsert() const;
 
     bool shouldInteractWithChildren() const;
     MouseCursor getCursor() const;

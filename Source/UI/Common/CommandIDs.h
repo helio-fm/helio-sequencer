@@ -190,9 +190,8 @@ namespace CommandIDs
         EditModeDefault                 = 0x4000,
         EditModeDraw                    = 0x4001,
         EditModePan                     = 0x4002,
-        EditModeWipeSpace               = 0x4003,
-        EditModeInsertSpace             = 0x4004,
-        EditModeSelect                  = 0x4005,
+        EditModeSelect                  = 0x4003,
+        EditModeScissors                = 0x4004,
         
         BeatShiftLeft                   = 0x4050,
         BeatShiftRight                  = 0x4051,

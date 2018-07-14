@@ -36,9 +36,7 @@ bool HybridRollEditMode::forbidsViewportDragging() const
     return
     this->isMode(HybridRollEditMode::drawMode) ||
     this->isMode(HybridRollEditMode::selectionMode) ||
-    this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::insertSpaceMode) ||
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
+    this->isMode(HybridRollEditMode::zoomMode);
 }
 
 bool HybridRollEditMode::forcesViewportDragging() const
@@ -64,9 +62,7 @@ bool HybridRollEditMode::forbidsSelectionMode() const
     return
     this->isMode(HybridRollEditMode::drawMode) ||
     this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::dragMode) ||
-    this->isMode(HybridRollEditMode::insertSpaceMode) ||
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
+    this->isMode(HybridRollEditMode::dragMode);
 }
 
 bool HybridRollEditMode::forcesSelectionMode() const
@@ -80,9 +76,7 @@ bool HybridRollEditMode::forbidsAddingEvents() const
     return
     this->isMode(HybridRollEditMode::selectionMode) ||
     this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::dragMode) ||
-    this->isMode(HybridRollEditMode::insertSpaceMode) ||
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
+    this->isMode(HybridRollEditMode::dragMode);
 }
 
 bool HybridRollEditMode::forcesAddingEvents() const
@@ -90,31 +84,6 @@ bool HybridRollEditMode::forcesAddingEvents() const
     return
     this->isMode(HybridRollEditMode::drawMode);
 }
-
-bool HybridRollEditMode::forbidsSpaceWipe() const
-{
-    return
-    (this->mode != HybridRollEditMode::wipeSpaceMode);
-}
-
-bool HybridRollEditMode::forcesSpaceWipe() const
-{
-    return
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
-}
-
-bool HybridRollEditMode::forbidsSpaceInsert() const
-{
-    return
-    (this->mode != HybridRollEditMode::insertSpaceMode);
-}
-
-bool HybridRollEditMode::forcesSpaceInsert() const
-{
-    return
-    this->isMode(HybridRollEditMode::insertSpaceMode);
-}
-
 
 bool HybridRollEditMode::shouldInteractWithChildren() const
 {
@@ -128,8 +97,6 @@ bool HybridRollEditMode::shouldInteractWithChildren() const
         case selectionMode:
         case zoomMode:
         case dragMode:
-        case insertSpaceMode:
-        case wipeSpaceMode:
         case scissorsMode:
             return false;
             break;
@@ -162,11 +129,7 @@ MouseCursor HybridRollEditMode::getCursor() const
             return MouseCursor::DraggingHandCursor;
             break;
             
-        case insertSpaceMode:
-            return MouseCursor::LeftRightResizeCursor;
-            break;
-            
-        case wipeSpaceMode:
+        case scissorsMode:
             return MouseCursor::CrosshairCursor;
             break;
     }

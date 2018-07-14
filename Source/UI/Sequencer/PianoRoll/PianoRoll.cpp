@@ -976,11 +976,8 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeSelect:
         this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         break;
-    case CommandIDs::EditModeWipeSpace:
-        this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
-        break;
-    case CommandIDs::EditModeInsertSpace:
-        this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
+    case CommandIDs::EditModeScissors:
+        this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         {

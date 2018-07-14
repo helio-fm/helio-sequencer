@@ -297,7 +297,7 @@ void SequencerSidebarRight::recreateMenu()
     const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
     const bool zoomMode = this->project.getEditMode().isMode(HybridRollEditMode::zoomMode);
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
-    const bool wipeSpaceMode = this->project.getEditMode().isMode(HybridRollEditMode::wipeSpaceMode);
+    const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::scissorsMode);
 
 #if HELIO_MOBILE
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));

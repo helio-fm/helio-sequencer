@@ -33,10 +33,7 @@
 #include "ShadowDownwards.h"
 #include "ShadowUpwards.h"
 
-#include "WipeSpaceHelper.h"
-#include "InsertSpaceHelper.h"
 #include "TimelineWarningMarker.h"
-
 #include "SerializationKeys.h"
 
 #include "LongTapController.h"
@@ -996,12 +993,6 @@ void HybridRoll::longTapEvent(const MouseEvent &e)
     this->lassoComponent->beginLasso(e, this);
 }
 
-void HybridRoll::mouseMove(const MouseEvent &e)
-{
-    this->updateWipeSpaceHelperIfNeeded(e);
-    this->updateInsertSpaceHelperIfNeeded(e);
-}
-
 void HybridRoll::mouseDown(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
@@ -1024,14 +1015,6 @@ void HybridRoll::mouseDown(const MouseEvent &e)
     else if (this->isViewportZoomEvent(e))
     {
         this->startZooming();
-    }
-    else if (this->isWipeSpaceEvent(e))
-    {
-        this->startWipingSpace(e);
-    }
-    else if (this->isInsertSpaceEvent(e))
-    {
-        this->startInsertingSpace(e);
     }
 }
 
@@ -1056,14 +1039,6 @@ void HybridRoll::mouseDrag(const MouseEvent &e)
     {
         this->continueZooming(e);
     }
-    else if (this->isWipeSpaceEvent(e))
-    {
-        this->continueWipingSpace(e);
-    }
-    else if (this->isInsertSpaceEvent(e))
-    {
-        this->continueInsertingSpace(e);
-    }
 }
 
 void HybridRoll::mouseUp(const MouseEvent &e)
@@ -1086,9 +1061,6 @@ void HybridRoll::mouseUp(const MouseEvent &e)
     {
         this->lassoComponent->endLasso();
     }
-
-    this->endWipingSpaceIfNeeded();
-    this->endInsertingSpaceIfNeeded();
 
 #if HELIO_DESKTOP
 #   define MIN_PAN_DISTANCE 10
@@ -1580,39 +1552,6 @@ bool HybridRoll::isLassoEvent(const MouseEvent &e) const
     return e.mods.isLeftButtonDown();
 }
 
-bool HybridRoll::isWipeSpaceEvent(const MouseEvent &e) const
-{
-    if (this->project.getEditMode().forbidsSpaceWipe())
-    {
-        return false;
-    }
-
-    if (this->project.getEditMode().forcesSpaceWipe())
-    {
-        return true;
-    }
-
-    // may add custom logic for default mode
-    return false;
-}
-
-bool HybridRoll::isInsertSpaceEvent(const MouseEvent &e) const
-{
-    if (this->project.getEditMode().forbidsSpaceInsert())
-    {
-        return false;
-    }
-
-    if (this->project.getEditMode().forcesSpaceInsert())
-    {
-        return true;
-    }
-
-    // may add custom logic for default mode
-    return false;
-}
-
-
 void HybridRoll::resetDraggingAnchors()
 {
     this->viewportAnchor = this->viewport.getViewPosition();
@@ -1624,165 +1563,6 @@ void HybridRoll::continueDragging(const MouseEvent &e)
     this->draggedDistance = e.getDistanceFromDragStart();
     this->smoothZoomController->cancelZoom();
     this->smoothPanController->panByOffset(this->getMouseOffset(e.source.getScreenPosition()).toInt());
-}
-
-//===----------------------------------------------------------------------===//
-// Wipe space tool
-//===----------------------------------------------------------------------===//
-
-void HybridRoll::initWipeSpaceHelper(int xPosition)
-{
-    if (this->wipeSpaceHelper == nullptr)
-    {
-        this->wipeSpaceHelper = new WipeSpaceHelper(*this);
-        this->addAndMakeVisible(this->wipeSpaceHelper);
-    }
-
-    const float startBeat = this->getRoundBeatByXPosition(xPosition);
-    this->wipeSpaceHelper->setStartBeat(startBeat);
-    this->wipeSpaceHelper->setEndBeat(startBeat);
-}
-
-void HybridRoll::updateWipeSpaceHelperIfNeeded(const MouseEvent &e)
-{
-    if (this->wipeSpaceHelper != nullptr)
-    {
-        const float endBeat = this->getRoundBeatByXPosition(e.x);
-        this->wipeSpaceHelper->setEndBeat(endBeat);
-        this->wipeSpaceHelper->snapWidth();
-    }
-}
-
-void HybridRoll::removeWipeSpaceHelper()
-{
-    this->wipeSpaceHelper = nullptr;
-}
-
-void HybridRoll::startWipingSpace(const MouseEvent &e)
-{
-    this->initWipeSpaceHelper(e.x);
-}
-
-void HybridRoll::continueWipingSpace(const MouseEvent &e)
-{
-    if (this->wipeSpaceHelper != nullptr)
-    {
-        const float endBeat = this->getRoundBeatByXPosition(e.x);
-        this->wipeSpaceHelper->setEndBeat(endBeat);
-    }
-}
-
-void HybridRoll::endWipingSpaceIfNeeded()
-{
-    if (this->wipeSpaceHelper != nullptr)
-    {
-        const float leftBeat = this->wipeSpaceHelper->getLeftMostBeat();
-        const float rightBeat = this->wipeSpaceHelper->getRightMostBeat();
-
-        if ((rightBeat - leftBeat) > 0.01f)
-        {
-            const bool isAnyModifierKeyDown =
-                Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isAnyModifierKeyDown();
-
-            SequencerOperations::wipeSpace(isAnyModifierKeyDown ? 
-                this->project.getSelectedTracks() : this->project.getTracks(), leftBeat, rightBeat);
-
-            if (! isAnyModifierKeyDown)
-            {
-                if (this->wipeSpaceHelper->isInverted())
-                {
-                    SequencerOperations::shiftEventsToTheLeft(this->project.getTracks(),
-                        leftBeat, (rightBeat - leftBeat), false);
-                }
-                else
-                {
-                    SequencerOperations::shiftEventsToTheRight(this->project.getTracks(), 
-                        leftBeat, -(rightBeat - leftBeat), false);
-                }
-            }
-        }
-
-        this->wipeSpaceHelper->snapWidth();
-    }
-}
-
-//===----------------------------------------------------------------------===//
-// Insert space tool
-//===----------------------------------------------------------------------===//
-
-void HybridRoll::initInsertSpaceHelper(int xPosition)
-{
-    if (this->insertSpaceHelper == nullptr)
-    {
-        this->insertSpaceHelper = new InsertSpaceHelper(*this);
-        this->addAndMakeVisible(this->insertSpaceHelper);
-    }
-
-    const float startBeat = this->getRoundBeatByXPosition(xPosition);
-    this->insertSpaceHelper->setStartBeat(startBeat);
-    this->insertSpaceHelper->setEndBeat(startBeat);
-}
-
-void HybridRoll::updateInsertSpaceHelperIfNeeded(const MouseEvent &e)
-{
-    if (this->insertSpaceHelper != nullptr)
-    {
-        const float endBeat = this->getRoundBeatByXPosition(e.x);
-        this->insertSpaceHelper->setEndBeat(endBeat);
-        this->insertSpaceHelper->snapWidth();
-    }
-}
-
-void HybridRoll::removeInsertSpaceHelper()
-{
-    this->insertSpaceHelper = nullptr;
-}
-
-void HybridRoll::startInsertingSpace(const MouseEvent &e)
-{
-    this->initInsertSpaceHelper(e.x);
-    this->insertSpaceHelper->resetDragDelta();
-    this->insertSpaceHelper->setNeedsCheckpoint(true);
-}
-
-void HybridRoll::continueInsertingSpace(const MouseEvent &e)
-{
-    if (this->insertSpaceHelper != nullptr)
-    {
-        this->insertSpaceHelper->setEndBeat(this->getRoundBeatByXPosition(e.x));
-
-        const float leftBeat = this->insertSpaceHelper->getLeftMostBeat();
-        const float rightBeat = this->insertSpaceHelper->getRightMostBeat();
-        const float changeDelta = this->insertSpaceHelper->getDragDelta();
-
-        if (fabs(changeDelta) > 0.01f)
-        {
-            const bool isInverted = (e.getOffsetFromDragStart().getX() < 0);
-            const bool shouldCheckpoint = this->insertSpaceHelper->shouldCheckpoint();
-
-            if (isInverted)
-            {
-                SequencerOperations::shiftEventsToTheLeft(this->project.getTracks(),
-                    rightBeat, changeDelta, shouldCheckpoint);
-            }
-            else
-            {
-                SequencerOperations::shiftEventsToTheRight(this->project.getTracks(),
-                    leftBeat, changeDelta, shouldCheckpoint);
-            }
-
-            this->insertSpaceHelper->resetDragDelta();
-            this->insertSpaceHelper->setNeedsCheckpoint(false);
-        }
-    }
-}
-
-void HybridRoll::endInsertingSpaceIfNeeded()
-{
-    if (this->insertSpaceHelper != nullptr)
-    {
-        this->insertSpaceHelper->snapWidth();
-    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -1893,16 +1673,6 @@ void HybridRoll::updateChildrenBounds()
         this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
     }
 
-    if (this->wipeSpaceHelper)
-    {
-        this->wipeSpaceHelper->rebound();
-    }
-
-    if (this->insertSpaceHelper)
-    {
-        this->insertSpaceHelper->rebound();
-    }
-
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         Component *const trackMap = this->trackMaps.getUnchecked(i);
@@ -1942,16 +1712,6 @@ void HybridRoll::updateChildrenPositions()
         this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     }
 
-    if (this->wipeSpaceHelper)
-    {
-        this->wipeSpaceHelper->rebound();
-    }
-
-    if (this->insertSpaceHelper)
-    {
-        this->insertSpaceHelper->rebound();
-    }
-
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         Component *const trackMap = this->trackMaps.getUnchecked(i);
@@ -1984,26 +1744,6 @@ void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
         ! (this->project.getEditMode().isMode(HybridRollEditMode::drawMode)))
     {
         this->setAltDrawingMode(false);
-    }
-
-    if (this->project.getEditMode().forcesSpaceInsert())
-    {
-        this->initInsertSpaceHelper(0);
-        this->insertSpaceHelper->fadeIn();
-    }
-    else
-    {
-        this->removeInsertSpaceHelper();
-    }
-
-    if (this->project.getEditMode().forcesSpaceWipe())
-    {
-        this->initWipeSpaceHelper(0);
-        this->wipeSpaceHelper->fadeIn();
-    }
-    else
-    {
-        this->removeWipeSpaceHelper();
     }
 
     const MouseCursor cursor(this->project.getEditMode().getCursor());

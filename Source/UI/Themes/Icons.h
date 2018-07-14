@@ -92,8 +92,6 @@ struct Icons final
         selectionTool,
         zoomTool,
         dragTool,
-        insertSpaceTool,
-        wipeSpaceTool,
         cropTool,
         stretchLeft,
         stretchRight,
