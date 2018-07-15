@@ -30,6 +30,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.hardware.camera2.*;
+import android.database.ContentObserver;
+import android.media.session.*;
+import android.media.MediaMetadata;
 import android.net.http.SslError;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,6 +55,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -1649,7 +1654,7 @@ public class workstation   extends Activity
 
     private native boolean webViewPageLoadStarted (long host, WebView view, String url);
     private native void webViewPageLoadFinished (long host, WebView view, String url);
-    private native void webViewReceivedSslError (long host, WebView view, SslErrorHandler handler, SslError error);
+    private native void webViewReceivedHttpError (long host, WebView view, WebResourceRequest request, WebResourceResponse errorResponse);    private native void webViewReceivedSslError (long host, WebView view, SslErrorHandler handler, SslError error);
     private native void webViewCloseWindowRequest (long host, WebView view);
     private native void webViewCreateWindowRequest (long host, WebView view);
 
@@ -1688,13 +1693,13 @@ public class workstation   extends Activity
         }
 
         @Override
-        public WebResourceResponse shouldInterceptRequest (WebView view, String url)
+        public WebResourceResponse shouldInterceptRequest (WebView view, WebResourceRequest request)
         {
             synchronized (hostLock)
             {
                 if (host != 0)
                 {
-                    boolean shouldLoad = webViewPageLoadStarted (host, view, url);
+                    boolean shouldLoad = webViewPageLoadStarted (host, view, request.getUrl().toString());
 
                     if (shouldLoad)
                         return null;
@@ -1731,6 +1736,319 @@ public class workstation   extends Activity
 
         private long host;
         private final Object hostLock = new Object();
+    }
+
+
+    //==============================================================================
+    public class CameraDeviceStateCallback  extends CameraDevice.StateCallback
+    {
+        private native void cameraDeviceStateClosed       (long host, CameraDevice camera);
+        private native void cameraDeviceStateDisconnected (long host, CameraDevice camera);
+        private native void cameraDeviceStateError        (long host, CameraDevice camera, int error);
+        private native void cameraDeviceStateOpened       (long host, CameraDevice camera);
+
+        CameraDeviceStateCallback (long hostToUse)
+        {
+            host = hostToUse;
+        }
+
+        @Override
+        public void onClosed (CameraDevice camera)
+        {
+            cameraDeviceStateClosed (host, camera);
+        }
+
+        @Override
+        public void onDisconnected (CameraDevice camera)
+        {
+            cameraDeviceStateDisconnected (host, camera);
+        }
+
+        @Override
+        public void onError (CameraDevice camera, int error)
+        {
+            cameraDeviceStateError (host, camera, error);
+        }
+
+        @Override
+        public void onOpened (CameraDevice camera)
+        {
+            cameraDeviceStateOpened (host, camera);
+        }
+
+        private long host;
+    }
+
+    //==============================================================================
+    public class CameraCaptureSessionStateCallback  extends CameraCaptureSession.StateCallback
+    {
+        private native void cameraCaptureSessionActive          (long host, CameraCaptureSession session);
+        private native void cameraCaptureSessionClosed          (long host, CameraCaptureSession session);
+        private native void cameraCaptureSessionConfigureFailed (long host, CameraCaptureSession session);
+        private native void cameraCaptureSessionConfigured      (long host, CameraCaptureSession session);
+        private native void cameraCaptureSessionReady           (long host, CameraCaptureSession session);
+
+        CameraCaptureSessionStateCallback (long hostToUse)
+        {
+            host = hostToUse;
+        }
+
+        @Override
+        public void onActive (CameraCaptureSession session)
+        {
+            cameraCaptureSessionActive (host, session);
+        }
+
+        @Override
+        public void onClosed (CameraCaptureSession session)
+        {
+            cameraCaptureSessionClosed (host, session);
+        }
+
+        @Override
+        public void onConfigureFailed (CameraCaptureSession session)
+        {
+            cameraCaptureSessionConfigureFailed (host, session);
+        }
+
+        @Override
+        public void onConfigured (CameraCaptureSession session)
+        {
+            cameraCaptureSessionConfigured (host, session);
+        }
+
+        @Override
+        public void onReady (CameraCaptureSession session)
+        {
+            cameraCaptureSessionReady (host, session);
+        }
+
+        private long host;
+    }
+
+    //==============================================================================
+    public class CameraCaptureSessionCaptureCallback    extends CameraCaptureSession.CaptureCallback
+    {
+        private native void cameraCaptureSessionCaptureCompleted  (long host, boolean isPreview, CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result);
+        private native void cameraCaptureSessionCaptureFailed     (long host, boolean isPreview, CameraCaptureSession session, CaptureRequest request, CaptureFailure failure);
+        private native void cameraCaptureSessionCaptureProgressed (long host, boolean isPreview, CameraCaptureSession session, CaptureRequest request, CaptureResult partialResult);
+        private native void cameraCaptureSessionCaptureStarted    (long host, boolean isPreview, CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber);
+        private native void cameraCaptureSessionCaptureSequenceAborted   (long host, boolean isPreview, CameraCaptureSession session, int sequenceId);
+        private native void cameraCaptureSessionCaptureSequenceCompleted (long host, boolean isPreview, CameraCaptureSession session, int sequenceId, long frameNumber);
+
+        CameraCaptureSessionCaptureCallback (long hostToUse, boolean shouldBePreview)
+        {
+            host = hostToUse;
+            preview = shouldBePreview;
+        }
+
+        @Override
+        public void onCaptureCompleted (CameraCaptureSession session, CaptureRequest request,
+                                        TotalCaptureResult result)
+        {
+            cameraCaptureSessionCaptureCompleted (host, preview, session, request, result);
+        }
+
+        @Override
+        public void onCaptureFailed (CameraCaptureSession session, CaptureRequest request, CaptureFailure failure)
+        {
+            cameraCaptureSessionCaptureFailed (host, preview, session, request, failure);
+        }
+
+        @Override
+        public void onCaptureProgressed (CameraCaptureSession session, CaptureRequest request,
+                                         CaptureResult partialResult)
+        {
+            cameraCaptureSessionCaptureProgressed (host, preview, session, request, partialResult);
+        }
+
+        @Override
+        public void onCaptureSequenceAborted (CameraCaptureSession session, int sequenceId)
+        {
+            cameraCaptureSessionCaptureSequenceAborted (host, preview, session, sequenceId);
+        }
+
+        @Override
+        public void onCaptureSequenceCompleted (CameraCaptureSession session, int sequenceId, long frameNumber)
+        {
+            cameraCaptureSessionCaptureSequenceCompleted (host, preview, session, sequenceId, frameNumber);
+        }
+
+        @Override
+        public void onCaptureStarted (CameraCaptureSession session, CaptureRequest request, long timestamp,
+                                      long frameNumber)
+        {
+            cameraCaptureSessionCaptureStarted (host, preview, session, request, timestamp, frameNumber);
+        }
+
+        private long host;
+        private boolean preview;
+    }
+
+    //==============================================================================
+    public class JuceOrientationEventListener    extends OrientationEventListener
+    {
+        private native void deviceOrientationChanged (long host, int orientation);
+
+        public JuceOrientationEventListener (long hostToUse, Context context, int rate)
+        {
+            super (context, rate);
+
+            host = hostToUse;
+        }
+
+        @Override
+        public void onOrientationChanged (int orientation)
+        {
+            deviceOrientationChanged (host, orientation);
+        }
+
+        private long host;
+    }
+
+
+    //==============================================================================
+    public class MediaControllerCallback  extends MediaController.Callback
+    {
+        private native void mediaControllerAudioInfoChanged     (long host, MediaController.PlaybackInfo info);
+        private native void mediaControllerMetadataChanged      (long host, MediaMetadata metadata);
+        private native void mediaControllerPlaybackStateChanged (long host, PlaybackState state);
+        private native void mediaControllerSessionDestroyed     (long host);
+
+        MediaControllerCallback (long hostToUse)
+        {
+            host = hostToUse;
+        }
+
+        @Override
+        public void onAudioInfoChanged (MediaController.PlaybackInfo info)
+        {
+            mediaControllerAudioInfoChanged (host, info);
+        }
+
+        @Override
+        public void onMetadataChanged (MediaMetadata metadata)
+        {
+            mediaControllerMetadataChanged (host, metadata);
+        }
+
+        @Override
+        public void onPlaybackStateChanged (PlaybackState state)
+        {
+             mediaControllerPlaybackStateChanged (host, state);
+        }
+
+        @Override
+        public void onQueueChanged (List<MediaSession.QueueItem> queue) {}
+
+        @Override
+        public void onSessionDestroyed()
+        {
+            mediaControllerSessionDestroyed (host);
+        }
+
+        private long host;
+    }
+
+    //==============================================================================
+    public class MediaSessionCallback  extends MediaSession.Callback
+    {
+        private native void mediaSessionPause           (long host);
+        private native void mediaSessionPlay            (long host);
+        private native void mediaSessionPlayFromMediaId (long host, String mediaId, Bundle extras);
+        private native void mediaSessionSeekTo          (long host, long pos);
+        private native void mediaSessionStop            (long host);
+
+
+        MediaSessionCallback (long hostToUse)
+        {
+            host = hostToUse;
+        }
+
+        @Override
+        public void onPause()
+        {
+            mediaSessionPause (host);
+        }
+
+        @Override
+        public void onPlay()
+        {
+            mediaSessionPlay (host);
+        }
+
+        @Override
+        public void onPlayFromMediaId (String mediaId, Bundle extras)
+        {
+            mediaSessionPlayFromMediaId (host, mediaId, extras);
+        }
+
+        @Override
+        public void onSeekTo (long pos)
+        {
+            mediaSessionSeekTo (host, pos);
+        }
+
+        @Override
+        public void onStop()
+        {
+            mediaSessionStop (host);
+        }
+
+        @Override
+        public void onFastForward() {}
+
+        @Override
+        public boolean onMediaButtonEvent (Intent mediaButtonIntent)
+        {
+            return true;
+        }
+
+        @Override
+        public void onRewind() {}
+
+        @Override
+        public void onSkipToNext() {}
+
+        @Override
+        public void onSkipToPrevious() {}
+
+        @Override
+        public void onSkipToQueueItem (long id) {}
+
+        private long host;
+    }
+
+    //==============================================================================
+    public class SystemVolumeObserver extends ContentObserver
+    {
+        private native void mediaSessionSystemVolumeChanged (long host);
+
+        SystemVolumeObserver (Activity activityToUse, long hostToUse)
+        {
+            super (null);
+
+            activity = activityToUse;
+            host = hostToUse;
+        }
+
+        void setEnabled (boolean shouldBeEnabled)
+        {
+            if (shouldBeEnabled)
+                activity.getApplicationContext().getContentResolver().registerContentObserver (android.provider.Settings.System.CONTENT_URI, true, this);
+            else
+                activity.getApplicationContext().getContentResolver().unregisterContentObserver (this);
+        }
+
+        @Override
+        public void onChange (boolean selfChange, Uri uri)
+        {
+            if (uri.toString().startsWith ("content://settings/system/volume_music"))
+                mediaSessionSystemVolumeChanged (host);
+        }
+
+        private Activity activity;
+        private long host;
     }
 
 

@@ -90,15 +90,15 @@
 #endif
 
 #ifndef    JUCE_BELA
- //#define JUCE_BELA 0
+ #define   JUCE_BELA 0
 #endif
 
 #ifndef    JUCE_USE_ANDROID_OBOE
- //#define JUCE_USE_ANDROID_OBOE 0
+ #define   JUCE_USE_ANDROID_OBOE 0
 #endif
 
 #ifndef    JUCE_USE_ANDROID_OPENSLES
- #define   JUCE_USE_ANDROID_OPENSLES 0
+ #define   JUCE_USE_ANDROID_OPENSLES 1
 #endif
 
 #ifndef    JUCE_USE_WINRT_MIDI
