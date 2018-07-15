@@ -129,8 +129,8 @@
         { "receiver": "PianoRoll", "command": "EditModeDefault", "key": "1" },
         { "receiver": "PianoRoll", "command": "EditModeDraw", "key": "2" },
         { "receiver": "PianoRoll", "command": "EditModePan", "key": "3" },
-        { "receiver": "PianoRoll", "command": "EditModeWipeSpace", "key": "4" },
-        { "receiver": "PianoRoll", "command": "EditModeInsertSpace", "key": "5" },
+        { "receiver": "PianoRoll", "command": "EditModeKnife", "key": "4" },
+        { "receiver": "PianoRoll", "command": "EditModeEraser", "key": "5" },
 
         // Version control
         { "receiver": "PianoRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
@@ -192,6 +192,8 @@
         { "receiver": "PatternRoll", "command": "EditModeDefault", "key": "1" },
         { "receiver": "PatternRoll", "command": "EditModeDraw", "key": "2" },
         { "receiver": "PatternRoll", "command": "EditModePan", "key": "3" },
+        { "receiver": "PatternRoll", "command": "EditModeKnife", "key": "4" },
+        { "receiver": "PatternRoll", "command": "EditModeEraser", "key": "5" },
 
         // Version control
         { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
