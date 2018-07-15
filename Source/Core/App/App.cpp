@@ -358,7 +358,7 @@ void App::anotherInstanceStarted(const String &commandLine)
 {
     // This will get called if the user launches another copy of the app
     
-    //this->getWindow()->toFront(true);
+    //this->window->toFront(true);
     Logger::outputDebugString("Another instance started: " + commandLine);
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
@@ -398,7 +398,7 @@ void App::suspended()
     }
     
 #if JUCE_ANDROID
-    this->getWindow()->detachOpenGLContext();
+    this->window->detachOpenGLContext();
 #endif
 }
 
@@ -412,7 +412,7 @@ void App::resumed()
     }
 
 #if JUCE_ANDROID
-    this->getWindow()->attachOpenGLContext();
+    this->window->attachOpenGLContext();
 #endif
 }
 
@@ -436,12 +436,12 @@ HelioTheme *App::getTheme() const noexcept
 
 String App::getMacAddressList()
 {
-    Array <MACAddress> macAddresses;
+    Array<MACAddress> macAddresses;
     MACAddress::findAllAddresses(macAddresses);
 
     StringArray addressStrings;
 
-    for (auto && macAddresse : macAddresses)
+    for (const auto &macAddresse : macAddresses)
     {
         addressStrings.add(macAddresse.toString());
     }

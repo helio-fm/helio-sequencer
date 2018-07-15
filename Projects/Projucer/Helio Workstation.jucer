@@ -1498,11 +1498,12 @@
                    androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                    smallIcon="WO0LHL" bigIcon="WO0LHL" androidScreenOrientation="landscape"
-                   androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="14"
+                   androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="17"
                    extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0" cameraPermissionNeeded="0"
                    microphonePermissionNeeded="0" androidBluetoothNeeded="0" androidInAppBilling="0"
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
-                   androidEnableRemoteNotifications="0">
+                   androidEnableRemoteNotifications="0" gradleVersion="4.4" buildToolsVersion="28.0.0"
+                   gradleWrapperVersion="3.1.3">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" androidArchitectures="armeabi x86" isDebug="1" optimisation="1"
                        targetName="Helio"/>
@@ -1538,16 +1539,17 @@
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_ASIO="1" JUCE_WASAPI="1" JUCE_WASAPI_EXCLUSIVE="1" JUCE_DIRECTSOUND="1"
-               JUCE_ALSA="1" JUCE_JACK="1" JUCE_USE_ANDROID_OPENSLES="1" JUCE_USE_CDREADER="0"
-               JUCE_USE_CDBURNER="0" JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="0"
-               JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0" JUCE_USE_WINDOWS_MEDIA_FORMAT="0"
+               JUCE_ALSA="1" JUCE_JACK="1" JUCE_USE_CDREADER="0" JUCE_USE_CDBURNER="0"
+               JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="0" JUCE_USE_MP3AUDIOFORMAT="0"
+               JUCE_USE_LAME_AUDIO_FORMAT="0" JUCE_USE_WINDOWS_MEDIA_FORMAT="0"
                JUCE_CHECK_MEMORY_LEAKS="1" JUCE_USE_CURL="1" JUCE_USE_XSHM="1"
                JUCE_USE_XRENDER="0" JUCE_USE_XCURSOR="1" JUCE_WEB_BROWSER="0"
                JUCE_PLUGINHOST_VST="1" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1"
                JUCE_CATCH_UNHANDLED_EXCEPTIONS="1" JUCE_ALLOW_STATIC_NULL_VARIABLES="1"
-               JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="1"/>
+               JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="1" JUCE_USE_ANDROID_OPENSLES="0"/>
   <LIVE_SETTINGS>
     <OSX/>
     <WINDOWS/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

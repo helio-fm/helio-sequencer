@@ -98,7 +98,7 @@
 #endif
 
 #ifndef    JUCE_USE_ANDROID_OPENSLES
- #define   JUCE_USE_ANDROID_OPENSLES 1
+ #define   JUCE_USE_ANDROID_OPENSLES 0
 #endif
 
 #ifndef    JUCE_USE_WINRT_MIDI
