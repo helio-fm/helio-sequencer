@@ -25,25 +25,23 @@ public:
 
     SelectionComponent();
 
-    virtual void beginLasso(const MouseEvent &e,
-        LassoSource<SelectableComponent *> *const lassoSource);
-
-    virtual void dragLasso(const MouseEvent &e);
-    virtual void endLasso();
-    
-    virtual bool isDragging() const;
+    void beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource);
+    void dragLasso(const MouseEvent &e);
+    void endLasso();
+    bool isDragging() const;
+    void updateBounds();
 
     void paint(Graphics &g) override;
-
-    bool hitTest(int, int) override { return false; }
 
 private:
 
     Array<SelectableComponent *> originalSelection;
-
     LassoSource<SelectableComponent *> *source;
 
-    Point<int> dragStartPos;
+    Point<double> startPosition;
+    Point<double> endPosition;
+
+    const Point<double> getParentSize() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionComponent)
 };

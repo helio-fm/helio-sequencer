@@ -1645,6 +1645,11 @@ void HybridRoll::updateChildrenBounds()
                             this->getWidth(), trackMap->getHeight());
     }
 
+    if (this->lassoComponent->isDragging())
+    {
+        this->lassoComponent->updateBounds();
+    }
+
     this->broadcastRollResized();
 
     HYBRID_ROLL_BULK_REPAINT_END
