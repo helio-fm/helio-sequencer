@@ -30,7 +30,7 @@ namespace VCS
     {
     public:
 
-        static ValueTree create(Pack::Ptr pack, const String &name = String::empty);
+        static ValueTree create(Pack::Ptr pack, const String &name = {});
         static void copyProperties(ValueTree one, ValueTree another);
         static void copyDeltas(ValueTree one, ValueTree another);
 

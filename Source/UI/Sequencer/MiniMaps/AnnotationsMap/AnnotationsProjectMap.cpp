@@ -414,8 +414,6 @@ void AnnotationsProjectMap<T>::applyAnnotationBounds(T *nc, T *nextOne)
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
     const float minWidth = 10.f;
-    const float oneBeatWidth = jmax(minWidth, (mapWidth * (1.f / projectLengthInBeats)));
-
     const float widthMargin = 16.f;
     const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;

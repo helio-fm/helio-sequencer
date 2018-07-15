@@ -18,13 +18,18 @@
 *.dmg
 *.xcscheme
 *.xcworkspacedata
+*.iml
 xcschememanagement.plist
 
 UserInterfaceState.xcuserstate
+IInAppBillingService.java
 resources.res
 Thumbs.db
 cloc.pl
 CMakeLists.txt
+.externalNativeBuild
+.gradle
+.idea
 
 build/
 Trash/

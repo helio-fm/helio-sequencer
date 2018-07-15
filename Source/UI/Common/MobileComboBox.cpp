@@ -213,7 +213,7 @@ void MobileComboBox::Trigger::updateBounds()
         const int h = 32;
         const int x = parent->getWidth() - w;
         const int y = 0;
-        this->setBounds(x, 0, w, h);
+        this->setBounds(x, y, w, h);
         this->setAlwaysOnTop(true);
         this->toFront(false);
     }

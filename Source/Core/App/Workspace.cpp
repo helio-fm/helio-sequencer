@@ -348,6 +348,7 @@ void Workspace::failedDeserializationFallback()
 
 void Workspace::importProject(const String &filePattern)
 {
+#if HELIO_DESKTOP
     FileChooser fc(TRANS("dialog::document::import"),
         File::getCurrentWorkingDirectory(), filePattern, true);
 
@@ -366,6 +367,7 @@ void Workspace::importProject(const String &filePattern)
             this->autosave();
         }
     }
+#endif
 }
 
 //===----------------------------------------------------------------------===//

@@ -141,7 +141,7 @@ String VersionControlTreeItem::getStatsString() const
         return String(TRANS_PLURAL("{x} revisions", numRevisions) + " " + TRANS("common::and") + " " + TRANS_PLURAL("{x} deltas", numDeltas));
     }
 
-    return String::empty;
+    return {};
 }
 
 void VersionControlTreeItem::commitProjectInfo()

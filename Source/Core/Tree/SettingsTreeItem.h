@@ -42,7 +42,7 @@ public:
     //===------------------------------------------------------------------===//
 
     var getDragSourceDescription() override
-    { return var::null; }
+    { return {}; }
 
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
     { return false; }

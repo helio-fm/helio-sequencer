@@ -39,13 +39,13 @@ String DocumentHelpers::getTemporaryFolder()
 static File getFirstSlot(String location1, String location2, const String &fileName)
 {
     File result;
+    bool slotExists = false;
 
 #if HELIO_DESKTOP
 
     const String helioSubfolder = "Helio";
     File file1(File(location1).getChildFile(helioSubfolder));
     File file2(File(location2).getChildFile(helioSubfolder));
-    bool slotExists = false;
 
     // 1й вариант: какой-то из слотов существует - выбираем его.
     if (file1.getChildFile(fileName).existsAsFile())

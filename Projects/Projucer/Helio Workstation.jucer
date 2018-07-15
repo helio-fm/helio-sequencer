@@ -1325,7 +1325,8 @@
                vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
                smallIcon="WO0LHL" customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
                documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override"
-               postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8">
+               postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8"
+               useHeaderMap="0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxCompatibility="10.7 SDK" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
@@ -1354,23 +1355,20 @@
                   vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
                   UIFileSharingEnabled="1" UIStatusBarHidden="1" smallIcon="WO0LHL"
                   extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override"
-                  extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0&#10;HELIO_AUDIOBUS_SUPPORT=0"
-                  customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;AudioComponents&lt;/key&gt;&#10;    &lt;array&gt;&#10;      &lt;dict&gt;&#10;        &lt;key&gt;manufacturer&lt;/key&gt;&#10;        &lt;string&gt;heli&lt;/string&gt;&#10;        &lt;key&gt;type&lt;/key&gt;&#10;        &lt;string&gt;auri&lt;/string&gt;&#10;        &lt;key&gt;subtype&lt;/key&gt;&#10;        &lt;string&gt;host&lt;/string&gt;&#10;        &lt;key&gt;name&lt;/key&gt;&#10;        &lt;string&gt;Helio: Host output&lt;/string&gt;&#10;        &lt;key&gt;version&lt;/key&gt;&#10;        &lt;integer&gt;1&lt;/integer&gt;&#10;      &lt;/dict&gt;&#10;    &lt;/array&gt;&#10;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;CFBundleIdentifier&lt;/key&gt;&#10;    &lt;string&gt;com.peterrudenko.helio&lt;/string&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;&#10;    &lt;key&gt;CFBundleURLTypes&lt;/key&gt;&#10;    &lt;array&gt;&#10;      &lt;dict&gt;&#10;        &lt;key&gt;CFBundleTypeRole&lt;/key&gt;&#10;        &lt;string&gt;Editor&lt;/string&gt;&#10;        &lt;key&gt;CFBundleURLName&lt;/key&gt;&#10;        &lt;string&gt;com.peterrudenko.helio&lt;/string&gt;&#10;        &lt;key&gt;CFBundleURLSchemes&lt;/key&gt;&#10;        &lt;array&gt;&#10;          &lt;string&gt;helio&lt;/string&gt;&#10;          &lt;string&gt;helio-1.6.0.audiobus&lt;/string&gt;&#10;        &lt;/array&gt;&#10;      &lt;/dict&gt;&#10;    &lt;/array&gt;&#10;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
+                  extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0"
+                  customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;CFBundleIdentifier&lt;/key&gt;&#10;    &lt;string&gt;fm.helio.workstation&lt;/string&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;"
                   iosScreenOrientation="landscape" customXcodeResourceFolders=""
                   customXcassetsFolder="../../Resources/iOS/Images.xcassets" iosDevelopmentTeamID="EQL633LLC8"
-                  userNotes="Warning! Make sure that:&#10; - IAA capability entitlement is added"
-                  extraLinkerFlags="" externalLibraries="" extraFrameworks="Security"
-                  iosBackgroundAudio="0" iosDeviceFamily="1,2" iPadScreenOrientation="landscape">
+                  userNotes="" extraLinkerFlags="" externalLibraries="" extraFrameworks=""
+                  iosDeviceFamily="1,2" iPadScreenOrientation="landscape" useHeaderMap="0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
-                       targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags="TARGETED_DEVICE_FAMILY=2, PRODUCT_BUNDLE_IDENTIFIER=com.peterrudenko.helio"
-                       libraryPath="../../Resources/iOS/AudioBus" enablePluginBinaryCopyStep="1"/>
+                       targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
+                       customXcodeFlags="" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="3"
-                       targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags="TARGETED_DEVICE_FAMILY=2, PRODUCT_BUNDLE_IDENTIFIER=com.peterrudenko.helio"
-                       libraryPath="../../Resources/iOS/AudioBus" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="1"/>
+                       targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
+                       customXcodeFlags="" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"
+                       stripLocalSymbols="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1500,14 +1498,14 @@
                    androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                    smallIcon="WO0LHL" bigIcon="WO0LHL" androidScreenOrientation="landscape"
-                   androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="14"
+                   androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="21"
                    extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0" cameraPermissionNeeded="0"
                    microphonePermissionNeeded="0" androidBluetoothNeeded="0" androidInAppBilling="0"
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
-                   androidEnableRemoteNotifications="0">
+                   androidEnableRemoteNotifications="0" gradleVersion="4.4" buildToolsVersion="28.0.0"
+                   gradleWrapperVersion="3.1.3">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" androidArchitectures="armeabi x86" isDebug="1" optimisation="1"
-                       targetName="Helio"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"/>
         <CONFIGURATION name="Release" androidArchitectures="" isDebug="0" optimisation="3"
                        targetName="Helio" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
@@ -1540,16 +1538,18 @@
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_ASIO="1" JUCE_WASAPI="1" JUCE_WASAPI_EXCLUSIVE="1" JUCE_DIRECTSOUND="1"
-               JUCE_ALSA="1" JUCE_JACK="1" JUCE_USE_ANDROID_OPENSLES="1" JUCE_USE_CDREADER="0"
-               JUCE_USE_CDBURNER="0" JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="0"
-               JUCE_USE_MP3AUDIOFORMAT="0" JUCE_USE_LAME_AUDIO_FORMAT="0" JUCE_USE_WINDOWS_MEDIA_FORMAT="0"
+               JUCE_ALSA="1" JUCE_JACK="1" JUCE_USE_CDREADER="0" JUCE_USE_CDBURNER="0"
+               JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="0" JUCE_USE_MP3AUDIOFORMAT="0"
+               JUCE_USE_LAME_AUDIO_FORMAT="0" JUCE_USE_WINDOWS_MEDIA_FORMAT="0"
                JUCE_CHECK_MEMORY_LEAKS="1" JUCE_USE_CURL="1" JUCE_USE_XSHM="1"
                JUCE_USE_XRENDER="0" JUCE_USE_XCURSOR="1" JUCE_WEB_BROWSER="0"
                JUCE_PLUGINHOST_VST="1" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1"
                JUCE_CATCH_UNHANDLED_EXCEPTIONS="1" JUCE_ALLOW_STATIC_NULL_VARIABLES="1"
-               JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="1"/>
+               JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="1" JUCE_USE_ANDROID_OPENSLES="1"
+               JUCE_USE_ANDROID_OBOE="0" JUCE_BELA="0"/>
   <LIVE_SETTINGS>
     <OSX/>
     <WINDOWS/>
+    <LINUX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

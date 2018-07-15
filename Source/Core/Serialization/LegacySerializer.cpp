@@ -92,11 +92,6 @@ static inline std::string encodeBase64(unsigned char const *bytes_to_encode, siz
     return ret;
 }
 
-static inline std::string encodeBase64(const std::string &s)
-{
-    return encodeBase64(reinterpret_cast<const unsigned char *>(s.data()), s.length());
-}
-
 static inline bool isBase64(unsigned char c)
 {
     return (isalnum(c) || (c == '+') || (c == '/'));

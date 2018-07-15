@@ -179,7 +179,7 @@ void AudioPluginsListComponent::updateListContent()
 var AudioPluginsListComponent::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
 {
     auto pd = this->pluginScanner.getList().getType(currentlySelectedRows[0]);
-    if (pd == nullptr) { return var::null; }
+    if (pd == nullptr) { return {}; }
 
     PluginDescriptionDragnDropWrapper::Ptr pluginWrapper = new PluginDescriptionDragnDropWrapper();
     pluginWrapper->pluginDescription = PluginDescription(*pd);

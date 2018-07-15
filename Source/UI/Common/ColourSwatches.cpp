@@ -22,7 +22,7 @@
 ColourSwatches::ColourSwatches()
 {
     const StringPairArray colours(MenuPanel::getColoursList());
-    for (const auto c : colours.getAllValues())
+    for (const auto &c : colours.getAllValues())
     {
         const Colour colour(Colour::fromString(c));
         ScopedPointer<ColourButton> button(new ColourButton(colour, this));

@@ -434,7 +434,7 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     else if (needsToStretchLeft)
     {
         const float deltaW = float(this->barWidth * numBarsToExpand);
-        this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
+        this->clickAnchor.addXY(deltaW, 0); // an ugly hack
         this->project.broadcastChangeViewBeatRange(
             (this->firstBar - numBarsToExpand) * float(BEATS_PER_BAR),
             this->lastBar * float(BEATS_PER_BAR));
@@ -1840,13 +1840,13 @@ Point<float> HybridRoll::getMouseOffset(Point<float> mouseScreenPosition) const
     const int w = this->getWidth() - this->viewport.getWidth();
 
     const Point<float> distanceFromDragStart = mouseScreenPosition - this->clickAnchor;
-    float x = this->viewportAnchor.getX() + distanceFromDragStart.getX() * -(SMOOTH_PAN_SPEED_MULTIPLIER);
+    float x = this->viewportAnchor.getX() - distanceFromDragStart.getX();
 
     x = (x < 0) ? 0 : x;
     x = (x > w) ? w : x;
 
     const int h = this->getHeight() - this->viewport.getHeight();
-    float y = this->viewportAnchor.getY() + distanceFromDragStart.getY() * -(SMOOTH_PAN_SPEED_MULTIPLIER);
+    float y = this->viewportAnchor.getY() - distanceFromDragStart.getY();
 
     y = (y < 0) ? 0 : y;
     y = (y > h) ? h : y;
@@ -1877,7 +1877,8 @@ void HybridRoll::updateChildrenBounds()
     this->topShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, shadowSize);
     this->bottomShadow->setBounds(viewX, viewY + viewHeight - shadowSize, viewWidth, shadowSize);
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-
+    //Logger::writeToLog("b viewY: " + String(viewY));
+    
     if (this->annotationsTrack)
     {
         this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
@@ -1926,6 +1927,7 @@ void HybridRoll::updateChildrenPositions()
     this->topShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     this->bottomShadow->setTopLeftPosition(viewX, viewY + viewHeight - shadowSize);
     this->header->setTopLeftPosition(0, viewY);
+    //Logger::writeToLog("p viewY: " + String(viewY));
 
     if (this->annotationsTrack)
     {

@@ -82,7 +82,7 @@ InternalPluginFormat::InternalPluginFormat()
 
 bool InternalPluginFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
-    return (fileOrIdentifier == String::empty ||
+    return (fileOrIdentifier.isEmpty() ||
             fileOrIdentifier == INTERNAL_PLUGIN_IDENTIFIER_HACK);
 }
 
@@ -96,36 +96,32 @@ void InternalPluginFormat::createPluginInstance(const PluginDescription &desc, d
         desc.name == this->audioOutDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), {});
         return;
     }
     if (desc.uid == this->audioInDesc.uid ||
              desc.name == this->audioInDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode), {});
         return;
     }
     if (desc.uid == this->midiInDesc.uid ||
              desc.name == this->midiInDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode), {});
         return;
     }
     else if (desc.uid == this->midiOutDesc.uid ||
              desc.name == this->midiOutDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
         return;
     }
     
-    callback(userData, nullptr, String::empty);
+    callback(userData, nullptr, {});
 }
 
 const PluginDescription *InternalPluginFormat::getDescriptionFor(const InternalFilterType type)
