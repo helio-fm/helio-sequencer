@@ -68,7 +68,7 @@ void FadingDialog::fadeOut()
     }
 }
 
-void FadingDialog::rebound()
+void FadingDialog::updatePosition()
 {
 #if HELIO_DESKTOP
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);

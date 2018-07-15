@@ -112,7 +112,7 @@ UserInterfaceSettings::UserInterfaceSettings()
     }
 
     this->fontEditor->setInterceptsMouseClicks(false, true);
-    this->fontEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
+    this->fontEditor->setFont(18.f);
     this->fontEditor->setText(TRANS("settings::ui::font") + ": " + lastUsedFontName);
     this->fontComboPrimer->initWith(this->fontEditor.get(), fontsMenu);
 

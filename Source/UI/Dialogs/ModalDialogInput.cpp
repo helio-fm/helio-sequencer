@@ -78,7 +78,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message, co
     setSize (450, 165);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
@@ -185,14 +185,14 @@ void ModalDialogInput::visibilityChanged()
 void ModalDialogInput::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void ModalDialogInput::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 

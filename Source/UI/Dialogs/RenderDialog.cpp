@@ -106,7 +106,7 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     setSize (520, 224);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     //[/Constructor]
 }
 
@@ -226,14 +226,14 @@ void RenderDialog::sliderValueChanged (Slider* sliderThatWasMoved)
 void RenderDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void RenderDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 

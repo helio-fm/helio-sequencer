@@ -32,10 +32,7 @@ public:
     void initResources();
     void initColours(const ::ColourScheme::Ptr colours);
     void updateBackgroundRenders(bool force = false);
-
     void updateFont(const Font &font);
-    Typeface::Ptr getTextTypeface() const
-    { return this->textTypefaceCache; }
         
     virtual int getShortAnimationLength() { return 150; }
     virtual int getLongAnimationLength() { return 250; }

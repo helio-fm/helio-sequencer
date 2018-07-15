@@ -29,7 +29,7 @@ public:
 protected:
     
     void fadeOut();
-    virtual void rebound();
+    virtual void updatePosition();
 
     SafePointer<Component> background;
     

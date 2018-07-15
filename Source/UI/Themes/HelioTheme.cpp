@@ -101,7 +101,7 @@ Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
     if (font.getTypefaceName() == Font::getDefaultSansSerifFontName() ||
         font.getTypefaceName() == Font::getDefaultSerifFontName())
     {
-        return this->getTextTypeface();
+        return this->textTypefaceCache;
     }
 
     return Font::getDefaultTypefaceForFont(font);
@@ -145,16 +145,16 @@ void HelioTheme::drawLasso(Graphics &g, Component &lassoComp)
     const float cornersRound = 10.f;
     const float dashLength = 7.f;
 #endif
-    
-    const Rectangle<float> r(0.5f, 0.5f,
-        float(lassoComp.getLocalBounds().getWidth()) - 1.0f,
-        float(lassoComp.getLocalBounds().getHeight()) - 1.0f);
-    
+
     g.setColour(lassoComp.findColour(ColourIDs::SelectionComponent::fill));
     g.fillRoundedRectangle(lassoComp.getLocalBounds().toFloat(), cornersRound);
     
     g.setColour(lassoComp.findColour(ColourIDs::SelectionComponent::outline));
-    
+
+    const Rectangle<float> r(0.5f, 0.5f,
+        float(lassoComp.getLocalBounds().getWidth()) - 1.0f,
+        float(lassoComp.getLocalBounds().getHeight()) - 1.0f);
+
     Path path;
     path.addQuadrilateral(r.getBottomRight().getX(), r.getBottomRight().getY(),
         r.getTopRight().getX(), r.getTopRight().getY(),
@@ -678,6 +678,10 @@ void HelioTheme::initResources()
 {
     Icons::initBuiltInImages();
 
+#if HELIO_MOBILE
+    this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
+#elif HELIO_DESKTOP
+
     if (Config::contains(Serialization::Config::lastUsedFont))
     {
         const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont);
@@ -720,12 +724,13 @@ void HelioTheme::initResources()
     }
     else
     {
-        // Verdana on Windows, Bitstream Vera Sans or something on Linux, Lucida Grande on macOS, Helvetica on iOS:
+        // Verdana on Windows, Bitstream Vera Sans or something on Linux, Lucida Grande on macOS:
         this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
     }
 
     Logger::writeToLog("Using font: " + this->textTypefaceCache->getName());
     Config::set(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
+#endif
 }
 
 void HelioTheme::updateFont(const Font &font)

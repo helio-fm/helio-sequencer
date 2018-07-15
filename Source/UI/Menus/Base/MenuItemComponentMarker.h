@@ -40,10 +40,6 @@ public:
 private:
 
     //[UserVariables]
-    void rebound()
-    {
-        this->setBounds(this->getParentComponent()->getLocalBounds());
-    }
     //[/UserVariables]
 
 

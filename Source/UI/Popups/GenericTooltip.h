@@ -32,7 +32,7 @@ public:
     {
         const Rectangle<int> messageBounds(this->getLocalBounds().reduced(10, 10));
         g.setColour(Colours::white.withAlpha(0.8f));
-        g.setFont(Font(Font::getDefaultSansSerifFontName(), 30.f, Font::plain));
+        g.setFont(30.f);
         g.drawFittedText(this->message,
                          messageBounds.getX(),
                          messageBounds.getY(),

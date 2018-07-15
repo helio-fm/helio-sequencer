@@ -254,7 +254,7 @@ void TreeItem::dispatchChangeTreeItemView()
 
 Font TreeItem::getFont() const noexcept
 {
-    return Font(Font::getDefaultSansSerifFontName(), TREE_FONT_SIZE, Font::plain); //this->getItemHeight() * TREE_FONT_HEIGHT_PROPORTION, Font::plain);
+    return Font(TREE_FONT_SIZE); //this->getItemHeight() * TREE_FONT_HEIGHT_PROPORTION, Font::plain);
 }
 
 Colour TreeItem::getColour() const noexcept

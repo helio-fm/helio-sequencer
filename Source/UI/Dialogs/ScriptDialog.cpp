@@ -97,7 +97,7 @@ function transform(selection, keySignature, timeSignature)\n\
     this->setSize(550, 350);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toFront(true);
@@ -197,14 +197,14 @@ void ScriptDialog::visibilityChanged()
 void ScriptDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void ScriptDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 
