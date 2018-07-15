@@ -28,7 +28,7 @@ class Headline;
 
 #if HELIO_MOBILE
 #   define HEADLINE_HEIGHT (34)
-#elif HELIO_DEKTOP
+#elif HELIO_DESKTOP
 #   define HEADLINE_HEIGHT (64)
 #endif
 
