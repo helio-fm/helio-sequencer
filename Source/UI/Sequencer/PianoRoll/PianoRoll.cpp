@@ -1053,6 +1053,12 @@ void PianoRoll::resized()
         component->setFloatBounds(this->getEventBounds(component));
     }
 
+    if (this->knifeToolHelper != nullptr)
+    {
+        this->knifeToolHelper->updateBounds();
+        this->knifeToolHelper->updateCutMarks();
+    }
+
     HybridRoll::resized();
 
     HYBRID_ROLL_BULK_REPAINT_END
@@ -1146,7 +1152,7 @@ void PianoRoll::continueCuttingEvents(const MouseEvent &event)
     if (this->knifeToolHelper != nullptr)
     {
         this->knifeToolHelper->setEndPosition(event.position);
-        this->knifeToolHelper->rebound();
+        this->knifeToolHelper->updateBounds();
 
         bool addsPoint;
         Point<float> intersection;
@@ -1185,7 +1191,7 @@ void PianoRoll::endCuttingEventsIfNeeded()
 {
     if (this->knifeToolHelper != nullptr)
     {
-        // TODO
+        // TODO cut
         this->knifeToolHelper = nullptr;
     }
 }

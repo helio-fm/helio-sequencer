@@ -20,8 +20,14 @@
 #include "NoteComponent.h"
 #include "CutPointMark.h"
 #include "HybridRoll.h"
+#include "ColourIDs.h"
 
 #define PADDING 2
+
+static inline ComponentAnimator &rootAnimator()
+{
+    return Desktop::getInstance().getAnimator();
+}
 
 KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) :
     roll(roll)
@@ -33,8 +39,7 @@ KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) :
 
 KnifeToolHelper::~KnifeToolHelper()
 {
-    Desktop::getInstance().getAnimator()
-        .animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 0.f);
+    rootAnimator().animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 0.f);
 }
 
 Line<float> KnifeToolHelper::getLine() const noexcept
@@ -45,16 +50,16 @@ Line<float> KnifeToolHelper::getLine() const noexcept
 void KnifeToolHelper::paint(Graphics &g)
 {
     g.setColour(Colours::black);
-    g.strokePath(this->path, PathStrokeType(1.f));
+    g.strokePath(this->path, PathStrokeType(.5f));
 
-    g.setColour(Colours::white);
+    //g.setColour(this->findColour(ColourIDs::SelectionComponent::outline));
+    g.setColour(Colours::white.withAlpha(0.75f));
     g.fillPath(this->path);
 }
 
-void KnifeToolHelper::rebound()
+void KnifeToolHelper::updateBounds()
 {
-    jassert(this->getParentComponent() != nullptr);
-    const auto parentSize = this->getParentComponent()->getLocalBounds().getBottomRight().toDouble();
+    const Point<double> parentSize(this->getParentSize());
     const auto start = (this->startPosition * parentSize).toFloat();
     const auto end = (this->endPosition * parentSize).toFloat();
     const auto x1 = jmin(start.getX(), end.getX());
@@ -65,34 +70,39 @@ void KnifeToolHelper::rebound()
     this->line = { start, end };
 
     this->path.clear();
-    path.startNewSubPath(start - startOffset);
-    path.lineTo(end - startOffset);
-    static Array<float> dashes(5.f, 5.f);
-    PathStrokeType(2.f).createDashedStroke(this->path, this->path,
+    //path.startNewSubPath(start - startOffset);
+    //path.lineTo(end - startOffset);
+    path.startNewSubPath(end - startOffset);
+    path.lineTo(start - startOffset);
+    static Array<float> dashes(8.f, 4.f);
+    PathStrokeType(3.f).createDashedStroke(this->path, this->path,
         dashes.getRawDataPointer(), dashes.size());
 
     this->setBounds(int(x1) - PADDING, int(y1) - PADDING,
         int(x2 - x1) + PADDING * 2, int(y2 - y1) + PADDING * 2);
 }
 
+void KnifeToolHelper::updateCutMarks()
+{
+    for (auto &m : this->cutMarkers)
+    {
+        m.second.get()->updateBounds(true);
+    }
+}
+
 void KnifeToolHelper::fadeIn()
 {
-    Desktop::getInstance().getAnimator()
-        .animateComponent(this, this->getBounds(), 1.f, 150, false, 0.f, 0.f);
+    rootAnimator().animateComponent(this, this->getBounds(), 1.f, 150, false, 0.f, 0.f);
 }
 
 void KnifeToolHelper::setStartPosition(const Point<float> &mousePos)
 {
-    jassert(this->getParentComponent() != nullptr);
-    const auto parentSize = this->getParentComponent()->getLocalBounds().getBottomRight().toDouble();
-    this->startPosition = mousePos.toDouble() / parentSize;
+    this->startPosition = mousePos.toDouble() / this->getParentSize();
 }
 
 void KnifeToolHelper::setEndPosition(const Point<float> &mousePos)
 {
-    jassert(this->getParentComponent() != nullptr);
-    const auto parentSize = this->getParentComponent()->getLocalBounds().getBottomRight().toDouble();
-    this->endPosition = mousePos.toDouble() / parentSize;
+    this->endPosition = mousePos.toDouble() / this->getParentSize();
 }
 
 void KnifeToolHelper::addOrUpdateCutPoint(NoteComponent *nc, float beat)
@@ -134,7 +144,17 @@ UniquePointer<CutPointMark> KnifeToolHelper::createCutPointMark(NoteComponent *n
     UniquePointer<CutPointMark> p;
     p.reset(new CutPointMark(nc, pos));
     this->getParentComponent()->addAndMakeVisible(p.get());
-    p.get()->rebound();
+    p.get()->updateBounds();
     p.get()->fadeIn();
     return p;
+}
+
+const Point<double> KnifeToolHelper::getParentSize() const
+{
+    if (const auto *p = this->getParentComponent())
+    {
+        return { double(p->getWidth()), double(p->getHeight()) };
+    }
+
+    return { 1.0, 1.0 };
 }

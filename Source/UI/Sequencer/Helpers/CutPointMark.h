@@ -29,13 +29,15 @@ public:
     void paint(Graphics &) override;
 
     void updatePosition(float pos);
-    void rebound();
+    void updatePositionFromMouseEvent(int mouseX, int mouseY);
+    void updateBounds(bool forceNoAnimation = false);
     void fadeIn();
 
 private:
 
     SafePointer<Component> targetComponent;
     float absPosX;
+    bool initialized;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CutPointMark)
 };

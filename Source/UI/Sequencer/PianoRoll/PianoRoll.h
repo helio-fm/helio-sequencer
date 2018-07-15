@@ -192,7 +192,6 @@ private:
     void insertNewNoteAt(const MouseEvent &e);
 
     ScopedPointer<KnifeToolHelper> knifeToolHelper;
-    HashMap<Note, UniquePointer<Component>> knifeIntersectionHelpers;
     void startCuttingEvents(const MouseEvent &e);
     void continueCuttingEvents(const MouseEvent &e);
     void endCuttingEventsIfNeeded();

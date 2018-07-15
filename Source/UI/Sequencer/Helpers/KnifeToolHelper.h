@@ -40,7 +40,8 @@ public:
 
     void paint(Graphics &g) override;
 
-    void rebound();
+    void updateBounds();
+    void updateCutMarks();
     void fadeIn();
 
 private:
@@ -54,6 +55,7 @@ private:
     Path path;
 
     UniquePointer<CutPointMark> createCutPointMark(NoteComponent *nc, float beat);
+    const Point<double> getParentSize() const;
 
     SparseHashMap<const Note, UniquePointer<CutPointMark>, MidiEventHash> cutMarkers;
     SparseHashMap<const Note, float, MidiEventHash> cutPoints;

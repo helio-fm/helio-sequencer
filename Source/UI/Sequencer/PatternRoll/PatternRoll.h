@@ -25,6 +25,7 @@
 #   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 4
 #endif
 
+class CutPointMark;
 class ClipComponent;
 class PatternRollSelectionMenuManager;
 
@@ -146,6 +147,11 @@ private:
 
     ClipComponent *newClipDragging;
     bool addNewClipMode;
+
+    ScopedPointer<CutPointMark> knifeToolHelper;
+    void startCuttingClips(const MouseEvent &e);
+    void continueCuttingClips(const MouseEvent &e);
+    void endCuttingClipsIfNeeded();
 
 private:
     
