@@ -94,8 +94,8 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const ValueTree revi
 
     this->setSize(REVISION_COMPONENT_WIDTH, REVISION_COMPONENT_HEIGHT);
 
-    this->revisionDescription->setFont(Font(Font::getDefaultSansSerifFontName(), (this->getHeight() / 3.f), Font::plain));
-    this->revisionDate->setFont(Font(Font::getDefaultSansSerifFontName(), (this->getHeight() / 4.f), Font::plain));
+    this->revisionDescription->setFont(this->getHeight() / 3.f);
+    this->revisionDate->setFont(this->getHeight() / 4.f);
 
     //[/Constructor]
 }

@@ -44,7 +44,7 @@ InstrumentEditorNode::InstrumentEditorNode(WeakReference<Instrument> instrument,
     nodeId(nodeId),
     pinSize(PIN_SIZE),
     isSelected(false),
-    font(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain)),
+    font(21.f),
     numInputs(0),
     numOutputs(0)
 {

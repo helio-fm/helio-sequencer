@@ -25,9 +25,9 @@ class ProjectTreeItem;
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontalReversed.h"
-#include "../../Themes/ShadowDownwards.h"
-#include "../../Themes/SeparatorHorizontal.h"
 #include "../../Themes/ShadowUpwards.h"
+#include "../../Themes/SeparatorHorizontal.h"
+#include "../../Themes/ShadowDownwards.h"
 #include "../../Common/PlayButton.h"
 
 class SequencerSidebarRight final : public Component,
@@ -51,9 +51,6 @@ public:
     void resized() override;
     void handleCommandMessage (int commandId) override;
 
-    // Binary resources:
-    static const char* gray1x1_png;
-    static const int gray1x1_pngSize;
 
 private:
 
@@ -122,15 +119,15 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<ListBox> listBox;
-    ScopedPointer<SeparatorHorizontalReversed> headLine;
-    ScopedPointer<ShadowUpwards> shadow;
-    ScopedPointer<SeparatorHorizontal> separator;
-    ScopedPointer<Label> totalTime;
-    ScopedPointer<Label> currentTime;
-    ScopedPointer<ShadowDownwards> headShadow;
-    ScopedPointer<MenuItemComponent> annotationsButton;
-    ScopedPointer<PlayButton> playButton;
+    UniquePointer<ListBox> listBox;
+    UniquePointer<SeparatorHorizontalReversed> headLine;
+    UniquePointer<ShadowUpwards> shadow;
+    UniquePointer<SeparatorHorizontal> separator;
+    UniquePointer<Label> totalTime;
+    UniquePointer<Label> currentTime;
+    UniquePointer<ShadowDownwards> headShadow;
+    UniquePointer<MenuItemComponent> annotationsButton;
+    UniquePointer<PlayButton> playButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)
 };

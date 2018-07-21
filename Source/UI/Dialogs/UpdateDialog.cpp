@@ -109,7 +109,7 @@ UpdateDialog::UpdateDialog()
     setSize (500, 190);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     //[/Constructor]
 }
 
@@ -222,14 +222,14 @@ void UpdateDialog::labelTextChanged (Label* labelThatHasChanged)
 void UpdateDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void UpdateDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 

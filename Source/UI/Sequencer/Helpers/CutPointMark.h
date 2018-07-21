@@ -17,23 +17,30 @@
 
 #pragma once
 
-class FadingDialog : public Component
+#include "NoteComponent.h"
+
+class CutPointMark final : public Component
 {
 public:
-    
-    FadingDialog();
-    ~FadingDialog() override;
 
-    void parentHierarchyChanged() override;
+    CutPointMark(SafePointer<Component> targetComponent, float absPosX);
+    ~CutPointMark();
 
-protected:
-    
-    void fadeOut();
-    virtual void updatePosition();
+    void paint(Graphics &) override;
 
-    SafePointer<Component> background;
-    
+    void updatePosition(float pos);
+    void updatePositionFromMouseEvent(int mouseX, int mouseY);
+    void updateBounds(bool forceNoAnimation = false);
+    void fadeIn();
+
+    Component *getComponent() const noexcept;
+    float getCutPosition() const noexcept;
+
 private:
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FadingDialog)
+
+    SafePointer<Component> targetComponent;
+    float absPosX;
+    bool initialized;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CutPointMark)
 };

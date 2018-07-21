@@ -325,12 +325,12 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TimeDistanceIndicator_e1c13445.o \
   $(JUCE_OBJDIR)/TrackEndIndicator_698c6d7.o \
   $(JUCE_OBJDIR)/TrackStartIndicator_fa80cb30.o \
+  $(JUCE_OBJDIR)/CutPointMark_e432a7df.o \
+  $(JUCE_OBJDIR)/HybridRollExpandMark_c3022404.o \
+  $(JUCE_OBJDIR)/KnifeToolHelper_d68a471.o \
+  $(JUCE_OBJDIR)/TimelineWarningMarker_6d5c36fb.o \
   $(JUCE_OBJDIR)/PatternOperations_aae46f62.o \
   $(JUCE_OBJDIR)/SequencerOperations_4fa1bea3.o \
-  $(JUCE_OBJDIR)/HybridRollExpandMark_c3022404.o \
-  $(JUCE_OBJDIR)/InsertSpaceHelper_7c318421.o \
-  $(JUCE_OBJDIR)/TimelineWarningMarker_6d5c36fb.o \
-  $(JUCE_OBJDIR)/WipeSpaceHelper_16b49913.o \
   $(JUCE_OBJDIR)/AutomationCurveClipComponent_9bff9d3.o \
   $(JUCE_OBJDIR)/AutomationCurveHelper_c47ea72.o \
   $(JUCE_OBJDIR)/AutomationCurveEventComponent_7e9080c7.o \
@@ -1497,6 +1497,26 @@ $(JUCE_OBJDIR)/TrackStartIndicator_fa80cb30.o: ../../Source/UI/Sequencer/Header/
 	@echo "Compiling TrackStartIndicator.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/CutPointMark_e432a7df.o: ../../Source/UI/Sequencer/Helpers/CutPointMark.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling CutPointMark.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HybridRollExpandMark_c3022404.o: ../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HybridRollExpandMark.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/KnifeToolHelper_d68a471.o: ../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling KnifeToolHelper.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimelineWarningMarker_6d5c36fb.o: ../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimelineWarningMarker.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/PatternOperations_aae46f62.o: ../../Source/UI/Sequencer/Helpers/PatternOperations.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PatternOperations.cpp"
@@ -1505,26 +1525,6 @@ $(JUCE_OBJDIR)/PatternOperations_aae46f62.o: ../../Source/UI/Sequencer/Helpers/P
 $(JUCE_OBJDIR)/SequencerOperations_4fa1bea3.o: ../../Source/UI/Sequencer/Helpers/SequencerOperations.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SequencerOperations.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/HybridRollExpandMark_c3022404.o: ../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HybridRollExpandMark.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/InsertSpaceHelper_7c318421.o: ../../Source/UI/Sequencer/Helpers/InsertSpaceHelper.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InsertSpaceHelper.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TimelineWarningMarker_6d5c36fb.o: ../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TimelineWarningMarker.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/WipeSpaceHelper_16b49913.o: ../../Source/UI/Sequencer/Helpers/WipeSpaceHelper.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling WipeSpaceHelper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/AutomationCurveClipComponent_9bff9d3.o: ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveClipComponent.cpp

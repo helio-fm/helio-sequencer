@@ -31,6 +31,7 @@
               file="../../Resources/Icons/automationTrack.svg"/>
         <FILE id="pQYljb" name="back.svg" compile="0" resource="1" file="../../Resources/Icons/back.svg"/>
         <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
+        <FILE id="htquXC" name="chordTool.svg" compile="0" resource="1" file="../../Resources/Icons/chordTool.svg"/>
         <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
         <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
         <FILE id="ja4Raa" name="commit.svg" compile="0" resource="1" file="../../Resources/Icons/commit.svg"/>
@@ -39,16 +40,16 @@
         <FILE id="FGsAM4" name="cropTool.svg" compile="0" resource="1" file="../../Resources/Icons/cropTool.svg"/>
         <FILE id="eeLgJV" name="cursorTool.svg" compile="0" resource="1" file="../../Resources/Icons/cursorTool.svg"/>
         <FILE id="kqVbqH" name="cut.svg" compile="0" resource="1" file="../../Resources/Icons/cut.svg"/>
+        <FILE id="qhKsHT" name="cutterTool.svg" compile="0" resource="1" file="../../Resources/Icons/cutterTool.svg"/>
         <FILE id="qQqffF" name="down.svg" compile="0" resource="1" file="../../Resources/Icons/down.svg"/>
         <FILE id="TZOeiP" name="dragTool.svg" compile="0" resource="1" file="../../Resources/Icons/dragTool.svg"/>
         <FILE id="S0dKhu" name="drawTool.svg" compile="0" resource="1" file="../../Resources/Icons/drawTool.svg"/>
         <FILE id="pt25MQ" name="ellipsis.svg" compile="0" resource="1" file="../../Resources/Icons/ellipsis.svg"/>
+        <FILE id="u0J7QC" name="eraserTool.svg" compile="0" resource="1" file="../../Resources/Icons/eraserTool.svg"/>
         <FILE id="PjELEM" name="expand.svg" compile="0" resource="1" file="../../Resources/Icons/expand.svg"/>
         <FILE id="XzECGs" name="fail.svg" compile="0" resource="1" file="../../Resources/Icons/fail.svg"/>
         <FILE id="mgkKBL" name="forward.svg" compile="0" resource="1" file="../../Resources/Icons/forward.svg"/>
         <FILE id="WO0LHL" name="helio.svg" compile="0" resource="1" file="../../Resources/Icons/helio.svg"/>
-        <FILE id="Zn4gep" name="insertSpaceTool.svg" compile="0" resource="1"
-              file="../../Resources/Icons/insertSpaceTool.svg"/>
         <FILE id="bpruBj" name="instrument.svg" compile="0" resource="1" file="../../Resources/Icons/instrument.svg"/>
         <FILE id="lF6noc" name="instrumentNode.svg" compile="0" resource="1"
               file="../../Resources/Icons/instrumentNode.svg"/>
@@ -102,8 +103,6 @@
         <FILE id="gFGVNu" name="versionControl.svg" compile="0" resource="1"
               file="../../Resources/Icons/versionControl.svg"/>
         <FILE id="EcPJkd" name="volume.svg" compile="0" resource="1" file="../../Resources/Icons/volume.svg"/>
-        <FILE id="CYlwe1" name="wipeSpaceTool.svg" compile="0" resource="1"
-              file="../../Resources/Icons/wipeSpaceTool.svg"/>
         <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
@@ -1047,6 +1046,21 @@
                   file="../../Source/UI/Sequencer/Header/TrackStartIndicator.h"/>
           </GROUP>
           <GROUP id="{8144406F-1438-BE00-DA08-A94FC6424392}" name="Helpers">
+            <FILE id="qsshHN" name="CutPointMark.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/CutPointMark.cpp"/>
+            <FILE id="OBROeR" name="CutPointMark.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Helpers/CutPointMark.h"/>
+            <FILE id="ZJCh08" name="HybridRollExpandMark.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp"/>
+            <FILE id="iM3cEX" name="HybridRollExpandMark.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h"/>
+            <FILE id="A5NXhb" name="KnifeToolHelper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp"/>
+            <FILE id="SQ41Eb" name="KnifeToolHelper.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/KnifeToolHelper.h"/>
+            <FILE id="NOqCjM" name="TimelineWarningMarker.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"/>
+            <FILE id="amNgBo" name="TimelineWarningMarker.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.h"/>
             <FILE id="BuB4fE" name="PatternOperations.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/PatternOperations.cpp"/>
             <FILE id="LbPJ1x" name="PatternOperations.h" compile="0" resource="0"
@@ -1055,22 +1069,6 @@
                   file="../../Source/UI/Sequencer/Helpers/SequencerOperations.cpp"/>
             <FILE id="Ef8Csi" name="SequencerOperations.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/SequencerOperations.h"/>
-            <FILE id="ZJCh08" name="HybridRollExpandMark.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp"/>
-            <FILE id="iM3cEX" name="HybridRollExpandMark.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h"/>
-            <FILE id="ovSGDS" name="InsertSpaceHelper.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/InsertSpaceHelper.cpp"/>
-            <FILE id="EVuhkP" name="InsertSpaceHelper.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/InsertSpaceHelper.h"/>
-            <FILE id="NOqCjM" name="TimelineWarningMarker.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"/>
-            <FILE id="amNgBo" name="TimelineWarningMarker.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.h"/>
-            <FILE id="jrNgrd" name="WipeSpaceHelper.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/WipeSpaceHelper.cpp"/>
-            <FILE id="QNCCDi" name="WipeSpaceHelper.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/WipeSpaceHelper.h"/>
           </GROUP>
           <GROUP id="{B0892F63-3E45-E55C-AC0C-2854CEBBAA2E}" name="PatternRoll">
             <GROUP id="{B0907F47-84ED-36AB-6C8C-C52ABB97E9A8}" name="ClipComponents">

@@ -111,7 +111,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     }
 
     this->textEditor->addListener(this);
-    this->textEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain));
+    this->textEditor->setFont(21.f);
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
 
     this->separatorH->setAlphaMultiplier(2.5f);
@@ -120,7 +120,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     setSize (370, 185);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toFront(true);
@@ -236,14 +236,14 @@ void TimeSignatureDialog::visibilityChanged()
 void TimeSignatureDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void TimeSignatureDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 

@@ -76,8 +76,8 @@ void MenuItemComponentMarker::resized()
 void MenuItemComponentMarker::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
     this->setAlpha(0.0f);
+    this->setBounds(this->getParentComponent()->getLocalBounds());
     Desktop::getInstance().getAnimator().fadeIn(this, 300);
     //[/UserCode_parentHierarchyChanged]
 }
@@ -85,7 +85,7 @@ void MenuItemComponentMarker::parentHierarchyChanged()
 void MenuItemComponentMarker::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->setBounds(this->getParentComponent()->getLocalBounds());
     //[/UserCode_parentSizeChanged]
 }
 

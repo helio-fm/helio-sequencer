@@ -49,7 +49,7 @@ void MenuPanel::resized()
 {
     this->listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
 
-    // Parent component may reposition and rebound menu at any time,
+    // Parent component may reposition menu at any time,
     // need to update content bounds animation:
     if (this->commandDescriptions.size() != 0)
     {

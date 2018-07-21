@@ -133,7 +133,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     this->colourSwatches->setSelectedColour(this->originalEvent.getTrackColour());
 
     this->textEditor->addListener(this);
-    this->textEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain));
+    this->textEditor->setFont(21.f);
     this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
 
     this->separatorH->setAlphaMultiplier(2.5f);
@@ -142,7 +142,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     setSize (450, 220);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toFront(true);
@@ -264,14 +264,14 @@ void AnnotationDialog::visibilityChanged()
 void AnnotationDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void AnnotationDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 

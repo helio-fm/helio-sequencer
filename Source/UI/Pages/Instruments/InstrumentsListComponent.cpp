@@ -141,7 +141,7 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
         g.fillAll(Colours::black.withAlpha(0.05f));
     }
 
-    g.setFont(Font(Font::getDefaultSansSerifFontName(), h * 0.4f, Font::plain));
+    g.setFont(h * 0.4f);
     const int margin = h / 12;
 
     g.setColour(Colours::white);

@@ -57,7 +57,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     setSize (410, 180);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
     this->setAlwaysOnTop(true);
@@ -144,14 +144,14 @@ void ModalDialogConfirmation::buttonClicked (Button* buttonThatWasClicked)
 void ModalDialogConfirmation::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void ModalDialogConfirmation::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 

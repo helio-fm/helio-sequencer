@@ -19,7 +19,7 @@
 
 // belongs to ProjectTreeItem
 
-class HybridRollEditMode : public ChangeBroadcaster
+class HybridRollEditMode final : public ChangeBroadcaster
 {
 public:
     
@@ -30,13 +30,12 @@ public:
         selectionMode                    = 0x03,
         zoomMode                         = 0x04,
         dragMode                         = 0x05,
-        insertSpaceMode                  = 0x06,
-        wipeSpaceMode                    = 0x07,
-        scissorsMode                     = 0x08,
+        knifeMode                        = 0x06,
+        eraserMode                       = 0x07,
+        chordBuilderMode                 = 0x08,
     };
     
-    HybridRollEditMode();
-    HybridRollEditMode(const HybridRollEditMode &other);
+    HybridRollEditMode() = default;
 
     bool forbidsViewportDragging() const;
     bool forcesViewportDragging() const;
@@ -50,11 +49,8 @@ public:
     bool forbidsAddingEvents() const;
     bool forcesAddingEvents() const;
 
-    bool forbidsSpaceWipe() const;
-    bool forcesSpaceWipe() const;
-
-    bool forbidsSpaceInsert() const;
-    bool forcesSpaceInsert() const;
+    bool forbidsCuttingEvents() const;
+    bool forcesCuttingEvents() const;
 
     bool shouldInteractWithChildren() const;
     MouseCursor getCursor() const;
@@ -65,8 +61,8 @@ public:
     
 private:
     
-    Mode mode;
-    Mode previousMode;
+    Mode mode = defaultMode;
+    Mode previousMode = defaultMode;
 
     JUCE_LEAK_DETECTOR(HybridRollEditMode)
     

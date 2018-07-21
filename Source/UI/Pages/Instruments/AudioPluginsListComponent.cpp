@@ -204,7 +204,7 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     int rowNumber, int columnId,
     int w, int h, bool rowIsSelected)
 {
-    g.setFont(Font(Font::getDefaultSansSerifFontName(), h * 0.27f, Font::plain));
+    g.setFont(h * 0.27f);
     const auto *pd = this->pluginScanner.getList().getType(rowNumber);
     if (pd == nullptr)
     {

@@ -98,7 +98,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
 
     this->separatorH->setAlphaMultiplier(2.5f);
     this->scaleNameEditor->addListener(this);
-    this->scaleNameEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain));
+    this->scaleNameEditor->setFont(21.f);
 
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
@@ -137,7 +137,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     this->setSize(460, 260);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toFront(true);
@@ -261,14 +261,14 @@ void KeySignatureDialog::visibilityChanged()
 void KeySignatureDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void KeySignatureDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 

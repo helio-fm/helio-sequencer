@@ -19,102 +19,66 @@
 #include "HybridRollEditMode.h"
 #include "Icons.h"
 
-HybridRollEditMode::HybridRollEditMode() :
-    mode(defaultMode),
-    previousMode(defaultMode)
-{
-}
-
-HybridRollEditMode::HybridRollEditMode(const HybridRollEditMode &other) :
-    mode(other.mode),
-    previousMode(other.previousMode)
-{
-}
-
 bool HybridRollEditMode::forbidsViewportDragging() const
 {
     return
-    this->isMode(HybridRollEditMode::drawMode) ||
-    this->isMode(HybridRollEditMode::selectionMode) ||
-    this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::insertSpaceMode) ||
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
+        this->isMode(HybridRollEditMode::drawMode) ||
+        this->isMode(HybridRollEditMode::selectionMode) ||
+        this->isMode(HybridRollEditMode::zoomMode);
 }
 
 bool HybridRollEditMode::forcesViewportDragging() const
 {
-    return
-    this->isMode(HybridRollEditMode::dragMode);
+    return this->isMode(HybridRollEditMode::dragMode);
 }
 
 bool HybridRollEditMode::forbidsViewportZooming() const
 {
-    return
-    (this->mode != HybridRollEditMode::zoomMode);
+    return !this->isMode(HybridRollEditMode::zoomMode);
 }
 
 bool HybridRollEditMode::forcesViewportZooming() const
 {
-    return
-    this->isMode(HybridRollEditMode::zoomMode);
+    return this->isMode(HybridRollEditMode::zoomMode);
 }
 
 bool HybridRollEditMode::forbidsSelectionMode() const
 {
     return
-    this->isMode(HybridRollEditMode::drawMode) ||
-    this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::dragMode) ||
-    this->isMode(HybridRollEditMode::insertSpaceMode) ||
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
+        this->isMode(HybridRollEditMode::drawMode) ||
+        this->isMode(HybridRollEditMode::zoomMode) ||
+        this->isMode(HybridRollEditMode::dragMode) ||
+        this->isMode(HybridRollEditMode::knifeMode);
 }
 
 bool HybridRollEditMode::forcesSelectionMode() const
 {
-    return
-    this->isMode(HybridRollEditMode::selectionMode);
+    return this->isMode(HybridRollEditMode::selectionMode);
 }
 
 bool HybridRollEditMode::forbidsAddingEvents() const
 {
     return
-    this->isMode(HybridRollEditMode::selectionMode) ||
-    this->isMode(HybridRollEditMode::zoomMode) ||
-    this->isMode(HybridRollEditMode::dragMode) ||
-    this->isMode(HybridRollEditMode::insertSpaceMode) ||
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
+        this->isMode(HybridRollEditMode::selectionMode) ||
+        this->isMode(HybridRollEditMode::zoomMode) ||
+        this->isMode(HybridRollEditMode::dragMode) ||
+        this->isMode(HybridRollEditMode::knifeMode);
 }
 
 bool HybridRollEditMode::forcesAddingEvents() const
 {
-    return
-    this->isMode(HybridRollEditMode::drawMode);
+    return this->isMode(HybridRollEditMode::drawMode);
 }
 
-bool HybridRollEditMode::forbidsSpaceWipe() const
+bool HybridRollEditMode::forbidsCuttingEvents() const
 {
-    return
-    (this->mode != HybridRollEditMode::wipeSpaceMode);
+    return !this->isMode(HybridRollEditMode::knifeMode);
 }
 
-bool HybridRollEditMode::forcesSpaceWipe() const
+bool HybridRollEditMode::forcesCuttingEvents() const
 {
-    return
-    this->isMode(HybridRollEditMode::wipeSpaceMode);
+    return this->isMode(HybridRollEditMode::knifeMode);
 }
-
-bool HybridRollEditMode::forbidsSpaceInsert() const
-{
-    return
-    (this->mode != HybridRollEditMode::insertSpaceMode);
-}
-
-bool HybridRollEditMode::forcesSpaceInsert() const
-{
-    return
-    this->isMode(HybridRollEditMode::insertSpaceMode);
-}
-
 
 bool HybridRollEditMode::shouldInteractWithChildren() const
 {
@@ -128,9 +92,7 @@ bool HybridRollEditMode::shouldInteractWithChildren() const
         case selectionMode:
         case zoomMode:
         case dragMode:
-        case insertSpaceMode:
-        case wipeSpaceMode:
-        case scissorsMode:
+        case knifeMode:
             return false;
             break;
     }
@@ -162,11 +124,7 @@ MouseCursor HybridRollEditMode::getCursor() const
             return MouseCursor::DraggingHandCursor;
             break;
             
-        case insertSpaceMode:
-            return MouseCursor::LeftRightResizeCursor;
-            break;
-            
-        case wipeSpaceMode:
+        case knifeMode:
             return MouseCursor::CrosshairCursor;
             break;
     }

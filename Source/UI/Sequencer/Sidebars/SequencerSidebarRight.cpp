@@ -60,27 +60,36 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
       timerStartSeekTime(0.0),
       timerStartSystemTime(0.0)
 {
-    addAndMakeVisible (listBox = new ListBox());
+    this->listBox.reset(new ListBox());
+    this->addAndMakeVisible(listBox.get());
 
-    addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
-    addAndMakeVisible (shadow = new ShadowUpwards(Light));
-    addAndMakeVisible (separator = new SeparatorHorizontal());
-    addAndMakeVisible (totalTime = new Label (String(),
-                                              TRANS("...")));
-    totalTime->setFont (Font (Font::getDefaultSansSerifFontName(), 14.00f, Font::plain).withTypefaceStyle ("Regular"));
-    totalTime->setJustificationType (Justification::centred);
-    totalTime->setEditable (false, false, false);
+    this->headLine.reset(new SeparatorHorizontalReversed());
+    this->addAndMakeVisible(headLine.get());
+    this->shadow.reset(new ShadowUpwards(Light));
+    this->addAndMakeVisible(shadow.get());
+    this->separator.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separator.get());
+    this->totalTime.reset(new Label(String(),
+                                     TRANS("...")));
+    this->addAndMakeVisible(totalTime.get());
+    this->totalTime->setFont(Font (Font::getDefaultSansSerifFontName(), 14.00f, Font::plain).withTypefaceStyle ("Regular"));
+    totalTime->setJustificationType(Justification::centred);
+    totalTime->setEditable(false, false, false);
 
-    addAndMakeVisible (currentTime = new Label (String(),
-                                                TRANS("...")));
-    currentTime->setFont (Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    currentTime->setJustificationType (Justification::centred);
-    currentTime->setEditable (false, false, false);
+    this->currentTime.reset(new Label(String(),
+                                       TRANS("...")));
+    this->addAndMakeVisible(currentTime.get());
+    this->currentTime->setFont(Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    currentTime->setJustificationType(Justification::centred);
+    currentTime->setEditable(false, false, false);
 
-    addAndMakeVisible (headShadow = new ShadowDownwards(Light));
-    addAndMakeVisible (annotationsButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)));
+    this->headShadow.reset(new ShadowDownwards(Light));
+    this->addAndMakeVisible(headShadow.get());
+    this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)));
+    this->addAndMakeVisible(annotationsButton.get());
 
-    addAndMakeVisible (playButton = new PlayButton());
+    this->playButton.reset(new PlayButton());
+    this->addAndMakeVisible(playButton.get());
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -101,7 +110,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
 
     //[/UserPreSize]
 
-    setSize (48, 640);
+    this->setSize(48, 640);
 
     //[Constructor]
     for (int i = 0; i < this->getNumChildComponents(); ++i)
@@ -159,15 +168,15 @@ void SequencerSidebarRight::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    listBox->setBounds (0, 41, getWidth() - 0, getHeight() - 113);
-    headLine->setBounds (0, 39, getWidth() - 0, 2);
-    shadow->setBounds (0, getHeight() - 71 - 6, getWidth() - 0, 6);
-    separator->setBounds (0, getHeight() - 70 - 2, getWidth() - 0, 2);
-    totalTime->setBounds ((getWidth() / 2) + 80 - (72 / 2), getHeight() - 9 - 18, 72, 18);
-    currentTime->setBounds ((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
-    headShadow->setBounds (0, 40, getWidth() - 0, 6);
-    annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    playButton->setBounds ((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
+    listBox->setBounds(0, 41, getWidth() - 0, getHeight() - 113);
+    headLine->setBounds(0, 39, getWidth() - 0, 2);
+    shadow->setBounds(0, getHeight() - 71 - 6, getWidth() - 0, 6);
+    separator->setBounds(0, getHeight() - 70 - 2, getWidth() - 0, 2);
+    totalTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 9 - 18, 72, 18);
+    currentTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
+    headShadow->setBounds(0, 40, getWidth() - 0, 6);
+    annotationsButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
+    playButton->setBounds((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
     //[UserResized] Add your own custom resize handling here..
     //Logger::writeToLog("HybridRollCommandPanel updateContent");
     // a hack for themes changing
@@ -242,41 +251,15 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
     }
     break;
 
-    case CommandIDs::CursorTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
-        break;
-
-    case CommandIDs::DrawTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
-        break;
-
-    case CommandIDs::SelectionTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
-        break;
-
-    case CommandIDs::ZoomTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::zoomMode);
-        break;
-
-    case CommandIDs::DragTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
-        break;
-        
-    case CommandIDs::ScissorsTool:
-        this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
-        break;
-
     case CommandIDs::TweakNotesVolume:
         if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
         {
-            if (roll->getLassoSelection().getNumSelected() > 0)
+            if (roll->getLassoSelection().getNumSelected() == 0)
             {
-                HelioCallout::emit(new NotesTuningPanel(roll->getProject(), *roll), roll, true);
+                roll->selectAll();
             }
-            else
-            {
-                App::Layout().showTooltip(TRANS("warnings::emptyselection"));
-            }
+
+            HelioCallout::emit(new NotesTuningPanel(roll->getProject(), *roll), roll, true);
         }
         break;
 
@@ -297,17 +280,24 @@ void SequencerSidebarRight::recreateMenu()
     const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
     const bool zoomMode = this->project.getEditMode().isMode(HybridRollEditMode::zoomMode);
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
+    const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::knifeMode);
+    const bool eraserMode = this->project.getEditMode().isMode(HybridRollEditMode::eraserMode);
 
 #if HELIO_MOBILE
-    this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
+    this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggled(selectionMode));
 #endif
 
-    this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
-    this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
-    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
+    this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::EditModeDefault)->toggled(defaultMode));
+    this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->toggled(drawMode));
+    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->toggled(dragMode));
+    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggled(scissorsMode));
+    //this->menu.add(MenuItem::item(Icons::eraserTool, CommandIDs::EditModeEraser)->toggled(eraserMode));
 
     if (this->menuMode == PianoRollTools)
     {
+        //const bool chordBuilderMode = this->project.getEditMode().isMode(HybridRollEditMode::chordBuilderMode);
+        //this->menu.add(MenuItem::item(Icons::chordTool, CommandIDs::EditModeChordBuilder)->toggled(chordBuilderMode));
+
         this->menu.add(MenuItem::item(Icons::volume, CommandIDs::TweakNotesVolume));
         //this->menu.add(MenuItem::item(Icons::refactor, CommandIDs::RefactorNotes));
         //this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ArpeggiateNotes));
@@ -451,7 +441,7 @@ void SequencerSidebarRight::updateModeButtons()
 
 void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu)
 {
-    HelioCallout::emit(newAnnotationsMenu, this->annotationsButton);
+    HelioCallout::emit(newAnnotationsMenu, this->annotationsButton.get());
 }
 
 void SequencerSidebarRight::setLinearMode()
@@ -518,14 +508,3 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
-
-//==============================================================================
-// Binary resources - be careful not to edit any of these sections!
-
-// JUCER_RESOURCE: gray1x1_png, 150, "../../../../MainLayout/~icons/gray1x1.png"
-static const unsigned char resource_SequencerSidebarRight_gray1x1_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,2,0,0,0,144,119,83,222,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,
-19,1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,101,7,
-0,0,0,12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
-
-const char* SequencerSidebarRight::gray1x1_png = (const char*) resource_SequencerSidebarRight_gray1x1_png;
-const int SequencerSidebarRight::gray1x1_pngSize = 150;

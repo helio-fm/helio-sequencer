@@ -38,6 +38,7 @@
 #include "Note.h"
 #include "NoteComponent.h"
 #include "HelperRectangle.h"
+#include "KnifeToolHelper.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
@@ -805,6 +806,10 @@ void PianoRoll::mouseDown(const MouseEvent &e)
         {
             this->insertNewNoteAt(e);
         }
+        else if (this->isKnifeToolEvent(e))
+        {
+            this->startCuttingEvents(e);
+        }
     }
 
     HybridRoll::mouseDown(e);
@@ -842,6 +847,10 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
             this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
         }
     }
+    else if (this->isKnifeToolEvent(e))
+    {
+        this->continueCuttingEvents(e);
+    }
 
     HybridRoll::mouseDrag(e);
 }
@@ -861,6 +870,8 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         this->setMouseCursor(this->project.getEditMode().getCursor());
         this->newNoteDragging = nullptr;
     }
+
+    this->endCuttingEventsIfNeeded();
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -964,24 +975,6 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::InvertChordDown:
         SequencerOperations::invertChord(this->getLassoSelection(), -12, true, &this->getTransport());
         break;
-    case CommandIDs::EditModeDefault:
-        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
-        break;
-    case CommandIDs::EditModeDraw:
-        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
-        break;
-    case CommandIDs::EditModePan:
-        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
-        break;
-    case CommandIDs::EditModeSelect:
-        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
-        break;
-    case CommandIDs::EditModeWipeSpace:
-        this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
-        break;
-    case CommandIDs::EditModeInsertSpace:
-        this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
-        break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         {
             // TODO
@@ -1043,6 +1036,12 @@ void PianoRoll::resized()
     for (const auto component : this->ghostNotes)
     {
         component->setFloatBounds(this->getEventBounds(component));
+    }
+
+    if (this->knifeToolHelper != nullptr)
+    {
+        this->knifeToolHelper->updateBounds();
+        this->knifeToolHelper->updateCutMarks();
     }
 
     HybridRoll::resized();
@@ -1119,6 +1118,87 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     this->addNote(draggingRow, draggingColumn, DEFAULT_NOTE_LENGTH, this->newNoteVolume);
 }
 
+void PianoRoll::startCuttingEvents(const MouseEvent &e)
+{
+    if (this->knifeToolHelper == nullptr)
+    {
+        this->deselectAll();
+        this->knifeToolHelper = new KnifeToolHelper(*this);
+        this->addAndMakeVisible(this->knifeToolHelper);
+        this->knifeToolHelper->toBack();
+        this->knifeToolHelper->fadeIn();
+    }
+
+    this->knifeToolHelper->setStartPosition(e.position);
+    this->knifeToolHelper->setEndPosition(e.position);
+}
+
+void PianoRoll::continueCuttingEvents(const MouseEvent &event)
+{
+    if (this->knifeToolHelper != nullptr)
+    {
+        this->knifeToolHelper->setEndPosition(event.position);
+        this->knifeToolHelper->updateBounds();
+
+        bool addsPoint;
+        Point<float> intersection;
+        forEachEventComponent(this->patternMap, e)
+        {
+            addsPoint = false;
+            auto *nc = e.second.get();
+            if (nc->isActive())
+            {
+                const int h2 = nc->getHeight() / 2;
+                const Line<float> noteLine(nc->getPosition().translated(0, h2).toFloat(),
+                    nc->getPosition().translated(nc->getWidth(), h2).toFloat());
+
+                if (this->knifeToolHelper->getLine().intersects(noteLine, intersection))
+                {
+                    const float relativeCutBeat = this->getRoundBeatByXPosition(int(intersection.getX()))
+                        - this->activeClip.getBeat() - nc->getBeat();
+ 
+                    if (relativeCutBeat > 0.f && relativeCutBeat < nc->getLength())
+                    {
+                        addsPoint = true;
+                        this->knifeToolHelper->addOrUpdateCutPoint(nc, relativeCutBeat);
+                    }
+                }
+
+                if (!addsPoint)
+                {
+                    this->knifeToolHelper->removeCutPointIfExists(nc->getNote());
+                }
+            }
+        }
+    }
+}
+
+void PianoRoll::endCuttingEventsIfNeeded()
+{
+    if (this->knifeToolHelper != nullptr)
+    {
+        Array<Note> notes;
+        Array<float> beats;
+        this->knifeToolHelper->getCutPoints(notes, beats);
+        Array<Note> cutEventsToTheRight = SequencerOperations::cutEvents(notes, beats);
+        // Now select all the new notes:
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, this->activeTrack)
+        {
+            auto &sequenceMap = *c.second.get();
+            for (const auto &note : cutEventsToTheRight)
+            {
+                if (auto *component = sequenceMap[note].get())
+                {
+                    this->selectEvent(component, false);
+                }
+            }
+        }
+
+        this->applyEditModeUpdates(); // update behaviour of newly created note components
+        this->knifeToolHelper = nullptr;
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // HybridRoll's legacy
 //===----------------------------------------------------------------------===//
@@ -1168,6 +1248,11 @@ void PianoRoll::handleAsyncUpdate()
     HybridRoll::handleAsyncUpdate();
 }
 
+void PianoRoll::changeListenerCallback(ChangeBroadcaster *source)
+{
+    this->endCuttingEventsIfNeeded();
+    HybridRoll::changeListenerCallback(source);
+}
 
 void PianoRoll::updateChildrenBounds()
 {

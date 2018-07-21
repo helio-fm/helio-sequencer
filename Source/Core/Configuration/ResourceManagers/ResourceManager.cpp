@@ -35,15 +35,19 @@ void ResourceManager::updateBaseResource(const ValueTree &resource)
 {
     Logger::writeToLog("Updating downloaded resource file for " + this->resourceName.toString());
 
-    //XmlSerializer serializer; // debug
-    //BinarySerializer serializer;
+#if HELIO_DESKTOP
     JsonSerializer serializer(false); // debug
+#elif HELIO_MOBILE
+    BinarySerializer serializer;
+#endif
+
     serializer.saveToFile(this->getDownloadedResourceFile(), resource);
 
+#if HELIO_DESKTOP
     this->reloadResources();
-
     // Do not send update message here, since resource update should go silently
     //this->sendChangeMessage();
+#endif
 }
 
 void ResourceManager::updateUserResource(const BaseResource::Ptr resource)

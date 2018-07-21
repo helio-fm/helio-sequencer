@@ -21,7 +21,11 @@
 #include "HelioTheme.h"
 
 SelectionComponent::SelectionComponent() :
-    source(nullptr) {}
+    source(nullptr)
+{
+    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, false);
+}
 
 void SelectionComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
 {
@@ -30,23 +34,25 @@ void SelectionComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableC
 
     if (lassoSource != nullptr)
     {
-        source = lassoSource;
-        originalSelection = lassoSource->getLassoSelection().getItemArray();
+        this->source = lassoSource;
+        this->originalSelection = lassoSource->getLassoSelection().getItemArray();
         this->setSize(0, 0);
         this->toFront(false);
-        dragStartPos = e.getMouseDownPosition();
+        this->startPosition = e.position.toDouble() / this->getParentSize();
     }
 }
 
 void SelectionComponent::dragLasso(const MouseEvent &e)
 {
-    if (source != nullptr)
+    if (this->source != nullptr)
     {
-        this->setBounds(Rectangle<int>(dragStartPos, e.getPosition()));
+        this->endPosition = e.position.toDouble() / this->getParentSize();
+
+        this->updateBounds();
         this->setVisible(true);
 
         Array<SelectableComponent *> itemsInLasso;
-        source->findLassoItemsInArea(itemsInLasso, getBounds());
+        this->source->findLassoItemsInArea(itemsInLasso, getBounds());
 
         if (e.mods.isShiftDown())
         {
@@ -62,13 +68,21 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
             itemsInLasso.addArray(originalMinusNew);
         }
 
-        source->getLassoSelection() = Lasso(itemsInLasso);
+        this->source->getLassoSelection() = Lasso(itemsInLasso);
     }
+}
+
+void SelectionComponent::updateBounds()
+{
+    const auto parentSize(this->getParentSize());
+    const auto start = (this->startPosition * parentSize).toInt();
+    const auto end = (this->endPosition * parentSize).toInt();
+    this->setBounds({ start, end });
 }
 
 void SelectionComponent::endLasso()
 {
-    if (source != nullptr)
+    if (this->source != nullptr)
     {
         this->source = nullptr;
         this->originalSelection.clear();
@@ -85,4 +99,14 @@ void SelectionComponent::paint(Graphics &g)
 {
     this->getLookAndFeel().drawLasso(g, *this);
     jassert(isMouseButtonDownAnywhere());
+}
+
+const Point<double> SelectionComponent::getParentSize() const
+{
+    if (const auto *p = this->getParentComponent())
+    {
+        return { double(p->getWidth()), double(p->getHeight()) };
+    }
+
+    return { 1.0, 1.0 };
 }

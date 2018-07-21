@@ -17,10 +17,19 @@
 
 #include "Common.h"
 #include "PatternOperations.h"
+#include "SequencerOperations.h"
 #include "ProjectTreeItem.h"
-#include "Lasso.h"
+#include "UndoStack.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
+#include "PianoTrackActions.h"
+#include "AutomationTrackActions.h"
+#include "Note.h"
+#include "AutomationEvent.h"
+#include "Clip.h"
 #include "ClipComponent.h"
 #include "Pattern.h"
+#include "Lasso.h"
 #include "SerializationKeys.h"
 #include "CommandIDs.h"
 
@@ -35,7 +44,7 @@ static String generateTransactionId(int commandId, const Lasso &selection)
     return String(commandId) + String(selection.getId());
 }
 
-void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint /*= true*/)
+void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0) { return; }
 
@@ -98,7 +107,7 @@ void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem 
     }
 }
 
-void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint /*= true*/)
+void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
 
@@ -119,7 +128,7 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
     }
 }
 
-void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint /*= true*/)
+void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0 || deltaVelocity == 0.f) { return; }
 
@@ -184,5 +193,112 @@ void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, boo
         }
 
         pattern->changeGroup(groupBefore, groupAfter, true);
+    }
+}
+
+static String generateNextNameForNewTrack(const String &name, const StringArray &allNames)
+{
+    StringArray tokens;
+    tokens.addTokens(name, true);
+    if (tokens.isEmpty())
+    {
+        jassertfalse;
+        return name;
+    }
+
+    const int last = tokens.size() - 1;
+    auto suffix = tokens.getReference(last).getLargeIntValue();
+    if (suffix > 0)
+    {
+        tokens.remove(last); // suffix already exists
+    }
+    else
+    {
+        suffix = 1; // no suffix, will start from 2
+    }
+
+    String newName;
+    do 
+    {
+        suffix++;
+        newName = tokens.joinIntoString(" ") + " " + String(suffix);
+    } while (allNames.contains(newName));
+
+    return newName;
+}
+
+void PatternOperations::cutClip(ProjectTreeItem &project, const Clip &clip, float relativeCutBeat, bool shouldCheckpoint)
+{
+    MidiTrack *track = clip.getPattern()->getTrack();
+    const auto allTrackNames(project.getAllTrackNames());
+    const String newName = generateNextNameForNewTrack(track->getTrackName(), allTrackNames);
+    const float cutBeat = relativeCutBeat - clip.getBeat();
+
+    // If this is a piano roll, need to cut events, if any intersect the given beat.
+    // Create a new track - either piano or automation, depending on the selected one.
+    // Delete events and perform track insert action, where track name would have a suffix like "counterpoint 3".
+
+    if (auto *pianoTrack = dynamic_cast<PianoTrackTreeItem *>(track))
+    {
+        Array<Note> intersectedEvents;
+        Array<float> intersectionPoints;
+        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
+        for (int i = 0; i < sequence->size(); ++i)
+        {
+            auto *note = static_cast<Note *>(sequence->getUnchecked(i));
+            if (note->getBeat() < cutBeat && (note->getBeat() + note->getLength()) > cutBeat)
+            {
+                intersectedEvents.add(*note);
+                intersectionPoints.add(cutBeat - note->getBeat());
+            }
+        }
+
+        // assumes that any changes will be done anyway, i.e. too simple check, but ok for now
+        if (shouldCheckpoint)
+        {
+            sequence->checkpoint();
+        }
+
+        SequencerOperations::cutEvents(intersectedEvents, intersectionPoints, false);
+
+        Array<Note> eventsToBeMoved;
+        for (int i = 0; i < sequence->size(); ++i)
+        {
+            auto *note = static_cast<Note *>(sequence->getUnchecked(i));
+            if (note->getBeat() >= cutBeat)
+            {
+                eventsToBeMoved.add(*note);
+            }
+        }
+
+        const auto newTrack = SequencerOperations::createPianoTrack(eventsToBeMoved, clip.getPattern());
+        const ValueTree trackTemplate = newTrack->serialize();
+
+        sequence->removeGroup(eventsToBeMoved, true);
+        project.getUndoStack()->perform(new PianoTrackInsertAction(project, &project, trackTemplate, newName));
+    }
+    else if (auto *autoTrack = dynamic_cast<AutomationTrackTreeItem *>(track))
+    {
+        Array<AutomationEvent> eventsToBeMoved;
+        auto *sequence = static_cast<AutomationSequence *>(track->getSequence());
+        for (int i = 0; i < sequence->size(); ++i)
+        {
+            auto *event = static_cast<AutomationEvent *>(sequence->getUnchecked(i));
+            if (event->getBeat() >= cutBeat)
+            {
+                eventsToBeMoved.add(*event);
+            }
+        }
+
+        const auto newTrack = SequencerOperations::createAutomationTrack(eventsToBeMoved, clip.getPattern());
+        const ValueTree trackTemplate = newTrack->serialize();
+
+        if (shouldCheckpoint)
+        {
+            sequence->checkpoint();
+        }
+
+        sequence->removeGroup(eventsToBeMoved, true);
+        project.getUndoStack()->perform(new AutomationTrackInsertAction(project, &project, trackTemplate, newName));
     }
 }

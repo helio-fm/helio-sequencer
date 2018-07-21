@@ -46,7 +46,7 @@
 #include "AutomationStepsClipComponent.h"
 #include "DummyClipComponent.h"
 #include "LassoListeners.h"
-
+#include "CutPointMark.h"
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
 #include "Config.h"
@@ -486,6 +486,10 @@ void PatternRoll::mouseDown(const MouseEvent &e)
         {
             this->insertNewClipAt(e);
         }
+        else if (this->isKnifeToolEvent(e))
+        {
+            this->startCuttingClips(e);
+        }
     }
 
     HybridRoll::mouseDown(e);
@@ -514,6 +518,10 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
             this->setMouseCursor(MouseCursor::DraggingHandCursor);
         }
     }
+    else if (this->isKnifeToolEvent(e))
+    {
+        this->continueCuttingClips(e);
+    }
 
     HybridRoll::mouseDrag(e);
 }
@@ -532,6 +540,8 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         this->setMouseCursor(this->project.getEditMode().getCursor());
         this->newClipDragging = nullptr;
     }
+
+    this->endCuttingClipsIfNeeded();
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -601,19 +611,6 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::BarShiftRight:
         PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
         break;
-    case CommandIDs::EditModeDefault:
-        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
-        break;
-    case CommandIDs::EditModeDraw:
-        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
-        break;
-    case CommandIDs::EditModePan:
-        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
-        break;
-    case CommandIDs::EditModeSelect:
-        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
-        break;
-
     default:
         break;
     }
@@ -634,6 +631,11 @@ void PatternRoll::resized()
     {
         const auto component = e.second.get();
         component->setFloatBounds(this->getEventBounds(component));
+    }
+
+    if (this->knifeToolHelper != nullptr)
+    {
+        this->knifeToolHelper->updateBounds(true);
     }
 
     HybridRoll::resized();
@@ -659,6 +661,58 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
     const float draggingBeat = this->getBeatByMousePosition(pattern, e.x);
     this->addNewClipMode = true;
     this->addClip(pattern, draggingBeat);
+}
+
+void PatternRoll::startCuttingClips(const MouseEvent &e)
+{
+    ClipComponent *targetClip = nullptr;
+    for (const auto &cc : this->clipComponents)
+    {
+        if (cc.second.get()->getBounds().contains(e.position.toInt()))
+        {
+            targetClip = cc.second.get();
+            break;
+        }
+    }
+
+    if (this->knifeToolHelper == nullptr && targetClip != nullptr)
+    {
+        this->knifeToolHelper = new CutPointMark(targetClip, 0.5f);
+        this->addAndMakeVisible(this->knifeToolHelper);
+
+        const float cutBeat = this->getRoundBeatByXPosition(e.getPosition().x);
+        const int beatX = this->getXPositionByBeat(cutBeat);
+        this->knifeToolHelper->toFront(false);
+        this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
+        this->knifeToolHelper->fadeIn();
+    }
+}
+
+void PatternRoll::continueCuttingClips(const MouseEvent &e)
+{
+    if (this->knifeToolHelper != nullptr)
+    {
+        const float cutBeat = this->getRoundBeatByXPosition(e.getPosition().x);
+        const int beatX = this->getXPositionByBeat(cutBeat);
+        this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
+    }
+}
+
+void PatternRoll::endCuttingClipsIfNeeded()
+{
+    if (this->knifeToolHelper != nullptr)
+    {
+        const float cutPos = this->knifeToolHelper->getCutPosition();
+        const auto *cc = dynamic_cast<ClipComponent *>(this->knifeToolHelper->getComponent());
+        if (cc != nullptr && cutPos > 0.f && cutPos < 1.f)
+        {
+            const float cutBeat = this->getRoundBeatByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
+            PatternOperations::cutClip(this->project, cc->getClip(), cutBeat);
+        }
+        this->applyEditModeUpdates(); // update behaviour of newly created clip components
+        this->knifeToolHelper->updatePosition(-1.f);
+        this->knifeToolHelper = nullptr;
+    }
 }
 
 //===----------------------------------------------------------------------===//

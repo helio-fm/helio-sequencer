@@ -121,9 +121,10 @@ void Icons::initBuiltInImages()
     setIconForKey(selectionTool);
     setIconForKey(zoomTool);
     setIconForKey(dragTool);
-    setIconForKey(insertSpaceTool);
-    setIconForKey(wipeSpaceTool);
     setIconForKey(cropTool);
+    setIconForKey(cutterTool);
+    setIconForKey(eraserTool);
+    setIconForKey(chordTool);
     setIconForKey(stretchLeft);
     setIconForKey(stretchRight);
     setIconForKey(expand);

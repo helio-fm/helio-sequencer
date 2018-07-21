@@ -26,8 +26,9 @@
 #include "NoteComponent.h"
 #include "ClipComponent.h"
 #include "PianoTrackTreeItem.h"
-#include "AutomationSequence.h"
+#include "AutomationTrackTreeItem.h"
 #include "PianoSequence.h"
+#include "AutomationSequence.h"
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
 #include "MidiTrack.h"
@@ -1896,23 +1897,109 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
     }
 }
 
+Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,
+    const Array<float> &relativeCutBeats, bool shouldCheckpoint)
+{
+    if (notes.isEmpty()) { return {}; }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    Array<Note> newEventsToTheRight;
+    PianoChangeGroup shortenedNotes;
+    for (int i = 0; i < notes.size(); ++i)
+    {
+        const Note &n = notes.getUnchecked(i);
+        const float cutBeat = relativeCutBeats.getUnchecked(i);
+        if (cutBeat > 0.f && cutBeat < n.getLength())
+        {
+            shortenedNotes.add(n.withLength(cutBeat));
+            newEventsToTheRight.add(n.withDeltaBeat(cutBeat).withDeltaLength(-cutBeat).copyWithNewId());
+        }
+    }
+
+    applyPianoChanges(notes, shortenedNotes, didCheckpoint);
+    applyPianoInsertions(newEventsToTheRight, didCheckpoint);
+    return newEventsToTheRight;
+}
+
 ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0) { return {}; }
 
+    const auto *track = selection.getFirstAs<NoteComponent>()->getNote().getSequence()->getTrack();
+    const auto &instrumentId = track->getTrackInstrumentId();
+    const auto &colour = track->getTrackColour();
+
+    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem({});
+    newItem->setTrackColour(colour, false);
+    newItem->setTrackInstrumentId(instrumentId, false);
+
     PianoChangeGroup copiedContent;
+    auto *sequence = static_cast<PianoSequence *>(newItem->getSequence());
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
-        copiedContent.add(note.copyWithNewId());
+        copiedContent.add(note.copyWithNewId(sequence));
     }
 
-    const auto &instrumentId = selection.getFirstAs<NoteComponent>()->getNote()
-        .getSequence()->getTrack()->getTrackInstrumentId();
-
-    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem("");
-    newItem->setTrackInstrumentId(instrumentId, false);
-    auto *sequence = static_cast<PianoSequence *>(newItem->getSequence());
+    sequence->reset();
     sequence->insertGroup(copiedContent, false);
+
+    return newItem;
+}
+
+ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *clips)
+{
+    if (events.size() == 0) { return {}; }
+
+    const auto *track = events.getReference(0).getSequence()->getTrack();
+    const auto &instrumentId = track->getTrackInstrumentId();
+    const auto &colour = track->getTrackColour();
+
+    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem({});
+    newItem->setTrackColour(colour, false);
+    newItem->setTrackInstrumentId(instrumentId, false);
+
+    PianoChangeGroup copiedContent;
+    auto *sequence = static_cast<PianoSequence *>(newItem->getSequence());
+    for (const auto &note : events) { copiedContent.add(note.copyWithNewId(sequence)); }
+    sequence->reset();
+    sequence->insertGroup(copiedContent, false);
+
+    Array<Clip> copiedClips;
+    auto *pattern = newItem->getPattern();
+    for (const auto *clip : clips->getClips()) { copiedClips.add(clip->copyWithNewId(pattern)); }
+    pattern->reset();
+    pattern->insertGroup(copiedClips, false);
+
+    return newItem;
+}
+
+ScopedPointer<MidiTrackTreeItem> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *clips)
+{
+    if (events.size() == 0) { return{}; }
+
+    const auto *track = events.getReference(0).getSequence()->getTrack();
+    const auto &instrumentId = track->getTrackInstrumentId();
+    const auto &cc = track->getTrackControllerNumber();
+    const auto &colour = track->getTrackColour();
+
+    ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem({});
+    newItem->setTrackColour(colour, false);
+    newItem->setTrackControllerNumber(cc, false);
+    newItem->setTrackInstrumentId(instrumentId, false);
+
+    AutoChangeGroup copiedContent;
+    auto *sequence = static_cast<AutomationSequence *>(newItem->getSequence());
+    for (const auto &event : events) { copiedContent.add(event.copyWithNewId(sequence)); }
+    sequence->reset();
+    sequence->insertGroup(copiedContent, false);
+
+    Array<Clip> copiedClips;
+    auto *pattern = newItem->getPattern();
+    for (const auto *clip : clips->getClips()) { copiedClips.add(clip->copyWithNewId(pattern)); }
+    pattern->reset();
+    pattern->insertGroup(copiedClips, false);
+
     return newItem;
 }

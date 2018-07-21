@@ -28,61 +28,61 @@
 AudioSettings::AudioSettings(AudioCore &core)
     : audioCore(core)
 {
-    addAndMakeVisible (sampleRateComboPrimer = new MobileComboBox::Primer());
+    addAndMakeVisible(sampleRateComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (bufferSizeComboPrimer = new MobileComboBox::Primer());
+    addAndMakeVisible(bufferSizeComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (deviceTypeComboPrimer = new MobileComboBox::Primer());
+    addAndMakeVisible(deviceTypeComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (deviceComboPrimer = new MobileComboBox::Primer());
+    addAndMakeVisible(deviceComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (deviceTypeEditor = new TextEditor (String()));
-    deviceTypeEditor->setMultiLine (false);
-    deviceTypeEditor->setReturnKeyStartsNewLine (false);
-    deviceTypeEditor->setReadOnly (true);
-    deviceTypeEditor->setScrollbarsShown (false);
-    deviceTypeEditor->setCaretVisible (false);
-    deviceTypeEditor->setPopupMenuEnabled (false);
-    deviceTypeEditor->setText (String());
+    addAndMakeVisible(deviceTypeEditor = new TextEditor(String()));
+    deviceTypeEditor->setMultiLine(false);
+    deviceTypeEditor->setReturnKeyStartsNewLine(false);
+    deviceTypeEditor->setReadOnly(true);
+    deviceTypeEditor->setScrollbarsShown(false);
+    deviceTypeEditor->setCaretVisible(false);
+    deviceTypeEditor->setPopupMenuEnabled(false);
+    deviceTypeEditor->setText(String());
 
-    addAndMakeVisible (deviceEditor = new TextEditor (String()));
-    deviceEditor->setMultiLine (false);
-    deviceEditor->setReturnKeyStartsNewLine (false);
-    deviceEditor->setReadOnly (true);
-    deviceEditor->setScrollbarsShown (false);
-    deviceEditor->setCaretVisible (false);
-    deviceEditor->setPopupMenuEnabled (false);
-    deviceEditor->setText (String());
+    addAndMakeVisible(deviceEditor = new TextEditor(String()));
+    deviceEditor->setMultiLine(false);
+    deviceEditor->setReturnKeyStartsNewLine(false);
+    deviceEditor->setReadOnly(true);
+    deviceEditor->setScrollbarsShown(false);
+    deviceEditor->setCaretVisible(false);
+    deviceEditor->setPopupMenuEnabled(false);
+    deviceEditor->setText(String());
 
-    addAndMakeVisible (sampleRateEditor = new TextEditor (String()));
-    sampleRateEditor->setMultiLine (false);
-    sampleRateEditor->setReturnKeyStartsNewLine (false);
-    sampleRateEditor->setReadOnly (true);
-    sampleRateEditor->setScrollbarsShown (false);
-    sampleRateEditor->setCaretVisible (false);
-    sampleRateEditor->setPopupMenuEnabled (false);
-    sampleRateEditor->setText (String());
+    addAndMakeVisible(sampleRateEditor = new TextEditor(String()));
+    sampleRateEditor->setMultiLine(false);
+    sampleRateEditor->setReturnKeyStartsNewLine(false);
+    sampleRateEditor->setReadOnly(true);
+    sampleRateEditor->setScrollbarsShown(false);
+    sampleRateEditor->setCaretVisible(false);
+    sampleRateEditor->setPopupMenuEnabled(false);
+    sampleRateEditor->setText(String());
 
-    addAndMakeVisible (bufferSizeEditor = new TextEditor (String()));
-    bufferSizeEditor->setMultiLine (false);
-    bufferSizeEditor->setReturnKeyStartsNewLine (false);
-    bufferSizeEditor->setReadOnly (true);
-    bufferSizeEditor->setScrollbarsShown (false);
-    bufferSizeEditor->setCaretVisible (false);
-    bufferSizeEditor->setPopupMenuEnabled (false);
-    bufferSizeEditor->setText (String());
+    addAndMakeVisible(bufferSizeEditor = new TextEditor(String()));
+    bufferSizeEditor->setMultiLine(false);
+    bufferSizeEditor->setReturnKeyStartsNewLine(false);
+    bufferSizeEditor->setReadOnly(true);
+    bufferSizeEditor->setScrollbarsShown(false);
+    bufferSizeEditor->setCaretVisible(false);
+    bufferSizeEditor->setPopupMenuEnabled(false);
+    bufferSizeEditor->setText(String());
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (550, 200);
+    setSize(550, 200);
 
     //[Constructor]
-    this->deviceTypeEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
-    this->deviceEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
-    this->sampleRateEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
-    this->bufferSizeEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
+    this->deviceTypeEditor->setFont(18.f);
+    this->deviceEditor->setFont(18.f);
+    this->sampleRateEditor->setFont(18.f);
+    this->bufferSizeEditor->setFont(18.f);
 
     this->deviceTypeEditor->setInterceptsMouseClicks(false, true);
     this->deviceEditor->setInterceptsMouseClicks(false, true);

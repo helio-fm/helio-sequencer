@@ -40,7 +40,7 @@ public:
 
     static float interpolateEvents(float cv1, float cv2, float factor, float easing);
 
-    AutomationEvent copyWithNewId() const noexcept;
+    AutomationEvent copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     AutomationEvent withBeat(float newBeat) const noexcept;
     AutomationEvent withDeltaBeat(float deltaBeat) const noexcept;
     AutomationEvent withInvertedControllerValue() const noexcept;
