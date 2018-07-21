@@ -1114,6 +1114,9 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeEraser:
         this->project.getEditMode().setMode(HybridRollEditMode::eraserMode);
         break;
+    case CommandIDs::EditModeChordBuilder:
+        this->project.getEditMode().setMode(HybridRollEditMode::chordBuilderMode);
+        break;
     case CommandIDs::Undo:
         this->project.undo();
         break;

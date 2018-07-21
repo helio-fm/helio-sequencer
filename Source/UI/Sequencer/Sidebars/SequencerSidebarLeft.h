@@ -31,9 +31,9 @@ class AudioMonitor;
 #include "MenuPanel.h"
 //[/Headers]
 
-#include "../../Themes/ShadowDownwards.h"
-#include "../../Themes/SeparatorHorizontalReversed.h"
 #include "../../Themes/ShadowUpwards.h"
+#include "../../Themes/SeparatorHorizontalReversed.h"
+#include "../../Themes/ShadowDownwards.h"
 #include "../../Themes/SeparatorHorizontal.h"
 
 class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
@@ -56,9 +56,6 @@ public:
     void resized() override;
     void handleCommandMessage (int commandId) override;
 
-    // Binary resources:
-    static const char* gray1x1_png;
-    static const int gray1x1_pngSize;
 
 private:
 

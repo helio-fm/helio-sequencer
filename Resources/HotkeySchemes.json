@@ -131,6 +131,7 @@
         { "receiver": "PianoRoll", "command": "EditModePan", "key": "3" },
         { "receiver": "PianoRoll", "command": "EditModeKnife", "key": "4" },
         { "receiver": "PianoRoll", "command": "EditModeEraser", "key": "5" },
+        { "receiver": "PianoRoll", "command": "EditModeChordBuilder", "key": "6" },
 
         // Version control
         { "receiver": "PianoRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },

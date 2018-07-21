@@ -195,7 +195,6 @@ void SequencerSidebarLeft::handleChangeMode()
     case 2:
         this->switchMonitorsAnimated(this->waveformMonitor, this->spectrogramMonitor);
         break;
-
     default:
         break;
     }
@@ -234,9 +233,24 @@ void SequencerSidebarLeft::setPatternMode()
 void SequencerSidebarLeft::recreateMenu()
 {
     this->menu.clear();
-    this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
     this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
+    this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
     this->menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip));
+
+    /* TODO:
+    // Jump to playhead position (or start following playhead when playing)
+    //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::ZoomEntireClip));
+
+    // Jump to the next anchor (timeline event or say clip)
+    this->menu.add(MenuItem::item(Icons::stretchLeft, CommandIDs::ZoomEntireClip));
+    this->menu.add(MenuItem::item(Icons::stretchLeft, CommandIDs::ZoomEntireClip));
+    this->menu.add(MenuItem::item(Icons::stretchRight, CommandIDs::ZoomEntireClip));
+    this->menu.add(MenuItem::item(Icons::stretchRight, CommandIDs::ZoomEntireClip));
+
+    // Focus on next/previous track
+    this->menu.add(MenuItem::item(Icons::pageUp, CommandIDs::ZoomEntireClip));
+    this->menu.add(MenuItem::item(Icons::pageDown, CommandIDs::ZoomEntireClip));
+    */
 }
 
 Component *SequencerSidebarLeft::refreshComponentForRow(int rowNumber,
@@ -251,8 +265,7 @@ Component *SequencerSidebarLeft::refreshComponentForRow(int rowNumber,
 
     if (existingComponentToUpdate != nullptr)
     {
-        if (MenuItemComponent *row =
-            dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
+        if (auto *row = dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
         {
             row->setSelected(isRowSelected);
             row->update(itemDescription);
@@ -260,8 +273,7 @@ Component *SequencerSidebarLeft::refreshComponentForRow(int rowNumber,
     }
     else
     {
-        MenuItemComponent *row =
-            new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
+        auto *row = new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
         row->setSelected(isRowSelected);
         return row;
     }
@@ -320,14 +332,3 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
-
-//==============================================================================
-// Binary resources - be careful not to edit any of these sections!
-
-// JUCER_RESOURCE: gray1x1_png, 150, "../../../../MainLayout/~icons/gray1x1.png"
-static const unsigned char resource_SequencerSidebarLeft_gray1x1_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,2,0,0,0,144,119,83,222,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,
-19,1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,101,7,
-0,0,0,12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
-
-const char* SequencerSidebarLeft::gray1x1_png = (const char*) resource_SequencerSidebarLeft_gray1x1_png;
-const int SequencerSidebarLeft::gray1x1_pngSize = 150;

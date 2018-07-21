@@ -86,16 +86,6 @@ namespace CommandIDs
         ClipVolumeUp                    = 0x1622,
         ClipVolumeDown                  = 0x1623,
 
-        CursorTool                      = 0x1700,
-        DrawTool                        = 0x1701,
-        SelectionTool                   = 0x1702,
-        ZoomTool                        = 0x1703,
-        DragTool                        = 0x1704,
-        InsertSpaceTool                 = 0x1705,
-        WipeSpaceTool                   = 0x1706,
-        ScissorsTool                    = 0x1707,
-        EraserTool                      = 0x1708,
-
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,
         ZoomEntireClip                  = 0x1802,
@@ -194,7 +184,8 @@ namespace CommandIDs
         EditModeSelect                  = 0x4003,
         EditModeKnife                   = 0x4004,
         EditModeEraser                  = 0x4005,
-        
+        EditModeChordBuilder            = 0x4006,
+
         BeatShiftLeft                   = 0x4050,
         BeatShiftRight                  = 0x4051,
         BarShiftLeft                    = 0x4052,

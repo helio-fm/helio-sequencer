@@ -95,6 +95,7 @@ struct Icons final
         cropTool,
         cutterTool,
         eraserTool,
+        chordTool,
         stretchLeft,
         stretchRight,
         expand,
