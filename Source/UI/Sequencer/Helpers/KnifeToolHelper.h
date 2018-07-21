@@ -31,6 +31,7 @@ public:
     ~KnifeToolHelper();
 
     Line<float> getLine() const noexcept;
+    void getCutPoints(Array<Note> &outNotes, Array<float> &outBeats) const;
 
     void setStartPosition(const Point<float> &mousePos);
     void setEndPosition(const Point<float> &mousePos);

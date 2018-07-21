@@ -23,9 +23,11 @@ class Lasso;
 class MidiSequence;
 class MidiTrackTreeItem;
 class MidiTrack;
+class Pattern;
 class Clipboard;
 
 #include "Note.h"
+#include "AutomationEvent.h"
 #include "Scale.h"
 #include "Arpeggiator.h"
 
@@ -86,5 +88,11 @@ struct SequencerOperations final
         WeakReference<MidiTrack> keySignatures,
         Scale::Ptr &outScale, Note::Key &outRootKey);
 
+    static Array<Note> cutEvents(const Array<Note> &notes,
+        const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);
+
+    // Creates new tracks from events of existing tracks
     static ScopedPointer<MidiTrackTreeItem> createPianoTrack(const Lasso &selection);
+    static ScopedPointer<MidiTrackTreeItem> createPianoTrack(const Array<Note> &events, const Pattern *pattern);
+    static ScopedPointer<MidiTrackTreeItem> createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern);
 };

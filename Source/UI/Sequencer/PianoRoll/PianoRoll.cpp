@@ -975,21 +975,6 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::InvertChordDown:
         SequencerOperations::invertChord(this->getLassoSelection(), -12, true, &this->getTransport());
         break;
-    case CommandIDs::EditModeDefault:
-        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
-        break;
-    case CommandIDs::EditModeDraw:
-        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
-        break;
-    case CommandIDs::EditModePan:
-        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
-        break;
-    case CommandIDs::EditModeSelect:
-        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
-        break;
-    case CommandIDs::EditModeKnife:
-        this->project.getEditMode().setMode(HybridRollEditMode::knifeMode);
-        break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         {
             // TODO
@@ -1137,6 +1122,7 @@ void PianoRoll::startCuttingEvents(const MouseEvent &e)
 {
     if (this->knifeToolHelper == nullptr)
     {
+        this->deselectAll();
         this->knifeToolHelper = new KnifeToolHelper(*this);
         this->addAndMakeVisible(this->knifeToolHelper);
         this->knifeToolHelper->toBack();
@@ -1191,7 +1177,24 @@ void PianoRoll::endCuttingEventsIfNeeded()
 {
     if (this->knifeToolHelper != nullptr)
     {
-        // TODO cut
+        Array<Note> notes;
+        Array<float> beats;
+        this->knifeToolHelper->getCutPoints(notes, beats);
+        Array<Note> cutEventsToTheRight = SequencerOperations::cutEvents(notes, beats);
+        // Now select all the new notes:
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, this->activeTrack)
+        {
+            auto &sequenceMap = *c.second.get();
+            for (const auto &note : cutEventsToTheRight)
+            {
+                if (auto *component = sequenceMap[note].get())
+                {
+                    this->selectEvent(component, false);
+                }
+            }
+        }
+
+        this->applyEditModeUpdates(); // update behaviour of newly created note components
         this->knifeToolHelper = nullptr;
     }
 }

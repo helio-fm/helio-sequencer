@@ -312,7 +312,7 @@ void HybridRoll::removeOwnedMap(Component *existingTrackMap)
 // Modes
 //===----------------------------------------------------------------------===//
 
-HybridRollEditMode HybridRoll::getEditMode() const noexcept
+HybridRollEditMode &HybridRoll::getEditMode() noexcept
 {
     return this->project.getEditMode();
 }
@@ -1096,6 +1096,24 @@ void HybridRoll::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
+    case CommandIDs::EditModeDefault:
+        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
+        break;
+    case CommandIDs::EditModeDraw:
+        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
+        break;
+    case CommandIDs::EditModePan:
+        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
+        break;
+    case CommandIDs::EditModeSelect:
+        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
+        break;
+    case CommandIDs::EditModeKnife:
+        this->project.getEditMode().setMode(HybridRollEditMode::knifeMode);
+        break;
+    case CommandIDs::EditModeEraser:
+        this->project.getEditMode().setMode(HybridRollEditMode::eraserMode);
+        break;
     case CommandIDs::Undo:
         this->project.undo();
         break;
@@ -1704,14 +1722,19 @@ void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
         this->lassoComponent->endLasso();
     }
 
+    this->applyEditModeUpdates();
+}
+
+void HybridRoll::applyEditModeUpdates()
+{
     if (this->isUsingSpaceDraggingMode() &&
-        ! (this->project.getEditMode().isMode(HybridRollEditMode::dragMode)))
+        !(this->project.getEditMode().isMode(HybridRollEditMode::dragMode)))
     {
         this->setSpaceDraggingMode(false);
     }
 
     if (this->isUsingAltDrawingMode() &&
-        ! (this->project.getEditMode().isMode(HybridRollEditMode::drawMode)))
+        !(this->project.getEditMode().isMode(HybridRollEditMode::drawMode)))
     {
         this->setAltDrawingMode(false);
     }

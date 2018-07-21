@@ -90,7 +90,7 @@ public:
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
-    HybridRollEditMode getEditMode() const noexcept;
+    HybridRollEditMode &getEditMode() noexcept;
 
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
@@ -403,5 +403,6 @@ protected:
 protected:
     
     void changeListenerCallback(ChangeBroadcaster *source) override;
+    void applyEditModeUpdates();
 
 };

@@ -118,10 +118,7 @@ void KnifeToolHelper::addOrUpdateCutPoint(NoteComponent *nc, float beat)
         this->cutMarkers[nc->getNote()].get()->updatePosition(beat / nc->getLength());
     }
 
-    if (!this->cutPoints.contains(nc->getNote()))
-    {
-        this->cutPoints[nc->getNote()] = beat;
-    }
+    this->cutPoints[nc->getNote()] = beat;
 }
 
 void KnifeToolHelper::removeCutPointIfExists(const Note &note)
@@ -157,4 +154,15 @@ const Point<double> KnifeToolHelper::getParentSize() const
     }
 
     return { 1.0, 1.0 };
+}
+
+void KnifeToolHelper::getCutPoints(Array<Note> &outNotes, Array<float> &outBeats) const
+{
+    outNotes.clearQuick();
+    outBeats.clearQuick();
+    for (const auto &cp : this->cutPoints)
+    {
+        outNotes.add(cp.first);
+        outBeats.add(cp.second);
+    }
 }

@@ -19,18 +19,6 @@
 #include "HybridRollEditMode.h"
 #include "Icons.h"
 
-HybridRollEditMode::HybridRollEditMode() :
-    mode(defaultMode),
-    previousMode(defaultMode)
-{
-}
-
-HybridRollEditMode::HybridRollEditMode(const HybridRollEditMode &other) :
-    mode(other.mode),
-    previousMode(other.previousMode)
-{
-}
-
 bool HybridRollEditMode::forbidsViewportDragging() const
 {
     return
