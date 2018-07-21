@@ -558,22 +558,27 @@ void PatternRoll::mouseUp(const MouseEvent &e)
 
 void PatternRoll::handleCommandMessage(int commandId)
 {
-    // TODO pattern roll-specific commands switch
     switch (commandId)
     {
     case CommandIDs::SelectAllClips:
         this->selectAll();
         break;
     case CommandIDs::RenameTrack:
-        if (auto *patternNode = dynamic_cast<PatternEditorTreeItem *>(this->project.findPrimaryActiveItem()))
+        if (this->selection.getNumSelected() > 0)
         {
-            // TODO check if all items in selection belong to one track
-            // and if they do, find according tree node and rename it
-            //this->selection.getFirstAs()
+            const String trackId = this->selection.getFirstAs<ClipComponent>()->getClip().getTrackId();
+            for (int i = 0; i < this->selection.getNumSelected(); ++i)
+            {
+                if (this->selection.getItemAs<ClipComponent>(i)->getClip().getTrackId() != trackId)
+                {
+                    return; // More then one track is selected
+                }
+            }
 
-            //auto inputDialog = ModalDialogInput::Presets::renameTrack(patternNode->getXPath());
-            //inputDialog->onOk = trackNode->getRenameCallback();
-            //App::Layout().showModalComponentUnowned(inputDialog.release());
+            auto *trackNode = this->project.findTrackById<MidiTrackTreeItem>(trackId);
+            auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
+            inputDialog->onOk = trackNode->getRenameCallback();
+            App::Layout().showModalComponentUnowned(inputDialog.release());
         }
         break;
     case CommandIDs::DeleteClips:

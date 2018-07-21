@@ -26,7 +26,23 @@
 PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)
 {
-    this->initDefaultMenu();
+    if (lasso->getNumSelected() > 0)
+    {
+        this->initDefaultMenu();
+    }
+}
+
+static bool canRename(WeakReference<Lasso> lasso)
+{
+    const String trackId = lasso->getFirstAs<ClipComponent>()->getClip().getTrackId();
+    for (int i = 0; i < lasso->getNumSelected(); ++i)
+    {
+        if (lasso->getItemAs<ClipComponent>(i)->getClip().getTrackId() != trackId)
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 void PatternRollSelectionMenu::initDefaultMenu()
@@ -42,6 +58,9 @@ void PatternRollSelectionMenu::initDefaultMenu()
 
     menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
         TRANS("menu::selection::clips::transpose::down")));
+
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
+        TRANS("menu::track::rename"))->disabledIf(!canRename(this->lasso))->closesMenu());
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips,
         TRANS("menu::selection::clips::copy"))->closesMenu());

@@ -43,6 +43,7 @@ public:
 
     bool isValid() const noexcept;
 
+    const String &getTrackId() const noexcept;
     Colour getTrackColour() const noexcept;
     int getTrackControllerNumber() const noexcept;
 

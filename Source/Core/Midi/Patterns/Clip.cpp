@@ -93,6 +93,12 @@ bool Clip::isValid() const noexcept
     return this->pattern != nullptr && this->id.isNotEmpty();
 }
 
+const String &Clip::getTrackId() const noexcept
+{
+    jassert(this->pattern);
+    return this->pattern->getTrack()->getTrackId();
+}
+
 Colour Clip::getTrackColour() const noexcept
 {
     jassert(this->pattern);
