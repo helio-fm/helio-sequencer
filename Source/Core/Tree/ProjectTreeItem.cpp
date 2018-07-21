@@ -77,7 +77,7 @@ ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
 
 void ProjectTreeItem::initialize()
 {
-    this->isTracksHashOutdated = true;
+    this->isTracksCacheOutdated = true;
     
     this->undoStack = new UndoStack(*this);
     
@@ -452,9 +452,9 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
 
-    this->rebuildTracksHashIfNeeded();
+    this->rebuildTracksRefsCacheIfNeeded();
 
-    for (const auto &i : this->tracksHash)
+    for (const auto &i : this->tracksRefsCache)
     {
         const auto *track = i.second.get();
         const float sequenceFirstBeat = track->getSequence()->getFirstBeat();
@@ -482,6 +482,17 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
     }
 
     return { firstBeat, lastBeat };
+}
+
+StringArray ProjectTreeItem::getAllTrackNames() const
+{
+    StringArray names;
+    this->rebuildTracksRefsCacheIfNeeded();
+    for (const auto &i : this->tracksRefsCache)
+    {
+        names.add(i.second->getTrackName());
+    }
+    return names;
 }
 
 //===----------------------------------------------------------------------===//
@@ -670,7 +681,7 @@ void ProjectTreeItem::broadcastPostRemoveEvent(MidiSequence *const layer)
 
 void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 {
-    this->isTracksHashOutdated = true;
+    this->isTracksCacheOutdated = true;
 
     if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
     {
@@ -684,7 +695,7 @@ void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 
 void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
 {
-    this->isTracksHashOutdated = true;
+    this->isTracksCacheOutdated = true;
 
     if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
     {
@@ -866,14 +877,14 @@ void ProjectTreeItem::exportMidi(File &file) const
 
 MidiTrack *ProjectTreeItem::getTrackById(const String &trackId)
 {
-    this->rebuildTracksHashIfNeeded();
-    return this->tracksHash[trackId].get();
+    this->rebuildTracksRefsCacheIfNeeded();
+    return this->tracksRefsCache[trackId].get();
 }
 
 Pattern *ProjectTreeItem::getPatternByTrackId(const String &trackId)
 {
-    this->rebuildTracksHashIfNeeded();
-    if (auto track = this->tracksHash[trackId].get())
+    this->rebuildTracksRefsCacheIfNeeded();
+    if (auto track = this->tracksRefsCache[trackId].get())
     {
         return track->getPattern();
     }
@@ -883,8 +894,8 @@ Pattern *ProjectTreeItem::getPatternByTrackId(const String &trackId)
 
 MidiSequence *ProjectTreeItem::getSequenceByTrackId(const String &trackId)
 {
-    this->rebuildTracksHashIfNeeded();
-    if (auto track = this->tracksHash[trackId].get())
+    this->rebuildTracksRefsCacheIfNeeded();
+    if (auto track = this->tracksRefsCache[trackId].get())
     {
         return track->getSequence();
     }
@@ -980,19 +991,19 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
     }
 }
 
-void ProjectTreeItem::rebuildTracksHashIfNeeded() const
+void ProjectTreeItem::rebuildTracksRefsCacheIfNeeded() const
 {
-    if (this->isTracksHashOutdated)
+    if (this->isTracksCacheOutdated)
     {
-        this->tracksHash.clear();
+        this->tracksRefsCache.clear();
 
-        this->tracksHash[this->timeline->getAnnotations()->getTrackId()] =
+        this->tracksRefsCache[this->timeline->getAnnotations()->getTrackId()] =
             this->timeline->getAnnotations();
 
-        this->tracksHash[this->timeline->getKeySignatures()->getTrackId()] =
+        this->tracksRefsCache[this->timeline->getKeySignatures()->getTrackId()] =
             this->timeline->getKeySignatures();
 
-        this->tracksHash[this->timeline->getTimeSignatures()->getTrackId()] =
+        this->tracksRefsCache[this->timeline->getTimeSignatures()->getTrackId()] =
             this->timeline->getTimeSignatures();
         
         const Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
@@ -1000,9 +1011,9 @@ void ProjectTreeItem::rebuildTracksHashIfNeeded() const
         for (int i = 0; i < children.size(); ++i)
         {
             MidiTrack *const track = children.getUnchecked(i);
-            this->tracksHash[track->getTrackId()] = track;
+            this->tracksRefsCache[track->getTrackId()] = track;
         }
         
-        this->isTracksHashOutdated = false;
+        this->isTracksCacheOutdated = false;
     }
 }

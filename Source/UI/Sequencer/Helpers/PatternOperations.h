@@ -17,6 +17,7 @@
 
 #pragma once
 
+class Clip;
 class Lasso;
 class ProjectTreeItem;
 
@@ -27,4 +28,7 @@ struct PatternOperations final
     static void transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint = true);
     static void tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint = true);
     static void shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint = true);
+
+    static void cutClip(ProjectTreeItem &project, const Clip &clip,
+        float relativeCutBeat, bool shouldCheckpoint = true);
 };

@@ -33,6 +33,9 @@ public:
     void updateBounds(bool forceNoAnimation = false);
     void fadeIn();
 
+    Component *getComponent() const noexcept;
+    float getCutPosition() const noexcept;
+
 private:
 
     SafePointer<Component> targetComponent;

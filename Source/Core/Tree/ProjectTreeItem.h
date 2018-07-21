@@ -120,6 +120,7 @@ public:
     Array<MidiTrack *> getTracks() const;
     Array<MidiTrack *> getSelectedTracks() const;
     Point<float> getProjectRangeInBeats() const;
+    StringArray getAllTrackNames() const;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -228,8 +229,8 @@ private:
 
     ScopedPointer<UndoStack> undoStack;
 
-    mutable bool isTracksHashOutdated;
-    mutable SparseHashMap<String, WeakReference<MidiTrack>, StringHash> tracksHash;
-    void rebuildTracksHashIfNeeded() const;
+    mutable bool isTracksCacheOutdated;
+    mutable SparseHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
+    void rebuildTracksRefsCacheIfNeeded() const;
 
 };

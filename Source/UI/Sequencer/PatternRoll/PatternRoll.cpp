@@ -702,7 +702,15 @@ void PatternRoll::endCuttingClipsIfNeeded()
 {
     if (this->knifeToolHelper != nullptr)
     {
-        // TODO cut
+        const float cutPos = this->knifeToolHelper->getCutPosition();
+        const auto *cc = dynamic_cast<ClipComponent *>(this->knifeToolHelper->getComponent());
+        if (cc != nullptr && cutPos > 0.f && cutPos < 1.f)
+        {
+            const float cutBeat = this->getRoundBeatByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
+            PatternOperations::cutClip(this->project, cc->getClip(), cutBeat);
+        }
+        this->applyEditModeUpdates(); // update behaviour of newly created clip components
+        this->knifeToolHelper->updatePosition(-1.f);
         this->knifeToolHelper = nullptr;
     }
 }

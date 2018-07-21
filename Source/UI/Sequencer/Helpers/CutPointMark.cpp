@@ -111,3 +111,13 @@ void CutPointMark::updatePositionFromMouseEvent(int mouseX, int mouseY)
 
     this->updateBounds();
 }
+
+Component *CutPointMark::getComponent() const noexcept
+{
+    return this->targetComponent.getComponent();
+}
+
+float CutPointMark::getCutPosition() const noexcept
+{
+    return this->absPosX;
+}
