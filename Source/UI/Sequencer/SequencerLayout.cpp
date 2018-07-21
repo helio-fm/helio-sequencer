@@ -36,6 +36,8 @@
 #include "OrigamiVertical.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
+#include "KnifeToolHelper.h"
+#include "CutPointMark.h"
 #include "RenderDialog.h"
 #include "SuccessTooltip.h"
 #include "App.h"
