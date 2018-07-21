@@ -22,6 +22,7 @@
 #include "HeadlineDropdown.h"
 
 //[MiscUserDefs]
+#include "Headline.h"
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineItemDataSource.h"
@@ -32,46 +33,30 @@
 #include "App.h"
 
 #include "TreeItem.h"
+
+static constexpr int getPadding() { return 4; }
+
 //[/MiscUserDefs]
 
 HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem)
     : item(targetItem)
 {
-    addAndMakeVisible (titleLabel = new Label (String(),
-                                               TRANS("Project")));
-    titleLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType (Justification::centredLeft);
-    titleLabel->setEditable (false, false, false);
+    this->content.reset(new Component());
+    this->addAndMakeVisible(content.get());
 
-    addAndMakeVisible (icon = new IconComponent (Icons::helio));
-
-    addAndMakeVisible (content = new Component());
-
-    internalPath1.startNewSubPath (0.0f, 0.0f);
-    internalPath1.lineTo (40.0f, 0.0f);
-    internalPath1.lineTo (40.0f, 32.0f);
-    internalPath1.lineTo (0.0f, 32.0f);
-    internalPath1.lineTo (8.0f, 16.0f);
-    internalPath1.closeSubPath();
-
+    this->header.reset(new HeadlineItemHighlighter(targetItem));
+    this->addAndMakeVisible(header.get());
 
     //[UserPreSize]
-    this->titleLabel->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
-    setSize (150, 34);
+    this->setSize(150, 34);
 
     //[Constructor]
     if (this->item != nullptr)
     {
-        this->icon->setIconImage(this->item->getIcon());
-        this->titleLabel->setText(this->item->getName(), dontSendNotification);
-        const int textWidth = this->titleLabel->getFont()
-            .getStringWidth(this->titleLabel->getText());
-        this->setSize(textWidth + 64, this->getHeight());
-
         // Debug: create tree panel for the root
         /*
         if (RootTreeItem *rootItem = dynamic_cast<RootTreeItem *>(this->item.get()))
@@ -100,8 +85,8 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
 
         if (ScopedPointer<Component> menu = this->item->createMenu())
         {
-            this->content = menu.release();
-            this->addAndMakeVisible(this->content);
+            this->content.reset(menu.release());
+            this->addAndMakeVisible(this->content.get());
             this->syncWidthWithContent();
         }
     }
@@ -115,9 +100,8 @@ HeadlineDropdown::~HeadlineDropdown()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    titleLabel = nullptr;
-    icon = nullptr;
     content = nullptr;
+    header = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -128,73 +112,20 @@ void HeadlineDropdown::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        float x = 0, y = 0;
-        Colour fillColour1 = Colour (0x33000000), fillColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       0.0f - 0.0f + x,
-                                       16.0f - 0.0f + y,
-                                       fillColour2,
-                                       16.0f - 0.0f + x,
-                                       14.0f - 0.0f + y,
-                                       true));
-        g.fillPath (internalPath1, AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour fillColour = Colour (0x15ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::BackgroundB::fill).brighter(0.035f);
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillPath (internalPath2, AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x66000000), strokeColour2 = Colour (0x11000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 2) - 0.0f + x,
-                                       32.0f - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 16) - 0.0f + x,
-                                       2.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath3, PathStrokeType (1.000f), AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x27ffffff), strokeColour2 = Colour (0x0bffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 3) - 0.0f + x,
-                                       32.0f - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 17) - 0.0f + x,
-                                       5.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath4, PathStrokeType (0.500f), AffineTransform::translation(x, y));
-    }
-
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(this->findColour(ColourIDs::BackgroundB::fill).brighter(0.035f));
+    g.fillRect(1, HEADLINE_HEIGHT - 3, this->getWidth() - 3, this->getHeight() - HEADLINE_HEIGHT + 3);
 
     // Draw a nice border around the menu:
     g.setColour(Colours::black.withAlpha(40.f / 255.f));
     g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 2));
-    g.drawVerticalLine(0, 33.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 2, 33.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(0, HEADLINE_HEIGHT - 1.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 2, HEADLINE_HEIGHT - 1.f, float(this->getHeight() - 1));
 
     g.setColour(Colours::white.withAlpha(9.f / 255.f));
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-    g.drawVerticalLine(1, 33.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 3, 33.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(1, HEADLINE_HEIGHT - 2.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 3, HEADLINE_HEIGHT - 2.f, float(this->getHeight() - 1));
 
     //[/UserPaint]
 }
@@ -202,45 +133,18 @@ void HeadlineDropdown::paint (Graphics& g)
 void HeadlineDropdown::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+#if 0
     //[/UserPreResize]
 
-    titleLabel->setBounds (33, 0, getWidth() - 44, 31);
-    icon->setBounds (7, 16 - (32 / 2), 32, 32);
-    content->setBounds (2, 33, getWidth() - 4, getHeight() - 34);
-    internalPath2.clear();
-    internalPath2.startNewSubPath (0.0f, 0.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 2), 32.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 2), static_cast<float> (getHeight() - 1));
-    internalPath2.lineTo (1.0f, static_cast<float> (getHeight() - 1));
-    internalPath2.lineTo (1.0f, 32.0f);
-    internalPath2.lineTo (8.0f, 16.0f);
-    internalPath2.closeSubPath();
-
-    internalPath3.clear();
-    internalPath3.startNewSubPath (static_cast<float> (getWidth() - -40), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 9), 16.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 2), 32.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - -40), 32.0f);
-    internalPath3.closeSubPath();
-
-    internalPath4.clear();
-    internalPath4.startNewSubPath (static_cast<float> (getWidth() - -24), 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 17), 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 10), 16.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 3), 32.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - -24), 32.0f);
-    internalPath4.closeSubPath();
-
+    content->setBounds(2, getHeight() - 1 - (getHeight() - 34), getWidth() - 4, getHeight() - 34);
+    header->setBounds(0, 0, getWidth() - 0, 32);
     //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
+#endif
 
-void HeadlineDropdown::mouseExit (const MouseEvent& e)
-{
-    //[UserCode_mouseExit] -- Add your code here...
-    //[/UserCode_mouseExit]
+    this->content->setBounds(2, HEADLINE_HEIGHT - 1, this->getWidth() - getPadding(), this->getHeight() - HEADLINE_HEIGHT);
+    this->header->setBounds(0, 0, this->getWidth() - 0, HEADLINE_HEIGHT);
+
+    //[/UserResized]
 }
 
 void HeadlineDropdown::mouseDown (const MouseEvent& e)
@@ -250,12 +154,6 @@ void HeadlineDropdown::mouseDown (const MouseEvent& e)
         this->item->onSelectedAsMenuItem();
     }
     //[/UserCode_mouseDown]
-}
-
-void HeadlineDropdown::mouseUp (const MouseEvent& e)
-{
-    //[UserCode_mouseUp] -- Add your code here...
-    //[/UserCode_mouseUp]
 }
 
 void HeadlineDropdown::inputAttemptWhenModal()
@@ -312,11 +210,12 @@ void HeadlineDropdown::timerCallback()
 
 void HeadlineDropdown::syncWidthWithContent()
 {
-    if (this->getWidth() != this->content->getWidth() + 4 ||
-        this->getHeight() != this->content->getHeight() + 34)
+    if (this->getWidth() != this->content->getWidth() + getPadding() ||
+        this->header->getWidth() != this->content->getWidth() + getPadding() ||
+        this->getHeight() != this->content->getHeight() + HEADLINE_HEIGHT)
     {
-        const int w = jmax(this->getWidth(), this->content->getWidth() + 4);
-        this->setSize(w, this->content->getHeight() + 34);
+        const int w = jmax(this->header->getWidth(), this->content->getWidth() + getPadding());
+        this->setSize(w, this->content->getHeight() + HEADLINE_HEIGHT);
     }
 }
 
@@ -335,29 +234,13 @@ BEGIN_JUCER_METADATA
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="inputAttemptWhenModal()"/>
-    <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=33000000, 1=0"
-          hasStroke="0" nonZeroWinding="1">s 0 0 l 40 0 l 40 32 l 0 32 l 8 16 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 15ffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 2R 32 l 2R 1R l 1 1R l 1 32 l 8 16 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour=" radial: 2R 32, 16R 2, 0=66000000, 1=11000000"
-          nonZeroWinding="1">s -40R 0 l 16R 0 l 9R 16 l 2R 32 l -40R 32 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="0.5, mitered, butt"
-          strokeColour=" radial: 3R 32, 17R 5, 0=27ffffff, 1=bffffff" nonZeroWinding="1">s -24R 0 l 17R 0 l 10R 16 l 3R 32 l -24R 32 x</PATH>
-  </BACKGROUND>
-  <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="33 0 44M 31" labelText="Project"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
-  <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
-                    explicitFocusOrder="0" pos="7 16c 32 32" class="IconComponent"
-                    params="Icons::helio"/>
+  <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="b986fd50e3b5b1c5" memberName="content" virtualName=""
-                    explicitFocusOrder="0" pos="2 33 4M 34M" class="Component" params=""/>
+                    explicitFocusOrder="0" pos="2 1Rr 4M 34M" class="Component" params=""/>
+  <JUCERCOMP name="" id="3d892173c3bdab59" memberName="header" virtualName=""
+             explicitFocusOrder="0" pos="0 0 0M 32" sourceFile="HeadlineItemHighlighter.cpp"
+             constructorParams="targetItem"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

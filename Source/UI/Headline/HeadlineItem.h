@@ -66,9 +66,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> titleLabel;
-    ScopedPointer<IconComponent> icon;
-    ScopedPointer<HeadlineItemArrow> component;
+    UniquePointer<Label> titleLabel;
+    UniquePointer<IconComponent> icon;
+    UniquePointer<HeadlineItemArrow> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItem)
 };

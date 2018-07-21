@@ -26,12 +26,6 @@ class Headline;
 #include "ComponentFader.h"
 #include "HotkeyScheme.h"
 
-#if HELIO_MOBILE
-#   define HEADLINE_HEIGHT (34)
-#elif HELIO_DESKTOP
-#   define HEADLINE_HEIGHT (64)
-#endif
-
 class MainLayout final : public Component
 {
 public:

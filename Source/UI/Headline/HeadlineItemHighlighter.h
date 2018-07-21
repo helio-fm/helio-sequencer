@@ -25,24 +25,19 @@ class IconComponent;
 class HeadlineItemDataSource;
 //[/Headers]
 
-#include "HeadlineItemHighlighter.h"
 
-class HeadlineDropdown final : public Component,
-                               private Timer
+class HeadlineItemHighlighter final : public Component
 {
 public:
 
-    HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem);
-    ~HeadlineDropdown();
+    HeadlineItemHighlighter(WeakReference<HeadlineItemDataSource> targetItem);
+    ~HeadlineItemHighlighter();
 
     //[UserMethods]
-    void childBoundsChanged(Component *) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-    void inputAttemptWhenModal() override;
 
 
 private:
@@ -51,13 +46,14 @@ private:
 
     WeakReference<HeadlineItemDataSource> item;
 
-    void timerCallback() override;
-    void syncWidthWithContent();
-
     //[/UserVariables]
 
-    UniquePointer<Component> content;
-    UniquePointer<HeadlineItemHighlighter> header;
+    UniquePointer<Label> titleLabel;
+    UniquePointer<IconComponent> icon;
+    Path internalPath1;
+    Path internalPath2;
+    Path internalPath3;
+    Path internalPath4;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineDropdown)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItemHighlighter)
 };

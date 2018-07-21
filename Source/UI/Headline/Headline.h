@@ -24,6 +24,12 @@
 class HeadlineItem;
 class HeadlineItemDataSource;
 
+#if HELIO_MOBILE
+#   define HEADLINE_HEIGHT (42)
+#elif HELIO_DESKTOP
+#   define HEADLINE_HEIGHT (34)
+#endif
+
 //[/Headers]
 
 #include "HeadlineNavigationPanel.h"

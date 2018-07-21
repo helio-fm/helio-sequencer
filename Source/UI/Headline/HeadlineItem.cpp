@@ -22,6 +22,7 @@
 #include "HeadlineItem.h"
 
 //[MiscUserDefs]
+#include "Headline.h"
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
@@ -36,17 +37,18 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     : item(treeItem),
       parentHeadline(parent)
 {
-    addAndMakeVisible (titleLabel = new Label (String(),
-                                               TRANS("Project")));
-    titleLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType (Justification::centredLeft);
-    titleLabel->setEditable (false, false, false);
+    this->titleLabel.reset(new Label(String(),
+                                      TRANS("Project")));
+    this->addAndMakeVisible(titleLabel.get());
+    this->titleLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    titleLabel->setJustificationType(Justification::centredLeft);
+    titleLabel->setEditable(false, false, false);
 
-    titleLabel->setBounds (33, 5, 256, 21);
+    this->icon.reset(new IconComponent(Icons::helio));
+    this->addAndMakeVisible(icon.get());
 
-    addAndMakeVisible (icon = new IconComponent (Icons::helio));
-
-    addAndMakeVisible (component = new HeadlineItemArrow());
+    this->component.reset(new HeadlineItemArrow());
+    this->addAndMakeVisible(component.get());
 
     //[UserPreSize]
     this->titleLabel->setInterceptsMouseClicks(false, false);
@@ -61,7 +63,7 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     this->bgColour = this->findColour(ColourIDs::BackgroundB::fill);
     //[/UserPreSize]
 
-    setSize (256, 32);
+    this->setSize(256, 32);
 
     //[Constructor]
     if (this->item != nullptr)
@@ -104,8 +106,9 @@ void HeadlineItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    icon->setBounds (7, (getHeight() / 2) - (32 / 2), 32, 32);
-    component->setBounds (getWidth() - 16, 0, 16, getHeight() - 0);
+    titleLabel->setBounds(33, (getHeight() / 2) + -1 - (30 / 2), 256, 30);
+    icon->setBounds(7, (getHeight() / 2) + -1 - (32 / 2), 32, 32);
+    component->setBounds(getWidth() - 16, 0, 16, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -174,7 +177,7 @@ void HeadlineItem::updateContent()
         const int textWidth = this->titleLabel->getFont()
             .getStringWidth(this->titleLabel->getText());
         const int maxTextWidth = this->titleLabel->getWidth();
-        this->setSize(jmin(textWidth, maxTextWidth) + 64, this->getHeight());
+        this->setSize(jmin(textWidth, maxTextWidth) + 64, HEADLINE_HEIGHT - 2);
     }
 }
 
@@ -220,12 +223,12 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="33 5 256 21" labelText="Project"
+         explicitFocusOrder="0" pos="33 -1Cc 256 30" labelText="Project"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
-                    explicitFocusOrder="0" pos="7 0Cc 32 32" class="IconComponent"
+                    explicitFocusOrder="0" pos="7 -1Cc 32 32" class="IconComponent"
                     params="Icons::helio"/>
   <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"

@@ -249,6 +249,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/HeadlineDropdown_494f430e.o \
   $(JUCE_OBJDIR)/HeadlineItem_cd7bcd10.o \
   $(JUCE_OBJDIR)/HeadlineItemArrow_da2ab0a3.o \
+  $(JUCE_OBJDIR)/HeadlineItemHighlighter_98266d3b.o \
   $(JUCE_OBJDIR)/HeadlineNavigationPanel_eeb8893d.o \
   $(JUCE_OBJDIR)/MultiTouchController_63afb603.o \
   $(JUCE_OBJDIR)/MenuItemComponent_2eff5284.o \
@@ -1115,6 +1116,11 @@ $(JUCE_OBJDIR)/HeadlineItem_cd7bcd10.o: ../../Source/UI/Headline/HeadlineItem.cp
 $(JUCE_OBJDIR)/HeadlineItemArrow_da2ab0a3.o: ../../Source/UI/Headline/HeadlineItemArrow.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling HeadlineItemArrow.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HeadlineItemHighlighter_98266d3b.o: ../../Source/UI/Headline/HeadlineItemHighlighter.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HeadlineItemHighlighter.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/HeadlineNavigationPanel_eeb8893d.o: ../../Source/UI/Headline/HeadlineNavigationPanel.cpp

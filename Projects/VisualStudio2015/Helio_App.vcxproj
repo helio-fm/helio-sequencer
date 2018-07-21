@@ -422,6 +422,7 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineDropdown.cpp"/>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItem.cpp"/>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemArrow.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.cpp"/>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponent.cpp"/>
@@ -2423,6 +2424,7 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineDropdown.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItem.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemArrow.h"/>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemDataSource.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Input\LongHoldController.h"/>
