@@ -59,6 +59,9 @@ namespace BinaryData
     extern const char*   browse_svg;
     const int            browse_svgSize = 394;
 
+    extern const char*   chordTool_svg;
+    const int            chordTool_svgSize = 594;
+
     extern const char*   close_svg;
     const int            close_svgSize = 569;
 
@@ -83,6 +86,9 @@ namespace BinaryData
     extern const char*   cut_svg;
     const int            cut_svgSize = 798;
 
+    extern const char*   cutterTool_svg;
+    const int            cutterTool_svgSize = 593;
+
     extern const char*   down_svg;
     const int            down_svgSize = 463;
 
@@ -95,6 +101,9 @@ namespace BinaryData
     extern const char*   ellipsis_svg;
     const int            ellipsis_svgSize = 645;
 
+    extern const char*   eraserTool_svg;
+    const int            eraserTool_svgSize = 661;
+
     extern const char*   expand_svg;
     const int            expand_svgSize = 458;
 
@@ -106,9 +115,6 @@ namespace BinaryData
 
     extern const char*   helio_svg;
     const int            helio_svgSize = 25191;
-
-    extern const char*   insertSpaceTool_svg;
-    const int            insertSpaceTool_svgSize = 981;
 
     extern const char*   instrument_svg;
     const int            instrument_svgSize = 2919;
@@ -234,7 +240,7 @@ namespace BinaryData
     const int            toggleOn_svgSize = 617;
 
     extern const char*   trackGroup_svg;
-    const int            trackGroup_svgSize = 1128;
+    const int            trackGroup_svgSize = 414;
 
     extern const char*   undo_svg;
     const int            undo_svgSize = 485;
@@ -250,9 +256,6 @@ namespace BinaryData
 
     extern const char*   volume_svg;
     const int            volume_svgSize = 262;
-
-    extern const char*   wipeSpaceTool_svg;
-    const int            wipeSpaceTool_svgSize = 1093;
 
     extern const char*   zoomIn_svg;
     const int            zoomIn_svgSize = 942;
@@ -273,7 +276,7 @@ namespace BinaryData
     const int            ColourSchemes_jsonSize = 2753;
 
     extern const char*   HotkeySchemes_json;
-    const int            HotkeySchemes_jsonSize = 12527;
+    const int            HotkeySchemes_jsonSize = 12761;
 
     extern const char*   Scales_json;
     const int            Scales_jsonSize = 3563;
@@ -282,7 +285,7 @@ namespace BinaryData
     const int            Translations_jsonSize = 271571;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 91;
+    const int namedResourceListSize = 92;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

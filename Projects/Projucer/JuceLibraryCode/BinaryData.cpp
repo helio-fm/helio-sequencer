@@ -9790,6 +9790,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x5bd41619:  numBytes = 1482; return automationTrack_svg;
         case 0x7e70270c:  numBytes = 464; return back_svg;
         case 0xf6383f2f:  numBytes = 394; return browse_svg;
+        case 0x68af1fb9:  numBytes = 594; return chordTool_svg;
         case 0xe3430f9d:  numBytes = 569; return close_svg;
         case 0x52ffe571:  numBytes = 645; return colour_svg;
         case 0x3cb6a35c:  numBytes = 939; return commit_svg;
@@ -9798,15 +9799,16 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xda9259ed:  numBytes = 287; return cropTool_svg;
         case 0x660f8cb3:  numBytes = 537; return cursorTool_svg;
         case 0x433f7ee7:  numBytes = 798; return cut_svg;
+        case 0x7f791efc:  numBytes = 593; return cutterTool_svg;
         case 0x5514f147:  numBytes = 463; return down_svg;
         case 0x4fd7e891:  numBytes = 924; return dragTool_svg;
         case 0x941ed8a1:  numBytes = 1148; return drawTool_svg;
         case 0xa83d7df6:  numBytes = 645; return ellipsis_svg;
+        case 0x5097a5e9:  numBytes = 661; return eraserTool_svg;
         case 0x2030ef3f:  numBytes = 458; return expand_svg;
         case 0x284005c3:  numBytes = 526; return fail_svg;
         case 0x628f95ea:  numBytes = 421; return forward_svg;
         case 0x423ac39a:  numBytes = 25191; return helio_svg;
-        case 0x46221c2a:  numBytes = 981; return insertSpaceTool_svg;
         case 0x74a8060c:  numBytes = 2919; return instrument_svg;
         case 0x5daabbae:  numBytes = 743; return instrumentNode_svg;
         case 0x503a1f43:  numBytes = 692; return list_svg;
@@ -9848,20 +9850,19 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb46c7428:  numBytes = 426; return success_svg;
         case 0x2a9081a0:  numBytes = 805; return toggleOff_svg;
         case 0x3b9bcc78:  numBytes = 617; return toggleOn_svg;
-        case 0x475dff99:  numBytes = 1128; return trackGroup_svg;
+        case 0x475dff99:  numBytes = 414; return trackGroup_svg;
         case 0xe5c4b489:  numBytes = 485; return undo_svg;
         case 0x8ebff0d7:  numBytes = 2482; return unmute_svg;
         case 0xcdfe36c0:  numBytes = 466; return up_svg;
         case 0x9916f08a:  numBytes = 1378; return versionControl_svg;
         case 0xa37ab7bf:  numBytes = 262; return volume_svg;
-        case 0x4dca255c:  numBytes = 1093; return wipeSpaceTool_svg;
         case 0xc82285fd:  numBytes = 942; return zoomIn_svg;
         case 0x86a456a0:  numBytes = 790; return zoomOut_svg;
         case 0x100cd030:  numBytes = 652; return zoomTool_svg;
         case 0xb3e40b64:  numBytes = 317; return Noise_png;
         case 0x9d3ca20d:  numBytes = 70; return Arpeggiators_json;
         case 0xaf771725:  numBytes = 2753; return ColourSchemes_json;
-        case 0x932a5b4b:  numBytes = 12527; return HotkeySchemes_json;
+        case 0x932a5b4b:  numBytes = 12761; return HotkeySchemes_json;
         case 0x67f906de:  numBytes = 3563; return Scales_json;
         case 0xe3299f05:  numBytes = 271571; return Translations_json;
         default: break;
@@ -9890,6 +9891,7 @@ const char* namedResourceList[] =
     "automationTrack_svg",
     "back_svg",
     "browse_svg",
+    "chordTool_svg",
     "close_svg",
     "colour_svg",
     "commit_svg",
@@ -9898,15 +9900,16 @@ const char* namedResourceList[] =
     "cropTool_svg",
     "cursorTool_svg",
     "cut_svg",
+    "cutterTool_svg",
     "down_svg",
     "dragTool_svg",
     "drawTool_svg",
     "ellipsis_svg",
+    "eraserTool_svg",
     "expand_svg",
     "fail_svg",
     "forward_svg",
     "helio_svg",
-    "insertSpaceTool_svg",
     "instrument_svg",
     "instrumentNode_svg",
     "list_svg",
@@ -9954,7 +9957,6 @@ const char* namedResourceList[] =
     "up_svg",
     "versionControl_svg",
     "volume_svg",
-    "wipeSpaceTool_svg",
     "zoomIn_svg",
     "zoomOut_svg",
     "zoomTool_svg",
@@ -9985,6 +9987,7 @@ const char* originalFilenames[] =
     "automationTrack.svg",
     "back.svg",
     "browse.svg",
+    "chordTool.svg",
     "close.svg",
     "colour.svg",
     "commit.svg",
@@ -9993,15 +9996,16 @@ const char* originalFilenames[] =
     "cropTool.svg",
     "cursorTool.svg",
     "cut.svg",
+    "cutterTool.svg",
     "down.svg",
     "dragTool.svg",
     "drawTool.svg",
     "ellipsis.svg",
+    "eraserTool.svg",
     "expand.svg",
     "fail.svg",
     "forward.svg",
     "helio.svg",
-    "insertSpaceTool.svg",
     "instrument.svg",
     "instrumentNode.svg",
     "list.svg",
@@ -10049,7 +10053,6 @@ const char* originalFilenames[] =
     "up.svg",
     "versionControl.svg",
     "volume.svg",
-    "wipeSpaceTool.svg",
     "zoomIn.svg",
     "zoomOut.svg",
     "zoomTool.svg",
