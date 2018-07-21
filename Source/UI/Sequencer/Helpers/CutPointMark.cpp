@@ -45,10 +45,31 @@ CutPointMark::~CutPointMark()
 
 void CutPointMark::paint(Graphics &g)
 {
+    const float w = float(this->getWidth());
+    const float h = float(this->getHeight());
+
+    g.setColour(Colours::orangered.darker(0.75f));
+    g.fillRect(w / 2.f - 0.25f, 1.f, .5f, h - 2.f);
+
     g.setColour(Colours::black);
-    g.fillRect(this->getLocalBounds());
+
+    Path p;
+    p.addTriangle(0.f, 0.f, w, 0.f, w / 2.f, 7.f);
+    g.fillPath(p);
+
+    p.clear();
+    p.addTriangle(0, h, w, h, w / 2.f, h - 7.f);
+    g.fillPath(p);
+
     g.setColour(Colours::orangered);
-    g.fillRect(this->getLocalBounds().reduced(1));
+
+    p.clear();
+    p.addTriangle(1.f, 1.f, w - 1.f, 1.f, w / 2.f, 6);
+    g.fillPath(p);
+
+    p.clear();
+    p.addTriangle(1.f, h - 1.f, w - 1.f, h - 1.f, w / 2.f, h - 6.f);
+    g.fillPath(p);
 }
 
 void CutPointMark::fadeIn()
@@ -74,7 +95,7 @@ void CutPointMark::updateBounds(bool forceNoAnimation)
         const int ht = this->targetComponent->getHeight();
         const int x = this->targetComponent->getX() + int(wt * this->absPosX);
         const int y = this->targetComponent->getY();
-        const Rectangle<int> newBounds(x - 3, y - 3, 7, ht + 6);
+        const Rectangle<int> newBounds(x - 4, y - 3, 9, ht + 6);
 
         if (!this->initialized || forceNoAnimation)
         {

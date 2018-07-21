@@ -52,8 +52,7 @@ void KnifeToolHelper::paint(Graphics &g)
     g.setColour(Colours::black);
     g.strokePath(this->path, PathStrokeType(.5f));
 
-    //g.setColour(this->findColour(ColourIDs::SelectionComponent::outline));
-    g.setColour(Colours::white.withAlpha(0.75f));
+    g.setColour(Colours::white.withAlpha(0.55f));
     g.fillPath(this->path);
 }
 
