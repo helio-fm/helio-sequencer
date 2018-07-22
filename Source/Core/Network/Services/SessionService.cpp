@@ -47,6 +47,12 @@ String SessionService::getApiToken()
     return Config::get(Serialization::Api::sessionLastToken, {});
 }
 
+void SessionService::setApiToken(const String &token)
+{
+    Config::set(Serialization::Api::sessionLastToken, token);
+    Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
+}
+
 bool SessionService::isLoggedIn()
 {
     return SessionService::getApiToken().isNotEmpty();
@@ -57,17 +63,17 @@ const UserProfile & SessionService::getUserProfile() const noexcept
     return this->userProfile;
 }
 
-void SessionService::signIn(const String &login, const String &passwordHash, AuthCallback callback)
+void SessionService::signIn(const String &provider, AuthCallback callback)
 {
-    if (this->loginCallback != nullptr)
+    if (this->authCallback != nullptr)
     {
         jassertfalse; // You should never hit this line
-        callback(false, { "Login is in progress" });
+        callback(false, { "Auth is in already progress" });
         return;
     }
 
-    this->loginCallback = callback;
-    this->getThreadFor<SignInThread>()->signIn(this, login, passwordHash);
+    this->authCallback = callback;
+    this->getThreadFor<AuthThread>()->requestWebAuth(this, provider);
 }
 
 void SessionService::signOut()
@@ -119,49 +125,33 @@ void SessionService::requestProfileFailed(const Array<String> &errors)
 // SignInThread::Listener
 //===----------------------------------------------------------------------===//
 
-void SessionService::signInOk(const String &userEmail, const String &newToken)
+
+void SessionService::authSessionInitiated(const AuthSession session)
 {
-    if (this->loginCallback != nullptr)
+    session.getAuthURI().launchInDefaultBrowser();
+}
+
+void SessionService::authSessionFinished(const AuthSession session)
+{
+    SessionService::setApiToken(session.getToken());
+
+    if (this->authCallback != nullptr)
     {
-        this->loginCallback(true, {});
-        this->loginCallback = nullptr;
+        this->authCallback(true, {});
+        this->authCallback = nullptr;
     }
 
     this->getThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
 }
 
-void SessionService::signInFailed(const Array<String> &errors)
+void SessionService::authSessionFailed(const Array<String> &errors)
 {
     Logger::writeToLog("Login failed: " + errors.getFirst());
 
-    if (this->loginCallback != nullptr)
+    if (this->authCallback != nullptr)
     {
-        this->loginCallback(false, errors);
-        this->loginCallback = nullptr;
-    }
-}
-
-//===----------------------------------------------------------------------===//
-// SignUpThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionService::signUpOk(const String &userEmail, const String &newToken)
-{
-    if (this->registrationCallback != nullptr)
-    {
-        this->registrationCallback(true, {});
-        this->registrationCallback = nullptr;
-    }
-}
-
-void SessionService::signUpFailed(const Array<String> &errors)
-{
-    Logger::writeToLog("Registration failed: " + errors.getFirst());
-
-    if (this->registrationCallback != nullptr)
-    {
-        this->registrationCallback(false, errors);
-        this->registrationCallback = nullptr;
+        this->authCallback(false, errors);
+        this->authCallback = nullptr;
     }
 }
 
@@ -171,8 +161,7 @@ void SessionService::signUpFailed(const Array<String> &errors)
 
 void SessionService::tokenUpdateOk(const String &newToken)
 {
-    Config::set(Serialization::Api::sessionLastToken, newToken);
-    Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
+    SessionService::setApiToken(newToken);
 
     // Token update happens most often once a day
     // At this point we're safe to launch updates check:
@@ -181,7 +170,7 @@ void SessionService::tokenUpdateOk(const String &newToken)
 
 void SessionService::tokenUpdateFailed(const Array<String> &errors)
 {
-    Config::set(Serialization::Api::sessionLastToken, {});
+    SessionService::setApiToken({});
     this->userProfile.reset();
 }
 
