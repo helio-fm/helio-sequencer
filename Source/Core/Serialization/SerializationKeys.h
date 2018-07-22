@@ -522,6 +522,9 @@ namespace Serialization
             static const Identifier deviceId = "deviceId";
             static const Identifier platformId = "platformId";
 
+            static const Identifier authSessionKey = "sessionKey";
+            static const Identifier authSessionId = "sessionId";
+            static const Identifier authSessionUri = "uri";
             static const Identifier token = "token";
 
             static const Identifier versionInfo = "versionInfo";

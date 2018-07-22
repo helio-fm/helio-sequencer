@@ -54,6 +54,11 @@ bool HelioApiRequest::Response::is200() const noexcept
     return this->statusCode == 200;
 }
 
+bool HelioApiRequest::Response::is(int code) const noexcept
+{
+    return this->statusCode == code;
+}
+
 bool HelioApiRequest::Response::hasProperty(const Identifier &name) const noexcept
 {
     return this->body.hasProperty(name);

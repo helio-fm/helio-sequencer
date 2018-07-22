@@ -301,6 +301,7 @@
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
           <GROUP id="{A1687DD1-8D95-2592-A933-804A188EC204}" name="Models">
             <FILE id="AHl4xW" name="ApiModel.h" compile="0" resource="0" file="../../Source/Core/Network/Models/ApiModel.h"/>
+            <FILE id="RlWKKH" name="AuthSession.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AuthSession.h"/>
             <FILE id="y1LaCU" name="UpdatesInfo.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UpdatesInfo.h"/>
             <FILE id="ERB820" name="UserProfile.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UserProfile.h"/>
           </GROUP>
@@ -309,12 +310,11 @@
                   file="../../Source/Core/Network/Requests/HelioApiRequest.cpp"/>
             <FILE id="Zri11i" name="HelioApiRequest.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/HelioApiRequest.h"/>
+            <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestUserProfileThread.h"/>
-            <FILE id="URoFvA" name="SignInThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/SignInThread.h"/>
-            <FILE id="hwTQ3u" name="SignUpThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/SignUpThread.h"/>
             <FILE id="TQIxzu" name="TokenCheckThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/TokenCheckThread.h"/>
             <FILE id="BbTLUC" name="TokenUpdateThread.h" compile="0" resource="0"
