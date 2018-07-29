@@ -18,51 +18,30 @@
 #pragma once
 
 //[Headers]
-class IconComponent;
-class RecentFilesComponent;
-class RootTreeItem;
-class MainLayout;
-class ComponentsList;
-class LogoFader;
-class AudioSettings;
-class ThemeSettings;
-class OpenGLSettings;
-class Log;
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundB.h"
-#include "Menu/DashboardMenu.h"
-#include "LoginButton.h"
-#include "UserProfileComponent.h"
 
-class WorkspacePage final : public Component
+class UserProfileComponent final : public Component
 {
 public:
 
-    WorkspacePage(MainLayout &workspaceRef);
-    ~WorkspacePage();
+    UserProfileComponent();
+    ~UserProfileComponent();
 
     //[UserMethods]
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void visibilityChanged() override;
 
 
 private:
 
     //[UserVariables]
-
-    MainLayout &workspace;
-
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundB> background;
-    UniquePointer<LogoFader> logoImage;
-    UniquePointer<DashboardMenu> component;
-    UniquePointer<LoginButton> component2;
-    UniquePointer<UserProfileComponent> component3;
+    UniquePointer<Label> nameLabel;
+    UniquePointer<Label> linkLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkspacePage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserProfileComponent)
 };

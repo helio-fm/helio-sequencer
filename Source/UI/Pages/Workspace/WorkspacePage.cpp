@@ -47,6 +47,14 @@ WorkspacePage::WorkspacePage(MainLayout &workspaceRef)
 
     this->component.reset(new DashboardMenu(&App::Workspace()));
     this->addAndMakeVisible(component.get());
+    this->component2.reset(new LoginButton());
+    this->addAndMakeVisible(component2.get());
+    component2->setBounds(24, 24, 224, 32);
+
+    this->component3.reset(new UserProfileComponent());
+    this->addAndMakeVisible(component3.get());
+    component3->setBounds(24, 72, 300, 200);
+
 
     //[UserPreSize]
     this->setWantsKeyboardFocus(false);
@@ -68,6 +76,8 @@ WorkspacePage::~WorkspacePage()
     background = nullptr;
     logoImage = nullptr;
     component = nullptr;
+    component2 = nullptr;
+    component3 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -88,8 +98,8 @@ void WorkspacePage::resized()
     //[/UserPreResize]
 
     background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    logoImage->setBounds((getWidth() / 2) - (280 / 2), proportionOfHeight (0.2228f) - (280 / 2), 280, 280);
-    component->setBounds((getWidth() / 2) - (450 / 2), (getHeight() / 2) + -34, 450, proportionOfHeight (0.4961f));
+    logoImage->setBounds((getWidth() / 2) - (280 / 2), proportionOfHeight (0.2234f) - (280 / 2), 280, 280);
+    component->setBounds((getWidth() / 2) - (450 / 2), (getHeight() / 2) + -34, 450, proportionOfHeight (0.4960f));
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -131,11 +141,17 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logoImage" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 22.28%c 280 280" class="LogoFader"
+                    explicitFocusOrder="0" pos="0Cc 22.34%c 280 280" class="LogoFader"
                     params=""/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0Cc -34C 450 49.611%" sourceFile="Menu/DashboardMenu.cpp"
+             explicitFocusOrder="0" pos="0Cc -34C 450 49.601%" sourceFile="Menu/DashboardMenu.cpp"
              constructorParams="&amp;App::Workspace()"/>
+  <JUCERCOMP name="" id="2ed6285515243e89" memberName="component2" virtualName=""
+             explicitFocusOrder="0" pos="24 24 224 32" sourceFile="LoginButton.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="dd0428617917b2a9" memberName="component3" virtualName=""
+             explicitFocusOrder="0" pos="24 72 300 200" sourceFile="UserProfileComponent.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

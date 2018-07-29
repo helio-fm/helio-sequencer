@@ -18,51 +18,36 @@
 #pragma once
 
 //[Headers]
-class IconComponent;
-class RecentFilesComponent;
-class RootTreeItem;
-class MainLayout;
-class ComponentsList;
-class LogoFader;
-class AudioSettings;
-class ThemeSettings;
-class OpenGLSettings;
-class Log;
+#include "IconComponent.h"
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundB.h"
-#include "Menu/DashboardMenu.h"
-#include "LoginButton.h"
-#include "UserProfileComponent.h"
+#include "../../Themes/SeparatorVertical.h"
 
-class WorkspacePage final : public Component
+class LoginButton final : public Component,
+                          public Button::Listener
 {
 public:
 
-    WorkspacePage(MainLayout &workspaceRef);
-    ~WorkspacePage();
+    LoginButton();
+    ~LoginButton();
 
     //[UserMethods]
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void visibilityChanged() override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
 
 
 private:
 
     //[UserVariables]
-
-    MainLayout &workspace;
-
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundB> background;
-    UniquePointer<LogoFader> logoImage;
-    UniquePointer<DashboardMenu> component;
-    UniquePointer<LoginButton> component2;
-    UniquePointer<UserProfileComponent> component3;
+    UniquePointer<IconComponent> component;
+    UniquePointer<SeparatorVertical> component2;
+    UniquePointer<Label> ctaLabel;
+    UniquePointer<TextButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkspacePage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoginButton)
 };

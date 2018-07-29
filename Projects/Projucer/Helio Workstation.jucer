@@ -961,8 +961,14 @@
               <FILE id="k8Pcdn" name="SignInRow.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.cpp"/>
               <FILE id="xWKY9O" name="SignInRow.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.h"/>
             </GROUP>
+            <FILE id="BVO4bO" name="LoginButton.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LoginButton.cpp"/>
+            <FILE id="sA6WNZ" name="LoginButton.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LoginButton.h"/>
             <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.cpp"/>
             <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.h"/>
+            <FILE id="Gab2ug" name="UserProfileComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Workspace/UserProfileComponent.cpp"/>
+            <FILE id="MDaNsa" name="UserProfileComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Workspace/UserProfileComponent.h"/>
             <FILE id="SATMyc" name="WorkspacePage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Workspace/WorkspacePage.cpp"/>
             <FILE id="ak0ZaE" name="WorkspacePage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/WorkspacePage.h"/>
