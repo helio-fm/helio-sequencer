@@ -29,13 +29,13 @@ public:
     struct VersionInfo final
     {
         Identifier getPlatformId() const noexcept
-        { return Identifier(this->data.getProperty(Serialization::Api::V1::platformId)); }
+        { return Identifier(this->data.getProperty(Serialization::Api::V1::Resources::platformId)); }
 
         String getVersion() const noexcept
-        { return this->data.getProperty(Serialization::Api::V1::version); }
+        { return this->data.getProperty(Serialization::Api::V1::Resources::version); }
 
         String getLink() const noexcept
-        { return this->data.getProperty(Serialization::Api::V1::link); }
+        { return this->data.getProperty(Serialization::Api::V1::Resources::link); }
 
         ValueTree data;
     };
@@ -43,26 +43,26 @@ public:
     struct ResourceInfo final
     {
         String getName() const noexcept
-        { return this->data.getProperty(Serialization::Api::V1::resourceName); }
+        { return this->data.getProperty(Serialization::Api::V1::Resources::resourceName); }
 
         String getHash() const noexcept
-        { return this->data.getProperty(Serialization::Api::V1::hash); }
+        { return this->data.getProperty(Serialization::Api::V1::Resources::hash); }
 
         ValueTree data;
     };
 
     Array<VersionInfo> getVersions() const
-    { return this->getChildren<VersionInfo>(Serialization::Api::V1::versionInfo); }
+    { return this->getChildren<VersionInfo>(Serialization::Api::V1::Resources::versionInfo); }
 
     Array<ResourceInfo> getResources() const
-    { return this->getChildren<ResourceInfo>(Serialization::Api::V1::resourceInfo); }
+    { return this->getChildren<ResourceInfo>(Serialization::Api::V1::Resources::resourceInfo); }
 
     // True if caches differ for the same resource,
     // or if new resource is not even listed here
     bool seemsOutdatedFor(const ResourceInfo &newResource) const
     {
         bool hasInfoForNewResource = false;
-        forEachValueTreeChildWithType(this->data, resourceData, Serialization::Api::V1::resourceInfo)
+        forEachValueTreeChildWithType(this->data, resourceData, Serialization::Api::V1::Resources::resourceInfo)
         {
             const ResourceInfo oldResource({ resourceData });
             if (oldResource.getName() == newResource.getName())

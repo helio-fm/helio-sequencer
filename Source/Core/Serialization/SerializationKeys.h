@@ -511,28 +511,42 @@ namespace Serialization
 
             static const Identifier user = "user";
             static const Identifier session = "session";
-
-            static const Identifier name = "name";
-            static const Identifier email = "email";
-            static const Identifier login = "login";
-            static const Identifier password = "password";
-            static const Identifier passwordConfirmation = "passwordConfirmation";
-
+            static const Identifier token = "token";
             static const Identifier bearer = "bearer";
             static const Identifier deviceId = "deviceId";
             static const Identifier platformId = "platformId";
 
-            static const Identifier authSessionKey = "sessionKey";
-            static const Identifier authSessionId = "sessionId";
-            static const Identifier authSessionUri = "uri";
-            static const Identifier token = "token";
+            namespace Identity
+            {
+                static const Identifier name = "name";
+                static const Identifier email = "email";
+                static const Identifier login = "login";
+                static const Identifier password = "password";
+                static const Identifier passwordConfirmation = "passwordConfirmation";
+            }
 
-            static const Identifier versionInfo = "versionInfo";
-            static const Identifier version = "version";
-            static const Identifier link = "link";
-            static const Identifier resourceInfo = "resourceInfo";
-            static const Identifier resourceName = "resourceName";
-            static const Identifier hash = "hash";
+            namespace AuthSession
+            {
+                static const Identifier id = "id";
+                static const Identifier secret = "secretKey";
+                static const Identifier provider = "provider";
+                static const Identifier appName = "appName";
+                static const Identifier appVersion = "appVersion";
+                static const Identifier appPlatform = "appPlatform";
+                static const Identifier deviceId = "deviceId";
+                static const Identifier token = "token";
+            }
+
+            namespace Resources
+            {
+                static const Identifier versionInfo = "versionInfo";
+                static const Identifier version = "version";
+                static const Identifier platformId = "platformId";
+                static const Identifier link = "link";
+                static const Identifier resourceInfo = "resourceInfo";
+                static const Identifier resourceName = "resourceName";
+                static const Identifier hash = "hash";
+            }
         } // namespace V1
     } // namespace Api
         

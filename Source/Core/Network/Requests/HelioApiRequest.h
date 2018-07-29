@@ -56,6 +56,7 @@ public:
 
         const Array<String> &getErrors() const noexcept;
         const ValueTree getBody() const noexcept;
+        const String getRedirect() const noexcept;
 
     private:
 

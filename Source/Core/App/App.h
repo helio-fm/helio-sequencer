@@ -45,7 +45,6 @@ class UpdatesService;
 class App final : public JUCEApplication,
                   private AsyncUpdater,
                   private ChangeListener // listens to TranslationManager
-
 {
 public:
 

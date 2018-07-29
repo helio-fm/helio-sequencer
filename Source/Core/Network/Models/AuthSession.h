@@ -18,6 +18,7 @@
 #pragma once
 
 #include "ApiModel.h"
+#include "HelioApiRoutes.h"
 
 class AuthSession final : public ApiModel
 {
@@ -26,16 +27,13 @@ public:
     AuthSession(const ValueTree &tree) : ApiModel(tree) {}
 
     String getSessionId() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::authSessionId); }
+    { return this->data.getProperty(Serialization::Api::V1::AuthSession::id); }
 
-    String getKey() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::authSessionKey); }
-
-    URL getAuthURI() const noexcept
-    { return { this->data.getProperty(Serialization::Api::V1::authSessionUri) }; }
+    String getSecret() const noexcept
+    { return this->data.getProperty(Serialization::Api::V1::AuthSession::secret); }
 
     String getToken() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::token); }
+    { return this->data.getProperty(Serialization::Api::V1::AuthSession::token); }
 
     JUCE_LEAK_DETECTOR(AuthSession)
 };

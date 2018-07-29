@@ -22,6 +22,7 @@
 #include "SerializationKeys.h"
 #include "AuthSession.h"
 #include "Config.h"
+#include "App.h"
 
 class AuthThread final : private Thread
 {
@@ -38,13 +39,13 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void authSessionInitiated(const AuthSession session) = 0;
+        virtual void authSessionInitiated(const AuthSession session, const String &redirect) = 0;
         virtual void authSessionFinished(const AuthSession session) = 0;
         virtual void authSessionFailed(const Array<String> &errors) = 0;
         friend class AuthThread;
     };
     
-    void requestWebAuth(AuthThread::Listener *listener, String provider = "github")
+    void requestWebAuth(AuthThread::Listener *listener, String provider = "Github")
     {
         if (this->isThreadRunning())
         {
@@ -67,39 +68,46 @@ private:
         namespace ApiRoutes = Routes::HelioFM::Api::V1;
 
         // Construct payload object:
-        ValueTree session(ApiKeys::session);
-        session.setProperty(ApiKeys::deviceId, Config::getDeviceId(), nullptr);
-        session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName(), nullptr);
-        
-        const String postUri = ApiRoutes::requestWebAuth + "/" + this->provider;
-        const HelioApiRequest initWebAuthRequest(postUri);
-        this->response = initWebAuthRequest.post(session);
+        ValueTree initSession(ApiKeys::session);
+        initSession.setProperty(ApiKeys::AuthSession::provider, this->provider, nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::deviceId, Config::getDeviceId(), nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::appPlatform, SystemStats::getOperatingSystemName(), nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::appVersion, App::getAppReadableVersion(), nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::appName, "Helio", nullptr);
 
-        const int noContent = 204;
+        const HelioApiRequest initWebAuthRequest(ApiRoutes::initWebAuth);
+        this->response = initWebAuthRequest.post(initSession);
+
         if (!this->response.isValid() ||
-            !this->response.is(noContent))
+            !this->response.is(201))
         {
             callRequestListener(AuthThread, authSessionFailed, self->response.getErrors());
             return;
         }
 
         // Session manager will redirect user in a browser
-        callRequestListener(AuthThread, authSessionInitiated, { self->response.getBody() });
+        callRequestListener(AuthThread, authSessionInitiated, { self->response.getBody() }, self->response.getRedirect());
 
         // Now check once a second if user has finished authentication
         const AuthSession authSession(this->response.getBody());
-        const String getUri = ApiRoutes::requestWebAuth + "/" + authSession.getSessionId();
-        const HelioApiRequest checkWebAuthRequest(getUri);
+        const HelioApiRequest checkWebAuthRequest(ApiRoutes::finaliseWebAuth);
 
+        ValueTree finaliseSession(ApiKeys::session);
+        initSession.setProperty(ApiKeys::AuthSession::id, authSession.getSessionId(), nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::secret, authSession.getSecret(), nullptr);
+
+        // 204 response clearly indicates that a valid session exists,
+        // and it hasn't failed, but still there's no token available:
+        static const int noContent = 204;
         do
         {
             Thread::sleep(1000);
-            this->response = checkWebAuthRequest.get();
+            this->response = checkWebAuthRequest.post(finaliseSession);
         } while (this->response.is(noContent));
 
         if (!this->response.isValid() ||
             !this->response.is200() ||
-            !this->response.hasProperty(ApiKeys::token))
+            !this->response.hasProperty(ApiKeys::AuthSession::token))
         {
             callRequestListener(AuthThread, authSessionFailed, self->response.getErrors());
             return;

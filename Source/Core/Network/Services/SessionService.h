@@ -56,7 +56,7 @@ private:
     
     // will be called on the message thread:
     
-    void authSessionInitiated(const AuthSession session) override;
+    void authSessionInitiated(const AuthSession session, const String &redirect) override;
     void authSessionFinished(const AuthSession session) override;
     void authSessionFailed(const Array<String> &errors) override;
 

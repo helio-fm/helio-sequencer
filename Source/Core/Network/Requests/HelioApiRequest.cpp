@@ -84,6 +84,12 @@ const ValueTree HelioApiRequest::Response::getBody() const noexcept
     return this->body;
 }
 
+const String HelioApiRequest::Response::getRedirect() const noexcept
+{
+    //if (this->statusCode == 301 || this->statusCode == 302)
+    return this->headers.getValue("location", {});
+}
+
 HelioApiRequest::HelioApiRequest(const String &apiEndpoint, ProgressCallback progressCallback) :
     apiEndpoint(apiEndpoint),
     progressCallback(progressCallback),
@@ -142,7 +148,7 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
         }
 
         // Try to parse errors
-        if (response.statusCode < 200 && response.statusCode >= 300)
+        if (response.statusCode < 200 && response.statusCode >= 400)
         {
             for (int i = 0; i < parsedResponse.getNumProperties(); ++i)
             {

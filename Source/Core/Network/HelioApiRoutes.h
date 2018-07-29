@@ -30,7 +30,8 @@ namespace Routes
             {
                 static const String tokenCheck = "/api/v1/session-status";
                 static const String tokenUpdate = "/api/v1/relogin";
-                static const String requestWebAuth = "/api/v1/client/helio/auth";
+                static const String initWebAuth = "/api/v1/client/helio/auth";
+                static const String finaliseWebAuth = "/api/v1/client/helio/auth/check";
                 static const String requestResource = "/api/v1/client/helio";
                 static const String requestUpdatesInfo = "/api/v1/client/helio/info";
                 static const String requestUserProfile = "/api/v1/me";

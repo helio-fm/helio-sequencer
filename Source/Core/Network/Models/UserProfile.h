@@ -32,13 +32,13 @@ public:
     //};
 
     String getEmail() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::email); }
+    { return this->data.getProperty(Serialization::Api::V1::Identity::email); }
 
     String getLogin() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::login); }
+    { return this->data.getProperty(Serialization::Api::V1::Identity::login); }
 
     String getName() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::name); }
+    { return this->data.getProperty(Serialization::Api::V1::Identity::name); }
 
     JUCE_LEAK_DETECTOR(UserProfile)
 };

@@ -126,9 +126,10 @@ void SessionService::requestProfileFailed(const Array<String> &errors)
 //===----------------------------------------------------------------------===//
 
 
-void SessionService::authSessionInitiated(const AuthSession session)
+void SessionService::authSessionInitiated(const AuthSession session, const String &redirect)
 {
-    session.getAuthURI().launchInDefaultBrowser();
+    jassert(redirect.isNotEmpty());
+    URL(redirect).launchInDefaultBrowser();
 }
 
 void SessionService::authSessionFinished(const AuthSession session)
