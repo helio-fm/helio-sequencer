@@ -224,11 +224,12 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
             ht->updateFont(this->systemFonts[fontIndex]);
+            SafePointer<Component> window = this->getTopLevelComponent();
             App::Helio().recreateLayout();
-            if (this->getTopLevelComponent() != nullptr)
+            if (window != nullptr)
             {
-                this->getTopLevelComponent()->resized();
-                this->getTopLevelComponent()->repaint();
+                window->resized();
+                window->repaint();
             }
         }
     }

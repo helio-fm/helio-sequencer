@@ -216,6 +216,7 @@ ProjectPage::ProjectPage(ProjectTreeItem &parentProject)
 ProjectPage::~ProjectPage()
 {
     //[Destructor_pre]
+    this->project.getTransport().removeTransportListener(this);
     this->project.removeChangeListener(this);
     //[/Destructor_pre]
 
