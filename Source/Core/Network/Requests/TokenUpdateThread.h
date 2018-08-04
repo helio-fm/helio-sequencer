@@ -60,7 +60,7 @@ private:
     void run() override
     {
         namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api;
 
         // Construct payload object:
         ValueTree session(ApiKeys::session);

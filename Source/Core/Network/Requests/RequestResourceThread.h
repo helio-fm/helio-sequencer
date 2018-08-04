@@ -57,7 +57,7 @@ private:
     
     void run() override
     {
-        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api;
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 

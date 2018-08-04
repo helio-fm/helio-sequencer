@@ -111,7 +111,8 @@ void TranslationSettings::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_helpButton] -- add your button handler code here..
         //Logger::writeToLog(DocumentReader::obfuscate(HELIO_TRANSLATIONS_HELP_URL));
-        URL updateUrl(Routes::HelioFM::translationsURL);
+        using namespace Routes::HelioFM;
+        URL updateUrl(Web::baseURL + Web::translationsURL);
         updateUrl.launchInDefaultBrowser();
         //[/UserButtonCode_helpButton]
     }

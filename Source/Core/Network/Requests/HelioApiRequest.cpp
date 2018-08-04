@@ -99,15 +99,20 @@ static String getHeaders()
 {
     String extraHeaders;
     extraHeaders
-        << "Content-Type: application/json"
+        << "Accept: application/helio.fm.v1+json"
         << newLine
-        << "Client: Helio " << App::getAppReadableVersion()
-        << newLine
-        << "Authorization: Bearer " << SessionService::getApiToken()
-        << newLine
-        << "Platform-Id: " << SystemStats::getOperatingSystemName()
-        << newLine
-        << "Device-Id: " << Config::getDeviceId();
+        << "Client: Helio " << App::getAppReadableVersion();
+        //<< newLine
+        //<< "Platform-Id: " << SystemStats::getOperatingSystemName()
+        //<< newLine
+        //<< "Device-Id: " << Config::getDeviceId();
+
+    if (SessionService::isLoggedIn())
+    {
+        extraHeaders
+            << newLine
+            << "Authorization: Bearer " << SessionService::getApiToken();
+    }
 
     return extraHeaders;
 }
@@ -178,7 +183,7 @@ HelioApiRequest::Response HelioApiRequest::post(const ValueTree &payload) const
         return response;
     }
 
-    const auto url = URL(Routes::HelioFM::baseURL + this->apiEndpoint)
+    const auto url = URL(Routes::HelioFM::Api::baseURL + this->apiEndpoint)
         .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8() + 1));
 
     int i = 0;
@@ -200,7 +205,7 @@ HelioApiRequest::Response HelioApiRequest::get() const
 {
     Response response;
     ScopedPointer<InputStream> stream;
-    const auto url = URL(Routes::HelioFM::baseURL + this->apiEndpoint);
+    const auto url = URL(Routes::HelioFM::Api::baseURL + this->apiEndpoint);
 
     int i = 0;
     do

@@ -59,7 +59,7 @@ private:
     
     void run() override
     {
-        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api;
 
         const HelioApiRequest request(ApiRoutes::requestUpdatesInfo);
         this->response = request.get();

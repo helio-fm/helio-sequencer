@@ -21,22 +21,23 @@ namespace Routes
 {
     namespace HelioFM
     {
-        static const String baseURL = "https://helio.fm";
-        static const String translationsURL = baseURL + "/translations";
+        namespace Web
+        {
+            static const String baseURL = "https://helio.fm";
+            static const String translationsURL = "/translations";
+        }
 
         namespace Api
         {
-            namespace V1
-            {
-                static const String tokenCheck = "/api/v1/session-status";
-                static const String tokenUpdate = "/api/v1/relogin";
-                static const String initWebAuth = "/api/v1/client/helio/auth";
-                static const String finaliseWebAuth = "/api/v1/client/helio/auth/check";
-                static const String requestResource = "/api/v1/client/helio";
-                static const String requestUpdatesInfo = "/api/v1/client/helio/info";
-                static const String requestUserProfile = "/api/v1/me";
-                static const String vcs = "/api/v1/vcs/:project";
-            } // namespace V1
-        } // namespace API
+            static const String baseURL = "https://api.helio.fm";
+            static const String tokenCheck = "/session-status";
+            static const String tokenUpdate = "/relogin";
+            static const String initWebAuth = "/clients/helio/auth";
+            static const String finaliseWebAuth = "/clients/helio/auth/check";
+            static const String requestResource = "/clients/helio";
+            static const String requestUpdatesInfo = "/clients/helio/info";
+            static const String requestUserProfile = "/me";
+            static const String vcs = "/vcs/:project";
+        } // namespace Api
     } // namespace HelioFM
 } // namespace Routes

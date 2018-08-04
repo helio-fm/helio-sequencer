@@ -65,7 +65,7 @@ private:
         jassert(this->provider.isNotEmpty());
 
         namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api;
 
         // Construct payload object:
         ValueTree initSession(ApiKeys::session);
