@@ -64,7 +64,7 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
     return n;
 }
 
-#define MIN_LENGTH 0.5f
+#define MIN_LENGTH (1.f / TICKS_PER_BEAT)
 
 Note Note::withBeat(float newBeat) const noexcept
 {

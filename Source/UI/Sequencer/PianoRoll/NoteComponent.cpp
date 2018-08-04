@@ -80,7 +80,7 @@ void NoteComponent::updateColours()
 
 bool NoteComponent::canResize() const noexcept
 {
-     return (this->getWidth() >= (RESIZE_CORNER * 3));
+     return (this->getWidth() >= (RESIZE_CORNER * 2));
 }
 
 bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const
