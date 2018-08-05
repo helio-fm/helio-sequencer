@@ -113,7 +113,7 @@ void HeadlineDropdown::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->findColour(ColourIDs::BackgroundB::fill).brighter(0.035f));
+    g.setColour(this->findColour(ColourIDs::BackgroundA::fill).brighter(0.035f));
     g.fillRect(1, HEADLINE_HEIGHT - 3, this->getWidth() - 3, this->getHeight() - HEADLINE_HEIGHT + 3);
 
     // Draw a nice border around the menu:
