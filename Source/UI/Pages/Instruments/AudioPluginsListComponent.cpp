@@ -50,26 +50,32 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     : pluginScanner(pluginScanner),
       instrumentsRoot(instrumentsRoot)
 {
-    addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (pluginsList = new TableListBox ("Instruments", this));
+    this->pluginsList.reset(new TableListBox("Instruments", this));
+    this->addAndMakeVisible(pluginsList.get());
 
-    addAndMakeVisible (initialScanButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS("instruments::initialscan"))));
+    this->initialScanButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS("instruments::initialscan"))));
+    this->addAndMakeVisible(initialScanButton.get());
 
-    addAndMakeVisible (separator1 = new SeparatorHorizontalFading());
-    addAndMakeVisible (separator2 = new SeparatorHorizontalFading());
-    addAndMakeVisible (titleLabel = new Label (String(),
-                                               TRANS("page::orchestra::plugins")));
-    titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType (Justification::centred);
-    titleLabel->setEditable (false, false, false);
+    this->separator1.reset(new SeparatorHorizontalFading());
+    this->addAndMakeVisible(separator1.get());
+    this->separator2.reset(new SeparatorHorizontalFading());
+    this->addAndMakeVisible(separator2.get());
+    this->titleLabel.reset(new Label(String(),
+                                      TRANS("page::orchestra::plugins")));
+    this->addAndMakeVisible(titleLabel.get());
+    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    titleLabel->setJustificationType(Justification::centred);
+    titleLabel->setEditable(false, false, false);
 
+    this->separator3.reset(new SeparatorHorizontalFadingReversed());
+    this->addAndMakeVisible(separator3.get());
 
     //[UserPreSize]
     this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
     this->showScanButtonIf(this->pluginScanner.getList().getNumTypes() == 0);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
 
@@ -104,12 +110,12 @@ AudioPluginsListComponent::~AudioPluginsListComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    panel = nullptr;
     pluginsList = nullptr;
     initialScanButton = nullptr;
     separator1 = nullptr;
     separator2 = nullptr;
     titleLabel = nullptr;
+    separator3 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -129,12 +135,12 @@ void AudioPluginsListComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    panel->setBounds (0, 35, getWidth() - 0, getHeight() - 35);
-    pluginsList->setBounds (1, 36, getWidth() - 2, getHeight() - 37);
-    initialScanButton->setBounds ((getWidth() / 2) - (310 / 2), (getHeight() / 2) - (64 / 2), 310, 64);
-    separator1->setBounds (((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + -18, 300, 3);
-    separator2->setBounds (((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + 64 - -14, 300, 3);
-    titleLabel->setBounds (0, 0, getWidth() - 0, 26);
+    pluginsList->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
+    initialScanButton->setBounds((getWidth() / 2) - (310 / 2), (getHeight() / 2) - (64 / 2), 310, 64);
+    separator1->setBounds(((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + -18, 300, 3);
+    separator2->setBounds(((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + 64 - -14, 300, 3);
+    titleLabel->setBounds(0, 0, getWidth() - 0, 26);
+    separator3->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
     //[UserResized] Add your own custom resize handling here..
     this->pluginsList->autoSizeAllColumns();
     //[/UserResized]
@@ -357,11 +363,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="1b089ba42e39d447" memberName="pluginsList" virtualName=""
-                    explicitFocusOrder="0" pos="1 36 2M 37M" class="TableListBox"
+                    explicitFocusOrder="0" pos="1 42 2M 43M" class="TableListBox"
                     params="&quot;Instruments&quot;, this"/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="initialScanButton" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 310 64" class="MenuItemComponent"
@@ -379,6 +382,9 @@ BEGIN_JUCER_METADATA
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

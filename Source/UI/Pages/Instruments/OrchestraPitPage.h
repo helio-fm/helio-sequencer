@@ -26,6 +26,8 @@ class MenuItemComponent;
 #include "HeadlineItemDataSource.h"
 //[/Headers]
 
+#include "../../Themes/SeparatorVerticalSkew.h"
+#include "../../Themes/PanelBackgroundA.h"
 #include "../../Themes/PanelBackgroundB.h"
 #include "AudioPluginsListComponent.h"
 #include "InstrumentsListComponent.h"
@@ -57,10 +59,11 @@ private:
     OrchestraPitTreeItem &instrumentsRoot;
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundB> background;
-    ScopedPointer<AudioPluginsListComponent> pluginsList;
-    ScopedPointer<Component> anchor;
-    ScopedPointer<InstrumentsListComponent> instrumentsList;
+    UniquePointer<SeparatorVerticalSkew> skew;
+    UniquePointer<PanelBackgroundA> backgroundA;
+    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<AudioPluginsListComponent> pluginsList;
+    UniquePointer<InstrumentsListComponent> instrumentsList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrchestraPitPage)
 };

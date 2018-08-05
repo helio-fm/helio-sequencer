@@ -35,22 +35,25 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     : pluginScanner(pluginScanner),
       instrumentsRoot(instrumentsRoot)
 {
-    addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (instrumentsList = new ListBox ("Instruments", this));
+    this->instrumentsList.reset(new ListBox("Instruments", this));
+    this->addAndMakeVisible(instrumentsList.get());
 
-    addAndMakeVisible (titleLabel = new Label (String(),
-                                               TRANS("page::orchestra::instruments")));
-    titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType (Justification::centred);
-    titleLabel->setEditable (false, false, false);
+    this->titleLabel.reset(new Label(String(),
+                                      TRANS("page::orchestra::instruments")));
+    this->addAndMakeVisible(titleLabel.get());
+    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    titleLabel->setJustificationType(Justification::centred);
+    titleLabel->setEditable(false, false, false);
 
+    this->separator1.reset(new SeparatorHorizontalFadingReversed());
+    this->addAndMakeVisible(separator1.get());
 
     //[UserPreSize]
     this->instrumentsList->setMultipleSelectionEnabled(false);
     this->instrumentsList->setRowHeight(INSTRUMENTSLIST_ROW_HEIGHT);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     //[/Constructor]
@@ -61,9 +64,9 @@ InstrumentsListComponent::~InstrumentsListComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    panel = nullptr;
     instrumentsList = nullptr;
     titleLabel = nullptr;
+    separator1 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -83,9 +86,9 @@ void InstrumentsListComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    panel->setBounds (0, 35, getWidth() - 0, getHeight() - 35);
-    instrumentsList->setBounds (1, 36, getWidth() - 2, getHeight() - 37);
-    titleLabel->setBounds (0, 0, getWidth() - 0, 26);
+    instrumentsList->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
+    titleLabel->setBounds(0, 0, getWidth() - 0, 26);
+    separator1->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -238,16 +241,16 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="1b089ba42e39d447" memberName="instrumentsList" virtualName=""
-                    explicitFocusOrder="0" pos="1 36 2M 37M" class="ListBox" params="&quot;Instruments&quot;, this"/>
+                    explicitFocusOrder="0" pos="1 42 2M 43M" class="ListBox" params="&quot;Instruments&quot;, this"/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0 0M 26" labelText="page::orchestra::instruments"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator1" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
