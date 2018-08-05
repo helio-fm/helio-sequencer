@@ -35,12 +35,12 @@ class Log;
 #include "LoginButton.h"
 #include "UserProfileComponent.h"
 
-class WorkspacePage final : public Component
+class Dashboard final : public Component
 {
 public:
 
-    WorkspacePage(MainLayout &workspaceRef);
-    ~WorkspacePage();
+    Dashboard(MainLayout &workspaceRef);
+    ~Dashboard();
 
     //[UserMethods]
     //[/UserMethods]
@@ -64,5 +64,5 @@ private:
     UniquePointer<LoginButton> component2;
     UniquePointer<UserProfileComponent> component3;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkspacePage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
 };

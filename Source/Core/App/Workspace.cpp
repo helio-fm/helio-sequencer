@@ -29,7 +29,7 @@
 #include "OrchestraPitTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
-#include "WorkspacePage.h"
+#include "Dashboard.h"
 
 Workspace::Workspace() : wasInitialized(false)
 {

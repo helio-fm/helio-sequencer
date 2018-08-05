@@ -88,6 +88,6 @@ public:
 
 private:
 
-    ScopedPointer<WorkspacePage> introPage;
+    ScopedPointer<Dashboard> dashboard;
 
 };
