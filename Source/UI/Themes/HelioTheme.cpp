@@ -352,20 +352,20 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 void HelioTheme::drawTableHeaderBackground(Graphics &g, TableHeaderComponent &header)
 {
     Rectangle<int> r(header.getLocalBounds());
-    auto outlineColour = header.findColour(TableHeaderComponent::outlineColourId);
 
-    g.setColour(outlineColour);
-    g.fillRect(r.removeFromBottom(1));
+    g.setGradientFill (ColourGradient (Colour (0x35000000),
+                                       static_cast<float> ((r.getWidth() / 2)), 0.0f,
+                                       Colour (0x00000000),
+                                       0.0f, 0.0f,
+                                       true));
+    g.drawHorizontalLine(r.getHeight() - 1, 0.f, float(r.getWidth()));
 
-    g.setColour(header.findColour(TableHeaderComponent::backgroundColourId));
-    g.fillRect(r);
-
-    g.setColour(outlineColour);
-
-    for (int i = header.getNumColumns(true); --i >= 0;)
-    {
-        g.fillRect(header.getColumnPosition(i).removeFromRight(1));
-    }
+    g.setGradientFill (ColourGradient (Colour (0x15ffffff),
+                                       static_cast<float> ((r.getWidth() / 2)), 0.0f,
+                                       Colour (0x00ffffff),
+                                       0.0f, 0.0f,
+                                       true));
+    g.drawHorizontalLine(r.getHeight() - 2, 0.f, float(r.getWidth()));
 }
 
 void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header, const String &columnName,
@@ -779,7 +779,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->setColour(TableHeaderComponent::backgroundColourId, Colours::transparentBlack);
 
-    this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.1f));
+    this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.05f));
     this->setColour(TableHeaderComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.04f));
     this->setColour(TableHeaderComponent::textColourId, s->getTextColour().withMultipliedAlpha(0.75f));
 
@@ -800,8 +800,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
 
     // Panels
-    this->setColour(ColourIDs::BackgroundA::fill, s->getPrimaryGradientColourA().brighter(0.025f));
-    this->setColour(ColourIDs::BackgroundB::fill, s->getPrimaryGradientColourA());
+    this->setColour(ColourIDs::BackgroundA::fill, s->getPrimaryGradientColourA().brighter(0.005f));
+    this->setColour(ColourIDs::BackgroundB::fill, s->getPrimaryGradientColourA().darker(0.02f));
     this->setColour(ColourIDs::BackgroundC::fill, s->getSecondaryGradientColourA());
 
     this->setColour(ColourIDs::Panel::fill, s->getPanelFillColour());

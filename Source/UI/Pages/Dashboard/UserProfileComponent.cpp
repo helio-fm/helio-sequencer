@@ -27,17 +27,17 @@
 UserProfileComponent::UserProfileComponent()
 {
     this->nameLabel.reset(new Label(String(),
-                                     TRANS("user name:")));
+                                     TRANS("user name")));
     this->addAndMakeVisible(nameLabel.get());
     this->nameLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    nameLabel->setJustificationType(Justification::centredLeft);
+    nameLabel->setJustificationType(Justification::centredRight);
     nameLabel->setEditable(false, false, false);
 
     this->linkLabel.reset(new Label(String(),
-                                     TRANS("profile link:")));
+                                     TRANS("/profile link")));
     this->addAndMakeVisible(linkLabel.get());
     this->linkLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    linkLabel->setJustificationType(Justification::centredLeft);
+    linkLabel->setJustificationType(Justification::centredRight);
     linkLabel->setEditable(false, false, false);
 
 
@@ -96,15 +96,15 @@ BEGIN_JUCER_METADATA
                  overlayOpacity="0.330" fixedSize="1" initialWidth="300" initialHeight="200">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="d16eb130158ae29c" memberName="nameLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 8 20M 24" labelText="user name:"
+         explicitFocusOrder="0" pos="8 8 20M 24" labelText="user name"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         bold="0" italic="0" justification="34"/>
   <LABEL name="" id="a051719deac4a34d" memberName="linkLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 40 20M 24" labelText="profile link:"
+         explicitFocusOrder="0" pos="8 40 20M 24" labelText="/profile link"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         bold="0" italic="0" justification="34"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

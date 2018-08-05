@@ -30,10 +30,13 @@ class OpenGLSettings;
 class Log;
 //[/Headers]
 
+#include "../../Themes/SeparatorVerticalSkew.h"
 #include "../../Themes/PanelBackgroundB.h"
+#include "../../Themes/PanelBackgroundA.h"
 #include "Menu/DashboardMenu.h"
-#include "LoginButton.h"
-#include "UserProfileComponent.h"
+#include "Menu/LoginButton.h"
+#include "Menu/OpenProjectButton.h"
+#include "Menu/CreateProjectButton.h"
 
 class Dashboard final : public Component
 {
@@ -58,11 +61,14 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<SeparatorVerticalSkew> skew;
+    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<LogoFader> logoImage;
     UniquePointer<DashboardMenu> component;
     UniquePointer<LoginButton> component2;
-    UniquePointer<UserProfileComponent> component3;
+    UniquePointer<OpenProjectButton> component3;
+    UniquePointer<CreateProjectButton> component4;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
 };

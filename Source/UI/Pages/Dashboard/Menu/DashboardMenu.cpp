@@ -23,9 +23,6 @@
 
 //[MiscUserDefs]
 #include "RecentProjectRow.h"
-#include "SignInRow.h"
-#include "CreateProjectRow.h"
-#include "OpenProjectRow.h"
 #include "App.h"
 #include "MainLayout.h"
 #include "SessionService.h"
@@ -37,12 +34,6 @@
 #include "App.h"
 #include "CommandIDs.h"
 #include "ComponentIDs.h"
-
-#if HELIO_DESKTOP
-#   define HAS_OPEN_PROJECT_ROW 1
-#else
-#   define HAS_OPEN_PROJECT_ROW 0
-#endif
 
 //[/MiscUserDefs]
 
@@ -153,12 +144,6 @@ void DashboardMenu::loadFile(RecentFileDescription::Ptr fileDescription)
     }
 
     this->listBox->updateContent();
-
-#if HAS_OPEN_PROJECT_ROW
-    this->listBox->scrollToEnsureRowIsOnscreen(2);
-#else
-    this->listBox->scrollToEnsureRowIsOnscreen(1);
-#endif
 }
 
 void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
@@ -175,57 +160,10 @@ void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
 Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-#if HAS_OPEN_PROJECT_ROW
-    const int openProjectRowIndex = 0;
-    const int createProjectRowIndex = 1;
-    const int numStaticCells = 2;
-#else
-    const int createProjectRowIndex = 0;
-    const int numStaticCells = 1;
-#endif
-
-#if HAS_OPEN_PROJECT_ROW
-    if (rowNumber == openProjectRowIndex)
-    {
-        if (existingComponentToUpdate != nullptr)
-        {
-            if (nullptr == dynamic_cast<OpenProjectRow *>(existingComponentToUpdate))
-            {
-                delete existingComponentToUpdate;
-                existingComponentToUpdate = new OpenProjectRow(*this, *this->listBox);
-                return existingComponentToUpdate;
-            }
-        }
-        else
-        {
-            auto row = new OpenProjectRow(*this, *this->listBox);
-            return row;
-        }
-    }
-#endif
-
-    if (rowNumber == createProjectRowIndex)
-    {
-        if (existingComponentToUpdate != nullptr)
-        {
-            if (nullptr == dynamic_cast<CreateProjectRow *>(existingComponentToUpdate))
-            {
-                delete existingComponentToUpdate;
-                existingComponentToUpdate = new CreateProjectRow(*this, *this->listBox);
-                return existingComponentToUpdate;
-            }
-        }
-        else
-        {
-            auto row = new CreateProjectRow(*this, *this->listBox);
-            return row;
-        }
-    }
-
     const int numFiles = this->workspace->getRecentFilesList().getNumItems();
-    const bool isLastRow = (rowNumber == (numFiles + numStaticCells - 1));
+    const bool isLastRow = (rowNumber == (numFiles - 1));
 
-    const int fileIndex = rowNumber - numStaticCells;
+    const int fileIndex = rowNumber;
     const RecentFileDescription::Ptr item = this->workspace->getRecentFilesList().getItem(fileIndex);
     //Logger::writeToLog(String(fileIndex));
 
@@ -260,21 +198,12 @@ Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
 }
 
 void DashboardMenu::listBoxItemClicked(int row, const MouseEvent &e) {}
+void DashboardMenu::paintListBoxItem(int, Graphics &, int, int, bool) {}
 
 int DashboardMenu::getNumRows()
 {
-    const int createProjectRow = 1;
-#if HAS_OPEN_PROJECT_ROW
-    const int openProjectRow = 1;
-#else
-    const int openProjectRow = 0;
-#endif
-
-    return this->workspace->getRecentFilesList().getNumItems() + openProjectRow + createProjectRow;
+    return this->workspace->getRecentFilesList().getNumItems();
 }
-
-void DashboardMenu::paintListBoxItem(int rowNumber, Graphics &g,
-    int width, int height, bool rowIsSelected) {}
 
 //[/MiscUserCode]
 

@@ -24,21 +24,16 @@ class IconComponent;
 #include "CommandIDs.h"
 //[/Headers]
 
-#include "../../../Themes/SeparatorHorizontalFading.h"
+#include "../../../Themes/SeparatorVertical.h"
 
-class CreateProjectRow  : public DraggingListBoxComponent
+class OpenProjectButton final : public HighlightedComponent
 {
 public:
 
-    CreateProjectRow (Component &parentComponent, ListBox &parentListBox);
-
-    ~CreateProjectRow();
+    OpenProjectButton();
+    ~OpenProjectButton();
 
     //[UserMethods]
-    void setSelected(bool shouldBeSelected) override
-    {
-        this->parent.postCommandMessage(CommandIDs::CreateNewProject);
-    }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -49,12 +44,12 @@ private:
 
     //[UserVariables]
     Component *createHighlighterComponent() override;
-    Component &parent;
     //[/UserVariables]
 
-    ScopedPointer<IconComponent> newProjectImage;
-    ScopedPointer<Label> newProjectLabel;
-    ScopedPointer<SeparatorHorizontalFading> shadow;
+    UniquePointer<IconComponent> newProjectImage;
+    UniquePointer<Label> openProjectLabel;
+    UniquePointer<SeparatorVertical> separator;
+    UniquePointer<TextButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CreateProjectRow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectButton)
 };

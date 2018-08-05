@@ -53,23 +53,28 @@ RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox
       parentList(parent),
       isSelected(false)
 {
-    addAndMakeVisible (titleLabel = new Label (String(),
-                                               TRANS("...")));
-    titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType (Justification::centredLeft);
-    titleLabel->setEditable (false, false, false);
+    this->titleLabel.reset(new Label(String(),
+                                      TRANS("...")));
+    this->addAndMakeVisible(titleLabel.get());
+    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    titleLabel->setJustificationType(Justification::centredLeft);
+    titleLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (dateLabel = new Label (String(),
-                                              TRANS("...")));
-    dateLabel->setFont (Font (Font::getDefaultSerifFontName(), 12.00f, Font::plain).withTypefaceStyle ("Regular"));
-    dateLabel->setJustificationType (Justification::centredLeft);
-    dateLabel->setEditable (false, false, false);
+    this->dateLabel.reset(new Label(String(),
+                                     TRANS("...")));
+    this->addAndMakeVisible(dateLabel.get());
+    this->dateLabel->setFont(Font (Font::getDefaultSerifFontName(), 12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    dateLabel->setJustificationType(Justification::centredLeft);
+    dateLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (activenessImage = new IconComponent (Icons::project));
+    this->activenessImage.reset(new IconComponent(Icons::project));
+    this->addAndMakeVisible(activenessImage.get());
 
-    addAndMakeVisible (remoteIndicatorImage = new IconComponent (Icons::remote));
+    this->remoteIndicatorImage.reset(new IconComponent(Icons::remote));
+    this->addAndMakeVisible(remoteIndicatorImage.get());
 
-    addAndMakeVisible (localIndicatorImage = new IconComponent (Icons::local));
+    this->localIndicatorImage.reset(new IconComponent(Icons::local));
+    this->addAndMakeVisible(localIndicatorImage.get());
 
 
     //[UserPreSize]
@@ -77,7 +82,7 @@ RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox
     //this->addChildComponent(this->selectionComponent);
     //[/UserPreSize]
 
-    setSize (350, 56);
+    this->setSize(350, 56);
 
     //[Constructor]
     //[/Constructor]
@@ -113,11 +118,11 @@ void RecentProjectRow::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    titleLabel->setBounds (54, 5, getWidth() - 84, 24);
-    dateLabel->setBounds (54, 28, getWidth() - 144, 16);
-    activenessImage->setBounds (32 - (40 / 2), (getHeight() / 2) + -4 - (40 / 2), 40, 40);
-    remoteIndicatorImage->setBounds (getWidth() - -62 - 24, getHeight() - 12 - 24, 24, 24);
-    localIndicatorImage->setBounds (getWidth() - -32 - 24, getHeight() - 12 - 24, 24, 24);
+    titleLabel->setBounds(54, 5, getWidth() - 84, 24);
+    dateLabel->setBounds(54, 28, getWidth() - 144, 16);
+    activenessImage->setBounds(32 - (40 / 2), (getHeight() / 2) + -4 - (40 / 2), 40, 40);
+    remoteIndicatorImage->setBounds(getWidth() - -62 - 24, getHeight() - 12 - 24, 24, 24);
+    localIndicatorImage->setBounds(getWidth() - -32 - 24, getHeight() - 12 - 24, 24, 24);
     //[UserResized] Add your own custom resize handling here..
     //this->selectionComponent->setBounds(this->getLocalBounds());
     //[/UserResized]
@@ -179,11 +184,13 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="c261305e2de1ebf2" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="54 5 84M 24" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="dateLabel" virtualName=""
          explicitFocusOrder="0" pos="54 28 144M 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="42f3ed34561654ef" memberName="activenessImage" virtualName=""
                     explicitFocusOrder="0" pos="32c -4Cc 40 40" class="IconComponent"
                     params="Icons::project"/>

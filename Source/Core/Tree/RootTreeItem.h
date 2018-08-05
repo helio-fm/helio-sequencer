@@ -24,7 +24,7 @@ class VersionControlTreeItem;
 class TrackGroupTreeItem;
 class MidiTrackTreeItem;
 class ScriptTreeItem;
-class WorkspacePage;
+class Dashboard;
 
 class RootTreeItem final : public TreeItem
 {

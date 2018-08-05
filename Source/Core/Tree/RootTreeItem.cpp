@@ -273,8 +273,7 @@ bool RootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetai
 
 bool RootTreeItem::isInterestedInFileDrag(const StringArray &files)
 {
-    return File::createFileWithoutCheckingPath(files[0])
-           .hasFileExtension("hp;helioproject;helio");
+    return File::createFileWithoutCheckingPath(files[0]).hasFileExtension("hp;helio");
 }
 
 void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)

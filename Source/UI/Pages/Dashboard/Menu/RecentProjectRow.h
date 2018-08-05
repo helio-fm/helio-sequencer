@@ -26,12 +26,11 @@ class IconComponent;
 //[/Headers]
 
 
-class RecentProjectRow  : public DraggingListBoxComponent
+class RecentProjectRow final : public DraggingListBoxComponent
 {
 public:
 
-    RecentProjectRow (DashboardMenu &parent, ListBox &parentListBox);
-
+    RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox);
     ~RecentProjectRow();
 
     //[UserMethods]
@@ -58,11 +57,11 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> titleLabel;
-    ScopedPointer<Label> dateLabel;
-    ScopedPointer<IconComponent> activenessImage;
-    ScopedPointer<IconComponent> remoteIndicatorImage;
-    ScopedPointer<IconComponent> localIndicatorImage;
+    UniquePointer<Label> titleLabel;
+    UniquePointer<Label> dateLabel;
+    UniquePointer<IconComponent> activenessImage;
+    UniquePointer<IconComponent> remoteIndicatorImage;
+    UniquePointer<IconComponent> localIndicatorImage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecentProjectRow)
 };

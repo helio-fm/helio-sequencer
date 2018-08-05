@@ -24,19 +24,16 @@ class IconComponent;
 #include "CommandIDs.h"
 //[/Headers]
 
+#include "../../../Themes/SeparatorVertical.h"
 
-class OpenProjectRow final : public DraggingListBoxComponent
+class CreateProjectButton final : public HighlightedComponent
 {
 public:
 
-    OpenProjectRow(Component &parentComponent, ListBox &parentListBox);
-    ~OpenProjectRow();
+    CreateProjectButton();
+    ~CreateProjectButton();
 
     //[UserMethods]
-    void setSelected(bool shouldBeSelected) override
-    {
-        this->parent.postCommandMessage(CommandIDs::OpenProject);
-    }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -47,11 +44,12 @@ private:
 
     //[UserVariables]
     Component *createHighlighterComponent() override;
-    Component &parent;
     //[/UserVariables]
 
     UniquePointer<IconComponent> newProjectImage;
-    UniquePointer<Label> openProjectLabel;
+    UniquePointer<Label> newProjectLabel;
+    UniquePointer<SeparatorVertical> separator;
+    UniquePointer<TextButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectRow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CreateProjectButton)
 };

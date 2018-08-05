@@ -40,19 +40,31 @@
 Dashboard::Dashboard(MainLayout &workspaceRef)
     : workspace(workspaceRef)
 {
-    this->background.reset(new PanelBackgroundB());
-    this->addAndMakeVisible(background.get());
+    this->skew.reset(new SeparatorVerticalSkew());
+    this->addAndMakeVisible(skew.get());
+    this->backgroundB.reset(new PanelBackgroundB());
+    this->addAndMakeVisible(backgroundB.get());
+    this->backgroundA.reset(new PanelBackgroundA());
+    this->addAndMakeVisible(backgroundA.get());
     this->logoImage.reset(new LogoFader());
     this->addAndMakeVisible(logoImage.get());
 
-    logoImage->setBounds(16, 16, 280, 280);
+    logoImage->setBounds(40, 32, 280, 280);
 
     this->component.reset(new DashboardMenu(&App::Workspace()));
     this->addAndMakeVisible(component.get());
     this->component2.reset(new LoginButton());
     this->addAndMakeVisible(component2.get());
-    this->component3.reset(new UserProfileComponent());
+    component2->setBounds(56, 448, 256, 32);
+
+    this->component3.reset(new OpenProjectButton());
     this->addAndMakeVisible(component3.get());
+    component3->setBounds(56, 368, 256, 32);
+
+    this->component4.reset(new CreateProjectButton());
+    this->addAndMakeVisible(component4.get());
+    component4->setBounds(56, 408, 256, 32);
+
 
     //[UserPreSize]
     this->setWantsKeyboardFocus(false);
@@ -71,11 +83,14 @@ Dashboard::~Dashboard()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    background = nullptr;
+    skew = nullptr;
+    backgroundB = nullptr;
+    backgroundA = nullptr;
     logoImage = nullptr;
     component = nullptr;
     component2 = nullptr;
     component3 = nullptr;
+    component4 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -95,10 +110,10 @@ void Dashboard::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    component->setBounds(getWidth() - 24 - 450, 184, 450, getHeight() - 200);
-    component2->setBounds(getWidth() - 24 - 224, 24, 224, 32);
-    component3->setBounds(getWidth() - 24 - 300, 80, 300, 200);
+    skew->setBounds(0 + 320, 0, 64, getHeight() - 0);
+    backgroundB->setBounds(getWidth() - (getWidth() - 384), 0, getWidth() - 384, getHeight() - 0);
+    backgroundA->setBounds(0, 0, 320, getHeight() - 0);
+    component->setBounds(getWidth() - 4 - 410, 16, 410, getHeight() - 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -136,20 +151,29 @@ BEGIN_JUCER_METADATA
           fontname="Georgia" fontsize="55.00000000000000000000" kerning="0.00000000000000000000"
           bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
   </BACKGROUND>
-  <JUCERCOMP name="" id="9e61167b79cef28c" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
+  <JUCERCOMP name="" id="9bde1b4dd587d5fb" memberName="skew" virtualName=""
+             explicitFocusOrder="0" pos="0R 0 64 0M" posRelativeX="981ceff5817d7b34"
+             sourceFile="../../Themes/SeparatorVerticalSkew.cpp" constructorParams=""/>
+  <JUCERCOMP name="" id="9e61167b79cef28c" memberName="backgroundB" virtualName=""
+             explicitFocusOrder="0" pos="0Rr 0 384M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="981ceff5817d7b34" memberName="backgroundA" virtualName=""
+             explicitFocusOrder="0" pos="0 0 320 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logoImage" virtualName=""
-                    explicitFocusOrder="0" pos="16 16 280 280" class="LogoFader"
+                    explicitFocusOrder="0" pos="40 32 280 280" class="LogoFader"
                     params=""/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="24Rr 184 450 200M" sourceFile="Menu/DashboardMenu.cpp"
+             explicitFocusOrder="0" pos="4Rr 16 410 32M" sourceFile="Menu/DashboardMenu.cpp"
              constructorParams="&amp;App::Workspace()"/>
   <JUCERCOMP name="" id="2ed6285515243e89" memberName="component2" virtualName=""
-             explicitFocusOrder="0" pos="24Rr 24 224 32" sourceFile="LoginButton.cpp"
+             explicitFocusOrder="0" pos="56 448 256 32" sourceFile="Menu/LoginButton.cpp"
              constructorParams=""/>
-  <JUCERCOMP name="" id="dd0428617917b2a9" memberName="component3" virtualName=""
-             explicitFocusOrder="0" pos="24Rr 80 300 200" sourceFile="UserProfileComponent.cpp"
+  <JUCERCOMP name="" id="13e51011dd762205" memberName="component3" virtualName=""
+             explicitFocusOrder="0" pos="56 368 256 32" sourceFile="Menu/OpenProjectButton.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="c748db515539334" memberName="component4" virtualName=""
+             explicitFocusOrder="0" pos="56 408 256 32" sourceFile="Menu/CreateProjectButton.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

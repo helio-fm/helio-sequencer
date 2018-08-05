@@ -18,36 +18,32 @@
 #pragma once
 
 //[Headers]
-#include "IconComponent.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorVertical.h"
 
-class LoginButton final : public Component,
-                          public Button::Listener
+class SeparatorVerticalSkew final : public Component
 {
 public:
 
-    LoginButton();
-    ~LoginButton();
+    SeparatorVerticalSkew();
+    ~SeparatorVerticalSkew();
 
     //[UserMethods]
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
 
 
 private:
 
     //[UserVariables]
+    Path line1;
+    Path line2;
     //[/UserVariables]
 
-    UniquePointer<IconComponent> component;
-    UniquePointer<SeparatorVertical> component2;
-    UniquePointer<Label> ctaLabel;
-    UniquePointer<TextButton> clickHandler;
+    Path internalPath1;
+    Path internalPath2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoginButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SeparatorVerticalSkew)
 };

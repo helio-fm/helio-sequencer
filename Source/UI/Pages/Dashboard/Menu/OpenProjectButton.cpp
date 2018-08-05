@@ -19,13 +19,13 @@
 #include "Common.h"
 //[/Headers]
 
-#include "OpenProjectRow.h"
+#include "OpenProjectButton.h"
 
 //[MiscUserDefs]
 #include "Icons.h"
 #include "IconComponent.h"
 
-class OpenProjectHighlighter : public Component
+class OpenProjectHighlighter final : public Component
 {
 public:
 
@@ -42,9 +42,7 @@ public:
 };
 //[/MiscUserDefs]
 
-OpenProjectRow::OpenProjectRow(Component &parentComponent, ListBox &parentListBox)
-    : DraggingListBoxComponent(parentListBox.getViewport()),
-      parent(parentComponent)
+OpenProjectButton::OpenProjectButton()
 {
     this->newProjectImage.reset(new IconComponent(Icons::browse));
     this->addAndMakeVisible(newProjectImage.get());
@@ -52,35 +50,45 @@ OpenProjectRow::OpenProjectRow(Component &parentComponent, ListBox &parentListBo
     this->openProjectLabel.reset(new Label(String(),
                                             TRANS("menu::workspace::project::open")));
     this->addAndMakeVisible(openProjectLabel.get());
-    this->openProjectLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->openProjectLabel->setFont(Font (Font::getDefaultSerifFontName(), 18.00f, Font::plain).withTypefaceStyle ("Regular"));
     openProjectLabel->setJustificationType(Justification::centredLeft);
     openProjectLabel->setEditable(false, false, false);
 
-    openProjectLabel->setBounds(54, 23, 261, 24);
+    this->separator.reset(new SeparatorVertical());
+    this->addAndMakeVisible(separator.get());
+    this->clickHandler.reset(new TextButton(String()));
+    this->addAndMakeVisible(clickHandler.get());
+    clickHandler->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
+    clickHandler->setColour(TextButton::buttonColourId, Colour (0x00000000));
+    clickHandler->setColour(TextButton::buttonOnColourId, Colour (0x14ffffff));
 
 
     //[UserPreSize]
+    this->openProjectLabel->setInterceptsMouseClicks(false, false);
+    this->clickHandler->setMouseCursor(MouseCursor::PointingHandCursor);
     //[/UserPreSize]
 
-    this->setSize(350, 56);
+    this->setSize(256, 32);
 
     //[Constructor]
     //[/Constructor]
 }
 
-OpenProjectRow::~OpenProjectRow()
+OpenProjectButton::~OpenProjectButton()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
 
     newProjectImage = nullptr;
     openProjectLabel = nullptr;
+    separator = nullptr;
+    clickHandler = nullptr;
 
     //[Destructor]
     //[/Destructor]
 }
 
-void OpenProjectRow::paint (Graphics& g)
+void OpenProjectButton::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -89,19 +97,22 @@ void OpenProjectRow::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void OpenProjectRow::resized()
+void OpenProjectButton::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    newProjectImage->setBounds(32 - (24 / 2), (getHeight() / 2) + 8 - (24 / 2), 24, 24);
+    newProjectImage->setBounds(2, 2, 28, getHeight() - 4);
+    openProjectLabel->setBounds(42, 0, getWidth() - 42, getHeight() - 0);
+    separator->setBounds(38, 4, 4, getHeight() - 8);
+    clickHandler->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
 
 //[MiscUserCode]
-Component *OpenProjectRow::createHighlighterComponent()
+Component *OpenProjectButton::createHighlighterComponent()
 {
     return new OpenProjectHighlighter();
 }
@@ -111,21 +122,26 @@ Component *OpenProjectRow::createHighlighterComponent()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="OpenProjectRow" template="../../../../Template"
-                 componentName="" parentClasses="public DraggingListBoxComponent"
-                 constructorParams="Component &amp;parentComponent, ListBox &amp;parentListBox"
-                 variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;parent(parentComponent)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="350" initialHeight="56">
+<JUCER_COMPONENT documentType="Component" className="OpenProjectButton" template="../../../../Template"
+                 componentName="" parentClasses="public HighlightedComponent"
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
+                 initialHeight="32">
   <BACKGROUND backgroundColour="ffffff"/>
   <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="newProjectImage" virtualName=""
-                    explicitFocusOrder="0" pos="32c 8Cc 24 24" class="IconComponent"
+                    explicitFocusOrder="0" pos="2 2 28 4M" class="IconComponent"
                     params="Icons::browse"/>
   <LABEL name="" id="8ebb161d0a976635" memberName="openProjectLabel" virtualName=""
-         explicitFocusOrder="0" pos="54 23 261 24" labelText="menu::workspace::project::open"
+         explicitFocusOrder="0" pos="42 0 42M 0M" labelText="menu::workspace::project::open"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21.00000000000000000000"
+         fontname="Default serif font" fontsize="18.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
+  <JUCERCOMP name="" id="49a90a98eefa147f" memberName="separator" virtualName=""
+             explicitFocusOrder="0" pos="38 4 4 8M" sourceFile="../../../Themes/SeparatorVertical.cpp"
+             constructorParams=""/>
+  <TEXTBUTTON name="" id="7e8a6c95d463c081" memberName="clickHandler" virtualName=""
+              explicitFocusOrder="0" pos="0 0 0M 0M" bgColOff="0" bgColOn="14ffffff"
+              buttonText="" connectedEdges="15" needsCallback="0" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
