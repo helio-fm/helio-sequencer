@@ -92,9 +92,9 @@ void PanelBackgroundB::paint (Graphics& g)
 #endif
 
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    if (theme.getBgCache1().isValid())
+    if (theme.getBgCacheB().isValid())
     {
-        g.setTiledImageFill(theme.getBgCache1(), 0, 0, 1.f);
+        g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());
     }
     else
@@ -120,7 +120,7 @@ void PanelBackgroundB::resized()
 
 void PanelBackgroundB::updateRender(HelioTheme &theme)
 {
-    if (theme.getBgCache1().isValid())
+    if (theme.getBgCacheB().isValid())
     {
         return;
     }
@@ -136,7 +136,7 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
     g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));
     g.fillAll();
     HelioTheme::drawNoise(theme, g, 0.5f);
-    theme.getBgCache1() = render;
+    theme.getBgCacheB() = render;
 }
 
 //[/MiscUserCode]

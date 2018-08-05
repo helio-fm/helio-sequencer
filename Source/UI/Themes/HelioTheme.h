@@ -137,8 +137,9 @@ public:
             Button *closeButton,
             bool positionTitleBarButtonsOnLeft) override;
     
-    inline Image &getBgCache1() noexcept { return this->bgCache1; }
-    inline Image &getBgCache2() noexcept { return this->bgCache2; }
+    inline Image &getBgCacheA() noexcept { return this->bgCacheA; }
+    inline Image &getBgCacheB() noexcept { return this->bgCacheB; }
+    inline Image &getBgCacheC() noexcept { return this->bgCacheC; }
 
 protected:
     
@@ -148,8 +149,9 @@ protected:
     
     Typeface::Ptr textTypefaceCache;
     
-    Image bgCache1;
-    Image bgCache2;
+    Image bgCacheA;
+    Image bgCacheB;
+    Image bgCacheC;
 
     JUCE_LEAK_DETECTOR(HelioTheme);
 

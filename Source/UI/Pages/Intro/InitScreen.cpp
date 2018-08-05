@@ -29,13 +29,12 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 #include "App.h"
 //[/MiscUserDefs]
 
 InitScreen::InitScreen()
 {
-    this->bg.reset(new PanelBackgroundA());
-    this->addAndMakeVisible(bg.get());
     this->headLine.reset(new SeparatorHorizontalReversed());
     this->addAndMakeVisible(headLine.get());
     this->headShadow.reset(new ShadowDownwards(Light));
@@ -67,7 +66,6 @@ InitScreen::~InitScreen()
     //Desktop::getInstance().getAnimator().fadeOut(this, animTime);
     //[/Destructor_pre]
 
-    bg = nullptr;
     headLine = nullptr;
     headShadow = nullptr;
     gradient1 = nullptr;
@@ -81,7 +79,33 @@ void InitScreen::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour = Colour (0xff48358c);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour = this->findColour(ColourIDs::BackgroundA::fill);
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
+
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x1e636363), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.7500f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.6500f)) - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.0000f)) - 0.0f + y,
+                                       false));
+        g.fillRect (x, y, width, height);
+    }
+
     //[UserPaint] Add your own custom painting code here..
+    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.f);
     //[/UserPaint]
 }
 
@@ -90,7 +114,6 @@ void InitScreen::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    bg->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     headLine->setBounds(0, 32, getWidth() - 0, 2);
     headShadow->setBounds(0, 33, getWidth() - 0, 6);
     gradient1->setBounds(-50, 0, getWidth() - -100, 32);
@@ -154,10 +177,11 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
     <METHOD name="visibilityChanged()"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="66a1a33f06322bfb" memberName="bg" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
-             constructorParams=""/>
+  <BACKGROUND backgroundColour="0">
+    <RECT pos="0 0 0M 0M" fill="solid: ff48358c" hasStroke="0"/>
+    <RECT pos="0 0 0M 0M" fill="linear: 75% 65%, 0 0%, 0=1e636363, 1=0"
+          hasStroke="0"/>
+  </BACKGROUND>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
              explicitFocusOrder="0" pos="0 32 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>

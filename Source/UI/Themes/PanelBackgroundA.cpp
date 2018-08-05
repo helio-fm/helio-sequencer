@@ -55,7 +55,7 @@ PanelBackgroundA::~PanelBackgroundA()
 void PanelBackgroundA::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    // Used in loading page, where caches are not available:
+#if 0
     //[/UserPrePaint]
 
     {
@@ -84,7 +84,19 @@ void PanelBackgroundA::paint (Graphics& g)
     }
 
     //[UserPaint] Add your own custom painting code here..
-    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.f);
+#endif
+
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    if (theme.getBgCacheA().isValid())
+    {
+        g.setTiledImageFill(theme.getBgCacheA(), 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
+    }
+    else
+    {
+        g.setColour(this->findColour(ColourIDs::BackgroundA::fill));
+        g.fillRect(this->getLocalBounds());
+    }
     //[/UserPaint]
 }
 
@@ -99,6 +111,23 @@ void PanelBackgroundA::resized()
 
 
 //[MiscUserCode]
+void PanelBackgroundA::updateRender(HelioTheme &theme)
+{
+    if (theme.getBgCacheA().isValid())
+    {
+        return;
+    }
+
+    const int w = 128; // d.totalArea.getWidth() * scale;
+    const int h = 128; // d.totalArea.getHeight() * scale;
+
+    Image render(Image::ARGB, w, h, true);
+    Graphics g(render);
+    g.setColour(theme.findColour(ColourIDs::BackgroundA::fill));
+    g.fillAll();
+    HelioTheme::drawNoise(theme, g, 0.5f);
+    theme.getBgCacheA() = render;
+}
 //[/MiscUserCode]
 
 #if 0

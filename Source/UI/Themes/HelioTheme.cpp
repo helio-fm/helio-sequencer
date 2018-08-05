@@ -800,7 +800,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
 
     // Panels
-    this->setColour(ColourIDs::BackgroundA::fill, s->getPrimaryGradientColourA());
+    this->setColour(ColourIDs::BackgroundA::fill, s->getPrimaryGradientColourA().brighter(0.025f));
     this->setColour(ColourIDs::BackgroundB::fill, s->getPrimaryGradientColourA());
     this->setColour(ColourIDs::BackgroundC::fill, s->getSecondaryGradientColourA());
 
@@ -871,15 +871,12 @@ void HelioTheme::updateBackgroundRenders(bool force)
     if (force)
     {
         Icons::clearPrerenderedCache();
-        this->bgCache1 = Image();
-        this->bgCache2 = Image();
+        this->bgCacheA = {};
+        this->bgCacheB = {};
+        this->bgCacheC = {};
     }
     
-#if PANEL_B_HAS_PRERENDERED_BACKGROUND
+    PanelBackgroundA::updateRender(*this);
     PanelBackgroundB::updateRender(*this);
-#endif
-    
-#if PANEL_C_HAS_PRERENDERED_BACKGROUND
     PanelBackgroundC::updateRender(*this);
-#endif
 }

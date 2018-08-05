@@ -21,7 +21,6 @@
 class LogoFader;
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundA.h"
 #include "../../Themes/SeparatorHorizontalReversed.h"
 #include "../../Themes/ShadowDownwards.h"
 #include "../../Themes/PanelBackgroundB.h"
@@ -51,7 +50,6 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundA> bg;
     UniquePointer<SeparatorHorizontalReversed> headLine;
     UniquePointer<ShadowDownwards> headShadow;
     UniquePointer<PanelBackgroundB> gradient1;
