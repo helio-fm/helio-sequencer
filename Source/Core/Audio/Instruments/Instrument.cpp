@@ -179,8 +179,6 @@ void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y,
         }
 
         this->configureNode(node, desc, x, y);
-        this->sendChangeMessage();
-
         f(node);
     });
 }

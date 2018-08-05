@@ -19,9 +19,9 @@
 
 class Instrument;
 class InstrumentTreeItem;
-class OrchestraPitPage;
 
 #include "TreeItem.h"
+#include "OrchestraPitPage.h"
 
 class OrchestraPitTreeItem final : public TreeItem
 {

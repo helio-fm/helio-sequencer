@@ -21,8 +21,7 @@ class AudioCore;
 class FilterInGraph;
 class Instrument;
 
-
-class Instrument :
+class Instrument final :
     public Serializable,
     public ChangeBroadcaster // notifies InstrumentEditorPanel
 {
@@ -91,15 +90,11 @@ public:
     int getNumNodes() const noexcept;
     const AudioProcessorGraph::Node::Ptr getNode(int index) const noexcept;
     const AudioProcessorGraph::Node::Ptr getNodeForId(AudioProcessorGraph::NodeID uid) const noexcept;
-
-    AudioProcessorGraph::Node::Ptr addNode(Instrument *instrument, double x, double y);
-    void addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f);
-
+    
     void removeNode(AudioProcessorGraph::NodeID id);
     void disconnectNode(AudioProcessorGraph::NodeID id);
 
     void removeAllConnectionsForNode(AudioProcessorGraph::Node::Ptr node);
-    void removeIllegalConnections();
 
     void setNodePosition(AudioProcessorGraph::NodeID id, double x, double y);
     void getNodePosition(AudioProcessorGraph::NodeID id, double &x, double &y) const;
@@ -141,6 +136,10 @@ public:
     static const int midiChannelNumber;
     
 protected:
+
+    AudioProcessorGraph::Node::Ptr addNode(Instrument *instrument, double x, double y);
+    void addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f);
+    void removeIllegalConnections();
 
     Uuid instrumentID;
     String instrumentName;

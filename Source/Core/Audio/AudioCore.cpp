@@ -86,14 +86,16 @@ AudioMonitor *AudioCore::getMonitor() const noexcept
 void AudioCore::addInstrument(const PluginDescription &pluginDescription,
     const String &name, Instrument::InitializationCallback callback)
 {
-    auto instrument = new Instrument(formatManager, name);
-    this->addInstrumentToDevice(instrument);
-
-    instrument->initializeFrom(pluginDescription, callback);
-
-    // FIXME: might need to do it async as well
-    this->instruments.add(instrument);
-    this->broadcastInstrumentAdded(instrument);
+    auto *instrument = this->instruments.add(new Instrument(formatManager, name));
+    instrument->initializeFrom(pluginDescription,
+        [this, callback](Instrument *instrument)
+        {
+            jassert(instrument);
+            this->addInstrumentToDevice(instrument);
+            this->broadcastInstrumentAdded(instrument);
+            callback(instrument);
+            Logger::writeToLog("Loaded " + instrument->getName());
+        });
 }
 
 void AudioCore::removeInstrument(Instrument *instrument)

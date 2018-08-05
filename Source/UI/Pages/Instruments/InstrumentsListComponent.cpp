@@ -130,8 +130,6 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
     const auto instrumentNode = this->instruments[rowNumber];
     if (instrumentNode == nullptr) { return; }
 
-    const auto instrument = instrumentNode->getInstrument();
-
     if (rowIsSelected)
     {
         g.fillAll(Colours::white.withAlpha(0.075f));
@@ -140,6 +138,9 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
     {
         g.fillAll(Colours::black.withAlpha(0.05f));
     }
+
+    const auto instrument = instrumentNode->getInstrument();
+    if (instrument == nullptr) { return; }
 
     g.setFont(h * 0.4f);
     const int margin = h / 12;

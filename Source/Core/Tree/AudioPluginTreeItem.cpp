@@ -87,7 +87,7 @@ uint32 AudioPluginTreeItem::getNodeId() const noexcept
 
 void AudioPluginTreeItem::showPage()
 {
-    const Instrument *instrument =
+    const auto instrument =
         this->findParentOfType<InstrumentTreeItem>()->getInstrument();
 
     if (instrument == nullptr)

@@ -47,8 +47,8 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
             [this](Instrument *instrument)
         {
             this->orchestraNode.addInstrumentTreeItem(instrument);
-            this->dismiss();
         });
+        this->dismiss();
     }));
 
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentTreeItem>();

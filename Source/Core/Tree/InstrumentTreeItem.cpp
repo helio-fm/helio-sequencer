@@ -101,7 +101,7 @@ void InstrumentTreeItem::safeRename(const String &newName)
 // Instrument
 //===----------------------------------------------------------------------===//
 
-Instrument *InstrumentTreeItem::getInstrument() const
+WeakReference<Instrument> InstrumentTreeItem::getInstrument() const noexcept
 {
     return this->instrument;
 }

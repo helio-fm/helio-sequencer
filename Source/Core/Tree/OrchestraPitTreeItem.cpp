@@ -25,7 +25,6 @@
 #include "AudioCore.h"
 #include "Icons.h"
 #include "PluginScanner.h"
-#include "OrchestraPitPage.h"
 #include "OrchestraPitMenu.h"
 #include "SerializationKeys.h"
 #include "App.h"
@@ -118,7 +117,7 @@ void OrchestraPitTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &d
 
 InstrumentTreeItem *OrchestraPitTreeItem::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
 {
-    this->setOpen(true);
+    jassert(MessageManager::getInstance()->isThisTheMessageThread());
     auto newInstrument = new InstrumentTreeItem(instrument);
     this->addChildTreeItem(newInstrument, insertIndex);
     this->sendChangeMessage();

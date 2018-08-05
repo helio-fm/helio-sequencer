@@ -42,7 +42,7 @@ public:
     // Instrument
     //===------------------------------------------------------------------===//
 
-    Instrument *getInstrument() const;
+    WeakReference<Instrument> getInstrument() const noexcept;
     Array<uint32> getInstrumentNodeIds() const;
     bool hasInstrumentWithNodeId(uint32 nodeId) const;
     TreeItem *findAudioPluginEditorForNodeId(uint32 nodeId) const;
