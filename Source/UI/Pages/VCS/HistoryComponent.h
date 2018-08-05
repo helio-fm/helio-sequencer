@@ -24,7 +24,7 @@ class RevisionTreeComponent;
 #include "HeadlineItemDataSource.h"
 //[/Headers]
 
-#include "../../Themes/FramePanel.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
 
 class HistoryComponent final : public Component,
                                public HeadlineItemDataSource
@@ -64,9 +64,9 @@ private:
     SafePointer<RevisionTreeComponent> revisionTree;
     //[/UserVariables]
 
-    UniquePointer<FramePanel> panel;
     UniquePointer<Viewport> revisionViewport;
     UniquePointer<Label> revisionTreeLabel;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HistoryComponent)
 };

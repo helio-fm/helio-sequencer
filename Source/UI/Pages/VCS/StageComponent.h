@@ -26,7 +26,7 @@ class ProgressIndicator;
 #include "Revision.h"
 //[/Headers]
 
-#include "../../Themes/FramePanel.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
 
 class StageComponent final : public Component,
                              public ListBoxModel,
@@ -103,8 +103,8 @@ private:
     UniquePointer<Component> horizontalCenter;
     UniquePointer<Label> titleLabel;
     UniquePointer<ProgressIndicator> indicator;
-    UniquePointer<FramePanel> panel;
     UniquePointer<ListBox> changesList;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StageComponent)
 };

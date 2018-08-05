@@ -30,8 +30,12 @@
 VersionControlEditor::VersionControlEditor(VersionControl &versionControl)
     : vcs(versionControl)
 {
-    this->background.reset(new PanelBackgroundB());
-    this->addAndMakeVisible(background.get());
+    this->backgroundA.reset(new PanelBackgroundA());
+    this->addAndMakeVisible(backgroundA.get());
+    this->skew.reset(new SeparatorVerticalSkew());
+    this->addAndMakeVisible(skew.get());
+    this->backgroundB.reset(new PanelBackgroundB());
+    this->addAndMakeVisible(backgroundB.get());
     this->stageComponent.reset(new StageComponent(versionControl));
     this->addAndMakeVisible(stageComponent.get());
     this->historyComponent.reset(new HistoryComponent(versionControl));
@@ -39,8 +43,6 @@ VersionControlEditor::VersionControlEditor(VersionControl &versionControl)
     this->anchor.reset(new Component());
     this->addAndMakeVisible(anchor.get());
 
-    this->shadow.reset(new ShadowRightwards(Normal));
-    this->addAndMakeVisible(shadow.get());
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -59,11 +61,12 @@ VersionControlEditor::~VersionControlEditor()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    background = nullptr;
+    backgroundA = nullptr;
+    skew = nullptr;
+    backgroundB = nullptr;
     stageComponent = nullptr;
     historyComponent = nullptr;
     anchor = nullptr;
-    shadow = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -83,11 +86,12 @@ void VersionControlEditor::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    stageComponent->setBounds(15, 10, proportionOfWidth (0.5006f) - 15, getHeight() - 20);
-    historyComponent->setBounds(0 + proportionOfWidth (0.5006f) - -15, 10, proportionOfWidth (0.5006f) - 30, getHeight() - 20);
-    anchor->setBounds(0, 0, proportionOfWidth (0.5006f), 8);
-    shadow->setBounds(0, 0, 5, getHeight() - 0);
+    backgroundA->setBounds(0, 0, proportionOfWidth (0.5011f) - 32, getHeight() - 0);
+    skew->setBounds(0 + (proportionOfWidth (0.5011f) - 32), 0, 64, getHeight() - 0);
+    backgroundB->setBounds((0 + (proportionOfWidth (0.5011f) - 32)) + 64, 0, proportionOfWidth (0.5011f) - 32, getHeight() - 0);
+    stageComponent->setBounds(15, 10, proportionOfWidth (0.5011f) - 47, getHeight() - 20);
+    historyComponent->setBounds(0 + proportionOfWidth (0.5011f) - -32, 10, proportionOfWidth (0.5011f) - 47, getHeight() - 20);
+    anchor->setBounds(0, 0, proportionOfWidth (0.5011f), 8);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -145,21 +149,25 @@ BEGIN_JUCER_METADATA
     <METHOD name="broughtToFront()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="9ce6aa2b193dc2e7" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
+  <JUCERCOMP name="" id="981ceff5817d7b34" memberName="backgroundA" virtualName=""
+             explicitFocusOrder="0" pos="0 0 32M 0M" posRelativeW="4ac6bf71d1e1d84f"
+             sourceFile="../../Themes/PanelBackgroundA.cpp" constructorParams=""/>
+  <JUCERCOMP name="" id="9bde1b4dd587d5fb" memberName="skew" virtualName=""
+             explicitFocusOrder="0" pos="0R 0 64 0M" posRelativeX="981ceff5817d7b34"
+             sourceFile="../../Themes/SeparatorVerticalSkew.cpp" constructorParams=""/>
+  <JUCERCOMP name="" id="9e61167b79cef28c" memberName="backgroundB" virtualName=""
+             explicitFocusOrder="0" pos="0R 0 32M 0M" posRelativeX="9bde1b4dd587d5fb"
+             posRelativeW="4ac6bf71d1e1d84f" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2c6b2bd8a55487b1" memberName="stageComponent" virtualName=""
-             explicitFocusOrder="0" pos="15 10 15M 20M" posRelativeW="4ac6bf71d1e1d84f"
+             explicitFocusOrder="0" pos="15 10 47M 20M" posRelativeW="4ac6bf71d1e1d84f"
              sourceFile="StageComponent.cpp" constructorParams="versionControl"/>
   <JUCERCOMP name="" id="6b8c3baafe7f22f1" memberName="historyComponent" virtualName=""
-             explicitFocusOrder="0" pos="-15R 10 30M 20M" posRelativeX="4ac6bf71d1e1d84f"
+             explicitFocusOrder="0" pos="-32R 10 47M 20M" posRelativeX="4ac6bf71d1e1d84f"
              posRelativeW="4ac6bf71d1e1d84f" sourceFile="HistoryComponent.cpp"
              constructorParams="versionControl"/>
   <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="anchor" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.06% 8" class="Component" params=""/>
-  <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/ShadowRightwards.cpp"
-             constructorParams="Normal"/>
+                    explicitFocusOrder="0" pos="0 0 50.11% 8" class="Component" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

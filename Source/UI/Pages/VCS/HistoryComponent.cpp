@@ -42,8 +42,6 @@
 HistoryComponent::HistoryComponent(VersionControl &owner)
     : vcs(owner)
 {
-    this->panel.reset(new FramePanel());
-    this->addAndMakeVisible(panel.get());
     this->revisionViewport.reset(new Viewport());
     this->addAndMakeVisible(revisionViewport.get());
 
@@ -54,6 +52,8 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     revisionTreeLabel->setJustificationType(Justification::centred);
     revisionTreeLabel->setEditable(false, false, false);
 
+    this->separator3.reset(new SeparatorHorizontalFadingReversed());
+    this->addAndMakeVisible(separator3.get());
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -69,9 +69,9 @@ HistoryComponent::~HistoryComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    panel = nullptr;
     revisionViewport = nullptr;
     revisionTreeLabel = nullptr;
+    separator3 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -91,9 +91,9 @@ void HistoryComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    panel->setBounds(0, 35, getWidth() - 0, getHeight() - 35);
-    revisionViewport->setBounds(1, 36, getWidth() - 2, getHeight() - 37);
+    revisionViewport->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
     revisionTreeLabel->setBounds(0, 0, getWidth() - 0, 26);
+    separator3->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -221,16 +221,16 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
-  <JUCERCOMP name="" id="fa0c0fc3d6eee313" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="34a64657988c0f04" memberName="revisionViewport" virtualName=""
-                    explicitFocusOrder="0" pos="1 36 2M 37M" class="Viewport" params=""/>
+                    explicitFocusOrder="0" pos="1 42 2M 43M" class="Viewport" params=""/>
   <LABEL name="" id="158da5e6e58ab3ae" memberName="revisionTreeLabel"
          virtualName="" explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::history::caption"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
