@@ -146,7 +146,7 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
     const int margin = h / 12;
 
     g.setColour(Colours::white);
-    g.drawText(instrument->getName(), (margin * 2) + this->instrumentIcon.getWidth(), margin,
+    g.drawText(instrumentNode->getName(), (margin * 2) + this->instrumentIcon.getWidth(), margin,
         w, h - (margin * 2), Justification::centredLeft, false);
 
     const auto placement = RectanglePlacement::yMid | RectanglePlacement::xLeft | RectanglePlacement::doNotResize;

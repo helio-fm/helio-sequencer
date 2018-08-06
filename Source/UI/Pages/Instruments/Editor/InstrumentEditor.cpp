@@ -54,7 +54,10 @@ InstrumentEditor::~InstrumentEditor()
 {
     this->audioCore->getDevice().removeChangeListener(this);
 
-    this->instrument->removeChangeListener(this);
+    if (this->instrument)
+    {
+        this->instrument->removeChangeListener(this);
+    }
     
     this->draggingConnector = nullptr;
     this->background = nullptr;

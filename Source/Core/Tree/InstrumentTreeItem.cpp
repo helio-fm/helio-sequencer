@@ -74,7 +74,7 @@ Image InstrumentTreeItem::getIcon() const noexcept
 void InstrumentTreeItem::showPage()
 {
     if (this->instrument.wasObjectDeleted())
-    { 
+    {
         delete this;
         return;
     }
@@ -258,8 +258,8 @@ void InstrumentTreeItem::deserialize(const ValueTree &tree)
     const String id = tree.getProperty(Serialization::Audio::instrumentId);
     this->instrument = this->audioCore->findInstrumentById(id);
 
-    // если в аудиоядре инструмент исчез:
-    if (this->instrument == nullptr)
+    if (this->instrument == nullptr ||
+        !this->instrument->isValid())
     {
         delete this;
         return;

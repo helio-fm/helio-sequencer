@@ -34,7 +34,6 @@
 Workspace::Workspace() : wasInitialized(false)
 {
     this->recentFilesList = new RecentFilesList();
-    this->recentFilesList->addChangeListener(this);
 }
 
 Workspace::~Workspace()
@@ -50,9 +49,7 @@ Workspace::~Workspace()
 
     this->treeRoot = nullptr;
     
-    this->recentFilesList->removeChangeListener(this);
     this->recentFilesList = nullptr;
-    
     this->pluginManager = nullptr;
     this->audioCore = nullptr;
 }
@@ -184,11 +181,6 @@ bool Workspace::onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescripti
 void Workspace::onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescription)
 {
     this->unloadProjectById(fileDescription->projectId);
-}
-
-void Workspace::changeListenerCallback(ChangeBroadcaster *source)
-{
-    Config::save(this, Serialization::Config::activeWorkspace);
 }
 
 //===----------------------------------------------------------------------===//

@@ -27,7 +27,6 @@ class PluginScanner;
 #include "TreeNavigationHistory.h"
 
 class Workspace final : public RecentFilesList::Owner,
-                        private ChangeListener, // listens to RecentFilesList
                         private Serializable
 {
 public:
@@ -86,7 +85,6 @@ private:
 private:
     
     void failedDeserializationFallback();
-    void changeListenerCallback(ChangeBroadcaster *source) override;
     
 private:
     

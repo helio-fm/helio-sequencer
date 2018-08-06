@@ -87,11 +87,11 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
     const String &name, Instrument::InitializationCallback callback)
 {
     auto *instrument = this->instruments.add(new Instrument(formatManager, name));
+    this->addInstrumentToDevice(instrument);
     instrument->initializeFrom(pluginDescription,
         [this, callback](Instrument *instrument)
         {
             jassert(instrument);
-            this->addInstrumentToDevice(instrument);
             this->broadcastInstrumentAdded(instrument);
             callback(instrument);
             Logger::writeToLog("Loaded " + instrument->getName());
