@@ -22,7 +22,7 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-class TokenUpdateThread final : private Thread
+class TokenUpdateThread final : public Thread
 {
 public:
     

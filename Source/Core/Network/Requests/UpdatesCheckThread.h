@@ -23,7 +23,7 @@
 #include "SerializationKeys.h"
 #include "UpdatesInfo.h"
 
-class UpdatesCheckThread final : private Thread
+class UpdatesCheckThread final : public Thread
 {
 public:
 

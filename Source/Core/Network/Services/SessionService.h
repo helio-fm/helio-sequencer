@@ -42,6 +42,7 @@ public:
     const UserProfile &getUserProfile() const noexcept;
     
     void signIn(const String &provider, AuthCallback callback = nullptr);
+    void cancelSignInProcess();
     void signOut();
 
 private:

@@ -21,7 +21,7 @@
 #include "HelioApiRequest.h"
 #include "SerializationKeys.h"
 
-class TokenCheckThread final : private Thread
+class TokenCheckThread final : public Thread
 {
 public:
 

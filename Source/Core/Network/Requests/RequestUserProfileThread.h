@@ -23,7 +23,7 @@
 #include "SerializationKeys.h"
 #include "UserProfile.h"
 
-class RequestUserProfileThread final : private Thread
+class RequestUserProfileThread final : public Thread
 {
 public:
 

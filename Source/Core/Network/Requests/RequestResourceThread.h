@@ -20,7 +20,7 @@
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
 
-class RequestResourceThread final : private Thread
+class RequestResourceThread final : public Thread
 {
 public:
     

@@ -23,7 +23,6 @@
 #include "HelioTheme.h"
 #include "App.h"
 
-#include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
 
@@ -58,7 +57,7 @@ bool SessionService::isLoggedIn()
     return SessionService::getApiToken().isNotEmpty();
 }
 
-const UserProfile & SessionService::getUserProfile() const noexcept
+const UserProfile &SessionService::getUserProfile() const noexcept
 {
     return this->userProfile;
 }
@@ -68,12 +67,21 @@ void SessionService::signIn(const String &provider, AuthCallback callback)
     if (this->authCallback != nullptr)
     {
         jassertfalse; // You should never hit this line
-        callback(false, { "Auth is in already progress" });
+        callback(false, { "Auth is already in progress" });
         return;
     }
 
     this->authCallback = callback;
-    this->getThreadFor<AuthThread>()->requestWebAuth(this, provider);
+    this->getNewThreadFor<AuthThread>()->requestWebAuth(this, provider);
+}
+
+void SessionService::cancelSignInProcess()
+{
+    if (auto *thread = this->getRunningThreadFor<AuthThread>())
+    {
+        thread->signalThreadShouldExit();
+        this->authCallback = nullptr;
+    }
 }
 
 void SessionService::signOut()
@@ -93,7 +101,7 @@ void SessionService::timerCallback()
     this->stopTimer();
     if (SessionService::getApiToken().isNotEmpty())
     {
-        this->getThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
+        this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
     }
 }
 
@@ -112,7 +120,8 @@ void SessionService::requestProfileOk(const UserProfile profile)
 
     if (lastSessionToken.isNotEmpty() && lastSessionUpdateTime < nowMinusHalfDay)
     {
-        this->getThreadFor<TokenUpdateThread>()->updateToken(this, lastSessionToken);
+        Logger::writeToLog("Attempting to re-issue auth token");
+        this->getNewThreadFor<TokenUpdateThread>()->updateToken(this, lastSessionToken);
     }
 }
 
@@ -129,7 +138,7 @@ void SessionService::requestProfileFailed(const Array<String> &errors)
 void SessionService::authSessionInitiated(const AuthSession session, const String &redirect)
 {
     jassert(redirect.isNotEmpty());
-    URL(redirect).launchInDefaultBrowser();
+    URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
 }
 
 void SessionService::authSessionFinished(const AuthSession session)
@@ -142,7 +151,7 @@ void SessionService::authSessionFinished(const AuthSession session)
         this->authCallback = nullptr;
     }
 
-    this->getThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
+    this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
 }
 
 void SessionService::authSessionFailed(const Array<String> &errors)

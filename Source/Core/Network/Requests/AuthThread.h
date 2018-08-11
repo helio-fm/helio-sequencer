@@ -24,11 +24,11 @@
 #include "Config.h"
 #include "App.h"
 
-class AuthThread final : private Thread
+class AuthThread final : public Thread
 {
 public:
     
-    AuthThread() : Thread("Auth"), listener(nullptr) {}
+    AuthThread() : Thread("Auth") {}
     ~AuthThread() override
     {
         this->stopThread(1000);
@@ -57,7 +57,7 @@ public:
         this->listener = listener;
         this->startThread(3);
     }
-    
+
 private:
     
     void run() override
@@ -70,10 +70,10 @@ private:
         // Construct payload object:
         ValueTree initSession(ApiKeys::session);
         initSession.setProperty(ApiKeys::AuthSession::provider, this->provider, nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::deviceId, Config::getDeviceId(), nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::appPlatform, SystemStats::getOperatingSystemName(), nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::appVersion, App::getAppReadableVersion(), nullptr);
         initSession.setProperty(ApiKeys::AuthSession::appName, "Helio", nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::appVersion, App::getAppReadableVersion(), nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::appPlatform, SystemStats::getOperatingSystemName(), nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::deviceId, Config::getDeviceId(), nullptr);
 
         const HelioApiRequest initWebAuthRequest(ApiRoutes::initWebAuth);
         this->response = initWebAuthRequest.post(initSession);
@@ -81,11 +81,13 @@ private:
         if (!this->response.isValid() ||
             !this->response.is(201))
         {
+            Logger::writeToLog("Failed to init web auth: " + this->response.getErrors().getFirst());
             callRequestListener(AuthThread, authSessionFailed, self->response.getErrors());
             return;
         }
 
         // Session manager will redirect user in a browser
+        Logger::writeToLog("Initialized web auth, redirecting to: " + this->response.getRedirect());
         callRequestListener(AuthThread, authSessionInitiated, { self->response.getBody() }, self->response.getRedirect());
 
         // Now check once a second if user has finished authentication
@@ -93,22 +95,35 @@ private:
         const HelioApiRequest checkWebAuthRequest(ApiRoutes::finaliseWebAuth);
 
         ValueTree finaliseSession(ApiKeys::session);
-        initSession.setProperty(ApiKeys::AuthSession::id, authSession.getSessionId(), nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::secret, authSession.getSecret(), nullptr);
+        finaliseSession.setProperty(ApiKeys::AuthSession::id, authSession.getSessionId(), nullptr);
+        finaliseSession.setProperty(ApiKeys::AuthSession::secret, authSession.getSecret(), nullptr);
 
         // 204 response clearly indicates that a valid session exists,
         // and it hasn't failed, but still there's no token available:
         static const int noContent = 204;
+        const int maxAttempts = 60 * 5;
+        int numAttempts = 0;
         do
         {
-            Thread::sleep(1000);
+            // Wait some time, but keep checking meanwhile if the thread should stop
+            for (int i = 0; i < 30; ++i)
+            {
+                Thread::sleep(100);
+                if (this->threadShouldExit())
+                {
+                    Logger::writeToLog("Canceled web auth process, exiting.");
+                    return; // canceled by user, no callbacks
+                }
+            }
+
             this->response = checkWebAuthRequest.post(finaliseSession);
-        } while (this->response.is(noContent));
+        } while (this->response.is(noContent) && numAttempts < maxAttempts);
 
         if (!this->response.isValid() ||
             !this->response.is200() ||
             !this->response.hasProperty(ApiKeys::AuthSession::token))
         {
+            Logger::writeToLog("Failed to finalize web auth: " + this->response.getErrors().getFirst());
             callRequestListener(AuthThread, authSessionFailed, self->response.getErrors());
             return;
         }
@@ -119,7 +134,7 @@ private:
     String provider;
     HelioApiRequest::Response response;
 
-    AuthThread::Listener *listener;
+    AuthThread::Listener *listener = nullptr;
 
     friend class BackendService;
 };
