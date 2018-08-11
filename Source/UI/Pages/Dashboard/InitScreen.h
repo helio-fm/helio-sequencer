@@ -23,7 +23,7 @@ class LogoFader;
 
 #include "../../Themes/SeparatorHorizontalReversed.h"
 #include "../../Themes/ShadowDownwards.h"
-#include "../../Themes/PanelBackgroundB.h"
+#include "../../Themes/PanelBackgroundA.h"
 
 class InitScreen final : public Component,
                          private Timer
@@ -52,7 +52,7 @@ private:
 
     UniquePointer<SeparatorHorizontalReversed> headLine;
     UniquePointer<ShadowDownwards> headShadow;
-    UniquePointer<PanelBackgroundB> gradient1;
+    UniquePointer<PanelBackgroundA> gradient1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InitScreen)
 };

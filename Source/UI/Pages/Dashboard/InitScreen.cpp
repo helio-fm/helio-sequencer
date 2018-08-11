@@ -39,7 +39,7 @@ InitScreen::InitScreen()
     this->addAndMakeVisible(headLine.get());
     this->headShadow.reset(new ShadowDownwards(Light));
     this->addAndMakeVisible(headShadow.get());
-    this->gradient1.reset(new PanelBackgroundB());
+    this->gradient1.reset(new PanelBackgroundA());
     this->addAndMakeVisible(gradient1.get());
 
     //[UserPreSize]
@@ -189,7 +189,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 33 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
              constructorParams="Light"/>
   <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
-             explicitFocusOrder="0" pos="-50 0 -100M 32" sourceFile="../../Themes/PanelBackgroundB.cpp"
+             explicitFocusOrder="0" pos="-50 0 -100M 32" sourceFile="../../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

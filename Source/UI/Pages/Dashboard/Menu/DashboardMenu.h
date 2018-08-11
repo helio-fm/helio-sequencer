@@ -29,7 +29,6 @@ class Workspace;
 #endif
 //[/Headers]
 
-#include "../../../Themes/ShadowHorizontalFading.h"
 #include "../../../Themes/SeparatorHorizontalFadingReversed.h"
 #include "../../../Themes/SeparatorHorizontalFading.h"
 
@@ -68,7 +67,6 @@ private:
     Workspace *workspace;
     //[/UserVariables]
 
-    UniquePointer<ShadowHorizontalFading> component;
     UniquePointer<ListBox> listBox;
     UniquePointer<SeparatorHorizontalFadingReversed> separator1;
     UniquePointer<SeparatorHorizontalFading> separator2;

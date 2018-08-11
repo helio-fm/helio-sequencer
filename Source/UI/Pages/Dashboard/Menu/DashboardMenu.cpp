@@ -39,8 +39,6 @@
 DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
     : workspace(parentWorkspace)
 {
-    this->component.reset(new ShadowHorizontalFading());
-    this->addAndMakeVisible(component.get());
     this->listBox.reset(new ListBox());
     this->addAndMakeVisible(listBox.get());
 
@@ -70,7 +68,6 @@ DashboardMenu::~DashboardMenu()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    component = nullptr;
     listBox = nullptr;
     separator1 = nullptr;
     separator2 = nullptr;
@@ -93,7 +90,6 @@ void DashboardMenu::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    component->setBounds(22, 2, getWidth() - 44, getHeight() - 4);
     listBox->setBounds(48, 2, getWidth() - 96, getHeight() - 5);
     separator1->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 3);
     separator2->setBounds(0, getHeight() - 3, getWidth() - 2, 3);
@@ -194,9 +190,6 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="c3e4abefb218ce57" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="22 2 44M 4M" sourceFile="../../../Themes/ShadowHorizontalFading.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="ae05579f2fbb226b" memberName="listBox" virtualName=""
                     explicitFocusOrder="0" pos="48 2 96M 5M" class="ListBox" params=""/>
   <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator1" virtualName=""
