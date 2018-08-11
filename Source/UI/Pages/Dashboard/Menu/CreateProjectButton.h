@@ -19,14 +19,15 @@
 
 //[Headers]
 class IconComponent;
-#include "DraggingListBoxComponent.h"
+
+#include "OverlayButton.h"
 #include "DashboardMenu.h"
 #include "CommandIDs.h"
 //[/Headers]
 
 #include "../../../Themes/SeparatorVertical.h"
 
-class CreateProjectButton final : public HighlightedComponent
+class CreateProjectButton final : public Component
 {
 public:
 
@@ -43,13 +44,12 @@ public:
 private:
 
     //[UserVariables]
-    Component *createHighlighterComponent() override;
     //[/UserVariables]
 
     UniquePointer<IconComponent> newProjectImage;
     UniquePointer<Label> newProjectLabel;
     UniquePointer<SeparatorVertical> separator;
-    UniquePointer<TextButton> clickHandler;
+    UniquePointer<OverlayButton> clickHandler;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CreateProjectButton)
 };

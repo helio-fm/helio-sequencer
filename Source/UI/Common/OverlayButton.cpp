@@ -15,40 +15,21 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-//[Headers]
-class IconComponent;
-#include "CommandIDs.h"
-#include "DashboardMenu.h"
+#include "Common.h"
 #include "OverlayButton.h"
-//[/Headers]
 
-#include "../../../Themes/SeparatorVertical.h"
-
-class OpenProjectButton final : public Component
+OverlayButton::OverlayButton() : Button({})
 {
-public:
+    this->setMouseCursor(MouseCursor::PointingHandCursor);
+}
 
-    OpenProjectButton();
-    ~OpenProjectButton();
-
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
-
-private:
-
-    //[UserVariables]
-    //[/UserVariables]
-
-    UniquePointer<IconComponent> newProjectImage;
-    UniquePointer<Label> openProjectLabel;
-    UniquePointer<SeparatorVertical> separator;
-    UniquePointer<OverlayButton> clickHandler;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectButton)
-};
+void OverlayButton::paintButton(Graphics &g, bool isMouseOverButton, bool isButtonDown)
+{
+    if (isMouseOverButton || isButtonDown)
+    {
+        g.setColour(Colours::white.withAlpha(isMouseOverButton && isButtonDown ? 0.075f : 0.025f));
+        g.fillRect(this->getLocalBounds().reduced(1, 0));
+        g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
+        g.drawVerticalLine(this->getWidth() - 1, 1.f, float(this->getHeight() - 1));
+    }
+}

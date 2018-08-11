@@ -208,6 +208,11 @@ void MainLayout::showModalComponentUnowned(Component *targetComponent)
     ownedTarget.release();
 }
 
+void MainLayout::hideModalComponentUnowned()
+{
+    ScopedPointer<Component> deleter(Component::getCurrentlyModalComponent());
+}
+
 // a hack!
 Rectangle<int> MainLayout::getPageBounds() const
 {

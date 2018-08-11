@@ -22,21 +22,12 @@
 #include "LoginButton.h"
 
 //[MiscUserDefs]
-class LoginButtonHighlighter final : public Component
-{
-public:
-
-    LoginButtonHighlighter()
-    {
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(Colours::white.withAlpha(0.025f));
-        g.fillRoundedRectangle(5.0f, 18.0f, static_cast<float> (getWidth() - 10), static_cast<float> (getHeight() - 21), 2.000f);
-    }
-};
+#include "App.h"
+#include "MainLayout.h"
+#include "SessionService.h"
+#include "ProgressTooltip.h"
+#include "SuccessTooltip.h"
+#include "FailTooltip.h"
 //[/MiscUserDefs]
 
 LoginButton::LoginButton()
@@ -54,15 +45,31 @@ LoginButton::LoginButton()
     ctaLabel->setJustificationType(Justification::centredLeft);
     ctaLabel->setEditable(false, false, false);
 
-    this->clickHandler.reset(new TextButton(String()));
+    this->clickHandler.reset(new OverlayButton());
     this->addAndMakeVisible(clickHandler.get());
-    clickHandler->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
-    clickHandler->setColour(TextButton::buttonColourId, Colour (0x00000000));
-    clickHandler->setColour(TextButton::buttonOnColourId, Colour (0x14ffffff));
 
 
     //[UserPreSize]
-    this->clickHandler->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->clickHandler->onClick = [](){
+        ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
+        tooltip->onCancel = []() {
+            App::Helio().getSessionService()->cancelSignInProcess();
+        };
+
+        App::Layout().showModalComponentUnowned(tooltip.release());
+        App::Helio().getSessionService()->signIn("Github", [](bool succeeded, const Array<String> &errors) {
+            App::Layout().hideModalComponentUnowned();
+            if (succeeded)
+            {
+                App::Layout().showModalComponentUnowned(new SuccessTooltip());
+            }
+            else
+            {
+                App::Layout().showTooltip(errors.getFirst());
+                App::Layout().showModalComponentUnowned(new FailTooltip());
+            }
+        });
+    };
     //[/UserPreSize]
 
     this->setSize(256, 32);
@@ -109,10 +116,6 @@ void LoginButton::resized()
 
 
 //[MiscUserCode]
-Component *LoginButton::createHighlighterComponent()
-{
-    return new LoginButtonHighlighter();
-}
 //[/MiscUserCode]
 
 #if 0
@@ -120,10 +123,9 @@ Component *LoginButton::createHighlighterComponent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="LoginButton" template="../../../../Template"
-                 componentName="" parentClasses="public HighlightedComponent"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
-                 initialHeight="32">
+                 componentName="" parentClasses="public Component" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="32">
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="new component" id="206f63304f17a28e" memberName="component"
                     virtualName="" explicitFocusOrder="0" pos="2 2 28 4M" class="IconComponent"
@@ -136,9 +138,9 @@ BEGIN_JUCER_METADATA
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
-  <TEXTBUTTON name="" id="7e8a6c95d463c081" memberName="clickHandler" virtualName=""
-              explicitFocusOrder="0" pos="0 0 0M 0M" bgColOff="0" bgColOn="14ffffff"
-              buttonText="" connectedEdges="15" needsCallback="0" radioGroupId="0"/>
+  <GENERICCOMPONENT name="" id="4b99a932dcc449b0" memberName="clickHandler" virtualName=""
+                    explicitFocusOrder="0" pos="0 0 0M 0M" class="OverlayButton"
+                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

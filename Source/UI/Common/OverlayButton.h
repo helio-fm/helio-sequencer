@@ -17,38 +17,17 @@
 
 #pragma once
 
-//[Headers]
-class IconComponent;
-#include "CommandIDs.h"
-#include "DashboardMenu.h"
-#include "OverlayButton.h"
-//[/Headers]
+#include "HighlightedComponent.h"
 
-#include "../../../Themes/SeparatorVertical.h"
-
-class OpenProjectButton final : public Component
+class OverlayButton final : public Button
 {
 public:
 
-    OpenProjectButton();
-    ~OpenProjectButton();
-
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
+    OverlayButton();
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
+    void paintButton(Graphics &g, bool isMouseOverButton, bool isButtonDown) override;
 
-    UniquePointer<IconComponent> newProjectImage;
-    UniquePointer<Label> openProjectLabel;
-    UniquePointer<SeparatorVertical> separator;
-    UniquePointer<OverlayButton> clickHandler;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OverlayButton)
 };

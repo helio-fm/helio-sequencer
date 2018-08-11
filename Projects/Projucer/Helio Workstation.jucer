@@ -636,6 +636,9 @@
                 file="../../Source/UI/Common/ModeIndicatorComponent.cpp"/>
           <FILE id="EhpPoR" name="ModeIndicatorComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ModeIndicatorComponent.h"/>
+          <FILE id="pi3eRY" name="OverlayButton.cpp" compile="1" resource="0"
+                file="../../Source/UI/Common/OverlayButton.cpp"/>
+          <FILE id="qUVkx6" name="OverlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/OverlayButton.h"/>
           <FILE id="f1fXjR" name="PlayButton.cpp" compile="1" resource="0" file="../../Source/UI/Common/PlayButton.cpp"/>
           <FILE id="Z9JjQa" name="PlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/PlayButton.h"/>
           <FILE id="yXiN5u" name="PluginWindow.cpp" compile="1" resource="0"

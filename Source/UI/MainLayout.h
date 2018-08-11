@@ -62,6 +62,7 @@ public:
     void showTooltip(Component *newTooltip, int timeOutMs = 15000);
     void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
     void showModalComponentUnowned(Component *targetComponent);
+    void hideModalComponentUnowned();
 
     //===------------------------------------------------------------------===//
     // Component

@@ -34,7 +34,6 @@
 #include "App.h"
 #include "CommandIDs.h"
 #include "ComponentIDs.h"
-
 //[/MiscUserDefs]
 
 DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
@@ -105,31 +104,6 @@ void DashboardMenu::resized()
 void DashboardMenu::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == CommandIDs::CreateNewProject)
-    {
-        this->workspace->createEmptyProject();
-        this->listBox->updateContent();
-    }
-    else if (commandId == CommandIDs::OpenProject)
-    {
-        this->workspace->importProject("*.helio;*.hp");
-        this->listBox->updateContent();
-    }
-    else if (commandId == CommandIDs::LoginLogout)
-    {
-        const bool isLoggedIn = SessionService::isLoggedIn();
-
-        if (!isLoggedIn)
-        {
-            this->listBox->updateContent();
-            //App::Layout().showModalComponentUnowned(new AuthorizationDialog());
-        }
-        else
-        {
-            App::Helio().getSessionService()->signOut();
-            this->listBox->updateContent();
-        }
-    }
     //[/UserCode_handleCommandMessage]
 }
 

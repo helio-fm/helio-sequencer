@@ -19,12 +19,12 @@
 
 //[Headers]
 #include "IconComponent.h"
-#include "HighlightedComponent.h"
+#include "OverlayButton.h"
 //[/Headers]
 
 #include "../../../Themes/SeparatorVertical.h"
 
-class LoginButton final : public HighlightedComponent
+class LoginButton final : public Component
 {
 public:
 
@@ -41,13 +41,12 @@ public:
 private:
 
     //[UserVariables]
-    Component *createHighlighterComponent() override;
     //[/UserVariables]
 
     UniquePointer<IconComponent> component;
     UniquePointer<SeparatorVertical> separator;
     UniquePointer<Label> ctaLabel;
-    UniquePointer<TextButton> clickHandler;
+    UniquePointer<OverlayButton> clickHandler;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoginButton)
 };
