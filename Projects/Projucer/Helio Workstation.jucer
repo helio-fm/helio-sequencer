@@ -867,14 +867,14 @@
                   file="../../Source/UI/Pages/Settings/ComponentsList.cpp"/>
             <FILE id="cSvomJ" name="ComponentsList.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/ComponentsList.h"/>
-            <FILE id="D84dv3" name="IntroSettingsWrapper.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/IntroSettingsWrapper.cpp"/>
-            <FILE id="nli1eM" name="IntroSettingsWrapper.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/IntroSettingsWrapper.h"/>
             <FILE id="cjGFIF" name="LabeledSettingsWrapper.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.cpp"/>
             <FILE id="f3JYry" name="LabeledSettingsWrapper.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.h"/>
+            <FILE id="P2xFl9" name="SimpleSettingsWrapper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.cpp"/>
+            <FILE id="XZVY6W" name="SimpleSettingsWrapper.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.h"/>
             <FILE id="Dt6gTd" name="LogComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/LogComponent.cpp"/>
             <FILE id="ImgYBs" name="LogComponent.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/LogComponent.h"/>
@@ -889,6 +889,9 @@
             <FILE id="NQm5bG" name="SettingsPage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/SettingsPage.cpp"/>
             <FILE id="KbKtdO" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SettingsPage.h"/>
+            <FILE id="wyFYMy" name="ThemeSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/ThemeSettings.cpp"/>
+            <FILE id="lKlRWH" name="ThemeSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/ThemeSettings.h"/>
             <FILE id="Ep8NCS" name="ThemeSettingsItem.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp"/>
             <FILE id="Jkf4Uy" name="ThemeSettingsItem.h" compile="0" resource="0"
@@ -1298,10 +1301,6 @@
                 file="../../Source/UI/Themes/SeparatorVerticalSkew.h"/>
           <FILE id="IwZtBU" name="ShadowComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowComponent.h"/>
-          <FILE id="PLyGE8" name="ShadowHorizontalFading.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowHorizontalFading.cpp"/>
-          <FILE id="wFsvNz" name="ShadowHorizontalFading.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowHorizontalFading.h"/>
           <FILE id="NJFPby" name="ShadowDownwards.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
           <FILE id="HrHof7" name="ShadowDownwards.h" compile="0" resource="0"

@@ -20,13 +20,14 @@
 //[Headers]
 //[/Headers]
 
+#include "../../Themes/FramePanel.h"
 
-class IntroSettingsWrapper final : public Component
+class SimpleSettingsWrapper final : public Component
 {
 public:
 
-    IntroSettingsWrapper();
-    ~IntroSettingsWrapper();
+    SimpleSettingsWrapper(Component *targetComponent);
+    ~SimpleSettingsWrapper();
 
     //[UserMethods]
     void showNonOwned(Component *targetComponent);
@@ -44,7 +45,7 @@ private:
     bool hasPreviousTarget;
     //[/UserVariables]
 
-    ScopedPointer<Component> targetBounds;
+    UniquePointer<FramePanel> panel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IntroSettingsWrapper)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSettingsWrapper)
 };

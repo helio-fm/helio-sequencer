@@ -28,8 +28,6 @@
 #include "BinaryData.h"
 #include "ThemeSettingsItem.h"
 #include "MenuPanel.h"
-#include "ColourScheme.h"
-#include "ColourSchemesManager.h"
 #include "ModalDialogConfirmation.h"
 
 #include "App.h"
@@ -44,25 +42,28 @@
 
 UserInterfaceSettings::UserInterfaceSettings()
 {
-    addAndMakeVisible (fontComboPrimer = new MobileComboBox::Primer());
+    this->fontComboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(fontComboPrimer.get());
 
-    addAndMakeVisible (themesList = new ListBox());
+    this->openGLRendererButton.reset(new ToggleButton(String()));
+    this->addAndMakeVisible(openGLRendererButton.get());
+    openGLRendererButton->setButtonText(TRANS("settings::renderer::opengl"));
+    openGLRendererButton->setRadioGroupId(1);
+    openGLRendererButton->addListener(this);
+    openGLRendererButton->setColour(ToggleButton::textColourId, Colour (0xbcffffff));
 
-    addAndMakeVisible (openGLRendererButton = new ToggleButton (String()));
-    openGLRendererButton->setButtonText (TRANS("settings::renderer::opengl"));
-    openGLRendererButton->setRadioGroupId (1);
-    openGLRendererButton->addListener (this);
-    openGLRendererButton->setColour (ToggleButton::textColourId, Colour (0xbcffffff));
-
-    addAndMakeVisible (defaultRendererButton = new ToggleButton (String()));
-    defaultRendererButton->setButtonText (TRANS("settings::renderer::default"));
-    defaultRendererButton->setRadioGroupId (1);
-    defaultRendererButton->addListener (this);
+    this->defaultRendererButton.reset(new ToggleButton(String()));
+    this->addAndMakeVisible(defaultRendererButton.get());
+    defaultRendererButton->setButtonText(TRANS("settings::renderer::default"));
+    defaultRendererButton->setRadioGroupId(1);
+    defaultRendererButton->addListener(this);
     defaultRendererButton->setToggleState (true, dontSendNotification);
-    defaultRendererButton->setColour (ToggleButton::textColourId, Colour (0xbcffffff));
+    defaultRendererButton->setColour(ToggleButton::textColourId, Colour (0xbcffffff));
 
-    addAndMakeVisible (separator2 = new SeparatorHorizontalFading());
-    addAndMakeVisible (fontEditor = new TextEditor (String()));
+    this->separator2.reset(new SeparatorHorizontalFading());
+    this->addAndMakeVisible(separator2.get());
+    this->fontEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(fontEditor.get());
     fontEditor->setMultiLine (false);
     fontEditor->setReturnKeyStartsNewLine (false);
     fontEditor->setReadOnly (true);
@@ -71,7 +72,6 @@ UserInterfaceSettings::UserInterfaceSettings()
     fontEditor->setPopupMenuEnabled (false);
     fontEditor->setText (String());
 
-    addAndMakeVisible (separator3 = new SeparatorHorizontalFading());
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -85,20 +85,11 @@ UserInterfaceSettings::UserInterfaceSettings()
 #elif JUCE_LINUX
     this->defaultRendererButton->setButtonText(TRANS("settings::renderer::native"));
 #endif
-
-    this->currentScheme = ColourSchemesManager::getInstance().getCurrentScheme();
-
-    this->themesList->setModel(this);
-    this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
-    this->themesList->getViewport()->setScrollBarsShown(true, false);
     //[/UserPreSize]
 
-    setSize (600, 350);
+    this->setSize(600, 146);
 
     //[Constructor]
-    const int numSchemes = ColourSchemesManager::getInstance().getSchemes().size();
-    this->setSize(600, 142 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
-
     MenuPanel::Menu fontsMenu;
     Font::findFonts(this->systemFonts);
     const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont);
@@ -115,24 +106,19 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->fontEditor->setFont(18.f);
     this->fontEditor->setText(TRANS("settings::ui::font") + ": " + lastUsedFontName);
     this->fontComboPrimer->initWith(this->fontEditor.get(), fontsMenu);
-
-    ColourSchemesManager::getInstance().addChangeListener(this);
     //[/Constructor]
 }
 
 UserInterfaceSettings::~UserInterfaceSettings()
 {
     //[Destructor_pre]
-    ColourSchemesManager::getInstance().removeChangeListener(this);
     //[/Destructor_pre]
 
     fontComboPrimer = nullptr;
-    themesList = nullptr;
     openGLRendererButton = nullptr;
     defaultRendererButton = nullptr;
     separator2 = nullptr;
     fontEditor = nullptr;
-    separator3 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -152,23 +138,21 @@ void UserInterfaceSettings::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    fontComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
-    themesList->setBounds (8, 8, getWidth() - 24, getHeight() - 142);
-    openGLRendererButton->setBounds (48, ((((8 + (getHeight() - 142) - -8) + 10) + 32 - -8) + 6) + 32, getWidth() - 64, 32);
-    defaultRendererButton->setBounds (48, (((8 + (getHeight() - 142) - -8) + 10) + 32 - -8) + 6, getWidth() - 64, 32);
-    separator2->setBounds (48, ((8 + (getHeight() - 142) - -8) + 10) + 32 - -8, getWidth() - 64, 4);
-    fontEditor->setBounds (47, (8 + (getHeight() - 142) - -8) + 10, getWidth() - 64, 32);
-    separator3->setBounds (48, 8 + (getHeight() - 142) - -8, getWidth() - 64, 4);
+    fontComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
+    openGLRendererButton->setBounds(16, ((16 + 32 - -16) + 6) + 32, getWidth() - 32, 32);
+    defaultRendererButton->setBounds(16, (16 + 32 - -16) + 6, getWidth() - 32, 32);
+    separator2->setBounds(16, 16 + 32 - -16, getWidth() - 32, 4);
+    fontEditor->setBounds(16, 16, getWidth() - 33, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void UserInterfaceSettings::buttonClicked (Button* buttonThatWasClicked)
+void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == openGLRendererButton)
+    if (buttonThatWasClicked == openGLRendererButton.get())
     {
         //[UserButtonCode_openGLRendererButton] -- add your button handler code here..
         if (this->openGLRendererButton->getToggleState())
@@ -192,7 +176,7 @@ void UserInterfaceSettings::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_openGLRendererButton]
     }
-    else if (buttonThatWasClicked == defaultRendererButton)
+    else if (buttonThatWasClicked == defaultRendererButton.get())
     {
         //[UserButtonCode_defaultRendererButton] -- add your button handler code here..
         App::Window().setOpenGLRendererEnabled(false);
@@ -237,60 +221,12 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
-
-//===----------------------------------------------------------------------===//
-// ChangeListener
-//===----------------------------------------------------------------------===//
-
-void UserInterfaceSettings::changeListenerCallback(ChangeBroadcaster *source)
-{
-    this->themesList->updateContent();
-}
-
-//===----------------------------------------------------------------------===//
-// ListBoxModel
-//===----------------------------------------------------------------------===//
-
-Component *UserInterfaceSettings::refreshComponentForRow(int rowNumber, bool isRowSelected,
-    Component *existingComponentToUpdate)
-{
-    const auto &schemes = ColourSchemesManager::getInstance().getSchemes();
-
-    if (rowNumber >= schemes.size()) { return existingComponentToUpdate; }
-
-    const bool isCurrentScheme = (this->currentScheme->getResourceId() == schemes[rowNumber]->getResourceId());
-    const bool isLastRow = (rowNumber == schemes.size() - 1);
-
-    if (existingComponentToUpdate != nullptr)
-    {
-        if (ThemeSettingsItem *row = dynamic_cast<ThemeSettingsItem *>(existingComponentToUpdate))
-        {
-            row->updateDescription(isLastRow, isCurrentScheme, schemes[rowNumber]);
-        }
-    }
-    else
-    {
-        auto row = new ThemeSettingsItem(*this->themesList);
-        row->updateDescription(isLastRow, isCurrentScheme, schemes[rowNumber]);
-        return row;
-    }
-
-    return existingComponentToUpdate;
-}
-
-int UserInterfaceSettings::getNumRows()
-{
-    const auto &themes = ColourSchemesManager::getInstance().getSchemes();
-    return themes.size();
-}
-
 void UserInterfaceSettings::updateButtons()
 {
     const bool openGLEnabled = MainWindow::isOpenGLRendererEnabled();
     this->defaultRendererButton->setToggleState(!openGLEnabled, dontSendNotification);
     this->openGLRendererButton->setToggleState(openGLEnabled, dontSendNotification);
 }
-
 //[/MiscUserCode]
 
 #if 0
@@ -298,38 +234,31 @@ void UserInterfaceSettings::updateButtons()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="UserInterfaceSettings" template="../../../Template"
-                 componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
-                 initialHeight="350">
+                 componentName="" parentClasses="public Component" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="146">
   <METHODS>
     <METHOD name="visibilityChanged()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0"/>
+  <BACKGROUND backgroundColour="40404"/>
   <GENERICCOMPONENT name="" id="1b5648cb76a38566" memberName="fontComboPrimer" virtualName=""
                     explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
                     params=""/>
-  <GENERICCOMPONENT name="" id="5005ba29a3a1bbc6" memberName="themesList" virtualName=""
-                    explicitFocusOrder="0" pos="8 8 24M 142M" class="ListBox" params=""/>
   <TOGGLEBUTTON name="" id="42fbb3993c5b4950" memberName="openGLRendererButton"
-                virtualName="" explicitFocusOrder="0" pos="48 32 64M 32" posRelativeY="1f025eebf3951095"
+                virtualName="" explicitFocusOrder="0" pos="16 32 32M 32" posRelativeY="1f025eebf3951095"
                 txtcol="bcffffff" buttonText="settings::renderer::opengl" connectedEdges="0"
                 needsCallback="1" radioGroupId="1" state="0"/>
   <TOGGLEBUTTON name="" id="1f025eebf3951095" memberName="defaultRendererButton"
-                virtualName="" explicitFocusOrder="0" pos="48 6 64M 32" posRelativeY="68d81e5e36696154"
+                virtualName="" explicitFocusOrder="0" pos="16 6 32M 32" posRelativeY="68d81e5e36696154"
                 txtcol="bcffffff" buttonText="settings::renderer::default" connectedEdges="0"
                 needsCallback="1" radioGroupId="1" state="1"/>
   <JUCERCOMP name="" id="68d81e5e36696154" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="48 -8R 64M 4" posRelativeY="4fd07309a20b15b6"
+             explicitFocusOrder="0" pos="16 -16R 32M 4" posRelativeY="4fd07309a20b15b6"
              sourceFile="../../Themes/SeparatorHorizontalFading.cpp" constructorParams=""/>
   <TEXTEDITOR name="" id="4fd07309a20b15b6" memberName="fontEditor" virtualName=""
-              explicitFocusOrder="0" pos="47 10 64M 32" posRelativeY="33d31e3c1e0ee070"
-              initialText="" multiline="0" retKeyStartsLine="0" readonly="1"
-              scrollbars="0" caret="0" popupmenu="0"/>
-  <JUCERCOMP name="" id="33d31e3c1e0ee070" memberName="separator3" virtualName=""
-             explicitFocusOrder="0" pos="48 -8R 64M 4" posRelativeY="5005ba29a3a1bbc6"
-             sourceFile="../../Themes/SeparatorHorizontalFading.cpp" constructorParams=""/>
+              explicitFocusOrder="0" pos="16 16 33M 32" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

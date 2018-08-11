@@ -19,26 +19,17 @@
 #include "Common.h"
 //[/Headers]
 
-#include "LabeledSettingsWrapper.h"
+#include "SimpleSettingsWrapper.h"
 
 //[MiscUserDefs]
 #define MARGIN_X 4
 #define MARGIN_Y 6
 //[/MiscUserDefs]
 
-LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const String &title)
+SimpleSettingsWrapper::SimpleSettingsWrapper(Component *targetComponent)
 {
     this->panel.reset(new FramePanel());
     this->addAndMakeVisible(panel.get());
-    this->titleLabel.reset(new Label(String(),
-                                      TRANS("...")));
-    this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType(Justification::centredLeft);
-    titleLabel->setEditable(false, false, false);
-
-    titleLabel->setBounds(8, 8, 576, 26);
-
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -46,37 +37,39 @@ LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const
     this->setSize(600, 400);
 
     //[Constructor]
-    this->showNonOwned(targetComponent, title);
+    this->showNonOwned(targetComponent);
     //[/Constructor]
 }
 
-LabeledSettingsWrapper::~LabeledSettingsWrapper()
+SimpleSettingsWrapper::~SimpleSettingsWrapper()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
 
     panel = nullptr;
-    titleLabel = nullptr;
 
     //[Destructor]
     //[/Destructor]
 }
 
-void LabeledSettingsWrapper::paint (Graphics& g)
+void SimpleSettingsWrapper::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+    if (this->target != nullptr)
+    {
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
+    }
     //[/UserPaint]
 }
 
-void LabeledSettingsWrapper::resized()
+void SimpleSettingsWrapper::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    panel->setBounds(5, 40, getWidth() - 10, getHeight() - 48);
+    panel->setBounds(5, 6, getWidth() - 10, getHeight() - 12);
     //[UserResized] Add your own custom resize handling here..
     if (this->target != nullptr)
     {
@@ -87,20 +80,15 @@ void LabeledSettingsWrapper::resized()
 
 
 //[MiscUserCode]
-void LabeledSettingsWrapper::showNonOwned(Component *targetComponent, const String &title)
+void SimpleSettingsWrapper::showNonOwned(Component *targetComponent)
 {
-    if (this->target != nullptr)
-    {
-        this->removeChildComponent(this->target);
-    }
-
     this->target = targetComponent;
     this->addAndMakeVisible(this->target);
 
     const int staticSpaceDelta = this->getHeight() - this->panel->getHeight() + MARGIN_Y * 2;
     this->setSize(this->getWidth(), this->target->getHeight() + staticSpaceDelta);
 
-    this->titleLabel->setText(title, dontSendNotification);
+    this->resized();
 }
 //[/MiscUserCode]
 
@@ -108,19 +96,14 @@ void LabeledSettingsWrapper::showNonOwned(Component *targetComponent, const Stri
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="LabeledSettingsWrapper" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="Component *targetComponent, const String &amp;title"
+<JUCER_COMPONENT documentType="Component" className="SimpleSettingsWrapper" template="../../../Template"
+                 componentName="" parentClasses="public Component" constructorParams="Component *targetComponent"
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="563306a3a7769fb" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="5 40 10M 48M" sourceFile="../../Themes/FramePanel.cpp"
+             explicitFocusOrder="0" pos="5 6 10M 12M" sourceFile="../../Themes/FramePanel.cpp"
              constructorParams=""/>
-  <LABEL name="" id="9f16871b637bd1bd" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 8 576 26" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
