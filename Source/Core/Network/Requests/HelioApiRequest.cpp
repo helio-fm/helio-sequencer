@@ -97,21 +97,26 @@ HelioApiRequest::HelioApiRequest(const String &apiEndpoint, ProgressCallback pro
 
 static String getHeaders()
 {
+    static const String apiVersion1 = "application/helio.fm.v1+json";
+    
     String extraHeaders;
     extraHeaders
-        << "Accept: application/helio.fm.v1+json"
-        << newLine
-        << "Client: Helio " << App::getAppReadableVersion();
-        //<< newLine
+        << "Accept: " << apiVersion1
+        << "\r\n"
+        << "Content-Type: " << apiVersion1
+        << "\r\n"
+        << "Client: Helio " << App::getAppReadableVersion()
+        << "\r\n";
         //<< "Platform-Id: " << SystemStats::getOperatingSystemName()
-        //<< newLine
-        //<< "Device-Id: " << Config::getDeviceId();
+        //<< "\r\n"
+        //<< "Device-Id: " << Config::getDeviceId()
+        //<< "\r\n";
 
     if (SessionService::isLoggedIn())
     {
         extraHeaders
-            << newLine
-            << "Authorization: Bearer " << SessionService::getApiToken();
+            << "Authorization: Bearer " << SessionService::getApiToken()
+            << "\r\n";
     }
 
     return extraHeaders;
@@ -128,15 +133,10 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
     const String responseBody = stream->readEntireStreamAsString();
     if (responseBody.isNotEmpty())
     {
-        Logger::writeToLog("Response: " + String(response.statusCode));
-
-        if (responseBody.length() < 512)
-        {
-            Logger::writeToLog(responseBody);
-        }
+        Logger::writeToLog("Response " + String(response.statusCode) + " " + responseBody.substring(0, 128) + (responseBody.length() > 128 ? ".." : ""));
+        //Logger::writeToLog(response.headers.getDescription());
 
         ValueTree parsedResponse;
-
         response.receipt = this->serializer.loadFromString(responseBody, parsedResponse);
         if (response.receipt.failed() || !parsedResponse.isValid())
         {
@@ -184,12 +184,12 @@ HelioApiRequest::Response HelioApiRequest::post(const ValueTree &payload) const
     }
 
     const auto url = URL(Routes::HelioFM::Api::baseURL + this->apiEndpoint)
-        .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8() + 1));
+        .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8()));
 
     int i = 0;
     do
     {
-        Logger::writeToLog("Connecting to " + this->apiEndpoint);
+        Logger::writeToLog("POST " + this->apiEndpoint + " " + jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
         stream = url.createInputStream(true,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
@@ -210,7 +210,7 @@ HelioApiRequest::Response HelioApiRequest::get() const
     int i = 0;
     do
     {
-        Logger::writeToLog("Connecting to " + this->apiEndpoint);
+        Logger::writeToLog("GET " + this->apiEndpoint);
         stream = url.createInputStream(false,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
