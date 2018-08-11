@@ -26,7 +26,6 @@
 #include "RecentFilesList.h"
 #include "MainLayout.h"
 #include "App.h"
-#include "ProgressTooltip.h"
 #include "FailTooltip.h"
 #include "SuccessTooltip.h"
 #include "Icons.h"

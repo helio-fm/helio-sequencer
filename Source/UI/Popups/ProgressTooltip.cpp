@@ -23,12 +23,16 @@
 
 //[MiscUserDefs]
 #include "ComponentIDs.h"
+#include "CommandIDs.h"
+
 #define PROGRESS_TOOLTIP_FADEOUT_TIMS_MS 350
 //[/MiscUserDefs]
 
-ProgressTooltip::ProgressTooltip()
+ProgressTooltip::ProgressTooltip(bool cancellable)
+    : isCancellable(cancellable)
 {
-    addAndMakeVisible (progressIndicator = new ProgressIndicator());
+    this->progressIndicator.reset(new ProgressIndicator());
+    this->addAndMakeVisible(progressIndicator.get());
 
 
     //[UserPreSize]
@@ -36,7 +40,7 @@ ProgressTooltip::ProgressTooltip()
     this->progressIndicator->startAnimating();
     //[/UserPreSize]
 
-    setSize (96, 96);
+    this->setSize(96, 96);
 
     //[Constructor]
     //[/Constructor]
@@ -60,8 +64,14 @@ void ProgressTooltip::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0xa0000000));
-    g.fillRoundedRectangle (static_cast<float> ((getWidth() / 2) - (96 / 2)), static_cast<float> ((getHeight() / 2) - (96 / 2)), 96.0f, 96.0f, 15.000f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) - (96 / 2)), y = static_cast<float> ((getHeight() / 2) - (96 / 2)), width = 96.0f, height = 96.0f;
+        Colour fillColour = Colour (0xa0000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 15.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -72,7 +82,7 @@ void ProgressTooltip::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    progressIndicator->setBounds ((getWidth() / 2) - (64 / 2), (getHeight() / 2) - (64 / 2), 64, 64);
+    progressIndicator->setBounds((getWidth() / 2) - (64 / 2), (getHeight() / 2) - (64 / 2), 64, 64);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -84,8 +94,57 @@ void ProgressTooltip::parentHierarchyChanged()
     //[/UserCode_parentHierarchyChanged]
 }
 
+void ProgressTooltip::handleCommandMessage (int commandId)
+{
+    //[UserCode_handleCommandMessage] -- Add your code here...
+    if (commandId == CommandIDs::DismissModalDialogAsync)
+    {
+        this->cancel();
+    }
+    //[/UserCode_handleCommandMessage]
+}
+
+bool ProgressTooltip::keyPressed (const KeyPress& key)
+{
+    //[UserCode_keyPressed] -- Add your code here...
+    if (key.isKeyCode(KeyPress::escapeKey))
+    {
+        this->cancel();
+        return true;
+    }
+
+    return false;
+    //[/UserCode_keyPressed]
+}
+
+void ProgressTooltip::inputAttemptWhenModal()
+{
+    //[UserCode_inputAttemptWhenModal] -- Add your code here...
+    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+    //[/UserCode_inputAttemptWhenModal]
+}
+
 
 //[MiscUserCode]
+void ProgressTooltip::cancel()
+{
+    if (!this->isCancellable)
+    {
+        return;
+    }
+
+    if (this->onCancel != nullptr)
+    {
+        this->onCancel();
+    }
+
+    this->disappear();
+}
+
+void ProgressTooltip::disappear()
+{
+    delete this;
+}
 //[/MiscUserCode]
 
 #if 0
@@ -94,14 +153,18 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ProgressTooltip" template="../../Template"
                  componentName="" parentClasses="public CenteredTooltipComponent"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="96"
-                 initialHeight="96">
+                 constructorParams="bool cancellable" variableInitialisers="isCancellable(cancellable)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="96" initialHeight="96">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
+    <METHOD name="inputAttemptWhenModal()"/>
+    <METHOD name="keyPressed (const KeyPress&amp; key)"/>
+    <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0Cc 0Cc 96 96" cornerSize="15" fill="solid: a0000000" hasStroke="0"/>
+    <ROUNDRECT pos="0Cc 0Cc 96 96" cornerSize="15.00000000000000000000" fill="solid: a0000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="c8b225da767e9a4d" memberName="progressIndicator"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0Cc 64 64" class="ProgressIndicator"

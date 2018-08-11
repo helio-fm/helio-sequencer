@@ -20,31 +20,39 @@
 //[Headers]
 #include "CenteredTooltipComponent.h"
 #include "ProgressIndicator.h"
+
+using SimpleCloseCallback = Function<void()>;
 //[/Headers]
 
 
-class ProgressTooltip  : public CenteredTooltipComponent
+class ProgressTooltip final : public CenteredTooltipComponent
 {
 public:
 
-    ProgressTooltip ();
-
+    ProgressTooltip(bool cancellable);
     ~ProgressTooltip();
 
     //[UserMethods]
+    SimpleCloseCallback onCancel;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
     void parentHierarchyChanged() override;
+    void handleCommandMessage (int commandId) override;
+    bool keyPressed (const KeyPress& key) override;
+    void inputAttemptWhenModal() override;
 
 
 private:
 
     //[UserVariables]
+    bool isCancellable;
+    void cancel();
+    void disappear();
     //[/UserVariables]
 
-    ScopedPointer<ProgressIndicator> progressIndicator;
+    UniquePointer<ProgressIndicator> progressIndicator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProgressTooltip)
 };
