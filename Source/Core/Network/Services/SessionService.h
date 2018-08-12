@@ -51,6 +51,8 @@ private:
     static void setApiToken(const String &token);
 
     UserProfile userProfile;
+    void resetUserProfile();
+
     AuthCallback authCallback;
 
 private:

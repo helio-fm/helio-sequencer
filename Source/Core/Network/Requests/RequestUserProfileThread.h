@@ -27,7 +27,7 @@ class RequestUserProfileThread final : public Thread
 {
 public:
 
-    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr) {}
+    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr), profile({}) {}
     ~RequestUserProfileThread() override
     {
         this->stopThread(1000);
@@ -43,13 +43,14 @@ public:
         friend class RequestUserProfileThread;
     };
     
-    void requestUserProfile(RequestUserProfileThread::Listener *authListener)
+    void requestUserProfile(RequestUserProfileThread::Listener *authListener, UserProfile existingProfile)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
+        this->profile = existingProfile;
         this->listener = authListener;
         this->startThread(3);
     }
@@ -69,9 +70,28 @@ private:
             callRequestListener(RequestUserProfileThread, requestProfileFailed, self->response.getErrors());
         }
 
-        callRequestListener(RequestUserProfileThread, requestProfileOk, { self->response.getBody() });
+        const String newProfileAvatarUrl = UserProfile(this->response.getBody(), {}).getAvatarUrl();
+        Image profileAvatar = this->profile.getAvatar();
+
+        if (newProfileAvatarUrl != this->profile.getAvatarUrl())
+        {
+            const int s = 20; // local avatar size
+            profileAvatar = { Image::ARGB, s, s, true };
+            MemoryBlock downloadedData;
+            URL(newProfileAvatarUrl).readEntireBinaryStream(downloadedData, false);
+            MemoryInputStream inputStream(downloadedData, false);
+            Image remoteAvatar = ImageFileFormat::loadFrom(inputStream).rescaled(s, s, Graphics::highResamplingQuality);
+            Graphics g(profileAvatar);
+            g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
+            g.fillEllipse(0.f, 0.f, float(s), float(s));
+        }
+
+        this->profile = { this->response.getBody(), profileAvatar };
+
+        callRequestListener(RequestUserProfileThread, requestProfileOk, self->profile);
     }
     
+    UserProfile profile;
     HelioApiRequest::Response response;
     RequestUserProfileThread::Listener *listener;
     

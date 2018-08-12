@@ -41,9 +41,10 @@ public:
 private:
 
     //[UserVariables]
+    void switchToUserProfile();
     //[/UserVariables]
 
-    UniquePointer<IconComponent> component;
+    UniquePointer<IconComponent> avatar;
     UniquePointer<SeparatorVertical> separator;
     UniquePointer<Label> ctaLabel;
     UniquePointer<OverlayButton> clickHandler;

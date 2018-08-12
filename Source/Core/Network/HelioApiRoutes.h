@@ -31,13 +31,13 @@ namespace Routes
         {
             static const String baseURL = "https://api.helio.fm";
             static const String tokenCheck = "/session-status";
-            static const String tokenUpdate = "/relogin";
+            static const String tokenUpdate = "/reauth";
             static const String initWebAuth = "/clients/helio/auth";
             static const String finaliseWebAuth = "/clients/helio/auth/check";
             static const String requestResource = "/clients/helio";
             static const String requestUpdatesInfo = "/clients/helio/info";
             static const String requestUserProfile = "/me";
-            static const String vcs = "/vcs/:project";
+            static const String vcs = "/vcs";
         } // namespace Api
     } // namespace HelioFM
 } // namespace Routes

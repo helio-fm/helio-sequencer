@@ -146,8 +146,8 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
 
         using namespace Serialization;
 
-        if (parsedResponse.hasType(Api::V1::rootElementSuccess) ||
-            parsedResponse.hasType(Api::V1::rootElementErrors))
+        if (parsedResponse.hasType(Api::V1::rootNode) ||
+            parsedResponse.hasType(Api::V1::rootErrorsNode))
         {
             response.body = parsedResponse;
         }

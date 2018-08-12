@@ -180,6 +180,7 @@ namespace Serialization
         static const Identifier activeWorkspace = "activeWorkspace";
         static const Identifier activeColourScheme = "activeColourScheme";
         static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
+        static const Identifier activeUserProfile = "activeUserProfile";
         static const Identifier currentLocale = "currentLocale";
 
         static const Identifier lastShownPageId = "lastShownPageId";
@@ -503,8 +504,8 @@ namespace Serialization
         // JSON keys
         namespace V1
         {
-            static const Identifier rootElementSuccess = "data";
-            static const Identifier rootElementErrors = "errors";
+            static const Identifier rootNode = "data";
+            static const Identifier rootErrorsNode = "errors";
 
             static const Identifier status = "status";
             static const Identifier message = "message";
@@ -521,6 +522,9 @@ namespace Serialization
                 static const Identifier name = "name";
                 static const Identifier email = "email";
                 static const Identifier login = "login";
+                static const Identifier profileUrl = "profileUrl";
+                static const Identifier avatarUrl = "avatar";
+                static const Identifier avatarCache = "avatarCache";
                 static const Identifier password = "password";
                 static const Identifier passwordConfirmation = "passwordConfirmation";
             }

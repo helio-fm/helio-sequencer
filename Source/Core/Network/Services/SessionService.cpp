@@ -29,8 +29,7 @@
 // Try to update our sliding session and reload user profile after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
 
-SessionService::SessionService() :
-    userProfile({})
+SessionService::SessionService() : userProfile({})
 {
     // The logic goes like this:
     // If we have a token, request user profile,
@@ -38,6 +37,7 @@ SessionService::SessionService() :
     // or return a profile - then we check if token was updated
     // more than 1 day ago, start update token thread
 
+    Config::load(this->userProfile, Serialization::Config::activeUserProfile);
     this->startTimer(UPDATE_SESSION_TIMEOUT_MS);
 }
 
@@ -87,9 +87,8 @@ void SessionService::cancelSignInProcess()
 void SessionService::signOut()
 {
     // TODO: need to erase token on server?
-    Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
-    Config::set(Serialization::Api::sessionLastToken, {});
-    this->userProfile.reset();
+    this->resetUserProfile();
+    SessionService::setApiToken({});
 }
 
 //===----------------------------------------------------------------------===//
@@ -101,7 +100,7 @@ void SessionService::timerCallback()
     this->stopTimer();
     if (SessionService::getApiToken().isNotEmpty())
     {
-        this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
+        this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
     }
 }
 
@@ -112,6 +111,7 @@ void SessionService::timerCallback()
 void SessionService::requestProfileOk(const UserProfile profile)
 {
     this->userProfile = profile;
+    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
 
     const String lastSessionToken = SessionService::getApiToken();
     const Time nowMinusHalfDay = Time::getCurrentTime() - RelativeTime::hours(12);
@@ -127,7 +127,7 @@ void SessionService::requestProfileOk(const UserProfile profile)
 
 void SessionService::requestProfileFailed(const Array<String> &errors)
 {
-    this->userProfile.reset();
+    this->resetUserProfile();
 }
 
 //===----------------------------------------------------------------------===//
@@ -151,7 +151,7 @@ void SessionService::authSessionFinished(const AuthSession session)
         this->authCallback = nullptr;
     }
 
-    this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
+    this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
 }
 
 void SessionService::authSessionFailed(const Array<String> &errors)
@@ -172,20 +172,22 @@ void SessionService::authSessionFailed(const Array<String> &errors)
 void SessionService::tokenUpdateOk(const String &newToken)
 {
     SessionService::setApiToken(newToken);
-
-    // Token update happens most often once a day
-    // At this point we're safe to launch updates check:
-    // TODO
 }
 
 void SessionService::tokenUpdateFailed(const Array<String> &errors)
 {
+    this->resetUserProfile();
     SessionService::setApiToken({});
-    this->userProfile.reset();
 }
 
 void SessionService::tokenUpdateNoResponse()
 {
     // In case of connection error, we should not erase the token
+    this->resetUserProfile();
+}
+
+void SessionService::resetUserProfile()
+{
     this->userProfile.reset();
+    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
 }

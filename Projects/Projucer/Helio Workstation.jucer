@@ -817,6 +817,37 @@
           <FILE id="nKGHgF" name="WorkspaceMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/WorkspaceMenu.h"/>
         </GROUP>
         <GROUP id="{B9AEC376-3BE9-2D8B-8315-5C9D02A78A83}" name="Pages">
+          <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Dashboard">
+            <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
+              <FILE id="tB359c" name="DashboardMenu.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.cpp"/>
+              <FILE id="AIxzo3" name="DashboardMenu.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.h"/>
+              <FILE id="F7m4dp" name="RecentProjectRow.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.cpp"/>
+              <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h"/>
+              <FILE id="lu3gMO" name="LoginButton.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.cpp"/>
+              <FILE id="jHQguA" name="LoginButton.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.h"/>
+              <FILE id="VvVVMm" name="CreateProjectButton.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.cpp"/>
+              <FILE id="hc7Ie4" name="CreateProjectButton.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.h"/>
+              <FILE id="VX9Eba" name="OpenProjectButton.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp"/>
+              <FILE id="QhDDee" name="OpenProjectButton.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.h"/>
+            </GROUP>
+            <FILE id="SATMyc" name="Dashboard.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.cpp"/>
+            <FILE id="ak0ZaE" name="Dashboard.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.h"/>
+            <FILE id="Tigws8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.cpp"/>
+            <FILE id="yJ1nQL" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.h"/>
+            <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.cpp"/>
+            <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.h"/>
+            <FILE id="wmerFw" name="UserProfileComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.cpp"/>
+            <FILE id="LAXjb0" name="UserProfileComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.h"/>
+          </GROUP>
           <GROUP id="{244063AE-D7BB-2E7F-F88C-F6B87D3750F0}" name="Instruments">
             <GROUP id="{8403AA58-8E12-1E01-83A5-94D36241D728}" name="Editor">
               <FILE id="WeFwTR" name="AudioPluginEditorPage.cpp" compile="1" resource="0"
@@ -942,37 +973,6 @@
                   file="../../Source/UI/Pages/VCS/VersionControlEditor.cpp"/>
             <FILE id="tjJByt" name="VersionControlEditor.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/VCS/VersionControlEditor.h"/>
-          </GROUP>
-          <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Dashboard">
-            <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
-              <FILE id="tB359c" name="DashboardMenu.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.cpp"/>
-              <FILE id="AIxzo3" name="DashboardMenu.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.h"/>
-              <FILE id="F7m4dp" name="RecentProjectRow.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.cpp"/>
-              <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h"/>
-              <FILE id="lu3gMO" name="LoginButton.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.cpp"/>
-              <FILE id="jHQguA" name="LoginButton.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.h"/>
-              <FILE id="VvVVMm" name="CreateProjectButton.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.cpp"/>
-              <FILE id="hc7Ie4" name="CreateProjectButton.h" compile="0" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.h"/>
-              <FILE id="VX9Eba" name="OpenProjectButton.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp"/>
-              <FILE id="QhDDee" name="OpenProjectButton.h" compile="0" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.h"/>
-            </GROUP>
-            <FILE id="SATMyc" name="Dashboard.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.cpp"/>
-            <FILE id="ak0ZaE" name="Dashboard.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.h"/>
-            <FILE id="Tigws8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.cpp"/>
-            <FILE id="yJ1nQL" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.h"/>
-            <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.cpp"/>
-            <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.h"/>
-            <FILE id="Gab2ug" name="UserProfileComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.cpp"/>
-            <FILE id="MDaNsa" name="UserProfileComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.h"/>
           </GROUP>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">

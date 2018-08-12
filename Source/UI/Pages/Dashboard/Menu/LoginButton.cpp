@@ -25,6 +25,7 @@
 #include "App.h"
 #include "MainLayout.h"
 #include "SessionService.h"
+#include "UserProfile.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
@@ -32,9 +33,8 @@
 
 LoginButton::LoginButton()
 {
-    this->component.reset(new IconComponent(Icons::github));
-    this->addAndMakeVisible(component.get());
-    component->setName ("new component");
+    this->avatar.reset(new IconComponent(Icons::github));
+    this->addAndMakeVisible(avatar.get());
 
     this->separator.reset(new SeparatorVertical());
     this->addAndMakeVisible(separator.get());
@@ -50,18 +50,19 @@ LoginButton::LoginButton()
 
 
     //[UserPreSize]
-    this->clickHandler->onClick = [](){
+    this->clickHandler->onClick = [this]() {
         ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
         tooltip->onCancel = []() {
             App::Helio().getSessionService()->cancelSignInProcess();
         };
 
         App::Layout().showModalComponentUnowned(tooltip.release());
-        App::Helio().getSessionService()->signIn("Github", [](bool succeeded, const Array<String> &errors) {
+        App::Helio().getSessionService()->signIn("Github", [this](bool succeeded, const Array<String> &errors) {
             App::Layout().hideModalComponentUnowned();
             if (succeeded)
             {
                 App::Layout().showModalComponentUnowned(new SuccessTooltip());
+                this->switchToUserProfile();
             }
             else
             {
@@ -83,7 +84,7 @@ LoginButton::~LoginButton()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    component = nullptr;
+    avatar = nullptr;
     separator = nullptr;
     ctaLabel = nullptr;
     clickHandler = nullptr;
@@ -106,9 +107,9 @@ void LoginButton::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    component->setBounds(2, 2, 28, getHeight() - 4);
-    separator->setBounds(38, 4, 4, getHeight() - 8);
-    ctaLabel->setBounds(42, 0, getWidth() - 42, getHeight() - 0);
+    avatar->setBounds(6, (getHeight() / 2) - ((getHeight() - 12) / 2), 24, getHeight() - 12);
+    separator->setBounds(34, 4, 4, getHeight() - 8);
+    ctaLabel->setBounds(38, 0, getWidth() - 38, getHeight() - 0);
     clickHandler->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -127,14 +128,14 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="32">
   <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="new component" id="206f63304f17a28e" memberName="component"
-                    virtualName="" explicitFocusOrder="0" pos="2 2 28 4M" class="IconComponent"
+  <GENERICCOMPONENT name="" id="206f63304f17a28e" memberName="avatar" virtualName=""
+                    explicitFocusOrder="0" pos="6 0Cc 24 12M" class="IconComponent"
                     params="Icons::github"/>
   <JUCERCOMP name="" id="49a90a98eefa147f" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="38 4 4 8M" sourceFile="../../../Themes/SeparatorVertical.cpp"
+             explicitFocusOrder="0" pos="34 4 4 8M" sourceFile="../../../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
   <LABEL name="" id="becf12dc18ebf08f" memberName="ctaLabel" virtualName=""
-         explicitFocusOrder="0" pos="42 0 42M 0M" labelText="dialog::auth::github"
+         explicitFocusOrder="0" pos="38 0 38M 0M" labelText="dialog::auth::github"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
