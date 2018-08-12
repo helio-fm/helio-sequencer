@@ -34,9 +34,10 @@ class Log;
 #include "../../Themes/PanelBackgroundB.h"
 #include "../../Themes/PanelBackgroundA.h"
 #include "Menu/DashboardMenu.h"
-#include "Menu/LoginButton.h"
 #include "Menu/OpenProjectButton.h"
 #include "Menu/CreateProjectButton.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "Menu/LoginButton.h"
 
 class Dashboard final : public Component
 {
@@ -65,10 +66,11 @@ private:
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<LogoFader> logoImage;
-    UniquePointer<DashboardMenu> component;
-    UniquePointer<LoginButton> component2;
-    UniquePointer<OpenProjectButton> component3;
-    UniquePointer<CreateProjectButton> component4;
+    UniquePointer<DashboardMenu> projectsList;
+    UniquePointer<OpenProjectButton> openProjectButton;
+    UniquePointer<CreateProjectButton> createProjectButton;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator2;
+    UniquePointer<LoginButton> loginButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
 };

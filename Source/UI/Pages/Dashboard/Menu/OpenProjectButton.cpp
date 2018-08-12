@@ -82,10 +82,10 @@ void OpenProjectButton::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    newProjectImage->setBounds(2, 2, 28, getHeight() - 4);
-    openProjectLabel->setBounds(42, 0, getWidth() - 42, getHeight() - 0);
-    separator->setBounds(38, 4, 4, getHeight() - 8);
-    clickHandler->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
+    newProjectImage->setBounds(6, (getHeight() / 2) - ((getHeight() - 12) / 2), 24, getHeight() - 12);
+    openProjectLabel->setBounds(38, 0, getWidth() - 42, getHeight() - 0);
+    separator->setBounds(34, 4, 4, getHeight() - 8);
+    clickHandler->setBounds(0, 24, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -104,18 +104,18 @@ BEGIN_JUCER_METADATA
                  overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="32">
   <BACKGROUND backgroundColour="ffffff"/>
   <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="newProjectImage" virtualName=""
-                    explicitFocusOrder="0" pos="2 2 28 4M" class="IconComponent"
+                    explicitFocusOrder="0" pos="6 0Cc 24 12M" class="IconComponent"
                     params="Icons::browse"/>
   <LABEL name="" id="8ebb161d0a976635" memberName="openProjectLabel" virtualName=""
-         explicitFocusOrder="0" pos="42 0 42M 0M" labelText="menu::workspace::project::open"
+         explicitFocusOrder="0" pos="38 0 42M 0M" labelText="menu::workspace::project::open"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="18.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="49a90a98eefa147f" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="38 4 4 8M" sourceFile="../../../Themes/SeparatorVertical.cpp"
+             explicitFocusOrder="0" pos="34 4 4 8M" sourceFile="../../../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="4b99a932dcc449b0" memberName="clickHandler" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 0M" class="OverlayButton"
+                    explicitFocusOrder="0" pos="0 24 0M 0M" class="OverlayButton"
                     params=""/>
 </JUCER_COMPONENT>
 

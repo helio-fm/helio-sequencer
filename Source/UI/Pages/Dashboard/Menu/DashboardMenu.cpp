@@ -42,10 +42,6 @@ DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
     this->listBox.reset(new ListBox());
     this->addAndMakeVisible(listBox.get());
 
-    this->separator1.reset(new SeparatorHorizontalFadingReversed());
-    this->addAndMakeVisible(separator1.get());
-    this->separator2.reset(new SeparatorHorizontalFading());
-    this->addAndMakeVisible(separator2.get());
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -69,8 +65,6 @@ DashboardMenu::~DashboardMenu()
     //[/Destructor_pre]
 
     listBox = nullptr;
-    separator1 = nullptr;
-    separator2 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -90,9 +84,7 @@ void DashboardMenu::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    listBox->setBounds(48, 2, getWidth() - 96, getHeight() - 5);
-    separator1->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 3);
-    separator2->setBounds(0, getHeight() - 3, getWidth() - 2, 3);
+    listBox->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -191,13 +183,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="ae05579f2fbb226b" memberName="listBox" virtualName=""
-                    explicitFocusOrder="0" pos="48 2 96M 5M" class="ListBox" params=""/>
-  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator1" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 0 0M 3" sourceFile="../../../Themes/SeparatorHorizontalFadingReversed.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="5b285323b956eb4e" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="0 0Rr 2M 3" sourceFile="../../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
+                    explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
