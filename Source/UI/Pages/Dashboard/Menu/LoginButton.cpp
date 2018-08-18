@@ -62,7 +62,7 @@ LoginButton::LoginButton()
             if (succeeded)
             {
                 App::Layout().showModalComponentUnowned(new SuccessTooltip());
-                this->switchToUserProfile();
+                //this->switchToUserProfile();
             }
             else
             {

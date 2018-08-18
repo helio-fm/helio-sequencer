@@ -85,7 +85,7 @@ void OpenProjectButton::resized()
     newProjectImage->setBounds(6, (getHeight() / 2) - ((getHeight() - 12) / 2), 24, getHeight() - 12);
     openProjectLabel->setBounds(38, 0, getWidth() - 42, getHeight() - 0);
     separator->setBounds(34, 4, 4, getHeight() - 8);
-    clickHandler->setBounds(0, 24, getWidth() - 0, getHeight() - 0);
+    clickHandler->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -115,7 +115,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="34 4 4 8M" sourceFile="../../../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="4b99a932dcc449b0" memberName="clickHandler" virtualName=""
-                    explicitFocusOrder="0" pos="0 24 0M 0M" class="OverlayButton"
+                    explicitFocusOrder="0" pos="0 0 0M 0M" class="OverlayButton"
                     params=""/>
 </JUCER_COMPONENT>
 

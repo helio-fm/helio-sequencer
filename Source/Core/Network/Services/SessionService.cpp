@@ -17,15 +17,8 @@
 
 #include "Common.h"
 #include "SessionService.h"
-
-#include "Config.h"
 #include "JsonSerializer.h"
-
-#include "HelioTheme.h"
-#include "App.h"
-
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
+#include "Config.h"
 
 // Try to update our sliding session after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
@@ -161,6 +154,7 @@ void SessionService::authSessionFinished(const AuthSession session)
     SessionService::setApiToken(session.getToken());
     // Don't call authCallback right now, instead request a user profile and callback when ready
     this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
+    this->sendChangeMessage();
 }
 
 void SessionService::authSessionFailed(const Array<String> &errors)
@@ -171,6 +165,7 @@ void SessionService::authSessionFailed(const Array<String> &errors)
         this->authCallback(false, errors);
         this->authCallback = nullptr;
     }
+    this->sendChangeMessage();
 }
 
 //===----------------------------------------------------------------------===//
@@ -186,6 +181,7 @@ void SessionService::requestProfileOk(const UserProfile profile)
         this->authCallback(true, {});
         this->authCallback = nullptr;
     }
+    this->sendChangeMessage();
 }
 
 void SessionService::requestProfileFailed(const Array<String> &errors)
@@ -196,6 +192,7 @@ void SessionService::requestProfileFailed(const Array<String> &errors)
         this->authCallback(false, errors);
         this->authCallback = nullptr;
     }
+    this->sendChangeMessage();
 }
 
 //===----------------------------------------------------------------------===//
@@ -205,12 +202,14 @@ void SessionService::requestProfileFailed(const Array<String> &errors)
 void SessionService::tokenUpdateOk(const String &newToken)
 {
     SessionService::setApiToken(newToken);
+    this->sendChangeMessage();
 }
 
 void SessionService::tokenUpdateFailed(const Array<String> &errors)
 {
     this->resetUserProfile();
     SessionService::setApiToken({});
+    this->sendChangeMessage();
 }
 
 void SessionService::tokenUpdateNoResponse()

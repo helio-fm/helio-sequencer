@@ -25,15 +25,17 @@
 //[MiscUserDefs]
 #include "HelioCallout.h"
 #include "RootTreeItem.h"
+#include "SettingsTreeItem.h"
 #include "MainLayout.h"
 #include "LogComponent.h"
 #include "SerializationKeys.h"
 #include "DashboardMenu.h"
 #include "LogoFader.h"
 #include "App.h"
-#include "SettingsTreeItem.h"
 #include "Workspace.h"
+#include "SessionService.h"
 #include "IconComponent.h"
+#include "UserProfile.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
@@ -55,19 +57,23 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->addAndMakeVisible(projectsList.get());
     this->openProjectButton.reset(new OpenProjectButton());
     this->addAndMakeVisible(openProjectButton.get());
-    openProjectButton->setBounds(400, 104, 271, 32);
+    openProjectButton->setBounds(400, 108, 271, 32);
 
     this->createProjectButton.reset(new CreateProjectButton());
     this->addAndMakeVisible(createProjectButton.get());
-    createProjectButton->setBounds(400, 64, 271, 32);
+    createProjectButton->setBounds(400, 68, 271, 32);
 
     this->separator2.reset(new SeparatorHorizontalFadingReversed());
     this->addAndMakeVisible(separator2.get());
-    separator2->setBounds(264, 56, 488, 3);
+    separator2->setBounds(264, 60, 488, 3);
 
     this->loginButton.reset(new LoginButton());
     this->addAndMakeVisible(loginButton.get());
-    loginButton->setBounds(400, 20, 272, 32);
+    loginButton->setBounds(400, 24, 272, 32);
+
+    this->userProfile.reset(new UserProfileComponent());
+    this->addAndMakeVisible(userProfile.get());
+    userProfile->setBounds(400, 24, 272, 32);
 
 
     //[UserPreSize]
@@ -79,12 +85,15 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->setSize(600, 400);
 
     //[Constructor]
+    this->updateLoginAndProfileButtons();
+    App::Helio().getSessionService()->addChangeListener(this);
     //[/Constructor]
 }
 
 Dashboard::~Dashboard()
 {
     //[Destructor_pre]
+    App::Helio().getSessionService()->removeChangeListener(this);
     //[/Destructor_pre]
 
     skew = nullptr;
@@ -96,6 +105,7 @@ Dashboard::~Dashboard()
     createProjectButton = nullptr;
     separator2 = nullptr;
     loginButton = nullptr;
+    userProfile = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -135,6 +145,22 @@ void Dashboard::visibilityChanged()
     //[/UserCode_visibilityChanged]
 }
 
+void Dashboard::changeListenerCallback(ChangeBroadcaster *source)
+{
+    // Listens to session service
+    this->updateLoginAndProfileButtons();
+}
+
+void Dashboard::updateLoginAndProfileButtons()
+{
+    const bool loggedIn = App::Helio().getSessionService()->isLoggedIn();
+    this->loginButton->setVisible(!loggedIn);
+    this->userProfile->setVisible(loggedIn);
+    if (loggedIn)
+    {
+        this->userProfile->updateProfileInfo();
+    }
+}
 
 //[MiscUserCode]
 //[/MiscUserCode]
@@ -144,10 +170,10 @@ void Dashboard::visibilityChanged()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="Dashboard" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="MainLayout &amp;workspaceRef"
-                 variableInitialisers="workspace(workspaceRef)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.660" fixedSize="0"
-                 initialWidth="600" initialHeight="400">
+                 componentName="" parentClasses="public Component, public ChangeListener"
+                 constructorParams="MainLayout &amp;workspaceRef" variableInitialisers="workspace(workspaceRef)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.660"
+                 fixedSize="0" initialWidth="600" initialHeight="400">
   <METHODS>
     <METHOD name="visibilityChanged()"/>
   </METHODS>
@@ -172,16 +198,19 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="10Rr 10Rr 376 20M" sourceFile="Menu/DashboardMenu.cpp"
              constructorParams="&amp;App::Workspace()"/>
   <JUCERCOMP name="" id="13e51011dd762205" memberName="openProjectButton"
-             virtualName="" explicitFocusOrder="0" pos="400 104 271 32" sourceFile="Menu/OpenProjectButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="400 108 271 32" sourceFile="Menu/OpenProjectButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="c748db515539334" memberName="createProjectButton"
-             virtualName="" explicitFocusOrder="0" pos="400 64 271 32" sourceFile="Menu/CreateProjectButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="400 68 271 32" sourceFile="Menu/CreateProjectButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="26985c577d404f94" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="264 56 488 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             explicitFocusOrder="0" pos="264 60 488 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2ed6285515243e89" memberName="loginButton" virtualName=""
-             explicitFocusOrder="0" pos="400 20 272 32" sourceFile="Menu/LoginButton.cpp"
+             explicitFocusOrder="0" pos="400 24 272 32" sourceFile="Menu/LoginButton.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="f5d48eba3545f546" memberName="userProfile" virtualName=""
+             explicitFocusOrder="0" pos="400 24 272 32" sourceFile="UserProfileComponent.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

@@ -18,8 +18,11 @@
 #pragma once
 
 //[Headers]
+#include "IconComponent.h"
+#include "OverlayButton.h"
 //[/Headers]
 
+#include "../../Themes/SeparatorVertical.h"
 
 class UserProfileComponent final : public Component
 {
@@ -29,6 +32,7 @@ public:
     ~UserProfileComponent();
 
     //[UserMethods]
+    void updateProfileInfo();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -41,7 +45,9 @@ private:
     //[/UserVariables]
 
     UniquePointer<Label> nameLabel;
-    UniquePointer<Label> linkLabel;
+    UniquePointer<IconComponent> avatar;
+    UniquePointer<SeparatorVertical> separator;
+    UniquePointer<OverlayButton> clickHandler;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserProfileComponent)
 };

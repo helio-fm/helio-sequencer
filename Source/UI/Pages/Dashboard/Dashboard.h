@@ -38,8 +38,10 @@ class Log;
 #include "Menu/CreateProjectButton.h"
 #include "../../Themes/SeparatorHorizontalFadingReversed.h"
 #include "Menu/LoginButton.h"
+#include "UserProfileComponent.h"
 
-class Dashboard final : public Component
+class Dashboard final : public Component,
+                        public ChangeListener
 {
 public:
 
@@ -60,6 +62,9 @@ private:
 
     MainLayout &workspace;
 
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+    void updateLoginAndProfileButtons();
+
     //[/UserVariables]
 
     UniquePointer<SeparatorVerticalSkew> skew;
@@ -71,6 +76,7 @@ private:
     UniquePointer<CreateProjectButton> createProjectButton;
     UniquePointer<SeparatorHorizontalFadingReversed> separator2;
     UniquePointer<LoginButton> loginButton;
+    UniquePointer<UserProfileComponent> userProfile;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
 };

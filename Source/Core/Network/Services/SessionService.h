@@ -25,6 +25,7 @@
 #include "UpdatesCheckThread.h"
 
 class SessionService final :
+    public ChangeBroadcaster,
     private BackendService,
     private AuthThread::Listener,
     private TokenUpdateThread::Listener,

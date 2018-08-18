@@ -51,7 +51,7 @@ public:
     { return this->data.getProperty(Serialization::Api::V1::Identity::name); }
 
     String getProfileUrl() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::Identity::login); }
+    { return this->data.getProperty(Serialization::Api::V1::Identity::profileUrl); }
 
     String getAvatarUrl() const noexcept
     { return this->data.getProperty(Serialization::Api::V1::Identity::avatarUrl); }
