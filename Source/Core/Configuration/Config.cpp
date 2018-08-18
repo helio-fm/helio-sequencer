@@ -33,12 +33,12 @@ String Config::getDeviceId()
     return String(CompileTimeHash(systemStats.toUTF8()));
 }
 
-void Config::set(const Identifier &key, const var &value)
+void Config::set(const Identifier &key, const var &value, bool delayedSave)
 {
-    App::Config().setProperty(key, value);
+    App::Config().setProperty(key, value, delayedSave);
 }
 
-String Config::get(const Identifier &key, const String &defaultReturnValue /*= String::empty*/)
+String Config::get(const Identifier &key, const String &defaultReturnValue)
 {
     return App::Config().getProperty(key, defaultReturnValue);
 }
@@ -80,7 +80,7 @@ Config::Config(int timeoutToSaveMs) :
 
 Config::~Config()
 {
-    this->setProperty(Serialization::Core::machineID, this->getDeviceId());
+    this->setProperty(Serialization::Core::machineID, this->getDeviceId(), false);
     this->saveIfNeeded();
 }
 
@@ -90,8 +90,6 @@ bool Config::saveIfNeeded()
     {
         return false;
     }
-
-    Logger::writeToLog("Config::saveIfNeeded - " + this->propertiesFile.getFullPathName());
 
     InterProcessLock::ScopedLockType fLock(this->fileLock);
     if (!fLock.isLocked())
@@ -103,6 +101,7 @@ bool Config::saveIfNeeded()
     if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, this->config))
     {
         needsSaving = false;
+        Logger::writeToLog("Config saved: " + this->propertiesFile.getFullPathName());
         return true;
     }
 
@@ -116,8 +115,6 @@ bool Config::reload()
         return false;
     }
 
-    Logger::writeToLog("Config::reload - " + this->propertiesFile.getFullPathName());
-
     InterProcessLock::ScopedLockType fLock(this->fileLock);
 
     const ValueTree doc(DocumentHelpers::load<XmlSerializer>(this->propertiesFile));
@@ -125,6 +122,7 @@ bool Config::reload()
     if (doc.isValid() && doc.hasType(Serialization::Core::globalConfig))
     {
         this->config = doc;
+        Logger::writeToLog("Config reloaded");
         return true;
     }
 
@@ -158,10 +156,13 @@ void Config::loadConfigFor(const Identifier &key, Serializable *serializable)
     }
 }
 
-void Config::setProperty(const Identifier &key, const var &value)
+void Config::setProperty(const Identifier &key, const var &value, bool delayedSave)
 {
     this->config.setProperty(key, value, nullptr);
-    this->onConfigChanged();
+    if (delayedSave)
+    {
+        this->onConfigChanged();
+    }
 }
 
 String Config::getProperty(const Identifier &key, const String &fallback) const noexcept

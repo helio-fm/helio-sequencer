@@ -29,7 +29,7 @@ public:
     static String getDeviceId();
 
     static bool contains(const Identifier &key);
-    static void set(const Identifier &key, const var &value);
+    static void set(const Identifier &key, const var &value, bool delayedSave = true);
     static String get(const Identifier &key, const String &fallback = {});
 
     static void save(const Serializable *serializer, const Identifier &key);
@@ -46,7 +46,7 @@ private:
     void saveConfigFor(const Identifier &key, const Serializable *serializer);
     void loadConfigFor(const Identifier &key, Serializable *serializer);
 
-    void setProperty(const Identifier &key, const var &value);
+    void setProperty(const Identifier &key, const var &value, bool delayedSave);
     String getProperty(const Identifier &key, const String &fallback) const noexcept;
 
     bool containsPropertyOrChild(const Identifier &key) const noexcept;
