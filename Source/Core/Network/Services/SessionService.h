@@ -18,17 +18,16 @@
 #pragma once
 
 #include "BackendService.h"
-#include "SignInThread.h"
-#include "SignUpThread.h"
+#include "AuthThread.h"
 #include "TokenUpdateThread.h"
 #include "RequestResourceThread.h"
 #include "RequestUserProfileThread.h"
 #include "UpdatesCheckThread.h"
 
 class SessionService final :
+    public ChangeBroadcaster,
     private BackendService,
-    private SignInThread::Listener,
-    private SignUpThread::Listener,
+    private AuthThread::Listener,
     private TokenUpdateThread::Listener,
     private RequestUserProfileThread::Listener
 {
@@ -43,27 +42,27 @@ public:
 
     const UserProfile &getUserProfile() const noexcept;
     
-    void signIn(const String &login, const String &passwordHash, AuthCallback callback = nullptr);
+    void signIn(const String &provider, AuthCallback callback = nullptr);
+    void cancelSignInProcess();
     void signOut();
 
 private:
 
     void timerCallback() override;
+    static void setApiToken(const String &token);
 
     UserProfile userProfile;
-    
-    AuthCallback loginCallback;
-    AuthCallback registrationCallback;
+    void resetUserProfile();
+
+    AuthCallback authCallback;
 
 private:
     
-    // will be called on the main thread:
+    // will be called on the message thread:
     
-    void signInOk(const String &userEmail, const String &newToken) override;
-    void signInFailed(const Array<String> &errors) override;
-
-    void signUpOk(const String &userEmail, const String &newToken) override;
-    void signUpFailed(const Array<String> &errors) override;
+    void authSessionInitiated(const AuthSession session, const String &redirect) override;
+    void authSessionFinished(const AuthSession session) override;
+    void authSessionFailed(const Array<String> &errors) override;
 
     void requestProfileOk(const UserProfile profile) override;
     void requestProfileFailed(const Array<String> &errors) override;

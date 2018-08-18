@@ -113,6 +113,7 @@ struct Icons final
         login,
         remote,
         local,
+        github,
 
         commit,
         reset,

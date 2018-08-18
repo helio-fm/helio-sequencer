@@ -33,9 +33,9 @@ class MenuItemComponent;
 #endif
 //[/Headers]
 
-#include "../../Themes/FramePanel.h"
 #include "../../Themes/SeparatorHorizontalFading.h"
 #include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
 
 class AudioPluginsListComponent final : public Component,
                                         public TableListBoxModel,
@@ -89,12 +89,12 @@ private:
     OrchestraPitTreeItem &instrumentsRoot;
     //[/UserVariables]
 
-    ScopedPointer<FramePanel> panel;
-    ScopedPointer<TableListBox> pluginsList;
-    ScopedPointer<MenuItemComponent> initialScanButton;
-    ScopedPointer<SeparatorHorizontalFading> separator1;
-    ScopedPointer<SeparatorHorizontalFading> separator2;
-    ScopedPointer<Label> titleLabel;
+    UniquePointer<TableListBox> pluginsList;
+    UniquePointer<MenuItemComponent> initialScanButton;
+    UniquePointer<SeparatorHorizontalFading> separator1;
+    UniquePointer<SeparatorHorizontalFading> separator2;
+    UniquePointer<Label> titleLabel;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginsListComponent)
 };

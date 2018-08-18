@@ -21,10 +21,11 @@
 class VersionControl;
 //[/Headers]
 
+#include "../../Themes/PanelBackgroundA.h"
+#include "../../Themes/SeparatorVerticalSkew.h"
 #include "../../Themes/PanelBackgroundB.h"
 #include "StageComponent.h"
 #include "HistoryComponent.h"
-#include "../../Themes/ShadowRightwards.h"
 
 class VersionControlEditor final : public Component,
                                    public ChangeListener
@@ -52,11 +53,12 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<PanelBackgroundA> backgroundA;
+    UniquePointer<SeparatorVerticalSkew> skew;
+    UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<StageComponent> stageComponent;
     UniquePointer<HistoryComponent> historyComponent;
     UniquePointer<Component> anchor;
-    UniquePointer<ShadowRightwards> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VersionControlEditor)
 };

@@ -19,7 +19,6 @@
 
 //[Headers]
 class HelioTheme;
-#define PANEL_C_HAS_PRERENDERED_BACKGROUND 1
 //[/Headers]
 
 

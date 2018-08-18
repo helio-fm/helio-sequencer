@@ -20,7 +20,7 @@
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
 
-class RequestResourceThread final : private Thread
+class RequestResourceThread final : public Thread
 {
 public:
     
@@ -57,7 +57,7 @@ private:
     
     void run() override
     {
-        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api;
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 

@@ -142,6 +142,7 @@ void Icons::initBuiltInImages()
     setIconForKey(login);
     setIconForKey(remote);
     setIconForKey(local);
+    setIconForKey(github);
 
     setIconForKey(commit);
     setIconForKey(reset);

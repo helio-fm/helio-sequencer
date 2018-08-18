@@ -60,31 +60,10 @@ void PanelBackgroundB::paint (Graphics& g)
 
     {
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0xff48358c), fillColour2 = Colour (0xff2d3e61);
+        Colour fillColour = Colour (0xff474c90);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
-                                       0.0f - 0.0f + y,
-                                       fillColour2,
-                                       0.0f - 0.0f + x,
-                                       static_cast<float> (proportionOfHeight (0.6500f)) - 0.0f + y,
-                                       true));
-        g.fillRect (x, y, width, height);
-    }
-
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0x1e48358c), fillColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> (proportionOfWidth (0.8924f)) - 0.0f + x,
-                                       static_cast<float> (proportionOfHeight (0.9827f)) - 0.0f + y,
-                                       fillColour2,
-                                       80.0f - 0.0f + x,
-                                       static_cast<float> (proportionOfHeight (0.0000f)) - 0.0f + y,
-                                       false));
+        g.setColour (fillColour);
         g.fillRect (x, y, width, height);
     }
 
@@ -92,9 +71,9 @@ void PanelBackgroundB::paint (Graphics& g)
 #endif
 
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    if (theme.getBgCache1().isValid())
+    if (theme.getBgCacheB().isValid())
     {
-        g.setTiledImageFill(theme.getBgCache1(), 0, 0, 1.f);
+        g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());
     }
     else
@@ -120,7 +99,7 @@ void PanelBackgroundB::resized()
 
 void PanelBackgroundB::updateRender(HelioTheme &theme)
 {
-    if (theme.getBgCache1().isValid())
+    if (theme.getBgCacheB().isValid())
     {
         return;
     }
@@ -136,7 +115,7 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
     g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));
     g.fillAll();
     HelioTheme::drawNoise(theme, g, 0.5f);
-    theme.getBgCache1() = render;
+    theme.getBgCacheB() = render;
 }
 
 //[/MiscUserCode]
@@ -150,10 +129,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="0"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 0M 0M" fill=" radial: 0C 0, 0 65%, 0=ff48358c, 1=ff2d3e61"
-          hasStroke="0"/>
-    <RECT pos="0 0 0M 0M" fill="linear: 89.24% 98.268%, 80 0%, 0=1e48358c, 1=0"
-          hasStroke="0"/>
+    <RECT pos="0 0 0M 0M" fill="solid: ff474c90" hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

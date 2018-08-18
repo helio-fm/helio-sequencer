@@ -30,15 +30,23 @@ class OpenGLSettings;
 class Log;
 //[/Headers]
 
+#include "../../Themes/SeparatorVerticalSkew.h"
 #include "../../Themes/PanelBackgroundB.h"
+#include "../../Themes/PanelBackgroundA.h"
 #include "Menu/DashboardMenu.h"
+#include "Menu/OpenProjectButton.h"
+#include "Menu/CreateProjectButton.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "Menu/LoginButton.h"
+#include "UserProfileComponent.h"
 
-class WorkspacePage final : public Component
+class Dashboard final : public Component,
+                        public ChangeListener
 {
 public:
 
-    WorkspacePage(MainLayout &workspaceRef);
-    ~WorkspacePage();
+    Dashboard(MainLayout &workspaceRef);
+    ~Dashboard();
 
     //[UserMethods]
     //[/UserMethods]
@@ -54,11 +62,21 @@ private:
 
     MainLayout &workspace;
 
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+    void updateLoginAndProfileButtons();
+
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<SeparatorVerticalSkew> skew;
+    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<LogoFader> logoImage;
-    UniquePointer<DashboardMenu> component;
+    UniquePointer<DashboardMenu> projectsList;
+    UniquePointer<OpenProjectButton> openProjectButton;
+    UniquePointer<CreateProjectButton> createProjectButton;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator2;
+    UniquePointer<LoginButton> loginButton;
+    UniquePointer<UserProfileComponent> userProfile;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkspacePage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
 };

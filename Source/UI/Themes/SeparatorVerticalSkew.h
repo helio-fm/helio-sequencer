@@ -18,28 +18,17 @@
 #pragma once
 
 //[Headers]
-class DashboardMenu;
-class IconComponent;
-
-#include "RecentFilesList.h"
-#include "DraggingListBoxComponent.h"
 //[/Headers]
 
 
-class RecentProjectRow  : public DraggingListBoxComponent
+class SeparatorVerticalSkew final : public Component
 {
 public:
 
-    RecentProjectRow (DashboardMenu &parent, ListBox &parentListBox);
-
-    ~RecentProjectRow();
+    SeparatorVerticalSkew();
+    ~SeparatorVerticalSkew();
 
     //[UserMethods]
-
-    void setSelected(bool shouldBeSelected) override;
-
-    void updateDescription(bool isLastRow, const RecentFileDescription::Ptr file);
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -49,20 +38,12 @@ public:
 private:
 
     //[UserVariables]
-
-    Component *createHighlighterComponent() override;
-
-    DashboardMenu &parentList;
-    RecentFileDescription::Ptr targetFile;
-    bool isSelected;
-
+    Path line1;
+    Path line2;
     //[/UserVariables]
 
-    ScopedPointer<Label> titleLabel;
-    ScopedPointer<Label> dateLabel;
-    ScopedPointer<IconComponent> activenessImage;
-    ScopedPointer<IconComponent> remoteIndicatorImage;
-    ScopedPointer<IconComponent> localIndicatorImage;
+    Path internalPath1;
+    Path internalPath2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecentProjectRow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SeparatorVerticalSkew)
 };

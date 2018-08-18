@@ -32,7 +32,7 @@ UpdatesService::UpdatesService()
 void UpdatesService::timerCallback()
 {
     this->stopTimer();
-    this->getThreadFor<UpdatesCheckThread>()->checkForUpdates(this);
+    this->getNewThreadFor<UpdatesCheckThread>()->checkForUpdates(this);
 }
 
 //===----------------------------------------------------------------------===//
@@ -99,7 +99,7 @@ void UpdatesService::updatesCheckOk(const UpdatesInfo info)
         {
             // I just don't want to fire all requests at once:
             const auto delay = r.nextInt(5) * 1000;
-            const auto requestThread = this->getThreadFor<RequestResourceThread>();
+            const auto requestThread = this->getNewThreadFor<RequestResourceThread>();
             requestThread->requestResource(this, newResource.getName(), delay);
             everythingIsUpToDate = false;
         }

@@ -43,7 +43,7 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
     this->addAndMakeVisible(component.get());
 
     //[UserPreSize]
-    this->bgColour = this->findColour(ColourIDs::BackgroundB::fill);
+    this->bgColour = this->findColour(ColourIDs::BackgroundA::fill);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]

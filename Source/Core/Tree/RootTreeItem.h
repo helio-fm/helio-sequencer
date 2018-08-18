@@ -24,7 +24,7 @@ class VersionControlTreeItem;
 class TrackGroupTreeItem;
 class MidiTrackTreeItem;
 class ScriptTreeItem;
-class WorkspacePage;
+class Dashboard;
 
 class RootTreeItem final : public TreeItem
 {
@@ -88,6 +88,6 @@ public:
 
 private:
 
-    ScopedPointer<WorkspacePage> introPage;
+    ScopedPointer<Dashboard> dashboard;
 
 };

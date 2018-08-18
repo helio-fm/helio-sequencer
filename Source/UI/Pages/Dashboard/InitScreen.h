@@ -18,40 +18,41 @@
 #pragma once
 
 //[Headers]
-class IconComponent;
-#include "DraggingListBoxComponent.h"
-#include "DashboardMenu.h"
-#include "CommandIDs.h"
+class LogoFader;
 //[/Headers]
 
+#include "../../Themes/SeparatorHorizontalReversed.h"
+#include "../../Themes/ShadowDownwards.h"
+#include "../../Themes/PanelBackgroundA.h"
 
-class OpenProjectRow final : public DraggingListBoxComponent
+class InitScreen final : public Component,
+                         private Timer
 {
 public:
 
-    OpenProjectRow(Component &parentComponent, ListBox &parentListBox);
-    ~OpenProjectRow();
+    InitScreen();
+    ~InitScreen();
 
     //[UserMethods]
-    void setSelected(bool shouldBeSelected) override
-    {
-        this->parent.postCommandMessage(CommandIDs::OpenProject);
-    }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void visibilityChanged() override;
+    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
-    Component *createHighlighterComponent() override;
-    Component &parent;
+
+    void timerCallback() override;
+
     //[/UserVariables]
 
-    UniquePointer<IconComponent> newProjectImage;
-    UniquePointer<Label> openProjectLabel;
+    UniquePointer<SeparatorHorizontalReversed> headLine;
+    UniquePointer<ShadowDownwards> headShadow;
+    UniquePointer<PanelBackgroundA> gradient1;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectRow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InitScreen)
 };

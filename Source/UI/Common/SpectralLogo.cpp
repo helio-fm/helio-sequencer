@@ -109,7 +109,7 @@ void SpectralLogo::paint(Graphics &g)
         const uint32 timeNow = Time::getMillisecondCounter();
 
         Random r;
-        Colour c(Colours::white.withAlpha(0.2f));
+        Colour c(Colours::white.withAlpha(0.35f));
         g.setColour(c);
 
         for (int i = 0; i < this->bandCount; ++i)
@@ -118,7 +118,7 @@ void SpectralLogo::paint(Graphics &g)
             const float wavePosition = float(i) * (MathConstants<float>::twoPi * float(NUM_WAVES) / float(this->bandCount));
             const float multiplier = 0.5f + sinf(waveOffset + wavePosition) / 2.f;
 
-            // Controls rays sharpness:
+            // Rays' sharpness:
             const float heptagramShape = 0.5f + ((multiplier * multiplier) / 2.f);
             //const float heptagramShape = 0.5f + ((multiplier * multiplier * multiplier) / 2.f);
             

@@ -20,15 +20,17 @@
 //[Headers]
 //[/Headers]
 
+#include "../../Themes/FramePanel.h"
 
-class ShadowHorizontalFading final : public Component
+class SimpleSettingsWrapper final : public Component
 {
 public:
 
-    ShadowHorizontalFading();
-    ~ShadowHorizontalFading();
+    SimpleSettingsWrapper(Component *targetComponent);
+    ~SimpleSettingsWrapper();
 
     //[UserMethods]
+    void showNonOwned(Component *targetComponent);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -38,8 +40,12 @@ public:
 private:
 
     //[UserVariables]
+    ComponentAnimator animator;
+    SafePointer<Component> target;
+    bool hasPreviousTarget;
     //[/UserVariables]
 
+    UniquePointer<FramePanel> panel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShadowHorizontalFading)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleSettingsWrapper)
 };

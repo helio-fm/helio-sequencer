@@ -55,12 +55,12 @@ PanelBackgroundA::~PanelBackgroundA()
 void PanelBackgroundA::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    // Used in loading page, where caches are not available:
+#if 0
     //[/UserPrePaint]
 
     {
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour = Colour (0xff48358c);
+        Colour fillColour = Colour (0xff5156a1);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         fillColour = this->findColour(ColourIDs::BackgroundA::fill);
         //[/UserPaintCustomArguments]
@@ -68,23 +68,20 @@ void PanelBackgroundA::paint (Graphics& g)
         g.fillRect (x, y, width, height);
     }
 
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0x1e636363), fillColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> (proportionOfWidth (0.7500f)) - 0.0f + x,
-                                       static_cast<float> (proportionOfHeight (0.6500f)) - 0.0f + y,
-                                       fillColour2,
-                                       0.0f - 0.0f + x,
-                                       static_cast<float> (proportionOfHeight (0.0000f)) - 0.0f + y,
-                                       false));
-        g.fillRect (x, y, width, height);
-    }
-
     //[UserPaint] Add your own custom painting code here..
-    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.f);
+#endif
+
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    if (theme.getBgCacheA().isValid())
+    {
+        g.setTiledImageFill(theme.getBgCacheA(), 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
+    }
+    else
+    {
+        g.setColour(this->findColour(ColourIDs::BackgroundA::fill));
+        g.fillRect(this->getLocalBounds());
+    }
     //[/UserPaint]
 }
 
@@ -99,6 +96,23 @@ void PanelBackgroundA::resized()
 
 
 //[MiscUserCode]
+void PanelBackgroundA::updateRender(HelioTheme &theme)
+{
+    if (theme.getBgCacheA().isValid())
+    {
+        return;
+    }
+
+    const int w = 128; // d.totalArea.getWidth() * scale;
+    const int h = 128; // d.totalArea.getHeight() * scale;
+
+    Image render(Image::ARGB, w, h, true);
+    Graphics g(render);
+    g.setColour(theme.findColour(ColourIDs::BackgroundA::fill));
+    g.fillAll();
+    HelioTheme::drawNoise(theme, g, 0.5f);
+    theme.getBgCacheA() = render;
+}
 //[/MiscUserCode]
 
 #if 0
@@ -110,9 +124,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="0"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 0M 0M" fill="solid: ff48358c" hasStroke="0"/>
-    <RECT pos="0 0 0M 0M" fill="linear: 75% 65%, 0 0%, 0=1e636363, 1=0"
-          hasStroke="0"/>
+    <RECT pos="0 0 0M 0M" fill="solid: ff5156a1" hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

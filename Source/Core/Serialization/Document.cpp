@@ -265,14 +265,14 @@ bool Document::internalSave(File result)
 
     if (savedOk)
     {
-        Logger::writeToLog("Document::internalSave ok :: " + result.getFullPathName());
         this->workingFile = result;
         this->hasChanges = false;
         this->owner.onDocumentDidSave(result);
+        Logger::writeToLog("Document saved: " + result.getFullPathName());
         return true;
     }
 
-    Logger::writeToLog("Document::internalSave failed :: " + result.getFullPathName());
+    Logger::writeToLog("Document save failed: " + result.getFullPathName());
     return false;
 }
 
@@ -282,13 +282,12 @@ bool Document::internalLoad(File result)
 
     if (loadedOk)
     {
-        Logger::writeToLog("Document::internalLoad ok :: " + result.getFullPathName());
         this->workingFile = result;
         this->hasChanges = false;
         this->owner.onDocumentDidLoad(result);
         return true;
     }
     
-    Logger::writeToLog("Document::internalLoad failed :: " + result.getFullPathName());
+    Logger::writeToLog("Document load failed: " + result.getFullPathName());
     return false;
 }

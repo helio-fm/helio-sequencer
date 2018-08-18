@@ -18,18 +18,22 @@
 #pragma once
 
 //[Headers]
+class IconComponent;
+#include "CommandIDs.h"
+#include "DashboardMenu.h"
+#include "OverlayButton.h"
 //[/Headers]
 
+#include "../../../Themes/SeparatorVertical.h"
 
-class IntroSettingsWrapper final : public Component
+class OpenProjectButton final : public Component
 {
 public:
 
-    IntroSettingsWrapper();
-    ~IntroSettingsWrapper();
+    OpenProjectButton();
+    ~OpenProjectButton();
 
     //[UserMethods]
-    void showNonOwned(Component *targetComponent);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -39,12 +43,12 @@ public:
 private:
 
     //[UserVariables]
-    ComponentAnimator animator;
-    SafePointer<Component> target;
-    bool hasPreviousTarget;
     //[/UserVariables]
 
-    ScopedPointer<Component> targetBounds;
+    UniquePointer<IconComponent> newProjectImage;
+    UniquePointer<Label> openProjectLabel;
+    UniquePointer<SeparatorVertical> separator;
+    UniquePointer<OverlayButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (IntroSettingsWrapper)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectButton)
 };

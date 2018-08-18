@@ -54,6 +54,8 @@ private:
     ScopedPointer<Component> audioSettingsWrapper;
     ScopedPointer<Component> uiSettings;
     ScopedPointer<Component> uiSettingsWrapper;
+    ScopedPointer<Component> themeSettings;
+    ScopedPointer<Component> themeSettingsWrapper;
     ScopedPointer<Component> translationSettings;
     ScopedPointer<Component> translationSettingsWrapper;
     ScopedPointer<Component> authSettings;

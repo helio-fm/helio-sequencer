@@ -18,22 +18,21 @@
 #pragma once
 
 //[Headers]
-class IconComponent;
-#include "DraggingListBoxComponent.h"
+#include "IconComponent.h"
+#include "OverlayButton.h"
 //[/Headers]
 
+#include "../../Themes/SeparatorVertical.h"
 
-class SignInRow  : public DraggingListBoxComponent
+class UserProfileComponent final : public Component
 {
 public:
 
-    SignInRow (Component &parentComponent, ListBox &parentListBox);
-
-    ~SignInRow();
+    UserProfileComponent();
+    ~UserProfileComponent();
 
     //[UserMethods]
-    void setSelected(bool shouldBeSelected) override;
-    void updateContent();
+    void updateProfileInfo();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -43,13 +42,12 @@ public:
 private:
 
     //[UserVariables]
-    Component *createHighlighterComponent() override;
-    Component &parent;
     //[/UserVariables]
 
-    ScopedPointer<Label> actionLabel;
-    ScopedPointer<Label> descriptionLabel;
-    ScopedPointer<IconComponent> loginImage;
+    UniquePointer<Label> nameLabel;
+    UniquePointer<IconComponent> avatar;
+    UniquePointer<SeparatorVertical> separator;
+    UniquePointer<OverlayButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SignInRow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserProfileComponent)
 };

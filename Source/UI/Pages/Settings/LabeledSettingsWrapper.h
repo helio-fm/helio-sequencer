@@ -22,12 +22,11 @@
 
 #include "../../Themes/FramePanel.h"
 
-class LabeledSettingsWrapper  : public Component
+class LabeledSettingsWrapper final : public Component
 {
 public:
 
-    LabeledSettingsWrapper (Component *targetComponent, const String &title);
-
+    LabeledSettingsWrapper(Component *targetComponent, const String &title);
     ~LabeledSettingsWrapper();
 
     //[UserMethods]
@@ -44,9 +43,8 @@ private:
     SafePointer<Component> target;
     //[/UserVariables]
 
-    ScopedPointer<FramePanel> panel;
-    ScopedPointer<Label> titleLabel;
-    ScopedPointer<Component> targetBounds;
+    UniquePointer<FramePanel> panel;
+    UniquePointer<Label> titleLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LabeledSettingsWrapper)
 };

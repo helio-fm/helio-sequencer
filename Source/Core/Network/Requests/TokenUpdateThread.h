@@ -22,7 +22,7 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-class TokenUpdateThread final : private Thread
+class TokenUpdateThread final : public Thread
 {
 public:
     
@@ -60,7 +60,7 @@ private:
     void run() override
     {
         namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api;
 
         // Construct payload object:
         ValueTree session(ApiKeys::session);

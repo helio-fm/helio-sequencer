@@ -60,7 +60,7 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     this->titleLabel->setBufferedToImage(true);
     this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
-    this->bgColour = this->findColour(ColourIDs::BackgroundB::fill);
+    this->bgColour = this->findColour(ColourIDs::BackgroundA::fill);
     //[/UserPreSize]
 
     this->setSize(256, 32);

@@ -118,7 +118,7 @@ void PanelBackgroundC::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    this->bgCache = theme.getBgCache2();
+    this->bgCache = theme.getBgCacheC();
     this->fillType = FillType(this->bgCache, {});
     //[/UserPreResize]
 
@@ -138,7 +138,7 @@ static void drawPanel(Graphics& g, HelioTheme &theme)
 
 void PanelBackgroundC::updateRender(HelioTheme &theme)
 {
-    if (theme.getBgCache2().isValid())
+    if (theme.getBgCacheC().isValid())
     {
         return;
     }
@@ -151,7 +151,7 @@ void PanelBackgroundC::updateRender(HelioTheme &theme)
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
     drawPanel(g, theme);
-    theme.getBgCache2() = render;
+    theme.getBgCacheC() = render;
 }
 
 //[/MiscUserCode]

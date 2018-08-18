@@ -31,7 +31,7 @@ class OrchestraPitTreeItem;
 #endif
 //[/Headers]
 
-#include "../../Themes/FramePanel.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
 
 class InstrumentsListComponent final : public Component,
                                        public ListBoxModel,
@@ -83,9 +83,9 @@ private:
     Image instrumentIcon;
     //[/UserVariables]
 
-    ScopedPointer<FramePanel> panel;
-    ScopedPointer<ListBox> instrumentsList;
-    ScopedPointer<Label> titleLabel;
+    UniquePointer<ListBox> instrumentsList;
+    UniquePointer<Label> titleLabel;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InstrumentsListComponent)
 };

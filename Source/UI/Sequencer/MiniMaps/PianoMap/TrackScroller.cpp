@@ -229,7 +229,7 @@ void TrackScroller::resized()
 void TrackScroller::paint(Graphics &g)
 {
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    g.setFillType(FillType(theme.getBgCache2(), {}));
+    g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineDark));

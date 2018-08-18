@@ -23,11 +23,11 @@
 #include "SerializationKeys.h"
 #include "UserProfile.h"
 
-class RequestUserProfileThread final : private Thread
+class RequestUserProfileThread final : public Thread
 {
 public:
 
-    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr) {}
+    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr), profile({}) {}
     ~RequestUserProfileThread() override
     {
         this->stopThread(1000);
@@ -43,13 +43,14 @@ public:
         friend class RequestUserProfileThread;
     };
     
-    void requestUserProfile(RequestUserProfileThread::Listener *authListener)
+    void requestUserProfile(RequestUserProfileThread::Listener *authListener, UserProfile existingProfile)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
+        this->profile = existingProfile;
         this->listener = authListener;
         this->startThread(3);
     }
@@ -59,7 +60,7 @@ private:
     void run() override
     {
         namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api;
 
         const HelioApiRequest request(ApiRoutes::requestUserProfile);
         this->response = request.get();
@@ -69,9 +70,28 @@ private:
             callRequestListener(RequestUserProfileThread, requestProfileFailed, self->response.getErrors());
         }
 
-        callRequestListener(RequestUserProfileThread, requestProfileOk, { self->response.getBody() });
+        const String newProfileAvatarUrl = UserProfile(this->response.getBody(), {}).getAvatarUrl();
+        Image profileAvatar = this->profile.getAvatar();
+
+        if (newProfileAvatarUrl != this->profile.getAvatarUrl())
+        {
+            const int s = 16; // local avatar thumbnail size
+            profileAvatar = { Image::RGB, s, s, true };
+            MemoryBlock downloadedData;
+            URL(newProfileAvatarUrl).readEntireBinaryStream(downloadedData, false);
+            MemoryInputStream inputStream(downloadedData, false);
+            Image remoteAvatar = ImageFileFormat::loadFrom(inputStream).rescaled(s, s, Graphics::highResamplingQuality);
+            Graphics g(profileAvatar);
+            g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
+            g.fillAll();
+        }
+
+        this->profile = { this->response.getBody(), profileAvatar };
+
+        callRequestListener(RequestUserProfileThread, requestProfileOk, self->profile);
     }
     
+    UserProfile profile;
     HelioApiRequest::Response response;
     RequestUserProfileThread::Listener *listener;
     

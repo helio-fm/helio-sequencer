@@ -22,25 +22,28 @@
 #include "LabeledSettingsWrapper.h"
 
 //[MiscUserDefs]
+#define MARGIN_X 4
+#define MARGIN_Y 6
 //[/MiscUserDefs]
 
 LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const String &title)
 {
-    addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (titleLabel = new Label (String(),
-                                               TRANS("...")));
-    titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    titleLabel->setJustificationType (Justification::centredLeft);
-    titleLabel->setEditable (false, false, false);
+    this->panel.reset(new FramePanel());
+    this->addAndMakeVisible(panel.get());
+    this->titleLabel.reset(new Label(String(),
+                                      TRANS("...")));
+    this->addAndMakeVisible(titleLabel.get());
+    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    titleLabel->setJustificationType(Justification::centredLeft);
+    titleLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (targetBounds = new Component());
+    titleLabel->setBounds(8, 8, 576, 26);
 
 
     //[UserPreSize]
-    this->targetBounds->setVisible(false);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->showNonOwned(targetComponent, title);
@@ -54,7 +57,6 @@ LabeledSettingsWrapper::~LabeledSettingsWrapper()
 
     panel = nullptr;
     titleLabel = nullptr;
-    targetBounds = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -74,13 +76,11 @@ void LabeledSettingsWrapper::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    panel->setBounds (5, 40, getWidth() - 10, getHeight() - 48);
-    titleLabel->setBounds (8, 8, 576, 26);
-    targetBounds->setBounds (12, 48, getWidth() - 24, getHeight() - 64);
+    panel->setBounds(5, 40, getWidth() - 10, getHeight() - 48);
     //[UserResized] Add your own custom resize handling here..
     if (this->target != nullptr)
     {
-        this->target->setBounds(this->targetBounds->getBounds());
+        this->target->setBounds(this->panel->getBounds().reduced(MARGIN_X, MARGIN_Y));
     }
     //[/UserResized]
 }
@@ -97,7 +97,7 @@ void LabeledSettingsWrapper::showNonOwned(Component *targetComponent, const Stri
     this->target = targetComponent;
     this->addAndMakeVisible(this->target);
 
-    const int staticSpaceDelta = this->getHeight() - this->targetBounds->getHeight();
+    const int staticSpaceDelta = this->getHeight() - this->panel->getHeight() + MARGIN_Y * 2;
     this->setSize(this->getWidth(), this->target->getHeight() + staticSpaceDelta);
 
     this->titleLabel->setText(title, dontSendNotification);
@@ -119,10 +119,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="9f16871b637bd1bd" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="8 8 576 26" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
-  <GENERICCOMPONENT name="" id="a0e12bb33465d20d" memberName="targetBounds" virtualName=""
-                    explicitFocusOrder="0" pos="12 48 24M 64M" class="Component"
-                    params=""/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

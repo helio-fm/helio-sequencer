@@ -29,9 +29,6 @@ class Workspace;
 #endif
 //[/Headers]
 
-#include "../../../Themes/ShadowHorizontalFading.h"
-#include "../../../Themes/SeparatorHorizontalFadingReversed.h"
-#include "../../../Themes/SeparatorHorizontalFading.h"
 
 class DashboardMenu final : public Component,
                             public ListBoxModel
@@ -68,10 +65,7 @@ private:
     Workspace *workspace;
     //[/UserVariables]
 
-    UniquePointer<ShadowHorizontalFading> component;
     UniquePointer<ListBox> listBox;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator1;
-    UniquePointer<SeparatorHorizontalFading> separator2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DashboardMenu)
 };

@@ -7,7 +7,7 @@
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
               cppLanguageStandard="14" usePrecompiledHeaders="0" precompiledHeaderFileName=""
               precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko"
-              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Popups/ChordBuilder&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes">
+              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Popups/ChordBuilder&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <GROUP id="{566A42BA-3539-AB6F-C7F2-BD3408E4047E}" name="Samples">
@@ -49,6 +49,7 @@
         <FILE id="PjELEM" name="expand.svg" compile="0" resource="1" file="../../Resources/Icons/expand.svg"/>
         <FILE id="XzECGs" name="fail.svg" compile="0" resource="1" file="../../Resources/Icons/fail.svg"/>
         <FILE id="mgkKBL" name="forward.svg" compile="0" resource="1" file="../../Resources/Icons/forward.svg"/>
+        <FILE id="lQBQI5" name="github.svg" compile="0" resource="1" file="../../Resources/Icons/github.svg"/>
         <FILE id="WO0LHL" name="helio.svg" compile="0" resource="1" file="../../Resources/Icons/helio.svg"/>
         <FILE id="bpruBj" name="instrument.svg" compile="0" resource="1" file="../../Resources/Icons/instrument.svg"/>
         <FILE id="lF6noc" name="instrumentNode.svg" compile="0" resource="1"
@@ -301,6 +302,7 @@
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
           <GROUP id="{A1687DD1-8D95-2592-A933-804A188EC204}" name="Models">
             <FILE id="AHl4xW" name="ApiModel.h" compile="0" resource="0" file="../../Source/Core/Network/Models/ApiModel.h"/>
+            <FILE id="RlWKKH" name="AuthSession.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AuthSession.h"/>
             <FILE id="y1LaCU" name="UpdatesInfo.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UpdatesInfo.h"/>
             <FILE id="ERB820" name="UserProfile.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UserProfile.h"/>
           </GROUP>
@@ -309,12 +311,11 @@
                   file="../../Source/Core/Network/Requests/HelioApiRequest.cpp"/>
             <FILE id="Zri11i" name="HelioApiRequest.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/HelioApiRequest.h"/>
+            <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestUserProfileThread.h"/>
-            <FILE id="URoFvA" name="SignInThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/SignInThread.h"/>
-            <FILE id="hwTQ3u" name="SignUpThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/SignUpThread.h"/>
             <FILE id="TQIxzu" name="TokenCheckThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/TokenCheckThread.h"/>
             <FILE id="BbTLUC" name="TokenUpdateThread.h" compile="0" resource="0"
@@ -635,6 +636,9 @@
                 file="../../Source/UI/Common/ModeIndicatorComponent.cpp"/>
           <FILE id="EhpPoR" name="ModeIndicatorComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ModeIndicatorComponent.h"/>
+          <FILE id="pi3eRY" name="OverlayButton.cpp" compile="1" resource="0"
+                file="../../Source/UI/Common/OverlayButton.cpp"/>
+          <FILE id="qUVkx6" name="OverlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/OverlayButton.h"/>
           <FILE id="f1fXjR" name="PlayButton.cpp" compile="1" resource="0" file="../../Source/UI/Common/PlayButton.cpp"/>
           <FILE id="Z9JjQa" name="PlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/PlayButton.h"/>
           <FILE id="yXiN5u" name="PluginWindow.cpp" compile="1" resource="0"
@@ -813,6 +817,37 @@
           <FILE id="nKGHgF" name="WorkspaceMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/WorkspaceMenu.h"/>
         </GROUP>
         <GROUP id="{B9AEC376-3BE9-2D8B-8315-5C9D02A78A83}" name="Pages">
+          <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Dashboard">
+            <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
+              <FILE id="tB359c" name="DashboardMenu.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.cpp"/>
+              <FILE id="AIxzo3" name="DashboardMenu.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.h"/>
+              <FILE id="F7m4dp" name="RecentProjectRow.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.cpp"/>
+              <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h"/>
+              <FILE id="lu3gMO" name="LoginButton.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.cpp"/>
+              <FILE id="jHQguA" name="LoginButton.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.h"/>
+              <FILE id="VvVVMm" name="CreateProjectButton.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.cpp"/>
+              <FILE id="hc7Ie4" name="CreateProjectButton.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.h"/>
+              <FILE id="VX9Eba" name="OpenProjectButton.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp"/>
+              <FILE id="QhDDee" name="OpenProjectButton.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.h"/>
+            </GROUP>
+            <FILE id="SATMyc" name="Dashboard.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.cpp"/>
+            <FILE id="ak0ZaE" name="Dashboard.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.h"/>
+            <FILE id="Tigws8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.cpp"/>
+            <FILE id="yJ1nQL" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.h"/>
+            <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.cpp"/>
+            <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.h"/>
+            <FILE id="wmerFw" name="UserProfileComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.cpp"/>
+            <FILE id="LAXjb0" name="UserProfileComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.h"/>
+          </GROUP>
           <GROUP id="{244063AE-D7BB-2E7F-F88C-F6B87D3750F0}" name="Instruments">
             <GROUP id="{8403AA58-8E12-1E01-83A5-94D36241D728}" name="Editor">
               <FILE id="WeFwTR" name="AudioPluginEditorPage.cpp" compile="1" resource="0"
@@ -849,10 +884,6 @@
             <FILE id="kI9KlF" name="OrchestraPitPage.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Instruments/OrchestraPitPage.h"/>
           </GROUP>
-          <GROUP id="{01355104-112B-DA3C-0607-D8B2FD252FBB}" name="Intro">
-            <FILE id="VYCvr8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Intro/InitScreen.cpp"/>
-            <FILE id="ADhqBV" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Intro/InitScreen.h"/>
-          </GROUP>
           <GROUP id="{CD7DBE7C-598C-14E2-4231-52EADE7D3894}" name="Project">
             <FILE id="DprHiC" name="ProjectPage.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.cpp"/>
             <FILE id="zrV2TC" name="ProjectPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.h"/>
@@ -867,14 +898,14 @@
                   file="../../Source/UI/Pages/Settings/ComponentsList.cpp"/>
             <FILE id="cSvomJ" name="ComponentsList.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/ComponentsList.h"/>
-            <FILE id="D84dv3" name="IntroSettingsWrapper.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/IntroSettingsWrapper.cpp"/>
-            <FILE id="nli1eM" name="IntroSettingsWrapper.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/IntroSettingsWrapper.h"/>
             <FILE id="cjGFIF" name="LabeledSettingsWrapper.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.cpp"/>
             <FILE id="f3JYry" name="LabeledSettingsWrapper.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.h"/>
+            <FILE id="P2xFl9" name="SimpleSettingsWrapper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.cpp"/>
+            <FILE id="XZVY6W" name="SimpleSettingsWrapper.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.h"/>
             <FILE id="Dt6gTd" name="LogComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/LogComponent.cpp"/>
             <FILE id="ImgYBs" name="LogComponent.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/LogComponent.h"/>
@@ -889,6 +920,9 @@
             <FILE id="NQm5bG" name="SettingsPage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/SettingsPage.cpp"/>
             <FILE id="KbKtdO" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SettingsPage.h"/>
+            <FILE id="wyFYMy" name="ThemeSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/ThemeSettings.cpp"/>
+            <FILE id="lKlRWH" name="ThemeSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/ThemeSettings.h"/>
             <FILE id="Ep8NCS" name="ThemeSettingsItem.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp"/>
             <FILE id="Jkf4Uy" name="ThemeSettingsItem.h" compile="0" resource="0"
@@ -939,32 +973,6 @@
                   file="../../Source/UI/Pages/VCS/VersionControlEditor.cpp"/>
             <FILE id="tjJByt" name="VersionControlEditor.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/VCS/VersionControlEditor.h"/>
-          </GROUP>
-          <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Workspace">
-            <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
-              <FILE id="tB359c" name="DashboardMenu.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/DashboardMenu.cpp"/>
-              <FILE id="AIxzo3" name="DashboardMenu.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/DashboardMenu.h"/>
-              <FILE id="VvVVMm" name="CreateProjectRow.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/CreateProjectRow.cpp"/>
-              <FILE id="hc7Ie4" name="CreateProjectRow.h" compile="0" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/CreateProjectRow.h"/>
-              <FILE id="VX9Eba" name="OpenProjectRow.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/OpenProjectRow.cpp"/>
-              <FILE id="QhDDee" name="OpenProjectRow.h" compile="0" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/OpenProjectRow.h"/>
-              <FILE id="F7m4dp" name="RecentProjectRow.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/RecentProjectRow.cpp"/>
-              <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/RecentProjectRow.h"/>
-              <FILE id="k8Pcdn" name="SignInRow.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.cpp"/>
-              <FILE id="xWKY9O" name="SignInRow.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.h"/>
-            </GROUP>
-            <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.cpp"/>
-            <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.h"/>
-            <FILE id="SATMyc" name="WorkspacePage.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Workspace/WorkspacePage.cpp"/>
-            <FILE id="ak0ZaE" name="WorkspacePage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/WorkspacePage.h"/>
           </GROUP>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
@@ -1287,12 +1295,12 @@
                 file="../../Source/UI/Themes/SeparatorVertical.cpp"/>
           <FILE id="seMoCv" name="SeparatorVertical.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorVertical.h"/>
+          <FILE id="aeIWOM" name="SeparatorVerticalSkew.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/SeparatorVerticalSkew.cpp"/>
+          <FILE id="BQbE3d" name="SeparatorVerticalSkew.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/SeparatorVerticalSkew.h"/>
           <FILE id="IwZtBU" name="ShadowComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowComponent.h"/>
-          <FILE id="PLyGE8" name="ShadowHorizontalFading.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowHorizontalFading.cpp"/>
-          <FILE id="wFsvNz" name="ShadowHorizontalFading.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/ShadowHorizontalFading.h"/>
           <FILE id="NJFPby" name="ShadowDownwards.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
           <FILE id="HrHof7" name="ShadowDownwards.h" compile="0" resource="0"

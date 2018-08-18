@@ -180,6 +180,7 @@ namespace Serialization
         static const Identifier activeWorkspace = "activeWorkspace";
         static const Identifier activeColourScheme = "activeColourScheme";
         static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
+        static const Identifier activeUserProfile = "activeUserProfile";
         static const Identifier currentLocale = "currentLocale";
 
         static const Identifier lastShownPageId = "lastShownPageId";
@@ -482,8 +483,7 @@ namespace Serialization
     namespace Api
     {
         // Session
-        static const Identifier sessionLastUpdateTime = "sessionLastUpdateTime";
-        static const Identifier sessionLastToken = "sessionLastToken";
+        static const Identifier sessionToken = "sessionToken";
         static const Identifier sessionUserProfile = "sessionUserProfile";
 
         static const Identifier updatesInfo = "updatesInfo";
@@ -503,33 +503,53 @@ namespace Serialization
         // JSON keys
         namespace V1
         {
-            static const Identifier rootElementSuccess = "data";
-            static const Identifier rootElementErrors = "errors";
+            static const Identifier rootNode = "data";
+            static const Identifier rootErrorsNode = "errors";
 
             static const Identifier status = "status";
             static const Identifier message = "message";
 
             static const Identifier user = "user";
             static const Identifier session = "session";
-
-            static const Identifier name = "name";
-            static const Identifier email = "email";
-            static const Identifier login = "login";
-            static const Identifier password = "password";
-            static const Identifier passwordConfirmation = "passwordConfirmation";
-
+            static const Identifier token = "token";
             static const Identifier bearer = "bearer";
             static const Identifier deviceId = "deviceId";
             static const Identifier platformId = "platformId";
 
-            static const Identifier token = "token";
+            namespace Identity
+            {
+                static const Identifier name = "name";
+                static const Identifier email = "email";
+                static const Identifier login = "login";
+                static const Identifier profileUrl = "profileUrl";
+                static const Identifier avatarUrl = "avatar";
+                static const Identifier avatarThumbnail = "avatarThumbnail";
+                static const Identifier password = "password";
+                static const Identifier passwordConfirmation = "passwordConfirmation";
+            }
 
-            static const Identifier versionInfo = "versionInfo";
-            static const Identifier version = "version";
-            static const Identifier link = "link";
-            static const Identifier resourceInfo = "resourceInfo";
-            static const Identifier resourceName = "resourceName";
-            static const Identifier hash = "hash";
+            namespace AuthSession
+            {
+                static const Identifier id = "id";
+                static const Identifier secret = "secretKey";
+                static const Identifier provider = "provider";
+                static const Identifier appName = "appName";
+                static const Identifier appVersion = "appVersion";
+                static const Identifier appPlatform = "appPlatform";
+                static const Identifier deviceId = "deviceId";
+                static const Identifier token = "token";
+            }
+
+            namespace Resources
+            {
+                static const Identifier versionInfo = "versionInfo";
+                static const Identifier version = "version";
+                static const Identifier platformId = "platformId";
+                static const Identifier link = "link";
+                static const Identifier resourceInfo = "resourceInfo";
+                static const Identifier resourceName = "resourceName";
+                static const Identifier hash = "hash";
+            }
         } // namespace V1
     } // namespace Api
         

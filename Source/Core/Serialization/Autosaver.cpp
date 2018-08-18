@@ -42,5 +42,4 @@ void Autosaver::timerCallback()
 {
     this->stopTimer();
     this->documentOwner.getDocument()->save();
-    Logger::writeToLog("Autosave trigger");
 }

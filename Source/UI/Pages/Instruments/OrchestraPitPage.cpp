@@ -40,17 +40,22 @@ OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitTre
     : pluginScanner(pluginScanner),
       instrumentsRoot(instrumentsRoot)
 {
-    addAndMakeVisible (background = new PanelBackgroundB());
-    addAndMakeVisible (pluginsList = new AudioPluginsListComponent (pluginScanner, instrumentsRoot));
-    addAndMakeVisible (anchor = new Component());
-
-    addAndMakeVisible (instrumentsList = new InstrumentsListComponent (pluginScanner, instrumentsRoot));
+    this->skew.reset(new SeparatorVerticalSkew());
+    this->addAndMakeVisible(skew.get());
+    this->backgroundA.reset(new PanelBackgroundA());
+    this->addAndMakeVisible(backgroundA.get());
+    this->backgroundB.reset(new PanelBackgroundB());
+    this->addAndMakeVisible(backgroundB.get());
+    this->pluginsList.reset(new AudioPluginsListComponent(pluginScanner, instrumentsRoot));
+    this->addAndMakeVisible(pluginsList.get());
+    this->instrumentsList.reset(new InstrumentsListComponent(pluginScanner, instrumentsRoot));
+    this->addAndMakeVisible(instrumentsList.get());
 
     //[UserPreSize]
     this->setComponentID(ComponentIDs::orchestraPit);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->pluginScanner.addChangeListener(this);
@@ -65,9 +70,10 @@ OrchestraPitPage::~OrchestraPitPage()
     this->pluginScanner.removeChangeListener(this);
     //[/Destructor_pre]
 
-    background = nullptr;
+    skew = nullptr;
+    backgroundA = nullptr;
+    backgroundB = nullptr;
     pluginsList = nullptr;
-    anchor = nullptr;
     instrumentsList = nullptr;
 
     //[Destructor]
@@ -88,10 +94,11 @@ void OrchestraPitPage::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    pluginsList->setBounds (15, 10, proportionOfWidth (0.5006f) - 15, getHeight() - 20);
-    anchor->setBounds (0, 0, proportionOfWidth (0.5006f), 8);
-    instrumentsList->setBounds (0 + proportionOfWidth (0.5006f) - -15, 10, proportionOfWidth (0.5006f) - 30, getHeight() - 20);
+    skew->setBounds(0 + (getWidth() - 510), 0, 64, getHeight() - 0);
+    backgroundA->setBounds(0, 0, getWidth() - 510, getHeight() - 0);
+    backgroundB->setBounds(getWidth() - 446, 0, 446, getHeight() - 0);
+    pluginsList->setBounds(14, 10, (getWidth() - 510) - 16, getHeight() - 20);
+    instrumentsList->setBounds((getWidth() - 446) + 14, 10, 446 - 28, getHeight() - 20);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -101,7 +108,7 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
     {
-        App::Layout().showModalComponentUnowned(new ProgressTooltip());
+        App::Layout().showModalComponentUnowned(new ProgressTooltip(false));
         this->pluginScanner.runInitialScan();
         this->pluginsList->showScanButtonIf(false);
     }
@@ -207,18 +214,21 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="9957575039af6ddc" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
+  <JUCERCOMP name="" id="9bde1b4dd587d5fb" memberName="skew" virtualName=""
+             explicitFocusOrder="0" pos="0R 0 64 0M" posRelativeX="981ceff5817d7b34"
+             sourceFile="../../Themes/SeparatorVerticalSkew.cpp" constructorParams=""/>
+  <JUCERCOMP name="" id="981ceff5817d7b34" memberName="backgroundA" virtualName=""
+             explicitFocusOrder="0" pos="0 0 510M 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>
+  <JUCERCOMP name="" id="9e61167b79cef28c" memberName="backgroundB" virtualName=""
+             explicitFocusOrder="0" pos="0Rr 0 446 0M" posRelativeW="4ac6bf71d1e1d84f"
+             sourceFile="../../Themes/PanelBackgroundB.cpp" constructorParams=""/>
   <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="pluginsList" virtualName=""
-             explicitFocusOrder="0" pos="15 10 15M 20M" posRelativeW="4ac6bf71d1e1d84f"
+             explicitFocusOrder="0" pos="14 10 16M 20M" posRelativeW="981ceff5817d7b34"
              sourceFile="AudioPluginsListComponent.cpp" constructorParams="pluginScanner, instrumentsRoot"/>
-  <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="anchor" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.065% 8" class="Component"
-                    params=""/>
   <JUCERCOMP name="" id="23f9d3ba9d40a668" memberName="instrumentsList" virtualName=""
-             explicitFocusOrder="0" pos="-15R 10 30M 20M" posRelativeX="4ac6bf71d1e1d84f"
-             posRelativeW="4ac6bf71d1e1d84f" sourceFile="InstrumentsListComponent.cpp"
+             explicitFocusOrder="0" pos="14 10 28M 20M" posRelativeX="9e61167b79cef28c"
+             posRelativeW="9e61167b79cef28c" sourceFile="InstrumentsListComponent.cpp"
              constructorParams="pluginScanner, instrumentsRoot"/>
 </JUCER_COMPONENT>
 

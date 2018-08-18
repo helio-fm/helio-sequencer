@@ -132,7 +132,7 @@ void SequencerSidebarLeft::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    g.setFillType({ theme.getBgCache2(), {} });
+    g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 

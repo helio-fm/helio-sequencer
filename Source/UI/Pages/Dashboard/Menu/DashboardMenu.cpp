@@ -23,9 +23,6 @@
 
 //[MiscUserDefs]
 #include "RecentProjectRow.h"
-#include "SignInRow.h"
-#include "CreateProjectRow.h"
-#include "OpenProjectRow.h"
 #include "App.h"
 #include "MainLayout.h"
 #include "SessionService.h"
@@ -37,27 +34,14 @@
 #include "App.h"
 #include "CommandIDs.h"
 #include "ComponentIDs.h"
-
-#if HELIO_DESKTOP
-#   define HAS_OPEN_PROJECT_ROW 1
-#else
-#   define HAS_OPEN_PROJECT_ROW 0
-#endif
-
 //[/MiscUserDefs]
 
 DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
     : workspace(parentWorkspace)
 {
-    this->component.reset(new ShadowHorizontalFading());
-    this->addAndMakeVisible(component.get());
     this->listBox.reset(new ListBox());
     this->addAndMakeVisible(listBox.get());
 
-    this->separator1.reset(new SeparatorHorizontalFadingReversed());
-    this->addAndMakeVisible(separator1.get());
-    this->separator2.reset(new SeparatorHorizontalFading());
-    this->addAndMakeVisible(separator2.get());
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -80,10 +64,7 @@ DashboardMenu::~DashboardMenu()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    component = nullptr;
     listBox = nullptr;
-    separator1 = nullptr;
-    separator2 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -103,10 +84,7 @@ void DashboardMenu::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    component->setBounds(22, 2, getWidth() - 44, getHeight() - 4);
-    listBox->setBounds(48, 2, getWidth() - 96, getHeight() - 5);
-    separator1->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 3);
-    separator2->setBounds(0, getHeight() - 3, getWidth() - 2, 3);
+    listBox->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -114,31 +92,6 @@ void DashboardMenu::resized()
 void DashboardMenu::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == CommandIDs::CreateNewProject)
-    {
-        this->workspace->createEmptyProject();
-        this->listBox->updateContent();
-    }
-    else if (commandId == CommandIDs::OpenProject)
-    {
-        this->workspace->importProject("*.helio;*.hp");
-        this->listBox->updateContent();
-    }
-    else if (commandId == CommandIDs::LoginLogout)
-    {
-        const bool isLoggedIn = SessionService::isLoggedIn();
-
-        if (!isLoggedIn)
-        {
-            this->listBox->updateContent();
-            //App::Layout().showModalComponentUnowned(new AuthorizationDialog());
-        }
-        else
-        {
-            App::Helio().getSessionService()->signOut();
-            this->listBox->updateContent();
-        }
-    }
     //[/UserCode_handleCommandMessage]
 }
 
@@ -153,12 +106,6 @@ void DashboardMenu::loadFile(RecentFileDescription::Ptr fileDescription)
     }
 
     this->listBox->updateContent();
-
-#if HAS_OPEN_PROJECT_ROW
-    this->listBox->scrollToEnsureRowIsOnscreen(2);
-#else
-    this->listBox->scrollToEnsureRowIsOnscreen(1);
-#endif
 }
 
 void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
@@ -175,57 +122,10 @@ void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
 Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-#if HAS_OPEN_PROJECT_ROW
-    const int openProjectRowIndex = 0;
-    const int createProjectRowIndex = 1;
-    const int numStaticCells = 2;
-#else
-    const int createProjectRowIndex = 0;
-    const int numStaticCells = 1;
-#endif
-
-#if HAS_OPEN_PROJECT_ROW
-    if (rowNumber == openProjectRowIndex)
-    {
-        if (existingComponentToUpdate != nullptr)
-        {
-            if (nullptr == dynamic_cast<OpenProjectRow *>(existingComponentToUpdate))
-            {
-                delete existingComponentToUpdate;
-                existingComponentToUpdate = new OpenProjectRow(*this, *this->listBox);
-                return existingComponentToUpdate;
-            }
-        }
-        else
-        {
-            auto row = new OpenProjectRow(*this, *this->listBox);
-            return row;
-        }
-    }
-#endif
-
-    if (rowNumber == createProjectRowIndex)
-    {
-        if (existingComponentToUpdate != nullptr)
-        {
-            if (nullptr == dynamic_cast<CreateProjectRow *>(existingComponentToUpdate))
-            {
-                delete existingComponentToUpdate;
-                existingComponentToUpdate = new CreateProjectRow(*this, *this->listBox);
-                return existingComponentToUpdate;
-            }
-        }
-        else
-        {
-            auto row = new CreateProjectRow(*this, *this->listBox);
-            return row;
-        }
-    }
-
     const int numFiles = this->workspace->getRecentFilesList().getNumItems();
-    const bool isLastRow = (rowNumber == (numFiles + numStaticCells - 1));
+    const bool isLastRow = (rowNumber == (numFiles - 1));
 
-    const int fileIndex = rowNumber - numStaticCells;
+    const int fileIndex = rowNumber;
     const RecentFileDescription::Ptr item = this->workspace->getRecentFilesList().getItem(fileIndex);
     //Logger::writeToLog(String(fileIndex));
 
@@ -260,21 +160,12 @@ Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
 }
 
 void DashboardMenu::listBoxItemClicked(int row, const MouseEvent &e) {}
+void DashboardMenu::paintListBoxItem(int, Graphics &, int, int, bool) {}
 
 int DashboardMenu::getNumRows()
 {
-    const int createProjectRow = 1;
-#if HAS_OPEN_PROJECT_ROW
-    const int openProjectRow = 1;
-#else
-    const int openProjectRow = 0;
-#endif
-
-    return this->workspace->getRecentFilesList().getNumItems() + openProjectRow + createProjectRow;
+    return this->workspace->getRecentFilesList().getNumItems();
 }
-
-void DashboardMenu::paintListBoxItem(int rowNumber, Graphics &g,
-    int width, int height, bool rowIsSelected) {}
 
 //[/MiscUserCode]
 
@@ -291,17 +182,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="c3e4abefb218ce57" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="22 2 44M 4M" sourceFile="../../../Themes/ShadowHorizontalFading.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="ae05579f2fbb226b" memberName="listBox" virtualName=""
-                    explicitFocusOrder="0" pos="48 2 96M 5M" class="ListBox" params=""/>
-  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator1" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 0 0M 3" sourceFile="../../../Themes/SeparatorHorizontalFadingReversed.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="5b285323b956eb4e" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="0 0Rr 2M 3" sourceFile="../../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
+                    explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

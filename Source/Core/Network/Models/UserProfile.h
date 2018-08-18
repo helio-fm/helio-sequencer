@@ -23,22 +23,63 @@ class UserProfile final : public ApiModel
 {
 public:
 
-    UserProfile(const ValueTree &tree) : ApiModel(tree) {}
+    UserProfile(const ValueTree &tree, const Image image = {}) : ApiModel(tree), avatar(image)
+    {
+        using namespace Serialization::Api::V1;
+        const bool hasImage = this->avatar.isValid();
+        const bool hasCache = this->data.hasProperty(Identity::avatarThumbnail);
+        if (hasImage && !hasCache)
+        {
+            MemoryBlock block;
+            {
+                MemoryOutputStream outStream(block, false);
+                this->imageFormat.writeImageToStream(this->avatar, outStream);
+            }
 
-    //struct ProjectInfo final
-    //{
-    //    String getProjectName() const noexcept { return this->data.getProperty(Serialization::Api::V1::projectName); }
-    //    const ValueTree data;
-    //};
+            const auto avatarData(Base64::toBase64(block.getData(), block.getSize()));
+            this->data.setProperty(Identity::avatarThumbnail, avatarData, nullptr);
+        }
+    }
 
     String getEmail() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::email); }
+    { return this->data.getProperty(Serialization::Api::V1::Identity::email); }
 
     String getLogin() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::login); }
+    { return this->data.getProperty(Serialization::Api::V1::Identity::login); }
 
     String getName() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::name); }
+    { return this->data.getProperty(Serialization::Api::V1::Identity::name); }
+
+    String getProfileUrl() const noexcept
+    { return this->data.getProperty(Serialization::Api::V1::Identity::profileUrl); }
+
+    String getAvatarUrl() const noexcept
+    { return this->data.getProperty(Serialization::Api::V1::Identity::avatarUrl); }
+
+    Image getAvatar() const noexcept
+    { return this->avatar; }
+
+    void deserialize(const ValueTree &tree) override
+    {
+        ApiModel::deserialize(tree);
+
+        using namespace Serialization::Api::V1;
+        if (this->data.hasProperty(Identity::avatarThumbnail))
+        {
+            MemoryBlock block;
+            {
+                MemoryOutputStream outStream(block, false);
+                Base64::convertFromBase64(outStream, { this->data.getProperty(Identity::avatarThumbnail) });
+            }
+
+            this->avatar = ImageFileFormat::loadFrom(block.getData(), block.getSize());
+        }
+    }
+
+private:
+
+    Image avatar;
+    PNGImageFormat imageFormat;
 
     JUCE_LEAK_DETECTOR(UserProfile)
 };

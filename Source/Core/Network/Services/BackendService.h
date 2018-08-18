@@ -21,12 +21,23 @@ class BackendService : protected Timer
 {
 protected:
 
+    ~BackendService() override
+    {
+        for (auto *thread : this->requestThreads)
+        {
+            if (thread->isThreadRunning())
+            {
+                thread->signalThreadShouldExit();
+            }
+        }
+    }
+
     OwnedArray<Thread> requestThreads;
 
     template<typename T>
-    T *getThreadFor()
+    T *getNewThreadFor()
     {
-        for (const auto thread : this->requestThreads)
+        for (auto *thread : this->requestThreads)
         {
             if (!thread->isThreadRunning())
             {
@@ -38,5 +49,22 @@ protected:
         }
 
         return static_cast<T *>(this->requestThreads.add(new T()));
+    }
+
+    template<typename T>
+    T *getRunningThreadFor()
+    {
+        for (auto *thread : this->requestThreads)
+        {
+            if (thread->isThreadRunning())
+            {
+                if (T *target = dynamic_cast<T *>(thread))
+                {
+                    return target;
+                }
+            }
+        }
+
+        return nullptr;
     }
 };

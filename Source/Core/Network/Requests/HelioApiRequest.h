@@ -47,6 +47,7 @@ public:
         // Status code check
         bool is2xx() const noexcept;
         bool is200() const noexcept;
+        bool is(int code) const noexcept;
 
         // ValueTree wrappers
         bool hasProperty(const Identifier &name) const noexcept;
@@ -55,6 +56,7 @@ public:
 
         const Array<String> &getErrors() const noexcept;
         const ValueTree getBody() const noexcept;
+        const String getRedirect() const noexcept;
 
     private:
 

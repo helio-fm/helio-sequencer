@@ -229,8 +229,7 @@ void App::dismissAllModalComponents()
 {
     while (Component *modal = Component::getCurrentlyModalComponent(0))
     {
-        Logger::writeToLog("getNumCurrentlyModalComponents: " + String(Component::getNumCurrentlyModalComponents()));
-        Logger::writeToLog("Dismissing the modal component: " + modal->getName());
+        Logger::writeToLog("Dismissing a modal component");
         modal->exitModalState(0);
         // Unowned components may leak here, use with caution
     }
@@ -272,12 +271,12 @@ void App::initialise(const String &commandLine)
             i.getValue()->initialise();
         }
 
-        this->workspace = new class Workspace();
-        this->window = new MainWindow();
-
         // Prepare backend APIs communication services
         this->sessionService = new SessionService();
         this->updatesService = new UpdatesService();
+
+        this->workspace = new class Workspace();
+        this->window = new MainWindow();
 
         TranslationsManager::getInstance().addChangeListener(this);
         
@@ -303,11 +302,11 @@ void App::shutdown()
 
         Logger::writeToLog("App::shutdown");
 
-        this->updatesService = nullptr;
-        this->sessionService = nullptr;
-
         this->window = nullptr;
         this->workspace = nullptr;
+
+        this->updatesService = nullptr;
+        this->sessionService = nullptr;
 
         this->theme = nullptr;
         this->config = nullptr;
@@ -374,15 +373,12 @@ void App::unhandledException(const std::exception *e, const String &file, int)
 void App::systemRequestedQuit()
 {
     Logger::writeToLog("App::systemRequestedQuit");
-
     if (this->workspace != nullptr)
     {
         this->workspace->stopPlaybackForAllProjects();
-        this->workspace->autosave();
     }
 
     App::dismissAllModalComponents();
-    
     this->triggerAsyncUpdate();
 }
 

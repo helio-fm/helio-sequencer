@@ -107,7 +107,7 @@ protected:
             if (this->fadingHighlights)
             {
                 this->highlightAnimator.animateComponent(this->highlighter,
-                    this->highlighter->getBounds(), 1.f, 100, false, 0.0, 0.0);
+                    this->highlighter->getBounds(), 1.f, 100, false, 1.0, 0.0);
             }
             else
             {
@@ -121,7 +121,7 @@ protected:
                 if (this->fadingHighlights)
                 {
                     this->highlightAnimator.animateComponent(this->highlighter,
-                        this->highlighter->getBounds(), 0.f, 250, true, 0.0, 0.0);
+                        this->highlighter->getBounds(), 0.f, 200, true, 1.0, 0.0);
                 }
                 
                 this->removeChildComponent(this->highlighter);

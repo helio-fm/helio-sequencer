@@ -18,43 +18,36 @@
 #pragma once
 
 //[Headers]
-class LogoFader;
+#include "IconComponent.h"
+#include "OverlayButton.h"
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundA.h"
-#include "../../Themes/SeparatorHorizontalReversed.h"
-#include "../../Themes/ShadowDownwards.h"
-#include "../../Themes/PanelBackgroundB.h"
+#include "../../../Themes/SeparatorVertical.h"
 
-class InitScreen final : public Component,
-                         private Timer
+class LoginButton final : public Component
 {
 public:
 
-    InitScreen();
-    ~InitScreen();
+    LoginButton();
+    ~LoginButton();
 
     //[UserMethods]
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void visibilityChanged() override;
-    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
-
-    void timerCallback() override;
-
+    void switchToUserProfile();
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundA> bg;
-    UniquePointer<SeparatorHorizontalReversed> headLine;
-    UniquePointer<ShadowDownwards> headShadow;
-    UniquePointer<PanelBackgroundB> gradient1;
+    UniquePointer<IconComponent> avatar;
+    UniquePointer<SeparatorVertical> separator;
+    UniquePointer<Label> ctaLabel;
+    UniquePointer<OverlayButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InitScreen)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoginButton)
 };

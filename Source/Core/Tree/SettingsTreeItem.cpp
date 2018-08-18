@@ -23,9 +23,11 @@
 #include "SerializationKeys.h"
 #include "AudioSettings.h"
 #include "UserInterfaceSettings.h"
+#include "ThemeSettings.h"
 #include "TranslationSettings.h"
 #include "ComponentsList.h"
 #include "LabeledSettingsWrapper.h"
+#include "SimpleSettingsWrapper.h"
 #include "SettingsPage.h"
 #include "App.h"
 #include "Workspace.h"
@@ -72,6 +74,8 @@ void SettingsTreeItem::recreatePage()
     this->translationSettings = nullptr;
     this->uiSettingsWrapper = nullptr;
     this->uiSettings = nullptr;
+    this->themeSettingsWrapper = nullptr;
+    this->themeSettings = nullptr;
     this->audioSettingsWrapper = nullptr;
     this->audioSettings = nullptr;
     this->settingsList = nullptr;
@@ -83,9 +87,15 @@ void SettingsTreeItem::recreatePage()
     this->translationSettingsWrapper = new LabeledSettingsWrapper(this->translationSettings, untranslatedLanguageCaption);
     this->settingsList->addAndMakeVisible(this->translationSettingsWrapper);
 
+    this->themeSettings = new ThemeSettings();
+    this->themeSettingsWrapper = new LabeledSettingsWrapper(this->themeSettings, TRANS("settings::ui"));
+    this->settingsList->addAndMakeVisible(this->themeSettingsWrapper);
+
+#if HELIO_DESKTOP
     this->uiSettings = new UserInterfaceSettings();
-    this->uiSettingsWrapper = new LabeledSettingsWrapper(this->uiSettings, TRANS("settings::ui"));
+    this->uiSettingsWrapper = new SimpleSettingsWrapper(this->uiSettings);
     this->settingsList->addAndMakeVisible(this->uiSettingsWrapper);
+#endif
 
     this->audioSettings = new AudioSettings(App::Workspace().getAudioCore());
     this->audioSettingsWrapper = new LabeledSettingsWrapper(this->audioSettings, TRANS("settings::audio"));

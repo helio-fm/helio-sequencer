@@ -36,7 +36,7 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "WorkspaceMenu.h"
-#include "WorkspacePage.h"
+#include "Dashboard.h"
 #include "Icons.h"
 #include "App.h"
 
@@ -64,17 +64,17 @@ Image RootTreeItem::getIcon() const noexcept
 
 void RootTreeItem::showPage()
 {
-    if (this->introPage == nullptr)
+    if (this->dashboard == nullptr)
     {
         this->recreatePage();
     }
 
-    App::Layout().showPage(this->introPage, this);
+    App::Layout().showPage(this->dashboard, this);
 }
 
 void RootTreeItem::recreatePage()
 {
-    this->introPage = new WorkspacePage(App::Layout());
+    this->dashboard = new Dashboard(App::Layout());
 }
 
 void RootTreeItem::safeRename(const String &newName)
@@ -123,7 +123,6 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
 {
     Array<ProjectTreeItem *> myProjects(this->findChildrenOfType<ProjectTreeItem>());
 
-    // под десктопом первым элементов всегда должны быть инструменты
 #if HELIO_DESKTOP
     const int insertIndexCorrection = (insertIndex == 0) ? 1 : insertIndex;
 #elif HELIO_MOBILE
@@ -274,8 +273,7 @@ bool RootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetai
 
 bool RootTreeItem::isInterestedInFileDrag(const StringArray &files)
 {
-    return File::createFileWithoutCheckingPath(files[0])
-           .hasFileExtension("hp;helioproject;helio");
+    return File::createFileWithoutCheckingPath(files[0]).hasFileExtension("hp;helio");
 }
 
 void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)

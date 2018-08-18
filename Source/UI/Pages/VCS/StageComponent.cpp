@@ -63,11 +63,11 @@ StageComponent::StageComponent(VersionControl &versionControl)
     this->indicator.reset(new ProgressIndicator());
     this->addAndMakeVisible(indicator.get());
 
-    this->panel.reset(new FramePanel());
-    this->addAndMakeVisible(panel.get());
     this->changesList.reset(new ListBox("", this));
     this->addAndMakeVisible(changesList.get());
 
+    this->separator3.reset(new SeparatorHorizontalFadingReversed());
+    this->addAndMakeVisible(separator3.get());
 
     //[UserPreSize]
     this->setComponentID(ComponentIDs::versionControlStage);
@@ -99,8 +99,8 @@ StageComponent::~StageComponent()
     horizontalCenter = nullptr;
     titleLabel = nullptr;
     indicator = nullptr;
-    panel = nullptr;
     changesList = nullptr;
+    separator3 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -120,11 +120,11 @@ void StageComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    horizontalCenter->setBounds(0, 0, proportionOfWidth (0.5071f), 8);
+    horizontalCenter->setBounds(0, 0, proportionOfWidth (0.5088f), 8);
     titleLabel->setBounds(0, 0, getWidth() - 0, 26);
     indicator->setBounds((getWidth() / 2) - (32 / 2), (getHeight() / 2) - (32 / 2), 32, 32);
-    panel->setBounds(0, 35, getWidth() - 0, getHeight() - 35);
-    changesList->setBounds(1, 36, getWidth() - 2, getHeight() - 37);
+    changesList->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
+    separator3->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -411,7 +411,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
   <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="horizontalCenter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.746% 8" class="Component"
+                    explicitFocusOrder="0" pos="0 0 50.879% 8" class="Component"
                     params=""/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::stage::caption"
@@ -421,11 +421,11 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 32 32" class="ProgressIndicator"
                     params=""/>
-  <JUCERCOMP name="" id="83da04584c2ed03b" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
-                    explicitFocusOrder="0" pos="1 36 2M 37M" class="ListBox" params="&quot;&quot;, this"/>
+                    explicitFocusOrder="0" pos="1 42 2M 43M" class="ListBox" params="&quot;&quot;, this"/>
+  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

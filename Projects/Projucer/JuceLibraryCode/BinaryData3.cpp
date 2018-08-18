@@ -266,8 +266,23 @@ static const unsigned char temp_binary_data_34[] =
 
 const char* forward_svg = (const char*) temp_binary_data_34;
 
-//================== helio.svg ==================
+//================== github.svg ==================
 static const unsigned char temp_binary_data_35[] =
+"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"28\" viewBox=\"0 0 24 28\">\n"
+"<path d=\"M12 2c6.625 0 12 5.375 12 12 0 5.297-3.437 9.797-8.203 11.391-0.609 0.109-0.828-0.266-0.828-0.578 0-0.391 0.016-1.687 0.016-3.297 0-1.125-0.375-1.844-0.812-2.219 2.672-0.297 5.484-1.313 5.484-5.922 0-1.313-0.469-2.375-1.234-3.219 0.125-0.31"
+"3 0.531-1.531-0.125-3.187-1-0.313-3.297 1.234-3.297 1.234-0.953-0.266-1.984-0.406-3-0.406s-2.047 0.141-3 0.406c0 0-2.297-1.547-3.297-1.234-0.656 1.656-0.25 2.875-0.125 3.187-0.766 0.844-1.234 1.906-1.234 3.219 0 4.594 2.797 5.625 5.469 5.922-0.344 0."
+"313-0.656 0.844-0.766 1.609-0.688 0.313-2.438 0.844-3.484-1-0.656-1.141-1.844-1.234-1.844-1.234-1.172-0.016-0.078 0.734-0.078 0.734 0.781 0.359 1.328 1.75 1.328 1.75 0.703 2.141 4.047 1.422 4.047 1.422 0 1 0.016 1.937 0.016 2.234 0 0.313-0.219 0.688-"
+"0.828 0.578-4.766-1.594-8.203-6.094-8.203-11.391 0-6.625 5.375-12 12-12zM4.547 19.234c0.031-0.063-0.016-0.141-0.109-0.187-0.094-0.031-0.172-0.016-0.203 0.031-0.031 0.063 0.016 0.141 0.109 0.187 0.078 0.047 0.172 0.031 0.203-0.031zM5.031 19.766c0.063-"
+"0.047 0.047-0.156-0.031-0.25-0.078-0.078-0.187-0.109-0.25-0.047-0.063 0.047-0.047 0.156 0.031 0.25 0.078 0.078 0.187 0.109 0.25 0.047zM5.5 20.469c0.078-0.063 0.078-0.187 0-0.297-0.063-0.109-0.187-0.156-0.266-0.094-0.078 0.047-0.078 0.172 0 0.281s0.20"
+"3 0.156 0.266 0.109zM6.156 21.125c0.063-0.063 0.031-0.203-0.063-0.297-0.109-0.109-0.25-0.125-0.313-0.047-0.078 0.063-0.047 0.203 0.063 0.297 0.109 0.109 0.25 0.125 0.313 0.047zM7.047 21.516c0.031-0.094-0.063-0.203-0.203-0.25-0.125-0.031-0.266 0.016-0"
+".297 0.109s0.063 0.203 0.203 0.234c0.125 0.047 0.266 0 0.297-0.094zM8.031 21.594c0-0.109-0.125-0.187-0.266-0.172-0.141 0-0.25 0.078-0.25 0.172 0 0.109 0.109 0.187 0.266 0.172 0.141 0 0.25-0.078 0.25-0.172zM8.937 21.438c-0.016-0.094-0.141-0.156-0.281-"
+"0.141-0.141 0.031-0.234 0.125-0.219 0.234 0.016 0.094 0.141 0.156 0.281 0.125s0.234-0.125 0.219-0.219z\"></path>\n"
+"</svg>\n";
+
+const char* github_svg = (const char*) temp_binary_data_35;
+
+//================== helio.svg ==================
+static const unsigned char temp_binary_data_36[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"863.58342\" height=\"842.08977\" viewBox=\"0 0 863.58342 842.08977\">\n"
 "  <defs>\n"
 "    <linearGradient id=\"20794d0d-ea67-4249-b501-c4565899937f\" x1=\"514.055\" y1=\"262.93742\" x2=\"462.28089\" y2=\"58.19437\" gradientUnits=\"userSpaceOnUse\">\n"
@@ -474,10 +489,10 @@ static const unsigned char temp_binary_data_35[] =
 "  </g>\n"
 "</svg>\n";
 
-const char* helio_svg = (const char*) temp_binary_data_35;
+const char* helio_svg = (const char*) temp_binary_data_36;
 
 //================== instrument.svg ==================
-static const unsigned char temp_binary_data_36[] =
+static const unsigned char temp_binary_data_37[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"744.09448819\" height=\"1052.3622047\">\n"
 "  <g id=\"layer1\">\n"
 "    <path\n"
@@ -497,40 +512,40 @@ static const unsigned char temp_binary_data_36[] =
 "  </g>\n"
 "</svg>\n";
 
-const char* instrument_svg = (const char*) temp_binary_data_36;
+const char* instrument_svg = (const char*) temp_binary_data_37;
 
 //================== instrumentNode.svg ==================
-static const unsigned char temp_binary_data_37[] =
+static const unsigned char temp_binary_data_38[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M14.18 13.32v-1.641h5v1.641c0 1.094-0.703 1.992-1.68 2.344v3.516h-1.68v-3.516c-0.977-0.352-1.641-1.25-1.641-2.344zM10.82 1.68v3.32h1.68v5h-5v-5h1.68v-3.32c0-0.469 0.352-0.859 0.82-0.859s0.82 0.391 0.82 0.859zM17.5 5h1.68v5h-5v-5h1.641v-3.32"
 "c0-0.469 0.391-0.859 0.859-0.859s0.82 0.391 0.82 0.859v3.32zM0.82 13.32v-1.641h5v1.641c0 1.094-0.664 1.992-1.641 2.344v3.516h-1.68v-3.516c-0.977-0.352-1.68-1.25-1.68-2.344zM7.5 13.32v-1.641h5v1.641c0 1.094-0.703 1.992-1.68 2.344v3.516h-1.641v-3.516c-"
 "0.977-0.352-1.68-1.25-1.68-2.344zM4.18 1.68v3.32h1.641v5h-5v-5h1.68v-3.32c0-0.469 0.352-0.859 0.82-0.859s0.859 0.391 0.859 0.859z\"></path>\n"
 "</svg>\n";
 
-const char* instrumentNode_svg = (const char*) temp_binary_data_37;
+const char* instrumentNode_svg = (const char*) temp_binary_data_38;
 
 //================== list.svg ==================
-static const unsigned char temp_binary_data_38[] =
+static const unsigned char temp_binary_data_39[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M14.4 9h-5.8c-0.552 0-0.6 0.447-0.6 1s0.048 1 0.6 1h5.8c0.552 0 0.6-0.447 0.6-1s-0.048-1-0.6-1zM16.4 14h-7.8c-0.552 0-0.6 0.447-0.6 1s0.048 1 0.6 1h7.8c0.552 0 0.6-0.447 0.6-1s-0.048-1-0.6-1zM8.6 6h7.8c0.552 0 0.6-0.447 0.6-1s-0.048-1-0.6-1"
 "h-7.8c-0.552 0-0.6 0.447-0.6 1s0.048 1 0.6 1zM5.4 9h-1.8c-0.552 0-0.6 0.447-0.6 1s0.048 1 0.6 1h1.8c0.552 0 0.6-0.447 0.6-1s-0.048-1-0.6-1zM5.4 14h-1.8c-0.552 0-0.6 0.447-0.6 1s0.048 1 0.6 1h1.8c0.552 0 0.6-0.447 0.6-1s-0.048-1-0.6-1zM5.4 4h-1.8c-0.5"
 "52 0-0.6 0.447-0.6 1s0.048 1 0.6 1h1.8c0.552 0 0.6-0.447 0.6-1s-0.048-1-0.6-1z\"></path>\n"
 "</svg>\n";
 
-const char* list_svg = (const char*) temp_binary_data_38;
+const char* list_svg = (const char*) temp_binary_data_39;
 
 //================== local.svg ==================
-static const unsigned char temp_binary_data_39[] =
+static const unsigned char temp_binary_data_40[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M29.894 18.237l-5.037-11.987c-0.397-0.8-1.453-1.454-2.347-1.454h-13.019c-0.894 0-1.95 0.654-2.349 1.454l-5.035 11.987c-0.4 0.8-0.606 2.176-0.459 3.059l1.088 5.898c0.147 0.882 0.997 1.603 1.89 1.603h22.752c0.894 0 1.744-0.722 1.891-1.603l1"
 ".088-5.898c0.142-0.882-0.062-2.259-0.462-3.059zM27.712 22.438l-0.413 2.403c-0.125 0.923-0.957 1.678-1.846 1.678h-18.906c-0.891 0-1.722-0.755-1.846-1.678l-0.414-2.403c-0.123-0.923 0.504-1.678 1.397-1.678h20.634c0.893 0.002 1.52 0.755 1.395 1.678z\" fi"
 "ll=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* local_svg = (const char*) temp_binary_data_39;
+const char* local_svg = (const char*) temp_binary_data_40;
 
 //================== login.svg ==================
-static const unsigned char temp_binary_data_40[] =
+static const unsigned char temp_binary_data_41[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "    <g id=\"Page-1\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" sketch:type=\"MSPage\">\n"
 "        <g id=\"key\" sketch:type=\"MSLayerGroup\" fill=\"#000000\">\n"
@@ -544,18 +559,18 @@ static const unsigned char temp_binary_data_40[] =
 "    </g>\n"
 "</svg>";
 
-const char* login_svg = (const char*) temp_binary_data_40;
+const char* login_svg = (const char*) temp_binary_data_41;
 
 //================== menu.svg ==================
-static const unsigned char temp_binary_data_41[] =
+static const unsigned char temp_binary_data_42[] =
 "<svg baseProfile=\"tiny\" height=\"24px\" id=\"Layer_1\" version=\"1.2\" viewBox=\"0 0 24 24\" width=\"24px\" xml:space=\"preserve\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><path d=\"M19,17H5c-1.103,0-2,0.897"
 "-2,2s0.897,2,2,2h14c1.103,0,2-0.897,2-2S20.103,17,19,17z\"/><path d=\"M19,10H5c-1.103,0-2,0.897-2,2s0.897,2,2,2h14c1.103,0,2-0.897,2-2S20.103,10,19,10z\"/><path d=\"M19,3H5C3.897,3,3,3.897,3,5s0.897,2,2,2h14c1.103,0,2-0.897,2-2S20.103,3,19,3z\"/></sv"
 "g>";
 
-const char* menu_svg = (const char*) temp_binary_data_41;
+const char* menu_svg = (const char*) temp_binary_data_42;
 
 //================== mute.svg ==================
-static const unsigned char temp_binary_data_42[] =
+static const unsigned char temp_binary_data_43[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "  <path\n"
 "     d=\"M 12.5625 5.15625 C 12.2525 5.15625 12.00725 5.24275 11.78125 5.46875 L 5.8125 11.4375 L 1.15625 11.4375 C 0.84625 11.436833 0.56975 11.554583 0.34375 11.78125 C 0.11775 12.007917 0 12.253167 0 12.5625 L 0 19.4375 C -0.00066666667 19.7475 0."
@@ -567,19 +582,19 @@ static const unsigned char temp_binary_data_42[] =
 "     id=\"path3088\" />\n"
 "</svg>\n";
 
-const char* mute_svg = (const char*) temp_binary_data_42;
+const char* mute_svg = (const char*) temp_binary_data_43;
 
 //================== microphone.svg ==================
-static const unsigned char temp_binary_data_43[] =
+static const unsigned char temp_binary_data_44[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M9.375 13.75c1.726 0 3.125-1.399 3.125-3.125v-7.5c0-1.726-1.399-3.125-3.125-3.125s-3.125 1.399-3.125 3.125v7.5c0 1.726 1.399 3.125 3.125 3.125zM13.75 8.75v1.875c0 2.416-1.959 4.375-4.375 4.375s-4.375-1.959-4.375-4.375v-1.875h-1.25v1.875c0 2"
 ".895 2.188 5.279 5 5.59v2.535h-2.5v1.25h6.25v-1.25h-2.5v-2.535c2.812-0.311 5-2.695 5-5.59v-1.875h-1.25z\"></path>\n"
 "</svg>\n";
 
-const char* microphone_svg = (const char*) temp_binary_data_43;
+const char* microphone_svg = (const char*) temp_binary_data_44;
 
 //================== orchestraPit.svg ==================
-static const unsigned char temp_binary_data_44[] =
+static const unsigned char temp_binary_data_45[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "  <path style=\"fill:#000000\"\n"
 "     d=\"M 371.90625 383.875 C 370.93534 383.88839 369.9307 383.93889 368.875 384 C 348.64136 385.17131 346.57096 390.34152 329.40625 483.28125 C 315.81467 556.87402 314.9047 560.77561 311.0625 562.25 C 306.00986 564.18888 305.68518 556.38125 309.937"
@@ -596,30 +611,30 @@ static const unsigned char temp_binary_data_44[] =
 "     id=\"path6329\" />\n"
 "</svg>\n";
 
-const char* orchestraPit_svg = (const char*) temp_binary_data_44;
+const char* orchestraPit_svg = (const char*) temp_binary_data_45;
 
 //================== pageDown.svg ==================
-static const unsigned char temp_binary_data_45[] =
+static const unsigned char temp_binary_data_46[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"21\" height=\"32\" viewBox=\"0 0 21 32\">\n"
 "\t<path d=\"M1.375 15.429q0-0.232 0.179-0.411l0.893-0.893q0.179-0.179 0.411-0.179t0.411 0.179l7.018 7.018 7.018-7.018q0.179-0.179 0.411-0.179t0.411 0.179l0.893 0.893q0.179 0.179 0.179 0.411t-0.179 0.411l-8.321 8.321q-0.179 0.179-0.411 0.179t-0.411-0."
 "179l-8.321-8.321q-0.179-0.179-0.179-0.411zM1.375 8.571q0-0.232 0.179-0.411l0.893-0.893q0.179-0.179 0.411-0.179t0.411 0.179l7.018 7.018 7.018-7.018q0.179-0.179 0.411-0.179t0.411 0.179l0.893 0.893q0.179 0.179 0.179 0.411t-0.179 0.411l-8.321 8.321q-0.17"
 "9 0.179-0.411 0.179t-0.411-0.179l-8.321-8.321q-0.179-0.179-0.179-0.411z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* pageDown_svg = (const char*) temp_binary_data_45;
+const char* pageDown_svg = (const char*) temp_binary_data_46;
 
 //================== pageUp.svg ==================
-static const unsigned char temp_binary_data_46[] =
+static const unsigned char temp_binary_data_47[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"21\" height=\"32\" viewBox=\"0 0 21 32\">\n"
 "\t<path d=\"M1.375 23.429q0-0.232 0.179-0.411l8.321-8.321q0.179-0.179 0.411-0.179t0.411 0.179l8.321 8.321q0.179 0.179 0.179 0.411t-0.179 0.411l-0.893 0.893q-0.179 0.179-0.411 0.179t-0.411-0.179l-7.018-7.018-7.018 7.018q-0.179 0.179-0.411 0.179t-0.411"
 "-0.179l-0.893-0.893q-0.179-0.179-0.179-0.411zM1.375 16.571q0-0.232 0.179-0.411l8.321-8.321q0.179-0.179 0.411-0.179t0.411 0.179l8.321 8.321q0.179 0.179 0.179 0.411t-0.179 0.411l-0.893 0.893q-0.179 0.179-0.411 0.179t-0.411-0.179l-7.018-7.018-7.018 7.01"
 "8q-0.179 0.179-0.411 0.179t-0.411-0.179l-0.893-0.893q-0.179-0.179-0.179-0.411z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* pageUp_svg = (const char*) temp_binary_data_46;
+const char* pageUp_svg = (const char*) temp_binary_data_47;
 
 //================== paste.svg ==================
-static const unsigned char temp_binary_data_47[] =
+static const unsigned char temp_binary_data_48[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "  <path\n"
 "     style=\"fill:#000000\"\n"
@@ -638,36 +653,36 @@ static const unsigned char temp_binary_data_47[] =
 "     id=\"path32729\" />\n"
 "</svg>\n";
 
-const char* paste_svg = (const char*) temp_binary_data_47;
+const char* paste_svg = (const char*) temp_binary_data_48;
 
 //================== patterns.svg ==================
-static const unsigned char temp_binary_data_48[] =
+static const unsigned char temp_binary_data_49[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n"
 "<path d=\"M3 5.016h18.984v6h-18.984v-6zM9.984 18.984v-6.984h12v6.984h-12zM3 18.984v-6.984h6v6.984h-6z\"></path>\n"
 "</svg>\n";
 
-const char* patterns_svg = (const char*) temp_binary_data_48;
+const char* patterns_svg = (const char*) temp_binary_data_49;
 
 //================== pause.svg ==================
-static const unsigned char temp_binary_data_49[] =
+static const unsigned char temp_binary_data_50[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M21.6 4.8c-1.59 0-2.88 0.49-2.88 2.080v18.24c0 1.59 1.29 2.080 2.88 2.080s2.88-0.49 2.88-2.080v-18.24c0-1.59-1.29-2.080-2.88-2.080zM10.4 4.8c-1.59 0-2.88 0.49-2.88 2.080v18.24c0 1.59 1.29 2.080 2.88 2.080s2.88-0.49 2.88-2.080v-18.24c0-1.5"
 "9-1.29-2.080-2.88-2.080z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* pause_svg = (const char*) temp_binary_data_49;
+const char* pause_svg = (const char*) temp_binary_data_50;
 
 //================== piano.svg ==================
-static const unsigned char temp_binary_data_50[] =
+static const unsigned char temp_binary_data_51[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M0 17.5v-14.375h19.375v14.375h-19.375zM3.75 11.25h-0.625v-7.5h-2.5v13.125h3.125v-5.625zM7.5 11.25h-0.625v-7.5h-1.875v7.5h-0.625v5.625h3.125v-5.625zM11.25 11.25h-0.625v-7.5h-1.875v7.5h-0.625v5.625h3.125v-5.625zM12.5 3.75v7.5h-0.625v5.625h3.1"
 "25v-5.625h-0.625v-7.5h-1.875zM18.75 3.75h-2.5v7.5h-0.625v5.625h3.125v-13.125z\"></path>\n"
 "</svg>\n";
 
-const char* piano_svg = (const char*) temp_binary_data_50;
+const char* piano_svg = (const char*) temp_binary_data_51;
 
 //================== pianoTrack.svg ==================
-static const unsigned char temp_binary_data_51[] =
+static const unsigned char temp_binary_data_52[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "  <path style=\"fill:#000000\"\n"
 "     d=\"M 303.65625 339 C 302.31278 338.93351 300.28555 339.62682 297.09375 340.78125 C 286.46856 344.62421 287.4375 337.11978 287.4375 416.78125 C 287.4375 455.45113 287.17191 487.0625 286.875 487.0625 C 286.57809 487.0625 284.53509 486.13389 282.3"
@@ -678,18 +693,18 @@ static const unsigned char temp_binary_data_51[] =
 "     id=\"path3063\" />\n"
 "</svg>\n";
 
-const char* pianoTrack_svg = (const char*) temp_binary_data_51;
+const char* pianoTrack_svg = (const char*) temp_binary_data_52;
 
 //================== play.svg ==================
-static const unsigned char temp_binary_data_52[] =
+static const unsigned char temp_binary_data_53[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M26.717 15.179l-13.698-8.486c-0.998-0.654-1.814-0.171-1.814 1.072v16.474c0 1.243 0.818 1.725 1.814 1.070l13.699-8.486c0 0 0.486-0.342 0.486-0.822-0.002-0.478-0.488-0.821-0.488-0.821z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* play_svg = (const char*) temp_binary_data_52;
+const char* play_svg = (const char*) temp_binary_data_53;
 
 //================== progressIndicator.svg ==================
-static const unsigned char temp_binary_data_53[] =
+static const unsigned char temp_binary_data_54[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "    <g id=\"Controls\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\" sketch:type=\"MSPage\">\n"
 "        <g id=\"Indicator\" sketch:type=\"MSArtboardGroup\" fill=\"#000000\">\n"
@@ -725,10 +740,10 @@ static const unsigned char temp_binary_data_53[] =
 "    </g>\n"
 "</svg>";
 
-const char* progressIndicator_svg = (const char*) temp_binary_data_53;
+const char* progressIndicator_svg = (const char*) temp_binary_data_54;
 
 //================== project.svg ==================
-static const unsigned char temp_binary_data_54[] =
+static const unsigned char temp_binary_data_55[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "  <path\n"
 "     style=\"fill:#000000\"\n"
@@ -743,37 +758,37 @@ static const unsigned char temp_binary_data_54[] =
 "     id=\"path5625\" />\n"
 "</svg>\n";
 
-const char* project_svg = (const char*) temp_binary_data_54;
+const char* project_svg = (const char*) temp_binary_data_55;
 
 //================== pull.svg ==================
-static const unsigned char temp_binary_data_55[] =
+static const unsigned char temp_binary_data_56[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M27.844 11.252c-0.101-4.022-3.389-7.252-7.433-7.252-2.369 0-4.477 1.109-5.839 2.835-0.764-0.987-1.959-1.624-3.303-1.624-2.307 0-4.176 1.871-4.176 4.179 0 0.201 0.015 0.399 0.043 0.592-0.351-0.063-0.711-0.098-1.080-0.098-3.344-0-6.054 2.71"
 "2-6.054 6.058s2.71 6.058 6.054 6.058h3.118l6.828 6.828 6.828-6.828 3.734-0c3.004-0.006 5.438-2.444 5.438-5.451 0-2.565-1.771-4.716-4.156-5.296zM16 26l-6-6h4v-6h4v6h4l-6 6z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* pull_svg = (const char*) temp_binary_data_55;
+const char* pull_svg = (const char*) temp_binary_data_56;
 
 //================== push.svg ==================
-static const unsigned char temp_binary_data_56[] =
+static const unsigned char temp_binary_data_57[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M27.883 12.078c0.076-0.347 0.117-0.708 0.117-1.078 0-2.761-2.239-5-5-5-0.444 0-0.875 0.058-1.285 0.167-0.775-2.417-3.040-4.167-5.715-4.167-2.73 0-5.033 1.823-5.76 4.318-0.711-0.207-1.462-0.318-2.24-0.318-4.418 0-8 3.582-8 8s3.582 8 8 8h4v"
 "6h8v-6h7c2.761 0 5-2.239 5-5 0-2.46-1.777-4.505-4.117-4.922zM18 20v6h-4v-6h-5l7-7 7 7h-5z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* push_svg = (const char*) temp_binary_data_56;
+const char* push_svg = (const char*) temp_binary_data_57;
 
 //================== redo.svg ==================
-static const unsigned char temp_binary_data_57[] =
+static const unsigned char temp_binary_data_58[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M17.333 7.332c-0.341 0-0.683 0.129-0.943 0.389-0.26 0.261-0.391 0.603-0.391 0.944v3.412c-6 0.664-10.667 5.745-10.667 11.921v1.333c2.993-4.564 7-5.227 10.667-5.319v3.319c0 0.34 0.131 0.683 0.391 0.943s0.601 0.391 0.943 0.391 0.683-0.131 0."
 "943-0.391l8.391-8.276-8.391-8.277c-0.26-0.26-0.601-0.389-0.943-0.389z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* redo_svg = (const char*) temp_binary_data_57;
+const char* redo_svg = (const char*) temp_binary_data_58;
 
 //================== refactor.svg ==================
-static const unsigned char temp_binary_data_58[] =
+static const unsigned char temp_binary_data_59[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"11\" height=\"20\" viewBox=\"0 0 11 20\">\n"
 "<path d=\"M8.214 6.429c0 0.19-0.167 0.357-0.357 0.357s-0.357-0.167-0.357-0.357c0-0.77-1.194-1.071-1.786-1.071-0.19 0-0.357-0.167-0.357-0.357s0.167-0.357 0.357-0.357c1.038 0 2.5 0.547 2.5 1.786zM10 6.429c0-2.232-2.266-3.571-4.286-3.571s-4.286 1.339-4."
 "286 3.571c0 0.714 0.29 1.462 0.759 2.009 0.212 0.246 0.458 0.48 0.681 0.737 0.792 0.949 1.462 2.065 1.574 3.326h2.545c0.112-1.261 0.781-2.377 1.574-3.326 0.223-0.257 0.469-0.491 0.681-0.737 0.469-0.547 0.759-1.295 0.759-2.009zM11.429 6.429c0 1.15-0.3"
@@ -782,28 +797,28 @@ static const unsigned char temp_binary_data_58[] =
 "-0.089-1.194-1.105-2.388-1.875-3.237s-1.15-1.842-1.15-2.991c0-3.036 2.891-5 5.714-5s5.714 1.964 5.714 5z\"></path>\n"
 "</svg>\n";
 
-const char* refactor_svg = (const char*) temp_binary_data_58;
+const char* refactor_svg = (const char*) temp_binary_data_59;
 
 //================== remote.svg ==================
-static const unsigned char temp_binary_data_59[] =
+static const unsigned char temp_binary_data_60[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M24.341 12.222c-0.44 0-0.874 0.038-1.294 0.109-1.050-3.432-4.301-5.933-8.154-5.933-4.701 0-8.51 3.725-8.51 8.32 0 0.41 0.032 0.813 0.091 1.208-0.226-0.026-0.453-0.043-0.686-0.043-3.195 0-5.787 2.534-5.787 5.658 0 3.125 2.592 5.658 5.787 5"
 ".658h18.554c4.232 0 7.659-3.354 7.659-7.488 0-4.136-3.429-7.488-7.659-7.488z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* remote_svg = (const char*) temp_binary_data_59;
+const char* remote_svg = (const char*) temp_binary_data_60;
 
 //================== remove.svg ==================
-static const unsigned char temp_binary_data_60[] =
+static const unsigned char temp_binary_data_61[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M16 2.88c-6.846 0-11.101 2.256-10.87 4.086l2.307 18.987c0.091 0.739 3.554 3.162 8.563 3.166 5.011-0.005 8.472-2.429 8.565-3.166l2.306-18.987c0.23-1.83-4.022-4.086-10.87-4.086zM16 9.746c-5.010-0.005-8.565-1.789-8.565-2.456-0.002-0.662 3.55"
 "5-2.451 8.565-2.448 5.010-0.002 8.566 1.786 8.565 2.448 0 0.667-3.554 2.451-8.565 2.456z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* remove_svg = (const char*) temp_binary_data_60;
+const char* remove_svg = (const char*) temp_binary_data_61;
 
 //================== render.svg ==================
-static const unsigned char temp_binary_data_61[] =
+static const unsigned char temp_binary_data_62[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
@@ -821,19 +836,19 @@ static const unsigned char temp_binary_data_61[] =
 "92325 -1.86318,-4.96678 -5.4675,16.14644 -2.69558,15.79005 -3.65721,19.52831 -5.53867,21.53102 -2.7026,2.87678 -6.80742,3.15155 -9.8825,0.6615 z\"/>\n"
 "</svg>\n";
 
-const char* render_svg = (const char*) temp_binary_data_61;
+const char* render_svg = (const char*) temp_binary_data_62;
 
 //================== reset.svg ==================
-static const unsigned char temp_binary_data_62[] =
+static const unsigned char temp_binary_data_63[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "\t<path d=\"M17.963 2.88c-7.114 0-12.898 5.699-13.070 12.792h-3.933l5.886 6.562 5.885-6.562h-4.57c0.173-5.282 4.493-9.512 9.802-9.512 5.418 0 9.808 4.405 9.808 9.84s-4.39 9.84-9.808 9.84c-2.173 0-4.179-0.71-5.805-1.909l-2.25 2.406c2.221 1.742 5.016 2"
 ".782 8.054 2.782 7.222 0 13.078-5.874 13.078-13.12-0.002-7.246-5.858-13.12-13.078-13.12zM16.8 8.96v7.504l4.808 4.808 1.584-1.584-4.152-4.152v-6.576h-2.24z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* reset_svg = (const char*) temp_binary_data_62;
+const char* reset_svg = (const char*) temp_binary_data_63;
 
 //================== revision.svg ==================
-static const unsigned char temp_binary_data_63[] =
+static const unsigned char temp_binary_data_64[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M16.4 4c0-1.326-1.074-2.4-2.4-2.4s-2.4 1.074-2.4 2.4c0 0.961 0.568 1.784 1.384 2.167-0.082 1.584-1.27 2.122-3.335 2.896-0.87 0.327-1.829 0.689-2.649 1.234v-4.121c0.825-0.38 1.4-1.209 1.4-2.176 0-1.326-1.074-2.4-2.4-2.4s-2.4 1.074-2.4 2.4c0 "
 "0.967 0.576 1.796 1.4 2.176v7.649c-0.825 0.379-1.4 1.208-1.4 2.175 0 1.326 1.074 2.4 2.4 2.4s2.4-1.075 2.4-2.4c0-0.961-0.568-1.784-1.384-2.167 0.082-1.583 1.271-2.122 3.335-2.896 2.030-0.762 4.541-1.711 4.64-4.756 0.829-0.378 1.409-1.21 1.409-2.181zM"
@@ -841,30 +856,30 @@ static const unsigned char temp_binary_data_63[] =
 "385-1.384 1.385zM14 5.385c-0.766 0-1.385-0.621-1.385-1.385 0-0.766 0.619-1.385 1.385-1.385 0.764 0 1.384 0.619 1.384 1.385 0 0.764-0.62 1.385-1.384 1.385z\"></path>\n"
 "</svg>\n";
 
-const char* revision_svg = (const char*) temp_binary_data_63;
+const char* revision_svg = (const char*) temp_binary_data_64;
 
 //================== routing.svg ==================
-static const unsigned char temp_binary_data_64[] =
+static const unsigned char temp_binary_data_65[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M14.18 13.32v-1.641h5v1.641c0 1.094-0.703 1.992-1.68 2.344v3.516h-1.68v-3.516c-0.977-0.352-1.641-1.25-1.641-2.344zM10.82 1.68v3.32h1.68v5h-5v-5h1.68v-3.32c0-0.469 0.352-0.859 0.82-0.859s0.82 0.391 0.82 0.859zM17.5 5h1.68v5h-5v-5h1.641v-3.32"
 "c0-0.469 0.391-0.859 0.859-0.859s0.82 0.391 0.82 0.859v3.32zM0.82 13.32v-1.641h5v1.641c0 1.094-0.664 1.992-1.641 2.344v3.516h-1.68v-3.516c-0.977-0.352-1.68-1.25-1.68-2.344zM7.5 13.32v-1.641h5v1.641c0 1.094-0.703 1.992-1.68 2.344v3.516h-1.641v-3.516c-"
 "0.977-0.352-1.68-1.25-1.68-2.344zM4.18 1.68v3.32h1.641v5h-5v-5h1.68v-3.32c0-0.469 0.352-0.859 0.82-0.859s0.859 0.391 0.859 0.859z\"></path>\n"
 "</svg>\n";
 
-const char* routing_svg = (const char*) temp_binary_data_64;
+const char* routing_svg = (const char*) temp_binary_data_65;
 
 //================== script.svg ==================
-static const unsigned char temp_binary_data_65[] =
+static const unsigned char temp_binary_data_66[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M5.719 14.75c-0.236 0-0.474-0.083-0.664-0.252l-5.060-4.498 5.341-4.748c0.412-0.365 1.044-0.33 1.411 0.083s0.33 1.045-0.083 1.412l-3.659 3.253 3.378 3.002c0.413 0.367 0.45 0.999 0.083 1.412-0.197 0.223-0.472 0.336-0.747 0.336zM14.664 14.748l"
 "5.341-4.748-5.060-4.498c-0.413-0.367-1.045-0.33-1.411 0.083s-0.33 1.045 0.083 1.412l3.378 3.003-3.659 3.252c-0.413 0.367-0.45 0.999-0.083 1.412 0.197 0.223 0.472 0.336 0.747 0.336 0.236 0 0.474-0.083 0.664-0.252zM9.986 16.165l2-12c0.091-0.545-0.277-1"
 ".060-0.822-1.151-0.547-0.092-1.061 0.277-1.15 0.822l-2 12c-0.091 0.545 0.277 1.060 0.822 1.151 0.056 0.009 0.11 0.013 0.165 0.013 0.48 0 0.904-0.347 0.985-0.835z\"></path>\n"
 "</svg>\n";
 
-const char* script_svg = (const char*) temp_binary_data_65;
+const char* script_svg = (const char*) temp_binary_data_66;
 
 //================== selectionTool.svg ==================
-static const unsigned char temp_binary_data_66[] =
+static const unsigned char temp_binary_data_67[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M24 1.333h2.667q1.656 0 2.828 1.172t1.172 2.828v2.667q0 0.552-0.391 0.943t-0.943 0.391-0.943-0.391-0.391-0.943v-2.667q0-0.552-0.391-0.943t-0.943-0.391h-2.667q-0.552 0-0.943-0.391t-0.391-0.943 0.391-0.943 0.943-0.391zM2.667 22.667q0.552 0 "
 "0.943 0.391t0.391 0.943v2.667q0 0.552 0.391 0.943t0.943 0.391h2.667q0.552 0 0.943 0.391t0.391 0.943-0.391 0.943-0.943 0.391h-2.667q-1.656 0-2.828-1.172t-1.172-2.828v-2.667q0-0.552 0.391-0.943t0.943-0.391zM2.667 12q0.552 0 0.943 0.391t0.391 0.943v5.33"
@@ -874,10 +889,10 @@ static const unsigned char temp_binary_data_66[] =
 "t-0.943 0.391-0.943-0.391-0.391-0.943v-5.333q0-0.552 0.391-0.943t0.943-0.391zM13.333 1.333h5.333q0.552 0 0.943 0.391t0.391 0.943-0.391 0.943-0.943 0.391h-5.333q-0.552 0-0.943-0.391t-0.391-0.943 0.391-0.943 0.943-0.391z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* selectionTool_svg = (const char*) temp_binary_data_66;
+const char* selectionTool_svg = (const char*) temp_binary_data_67;
 
 //================== selection.svg ==================
-static const unsigned char temp_binary_data_67[] =
+static const unsigned char temp_binary_data_68[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M16.563 16.875h-1.875c-0.172 0-0.313-0.14-0.313-0.313s0.14-0.313 0.313-0.313h1.563v-1.563c0-0.172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 13.125c-0.172 0-0.313-0.14-0.313-0.313v-1.875c0-0."
 "172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 9.375c-0.172 0-0.313-0.14-0.313-0.313v-1.875c0-0.172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 5.625c-0."
@@ -889,10 +904,10 @@ static const unsigned char temp_binary_data_67[] =
 "c0.172 0 0.313 0.14 0.313 0.313s-0.141 0.313-0.313 0.313h-1.875c-0.172 0-0.313-0.14-0.313-0.313s0.14-0.313 0.313-0.313z\"></path>\n"
 "</svg>\n";
 
-const char* selection_svg = (const char*) temp_binary_data_67;
+const char* selection_svg = (const char*) temp_binary_data_68;
 
 //================== selectAll.svg ==================
-static const unsigned char temp_binary_data_68[] =
+static const unsigned char temp_binary_data_69[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M16.563 16.875h-1.875c-0.172 0-0.313-0.14-0.313-0.313s0.14-0.313 0.313-0.313h1.563v-1.563c0-0.172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 13.125c-0.172 0-0.313-0.14-0.313-0.313v-1.875c0-0."
 "172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 9.375c-0.172 0-0.313-0.14-0.313-0.313v-1.875c0-0.172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 5.625c-0."
@@ -905,10 +920,10 @@ static const unsigned char temp_binary_data_68[] =
 "-0.313s0.14-0.313 0.313-0.313zM10.938 16.25h1.875c0.172 0 0.313 0.14 0.313 0.313s-0.141 0.313-0.313 0.313h-1.875c-0.172 0-0.313-0.14-0.313-0.313s0.14-0.313 0.313-0.313z\"></path>\n"
 "</svg>\n";
 
-const char* selectAll_svg = (const char*) temp_binary_data_68;
+const char* selectAll_svg = (const char*) temp_binary_data_69;
 
 //================== selectNone.svg ==================
-static const unsigned char temp_binary_data_69[] =
+static const unsigned char temp_binary_data_70[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M16.563 16.875h-1.875c-0.172 0-0.313-0.14-0.313-0.313s0.14-0.313 0.313-0.313h1.563v-1.563c0-0.172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 13.125c-0.172 0-0.313-0.14-0.313-0.313v-1.875c0-0."
 "172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 9.375c-0.172 0-0.313-0.14-0.313-0.313v-1.875c0-0.172 0.14-0.313 0.313-0.313s0.313 0.14 0.313 0.313v1.875c0 0.172-0.141 0.313-0.313 0.313zM16.563 5.625c-0."
@@ -922,10 +937,10 @@ static const unsigned char temp_binary_data_69[] =
 "-0.14-0.313-0.313s0.14-0.313 0.313-0.313z\"></path>\n"
 "</svg>\n";
 
-const char* selectNone_svg = (const char*) temp_binary_data_69;
+const char* selectNone_svg = (const char*) temp_binary_data_70;
 
 //================== settings.svg ==================
-static const unsigned char temp_binary_data_70[] =
+static const unsigned char temp_binary_data_71[] =
 "<svg width=\"279px\" height=\"205px\" viewBox=\"0 0 279 205\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <g id=\"Page-1\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
 "        <g id=\"settings\" transform=\"translate(1.000000, 0.000000)\" fill=\"#000000\">\n"
@@ -946,83 +961,83 @@ static const unsigned char temp_binary_data_70[] =
 "    </g>\n"
 "</svg>";
 
-const char* settings_svg = (const char*) temp_binary_data_70;
+const char* settings_svg = (const char*) temp_binary_data_71;
 
 //================== stretchLeft.svg ==================
-static const unsigned char temp_binary_data_71[] =
+static const unsigned char temp_binary_data_72[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"23\" height=\"32\" viewBox=\"0 0 23 32\">\n"
 "\t<path d=\"M2.75 14.857q0-0.464 0.339-0.804l13.25-13.25q0.339-0.339 0.804-0.339t0.804 0.339l2.964 2.964q0.339 0.339 0.339 0.804t-0.339 0.804l-9.482 9.482 9.482 9.482q0.339 0.339 0.339 0.804t-0.339 0.804l-2.964 2.964q-0.339 0.339-0.804 0.339t-0.804-0"
 ".339l-13.25-13.25q-0.339-0.339-0.339-0.804z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* stretchLeft_svg = (const char*) temp_binary_data_71;
+const char* stretchLeft_svg = (const char*) temp_binary_data_72;
 
 //================== stretchRight.svg ==================
-static const unsigned char temp_binary_data_72[] =
-"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"23\" height=\"32\" viewBox=\"0 0 23 32\">\n"
-"\t<path d=\"M1.607 25.143q0-0.464 0.339-0.804l9.482-9.482-9.482-9.482q-0.339-0.339-0.339-0.804t0.339-0.804l2.964-2.964q0.339-0.339 0.804-0.339t0.804 0.339l13.25 13.25q0.339 0.339 0.339 0.804t-0.339 0.804l-13.25 13.25q-0.339 0.339-0.804 0.339t-0.804-0"
-".339l-2.964-2.964q-0.339-0.339-0.339-0.804z\" fill=\"#000000\"></path>\n"
-"</svg>\n";
-
-const char* stretchRight_svg = (const char*) temp_binary_data_72;
-
-//================== submenu.svg ==================
 static const unsigned char temp_binary_data_73[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"23\" height=\"32\" viewBox=\"0 0 23 32\">\n"
 "\t<path d=\"M1.607 25.143q0-0.464 0.339-0.804l9.482-9.482-9.482-9.482q-0.339-0.339-0.339-0.804t0.339-0.804l2.964-2.964q0.339-0.339 0.804-0.339t0.804 0.339l13.25 13.25q0.339 0.339 0.339 0.804t-0.339 0.804l-13.25 13.25q-0.339 0.339-0.804 0.339t-0.804-0"
 ".339l-2.964-2.964q-0.339-0.339-0.339-0.804z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* submenu_svg = (const char*) temp_binary_data_73;
+const char* stretchRight_svg = (const char*) temp_binary_data_73;
+
+//================== submenu.svg ==================
+static const unsigned char temp_binary_data_74[] =
+"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"23\" height=\"32\" viewBox=\"0 0 23 32\">\n"
+"\t<path d=\"M1.607 25.143q0-0.464 0.339-0.804l9.482-9.482-9.482-9.482q-0.339-0.339-0.339-0.804t0.339-0.804l2.964-2.964q0.339-0.339 0.804-0.339t0.804 0.339l13.25 13.25q0.339 0.339 0.339 0.804t-0.339 0.804l-13.25 13.25q-0.339 0.339-0.804 0.339t-0.804-0"
+".339l-2.964-2.964q-0.339-0.339-0.339-0.804z\" fill=\"#000000\"></path>\n"
+"</svg>\n";
+
+const char* submenu_svg = (const char*) temp_binary_data_74;
 
 //================== success.svg ==================
-static const unsigned char temp_binary_data_74[] =
+static const unsigned char temp_binary_data_75[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M2.161 16.571q0-0.714 0.5-1.214l2.429-2.429q0.5-0.5 1.214-0.5t1.214 0.5l5.25 5.268 11.714-11.732q0.5-0.5 1.214-0.5t1.214 0.5l2.429 2.429q0.5 0.5 0.5 1.214t-0.5 1.214l-15.357 15.357q-0.5 0.5-1.214 0.5t-1.214-0.5l-8.893-8.893q-0.5-0.5-0.5-1"
 ".214z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* success_svg = (const char*) temp_binary_data_74;
+const char* success_svg = (const char*) temp_binary_data_75;
 
 //================== toggleOff.svg ==================
-static const unsigned char temp_binary_data_75[] =
+static const unsigned char temp_binary_data_76[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"16\" height=\"14\" viewBox=\"0 0 16 14\">\n"
 "<path fill=\"#000000\" d=\"M9 7q0-0.813-0.316-1.551t-0.855-1.277-1.277-0.855-1.551-0.316-1.551 0.316-1.277 0.855-0.855 1.277-0.316 1.551 0.316 1.551 0.855 1.277 1.277 0.855 1.551 0.316 1.551-0.316 1.277-0.855 0.855-1.277 0.316-1.551zM15 7q0-0.813-0.3"
 "16-1.551t-0.855-1.277-1.277-0.855-1.551-0.316h-3.016q0.93 0.703 1.473 1.75t0.543 2.25-0.543 2.25-1.473 1.75h3.016q0.813 0 1.551-0.316t1.277-0.855 0.855-1.277 0.316-1.551zM16 7q0 1.016-0.398 1.941t-1.066 1.594-1.594 1.066-1.941 0.398h-6q-1.016 0-1.941"
 "-0.398t-1.594-1.066-1.066-1.594-0.398-1.941 0.398-1.941 1.066-1.594 1.594-1.066 1.941-0.398h6q1.016 0 1.941 0.398t1.594 1.066 1.066 1.594 0.398 1.941z\"></path>\n"
 "</svg>\n";
 
-const char* toggleOff_svg = (const char*) temp_binary_data_75;
+const char* toggleOff_svg = (const char*) temp_binary_data_76;
 
 //================== toggleOn.svg ==================
-static const unsigned char temp_binary_data_76[] =
+static const unsigned char temp_binary_data_77[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"16\" height=\"14\" viewBox=\"0 0 16 14\">\n"
 "<path fill=\"#000000\" d=\"M0 7q0-1.016 0.398-1.941t1.066-1.594 1.594-1.066 1.941-0.398h6q1.016 0 1.941 0.398t1.594 1.066 1.066 1.594 0.398 1.941-0.398 1.941-1.066 1.594-1.594 1.066-1.941 0.398h-6q-1.016 0-1.941-0.398t-1.594-1.066-1.066-1.594-0.398-1"
 ".941zM11 11q0.813 0 1.551-0.316t1.277-0.855 0.855-1.277 0.316-1.551-0.316-1.551-0.855-1.277-1.277-0.855-1.551-0.316-1.551 0.316-1.277 0.855-0.855 1.277-0.316 1.551 0.316 1.551 0.855 1.277 1.277 0.855 1.551 0.316z\"></path>\n"
 "</svg>\n";
 
-const char* toggleOn_svg = (const char*) temp_binary_data_76;
+const char* toggleOn_svg = (const char*) temp_binary_data_77;
 
 //================== trackGroup.svg ==================
-static const unsigned char temp_binary_data_77[] =
+static const unsigned char temp_binary_data_78[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M20 2.5v-2.5l-14 2v12.17c-0.297-0.108-0.639-0.17-0.996-0.17-0.002 0-0.003 0-0.005 0h-2c-1.657 0-3 1.343-3 3s1.343 3 3 3v0h2c1.657 0 3-1.343 3-3v0-11.29l10-1.41v7.88c-0.297-0.108-0.639-0.17-0.996-0.17-0.002 0-0.003 0-0.005 0h-2c-1.657 0-3 1."
 "343-3 3s1.343 3 3 3h2c1.657 0 3-1.343 3-3v0-12.51z\"></path>\n"
 "</svg>\n";
 
-const char* trackGroup_svg = (const char*) temp_binary_data_77;
+const char* trackGroup_svg = (const char*) temp_binary_data_78;
 
 //================== undo.svg ==================
-static const unsigned char temp_binary_data_78[] =
+static const unsigned char temp_binary_data_79[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M16 12.079v-3.412c0-0.341-0.131-0.683-0.391-0.944-0.26-0.26-0.601-0.389-0.943-0.389s-0.683 0.129-0.943 0.389l-8.391 8.277 8.391 8.276c0.26 0.26 0.601 0.391 0.943 0.391s0.683-0.131 0.943-0.391 0.391-0.603 0.391-0.943v-3.319c3.667 0.091 7.6"
 "73 0.755 10.667 5.319v-1.333c0-6.177-4.667-11.257-10.667-11.921z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* undo_svg = (const char*) temp_binary_data_78;
+const char* undo_svg = (const char*) temp_binary_data_79;
 
 //================== unmute.svg ==================
-static const unsigned char temp_binary_data_79[] =
+static const unsigned char temp_binary_data_80[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"30\" height=\"32\">\n"
 "    <path id=\"shapePath1\" d=\"M0,19.429 L0,12.572 C0,12.2627 0.113,11.9947 0.339,11.768 C0.565,11.5413 0.833,11.4283 1.143,11.429 L5.822,11.429 L11.768,5.483 C11.994,5.257 12.262,5.144 12.572,5.144 C12.882,5.144 13.15,5.257 13.376,5.483 C13.602,5.7"
 "09 13.715,5.977 13.715,6.287 L13.715,25.716 C13.715,26.0253 13.602,26.2933 13.376,26.52 C13.15,26.7467 12.882,26.8597 12.572,26.859 C12.262,26.8583 11.994,26.7453 11.768,26.52 L5.822,20.574 L1.143,20.574 C0.833667,20.574 0.565666,20.461 0.339,20.235 "
@@ -1036,19 +1051,19 @@ static const unsigned char temp_binary_data_79[] =
 "01,23.665 18.001,23.355 L18,23.357 Z\" style=\"stroke:none;fill-rule:evenodd;fill:#000000;fill-opacity:1;\"/>\n"
 "</svg>\n";
 
-const char* unmute_svg = (const char*) temp_binary_data_79;
+const char* unmute_svg = (const char*) temp_binary_data_80;
 
 //================== up.svg ==================
-static const unsigned char temp_binary_data_80[] =
+static const unsigned char temp_binary_data_81[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"21\" height=\"32\" viewBox=\"0 0 21 32\">\n"
 "\t<path d=\"M1.375 21.143q0-0.232 0.179-0.411l8.321-8.321q0.179-0.179 0.411-0.179t0.411 0.179l8.321 8.321q0.179 0.179 0.179 0.411t-0.179 0.411l-0.893 0.893q-0.179 0.179-0.411 0.179t-0.411-0.179l-7.018-7.018-7.018 7.018q-0.179 0.179-0.411 0.179t-0.411"
 "-0.179l-0.893-0.893q-0.179-0.179-0.179-0.411z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* up_svg = (const char*) temp_binary_data_80;
+const char* up_svg = (const char*) temp_binary_data_81;
 
 //================== versionControl.svg ==================
-static const unsigned char temp_binary_data_81[] =
+static const unsigned char temp_binary_data_82[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n"
 "  <g id=\"g5291\" transform=\"translate(-40,52.857143)\">\n"
 "    <path style=\"fill:#000000\" d=\"m 309.85714,572.86218 0,-9.5 6.35705,0 6.35704,0 0.6724,-9.76279 c 2.24007,-32.52416 11.2486,-49.24248 35.915,-66.65218 20.34032,-14.35633 20.34032,-24.81373 0,-39.17006 -24.6664,-17.4097 -33.67493,-34.12802 -35.9"
@@ -1060,18 +1075,18 @@ static const unsigned char temp_binary_data_81[] =
 "  </g>\n"
 "</svg>\n";
 
-const char* versionControl_svg = (const char*) temp_binary_data_81;
+const char* versionControl_svg = (const char*) temp_binary_data_82;
 
 //================== volume.svg ==================
-static const unsigned char temp_binary_data_82[] =
+static const unsigned char temp_binary_data_83[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
 "<path d=\"M19 13.805c0 0.657-0.538 1.195-1.195 1.195h-16.272c-0.88 0-0.982-0.371-0.229-0.822l16.323-9.055c0.755-0.453 1.373-0.104 1.373 0.777v7.905z\"></path>\n"
 "</svg>\n";
 
-const char* volume_svg = (const char*) temp_binary_data_82;
+const char* volume_svg = (const char*) temp_binary_data_83;
 
 //================== zoomIn.svg ==================
-static const unsigned char temp_binary_data_83[] =
+static const unsigned char temp_binary_data_84[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M17.333 14.667h-2.667v-2.667c0-0.368-0.299-0.667-0.667-0.667s-0.667 0.299-0.667 0.667v2.667h-2.667c-0.368 0-0.667 0.299-0.667 0.667s0.299 0.667 0.667 0.667h2.667v2.667c0 0.368 0.299 0.667 0.667 0.667s0.667-0.299 0.667-0.667v-2.667h2.667c0"
 ".368 0 0.667-0.299 0.667-0.667s-0.299-0.667-0.667-0.667z\" fill=\"#000000\"></path>\n"
@@ -1079,40 +1094,40 @@ static const unsigned char temp_binary_data_83[] =
 "301 0 4.173-1.872 4.173-4.175 0-1.12-0.437-2.171-1.232-2.957l-1.267-1.315zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667-2.991 6.667-6.667 6.667-6.667-2.991-6.667-6.667z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* zoomIn_svg = (const char*) temp_binary_data_83;
+const char* zoomIn_svg = (const char*) temp_binary_data_84;
 
 //================== zoomOut.svg ==================
-static const unsigned char temp_binary_data_84[] =
+static const unsigned char temp_binary_data_85[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M17.333 14.667h-6.667c-0.368 0-0.667 0.299-0.667 0.667s0.299 0.667 0.667 0.667h6.667c0.368 0 0.667-0.299 0.667-0.667s-0.299-0.667-0.667-0.667z\" fill=\"#000000\"></path>\n"
 "\t<path d=\"M25.841 21.275l-1.265-1.315-1.715-1.716c0.303-0.917 0.472-1.893 0.472-2.911 0-5.145-4.187-9.333-9.333-9.333s-9.333 4.188-9.333 9.333 4.187 9.333 9.333 9.333c1.017 0 1.995-0.169 2.912-0.472l3.096 3.093 0.087 0.073c0.801 0.675 1.797 1.045 2"
 ".805 1.045 2.301 0 4.173-1.872 4.173-4.175 0-1.12-0.437-2.171-1.232-2.957zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667-2.991 6.667-6.667 6.667-6.667-2.991-6.667-6.667z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* zoomOut_svg = (const char*) temp_binary_data_84;
+const char* zoomOut_svg = (const char*) temp_binary_data_85;
 
 //================== zoomTool.svg ==================
-static const unsigned char temp_binary_data_85[] =
+static const unsigned char temp_binary_data_86[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n"
 "<path fill=\"#000000\" d=\"M13 4c-3.859 0-7 3.141-7 7 0 0.763 0.127 1.495 0.354 2.183l-1.26 1.262-1.008 1.045c-0.562 0.557-0.891 1.345-0.891 2.185 0 1.727 1.404 3.131 3.13 3.131 0.757 0 1.504-0.278 2.104-0.784l0.064-0.055 0.061-0.061 2.262-2.259c0.68"
 "8 0.226 1.421 0.353 2.184 0.353 3.859 0 7-3.141 7-7s-3.141-7-7-7zM13 16c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z\"></path>\n"
 "<path fill=\"#000000\" d=\"M13 7c-2.205 0-4 1.794-4 4s1.795 4 4 4 4-1.794 4-4-1.795-4-4-4zM13 14c-1.656 0-3-1.344-3-3s1.344-3 3-3 3 1.344 3 3-1.344 3-3 3z\"></path>\n"
 "</svg>\n";
 
-const char* zoomTool_svg = (const char*) temp_binary_data_85;
+const char* zoomTool_svg = (const char*) temp_binary_data_86;
 
 //================== Noise.png ==================
-static const unsigned char temp_binary_data_86[] =
+static const unsigned char temp_binary_data_87[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,48,0,0,0,48,8,6,0,0,0,87,2,249,135,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,0,0,244,73,68,65,84,104,5,213,146,201,13,192,48,16,2,211,131,235,117,143,238,40,7,18,145,64,219,192,228,99,145,215,176,
 204,181,247,190,175,247,251,222,181,214,77,203,31,251,255,157,115,84,198,63,104,217,220,172,151,170,142,85,215,181,105,170,52,47,75,153,166,245,20,84,149,162,79,79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,
 114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,17,212,83,80,85,138,82,61,13,45,71,25,76,160,170,99,245,117,104,154,42,205,139,177,101,4,245,20,84,149,162,84,
 79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,9,244,1,171,21,46,
 170,68,251,251,242,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* Noise_png = (const char*) temp_binary_data_86;
+const char* Noise_png = (const char*) temp_binary_data_87;
 
 //================== Arpeggiators.json ==================
-static const unsigned char temp_binary_data_87[] =
+static const unsigned char temp_binary_data_88[] =
 "{\r\n"
 "  // TODO\r\n"
 "  \"arpeggiators\": {\r\n"
@@ -1121,10 +1136,10 @@ static const unsigned char temp_binary_data_87[] =
 "  }\r\n"
 "}";
 
-const char* Arpeggiators_json = (const char*) temp_binary_data_87;
+const char* Arpeggiators_json = (const char*) temp_binary_data_88;
 
 //================== ColourSchemes.json ==================
-static const unsigned char temp_binary_data_88[] =
+static const unsigned char temp_binary_data_89[] =
 "{\r\n"
 "  \"colourSchemes\": {\r\n"
 "    \"colourScheme\": [\r\n"
@@ -1216,10 +1231,10 @@ static const unsigned char temp_binary_data_88[] =
 "  }\r\n"
 "}";
 
-const char* ColourSchemes_json = (const char*) temp_binary_data_88;
+const char* ColourSchemes_json = (const char*) temp_binary_data_89;
 
 //================== HotkeySchemes.json ==================
-static const unsigned char temp_binary_data_89[] =
+static const unsigned char temp_binary_data_90[] =
 "{\n"
 "  \"hotkeySchemes\": {\n"
 "\n"
@@ -1444,10 +1459,10 @@ static const unsigned char temp_binary_data_89[] =
 "  }\n"
 "}";
 
-const char* HotkeySchemes_json = (const char*) temp_binary_data_89;
+const char* HotkeySchemes_json = (const char*) temp_binary_data_90;
 
 //================== Scales.json ==================
-static const unsigned char temp_binary_data_90[] =
+static const unsigned char temp_binary_data_91[] =
 "{\r\n"
 "  /*\r\n"
 "    This is the list of most common scales (and their modes),\r\n"
@@ -1500,10 +1515,10 @@ static const unsigned char temp_binary_data_90[] =
 "  }\r\n"
 "}";
 
-const char* Scales_json = (const char*) temp_binary_data_90;
+const char* Scales_json = (const char*) temp_binary_data_91;
 
 //================== Translations.json ==================
-static const unsigned char temp_binary_data_91[] =
+static const unsigned char temp_binary_data_92[] =
 { 123,34,116,114,97,110,115,108,97,116,105,111,110,115,34,58,123,34,108,111,99,97,108,101,34,58,91,123,34,105,100,34,58,34,101,110,34,44,34,110,97,109,101,34,58,34,69,110,103,108,105,115,104,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,
 34,58,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,110,97,109,101,34,58,34,100,101,102,97,117,108,116,115,58,58,110,101,119,112,114,111,106,101,99,116,58,58,102,105,114,115,116,99,111,109,109,
 105,116,34,44,34,116,114,97,110,115,108,97,116,105,111,110,34,58,34,80,114,111,106,101,99,116,32,115,116,97,114,116,101,100,34,125,44,123,34,110,97,109,101,34,58,34,100,101,102,97,117,108,116,115,58,58,110,101,119,112,114,111,106,101,99,116,58,58,110,
@@ -5439,5 +5454,5 @@ static const unsigned char temp_binary_data_91[] =
 109,32,123,120,125,34,44,34,116,114,97,110,115,108,97,116,105,111,110,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,236,151,144,236,132,156,32,236,152,174,234,178,168,236,167,144,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
 125,93,125,93,125,125,0,0 };
 
-const char* Translations_json = (const char*) temp_binary_data_91;
+const char* Translations_json = (const char*) temp_binary_data_92;
 }
