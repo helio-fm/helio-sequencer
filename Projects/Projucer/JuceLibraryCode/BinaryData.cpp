@@ -9808,6 +9808,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x2030ef3f:  numBytes = 458; return expand_svg;
         case 0x284005c3:  numBytes = 526; return fail_svg;
         case 0x628f95ea:  numBytes = 421; return forward_svg;
+        case 0x76676008:  numBytes = 1966; return github_svg;
         case 0x423ac39a:  numBytes = 25191; return helio_svg;
         case 0x74a8060c:  numBytes = 2919; return instrument_svg;
         case 0x5daabbae:  numBytes = 743; return instrumentNode_svg;
@@ -9909,6 +9910,7 @@ const char* namedResourceList[] =
     "expand_svg",
     "fail_svg",
     "forward_svg",
+    "github_svg",
     "helio_svg",
     "instrument_svg",
     "instrumentNode_svg",
@@ -10005,6 +10007,7 @@ const char* originalFilenames[] =
     "expand.svg",
     "fail.svg",
     "forward.svg",
+    "github.svg",
     "helio.svg",
     "instrument.svg",
     "instrumentNode.svg",

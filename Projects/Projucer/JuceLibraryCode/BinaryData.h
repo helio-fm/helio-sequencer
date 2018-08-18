@@ -113,6 +113,9 @@ namespace BinaryData
     extern const char*   forward_svg;
     const int            forward_svgSize = 421;
 
+    extern const char*   github_svg;
+    const int            github_svgSize = 1966;
+
     extern const char*   helio_svg;
     const int            helio_svgSize = 25191;
 
@@ -285,7 +288,7 @@ namespace BinaryData
     const int            Translations_jsonSize = 271571;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 92;
+    const int namedResourceListSize = 93;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
