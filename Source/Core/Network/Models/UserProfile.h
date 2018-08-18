@@ -27,13 +27,17 @@ public:
     {
         using namespace Serialization::Api::V1;
         const bool hasImage = this->avatar.isValid();
-        const bool hasCache = this->data.hasProperty(Identity::avatarCache);
+        const bool hasCache = this->data.hasProperty(Identity::avatarThumbnail);
         if (hasImage && !hasCache)
         {
-            MemoryOutputStream outStream;
-            this->pngFormat.writeImageToStream(this->avatar, outStream);
-            const auto avatarData(Base64::toBase64(outStream.getData(), outStream.getDataSize()));
-            this->data.setProperty(Identity::avatarCache, avatarData, nullptr);
+            MemoryBlock block;
+            {
+                MemoryOutputStream outStream(block, false);
+                this->imageFormat.writeImageToStream(this->avatar, outStream);
+            }
+
+            const auto avatarData(Base64::toBase64(block.getData(), block.getSize()));
+            this->data.setProperty(Identity::avatarThumbnail, avatarData, nullptr);
         }
     }
 
@@ -60,29 +64,22 @@ public:
         ApiModel::deserialize(tree);
 
         using namespace Serialization::Api::V1;
-        if (this->data.hasProperty(Identity::avatarCache))
+        if (this->data.hasProperty(Identity::avatarThumbnail))
         {
             MemoryBlock block;
             {
                 MemoryOutputStream outStream(block, false);
-                Base64::convertFromBase64(outStream, { this->data.getProperty(Identity::avatarCache) });
+                Base64::convertFromBase64(outStream, { this->data.getProperty(Identity::avatarThumbnail) });
             }
 
-            MemoryInputStream inStream(block, false);
-            if (this->pngFormat.canUnderstand(inStream))
-            {
-                this->avatar = this->pngFormat.decodeImage(inStream);
-            }
+            this->avatar = ImageFileFormat::loadFrom(block.getData(), block.getSize());
         }
-
-        const bool hasImage = this->avatar.isValid();
-        const bool hasCache = this->data.hasProperty(Identity::avatarCache);
     }
 
 private:
 
     Image avatar;
-    PNGImageFormat pngFormat;
+    PNGImageFormat imageFormat;
 
     JUCE_LEAK_DETECTOR(UserProfile)
 };

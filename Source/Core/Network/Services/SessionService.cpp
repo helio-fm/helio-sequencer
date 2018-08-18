@@ -19,6 +19,7 @@
 #include "SessionService.h"
 
 #include "Config.h"
+#include "JsonSerializer.h"
 
 #include "HelioTheme.h"
 #include "App.h"
@@ -26,30 +27,63 @@
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
 
-// Try to update our sliding session and reload user profile after 5 seconds
+// Try to update our sliding session after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
 
 SessionService::SessionService() : userProfile({})
 {
-    // The logic goes like this:
-    // If we have a token, request user profile,
-    // which will either fail with expired token (do nothing)
-    // or return a profile - then we check if token was updated
-    // more than 1 day ago, start update token thread
-
     Config::load(this->userProfile, Serialization::Config::activeUserProfile);
-    this->startTimer(UPDATE_SESSION_TIMEOUT_MS);
+    const String token = SessionService::getApiToken();
+    if (token.isNotEmpty())
+    {
+        // Assuming we're using JWT, try to get token expiry:
+        StringArray jwtBlocks;
+        jwtBlocks.addTokens(token, ".", "");
+        if (jwtBlocks.size() == 3)
+        {
+            MemoryBlock block;
+            {
+                MemoryOutputStream outStream(block, false);
+                Base64::convertFromBase64(outStream, jwtBlocks[1]);
+            }
+
+            ValueTree jwt;
+            static JsonSerializer decoder;
+            if (decoder.loadFromString(block.toString(), jwt).wasOk())
+            {
+                const Time now = Time::getCurrentTime();
+                const Time expiry(int64(jwt.getProperty("exp")) * 1000);
+                Logger::writeToLog("Found token expiring " + expiry.toString(true, true));
+                if (expiry < now)
+                {
+                    Logger::writeToLog("Token seems to be expired, removing");
+                    SessionService::setApiToken({});
+                    this->resetUserProfile();
+                }
+                else if ((expiry - now).inDays() <= 5)
+                {
+                    Logger::writeToLog("Attempting to re-issue auth token");
+                    this->startTimer(UPDATE_SESSION_TIMEOUT_MS);
+                }
+
+                return;
+            }
+        }
+
+        Logger::writeToLog("Warning: auth token seems to be invalid, removing");
+        SessionService::setApiToken({});
+        this->resetUserProfile();
+    }
 }
 
 String SessionService::getApiToken()
 {
-    return Config::get(Serialization::Api::sessionLastToken, {});
+    return Config::get(Serialization::Api::sessionToken, {});
 }
 
 void SessionService::setApiToken(const String &token)
 {
-    Config::set(Serialization::Api::sessionLastToken, token);
-    Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
+    Config::set(Serialization::Api::sessionToken, token);
 }
 
 bool SessionService::isLoggedIn()
@@ -61,6 +95,16 @@ const UserProfile &SessionService::getUserProfile() const noexcept
 {
     return this->userProfile;
 }
+
+void SessionService::resetUserProfile()
+{
+    this->userProfile.reset();
+    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
+}
+
+//===----------------------------------------------------------------------===//
+// Sign in / sign out
+//===----------------------------------------------------------------------===//
 
 void SessionService::signIn(const String &provider, AuthCallback callback)
 {
@@ -98,9 +142,34 @@ void SessionService::signOut()
 void SessionService::timerCallback()
 {
     this->stopTimer();
-    if (SessionService::getApiToken().isNotEmpty())
+    const String token = SessionService::getApiToken();
+    this->getNewThreadFor<TokenUpdateThread>()->updateToken(this, token);
+}
+
+//===----------------------------------------------------------------------===//
+// SignInThread::Listener
+//===----------------------------------------------------------------------===//
+
+void SessionService::authSessionInitiated(const AuthSession session, const String &redirect)
+{
+    jassert(redirect.isNotEmpty());
+    URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
+}
+
+void SessionService::authSessionFinished(const AuthSession session)
+{
+    SessionService::setApiToken(session.getToken());
+    // Don't call authCallback right now, instead request a user profile and callback when ready
+    this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
+}
+
+void SessionService::authSessionFailed(const Array<String> &errors)
+{
+    Logger::writeToLog("Login failed: " + errors.getFirst());
+    if (this->authCallback != nullptr)
     {
-        this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
+        this->authCallback(false, errors);
+        this->authCallback = nullptr;
     }
 }
 
@@ -112,52 +181,16 @@ void SessionService::requestProfileOk(const UserProfile profile)
 {
     this->userProfile = profile;
     Config::save(this->userProfile, Serialization::Config::activeUserProfile);
-
-    const String lastSessionToken = SessionService::getApiToken();
-    const Time nowMinusHalfDay = Time::getCurrentTime() - RelativeTime::hours(12);
-    const Time lastSessionUpdateTime =
-        Time::fromISO8601(Config::get(Serialization::Api::sessionLastUpdateTime));
-
-    if (lastSessionToken.isNotEmpty() && lastSessionUpdateTime < nowMinusHalfDay)
+    if (this->authCallback != nullptr)
     {
-        Logger::writeToLog("Attempting to re-issue auth token");
-        this->getNewThreadFor<TokenUpdateThread>()->updateToken(this, lastSessionToken);
+        this->authCallback(true, {});
+        this->authCallback = nullptr;
     }
 }
 
 void SessionService::requestProfileFailed(const Array<String> &errors)
 {
     this->resetUserProfile();
-}
-
-//===----------------------------------------------------------------------===//
-// SignInThread::Listener
-//===----------------------------------------------------------------------===//
-
-
-void SessionService::authSessionInitiated(const AuthSession session, const String &redirect)
-{
-    jassert(redirect.isNotEmpty());
-    URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
-}
-
-void SessionService::authSessionFinished(const AuthSession session)
-{
-    SessionService::setApiToken(session.getToken());
-
-    if (this->authCallback != nullptr)
-    {
-        this->authCallback(true, {});
-        this->authCallback = nullptr;
-    }
-
-    this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
-}
-
-void SessionService::authSessionFailed(const Array<String> &errors)
-{
-    Logger::writeToLog("Login failed: " + errors.getFirst());
-
     if (this->authCallback != nullptr)
     {
         this->authCallback(false, errors);
@@ -182,12 +215,6 @@ void SessionService::tokenUpdateFailed(const Array<String> &errors)
 
 void SessionService::tokenUpdateNoResponse()
 {
-    // In case of connection error, we should not erase the token
-    this->resetUserProfile();
-}
-
-void SessionService::resetUserProfile()
-{
-    this->userProfile.reset();
-    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
+    // This might be the case of connection error,
+    // so we should not reset the token and profile
 }

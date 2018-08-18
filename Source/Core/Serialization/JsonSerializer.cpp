@@ -598,7 +598,7 @@ struct JsonFormatter final
 // Json serializer
 //===----------------------------------------------------------------------===//
 
-static const Identifier fakeRoot = "fakeRoot";
+static const Identifier fakeRoot = "root";
 
 JsonSerializer::JsonSerializer(bool allOnOneLine) noexcept :
     allOnOneLine(allOnOneLine) {}
@@ -651,7 +651,17 @@ Result JsonSerializer::loadFromString(const String &string, ValueTree &tree) con
     const auto result = JsonParser::parseObjectOrArray(string.getCharPointer(), root);
     if (result.wasOk())
     {
-        tree = root.getChild(0);
+        if (root.getNumChildren() == 1 && root.getNumProperties() == 0)
+        {
+            // expected behaviour in most cases:
+            tree = root.getChild(0);
+        }
+        else
+        {
+            // but it might be just a regular json we need to parse:
+            tree = root;
+        }
+
         return result;
     }
 

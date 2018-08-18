@@ -483,8 +483,7 @@ namespace Serialization
     namespace Api
     {
         // Session
-        static const Identifier sessionLastUpdateTime = "sessionLastUpdateTime";
-        static const Identifier sessionLastToken = "sessionLastToken";
+        static const Identifier sessionToken = "sessionToken";
         static const Identifier sessionUserProfile = "sessionUserProfile";
 
         static const Identifier updatesInfo = "updatesInfo";
@@ -524,7 +523,7 @@ namespace Serialization
                 static const Identifier login = "login";
                 static const Identifier profileUrl = "profileUrl";
                 static const Identifier avatarUrl = "avatar";
-                static const Identifier avatarCache = "avatarCache";
+                static const Identifier avatarThumbnail = "avatarThumbnail";
                 static const Identifier password = "password";
                 static const Identifier passwordConfirmation = "passwordConfirmation";
             }

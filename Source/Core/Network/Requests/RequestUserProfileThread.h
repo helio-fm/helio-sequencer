@@ -75,15 +75,15 @@ private:
 
         if (newProfileAvatarUrl != this->profile.getAvatarUrl())
         {
-            const int s = 20; // local avatar size
-            profileAvatar = { Image::ARGB, s, s, true };
+            const int s = 16; // local avatar thumbnail size
+            profileAvatar = { Image::RGB, s, s, true };
             MemoryBlock downloadedData;
             URL(newProfileAvatarUrl).readEntireBinaryStream(downloadedData, false);
             MemoryInputStream inputStream(downloadedData, false);
             Image remoteAvatar = ImageFileFormat::loadFrom(inputStream).rescaled(s, s, Graphics::highResamplingQuality);
             Graphics g(profileAvatar);
             g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
-            g.fillEllipse(0.f, 0.f, float(s), float(s));
+            g.fillAll();
         }
 
         this->profile = { this->response.getBody(), profileAvatar };
