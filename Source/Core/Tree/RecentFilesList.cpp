@@ -17,20 +17,19 @@
 
 #include "Common.h"
 #include "RecentFilesList.h"
-#include "Config.h"
+#include "SessionService.h"
 #include "SerializationKeys.h"
+#include "Config.h"
 #include "App.h"
 
 RecentFilesList::RecentFilesList()
 {
-    //App::Helio()->getSessionManager()->addChangeListener(this);
-    // todo update list
+    App::Helio().getSessionService()->addChangeListener(this);
 }
 
 RecentFilesList::~RecentFilesList()
 {
-    // TODO
-    //App::Helio()->getSessionManager()->removeChangeListener(this);
+    App::Helio().getSessionService()->removeChangeListener(this);
 }
 
 void RecentFilesList::onProjectStateChanged(const String &title, const String &path,
@@ -47,8 +46,6 @@ void RecentFilesList::onProjectStateChanged(const String &title, const String &p
     
     if (index >= 0)
     {
-        Logger::writeToLog("onProjectStateChanged (found recent file) " + title + " :: " + path);
-
         RecentFileDescription::Ptr fd = this->localFiles[index];
         fd->title = title;
         fd->isLoaded = isLoaded;
@@ -61,8 +58,6 @@ void RecentFilesList::onProjectStateChanged(const String &title, const String &p
     }
     else
     {
-        Logger::writeToLog("onProjectStateChanged (new recent file) " + title + " :: " + path);
-
         RecentFileDescription::Ptr fd = new RecentFileDescription();
         fd->lastModifiedTime = Time::getCurrentTime().toMilliseconds();
         fd->title = title;

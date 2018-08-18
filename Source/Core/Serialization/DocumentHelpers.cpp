@@ -118,7 +118,7 @@ static File getFirstSlot(String location1, String location2, const String &fileN
 
     if (slotExists)
     {
-        Logger::writeToLog("Using document at " + result.getFullPathName());
+        Logger::writeToLog("Opening file: " + result.getFullPathName());
     }
 
     return result;

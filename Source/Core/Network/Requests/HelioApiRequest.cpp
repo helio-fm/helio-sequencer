@@ -133,7 +133,7 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
     const String responseBody = stream->readEntireStreamAsString();
     if (responseBody.isNotEmpty())
     {
-        Logger::writeToLog("Response " + String(response.statusCode) + " " + responseBody.substring(0, 128) + (responseBody.length() > 128 ? ".." : ""));
+        Logger::writeToLog("<< Received " + String(response.statusCode) + " " + responseBody.substring(0, 128) + (responseBody.length() > 128 ? ".." : ""));
         //Logger::writeToLog(response.headers.getDescription());
 
         ValueTree parsedResponse;
@@ -189,7 +189,7 @@ HelioApiRequest::Response HelioApiRequest::post(const ValueTree &payload) const
     int i = 0;
     do
     {
-        Logger::writeToLog("POST " + this->apiEndpoint + " " + jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
+        Logger::writeToLog(">> POST " + this->apiEndpoint + " " + jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
         stream = url.createInputStream(true,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
@@ -210,7 +210,7 @@ HelioApiRequest::Response HelioApiRequest::get() const
     int i = 0;
     do
     {
-        Logger::writeToLog("GET " + this->apiEndpoint);
+        Logger::writeToLog(">> GET " + this->apiEndpoint);
         stream = url.createInputStream(false,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,

@@ -179,8 +179,6 @@ bool VCS::Head::moveTo(const ValueTree revision)
             this->state = new HeadState();
         }
 
-        Logger::writeToLog("Head::moveTo " + Revision::getUuid(currentRevision));
-
         while (currentRevision.isValid())
         {
             treePath.insert(0, currentRevision);
@@ -192,7 +190,7 @@ bool VCS::Head::moveTo(const ValueTree revision)
         {
             const ValueTree rev(i);
 
-            Logger::writeToLog("Head::moveTo -> " + Revision::getUuid(rev));
+            Logger::writeToLog("VCS head moved to " + Revision::getUuid(rev));
 
             // собираем все дельты и применяем их к текущему состоянию
             for (int j = 0; j < rev.getNumProperties(); ++j)
