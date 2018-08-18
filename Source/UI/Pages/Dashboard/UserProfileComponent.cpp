@@ -96,6 +96,7 @@ void UserProfileComponent::resized()
     //[/UserResized]
 }
 
+//[MiscUserCode]
 void UserProfileComponent::updateProfileInfo()
 {
     const auto *session = App::Helio().getSessionService();
@@ -108,8 +109,6 @@ void UserProfileComponent::updateProfileInfo()
         };
     }
 }
-
-//[MiscUserCode]
 //[/MiscUserCode]
 
 #if 0

@@ -24,6 +24,8 @@
 //[MiscUserDefs]
 #include "Icons.h"
 #include "IconComponent.h"
+#include "App.h"
+#include "Workspace.h"
 //[/MiscUserDefs]
 
 CreateProjectButton::CreateProjectButton()
@@ -46,6 +48,9 @@ CreateProjectButton::CreateProjectButton()
 
     //[UserPreSize]
     this->newProjectLabel->setInterceptsMouseClicks(false, false);
+    this->clickHandler->onClick = []() {
+        App::Workspace().createEmptyProject();
+    };
     //[/UserPreSize]
 
     this->setSize(256, 32);

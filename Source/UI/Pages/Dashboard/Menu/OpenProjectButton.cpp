@@ -24,6 +24,8 @@
 //[MiscUserDefs]
 #include "Icons.h"
 #include "IconComponent.h"
+#include "App.h"
+#include "Workspace.h"
 //[/MiscUserDefs]
 
 OpenProjectButton::OpenProjectButton()
@@ -46,6 +48,9 @@ OpenProjectButton::OpenProjectButton()
 
     //[UserPreSize]
     this->openProjectLabel->setInterceptsMouseClicks(false, false);
+    this->clickHandler->onClick = []() {
+        App::Workspace().importProject("*.helio;*.hp");
+    };
     //[/UserPreSize]
 
     this->setSize(256, 32);

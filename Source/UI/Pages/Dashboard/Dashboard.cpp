@@ -145,6 +145,7 @@ void Dashboard::visibilityChanged()
     //[/UserCode_visibilityChanged]
 }
 
+//[MiscUserCode]
 void Dashboard::changeListenerCallback(ChangeBroadcaster *source)
 {
     // Listens to session service
@@ -161,8 +162,6 @@ void Dashboard::updateLoginAndProfileButtons()
         this->userProfile->updateProfileInfo();
     }
 }
-
-//[MiscUserCode]
 //[/MiscUserCode]
 
 #if 0
