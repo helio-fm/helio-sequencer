@@ -21,6 +21,9 @@
 #include "StageComponent.h"
 #include "VersionControl.h"
 
+#include "App.h"
+#include "SessionService.h"
+
 #include "MenuPanel.h"
 #include "CommandIDs.h"
 #include "Icons.h"
@@ -46,14 +49,15 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
         CommandIDs::VersionControlResetAll,
         TRANS("menu::vcs::resetall"))->closesMenu());
 
-    // TODO push-pull
+    const bool loggedIn = App::Helio().getSessionService()->isLoggedIn();
+
     menu.add(MenuItem::item(Icons::push,
         CommandIDs::VersionControlPush,
-        TRANS("menu::vcs::push"))->disabledIf(true)->closesMenu());
+        TRANS("menu::vcs::push"))->disabledIf(!loggedIn)->closesMenu());
 
     menu.add(MenuItem::item(Icons::pull,
         CommandIDs::VersionControlPull,
-        TRANS("menu::vcs::pull"))->disabledIf(true)->closesMenu());
+        TRANS("menu::vcs::pull"))->disabledIf(!loggedIn)->closesMenu());
 
     // TODO when stashes are ready
     //menu.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,

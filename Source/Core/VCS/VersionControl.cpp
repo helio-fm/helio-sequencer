@@ -180,42 +180,26 @@ void VersionControl::recursiveTreeMerge(ValueTree localRevision,
         }
     }
 
-    // должно работать.
-
-    // остается вопрос, как мы отличим up to date
-    // от new/outdated?
-    // на сервер отдается хэш от уидов всех айтемов.
-    // тогда мы точно сможем сказать, изменилась ли история.
-    // если изменилась, то ни версия, ни таймштамп истории здесь не критерий.
-    // качаем, и - что дальше?
-    // ступор.
-    //===------------------------------------------------------------------===//
-    // что, если увеличивать счетчик только после мержа двух историй?
-    // окей. представь 2 девайса:
-    // 1   1   1
-    // 1a  1   1b
-    // 1a<<1   1b   должен выдать ошибку (разные хэши, одинаковые версии)
-    // 1a>>1   1b   разные хэши, должен смержить серверную версию с локальной, увеличить счетчики у обеих
-    // 2   2   1b   так?
-    // 2   2 <<1b   ошибка, нельзя пушить на более позднюю версию
-    // 2   2 >>1b   должен сделать пулл, смержить локальную с серверной, увеличить счетчик у локальной
-    // 2   2   2b
-    // 2   2 <<2b   разные хэши, должен смержить серверную версию с локальной, увеличить счетчики у обеих
-    // 2   3   3    так?
-    // 2c  3   3    сделал изменения
-    // 2c>>3   3    ошибка, нельзя пушить на более позднюю версию
-    // 2с<<3   3    должен сделать пулл, смержить локальную с серверной, увеличить счетчик у локальной
-    // 3с  3   3
-    // и так далее, да, схема должна работать.
-    //===------------------------------------------------------------------===//
-    // итак, пулл разрешен только если серверная версия больше.
-    // если версии равны и равны хэши - up to date
-    // остальное - ошибка.
-    //===------------------------------------------------------------------===//
-    // пуш разрешен, только если локальная версия больше, либо версии равны, но не равны хэши
-    // если версии и хэши равны - up to date
-    // остальное - ошибка.
-    //===------------------------------------------------------------------===//
+    // For a simple case, consider 2 devices and server (in the centre):
+    // 1    1   1
+    // 1<<  1   1    GET /vcs/projects/:id, returns leafs, and we see that these leafs are *exactly* our leafs ("up to date")
+    // 1a   1   1b
+    // 1a<< 1   1b   GET /vcs/projects/:id, returns leafs, and we see that these leafs are behind of what we have
+    // 1a>> 1   1b   PUT /vcs/projects/:id, sending all new revisions (what about NEW branches?)
+    //              if the server was modified in the meanwhile - returns 4xx? (and WHAT about NEW branches?)
+    //                (it should check if sent parents are server's leafs with no children)
+    // 2    2   1b   if the server was not modified in the meanwhile, it will accept all new data
+    // 2    2 <<1b   GET /vcs/projects/:id, returns leafs, and we see that these leafs are something new, so we cannot push
+    // 2    2 >>1b   GET /vcs/revisions/:leaf/branch, for each new leaf, tries to fetch history up to his parent (i.e. a node with more than one child)
+    //              WHAT about multiple parents?
+    // 2    2   2b
+    // 2    2 <<2b   PUT /vcs/projects/:id, sending all new revisions
+    // 2    3   3    
+    // 2c   3   3    makes some changes
+    // 2c>> 3   3    GET /vcs/projects/:id, returns leafs, and we see that some leafs are behind of what we have, *but* some are new
+    // 2с<< 3   3    GET /vcs/revisions/:leaf/branch, for each new leaf, tries to fetch history until we see the merge point
+    // 3c   3   3    merges the fetched branch with his own
+    // 3с>> 3   3
 }
 
 
