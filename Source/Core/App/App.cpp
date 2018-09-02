@@ -19,7 +19,8 @@
 #include "App.h"
 #include "AudioCore.h"
 #include "SessionService.h"
-#include "UpdatesService.h"
+#include "ProjectSyncService.h"
+#include "ResourceSyncService.h"
 
 #include "TranslationsManager.h"
 #include "ArpeggiatorsManager.h"
@@ -271,9 +272,10 @@ void App::initialise(const String &commandLine)
             i.getValue()->initialise();
         }
 
-        // Prepare backend APIs communication services
+        // Prepare back-end APIs communication services
         this->sessionService = new SessionService();
-        this->updatesService = new UpdatesService();
+        this->projectSyncService = new ProjectSyncService();
+        this->resourceSyncService = new ResourceSyncService();
 
         this->workspace = new class Workspace();
         this->window = new MainWindow();
@@ -305,7 +307,8 @@ void App::shutdown()
         this->window = nullptr;
         this->workspace = nullptr;
 
-        this->updatesService = nullptr;
+        this->resourceSyncService = nullptr;
+        this->projectSyncService = nullptr;
         this->sessionService = nullptr;
 
         this->theme = nullptr;

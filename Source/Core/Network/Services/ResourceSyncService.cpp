@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "UpdatesService.h"
+#include "ResourceSyncService.h"
 #include "App.h"
 #include "Config.h"
 #include "ResourceManager.h"
@@ -24,12 +24,12 @@
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
 
-UpdatesService::UpdatesService()
+ResourceSyncService::ResourceSyncService()
 {
     this->startTimer(UPDATE_INFO_TIMEOUT_MS);
 }
 
-void UpdatesService::timerCallback()
+void ResourceSyncService::timerCallback()
 {
     this->stopTimer();
     this->getNewThreadFor<UpdatesCheckThread>()->checkForUpdates(this);
@@ -66,7 +66,7 @@ static Identifier getPlatformId()
 #endif
 }
 
-void UpdatesService::updatesCheckOk(const UpdatesInfo info)
+void ResourceSyncService::updatesCheckOk(const UpdatesInfo info)
 {
     // TODO:
     
@@ -115,7 +115,7 @@ void UpdatesService::updatesCheckOk(const UpdatesInfo info)
     }
 }
 
-void UpdatesService::updatesCheckFailed(const Array<String> &errors)
+void ResourceSyncService::updatesCheckFailed(const Array<String> &errors)
 {
     Logger::writeToLog("updatesCheckFailed: " + errors.getFirst());
 }
@@ -124,12 +124,12 @@ void UpdatesService::updatesCheckFailed(const Array<String> &errors)
 // RequestResourceThread::Listener
 //===----------------------------------------------------------------------===//
 
-void UpdatesService::requestResourceOk(const Identifier &resourceId, const ValueTree &resource)
+void ResourceSyncService::requestResourceOk(const Identifier &resourceId, const ValueTree &resource)
 {
     App::Helio().getResourceManagerFor(resourceId).updateBaseResource(resource);
 }
 
-void UpdatesService::requestResourceFailed(const Identifier &resourceId, const Array<String> &errors)
+void ResourceSyncService::requestResourceFailed(const Identifier &resourceId, const Array<String> &errors)
 {
 
 }

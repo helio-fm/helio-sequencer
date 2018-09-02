@@ -21,13 +21,13 @@
 #include "UpdatesCheckThread.h"
 #include "RequestResourceThread.h"
 
-class UpdatesService final : private BackendService,
+class ResourceSyncService final : private BackendService,
                              private UpdatesCheckThread::Listener,
                              private RequestResourceThread::Listener
 {
 public:
 
-    UpdatesService();
+    ResourceSyncService();
 
 private:
 

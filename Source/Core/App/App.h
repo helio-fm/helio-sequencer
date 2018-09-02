@@ -40,7 +40,8 @@ class Config;
 class ApiCore;
 class AudioCore;
 class SessionService;
-class UpdatesService;
+class ProjectSyncService;
+class ResourceSyncService;
 
 class App final : public JUCEApplication,
                   private AsyncUpdater,
@@ -109,7 +110,8 @@ private:
     ScopedPointer<class Workspace> workspace;
     ScopedPointer<class MainWindow> window;
     ScopedPointer<class SessionService> sessionService;
-    ScopedPointer<class UpdatesService> updatesService;
+    ScopedPointer<class ProjectSyncService> projectSyncService;
+    ScopedPointer<class ResourceSyncService> resourceSyncService;
 
     using ResourceManagers = HashMap<Identifier, ResourceManager *, IdentifierHash>;
     ResourceManagers resourceManagers;

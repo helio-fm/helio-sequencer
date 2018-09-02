@@ -38,6 +38,10 @@ public:
 
 private:
 
+    void timerCallback() override;
+
+private:
+
     // TODO callbacks
 
 };

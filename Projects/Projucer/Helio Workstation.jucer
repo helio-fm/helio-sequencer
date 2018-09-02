@@ -332,14 +332,14 @@
                   file="../../Source/Core/Network/Services/ProjectSyncService.cpp"/>
             <FILE id="upkO8R" name="ProjectSyncService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/ProjectSyncService.h"/>
+            <FILE id="X60dwC" name="ResourceSyncService.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Services/ResourceSyncService.cpp"/>
+            <FILE id="hUPJJL" name="ResourceSyncService.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Services/ResourceSyncService.h"/>
             <FILE id="uoRx7M" name="SessionService.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Services/SessionService.cpp"/>
             <FILE id="cWX3ze" name="SessionService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/SessionService.h"/>
-            <FILE id="X60dwC" name="UpdatesService.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Services/UpdatesService.cpp"/>
-            <FILE id="hUPJJL" name="UpdatesService.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Services/UpdatesService.h"/>
           </GROUP>
           <FILE id="wvwATY" name="HelioApiRoutes.h" compile="0" resource="0"
                 file="../../Source/Core/Network/HelioApiRoutes.h"/>
