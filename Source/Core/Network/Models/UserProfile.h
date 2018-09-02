@@ -18,11 +18,10 @@
 #pragma once
 
 #include "ApiModel.h"
+#include "RemoteProject.h"
 
-class UserProfile final : public ApiModel
+struct UserProfile final : ApiModel
 {
-public:
-
     UserProfile(const ValueTree &tree, const Image image = {}) : ApiModel(tree), avatar(image)
     {
         using namespace Serialization::Api::V1;
@@ -41,23 +40,32 @@ public:
         }
     }
 
-    String getEmail() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::Identity::email); }
+    String getEmail() const noexcept { return API_MODEL_DATA(Identity::email); }
+    String getLogin() const noexcept { return API_MODEL_DATA(Identity::login); }
+    String getName() const noexcept { return API_MODEL_DATA(Identity::name); }
+    String getProfileUrl() const noexcept { return API_MODEL_DATA(Identity::profileUrl); }
+    String getAvatarUrl() const noexcept { return API_MODEL_DATA(Identity::avatarUrl); }
+    Image getAvatar() const noexcept { return this->avatar; }
 
-    String getLogin() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::Identity::login); }
+    struct ResourceInfo final
+    {
+        String getType() const noexcept { return API_MODEL_DATA(Resources::resourceType); }
+        String getName() const noexcept { return API_MODEL_DATA(Resources::resourceName); }
+        String getHash() const noexcept { return API_MODEL_DATA(Resources::hash); }
+        ValueTree data;
+    };
 
-    String getName() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::Identity::name); }
-
-    String getProfileUrl() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::Identity::profileUrl); }
-
-    String getAvatarUrl() const noexcept
-    { return this->data.getProperty(Serialization::Api::V1::Identity::avatarUrl); }
-
-    Image getAvatar() const noexcept
-    { return this->avatar; }
+    struct SessionInfo final
+    {
+        Identifier getPlatformId() const noexcept { return { API_MODEL_DATA(Sessions::platformId) }; }
+        Time getCreationTime() const noexcept { return Time(API_MODEL_DATA(Sessions::createdAt)); }
+        Time getLastUpdateTime() const noexcept { return Time(API_MODEL_DATA(Sessions::updatedAt)); }
+        ValueTree data;
+    };
+    
+    Array<SessionInfo> getSessions() const { return API_MODEL_CHILDREN(SessionInfo, Sessions::sessionInfo); }
+    Array<ResourceInfo> getResources() const { return API_MODEL_CHILDREN(ResourceInfo, Resources::resourceInfo); }
+    Array<RemoteProject> getProjects() const { return API_MODEL_CHILDREN(RemoteProject, Projects::projectInfo); }
 
     void deserialize(const ValueTree &tree) override
     {

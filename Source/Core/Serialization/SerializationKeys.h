@@ -488,7 +488,7 @@ namespace Serialization
 
         static const Identifier updatesInfo = "updatesInfo";
 
-        namespace PlatformIds
+        namespace PlatformTypes
         {
             static const Identifier windows32 = "windows32";
             static const Identifier windows64 = "windows64";
@@ -542,13 +542,32 @@ namespace Serialization
 
             namespace Resources
             {
-                static const Identifier versionInfo = "versionInfo";
+                static const Identifier versionInfo = "versions";
                 static const Identifier version = "version";
                 static const Identifier platformId = "platformId";
                 static const Identifier link = "link";
-                static const Identifier resourceInfo = "resourceInfo";
-                static const Identifier resourceName = "resourceName";
+                static const Identifier resourceInfo = "resources";
+                static const Identifier resourceType = "type";
+                static const Identifier resourceName = "name";
                 static const Identifier hash = "hash";
+            }
+
+            namespace Sessions
+            {
+                static const Identifier sessionInfo = "sessions";
+                static const Identifier createdAt = "createdAt";
+                static const Identifier updatedAt = "updatedAt";
+                static const Identifier platformId = "platformId";
+            }
+
+            namespace Projects
+            {
+                static const Identifier projectInfo = "projects";
+                static const Identifier id = "id";
+                static const Identifier title = "title";
+                static const Identifier alias = "alias";
+                static const Identifier head = "head";
+                static const Identifier updatedAt = "updatedAt";
             }
         } // namespace V1
     } // namespace Api

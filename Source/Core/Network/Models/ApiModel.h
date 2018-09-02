@@ -17,10 +17,8 @@
 
 #pragma once
 
-class ApiModel : public Serializable
+struct ApiModel : Serializable
 {
-public:
-
     ApiModel(const ValueTree &tree) : data(tree) {}
 
     template<typename T>
@@ -53,3 +51,7 @@ protected:
 
     ValueTree data;
 };
+
+#define API_MODEL_DATA(x) this->data.getProperty(Serialization::Api::V1::x)
+#define API_MODEL_GETTER(x) const noexcept { return API_MODEL_DATA(x); }
+#define API_MODEL_CHILDREN(c, x) this->getChildren<c>(Serialization::Api::V1::x);

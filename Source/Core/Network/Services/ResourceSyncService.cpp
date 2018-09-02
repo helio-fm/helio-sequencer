@@ -39,28 +39,28 @@ void ResourceSyncService::timerCallback()
 // UpdatesCheckThread::Listener
 //===----------------------------------------------------------------------===//
 
-static Identifier getPlatformId()
+static Identifier getPlatformType()
 {
     using namespace Serialization::Api;
 
 #if JUCE_WINDOWS
   #if JUCE_32BIT
-    return PlatformIds::windows32;
+    return PlatformTypes::windows32;
   #elif JUCE_64BIT
-    return PlatformIds::windows64;
+    return PlatformTypes::windows64;
   #endif
 #elif JUCE_LINUX
   #if JUCE_32BIT
-    return PlatformIds::linux32;
+    return PlatformTypes::linux32;
   #elif JUCE_64BIT
-    return PlatformIds::linux64;
+    return PlatformTypes::linux64;
   #endif
 #elif JUCE_MAC
-    return PlatformIds::mac;
+    return PlatformTypes::mac;
 #elif JUCE_IOS
-    return PlatformIds::ios;
+    return PlatformTypes::ios;
 #elif JUCE_ANDROID
-    return PlatformIds::android;
+    return PlatformTypes::android;
 #else
     jassertfalse;
 #endif
@@ -74,10 +74,10 @@ void ResourceSyncService::updatesCheckOk(const UpdatesInfo info)
     // check if current version has newer build available
     // tell dialog launcher to schedule an update dialog to be shown
 
-    const auto platformId(getPlatformId());
+    const auto platformType(getPlatformType());
     for (const auto &version : info.getVersions())
     {
-        if (version.getPlatformId() == platformId)
+        if (version.getPlatformType() == platformType)
         {
 
         }
@@ -100,7 +100,7 @@ void ResourceSyncService::updatesCheckOk(const UpdatesInfo info)
             // I just don't want to fire all requests at once:
             const auto delay = r.nextInt(5) * 1000;
             const auto requestThread = this->getNewThreadFor<RequestResourceThread>();
-            requestThread->requestResource(this, newResource.getName(), delay);
+            requestThread->requestResource(this, newResource.getType(), delay);
             everythingIsUpToDate = false;
         }
     }

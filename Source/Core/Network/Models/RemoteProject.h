@@ -18,15 +18,16 @@
 #pragma once
 
 #include "ApiModel.h"
-#include "HelioApiRoutes.h"
 
-struct AuthSession final : ApiModel
+struct RemoteProject final : ApiModel
 {
-    AuthSession(const ValueTree &tree) : ApiModel(tree) {}
+    RemoteProject(const ValueTree &tree) : ApiModel(tree) {}
 
-    String getSessionId() const noexcept { return API_MODEL_DATA(AuthSession::id); }
-    String getSecret() const noexcept { return API_MODEL_DATA(AuthSession::secret); }
-    String getToken() const noexcept { return API_MODEL_DATA(AuthSession::token); }
+    String getId() const noexcept { return API_MODEL_DATA(Projects::id); }
+    String getTitle() const noexcept { return API_MODEL_DATA(Projects::title); }
+    String getAlias() const noexcept { return API_MODEL_DATA(Projects::alias); }
+    String getHead() const noexcept { return API_MODEL_DATA(Projects::head); }
+    Time getUpdateTime() const noexcept { return Time(API_MODEL_DATA(Projects::updatedAt)); }
 
-    JUCE_LEAK_DETECTOR(AuthSession)
+    JUCE_LEAK_DETECTOR(RemoteProject)
 };

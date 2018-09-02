@@ -191,10 +191,10 @@ void VersionControl::recursiveTreeMerge(ValueTree localRevision,
     // 2    2   1b   if the server was not modified in the meanwhile, it will accept all new data
     // 2    2 <<1b   GET /vcs/projects/:id, returns leafs, and we see that these leafs are something new, so we cannot push
     // 2    2 >>1b   GET /vcs/revisions/:leaf/branch, for each new leaf, tries to fetch history up to his parent (i.e. a node with more than one child)
-    //              WHAT about multiple parents?
+    //               WHAT about multiple parents?
     // 2    2   2b
     // 2    2 <<2b   PUT /vcs/projects/:id, sending all new revisions
-    // 2    3   3    
+    // 2    3   3
     // 2c   3   3    makes some changes
     // 2c>> 3   3    GET /vcs/projects/:id, returns leafs, and we see that some leafs are behind of what we have, *but* some are new
     // 2с<< 3   3    GET /vcs/revisions/:leaf/branch, for each new leaf, tries to fetch history until we see the merge point
