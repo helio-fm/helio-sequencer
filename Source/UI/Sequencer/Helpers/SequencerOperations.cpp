@@ -1802,11 +1802,11 @@ void SequencerOperations::invertChord(Lasso &selection,
 
 // Tries to detect if there's a one key signature that affects the whole sequence.
 // If there's none, of if there's more than one, returns false.
-bool SequencerOperations::findHarmonicContext(const Lasso &selection,
+bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip &clip,
     WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)
 {
-    const auto startBeat = SequencerOperations::findStartBeat(selection);
-    const auto endBeat = SequencerOperations::findEndBeat(selection);
+    const auto startBeat = SequencerOperations::findStartBeat(selection) + clip.getBeat();
+    const auto endBeat = SequencerOperations::findEndBeat(selection) + clip.getBeat();
 
     if (const auto keySignatures = dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
     {
