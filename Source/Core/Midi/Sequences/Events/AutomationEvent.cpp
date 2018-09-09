@@ -100,7 +100,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Cli
             this->getTrackControllerNumber(), int(this->controllerValue * 127));
     }
 
-    const double startTime = this->beat * timeFactor;
+    const double startTime = (this->beat + clip.getBeat()) * timeFactor;
     cc.setTimeStamp(startTime);
     outSequence.addEvent(cc, timeOffset);
 
