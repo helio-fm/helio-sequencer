@@ -190,6 +190,10 @@
  #define   JUCE_ALLOW_STATIC_NULL_VARIABLES 1
 #endif
 
+#ifndef    JUCE_STRICT_REFCOUNTEDPOINTER
+ #define   JUCE_STRICT_REFCOUNTEDPOINTER 1
+#endif
+
 //==============================================================================
 // juce_events flags:
 
@@ -206,6 +210,10 @@
 
 #ifndef    JUCE_USE_DIRECTWRITE
  //#define JUCE_USE_DIRECTWRITE 1
+#endif
+
+#ifndef    JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING
+ #define   JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING 1
 #endif
 
 //==============================================================================
@@ -233,6 +241,10 @@
 
 #ifndef    JUCE_USE_XCURSOR
  #define   JUCE_USE_XCURSOR 1
+#endif
+
+#ifndef    JUCE_WIN_PER_MONITOR_DPI_AWARE
+ #define   JUCE_WIN_PER_MONITOR_DPI_AWARE 1
 #endif
 
 //==============================================================================

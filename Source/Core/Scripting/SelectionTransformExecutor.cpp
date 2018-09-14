@@ -39,7 +39,7 @@ Array<Note> Scripting::SelectionTransformExecutor::execute(Lasso &selection,
     {
         const auto *nc = selection.getItemAs<NoteComponent>(i);
         NoteClass::Ptr noteWrapper(new NoteClass(nc->getNote()));
-        selectionWrapper.add(var(noteWrapper));
+        selectionWrapper.add(var(noteWrapper.get()));
     }
 
     TimeSignatureClass::Ptr timeSignatureWrapper(new TimeSignatureClass(time));
@@ -47,8 +47,8 @@ Array<Note> Scripting::SelectionTransformExecutor::execute(Lasso &selection,
 
     var args;
     args.append(var(selectionWrapper));
-    args.append(var(timeSignatureWrapper));
-    args.append(var(keySignatureWrapper));
+    args.append(var(timeSignatureWrapper.get()));
+    args.append(var(keySignatureWrapper.get()));
 
     // TODO any root object API in future?
     var self(var::undefined());

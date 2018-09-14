@@ -654,7 +654,7 @@ void Head::run()
                 if (itemDiff->hasAnyChanges())
                 {
                     RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
-                    var revisionVar(revisionRecord);
+                    var revisionVar(revisionRecord.get());
 
                     const ScopedWriteLock itemDiffLock(this->diffLock);
                     this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
@@ -670,7 +670,7 @@ void Head::run()
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
 
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
-            var revisionVar(revisionRecord);
+            var revisionVar(revisionRecord.get());
 
             const ScopedWriteLock emptyDiffLock(this->diffLock);
             this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
@@ -707,7 +707,7 @@ void Head::run()
         if (! foundItemInState)
         {
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
-            var revisionVar(revisionRecord);
+            var revisionVar(revisionRecord.get());
 
             const ScopedWriteLock lock(this->diffLock);
             this->diff.setProperty(targetItem->getUuid().toString(), revisionVar, nullptr);
@@ -763,7 +763,7 @@ void Head::rebuildDiffSynchronously()
                 if (itemDiff->hasAnyChanges())
                 {
                     RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
-                    var revisionVar(revisionRecord);
+                    var revisionVar(revisionRecord.get());
                     
                     const ScopedWriteLock lock(this->diffLock);
                     this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
@@ -779,7 +779,7 @@ void Head::rebuildDiffSynchronously()
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
             
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
-            var revisionVar(revisionRecord);
+            var revisionVar(revisionRecord.get());
             
             const ScopedWriteLock lock(this->diffLock);
             this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
@@ -809,7 +809,7 @@ void Head::rebuildDiffSynchronously()
         if (! foundItemInState)
         {
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
-            var revisionVar(revisionRecord);
+            var revisionVar(revisionRecord.get());
             
             const ScopedWriteLock lock(this->diffLock);
             this->diff.setProperty(targetItem->getUuid().toString(), revisionVar, nullptr);

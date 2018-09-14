@@ -24,14 +24,13 @@ namespace VCS
 {
     class RevisionItem;
 
-    class HeadState : public TrackedItemsSource
+    class HeadState final : public TrackedItemsSource
     {
     public:
 
         HeadState();
         HeadState(const HeadState &other);
         explicit HeadState(const HeadState *other);
-        ~HeadState() override;
 
         void addItem(RevisionItem::Ptr item);
         void removeItem(RevisionItem::Ptr item);

@@ -96,6 +96,7 @@ void UserProfileComponent::resized()
     //[/UserResized]
 }
 
+
 //[MiscUserCode]
 void UserProfileComponent::updateProfileInfo()
 {

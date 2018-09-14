@@ -168,7 +168,7 @@ void RecentFilesList::deserialize(const ValueTree &tree)
             fd->lastModifiedTime = time;
             fd->projectId = id;
             fd->isLoaded = false;
-            this->localFiles.addSorted(*fd, fd);
+            this->localFiles.addSorted(*fd, fd.get());
         }
     }
 

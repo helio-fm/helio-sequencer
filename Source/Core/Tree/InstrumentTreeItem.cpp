@@ -117,7 +117,7 @@ Array<uint32> InstrumentTreeItem::getInstrumentNodeIds() const
 
     for (int i = 0; i < this->instrument->getNumNodes(); ++i)
     {
-        result.add(this->instrument->getNode(i)->nodeID);
+        result.add(this->instrument->getNode(i)->nodeID.uid);
     }
 
     return result;
@@ -136,7 +136,7 @@ bool InstrumentTreeItem::hasInstrumentWithNodeId(uint32 targetNodeId) const
     return false;
 }
 
-TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(uint32 nodeId) const
+TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const
 {
     for (const auto audioPluginTreeItem : this->findChildrenOfType<AudioPluginTreeItem>())
     {
@@ -217,8 +217,7 @@ void InstrumentTreeItem::updateChildrenEditors()
         }
 
         // неюзабельно, используем только на мобилках
-        AudioPluginTreeItem *ap = new AudioPluginTreeItem(node->nodeID,
-            node->getProcessor()->getName());
+        auto *ap = new AudioPluginTreeItem(node->nodeID, node->getProcessor()->getName());
         this->addChildTreeItem(ap);
     }
 }

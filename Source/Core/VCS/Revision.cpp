@@ -30,7 +30,7 @@ ValueTree Revision::create(Pack::Ptr pack, const String &name /*= String::empty*
     tree.setProperty(Serialization::VCS::commitMessage, var(name), nullptr);
     tree.setProperty(Serialization::VCS::commitTimeStamp, var(Time::getCurrentTime().toMilliseconds()), nullptr);
     tree.setProperty(Serialization::VCS::commitVersion, var(int64(1)), nullptr);
-    tree.setProperty(Serialization::VCS::pack, var(pack), nullptr);
+    tree.setProperty(Serialization::VCS::pack, var(pack.get()), nullptr);
     return tree;
 }
 
@@ -54,14 +54,14 @@ static void copyProperty(ValueTree valueTree,
 {
     if (getPackPtr(valueTree) == itemToCopy->getPackPtr())
     {
-        valueTree.setProperty(id, var(itemToCopy), nullptr);
+        valueTree.setProperty(id, var(itemToCopy.get()), nullptr);
     }
     else
     {
         // when merging two trees with different delta packs,
         // copy items with new RevisionItem to copy data from the old pack:
-        RevisionItem::Ptr newItem(new RevisionItem(getPackPtr(valueTree), itemToCopy->getType(), itemToCopy));
-        valueTree.setProperty(id, var(newItem), nullptr);
+        RevisionItem::Ptr newItem(new RevisionItem(getPackPtr(valueTree), itemToCopy->getType(), itemToCopy.get()));
+        valueTree.setProperty(id, var(newItem.get()), nullptr);
     }
 }
 
@@ -69,7 +69,7 @@ void Revision::copyProperties(ValueTree one, ValueTree another)
 {
     Pack::Ptr pack(getPackPtr(one));
     one.removeAllProperties(nullptr);
-    one.setProperty(Serialization::VCS::pack, var(pack), nullptr);
+    one.setProperty(Serialization::VCS::pack, var(pack.get()), nullptr);
 
     for (int i = 0; i < another.getNumProperties(); ++i)
     {
@@ -263,7 +263,7 @@ void Revision::deserialize(ValueTree revision, const ValueTree &tree)
             RevisionItem::Ptr item(new RevisionItem(getPackPtr(revision),
                 RevisionItem::Undefined, nullptr));
             item->deserialize(e);
-            revision.setProperty(item->getUuid().toString(), var(item), nullptr);
+            revision.setProperty(item->getUuid().toString(), var(item.get()), nullptr);
         }
     }
 }

@@ -26,7 +26,7 @@ using namespace Serialization::Scripts;
 KeySignatureClass::KeySignatureClass(const KeySignatureEvent &event)
 {
     ScaleClass::Ptr scale(new ScaleClass(event.getScale()));
-    this->setProperty(Api::KeySignature::scale, var(scale));
+    this->setProperty(Api::KeySignature::scale, var(scale.get()));
     this->setProperty(Api::KeySignature::position, event.getBeat());
     this->setProperty(Api::KeySignature::rootKey, event.getRootKey());
 }

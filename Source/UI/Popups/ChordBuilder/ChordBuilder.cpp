@@ -169,7 +169,7 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
     if (Config::contains(Serialization::Config::lastUsedScale))
     {
         Scale::Ptr s(new Scale());
-        Config::load(s, Serialization::Config::lastUsedScale);
+        Config::load(s.get(), Serialization::Config::lastUsedScale);
         if (s->isValid())
         {
             this->scale = s;
@@ -389,7 +389,7 @@ void ChordBuilder::applyScale(const Scale::Ptr scale)
     if (this->scale != scale)
     {
         this->scale = scale;
-        Config::save(this->scale, Serialization::Config::lastUsedScale);
+        Config::save(this->scale.get(), Serialization::Config::lastUsedScale);
         this->buildChord(this->scale->getTriad(this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }

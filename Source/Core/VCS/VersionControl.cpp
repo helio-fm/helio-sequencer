@@ -257,7 +257,7 @@ void VersionControl::cherryPick(const ValueTree revision, const Array<Uuid> uuid
 void VersionControl::quickAmendItem(TrackedItem *targetItem)
 {
     RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
-    this->head.getHeadingRevision().setProperty(revisionRecord->getUuid().toString(), var(revisionRecord), nullptr);
+    this->head.getHeadingRevision().setProperty(revisionRecord->getUuid().toString(), var(revisionRecord.get()), nullptr);
     this->head.moveTo(this->head.getHeadingRevision());
     Revision::flush(this->head.getHeadingRevision());
     this->pack->flush();

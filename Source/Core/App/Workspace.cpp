@@ -348,14 +348,14 @@ void Workspace::importProject(const String &filePattern)
     {
         const File file(fc.getResult());
         const String &extension = file.getFileExtension();
-        if (extension == ".hp" || extension == ".helio")
-        {
-            this->treeRoot->openProject(file);
-            this->autosave();
-        }
-        else if (extension == ".mid" || extension == ".midi" || extension == ".smf")
+        if (extension == ".mid" || extension == ".midi" || extension == ".smf")
         {
             this->treeRoot->importMidi(file);
+            this->autosave();
+        }
+        else
+        {
+            this->treeRoot->openProject(file);
             this->autosave();
         }
     }

@@ -23,28 +23,13 @@
 
 using namespace VCS;
 
-HeadState::HeadState()
-{
-
-}
+HeadState::HeadState() {}
 
 HeadState::HeadState(const HeadState &other) :
-    items(other.items)
-{
-
-}
+    items(other.items) {}
 
 HeadState::HeadState(const HeadState *other) :
-    items(other->items)
-{
-    
-}
-
-HeadState::~HeadState()
-{
-
-}
-
+    items(other->items) {}
 
 void HeadState::addItem(RevisionItem::Ptr item)
 {
@@ -111,16 +96,13 @@ int HeadState::getNumTrackedItems()
 
 TrackedItem *HeadState::getTrackedItem(int index)
 {
-    return this->items[index];
+    return this->items[index].get();
 }
-
-
 
 RevisionItem::Ptr HeadState::getItemWithSameUuid(RevisionItem::Ptr item) const
 {
     return this->getItemWithUuid(item->getUuid());
 }
-
 
 RevisionItem::Ptr HeadState::getItemWithUuid(const Uuid &uuid) const
 {

@@ -52,10 +52,10 @@ public:
     { }
 };
 
-AudioPluginTreeItem::AudioPluginTreeItem(uint32 pluginID, const String &name) :
+AudioPluginTreeItem::AudioPluginTreeItem(AudioProcessorGraph::NodeID pluginID, const String &name) :
     TreeItem(name, Serialization::Audio::audioPlugin),
     audioPluginEditor(nullptr),
-    filterID(pluginID)
+    nodeId(pluginID)
 {
     this->setVisible(false);
 }
@@ -80,9 +80,9 @@ Image AudioPluginTreeItem::getIcon() const noexcept
     return Icons::findByName(Icons::audioPlugin, HEADLINE_ICON_SIZE);
 }
 
-uint32 AudioPluginTreeItem::getNodeId() const noexcept
+AudioProcessorGraph::NodeID AudioPluginTreeItem::getNodeId() const noexcept
 {
-    return this->filterID;
+    return this->nodeId;
 }
 
 void AudioPluginTreeItem::showPage()
@@ -96,7 +96,8 @@ void AudioPluginTreeItem::showPage()
         return;
     }
 
-    const AudioProcessorGraph::Node::Ptr f(instrument->getNodeForId(filterID));
+    const AudioProcessorGraph::NodeID nodeId(nodeId);
+    const AudioProcessorGraph::Node::Ptr f(instrument->getNodeForId(nodeId));
 
     if (f == nullptr)
     {

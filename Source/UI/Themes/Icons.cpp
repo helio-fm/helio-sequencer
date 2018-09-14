@@ -255,8 +255,7 @@ const int kRoundFactor = 8;
 
 Image Icons::findByName(Icons::Id id, int maxSize)
 {
-    const Desktop::Displays::Display &dis =
-        Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
@@ -282,8 +281,7 @@ Image Icons::findByName(Icons::Id id, int maxSize)
 
 Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 {
-    const Desktop::Displays::Display &dis =
-        Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
@@ -300,8 +298,7 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 
 void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy)
 {
-    const Desktop::Displays::Display &dis =
-        Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int scale = 2;

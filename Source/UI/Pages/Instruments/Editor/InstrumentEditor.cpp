@@ -32,6 +32,8 @@
 #include "MainLayout.h"
 #include "App.h"
 
+static const AudioProcessorGraph::NodeID idZero;
+
 InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
     WeakReference<AudioCore> audioCoreRef) :
     instrument(instrument),
@@ -66,7 +68,7 @@ InstrumentEditor::~InstrumentEditor()
 
 void InstrumentEditor::mouseDown(const MouseEvent &e)
 {
-    this->selectNode(0);
+    this->selectNode({});
 }
 
 void InstrumentEditor::resized()
@@ -127,7 +129,7 @@ InstrumentEditorPin *InstrumentEditor::findPinAt(const int x, const int y) const
 
 void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
 {
-    this->selectedNode = (this->selectedNode == id) ? 0 : id;
+    this->selectedNode = (this->selectedNode == id) ? idZero : id;
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
@@ -139,7 +141,7 @@ void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
 
     App::Layout().hideSelectionMenu();
 
-    if (this->selectedNode != 0)
+    if (this->selectedNode != idZero)
     {
         App::Layout().showSelectionMenu(this);
     }
@@ -147,7 +149,7 @@ void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
 
 void InstrumentEditor::updateComponents()
 {
-    this->selectNode(0);
+    this->selectNode({});
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
@@ -245,12 +247,12 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
         {
             auto c = this->draggingConnector->connection;
             
-            if (c.source.nodeID == 0 && ! pin->isInput)
+            if (c.source.nodeID == idZero && !pin->isInput)
             {
                 c.source.nodeID = pin->nodeID;
                 c.source.channelIndex = pin->index;
             }
-            else if (c.destination.nodeID == 0 && pin->isInput)
+            else if (c.destination.nodeID == idZero && pin->isInput)
             {
                 c.destination.nodeID = pin->nodeID;
                 c.destination.channelIndex = pin->index;
@@ -265,7 +267,7 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
             }
         }
         
-        if (this->draggingConnector->connection.source.nodeID == 0)
+        if (this->draggingConnector->connection.source.nodeID == idZero)
         {
             this->draggingConnector->dragStart(x, y);
         }
@@ -296,7 +298,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
     
     if (auto pin = findPinAt(e2.x, e2.y))
     {
-        if (srcNode == 0)
+        if (srcNode == idZero)
         {
             if (pin->isInput)
             { return; }

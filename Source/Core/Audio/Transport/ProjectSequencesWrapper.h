@@ -138,7 +138,7 @@ public:
         
         for (int i = 0; i < this->sequences.size(); ++i)
         {
-            SequenceWrapper *wrapper = this->sequences.getUnchecked(i);
+            const auto wrapper = this->sequences.getUnchecked(i);
             wrapper->currentIndex = this->getNextIndexAtTime(wrapper->midiMessages, (position - DBL_MIN));
         }
     }
@@ -162,8 +162,7 @@ public:
 
         for (int i = 0; i < this->sequences.size(); ++i)
         {
-            SequenceWrapper *wrapper = this->sequences.getUnchecked(i);
-
+            const auto wrapper = this->sequences.getUnchecked(i);
             if (wrapper->currentIndex < wrapper->midiMessages.getNumEvents())
             {
                 MidiMessage &message = wrapper->midiMessages.getEventPointer(wrapper->currentIndex)->message;
@@ -179,7 +178,7 @@ public:
         if (targetSequenceIndex < 0)
         { return false; }
 
-        SequenceWrapper *foundWrapper = this->sequences.getUnchecked(targetSequenceIndex);
+        const auto foundWrapper = this->sequences.getUnchecked(targetSequenceIndex);
         MidiMessage &foundMessage = foundWrapper->midiMessages.getEventPointer(foundWrapper->currentIndex)->message;
         foundWrapper->currentIndex++;
                 

@@ -30,7 +30,7 @@ HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
 {
     if (Config::contains(Serialization::Config::activeHotkeyScheme))
     {
-        Config::load(this->activeScheme, Serialization::Config::activeHotkeyScheme);
+        Config::load(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
     }
 
     if (this->resources.size() > 0)
@@ -54,7 +54,7 @@ void HotkeySchemesManager::setCurrentScheme(const HotkeyScheme::Ptr scheme)
 {
     jassert(scheme != nullptr);
     this->activeScheme = scheme;
-    Config::save(this->activeScheme, Serialization::Config::activeHotkeyScheme);
+    Config::save(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
 }
 
 //===----------------------------------------------------------------------===//
