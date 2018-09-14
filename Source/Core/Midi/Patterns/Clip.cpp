@@ -27,16 +27,6 @@ Clip::Clip() : pattern(nullptr), key(0), beat(0.f), velocity(1.f)
     //jassertfalse;
 }
 
-Clip::Clip(const Clip &other) :
-    pattern(other.pattern),
-    key(other.key),
-    beat(other.beat),
-    velocity(other.velocity),
-    id(other.id)
-{
-    this->updateCaches();
-}
-
 Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
     pattern(owner),
     key(0),

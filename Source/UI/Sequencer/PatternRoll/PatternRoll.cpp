@@ -123,7 +123,6 @@ void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
-    //this->trackHeaders.clear();
     this->clipComponents.clear();
 
     this->tracks.clearQuick();
@@ -319,7 +318,7 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
         }
     }
 
-    this->resized();
+    this->repaint();
 }
 
 void PatternRoll::onRemoveTrack(MidiTrack *const track)
@@ -334,15 +333,14 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
         for (int i = 0; i < pattern->size(); ++i)
         {
             const Clip &clip = *pattern->getUnchecked(i);
-            if (auto *deletedComponent = this->clipComponents[clip].get())
+            if (this->clipComponents.contains(clip))
             {
-                this->selection.deselect(deletedComponent);
                 this->clipComponents.erase(clip);
             }
         }
     }
 
-    this->resized();
+    this->repaint();
 }
 
 void PatternRoll::onAddClip(const Clip &clip)
