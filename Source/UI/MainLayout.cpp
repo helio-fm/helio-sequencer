@@ -116,7 +116,7 @@ void MainLayout::forceRestoreLastOpenedPage()
 void hideMarkersRecursive(WeakReference<TreeItem> startFrom)
 {
     jassert(startFrom != nullptr);
-    startFrom->setMarkerVisible(false);
+    startFrom->setPrimarySelection(false);
 
     for (int i = 0; i < startFrom->getNumSubItems(); ++i)
     {
@@ -142,7 +142,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     if (source != nullptr)
     {
         hideMarkersRecursive(App::Workspace().getTreeRoot());
-        source->setMarkerVisible(true);
+        source->setPrimarySelection(true);
         App::Workspace().getNavigationHistory().addItemIfNeeded(source);
         this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
     }

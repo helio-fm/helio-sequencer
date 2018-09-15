@@ -25,7 +25,6 @@ class ColourSwatches : public Component,
 public:
 
     ColourSwatches();
-    ~ColourSwatches();
 
     void onColourButtonClicked(ColourButton *button) override;
     void setSelectedColour(Colour colour);

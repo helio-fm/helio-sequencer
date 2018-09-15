@@ -45,11 +45,7 @@ Pattern::Pattern(MidiTrack &parentTrack,
     track(parentTrack),
     eventDispatcher(dispatcher),
     lastStartBeat(0.f),
-    lastEndBeat(0.f)
-{
-    // Add default single instance (we need to have at least one clip on a pattern):
-    this->clips.add(new Clip(this));
-}
+    lastEndBeat(0.f) {}
 
 //===----------------------------------------------------------------------===//
 // Accessors

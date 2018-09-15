@@ -34,7 +34,6 @@ namespace VCS
 
         virtual const Identifier getType() const = 0;
 
-        virtual void resetStateTo(const TrackedItem &newState) = 0;
         virtual Diff *createDiff(const TrackedItem &initialState) const = 0;
         virtual Diff *createMergedItem(const TrackedItem &initialState) const = 0;
 

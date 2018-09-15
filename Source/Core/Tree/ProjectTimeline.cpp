@@ -371,7 +371,6 @@ void ProjectTimeline::resetAnnotationsDelta(const ValueTree &state)
     }
 
     this->annotationsSequence->updateBeatRange(false);
-    this->annotationsSequence->invalidateSequenceCache();
 }
 
 ValueTree ProjectTimeline::serializeTimeSignaturesDelta() const
@@ -398,7 +397,6 @@ void ProjectTimeline::resetTimeSignaturesDelta(const ValueTree &state)
     }
 
     this->timeSignaturesSequence->updateBeatRange(false);
-    this->timeSignaturesSequence->invalidateSequenceCache();
 }
 
 ValueTree ProjectTimeline::serializeKeySignaturesDelta() const
@@ -425,5 +423,4 @@ void ProjectTimeline::resetKeySignaturesDelta(const ValueTree &state)
     }
 
     this->keySignaturesSequence->updateBeatRange(false);
-    this->keySignaturesSequence->invalidateSequenceCache();
 }

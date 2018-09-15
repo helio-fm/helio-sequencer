@@ -67,7 +67,6 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence, shor
     }
 
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 
@@ -87,7 +86,7 @@ MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &eventParams, b
     {
         const auto ownedSignature = new KeySignatureEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedSignature, ownedSignature);
-        this->notifyEventAdded(*ownedSignature);
+        this->eventDispatcher.dispatchAddEvent(*ownedSignature);
         this->updateBeatRange(true);
         return ownedSignature;
     }
@@ -109,10 +108,10 @@ bool KeySignaturesSequence::remove(const KeySignatureEvent &signature, bool undo
         if (index >= 0)
         {
             MidiEvent *const removedEvent = this->midiEvents[index];
-            this->notifyEventRemoved(*removedEvent);
+            this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
-            this->notifyEventRemovedPostAction();
+            this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
         
@@ -140,7 +139,7 @@ bool KeySignaturesSequence::change(const KeySignatureEvent &oldParams,
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(oldParams, *changedEvent);
+            this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -166,7 +165,7 @@ bool KeySignaturesSequence::insertGroup(Array<KeySignatureEvent> &group, bool un
             const KeySignatureEvent &eventParams = group.getUnchecked(i);
             const auto ownedEvent = new KeySignatureEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-            this->notifyEventAdded(*ownedEvent);
+            this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
         
         this->updateBeatRange(true);
@@ -192,13 +191,13 @@ bool KeySignaturesSequence::removeGroup(Array<KeySignatureEvent> &group, bool un
             if (index >= 0)
             {
                 const auto removedEvent = this->midiEvents[index];
-                this->notifyEventRemoved(*removedEvent);
+                this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
                 this->midiEvents.remove(index, true);
             }
         }
         
         this->updateBeatRange(true);
-        this->notifyEventRemovedPostAction();
+        this->eventDispatcher.dispatchPostRemoveEvent(this);
     }
     
     return true;
@@ -228,7 +227,7 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(oldParams, *changedEvent);
+                this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             }
         }
 
@@ -286,12 +285,10 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
 
     this->sort();
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 void KeySignaturesSequence::reset()
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();
-    this->invalidateSequenceCache();
 }

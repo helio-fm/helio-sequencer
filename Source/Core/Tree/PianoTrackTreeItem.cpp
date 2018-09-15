@@ -275,8 +275,6 @@ ValueTree PianoTrackTreeItem::serializeInstrumentDelta() const
 ValueTree PianoTrackTreeItem::serializeEventsDelta() const
 {
     ValueTree tree(Serialization::VCS::PianoSequenceDeltas::notesAdded);
-
-    // да, дублируется сериализация :( причем 2 раза
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
         const MidiEvent *event = this->getSequence()->getUnchecked(i);
@@ -290,7 +288,7 @@ void PianoTrackTreeItem::resetPathDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
-    this->setXPath(path);
+    this->setXPath(path, false);
 }
 
 void PianoTrackTreeItem::resetMuteDelta(const ValueTree &state)
@@ -335,5 +333,4 @@ void PianoTrackTreeItem::resetEventsDelta(const ValueTree &state)
     }
 
     this->getSequence()->updateBeatRange(false);
-    this->getSequence()->invalidateSequenceCache();
 }

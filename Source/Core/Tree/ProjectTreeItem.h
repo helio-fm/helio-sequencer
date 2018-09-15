@@ -72,20 +72,17 @@ public:
     void importMidi(const File &file);
     void exportMidi(File &file) const;
 
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
 
-    void safeRename(const String &newName) override;
+    void safeRename(const String &newName, bool sendNotifications) override;
 
     void showPatternEditor(WeakReference<TreeItem> source);
     void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source);
-    void hideEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source);
     WeakReference<TreeItem> getLastShownTrack() const noexcept;
 
-    void updateActiveGroupEditors();
     void setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea = false);
 
     //===------------------------------------------------------------------===//
@@ -168,7 +165,8 @@ public:
     String getVCSName() const override;
     int getNumTrackedItems() override;
     VCS::TrackedItem *getTrackedItem(int index) override;
-    VCS::TrackedItem *initTrackedItem(const Identifier &type, const Uuid &id) override;
+    VCS::TrackedItem *initTrackedItem(const Identifier &type,
+        const Uuid &id, const VCS::TrackedItem &newState) override;
     bool deleteTrackedItem(VCS::TrackedItem *item) override;
     void onResetState() override;
 

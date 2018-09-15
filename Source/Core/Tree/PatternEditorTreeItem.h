@@ -26,23 +26,13 @@ public:
     PatternEditorTreeItem();
 
     String getName() const noexcept override;
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
 
     String getStatsString() const;
-
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    void onItemParentChanged() override {}
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
-    { return false; }
-
+    
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//

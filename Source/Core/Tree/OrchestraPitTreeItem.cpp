@@ -36,11 +36,6 @@ OrchestraPitTreeItem::OrchestraPitTreeItem() :
     this->recreatePage();
 }
 
-Colour OrchestraPitTreeItem::getColour() const noexcept
-{
-    return Colour(0xffff80f3);
-}
-
 Image OrchestraPitTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::orchestraPit, TREE_LARGE_ICON_HEIGHT);

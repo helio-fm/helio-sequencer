@@ -33,12 +33,7 @@ String TreeItem::createSafeName(const String &name)
 TreeItem::TreeItem(const String &name, const Identifier &type) :
     name(TreeItem::createSafeName(name)),
     type(type.toString()),
-    markerIsVisible(false),
-    itemShouldBeVisible(true)
-{
-    this->setLinesDrawnForSubItems(false);
-    this->setDrawsInLeftMargin(true);
-}
+    isPrimarySelectedItem(false) {}
 
 TreeItem::~TreeItem()
 {
@@ -47,14 +42,14 @@ TreeItem::~TreeItem()
     this->removeItemFromParent();
 }
 
-void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept
+void TreeItem::setPrimarySelection(bool isSelected) noexcept
 {
-    this->markerIsVisible = shouldBeVisible;
+    this->isPrimarySelectedItem = isSelected;
 }
 
-bool TreeItem::isMarkerVisible() const noexcept
+bool TreeItem::isPrimarySelection() const noexcept
 {
-    return this->markerIsVisible;
+    return this->isPrimarySelectedItem;
 }
 
 int TreeItem::getNumSelectedSiblings() const
@@ -124,9 +119,13 @@ bool TreeItem::haveAllChildrenSelectedWithDeepSearch() const
 // Rename
 //===----------------------------------------------------------------------===//
 
-void TreeItem::safeRename(const String &newName)
+void TreeItem::safeRename(const String &newName, bool sendNotifications)
 {
     this->name = TreeItem::createSafeName(newName);
+    if (sendNotifications)
+    {
+        this->dispatchChangeTreeItemView();
+    }
 }
 
 String TreeItem::getName() const noexcept 
@@ -150,58 +149,47 @@ void TreeItem::itemSelectionChanged(bool isNowSelected)
 // Cleanup
 //===----------------------------------------------------------------------===//
 
-bool TreeItem::deleteItem(TreeItem *itemToDelete)
+bool TreeItem::deleteItem(TreeItem *itemToDelete, bool sendNotifications)
 {
     if (!itemToDelete) { return false; }
+    if (itemToDelete->getRootTreeItem() == itemToDelete) { return false; }
 
-    if (itemToDelete->getRootTreeItem() != itemToDelete) // не удалять рут
+    WeakReference<TreeItem> moveFocusTo = nullptr;
+    WeakReference<TreeItem> parent = dynamic_cast<TreeItem *>(itemToDelete->getParentItem());
+
+    const auto *activeItem = TreeItem::getActiveItem<TreeItem>(itemToDelete->getRootTreeItem());
+    if (itemToDelete->isPrimarySelection() || (activeItem == nullptr))
     {
-        WeakReference<TreeItem> switchTo = nullptr;
-        WeakReference<TreeItem> parent = dynamic_cast<TreeItem *>(itemToDelete->getParentItem());
-
-        const auto *markerItem = TreeItem::getActiveItem<TreeItem>(itemToDelete->getRootTreeItem());
-        const bool markerItemIsDeleted = (markerItem == nullptr);
-
-        if (itemToDelete->isMarkerVisible() || markerItemIsDeleted)
-        {
-            switchTo = parent;
-        }
-
-        delete itemToDelete;
-
-        if (parent != nullptr)
-        {
-            parent->sendChangeMessage();
-        }
-
-        if (switchTo != nullptr)
-        {
-            switchTo->setSelected(true, true);
-        }
-        else if (parent != nullptr)
-        {
-            while (parent)
-            {
-                if (parent->isMarkerVisible())
-                {
-                    parent->setSelected(true, true);
-                    break;
-                }
-
-                parent = dynamic_cast<TreeItem *>(parent->getParentItem());
-            }
-        }
-
-        return true;
+        moveFocusTo = parent;
     }
 
-    return false;
-}
+    itemToDelete->onItemDeletedFromTree(sendNotifications);
+    delete itemToDelete;
 
-void TreeItem::deleteAllSelectedItems(Component *componentInTree)
-{
-    TreeItem *itemToDelete = TreeItem::getSelectedItem(componentInTree);
-    TreeItem::deleteItem(itemToDelete);
+    if (parent != nullptr)
+    {
+        parent->sendChangeMessage();
+    }
+
+    if (moveFocusTo != nullptr)
+    {
+        moveFocusTo->setSelected(true, true);
+    }
+    else if (parent != nullptr)
+    {
+        while (parent)
+        {
+            if (parent->isPrimarySelection())
+            {
+                parent->setSelected(true, true);
+                break;
+            }
+
+            parent = dynamic_cast<TreeItem *>(parent->getParentItem());
+        }
+    }
+
+    return true;
 }
 
 void TreeItem::deleteAllSubItems()
@@ -229,21 +217,21 @@ void TreeItem::removeItemFromParent()
     }
 }
 
-static void notifySubtreeParentChanged(TreeItem *node)
+static void notifySubtreeParentChanged(TreeItem *node, bool sendNotifications)
 {
-    node->onItemParentChanged();
+    node->onItemAddedToTree(sendNotifications);
 
     for (int i = 0; i < node->getNumSubItems(); ++i)
     {
         TreeItem *child = static_cast<TreeItem *>(node->getSubItem(i));
-        notifySubtreeParentChanged(child);
+        notifySubtreeParentChanged(child, sendNotifications);
     }
 }
 
-void TreeItem::addChildTreeItem(TreeItem *child, int insertIndex /*= -1*/)
+void TreeItem::addChildTreeItem(TreeItem *child, int insertIndex /*= -1*/, bool sendNotifications /*= true*/)
 {
     this->addSubItem(child, insertIndex);
-    notifySubtreeParentChanged(child);
+    notifySubtreeParentChanged(child, sendNotifications);
 }
 
 void TreeItem::dispatchChangeTreeItemView()
@@ -251,18 +239,6 @@ void TreeItem::dispatchChangeTreeItemView()
     this->sendChangeMessage(); // update listeners
     this->treeHasChanged(); // updates ownerView, if any
 }
-
-Font TreeItem::getFont() const noexcept
-{
-    return Font(TREE_FONT_SIZE); //this->getItemHeight() * TREE_FONT_HEIGHT_PROPORTION, Font::plain);
-}
-
-Colour TreeItem::getColour() const noexcept
-{
-    return Colour(100, 150, 200);
-    //return this->colour; // todo
-}
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -402,6 +378,15 @@ void TreeItem::recreateSubtreePages()
     }
 }
 
+//===----------------------------------------------------------------------===//
+// Dragging
+//===----------------------------------------------------------------------===//
+
+var TreeItem::getDragSourceDescription()
+{
+    return {};
+}
+
 void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
     if (TreeView *tree = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
@@ -435,9 +420,4 @@ void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDet
 
         this->addChildTreeItem(selected, insertIndex + insertIndexCorrection);
     }
-}
-
-void TreeItem::setVisible(bool shouldBeVisible) noexcept
-{
-    this->itemShouldBeVisible = shouldBeVisible;
 }

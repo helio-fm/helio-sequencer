@@ -178,30 +178,6 @@ UndoStack *MidiSequence::getUndoStack() const noexcept
 // Events change listener
 //===----------------------------------------------------------------------===//
 
-void MidiSequence::notifyEventChanged(const MidiEvent &e1, const MidiEvent &e2)
-{
-    this->invalidateSequenceCache();
-    this->eventDispatcher.dispatchChangeEvent(e1, e2);
-}
-
-void MidiSequence::notifyEventAdded(const MidiEvent &event)
-{
-    this->invalidateSequenceCache();
-    this->eventDispatcher.dispatchAddEvent(event);
-}
-
-void MidiSequence::notifyEventRemoved(const MidiEvent &event)
-{
-    this->invalidateSequenceCache();
-    this->eventDispatcher.dispatchRemoveEvent(event);
-}
-
-void MidiSequence::notifyEventRemovedPostAction()
-{
-    this->invalidateSequenceCache();
-    this->eventDispatcher.dispatchPostRemoveEvent(this);
-}
-
 void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
 {
     if (this->lastStartBeat == this->getFirstBeat() &&

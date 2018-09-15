@@ -40,11 +40,6 @@ SettingsTreeItem::SettingsTreeItem() :
     //this->setVisible(false);
 }
 
-Colour SettingsTreeItem::getColour() const noexcept
-{
-    return Colour(0xffffbe92).interpolatedWith(Colour(0xffff80f3), 0.5f);
-}
-
 Image SettingsTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::settings, TREE_LARGE_ICON_HEIGHT);

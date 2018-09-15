@@ -26,6 +26,7 @@
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
 
+#include "Pattern.h"
 #include "MidiTrack.h"
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
@@ -41,20 +42,12 @@
 #include "App.h"
 
 RootTreeItem::RootTreeItem(const String &name) :
-    TreeItem(name, Serialization::Core::root)
-{
-    this->setVisible(false);
-}
+    TreeItem(name, Serialization::Core::root) {}
 
 String RootTreeItem::getName() const noexcept
 {
     // TODO: if user is logged in, show his name rather than default value?
     return TRANS("tree::root");
-}
-
-Colour RootTreeItem::getColour() const noexcept
-{
-    return Colour(0xffffbe92);
 }
 
 Image RootTreeItem::getIcon() const noexcept
@@ -75,12 +68,6 @@ void RootTreeItem::showPage()
 void RootTreeItem::recreatePage()
 {
     this->dashboard = new Dashboard(App::Layout());
-}
-
-void RootTreeItem::safeRename(const String &newName)
-{
-    TreeItem::safeRename(newName);
-    this->dispatchChangeTreeItemView();
 }
 
 void RootTreeItem::importMidi(const File &file)
@@ -233,6 +220,8 @@ TrackGroupTreeItem *RootTreeItem::addGroup(TreeItem *parent, const String &name)
 MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &name)
 {
     MidiTrackTreeItem *item = new PianoTrackTreeItem(name);
+    const Clip clip(item->getPattern());
+    item->getPattern()->insert(clip, false);
     parent->addChildTreeItem(item);
     return item;
 }
@@ -240,6 +229,8 @@ MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &n
 MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
     MidiTrackTreeItem *item = new AutomationTrackTreeItem(name);
+    const Clip clip(item->getPattern());
+    item->getPattern()->insert(clip, false);
     item->setTrackControllerNumber(controllerNumber, false);
     AutomationSequence *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
@@ -260,29 +251,6 @@ bool RootTreeItem::hasMenu() const noexcept
 ScopedPointer<Component> RootTreeItem::createMenu()
 {
     return new WorkspaceMenu(App::Workspace());
-}
-
-//===----------------------------------------------------------------------===//
-// Dragging
-//===----------------------------------------------------------------------===//
-
-bool RootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
-{
-    return (dragSourceDetails.description == Serialization::Core::project.toString());
-}
-
-bool RootTreeItem::isInterestedInFileDrag(const StringArray &files)
-{
-    return File::createFileWithoutCheckingPath(files[0]).hasFileExtension("hp;helio");
-}
-
-void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)
-{
-    for (const auto & i : files)
-    {
-        const File file(i);
-        this->openProject(file, insertIndex);
-    }
 }
 
 //===----------------------------------------------------------------------===//

@@ -39,9 +39,6 @@ public:
     TreeItem(const String &name, const Identifier &type);
     ~TreeItem() override;
     
-    static const String xPathSeparator;
-    static String createSafeName(const String &nameStr);
-
     static TreeItem *getSelectedItem(Component *anyComponentInTree);
     static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeItem> &selectedNodes);
     static bool isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck);
@@ -52,19 +49,15 @@ public:
     bool haveAllChildrenSelected() const;
     bool haveAllChildrenSelectedWithDeepSearch() const;
 
-    virtual void onItemParentChanged() {}
-
-    virtual void safeRename(const String &newName);
-    void addChildTreeItem(TreeItem *child, int insertIndex = -1);
-    void dispatchChangeTreeItemView();
-
-    // Some of the main properties for the views:
-    virtual Colour getColour() const noexcept;
-    virtual Font getFont() const noexcept;
     String getName() const noexcept override;
+    virtual void safeRename(const String &newName, bool sendNotifications);
 
-    bool isMarkerVisible() const noexcept;
-    void setMarkerVisible(bool shouldBeVisible) noexcept;
+    static const String xPathSeparator;
+    static String createSafeName(const String &nameStr);
+
+    // Deprecated
+    bool isPrimarySelection() const noexcept;
+    void setPrimarySelection(bool isSelected) noexcept;
 
     template<typename T>
     static T *getActiveItem(TreeItem *root)
@@ -80,7 +73,7 @@ public:
         {
             T *p = static_cast<T *>(childrenOfType.getUnchecked(i));
             
-            if (p->isMarkerVisible())
+            if (p->isPrimarySelection())
             {
                 return p;
             }
@@ -197,16 +190,20 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
+    var getDragSourceDescription() override;
     void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
     bool isInterestedInFileDrag(const StringArray &files) override { return false; }
     void filesDropped(const StringArray &files, int insertIndex) override {}
 
     //===------------------------------------------------------------------===//
-    // Cleanup
+    // Adding nodes to the tree and removing them
     //===------------------------------------------------------------------===//
 
-    static void deleteAllSelectedItems(Component *anyComponentInTree);
-    static bool deleteItem(TreeItem *itemToDelete);
+    void addChildTreeItem(TreeItem *child, int insertIndex = -1, bool sendNotifications = true);
+    virtual void onItemAddedToTree(bool sendNotifications) {}
+
+    static bool deleteItem(TreeItem *itemToDelete, bool sendNotifications);
+    virtual void onItemDeletedFromTree(bool sendNotifications) {}
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -218,9 +215,8 @@ public:
 
 protected:
 
+    void dispatchChangeTreeItemView();
     void itemSelectionChanged(bool isNowSelected) override;
-
-    void setVisible(bool shouldBeVisible) noexcept;
 
     template<typename T, typename ArrayType>
     static void collectChildrenOfType(const TreeItem *rootNode, ArrayType &resultArray, bool pickOnlySelectedOnes)
@@ -268,7 +264,7 @@ protected:
         {
             TreeItem *child = static_cast<TreeItem *>(rootNode->getSubItem(i));
         
-            if (child->isMarkerVisible())
+            if (child->isPrimarySelection())
             {
                 resultArray.add(child);
             }
@@ -283,8 +279,7 @@ protected:
     String name;
     String type;
 
-    bool markerIsVisible;
-    bool itemShouldBeVisible;
+    bool isPrimarySelectedItem;
 
     void removeItemFromParent();
     void deleteAllSubItems();

@@ -290,6 +290,14 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
             }
         }
     }
+
+    // Roll size might need to be changed
+    this->updateRollSize();
+
+    // And clip component positions should be updated
+    // (this may be doing the same job twice,
+    // in case if updateRollSize have called resized as well)
+    this->resized();
 }
 
 //void debugTracksOrder(Array<MidiTrack *> tracks)
@@ -318,7 +326,8 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
         }
     }
 
-    this->repaint();
+    this->updateRollSize();
+    this->resized();
 }
 
 void PatternRoll::onRemoveTrack(MidiTrack *const track)
@@ -340,7 +349,8 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
         }
     }
 
-    this->repaint();
+    this->updateRollSize();
+    this->resized();
 }
 
 void PatternRoll::onAddClip(const Clip &clip)
@@ -632,8 +642,8 @@ void PatternRoll::resized()
 
     for (const auto &e : this->clipComponents)
     {
-        const auto component = e.second.get();
-        component->setFloatBounds(this->getEventBounds(component));
+        const auto c = e.second.get();
+        c->setFloatBounds(this->getEventBounds(c));
     }
 
     if (this->knifeToolHelper != nullptr)

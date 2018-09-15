@@ -35,28 +35,16 @@
 #include "App.h"
 #include "Workspace.h"
 
-// todo:
-// MergeTreeItem
-
 VersionControlTreeItem::VersionControlTreeItem(const String &withExistingId, const String &withExistingKey) :
     TreeItem("Versions", Serialization::Core::versionControl),
     vcs(nullptr),
     existingId(withExistingId),
-    existingKey(withExistingKey)
-{
-    this->initVCS();
-    this->initEditor();
-}
+    existingKey(withExistingKey) {}
 
 VersionControlTreeItem::~VersionControlTreeItem()
 {
     this->shutdownEditor();
     this->shutdownVCS();
-}
-
-Colour VersionControlTreeItem::getColour() const noexcept
-{
-    return Colour(0xff818dff);
 }
 
 Image VersionControlTreeItem::getIcon() const noexcept
@@ -96,7 +84,7 @@ String VersionControlTreeItem::getId() const
         return this->vcs->getPublicId();
     }
 
-    return "";
+    return {};
 }
 
 String VersionControlTreeItem::getName() const noexcept
@@ -188,16 +176,20 @@ void VersionControlTreeItem::toggleQuickStash()
 }
 
 //===----------------------------------------------------------------------===//
-// Dragging
+// Tree
 //===----------------------------------------------------------------------===//
 
-void VersionControlTreeItem::onItemParentChanged()
+void VersionControlTreeItem::onItemAddedToTree(bool sendNotifications)
 {
     // Could be still uninitialized at this moment
-    if (this->vcs == nullptr)
-    {
-        this->initVCS();
-    }
+    this->initVCS();
+    this->initEditor();
+}
+
+void VersionControlTreeItem::onItemDeletedFromTree(bool sendNotifications)
+{
+    this->shutdownEditor();
+    this->shutdownVCS();
 }
 
 //===----------------------------------------------------------------------===//
@@ -266,10 +258,8 @@ void VersionControlTreeItem::reset()
 
 void VersionControlTreeItem::initVCS()
 {
-    ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-
-    if (parentProject &&
-        (this->vcs == nullptr))
+    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    if (parentProject != nullptr && this->vcs == nullptr)
     {
         this->vcs = new VersionControl(parentProject, this->existingId, this->existingKey);
         this->vcs->addChangeListener(parentProject);
@@ -279,10 +269,8 @@ void VersionControlTreeItem::initVCS()
 
 void VersionControlTreeItem::shutdownVCS()
 {
-    ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-
-    if (parentProject &&
-        (this->vcs != nullptr))
+    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    if (parentProject != nullptr && this->vcs != nullptr)
     {
         parentProject->removeChangeListener(this->vcs);
         this->vcs->removeChangeListener(parentProject);
@@ -292,11 +280,9 @@ void VersionControlTreeItem::shutdownVCS()
 void VersionControlTreeItem::initEditor()
 {
     this->shutdownEditor();
-    
-    ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-    
-    if (parentProject &&
-        (this->vcs != nullptr))
+    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    if (parentProject != nullptr &&
+        this->vcs != nullptr)
     {
         this->editor = this->vcs->createEditor();
         this->vcs->addChangeListener(this->editor);
@@ -306,11 +292,10 @@ void VersionControlTreeItem::initEditor()
 
 void VersionControlTreeItem::shutdownEditor()
 {
-    ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-    
-    if (parentProject &&
-        (this->vcs != nullptr) &&
-        (this->editor != nullptr))
+    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    if (parentProject != nullptr &&
+        this->vcs != nullptr &&
+        this->editor != nullptr)
     {
         parentProject->removeChangeListener(this->editor);
         this->vcs->removeChangeListener(this->editor);

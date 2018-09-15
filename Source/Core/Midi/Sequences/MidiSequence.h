@@ -19,9 +19,9 @@
 
 #include "Clip.h"
 #include "MidiEvent.h"
+#include "ProjectEventDispatcher.h"
 
 class ProjectTreeItem;
-class ProjectEventDispatcher;
 class MidiTrack;
 class UndoStack;
 
@@ -128,22 +128,10 @@ public:
     }
 
     //===------------------------------------------------------------------===//
-    // Events change listener
-    //===------------------------------------------------------------------===//
-
-    void notifyEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent);
-    void notifyEventAdded(const MidiEvent &event);
-    void notifyEventRemoved(const MidiEvent &event);
-    void notifyEventRemovedPostAction();
-
-    // TODO remove this or implement caching and benchmark to see if it's really needed:
-    void invalidateSequenceCache() const noexcept {}
-
-    void updateBeatRange(bool shouldNotifyIfChanged);
-
-    //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
+
+    void updateBeatRange(bool shouldNotifyIfChanged);
 
     String createUniqueEventId() const noexcept;
     const String &getTrackId() const noexcept;
@@ -157,13 +145,13 @@ public:
 private:
 
     MidiTrack &track;
-    ProjectEventDispatcher &eventDispatcher;
 
 protected:
 
     float lastEndBeat;
     float lastStartBeat;
-    
+
+    ProjectEventDispatcher &eventDispatcher;
     ProjectTreeItem *getProject() const noexcept;
     UndoStack *getUndoStack() const noexcept;
 

@@ -55,10 +55,7 @@ public:
 AudioPluginTreeItem::AudioPluginTreeItem(AudioProcessorGraph::NodeID pluginID, const String &name) :
     TreeItem(name, Serialization::Audio::audioPlugin),
     audioPluginEditor(nullptr),
-    nodeId(pluginID)
-{
-    this->setVisible(false);
-}
+    nodeId(pluginID) {}
 
 bool AudioPluginTreeItem::hasMenu() const noexcept
 {
@@ -68,11 +65,6 @@ bool AudioPluginTreeItem::hasMenu() const noexcept
 ScopedPointer<Component> AudioPluginTreeItem::createMenu()
 {
     return nullptr;
-}
-
-Colour AudioPluginTreeItem::getColour() const noexcept
-{
-    return Colour(0xffd151ff);
 }
 
 Image AudioPluginTreeItem::getIcon() const noexcept
@@ -148,11 +140,3 @@ void AudioPluginTreeItem::showPage()
 
     App::Layout().showPage(this->audioPluginEditor, this);
 }
-
-//===----------------------------------------------------------------------===//
-// Dragging
-//===----------------------------------------------------------------------===//
-
-var AudioPluginTreeItem::getDragSourceDescription() { return {}; }
-bool AudioPluginTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) { return false; }
-void AudioPluginTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) {}

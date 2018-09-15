@@ -282,7 +282,7 @@ void AutomationTrackTreeItem::resetPathDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
-    this->setXPath(path);
+    this->setXPath(path, false);
 }
 
 void AutomationTrackTreeItem::resetMuteDelta(const ValueTree &state)
@@ -334,5 +334,4 @@ void AutomationTrackTreeItem::resetEventsDelta(const ValueTree &state)
     }
 
     this->getSequence()->updateBeatRange(false);
-    this->getSequence()->invalidateSequenceCache();
 }

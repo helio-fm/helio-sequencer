@@ -1931,6 +1931,10 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Las
     const auto &colour = track->getTrackColour();
 
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem({});
+
+    const Clip clip(track->getPattern());
+    track->getPattern()->insert(clip, false);
+
     newItem->setTrackColour(colour, false);
     newItem->setTrackInstrumentId(instrumentId, false);
 

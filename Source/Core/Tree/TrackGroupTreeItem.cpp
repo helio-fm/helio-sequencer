@@ -29,11 +29,6 @@
 TrackGroupTreeItem::TrackGroupTreeItem(const String &name) :
     TreeItem(name, Serialization::Core::trackGroup) {}
 
-Colour TrackGroupTreeItem::getColour() const noexcept
-{
-    return Colour(255, 210, 255);
-}
-
 Image TrackGroupTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::trackGroup, HEADLINE_ICON_SIZE);
@@ -65,7 +60,7 @@ void TrackGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
             
             for (int i = 0; i < groupsToDelete.size(); ++i)
             {
-                TreeItem::deleteItem(groupsToDelete.getUnchecked(i));
+                TreeItem::deleteItem(groupsToDelete.getUnchecked(i), true);
             }
         }
         while (numGroupsDeleted > 0);
@@ -120,6 +115,7 @@ void TrackGroupTreeItem::sortByNameAmongSiblings()
     }
 }
 
+// Deprecated, we no longer use tree view and multi-track selection
 static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forceSelectAll = false)
 {
     const bool shiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
@@ -178,7 +174,7 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
         {
             if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootNode->getSubItem(i)))
             {
-                if (layerItem->isMarkerVisible())
+                if (layerItem->isPrimarySelection())
                 {
                     layerItem->setSelected(false, false, sendNotification);
                     layerItem->setSelected(true, true, sendNotification);
@@ -228,11 +224,10 @@ void TrackGroupTreeItem::showPage()
     }
 }
 
-void TrackGroupTreeItem::safeRename(const String &newName)
+void TrackGroupTreeItem::safeRename(const String &newName, bool sendNotifications)
 {
-    TreeItem::safeRename(newName);
+    TreeItem::safeRename(newName, sendNotifications);
     this->sortByNameAmongSiblings();
-    this->dispatchChangeTreeItemView();
 }
 
 //===----------------------------------------------------------------------===//

@@ -28,7 +28,6 @@ public:
 
     AudioPluginTreeItem(AudioProcessorGraph::NodeID pluginID, const String &name);
 
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
     AudioProcessorGraph::NodeID getNodeId() const noexcept;
 
@@ -36,15 +35,7 @@ public:
     ScopedPointer<Component> createMenu() override;
 
     void showPage() override;
-
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    var getDragSourceDescription() override;
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
+    
 private:
 
     ScopedPointer<Component> audioPluginEditor;

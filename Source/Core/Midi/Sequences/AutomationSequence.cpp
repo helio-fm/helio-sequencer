@@ -51,7 +51,6 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence, short t
     }
     
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 //===----------------------------------------------------------------------===//
@@ -70,7 +69,7 @@ MidiEvent *AutomationSequence::insert(const AutomationEvent &eventParams, bool u
     {
         const auto ownedEvent = new AutomationEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-        this->notifyEventAdded(*ownedEvent);
+        this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         this->updateBeatRange(true);
         return ownedEvent;
     }
@@ -92,10 +91,10 @@ bool AutomationSequence::remove(const AutomationEvent &eventParams, bool undoabl
         if (index >= 0)
         {
             MidiEvent *const removedEvent = this->midiEvents[index];
-            this->notifyEventRemoved(*removedEvent);
+            this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
-            this->notifyEventRemovedPostAction();
+            this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
 
@@ -123,7 +122,7 @@ bool AutomationSequence::change(const AutomationEvent &oldParams,
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(oldParams, *changedEvent);
+            this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -149,7 +148,7 @@ bool AutomationSequence::insertGroup(Array<AutomationEvent> &group, bool undoabl
             const AutomationEvent &eventParams = group.getUnchecked(i);
             auto ownedEvent = new AutomationEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-            this->notifyEventAdded(*ownedEvent);
+            this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
         
         this->updateBeatRange(true);
@@ -175,13 +174,13 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &group, bool undoabl
             if (index >= 0)
             {
                 const auto removedEvent = this->midiEvents[index];
-                this->notifyEventRemoved(*removedEvent);
+                this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
                 this->midiEvents.remove(index, true);
             }
         }
         
         this->updateBeatRange(true);
-        this->notifyEventRemovedPostAction();
+        this->eventDispatcher.dispatchPostRemoveEvent(this);
     }
     
     return true;
@@ -211,7 +210,7 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(oldParams, *changedEvent);
+                this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             }
         }
         
@@ -267,12 +266,10 @@ void AutomationSequence::deserialize(const ValueTree &tree)
 
     this->sort();
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 void AutomationSequence::reset()
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();
-    this->invalidateSequenceCache();
 }

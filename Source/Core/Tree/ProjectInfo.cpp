@@ -43,7 +43,7 @@ String ProjectInfo::getLicense() const          { return this->license; }
 void ProjectInfo::setLicense(String val)        { this->license = val; this->project.broadcastChangeProjectInfo(this); }
 
 String ProjectInfo::getFullName() const         { return this->project.getName(); }
-void ProjectInfo::setFullName(String val)       { this->project.safeRename(val); this->project.broadcastChangeProjectInfo(this); } // this->fullName = val;
+void ProjectInfo::setFullName(String val)       { this->project.safeRename(val, true); } // will broadcastChangeProjectInfo itself
 
 String ProjectInfo::getAuthor() const           { return this->author; }
 void ProjectInfo::setAuthor(String val)         { this->author = val; this->project.broadcastChangeProjectInfo(this); }

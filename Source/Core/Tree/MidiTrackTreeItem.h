@@ -41,11 +41,10 @@ public:
     ~MidiTrackTreeItem() override;
 
     String getXPath() const noexcept;
-    void setXPath(const String &path);
-    Colour getColour() const noexcept override;
+    void setXPath(const String &path, bool sendNotifications);
 
     void showPage() override;
-    void safeRename(const String &newName) override;
+    void safeRename(const String &newName, bool sendNotifications) override;
 
     void importMidi(const MidiMessageSequence &sequence, short timeFormat);
 
@@ -105,10 +104,8 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    void onItemParentChanged() override;
-    var getDragSourceDescription() override;
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
+    void onItemAddedToTree(bool sendNotifications) override;
+    void onItemDeletedFromTree(bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
     // Menu

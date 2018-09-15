@@ -370,7 +370,7 @@ static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
 {
     if (TreeItem *treeItem = dynamic_cast<TreeItem *>(item))
     {
-        if (treeItem->isMarkerVisible())
+        if (treeItem->isPrimarySelection())
         {
             ValueTree child(Serialization::Core::selectedTreeItem);
             child.setProperty(Serialization::Core::treeItemId, item->getItemIdentifierString(), nullptr);
@@ -390,7 +390,7 @@ static TreeItem *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
     {
         if (treeItem->getItemIdentifierString() == id)
         {
-            treeItem->setMarkerVisible(true);
+            treeItem->setPrimarySelection(true);
             treeItem->setSelected(true, true);
             treeItem->showPage();
             return treeItem;

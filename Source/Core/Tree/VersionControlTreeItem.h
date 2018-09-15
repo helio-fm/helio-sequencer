@@ -31,7 +31,6 @@ public:
     ~VersionControlTreeItem() override;
 
     String getName() const noexcept override;
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
@@ -44,13 +43,11 @@ public:
     void toggleQuickStash();
     
     //===------------------------------------------------------------------===//
-    // Dragging
+    // Tree
     //===------------------------------------------------------------------===//
 
-    void onItemParentChanged() override;
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
-    { return false; }
+    void onItemAddedToTree(bool sendNotifications) override;
+    void onItemDeletedFromTree(bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
     // Menu

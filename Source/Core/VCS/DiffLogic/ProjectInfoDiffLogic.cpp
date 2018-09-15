@@ -46,11 +46,6 @@ const Identifier ProjectInfoDiffLogic::getType() const
     return Serialization::Core::projectInfo;
 }
 
-void ProjectInfoDiffLogic::resetStateTo(const TrackedItem &newState)
-{
-    this->target.resetStateTo(newState);
-}
-
 Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);
