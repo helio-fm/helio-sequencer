@@ -19,15 +19,12 @@
 
 #include "ApiModel.h"
 
-struct RemoteProject final : ApiModel
+struct AppResourceDto final : ApiModel
 {
-    RemoteProject(const ValueTree &tree) : ApiModel(tree) {}
+    AppResourceDto(const ValueTree &tree) : ApiModel(tree) {}
 
-    String getId() const noexcept { return API_MODEL_DATA(Projects::id); }
-    String getTitle() const noexcept { return API_MODEL_DATA(Projects::title); }
-    String getAlias() const noexcept { return API_MODEL_DATA(Projects::alias); }
-    String getHead() const noexcept { return API_MODEL_DATA(Projects::head); }
-    Time getUpdateTime() const noexcept { return Time(API_MODEL_DATA(Projects::updatedAt)); }
+    String getType() const noexcept { return DTO_PROPERTY(Resources::type); }
+    String getHash() const noexcept { return DTO_PROPERTY(Resources::hash); }
 
-    JUCE_LEAK_DETECTOR(RemoteProject)
+    JUCE_LEAK_DETECTOR(AppResourceDto)
 };

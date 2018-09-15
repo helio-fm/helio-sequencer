@@ -21,7 +21,7 @@
 #include "HelioApiRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "UserProfile.h"
+#include "UserProfileDto.h"
 
 class RequestUserProfileThread final : public Thread
 {
@@ -38,12 +38,12 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void requestProfileOk(const UserProfile profile) = 0;
+        virtual void requestProfileOk(const UserProfileDto profile) = 0;
         virtual void requestProfileFailed(const Array<String> &errors) = 0;
         friend class RequestUserProfileThread;
     };
     
-    void requestUserProfile(RequestUserProfileThread::Listener *authListener, UserProfile existingProfile)
+    void requestUserProfile(RequestUserProfileThread::Listener *authListener, UserProfileDto existingProfile)
     {
         if (this->isThreadRunning())
         {
@@ -70,7 +70,7 @@ private:
             callRequestListener(RequestUserProfileThread, requestProfileFailed, self->response.getErrors());
         }
 
-        const String newProfileAvatarUrl = UserProfile(this->response.getBody(), {}).getAvatarUrl();
+        const String newProfileAvatarUrl = UserProfileDto(this->response.getBody(), {}).getAvatarUrl();
         Image profileAvatar = this->profile.getAvatar();
 
         if (newProfileAvatarUrl != this->profile.getAvatarUrl())
@@ -91,7 +91,7 @@ private:
         callRequestListener(RequestUserProfileThread, requestProfileOk, self->profile);
     }
     
-    UserProfile profile;
+    UserProfileDto profile;
     HelioApiRequest::Response response;
     RequestUserProfileThread::Listener *listener;
     

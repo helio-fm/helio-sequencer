@@ -18,11 +18,13 @@
 #pragma once
 
 #include "ApiModel.h"
-#include "RemoteProject.h"
+#include "ProjectDto.h"
+#include "UserResourceDto.h"
+#include "UserSessionDto.h"
 
-struct UserProfile final : ApiModel
+struct UserProfileDto final : ApiModel
 {
-    UserProfile(const ValueTree &tree, const Image image = {}) : ApiModel(tree), avatar(image)
+    UserProfileDto(const ValueTree &tree, const Image image = {}) : ApiModel(tree), avatar(image)
     {
         using namespace Serialization::Api::V1;
         const bool hasImage = this->avatar.isValid();
@@ -40,32 +42,16 @@ struct UserProfile final : ApiModel
         }
     }
 
-    String getEmail() const noexcept { return API_MODEL_DATA(Identity::email); }
-    String getLogin() const noexcept { return API_MODEL_DATA(Identity::login); }
-    String getName() const noexcept { return API_MODEL_DATA(Identity::name); }
-    String getProfileUrl() const noexcept { return API_MODEL_DATA(Identity::profileUrl); }
-    String getAvatarUrl() const noexcept { return API_MODEL_DATA(Identity::avatarUrl); }
+    String getEmail() const noexcept { return DTO_PROPERTY(Identity::email); }
+    String getLogin() const noexcept { return DTO_PROPERTY(Identity::login); }
+    String getName() const noexcept { return DTO_PROPERTY(Identity::name); }
+    String getProfileUrl() const noexcept { return DTO_PROPERTY(Identity::profileUrl); }
+    String getAvatarUrl() const noexcept { return DTO_PROPERTY(Identity::avatarUrl); }
     Image getAvatar() const noexcept { return this->avatar; }
 
-    struct ResourceInfo final
-    {
-        String getType() const noexcept { return API_MODEL_DATA(Resources::resourceType); }
-        String getName() const noexcept { return API_MODEL_DATA(Resources::resourceName); }
-        String getHash() const noexcept { return API_MODEL_DATA(Resources::hash); }
-        ValueTree data;
-    };
-
-    struct SessionInfo final
-    {
-        Identifier getPlatformId() const noexcept { return { API_MODEL_DATA(Sessions::platformId) }; }
-        Time getCreationTime() const noexcept { return Time(API_MODEL_DATA(Sessions::createdAt)); }
-        Time getLastUpdateTime() const noexcept { return Time(API_MODEL_DATA(Sessions::updatedAt)); }
-        ValueTree data;
-    };
-    
-    Array<SessionInfo> getSessions() const { return API_MODEL_CHILDREN(SessionInfo, Sessions::sessionInfo); }
-    Array<ResourceInfo> getResources() const { return API_MODEL_CHILDREN(ResourceInfo, Resources::resourceInfo); }
-    Array<RemoteProject> getProjects() const { return API_MODEL_CHILDREN(RemoteProject, Projects::projectInfo); }
+    Array<ProjectDto> getProjects() const { return DTO_CHILDREN(ProjectDto, Projects::projects); }
+    Array<UserSessionDto> getSessions() const { return DTO_CHILDREN(UserSessionDto, Sessions::sessions); }
+    Array<UserResourceDto> getResources() const { return DTO_CHILDREN(UserResourceDto, Resources::resources); }
 
     void deserialize(const ValueTree &tree) override
     {
@@ -89,5 +75,5 @@ private:
     Image avatar;
     PNGImageFormat imageFormat;
 
-    JUCE_LEAK_DETECTOR(UserProfile)
+    JUCE_LEAK_DETECTOR(UserProfileDto)
 };

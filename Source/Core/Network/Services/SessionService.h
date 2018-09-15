@@ -40,7 +40,7 @@ public:
     static String getApiToken();
     static bool isLoggedIn();
 
-    const UserProfile &getUserProfile() const noexcept;
+    const UserProfileDto &getUserProfile() const noexcept;
     
     void signIn(const String &provider, AuthCallback callback = nullptr);
     void cancelSignInProcess();
@@ -51,7 +51,7 @@ private:
     void timerCallback() override;
     static void setApiToken(const String &token);
 
-    UserProfile userProfile;
+    UserProfileDto userProfile;
     void resetUserProfile();
 
     AuthCallback authCallback;
@@ -60,11 +60,11 @@ private:
     
     // will be called on the message thread:
     
-    void authSessionInitiated(const AuthSession session, const String &redirect) override;
-    void authSessionFinished(const AuthSession session) override;
+    void authSessionInitiated(const AuthSessionDto session, const String &redirect) override;
+    void authSessionFinished(const AuthSessionDto session) override;
     void authSessionFailed(const Array<String> &errors) override;
 
-    void requestProfileOk(const UserProfile profile) override;
+    void requestProfileOk(const UserProfileDto profile) override;
     void requestProfileFailed(const Array<String> &errors) override;
 
     void tokenUpdateOk(const String &newToken) override;

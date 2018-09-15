@@ -25,7 +25,7 @@
 #include "App.h"
 #include "MainLayout.h"
 #include "SessionService.h"
-#include "UserProfile.h"
+#include "UserProfileDto.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"

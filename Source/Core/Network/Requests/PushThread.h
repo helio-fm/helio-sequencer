@@ -21,7 +21,7 @@
 #include "HelioApiRequest.h"
 #include "SerializationKeys.h"
 #include "VersionControl.h"
-#include "AuthSession.h"
+#include "AuthSessionDto.h"
 #include "Config.h"
 #include "App.h"
 

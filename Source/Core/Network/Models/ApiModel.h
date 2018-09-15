@@ -52,6 +52,6 @@ protected:
     ValueTree data;
 };
 
-#define API_MODEL_DATA(x) this->data.getProperty(Serialization::Api::V1::x)
-#define API_MODEL_GETTER(x) const noexcept { return API_MODEL_DATA(x); }
-#define API_MODEL_CHILDREN(c, x) this->getChildren<c>(Serialization::Api::V1::x);
+
+#define DTO_PROPERTY(x) this->data.getProperty(Serialization::Api::V1::x)
+#define DTO_CHILDREN(c, x) this->getChildren<c>(Serialization::Api::V1::x);

@@ -35,7 +35,7 @@ private:
 
 private:
 
-    void updatesCheckOk(const UpdatesInfo info) override;
+    void updatesCheckOk(const AppInfoDto info) override;
     void updatesCheckFailed(const Array<String> &errors) override;
 
     void requestResourceOk(const Identifier &resourceId, const ValueTree &resource) override;

@@ -18,13 +18,13 @@
 #pragma once
 
 #include "ApiModel.h"
-#include "RemoteProject.h"
+#include "ProjectDto.h"
 
-struct RemoteProjectsList final : ApiModel
+struct ProjectsListDto final : ApiModel
 {
-    RemoteProjectsList(const ValueTree &tree) : ApiModel(tree) {}
+    ProjectsListDto(const ValueTree &tree) : ApiModel(tree) {}
 
-    Array<RemoteProject> getSessions() const { return API_MODEL_CHILDREN(RemoteProject, Project::projects); }
+    Array<ProjectDto> getProjects() const { return DTO_CHILDREN(ProjectDto, Projects::projects); }
 
-    JUCE_LEAK_DETECTOR(RemoteProjectsList)
+    JUCE_LEAK_DETECTOR(ProjectsListDto)
 };

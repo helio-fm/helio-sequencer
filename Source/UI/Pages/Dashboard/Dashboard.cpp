@@ -35,7 +35,7 @@
 #include "Workspace.h"
 #include "SessionService.h"
 #include "IconComponent.h"
-#include "UserProfile.h"
+#include "UserProfileDto.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 

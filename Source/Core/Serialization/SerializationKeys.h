@@ -482,10 +482,9 @@ namespace Serialization
 
     namespace Api
     {
-        // Session
+        // Config keys
         static const Identifier sessionToken = "sessionToken";
         static const Identifier sessionUserProfile = "sessionUserProfile";
-
         static const Identifier updatesInfo = "updatesInfo";
 
         namespace PlatformTypes
@@ -542,19 +541,20 @@ namespace Serialization
 
             namespace Resources
             {
-                static const Identifier versionInfo = "versions";
+                static const Identifier versions = "versions";
                 static const Identifier version = "version";
                 static const Identifier platformId = "platformId";
+                static const Identifier resources = "resources";
                 static const Identifier link = "link";
-                static const Identifier resourceInfo = "resources";
-                static const Identifier resourceType = "type";
-                static const Identifier resourceName = "name";
+                static const Identifier type = "type";
+                static const Identifier name = "name";
                 static const Identifier hash = "hash";
+                static const Identifier updatedAt = "updatedAt";
             }
 
             namespace Sessions
             {
-                static const Identifier sessionInfo = "sessions";
+                static const Identifier sessions = "sessions";
                 static const Identifier createdAt = "createdAt";
                 static const Identifier updatedAt = "updatedAt";
                 static const Identifier platformId = "platformId";
@@ -562,12 +562,22 @@ namespace Serialization
 
             namespace Projects
             {
-                static const Identifier projectInfo = "projects";
+                static const Identifier projects = "projects";
                 static const Identifier id = "id";
                 static const Identifier title = "title";
                 static const Identifier alias = "alias";
                 static const Identifier head = "head";
                 static const Identifier updatedAt = "updatedAt";
+            }
+
+            namespace Revisions
+            {
+                static const Identifier revisions = "revisions";
+                static const Identifier id = "id";
+                static const Identifier hash = "hash";
+                static const Identifier message = "message";
+                static const Identifier parentId = "parentId";
+                static const Identifier data = "data";
             }
         } // namespace V1
     } // namespace Api

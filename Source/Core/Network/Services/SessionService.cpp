@@ -84,7 +84,7 @@ bool SessionService::isLoggedIn()
     return SessionService::getApiToken().isNotEmpty();
 }
 
-const UserProfile &SessionService::getUserProfile() const noexcept
+const UserProfileDto &SessionService::getUserProfile() const noexcept
 {
     return this->userProfile;
 }
@@ -143,13 +143,13 @@ void SessionService::timerCallback()
 // SignInThread::Listener
 //===----------------------------------------------------------------------===//
 
-void SessionService::authSessionInitiated(const AuthSession session, const String &redirect)
+void SessionService::authSessionInitiated(const AuthSessionDto session, const String &redirect)
 {
     jassert(redirect.isNotEmpty());
     URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
 }
 
-void SessionService::authSessionFinished(const AuthSession session)
+void SessionService::authSessionFinished(const AuthSessionDto session)
 {
     SessionService::setApiToken(session.getToken());
     // Don't call authCallback right now, instead request a user profile and callback when ready
@@ -172,7 +172,7 @@ void SessionService::authSessionFailed(const Array<String> &errors)
 // RequestUserProfileThread::Listener
 //===----------------------------------------------------------------------===//
 
-void SessionService::requestProfileOk(const UserProfile profile)
+void SessionService::requestProfileOk(const UserProfileDto profile)
 {
     this->userProfile = profile;
     Config::save(this->userProfile, Serialization::Config::activeUserProfile);

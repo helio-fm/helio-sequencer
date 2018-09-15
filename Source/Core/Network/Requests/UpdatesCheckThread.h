@@ -21,7 +21,7 @@
 #include "HelioApiRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "UpdatesInfo.h"
+#include "AppInfoDto.h"
 
 class UpdatesCheckThread final : public Thread
 {
@@ -39,7 +39,7 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void updatesCheckOk(const UpdatesInfo info) = 0;
+        virtual void updatesCheckOk(const AppInfoDto info) = 0;
         virtual void updatesCheckFailed(const Array<String> &errors) = 0;
         friend class UpdatesCheckThread;
     };

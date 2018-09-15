@@ -302,12 +302,24 @@
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
           <GROUP id="{A1687DD1-8D95-2592-A933-804A188EC204}" name="Models">
             <FILE id="AHl4xW" name="ApiModel.h" compile="0" resource="0" file="../../Source/Core/Network/Models/ApiModel.h"/>
-            <FILE id="RlWKKH" name="AuthSession.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AuthSession.h"/>
-            <FILE id="iwzbal" name="RemoteProject.h" compile="0" resource="0" file="../../Source/Core/Network/Models/RemoteProject.h"/>
-            <FILE id="Sxnmqb" name="RemoteProjectsList.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Models/RemoteProjectsList.h"/>
-            <FILE id="y1LaCU" name="UpdatesInfo.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UpdatesInfo.h"/>
-            <FILE id="ERB820" name="UserProfile.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UserProfile.h"/>
+            <FILE id="h0FG8Z" name="AppInfoDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AppInfoDto.h"/>
+            <FILE id="Gr5lGI" name="AppResourceDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/AppResourceDto.h"/>
+            <FILE id="LD7eu0" name="AppVersionDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AppVersionDto.h"/>
+            <FILE id="FTRg8N" name="AuthSessionDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/AuthSessionDto.h"/>
+            <FILE id="wlq5uy" name="ProjectDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/ProjectDto.h"/>
+            <FILE id="DOA3wc" name="ProjectsListDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/ProjectsListDto.h"/>
+            <FILE id="m2ytBT" name="RevisionDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/RevisionDto.h"/>
+            <FILE id="M9Ac60" name="RevisionsListDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/RevisionsListDto.h"/>
+            <FILE id="JbvARx" name="UserProfileDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/UserProfileDto.h"/>
+            <FILE id="cLakY7" name="UserResourceDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/UserResourceDto.h"/>
+            <FILE id="EY6gpo" name="UserSessionDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/UserSessionDto.h"/>
           </GROUP>
           <GROUP id="{BF645CFC-E5C3-362D-D4B5-CFF3106A0CDB}" name="Requests">
             <FILE id="ChYQjB" name="HelioApiRequest.cpp" compile="1" resource="0"

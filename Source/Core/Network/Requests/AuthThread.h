@@ -20,7 +20,7 @@
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
 #include "SerializationKeys.h"
-#include "AuthSession.h"
+#include "AuthSessionDto.h"
 #include "Config.h"
 #include "App.h"
 
@@ -39,8 +39,8 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void authSessionInitiated(const AuthSession session, const String &redirect) = 0;
-        virtual void authSessionFinished(const AuthSession session) = 0;
+        virtual void authSessionInitiated(const AuthSessionDto session, const String &redirect) = 0;
+        virtual void authSessionFinished(const AuthSessionDto session) = 0;
         virtual void authSessionFailed(const Array<String> &errors) = 0;
         friend class AuthThread;
     };
@@ -91,7 +91,7 @@ private:
         callRequestListener(AuthThread, authSessionInitiated, { self->response.getBody() }, self->response.getRedirect());
 
         // Now check once a second if user has finished authentication
-        const AuthSession authSession(this->response.getBody());
+        const AuthSessionDto authSession(this->response.getBody());
         const HelioApiRequest checkWebAuthRequest(ApiRoutes::finaliseWebAuth);
 
         ValueTree finaliseSession(ApiKeys::session);

@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 #include "App.h"
 #include "SessionService.h"
-#include "UserProfile.h"
+#include "UserProfileDto.h"
 //[/MiscUserDefs]
 
 UserProfileComponent::UserProfileComponent()

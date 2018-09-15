@@ -17,33 +17,15 @@
 
 #pragma once
 
-#include "BackendService.h"
-#include "PullThread.h"
-#include "PushThread.h"
-#include "ProjectInfo.h"
-#include "ProjectsListDto.h"
+#include "ApiModel.h"
 
-// A service responsible for:
-// - fetching a list of user's projects
-// - publishing and deleting a project
-// - fetching all latest project history data
-// - pushing a branch (i.e. simply a revision with all its parents)
-// - pulling a branch
-
-class ProjectSyncService final : private BackendService,
-                                 private PullThread::Listener,
-                                 private PushThread::Listener
+struct AppVersionDto final : ApiModel
 {
-public:
+    AppVersionDto(const ValueTree &tree) : ApiModel(tree) {}
 
-    ProjectSyncService();
+    String getLink() const noexcept { return DTO_PROPERTY(Resources::link); }
+    String getVersion() const noexcept { return DTO_PROPERTY(Resources::version); }
+    Identifier getPlatformType() const noexcept { return DTO_PROPERTY(Resources::platformId); }
 
-private:
-
-    void timerCallback() override;
-
-private:
-
-    // TODO callbacks
-
+    JUCE_LEAK_DETECTOR(AppVersionDto)
 };

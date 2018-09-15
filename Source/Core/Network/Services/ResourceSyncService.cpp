@@ -66,7 +66,7 @@ static Identifier getPlatformType()
 #endif
 }
 
-void ResourceSyncService::updatesCheckOk(const UpdatesInfo info)
+void ResourceSyncService::updatesCheckOk(const AppInfoDto info)
 {
     // TODO:
     
@@ -88,14 +88,14 @@ void ResourceSyncService::updatesCheckOk(const UpdatesInfo info)
     // then start threads to fetch those resources (with somewhat random delays)
     // store UpdateInfo in Config
 
-    UpdatesInfo lastUpdatesInfo;
+    AppInfoDto lastUpdatesInfo;
     Config::load(lastUpdatesInfo, Serialization::Config::lastUpdatesInfo);
     bool everythingIsUpToDate = true;
 
     Random r;
     for (const auto &newResource : info.getResources())
     {
-        if (lastUpdatesInfo.seemsOutdatedFor(newResource))
+        if (lastUpdatesInfo.resourceSeemsOutdated(newResource))
         {
             // I just don't want to fire all requests at once:
             const auto delay = r.nextInt(5) * 1000;
