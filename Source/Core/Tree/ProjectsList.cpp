@@ -16,23 +16,23 @@
 */
 
 #include "Common.h"
-#include "RecentFilesList.h"
+#include "ProjectsList.h"
 #include "SessionService.h"
 #include "SerializationKeys.h"
 #include "Config.h"
 #include "App.h"
 
-RecentFilesList::RecentFilesList()
+ProjectsList::ProjectsList()
 {
     App::Helio().getSessionService()->addChangeListener(this);
 }
 
-RecentFilesList::~RecentFilesList()
+ProjectsList::~ProjectsList()
 {
     App::Helio().getSessionService()->removeChangeListener(this);
 }
 
-void RecentFilesList::onProjectStateChanged(const String &title, const String &path,
+void ProjectsList::onProjectStateChanged(const String &title, const String &path,
                                             const String &id, bool isLoaded)
 {
     const int index = id.isEmpty() ? this->findIndexByPath(path) : this->findIndexById(id);
@@ -70,7 +70,7 @@ void RecentFilesList::onProjectStateChanged(const String &title, const String &p
     this->sendChangeMessage();
 }
 
-void RecentFilesList::removeByPath(const String &path)
+void ProjectsList::removeByPath(const String &path)
 {
     const int index = this->findIndexByPath(path);
     
@@ -81,7 +81,7 @@ void RecentFilesList::removeByPath(const String &path)
     }
 }
 
-void RecentFilesList::removeById(const String &id)
+void ProjectsList::removeById(const String &id)
 {
     const int index = this->findIndexById(id);
 
@@ -92,7 +92,7 @@ void RecentFilesList::removeById(const String &id)
     }
 }
 
-void RecentFilesList::cleanup()
+void ProjectsList::cleanup()
 {
     for (int i = 0; i < this->localFiles.size(); ++i)
     {
@@ -107,12 +107,12 @@ void RecentFilesList::cleanup()
     }
 }
 
-RecentFileDescription::Ptr RecentFilesList::getItem(int index) const
+RecentFileDescription::Ptr ProjectsList::getItem(int index) const
 {
     return this->createCoalescedList()[index];
 }
 
-int RecentFilesList::getNumItems() const
+int ProjectsList::getNumItems() const
 {
     return this->createCoalescedList().size();
 }
@@ -122,7 +122,7 @@ int RecentFilesList::getNumItems() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree RecentFilesList::serialize() const
+ValueTree ProjectsList::serialize() const
 {
     using namespace Serialization;
     const ScopedReadLock lock(this->listLock);
@@ -141,7 +141,7 @@ ValueTree RecentFilesList::serialize() const
     return tree;
 }
 
-void RecentFilesList::deserialize(const ValueTree &tree)
+void ProjectsList::deserialize(const ValueTree &tree)
 {
     this->reset();
     using namespace Serialization;
@@ -175,7 +175,7 @@ void RecentFilesList::deserialize(const ValueTree &tree)
     this->sendChangeMessage();
 }
 
-void RecentFilesList::reset()
+void ProjectsList::reset()
 {
     const ScopedWriteLock lock(this->listLock);
     this->localFiles.clear();
@@ -187,23 +187,23 @@ void RecentFilesList::reset()
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
-void RecentFilesList::forceUpdate()
+void ProjectsList::forceUpdate()
 {
     this->sendChangeMessage();
 }
 
-void RecentFilesList::changeListenerCallback(ChangeBroadcaster *source)
+void ProjectsList::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->forceUpdate();
 }
 
-ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedList() const
+ReferenceCountedArray<RecentFileDescription> ProjectsList::createCoalescedList() const
 {
     ReferenceCountedArray<RecentFileDescription> resultList;
     ReferenceCountedArray<RecentFileDescription> remoteFiles; // TODO
 
     // adds remote files
-    for (auto && remoteFile : remoteFiles)
+    for (auto &remoteFile : remoteFiles)
     {
         RecentFileDescription::Ptr description = new RecentFileDescription();
         description->projectId = remoteFile->projectId;
@@ -236,11 +236,11 @@ ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedLis
     }
     
     // adds the rest of the local files
-    for (auto && localFile : this->localFiles)
+    for (auto &localFile : this->localFiles)
     {
         bool alreadyAdded = false;
         
-        for (auto && remoteFile : remoteFiles)
+        for (auto &remoteFile : remoteFiles)
         {
             if (localFile->projectId == remoteFile->projectId)
             {
@@ -264,7 +264,7 @@ ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedLis
     return resultList;
 }
 
-int RecentFilesList::findIndexByPath(const String &path) const
+int ProjectsList::findIndexByPath(const String &path) const
 {
     for (int i = 0; i < this->localFiles.size(); ++i)
     {
@@ -277,7 +277,7 @@ int RecentFilesList::findIndexByPath(const String &path) const
     return -1;
 }
 
-int RecentFilesList::findIndexById(const String &id) const
+int ProjectsList::findIndexById(const String &id) const
 {
     for (int i = 0; i < this->localFiles.size(); ++i)
     {

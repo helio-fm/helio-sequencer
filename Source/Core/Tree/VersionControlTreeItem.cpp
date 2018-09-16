@@ -23,7 +23,6 @@
 #include "Head.h"
 #include "ProjectInfo.h"
 #include "ProjectTimeline.h"
-#include "RecentFilesList.h"
 #include "MainLayout.h"
 #include "App.h"
 #include "FailTooltip.h"

@@ -102,7 +102,7 @@ void DashboardMenu::loadFile(RecentFileDescription::Ptr fileDescription)
 {
     if (!this->workspace->onClickedLoadRecentFile(fileDescription))
     {
-        this->workspace->getRecentFilesList().removeById(fileDescription->projectId);
+        this->workspace->getProjectsList().removeById(fileDescription->projectId);
     }
 
     this->listBox->updateContent();
@@ -122,11 +122,11 @@ void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
 Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-    const int numFiles = this->workspace->getRecentFilesList().getNumItems();
+    const int numFiles = this->workspace->getProjectsList().getNumItems();
     const bool isLastRow = (rowNumber == (numFiles - 1));
 
     const int fileIndex = rowNumber;
-    const RecentFileDescription::Ptr item = this->workspace->getRecentFilesList().getItem(fileIndex);
+    const RecentFileDescription::Ptr item = this->workspace->getProjectsList().getItem(fileIndex);
     //Logger::writeToLog(String(fileIndex));
 
     if (item == nullptr) { return existingComponentToUpdate; }
@@ -164,7 +164,7 @@ void DashboardMenu::paintListBoxItem(int, Graphics &, int, int, bool) {}
 
 int DashboardMenu::getNumRows()
 {
-    return this->workspace->getRecentFilesList().getNumItems();
+    return this->workspace->getProjectsList().getNumItems();
 }
 
 //[/MiscUserCode]

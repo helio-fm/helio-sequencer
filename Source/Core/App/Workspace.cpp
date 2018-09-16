@@ -33,7 +33,7 @@
 
 Workspace::Workspace() : wasInitialized(false)
 {
-    this->recentFilesList = new RecentFilesList();
+    this->recentProjectsList = new ProjectsList();
 }
 
 Workspace::~Workspace()
@@ -49,7 +49,7 @@ Workspace::~Workspace()
 
     this->treeRoot = nullptr;
     
-    this->recentFilesList = nullptr;
+    this->recentProjectsList = nullptr;
     this->pluginManager = nullptr;
     this->audioCore = nullptr;
 }
@@ -64,7 +64,7 @@ void Workspace::init()
         
         if (! this->autoload())
         {
-            Logger::writeToLog("workspace autoload failed, creating an empty one");
+            Logger::writeToLog("Workspace autoload failed, creating the empty workspace");
             this->failedDeserializationFallback();
         }
         else
@@ -141,10 +141,10 @@ RootTreeItem *Workspace::getTreeRoot() const
 // RecentFilesListOwner
 //===----------------------------------------------------------------------===//
 
-RecentFilesList &Workspace::getRecentFilesList() const
+ProjectsList &Workspace::getProjectsList() const
 {
-    jassert(this->recentFilesList);
-    return *this->recentFilesList;
+    jassert(this->recentProjectsList);
+    return *this->recentProjectsList;
 }
 
 bool Workspace::onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescription)
@@ -422,7 +422,7 @@ ValueTree Workspace::serialize() const
 
     tree.appendChild(this->audioCore->serialize(), nullptr);
     tree.appendChild(this->pluginManager->serialize(), nullptr);
-    tree.appendChild(this->recentFilesList->serialize(), nullptr);
+    tree.appendChild(this->recentProjectsList->serialize(), nullptr);
 
     ValueTree treeRootNode(Core::treeRoot);
     treeRootNode.appendChild(this->treeRoot->serialize(), nullptr);
@@ -451,7 +451,7 @@ void Workspace::deserialize(const ValueTree &tree)
         return;
     }
 
-    this->recentFilesList->deserialize(root);
+    this->recentProjectsList->deserialize(root);
     this->audioCore->deserialize(root);
     this->pluginManager->deserialize(root);
 
@@ -488,7 +488,7 @@ void Workspace::deserialize(const ValueTree &tree)
 
 void Workspace::reset()
 {
-    this->recentFilesList->reset();
+    this->recentProjectsList->reset();
     this->audioCore->reset();
     this->treeRoot->reset();
 }

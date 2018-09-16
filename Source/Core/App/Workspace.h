@@ -23,10 +23,10 @@ class RootTreeItem;
 class PluginScanner;
 
 #include "DocumentOwner.h"
-#include "RecentFilesList.h"
+#include "ProjectsList.h"
 #include "TreeNavigationHistory.h"
 
-class Workspace final : public RecentFilesList::Owner,
+class Workspace final : public ProjectsList::Owner,
                         private Serializable
 {
 public:
@@ -51,7 +51,7 @@ public:
     // RecentFilesListOwner
     //===------------------------------------------------------------------===//
 
-    RecentFilesList &getRecentFilesList() const override;
+    ProjectsList &getProjectsList() const override;
     bool onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescription) override;
     void onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescription) override;
 
@@ -87,13 +87,12 @@ private:
     void failedDeserializationFallback();
     
 private:
-    
-    // Needs to outlive the tree
-    ScopedPointer<RecentFilesList> recentFilesList;
-    
+
     bool wasInitialized;
+
+    ScopedPointer<ProjectsList> recentProjectsList;
     
-    ProjectTreeItem *currentProject;
+    WeakReference<ProjectTreeItem> currentProject;
     
     ScopedPointer<AudioCore> audioCore;
     ScopedPointer<PluginScanner> pluginManager;

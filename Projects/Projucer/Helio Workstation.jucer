@@ -413,10 +413,6 @@
           <FILE id="cf5hpo" name="XmlSerializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/XmlSerializer.h"/>
         </GROUP>
         <GROUP id="{979A75EC-73DC-C02F-D56E-866D72FF00D2}" name="Tree">
-          <FILE id="rSZUTM" name="RecentFilesList.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/RecentFilesList.cpp"/>
-          <FILE id="yxTjr8" name="RecentFilesList.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/RecentFilesList.h"/>
           <FILE id="CE6G1K" name="AudioPluginTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/AudioPluginTreeItem.cpp"/>
           <FILE id="RL4cbn" name="AudioPluginTreeItem.h" compile="0" resource="0"
@@ -461,6 +457,9 @@
                 file="../../Source/Core/Tree/ProjectTreeItem.cpp"/>
           <FILE id="wdnaf6" name="ProjectTreeItem.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/ProjectTreeItem.h"/>
+          <FILE id="AF9bbm" name="ProjectsList.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/ProjectsList.cpp"/>
+          <FILE id="dF6IPG" name="ProjectsList.h" compile="0" resource="0" file="../../Source/Core/Tree/ProjectsList.h"/>
           <FILE id="pmK6z1" name="RootTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/RootTreeItem.cpp"/>
           <FILE id="VkPEVe" name="RootTreeItem.h" compile="0" resource="0" file="../../Source/Core/Tree/RootTreeItem.h"/>

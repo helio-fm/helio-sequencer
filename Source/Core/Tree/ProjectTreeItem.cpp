@@ -41,7 +41,7 @@
 #include "MidiTrack.h"
 #include "MidiEvent.h"
 #include "TrackedItem.h"
-#include "RecentFilesList.h"
+#include "ProjectsList.h"
 #include "HybridRoll.h"
 #include "UndoStack.h"
 
@@ -85,9 +85,7 @@ void ProjectTreeItem::initialize()
 
     this->transport = new Transport(App::Workspace().getAudioCore());
     this->addListener(this->transport);
-    
-    this->recentFilesList = &App::Workspace().getRecentFilesList();
-    
+        
     this->info = new ProjectInfo(*this);
     this->vcsItems.add(this->info);
     
@@ -108,14 +106,10 @@ ProjectTreeItem::~ProjectTreeItem()
     this->transport->stopRender();
 
     // remember as the recent file
-    if (this->recentFilesList != nullptr)
-    {
-        this->recentFilesList->
+    App::Workspace().getProjectsList().
         onProjectStateChanged(this->getName(),
-                              this->getDocument()->getFullPath(),
-                              this->getId(),
-                              false);
-    }
+            this->getDocument()->getFullPath(),
+            this->getId(), false);
 
     this->projectPage = nullptr;
 
@@ -144,11 +138,7 @@ void ProjectTreeItem::deletePermanently()
         File localProjectFile(this->getDocument()->getFullPath());
         App::Workspace().unloadProjectById(this->getId());
         localProjectFile.deleteFile();
-        
-        if (this->recentFilesList != nullptr)
-        {
-            this->recentFilesList->cleanup();
-        }
+        App::Workspace().getProjectsList().cleanup();
     }
 }
 
@@ -232,10 +222,7 @@ void ProjectTreeItem::safeRename(const String &newName)
     }
     
     // notify recent files list
-    if (this->recentFilesList != nullptr)
-    {
-        this->recentFilesList->removeById(this->getId());
-    }
+    App::Workspace().getProjectsList().removeById(this->getId());
 
     this->name = newName;
     
@@ -243,14 +230,10 @@ void ProjectTreeItem::safeRename(const String &newName)
     this->broadcastChangeProjectInfo(this->info);
 
     // notify recent files list
-    if (this->recentFilesList != nullptr)
-    {
-        this->recentFilesList->
+    App::Workspace().getProjectsList().
         onProjectStateChanged(this->getName(),
-                              this->getDocument()->getFullPath(),
-                              this->getId(),
-                              true);
-    }
+            this->getDocument()->getFullPath(),
+            this->getId(),true);
 
     this->dispatchChangeTreeItemView();
 }
@@ -798,14 +781,10 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
 
 void ProjectTreeItem::onDocumentDidLoad(File &file)
 {
-    if (this->recentFilesList != nullptr)
-    {
-        this->recentFilesList->
+    App::Workspace().getProjectsList().
         onProjectStateChanged(this->getName(),
-                              this->getDocument()->getFullPath(),
-                              this->getId(),
-                              true);
-    }
+            this->getDocument()->getFullPath(),
+            this->getId(), true);
 }
 
 bool ProjectTreeItem::onDocumentSave(File &file)

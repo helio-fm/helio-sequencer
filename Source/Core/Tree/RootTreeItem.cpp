@@ -30,7 +30,6 @@
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "AutomationEvent.h"
-#include "RecentFilesList.h"
 #include "ProjectInfo.h"
 
 #include "MainLayout.h"
@@ -147,7 +146,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
 
         if (!project->getDocument()->load(file.getFullPathName()))
         {
-            App::Workspace().getRecentFilesList().removeByPath(file.getFullPathName());
+            App::Workspace().getProjectsList().removeByPath(file.getFullPathName());
             delete project;
             return nullptr;
         }
@@ -157,7 +156,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
         {
             if (myProject->getId() == project->getId())
             {
-                App::Workspace().getRecentFilesList().removeByPath(file.getFullPathName());
+                App::Workspace().getProjectsList().removeByPath(file.getFullPathName());
                 delete project;
                 return nullptr;
             }
@@ -202,7 +201,7 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
     newProject->getDocument()->save();
 
     // notify recent files list
-    App::Workspace().getRecentFilesList().
+    App::Workspace().getProjectsList().
     onProjectStateChanged(newProject->getName(),
                           newProject->getDocument()->getFullPath(),
                           newProject->getId(),

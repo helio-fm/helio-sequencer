@@ -21,7 +21,7 @@
 class DashboardMenu;
 class IconComponent;
 
-#include "RecentFilesList.h"
+#include "ProjectsList.h"
 #include "DraggingListBoxComponent.h"
 //[/Headers]
 

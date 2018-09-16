@@ -18,10 +18,9 @@
 #pragma once
 
 class DocumentOwner;
-class RecentFilesList;
+class ProjectsList;
 
-
-class RecentFileDescription : public ReferenceCountedObject
+class RecentFileDescription final : public ReferenceCountedObject
 {
 public:
     
@@ -46,15 +45,15 @@ public:
     }
 };
 
-class RecentFilesList :
+class ProjectsList final :
     public Serializable,
     public ChangeBroadcaster,
     private ChangeListener // listens to AuthorizationManager
 {
 public:
     
-    RecentFilesList();
-    ~RecentFilesList() override;
+    ProjectsList();
+    ~ProjectsList() override;
     
     void forceUpdate();
     
@@ -72,7 +71,7 @@ public:
     {
     public:
         virtual ~Owner() {}
-        virtual RecentFilesList &getRecentFilesList() const = 0;
+        virtual ProjectsList &getProjectsList() const = 0;
         virtual bool onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescription) = 0;
         virtual void onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescription) = 0;
     };
@@ -105,6 +104,6 @@ private:
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RecentFilesList)
-    JUCE_DECLARE_WEAK_REFERENCEABLE(RecentFilesList)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectsList)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(ProjectsList)
 };

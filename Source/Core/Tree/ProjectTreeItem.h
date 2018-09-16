@@ -31,7 +31,6 @@ class Transport;
 class ProjectInfo;
 class ProjectTimeline;
 class UndoStack;
-class RecentFilesList;
 class Pattern;
 class MidiTrack;
 class Clip;
@@ -204,7 +203,6 @@ private:
 
     ScopedPointer<Autosaver> autosaver;
     ScopedPointer<Transport> transport;
-    WeakReference<RecentFilesList> recentFilesList;
 
     ScopedPointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;

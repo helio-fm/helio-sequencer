@@ -20,7 +20,7 @@
 //[Headers]
 class Workspace;
 
-#include "RecentFilesList.h"
+#include "ProjectsList.h"
 
 #if HELIO_DESKTOP
 #    define DEFAULT_RECENT_FILES_ROW_HEIGHT (56)
