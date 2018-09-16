@@ -17,6 +17,9 @@
 
 #pragma once
 
+#include "Serializable.h"
+#include "SerializationKeys.h"
+
 struct ApiModel : Serializable
 {
     ApiModel(const ValueTree &tree) : data(tree) {}
@@ -25,11 +28,16 @@ struct ApiModel : Serializable
     Array<T> getChildren(const Identifier &id) const
     {
         Array<T> result;
-        forEachValueTreeChildWithType(this->data, release, id)
+        forEachValueTreeChildWithType(this->data, child, id)
         {
-            result.add({ release });
+            result.add({ child });
         }
         return result;
+    }
+
+    bool isValid() const noexcept
+    {
+        return this->data.isValid();
     }
 
     ValueTree serialize() const override
@@ -51,7 +59,6 @@ protected:
 
     ValueTree data;
 };
-
 
 #define DTO_PROPERTY(x) this->data.getProperty(Serialization::Api::V1::x)
 #define DTO_CHILDREN(c, x) this->getChildren<c>(Serialization::Api::V1::x);

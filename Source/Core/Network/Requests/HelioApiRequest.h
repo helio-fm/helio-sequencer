@@ -63,8 +63,10 @@ public:
         friend class HelioApiRequest;
     };
 
-    Response post(const ValueTree &payload) const;
     Response get() const;
+    Response post(const ValueTree &payload) const;
+    Response put(const ValueTree &payload) const;
+    Response del() const;
 
     ProgressCallback progressCallback;
 
@@ -73,6 +75,8 @@ private:
     String apiEndpoint;
     JsonSerializer serializer;
 
+    Response doRequest(const String &verb) const;
+    Response doRequest(const ValueTree &payload, const String &verb) const;
     void processResponse(Response &response, InputStream *const stream) const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioApiRequest)

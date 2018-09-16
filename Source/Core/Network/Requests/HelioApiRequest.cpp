@@ -172,7 +172,48 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
     }
 }
 
+HelioApiRequest::Response HelioApiRequest::put(const ValueTree &payload) const
+{
+    return this->doRequest(payload, "PUT");
+}
+
 HelioApiRequest::Response HelioApiRequest::post(const ValueTree &payload) const
+{
+    return this->doRequest(payload, "POST");
+}
+
+HelioApiRequest::Response HelioApiRequest::get() const
+{
+    return this->doRequest("GET");
+}
+
+HelioApiRequest::Response HelioApiRequest::del() const
+{
+    return this->doRequest("DELETE");
+}
+
+HelioApiRequest::Response HelioApiRequest::doRequest(const String &verb) const
+{
+    Response response;
+    ScopedPointer<InputStream> stream;
+    const auto url = URL(Routes::HelioFM::Api::baseURL + this->apiEndpoint);
+
+    int i = 0;
+    do
+    {
+        Logger::writeToLog(">> " + verb + " " + this->apiEndpoint);
+        stream = url.createInputStream(false,
+            progressCallbackInternal, (void *)(this),
+            getHeaders(), CONNECTION_TIMEOUT_MS,
+            &response.headers, &response.statusCode,
+            5, verb);
+    } while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
+
+    processResponse(response, stream);
+    return response;
+}
+
+HelioApiRequest::Response HelioApiRequest::doRequest(const ValueTree &payload, const String &verb) const
 {
     Response response;
     ScopedPointer<InputStream> stream;
@@ -189,32 +230,12 @@ HelioApiRequest::Response HelioApiRequest::post(const ValueTree &payload) const
     int i = 0;
     do
     {
-        Logger::writeToLog(">> POST " + this->apiEndpoint + " " + jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
+        Logger::writeToLog(">> " + verb + " " + this->apiEndpoint + " " + jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
         stream = url.createInputStream(true,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
-            &response.headers, &response.statusCode);
-    }
-    while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
-
-    processResponse(response, stream);
-    return response;
-}
-
-HelioApiRequest::Response HelioApiRequest::get() const
-{
-    Response response;
-    ScopedPointer<InputStream> stream;
-    const auto url = URL(Routes::HelioFM::Api::baseURL + this->apiEndpoint);
-
-    int i = 0;
-    do
-    {
-        Logger::writeToLog(">> GET " + this->apiEndpoint);
-        stream = url.createInputStream(false,
-            progressCallbackInternal, (void *)(this),
-            getHeaders(), CONNECTION_TIMEOUT_MS,
-            &response.headers, &response.statusCode);
+            &response.headers, &response.statusCode,
+            5, verb);
     } while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
 
     processResponse(response, stream);
