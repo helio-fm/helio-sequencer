@@ -34,18 +34,11 @@ public:
         this->stopThread(1000);
     }
     
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void authSessionInitiated(const AuthSessionDto session, const String &redirect) = 0;
-        virtual void authSessionFinished(const AuthSessionDto session) = 0;
-        virtual void authSessionFailed(const Array<String> &errors) = 0;
-        friend class AuthThread;
-    };
+    Function<void(const AuthSessionDto session, const String &redirect)> onAuthSessionInitiated;
+    Function<void(const AuthSessionDto session)> onAuthSessionFinished;
+    Function<void(const Array<String> &errors)> onAuthSessionFailed;
     
-    void requestWebAuth(AuthThread::Listener *listener, String provider = "Github")
+    void requestWebAuth(String provider = "Github")
     {
         if (this->isThreadRunning())
         {
@@ -54,7 +47,6 @@ public:
         }
 
         this->provider = provider;
-        this->listener = listener;
         this->startThread(3);
     }
 
@@ -82,13 +74,13 @@ private:
             !this->response.is(201))
         {
             Logger::writeToLog("Failed to init web auth: " + this->response.getErrors().getFirst());
-            callRequestListener(AuthThread, authSessionFailed, self->response.getErrors());
+            callbackOnMessageThread(AuthThread, onAuthSessionFailed, self->response.getErrors());
             return;
         }
 
         // Session manager will redirect user in a browser
         Logger::writeToLog("Initialized web auth, redirecting to: " + this->response.getRedirect());
-        callRequestListener(AuthThread, authSessionInitiated, { self->response.getBody() }, self->response.getRedirect());
+        callbackOnMessageThread(AuthThread, onAuthSessionInitiated, { self->response.getBody() }, self->response.getRedirect());
 
         // Now check once a second if user has finished authentication
         const AuthSessionDto authSession(this->response.getBody());
@@ -124,17 +116,15 @@ private:
             !this->response.hasProperty(ApiKeys::AuthSession::token))
         {
             Logger::writeToLog("Failed to finalize web auth: " + this->response.getErrors().getFirst());
-            callRequestListener(AuthThread, authSessionFailed, self->response.getErrors());
+            callbackOnMessageThread(AuthThread, onAuthSessionFailed, self->response.getErrors());
             return;
         }
 
-        callRequestListener(AuthThread, authSessionFinished, { self->response.getBody() });
+        callbackOnMessageThread(AuthThread, onAuthSessionFinished, { self->response.getBody() });
     }
     
     String provider;
     HelioApiRequest::Response response;
-
-    AuthThread::Listener *listener = nullptr;
 
     friend class BackendService;
 };

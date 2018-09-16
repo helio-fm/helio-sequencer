@@ -109,7 +109,7 @@ inline float roundf(float x)
 // Beat is essentially a quarter-note
 #define BEATS_PER_BAR 4
 
-// Defines a maximum available resolution
+// Defines the maximum available resolution
 #define TICKS_PER_BEAT 16
 
 #define VELOCITY_SAVE_ACCURACY 1024.f
@@ -123,11 +123,14 @@ inline float roundBeat(float beat)
 #define forEachValueTreeChildWithType(parentElement, child, requiredType) \
     for (const auto &child : parentElement) if (child.hasType(requiredType))
 
-#define callMessageThreadFrom(threadType, function) \
+#define callbackOnMessageThread(cls, function, ...) \
     MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \
         { \
-            const auto self = static_cast<threadType *>(ptr); \
-            function(self); \
+            const auto *self = static_cast<cls *>(ptr); \
+            if (self->function != nullptr) \
+            { \
+                self->function(__VA_ARGS__); \
+            } \
             return nullptr; \
         }, this)
 

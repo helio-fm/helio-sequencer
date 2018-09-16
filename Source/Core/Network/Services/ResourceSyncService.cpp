@@ -26,13 +26,7 @@
 
 ResourceSyncService::ResourceSyncService()
 {
-    this->startTimer(UPDATE_INFO_TIMEOUT_MS);
-}
-
-void ResourceSyncService::timerCallback()
-{
-    this->stopTimer();
-    this->getNewThreadFor<UpdatesCheckThread>()->checkForUpdates(this);
+    this->prepareUpdatesCheckThread()->checkForUpdates(UPDATE_INFO_TIMEOUT_MS);
 }
 
 //===----------------------------------------------------------------------===//
@@ -66,70 +60,66 @@ static Identifier getPlatformType()
 #endif
 }
 
-void ResourceSyncService::updatesCheckOk(const AppInfoDto info)
+RequestResourceThread *ResourceSyncService::prepareResourceRequestThread()
 {
-    // TODO:
+    auto *thread = this->getNewThreadFor<RequestResourceThread>();
+
+    thread->onRequestResourceOk = [](const Identifier &resourceId, const ValueTree &resource)
+    {
+        App::Helio().getResourceManagerFor(resourceId).updateBaseResource(resource);
+    };
     
-    // 1
-    // check if current version has newer build available
-    // tell dialog launcher to schedule an update dialog to be shown
+    return thread;
+}
 
-    const auto platformType(getPlatformType());
-    for (const auto &version : info.getVersions())
+UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
+{
+    auto *thread = this->getNewThreadFor<UpdatesCheckThread>();
+
+    thread->onUpdatesCheckOk = [this](const AppInfoDto info)
     {
-        if (version.getPlatformType() == platformType)
+        const auto platformType(getPlatformType());
+        for (const auto &version : info.getVersions())
         {
-
+            if (version.getPlatformType() == platformType)
+            {
+                // TODO: make update info available on the dashboard page
+            }
         }
-    }
 
-    // 2
-    // check if any available resource has a hash different from stored one
-    // then start threads to fetch those resources (with somewhat random delays)
-    // store UpdateInfo in Config
+        // Check if any available resource has a hash different from stored one
+        // then start threads to fetch those resources (with somewhat random delays)
 
-    AppInfoDto lastUpdatesInfo;
-    Config::load(lastUpdatesInfo, Serialization::Config::lastUpdatesInfo);
-    bool everythingIsUpToDate = true;
+        AppInfoDto lastUpdatesInfo;
+        Config::load(lastUpdatesInfo, Serialization::Config::lastUpdatesInfo);
+        bool everythingIsUpToDate = true;
 
-    Random r;
-    for (const auto &newResource : info.getResources())
-    {
-        if (lastUpdatesInfo.resourceSeemsOutdated(newResource))
+        Random r;
+        for (const auto &newResource : info.getResources())
         {
-            // I just don't want to fire all requests at once:
-            const auto delay = r.nextInt(5) * 1000;
-            const auto requestThread = this->getNewThreadFor<RequestResourceThread>();
-            requestThread->requestResource(this, newResource.getType(), delay);
-            everythingIsUpToDate = false;
+            if (lastUpdatesInfo.resourceSeemsOutdated(newResource))
+            {
+                // I just don't want to fire all requests at once:
+                const auto delay = r.nextInt(5) * 1000;
+                this->prepareResourceRequestThread()->requestResource(newResource.getType(), delay);
+                everythingIsUpToDate = false;
+            }
         }
-    }
 
-    if (!everythingIsUpToDate)
+        if (!everythingIsUpToDate)
+        {
+            Config::save(info, Serialization::Config::lastUpdatesInfo);
+        }
+        else
+        {
+            Logger::writeToLog("All resources are up to date");
+        }
+    };
+
+    thread->onUpdatesCheckFailed = [](const Array<String> &errors)
     {
-        Config::save(info, Serialization::Config::lastUpdatesInfo);
-    }
-    else
-    {
-        Logger::writeToLog("All resources are up to date");
-    }
-}
+        Logger::writeToLog("updatesCheckFailed: " + errors.getFirst());
+    };
 
-void ResourceSyncService::updatesCheckFailed(const Array<String> &errors)
-{
-    Logger::writeToLog("updatesCheckFailed: " + errors.getFirst());
-}
-
-//===----------------------------------------------------------------------===//
-// RequestResourceThread::Listener
-//===----------------------------------------------------------------------===//
-
-void ResourceSyncService::requestResourceOk(const Identifier &resourceId, const ValueTree &resource)
-{
-    App::Helio().getResourceManagerFor(resourceId).updateBaseResource(resource);
-}
-
-void ResourceSyncService::requestResourceFailed(const Identifier &resourceId, const Array<String> &errors)
-{
-
+    return thread;
 }

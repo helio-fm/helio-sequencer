@@ -41,7 +41,7 @@ SessionService::SessionService() : userProfile({})
             }
 
             ValueTree jwt;
-            static JsonSerializer decoder;
+            const JsonSerializer decoder;
             if (decoder.loadFromString(block.toString(), jwt).wasOk())
             {
                 const Time now = Time::getCurrentTime();
@@ -56,7 +56,12 @@ SessionService::SessionService() : userProfile({})
                 else if ((expiry - now).inDays() <= 5)
                 {
                     Logger::writeToLog("Attempting to re-issue auth token");
-                    this->startTimer(UPDATE_SESSION_TIMEOUT_MS);
+                    this->prepareTokenUpdateThread()->updateToken(token, UPDATE_SESSION_TIMEOUT_MS);
+                }
+                else
+                {
+                    Logger::writeToLog("Token seems to be ok, skipping session update step");
+                    // TODO request user profile
                 }
 
                 return;
@@ -109,7 +114,7 @@ void SessionService::signIn(const String &provider, AuthCallback callback)
     }
 
     this->authCallback = callback;
-    this->getNewThreadFor<AuthThread>()->requestWebAuth(this, provider);
+    this->prepareAuthThread()->requestWebAuth(provider);
 }
 
 void SessionService::cancelSignInProcess()
@@ -132,88 +137,90 @@ void SessionService::signOut()
 // Updating session
 //===----------------------------------------------------------------------===//
 
-void SessionService::timerCallback()
+AuthThread *SessionService::prepareAuthThread()
 {
-    this->stopTimer();
-    const String token = SessionService::getApiToken();
-    this->getNewThreadFor<TokenUpdateThread>()->updateToken(this, token);
-}
+    auto *thread = this->getNewThreadFor<AuthThread>();
 
-//===----------------------------------------------------------------------===//
-// SignInThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionService::authSessionInitiated(const AuthSessionDto session, const String &redirect)
-{
-    jassert(redirect.isNotEmpty());
-    URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
-}
-
-void SessionService::authSessionFinished(const AuthSessionDto session)
-{
-    SessionService::setApiToken(session.getToken());
-    // Don't call authCallback right now, instead request a user profile and callback when ready
-    this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
-    this->sendChangeMessage();
-}
-
-void SessionService::authSessionFailed(const Array<String> &errors)
-{
-    Logger::writeToLog("Login failed: " + errors.getFirst());
-    if (this->authCallback != nullptr)
+    thread->onAuthSessionInitiated = [](const AuthSessionDto session, const String &redirect)
     {
-        this->authCallback(false, errors);
-        this->authCallback = nullptr;
-    }
-    this->sendChangeMessage();
-}
+        jassert(redirect.isNotEmpty());
+        URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
+    };
 
-//===----------------------------------------------------------------------===//
-// RequestUserProfileThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionService::requestProfileOk(const UserProfileDto profile)
-{
-    this->userProfile = profile;
-    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
-    if (this->authCallback != nullptr)
+    thread->onAuthSessionFinished = [this](const AuthSessionDto session)
     {
-        this->authCallback(true, {});
-        this->authCallback = nullptr;
-    }
-    this->sendChangeMessage();
-}
+        SessionService::setApiToken(session.getToken());
+        // Don't call authCallback right now, instead request a user profile and callback when ready
+        this->prepareProfileRequestThread()->requestUserProfile(this->userProfile);
+        this->sendChangeMessage();
+    };
 
-void SessionService::requestProfileFailed(const Array<String> &errors)
-{
-    this->resetUserProfile();
-    if (this->authCallback != nullptr)
+    thread->onAuthSessionFailed = [this](const Array<String> &errors)
     {
-        this->authCallback(false, errors);
-        this->authCallback = nullptr;
-    }
-    this->sendChangeMessage();
+        Logger::writeToLog("Login failed: " + errors.getFirst());
+        if (this->authCallback != nullptr)
+        {
+            this->authCallback(false, errors);
+            this->authCallback = nullptr;
+        }
+        this->sendChangeMessage();
+    };
+
+    return thread;
 }
 
-//===----------------------------------------------------------------------===//
-// TokenUpdateThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionService::tokenUpdateOk(const String &newToken)
+TokenUpdateThread *SessionService::prepareTokenUpdateThread()
 {
-    SessionService::setApiToken(newToken);
-    this->sendChangeMessage();
+    auto *thread = this->getNewThreadFor<TokenUpdateThread>();
+
+    thread->onTokenUpdateOk = [this](const String &newToken)
+    {
+        SessionService::setApiToken(newToken);
+        // TODO request profile here?
+        this->sendChangeMessage();
+    };
+
+    thread->onTokenUpdateFailed = [this](const Array<String> &errors)
+    {
+        // This might be the case of connection error,
+        // so we should not reset the token and profile
+        if (!errors.isEmpty())
+        {
+            this->resetUserProfile();
+            SessionService::setApiToken({});
+            this->sendChangeMessage();
+        }
+    };
+
+    return thread;
 }
 
-void SessionService::tokenUpdateFailed(const Array<String> &errors)
+RequestUserProfileThread *SessionService::prepareProfileRequestThread()
 {
-    this->resetUserProfile();
-    SessionService::setApiToken({});
-    this->sendChangeMessage();
-}
+    auto *thread = this->getNewThreadFor<RequestUserProfileThread>();
 
-void SessionService::tokenUpdateNoResponse()
-{
-    // This might be the case of connection error,
-    // so we should not reset the token and profile
+    thread->onRequestProfileOk = [this](const UserProfileDto profile)
+    {
+        this->userProfile = profile;
+        Config::save(this->userProfile, Serialization::Config::activeUserProfile);
+        if (this->authCallback != nullptr)
+        {
+            this->authCallback(true, {});
+            this->authCallback = nullptr;
+        }
+        this->sendChangeMessage();
+    };
+
+    thread->onRequestProfileFailed = [this](const Array<String> &errors)
+    {
+        this->resetUserProfile();
+        if (this->authCallback != nullptr)
+        {
+            this->authCallback(false, errors);
+            this->authCallback = nullptr;
+        }
+        this->sendChangeMessage();
+    };
+
+    return thread;
 }

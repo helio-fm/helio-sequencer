@@ -24,12 +24,7 @@
 #include "RequestUserProfileThread.h"
 #include "UpdatesCheckThread.h"
 
-class SessionService final :
-    public ChangeBroadcaster,
-    private BackendService,
-    private AuthThread::Listener,
-    private TokenUpdateThread::Listener,
-    private RequestUserProfileThread::Listener
+class SessionService final : private BackendService, public ChangeBroadcaster
 {
 public:
     
@@ -48,7 +43,6 @@ public:
 
 private:
 
-    void timerCallback() override;
     static void setApiToken(const String &token);
 
     UserProfileDto userProfile;
@@ -57,18 +51,9 @@ private:
     AuthCallback authCallback;
 
 private:
-    
-    // will be called on the message thread:
-    
-    void authSessionInitiated(const AuthSessionDto session, const String &redirect) override;
-    void authSessionFinished(const AuthSessionDto session) override;
-    void authSessionFailed(const Array<String> &errors) override;
 
-    void requestProfileOk(const UserProfileDto profile) override;
-    void requestProfileFailed(const Array<String> &errors) override;
-
-    void tokenUpdateOk(const String &newToken) override;
-    void tokenUpdateFailed(const Array<String> &errors) override;
-    void tokenUpdateNoResponse() override;
+    AuthThread *prepareAuthThread();
+    TokenUpdateThread *prepareTokenUpdateThread();
+    RequestUserProfileThread *prepareProfileRequestThread();
 
 };

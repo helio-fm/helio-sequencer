@@ -19,15 +19,6 @@
 
 #include "JsonSerializer.h"
 
-// A shorthand to call request thread's listener on a main thread
-#define callRequestListener(threadType, function, ...) \
-    MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \
-        { \
-            const auto self = static_cast<threadType *>(ptr); \
-            self->listener->function(__VA_ARGS__); \
-            return nullptr; \
-        }, this)
-
 class HelioApiRequest final
 {
 public:

@@ -24,8 +24,3 @@ ProjectSyncService::ProjectSyncService()
 {
     // TODO
 }
-
-void ProjectSyncService::timerCallback()
-{
-
-}

@@ -27,23 +27,16 @@ class RequestUserProfileThread final : public Thread
 {
 public:
 
-    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr), profile({}) {}
+    RequestUserProfileThread() : Thread("RequestUserProfile"), profile({}) {}
     ~RequestUserProfileThread() override
     {
         this->stopThread(1000);
     }
 
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void requestProfileOk(const UserProfileDto profile) = 0;
-        virtual void requestProfileFailed(const Array<String> &errors) = 0;
-        friend class RequestUserProfileThread;
-    };
-    
-    void requestUserProfile(RequestUserProfileThread::Listener *authListener, UserProfileDto existingProfile)
+    Function<void(const UserProfileDto profile)> onRequestProfileOk;
+    Function<void(const Array<String> &errors)> onRequestProfileFailed;
+
+    void requestUserProfile(UserProfileDto existingProfile)
     {
         if (this->isThreadRunning())
         {
@@ -51,7 +44,6 @@ public:
         }
 
         this->profile = existingProfile;
-        this->listener = authListener;
         this->startThread(3);
     }
     
@@ -67,7 +59,7 @@ private:
 
         if (!this->response.isValid() || !this->response.is200())
         {
-            callRequestListener(RequestUserProfileThread, requestProfileFailed, self->response.getErrors());
+            callbackOnMessageThread(RequestUserProfileThread, onRequestProfileFailed, self->response.getErrors());
         }
 
         const String newProfileAvatarUrl = UserProfileDto(this->response.getBody(), {}).getAvatarUrl();
@@ -88,12 +80,11 @@ private:
 
         this->profile = { this->response.getBody(), profileAvatar };
 
-        callRequestListener(RequestUserProfileThread, requestProfileOk, self->profile);
+        callbackOnMessageThread(RequestUserProfileThread, onRequestProfileOk, self->profile);
     }
     
     UserProfileDto profile;
     HelioApiRequest::Response response;
-    RequestUserProfileThread::Listener *listener;
-    
+
     friend class BackendService;
 };

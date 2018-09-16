@@ -24,23 +24,16 @@ class RequestResourceThread final : public Thread
 {
 public:
     
-    RequestResourceThread() : Thread("RequestResource"), listener(nullptr) {}
+    RequestResourceThread() : Thread("RequestResource") {}
     ~RequestResourceThread() override
     {
         this->stopThread(1000);
     }
     
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void requestResourceOk(const Identifier &resourceId, const ValueTree &resource) = 0;
-        virtual void requestResourceFailed(const Identifier &resourceId, const Array<String> &errors) = 0;
-        friend class RequestResourceThread;
-    };
+    Function<void(const Identifier &resourceId, const ValueTree &resource)> onRequestResourceOk;
+    Function<void(const Identifier &resourceId, const Array<String> &errors)> onRequestResourceFailed;
     
-    void requestResource(RequestResourceThread::Listener *listener, const Identifier &resourceId, uint32 delayMs)
+    void requestResource(const Identifier &resourceId, uint32 delayMs)
     {
         if (this->isThreadRunning())
         {
@@ -48,7 +41,6 @@ public:
         }
 
         this->delay = delayMs;
-        this->listener = listener;
         this->resourceId = resourceId;
         this->startThread(3);
     }
@@ -67,19 +59,18 @@ private:
 
         if (!this->response.isValid() || !this->response.is2xx())
         {
-            callRequestListener(RequestResourceThread, requestResourceFailed,
+            callbackOnMessageThread(RequestResourceThread, onRequestResourceFailed,
                 self->resourceId, self->response.getErrors());
             return;
         }
 
-        callRequestListener(RequestResourceThread, requestResourceOk,
+        callbackOnMessageThread(RequestResourceThread, onRequestResourceOk,
             self->resourceId, self->response.getChild(self->resourceId));
     }
     
     uint32 delay;
     Identifier resourceId;
     HelioApiRequest::Response response;
-    RequestResourceThread::Listener *listener;
     
     friend class BackendService;
 };

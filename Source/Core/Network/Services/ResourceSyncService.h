@@ -21,9 +21,7 @@
 #include "UpdatesCheckThread.h"
 #include "RequestResourceThread.h"
 
-class ResourceSyncService final : private BackendService,
-                             private UpdatesCheckThread::Listener,
-                             private RequestResourceThread::Listener
+class ResourceSyncService final : private BackendService
 {
 public:
 
@@ -31,14 +29,7 @@ public:
 
 private:
 
-    void timerCallback() override;
-
-private:
-
-    void updatesCheckOk(const AppInfoDto info) override;
-    void updatesCheckFailed(const Array<String> &errors) override;
-
-    void requestResourceOk(const Identifier &resourceId, const ValueTree &resource) override;
-    void requestResourceFailed(const Identifier &resourceId, const Array<String> &errors) override;
+    UpdatesCheckThread *prepareUpdatesCheckThread();
+    RequestResourceThread *prepareResourceRequestThread();
 
 };
