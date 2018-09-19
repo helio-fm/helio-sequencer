@@ -2036,7 +2036,7 @@
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
+				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.helio.workstation;
 				PRODUCT_NAME = "Helio";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2079,7 +2079,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LLVM_LTO = YES;
-				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
+				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.helio.workstation;
 				PRODUCT_NAME = "Helio";
 				PROVISIONING_PROFILE_SPECIFIER = "";

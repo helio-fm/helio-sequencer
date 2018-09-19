@@ -119,8 +119,7 @@ public:
         }
     }
     
-    //==============================================================================
-    class ProxyComponent  : public Component
+    class ProxyComponent final : public Component
     {
     public:
         explicit ProxyComponent (Component& c)
@@ -139,8 +138,8 @@ public:
                 jassertfalse; // seem to be trying to animate a component that's not visible..
             }
             
-            const float scale = static_cast<float>( Desktop::getInstance().getDisplays()
-                                                   .getDisplayContaining (getScreenBounds().getCentre()).scale);
+            const float scale = static_cast<float>(Desktop::getInstance().getDisplays()
+                .findDisplayForPoint(getScreenBounds().getCentre()).scale);
             
             image = c.createComponentSnapshot (c.getLocalBounds(), true, scale);
             

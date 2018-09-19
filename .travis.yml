@@ -1,21 +1,14 @@
 language: generic
 sudo: false
 
-os: linux
-dist: trusty
-
 notifications:
   email: false
-
-cache:
-  directories:
-    - ${TRAVIS_BUILD_DIR}/ThirdParty/ASIO
 
 branches:
   only:
     - master
     - develop
-    - tech-debt
+    - travis-updates
 
 addons_shortcuts:
   # Commented out Clang builds until Xenial images are available in Travis.
@@ -36,21 +29,63 @@ addons_shortcuts:
     apt:
       sources: [ 'ubuntu-toolchain-r-test' ]
       packages: [ 'g++-6', 'gcc-6', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+  addons_gcc6: &gcc7
+    ssh_known_hosts: helio.fm
+    apt:
+      sources: [ 'ubuntu-toolchain-r-test' ]
+      packages: [ 'g++-7', 'gcc-7', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+  addons_deploy: &deploy
+    ssh_known_hosts: helio.fm
 
 matrix:
   include:
-    # - compiler: "clang-4.0"
+    # - name: "clang 4.0"
     #   addons: *clang40
     #   env: CC=clang-4.0 CXX=clang++-4.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
-    # - compiler: "clang-5.0"
+    # - name: "clang 5.0"
     #   addons: *clang50
     #   env: CC=clang-5.0 CXX=clang++-5.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
-    - compiler: "gcc-5"
+    - name: "gcc 5, debug build, 64-bit"
+      os: linux
+      dist: trusty
       addons: *gcc5
       env: CC=gcc-5 CXX=g++-5 CONFIG=Travis DISPLAY=localhost:1.0
-    - compiler: "gcc-6"
+    - name: "gcc 6, debug build, 64-bit"
+      os: linux
+      dist: trusty
       addons: *gcc6
       env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
+    - name: "gcc 7, release build, 64-bit, deploy"
+      os: linux
+      dist: trusty
+      addons: *gcc7
+      env: DEPLOY=true CC=gcc-7 CXX=g++-7 CONFIG=Release64 DISPLAY=localhost:1.0
+    - name: "xcode 10, release and deploy"
+      os: osx
+      osx_image: xcode10
+      xcode_sdk: macosx10.14
+      xcode_scheme: "Helio - App"
+      addons: *deploy
+      env: DEPLOY=true
 
 script:
-  - xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make'
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+    xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make';
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    xcodebuild -project Projects/macOS/Helio.xcodeproj ONLY_ACTIVE_ARCH=NO -quiet;
+    fi
+
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_e6d7a52b0113_key -iv $encrypted_e6d7a52b0113_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy_rsa.enc -out /tmp/deploy_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 /tmp/deploy_rsa
+  - ssh-add /tmp/deploy_rsa
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: sh ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${TRAVIS_OS_NAME}.sh
+  on:
+    branch: travis-updates
+    condition: $DEPLOY = true
