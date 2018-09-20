@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="2.0" bundleIdentifier="fm.helio.workstation"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="2.0" bundleIdentifier="fm.helio"
               includeBinaryInAppConfig="1" jucerVersion="5.3.2" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               defines="JUCE_DONT_DECLARE_PROJECTINFO=1" displaySplashScreen="0"
@@ -1331,21 +1331,20 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="../../Projects/macOS" vstFolder="~/Code/Steinberg/VST3"
-               vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
-               smallIcon="WO0LHL" customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
+    <XCODE_MAC targetFolder="../../Projects/macOS" bigIcon="WO0LHL" smallIcon="WO0LHL"
+               customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;  &#9;&lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;  &#9;&lt;string&gt;public.app-category.music&lt;/string&gt;&#10;  &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
                documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8"
                useHeaderMap="0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxCompatibility="10.7 SDK" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags="CODE_SIGN_IDENTITY = &quot;Developer ID Application&quot;"
-                       enablePluginBinaryCopyStep="1"/>
+                       enablePluginBinaryCopyStep="1" codeSigningIdentity="Developer ID Application"
+                       customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
         <CONFIGURATION name="Release" osxCompatibility="10.7 SDK" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
-                       customXcodeFlags="CODE_SIGN_IDENTITY = &quot;Developer ID Application&quot;"
-                       stripLocalSymbols="0" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"/>
+                       stripLocalSymbols="0" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"
+                       codeSigningIdentity="Developer ID Application" customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1361,12 +1360,10 @@
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <XCODE_IPHONE targetFolder="../../Projects/iOS" vstFolder="~/Code/Steinberg/VST3"
-                  vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
-                  UIFileSharingEnabled="1" UIStatusBarHidden="1" smallIcon="WO0LHL"
-                  extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
+    <XCODE_IPHONE targetFolder="../../Projects/iOS" bigIcon="WO0LHL" UIFileSharingEnabled="1"
+                  UIStatusBarHidden="1" smallIcon="WO0LHL" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0"
-                  customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;CFBundleIdentifier&lt;/key&gt;&#10;    &lt;string&gt;fm.helio.workstation&lt;/string&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;"
+                  customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;CFBundleIdentifier&lt;/key&gt;&#10;    &lt;string&gt;fm.helio.mobile&lt;/string&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;"
                   iosScreenOrientation="landscape" customXcodeResourceFolders=""
                   customXcassetsFolder="../../Resources/iOS/Images.xcassets" iosDevelopmentTeamID="EQL633LLC8"
                   userNotes="" extraLinkerFlags="" externalLibraries="" extraFrameworks=""
@@ -1394,8 +1391,7 @@
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
-    <VS2015 targetFolder="../../Projects/VisualStudio2015" vstFolder="c:\Code\VST3"
-            vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="WO0LHL"
+    <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="WO0LHL"
             bigIcon="WO0LHL" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
             windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC">
@@ -1433,8 +1429,8 @@
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <VS2017 targetFolder="../../Projects/VisualStudio2017" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
-            extraCompilerFlags="/FC" usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
+    <VS2017 targetFolder="../../Projects/VisualStudio2017" extraCompilerFlags="/FC"
+            usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
             precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
             smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp">
       <CONFIGURATIONS>
@@ -1473,8 +1469,7 @@
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" vstFolder="~/Code/Steinberg/VST3"
-                vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="WO0LHL"
+    <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" bigIcon="WO0LHL"
                 smallIcon="WO0LHL" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess"
                 cppLanguageStandard="-std=c++14" extraLinkerFlags="" usePrecompiledHeaders="1"
                 precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*">
@@ -1502,10 +1497,9 @@
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
-    <ANDROIDSTUDIO targetFolder="../../Projects/Android" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
-                   androidSDKPath="~/Android/Sdk/" androidNDKPath="~/Android/Ndk/"
-                   androidActivityClass="fm.helio.workstation" androidInternetNeeded="1"
-                   androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
+    <ANDROIDSTUDIO targetFolder="../../Projects/Android" androidSDKPath="~/Android/Sdk/"
+                   androidNDKPath="~/Android/Ndk/" androidActivityClass="fm.helio.workstation"
+                   androidInternetNeeded="1" androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                    smallIcon="WO0LHL" bigIcon="WO0LHL" androidScreenOrientation="landscape"
                    androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="21"
