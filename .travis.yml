@@ -71,7 +71,7 @@ before_script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     openssl aes-256-cbc -K $encrypted_2dee6ac16b0a_key -iv $encrypted_2dee6ac16b0a_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/osx-certificates.tar.enc -out /tmp/certificates.tar -d;
     tar xvf /tmp/certificates.tar -C /tmp;
-    sh ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-osx.sh;
+    bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-osx.sh;
     fi
 
 script:
@@ -91,7 +91,7 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: sh ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${TRAVIS_OS_NAME}.sh
+  script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${TRAVIS_OS_NAME}.sh
   on:
     branch: travis-updates
     condition: $DEPLOY = true

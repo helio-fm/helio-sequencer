@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Create the keychain with a password
 security create-keychain -p travis osx-build.keychain
