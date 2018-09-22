@@ -98,19 +98,17 @@ HelioApiRequest::HelioApiRequest(const String &apiEndpoint, ProgressCallback pro
 static String getHeaders()
 {
     static const String apiVersion1 = "application/helio.fm.v1+json";
-    
+    static const String userAgent = "Helio " + App::getAppReadableVersion() +
+        (SystemStats::isOperatingSystem64Bit ? " 64-bit on " : " 32-bit on ") + SystemStats::getOperatingSystemName();
+
     String extraHeaders;
     extraHeaders
         << "Accept: " << apiVersion1
         << "\r\n"
         << "Content-Type: " << apiVersion1
         << "\r\n"
-        << "Client: Helio " << App::getAppReadableVersion()
+        << "User-Agent: " << userAgent
         << "\r\n";
-        //<< "Platform-Id: " << SystemStats::getOperatingSystemName()
-        //<< "\r\n"
-        //<< "Device-Id: " << Config::getDeviceId()
-        //<< "\r\n";
 
     if (SessionService::isLoggedIn())
     {
