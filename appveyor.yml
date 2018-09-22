@@ -3,18 +3,30 @@ branches:
   only:
   - develop
   - master
+  - travis-updates
 skip_tags: true
 image: Visual Studio 2015
 configuration: Release 64-bit
 platform: x64
 clone_depth: 1
+environment:
+  encrypted_deploy_key:
+    secure: ++30FOn93CZGPrm6JMlLQe2A5CDBmwsL4nDAlUlbgLGhDhMCfSe8oz5uvLFdsW2M8+plXilRBWvo/bdfITBHvxOtbHN7kNKRNuUY2z2z4lLy+1mYK5YG33DDkrgMokq3n5keLCh4Z9oTEBQkz+S4GQ==
 install:
-- ps: |
-    cmd.exe /c 'git submodule update --init --recursive 2> $null'
+- cmd: git submodule update --init --recursive 2> $null
+- ps: >-
+    Push-Location ($PSScriptRoot + "\projects\helio-workstation\ThirdParty\ASIO\")
 
-    Push-Location ($PSScriptRoot + "\ThirdParty\ASIO\")
     & ".\get_asio_sdk.ps1"
+
     Pop-Location
+- nuget install secure-file -ExcludeVersion
+- secure-file\tools\secure-file -decrypt Projects\Deployment\AppVeyor\deploy-rsa.enc -secret %encrypted_deploy_key% -out deploy-rsa
+cache: ThirdParty\ASIO
 build:
   project: Projects\VisualStudio2015\Helio.sln
   verbosity: minimal
+deploy_script:
+- 7z a %APPVEYOR_BUILD_FOLDER%\helio-dev.zip "%APPVEYOR_BUILD_FOLDER%\Projects\VisualStudio2015\x64\Release 64-bit\App\Helio.exe"
+- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/helio-dev.zip deploy@helio.fm:/opt/musehackers/files/ci/helio-dev.zip"
+
