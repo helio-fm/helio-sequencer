@@ -23,6 +23,61 @@
 // Try to update our sliding session after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
 
+class JsonWebToken final
+{
+public:
+
+    JsonWebToken(const String &token)
+    {
+        if (token.isNotEmpty())
+        {
+            StringArray blocks;
+            blocks.addTokens(token, ".", "");
+            if (blocks.size() == 3)
+            {
+                MemoryBlock block;
+                {
+                    MemoryOutputStream outStream(block, false);
+                    Base64::convertFromBase64(outStream, blocks[1]);
+                }
+
+                const JsonSerializer decoder;
+                decoder.loadFromString(block.toString(), this->jwt);
+            }
+        }
+    }
+
+    const bool isValid() const noexcept
+    {
+        return this->jwt.isValid();
+    }
+
+    const Time getExpiry() const
+    {
+        if (this->jwt.isValid())
+        {
+            return Time(int64(this->jwt.getProperty("exp")) * 1000);
+        }
+
+        return {};
+    }
+
+    const String getIssuer() const
+    {
+        if (this->jwt.isValid())
+        {
+            return this->jwt.getProperty("iss");
+        }
+
+        return {};
+    }
+
+private:
+
+    ValueTree jwt;
+};
+
+
 SessionService::SessionService() : userProfile({})
 {
     Config::load(this->userProfile, Serialization::Config::activeUserProfile);
@@ -30,42 +85,31 @@ SessionService::SessionService() : userProfile({})
     if (token.isNotEmpty())
     {
         // Assuming we're using JWT, try to get token expiry:
-        StringArray jwtBlocks;
-        jwtBlocks.addTokens(token, ".", "");
-        if (jwtBlocks.size() == 3)
+        JsonWebToken jwt(token);
+        if (jwt.isValid())
         {
-            MemoryBlock block;
+            const Time now = Time::getCurrentTime();
+            const Time expiry = jwt.getExpiry();
+            Logger::writeToLog("Found token expiring " + expiry.toString(true, true));
+
+            if (expiry < now)
             {
-                MemoryOutputStream outStream(block, false);
-                Base64::convertFromBase64(outStream, jwtBlocks[1]);
+                Logger::writeToLog("Token seems to be expired, removing");
+                SessionService::setApiToken({});
+                this->resetUserProfile();
+            }
+            else if ((expiry - now).inDays() <= 5)
+            {
+                Logger::writeToLog("Attempting to re-issue auth token");
+                this->prepareTokenUpdateThread()->updateToken(token, UPDATE_SESSION_TIMEOUT_MS);
+            }
+            else
+            {
+                Logger::writeToLog("Token seems to be ok, skipping session update step");
+                this->prepareProfileRequestThread()->requestUserProfile(this->userProfile);
             }
 
-            ValueTree jwt;
-            const JsonSerializer decoder;
-            if (decoder.loadFromString(block.toString(), jwt).wasOk())
-            {
-                const Time now = Time::getCurrentTime();
-                const Time expiry(int64(jwt.getProperty("exp")) * 1000);
-                Logger::writeToLog("Found token expiring " + expiry.toString(true, true));
-                if (expiry < now)
-                {
-                    Logger::writeToLog("Token seems to be expired, removing");
-                    SessionService::setApiToken({});
-                    this->resetUserProfile();
-                }
-                else if ((expiry - now).inDays() <= 5)
-                {
-                    Logger::writeToLog("Attempting to re-issue auth token");
-                    this->prepareTokenUpdateThread()->updateToken(token, UPDATE_SESSION_TIMEOUT_MS);
-                }
-                else
-                {
-                    Logger::writeToLog("Token seems to be ok, skipping session update step");
-                    // TODO request user profile
-                }
-
-                return;
-            }
+            return;
         }
 
         Logger::writeToLog("Warning: auth token seems to be invalid, removing");
@@ -176,7 +220,7 @@ TokenUpdateThread *SessionService::prepareTokenUpdateThread()
     thread->onTokenUpdateOk = [this](const String &newToken)
     {
         SessionService::setApiToken(newToken);
-        // TODO request profile here?
+        this->prepareProfileRequestThread()->requestUserProfile(this->userProfile);
         this->sendChangeMessage();
     };
 
