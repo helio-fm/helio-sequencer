@@ -8,7 +8,6 @@ branches:
   only:
     - master
     - develop
-    - travis-updates
 
 addons_shortcuts:
   # Commented out Clang builds until Xenial images are available in Travis.
@@ -93,5 +92,5 @@ deploy:
   skip_cleanup: true
   script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${TRAVIS_OS_NAME}.sh
   on:
-    branch: travis-updates
+    branch: develop
     condition: $DEPLOY = true
