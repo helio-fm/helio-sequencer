@@ -26,7 +26,7 @@ struct AppInfoDto final : ApiModel
     AppInfoDto() : ApiModel({}) {}
     AppInfoDto(const ValueTree &tree) : ApiModel(tree) {}
 
-    Array<AppVersionDto> getVersions() const { return DTO_CHILDREN(AppVersionDto, Resources::versions); }
+    Array<AppVersionDto> getVersions() const { return DTO_CHILDREN(AppVersionDto, Versions::versions); }
     Array<AppResourceDto> getResources() const { return DTO_CHILDREN(AppResourceDto, Resources::resources); }
 
     // True if caches differ for the same resource,

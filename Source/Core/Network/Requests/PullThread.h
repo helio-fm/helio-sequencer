@@ -18,7 +18,7 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "SerializationKeys.h"
 #include "VersionControl.h"
 #include "AuthSessionDto.h"
@@ -34,15 +34,6 @@ public:
     {
         this->stopThread(1000);
     }
-    
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        // TODO
-        friend class PullThread;
-    };
     
     void pull(PullThread::Listener *listener, VersionControl *vcs)
     {
@@ -67,7 +58,7 @@ private:
         // TODO
     }
     
-    HelioApiRequest::Response response;
+    BackendRequest::Response response;
     PullThread::Listener *listener = nullptr;
 
     friend class BackendService;

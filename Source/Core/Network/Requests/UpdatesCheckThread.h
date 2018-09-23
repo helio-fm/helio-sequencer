@@ -18,7 +18,7 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "AppInfoDto.h"
@@ -56,7 +56,7 @@ private:
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
-        const HelioApiRequest request(ApiRoutes::requestUpdatesInfo);
+        const BackendRequest request(ApiRoutes::requestUpdatesInfo);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is2xx())
@@ -69,7 +69,7 @@ private:
     }
     
     uint32 delay;
-    HelioApiRequest::Response response;
+    BackendRequest::Response response;
     
     friend class BackendService;
 };

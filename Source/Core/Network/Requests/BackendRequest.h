@@ -19,13 +19,13 @@
 
 #include "JsonSerializer.h"
 
-class HelioApiRequest final
+class BackendRequest final
 {
 public:
 
     using ProgressCallback = Function<void(int, int)>;
 
-    HelioApiRequest(const String &apiEndpoint,
+    BackendRequest(const String &apiEndpoint,
         ProgressCallback progressCallback = nullptr);
 
     struct Response final
@@ -60,7 +60,7 @@ public:
         Result receipt;
         StringPairArray headers;
 
-        friend class HelioApiRequest;
+        friend class BackendRequest;
     };
 
     Response get() const;
@@ -79,5 +79,5 @@ private:
     Response doRequest(const ValueTree &payload, const String &verb) const;
     void processResponse(Response &response, InputStream *const stream) const;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioApiRequest)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BackendRequest)
 };

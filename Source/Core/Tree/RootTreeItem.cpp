@@ -35,7 +35,6 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "WorkspaceMenu.h"
-#include "Dashboard.h"
 #include "Icons.h"
 #include "App.h"
 

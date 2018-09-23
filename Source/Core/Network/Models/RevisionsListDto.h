@@ -24,7 +24,7 @@ struct RevisionsListDto final : ApiModel
 {
     RevisionsListDto(const ValueTree &tree) : ApiModel(tree) {}
 
-    Array<RevisionDto> getRevisions() const { return DTO_CHILDREN(RevisionDto, Revision::revisions); }
+    Array<RevisionDto> getRevisions() const { return DTO_CHILDREN(RevisionDto, Revisions::revisions); }
 
     JUCE_LEAK_DETECTOR(RevisionsListDto)
 };

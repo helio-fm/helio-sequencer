@@ -42,11 +42,11 @@ struct UserProfileDto final : ApiModel
         }
     }
 
-    String getEmail() const noexcept { return DTO_PROPERTY(Identity::email); }
-    String getLogin() const noexcept { return DTO_PROPERTY(Identity::login); }
     String getName() const noexcept { return DTO_PROPERTY(Identity::name); }
-    String getProfileUrl() const noexcept { return DTO_PROPERTY(Identity::profileUrl); }
+    String getLogin() const noexcept { return DTO_PROPERTY(Identity::login); }
     String getAvatarUrl() const noexcept { return DTO_PROPERTY(Identity::avatarUrl); }
+    String getProfileUrl() const noexcept { return DTO_PROPERTY(Identity::profileUrl); }
+
     Image getAvatar() const noexcept { return this->avatar; }
 
     Array<ProjectDto> getProjects() const { return DTO_CHILDREN(ProjectDto, Projects::projects); }

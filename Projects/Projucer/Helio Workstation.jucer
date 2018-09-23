@@ -322,12 +322,14 @@
                   file="../../Source/Core/Network/Models/UserSessionDto.h"/>
           </GROUP>
           <GROUP id="{BF645CFC-E5C3-362D-D4B5-CFF3106A0CDB}" name="Requests">
-            <FILE id="ChYQjB" name="HelioApiRequest.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Requests/HelioApiRequest.cpp"/>
-            <FILE id="Zri11i" name="HelioApiRequest.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Requests/HelioApiRequest.h"/>
+            <FILE id="MpOqfA" name="BackendRequest.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/BackendRequest.cpp"/>
+            <FILE id="x663ni" name="BackendRequest.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/BackendRequest.h"/>
             <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
+            <FILE id="hk3NVA" name="PushThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/Requests/PushThread.cpp"/>
             <FILE id="jE9wVo" name="PushThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/PushThread.h"/>
+            <FILE id="CJcF7U" name="PullThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/Requests/PullThread.cpp"/>
             <FILE id="upyPlv" name="PullThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/PullThread.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>

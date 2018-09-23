@@ -502,9 +502,6 @@ namespace Serialization
         // JSON keys
         namespace V1
         {
-            static const Identifier rootNode = "data";
-            static const Identifier rootErrorsNode = "errors";
-
             static const Identifier status = "status";
             static const Identifier message = "message";
 
@@ -541,15 +538,22 @@ namespace Serialization
 
             namespace Resources
             {
-                static const Identifier versions = "versions";
-                static const Identifier version = "version";
-                static const Identifier platformId = "platformId";
                 static const Identifier resources = "resources";
-                static const Identifier link = "link";
                 static const Identifier type = "type";
-                static const Identifier name = "name";
                 static const Identifier hash = "hash";
+                static const Identifier name = "name";
                 static const Identifier updatedAt = "updatedAt";
+            }
+
+            namespace Versions
+            {
+                static const Identifier versions = "versions";
+                static const Identifier branch = "branch";
+                static const Identifier architecture = "architecture";
+                static const Identifier platformType = "platformType";
+                static const Identifier buildType = "buildType";
+                static const Identifier version = "version";
+                static const Identifier link = "link";
             }
 
             namespace Sessions
@@ -557,6 +561,7 @@ namespace Serialization
                 static const Identifier sessions = "sessions";
                 static const Identifier createdAt = "createdAt";
                 static const Identifier updatedAt = "updatedAt";
+                static const Identifier deviceId = "deviceId";
                 static const Identifier platformId = "platformId";
             }
 

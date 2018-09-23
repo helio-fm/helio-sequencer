@@ -30,9 +30,7 @@
 // - pushing a branch (i.e. simply a revision with all its parents)
 // - pulling a branch
 
-class ProjectSyncService final : private BackendService,
-                                 private PullThread::Listener,
-                                 private PushThread::Listener
+class ProjectSyncService final : private BackendService
 {
 public:
 

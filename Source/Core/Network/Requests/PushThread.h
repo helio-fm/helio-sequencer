@@ -17,58 +17,30 @@
 
 #pragma once
 
-#include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
-#include "SerializationKeys.h"
+#include "ProjectTreeItem.h"
+#include "BackendRequest.h"
 #include "VersionControl.h"
-#include "AuthSessionDto.h"
-#include "Config.h"
-#include "App.h"
 
 class PushThread final : public Thread
 {
 public:
     
-    PushThread() : Thread("Push") {}
-    ~PushThread() override
-    {
-        this->stopThread(1000);
-    }
+    PushThread();
+    ~PushThread() override;
     
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        // TODO
-        friend class PushThread;
-    };
-    
-    void requestWebAuth(PushThread::Listener *listener, VersionControl *vcs)
-    {
-        if (this->isThreadRunning())
-        {
-            Logger::writeToLog("Warning: failed to start push thread, already running");
-            return;
-        }
+    ///Function<void(...)> onAuthSessionFinished;
+    Function<void(const Array<String> &errors)> onPushFailed;
 
-        // TODO
-        this->listener = listener;
-        this->startThread(3);
-    }
+    void doPush(WeakReference<VersionControl> vcs, WeakReference<ProjectTreeItem> project);
 
 private:
     
-    void run() override
-    {
-        namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api;
-        
-        // TODO
-    }
+    void run() override;
     
-    HelioApiRequest::Response response;
-    PushThread::Listener *listener = nullptr;
+    WeakReference<VersionControl> vcs;
+    WeakReference<ProjectTreeItem> project;
+
+    BackendRequest::Response response;
 
     friend class BackendService;
 };

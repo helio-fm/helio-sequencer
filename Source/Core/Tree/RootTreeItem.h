@@ -18,13 +18,13 @@
 #pragma once
 
 #include "TreeItem.h"
+#include "Dashboard.h"
 
 class ProjectTreeItem;
 class VersionControlTreeItem;
 class TrackGroupTreeItem;
 class MidiTrackTreeItem;
 class ScriptTreeItem;
-class Dashboard;
 
 class RootTreeItem final : public TreeItem
 {

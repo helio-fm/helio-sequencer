@@ -18,7 +18,7 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "SerializationKeys.h"
 #include "AuthSessionDto.h"
 #include "Config.h"
@@ -67,7 +67,7 @@ private:
         initSession.setProperty(ApiKeys::AuthSession::appPlatform, SystemStats::getOperatingSystemName(), nullptr);
         initSession.setProperty(ApiKeys::AuthSession::deviceId, Config::getDeviceId(), nullptr);
 
-        const HelioApiRequest initWebAuthRequest(ApiRoutes::initWebAuth);
+        const BackendRequest initWebAuthRequest(ApiRoutes::initWebAuth);
         this->response = initWebAuthRequest.post(initSession);
 
         if (!this->response.isValid() ||
@@ -84,7 +84,7 @@ private:
 
         // Now check once a second if user has finished authentication
         const AuthSessionDto authSession(this->response.getBody());
-        const HelioApiRequest checkWebAuthRequest(ApiRoutes::finaliseWebAuth);
+        const BackendRequest checkWebAuthRequest(ApiRoutes::finaliseWebAuth);
 
         ValueTree finaliseSession(ApiKeys::session);
         finaliseSession.setProperty(ApiKeys::AuthSession::id, authSession.getSessionId(), nullptr);
@@ -124,7 +124,7 @@ private:
     }
     
     String provider;
-    HelioApiRequest::Response response;
+    BackendRequest::Response response;
 
     friend class BackendService;
 };

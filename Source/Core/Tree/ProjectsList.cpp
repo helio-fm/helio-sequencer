@@ -32,8 +32,7 @@ ProjectsList::~ProjectsList()
     App::Helio().getSessionService()->removeChangeListener(this);
 }
 
-void ProjectsList::onProjectStateChanged(const String &title, const String &path,
-                                            const String &id, bool isLoaded)
+void ProjectsList::onProjectStateChanged(const String &title, const String &path, const String &id, bool isLoaded)
 {
     const int index = id.isEmpty() ? this->findIndexByPath(path) : this->findIndexById(id);
 

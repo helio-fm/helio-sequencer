@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "SessionService.h"
 #include "App.h"
 
@@ -26,7 +26,7 @@
 
 static bool progressCallbackInternal(void *const context, int bytesSent, int totalBytes)
 {
-    const auto connection = static_cast<const HelioApiRequest *const>(context);
+    const auto connection = static_cast<const BackendRequest *const>(context);
     if (connection->progressCallback != nullptr)
     {
         connection->progressCallback(bytesSent, totalBytes);
@@ -35,62 +35,62 @@ static bool progressCallbackInternal(void *const context, int bytesSent, int tot
     return true; // always continue
 }
 
-HelioApiRequest::Response::Response() :
+BackendRequest::Response::Response() :
     statusCode(0),
     receipt(Result::fail({})) {}
 
-bool HelioApiRequest::Response::isValid() const noexcept
+bool BackendRequest::Response::isValid() const noexcept
 {
     return this->receipt.wasOk() && this->statusCode != 500;
 }
 
-bool HelioApiRequest::Response::is2xx() const noexcept
+bool BackendRequest::Response::is2xx() const noexcept
 {
     return (this->statusCode / 100) == 2;
 }
 
-bool HelioApiRequest::Response::is200() const noexcept
+bool BackendRequest::Response::is200() const noexcept
 {
     return this->statusCode == 200;
 }
 
-bool HelioApiRequest::Response::is(int code) const noexcept
+bool BackendRequest::Response::is(int code) const noexcept
 {
     return this->statusCode == code;
 }
 
-bool HelioApiRequest::Response::hasProperty(const Identifier &name) const noexcept
+bool BackendRequest::Response::hasProperty(const Identifier &name) const noexcept
 {
     return this->body.hasProperty(name);
 }
 
-var HelioApiRequest::Response::getProperty(const Identifier &name) const noexcept
+var BackendRequest::Response::getProperty(const Identifier &name) const noexcept
 {
     return this->body.getProperty(name);
 }
 
-ValueTree HelioApiRequest::Response::getChild(const Identifier &name) const noexcept
+ValueTree BackendRequest::Response::getChild(const Identifier &name) const noexcept
 {
     return this->body.getChildWithName(name);
 }
 
-const Array<String> &HelioApiRequest::Response::getErrors() const noexcept
+const Array<String> &BackendRequest::Response::getErrors() const noexcept
 {
     return this->errors;
 }
 
-const ValueTree HelioApiRequest::Response::getBody() const noexcept
+const ValueTree BackendRequest::Response::getBody() const noexcept
 {
     return this->body;
 }
 
-const String HelioApiRequest::Response::getRedirect() const noexcept
+const String BackendRequest::Response::getRedirect() const noexcept
 {
     //if (this->statusCode == 301 || this->statusCode == 302)
     return this->headers.getValue("location", {});
 }
 
-HelioApiRequest::HelioApiRequest(const String &apiEndpoint, ProgressCallback progressCallback) :
+BackendRequest::BackendRequest(const String &apiEndpoint, ProgressCallback progressCallback) :
     apiEndpoint(apiEndpoint),
     progressCallback(progressCallback),
     serializer(true) {}
@@ -99,7 +99,7 @@ static String getHeaders()
 {
     static const String apiVersion1 = "application/helio.fm.v1+json";
     static const String userAgent = "Helio " + App::getAppReadableVersion() +
-        (SystemStats::isOperatingSystem64Bit ? " 64-bit on " : " 32-bit on ") + SystemStats::getOperatingSystemName();
+        (SystemStats::isOperatingSystem64Bit() ? " 64-bit on " : " 32-bit on ") + SystemStats::getOperatingSystemName();
 
     String extraHeaders;
     extraHeaders
@@ -120,7 +120,7 @@ static String getHeaders()
     return extraHeaders;
 }
 
-void HelioApiRequest::processResponse(HelioApiRequest::Response &response, InputStream *const stream) const
+void BackendRequest::processResponse(BackendRequest::Response &response, InputStream *const stream) const
 {
     if (stream == nullptr)
     {
@@ -142,15 +142,10 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
             return;
         }
 
-        using namespace Serialization;
-
-        if (parsedResponse.hasType(Api::V1::rootNode) ||
-            parsedResponse.hasType(Api::V1::rootErrorsNode))
-        {
-            response.body = parsedResponse;
-        }
+        response.body = parsedResponse;
 
         // Try to parse errors
+        using namespace Serialization;
         if (response.statusCode < 200 && response.statusCode >= 400)
         {
             for (int i = 0; i < parsedResponse.getNumProperties(); ++i)
@@ -170,27 +165,27 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
     }
 }
 
-HelioApiRequest::Response HelioApiRequest::put(const ValueTree &payload) const
+BackendRequest::Response BackendRequest::put(const ValueTree &payload) const
 {
     return this->doRequest(payload, "PUT");
 }
 
-HelioApiRequest::Response HelioApiRequest::post(const ValueTree &payload) const
+BackendRequest::Response BackendRequest::post(const ValueTree &payload) const
 {
     return this->doRequest(payload, "POST");
 }
 
-HelioApiRequest::Response HelioApiRequest::get() const
+BackendRequest::Response BackendRequest::get() const
 {
     return this->doRequest("GET");
 }
 
-HelioApiRequest::Response HelioApiRequest::del() const
+BackendRequest::Response BackendRequest::del() const
 {
     return this->doRequest("DELETE");
 }
 
-HelioApiRequest::Response HelioApiRequest::doRequest(const String &verb) const
+BackendRequest::Response BackendRequest::doRequest(const String &verb) const
 {
     Response response;
     ScopedPointer<InputStream> stream;
@@ -211,7 +206,7 @@ HelioApiRequest::Response HelioApiRequest::doRequest(const String &verb) const
     return response;
 }
 
-HelioApiRequest::Response HelioApiRequest::doRequest(const ValueTree &payload, const String &verb) const
+BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, const String &verb) const
 {
     Response response;
     ScopedPointer<InputStream> stream;

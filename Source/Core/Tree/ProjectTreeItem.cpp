@@ -99,7 +99,6 @@ void ProjectTreeItem::initialize()
 
 ProjectTreeItem::~ProjectTreeItem()
 {
-    // the main policy: all data is to be autosaved
     this->getDocument()->save();
     
     this->transport->stopPlayback();

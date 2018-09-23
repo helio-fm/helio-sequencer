@@ -27,7 +27,7 @@ struct RevisionDto final : ApiModel
     String getHash() const noexcept { return DTO_PROPERTY(Revisions::hash); }
     String getMessage() const noexcept { return DTO_PROPERTY(Revisions::message); }
     String getParentId() const noexcept { return DTO_PROPERTY(Revisions::parentId); }
-    var getData() const noexcept { return DTO_PROPERTY(Revisions::data); }
+    ValueTree getData() const noexcept { return DTO_CHILD(Revisions::data); }
 
     JUCE_LEAK_DETECTOR(RevisionDto)
 };

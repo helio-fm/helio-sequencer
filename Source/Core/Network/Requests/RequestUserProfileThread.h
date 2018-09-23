@@ -18,7 +18,7 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "UserProfileDto.h"
@@ -54,7 +54,7 @@ private:
         namespace ApiKeys = Serialization::Api::V1;
         namespace ApiRoutes = Routes::HelioFM::Api;
 
-        const HelioApiRequest request(ApiRoutes::requestUserProfile);
+        const BackendRequest request(ApiRoutes::requestUserProfile);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is200())
@@ -84,7 +84,7 @@ private:
     }
     
     UserProfileDto profile;
-    HelioApiRequest::Response response;
+    BackendRequest::Response response;
 
     friend class BackendService;
 };

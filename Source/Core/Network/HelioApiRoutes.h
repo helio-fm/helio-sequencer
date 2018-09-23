@@ -30,15 +30,18 @@ namespace Routes
         namespace Api
         {
             static const String baseURL = "https://api.helio.fm";
-            static const String tokenCheck = "/session/status";
-            static const String tokenUpdate = "/session/update";
             static const String initWebAuth = "/clients/helio/auth";
             static const String finaliseWebAuth = "/clients/helio/auth/check";
             static const String requestResource = "/clients/helio";
             static const String requestUpdatesInfo = "/clients/helio/info";
             static const String requestUserProfile = "/my/profile";
-            static const String requestUserResource = "/my/resources";
-            static const String vcs = "/vcs";
+            static const String requestUserResource = "/my/resources/:type/:name";
+            static const String tokenCheck = "/my/sessions/current/status";
+            static const String tokenUpdate = "/my/sessions/current/update";
+            static const String deleteSession = "/my/sessions/:deviceId";
+            static const String projects = "/my/projects";
+            static const String projectRevisions = "/my/projects/:projectId";
+            static const String vcsRevisions = "/my/projects/:projectId/revisions/:revisionId";
         } // namespace Api
     } // namespace HelioFM
 } // namespace Routes

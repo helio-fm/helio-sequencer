@@ -106,14 +106,13 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
             }
         }
 
-        if (!everythingIsUpToDate)
-        {
-            Config::save(info, Serialization::Config::lastUpdatesInfo);
-        }
-        else
+        if (everythingIsUpToDate)
         {
             Logger::writeToLog("All resources are up to date");
         }
+
+        // Versions info might have changed:
+        Config::save(info, Serialization::Config::lastUpdatesInfo);
     };
 
     thread->onUpdatesCheckFailed = [](const Array<String> &errors)

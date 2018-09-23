@@ -23,6 +23,7 @@ struct UserSessionDto final : ApiModel
 {
     UserSessionDto(const ValueTree &tree) : ApiModel(tree) {}
 
+    String getDeviceId() const noexcept { return DTO_PROPERTY(Sessions::deviceId); }
     String getPlatformId() const noexcept { return DTO_PROPERTY(Sessions::platformId); }
     Time getCreateTime() const noexcept { return Time(DTO_PROPERTY(Sessions::createdAt)); }
     Time getUpdateTime() const noexcept { return Time(DTO_PROPERTY(Sessions::updatedAt)); }

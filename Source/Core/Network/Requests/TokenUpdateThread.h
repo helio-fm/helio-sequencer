@@ -18,7 +18,7 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 
@@ -62,7 +62,7 @@ private:
         session.setProperty(ApiKeys::deviceId, Config::getDeviceId(), nullptr);
         session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName(), nullptr);
 
-        const HelioApiRequest request(ApiRoutes::tokenUpdate);
+        const BackendRequest request(ApiRoutes::tokenUpdate);
         this->response = request.post(session);
 
         if (!this->response.isValid() ||
@@ -79,7 +79,7 @@ private:
     
     uint32 delay;
     String oldToken;
-    HelioApiRequest::Response response;
+    BackendRequest::Response response;
     
     friend class BackendService;
 };

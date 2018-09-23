@@ -18,7 +18,7 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 
 class RequestResourceThread final : public Thread
 {
@@ -54,7 +54,7 @@ private:
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
         const String uri = ApiRoutes::requestResource + "/" + this->resourceId;
-        const HelioApiRequest request(uri);
+        const BackendRequest request(uri);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is2xx())
@@ -70,7 +70,7 @@ private:
     
     uint32 delay;
     Identifier resourceId;
-    HelioApiRequest::Response response;
+    BackendRequest::Response response;
     
     friend class BackendService;
 };
