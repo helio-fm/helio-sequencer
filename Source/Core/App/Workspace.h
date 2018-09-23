@@ -31,10 +31,11 @@ class Workspace final : public ProjectsList::Owner,
 {
 public:
     
-    Workspace();
+    Workspace() = default;
     ~Workspace() override;
 
     void init();
+    void shutdown();
     bool isInitialized() const noexcept;
 
     WeakReference<TreeItem> getActiveTreeItem() const;
@@ -88,22 +89,22 @@ private:
     
 private:
 
-    bool wasInitialized;
+    bool wasInitialized = false;
 
-    ScopedPointer<ProjectsList> recentProjectsList;
+    UniquePointer<ProjectsList> recentProjectsList;
     
     WeakReference<ProjectTreeItem> currentProject;
     
-    ScopedPointer<AudioCore> audioCore;
-    ScopedPointer<PluginScanner> pluginManager;
+    UniquePointer<AudioCore> audioCore;
+    UniquePointer<PluginScanner> pluginManager;
     
-    ScopedPointer<RootTreeItem> treeRoot;
+    UniquePointer<RootTreeItem> treeRoot;
     TreeNavigationHistory navigationHistory;
 
     // A quick hack to have some kind of backwards compatibility.
     // If a previous version of tree is found, it is loaded as is
     // and then saved along with the new one.
-    ScopedPointer<XmlElement> previousVersionTree;
+    UniquePointer<XmlElement> previousVersionTree;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Workspace)
 

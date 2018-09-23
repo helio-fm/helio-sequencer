@@ -305,6 +305,8 @@ void App::shutdown()
         Logger::writeToLog("App::shutdown");
 
         this->window = nullptr;
+
+        this->workspace->shutdown();
         this->workspace = nullptr;
 
         this->resourceSyncService = nullptr;

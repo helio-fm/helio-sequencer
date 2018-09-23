@@ -31,36 +31,19 @@
 #include "RootTreeItem.h"
 #include "Dashboard.h"
 
-Workspace::Workspace() : wasInitialized(false)
-{
-    this->recentProjectsList = new ProjectsList();
-}
-
 Workspace::~Workspace()
 {
-    this->autosave();
-    
-    // To cleanup properly, remove all projects first (before instruments etc).
-    // Tree item destructor will remove the rest.
-    while (this->getLoadedProjects().size() > 0)
-    {
-        delete this->getLoadedProjects().getFirst();
-    }
-
-    this->treeRoot = nullptr;
-    
-    this->recentProjectsList = nullptr;
-    this->pluginManager = nullptr;
-    this->audioCore = nullptr;
+    this->shutdown();
 }
 
 void Workspace::init()
 {
     if (! this->wasInitialized)
     {
-        this->audioCore = new AudioCore();
-        this->pluginManager = new PluginScanner();
-        this->treeRoot = new RootTreeItem("Workspace");
+        this->recentProjectsList.reset(new ProjectsList());
+        this->audioCore.reset(new AudioCore());
+        this->pluginManager.reset(new PluginScanner());
+        this->treeRoot.reset(new RootTreeItem("Workspace"));
         
         if (! this->autoload())
         {
@@ -77,6 +60,29 @@ void Workspace::init()
 bool Workspace::isInitialized() const noexcept
 {
     return this->wasInitialized;
+}
+
+void Workspace::shutdown()
+{
+    if (this->wasInitialized)
+    {
+        this->autosave();
+
+        // To cleanup properly, remove all projects first (before instruments etc).
+        // Tree item destructor will remove the rest.
+        while (this->getLoadedProjects().size() > 0)
+        {
+            delete this->getLoadedProjects().getFirst();
+        }
+
+        this->treeRoot = nullptr;
+
+        this->recentProjectsList = nullptr;
+        this->pluginManager = nullptr;
+        this->audioCore = nullptr;
+
+        this->wasInitialized = false;
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -134,7 +140,7 @@ PluginScanner &Workspace::getPluginManager()
 
 RootTreeItem *Workspace::getTreeRoot() const
 {
-    return this->treeRoot;
+    return this->treeRoot.get();
 }
 
 //===----------------------------------------------------------------------===//
@@ -143,7 +149,7 @@ RootTreeItem *Workspace::getTreeRoot() const
 
 ProjectsList &Workspace::getProjectsList() const
 {
-    jassert(this->recentProjectsList);
+    jassert(this->recentProjectsList.get() != nullptr); // WTF a crash on exit?
     return *this->recentProjectsList;
 }
 
@@ -410,7 +416,7 @@ static TreeItem *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
 
 void Workspace::activateSubItemWithId(const String &id)
 {
-    selectActiveSubItemWithId(this->treeRoot, id);
+    selectActiveSubItemWithId(this->treeRoot.get(), id);
 }
 
 ValueTree Workspace::serialize() const
@@ -430,7 +436,7 @@ ValueTree Workspace::serialize() const
     
     // TODO serialize tree openness state?
     ValueTree treeStateNode(Core::treeState);
-    addAllActiveItemIds(this->treeRoot, treeStateNode);
+    addAllActiveItemIds(this->treeRoot.get(), treeStateNode);
     tree.appendChild(treeStateNode, nullptr);
     
     return tree;
@@ -466,7 +472,7 @@ void Workspace::deserialize(const ValueTree &tree)
         forEachValueTreeChildWithType(treeStateNode, e, Core::selectedTreeItem)
         {
             const String id = e.getProperty(Core::treeItemId);
-            foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot, id));
+            foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot.get(), id));
         }
     }
     
@@ -482,7 +488,7 @@ void Workspace::deserialize(const ValueTree &tree)
     if (! foundActiveNode)
     {
         // Fallback to the main page
-        selectActiveSubItemWithId(this->treeRoot, this->treeRoot->getItemIdentifierString());
+        selectActiveSubItemWithId(this->treeRoot.get(), this->treeRoot->getItemIdentifierString());
     }
 }
 
