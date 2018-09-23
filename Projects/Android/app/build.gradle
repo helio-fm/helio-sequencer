@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "fm.helio.workstation"
+        applicationId "fm.helio"
         minSdkVersion    21
         targetSdkVersion 21
         externalNativeBuild {

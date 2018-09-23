@@ -38,11 +38,6 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackController));
     this->deltas.add(new VCS::Delta({}, AutoSequenceDeltas::eventsAdded));
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
-    
-#if HELIO_MOBILE
-    // для мобил выключаю автоматизации нафиг, неюзабельно будет совершенно
-    this->setVisible(false);
-#endif
 }
 
 Image AutomationTrackTreeItem::getIcon() const noexcept
