@@ -28,7 +28,7 @@ class RevisionComponent  : public Component
 {
 public:
 
-    RevisionComponent (VersionControl &owner, const ValueTree revision, bool isHead);
+    RevisionComponent (VersionControl &owner, const VCS::Revision::Ptr revision, bool isHead);
 
     ~RevisionComponent();
 
@@ -41,7 +41,7 @@ public:
     float change;
     int number;
 
-    const ValueTree revision;
+    const VCS::Revision::Ptr revision;
 
     RevisionComponent *parent;
     RevisionComponent *ancestor;

@@ -195,7 +195,7 @@ String HistoryComponent::getName() const
     if (this->revisionTree != nullptr &&
         this->revisionTree->getSelectedRevision().isValid())
     {
-        return VCS::Revision::getMessage(this->revisionTree->getSelectedRevision());
+        return this->revisionTree->getSelectedRevision()->getMessage();
     }
 
     return TRANS("menu::selection::vcs::history");

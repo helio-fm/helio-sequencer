@@ -17,39 +17,59 @@
 
 #pragma once
 
+#include "Serializable.h"
 #include "RevisionItem.h"
 #include "Pack.h"
 
 namespace VCS
 {
-    // First, this class was a wrapped around ValueTree
-    // But once JUCE developers have decided to make ValueTree final,
-    // I had to turn this into a set of static helper functions
-
-    class Revision final
+    class Revision final : public Serializable, public ReferenceCountedObject
     {
     public:
 
-        static ValueTree create(Pack::Ptr pack, const String &name = {});
-        static void copyProperties(ValueTree one, ValueTree another);
-        static void copyDeltas(ValueTree one, ValueTree another);
+        using Ptr = ReferenceCountedObjectPtr<Revision>;
 
-        static uint32 calculateHash(ValueTree revision);
-        static void incrementVersion(ValueTree revision);
-        static void flush(ValueTree revision);
+        Revision(Pack::Ptr pack, const String &name = {});
 
-        static String getMessage(ValueTree revision);
-        static String getUuid(ValueTree revision);
-        static int64 getTimeStamp(ValueTree revision);
-        static bool isEmpty(ValueTree revision);
+        //void copyPropertiesFrom(Revision::Ptr other);
+        void copyDeltasFrom(Revision::Ptr other);
+
+        const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
+        const ReferenceCountedArray<Revision> &getChildren() const noexcept;
+
+        void addItem(RevisionItem *item);
+        void addChild(Revision *revision);
+
+        uint32 calculateHash() const;
+
+        WeakReference<Revision> getParent() const noexcept;
+        String getMessage() const noexcept;
+        String getUuid() const noexcept;
+        int64 getTimeStamp() const noexcept;
+        bool isEmpty() const noexcept;
+
+        void flush();
 
         //===--------------------------------------------------------------===//
         // Serializable
         //===--------------------------------------------------------------===//
 
-        static ValueTree serialize(ValueTree revision);
-        static void deserialize(ValueTree revision, const ValueTree &tree);
-        static void reset(ValueTree revision);
+        ValueTree serialize() const;
+        void deserialize(const ValueTree &tree);
+        void reset();
 
+    private:
+
+        Pack::Ptr pack;
+        WeakReference<Revision> parent;
+
+        String id;
+        String message;
+        int64 timestamp;
+
+        ReferenceCountedArray<Revision> children;
+        ReferenceCountedArray<RevisionItem> deltas;
+
+        JUCE_DECLARE_WEAK_REFERENCEABLE(Revision)
     };
 }  // namespace VCS

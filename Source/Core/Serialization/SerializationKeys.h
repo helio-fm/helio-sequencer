@@ -406,7 +406,6 @@ namespace Serialization
         static const Identifier headRevisionId = "headRevisionId";
         static const Identifier commitMessage = "message";
         static const Identifier commitTimeStamp = "date";
-        static const Identifier commitVersion = "version";
         static const Identifier commitId = "id";
 
         static const Identifier vcsItemId = "vcsId";

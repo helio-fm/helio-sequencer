@@ -95,7 +95,7 @@ String VersionControlTreeItem::getId() const
         return this->vcs->getPublicId();
     }
 
-    return "";
+    return {};
 }
 
 String VersionControlTreeItem::getName() const noexcept
@@ -103,26 +103,17 @@ String VersionControlTreeItem::getName() const noexcept
     return TRANS("tree::vcs");
 }
 
-void countStatsFor(ValueTree rootRevision, int &numRevivions, int &numDeltas)
+static void countStatsFor(const VCS::Revision::Ptr rootRevision, int &numRevisions, int &numDeltas)
 {
-    for (int i = 0; i < rootRevision.getNumProperties(); ++i)
+    for (const auto *revItem : rootRevision->getItems())
     {
-        const Identifier id(rootRevision.getPropertyName(i));
-        const var property(rootRevision.getProperty(id));
-
-        if (VCS::RevisionItem *revItem = dynamic_cast<VCS::RevisionItem *>(property.getObject()))
-        {
-            numDeltas += revItem->getNumDeltas();
-        }
+        numDeltas += revItem->getNumDeltas();
     }
 
-    const int numChildren = rootRevision.getNumChildren();
-    numRevivions += numChildren;
-
-    for (int i = 0; i < numChildren; ++i)
+    numRevisions += rootRevision->getChildren().size();
+    for (auto *childRevision : rootRevision->getChildren())
     {
-        ValueTree childRevision(rootRevision.getChild(i));
-        countStatsFor(childRevision, numRevivions, numDeltas);
+        countStatsFor(childRevision, numRevisions, numDeltas);
     }
 }
 
@@ -130,7 +121,7 @@ String VersionControlTreeItem::getStatsString() const
 {
     if (this->vcs)
     {
-        ValueTree root(this->vcs->getRoot());
+        const auto root(this->vcs->getRoot());
         
         int numRevisions = 1;
         int numDeltas = 0;
@@ -144,8 +135,7 @@ String VersionControlTreeItem::getStatsString() const
 
 void VersionControlTreeItem::commitProjectInfo()
 {
-    ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-
+    const auto *parentProject = this->findParentOfType<ProjectTreeItem>();
     if (parentProject && this->vcs)
     {
         this->vcs->quickAmendItem(parentProject->getProjectInfo());

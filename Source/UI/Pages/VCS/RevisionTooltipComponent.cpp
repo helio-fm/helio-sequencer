@@ -36,10 +36,10 @@
 
 //[/MiscUserDefs]
 
-RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const ValueTree revision)
+RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const VCS::Revision::Ptr revision)
     : vcs(owner),
       revision(revision),
-      revisionItemsOnly("temporaryPropertyList")
+      revisionItemsOnly()
 {
     addAndMakeVisible (changesList = new ListBox ("", this));
 
@@ -52,16 +52,7 @@ RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const 
 
     //[UserPreSize]
 
-    for (int i = 0; i < this->revision.getNumProperties(); ++i)
-    {
-        const Identifier id = this->revision.getPropertyName(i);
-        const var property = this->revision.getProperty(id);
-
-        if (VCS::RevisionItem *item = dynamic_cast<VCS::RevisionItem *>(property.getObject()))
-        {
-            this->revisionItemsOnly.setProperty(id, property, nullptr);
-        }
-    }
+    this->revisionItemsOnly.addArray(this->revision->getItems());
 
     this->changesList->setMultipleSelectionEnabled(true);
     this->changesList->setRowHeight(REVISION_TOOLTIP_ROW_HEIGHT);
@@ -165,48 +156,35 @@ Component *RevisionTooltipComponent::refreshComponentForRow(int rowNumber,
 
     if (rowNumber >= numProps) { return existingComponentToUpdate; }
 
-    const Identifier id = this->revisionItemsOnly.getPropertyName(rowNumber);
-    const var property = this->revisionItemsOnly.getProperty(id);
-
-    if (VCS::RevisionItem *revRecord = dynamic_cast<VCS::RevisionItem *>(property.getObject()))
+    const auto revRecord = this->revisionItemsOnly.getUnchecked(rowNumber);
+    if (existingComponentToUpdate != nullptr)
     {
-        if (existingComponentToUpdate != nullptr)
+        if (auto *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
         {
-            if (RevisionItemComponent *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
-            {
-                row->updateItemInfo(rowNumber, isLastRow, revRecord);
-                return existingComponentToUpdate;
-            }
-        }
-        else
-        {
-            auto row = new RevisionItemComponent(*this->changesList, this->vcs.getHead());
             row->updateItemInfo(rowNumber, isLastRow, revRecord);
-            return row;
+            return existingComponentToUpdate;
         }
+    }
+    else
+    {
+        auto row = new RevisionItemComponent(*this->changesList, this->vcs.getHead());
+        row->updateItemInfo(rowNumber, isLastRow, revRecord);
+        return row;
     }
 
     return nullptr;
 }
 
-void RevisionTooltipComponent::listBoxItemClicked(int row, const MouseEvent &e)
-{
-}
-
-void RevisionTooltipComponent::listBoxItemDoubleClicked(int row, const MouseEvent &e)
-{
-}
+void RevisionTooltipComponent::listBoxItemClicked(int row, const MouseEvent &e) {}
+void RevisionTooltipComponent::listBoxItemDoubleClicked(int row, const MouseEvent &e) {}
 
 int RevisionTooltipComponent::getNumRows()
 {
-    const int numProps = this->revisionItemsOnly.getNumProperties();
-    return numProps;
+    return this->revisionItemsOnly.size();
 }
 
 void RevisionTooltipComponent::paintListBoxItem(int rowNumber, Graphics &g,
-                                      int width, int height, bool rowIsSelected)
-{
-}
+    int width, int height, bool rowIsSelected) {}
 
 
 //[/MiscUserCode]
@@ -217,8 +195,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RevisionTooltipComponent"
                  template="../../../Template" componentName="" parentClasses="public Component, public ListBoxModel"
-                 constructorParams="VersionControl &amp;owner, const ValueTree revision"
-                 variableInitialisers="vcs(owner),&#10;revision(revision),&#10;revisionItemsOnly(&quot;temporaryPropertyList&quot;)"
+                 constructorParams="VersionControl &amp;owner, const VCS::Revision::Ptr revision"
+                 variableInitialisers="vcs(owner),&#10;revision(revision),&#10;revisionItemsOnly()"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="320" initialHeight="220">
   <METHODS>

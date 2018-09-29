@@ -33,10 +33,7 @@ public:
     void deselectAll(bool sendNotification = true);
     void selectComponent(RevisionComponent *revComponent, bool deselectOthers, bool sendNotification = true);
 
-    //void showTooltipFor(RevisionComponent *revComponent,
-    //    Point<int> clickPoint, const ValueTree revision);
-
-    ValueTree getSelectedRevision() const noexcept;
+    VCS::Revision::Ptr getSelectedRevision() const noexcept;
 
     void handleCommandMessage(int commandId) override;
 
@@ -45,7 +42,7 @@ private:
     // Tree layout methods:
 
     RevisionComponent *initComponents(int depth,
-        const ValueTree revision, RevisionComponent *parentRevisionComponent);
+        const VCS::Revision::Ptr revision, RevisionComponent *parentRevisionComponent);
 
     RevisionComponent *firstWalk(RevisionComponent *v, float distance = 1.f);
 
@@ -69,7 +66,7 @@ private:
     HistoryComponent *findParentEditor() const;
 
     VersionControl &vcs;
-    ValueTree selectedRevision;
+    VCS::Revision::Ptr selectedRevision;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionTreeComponent)
 

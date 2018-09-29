@@ -20,6 +20,7 @@
 //[Headers]
 #include "VersionControl.h"
 #include "Revision.h"
+#include "RevisionItem.h"
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontal.h"
@@ -30,7 +31,7 @@ class RevisionTooltipComponent final : public Component,
 {
 public:
 
-    RevisionTooltipComponent(VersionControl &owner, const ValueTree revision);
+    RevisionTooltipComponent(VersionControl &owner, const VCS::Revision::Ptr revision);
     ~RevisionTooltipComponent();
 
     //[UserMethods]
@@ -67,9 +68,9 @@ private:
 
     VersionControl &vcs;
 
-    const ValueTree revision;
+    const VCS::Revision::Ptr revision;
 
-    ValueTree revisionItemsOnly;
+    ReferenceCountedArray<VCS::RevisionItem> revisionItemsOnly;
 
     //[/UserVariables]
 

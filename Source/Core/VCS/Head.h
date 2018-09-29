@@ -39,9 +39,9 @@ namespace VCS
         explicit Head(Pack::Ptr packPtr,
              WeakReference<TrackedItemsSource> targetProject = nullptr);
 
-        ValueTree getHeadingRevision() const;
+        Revision::Ptr getHeadingRevision() const;
         
-        ValueTree getDiff() const;
+        Revision::Ptr getDiff() const;
         bool isDiffOutdated() const;
         void setDiffOutdated(bool isOutdated);
 
@@ -51,9 +51,9 @@ namespace VCS
         bool hasAnythingOnTheStage() const;
         bool hasTrackedItemsOnTheStage() const;
 
-        void mergeStateWith(ValueTree changes);
-        bool moveTo(const ValueTree revision); // rebuilds state index
-        void pointTo(const ValueTree revision); // does not rebuild index
+        void mergeStateWith(Revision::Ptr changes);
+        bool moveTo(const Revision::Ptr revision); // rebuilds state index
+        void pointTo(const Revision::Ptr revision); // does not rebuild index
 
         void checkout();
         void cherryPick(const Array<Uuid> uuids);
@@ -85,21 +85,21 @@ namespace VCS
         //===--------------------------------------------------------------===//
 
         void run() override;
-        void checkoutItem(VCS::RevisionItem::Ptr stateItem);
-        bool resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem);
+        void checkoutItem(RevisionItem::Ptr stateItem);
+        bool resetChangedItemToState(const RevisionItem::Ptr diffItem);
 
         ReadWriteLock outdatedMarkerLock;
         bool diffOutdated;
 
         ReadWriteLock diffLock;
-        ValueTree diff;
+        Revision::Ptr diff;
         
         ReadWriteLock rebuildingDiffLock;
         bool rebuildingDiffMode;
 
     private:
 
-        ValueTree headingAt;
+        Revision::Ptr headingAt;
         ReadWriteLock stateLock;
         ScopedPointer<HeadState> state;
 

@@ -35,7 +35,7 @@ class VersionControlEditor;
 
 #include "Key.h"
 
-class VersionControl :
+class VersionControl final :
     public Serializable,
     public ChangeListener,
     public ChangeBroadcaster
@@ -43,11 +43,10 @@ class VersionControl :
 public:
 
     explicit VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
-                   const String &existingId = "",
-                   const String &existingKeyBase64 = "");
+        const String &existingId = "",
+        const String &existingKeyBase64 = "");
 
     ~VersionControl() override;
-
 
     //===------------------------------------------------------------------===//
     // Push-pull stuff
@@ -77,11 +76,11 @@ public:
 
     VersionControlEditor *createEditor();
     VCS::Head &getHead() { return this->head; }
-    ValueTree getRoot() { return this->rootRevision; }
+    VCS::Revision::Ptr getRoot() { return this->rootRevision; }
 
-    void moveHead(const ValueTree revision);
-    void checkout(const ValueTree revision);
-    void cherryPick(const ValueTree revision, const Array<Uuid> uuids);
+    void moveHead(const VCS::Revision::Ptr revision);
+    void checkout(const VCS::Revision::Ptr revision);
+    void cherryPick(const VCS::Revision::Ptr revision, const Array<Uuid> uuids);
 
     bool resetChanges(SparseSet<int> selectedItems);
     bool resetAllChanges();
@@ -89,7 +88,7 @@ public:
     void quickAmendItem(VCS::TrackedItem *targetItem); // for projectinfo
 
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
-    bool applyStash(const ValueTree stash, bool shouldKeepStash = false);
+    bool applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash = false);
     bool applyStash(const String &stashId, bool shouldKeepStash = false);
     
     bool hasQuickStash() const;
@@ -112,16 +111,15 @@ public:
     
 protected:
 
-    StringArray recursiveGetHashes(const ValueTree revision) const;
-    void recursiveTreeMerge(ValueTree localRevision, ValueTree remoteRevision);
-    ValueTree getRevisionById(const ValueTree startFrom, const String &id) const;
+    void recursiveTreeMerge(VCS::Revision::Ptr localRevision, VCS::Revision::Ptr remoteRevision);
+    VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
 
     VCS::Pack::Ptr pack;
     VCS::StashesRepository::Ptr stashes;
     VCS::Head head;
 
     // the history tree itself
-    ValueTree rootRevision;
+    VCS::Revision::Ptr rootRevision;
     WeakReference<VCS::TrackedItemsSource> parentItem;
 
 protected:

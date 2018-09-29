@@ -37,7 +37,7 @@
 
 //[/MiscUserDefs]
 
-RevisionComponent::RevisionComponent(VersionControl &owner, const ValueTree revision, bool isHead)
+RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, bool isHead)
     : vcs(owner),
       revision(revision),
       selected(false),
@@ -71,8 +71,8 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const ValueTree revi
 
     //const String &message = this->revision.getProperty(Identifier(Serialization::VCS::commitMessage)).toString();
     //const int64 timestamp = this->revision.getProperty(Identifier(Serialization::VCS::commitTimeStamp));
-    const String &message = VCS::Revision::getMessage(this->revision);
-    const int64 timestamp = VCS::Revision::getTimeStamp(this->revision);
+    const String &message = this->revision->getMessage();
+    const int64 timestamp = this->revision->getTimeStamp();
 
     this->revisionDescription->setText(message, dontSendNotification);
     this->revisionDate->setText(App::getHumanReadableDate(Time(timestamp)), dontSendNotification);
@@ -262,7 +262,7 @@ RevisionComponent *RevisionComponent::left() const
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RevisionComponent" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner, const ValueTree revision, bool isHead"
+                 componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner, const VCS::Revision::Ptr revision, bool isHead"
                  variableInitialisers="vcs(owner)&#10;revision(revision),&#10;selected(false),&#10;isHeadRevision(isHead),&#10;x(0.f),&#10;y(0.f),&#10;mod(0.f),&#10;shift(0.f),&#10;change(0.f),&#10;number(0),&#10;parent(nullptr),&#10;thread(nullptr),&#10;leftmostSibling(nullptr)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="150" initialHeight="40">

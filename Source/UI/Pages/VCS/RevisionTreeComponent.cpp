@@ -116,7 +116,7 @@ void RevisionTreeComponent::handleCommandMessage(int commandId)
 //    }
 //}
 
-ValueTree RevisionTreeComponent::getSelectedRevision() const noexcept
+VCS::Revision::Ptr RevisionTreeComponent::getSelectedRevision() const noexcept
 {
     return this->selectedRevision;
 }
@@ -127,7 +127,7 @@ ValueTree RevisionTreeComponent::getSelectedRevision() const noexcept
 //===----------------------------------------------------------------------===//
 
 RevisionComponent *RevisionTreeComponent::initComponents(int depth,
-    const ValueTree revision, RevisionComponent *parentRevisionComponent)
+    const VCS::Revision::Ptr revision, RevisionComponent *parentRevisionComponent)
 {
     // create component for revision
     const bool isHead = (this->vcs.getHead().getHeadingRevision() == revision);
@@ -140,12 +140,10 @@ RevisionComponent *RevisionTreeComponent::initComponents(int depth,
 
     this->addAndMakeVisible(revisionComponent);
 
-    for (int i = 0; i < revision.getNumChildren(); ++i)
+    for (const auto childRevision : revision->getChildren())
     {
-        RevisionComponent *child =
-            this->initComponents(depth + 1,
-                revision.getChild(i), revisionComponent);
-        revisionComponent->children.add(child);
+        auto *childComponent = this->initComponents(depth + 1, childRevision, revisionComponent);
+        revisionComponent->children.add(childComponent);
     }
 
     return revisionComponent;

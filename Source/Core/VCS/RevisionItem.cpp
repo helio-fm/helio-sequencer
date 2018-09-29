@@ -154,7 +154,7 @@ ValueTree VCS::RevisionItem::serialize() const
     tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName(), nullptr);
     tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString(), nullptr);
 
-    for (auto delta : this->deltas)
+    for (const auto *delta : this->deltas)
     {
         tree.appendChild(delta->serialize(), nullptr);
     }
