@@ -24,14 +24,13 @@ namespace VCS
 {
     class RevisionItem;
 
-    class HeadState : public TrackedItemsSource
+    class Snapshot final : public TrackedItemsSource
     {
     public:
 
-        HeadState();
-        HeadState(const HeadState &other);
-        explicit HeadState(const HeadState *other);
-        ~HeadState() override;
+        Snapshot() = default;
+        explicit Snapshot(const Snapshot &other);
+        explicit Snapshot(const Snapshot *other);
 
         void addItem(RevisionItem::Ptr item);
         void removeItem(RevisionItem::Ptr item);
@@ -41,8 +40,8 @@ namespace VCS
         // TrackedItemsSource
         //===--------------------------------------------------------------===//
 
-        String getVCSName() const override
-        { return "<head state>"; }
+        String getVCSName() const noexcept override
+        { return "<snapshot>"; }
         
         int getNumTrackedItems() override;
         TrackedItem *getTrackedItem(int index) override;
@@ -56,7 +55,7 @@ namespace VCS
 
         Array<RevisionItem::Ptr> items;
 
-        JUCE_LEAK_DETECTOR(HeadState);
+        JUCE_LEAK_DETECTOR(Snapshot);
 
     };
 } // namespace VCS

@@ -16,37 +16,20 @@
 */
 
 #include "Common.h"
-#include "HeadState.h"
+#include "Snapshot.h"
 #include "Head.h"
 #include "Diff.h"
 #include "DiffLogic.h"
 
 using namespace VCS;
 
-HeadState::HeadState()
-{
+Snapshot::Snapshot(const Snapshot &other) :
+    items(other.items) {}
 
-}
+Snapshot::Snapshot(const Snapshot *other) :
+    items(other->items) {}
 
-HeadState::HeadState(const HeadState &other) :
-    items(other.items)
-{
-
-}
-
-HeadState::HeadState(const HeadState *other) :
-    items(other->items)
-{
-    
-}
-
-HeadState::~HeadState()
-{
-
-}
-
-
-void HeadState::addItem(RevisionItem::Ptr item)
+void Snapshot::addItem(RevisionItem::Ptr item)
 {
     RevisionItem::Ptr ownItem = this->getItemWithSameUuid(item);
 
@@ -62,7 +45,7 @@ void HeadState::addItem(RevisionItem::Ptr item)
     }
 }
 
-void HeadState::removeItem(RevisionItem::Ptr item)
+void Snapshot::removeItem(RevisionItem::Ptr item)
 {
     this->items.removeAllInstancesOf(item);
 
@@ -77,7 +60,7 @@ void HeadState::removeItem(RevisionItem::Ptr item)
     this->items.addIfNotAlreadyThere(item);
 }
 
-void HeadState::mergeItem(RevisionItem::Ptr newItem)
+void Snapshot::mergeItem(RevisionItem::Ptr newItem)
 {
     RevisionItem::Ptr stateItem = this->getItemWithSameUuid(newItem);
 
@@ -99,30 +82,27 @@ void HeadState::mergeItem(RevisionItem::Ptr newItem)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // TrackedItemsSource
 //===----------------------------------------------------------------------===//
 
-int HeadState::getNumTrackedItems()
+int Snapshot::getNumTrackedItems()
 {
     return this->items.size();
 }
 
-TrackedItem *HeadState::getTrackedItem(int index)
+TrackedItem *Snapshot::getTrackedItem(int index)
 {
     return this->items[index];
 }
 
 
-
-RevisionItem::Ptr HeadState::getItemWithSameUuid(RevisionItem::Ptr item) const
+RevisionItem::Ptr Snapshot::getItemWithSameUuid(RevisionItem::Ptr item) const
 {
     return this->getItemWithUuid(item->getUuid());
 }
 
-
-RevisionItem::Ptr HeadState::getItemWithUuid(const Uuid &uuid) const
+RevisionItem::Ptr Snapshot::getItemWithUuid(const Uuid &uuid) const
 {
     for (auto && item : this->items)
     {

@@ -29,7 +29,6 @@ class VersionControlEditor;
 #include "Delta.h"
 #include "Revision.h"
 #include "Head.h"
-#include "HeadState.h"
 #include "Pack.h"
 #include "StashesRepository.h"
 

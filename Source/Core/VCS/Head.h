@@ -22,7 +22,7 @@
 
 namespace VCS
 {
-    class HeadState;
+    class Snapshot;
     class TrackedItem;
     class TrackedItemsSource;
     class DeltaDataSource;
@@ -101,7 +101,7 @@ namespace VCS
 
         Revision::Ptr headingAt;
         ReadWriteLock stateLock;
-        ScopedPointer<HeadState> state;
+        ScopedPointer<Snapshot> state;
 
     private:
 

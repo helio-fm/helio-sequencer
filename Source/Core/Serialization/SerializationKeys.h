@@ -396,8 +396,8 @@ namespace Serialization
 
         static const Identifier revision = "revision";
         static const Identifier head = "head";
-        static const Identifier headIndex = "snapshot";
-        static const Identifier headIndexData = "snapshotData";
+        static const Identifier snapshot = "snapshot";
+        static const Identifier snapshotData = "snapshotData";
         static const Identifier headRevisionId = "headRevisionId";
         static const Identifier commitMessage = "message";
         static const Identifier commitTimeStamp = "date";

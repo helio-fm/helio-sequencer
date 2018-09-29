@@ -20,7 +20,7 @@
 #include "TrackedItemsSource.h"
 #include "ProjectTreeItem.h"
 #include "TrackedItem.h"
-#include "HeadState.h"
+#include "Snapshot.h"
 #include "App.h"
 
 #include "Diff.h"
@@ -38,7 +38,7 @@ Head::Head(const Head &other) :
     rebuildingDiffMode(false),
     diff(other.diff),
     headingAt(other.headingAt),
-    state(new HeadState(other.state)) {}
+    state(new Snapshot(other.state)) {}
 
 Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
     Thread("Diff Thread"),
@@ -52,7 +52,7 @@ Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
 {
     if (targetVcsItemsSource != nullptr)
     {
-        this->state = new HeadState();
+        this->state = new Snapshot();
     }
 }
 
@@ -156,7 +156,7 @@ bool VCS::Head::moveTo(const Revision::Ptr revision)
         // first, reset the snapshot state
         {
             const ScopedWriteLock lock(this->stateLock);
-            this->state = new HeadState();
+            this->state = new Snapshot();
         }
 
         // FIXME
@@ -482,8 +482,8 @@ void Head::rebuildDiffNow()
 ValueTree VCS::Head::serialize() const
 {
     ValueTree tree(Serialization::VCS::head);
-    ValueTree stateNode(Serialization::VCS::headIndex);
-    ValueTree stateDataNode(Serialization::VCS::headIndexData);
+    ValueTree stateNode(Serialization::VCS::snapshot);
+    ValueTree stateDataNode(Serialization::VCS::snapshotData);
 
     {
         const ScopedReadLock lock(this->stateLock);
@@ -522,10 +522,10 @@ void VCS::Head::deserialize(const ValueTree &tree)
         tree : tree.getChildWithName(Serialization::VCS::head);
     if (!headRoot.isValid()) { return; }
     
-    const auto indexRoot = headRoot.getChildWithName(Serialization::VCS::headIndex);
+    const auto indexRoot = headRoot.getChildWithName(Serialization::VCS::snapshot);
     if (!indexRoot.isValid()) { return; }
 
-    const auto dataRoot = headRoot.getChildWithName(Serialization::VCS::headIndexData);
+    const auto dataRoot = headRoot.getChildWithName(Serialization::VCS::snapshotData);
     if (!dataRoot.isValid()) { return; }
     
     forEachValueTreeChildWithType(indexRoot, stateElement, Serialization::VCS::revisionItem)
@@ -555,7 +555,7 @@ void VCS::Head::deserialize(const ValueTree &tree)
 
 void Head::reset()
 {
-    this->state = new HeadState();
+    this->state = new Snapshot();
     this->setDiffOutdated(true);
 }
 
