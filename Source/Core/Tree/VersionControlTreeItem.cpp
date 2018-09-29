@@ -34,14 +34,9 @@
 #include "App.h"
 #include "Workspace.h"
 
-// todo:
-// MergeTreeItem
-
-VersionControlTreeItem::VersionControlTreeItem(const String &withExistingId, const String &withExistingKey) :
+VersionControlTreeItem::VersionControlTreeItem() :
     TreeItem("Versions", Serialization::Core::versionControl),
-    vcs(nullptr),
-    existingId(withExistingId),
-    existingKey(withExistingKey)
+    vcs(nullptr)
 {
     this->initVCS();
     this->initEditor();
@@ -86,16 +81,6 @@ void VersionControlTreeItem::recreatePage()
 {
     this->shutdownEditor();
     this->initEditor();
-}
-
-String VersionControlTreeItem::getId() const
-{
-    if (this->vcs)
-    {
-        return this->vcs->getPublicId();
-    }
-
-    return {};
 }
 
 String VersionControlTreeItem::getName() const noexcept
@@ -260,7 +245,7 @@ void VersionControlTreeItem::initVCS()
     if (parentProject &&
         (this->vcs == nullptr))
     {
-        this->vcs = new VersionControl(parentProject, this->existingId, this->existingKey);
+        this->vcs = new VersionControl(parentProject);
         this->vcs->addChangeListener(parentProject);
         parentProject->addChangeListener(this->vcs);
     }

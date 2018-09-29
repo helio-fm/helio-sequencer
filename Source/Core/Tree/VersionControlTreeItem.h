@@ -27,7 +27,7 @@ class VersionControlTreeItem final : public TreeItem
 {
 public:
 
-    VersionControlTreeItem(const String &existingId = {}, const String &existingKey = {});
+    VersionControlTreeItem();
     ~VersionControlTreeItem() override;
 
     String getName() const noexcept override;
@@ -37,7 +37,6 @@ public:
     void showPage() override;
     void recreatePage() override;
     
-    String getId() const;
     String getStatsString() const;
     
     void commitProjectInfo();
@@ -73,10 +72,7 @@ protected:
     ScopedPointer<VersionControlEditor> editor;
 
 private:
-
-    String existingId;
-    String existingKey;
-    
+        
     void initVCS();
     void shutdownVCS();
     

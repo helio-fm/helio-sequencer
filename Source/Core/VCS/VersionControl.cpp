@@ -26,36 +26,13 @@
 
 using namespace VCS;
 
-VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
-                               const String &existingId,
-                               const String &existingKeyBase64) :
+VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent) :
     pack(new Pack()),
     stashes(new StashesRepository(pack)),
     head(pack, parent),
     rootRevision(new Revision(pack, "root")),
-    parentItem(parent),
-    historyMergeVersion(1)
+    parentItem(parent)
 {
-    // both existing id and key should be empty or not at the same time.
-    jassert((existingId.isEmpty() && existingKeyBase64.isEmpty()) ||
-            (existingId.isNotEmpty() && existingKeyBase64.isNotEmpty()));
-    
-    if (existingId.isNotEmpty())
-    {
-        this->publicId = existingId;
-    }
-    else
-    {
-        Uuid id1;
-        Uuid id2;
-        this->publicId = id1.toString() + id2.toString();
-    }
-    
-    if (existingKeyBase64.isNotEmpty())
-    {
-        this->key.restoreFromBase64(existingKeyBase64);
-    }
-
     this->rootRevision = { new Revision(this->pack, TRANS("defaults::newproject::firstcommit")) };
 
     MessageManagerLock lock;
@@ -73,10 +50,6 @@ VersionControlEditor *VersionControl::createEditor()
 {
     return new VersionControlEditor(*this);
 }
-
-//===----------------------------------------------------------------------===//
-// Push-pull stuff
-//===----------------------------------------------------------------------===//
 
 static StringArray recursiveGetHashes(const Revision *revision)
 {
@@ -99,82 +72,10 @@ String VersionControl::calculateHash() const
     return String(CompileTimeHash(ids.joinIntoString("").toUTF8()));
 }
 
-void VersionControl::mergeWith(VersionControl &remoteHistory)
+String VersionControl::getParentName() const
 {
-    this->recursiveTreeMerge(this->getRoot(), remoteHistory.getRoot());
-
-    this->publicId = remoteHistory.getPublicId();
-    this->historyMergeVersion = remoteHistory.getVersion();
-
-    Revision::Ptr newHeadRevision(this->getRevisionById(this->rootRevision,
-        remoteHistory.getHead().getHeadingRevision()->getUuid()));
-
-    if (! newHeadRevision->isEmpty())
-    {
-        this->head.moveTo(newHeadRevision);
-    }
-
-    this->pack->flush();
-    this->sendChangeMessage();
+    return this->parentItem->getVCSName();
 }
-
-void VersionControl::recursiveTreeMerge(Revision::Ptr localRevision, Revision::Ptr remoteRevision)
-{
-    // сначала мерж двух ревизий.
-    // проход по чайлдам идет потом, чтоб head.moveTo у чайлда имел дело
-    // с уже смерженным родителем.
-
-    if (localRevision->calculateHash() != remoteRevision->calculateHash())
-    {
-        Revision::copyProperties(localRevision, remoteRevision);
-        localRevision->flush();
-
-        // amend не работает
-        //Revision headRevision(this->head.getHeadingRevision());
-        //this->head.moveTo(localRevision);
-
-        //this->head.mergeHeadWith(remoteRevision,
-        //                         remoteRevision.getMessage(),
-        //                         remoteRevision.getTimeStamp());
-
-        //localRevision.setProperty(Serialization::VCS::commitId, remoteRevision.getUuid(), nullptr);
-        //localRevision.setProperty(Serialization::VCS::commitVersion, remoteRevision.getVersion(), nullptr);
-        //localRevision.flushData();
-
-        //this->head.moveTo(headRevision);
-    }
-
-    // затем пройтись по чайлдам.
-    // аналогичные - смержить этой же процедурой.
-    // несуществующие локально - скопировать.
-    // новые локально - оставить в покое.
-
-    for (auto *remoteChild : remoteRevision->getChildren())
-    {
-        bool remoteChildExistsInLocal = false;
-        for (auto *localChild : localRevision->getChildren())
-        {
-            if (localChild->getUuid() == remoteChild->getUuid())
-            {
-                this->recursiveTreeMerge(localChild, remoteChild);
-                remoteChildExistsInLocal = true;
-                break;
-            }
-        }
-
-        // копируем, тоже рекурсией.
-        if (!remoteChildExistsInLocal)
-        {
-            // скопировать все свойства, кроме пака. только свойства, не чайлдов.
-            Revision::Ptr newLocalChild(new Revision(this->pack));
-            Revision::copyProperties(newLocalChild, remoteChild);
-            newLocalChild->flush();
-            localRevision->addChild(newLocalChild);
-            this->recursiveTreeMerge(newLocalChild, remoteChild);
-        }
-    }
-}
-
 
 //===----------------------------------------------------------------------===//
 // VCS
@@ -385,11 +286,8 @@ ValueTree VersionControl::serialize() const
 {
     ValueTree tree(Serialization::Core::versionControl);
 
-    tree.setProperty(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion), nullptr);
-    tree.setProperty(Serialization::VCS::vcsHistoryId, this->publicId, nullptr);
     tree.setProperty(Serialization::VCS::headRevisionId, this->head.getHeadingRevision()->getUuid(), nullptr);
     
-    tree.appendChild(this->key.serialize(), nullptr);
     tree.appendChild(this->rootRevision->serialize(), nullptr);
     tree.appendChild(this->stashes->serialize(), nullptr);
     tree.appendChild(this->pack->serialize(), nullptr);
@@ -407,15 +305,9 @@ void VersionControl::deserialize(const ValueTree &tree)
 
     if (!root.isValid()) { return; }
 
-    const String timeStamp = root.getProperty(Serialization::VCS::vcsHistoryVersion);
-    this->historyMergeVersion = timeStamp.getLargeIntValue();
-
-    this->publicId = root.getProperty(Serialization::VCS::vcsHistoryId, this->publicId);
-
     const String headId = root.getProperty(Serialization::VCS::headRevisionId);
     Logger::writeToLog("Head ID is " + headId);
 
-    this->key.deserialize(root);
     this->rootRevision->deserialize(root);
     this->stashes->deserialize(root);
     this->pack->deserialize(root);

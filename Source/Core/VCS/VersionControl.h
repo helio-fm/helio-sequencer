@@ -33,8 +33,6 @@ class VersionControlEditor;
 #include "Pack.h"
 #include "StashesRepository.h"
 
-#include "Key.h"
-
 class VersionControl final :
     public Serializable,
     public ChangeListener,
@@ -42,33 +40,11 @@ class VersionControl final :
 {
 public:
 
-    explicit VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
-        const String &existingId = "",
-        const String &existingKeyBase64 = "");
-
+    explicit VersionControl(WeakReference<VCS::TrackedItemsSource> parent);
     ~VersionControl() override;
 
-    //===------------------------------------------------------------------===//
-    // Push-pull stuff
-    //===------------------------------------------------------------------===//
-
-    inline String getParentName() const
-    { return this->parentItem->getVCSName(); }
-
-    inline String getPublicId() const
-    { return this->publicId; }
-
-    inline MemoryBlock getKey()
-    { return this->key.getKeyData(); }
-
-    inline int64 getVersion() const
-    { return this->historyMergeVersion; }
-
-    inline void incrementVersion()
-    { this->historyMergeVersion += 1; }
-
+    String getParentName() const;
     String calculateHash() const;
-    void mergeWith(VersionControl &remoteHistory);
 
     //===------------------------------------------------------------------===//
     // VCS
@@ -85,7 +61,7 @@ public:
     bool resetChanges(SparseSet<int> selectedItems);
     bool resetAllChanges();
     bool commit(SparseSet<int> selectedItems, const String &message);
-    void quickAmendItem(VCS::TrackedItem *targetItem); // for projectinfo
+    void quickAmendItem(VCS::TrackedItem *targetItem); // for project info
 
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
     bool applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash = false);
@@ -107,11 +83,10 @@ public:
     // ChangeListener
     //===------------------------------------------------------------------===//
 
-    void changeListenerCallback(ChangeBroadcaster* source) override;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
     
 protected:
 
-    void recursiveTreeMerge(VCS::Revision::Ptr localRevision, VCS::Revision::Ptr remoteRevision);
     VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
 
     VCS::Pack::Ptr pack;
@@ -121,12 +96,6 @@ protected:
     // the history tree itself
     VCS::Revision::Ptr rootRevision;
     WeakReference<VCS::TrackedItemsSource> parentItem;
-
-protected:
-
-    String publicId;
-    VCS::Key key;
-    int64 historyMergeVersion;
 
 private:
 

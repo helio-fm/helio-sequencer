@@ -564,7 +564,6 @@
           <FILE id="eU5eqe" name="Head.h" compile="0" resource="0" file="../../Source/Core/VCS/Head.h"/>
           <FILE id="byUomD" name="HeadState.cpp" compile="1" resource="0" file="../../Source/Core/VCS/HeadState.cpp"/>
           <FILE id="Dy1Fn9" name="HeadState.h" compile="0" resource="0" file="../../Source/Core/VCS/HeadState.h"/>
-          <FILE id="SguYRb" name="Key.h" compile="0" resource="0" file="../../Source/Core/VCS/Key.h"/>
           <FILE id="BMxiQb" name="Pack.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Pack.cpp"/>
           <FILE id="abUynR" name="Pack.h" compile="0" resource="0" file="../../Source/Core/VCS/Pack.h"/>
           <FILE id="q9lbK8" name="Revision.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Revision.cpp"/>

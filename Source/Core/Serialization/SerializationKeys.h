@@ -384,11 +384,6 @@ namespace Serialization
 
     namespace VCS
     {
-        static const Identifier vcsHistoryKey = "historyKey";
-        static const Identifier vcsHistoryKeyData = "data";
-        static const Identifier vcsHistoryId = "historyId";
-        static const Identifier vcsHistoryVersion = "historyVersion";
-        
         static const Identifier stashesRepository = "stashesRepository";
         static const Identifier userStashes = "userStashes";
         static const Identifier quickStash = "quickStash";
