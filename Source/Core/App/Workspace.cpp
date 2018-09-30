@@ -174,11 +174,10 @@ bool Workspace::onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescripti
         return true;
     }
 
-    if (fileDescription->hasRemoteCopy)
+    if (fileDescription->hasRemoteCopy) // and not present locally
     {
-        this->treeRoot->checkoutProject(fileDescription->title,
-                                        fileDescription->projectId,
-                                        fileDescription->projectKey);
+        // TODO checkout and open
+        //this->treeRoot->checkoutProject(fileDescription->projectId);
     }
     
     return true;

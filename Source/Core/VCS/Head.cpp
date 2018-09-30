@@ -20,7 +20,6 @@
 #include "TrackedItemsSource.h"
 #include "ProjectTreeItem.h"
 #include "TrackedItem.h"
-#include "Snapshot.h"
 #include "App.h"
 
 #include "Diff.h"
@@ -159,7 +158,6 @@ bool VCS::Head::moveTo(const Revision::Ptr revision)
             this->state = new Snapshot();
         }
 
-        // FIXME
         // a path from the root to current revision
         ReferenceCountedArray<Revision> treePath;
         Revision::Ptr currentRevision(revision);

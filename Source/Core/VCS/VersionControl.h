@@ -42,7 +42,6 @@ public:
     explicit VersionControl(WeakReference<VCS::TrackedItemsSource> parent);
     ~VersionControl() override;
 
-    String getParentName() const;
     String calculateHash() const;
 
     //===------------------------------------------------------------------===//
@@ -89,15 +88,11 @@ protected:
     VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
 
     VCS::Pack::Ptr pack;
-    VCS::StashesRepository::Ptr stashes;
     VCS::Head head;
-
-    // the history tree itself
-    VCS::Revision::Ptr rootRevision;
-    WeakReference<VCS::TrackedItemsSource> parentItem;
+    VCS::StashesRepository::Ptr stashes;
+    VCS::Revision::Ptr rootRevision; // the history tree itself
 
 private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
-
 };

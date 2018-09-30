@@ -21,9 +21,10 @@
 class VersionControl;
 class ProgressIndicator;
 
+#include "Revision.h"
+#include "RevisionItem.h"
 #include "HeadlineItemDataSource.h"
 #include "ComponentFader.h"
-#include "Revision.h"
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontalFadingReversed.h"
@@ -84,8 +85,9 @@ private:
     VersionControl &vcs;
 
     ReadWriteLock diffLock;
-    ValueTree lastDiff;
     String lastCommitMessage;
+
+    ReferenceCountedArray<VCS::RevisionItem> stageDeltas;
 
     ComponentFader fader;
     void startProgressAnimation();

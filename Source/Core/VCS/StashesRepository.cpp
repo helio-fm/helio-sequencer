@@ -63,7 +63,7 @@ void VCS::StashesRepository::addStash(Revision::Ptr newStash)
 void VCS::StashesRepository::removeStash(Revision::Ptr stashToRemove)
 {
     // todo sanity checks?
-    this->userStashes.removeChild(stashToRemove, nullptr);
+    this->userStashes->removeChild(stashToRemove);
 }
 
 Revision::Ptr VCS::StashesRepository::getQuickStash() const noexcept

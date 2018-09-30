@@ -147,7 +147,7 @@ void HistoryComponent::rebuildRevisionTree()
 void HistoryComponent::onRevisionSelectionChanged()
 {
     if (this->revisionTree != nullptr &&
-        this->revisionTree->getSelectedRevision().isValid())
+        this->revisionTree->getSelectedRevision() != nullptr)
     {
         // Hide existing because selection caption will be always different:
         App::Layout().hideSelectionMenu();
@@ -193,7 +193,7 @@ Image HistoryComponent::getIcon() const
 String HistoryComponent::getName() const
 {
     if (this->revisionTree != nullptr &&
-        this->revisionTree->getSelectedRevision().isValid())
+        this->revisionTree->getSelectedRevision() != nullptr)
     {
         return this->revisionTree->getSelectedRevision()->getMessage();
     }

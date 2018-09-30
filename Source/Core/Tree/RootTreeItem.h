@@ -50,8 +50,6 @@ public:
     // Children
     //===------------------------------------------------------------------===//
 
-    void checkoutProject(const String &name, const String &id, const String &key);
-
     ProjectTreeItem *openProject(const File &file, int insertIndex = -1);
 
     ProjectTreeItem *addDefaultProject(const File &projectLocation);

@@ -28,13 +28,10 @@ using namespace VCS;
 
 VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent) :
     pack(new Pack()),
-    stashes(new StashesRepository(pack)),
     head(pack, parent),
-    rootRevision(new Revision(pack, "root")),
-    parentItem(parent)
+    stashes(new StashesRepository(pack)),
+    rootRevision(new Revision(pack, TRANS("defaults::newproject::firstcommit")))
 {
-    this->rootRevision = { new Revision(this->pack, TRANS("defaults::newproject::firstcommit")) };
-
     MessageManagerLock lock;
     this->addChangeListener(&this->head);
     this->head.moveTo(this->rootRevision);
@@ -54,7 +51,6 @@ VersionControlEditor *VersionControl::createEditor()
 static StringArray recursiveGetHashes(const Revision *revision)
 {
     StringArray sum;
-
     for (auto *child : revision->getChildren())
     {
         sum.addArray(recursiveGetHashes(child));
@@ -70,11 +66,6 @@ String VersionControl::calculateHash() const
     StringArray ids(recursiveGetHashes(this->rootRevision));
     ids.sort(true); // sort it not to depend on child order
     return String(CompileTimeHash(ids.joinIntoString("").toUTF8()));
-}
-
-String VersionControl::getParentName() const
-{
-    return this->parentItem->getVCSName();
 }
 
 //===----------------------------------------------------------------------===//
@@ -162,7 +153,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
     if (selectedItems.size() == 0) { return false; }
 
     Revision::Ptr newRevision(new Revision(this->pack, message));
-    Revision::Ptr allChanges(this->head.getDiff().createCopy());
+    Revision::Ptr allChanges(this->head.getDiff());
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -175,8 +166,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
     }
 
     Revision::Ptr headingRevision(this->head.getHeadingRevision());
-
-    if (!headingRevision.isValid()) { return false; }
+    if (headingRevision == nullptr) { return false; }
 
     headingRevision->addChild(newRevision);
     this->head.moveTo(newRevision);
@@ -199,7 +189,7 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
     if (selectedItems.size() == 0) { return false; }
     
     Revision::Ptr newRevision(new Revision(this->pack, message));
-    Revision::Ptr allChanges(this->head.getDiff().createCopy());
+    Revision::Ptr allChanges(this->head.getDiff());
     
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -255,7 +245,7 @@ bool VersionControl::quickStashAll()
     if (this->hasQuickStash())
     { return false; }
 
-    Revision::Ptr allChanges(this->head.getDiff().createCopy());
+    Revision::Ptr allChanges(this->head.getDiff());
     this->stashes->storeQuickStash(allChanges);
     this->resetAllChanges();
 

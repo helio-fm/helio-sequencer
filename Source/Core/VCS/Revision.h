@@ -31,14 +31,13 @@ namespace VCS
 
         Revision(Pack::Ptr pack, const String &name = {});
 
-        //void copyPropertiesFrom(Revision::Ptr other);
-        void copyDeltasFrom(Revision::Ptr other);
-
         const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
         const ReferenceCountedArray<Revision> &getChildren() const noexcept;
 
         void addItem(RevisionItem *item);
         void addChild(Revision *revision);
+        void removeChild(Revision *revision);
+        void copyDeltasFrom(Revision::Ptr other);
 
         uint32 calculateHash() const;
 
@@ -71,5 +70,6 @@ namespace VCS
         ReferenceCountedArray<RevisionItem> deltas;
 
         JUCE_DECLARE_WEAK_REFERENCEABLE(Revision)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Revision)
     };
 }  // namespace VCS

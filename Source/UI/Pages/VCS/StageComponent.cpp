@@ -209,15 +209,12 @@ Component *StageComponent::refreshComponentForRow(int rowNumber,
     const ScopedReadLock lock(this->diffLock);
 
     // juce out-of-range fix
-    const int numProps = this->lastDiff.getNumProperties();
-    const bool isLastRow = (rowNumber == (numProps - 1));
+    const int numRecords = this->stageDeltas.size();
+    const bool isLastRow = (rowNumber == (numRecords - 1));
 
-    if (rowNumber >= numProps) { return existingComponentToUpdate; }
-
-    const Identifier id = this->lastDiff.getPropertyName(rowNumber);
-    const var property = this->lastDiff.getProperty(id);
-
-    if (RevisionItem *revRecord = dynamic_cast<RevisionItem *>(property.getObject()))
+    if (rowNumber >= numRecords) { return existingComponentToUpdate; }
+    
+    if (VCS::RevisionItem *revRecord = this->stageDeltas[rowNumber])
     {
         if (existingComponentToUpdate != nullptr)
         {
@@ -258,7 +255,7 @@ void StageComponent::selectedRowsChanged(int lastRowSelected)
 int StageComponent::getNumRows()
 {
     const ScopedReadLock lock(this->diffLock);
-    const int numProps = this->lastDiff.getNumProperties();
+    const int numProps = this->stageDeltas.size();
     return numProps;
 }
 
@@ -269,7 +266,8 @@ int StageComponent::getNumRows()
 void StageComponent::updateList()
 {
     const ScopedWriteLock lock(this->diffLock);
-    this->lastDiff = this->vcs.getHead().getDiff().createCopy();
+    this->stageDeltas.clearQuick();
+    this->stageDeltas.addArray(this->vcs.getHead().getDiff()->getItems());
     this->changesList->deselectAllRows();
     this->changesList->updateContent();
     this->repaint();
@@ -278,7 +276,7 @@ void StageComponent::updateList()
 void StageComponent::clearList()
 {
     const ScopedWriteLock lock(this->diffLock);
-    this->lastDiff = ValueTree();
+    this->stageDeltas.clearQuick();
     this->changesList->deselectAllRows();
     this->changesList->updateContent();
     this->repaint();

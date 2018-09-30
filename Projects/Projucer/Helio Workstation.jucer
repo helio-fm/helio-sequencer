@@ -562,8 +562,6 @@
           <FILE id="uzpPWh" name="Diff.h" compile="0" resource="0" file="../../Source/Core/VCS/Diff.h"/>
           <FILE id="OtwnG1" name="Head.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Head.cpp"/>
           <FILE id="eU5eqe" name="Head.h" compile="0" resource="0" file="../../Source/Core/VCS/Head.h"/>
-          <FILE id="byUomD" name="HeadState.cpp" compile="1" resource="0" file="../../Source/Core/VCS/HeadState.cpp"/>
-          <FILE id="Dy1Fn9" name="HeadState.h" compile="0" resource="0" file="../../Source/Core/VCS/HeadState.h"/>
           <FILE id="BMxiQb" name="Pack.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Pack.cpp"/>
           <FILE id="abUynR" name="Pack.h" compile="0" resource="0" file="../../Source/Core/VCS/Pack.h"/>
           <FILE id="q9lbK8" name="Revision.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Revision.cpp"/>
@@ -571,6 +569,8 @@
           <FILE id="uYfQO0" name="RevisionItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/VCS/RevisionItem.cpp"/>
           <FILE id="PYjhVf" name="RevisionItem.h" compile="0" resource="0" file="../../Source/Core/VCS/RevisionItem.h"/>
+          <FILE id="pcmXt5" name="Snapshot.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Snapshot.cpp"/>
+          <FILE id="fP52lO" name="Snapshot.h" compile="0" resource="0" file="../../Source/Core/VCS/Snapshot.h"/>
           <FILE id="pbbYnx" name="StashesRepository.cpp" compile="1" resource="0"
                 file="../../Source/Core/VCS/StashesRepository.cpp"/>
           <FILE id="epEI48" name="StashesRepository.h" compile="0" resource="0"

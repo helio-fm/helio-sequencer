@@ -28,66 +28,6 @@ Revision::Revision(Pack::Ptr pack, const String &name /*= String::empty*/) :
     id(Uuid().toString()),
     timestamp(Time::getCurrentTime().toMilliseconds()) {}
 
-//// simple setProperty, or copy deltas when using different delta packs
-//void copyProperty(ValueTree valueTree, Identifier id, const RevisionItem::Ptr itemToCopy)
-//{
-//    if (getPackPtr(valueTree) == itemToCopy->getPackPtr())
-//    {
-//        valueTree.setProperty(id, var(itemToCopy), nullptr);
-//    }
-//    else
-//    {
-//        // when merging two trees with different delta packs,
-//        // copy items with new RevisionItem to copy data from the old pack:
-//        RevisionItem::Ptr newItem(new RevisionItem(getPackPtr(valueTree), itemToCopy->getType(), itemToCopy));
-//        valueTree.setProperty(id, var(newItem), nullptr);
-//    }
-//}
-//
-//void Revision::copyPropertiesFrom(Revision::Ptr other)
-//{
-//    Pack::Ptr pack(getPackPtr(one));
-//    one.removeAllProperties(nullptr);
-//    one.setProperty(Serialization::VCS::pack, var(pack), nullptr);
-//
-//    for (int i = 0; i < another.getNumProperties(); ++i)
-//    {
-//        const Identifier id(another.getPropertyName(i));
-//        if (id == Serialization::VCS::pack)
-//        {
-//            continue;
-//        }
-//
-//        const var &property(another.getProperty(id));
-//        if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-//        {
-//            copyProperty(one, id, revItem);
-//        }
-//        else
-//        {
-//            one.setProperty(id, property, nullptr);
-//        }
-//    }
-//}
-//
-//static void resetAllDeltasFrom(Revision::Ptr other)
-//{
-//    for (int i = 0; i < valueTree.getNumProperties(); )
-//    {
-//        const Identifier id(valueTree.getPropertyName(i));
-//        const var property(valueTree.getProperty(id));
-//
-//        if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-//        {
-//            valueTree.removeProperty(id, nullptr);
-//        }
-//        else
-//        {
-//            ++i;
-//        }
-//    }
-//}
-
 void Revision::copyDeltasFrom(Revision::Ptr other)
 {
     this->deltas.clearQuick();
@@ -154,6 +94,15 @@ void Revision::addChild(Revision *child)
     child->parent = this;
     this->children.add(child); // todo test
     //this->children.insert(0, child);
+}
+
+void Revision::removeChild(Revision *revision)
+{
+    if (this->children.contains(revision))
+    {
+        revision->parent = nullptr;
+        this->children.removeObject(revision);
+    }
 }
 
 void Revision::addItem(RevisionItem *item)

@@ -17,12 +17,12 @@
 
 #pragma once
 
+#include "Snapshot.h"
 #include "Revision.h"
 #include "Pack.h"
 
 namespace VCS
 {
-    class Snapshot;
     class TrackedItem;
     class TrackedItemsSource;
     class DeltaDataSource;

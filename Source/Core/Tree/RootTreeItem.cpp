@@ -93,30 +93,6 @@ void RootTreeItem::importMidi(const File &file)
 // Children
 //===----------------------------------------------------------------------===//
 
-void RootTreeItem::checkoutProject(const String &name, const String &id, const String &key)
-{
-    Array<ProjectTreeItem *> myProjects(this->findChildrenOfType<ProjectTreeItem>());
-    
-    for (auto myProject : myProjects)
-    {
-        if (myProject->getId() == id)
-        {
-            return;
-        }
-    }
-    
-    this->setOpen(true);
-    auto newProject = new ProjectTreeItem(name);
-    this->addChildTreeItem(newProject);
-    
-    auto vcs = new VersionControlTreeItem(id, key);
-    newProject->addChildTreeItem(vcs);
-    
-    // TODO
-    //vcs->checkout();
-    App::Workspace().autosave();
-}
-
 ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*= -1 */)
 {
     Array<ProjectTreeItem *> myProjects(this->findChildrenOfType<ProjectTreeItem>());
