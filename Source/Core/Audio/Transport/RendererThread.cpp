@@ -40,7 +40,6 @@ float RendererThread::getPercentsComplete() const
     return this->percentsDone;
 }
 
-
 void RendererThread::startRecording(const File &file)
 {
     this->transport.rebuildSequencesIfNeeded();
@@ -67,17 +66,21 @@ void RendererThread::startRecording(const File &file)
             this->percentsDone = 0.f;
         }
         
-        if (file.getFileExtension().toLowerCase() == ".wav")
+        // 16 bits per sample should be enough for anybody :)
+        // ..wanna fight about it? https://people.xiph.org/~xiphmont/demo/neil-young.html
+        const int bitDepth = 16;
+
+        if (file.getFileExtension().endsWithIgnoreCase("wav"))
         {
             WavAudioFormat wavFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
+            this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
         }
-        else if (file.getFileExtension().toLowerCase() == ".flac")
+        else if (file.getFileExtension().endsWithIgnoreCase("flac"))
         {
             FlacAudioFormat flacFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
+            this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
         }
 
         if (writer != nullptr)
@@ -107,7 +110,6 @@ bool RendererThread::isRecording() const
     //return (this->writer != nullptr) && this->isThreadRunning();
     return this->isThreadRunning();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Thread
