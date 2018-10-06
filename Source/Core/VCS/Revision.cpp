@@ -61,7 +61,7 @@ uint32 Revision::calculateHash() const
 
 bool Revision::isEmpty() const noexcept
 {
-    return this->message.isEmpty();
+    return this->deltas.isEmpty() && this->children.isEmpty();
 }
 
 int64 Revision::getTimeStamp() const noexcept

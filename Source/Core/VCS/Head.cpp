@@ -113,7 +113,7 @@ void Head::mergeStateWith(Revision::Ptr changes)
     Logger::writeToLog("Head::mergeStateWith " + changes->getUuid());
 
     Revision::Ptr headRevision(this->getHeadingRevision());
-    for (auto *changesItem : this->getDiff()->getItems())
+    for (auto *changesItem : changes->getItems())
     {
         if (changesItem->getType() == RevisionItem::Added)
         {

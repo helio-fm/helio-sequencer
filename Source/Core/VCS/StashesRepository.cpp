@@ -86,7 +86,8 @@ void VCS::StashesRepository::storeQuickStash(Revision::Ptr newStash)
 
 void StashesRepository::resetQuickStash()
 {
-    this->quickStash = { new Revision(this->pack, Serialization::VCS::quickStashId.toString()) };
+    this->quickStash = { new Revision(this->pack,
+        Serialization::VCS::quickStashId.toString()) };
 }
 
 //===----------------------------------------------------------------------===//
