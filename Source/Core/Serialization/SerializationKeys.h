@@ -36,6 +36,7 @@ namespace Serialization
         static const Identifier instrumentRoot = "instrument";
 
         static const Identifier project = "project";
+        static const Identifier projectId = "projectId";
         static const Identifier projectInfo = "projectInfo";
         static const Identifier projectTimeStamp = "projectTimeStamp";
         static const Identifier versionControl = "versionControl";

@@ -63,14 +63,16 @@
 
 ProjectTreeItem::ProjectTreeItem(const String &name) :
     DocumentOwner(name, "helio"),
-    TreeItem(name, Serialization::Core::project)
+    TreeItem(name, Serialization::Core::project),
+    id(Uuid().toString())
 {
     this->initialize();
 }
 
 ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
     DocumentOwner(existingFile),
-    TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project)
+    TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project),
+    id(Uuid().toString())
 {
     this->initialize();
 }
@@ -141,17 +143,9 @@ void ProjectTreeItem::deletePermanently()
     }
 }
 
-String ProjectTreeItem::getId() const
+String ProjectTreeItem::getId() const noexcept
 {
-    VersionControlTreeItem *vcsTreeItem =
-        this->findChildOfType<VersionControlTreeItem>();
-
-    if (vcsTreeItem != nullptr)
-    {
-        return vcsTreeItem->getId();
-    }
-
-    return {};
+    return this->id;
 }
 
 String ProjectTreeItem::getStats() const
@@ -221,7 +215,8 @@ void ProjectTreeItem::safeRename(const String &newName)
     }
     
     // notify recent files list
-    App::Workspace().getProjectsList().removeById(this->getId());
+    App::Workspace().getProjectsList()
+        .removeByPath(this->getDocument()->getFullPath());
 
     this->name = newName;
     
@@ -232,7 +227,7 @@ void ProjectTreeItem::safeRename(const String &newName)
     App::Workspace().getProjectsList().
         onProjectStateChanged(this->getName(),
             this->getDocument()->getFullPath(),
-            this->getId(),true);
+            this->getId(), true);
 
     this->dispatchChangeTreeItemView();
 }
@@ -525,6 +520,7 @@ ValueTree ProjectTreeItem::save() const
     ValueTree tree(Serialization::Core::project);
 
     tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
+    tree.setProperty(Serialization::Core::projectId, this->id, nullptr);
 
     tree.appendChild(this->info->serialize(), nullptr);
     tree.appendChild(this->timeline->serialize(), nullptr);
@@ -545,6 +541,8 @@ void ProjectTreeItem::load(const ValueTree &tree)
         tree : tree.getChildWithName(Serialization::Core::project);
 
     if (!root.isValid()) { return; }
+
+    this->id = root.getProperty(Serialization::Core::projectId, Uuid().toString());
 
     this->info->deserialize(root);
     this->timeline->deserialize(root);

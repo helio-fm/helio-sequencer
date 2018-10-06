@@ -104,7 +104,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
 #endif
 
     // предварительная проверка на дубликаты - по полному пути
-    for (auto myProject : myProjects)
+    for (auto *myProject : myProjects)
     {
         if (myProject->getDocument()->getFullPath() == file.getFullPathName())
         {
@@ -116,29 +116,27 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
     
     if (file.existsAsFile())
     {
-        auto project = new ProjectTreeItem(file);
-        this->addChildTreeItem(project, insertIndexCorrection);
+        UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(file));
+        this->addChildTreeItem(project.get(), insertIndexCorrection);
 
         if (!project->getDocument()->load(file.getFullPathName()))
         {
             App::Workspace().getProjectsList().removeByPath(file.getFullPathName());
-            delete project;
             return nullptr;
         }
 
         // вторая проверка на дубликаты - по id
-        for (auto myProject : myProjects)
+        for (auto *myProject : myProjects)
         {
             if (myProject->getId() == project->getId())
             {
                 App::Workspace().getProjectsList().removeByPath(file.getFullPathName());
-                delete project;
                 return nullptr;
             }
         }
 
         App::Workspace().autosave();
-        return project;
+        return project.release();
     }
 
     return nullptr;

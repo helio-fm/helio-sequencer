@@ -59,7 +59,7 @@ public:
     
     void deletePermanently();
     
-    String getId() const;
+    String getId() const noexcept;
     String getStats() const;
 
     Transport &getTransport() const noexcept;
@@ -221,6 +221,8 @@ private:
     void load(const ValueTree &tree);
 
 private:
+
+    String id;
 
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
