@@ -312,8 +312,6 @@
             <FILE id="DOA3wc" name="ProjectsListDto.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Models/ProjectsListDto.h"/>
             <FILE id="m2ytBT" name="RevisionDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/RevisionDto.h"/>
-            <FILE id="M9Ac60" name="RevisionsListDto.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Models/RevisionsListDto.h"/>
             <FILE id="JbvARx" name="UserProfileDto.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Models/UserProfileDto.h"/>
             <FILE id="cLakY7" name="UserResourceDto.h" compile="0" resource="0"

@@ -18,6 +18,7 @@
 #pragma once
 
 #include "ApiModel.h"
+#include "RevisionDto.h"
 
 struct ProjectDto final : ApiModel
 {
@@ -28,6 +29,7 @@ struct ProjectDto final : ApiModel
     String getAlias() const noexcept { return DTO_PROPERTY(Projects::alias); }
     String getHead() const noexcept { return DTO_PROPERTY(Projects::head); }
     Time getUpdateTime() const noexcept { return Time(DTO_PROPERTY(Projects::updatedAt)); }
+    Array<RevisionDto> getRevisions() const { return DTO_CHILDREN(RevisionDto, Revisions::revisions); }
 
     JUCE_LEAK_DETECTOR(ProjectDto)
 };
