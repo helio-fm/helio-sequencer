@@ -20,6 +20,22 @@
 class DocumentOwner;
 class ProjectsList;
 
+#include "ProjectDto.h"
+
+struct LocalProjectFileInfo final
+{
+    String path;
+    String title;
+    String projectId;
+    int64 lastModifiedTimeMs;
+};
+
+struct RecentProject final
+{
+    LocalProjectFileInfo localFile;
+    ProjectDto remoteProject;
+};
+
 class RecentFileDescription final : public ReferenceCountedObject
 {
 public:

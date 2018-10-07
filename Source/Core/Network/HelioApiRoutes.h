@@ -40,8 +40,8 @@ namespace Routes
             static const String tokenUpdate = "/my/sessions/current/update";
             static const String deleteSession = "/my/sessions/:deviceId";
             static const String projects = "/my/projects";
-            static const String projectRevisions = "/my/projects/:projectId";
-            static const String vcsRevisions = "/my/projects/:projectId/revisions/:revisionId";
+            static const String project = "/my/projects/:projectId";
+            static const String projectRevision = "/my/projects/:projectId/revisions/:revisionId";
         } // namespace Api
     } // namespace HelioFM
 } // namespace Routes

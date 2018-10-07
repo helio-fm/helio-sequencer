@@ -573,6 +573,7 @@ namespace Serialization
             namespace Revisions
             {
                 static const Identifier revisions = "revisions";
+                static const Identifier revision = "revision";
                 static const Identifier id = "id";
                 static const Identifier hash = "hash";
                 static const Identifier message = "message";

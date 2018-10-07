@@ -44,34 +44,96 @@ void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs, WeakReference<
 }
 
 using RevisionsMap = SparseHashMap<String, VCS::Revision::Ptr, StringHash>;
+using RevisionDtosMap = SparseHashMap<String, RevisionDto, StringHash>;
+
 static void buildLocalRevisionsIndex(RevisionsMap &map, VCS::Revision::Ptr root)
 {
     map[root->getUuid()] = root;
-    for (const auto child : root->getChildren())
+    for (auto *child : root->getChildren())
     {
         buildLocalRevisionsIndex(map, child);
     }
 }
 
-static ReferenceCountedArray<VCS::Revision> constructRevisionTrees(const Array<VCS::Revision::Ptr> &list)
+static bool findParentIn(const String &id, const ReferenceCountedArray<VCS::Revision> &list)
 {
-    ReferenceCountedArray<VCS::Revision> trees;
-    for (const auto dto : list)
+    for (const auto *child : list)
     {
-        if (VCS::Revision::Ptr parent = findParentIn(trees))
+        if (child->getUuid() == id)
         {
-            parent->addChild(dto);
-        }
-        else
-        {
-            trees.add(dto);
+            return true;
         }
     }
+
+    return false;
 }
 
-static VCS::Revision::Ptr createShallowRevision(const RevisionDto dto)
+static ReferenceCountedArray<VCS::Revision> constructNewLocalTrees(const ReferenceCountedArray<VCS::Revision> &list)
 {
-    return { new VCS::Revision(nullptr, dto.getMessage()) };
+    ReferenceCountedArray<VCS::Revision> trees;
+    for (const auto child : list)
+    {
+        // Since local revisions already have their children in places,
+        // we only need to figure out which ones are the roots:
+        if (child->getParent() == nullptr || !findParentIn(child->getParent()->getUuid(), list))
+        {
+            trees.add(child);
+        }
+    }
+
+    return trees;
+}
+
+static bool findParentIn(const String &id, const Array<RevisionDto> &list)
+{
+    for (const auto child : list)
+    {
+        if (child.getId() == id)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Returns a map of <id of a parent to mount to : root revision containing all the children>
+static RevisionsMap constructNewRemoteTrees(const Array<RevisionDto> &list)
+{
+    struct ShallowRevision final
+    {
+        VCS::Revision::Ptr revision;
+        RevisionDto associatedDto;
+    };
+
+    using ShallowRevisionsMap = SparseHashMap<String, ShallowRevision, StringHash>;
+
+    RevisionsMap trees;
+    ShallowRevisionsMap lookup;
+    for (const auto &dto : list)
+    {
+        VCS::Revision::Ptr newRevision(new VCS::Revision(dto));
+        lookup[dto.getId()] = { newRevision, dto };
+    }
+
+    for (const auto &child : lookup)
+    {
+        if (lookup.contains(child.second.associatedDto.getParentId()))
+        {
+            const auto proposedParent = lookup[child.second.associatedDto.getParentId()];
+            proposedParent.revision->addChild(child.second.revision);
+        }
+    }
+
+    for (const auto &child : lookup)
+    {
+        if (child.second.revision->getParent() == nullptr)
+        {
+            trees[child.second.associatedDto.getParentId()] = child.second.revision;
+        }
+    }
+
+    return trees;
 }
 
 void ProjectSyncThread::run()
@@ -82,7 +144,7 @@ void ProjectSyncThread::run()
     RevisionsMap localRevisions;
     buildLocalRevisionsIndex(localRevisions, this->vcs->getRoot());
 
-    const String projectRoute(ApiRoutes::projects.replace(":projectId", this->project->getId()));
+    const String projectRoute(ApiRoutes::project.replace(":projectId", this->project->getId()));
     const BackendRequest revisionsRequest(projectRoute);
     this->response = revisionsRequest.get();
 
@@ -110,25 +172,24 @@ void ProjectSyncThread::run()
         return;
     }
 
-    RevisionsMap remoteRevisions;
+    RevisionDtosMap remoteRevisions;
     for (const auto child : remoteProject.getRevisions())
     {
-        VCS::Revision::Ptr shallowRevision(createShallowRevision(child));
-        remoteRevisions[shallowRevision->getUuid()] = shallowRevision;
+        remoteRevisions[child.getId()] = child;
     }
 
     // Find all new revisions on the remote
-    Array<VCS::Revision::Ptr> newRemoteRevisions;
-    for (const auto remoteRevision : remoteRevisions)
+    Array<RevisionDto> newRemoteRevisions;
+    for (const auto &remoteRevision : remoteRevisions)
     {
-        if (!localRevisions.contains(remoteRevision.second->getUuid()))
+        if (!localRevisions.contains(remoteRevision.second.getId()))
         {
             newRemoteRevisions.add(remoteRevision.second);
         }
     }
 
     // Find all new revisions locally
-    Array<VCS::Revision::Ptr> newLocalRevisions;
+    ReferenceCountedArray<VCS::Revision> newLocalRevisions;
     for (const auto &localRevision : localRevisions)
     {
         if (!remoteRevisions.contains(localRevision.second->getUuid()))
@@ -147,17 +208,48 @@ void ProjectSyncThread::run()
         return;
     }
 
-    // build tree(s) of shallow VCS::Revision from newRemoteRevisions list
-    const auto newRemoteTrees = constructRevisionTrees(newLocalRevisions);
-    // append them to VCS,
-    // callback that fetch is done,
+    // build tree(s) of shallow VCS::Revision from newRemoteRevisions list and append them to VCS
+    const auto newRemoteTrees = constructNewRemoteTrees(newRemoteRevisions);
+    for (auto subtree : newRemoteTrees)
+    {
+        this->vcs->appendSubtree(subtree.second, subtree.first);
+    }
 
-    // if anything is needed to pull,
-    // fetch all data for each shallow revision, update and callback
+    // callback that fetch is done,
+    if (this->onFetchDone != nullptr)
+    {
+        this->onFetchDone();
+    }
+
+    // if anything is needed to pull, fetch all data for each, then update and callback
+    for (auto subtree : newRemoteTrees)
+    {
+        // todo only pull a revision if that was specified explicitly?
+        const String revisionRoute(ApiRoutes::projectRevision
+            .replace(":projectId", this->project->getId())
+            .replace(":revisionId", subtree.second->getUuid()));
+
+        const BackendRequest revisionRequest(revisionRoute);
+        this->response = revisionRequest.get();
+        if (!this->response.is2xx())
+        {
+            Logger::writeToLog("Failed to fetch the revision data: " + this->response.getErrors().getFirst());
+            callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+            return;
+        }
+
+        const RevisionDto fullRevision(this->response.getBody());
+        const auto revision = this->vcs->updateShallowRevisionData(fullRevision.getId(), fullRevision.getData());
+
+        if (this->onRevisionPulled != nullptr)
+        {
+            this->onRevisionPulled(revision);
+        }
+    }
 
     // if anything is needed to push,
     // build tree(s) from newLocalRevisions list
-    const auto newLocalTrees = constructRevisionTrees(newLocalRevisions);
+    const auto newLocalTrees = constructNewLocalTrees(newLocalRevisions);
     // push them recursively, starting from the root, so that
     // each pushed revision already has a valid remote parent
 

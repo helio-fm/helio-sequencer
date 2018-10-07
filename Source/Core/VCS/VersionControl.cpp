@@ -103,6 +103,32 @@ void VersionControl::cherryPick(const Revision::Ptr revision, const Array<Uuid> 
     }
 }
 
+void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId)
+{
+    if (appendRevisionId.isEmpty())
+    {
+        // if appendRevisionId is empty - replace root?
+        // todo make clear how to clone projects
+        //Logger::writeToLog("Warning: replacing history remote tree");
+        //this->rootRevision = subtree;
+    }
+    else
+    {
+        Revision::Ptr headRevision(this->getRevisionById(this->rootRevision, appendRevisionId));
+        if (!headRevision->isEmpty())
+        {
+            headRevision->addChild(subtree);
+            this->sendChangeMessage();
+        }
+    }
+}
+
+Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const ValueTree &data)
+{
+    // TODO
+    return {};
+}
+
 void VersionControl::quickAmendItem(TrackedItem *targetItem)
 {
     RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));

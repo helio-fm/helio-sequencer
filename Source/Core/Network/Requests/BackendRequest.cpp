@@ -99,7 +99,8 @@ static String getHeaders()
 {
     static const String apiVersion1 = "application/helio.fm.v1+json";
     static const String userAgent = "Helio " + App::getAppReadableVersion() +
-        (SystemStats::isOperatingSystem64Bit() ? " 64-bit on " : " 32-bit on ") + SystemStats::getOperatingSystemName();
+        (SystemStats::isOperatingSystem64Bit() ? " 64-bit on " : " 32-bit on ") +
+        SystemStats::getOperatingSystemName();
 
     String extraHeaders;
     extraHeaders
