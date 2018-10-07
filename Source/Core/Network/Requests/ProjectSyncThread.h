@@ -20,18 +20,22 @@
 #include "ProjectTreeItem.h"
 #include "BackendRequest.h"
 #include "VersionControl.h"
+#include "Revision.h"
 
-class PushThread final : public Thread
+class ProjectSyncThread final : public Thread
 {
 public:
     
-    PushThread();
-    ~PushThread() override;
+    ProjectSyncThread();
+    ~ProjectSyncThread() override;
     
-    ///Function<void(...)> onAuthSessionFinished;
-    Function<void(const Array<String> &errors)> onPushFailed;
+    Function<void()> onFetchDone;
+    Function<void(const VCS::Revision::Ptr revision)> onRevisionPushed;
+    Function<void(const VCS::Revision::Ptr revision)> onRevisionPulled;
+    Function<void(bool upToDate, int numRevisionsPushed, int numRevisionsPulled)> onSyncDone;
+    Function<void(const Array<String> &errors)> onSyncFailed;
 
-    void doPush(WeakReference<VersionControl> vcs, WeakReference<ProjectTreeItem> project);
+    void doSync(WeakReference<VersionControl> vcs, WeakReference<ProjectTreeItem> project);
 
 private:
     

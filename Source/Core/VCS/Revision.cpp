@@ -28,6 +28,11 @@ Revision::Revision(Pack::Ptr pack, const String &name /*= String::empty*/) :
     id(Uuid().toString()),
     timestamp(Time::getCurrentTime().toMilliseconds()) {}
 
+Revision::Revision(const RevisionDto &dto) :
+    pack(nullptr),
+    message(dto.getMessage()),
+    id(dto.getId()) {}
+
 void Revision::copyDeltasFrom(Revision::Ptr other)
 {
     this->deltas.clearQuick();

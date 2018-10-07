@@ -19,6 +19,7 @@
 
 #include "Serializable.h"
 #include "RevisionItem.h"
+#include "RevisionDto.h"
 #include "Pack.h"
 
 namespace VCS
@@ -30,6 +31,7 @@ namespace VCS
         using Ptr = ReferenceCountedObjectPtr<Revision>;
 
         Revision(Pack::Ptr pack, const String &name = {});
+        Revision(const RevisionDto &remoteDescription);
 
         const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
         const ReferenceCountedArray<Revision> &getChildren() const noexcept;

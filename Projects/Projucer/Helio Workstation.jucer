@@ -325,10 +325,10 @@
             <FILE id="x663ni" name="BackendRequest.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/BackendRequest.h"/>
             <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
-            <FILE id="hk3NVA" name="PushThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/Requests/PushThread.cpp"/>
-            <FILE id="jE9wVo" name="PushThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/PushThread.h"/>
-            <FILE id="CJcF7U" name="PullThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/Requests/PullThread.cpp"/>
-            <FILE id="upyPlv" name="PullThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/PullThread.h"/>
+            <FILE id="hk3NVA" name="ProjectSyncThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectSyncThread.cpp"/>
+            <FILE id="jE9wVo" name="ProjectSyncThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectSyncThread.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
@@ -343,10 +343,6 @@
           <GROUP id="{4D47E5BE-9508-0751-0896-8550519A0BB6}" name="Services">
             <FILE id="QeLQ6I" name="BackendService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/BackendService.h"/>
-            <FILE id="khMMrU" name="ProjectSyncService.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Services/ProjectSyncService.cpp"/>
-            <FILE id="upkO8R" name="ProjectSyncService.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Services/ProjectSyncService.h"/>
             <FILE id="X60dwC" name="ResourceSyncService.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Services/ResourceSyncService.cpp"/>
             <FILE id="hUPJJL" name="ResourceSyncService.h" compile="0" resource="0"

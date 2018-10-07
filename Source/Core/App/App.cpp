@@ -19,7 +19,6 @@
 #include "App.h"
 #include "AudioCore.h"
 #include "SessionService.h"
-#include "ProjectSyncService.h"
 #include "ResourceSyncService.h"
 
 #include "TranslationsManager.h"
@@ -274,7 +273,6 @@ void App::initialise(const String &commandLine)
 
         // Prepare back-end APIs communication services
         this->sessionService = new SessionService();
-        this->projectSyncService = new ProjectSyncService();
         this->resourceSyncService = new ResourceSyncService();
 
         this->workspace = new class Workspace();
@@ -310,7 +308,6 @@ void App::shutdown()
         this->workspace = nullptr;
 
         this->resourceSyncService = nullptr;
-        this->projectSyncService = nullptr;
         this->sessionService = nullptr;
 
         this->theme = nullptr;

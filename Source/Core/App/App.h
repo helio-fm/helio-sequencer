@@ -40,7 +40,6 @@ class Config;
 class ApiCore;
 class AudioCore;
 class SessionService;
-class ProjectSyncService;
 class ResourceSyncService;
 
 class App final : public JUCEApplication,
@@ -110,7 +109,6 @@ private:
     ScopedPointer<class Workspace> workspace;
     ScopedPointer<class MainWindow> window;
     ScopedPointer<class SessionService> sessionService;
-    ScopedPointer<class ProjectSyncService> projectSyncService;
     ScopedPointer<class ResourceSyncService> resourceSyncService;
 
     using ResourceManagers = HashMap<Identifier, ResourceManager *, IdentifierHash>;
