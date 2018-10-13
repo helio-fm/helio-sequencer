@@ -40,14 +40,14 @@ namespace VCS
         void addChild(Revision *revision);
         void removeChild(Revision *revision);
         void copyDeltasFrom(Revision::Ptr other);
-
-        uint32 calculateHash() const;
-
+        
         WeakReference<Revision> getParent() const noexcept;
         String getMessage() const noexcept;
         String getUuid() const noexcept;
         int64 getTimeStamp() const noexcept;
+
         bool isEmpty() const noexcept;
+        bool isShallowCopy() const noexcept;
 
         void flush();
 

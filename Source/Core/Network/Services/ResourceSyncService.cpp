@@ -17,9 +17,9 @@
 
 #include "Common.h"
 #include "ResourceSyncService.h"
-#include "App.h"
-#include "Config.h"
 #include "ResourceManager.h"
+#include "Config.h"
+#include "App.h"
 
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
@@ -29,9 +29,17 @@ ResourceSyncService::ResourceSyncService()
     this->prepareUpdatesCheckThread()->checkForUpdates(UPDATE_INFO_TIMEOUT_MS);
 }
 
-//===----------------------------------------------------------------------===//
-// UpdatesCheckThread::Listener
-//===----------------------------------------------------------------------===//
+void ResourceSyncService::syncProject(WeakReference<VersionControl> vcs,
+    const String &projectId, const String &projectName)
+{
+    if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
+    {
+        // TODO error
+        return;
+    }
+
+    this->prepareProjectSyncThread()->doSync(vcs, projectId, projectName);
+}
 
 static Identifier getPlatformType()
 {
@@ -118,6 +126,39 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
     thread->onUpdatesCheckFailed = [](const Array<String> &errors)
     {
         Logger::writeToLog("updatesCheckFailed: " + errors.getFirst());
+    };
+
+    return thread;
+}
+
+ProjectSyncThread *ResourceSyncService::prepareProjectSyncThread()
+{
+    auto *thread = this->getNewThreadFor<ProjectSyncThread>();
+    
+    thread->onFetchDone = []()
+    {
+
+    };
+
+    thread->onRevisionPulled = [](const VCS::Revision::Ptr revision)
+    {
+
+    };
+
+    thread->onRevisionPushed = [](const VCS::Revision::Ptr revision)
+    {
+
+    };
+
+    thread->onSyncDone = [](int numRevisionsPulled, int numRevisionsPushed)
+    {
+
+    };
+
+    thread->onSyncFailed = [](const Array<String> &errors)
+    {
+        // TODO: show errors and failure icon
+        Logger::writeToLog("onSyncFailed: " + errors.getFirst());
     };
 
     return thread;

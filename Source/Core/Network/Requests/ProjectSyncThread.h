@@ -32,17 +32,20 @@ public:
     Function<void()> onFetchDone;
     Function<void(const VCS::Revision::Ptr revision)> onRevisionPushed;
     Function<void(const VCS::Revision::Ptr revision)> onRevisionPulled;
-    Function<void(bool upToDate, int numRevisionsPushed, int numRevisionsPulled)> onSyncDone;
+    Function<void(int numRevisionsPulled, int numRevisionsPushed)> onSyncDone;
     Function<void(const Array<String> &errors)> onSyncFailed;
 
-    void doSync(WeakReference<VersionControl> vcs, WeakReference<ProjectTreeItem> project);
+    void doSync(WeakReference<VersionControl> vcs,
+        const String &projectId, const String &projectName);
 
 private:
     
     void run() override;
+    void pushSubtreeRecursively(VCS::Revision *subtree);
     
+    String projectId;
+    String projectName;
     WeakReference<VersionControl> vcs;
-    WeakReference<ProjectTreeItem> project;
 
     BackendRequest::Response response;
 

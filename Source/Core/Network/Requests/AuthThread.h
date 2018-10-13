@@ -60,7 +60,7 @@ private:
         namespace ApiRoutes = Routes::HelioFM::Api;
 
         // Construct payload object:
-        ValueTree initSession(ApiKeys::session);
+        ValueTree initSession(ApiKeys::AuthSession::session);
         initSession.setProperty(ApiKeys::AuthSession::provider, this->provider, nullptr);
         initSession.setProperty(ApiKeys::AuthSession::appName, "Helio", nullptr);
         initSession.setProperty(ApiKeys::AuthSession::appVersion, App::getAppReadableVersion(), nullptr);
@@ -86,7 +86,7 @@ private:
         const AuthSessionDto authSession(this->response.getBody());
         const BackendRequest checkWebAuthRequest(ApiRoutes::finaliseWebAuth);
 
-        ValueTree finaliseSession(ApiKeys::session);
+        ValueTree finaliseSession(ApiKeys::AuthSession::session);
         finaliseSession.setProperty(ApiKeys::AuthSession::id, authSession.getSessionId(), nullptr);
         finaliseSession.setProperty(ApiKeys::AuthSession::secret, authSession.getSecret(), nullptr);
 

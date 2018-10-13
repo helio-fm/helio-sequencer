@@ -21,7 +21,9 @@
 #include "SerializationKeys.h"
 #include "RevisionDto.h"
 #include "ProjectDto.h"
-#include "ProjectInfo.h"
+
+namespace ApiKeys = Serialization::Api::V1;
+namespace ApiRoutes = Routes::HelioFM::Api;
 
 ProjectSyncThread::ProjectSyncThread() : Thread("Push") {}
 
@@ -30,7 +32,8 @@ ProjectSyncThread::~ProjectSyncThread()
     this->stopThread(1000);
 }
 
-void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs, WeakReference<ProjectTreeItem> project)
+void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs,
+    const String &projectId, const String &projectName)
 {
     if (this->isThreadRunning())
     {
@@ -39,7 +42,8 @@ void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs, WeakReference<
     }
 
     this->vcs = vcs;
-    this->project = project;
+    this->projectId = projectId;
+    this->projectName = projectName;
     this->startThread(7);
 }
 
@@ -84,19 +88,6 @@ static ReferenceCountedArray<VCS::Revision> constructNewLocalTrees(const Referen
     return trees;
 }
 
-static bool findParentIn(const String &id, const Array<RevisionDto> &list)
-{
-    for (const auto child : list)
-    {
-        if (child.getId() == id)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 // Returns a map of <id of a parent to mount to : root revision containing all the children>
 static RevisionsMap constructNewRemoteTrees(const Array<RevisionDto> &list)
 {
@@ -138,13 +129,10 @@ static RevisionsMap constructNewRemoteTrees(const Array<RevisionDto> &list)
 
 void ProjectSyncThread::run()
 {
-    namespace ApiKeys = Serialization::Api::V1;
-    namespace ApiRoutes = Routes::HelioFM::Api;
-
     RevisionsMap localRevisions;
     buildLocalRevisionsIndex(localRevisions, this->vcs->getRoot());
 
-    const String projectRoute(ApiRoutes::project.replace(":projectId", this->project->getId()));
+    const String projectRoute(ApiRoutes::project.replace(":projectId", this->projectId));
     const BackendRequest revisionsRequest(projectRoute);
     this->response = revisionsRequest.get();
 
@@ -154,9 +142,9 @@ void ProjectSyncThread::run()
     {
         // Put the project:
         const BackendRequest createProjectRequest(projectRoute);
-        ValueTree payload(ApiKeys::session);
+        ValueTree payload(ApiKeys::Projects::project);
         // head reference will be put later when all revisions are pushed
-        payload.setProperty(ApiKeys::Projects::title, this->project->getProjectInfo()->getFullName(), nullptr);
+        payload.setProperty(ApiKeys::Projects::title, this->projectName, nullptr);
         this->response = createProjectRequest.put(payload);
         if (!this->response.is2xx())
         {
@@ -203,7 +191,7 @@ void ProjectSyncThread::run()
     {
         if (this->onSyncDone != nullptr)
         {
-            this->onSyncDone(true, 0, 0);
+            this->onSyncDone(0, 0);
         }
         return;
     }
@@ -226,14 +214,14 @@ void ProjectSyncThread::run()
     {
         // todo only pull a revision if that was specified explicitly?
         const String revisionRoute(ApiRoutes::projectRevision
-            .replace(":projectId", this->project->getId())
+            .replace(":projectId", this->projectId)
             .replace(":revisionId", subtree.second->getUuid()));
 
         const BackendRequest revisionRequest(revisionRoute);
         this->response = revisionRequest.get();
         if (!this->response.is2xx())
         {
-            Logger::writeToLog("Failed to fetch the revision data: " + this->response.getErrors().getFirst());
+            Logger::writeToLog("Failed to fetch revision data: " + this->response.getErrors().getFirst());
             callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
             return;
         }
@@ -250,7 +238,64 @@ void ProjectSyncThread::run()
     // if anything is needed to push,
     // build tree(s) from newLocalRevisions list
     const auto newLocalTrees = constructNewLocalTrees(newLocalRevisions);
+
     // push them recursively, starting from the root, so that
     // each pushed revision already has a valid remote parent
+    for (auto subtree : newLocalTrees)
+    {
+        this->pushSubtreeRecursively(subtree);
+    }
 
+    // finally, update project head ref
+    const BackendRequest createProjectRequest(projectRoute);
+    ValueTree payload(ApiKeys::Projects::project);
+    // head reference will be put later when all revisions are pushed
+    payload.setProperty(ApiKeys::Projects::title, this->projectName, nullptr);
+    payload.setProperty(ApiKeys::Projects::head, this->vcs->getHead().getHeadingRevision()->getUuid(), nullptr);
+    this->response = createProjectRequest.put(payload);
+    if (!this->response.is2xx())
+    {
+        Logger::writeToLog("Failed to update the project on remote: " + this->response.getErrors().getFirst());
+        callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+        return;
+    }
+
+    if (this->onSyncDone != nullptr)
+    {
+        this->onSyncDone(newRemoteRevisions.size(), newLocalRevisions.size());
+    }
+}
+
+void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision *root)
+{
+    const String revisionRoute(ApiRoutes::projectRevision
+        .replace(":projectId", this->projectId)
+        .replace(":revisionId", root->getUuid()));
+
+    ValueTree payload(ApiKeys::Revisions::revision);
+    payload.setProperty(ApiKeys::Revisions::message, root->getMessage(), nullptr);
+    payload.setProperty(ApiKeys::Revisions::timestamp, String(root->getTimeStamp()), nullptr);
+    payload.setProperty(ApiKeys::Revisions::parentId, (root->getParent() ? root->getParent()->getUuid() : var::null), nullptr);
+    ValueTree data(ApiKeys::Revisions::data);
+    data.addChild(root->serialize(), 0, nullptr);
+    payload.addChild(data, 0, nullptr);
+
+    const BackendRequest revisionRequest(revisionRoute);
+    this->response = revisionRequest.put(payload);
+    if (!this->response.is2xx())
+    {
+        Logger::writeToLog("Failed to put revision data: " + this->response.getErrors().getFirst());
+        callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+        return;
+    }
+    
+    if (this->onRevisionPushed != nullptr)
+    {
+        this->onRevisionPushed(root);
+    }
+
+    for (auto *child : root->getChildren())
+    {
+        this->pushSubtreeRecursively(child);
+    }
 }

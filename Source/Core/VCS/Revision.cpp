@@ -31,7 +31,8 @@ Revision::Revision(Pack::Ptr pack, const String &name /*= String::empty*/) :
 Revision::Revision(const RevisionDto &dto) :
     pack(nullptr),
     message(dto.getMessage()),
-    id(dto.getId()) {}
+    id(dto.getId()),
+    timestamp(dto.getTimestamp()) {}
 
 void Revision::copyDeltasFrom(Revision::Ptr other)
 {
@@ -52,21 +53,14 @@ void Revision::copyDeltasFrom(Revision::Ptr other)
     }
 }
 
-uint32 Revision::calculateHash() const
-{
-    StringArray sum;
-    for (const auto *revItem : this->deltas)
-    {
-        sum.add(revItem->getUuid().toString());
-    }
-
-    sum.sort(true);
-    return CompileTimeHash(sum.joinIntoString("").toUTF8());
-}
-
 bool Revision::isEmpty() const noexcept
 {
     return this->deltas.isEmpty() && this->children.isEmpty();
+}
+
+bool Revision::isShallowCopy() const noexcept
+{
+    return this->isEmpty() && this->pack == nullptr;
 }
 
 int64 Revision::getTimeStamp() const noexcept

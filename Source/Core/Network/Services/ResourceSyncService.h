@@ -18,6 +18,7 @@
 #pragma once
 
 #include "BackendService.h"
+#include "ProjectSyncThread.h"
 #include "UpdatesCheckThread.h"
 #include "RequestResourceThread.h"
 
@@ -27,8 +28,12 @@ public:
 
     ResourceSyncService();
 
+    void syncProject(WeakReference<VersionControl> vcs,
+        const String &projectId, const String &projectName);
+
 private:
 
+    ProjectSyncThread *prepareProjectSyncThread();
     UpdatesCheckThread *prepareUpdatesCheckThread();
     RequestResourceThread *prepareResourceRequestThread();
 

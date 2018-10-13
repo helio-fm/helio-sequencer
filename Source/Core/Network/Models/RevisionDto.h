@@ -21,12 +21,13 @@
 
 struct RevisionDto final : ApiModel
 {
+    RevisionDto() : ApiModel({}) {}
     RevisionDto(const ValueTree &tree) : ApiModel(tree) {}
 
     String getId() const noexcept { return DTO_PROPERTY(Revisions::id); }
-    String getHash() const noexcept { return DTO_PROPERTY(Revisions::hash); }
     String getMessage() const noexcept { return DTO_PROPERTY(Revisions::message); }
     String getParentId() const noexcept { return DTO_PROPERTY(Revisions::parentId); }
+    int64 getTimestamp() const noexcept { return DTO_PROPERTY(Revisions::timestamp); }
     ValueTree getData() const noexcept { return DTO_CHILD(Revisions::data); }
 
     JUCE_LEAK_DETECTOR(RevisionDto)

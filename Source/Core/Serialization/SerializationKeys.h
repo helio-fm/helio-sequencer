@@ -501,9 +501,9 @@ namespace Serialization
             static const Identifier message = "message";
 
             static const Identifier user = "user";
-            static const Identifier session = "session";
             static const Identifier token = "token";
             static const Identifier bearer = "bearer";
+            static const Identifier session = "session";
             static const Identifier deviceId = "deviceId";
             static const Identifier platformId = "platformId";
 
@@ -522,6 +522,7 @@ namespace Serialization
             namespace AuthSession
             {
                 static const Identifier id = "id";
+                static const Identifier session = "session";
                 static const Identifier secret = "secretKey";
                 static const Identifier provider = "provider";
                 static const Identifier appName = "appName";
@@ -562,6 +563,7 @@ namespace Serialization
 
             namespace Projects
             {
+                static const Identifier project = "project";
                 static const Identifier projects = "projects";
                 static const Identifier id = "id";
                 static const Identifier title = "title";
@@ -572,11 +574,11 @@ namespace Serialization
 
             namespace Revisions
             {
-                static const Identifier revisions = "revisions";
                 static const Identifier revision = "revision";
+                static const Identifier revisions = "revisions";
                 static const Identifier id = "id";
-                static const Identifier hash = "hash";
                 static const Identifier message = "message";
+                static const Identifier timestamp = "timestamp";
                 static const Identifier parentId = "parentId";
                 static const Identifier data = "data";
             }
