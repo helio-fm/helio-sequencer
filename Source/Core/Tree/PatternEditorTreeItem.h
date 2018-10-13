@@ -35,15 +35,6 @@ public:
     String getStatsString() const;
 
     //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    void onItemParentChanged() override {}
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
-    { return false; }
-
-    //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 

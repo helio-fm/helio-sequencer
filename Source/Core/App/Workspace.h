@@ -53,8 +53,8 @@ public:
     //===------------------------------------------------------------------===//
 
     ProjectsList &getProjectsList() const override;
-    bool onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescription) override;
-    void onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescription) override;
+    bool onClickedLoadRecentFile(RecentFileDescription::Ptr file) override;
+    void onClickedUnloadRecentFile(RecentFileDescription::Ptr file) override;
 
     //===------------------------------------------------------------------===//
     // Project management
@@ -93,19 +93,11 @@ private:
 
     UniquePointer<ProjectsList> recentProjectsList;
     
-    WeakReference<ProjectTreeItem> currentProject;
-    
     UniquePointer<AudioCore> audioCore;
     UniquePointer<PluginScanner> pluginManager;
     
     UniquePointer<RootTreeItem> treeRoot;
     TreeNavigationHistory navigationHistory;
 
-    // A quick hack to have some kind of backwards compatibility.
-    // If a previous version of tree is found, it is loaded as is
-    // and then saved along with the new one.
-    UniquePointer<XmlElement> previousVersionTree;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Workspace)
-
 };

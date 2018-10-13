@@ -36,15 +36,7 @@ public:
     ScopedPointer<Component> createMenu() override;
 
     void showPage() override;
-
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    var getDragSourceDescription() override;
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
+    
 private:
 
     ScopedPointer<Component> audioPluginEditor;

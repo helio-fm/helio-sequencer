@@ -66,7 +66,6 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    var getDragSourceDescription() override { return {}; }
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
     bool isInterestedInFileDrag(const StringArray &files) override;
     void filesDropped(const StringArray &files, int insertIndex) override;

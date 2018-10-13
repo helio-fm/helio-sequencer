@@ -37,16 +37,6 @@ public:
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
 
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    var getDragSourceDescription() override
-    { return {}; }
-
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
-    { return false; }
-
 private:
 
     ScopedPointer<ComponentsList> settingsList;

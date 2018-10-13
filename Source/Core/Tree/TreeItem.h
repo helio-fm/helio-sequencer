@@ -197,9 +197,10 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-    bool isInterestedInFileDrag(const StringArray &files) override { return false; }
-    void filesDropped(const StringArray &files, int insertIndex) override {}
+    void itemDropped(const DragAndDropTarget::SourceDetails &, int) override;
+    bool isInterestedInFileDrag(const StringArray &) override { return false; }
+    void filesDropped(const StringArray &, int) override {}
+    var getDragSourceDescription() override { return{}; }
 
     //===------------------------------------------------------------------===//
     // Cleanup

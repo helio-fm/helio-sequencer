@@ -147,11 +147,3 @@ void AudioPluginTreeItem::showPage()
 
     App::Layout().showPage(this->audioPluginEditor, this);
 }
-
-//===----------------------------------------------------------------------===//
-// Dragging
-//===----------------------------------------------------------------------===//
-
-var AudioPluginTreeItem::getDragSourceDescription() { return {}; }
-bool AudioPluginTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) { return false; }
-void AudioPluginTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) {}

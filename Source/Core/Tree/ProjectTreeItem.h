@@ -98,8 +98,7 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
+    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &) override;
 
     //===------------------------------------------------------------------===//
     // Undos

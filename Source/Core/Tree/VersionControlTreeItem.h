@@ -36,20 +36,19 @@ public:
 
     void showPage() override;
     void recreatePage() override;
-    
+
+    void onItemParentChanged() override;
+
     String getStatsString() const;
     
     void commitProjectInfo();
     void toggleQuickStash();
-    
+
     //===------------------------------------------------------------------===//
-    // Dragging
+    // Network
     //===------------------------------------------------------------------===//
 
-    void onItemParentChanged() override;
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
-    { return false; }
+    void syncProject();
 
     //===------------------------------------------------------------------===//
     // Menu
@@ -68,8 +67,8 @@ public:
 
 protected:
 
-    ScopedPointer<VersionControl> vcs;
-    ScopedPointer<VersionControlEditor> editor;
+    UniquePointer<VersionControl> vcs;
+    UniquePointer<VersionControlEditor> editor;
 
 private:
         
