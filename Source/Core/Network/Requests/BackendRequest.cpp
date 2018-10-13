@@ -147,7 +147,7 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
 
         // Try to parse errors
         using namespace Serialization;
-        if (response.statusCode < 200 && response.statusCode >= 400)
+        if (response.statusCode < 200 || response.statusCode >= 400)
         {
             for (int i = 0; i < parsedResponse.getNumProperties(); ++i)
             {
