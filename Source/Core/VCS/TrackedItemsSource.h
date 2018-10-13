@@ -28,6 +28,7 @@ namespace VCS
         TrackedItemsSource() {}
         virtual ~TrackedItemsSource() {};
 
+        virtual String getVCSId() const = 0;
         virtual String getVCSName() const = 0;
 
         virtual int getNumTrackedItems() = 0;
@@ -56,6 +57,5 @@ namespace VCS
     private:
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackedItemsSource)
-        JUCE_DECLARE_WEAK_REFERENCEABLE(TrackedItemsSource)
     };
 } // namespace VCS

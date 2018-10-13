@@ -36,8 +36,7 @@ namespace VCS
     public:
 
         Head(const Head &other);
-        explicit Head(Pack::Ptr packPtr,
-             WeakReference<TrackedItemsSource> targetProject = nullptr);
+        Head(Pack::Ptr packPtr, TrackedItemsSource &targetProject);
 
         Revision::Ptr getHeadingRevision() const;
         
@@ -101,12 +100,11 @@ namespace VCS
 
         Revision::Ptr headingAt;
         ReadWriteLock stateLock;
-        ScopedPointer<Snapshot> state;
+        UniquePointer<Snapshot> state;
 
     private:
 
-        WeakReference<TrackedItemsSource> targetVcsItemsSource; // ProjectTreeItem
-
+        TrackedItemsSource &targetVcsItemsSource;
         Pack::Ptr pack;
 
         JUCE_LEAK_DETECTOR(Head)

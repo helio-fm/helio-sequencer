@@ -37,9 +37,9 @@ Head::Head(const Head &other) :
     rebuildingDiffMode(false),
     diff(other.diff),
     headingAt(other.headingAt),
-    state(new Snapshot(other.state)) {}
+    state(new Snapshot(other.state.get())) {}
 
-Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
+Head::Head(Pack::Ptr packPtr, TrackedItemsSource &targetProject) :
     Thread("Diff Thread"),
     targetVcsItemsSource(targetProject),
     pack(packPtr),
@@ -47,13 +47,7 @@ Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
     rebuildingDiffMode(false),
     diff(new Revision(packPtr)),
     headingAt(new Revision(packPtr)),
-    state(nullptr)
-{
-    if (targetVcsItemsSource != nullptr)
-    {
-        this->state = new Snapshot();
-    }
-}
+    state(new Snapshot()) {}
 
 Revision::Ptr Head::getHeadingRevision() const
 {
@@ -150,47 +144,44 @@ bool VCS::Head::moveTo(const Revision::Ptr revision)
         this->stopThread(DIFF_BUILD_THREAD_STOP_TIMEOUT);
     }
 
-    if (this->targetVcsItemsSource != nullptr)
+    // first, reset the snapshot state
     {
-        // first, reset the snapshot state
-        {
-            const ScopedWriteLock lock(this->stateLock);
-            this->state = new Snapshot();
-        }
+        const ScopedWriteLock lock(this->stateLock);
+        this->state.reset(new Snapshot());
+    }
 
-        // a path from the root to current revision
-        ReferenceCountedArray<Revision> treePath;
-        Revision::Ptr currentRevision(revision);
-        while (currentRevision != nullptr)
-        {
-            treePath.insert(0, currentRevision);
-            currentRevision = currentRevision->getParent();
-        }
+    // a path from the root to current revision
+    ReferenceCountedArray<Revision> treePath;
+    Revision::Ptr currentRevision(revision);
+    while (currentRevision != nullptr)
+    {
+        treePath.insert(0, currentRevision);
+        currentRevision = currentRevision->getParent();
+    }
 
-        // then move from the root back to target revision
-        for (const auto *rev : treePath)
-        {
-            Logger::writeToLog("VCS head moved to " + rev->getUuid());
+    // then move from the root back to target revision
+    for (const auto *rev : treePath)
+    {
+        Logger::writeToLog("VCS head moved to " + rev->getUuid());
 
-            // picking all deltas and applying them to current state
-            for (auto *item : rev->getItems())
+        // picking all deltas and applying them to current state
+        for (auto *item : rev->getItems())
+        {
+            if (item->getType() == RevisionItem::Added)
             {
-                if (item->getType() == RevisionItem::Added)
-                {
-                    this->state->addItem(item);
-                }
-                else if (item->getType() == RevisionItem::Removed)
-                {
-                    this->state->removeItem(item);
-                }
-                else if (item->getType() == RevisionItem::Changed)
-                {
-                    this->state->mergeItem(item);
-                }
-                else
-                {
-                    jassertfalse;
-                }
+                this->state->addItem(item);
+            }
+            else if (item->getType() == RevisionItem::Removed)
+            {
+                this->state->removeItem(item);
+            }
+            else if (item->getType() == RevisionItem::Changed)
+            {
+                this->state->mergeItem(item);
+            }
+            else
+            {
+                jassertfalse;
             }
         }
     }
@@ -209,9 +200,6 @@ void Head::pointTo(const Revision::Ptr revision)
 
 bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return false; }
-
     if (this->state == nullptr)
     { return false; }
 
@@ -236,9 +224,9 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
         VCS::TrackedItem *targetItem = nullptr;
 
         // ищем в проекте айтем с соответствующим уидом
-        for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+        for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            VCS::TrackedItem *item = this->targetVcsItemsSource->getTrackedItem(i);
+            VCS::TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {
@@ -258,9 +246,9 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
         VCS::TrackedItem *targetItem = nullptr;
 
         // снова ищем исходный с тем же уидом и вызываем deleteTrackedItem
-        for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+        for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            VCS::TrackedItem *item = this->targetVcsItemsSource->getTrackedItem(i);
+            VCS::TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {
@@ -271,7 +259,7 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
 
         if (targetItem)
         {
-            return this->targetVcsItemsSource->deleteTrackedItem(targetItem);
+            return this->targetVcsItemsSource.deleteTrackedItem(targetItem);
         }
     }
     else if (diffItem->getType() == RevisionItem::Removed)
@@ -280,7 +268,7 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
         const Uuid id(sourceItem->getUuid());
 
         TrackedItem *newItem =
-            this->targetVcsItemsSource->initTrackedItem(logicType, id);
+            this->targetVcsItemsSource.initTrackedItem(logicType, id);
 
         if (newItem)
         {
@@ -294,9 +282,6 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
 
 void Head::checkout()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     if (this->state == nullptr)
     { return; }
 
@@ -304,9 +289,9 @@ void Head::checkout()
     {
         Array<TrackedItem *> itemsToClear;
 
-        for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+        for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            TrackedItem *ti = this->targetVcsItemsSource->getTrackedItem(i);
+            TrackedItem *ti = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (this->state->getItemWithUuid(ti->getUuid()) != nullptr)
             {
@@ -316,7 +301,7 @@ void Head::checkout()
 
         for (auto i : itemsToClear)
         {
-            this->targetVcsItemsSource->deleteTrackedItem(i);
+            this->targetVcsItemsSource.deleteTrackedItem(i);
         }
     }
 
@@ -326,14 +311,11 @@ void Head::checkout()
         this->checkoutItem(stateItem);
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
 }
 
 void Head::cherryPick(const Array<Uuid> uuids)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     if (this->state == nullptr)
     { return; }
 
@@ -352,14 +334,11 @@ void Head::cherryPick(const Array<Uuid> uuids)
         }
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
 }
 
 void Head::cherryPickAll()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-    
     if (this->state == nullptr)
     { return; }
     
@@ -369,14 +348,11 @@ void Head::cherryPickAll()
         this->checkoutItem(stateItem);
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
 }
 
 bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return false; }
-    
     if (this->state == nullptr)
     { return false; }
 
@@ -385,24 +361,21 @@ bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
         this->resetChangedItemToState(item);
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
     return true;
 }
 
 void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     // Changed и Added RevisionItem'ы нужно применять через resetStateTo
     TrackedItem *targetItem = nullptr;
 
     //Logger::writeToLog(stateItem->getVCSName());
     
     // ищем в проекте айтем с соответствующим уидом
-    for (int j = 0; j < this->targetVcsItemsSource->getNumTrackedItems(); ++j)
+    for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
     {
-        TrackedItem *item = this->targetVcsItemsSource->getTrackedItem(j);
+        TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(j);
 
         if (item->getUuid() == stateItem->getUuid())
         {
@@ -430,7 +403,7 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
             //Logger::writeToLog("Create tracked item of type: " + logicType);
 
             TrackedItem *newItem =
-                this->targetVcsItemsSource->initTrackedItem(logicType, id);
+                this->targetVcsItemsSource.initTrackedItem(logicType, id);
 
             if (newItem)
             {
@@ -446,7 +419,7 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
     {
         if (targetItem)
         {
-            this->targetVcsItemsSource->deleteTrackedItem(targetItem);
+            this->targetVcsItemsSource.deleteTrackedItem(targetItem);
         }
     }
 }
@@ -553,7 +526,7 @@ void VCS::Head::deserialize(const ValueTree &tree)
 
 void Head::reset()
 {
-    this->state = new Snapshot();
+    this->state.reset(new Snapshot());
     this->setDiffOutdated(true);
 }
 
@@ -574,9 +547,6 @@ void Head::changeListenerCallback(ChangeBroadcaster *source)
 
 void Head::run()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     if (this->state == nullptr)
     { return; }
     
@@ -605,7 +575,7 @@ void Head::run()
         // will check `removed` records later
         if (stateItem->getType() == RevisionItem::Removed) { continue; }
 
-        for (int j = 0; j < this->targetVcsItemsSource->getNumTrackedItems(); ++j)
+        for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
             if (this->threadShouldExit())
             {
@@ -614,7 +584,7 @@ void Head::run()
                 return;
             }
 
-            TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(j); // i.e. LayerTreeItem
+            TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. LayerTreeItem
 
             // state item exists in project, adding `changed` record, if needed
             if (stateItem->getUuid() == targetItem->getUuid())
@@ -645,7 +615,7 @@ void Head::run()
     }
 
     // search for project item that are missing (or deleted) in the state
-    for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+    for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
     {
         if (this->threadShouldExit())
         {
@@ -655,7 +625,7 @@ void Head::run()
         }
 
         bool foundItemInState = false;
-        TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(i);
+        TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(i);
 
         for (int j = 0; j < this->state->getNumTrackedItems(); ++j)
         {
@@ -687,9 +657,6 @@ void Head::run()
 // FIXME: lots of duplicate code form Head::run
 void Head::rebuildDiffSynchronously()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-    
     if (this->state == nullptr)
     { return; }
     
@@ -713,9 +680,9 @@ void Head::rebuildDiffSynchronously()
         // will check `removed` records later
         if (stateItem->getType() == RevisionItem::Removed) { continue; }
         
-        for (int j = 0; j < this->targetVcsItemsSource->getNumTrackedItems(); ++j)
+        for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
-            TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(j); // i.e. LayerTreeItem
+            TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. LayerTreeItem
             
             // state item exists in project, adding `changed` record, if needed
             if (stateItem->getUuid() == targetItem->getUuid())
@@ -746,10 +713,10 @@ void Head::rebuildDiffSynchronously()
     }
     
     // search for project item that are missing (or deleted) in the state
-    for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+    for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
     {
         bool foundItemInState = false;
-        TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(i);
+        TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(i);
         
         for (int j = 0; j < this->state->getNumTrackedItems(); ++j)
         {

@@ -423,6 +423,11 @@ SessionService *App::getSessionService() const noexcept
     return this->sessionService;
 }
 
+ResourceSyncService *App::getResourceSyncService() const noexcept
+{
+    return this->resourceSyncService;
+}
+
 HelioTheme *App::getTheme() const noexcept
 {
     return this->theme;

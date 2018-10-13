@@ -23,10 +23,13 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 #include "SerializationKeys.h"
+#include "ResourceSyncService.h"
+#include "App.h"
 
 using namespace VCS;
 
-VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent) :
+VersionControl::VersionControl(VCS::TrackedItemsSource &parent) :
+    parent(parent),
     pack(new Pack()),
     head(pack, parent),
     stashes(new StashesRepository(pack)),
@@ -46,26 +49,6 @@ VersionControl::~VersionControl()
 VersionControlEditor *VersionControl::createEditor()
 {
     return new VersionControlEditor(*this);
-}
-
-static StringArray recursiveGetHashes(const Revision *revision)
-{
-    StringArray sum;
-    for (auto *child : revision->getChildren())
-    {
-        sum.addArray(recursiveGetHashes(child));
-    }
-
-    const uint32 revisionSum(revision->calculateHash());
-    sum.add(String(revisionSum));
-    return sum;
-}
-
-String VersionControl::calculateHash() const
-{
-    StringArray ids(recursiveGetHashes(this->rootRevision));
-    ids.sort(true); // sort it not to depend on child order
-    return String(CompileTimeHash(ids.joinIntoString("").toUTF8()));
 }
 
 //===----------------------------------------------------------------------===//
@@ -114,10 +97,9 @@ void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const Strin
     }
     else
     {
-        Revision::Ptr headRevision(this->getRevisionById(this->rootRevision, appendRevisionId));
-        if (!headRevision->isEmpty())
+        if (auto targetRevision = this->getRevisionById(this->rootRevision, appendRevisionId))
         {
-            headRevision->addChild(subtree);
+            targetRevision->addChild(subtree);
             this->sendChangeMessage();
         }
     }
@@ -125,8 +107,15 @@ void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const Strin
 
 Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const ValueTree &data)
 {
-    // TODO
-    return {};
+    if (auto targetRevision = this->getRevisionById(this->rootRevision, id))
+    {
+        targetRevision->deserialize(data);
+        targetRevision->flush();
+        this->sendChangeMessage();
+        return targetRevision;
+    }
+
+    return nullptr;
 }
 
 void VersionControl::quickAmendItem(TrackedItem *targetItem)
@@ -332,27 +321,13 @@ void VersionControl::deserialize(const ValueTree &tree)
         const double h1 = Time::getMillisecondCounterHiRes();
         this->head.deserialize(root);
         const double h2 = Time::getMillisecondCounterHiRes();
-        Logger::writeToLog("Loading index done in " + String(h2 - h1) + "ms");
+        Logger::writeToLog("Loading VCS snapshot done in " + String(h2 - h1) + "ms");
     }
     
-    Revision::Ptr headRevision(this->getRevisionById(this->rootRevision, headId));
-
-    // здесь мы раньше полностью десериализовали состояние хэда.
-    // если дерево истории со временеи становится большим, moveTo со всеми мержами занимает кучу времени.
-    // если работать в десятками тысяч событий, загрузка индекса длится ~2ms, а пересборка индекса - ~500ms
-    // поэтому moveTo убираем, оставляем pointTo
-    
-    if (! headRevision->isEmpty())
+    if (auto headRevision = this->getRevisionById(this->rootRevision, headId))
     {
-        //const double t1 = Time::getMillisecondCounterHiRes();
-
         this->head.pointTo(headRevision);
-        //this->head.moveTo(headRevision);
-
-        //const double t2 = Time::getMillisecondCounterHiRes();
-        //Logger::writeToLog("Building index done in " + String(t2 - t1) + "ms");
     }
-//#endif
 }
 
 void VersionControl::reset()
@@ -362,7 +337,6 @@ void VersionControl::reset()
     this->stashes->reset();
     this->pack->reset();
 }
-
 
 //===----------------------------------------------------------------------===//
 // ChangeListener
@@ -374,6 +348,15 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
     this->getHead().setDiffOutdated(true);
 }
 
+//===----------------------------------------------------------------------===//
+// Network
+//===----------------------------------------------------------------------===//
+
+void VersionControl::syncProject()
+{
+    App::Helio().getResourceSyncService()->syncProject(this,
+        this->parent.getVCSId(), this->parent.getVCSName());
+}
 
 //===----------------------------------------------------------------------===//
 // Private
@@ -381,8 +364,6 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
 
 Revision::Ptr VersionControl::getRevisionById(const Revision::Ptr startFrom, const String &id) const
 {
-    //Logger::writeToLog("getRevisionById, iterating " + startFrom.getUuid());
-
     if (startFrom->getUuid() == id)
     {
         return startFrom;
@@ -390,13 +371,11 @@ Revision::Ptr VersionControl::getRevisionById(const Revision::Ptr startFrom, con
 
     for (auto *child : startFrom->getChildren())
     {
-        Revision::Ptr search(this->getRevisionById(child, id));
-        if (! search->isEmpty())
+        if (auto search = this->getRevisionById(child, id))
         {
-            //Logger::writeToLog("search ok, returning " + search.getUuid());
             return search;
         }
     }
 
-    return { new Revision(this->pack) };
+    return nullptr;
 }

@@ -39,11 +39,9 @@ class VersionControl final :
 {
 public:
 
-    explicit VersionControl(WeakReference<VCS::TrackedItemsSource> parent);
+    explicit VersionControl(VCS::TrackedItemsSource &parent);
     ~VersionControl() override;
-
-    String calculateHash() const;
-
+    
     //===------------------------------------------------------------------===//
     // VCS
     //===------------------------------------------------------------------===//
@@ -62,7 +60,7 @@ public:
     bool resetChanges(SparseSet<int> selectedItems);
     bool resetAllChanges();
     bool commit(SparseSet<int> selectedItems, const String &message);
-    void quickAmendItem(VCS::TrackedItem *targetItem); // for project info
+    void quickAmendItem(VCS::TrackedItem *targetItem); // for first commit
 
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
     bool applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash = false);
@@ -71,7 +69,13 @@ public:
     bool hasQuickStash() const;
     bool quickStashAll();
     bool applyQuickStash();
-    
+
+    //===------------------------------------------------------------------===//
+    // Network
+    //===------------------------------------------------------------------===//
+
+    void syncProject();
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -97,5 +101,8 @@ protected:
 
 private:
 
+    VCS::TrackedItemsSource &parent;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(VersionControl)
 };

@@ -55,11 +55,9 @@ public:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-    Component *refreshComponentForRow(int rowNumber,
-        bool isRowSelected, Component *existingComponentToUpdate) override;
-    void paintListBoxItem(int rowNumber, Graphics &g,
-        int width, int height, bool rowIsSelected) override {}
-    void selectedRowsChanged(int lastRowSelected) override;
+    Component *refreshComponentForRow(int, bool, Component *) override;
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
+    void selectedRowsChanged(int) override;
 
     //===------------------------------------------------------------------===//
     // HeadlineItemDataSource

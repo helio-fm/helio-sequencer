@@ -157,6 +157,13 @@ void StageComponent::handleCommandMessage (int commandId)
         this->selectAll(sendNotification);
         this->resetSelected();
         break;
+    case CommandIDs::VersionControlPush:
+        this->vcs.syncProject();
+        // TODO
+        break;
+    case CommandIDs::VersionControlPull:
+        // TODO
+        break;
     default:
         break;
     }

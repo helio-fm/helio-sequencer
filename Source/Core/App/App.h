@@ -95,8 +95,9 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    SessionService *getSessionService() const noexcept;
     HelioTheme *getTheme() const noexcept;
+    SessionService *getSessionService() const noexcept;
+    ResourceSyncService *getResourceSyncService() const noexcept;
     ResourceManager &getResourceManagerFor(const Identifier &id) const;
 
 private:
@@ -108,6 +109,7 @@ private:
     ScopedPointer<class Config> config;
     ScopedPointer<class Workspace> workspace;
     ScopedPointer<class MainWindow> window;
+
     ScopedPointer<class SessionService> sessionService;
     ScopedPointer<class ResourceSyncService> resourceSyncService;
 

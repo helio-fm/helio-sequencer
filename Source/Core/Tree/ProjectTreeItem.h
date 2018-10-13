@@ -163,6 +163,7 @@ public:
     // VCS::TrackedItemsSource
     //===------------------------------------------------------------------===//
 
+    String getVCSId() const override;
     String getVCSName() const override;
     int getNumTrackedItems() override;
     VCS::TrackedItem *getTrackedItem(int index) override;

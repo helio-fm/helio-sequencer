@@ -40,8 +40,8 @@ namespace VCS
         // TrackedItemsSource
         //===--------------------------------------------------------------===//
 
-        String getVCSName() const noexcept override
-        { return "<snapshot>"; }
+        String getVCSId() const noexcept override { return "<snapshot>"; }
+        String getVCSName() const noexcept override { return "<snapshot>"; }
         
         int getNumTrackedItems() override;
         TrackedItem *getTrackedItem(int index) override;

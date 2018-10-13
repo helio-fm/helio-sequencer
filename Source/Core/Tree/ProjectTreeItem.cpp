@@ -883,6 +883,11 @@ MidiSequence *ProjectTreeItem::getSequenceByTrackId(const String &trackId)
 // VCS::TrackedItemsSource
 //===----------------------------------------------------------------------===//
 
+String ProjectTreeItem::getVCSId() const
+{
+    return this->getId();
+}
+
 String ProjectTreeItem::getVCSName() const
 {
     return this->getName();
