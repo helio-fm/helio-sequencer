@@ -143,7 +143,7 @@ void RecentProjectRow::setSelected(bool shouldBeSelected)
     }
 }
 
-void RecentProjectRow::updateDescription(bool isLastRow, const RecentFileDescription::Ptr file)
+void RecentProjectRow::updateDescription(bool isLastRow, const RecentProjectInfo::Ptr file)
 {
     //Logger::writeToLog("Updating info for: " + file->title);
     this->targetFile = file;

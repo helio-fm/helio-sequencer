@@ -57,8 +57,6 @@ public:
     explicit ProjectTreeItem(const File &existingFile);
     ~ProjectTreeItem() override;
     
-    void deletePermanently();
-    
     String getId() const noexcept;
     String getStats() const;
 

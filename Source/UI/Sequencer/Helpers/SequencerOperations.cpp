@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "SequencerOperations.h"
 #include "ProjectTreeItem.h"
-#include "Clipboard.h"
+#include "App.h"
 #include "Lasso.h"
 #include "Note.h"
 #include "AnnotationEvent.h"

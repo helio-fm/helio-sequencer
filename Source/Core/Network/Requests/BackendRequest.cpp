@@ -132,7 +132,7 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
     const String responseBody = stream->readEntireStreamAsString();
     if (responseBody.isNotEmpty())
     {
-        Logger::writeToLog("<< Received " + String(response.statusCode) + " " + responseBody.substring(0, 128) + (responseBody.length() > 128 ? ".." : ""));
+        Logger::writeToLog("<< Received " + String(response.statusCode) + " " + responseBody); // .substring(0, 128) + (responseBody.length() > 128 ? ".." : ""));
         //Logger::writeToLog(response.headers.getDescription());
 
         ValueTree parsedResponse;
@@ -224,7 +224,7 @@ BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, con
     int i = 0;
     do
     {
-        Logger::writeToLog(">> " + verb + " " + this->apiEndpoint + " " + jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
+        Logger::writeToLog(">> " + verb + " " + this->apiEndpoint + " " + jsonPayload); // jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
         stream = url.createInputStream(true,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,

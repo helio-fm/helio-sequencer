@@ -22,6 +22,9 @@
 #include "RevisionDto.h"
 #include "ProjectDto.h"
 
+#include "App.h"
+#include "Workspace.h"
+
 namespace ApiKeys = Serialization::Api::V1;
 namespace ApiRoutes = Routes::HelioFM::Api;
 
@@ -152,6 +155,11 @@ void ProjectSyncThread::run()
             callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
             return;
         }
+
+        //App::Workspace().getProjectsList().setTrackedRemote?
+        //App::Session().getUserProfile().addRemoteProject?
+        // TODO! make this project appear in user's projects list (like, call workspace::recentProjectsList.add blah blah)
+        // TODO make clear where remote revisions info is stored (in vcs, a remote list cache?)
     }
     else if (!this->response.is200())
     {

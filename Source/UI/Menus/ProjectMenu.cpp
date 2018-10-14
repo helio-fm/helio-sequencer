@@ -86,8 +86,8 @@ void ProjectMenu::handleCommandMessage(int commandId)
             this->dismiss();
             return;
         }
-            
-        // TODO: change clips, don't transpose sequences!
+
+        // FIXME: change clips, don't transpose sequences!
         case CommandIDs::ProjectTransposeUp:
         {
             Array<MidiTrack *> tracks = this->project.getTracks();
@@ -95,8 +95,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
             
             for (int i = 0; i < tracks.size(); ++i)
             {
-                if (PianoSequence *pianoSequence =
-                    dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
+                if (auto *pianoSequence = dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
                 {
                     if (! didCheckpoint)
                     {
@@ -108,9 +107,9 @@ void ProjectMenu::handleCommandMessage(int commandId)
                 }
             }
         }
-            return;
-            
-        // TODO: change clips, don't transpose sequences!
+        return;
+
+        // FIXME: change clips, don't transpose sequences!
         case CommandIDs::ProjectTransposeDown:
         {
             Array<MidiTrack *> tracks = this->project.getTracks();
@@ -118,8 +117,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
             
             for (int i = 0; i < tracks.size(); ++i)
             {
-                if (PianoSequence *pianoSequence =
-                    dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
+                if (auto *pianoSequence = dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
                 {
                     if (! didCheckpoint)
                     {
@@ -134,7 +132,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
         return;
 
         case CommandIDs::UnloadProject:
-            App::Workspace().unloadProjectById(this->project.getId());
+            App::Workspace().unloadProject(this->project.getId());
             this->dismiss();
             return;
 
@@ -149,7 +147,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
                 {
                     if (text == project.getName())
                     {
-                        project.deletePermanently();
+                        App::Workspace().deleteProject(project);
                     }
                     else
                     {
@@ -166,6 +164,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
         }
     }
 }
+
 ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);

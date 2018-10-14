@@ -98,19 +98,19 @@ void DashboardMenu::handleCommandMessage (int commandId)
 
 //[MiscUserCode]
 
-void DashboardMenu::loadFile(RecentFileDescription::Ptr fileDescription)
+void DashboardMenu::loadFile(RecentProjectInfo::Ptr project)
 {
-    if (!this->workspace->onClickedLoadRecentFile(fileDescription))
+    if (!this->workspace->loadRecentProject(project))
     {
-        this->workspace->getProjectsList().removeById(fileDescription->projectId);
+        this->workspace->getUserProfile().onProjectDeleted(project->getProjectId());
     }
 
     this->listBox->updateContent();
 }
 
-void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
+void DashboardMenu::unloadFile(RecentProjectInfo::Ptr project)
 {
-    this->workspace->onClickedUnloadRecentFile(fileDescription);
+    this->workspace->unloadProject(project->getProjectId());
     this->listBox->updateContent();
 }
 
@@ -122,12 +122,11 @@ void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
 Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-    const int numFiles = this->workspace->getProjectsList().getNumItems();
-    const bool isLastRow = (rowNumber == (numFiles - 1));
+    const auto &list = this->workspace->getUserProfile().getProjects();
+    const bool isLastRow = (rowNumber == (list.size() - 1));
 
     const int fileIndex = rowNumber;
-    const RecentFileDescription::Ptr item = this->workspace->getProjectsList().getItem(fileIndex);
-    //Logger::writeToLog(String(fileIndex));
+    const auto item = list.getUnchecked(fileIndex);
 
     if (item == nullptr) { return existingComponentToUpdate; }
 
@@ -164,7 +163,7 @@ void DashboardMenu::paintListBoxItem(int, Graphics &, int, int, bool) {}
 
 int DashboardMenu::getNumRows()
 {
-    return this->workspace->getProjectsList().getNumItems();
+    return this->workspace->getUserProfile().getProjects().size();
 }
 
 //[/MiscUserCode]

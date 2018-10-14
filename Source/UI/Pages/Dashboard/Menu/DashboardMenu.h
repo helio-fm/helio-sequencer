@@ -20,7 +20,7 @@
 //[Headers]
 class Workspace;
 
-#include "ProjectsList.h"
+#include "RecentProjectInfo.h"
 
 #if HELIO_DESKTOP
 #    define DEFAULT_RECENT_FILES_ROW_HEIGHT (56)
@@ -40,8 +40,8 @@ public:
 
     //[UserMethods]
 
-    void loadFile(RecentFileDescription::Ptr fileDescription);
-    void unloadFile(RecentFileDescription::Ptr fileDescription);
+    void loadFile(RecentProjectInfo::Ptr fileDescription);
+    void unloadFile(RecentProjectInfo::Ptr fileDescription);
 
     //===------------------------------------------------------------------===//
     // ListBoxModel

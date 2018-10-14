@@ -19,22 +19,22 @@
 
 #include "TreeItem.h"
 
-class TreeNavigationHistoryLock final
+class NavigationHistoryLock final
 {
 public:
-    TreeNavigationHistoryLock() {}
+    NavigationHistoryLock() {}
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeNavigationHistoryLock)
-    JUCE_DECLARE_WEAK_REFERENCEABLE(TreeNavigationHistoryLock)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NavigationHistoryLock)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(NavigationHistoryLock)
 };
 
-class TreeNavigationHistory final : public ChangeBroadcaster
+class NavigationHistory final : public ChangeBroadcaster
 {
 public:
     
-    TreeNavigationHistory();
+    NavigationHistory();
 
-    ScopedPointer<TreeNavigationHistoryLock> lock();
+    ScopedPointer<NavigationHistoryLock> lock();
         
     bool canGoForward() const;
     bool canGoBackward() const;
@@ -50,9 +50,9 @@ private:
     Array<WeakReference<TreeItem>> list;
     
     // A way to prevent new items from being added when navigating back/forward
-    WeakReference<TreeNavigationHistoryLock> historyLock;
+    WeakReference<NavigationHistoryLock> historyLock;
     
     int currentPageIndex;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeNavigationHistory)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NavigationHistory)
 };

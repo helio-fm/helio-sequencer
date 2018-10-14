@@ -17,9 +17,6 @@
 
 #pragma once
 
-#include "Logger.h"
-#include "Clipboard.h"
-
 #if HELIO_DESKTOP
 #   define APP_VERSION_MAJOR "2"
 #   define APP_VERSION_MINOR "0"
@@ -42,9 +39,42 @@ class AudioCore;
 class SessionService;
 class ResourceSyncService;
 
+class Clipboard final
+{
+public:
+
+    Clipboard() = default;
+    void copy(const ValueTree &data, bool mirrorToSystemClipboard = false);
+    const ValueTree &getData() const noexcept;
+
+private:
+
+    String getCurrentContentAsString() const;
+    ValueTree clipboard;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Clipboard)
+    JUCE_PREVENT_HEAP_ALLOCATION
+};
+
+class DebugLogger final : public Logger, public ChangeBroadcaster
+{
+public:
+
+    DebugLogger() = default;
+    String getText() const;
+    void logMessage(const String &message) override;
+
+private:
+
+    ReadWriteLock logLock;
+    String log;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugLogger)
+};
+
 class App final : public JUCEApplication,
                   private AsyncUpdater,
-                  private ChangeListener // listens to TranslationManager
+                  private ChangeListener
 {
 public:
 
@@ -71,12 +101,11 @@ public:
     
     static void dismissAllModalComponents();
 
-    void recreateLayout();
-    
     //===------------------------------------------------------------------===//
     // JUCEApplication
     //===------------------------------------------------------------------===//
 
+    void recreateLayout();
     void initialise(const String &commandLine) override;
     void shutdown() override;
 

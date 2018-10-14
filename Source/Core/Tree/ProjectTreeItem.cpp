@@ -41,7 +41,6 @@
 #include "MidiTrack.h"
 #include "MidiEvent.h"
 #include "TrackedItem.h"
-#include "ProjectsList.h"
 #include "HybridRoll.h"
 #include "UndoStack.h"
 
@@ -107,10 +106,7 @@ ProjectTreeItem::~ProjectTreeItem()
     this->transport->stopRender();
 
     // remember as the recent file
-    App::Workspace().getProjectsList().
-        onProjectStateChanged(this->getName(),
-            this->getDocument()->getFullPath(),
-            this->getId(), false);
+    App::Workspace().getUserProfile().onProjectUnloaded(this->getId());
 
     this->projectPage = nullptr;
 
@@ -124,23 +120,6 @@ ProjectTreeItem::~ProjectTreeItem()
     this->transport = nullptr;
 
     this->autosaver = nullptr;
-}
-
-void ProjectTreeItem::deletePermanently()
-{
-    if (auto vcsTreeItem = this->findChildOfType<VersionControlTreeItem>())
-    {
-        // TODO
-        //vcsTreeItem->deletePermanentlyFromRemoteRepo();
-    }
-    else
-    {
-        // normally, this should never happen
-        File localProjectFile(this->getDocument()->getFullPath());
-        App::Workspace().unloadProjectById(this->getId());
-        localProjectFile.deleteFile();
-        App::Workspace().getProjectsList().cleanup();
-    }
 }
 
 String ProjectTreeItem::getId() const noexcept
@@ -214,20 +193,15 @@ void ProjectTreeItem::safeRename(const String &newName)
         return;
     }
     
-    // notify recent files list
-    App::Workspace().getProjectsList()
-        .removeByPath(this->getDocument()->getFullPath());
-
     this->name = newName;
     
     this->getDocument()->renameFile(newName);
     this->broadcastChangeProjectInfo(this->info);
 
     // notify recent files list
-    App::Workspace().getProjectsList().
-        onProjectStateChanged(this->getName(),
-            this->getDocument()->getFullPath(),
-            this->getId(), true);
+    App::Workspace().getUserProfile()
+        .updateLocalProjectInfo(this->getId(), this->getName(),
+            this->getDocument()->getFullPath());
 
     this->dispatchChangeTreeItemView();
 }
@@ -281,8 +255,7 @@ WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const noexcept
 
 void ProjectTreeItem::updateActiveGroupEditors()
 {
-    Array<TrackGroupTreeItem *> myGroups(this->findChildrenOfType<TrackGroupTreeItem>());
-
+    const auto myGroups = this->findChildrenOfType<TrackGroupTreeItem>();
     for (int i = 0; i < myGroups.size(); ++i)
     {
         TrackGroupTreeItem *group = myGroups.getUnchecked(i);
@@ -778,10 +751,7 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
 
 void ProjectTreeItem::onDocumentDidLoad(File &file)
 {
-    App::Workspace().getProjectsList().
-        onProjectStateChanged(this->getName(),
-            this->getDocument()->getFullPath(),
-            this->getId(), true);
+    App::Workspace().getUserProfile().onProjectLoaded(this->getId());
 }
 
 bool ProjectTreeItem::onDocumentSave(File &file)

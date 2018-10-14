@@ -22,7 +22,7 @@
 #include "LogComponent.h"
 
 //[MiscUserDefs]
-#include "Logger.h"
+#include "App.h"
 //[/MiscUserDefs]
 
 LogComponent::LogComponent()

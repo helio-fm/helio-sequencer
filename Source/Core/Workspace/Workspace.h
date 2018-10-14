@@ -23,11 +23,10 @@ class RootTreeItem;
 class PluginScanner;
 
 #include "DocumentOwner.h"
-#include "ProjectsList.h"
-#include "TreeNavigationHistory.h"
+#include "UserProfile.h"
+#include "NavigationHistory.h"
 
-class Workspace final : public ProjectsList::Owner,
-                        private Serializable
+class Workspace final : private Serializable
 {
 public:
     
@@ -38,32 +37,27 @@ public:
     void shutdown();
     bool isInitialized() const noexcept;
 
+    void activateSubItemWithId(const String &id);
     WeakReference<TreeItem> getActiveTreeItem() const;
-    TreeNavigationHistory &getNavigationHistory();
+    NavigationHistory &getNavigationHistory();
     void navigateBackwardIfPossible();
     void navigateForwardIfPossible();
 
     AudioCore &getAudioCore();
     PluginScanner &getPluginManager();
-    RootTreeItem *getTreeRoot() const;
-    void activateSubItemWithId(const String &id);
-
-    //===------------------------------------------------------------------===//
-    // RecentFilesListOwner
-    //===------------------------------------------------------------------===//
-
-    ProjectsList &getProjectsList() const override;
-    bool onClickedLoadRecentFile(RecentFileDescription::Ptr file) override;
-    void onClickedUnloadRecentFile(RecentFileDescription::Ptr file) override;
+    UserProfile &getUserProfile();
+    RootTreeItem *getTreeRoot();
 
     //===------------------------------------------------------------------===//
     // Project management
     //===------------------------------------------------------------------===//
 
     void createEmptyProject();
-    void unloadProjectById(const String &id);
+    bool loadRecentProject(RecentProjectInfo::Ptr file);
     Array<ProjectTreeItem *> getLoadedProjects() const;
     void stopPlaybackForAllProjects();
+    void unloadProject(const String &id);
+    void deleteProject(ProjectTreeItem &project);
 
     //===------------------------------------------------------------------===//
     // Save/Load
@@ -84,20 +78,18 @@ private:
     void reset() override;
     
 private:
-    
-    void failedDeserializationFallback();
-    
-private:
 
     bool wasInitialized = false;
 
-    UniquePointer<ProjectsList> recentProjectsList;
+    UniquePointer<UserProfile> userProfile;
     
     UniquePointer<AudioCore> audioCore;
     UniquePointer<PluginScanner> pluginManager;
     
     UniquePointer<RootTreeItem> treeRoot;
-    TreeNavigationHistory navigationHistory;
+    NavigationHistory navigationHistory;
+
+    void failedDeserializationFallback();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Workspace)
 };

@@ -46,6 +46,65 @@
 #include "RootTreeItem.h"
 #include "SerializablePluginDescription.h"
 
+
+//===----------------------------------------------------------------------===//
+// Logger
+//===----------------------------------------------------------------------===//
+
+String DebugLogger::getText() const
+{
+#if JUCE_DEBUG
+    const ScopedReadLock lock(this->logLock);
+    return this->log;
+#else
+    return {};
+#endif
+}
+
+void DebugLogger::logMessage(const String &message)
+{
+#if JUCE_DEBUG
+    const ScopedWriteLock lock(this->logLock);
+    this->log += message;
+    this->log += newLine;
+    Logger::outputDebugString(message);
+    this->sendChangeMessage();
+#endif
+}
+
+//===----------------------------------------------------------------------===//
+// Clipboard
+//===----------------------------------------------------------------------===//
+
+String Clipboard::getCurrentContentAsString() const
+{
+    if (this->clipboard.isValid())
+    {
+        String text;
+        static  XmlSerializer serializer;
+        serializer.saveToString(text, this->clipboard);
+        return text;
+    }
+
+    return {};
+}
+
+const ValueTree &Clipboard::getData() const noexcept
+{
+    return clipboard;
+}
+
+void Clipboard::copy(const ValueTree &data, bool mirrorToSystemClipboard /*= false*/)
+{
+    this->clipboard = data;
+
+    if (mirrorToSystemClipboard)
+    {
+        SystemClipboard::copyTextToClipboard(this->getCurrentContentAsString());
+    }
+}
+
+
 //===----------------------------------------------------------------------===//
 // Static
 //===----------------------------------------------------------------------===//
@@ -73,11 +132,6 @@ class MainWindow &App::Window() noexcept
 class Config &App::Config() noexcept
 {
     return *static_cast<App *>(JUCEApplicationBase::getInstance())->config;
-}
-
-class Clipboard &App::Clipboard() noexcept
-{
-    return static_cast<App *>(JUCEApplicationBase::getInstance())->clipboard;
 }
 
 Point<double> App::getScreenInCm()

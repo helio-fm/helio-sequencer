@@ -27,6 +27,7 @@
 #include "PluginScanner.h"
 #include "SettingsTreeItem.h"
 #include "OrchestraPitTreeItem.h"
+#include "VersionControlTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
 #include "Dashboard.h"
@@ -40,7 +41,7 @@ void Workspace::init()
 {
     if (! this->wasInitialized)
     {
-        this->recentProjectsList.reset(new ProjectsList());
+        this->userProfile.reset(new UserProfile());
         this->audioCore.reset(new AudioCore());
         this->pluginManager.reset(new PluginScanner());
         this->treeRoot.reset(new RootTreeItem("Workspace"));
@@ -76,10 +77,9 @@ void Workspace::shutdown()
         }
 
         this->treeRoot = nullptr;
-
-        this->recentProjectsList = nullptr;
         this->pluginManager = nullptr;
         this->audioCore = nullptr;
+        this->userProfile = nullptr;
 
         this->wasInitialized = false;
     }
@@ -89,7 +89,7 @@ void Workspace::shutdown()
 // Navigation history
 //===----------------------------------------------------------------------===//
 
-TreeNavigationHistory &Workspace::getNavigationHistory()
+NavigationHistory &Workspace::getNavigationHistory()
 {
     return this->navigationHistory;
 }
@@ -138,54 +138,15 @@ PluginScanner &Workspace::getPluginManager()
     return *this->pluginManager;
 }
 
-RootTreeItem *Workspace::getTreeRoot() const
+RootTreeItem *Workspace::getTreeRoot()
 {
     return this->treeRoot.get();
 }
 
-//===----------------------------------------------------------------------===//
-// RecentFilesListOwner
-//===----------------------------------------------------------------------===//
-
-ProjectsList &Workspace::getProjectsList() const
+UserProfile &Workspace::getUserProfile()
 {
-    jassert(this->recentProjectsList.get() != nullptr); // WTF a crash on exit?
-    return *this->recentProjectsList;
-}
-
-bool Workspace::onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescription)
-{
-    if (fileDescription->hasLocalCopy && fileDescription->path.isNotEmpty())
-    {
-        File absFile(fileDescription->path);
-        ProjectTreeItem *project = this->treeRoot->openProject(absFile);
-        
-        if (project == nullptr)
-        {
-            // file may be missed here, because we store absolute path,
-            // but some platforms (like iOS) may change documents folder path on every app run
-            // so we need th check in a document folder again:
-            
-            File localFile(DocumentHelpers::getDocumentSlot(absFile.getFileName()));
-            project = this->treeRoot->openProject(localFile);
-            return (project != nullptr);
-        }
-        
-        return true;
-    }
-
-    if (fileDescription->hasRemoteCopy) // and not present locally
-    {
-        // TODO checkout and open
-        //this->treeRoot->checkoutProject(fileDescription->projectId);
-    }
-    
-    return true;
-}
-
-void Workspace::onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescription)
-{
-    this->unloadProjectById(fileDescription->projectId);
+    jassert(this->userProfile.get() != nullptr);
+    return *this->userProfile;
 }
 
 //===----------------------------------------------------------------------===//
@@ -209,16 +170,31 @@ void Workspace::createEmptyProject()
 #endif
 }
 
-void Workspace::unloadProjectById(const String &targetProjectId)
+bool Workspace::loadRecentProject(RecentProjectInfo::Ptr projectInfo)
 {
-    Array<ProjectTreeItem *> projects =
-    this->treeRoot->findChildrenOfType<ProjectTreeItem>();
-    
+    const File file(projectInfo->getLocalFile());
+    if (file.existsAsFile())
+    {
+        const auto *project = this->treeRoot->openProject(file);
+        return (project != nullptr);
+    }
+    //else if (projectInfo->hasRemoteCopy) // and not present locally
+    //{
+    //    // TODO checkout and open
+    //    this->treeRoot->checkoutProject(fileDescription->projectId);
+    //}
+
+    return true;
+}
+
+void Workspace::unloadProject(const String &targetProjectId)
+{
+    const auto projects = this->treeRoot->findChildrenOfType<ProjectTreeItem>();
     TreeItem *currentShowingItem = this->getActiveTreeItem();
     ProjectTreeItem *projectToDelete = nullptr;
     ProjectTreeItem *projectToSwitchTo = nullptr;
     
-    for (auto project : projects)
+    for (auto *project : projects)
     {
         if (project->getId() == targetProjectId)
         {
@@ -234,15 +210,15 @@ void Workspace::unloadProjectById(const String &targetProjectId)
     bool isShowingAnyProjectToDelete = false;
     Array<TreeItem *> childrenToDelete;
     
-    if (projectToDelete)
+    if (projectToDelete != nullptr)
     {
         childrenToDelete = projectToDelete->findChildrenOfType<TreeItem>();
         isShowingAnyProjectToDelete = (currentShowingItem == projectToDelete);
     }
     
-    for (auto i : childrenToDelete)
+    for (auto *treeItem : childrenToDelete)
     {
-        if (currentShowingItem == i)
+        if (currentShowingItem == treeItem)
         {
             isShowingAnyOfDeletedChildren = true;
             break;
@@ -251,9 +227,8 @@ void Workspace::unloadProjectById(const String &targetProjectId)
     
     const bool shouldSwitchToOtherPage = isShowingAnyProjectToDelete || isShowingAnyOfDeletedChildren;
     
-    if (projectToDelete)
+    if (projectToDelete != nullptr)
     {
-        //TreeItem::deleteItem(projectToDelete);
         delete projectToDelete;
     }
     
@@ -270,6 +245,18 @@ void Workspace::unloadProjectById(const String &targetProjectId)
     }
 }
 
+void Workspace::deleteProject(ProjectTreeItem &project)
+{
+    if (auto *vcsTreeItem = project.findChildOfType<VersionControlTreeItem>())
+    {
+        //vcsTreeItem->deletePermanentlyFromRemoteRepo(); // FIXME
+        const File localProjectFile(project.getDocument()->getFullPath());
+        this->unloadProject(project.getId());
+        this->getUserProfile().onProjectDeleted(project.getId());
+        localProjectFile.deleteFile();
+    }
+}
+
 Array<ProjectTreeItem *> Workspace::getLoadedProjects() const
 {
     return this->treeRoot->findChildrenOfType<ProjectTreeItem>();
@@ -277,9 +264,7 @@ Array<ProjectTreeItem *> Workspace::getLoadedProjects() const
 
 void Workspace::stopPlaybackForAllProjects()
 {
-    Array<ProjectTreeItem *> projects = this->getLoadedProjects();
-    
-    for (auto project : projects)
+    for (auto *project : this->getLoadedProjects())
     {
         project->getTransport().stopPlayback();
     }
@@ -391,7 +376,7 @@ static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
 
 static TreeItem *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
 {
-    if (TreeItem *treeItem = dynamic_cast<TreeItem *>(item))
+    if (auto *treeItem = dynamic_cast<TreeItem *>(item))
     {
         if (treeItem->getItemIdentifierString() == id)
         {
@@ -403,7 +388,7 @@ static TreeItem *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
         
         for (int i = 0; i < item->getNumSubItems(); ++i)
         {
-            if (TreeItem *subItem = selectActiveSubItemWithId(item->getSubItem(i), id))
+            if (auto *subItem = selectActiveSubItemWithId(item->getSubItem(i), id))
             {
                 return subItem;
             }
@@ -427,7 +412,7 @@ ValueTree Workspace::serialize() const
 
     tree.appendChild(this->audioCore->serialize(), nullptr);
     tree.appendChild(this->pluginManager->serialize(), nullptr);
-    tree.appendChild(this->recentProjectsList->serialize(), nullptr);
+    tree.appendChild(this->userProfile->serialize(), nullptr);
 
     ValueTree treeRootNode(Core::treeRoot);
     treeRootNode.appendChild(this->treeRoot->serialize(), nullptr);
@@ -456,7 +441,7 @@ void Workspace::deserialize(const ValueTree &tree)
         return;
     }
 
-    this->recentProjectsList->deserialize(root);
+    this->userProfile->deserialize(root);
     this->audioCore->deserialize(root);
     this->pluginManager->deserialize(root);
 
@@ -493,7 +478,7 @@ void Workspace::deserialize(const ValueTree &tree)
 
 void Workspace::reset()
 {
-    this->recentProjectsList->reset();
+    this->userProfile->reset();
     this->audioCore->reset();
     this->treeRoot->reset();
 }

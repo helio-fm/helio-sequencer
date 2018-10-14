@@ -16,30 +16,30 @@
 */
 
 #include "Common.h"
-#include "TreeNavigationHistory.h"
+#include "NavigationHistory.h"
 
-TreeNavigationHistory::TreeNavigationHistory() :
+NavigationHistory::NavigationHistory() :
     historyLock(nullptr),
     currentPageIndex(0) {}
 
-ScopedPointer<TreeNavigationHistoryLock> TreeNavigationHistory::lock()
+ScopedPointer<NavigationHistoryLock> NavigationHistory::lock()
 {
-    ScopedPointer<TreeNavigationHistoryLock> l(new TreeNavigationHistoryLock());
+    ScopedPointer<NavigationHistoryLock> l(new NavigationHistoryLock());
     this->historyLock = l;
     return l;
 }
 
-bool TreeNavigationHistory::canGoForward() const
+bool NavigationHistory::canGoForward() const
 {
     return (this->currentPageIndex < (this->list.size() - 1));
 }
 
-bool TreeNavigationHistory::canGoBackward() const
+bool NavigationHistory::canGoBackward() const
 {
     return (this->currentPageIndex > 0);
 }
 
-WeakReference<TreeItem> TreeNavigationHistory::goBack()
+WeakReference<TreeItem> NavigationHistory::goBack()
 {
     if (!this->canGoBackward())
     {
@@ -71,7 +71,7 @@ WeakReference<TreeItem> TreeNavigationHistory::goBack()
     return this->list[this->currentPageIndex];
 }
 
-WeakReference<TreeItem> TreeNavigationHistory::goForward()
+WeakReference<TreeItem> NavigationHistory::goForward()
 {
     if (! this->canGoForward())
     {
@@ -104,12 +104,12 @@ WeakReference<TreeItem> TreeNavigationHistory::goForward()
     return this->list[this->currentPageIndex];
 }
 
-WeakReference<TreeItem> TreeNavigationHistory::getCurrentItem() const
+WeakReference<TreeItem> NavigationHistory::getCurrentItem() const
 {
     return this->list[this->currentPageIndex];
 }
 
-bool TreeNavigationHistory::addItemIfNeeded(TreeItem *item)
+bool NavigationHistory::addItemIfNeeded(TreeItem *item)
 {
     if (this->historyLock != nullptr)
     {

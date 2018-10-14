@@ -121,7 +121,6 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
 
         if (!project->getDocument()->load(file.getFullPathName()))
         {
-            App::Workspace().getProjectsList().removeByPath(file.getFullPathName());
             return nullptr;
         }
 
@@ -130,7 +129,6 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
         {
             if (myProject->getId() == project->getId())
             {
-                App::Workspace().getProjectsList().removeByPath(file.getFullPathName());
                 return nullptr;
             }
         }
@@ -153,7 +151,7 @@ ProjectTreeItem *RootTreeItem::addDefaultProject(const String &projectName)
 ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
 {
     this->setOpen(true);
-    auto newProject = new ProjectTreeItem(projectLocation);
+    auto *newProject = new ProjectTreeItem(projectLocation);
     this->addChildTreeItem(newProject);
     return this->createDefaultProjectChildren(newProject);
 }
@@ -174,11 +172,9 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
     newProject->getDocument()->save();
 
     // notify recent files list
-    App::Workspace().getProjectsList().
-    onProjectStateChanged(newProject->getName(),
-                          newProject->getDocument()->getFullPath(),
-                          newProject->getId(),
-                          true);
+    App::Workspace().getUserProfile().updateLocalProjectInfo(newProject->getId(),
+        newProject->getName(), newProject->getDocument()->getFullPath());
+
     return newProject;
 }
 

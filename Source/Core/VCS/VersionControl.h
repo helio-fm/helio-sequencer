@@ -103,6 +103,12 @@ private:
 
     VCS::TrackedItemsSource &parent;
 
+    
+    // TODO
+    //void updateSyncCache(const String &revisionId, Time syncedAt);
+    //SparseHashMap<String, uint64, StringHash> remoteSyncCache;
+
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
     JUCE_DECLARE_WEAK_REFERENCEABLE(VersionControl)
 };

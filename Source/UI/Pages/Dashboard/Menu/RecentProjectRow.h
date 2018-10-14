@@ -21,7 +21,7 @@
 class DashboardMenu;
 class IconComponent;
 
-#include "ProjectsList.h"
+#include "RecentProjectInfo.h"
 #include "DraggingListBoxComponent.h"
 //[/Headers]
 
@@ -34,11 +34,8 @@ public:
     ~RecentProjectRow();
 
     //[UserMethods]
-
     void setSelected(bool shouldBeSelected) override;
-
-    void updateDescription(bool isLastRow, const RecentFileDescription::Ptr file);
-
+    void updateDescription(bool isLastRow, const RecentProjectInfo::Ptr file);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -52,7 +49,7 @@ private:
     Component *createHighlighterComponent() override;
 
     DashboardMenu &parentList;
-    RecentFileDescription::Ptr targetFile;
+    RecentProjectInfo::Ptr targetFile;
     bool isSelected;
 
     //[/UserVariables]

@@ -25,8 +25,8 @@ struct UserSessionDto final : ApiModel
 
     String getDeviceId() const noexcept { return DTO_PROPERTY(Sessions::deviceId); }
     String getPlatformId() const noexcept { return DTO_PROPERTY(Sessions::platformId); }
-    Time getCreateTime() const noexcept { return Time(DTO_PROPERTY(Sessions::createdAt)); }
-    Time getUpdateTime() const noexcept { return Time(DTO_PROPERTY(Sessions::updatedAt)); }
+    int64 getCreateTime() const noexcept { return DTO_PROPERTY(Sessions::createdAt); }
+    int64 getUpdateTime() const noexcept { return DTO_PROPERTY(Sessions::updatedAt); }
 
     JUCE_LEAK_DETECTOR(UserSessionDto)
 };
