@@ -32,9 +32,8 @@
 // JUCE
 //===----------------------------------------------------------------------===//
 
-#if !defined JUCE_ANDROID
+#if JUCE_LINUX
 #   define JUCE_USE_FREETYPE_AMALGAMATED 1
-#   define JUCE_AMALGAMATED_INCLUDE 1
 #endif
 
 #include "JuceHeader.h"

@@ -1365,7 +1365,7 @@
         <CONFIGURATION name="Release" osxCompatibility="10.7 SDK" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
                        customXcodeFlags="CODE_SIGN_IDENTITY = &quot;Developer ID Application&quot;"
-                       stripLocalSymbols="0" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"/>
+                       stripLocalSymbols="1" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1418,26 +1418,25 @@
             vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="WO0LHL"
             bigIcon="WO0LHL" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC">
+            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy"
+            extraLinkerFlags="/OPT:REF /OPT:ICF=5">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" isDebug="1" optimisation="1" targetName="Helio"
-                       wholeProgramOptimisation="1" enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
+                       enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1"/>
         <CONFIGURATION name="Debug 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" isDebug="1" optimisation="1" targetName="Helio"
-                       wholeProgramOptimisation="1" enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
+                       enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1"/>
         <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" isDebug="0" optimisation="3" targetName="Helio"
-                       useRuntimeLibDLL="0" wholeProgramOptimisation="1" enableIncrementalLinking="1"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       linkTimeOptimisation="0" warningsAreErrors="1"/>
+                       useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
         <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" isDebug="0" optimisation="3" targetName="Helio"
-                       useRuntimeLibDLL="0" enableIncrementalLinking="1" wholeProgramOptimisation="1"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       linkTimeOptimisation="0" warningsAreErrors="1"/>
+                       useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
@@ -1454,9 +1453,9 @@
       </MODULEPATHS>
     </VS2015>
     <VS2017 targetFolder="../../Projects/VisualStudio2017" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
-            extraCompilerFlags="/FC" usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
+            extraCompilerFlags="/FC /Gy" usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
             precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp">
+            smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp" extraLinkerFlags="/OPT:REF /OPT:ICF=5">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
@@ -1471,12 +1470,12 @@
         <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"
+                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
                        warningsAreErrors="1"/>
         <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"
+                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
                        warningsAreErrors="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1571,10 +1570,9 @@
                JUCE_ALSA="1" JUCE_JACK="1" JUCE_USE_CDREADER="0" JUCE_USE_CDBURNER="0"
                JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="0" JUCE_USE_MP3AUDIOFORMAT="0"
                JUCE_USE_LAME_AUDIO_FORMAT="0" JUCE_USE_WINDOWS_MEDIA_FORMAT="0"
-               JUCE_CHECK_MEMORY_LEAKS="1" JUCE_USE_CURL="1" JUCE_USE_XSHM="1"
-               JUCE_USE_XRENDER="0" JUCE_USE_XCURSOR="1" JUCE_WEB_BROWSER="0"
-               JUCE_PLUGINHOST_VST="1" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1"
-               JUCE_CATCH_UNHANDLED_EXCEPTIONS="1" JUCE_ALLOW_STATIC_NULL_VARIABLES="1"
+               JUCE_USE_CURL="1" JUCE_USE_XSHM="1" JUCE_USE_XRENDER="0" JUCE_USE_XCURSOR="1"
+               JUCE_WEB_BROWSER="0" JUCE_PLUGINHOST_VST="1" JUCE_PLUGINHOST_VST3="1"
+               JUCE_PLUGINHOST_AU="1" JUCE_CATCH_UNHANDLED_EXCEPTIONS="1" JUCE_ALLOW_STATIC_NULL_VARIABLES="1"
                JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="1" JUCE_USE_ANDROID_OPENSLES="1"
                JUCE_USE_ANDROID_OBOE="0" JUCE_BELA="0" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="0"/>
   <LIVE_SETTINGS>
