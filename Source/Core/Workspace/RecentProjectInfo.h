@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Serializable.h"
+#include "ProjectDto.h"
 
 class RecentProjectInfo final : public Serializable,
                                 public ReferenceCountedObject
@@ -25,57 +26,34 @@ class RecentProjectInfo final : public Serializable,
 public:
 
     RecentProjectInfo() = default;
+    RecentProjectInfo(const ProjectDto &remoteInfo);
+    RecentProjectInfo(const String &localId,
+        const String &localTitle, const String &localPath);
 
-    // bool isLoaded() const; // fuck that. will ask for workspace
+    Time getUpdatedAt() const noexcept;
+    String getProjectId() const noexcept;
+    String getTitle() const;
+    File getLocalFile() const;
 
-    String getProjectId() const noexcept
-    {
-        return this->projectId;
-    }
+    bool hasLocalCopy() const noexcept;
+    bool hasRemoteCopy() const noexcept;
+    bool isValid() const;
 
-    File getLocalFile() const
-    {
-        if (this->local != nullptr)
-        {
-            // file may be missed here, because we store absolute path,
-            // but some platforms, like iOS, change documents folder path on every app run
-            // so we need to check in a document folder as well:
-            return this->local->path.existsAsFile() ?
-                this->local->path :
-                File(DocumentHelpers::getDocumentSlot(this->local->path.getFileName()));
-        }
-
-        return {};
-    }
+    void updateRemoteInfo(const ProjectDto &remoteInfo);
+    void updateLocalInfo(const String &localId,
+        const String &localTitle, const String &localPath);
+    void updateLocalTimestampAsNow();
 
     using Ptr = ReferenceCountedObjectPtr<RecentProjectInfo>;
-    static int compareElements(RecentProjectInfo::Ptr first, RecentProjectInfo::Ptr second)
-    {
-        // todo order, loaded first, etc
-        //if (first->local == nullptr && second->local != nullptr) { return -1; }
-        //if (second->local == nullptr && first->local != nullptr) { return 1; }
-
-        return int(second->local->lastModifiedMs - first->local->lastModifiedMs);
-    }
+    static int compareElements(Ptr first, Ptr second);
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
-    virtual ValueTree serialize() const override
-    {
-
-    }
-
-    virtual void deserialize(const ValueTree &tree) override
-    {
-
-    }
-
-    virtual void reset() override
-    {
-
-    }
+    virtual ValueTree serialize() const override;
+    virtual void deserialize(const ValueTree &tree) override;
+    virtual void reset() override;
 
 private:
 
@@ -98,4 +76,5 @@ private:
     UniquePointer<LocalInfo> local;
     UniquePointer<RemoteInfo> remote;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RecentProjectInfo)
 };

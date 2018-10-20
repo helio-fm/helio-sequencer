@@ -64,13 +64,6 @@ namespace Serialization
         static const Identifier machineID = "deviceId";
         static const Identifier globalConfig = "config";
 
-        static const Identifier recentFiles = "recentFiles";
-        static const Identifier recentFileItem = "file";
-        static const Identifier recentFileTitle = "title";
-        static const Identifier recentFilePath = "path";
-        static const Identifier recentFileProjectId = "id";
-        static const Identifier recentFileTime = "time";
-
         static const Identifier filePath = "filePath";
 
         static const Identifier clipboard = "helioClipboard";
@@ -181,7 +174,6 @@ namespace Serialization
         static const Identifier activeWorkspace = "activeWorkspace";
         static const Identifier activeColourScheme = "activeColourScheme";
         static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
-        static const Identifier activeUserProfile = "activeUserProfile";
         static const Identifier currentLocale = "currentLocale";
 
         static const Identifier lastShownPageId = "lastShownPageId";
@@ -383,6 +375,39 @@ namespace Serialization
         static const Identifier firstBeat = "firstBeat";
     } // namespace Clipboard
 
+    namespace User
+    {
+        namespace Profile
+        {
+            static const Identifier userProfile = "userProfile";
+            static const Identifier url = "url";
+            static const Identifier name = "name";
+            static const Identifier login = "login";
+            static const Identifier thumbnail = "thumbnail";
+        } // namespace Profile
+
+        namespace RecentProjects
+        {
+            static const Identifier recentProject = "recentProject";
+            static const Identifier localProjectInfo = "localProjectInfo";
+            static const Identifier remotelProjectInfo = "remotelProjectInfo";
+            static const Identifier path = "path";
+            static const Identifier file = "file";
+            static const Identifier title = "title";
+            static const Identifier projectId = "id";
+            static const Identifier updatedAt = "updatedAt";
+        } // namespace RecentProjects
+
+        namespace Sessions
+        {
+            static const Identifier session = "session";
+            static const Identifier deviceId = "deviceId";
+            static const Identifier platformId = "platformId";
+            static const Identifier createdAt = "createdAt";
+            static const Identifier updatedAt = "updatedAt";
+        } // namespace Sessions
+    } // namespace User
+
     namespace VCS
     {
         static const Identifier stashesRepository = "stashesRepository";
@@ -510,11 +535,9 @@ namespace Serialization
             namespace Identity
             {
                 static const Identifier name = "name";
-                static const Identifier email = "email";
                 static const Identifier login = "login";
                 static const Identifier profileUrl = "profileUrl";
                 static const Identifier avatarUrl = "avatar";
-                static const Identifier avatarThumbnail = "avatarThumbnail";
                 static const Identifier password = "password";
                 static const Identifier passwordConfirmation = "passwordConfirmation";
             }

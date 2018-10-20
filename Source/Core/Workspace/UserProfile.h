@@ -39,10 +39,26 @@ public:
     void onProjectUnloaded(const String &id);
     void onProjectDeleted(const String &id);
 
-    //void onSessionRemoved(const String &deviceId);
+
+    //void onSessionDeleted(const String &deviceId);
+
+    void clearProfileAndSession();
+
+    //===------------------------------------------------------------------===//
+    // Accessors
+    //===------------------------------------------------------------------===//
+
+    bool isLoggedIn() const;
+    String getApiToken() const;
+    void setApiToken(const String &token);
 
     const ReferenceCountedArray<UserSessionInfo> &getSessions() const noexcept;
     const ReferenceCountedArray<RecentProjectInfo> &getProjects() const noexcept;
+
+    bool needsAvatarImage() const noexcept;
+    Image getAvatar() const noexcept;
+    String getLogin() const noexcept;
+    String getProfileUrl() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -55,8 +71,15 @@ public:
 private:
 
     // returns found item's index - or -1, if not found
-    int findProjectIndexByPath(const String &path) const;
-    int findProjectIndexById(const String &id) const;
+    RecentProjectInfo *findProject(const String &id) const;
+
+    Image avatar;
+    String avatarThumbnail;
+    PNGImageFormat imageFormat;
+
+    String name;
+    String login;
+    String profileUrl;
 
     ReadWriteLock projectsListLock;
     ReferenceCountedArray<RecentProjectInfo> projects;

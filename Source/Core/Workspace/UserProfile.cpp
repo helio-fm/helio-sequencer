@@ -22,38 +22,98 @@
 #include "Config.h"
 #include "App.h"
 
-void UserProfile::onProjectStateChanged(const String &title, const String &path, const String &id, bool isLoaded)
-{
-    const int index = id.isEmpty() ? this->findIndexByPath(path) : this->findIndexById(id);
+static UserSessionInfo kSessionsSort;
+static RecentProjectInfo kProjectsSort;
 
-    if (!File(path).existsAsFile())
+void UserProfile::updateProfile(const UserProfileDto &dto)
+{
+    // Resize avatar thumbnail and cache it as png-encoded base64 string:
+    const int size = 16;
+    this->avatar = { Image::RGB, size, size, true };
+    MemoryInputStream inputStream(dto.getAvatarData(), false);
+    const Image remoteAvatar = ImageFileFormat::loadFrom(inputStream)
+        .rescaled(size, size, Graphics::highResamplingQuality);
+
+    Graphics g(this->avatar);
+    g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
+    g.fillAll();
+
+    if (this->avatar.isValid() && this->avatarThumbnail.isEmpty())
     {
-        this->list.remove(index);
-        this->sendChangeMessage();
-        return;
+        MemoryBlock block;
+        {
+            MemoryOutputStream outStream(block, false);
+            this->imageFormat.writeImageToStream(this->avatar, outStream);
+        }
+
+        this->avatarThumbnail = Base64::toBase64(block.getData(), block.getSize());
     }
 
-    if (index >= 0)
+    // Update remote project descriptions
+    for (const auto p : dto.getProjects())
     {
-        RecentProjectInfo::Ptr fd = this->list[index];
-        fd->title = title;
-        fd->isLoaded = isLoaded;
-        fd->projectId = id;
+        // TODO
+        //this->findProjectIndexById(p.getId())
+    }
 
-        if (isLoaded)
-        {
-            fd->lastModifiedTime = Time::getCurrentTime().toMilliseconds();
-        }
+    // TODO Update sessions info
+    for (const auto s : dto.getSessions())
+    {
+        // TODO
+    }
+
+    this->sendChangeMessage();
+}
+
+void UserProfile::updateLocalProjectInfo(const String &id, const String &title, const String &path)
+{
+    if (auto *project = this->findProject(id))
+    {
+        const ScopedWriteLock lock(this->projectsListLock);
+        project->updateLocalInfo(id, title, path);
     }
     else
     {
-        RecentProjectInfo::Ptr fd = new RecentProjectInfo();
-        fd->lastModifiedTime = Time::getCurrentTime().toMilliseconds();
-        fd->title = title;
-        fd->path = path;
-        fd->isLoaded = isLoaded;
-        fd->projectId = id;
-        this->list.add(fd);
+        const ScopedWriteLock lock(this->projectsListLock);
+        this->projects.add(new RecentProjectInfo(id, title, path));
+    }
+
+    this->sendChangeMessage();
+}
+
+void UserProfile::updateRemoteProjectInfo(const ProjectDto &info)
+{
+    if (auto *project = this->findProject(info.getId()))
+    {
+        const ScopedWriteLock lock(this->projectsListLock);
+        project->updateRemoteInfo(info);
+    }
+    else
+    {
+        const ScopedWriteLock lock(this->projectsListLock);
+        this->projects.add(new RecentProjectInfo(info));
+    }
+
+    this->sendChangeMessage();
+}
+
+void UserProfile::onProjectLoaded(const String &id)
+{
+    if (auto *project = this->findProject(id))
+    {
+        const ScopedWriteLock lock(this->projectsListLock);
+        project->updateLocalTimestampAsNow();
+    }
+
+    this->sendChangeMessage();
+}
+
+void UserProfile::onProjectUnloaded(const String &id)
+{
+    if (auto *project = this->findProject(id))
+    {
+        const ScopedWriteLock lock(this->projectsListLock);
+        project->updateLocalTimestampAsNow();
     }
 
     this->sendChangeMessage();
@@ -61,45 +121,88 @@ void UserProfile::onProjectStateChanged(const String &title, const String &path,
 
 void UserProfile::onProjectDeleted(const String &id)
 {
-    const int index = this->findIndexById(id);
-
-    if (index >= 0)
+    for (auto *project : this->projects)
     {
-        this->list.remove(index);
-        this->sendChangeMessage();
-    }
-}
-
-const ReferenceCountedArray<RecentProjectInfo> &UserProfile::getList() const noexcept
-{
-    return this->list;
-}
-
-
-int UserProfile::findIndexByPath(const String &path) const
-{
-    for (int i = 0; i < this->list.size(); ++i)
-    {
-        if (this->list[i]->path == path)
+        if (project->getProjectId() == id)
         {
-            return i;
+            const ScopedWriteLock lock(this->projectsListLock);
+            this->projects.removeObject(project);
+            break;
         }
     }
 
-    return -1;
+    this->sendChangeMessage();
 }
 
-int UserProfile::findIndexById(const String &id) const
+void UserProfile::clearProfileAndSession()
 {
-    for (int i = 0; i < this->list.size(); ++i)
+    this->setApiToken({});
+    this->avatar = {};
+    this->avatarThumbnail.clear();
+    this->name.clear();
+    this->login.clear();
+    this->profileUrl.clear();
+}
+
+bool UserProfile::needsAvatarImage() const noexcept
+{
+    return this->avatarThumbnail.isEmpty();
+}
+
+Image UserProfile::getAvatar() const noexcept
+{
+    return this->avatar;
+}
+
+String UserProfile::getLogin() const noexcept
+{
+    return this->login;
+}
+
+String UserProfile::getProfileUrl() const noexcept
+{
+    return this->profileUrl;
+}
+
+String UserProfile::getApiToken() const
+{
+    // Kinda legacy, it should have been stored in profile
+    // but let's keep it as is for now
+    return Config::get(Serialization::Api::sessionToken, {});
+}
+
+void UserProfile::setApiToken(const String &token)
+{
+    Config::set(Serialization::Api::sessionToken, token);
+    this->sendChangeMessage();
+}
+
+bool UserProfile::isLoggedIn() const
+{
+    return this->getApiToken().isNotEmpty();
+}
+
+const ReferenceCountedArray<UserSessionInfo> &UserProfile::getSessions() const noexcept
+{
+    return this->sessions;
+}
+
+const ReferenceCountedArray<RecentProjectInfo> &UserProfile::getProjects() const noexcept
+{
+    return this->projects;
+}
+
+RecentProjectInfo *UserProfile::findProject(const String &id) const
+{
+    for (auto *project : this->projects)
     {
-        if (this->list[i]->projectId == id)
+        if (project->getProjectId() == id)
         {
-            return i;
+            return project;
         }
     }
 
-    return -1;
+    return nullptr;
 }
 
 //===----------------------------------------------------------------------===//
@@ -108,18 +211,24 @@ int UserProfile::findIndexById(const String &id) const
 
 ValueTree UserProfile::serialize() const
 {
-    using namespace Serialization;
-    const ScopedReadLock lock(this->projectsListLock);
-    ValueTree tree(Core::recentFiles);
+    using namespace Serialization::User;
 
-    for (const auto localFile : this->projects)
+    const ScopedReadLock lock(this->projectsListLock);
+    ValueTree tree(Profile::userProfile);
+
+    tree.setProperty(Profile::url, this->profileUrl, nullptr);
+    tree.setProperty(Profile::name, this->name, nullptr);
+    tree.setProperty(Profile::login, this->login, nullptr);
+    tree.setProperty(Profile::thumbnail, this->avatarThumbnail, nullptr);
+
+    for (const auto *project : this->projects)
     {
-        ValueTree item(Core::recentFileItem);
-        item.setProperty(Core::recentFileTitle, localFile->title, nullptr);
-        item.setProperty(Core::recentFilePath, localFile->path, nullptr);
-        item.setProperty(Core::recentFileProjectId, localFile->projectId, nullptr);
-        item.setProperty(Core::recentFileTime, String(localFile->lastModifiedTime), nullptr);
-        tree.appendChild(item, nullptr);
+        tree.appendChild(project->serialize(), nullptr);
+    }
+
+    for (const auto *session : this->sessions)
+    {
+        tree.appendChild(session->serialize(), nullptr);
     }
 
     return tree;
@@ -127,36 +236,55 @@ ValueTree UserProfile::serialize() const
 
 void UserProfile::deserialize(const ValueTree &tree)
 {
-    // TODO cleanup invalid projects on deserialize
-
     this->reset();
-    using namespace Serialization;
-
-    const ScopedWriteLock lock(this->projectsListLock);
-
-    const auto root = tree.hasType(Core::recentFiles) ?
-        tree : tree.getChildWithName(Core::recentFiles);
+    using namespace Serialization::User;
+    const auto root = tree.hasType(Profile::userProfile) ?
+        tree : tree.getChildWithName(Profile::userProfile);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, child, Core::recentFileItem)
-    {
-        const String title = child.getProperty(Core::recentFileTitle);
-        const String path = child.getProperty(Core::recentFilePath);
-        const String id = child.getProperty(Core::recentFileProjectId);
-        const int64 time = child.getProperty(Core::recentFileTime);
+    this->name = root.getProperty(Profile::name);
+    this->login = root.getProperty(Profile::login);
+    this->profileUrl = root.getProperty(Profile::url);
+    this->avatarThumbnail = root.getProperty(Profile::thumbnail);
 
-        if (path.isNotEmpty())
+    if (this->avatarThumbnail.isNotEmpty())
+    {
+        MemoryBlock block;
         {
-            RecentProjectInfo::Ptr fd = new RecentProjectInfo();
-            fd->title = title;
-            fd->path = path;
-            fd->lastModifiedTime = time;
-            fd->projectId = id;
-            fd->isLoaded = false;
-            this->list.addSorted(*fd, fd);
+            MemoryOutputStream outStream(block, false);
+            Base64::convertFromBase64(outStream, this->avatarThumbnail);
+        }
+
+        this->avatar = ImageFileFormat::loadFrom(block.getData(), block.getSize());
+    }
+
+    {
+        const ScopedWriteLock lock(this->projectsListLock);
+        forEachValueTreeChildWithType(root, child, RecentProjects::recentProject)
+        {
+            RecentProjectInfo::Ptr p(new RecentProjectInfo());
+            p->deserialize(child);
+            if (p->isValid())
+            {
+                this->projects.addSorted(kProjectsSort, p);
+            }
         }
     }
+    
+    {
+        const ScopedWriteLock lock(this->sessionsListLock);
+        forEachValueTreeChildWithType(root, child, Sessions::session)
+        {
+            UserSessionInfo::Ptr s(new UserSessionInfo());
+            s->deserialize(child);
+            // TODO store JWT as well? remove current session if stale?
+            this->sessions.addSorted(kSessionsSort, s);
+        }
+    }
+
+    // TODO scan documents folder for existing projects not present in the list?
+    // or only do it when the list is empty?
 
     this->sendChangeMessage();
 }
@@ -164,6 +292,7 @@ void UserProfile::deserialize(const ValueTree &tree)
 void UserProfile::reset()
 {
     const ScopedWriteLock lock(this->projectsListLock);
-    this->projects.clear();
+    this->projects.clearQuick();
+    this->sessions.clearQuick();
     this->sendChangeMessage();
 }

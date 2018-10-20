@@ -25,64 +25,31 @@ class UserSessionInfo final : public Serializable,
 {
 public:
 
-    UserSessionInfo(const UserSessionDto &dto) :
-        deviceId(dto.getDeviceId()),
-        platformId(dto.getPlatformId()),
-        createdAt(dto.getCreateTime()),
-        updatedAt(dto.getUpdateTime()) {}
+    UserSessionInfo() = default;
+    UserSessionInfo(const UserSessionDto &dto);
 
-    String getDeviceId() const noexcept
-    {
-        return this->deviceId;
-    }
+    String getDeviceId() const noexcept;
+    String getPlatformId() const noexcept;
+    Time getCreateTime() const noexcept;
+    Time getUpdateTime() const noexcept;
 
-    String getPlatformId() const noexcept
-    {
-        return this->platformId;
-    }
-
-    Time getCreateTime() const noexcept
-    {
-        return this->createdAt;
-    }
-
-    Time getUpdateTime() const noexcept
-    {
-        return this->updatedAt;
-    }
+    using Ptr = ReferenceCountedObjectPtr<UserSessionInfo>;
+    static int compareElements(Ptr first, Ptr second);
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
-    virtual ValueTree serialize() const override
-    {
-        ValueTree root(Serialization::UserProfile::session);
-
-        return root;
-    }
-
-    virtual void deserialize(const ValueTree &tree) override
-    {
-        this->reset();
-        using namespace Serialization;
-
-        const auto root = tree.hasType(UserProfile::session) ?
-            tree : tree.getChildWithName(UserProfile::session);
-
-        if (!root.isValid()) { return; }
-
-        // TODO
-    }
-
-    virtual void reset() override {}
+    virtual ValueTree serialize() const override;
+    virtual void deserialize(const ValueTree &tree) override;
+    virtual void reset() override;
 
 private:
 
-    const String deviceId;
-    const String platformId;
-    const Time createdAt;
-    const Time updatedAt;
+    String deviceId;
+    String platformId;
+    Time createdAt;
+    Time updatedAt;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserSessionInfo)
 };

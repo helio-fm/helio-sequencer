@@ -22,6 +22,7 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "UserProfileDto.h"
+#include "UserProfile.h"
 
 class RequestUserProfileThread final : public Thread
 {
@@ -36,14 +37,14 @@ public:
     Function<void(const UserProfileDto profile)> onRequestProfileOk;
     Function<void(const Array<String> &errors)> onRequestProfileFailed;
 
-    void requestUserProfile(UserProfileDto existingProfile)
+    void doRequest(bool fetchAvatarData)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
-        this->profile = existingProfile;
+        this->shouldFetchAvatar = fetchAvatarData;
         this->startThread(3);
     }
     
@@ -62,27 +63,19 @@ private:
             callbackOnMessageThread(RequestUserProfileThread, onRequestProfileFailed, self->response.getErrors());
         }
 
-        const String newProfileAvatarUrl = UserProfileDto(this->response.getBody(), {}).getAvatarUrl();
-        Image profileAvatar = this->profile.getAvatar();
+        this->profile = { this->response.getBody(), {} };
 
-        if (newProfileAvatarUrl != this->profile.getAvatarUrl())
+        if (this->shouldFetchAvatar)
         {
-            const int s = 16; // local avatar thumbnail size
-            profileAvatar = { Image::RGB, s, s, true };
-            MemoryBlock downloadedData;
-            URL(newProfileAvatarUrl).readEntireBinaryStream(downloadedData, false);
-            MemoryInputStream inputStream(downloadedData, false);
-            Image remoteAvatar = ImageFileFormat::loadFrom(inputStream).rescaled(s, s, Graphics::highResamplingQuality);
-            Graphics g(profileAvatar);
-            g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
-            g.fillAll();
+            const String newProfileAvatarUrl = UserProfileDto(this->response.getBody(), {}).getAvatarUrl();
+            URL(newProfileAvatarUrl).readEntireBinaryStream(this->profile.getAvatarData(), false);
         }
-
-        this->profile = { this->response.getBody(), profileAvatar };
 
         callbackOnMessageThread(RequestUserProfileThread, onRequestProfileOk, self->profile);
     }
     
+    bool shouldFetchAvatar = false;
+
     UserProfileDto profile;
     BackendRequest::Response response;
 

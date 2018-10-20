@@ -24,56 +24,24 @@
 
 struct UserProfileDto final : ApiModel
 {
-    UserProfileDto(const ValueTree &tree, const Image image = {}) : ApiModel(tree), avatar(image)
-    {
-        using namespace Serialization::Api::V1;
-        const bool hasImage = this->avatar.isValid();
-        const bool hasCache = this->data.hasProperty(Identity::avatarThumbnail);
-        if (hasImage && !hasCache)
-        {
-            MemoryBlock block;
-            {
-                MemoryOutputStream outStream(block, false);
-                this->imageFormat.writeImageToStream(this->avatar, outStream);
-            }
-
-            const auto avatarData(Base64::toBase64(block.getData(), block.getSize()));
-            this->data.setProperty(Identity::avatarThumbnail, avatarData, nullptr);
-        }
-    }
-
+    UserProfileDto(const ValueTree &tree, const MemoryBlock &image = {}) :
+        ApiModel(tree), avatarData(image) {}
+    
     String getName() const noexcept { return DTO_PROPERTY(Identity::name); }
     String getLogin() const noexcept { return DTO_PROPERTY(Identity::login); }
     String getAvatarUrl() const noexcept { return DTO_PROPERTY(Identity::avatarUrl); }
     String getProfileUrl() const noexcept { return DTO_PROPERTY(Identity::profileUrl); }
 
-    Image getAvatar() const noexcept { return this->avatar; }
+    MemoryBlock &getAvatarData() noexcept { return this->avatarData; }
+    const MemoryBlock &getAvatarData() const noexcept { return this->avatarData; }
 
     Array<ProjectDto> getProjects() const { return DTO_CHILDREN(ProjectDto, Projects::projects); }
     Array<UserSessionDto> getSessions() const { return DTO_CHILDREN(UserSessionDto, Sessions::sessions); }
     Array<UserResourceDto> getResources() const { return DTO_CHILDREN(UserResourceDto, Resources::resources); }
 
-    void deserialize(const ValueTree &tree) override
-    {
-        ApiModel::deserialize(tree);
-
-        using namespace Serialization::Api::V1;
-        if (this->data.hasProperty(Identity::avatarThumbnail))
-        {
-            MemoryBlock block;
-            {
-                MemoryOutputStream outStream(block, false);
-                Base64::convertFromBase64(outStream, { this->data.getProperty(Identity::avatarThumbnail) });
-            }
-
-            this->avatar = ImageFileFormat::loadFrom(block.getData(), block.getSize());
-        }
-    }
-
 private:
 
-    Image avatar;
-    PNGImageFormat imageFormat;
+    MemoryBlock avatarData;
 
     JUCE_LEAK_DETECTOR(UserProfileDto)
 };

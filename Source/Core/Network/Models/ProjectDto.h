@@ -28,7 +28,7 @@ struct ProjectDto final : ApiModel
     String getTitle() const noexcept { return DTO_PROPERTY(Projects::title); }
     String getAlias() const noexcept { return DTO_PROPERTY(Projects::alias); }
     String getHead() const noexcept { return DTO_PROPERTY(Projects::head); }
-    Time getUpdateTime() const noexcept { return Time(DTO_PROPERTY(Projects::updatedAt)); }
+    int64 getUpdateTime() const noexcept { return DTO_PROPERTY(Projects::updatedAt); }
     Array<RevisionDto> getRevisions() const { return DTO_CHILDREN(RevisionDto, Revisions::revisions); }
 
     JUCE_LEAK_DETECTOR(ProjectDto)

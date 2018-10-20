@@ -567,8 +567,12 @@
                 file="../../Source/Core/Workspace/NavigationHistory.cpp"/>
           <FILE id="KYXXgO" name="NavigationHistory.h" compile="0" resource="0"
                 file="../../Source/Core/Workspace/NavigationHistory.h"/>
+          <FILE id="AJZki2" name="RecentProjectInfo.cpp" compile="1" resource="0"
+                file="../../Source/Core/Workspace/RecentProjectInfo.cpp"/>
           <FILE id="K03ht6" name="RecentProjectInfo.h" compile="0" resource="0"
                 file="../../Source/Core/Workspace/RecentProjectInfo.h"/>
+          <FILE id="LUtAvf" name="UserSessionInfo.cpp" compile="1" resource="0"
+                file="../../Source/Core/Workspace/UserSessionInfo.cpp"/>
           <FILE id="EYK85b" name="UserSessionInfo.h" compile="0" resource="0"
                 file="../../Source/Core/Workspace/UserSessionInfo.h"/>
           <FILE id="HRCp8k" name="UserProfile.cpp" compile="1" resource="0" file="../../Source/Core/Workspace/UserProfile.cpp"/>
