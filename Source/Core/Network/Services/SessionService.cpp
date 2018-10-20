@@ -77,11 +77,9 @@ private:
     ValueTree jwt;
 };
 
-
-SessionService::SessionService() : userProfile({})
+SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfile)
 {
-    Config::load(this->userProfile, Serialization::Config::activeUserProfile);
-    const String token = SessionService::getApiToken();
+    const auto token = this->userProfile.getApiToken();
     if (token.isNotEmpty())
     {
         // Assuming we're using JWT, try to get token expiry:
@@ -95,8 +93,7 @@ SessionService::SessionService() : userProfile({})
             if (expiry < now)
             {
                 Logger::writeToLog("Token seems to be expired, removing");
-                SessionService::setApiToken({});
-                this->resetUserProfile();
+                this->userProfile.clearProfileAndSession();
             }
             else if ((expiry - now).inDays() <= 5)
             {
@@ -106,42 +103,15 @@ SessionService::SessionService() : userProfile({})
             else
             {
                 Logger::writeToLog("Token seems to be ok, skipping session update step");
-                this->prepareProfileRequestThread()->requestUserProfile(this->userProfile);
+                this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
             }
 
             return;
         }
 
         Logger::writeToLog("Warning: auth token seems to be invalid, removing");
-        SessionService::setApiToken({});
-        this->resetUserProfile();
+        this->userProfile.clearProfileAndSession();
     }
-}
-
-String SessionService::getApiToken()
-{
-    return Config::get(Serialization::Api::sessionToken, {});
-}
-
-void SessionService::setApiToken(const String &token)
-{
-    Config::set(Serialization::Api::sessionToken, token);
-}
-
-bool SessionService::isLoggedIn()
-{
-    return SessionService::getApiToken().isNotEmpty();
-}
-
-const UserProfileDto &SessionService::getUserProfile() const noexcept
-{
-    return this->userProfile;
-}
-
-void SessionService::resetUserProfile()
-{
-    this->userProfile.reset();
-    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
 }
 
 //===----------------------------------------------------------------------===//
@@ -152,7 +122,7 @@ void SessionService::signIn(const String &provider, AuthCallback callback)
 {
     if (this->authCallback != nullptr)
     {
-        jassertfalse; // You should never hit this line
+        jassertfalse;
         callback(false, { "Auth is already in progress" });
         return;
     }
@@ -172,9 +142,8 @@ void SessionService::cancelSignInProcess()
 
 void SessionService::signOut()
 {
-    // TODO: need to erase token on server?
-    this->resetUserProfile();
-    SessionService::setApiToken({});
+    // TODO: need to erase token on server, and then:
+    this->userProfile.clearProfileAndSession();
 }
 
 //===----------------------------------------------------------------------===//
@@ -193,10 +162,9 @@ AuthThread *SessionService::prepareAuthThread()
 
     thread->onAuthSessionFinished = [this](const AuthSessionDto session)
     {
-        SessionService::setApiToken(session.getToken());
+        this->userProfile.setApiToken(session.getToken());
         // Don't call authCallback right now, instead request a user profile and callback when ready
-        this->prepareProfileRequestThread()->requestUserProfile(this->userProfile);
-        this->sendChangeMessage();
+        this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
     };
 
     thread->onAuthSessionFailed = [this](const Array<String> &errors)
@@ -207,7 +175,6 @@ AuthThread *SessionService::prepareAuthThread()
             this->authCallback(false, errors);
             this->authCallback = nullptr;
         }
-        this->sendChangeMessage();
     };
 
     return thread;
@@ -219,9 +186,8 @@ TokenUpdateThread *SessionService::prepareTokenUpdateThread()
 
     thread->onTokenUpdateOk = [this](const String &newToken)
     {
-        SessionService::setApiToken(newToken);
-        this->prepareProfileRequestThread()->requestUserProfile(this->userProfile);
-        this->sendChangeMessage();
+        this->userProfile.setApiToken(newToken);
+        this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
     };
 
     thread->onTokenUpdateFailed = [this](const Array<String> &errors)
@@ -230,9 +196,7 @@ TokenUpdateThread *SessionService::prepareTokenUpdateThread()
         // so we should not reset the token and profile
         if (!errors.isEmpty())
         {
-            this->resetUserProfile();
-            SessionService::setApiToken({});
-            this->sendChangeMessage();
+            this->userProfile.clearProfileAndSession();
         }
     };
 
@@ -245,25 +209,21 @@ RequestUserProfileThread *SessionService::prepareProfileRequestThread()
 
     thread->onRequestProfileOk = [this](const UserProfileDto profile)
     {
-        this->userProfile = profile;
-        Config::save(this->userProfile, Serialization::Config::activeUserProfile);
+        this->userProfile.updateProfile(profile);
         if (this->authCallback != nullptr)
         {
             this->authCallback(true, {});
             this->authCallback = nullptr;
         }
-        this->sendChangeMessage();
     };
 
     thread->onRequestProfileFailed = [this](const Array<String> &errors)
     {
-        this->resetUserProfile();
         if (this->authCallback != nullptr)
         {
             this->authCallback(false, errors);
             this->authCallback = nullptr;
         }
-        this->sendChangeMessage();
     };
 
     return thread;

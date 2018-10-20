@@ -17,8 +17,10 @@
 
 #include "Common.h"
 #include "BackendRequest.h"
-#include "SessionService.h"
+#include "HelioApiRoutes.h"
 #include "App.h"
+#include "Workspace.h"
+#include "UserProfile.h"
 
 // Let OS set the default timeout:
 #define CONNECTION_TIMEOUT_MS (0)
@@ -111,10 +113,10 @@ static String getHeaders()
         << "User-Agent: " << userAgent
         << "\r\n";
 
-    if (SessionService::isLoggedIn())
+    if (App::Workspace().getUserProfile().isLoggedIn())
     {
         extraHeaders
-            << "Authorization: Bearer " << SessionService::getApiToken()
+            << "Authorization: Bearer " << App::Workspace().getUserProfile().getApiToken()
             << "\r\n";
     }
 

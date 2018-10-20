@@ -89,4 +89,8 @@ private:
     ValueTree userResources;
 
     DummyBaseResource comparator;
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE(ResourceManager)
 };
+
+using ResourceManagerPool = SparseHashMap<Identifier, WeakReference<ResourceManager>, IdentifierHash>;

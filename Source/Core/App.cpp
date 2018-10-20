@@ -134,6 +134,11 @@ class Config &App::Config() noexcept
     return *static_cast<App *>(JUCEApplicationBase::getInstance())->config;
 }
 
+class Clipboard &App::Clipboard() noexcept
+{
+    return static_cast<App *>(JUCEApplicationBase::getInstance())->clipboard;
+}
+
 Point<double> App::getScreenInCm()
 {
     Rectangle<int> screenArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
@@ -304,33 +309,32 @@ void App::initialise(const String &commandLine)
         Logger::setCurrentLogger(&this->logger);
         Logger::writeToLog("Helio v" + App::getAppReadableVersion());
 
-        this->config = new class Config();
+        this->config.reset(new class Config());
 
-        this->theme = new HelioTheme();
+        this->theme.reset(new HelioTheme());
         this->theme->initResources();
-        LookAndFeel::setDefaultLookAndFeel(this->theme);
+        LookAndFeel::setDefaultLookAndFeel(this->theme.get());
     
         // TODO: get rid of singletons someday
-        using namespace Serialization;
-        this->resourceManagers.set(Resources::translations, &TranslationsManager::getInstance());
-        this->resourceManagers.set(Resources::arpeggiators, &ArpeggiatorsManager::getInstance());
-        this->resourceManagers.set(Resources::colourSchemes, &ColourSchemesManager::getInstance());
-        this->resourceManagers.set(Resources::hotkeySchemes, &HotkeySchemesManager::getInstance());
-        this->resourceManagers.set(Resources::scales, &ScalesManager::getInstance());
-        this->resourceManagers.set(Resources::scripts, &ScriptsManager::getInstance());
+        using namespace Serialization::Resources;
+        this->resourceManagers[translations] = &TranslationsManager::getInstance();
+        this->resourceManagers[arpeggiators] = &ArpeggiatorsManager::getInstance();
+        this->resourceManagers[colourSchemes] = &ColourSchemesManager::getInstance();
+        this->resourceManagers[hotkeySchemes] = &HotkeySchemesManager::getInstance();
+        this->resourceManagers[scales] = &ScalesManager::getInstance();
+        this->resourceManagers[scripts] = &ScriptsManager::getInstance();
 
-        ResourceManagers::Iterator i(this->resourceManagers);
-        while (i.next())
+        for (auto i : this->resourceManagers)
         {
-            i.getValue()->initialise();
+            i.second->initialise();
         }
 
-        // Prepare back-end APIs communication services
-        this->sessionService = new SessionService();
-        this->resourceSyncService = new ResourceSyncService();
+        this->workspace.reset(new class Workspace());
+        this->window.reset(new MainWindow());
 
-        this->workspace = new class Workspace();
-        this->window = new MainWindow();
+        // Prepare back-end APIs communication services
+        this->sessionService.reset(new SessionService(this->workspace->getUserProfile()));
+        this->resourceSyncService.reset(new ResourceSyncService(this->resourceManagers));
 
         TranslationsManager::getInstance().addChangeListener(this);
         
@@ -358,11 +362,11 @@ void App::shutdown()
 
         this->window = nullptr;
 
-        this->workspace->shutdown();
-        this->workspace = nullptr;
-
         this->resourceSyncService = nullptr;
         this->sessionService = nullptr;
+
+        this->workspace->shutdown();
+        this->workspace = nullptr;
 
         this->theme = nullptr;
         this->config = nullptr;
@@ -377,10 +381,9 @@ void App::shutdown()
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
 
-        ResourceManagers::Iterator i(this->resourceManagers);
-        while (i.next())
+        for (auto i : this->resourceManagers)
         {
-            i.getValue()->shutdown();
+            i.second->shutdown();
         }
 
         this->resourceManagers.clear();
@@ -474,17 +477,17 @@ void App::resumed()
 
 SessionService *App::getSessionService() const noexcept
 {
-    return this->sessionService;
+    return this->sessionService.get();
 }
 
 ResourceSyncService *App::getResourceSyncService() const noexcept
 {
-    return this->resourceSyncService;
+    return this->resourceSyncService.get();
 }
 
 HelioTheme *App::getTheme() const noexcept
 {
-    return this->theme;
+    return this->theme.get();
 }
 
 //===----------------------------------------------------------------------===//
@@ -506,7 +509,7 @@ String App::getMacAddressList()
     return addressStrings.joinIntoString(", ");
 }
 
-App::RunMode App::detectRunMode(const String &commandLine)
+App::RunMode App::detectRunMode(const String &commandLine) const
 {
     if (commandLine.isNotEmpty() &&
         DocumentHelpers::getTempSlot(commandLine).existsAsFile())
@@ -582,7 +585,7 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
 ResourceManager &App::getResourceManagerFor(const Identifier &id) const
 {
     jassert(this->resourceManagers.contains(id));
-    return *this->resourceManagers[id];
+    return *this->resourceManagers.at(id);
 }
 
 START_JUCE_APPLICATION(App)

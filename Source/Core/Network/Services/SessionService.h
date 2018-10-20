@@ -24,36 +24,26 @@
 #include "RequestUserProfileThread.h"
 #include "UpdatesCheckThread.h"
 
-class SessionService final : private BackendService, public ChangeBroadcaster
+class SessionService final : private BackendService
 {
 public:
     
-    SessionService();
+    SessionService(UserProfile &userProfile);
 
     using AuthCallback = Function<void(bool, const Array<String> &)>;
 
-    static String getApiToken();
-    static bool isLoggedIn();
-
-    const UserProfileDto &getUserProfile() const noexcept;
-    
     void signIn(const String &provider, AuthCallback callback = nullptr);
     void cancelSignInProcess();
     void signOut();
 
 private:
 
-    static void setApiToken(const String &token);
-
-    UserProfileDto userProfile;
-    void resetUserProfile();
-
+    UserProfile &userProfile;
     AuthCallback authCallback;
-
-private:
 
     AuthThread *prepareAuthThread();
     TokenUpdateThread *prepareTokenUpdateThread();
     RequestUserProfileThread *prepareProfileRequestThread();
 
+    JUCE_DECLARE_NON_COPYABLE(SessionService)
 };

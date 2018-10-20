@@ -19,12 +19,12 @@
 #include "ResourceSyncService.h"
 #include "ResourceManager.h"
 #include "Config.h"
-#include "App.h"
 
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
 
-ResourceSyncService::ResourceSyncService()
+ResourceSyncService::ResourceSyncService(const ResourceManagerPool &rm) :
+    resourceManagers(rm)
 {
     this->prepareUpdatesCheckThread()->checkForUpdates(UPDATE_INFO_TIMEOUT_MS);
 }
@@ -72,9 +72,12 @@ RequestResourceThread *ResourceSyncService::prepareResourceRequestThread()
 {
     auto *thread = this->getNewThreadFor<RequestResourceThread>();
 
-    thread->onRequestResourceOk = [](const Identifier &resourceId, const ValueTree &resource)
+    thread->onRequestResourceOk = [this](const Identifier &resourceId, const ValueTree &resource)
     {
-        App::Helio().getResourceManagerFor(resourceId).updateBaseResource(resource);
+        if (this->resourceManagers.contains(resourceId))
+        {
+            this->resourceManagers.at(resourceId)->updateBaseResource(resource);
+        }
     };
     
     return thread;

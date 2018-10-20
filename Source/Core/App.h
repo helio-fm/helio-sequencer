@@ -134,16 +134,15 @@ private:
     class DebugLogger logger;
     class Clipboard clipboard;
 
-    ScopedPointer<class HelioTheme> theme;
-    ScopedPointer<class Config> config;
-    ScopedPointer<class Workspace> workspace;
-    ScopedPointer<class MainWindow> window;
+    UniquePointer<class HelioTheme> theme;
+    UniquePointer<class Config> config;
+    UniquePointer<class Workspace> workspace;
+    UniquePointer<class MainWindow> window;
 
-    ScopedPointer<class SessionService> sessionService;
-    ScopedPointer<class ResourceSyncService> resourceSyncService;
+    UniquePointer<class SessionService> sessionService;
+    UniquePointer<class ResourceSyncService> resourceSyncService;
 
-    using ResourceManagers = HashMap<Identifier, ResourceManager *, IdentifierHash>;
-    ResourceManagers resourceManagers;
+    ResourceManagerPool resourceManagers;
 
 private:
 
@@ -160,7 +159,7 @@ private:
         PLUGIN_CHECK
     };
 
-    App::RunMode detectRunMode(const String &commandLine);
+    App::RunMode detectRunMode(const String &commandLine) const;
     App::RunMode runMode;
     
     void handleAsyncUpdate() override;
