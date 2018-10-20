@@ -19,14 +19,7 @@
 
 //[Headers]
 class Workspace;
-
-#include "RecentProjectInfo.h"
-
-#if HELIO_DESKTOP
-#    define DEFAULT_RECENT_FILES_ROW_HEIGHT (56)
-#elif HELIO_MOBILE
-#    define DEFAULT_RECENT_FILES_ROW_HEIGHT (56)
-#endif
+#include "UserProfile.h"
 //[/Headers]
 
 
@@ -40,6 +33,7 @@ public:
 
     //[UserMethods]
 
+    void updateListContent();
     void loadFile(RecentProjectInfo::Ptr fileDescription);
     void unloadFile(RecentProjectInfo::Ptr fileDescription);
 
@@ -63,6 +57,7 @@ private:
 
     //[UserVariables]
     Workspace *workspace;
+    SparseHashSet<String, StringHash> loadedProjectIds;
     //[/UserVariables]
 
     UniquePointer<ListBox> listBox;

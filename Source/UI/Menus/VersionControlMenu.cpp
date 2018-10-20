@@ -22,7 +22,8 @@
 #include "VersionControl.h"
 
 #include "App.h"
-#include "SessionService.h"
+#include "Workspace.h"
+#include "UserProfile.h"
 
 #include "MenuPanel.h"
 #include "CommandIDs.h"
@@ -49,7 +50,7 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
         CommandIDs::VersionControlResetAll,
         TRANS("menu::vcs::resetall"))->closesMenu());
 
-    const bool loggedIn = App::Helio().getSessionService()->isLoggedIn();
+    const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
 
     menu.add(MenuItem::item(Icons::push,
         CommandIDs::VersionControlPush,

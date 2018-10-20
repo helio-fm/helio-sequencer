@@ -48,6 +48,7 @@ public:
 RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox)
     : DraggingListBoxComponent(parentListBox.getViewport()),
       parentList(parent),
+      isFileLoaded(false),
       isSelected(false)
 {
     this->titleLabel.reset(new Label(String(),
@@ -132,7 +133,7 @@ void RecentProjectRow::setSelected(bool shouldBeSelected)
 {
     if (shouldBeSelected)
     {
-        if (this->targetFile->isLoaded)
+        if (this->isFileLoaded)
         {
             this->parentList.unloadFile(this->targetFile);
         }
@@ -143,21 +144,22 @@ void RecentProjectRow::setSelected(bool shouldBeSelected)
     }
 }
 
-void RecentProjectRow::updateDescription(bool isLastRow, const RecentProjectInfo::Ptr file)
+void RecentProjectRow::updateDescription(const RecentProjectInfo::Ptr file, bool isLoaded, bool isLastRow)
 {
     //Logger::writeToLog("Updating info for: " + file->title);
     this->targetFile = file;
+    this->isFileLoaded = isLoaded;
 
-    this->titleLabel->setText(this->targetFile->title, dontSendNotification);
-    this->dateLabel->setText(App::getHumanReadableDate(Time(this->targetFile->lastModifiedTime)), dontSendNotification);
-    this->remoteIndicatorImage->setAlpha(this->targetFile->hasRemoteCopy ? 1.f : 0.3f);
-    this->localIndicatorImage->setAlpha(this->targetFile->hasLocalCopy ? 1.f : 0.3f);
+    this->titleLabel->setText(this->targetFile->getTitle(), dontSendNotification);
+    this->dateLabel->setText(App::getHumanReadableDate(this->targetFile->getUpdatedAt()), dontSendNotification);
+    this->remoteIndicatorImage->setAlpha(this->targetFile->hasRemoteCopy() ? 1.f : 0.3f);
+    this->localIndicatorImage->setAlpha(this->targetFile->hasLocalCopy() ? 1.f : 0.3f);
 
-    this->activenessImage->setAlpha(this->targetFile->isLoaded ? 1.f : 0.7f);
+    this->activenessImage->setAlpha(this->isFileLoaded ? 1.f : 0.7f);
     //this->titleLabel->setAlpha(this->targetFile->isLoaded ? 1.f : 0.6f);
     //this->dateLabel->setAlpha(this->targetFile->isLoaded ? 1.f : 0.5f);
 
-    this->setAlpha(this->targetFile->isLoaded ? 1.f : 0.5f);
+    this->setAlpha(this->isFileLoaded ? 1.f : 0.5f);
 }
 
 Component *RecentProjectRow::createHighlighterComponent()
@@ -174,7 +176,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="RecentProjectRow" template="../../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="DashboardMenu &amp;parent, ListBox &amp;parentListBox"
-                 variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;parentList(parent),&#10;isSelected(false)"
+                 variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;parentList(parent),&#10;isFileLoaded(false),&#10;isSelected(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="350" initialHeight="56">
   <BACKGROUND backgroundColour="0"/>

@@ -35,7 +35,7 @@ public:
 
     //[UserMethods]
     void setSelected(bool shouldBeSelected) override;
-    void updateDescription(bool isLastRow, const RecentProjectInfo::Ptr file);
+    void updateDescription(const RecentProjectInfo::Ptr file, bool isLoaded, bool isLastRow);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -50,6 +50,7 @@ private:
 
     DashboardMenu &parentList;
     RecentProjectInfo::Ptr targetFile;
+    bool isFileLoaded;
     bool isSelected;
 
     //[/UserVariables]

@@ -35,7 +35,7 @@
 #include "Workspace.h"
 #include "SessionService.h"
 #include "IconComponent.h"
-#include "UserProfileDto.h"
+#include "UserProfile.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
@@ -85,15 +85,15 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->setSize(600, 400);
 
     //[Constructor]
-    this->updateLoginAndProfileButtons();
-    App::Helio().getSessionService()->addChangeListener(this);
+    this->updateProfileViews();
+    App::Workspace().getUserProfile().addChangeListener(this);
     //[/Constructor]
 }
 
 Dashboard::~Dashboard()
 {
     //[Destructor_pre]
-    App::Helio().getSessionService()->removeChangeListener(this);
+    App::Workspace().getUserProfile().removeChangeListener(this);
     //[/Destructor_pre]
 
     skew = nullptr;
@@ -145,22 +145,24 @@ void Dashboard::visibilityChanged()
     //[/UserCode_visibilityChanged]
 }
 
+
 //[MiscUserCode]
 void Dashboard::changeListenerCallback(ChangeBroadcaster *source)
 {
-    // Listens to session service
-    this->updateLoginAndProfileButtons();
+    // Listens to user profile changes:
+    this->updateProfileViews();
 }
 
-void Dashboard::updateLoginAndProfileButtons()
+void Dashboard::updateProfileViews()
 {
-    const bool loggedIn = App::Helio().getSessionService()->isLoggedIn();
+    const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
     this->loginButton->setVisible(!loggedIn);
     this->userProfile->setVisible(loggedIn);
     if (loggedIn)
     {
         this->userProfile->updateProfileInfo();
     }
+    this->projectsList->updateListContent();
 }
 //[/MiscUserCode]
 
@@ -195,7 +197,7 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="projectsList" virtualName=""
              explicitFocusOrder="0" pos="10Rr 10Rr 376 20M" sourceFile="Menu/DashboardMenu.cpp"
-             constructorParams="&amp;App::Workspace()"/>
+             constructorParams="&amp;App::Workspace().getUserProfile()"/>
   <JUCERCOMP name="" id="13e51011dd762205" memberName="openProjectButton"
              virtualName="" explicitFocusOrder="0" pos="400 108 271 32" sourceFile="Menu/OpenProjectButton.cpp"
              constructorParams=""/>

@@ -63,7 +63,7 @@ private:
     MainLayout &workspace;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    void updateLoginAndProfileButtons();
+    void updateProfileViews();
 
     //[/UserVariables]
 

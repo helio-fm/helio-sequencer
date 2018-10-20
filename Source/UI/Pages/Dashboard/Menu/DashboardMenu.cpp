@@ -23,17 +23,18 @@
 
 //[MiscUserDefs]
 #include "RecentProjectRow.h"
-#include "App.h"
-#include "MainLayout.h"
-#include "SessionService.h"
-#include "ProgressTooltip.h"
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
+#include "ProjectTreeItem.h"
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "App.h"
 #include "CommandIDs.h"
 #include "ComponentIDs.h"
+
+#if HELIO_DESKTOP
+#    define DEFAULT_RECENT_FILES_ROW_HEIGHT (56)
+#elif HELIO_MOBILE
+#    define DEFAULT_RECENT_FILES_ROW_HEIGHT (56)
+#endif
 //[/MiscUserDefs]
 
 DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
@@ -44,6 +45,7 @@ DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
 
 
     //[UserPreSize]
+    this->setFocusContainer(false);
     //[/UserPreSize]
 
     this->setSize(450, 500);
@@ -53,9 +55,7 @@ DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
     this->listBox->getViewport()->setScrollBarsShown(false, false);
 
     this->listBox->setModel(this);
-    this->setFocusContainer(false);
-
-    // FIXME update on workspace's recent files list changes
+    this->updateListContent();
     //[/Constructor]
 }
 
@@ -105,13 +105,13 @@ void DashboardMenu::loadFile(RecentProjectInfo::Ptr project)
         this->workspace->getUserProfile().onProjectDeleted(project->getProjectId());
     }
 
-    this->listBox->updateContent();
+    this->updateListContent();
 }
 
 void DashboardMenu::unloadFile(RecentProjectInfo::Ptr project)
 {
     this->workspace->unloadProject(project->getProjectId());
-    this->listBox->updateContent();
+    this->updateListContent();
 }
 
 
@@ -130,29 +130,31 @@ Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
 
     if (item == nullptr) { return existingComponentToUpdate; }
 
+    const bool isLoaded = this->loadedProjectIds.contains(item->getProjectId());
+
     if (existingComponentToUpdate != nullptr)
     {
-        if (RecentProjectRow *row = dynamic_cast<RecentProjectRow *>(existingComponentToUpdate))
+        if (auto *row = dynamic_cast<RecentProjectRow *>(existingComponentToUpdate))
         {
-            row->updateDescription(isLastRow, item);
+            row->updateDescription(item, isLoaded, isLastRow);
             row->setSelected(isRowSelected);
         }
         else
         {
             delete existingComponentToUpdate;
-            auto row2 = new RecentProjectRow(*this, *this->listBox);
-            row2->updateDescription(isLastRow, item);
-            row2->setSelected(isRowSelected);
-            existingComponentToUpdate = row2;
-            return row2;
+            ScopedPointer<RecentProjectRow> newRow(new RecentProjectRow(*this, *this->listBox));
+            newRow->updateDescription(item, isLoaded, isLastRow);
+            newRow->setSelected(isRowSelected);
+            existingComponentToUpdate = newRow;
+            return newRow.release();
         }
     }
     else
     {
-        auto row = new RecentProjectRow(*this, *this->listBox);
-        row->updateDescription(isLastRow, item);
+        ScopedPointer<RecentProjectRow> row(new RecentProjectRow(*this, *this->listBox));
+        row->updateDescription(item, isLoaded, isLastRow);
         row->setSelected(isRowSelected);
-        return row;
+        return row.release();
     }
 
     return existingComponentToUpdate;
@@ -166,6 +168,16 @@ int DashboardMenu::getNumRows()
     return this->workspace->getUserProfile().getProjects().size();
 }
 
+void DashboardMenu::updateListContent()
+{
+    this->loadedProjectIds.clear();
+    for (const auto *project : this->workspace->getLoadedProjects())
+    {
+        this->loadedProjectIds.emplace(project->getId());
+    }
+    this->listBox->updateContent();
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -177,6 +189,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="Workspace *parentWorkspace" variableInitialisers="workspace(parentWorkspace)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="500">
+                 initialWidth="450" initialHeight="500">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
