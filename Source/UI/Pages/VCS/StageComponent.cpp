@@ -221,11 +221,11 @@ Component *StageComponent::refreshComponentForRow(int rowNumber,
 
     if (rowNumber >= numRecords) { return existingComponentToUpdate; }
     
-    if (VCS::RevisionItem *revRecord = this->stageDeltas[rowNumber])
+    if (auto *revRecord = this->stageDeltas[rowNumber].get())
     {
         if (existingComponentToUpdate != nullptr)
         {
-            if (RevisionItemComponent *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
+            if (auto *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
             {
                 row->updateItemInfo(rowNumber, isLastRow, revRecord);
                 return existingComponentToUpdate;
@@ -233,7 +233,7 @@ Component *StageComponent::refreshComponentForRow(int rowNumber,
         }
         else
         {
-            auto row = new RevisionItemComponent(*this->changesList, this->vcs.getHead());
+            auto *row = new RevisionItemComponent(*this->changesList, this->vcs.getHead());
             row->updateItemInfo(rowNumber, isLastRow, revRecord);
             return row;
         }

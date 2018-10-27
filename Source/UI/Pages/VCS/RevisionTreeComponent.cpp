@@ -62,7 +62,7 @@ void RevisionTreeComponent::deselectAll(bool sendNotification)
         }
     }
 
-    this->selectedRevision = {};
+    this->selectedRevision = nullptr;
 
     auto *editor = this->findParentEditor();
     if (editor != nullptr && sendNotification)

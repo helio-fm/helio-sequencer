@@ -382,11 +382,6 @@ void TreeItem::recreateSubtreePages()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-var TreeItem::getDragSourceDescription()
-{
-    return {};
-}
-
 void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
     if (TreeView *tree = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))

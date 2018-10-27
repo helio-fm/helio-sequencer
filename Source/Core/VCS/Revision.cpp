@@ -95,6 +95,11 @@ void Revision::addChild(Revision *child)
     //this->children.insert(0, child);
 }
 
+void VCS::Revision::addChild(Revision::Ptr revision)
+{
+    this->addChild(revision.get());
+}
+
 void Revision::removeChild(Revision *revision)
 {
     if (this->children.contains(revision))
@@ -104,7 +109,17 @@ void Revision::removeChild(Revision *revision)
     }
 }
 
+void VCS::Revision::removeChild(Revision::Ptr revision)
+{
+    this->removeChild(revision.get());
+}
+
 void Revision::addItem(RevisionItem *item)
+{
+    this->deltas.add(item);
+}
+
+void VCS::Revision::addItem(RevisionItem::Ptr item)
 {
     this->deltas.add(item);
 }

@@ -139,7 +139,7 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
     {
         const int index = selectedItems[i];
         if (index >= allChanges->getItems().size()) { return false; }
-        if (RevisionItem *item = allChanges->getItems()[index])
+        if (auto *item = allChanges->getItems()[index].get())
         {
             changesToReset.add(item);
         }
@@ -174,7 +174,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
     {
         const int index = selectedItems[i];
         if (index >= allChanges->getItems().size()) { return false; }
-        if (RevisionItem *item = allChanges->getItems()[index])
+        if (auto *item = allChanges->getItems()[index].get())
         {
             newRevision->addItem(item);
         }

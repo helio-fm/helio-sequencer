@@ -282,7 +282,7 @@ void UserProfile::deserialize(const ValueTree &tree)
             p->deserialize(child);
             if (p->isValid())
             {
-                this->projects.addSorted(kProjectsSort, p);
+                this->projects.addSorted(kProjectsSort, p.get());
             }
         }
     }
@@ -294,7 +294,7 @@ void UserProfile::deserialize(const ValueTree &tree)
             UserSessionInfo::Ptr s(new UserSessionInfo());
             s->deserialize(child);
             // TODO store JWT as well? remove current session if stale?
-            this->sessions.addSorted(kSessionsSort, s);
+            this->sessions.addSorted(kSessionsSort, s.get());
         }
     }
 

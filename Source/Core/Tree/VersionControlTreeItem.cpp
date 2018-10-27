@@ -82,15 +82,6 @@ String VersionControlTreeItem::getName() const noexcept
     return TRANS("tree::vcs");
 }
 
-void VersionControlTreeItem::onItemParentChanged()
-{
-    // Could be still uninitialized at this moment
-    if (this->vcs == nullptr)
-    {
-        this->initVCS();
-    }
-}
-
 //===----------------------------------------------------------------------===//
 // Stats
 //===----------------------------------------------------------------------===//
@@ -180,8 +171,11 @@ void VersionControlTreeItem::toggleQuickStash()
 void VersionControlTreeItem::onItemAddedToTree(bool sendNotifications)
 {
     // Could be still uninitialized at this moment
-    this->initVCS();
-    this->initEditor();
+    if (this->vcs == nullptr)
+    {
+        this->initVCS();
+        this->initEditor();
+    }
 }
 
 void VersionControlTreeItem::onItemDeletedFromTree(bool sendNotifications)

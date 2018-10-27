@@ -37,8 +37,14 @@ namespace VCS
         const ReferenceCountedArray<Revision> &getChildren() const noexcept;
 
         void addItem(RevisionItem *item);
+        void addItem(RevisionItem::Ptr item);
+
         void addChild(Revision *revision);
+        void addChild(Revision::Ptr revision);
+
         void removeChild(Revision *revision);
+        void removeChild(Revision::Ptr revision);
+
         void copyDeltasFrom(Revision::Ptr other);
         
         WeakReference<Revision> getParent() const noexcept;

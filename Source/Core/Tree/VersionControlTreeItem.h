@@ -35,9 +35,6 @@ public:
 
     void showPage() override;
     void recreatePage() override;
-
-    void onItemParentChanged() override;
-
     String getStatsString() const;
     
     void commitProjectInfo();

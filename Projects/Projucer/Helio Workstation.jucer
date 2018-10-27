@@ -1374,6 +1374,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <XCODE_IPHONE targetFolder="../../Projects/iOS" bigIcon="WO0LHL" UIFileSharingEnabled="1"
@@ -1404,6 +1405,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
     <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="WO0LHL"
@@ -1440,6 +1442,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <VS2017 targetFolder="../../Projects/VisualStudio2017" extraCompilerFlags="/FC /Gy /bigobj"
@@ -1479,6 +1482,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
     <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" bigIcon="WO0LHL"
@@ -1506,6 +1510,7 @@
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <ANDROIDSTUDIO targetFolder="../../Projects/Android" androidSDKPath="~/Android/Sdk/"
@@ -1535,6 +1540,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </ANDROIDSTUDIO>
   </EXPORTFORMATS>
@@ -1548,6 +1554,7 @@
     <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_ASIO="1" JUCE_WASAPI="1" JUCE_WASAPI_EXCLUSIVE="1" JUCE_DIRECTSOUND="1"

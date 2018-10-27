@@ -266,7 +266,7 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
     {
         const Identifier logicType(sourceItem->getDiffLogic()->getType());
         const Uuid id(sourceItem->getUuid());
-        this->targetVcsItemsSource->initTrackedItem(logicType, id, *sourceItem);
+        this->targetVcsItemsSource.initTrackedItem(logicType, id, *sourceItem);
         return true;
     }
 
@@ -392,7 +392,7 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
             
             const Identifier logicType(stateItem->getDiffLogic()->getType());
             const Uuid id(stateItem->getUuid());
-            this->targetVcsItemsSource->initTrackedItem(logicType, id, *stateItem);
+            this->targetVcsItemsSource.initTrackedItem(logicType, id, *stateItem);
         }
         else
         {
