@@ -58,8 +58,8 @@ private:
     UniquePointer<CutPointMark> createCutPointMark(NoteComponent *nc, float beat);
     const Point<double> getParentSize() const;
 
-    SparseHashMap<const Note, UniquePointer<CutPointMark>, MidiEventHash> cutMarkers;
-    SparseHashMap<const Note, float, MidiEventHash> cutPoints;
+    FlatHashMap<Note, UniquePointer<CutPointMark>, MidiEventHash> cutMarkers;
+    FlatHashMap<Note, float, MidiEventHash> cutPoints;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KnifeToolHelper)
 };

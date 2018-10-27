@@ -61,7 +61,7 @@ public:
     
     // Grouped selections are selected events, split by track,
     // so that is easier to perform undo/redo actions:
-    using GroupedSelections = SparseHashMap<String, SelectionProxyArray::Ptr, StringHash>;
+    using GroupedSelections = FlatHashMap<String, SelectionProxyArray::Ptr, StringHash>;
     const GroupedSelections &getGroupedSelections() const;
 
     template<typename T>

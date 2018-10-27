@@ -1418,7 +1418,7 @@
             vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="WO0LHL"
             bigIcon="WO0LHL" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy"
+            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj"
             extraLinkerFlags="/OPT:REF /OPT:ICF=5">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
@@ -1453,8 +1453,8 @@
       </MODULEPATHS>
     </VS2015>
     <VS2017 targetFolder="../../Projects/VisualStudio2017" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
-            extraCompilerFlags="/FC /Gy" usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
-            precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
+            extraCompilerFlags="/FC /Gy /bigobj" usePrecompiledHeaders="1"
+            precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
             smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp" extraLinkerFlags="/OPT:REF /OPT:ICF=5">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"

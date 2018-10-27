@@ -96,7 +96,7 @@ private:
     WeakReference<MidiSequence> sequence;
 
     OwnedArray<AutomationCurveEventComponent> eventComponents;
-    SparseHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;
+    FlatHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;
 
     AutomationCurveEventComponent *draggingEvent;
     bool addNewEventMode;

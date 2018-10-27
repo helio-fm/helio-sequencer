@@ -228,7 +228,7 @@ private:
     ScopedPointer<UndoStack> undoStack;
 
     mutable bool isTracksCacheOutdated;
-    mutable SparseHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
+    mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
     void rebuildTracksRefsCacheIfNeeded() const;
 
 };

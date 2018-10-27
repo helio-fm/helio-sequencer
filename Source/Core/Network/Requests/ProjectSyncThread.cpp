@@ -50,8 +50,8 @@ void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs,
     this->startThread(7);
 }
 
-using RevisionsMap = SparseHashMap<String, VCS::Revision::Ptr, StringHash>;
-using RevisionDtosMap = SparseHashMap<String, RevisionDto, StringHash>;
+using RevisionsMap = FlatHashMap<String, VCS::Revision::Ptr, StringHash>;
+using RevisionDtosMap = FlatHashMap<String, RevisionDto, StringHash>;
 
 static void buildLocalRevisionsIndex(RevisionsMap &map, VCS::Revision::Ptr root)
 {
@@ -100,7 +100,7 @@ static RevisionsMap constructNewRemoteTrees(const Array<RevisionDto> &list)
         RevisionDto associatedDto;
     };
 
-    using ShallowRevisionsMap = SparseHashMap<String, ShallowRevision, StringHash>;
+    using ShallowRevisionsMap = FlatHashMap<String, ShallowRevision, StringHash>;
 
     RevisionsMap trees;
     ShallowRevisionsMap lookup;

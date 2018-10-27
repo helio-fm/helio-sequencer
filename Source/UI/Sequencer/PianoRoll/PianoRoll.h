@@ -261,8 +261,8 @@ private:
 
     ScopedPointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
-    using SequenceMap = SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash>;
-    using PatternMap = SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash>;
+    using SequenceMap = FlatHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash>;
+    using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll)

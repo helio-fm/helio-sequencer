@@ -93,4 +93,4 @@ private:
     JUCE_DECLARE_WEAK_REFERENCEABLE(ResourceManager)
 };
 
-using ResourceManagerPool = SparseHashMap<Identifier, WeakReference<ResourceManager>, IdentifierHash>;
+using ResourceManagerPool = FlatHashMap<Identifier, WeakReference<ResourceManager>, IdentifierHash>;

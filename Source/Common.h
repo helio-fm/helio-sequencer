@@ -21,12 +21,12 @@
 // Pragmas
 //===----------------------------------------------------------------------===//
 
-// Unreferenced formal parameter
+// unreferenced formal parameter
 #pragma warning(disable: 4100)
-// Hides class member
+// hides class member
 #pragma warning(disable: 4458)
-// std::uninitialized_copy::_Unchecked_iterators::_Deprecate
-#pragma warning(disable: 4996)
+// decorated name length exceeded, name was truncated
+#pragma warning(disable: 4503)
 
 //===----------------------------------------------------------------------===//
 // JUCE
@@ -47,13 +47,13 @@
 // SparsePP
 //===----------------------------------------------------------------------===//
 
-#include "../../ThirdParty/SparseHashMap/sparsepp/spp.h"
+#include "../../ThirdParty/FlatHashMap/flat_hash_map.hpp"
 
-template <class Key, class T, class HashFcn = spp::spp_hash<Key>, class EqualKey = std::equal_to<Key>>
-using SparseHashMap = spp::sparse_hash_map<Key, T, HashFcn, EqualKey>;
+template <class Key, class T, class HashFn = std::hash<Key>, class EqualKey = std::equal_to<Key>>
+using FlatHashMap = ska::flat_hash_map<Key, T, HashFn, EqualKey>;
 
-template <class Value, class HashFcn = spp::spp_hash<Value>, class EqualKey = std::equal_to<Value>>
-using SparseHashSet = spp::sparse_hash_set<Value, HashFcn, EqualKey>;
+template <class Value, class HashFn = std::hash<Value>, class EqualKey = std::equal_to<Value>>
+using SparseHashSet = ska::flat_hash_set<Value, HashFn, EqualKey>;
 
 using HashCode = size_t;
 

@@ -95,7 +95,7 @@ private:
     ComponentAnimator animator;
 
     OwnedArray<T> keySignatureComponents;
-    SparseHashMap<KeySignatureEvent, T *, MidiEventHash> keySignaturesHash;
+    FlatHashMap<KeySignatureEvent, T *, MidiEventHash> keySignaturesHash;
     
 };
 
