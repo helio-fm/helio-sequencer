@@ -81,7 +81,7 @@ private:
 
     bool wasInitialized = false;
 
-    UniquePointer<UserProfile> userProfile;
+    UserProfile userProfile;
     
     UniquePointer<AudioCore> audioCore;
     UniquePointer<PluginScanner> pluginManager;

@@ -216,10 +216,25 @@ ValueTree UserProfile::serialize() const
     const ScopedReadLock lock(this->projectsListLock);
     ValueTree tree(Profile::userProfile);
 
-    tree.setProperty(Profile::url, this->profileUrl, nullptr);
-    tree.setProperty(Profile::name, this->name, nullptr);
-    tree.setProperty(Profile::login, this->login, nullptr);
-    tree.setProperty(Profile::thumbnail, this->avatarThumbnail, nullptr);
+    if (this->profileUrl.isNotEmpty())
+    {
+        tree.setProperty(Profile::url, this->profileUrl, nullptr);
+    }
+
+    if (this->name.isNotEmpty())
+    {
+        tree.setProperty(Profile::name, this->name, nullptr);
+    }
+
+    if (this->login.isNotEmpty())
+    {
+        tree.setProperty(Profile::login, this->login, nullptr);
+    }
+
+    if (this->avatarThumbnail.isNotEmpty())
+    {
+        tree.setProperty(Profile::thumbnail, this->avatarThumbnail, nullptr);
+    }
 
     for (const auto *project : this->projects)
     {
@@ -285,6 +300,8 @@ void UserProfile::deserialize(const ValueTree &tree)
 
     // TODO scan documents folder for existing projects not present in the list?
     // or only do it when the list is empty?
+
+    // and get all workspace's projects
 
     this->sendChangeMessage();
 }

@@ -41,7 +41,6 @@ void Workspace::init()
 {
     if (! this->wasInitialized)
     {
-        this->userProfile.reset(new UserProfile());
         this->audioCore.reset(new AudioCore());
         this->pluginManager.reset(new PluginScanner());
         this->treeRoot.reset(new RootTreeItem("Workspace"));
@@ -79,7 +78,6 @@ void Workspace::shutdown()
         this->treeRoot = nullptr;
         this->pluginManager = nullptr;
         this->audioCore = nullptr;
-        this->userProfile = nullptr;
 
         this->wasInitialized = false;
     }
@@ -145,8 +143,7 @@ RootTreeItem *Workspace::getTreeRoot()
 
 UserProfile &Workspace::getUserProfile()
 {
-    jassert(this->userProfile.get() != nullptr);
-    return *this->userProfile;
+    return this->userProfile;
 }
 
 //===----------------------------------------------------------------------===//
@@ -410,9 +407,9 @@ ValueTree Workspace::serialize() const
 
     // TODO serialize window size and position
 
+    tree.appendChild(this->userProfile.serialize(), nullptr);
     tree.appendChild(this->audioCore->serialize(), nullptr);
     tree.appendChild(this->pluginManager->serialize(), nullptr);
-    tree.appendChild(this->userProfile->serialize(), nullptr);
 
     ValueTree treeRootNode(Core::treeRoot);
     treeRootNode.appendChild(this->treeRoot->serialize(), nullptr);
@@ -441,7 +438,7 @@ void Workspace::deserialize(const ValueTree &tree)
         return;
     }
 
-    this->userProfile->deserialize(root);
+    this->userProfile.deserialize(root);
     this->audioCore->deserialize(root);
     this->pluginManager->deserialize(root);
 
@@ -460,6 +457,8 @@ void Workspace::deserialize(const ValueTree &tree)
         }
     }
     
+    // TODO pass all opened projects to user profile?
+
     // If no instruments root item is found for whatever reason
     // (i.e. malformed tree), make sure to add one:
     if (nullptr == this->treeRoot->findChildOfType<OrchestraPitTreeItem>())
@@ -478,7 +477,7 @@ void Workspace::deserialize(const ValueTree &tree)
 
 void Workspace::reset()
 {
-    this->userProfile->reset();
+    this->userProfile.reset();
     this->audioCore->reset();
     this->treeRoot->reset();
 }

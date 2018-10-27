@@ -124,10 +124,9 @@ Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
 {
     const auto &list = this->workspace->getUserProfile().getProjects();
     const bool isLastRow = (rowNumber == (list.size() - 1));
+    if (rowNumber >= list.size()) { return existingComponentToUpdate; }
 
-    const int fileIndex = rowNumber;
-    const auto item = list.getUnchecked(fileIndex);
-
+    const auto item = list[rowNumber];
     if (item == nullptr) { return existingComponentToUpdate; }
 
     const bool isLoaded = this->loadedProjectIds.contains(item->getProjectId());
