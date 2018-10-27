@@ -102,6 +102,6 @@ struct ClipHash
 {
     inline HashCode operator()(const Clip &key) const noexcept
     {
-        return key.hashCode() % HASH_CODE_MAX;
+        return key.hashCode();
     }
 };

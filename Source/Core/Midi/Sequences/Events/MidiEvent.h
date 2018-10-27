@@ -99,6 +99,6 @@ struct MidiEventHash
 {
     inline HashCode operator()(const MidiEvent &key) const noexcept
     {
-        return key.hashCode() % HASH_CODE_MAX;
+        return key.hashCode();
     }
 };

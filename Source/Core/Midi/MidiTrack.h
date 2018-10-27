@@ -104,7 +104,7 @@ struct MidiTrackHash
 {
     inline HashCode operator()(const MidiTrack *const key) const noexcept
     {
-        return key->hashCode() % HASH_CODE_MAX;
+        return key->hashCode();
     }
 };
 

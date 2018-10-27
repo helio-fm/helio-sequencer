@@ -57,15 +57,11 @@ using SparseHashSet = ska::flat_hash_set<Value, HashFn, EqualKey>;
 
 using HashCode = size_t;
 
-#if !defined HASH_CODE_MAX
-#   define HASH_CODE_MAX SIZE_MAX
-#endif
-
 struct StringHash
 {
     inline HashCode operator()(const juce::String &key) const noexcept
     {
-        return static_cast<HashCode>(key.hashCode()) % HASH_CODE_MAX;
+        return static_cast<HashCode>(key.hashCode());
     }
 };
 
@@ -73,7 +69,7 @@ struct IdentifierHash
 {
     inline HashCode operator()(const juce::Identifier &key) const noexcept
     {
-        return static_cast<HashCode>(key.toString().hashCode()) % HASH_CODE_MAX;
+        return static_cast<HashCode>(key.toString().hashCode());
     }
 
     static int generateHash(const Identifier& key, int upperLimit) noexcept
