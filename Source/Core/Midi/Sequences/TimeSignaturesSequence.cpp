@@ -52,7 +52,6 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence, sho
     }
 
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 //===----------------------------------------------------------------------===//
@@ -71,7 +70,7 @@ MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &eventParams,
     {
         const auto ownedEvent = new TimeSignatureEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-        this->notifyEventAdded(*ownedEvent);
+        this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         this->updateBeatRange(true);
         return ownedEvent;
     }
@@ -93,10 +92,10 @@ bool TimeSignaturesSequence::remove(const TimeSignatureEvent &signature, bool un
         if (index >= 0)
         {
             MidiEvent *const removedEvent = this->midiEvents[index];
-            this->notifyEventRemoved(*removedEvent);
+            this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
-            this->notifyEventRemovedPostAction();
+            this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
 
@@ -124,7 +123,7 @@ bool TimeSignaturesSequence::change(const TimeSignatureEvent &oldParams,
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(oldParams, *changedEvent);
+            this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -150,7 +149,7 @@ bool TimeSignaturesSequence::insertGroup(Array<TimeSignatureEvent> &signatures, 
             const TimeSignatureEvent &eventParams = signatures.getUnchecked(i);
             const auto ownedEvent = new TimeSignatureEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-            this->notifyEventAdded(*ownedEvent);
+            this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
         
         this->updateBeatRange(true);
@@ -176,13 +175,13 @@ bool TimeSignaturesSequence::removeGroup(Array<TimeSignatureEvent> &signatures, 
             if (index >= 0)
             {
                 MidiEvent *const removedSignature = this->midiEvents[index];
-                this->notifyEventRemoved(*removedSignature);
+                this->eventDispatcher.dispatchRemoveEvent(*removedSignature);
                 this->midiEvents.remove(index, true);
             }
         }
         
         this->updateBeatRange(true);
-        this->notifyEventRemovedPostAction();
+        this->eventDispatcher.dispatchPostRemoveEvent(this);
     }
     
     return true;
@@ -212,7 +211,7 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(oldParams, *changedEvent);
+                this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             }
         }
 
@@ -288,12 +287,10 @@ void TimeSignaturesSequence::deserialize(const ValueTree &tree)
 
     this->sort();
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 void TimeSignaturesSequence::reset()
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();
-    this->invalidateSequenceCache();
 }

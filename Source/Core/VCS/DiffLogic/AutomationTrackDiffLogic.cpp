@@ -60,12 +60,6 @@ const Identifier VCS::AutomationTrackDiffLogic::getType() const
     return Serialization::Core::automationTrack;
 }
 
-// assuming this is used only on checkout and resetting changes
-void AutomationTrackDiffLogic::resetStateTo(const TrackedItem &newState)
-{
-    this->target.resetStateTo(newState);
-}
-
 Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);

@@ -47,15 +47,6 @@ VersionControlTreeItem::~VersionControlTreeItem()
     this->shutdownVCS();
 }
 
-//===----------------------------------------------------------------------===//
-// TreeItem
-//===----------------------------------------------------------------------===//
-
-Colour VersionControlTreeItem::getColour() const noexcept
-{
-    return Colour(0xff818dff);
-}
-
 Image VersionControlTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::versionControl, HEADLINE_ICON_SIZE);
@@ -183,6 +174,23 @@ void VersionControlTreeItem::toggleQuickStash()
 }
 
 //===----------------------------------------------------------------------===//
+// Tree
+//===----------------------------------------------------------------------===//
+
+void VersionControlTreeItem::onItemAddedToTree(bool sendNotifications)
+{
+    // Could be still uninitialized at this moment
+    this->initVCS();
+    this->initEditor();
+}
+
+void VersionControlTreeItem::onItemDeletedFromTree(bool sendNotifications)
+{
+    this->shutdownEditor();
+    this->shutdownVCS();
+}
+
+//===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
@@ -249,7 +257,6 @@ void VersionControlTreeItem::reset()
 void VersionControlTreeItem::initVCS()
 {
     auto *parentProject = this->findParentOfType<ProjectTreeItem>();
-
     if (parentProject != nullptr && this->vcs == nullptr)
     {
         this->vcs.reset(new VersionControl(*parentProject));

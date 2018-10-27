@@ -42,7 +42,7 @@ class Scale;
 #include "Note.h"
 #include "Clip.h"
 
-class PianoRoll : public HybridRoll
+class PianoRoll final : public HybridRoll
 {
 public:
 

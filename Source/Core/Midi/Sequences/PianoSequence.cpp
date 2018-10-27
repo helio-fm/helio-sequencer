@@ -63,7 +63,6 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFo
     }
 
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 //===----------------------------------------------------------------------===//
@@ -82,7 +81,7 @@ MidiEvent *PianoSequence::insert(const Note &eventParams, const bool undoable)
     {
         const auto ownedNote = new Note(this, eventParams);
         this->midiEvents.addSorted(*ownedNote, ownedNote);
-        this->notifyEventAdded(*ownedNote);
+        this->eventDispatcher.dispatchAddEvent(*ownedNote);
         this->updateBeatRange(true);
         return ownedNote;
     }
@@ -106,10 +105,10 @@ bool PianoSequence::remove(const Note &eventParams, const bool undoable)
         {
             MidiEvent *const removedNote = this->midiEvents[index];
             jassert(removedNote->isValid());
-            this->notifyEventRemoved(*removedNote);
+            this->eventDispatcher.dispatchRemoveEvent(*removedNote);
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
-            this->notifyEventRemovedPostAction();
+            this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
         
@@ -138,7 +137,7 @@ bool PianoSequence::change(const Note &oldParams,
             changedNote->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedNote, changedNote);
-            this->notifyEventChanged(oldParams, *changedNote);
+            this->eventDispatcher.dispatchChangeEvent(oldParams, *changedNote);
             this->updateBeatRange(true);
             return true;
         }
@@ -164,7 +163,7 @@ bool PianoSequence::insertGroup(Array<Note> &group, bool undoable)
             const Note &eventParams = group.getUnchecked(i);
             const auto ownedNote = new Note(this, eventParams);
             this->midiEvents.addSorted(*ownedNote, ownedNote);
-            this->notifyEventAdded(*ownedNote);
+            this->eventDispatcher.dispatchAddEvent(*ownedNote);
         }
 
         this->updateBeatRange(true);
@@ -195,13 +194,13 @@ bool PianoSequence::removeGroup(Array<Note> &group, bool undoable)
             if (index >= 0)
             {
                 const auto removedNote = this->midiEvents[index];
-                this->notifyEventRemoved(*removedNote);
+                this->eventDispatcher.dispatchRemoveEvent(*removedNote);
                 this->midiEvents.remove(index, true);
             }
         }
 
         this->updateBeatRange(true);
-        this->notifyEventRemovedPostAction();
+        this->eventDispatcher.dispatchPostRemoveEvent(this);
     }
 
     return true;
@@ -232,7 +231,7 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
                 changedNote->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedNote, changedNote);
-                this->notifyEventChanged(oldParams, *changedNote);
+                this->eventDispatcher.dispatchChangeEvent(oldParams, *changedNote);
             }
         }
 
@@ -343,12 +342,10 @@ void PianoSequence::deserialize(const ValueTree &tree)
 
     this->sort();
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 void PianoSequence::reset()
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();
-    this->invalidateSequenceCache();
 }

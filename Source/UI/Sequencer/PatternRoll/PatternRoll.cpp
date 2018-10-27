@@ -123,7 +123,6 @@ void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
-    //this->trackHeaders.clear();
     this->clipComponents.clear();
 
     this->tracks.clearQuick();
@@ -291,6 +290,14 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
             }
         }
     }
+
+    // Roll size might need to be changed
+    this->updateRollSize();
+
+    // And clip component positions should be updated
+    // (this may be doing the same job twice,
+    // in case if updateRollSize have called resized as well)
+    this->resized();
 }
 
 //void debugTracksOrder(Array<MidiTrack *> tracks)
@@ -319,6 +326,7 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
         }
     }
 
+    this->updateRollSize();
     this->resized();
 }
 
@@ -334,14 +342,14 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
         for (int i = 0; i < pattern->size(); ++i)
         {
             const Clip &clip = *pattern->getUnchecked(i);
-            if (auto *deletedComponent = this->clipComponents[clip].get())
+            if (this->clipComponents.contains(clip))
             {
-                this->selection.deselect(deletedComponent);
                 this->clipComponents.erase(clip);
             }
         }
     }
 
+    this->updateRollSize();
     this->resized();
 }
 
@@ -634,8 +642,8 @@ void PatternRoll::resized()
 
     for (const auto &e : this->clipComponents)
     {
-        const auto component = e.second.get();
-        component->setFloatBounds(this->getEventBounds(component));
+        const auto c = e.second.get();
+        c->setFloatBounds(this->getEventBounds(c));
     }
 
     if (this->knifeToolHelper != nullptr)
@@ -777,7 +785,7 @@ void PatternRoll::reset() {}
 
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
 {
-    const int width = 64;
+    const int width = 48;
     const int shadowHeight = PATTERN_ROLL_TRACK_HEADER_HEIGHT * 2;
     Image patternImage(Image::RGB, width, height, false);
     Graphics g(patternImage);
@@ -789,39 +797,45 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
     // FIXME no hard-coded colours please
     const Colour shadowColour(Colours::black.withAlpha(0.125f));
 
-    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
-    g.fillRect(patternImage.getBounds().withHeight(PATTERN_ROLL_TRACK_HEADER_HEIGHT));
-
-    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorder));
-    g.drawHorizontalLine(0, 0.f, float(width));
-    g.drawHorizontalLine(PATTERN_ROLL_TRACK_HEADER_HEIGHT - 1, 0.f, float(width));
-
+    int yBase = 0;
+    while (yBase < height)
     {
-        float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
-        g.setGradientFill(ColourGradient(shadowColour, x, y,
-            Colours::transparentBlack, x, float(shadowHeight + y), false));
-        g.fillRect(int(x), int(y), width, shadowHeight);
-    }
+        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
+        g.fillRect(0, yBase, width, PATTERN_ROLL_TRACK_HEADER_HEIGHT);
 
-    {
-        float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
-        g.setGradientFill(ColourGradient(shadowColour, x, y,
-            Colours::transparentBlack, x, float((shadowHeight / 2) + y), false));
-        g.fillRect(int(x), int(y), width, shadowHeight);
-    }
+        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorder));
+        g.drawHorizontalLine(yBase, 0.f, float(width));
+        g.drawHorizontalLine(yBase + PATTERN_ROLL_TRACK_HEADER_HEIGHT - 1, 0.f, float(width));
 
-    {
-        float x = 0, y = float(height - shadowHeight);
-        g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
-            shadowColour, x, float(height), false));
-        g.fillRect(int(x), int(y), width, shadowHeight);
-    }
+        {
+            float x = 0, y = float(yBase + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+            g.setGradientFill(ColourGradient(shadowColour, x, y,
+                Colours::transparentBlack, x, float(shadowHeight + y), false));
+            g.fillRect(int(x), int(y), width, shadowHeight);
+        }
 
-    {
-        float x = 0, y = float(height - shadowHeight / 2);
-        g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
-            shadowColour, x, float(height), false));
-        g.fillRect(int(x), int(y), width, shadowHeight);
+        {
+            float x = 0, y = float(yBase + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+            g.setGradientFill(ColourGradient(shadowColour, x, y,
+                Colours::transparentBlack, x, float((shadowHeight / 2) + y), false));
+            g.fillRect(int(x), int(y), width, shadowHeight);
+        }
+
+        {
+            float x = 0, y = float(yBase + height - shadowHeight);
+            g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
+                shadowColour, x, float(height), false));
+            g.fillRect(int(x), int(y), width, shadowHeight);
+        }
+
+        {
+            float x = 0, y = float(yBase + height - shadowHeight / 2);
+            g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
+                shadowColour, x, float(height), false));
+            g.fillRect(int(x), int(y), width, shadowHeight);
+        }
+
+        yBase += rowHeight();
     }
 
     HelioTheme::drawNoise(theme, g, 1.75f);
@@ -831,5 +845,5 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
 void PatternRoll::repaintBackgroundsCache()
 {
     const HelioTheme &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    this->rowPattern = PatternRoll::renderRowsPattern(theme, rowHeight());
+    this->rowPattern = PatternRoll::renderRowsPattern(theme, rowHeight() * 8);
 }

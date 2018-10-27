@@ -1055,9 +1055,8 @@ void PianoRoll::paint(Graphics &g)
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = paintStartX + this->viewport.getViewWidth();
 
-    // I guess there's a weird bug in JUCE OpenGL shaders,
-    // so that OpenGL images tiling offset differs by 1 from native renderers.
-    // FIXME: someday I may need to investigate this issue and propose them a fix
+    // Seems that OpenGL renders non-power-of-2 textures incorrectly?
+    // This is just a quick hack, please FIXME:
     const float paintOffsetY = MainWindow::isOpenGLRendererEnabled() ?
         float(HYBRID_ROLL_HEADER_HEIGHT + 1) : float(HYBRID_ROLL_HEADER_HEIGHT);
 

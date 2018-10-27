@@ -17,13 +17,8 @@
 
 #pragma once
 
-#if HELIO_DESKTOP
-#   define PATTERN_ROLL_CLIP_HEIGHT 64
-#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 4
-#elif HELIO_MOBILE
-#   define PATTERN_ROLL_CLIP_HEIGHT 72
-#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 4
-#endif
+#define PATTERN_ROLL_CLIP_HEIGHT 60
+#define PATTERN_ROLL_TRACK_HEADER_HEIGHT 4
 
 class CutPointMark;
 class ClipComponent;
@@ -35,7 +30,7 @@ class PatternRollSelectionMenuManager;
 #include "Pattern.h"
 #include "Clip.h"
 
-class PatternRoll : public HybridRoll
+class PatternRoll final : public HybridRoll
 {
 public:
 

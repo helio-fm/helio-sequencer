@@ -27,11 +27,6 @@
 PatternEditorTreeItem::PatternEditorTreeItem() :
     TreeItem("Patterns", Serialization::Core::patternSet) {}
 
-Colour PatternEditorTreeItem::getColour() const noexcept
-{
-    return Colour(0xff818dff);
-}
-
 Image PatternEditorTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::patterns, HEADLINE_ICON_SIZE);

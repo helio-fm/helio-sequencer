@@ -9,7 +9,7 @@
       <true/>
     </dict>
     <key>CFBundleIdentifier</key>
-    <string>fm.helio.workstation</string>
+    <string>fm.helio.mobile</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.music</string>
     <key>NSHumanReadableCopyright</key>

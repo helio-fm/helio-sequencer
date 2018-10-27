@@ -23,7 +23,7 @@
 #include "ColourIDs.h"
 
 InstrumentEditorConnector::InstrumentEditorConnector(WeakReference<Instrument> instrument) :
-    connection({0, 0}, {0, 0}),
+    connection({}, {}),
     instrument(instrument),
     lastInputX(0),
     lastInputY(0),
@@ -165,11 +165,12 @@ void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
         double distanceFromStart = 0.0, distanceFromEnd = 0.0;
         this->getDistancesFromEnds(e.x, e.y, distanceFromStart, distanceFromEnd);
         const bool isNearerSource = (distanceFromStart < distanceFromEnd);
+        const AudioProcessorGraph::NodeID nodeIdZero;
 
         this->getGraphPanel()->beginConnectorDrag(
-            isNearerSource ? 0 : this->connection.source.nodeID,
+            isNearerSource ? nodeIdZero : this->connection.source.nodeID,
             this->connection.source.channelIndex,
-            isNearerSource ? this->connection.destination.nodeID : 0,
+            isNearerSource ? this->connection.destination.nodeID : nodeIdZero,
             this->connection.destination.channelIndex,
             e);
     }

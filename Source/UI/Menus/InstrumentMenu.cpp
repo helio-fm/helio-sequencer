@@ -72,7 +72,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 
     menu.add(MenuItem::item(Icons::remove, TRANS("menu::instrument::delete"))->withAction([this]()
     {
-        TreeItem::deleteItem(&this->instrumentNode);
+        TreeItem::deleteItem(&this->instrumentNode, true);
         this->dismiss();
     }));
 

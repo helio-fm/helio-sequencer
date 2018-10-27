@@ -33,7 +33,6 @@ public:
     explicit RootTreeItem(const String &name);
 
     String getName() const noexcept override;
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     bool mightContainSubItems() override
@@ -41,9 +40,7 @@ public:
     
     void showPage() override;
     void recreatePage() override;
-
-    void safeRename(const String &newName) override;
-
+    
     void importMidi(const File &file);
 
     //===------------------------------------------------------------------===//
@@ -61,15 +58,7 @@ public:
     MidiTrackTreeItem *addPianoTrack(TreeItem *parent, const String &name);
     MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber);
     ScriptTreeItem *addScript(TreeItem *parent, const String &path);
-
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    bool isInterestedInFileDrag(const StringArray &files) override;
-    void filesDropped(const StringArray &files, int insertIndex) override;
-
+    
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//

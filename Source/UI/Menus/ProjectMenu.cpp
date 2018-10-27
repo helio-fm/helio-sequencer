@@ -37,6 +37,7 @@
 #include "MidiTrackActions.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
+#include "Pattern.h"
 #include "UndoStack.h"
 #include "App.h"
 #include "Workspace.h"
@@ -168,6 +169,11 @@ void ProjectMenu::handleCommandMessage(int commandId)
 ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
+    
+    // We need to have at least one clip on a pattern:
+    const Clip clip(newItem->getPattern());
+    newItem->getPattern()->insert(clip, false);
+
     newItem->setTrackInstrumentId(instrumentId, false);
     return newItem->serialize();
 }
@@ -175,6 +181,11 @@ ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String 
 ValueTree ProjectMenu::createAutoTrackTempate(const String &name, int controllerNumber, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
+
+    // We need to have at least one clip on a pattern:
+    const Clip clip(newItem->getPattern());
+    newItem->getPattern()->insert(clip, false);
+
     auto itemLayer = static_cast<AutomationSequence *>(newItem->getSequence());
     
     newItem->setTrackControllerNumber(controllerNumber, false);

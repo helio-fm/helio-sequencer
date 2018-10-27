@@ -31,7 +31,6 @@ public:
     ~VersionControlTreeItem() override;
 
     String getName() const noexcept override;
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
@@ -43,6 +42,13 @@ public:
     
     void commitProjectInfo();
     void toggleQuickStash();
+
+    //===------------------------------------------------------------------===//
+    // Tree
+    //===------------------------------------------------------------------===//
+
+    void onItemAddedToTree(bool sendNotifications) override;
+    void onItemDeletedFromTree(bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
     // Network

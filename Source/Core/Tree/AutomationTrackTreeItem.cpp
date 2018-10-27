@@ -38,11 +38,6 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackController));
     this->deltas.add(new VCS::Delta({}, AutoSequenceDeltas::eventsAdded));
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
-    
-#if HELIO_MOBILE
-    // для мобил выключаю автоматизации нафиг, неюзабельно будет совершенно
-    this->setVisible(false);
-#endif
 }
 
 Image AutomationTrackTreeItem::getIcon() const noexcept
@@ -282,7 +277,7 @@ void AutomationTrackTreeItem::resetPathDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
-    this->setXPath(path);
+    this->setXPath(path, false);
 }
 
 void AutomationTrackTreeItem::resetMuteDelta(const ValueTree &state)
@@ -334,5 +329,4 @@ void AutomationTrackTreeItem::resetEventsDelta(const ValueTree &state)
     }
 
     this->getSequence()->updateBeatRange(false);
-    this->getSequence()->invalidateSequenceCache();
 }

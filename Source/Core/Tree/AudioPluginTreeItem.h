@@ -26,11 +26,10 @@ class AudioPluginTreeItem final : public TreeItem
 {
 public:
 
-    AudioPluginTreeItem(uint32 pluginID, const String &name);
+    AudioPluginTreeItem(AudioProcessorGraph::NodeID pluginID, const String &name);
 
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
-    uint32 getNodeId() const noexcept;
+    AudioProcessorGraph::NodeID getNodeId() const noexcept;
 
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
@@ -40,6 +39,6 @@ public:
 private:
 
     ScopedPointer<Component> audioPluginEditor;
-    const uint32 filterID;
+    const AudioProcessorGraph::NodeID nodeId;
 
 };

@@ -50,7 +50,6 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence, short 
     }
 
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 //===----------------------------------------------------------------------===//
@@ -69,7 +68,7 @@ MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &eventParams, bool 
     {
         const auto ownedEvent = new AnnotationEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-        this->notifyEventAdded(*ownedEvent);
+        this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         this->updateBeatRange(true);
         return ownedEvent;
     }
@@ -92,10 +91,10 @@ bool AnnotationsSequence::remove(const AnnotationEvent &eventParams, bool undoab
         {
             MidiEvent *const removedEvent = this->midiEvents[index];
             jassert(removedEvent->isValid());
-            this->notifyEventRemoved(*removedEvent);
+            this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
-            this->notifyEventRemovedPostAction();
+            this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
         
@@ -123,7 +122,7 @@ bool AnnotationsSequence::change(const AnnotationEvent &oldParams,
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(oldParams, *changedEvent);
+            this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -150,7 +149,7 @@ bool AnnotationsSequence::insertGroup(Array<AnnotationEvent> &group, bool undoab
             const auto ownedEvent = new AnnotationEvent(this, eventParams);
             jassert(ownedEvent->isValid());
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-            this->notifyEventAdded(*ownedEvent);
+            this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
         
         this->updateBeatRange(true);
@@ -176,13 +175,13 @@ bool AnnotationsSequence::removeGroup(Array<AnnotationEvent> &group, bool undoab
             if (index >= 0)
             {
                 const auto removedEvent = this->midiEvents[index];
-                this->notifyEventRemoved(*removedEvent);
+                this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
                 this->midiEvents.remove(index, true);
             }
         }
         
         this->updateBeatRange(true);
-        this->notifyEventRemovedPostAction();
+        this->eventDispatcher.dispatchPostRemoveEvent(this);
     }
     
     return true;
@@ -212,7 +211,7 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(oldParams, *changedEvent);
+                this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
             }
         }
 
@@ -283,12 +282,10 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
 
     this->sort();
     this->updateBeatRange(false);
-    this->invalidateSequenceCache();
 }
 
 void AnnotationsSequence::reset()
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();
-    this->invalidateSequenceCache();
 }

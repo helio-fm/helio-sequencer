@@ -31,10 +31,6 @@ ColourSwatches::ColourSwatches()
     }
 }
 
-ColourSwatches::~ColourSwatches()
-{
-}
-
 void ColourSwatches::resized()
 {
     int x = 0;

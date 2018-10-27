@@ -26,14 +26,13 @@ public:
     PatternEditorTreeItem();
 
     String getName() const noexcept override;
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
 
     String getStatsString() const;
-
+    
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//

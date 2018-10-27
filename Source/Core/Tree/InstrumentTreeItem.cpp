@@ -60,12 +60,6 @@ InstrumentTreeItem::~InstrumentTreeItem()
     }
 }
 
-Colour InstrumentTreeItem::getColour() const noexcept
-{
-    return Colour(0xffff80f3).interpolatedWith(Colour(0xffa489ff), 0.5f);
-    //return Colour(0xffd151ff);
-}
-
 Image InstrumentTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::instrument, HEADLINE_ICON_SIZE);
@@ -82,7 +76,7 @@ void InstrumentTreeItem::showPage()
     App::Layout().showPage(this->instrumentEditor, this);
 }
 
-void InstrumentTreeItem::safeRename(const String &newName)
+void InstrumentTreeItem::safeRename(const String &newName, bool sendNotifications)
 {
     if (this->instrument.wasObjectDeleted())
     { 
@@ -90,10 +84,13 @@ void InstrumentTreeItem::safeRename(const String &newName)
         return;
     }
 
-    TreeItem::safeRename(newName);
+    TreeItem::safeRename(newName, sendNotifications);
     this->instrument->setName(newName);
-    this->dispatchChangeTreeItemView();
-    this->notifyOrchestraChanged();
+
+    if (sendNotifications)
+    {
+        this->notifyOrchestraChanged();
+    }
 }
 
 
@@ -117,7 +114,7 @@ Array<uint32> InstrumentTreeItem::getInstrumentNodeIds() const
 
     for (int i = 0; i < this->instrument->getNumNodes(); ++i)
     {
-        result.add(this->instrument->getNode(i)->nodeID);
+        result.add(this->instrument->getNode(i)->nodeID.uid);
     }
 
     return result;
@@ -136,7 +133,7 @@ bool InstrumentTreeItem::hasInstrumentWithNodeId(uint32 targetNodeId) const
     return false;
 }
 
-TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(uint32 nodeId) const
+TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const
 {
     for (const auto audioPluginTreeItem : this->findChildrenOfType<AudioPluginTreeItem>())
     {
@@ -217,8 +214,7 @@ void InstrumentTreeItem::updateChildrenEditors()
         }
 
         // неюзабельно, используем только на мобилках
-        AudioPluginTreeItem *ap = new AudioPluginTreeItem(node->nodeID,
-            node->getProcessor()->getName());
+        auto *ap = new AudioPluginTreeItem(node->nodeID, node->getProcessor()->getName());
         this->addChildTreeItem(ap);
     }
 }
@@ -233,7 +229,7 @@ Function<void(const String &text)> InstrumentTreeItem::getRenameCallback()
     {
         if (text != this->getName())
         {
-            this->safeRename(text);
+            this->safeRename(text, true);
         }
     };
 }

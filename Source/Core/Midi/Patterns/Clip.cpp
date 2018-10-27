@@ -21,21 +21,11 @@
 #include "MidiTrack.h"
 #include "SerializationKeys.h"
 
-Clip::Clip() : pattern(nullptr), key(0), beat(0.f), velocity(1.f)
-{
-    // needed for juce's Array to work
-    //jassertfalse;
-}
-
-Clip::Clip(const Clip &other) :
-    pattern(other.pattern),
-    key(other.key),
-    beat(other.beat),
-    velocity(other.velocity),
-    id(other.id)
-{
-    this->updateCaches();
-}
+Clip::Clip() :
+    pattern(nullptr),
+    key(0),
+    beat(0.f),
+    velocity(1.f) {}
 
 Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
     pattern(owner),

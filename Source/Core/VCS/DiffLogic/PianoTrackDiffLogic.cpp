@@ -60,12 +60,6 @@ const Identifier PianoTrackDiffLogic::getType() const
     return Serialization::Core::pianoTrack;
 }
 
-// assuming this is used only on checkout and resetting changes
-void PianoTrackDiffLogic::resetStateTo(const TrackedItem &newState)
-{
-    this->target.resetStateTo(newState);
-}
-
 Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);

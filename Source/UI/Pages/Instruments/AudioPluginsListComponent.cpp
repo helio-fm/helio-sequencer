@@ -189,7 +189,7 @@ var AudioPluginsListComponent::getDragSourceDescription(const SparseSet<int> &cu
 
     PluginDescriptionDragnDropWrapper::Ptr pluginWrapper = new PluginDescriptionDragnDropWrapper();
     pluginWrapper->pluginDescription = PluginDescription(*pd);
-    var pluginVar(pluginWrapper);
+    var pluginVar(pluginWrapper.get());
 
     return pluginVar;
 }

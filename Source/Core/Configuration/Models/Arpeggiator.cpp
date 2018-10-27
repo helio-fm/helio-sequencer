@@ -72,8 +72,7 @@ class DiatonicArpMapper final : public Arpeggiator::Mapper
         case 3: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, 1);
         case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 0);
         case 5: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 1);
-        case 6: return
-            (chord.size() <= 3) ?
+        case 6: return (chord.size() <= 3) ?
             periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 2) :
             periodOffset + this->getChordKey(chord, 3, chordScale, absChordRoot, 0);
         default: return periodOffset + absChordRoot;
@@ -271,11 +270,11 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
         this->mapper->mapArpKeyIntoChordSpace(arpKey,
             chord, chordScale, absChordRoot);
 
-    return chord.getFirst().
-        withKeyBeat(newNoteKey, startBeat + arpKey.beat).
-        withLength(arpKey.length).
-        withVelocity(arpKey.velocity). // TODO some randomness?
-        copyWithNewId();
+    return chord.getFirst()
+        .withKeyBeat(newNoteKey, startBeat + arpKey.beat)
+        .withLength(arpKey.length)
+        .withVelocity(arpKey.velocity) // TODO some randomness?
+        .copyWithNewId();
 }
 
 //===----------------------------------------------------------------------===//

@@ -64,12 +64,6 @@ const Identifier ProjectTimelineDiffLogic::getType() const
     return Serialization::Core::projectTimeline;
 }
 
-// assuming this is used only on checkout and resetting changes
-void ProjectTimelineDiffLogic::resetStateTo(const TrackedItem &newState)
-{
-    this->target.resetStateTo(newState);
-}
-
 Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);

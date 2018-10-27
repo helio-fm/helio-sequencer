@@ -151,8 +151,9 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
             Note::Key rootKey = -1;
             Scale::Ptr scale = nullptr;
 
+            const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
             const auto keySignatures = this->project.getTimeline()->getKeySignatures();
-            if (!SequencerOperations::findHarmonicContext(*this->lasso, keySignatures, scale, rootKey))
+            if (!SequencerOperations::findHarmonicContext(*this->lasso, clip, keySignatures, scale, rootKey))
             {
                 App::Layout().showTooltip(TRANS("menu::arpeggiators::error"));
                 this->dismiss();
@@ -183,7 +184,7 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
     // FIXME: move this into PianoRoll and assign a hotkey
     if (commandId == CommandIDs::CreateArpeggiatorFromSelection)
     {
-        // A scenario from user's point:
+        // A scenario from user's perspective:
         // 1. User creates a sequence of notes strictly within a certain scale,
         // 2. User selects `create arpeggiator from sequence`
         // 3. App checks that the entire sequence is within single scale and adds arp model
@@ -196,11 +197,12 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
             return;
         }
 
+        const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
         const auto keySignatures = this->project.getTimeline()->getKeySignatures();
 
         Note::Key rootKey = -1;
         Scale::Ptr scale = nullptr;
-        if (!SequencerOperations::findHarmonicContext(*this->lasso, keySignatures, scale, rootKey))
+        if (!SequencerOperations::findHarmonicContext(*this->lasso, clip, keySignatures, scale, rootKey))
         {
             App::Layout().showTooltip(TRANS("menu::arpeggiators::error"));
             this->dismiss();

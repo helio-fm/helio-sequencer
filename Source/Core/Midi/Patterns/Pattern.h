@@ -25,7 +25,7 @@ class UndoStack;
 class MidiTrack;
 
 // A sorted array of clips
-class Pattern : public Serializable
+class Pattern final : public Serializable
 {
 public:
 

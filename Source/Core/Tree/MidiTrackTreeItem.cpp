@@ -42,7 +42,7 @@
 MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type) :
     TreeItem(name, type),
     id(Uuid().toString()),
-    colour(Colours::white), // TODO random color from my set
+    colour(Colours::white),
     channel(1),
     controllerNumber(0),
     mute(false),
@@ -55,22 +55,7 @@ MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type)
 
 MidiTrackTreeItem::~MidiTrackTreeItem()
 {
-    this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
-    
-    if (this->lastFoundParent != nullptr)
-    {
-        // Important: first notify
-        this->lastFoundParent->hideEditor(this, this);
-        this->lastFoundParent->broadcastRemoveTrack(this);
-        // Then disconnect from the tree
-        this->removeItemFromParent();
-        TrackGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
-    }
-}
 
-Colour MidiTrackTreeItem::getColour() const noexcept
-{
-    return this->getTrackColour().interpolatedWith(Colours::white, 0.4f);
 }
 
 void MidiTrackTreeItem::showPage()
@@ -81,7 +66,7 @@ void MidiTrackTreeItem::showPage()
     }
 }
 
-void MidiTrackTreeItem::safeRename(const String &newName)
+void MidiTrackTreeItem::safeRename(const String &newName, bool sendNotifications)
 {
     String fixedName = newName.replace("\\", "/");
     
@@ -90,7 +75,7 @@ void MidiTrackTreeItem::safeRename(const String &newName)
         fixedName = fixedName.replace("//", "/");
     }
     
-    this->setXPath(fixedName);
+    this->setXPath(fixedName, sendNotifications);
 }
 
 void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence, short timeFormat)
@@ -162,7 +147,7 @@ int MidiTrackTreeItem::getTrackChannel() const noexcept
 
 void MidiTrackTreeItem::setTrackName(const String &val, bool sendNotifications)
 {
-    this->safeRename(val);
+    this->safeRename(val, sendNotifications);
     if (sendNotifications)
     {
         this->dispatchChangeTrackProperties(this);
@@ -277,7 +262,7 @@ String MidiTrackTreeItem::getXPath() const noexcept
     return xpath;
 }
 
-void MidiTrackTreeItem::setXPath(const String &path)
+void MidiTrackTreeItem::setXPath(const String &path, bool sendNotifications)
 {
     if (path == this->getXPath())
     {
@@ -291,6 +276,7 @@ void MidiTrackTreeItem::setXPath(const String &path)
 
     TreeItem *rootItem = this->lastFoundParent;
 
+    jassert(rootItem != nullptr);
     jassert(parts.size() >= 1);
 
     for (int i = 0; i < (parts.size() - 1); ++i)
@@ -361,7 +347,7 @@ void MidiTrackTreeItem::setXPath(const String &path)
     if (!foundRightPlace) { ++insertIndex; }
 
     // This will also send changed-parent notifications
-    rootItem->addChildTreeItem(this, insertIndex);
+    rootItem->addChildTreeItem(this, insertIndex, sendNotifications);
     
     // Cleanup all empty groups
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
@@ -454,74 +440,44 @@ void MidiTrackTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
 
 ProjectTreeItem *MidiTrackTreeItem::getProject() const noexcept
 {
+    jassert(this->lastFoundParent != nullptr);
     return this->lastFoundParent;
 }
 
 //===----------------------------------------------------------------------===//
-// Dragging
+// Add to tree and remove from tree callbacks
 //===----------------------------------------------------------------------===//
 
-var MidiTrackTreeItem::getDragSourceDescription()
+void MidiTrackTreeItem::onItemAddedToTree(bool sendNotifications)
 {
-    return Serialization::Core::track.toString();
+    auto *newParent = this->findParentOfType<ProjectTreeItem>();
+    jassert(newParent != nullptr);
+
+    const bool parentHasChanged = (this->lastFoundParent != newParent);
+    this->lastFoundParent = newParent;
+
+    if (parentHasChanged &&
+        sendNotifications &&
+        this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastAddTrack(this);
+    }
 }
 
-void MidiTrackTreeItem::onItemParentChanged()
+void MidiTrackTreeItem::onItemDeletedFromTree(bool sendNotifications)
 {
-    if (this->lastFoundParent)
+    this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
+    if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->updateActiveGroupEditors();
-        this->lastFoundParent->sendChangeMessage();
-    }
-
-    ProjectTreeItem *newParent = this->findParentOfType<ProjectTreeItem>();
-
-    const bool parentProjectChanged = (this->lastFoundParent != newParent);
-    const bool needsToRepaintEditor = (this->isMarkerVisible() &&
-        (this->lastFoundParent != nullptr) && parentProjectChanged);
-
-    if (parentProjectChanged)
-    {
-        if (this->lastFoundParent)
+        if (sendNotifications)
         {
+            // Important: first notify
             this->lastFoundParent->broadcastRemoveTrack(this);
         }
 
-        if (newParent)
-        {
-            newParent->broadcastAddTrack(this);
-            newParent->updateActiveGroupEditors();
-        }
-
-        this->lastFoundParent = newParent;
-    }
-
-    if (needsToRepaintEditor)
-    {
-        this->showPage();
-    }
-}
-
-bool MidiTrackTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
-{
-    bool isInterested = (Serialization::Core::instrumentRoot.toString() == dragSourceDetails.description.toString());
-
-    if (isInterested)
-    { this->setOpen(true); }
-
-    return isInterested;
-}
-
-void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
-{
-    if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    {
-        TreeItem *selected = TreeItem::getSelectedItem(treeView);
-
-        if (InstrumentTreeItem *iti = dynamic_cast<InstrumentTreeItem *>(selected))
-        {
-            this->setTrackInstrumentId(iti->getInstrumentIdAndHash(), true);
-        }
+        // Then disconnect from the tree
+        this->removeItemFromParent();
+        TrackGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
 
@@ -562,7 +518,7 @@ Function<void(const String &text)> MidiTrackTreeItem::getChangeColourCallback()
     return [this](const String &text)
     {
         const Colour colour(Colour::fromString(text));
-        if (colour != this->getColour())
+        if (colour != this->getTrackColour())
         {
             auto project = this->getProject();
             const auto &trackId = this->getTrackId();

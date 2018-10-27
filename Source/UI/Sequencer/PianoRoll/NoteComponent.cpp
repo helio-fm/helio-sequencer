@@ -1070,6 +1070,7 @@ void NoteComponent::checkpointIfNeeded()
 void NoteComponent::stopSound()
 {
     this->getRoll().getTransport().allNotesControllersAndSoundOff();
+    Thread::sleep(9); // let some time pass so that next messages wont be messed with sound-off ones
 }
 
 void NoteComponent::sendMidiMessage(const MidiMessage &message) const

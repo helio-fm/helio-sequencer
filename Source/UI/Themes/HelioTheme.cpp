@@ -684,42 +684,42 @@ void HelioTheme::initResources()
     if (Config::contains(Serialization::Config::lastUsedFont))
     {
         const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont);
-        Font lastUsedFont(lastUsedFontName, 0, 0);
+        Font lastUsedFont(lastUsedFontName, 10, Font::plain);
         this->textTypefaceCache = Typeface::createSystemTypefaceFor(lastUsedFont);
         return;
     }
 
-    // Font search takes time, so only do it when no last used font is found in config
-    Logger::writeToLog("Fonts search started");
+    const auto startTime = Time::getMillisecondCounter();
     Array<Font> systemFonts;
     Font::findFonts(systemFonts);
+    Logger::writeToLog("Fonts search done in " + String(Time::getMillisecondCounter() - startTime) + " ms");
 
-    const Font *lastUsedFont = nullptr;
-    const Font *notoLike = nullptr;
+    const Font *noto = nullptr;
+    const StringArray notoNames = {"Noto Sans", "Noto Sans UI"};
 
-    const String fallbackFont = "Noto Sans";
-    const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont, fallbackFont);
+    const Font *notoCJK = nullptr;
+    const String notoCJKName = "Noto Sans CJK";
 
-    // Search for Noto if present, or fallback to default sans serif font
     for (const auto &systemFont : systemFonts)
     {
-        if (systemFont.getTypeface()->getName() == lastUsedFontName)
+        // Logger::writeToLog(systemFont.getTypeface()->getName());
+        if (notoNames.contains(systemFont.getTypeface()->getName()))
         {
-            lastUsedFont = &systemFont;
+            noto = &systemFont;
         }
-        else if (systemFont.getTypeface()->getName().startsWithIgnoreCase(fallbackFont))
+        else if (systemFont.getTypeface()->getName().startsWithIgnoreCase(notoCJKName))
         {
-            notoLike = &systemFont;
+            notoCJK = &systemFont;
         }
     }
 
-    if (lastUsedFont != nullptr)
+    if (notoCJK != nullptr)
     {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*lastUsedFont);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*notoCJK);
     }
-    else if (notoLike != nullptr)
+    else if (noto != nullptr)
     {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*notoLike);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*noto);
     }
     else
     {

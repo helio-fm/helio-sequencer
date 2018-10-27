@@ -93,7 +93,7 @@ int Snapshot::getNumTrackedItems()
 
 TrackedItem *Snapshot::getTrackedItem(int index)
 {
-    return this->items[index];
+    return this->items[index].get();
 }
 
 

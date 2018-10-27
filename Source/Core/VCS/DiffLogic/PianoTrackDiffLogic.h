@@ -38,7 +38,6 @@ namespace VCS
         //===--------------------------------------------------------------===//
 
         const Identifier getType() const override;
-        void resetStateTo(const TrackedItem &newState) override;
         Diff *createDiff(const TrackedItem &initialState) const override;
         Diff *createMergedItem(const TrackedItem &initialState) const override;
     };

@@ -447,9 +447,9 @@ ValueTree Instrument::serialize() const
     for (const auto &c : this->getConnections())
     {
         ValueTree e(Audio::connection);
-        e.setProperty(Audio::sourceNodeId, static_cast<int>(c.source.nodeID), nullptr);
+        e.setProperty(Audio::sourceNodeId, static_cast<int>(c.source.nodeID.uid), nullptr);
         e.setProperty(Audio::sourceChannel, c.source.channelIndex, nullptr);
-        e.setProperty(Audio::destinationNodeId, static_cast<int>(c.destination.nodeID), nullptr);
+        e.setProperty(Audio::destinationNodeId, static_cast<int>(c.destination.nodeID.uid), nullptr);
         e.setProperty(Audio::destinationChannel, c.destination.channelIndex, nullptr);
         tree.appendChild(e, nullptr);
     }
@@ -504,8 +504,10 @@ void Instrument::deserialize(const ValueTree &tree)
                 // Try to create as many connections as possible
                 for (const auto &connectionInfo : connectionDescriptions)
                 {
-                    this->addConnection(connectionInfo.sourceNodeId, connectionInfo.sourceChannel,
-                                        connectionInfo.destinationNodeId, connectionInfo.destinationChannel);
+                    this->addConnection(AudioProcessorGraph::NodeID(connectionInfo.sourceNodeId),
+                        connectionInfo.sourceChannel,
+                        AudioProcessorGraph::NodeID(connectionInfo.destinationNodeId),
+                        connectionInfo.destinationChannel);
                 }
 
                 this->processorGraph->removeIllegalConnections();
@@ -520,7 +522,7 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
     if (AudioPluginInstance *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
         ValueTree tree(Audio::node);
-        tree.setProperty(Audio::nodeId, static_cast<int>(node->nodeID), nullptr);
+        tree.setProperty(Audio::nodeId, static_cast<int>(node->nodeID.uid), nullptr);
         tree.setProperty(Audio::nodeHash, node->properties[Audio::nodeHash].toString(), nullptr);
         tree.setProperty(UI::positionX, node->properties[UI::positionX].toString(), nullptr);
         tree.setProperty(UI::positionY, node->properties[UI::positionY].toString(), nullptr);
@@ -557,7 +559,7 @@ void Instrument::deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f)
         nodeStateBlock.fromBase64Encoding(state);
     }
     
-    const int nodeUid = tree.getProperty(Audio::nodeId);
+    const uint32 nodeUid = int(tree.getProperty(Audio::nodeId));
     const String nodeHash = tree.getProperty(Audio::nodeHash);
     const double nodeX = tree.getProperty(UI::positionX);
     const double nodeY = tree.getProperty(UI::positionY);
@@ -575,7 +577,8 @@ void Instrument::deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f)
                 return;
             }
 
-            AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeUid));
+            AudioProcessorGraph::NodeID nodeId(nodeUid);
+            AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeId));
 
             if (nodeStateBlock.getSize() > 0)
             {
@@ -616,8 +619,9 @@ void Instrument::deserializeNode(const ValueTree &tree)
         return;
     }
 
-    const int nodeUid = tree.getProperty(Audio::nodeId);
-    AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeUid));
+    const uint32 nodeUid = int(tree.getProperty(Audio::nodeId));
+    AudioProcessorGraph::NodeID nodeId(nodeUid);
+    AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeId));
 
     const String state = tree.getProperty(Audio::pluginState);
     if (state.isNotEmpty())

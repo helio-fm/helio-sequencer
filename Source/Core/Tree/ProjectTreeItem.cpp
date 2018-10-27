@@ -170,11 +170,6 @@ HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
     return this->sequencerLayout->getRoll();
 }
 
-Colour ProjectTreeItem::getColour() const noexcept
-{
-    return Colour(0xffa489ff);
-}
-
 Image ProjectTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::project, TREE_LARGE_ICON_HEIGHT);
@@ -186,7 +181,7 @@ void ProjectTreeItem::showPage()
     App::Layout().showPage(this->projectPage, this);
 }
 
-void ProjectTreeItem::safeRename(const String &newName)
+void ProjectTreeItem::safeRename(const String &newName, bool sendNotifications)
 {
     if (newName == this->getName())
     {
@@ -196,14 +191,17 @@ void ProjectTreeItem::safeRename(const String &newName)
     this->name = newName;
     
     this->getDocument()->renameFile(newName);
-    this->broadcastChangeProjectInfo(this->info);
 
-    // notify recent files list
-    App::Workspace().getUserProfile()
-        .updateLocalProjectInfo(this->getId(), this->getName(),
-            this->getDocument()->getFullPath());
+    if (sendNotifications)
+    {
+        this->broadcastChangeProjectInfo(this->info);
 
-    this->dispatchChangeTreeItemView();
+        App::Workspace().getUserProfile()
+            .updateLocalProjectInfo(this->getId(), this->getName(),
+                this->getDocument()->getFullPath());
+
+        this->dispatchChangeTreeItemView();
+    }
 }
 
 void ProjectTreeItem::recreatePage()
@@ -241,32 +239,11 @@ void ProjectTreeItem::showLinearEditor(WeakReference<MidiTrack> activeTrack, Wea
     }
 }
 
-void ProjectTreeItem::hideEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source)
-{
-    jassert(source != nullptr);
-    jassert(activeTrack != nullptr);
-    // TODO hide all automation editors if any
-}
-
 WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const noexcept
 {
     return this->lastShownTrack;
 }
 
-void ProjectTreeItem::updateActiveGroupEditors()
-{
-    const auto myGroups = this->findChildrenOfType<TrackGroupTreeItem>();
-    for (int i = 0; i < myGroups.size(); ++i)
-    {
-        TrackGroupTreeItem *group = myGroups.getUnchecked(i);
-
-        if (group->isMarkerVisible())
-        {
-            group->showPage();
-            return;
-        }
-    }
-}
 
 void ProjectTreeItem::setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea)
 {
@@ -561,14 +538,25 @@ void ProjectTreeItem::importMidi(const File &file)
         DBG("Midi file appears corrupted");
         return;
     }
-    
+
+    Random r;
+    const auto colours = MenuPanel::getColoursList().getAllValues();
+
     for (int i = 0; i < tempFile.getNumTracks(); i++)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(i);
         const String trackName = "Track " + String(i);
         MidiTrackTreeItem *track = new PianoTrackTreeItem(trackName);
-        this->addChildTreeItem(track);
-        // TODO track->setTrackColour(random);
+
+        const Clip clip(track->getPattern());
+        track->getPattern()->insert(clip, false);
+
+        this->addChildTreeItem(track, -1, false);
+
+        // Set some colour
+        const int ci = r.nextInt(colours.size());
+        track->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
+
         track->importMidi(*currentTrack, tempFile.getTimeFormat());
     }
     
@@ -636,7 +624,7 @@ void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 {
     this->isTracksCacheOutdated = true;
 
-    if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
+    if (auto *tracked = dynamic_cast<VCS::TrackedItem *>(track))
     {
         const ScopedWriteLock lock(this->vcsInfoLock);
         this->vcsItems.addIfNotAlreadyThere(tracked);
@@ -650,7 +638,7 @@ void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
 {
     this->isTracksCacheOutdated = true;
 
-    if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
+    if (auto *tracked = dynamic_cast<VCS::TrackedItem *>(track))
     {
         const ScopedWriteLock lock(this->vcsInfoLock);
         this->vcsItems.removeAllInstancesOf(tracked);
@@ -875,30 +863,40 @@ VCS::TrackedItem *ProjectTreeItem::getTrackedItem(int index)
     return const_cast<VCS::TrackedItem *>(this->vcsItems[index]);
 }
 
-VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type, const Uuid &id)
+VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type,
+    const Uuid &id, const VCS::TrackedItem &newState)
 {
     if (type == Serialization::Core::pianoTrack)
     {
-        MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
+        auto *track = new PianoTrackTreeItem("");
         track->setVCSUuid(id);
-        this->addChildTreeItem(track);
+        this->addChildTreeItem(track, -1, false);
+        // add explicitly, since we aren't going to receive a notification:
+        this->isTracksCacheOutdated = true;
+        this->vcsItems.addIfNotAlreadyThere(track);
+        track->resetStateTo(newState);
         return track;
     }
     if (type == Serialization::Core::automationTrack)
     {
-        MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
+        auto *track = new AutomationTrackTreeItem("");
         track->setVCSUuid(id);
-        this->addChildTreeItem(track);
+        this->addChildTreeItem(track, -1, false);
+        this->isTracksCacheOutdated = true;
+        this->vcsItems.addIfNotAlreadyThere(track);
+        track->resetStateTo(newState);
         return track;
     }
     else if (type == Serialization::Core::projectInfo)
     {
         this->info->setVCSUuid(id);
+        this->info->resetStateTo(newState);
         return this->info;
     }
     else if (type == Serialization::Core::projectTimeline)
     {
         this->timeline->setVCSUuid(id);
+        this->timeline->resetStateTo(newState);
         return this->timeline;
     }
     
@@ -907,9 +905,11 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type, const
 
 bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 {
-    if (dynamic_cast<MidiTrackTreeItem *>(item))
+    if (auto *treeItem = dynamic_cast<MidiTrackTreeItem *>(item))
     {
-        delete item; // will call broadcastRemoveTrack in destructor
+        TreeItem::deleteItem(treeItem, false); // don't broadcastRemoveTrack
+        this->vcsItems.removeAllInstancesOf(item);
+        this->isTracksCacheOutdated = true;
         return true;
     }
 

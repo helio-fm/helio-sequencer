@@ -84,9 +84,8 @@ struct SequencerOperations final
     static void invertChord(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);
     
-    static bool findHarmonicContext(const Lasso &selection,
-        WeakReference<MidiTrack> keySignatures,
-        Scale::Ptr &outScale, Note::Key &outRootKey);
+    static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
+        WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
 
     static Array<Note> cutEvents(const Array<Note> &notes,
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);

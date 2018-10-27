@@ -67,7 +67,7 @@ void TranslationsManager::initialise()
     this->engine->maximumExecutionTime = RelativeTime::milliseconds(200);
     
     PluralEquationWrapper::Ptr pluralEquationWrapper(new PluralEquationWrapper(*this));
-    this->engine->registerNativeObject(Serialization::Translations::wrapperClassName, pluralEquationWrapper);
+    this->engine->registerNativeObject(Serialization::Translations::wrapperClassName, pluralEquationWrapper.get());
     
     this->reloadResources();
 }

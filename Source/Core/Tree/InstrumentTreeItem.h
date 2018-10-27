@@ -32,11 +32,10 @@ public:
 
     void updateChildrenEditors();
 
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
-    void safeRename(const String &newName) override;
+    void safeRename(const String &newName, bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
     // Instrument
@@ -45,7 +44,7 @@ public:
     WeakReference<Instrument> getInstrument() const noexcept;
     Array<uint32> getInstrumentNodeIds() const;
     bool hasInstrumentWithNodeId(uint32 nodeId) const;
-    TreeItem *findAudioPluginEditorForNodeId(uint32 nodeId) const;
+    TreeItem *findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const;
     String getInstrumentIdAndHash() const;
 
     //===------------------------------------------------------------------===//

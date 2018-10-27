@@ -237,7 +237,7 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
 
         if (targetItem)
         {
-            targetItem->getDiffLogic()->resetStateTo(*sourceItem);
+            targetItem->resetStateTo(*sourceItem);
             return true;
         }
     }
@@ -266,14 +266,7 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
     {
         const Identifier logicType(sourceItem->getDiffLogic()->getType());
         const Uuid id(sourceItem->getUuid());
-
-        TrackedItem *newItem =
-            this->targetVcsItemsSource.initTrackedItem(logicType, id);
-
-        if (newItem)
-        {
-            newItem->getDiffLogic()->resetStateTo(*sourceItem);
-        }
+        this->targetVcsItemsSource->initTrackedItem(logicType, id, *sourceItem);
         return true;
     }
 
@@ -388,7 +381,7 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
     {
         if (targetItem)
         {
-            targetItem->getDiffLogic()->resetStateTo(*stateItem);
+            targetItem->resetStateTo(*stateItem);
         }
     }
     else if (stateItem->getType() == RevisionItem::Added)
@@ -399,20 +392,11 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
             
             const Identifier logicType(stateItem->getDiffLogic()->getType());
             const Uuid id(stateItem->getUuid());
-
-            //Logger::writeToLog("Create tracked item of type: " + logicType);
-
-            TrackedItem *newItem =
-                this->targetVcsItemsSource.initTrackedItem(logicType, id);
-
-            if (newItem)
-            {
-                newItem->getDiffLogic()->resetStateTo(*stateItem);
-            }
+            this->targetVcsItemsSource->initTrackedItem(logicType, id, *stateItem);
         }
         else
         {
-            targetItem->getDiffLogic()->resetStateTo(*stateItem);
+            targetItem->resetStateTo(*stateItem);
         }
     }
     else if (stateItem->getType() == RevisionItem::Removed)

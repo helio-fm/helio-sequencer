@@ -28,7 +28,6 @@ public:
     SettingsTreeItem();
     
     String getName() const noexcept override;
-    Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;

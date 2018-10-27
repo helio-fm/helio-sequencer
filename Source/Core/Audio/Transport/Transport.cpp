@@ -494,12 +494,18 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
 
 void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->stopPlayback();
     this->sequencesAreOutdated = true;
+
+    this->tracksCache.clearQuick();
+    this->linksCache.clear();
+
+    this->tracksCache.addArray(tracks);
     for (const auto &track : tracks)
     {
         this->updateLinkForTrack(track);
     }
+
+    this->stopPlayback();
 }
 
 void Transport::onAddTrack(MidiTrack *const track)

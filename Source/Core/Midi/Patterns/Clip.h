@@ -23,16 +23,21 @@ class Pattern;
 // In future we it should have adjustable length too
 // (and a stack of parametric modifiers like user-defined arps, etc.)
 
-class Clip : public Serializable
+class Clip final : public Serializable
 {
 public:
 
     using Id = String;
 
     Clip();
-    Clip(const Clip &other);
     Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy);
     explicit Clip(WeakReference<Pattern> owner, float beatVal = 0.f);
+
+    Clip(const Clip &other) noexcept = default;
+    Clip &operator= (const Clip &other) = default;
+
+    Clip(Clip &&other) noexcept = default;
+    Clip &operator= (Clip &&other) noexcept = default;
 
     Pattern *getPattern() const noexcept;
     int getKey() const noexcept;

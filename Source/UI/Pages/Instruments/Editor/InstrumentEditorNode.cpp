@@ -94,7 +94,7 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
             return;
         }
 
-        this->getParentEditor()->selectNode(0);
+        this->getParentEditor()->selectNode({});
 
         if (const AudioProcessorGraph::Node::Ptr f = this->instrument->getNodeForId(this->nodeId))
         {

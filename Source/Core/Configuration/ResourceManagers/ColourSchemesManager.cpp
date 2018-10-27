@@ -31,7 +31,7 @@ ColourScheme::Ptr ColourSchemesManager::getCurrentScheme() const
     if (Config::contains(Serialization::Config::activeColourScheme))
     {
         ColourScheme::Ptr cs(new ColourScheme());
-        Config::load(cs, Serialization::Config::activeColourScheme);
+        Config::load(cs.get(), Serialization::Config::activeColourScheme);
         return cs;
     }
 
@@ -47,7 +47,7 @@ ColourScheme::Ptr ColourSchemesManager::getCurrentScheme() const
 
 void ColourSchemesManager::setCurrentScheme(const ColourScheme::Ptr scheme)
 {
-    Config::save(scheme, Serialization::Config::activeColourScheme);
+    Config::save(scheme.get(), Serialization::Config::activeColourScheme);
 }
 
 //===----------------------------------------------------------------------===//
