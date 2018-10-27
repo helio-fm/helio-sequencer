@@ -54,7 +54,7 @@ protected:
 
     String name;
     Identifier type;
-    CodeDocument content;
+    //CodeDocument content;
 
     JUCE_LEAK_DETECTOR(Script)
 };

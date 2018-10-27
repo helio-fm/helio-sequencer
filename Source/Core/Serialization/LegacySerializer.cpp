@@ -38,60 +38,6 @@ static const std::string kXorKey =
     "y;W6rzn)ij}Ol%Eaxoq),+tx>l|@BS($"
     "7W9b9|46Fr&%pS!}[>5g5lly|bC]3aQu";
 
-static inline std::string encodeBase64(unsigned char const *bytes_to_encode, size_t in_len)
-{
-    std::string ret;
-    int i = 0;
-    int j = 0;
-    unsigned char char_array_3[3];
-    unsigned char char_array_4[4];
-
-    while (in_len--)
-    {
-        char_array_3[i++] = *(bytes_to_encode++);
-
-        if (i == 3)
-        {
-            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-            char_array_4[3] = char_array_3[2] & 0x3f;
-
-            for (i = 0; (i < 4); i++)
-            {
-                ret += kBase64Chars[char_array_4[i]];
-            }
-
-            i = 0;
-        }
-    }
-
-    if (i)
-    {
-        for (j = i; j < 3; j++)
-        {
-            char_array_3[j] = '\0';
-        }
-
-        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
-        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
-        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-        char_array_4[3] = char_array_3[2] & 0x3f;
-
-        for (j = 0; (j < i + 1); j++)
-        {
-            ret += kBase64Chars[char_array_4[j]];
-        }
-
-        while ((i++ < 3))
-        {
-            ret += '=';
-        }
-    }
-
-    return ret;
-}
-
 static inline bool isBase64(unsigned char c)
 {
     return (isalnum(c) || (c == '+') || (c == '/'));
@@ -168,15 +114,6 @@ static inline MemoryBlock doXor(const MemoryBlock &input)
     return encoded;
 }
 
-static inline MemoryBlock compress(const String &str)
-{
-    MemoryOutputStream memOut;
-    GZIPCompressorOutputStream compressMemOut(&memOut, 1, false);
-    compressMemOut.write(str.toRawUTF8(), str.getNumBytesAsUTF8());
-    compressMemOut.flush();
-    return MemoryBlock(memOut.getData(), memOut.getDataSize());
-}
-
 static inline String decompress(const MemoryBlock &str)
 {
     MemoryInputStream input(str.getData(), str.getSize(), false);
@@ -193,15 +130,6 @@ static inline String decompress(const MemoryBlock &str)
     return decompressedData.toString();
 }
 
-static String obfuscateString(const String &buffer)
-{
-    const MemoryBlock &compressed = compress(buffer);
-    const MemoryBlock &xorBlock = doXor(compressed);
-    const std::string &encoded = encodeBase64(reinterpret_cast<unsigned char const *>(xorBlock.getData()), xorBlock.getSize());
-    const String &result = String::createStringFromData(encoded.data(), int(encoded.size()));
-    return result;
-}
-
 static String deobfuscateString(const String &buffer)
 {
     const std::string &decoded = decodeBase64(buffer.toStdString());
@@ -209,30 +137,6 @@ static String deobfuscateString(const String &buffer)
     const MemoryBlock &xorBlock = doXor(decodedMemblock);
     const String &uncompressed = decompress(xorBlock);
     return uncompressed;
-}
-
-static bool saveObfuscated(const File &file, XmlElement *xml)
-{
-    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
-    const MemoryBlock &compressed = compress(xmlString);
-    const MemoryBlock &xorBlock = doXor(compressed);
-
-    MemoryInputStream obfuscatedStream(xorBlock, false);
-    if (!file.existsAsFile())
-    {
-        Result creationResult = file.create();
-    }
-
-    ScopedPointer <OutputStream> out(file.createOutputStream());
-    if (out != nullptr)
-    {
-        out->writeInt(kHelioHeaderV1);
-        out->writeFromInputStream(obfuscatedStream, -1);
-        out->flush();
-        return true;
-    }
-
-    return false;
 }
 
 static XmlElement *loadObfuscated(const File &file)
@@ -259,9 +163,7 @@ static XmlElement *loadObfuscated(const File &file)
 
 Result LegacySerializer::saveToFile(File file, const ValueTree &tree) const
 {
-    ScopedPointer<XmlElement> xml(tree.createXml());
-    const bool saved = saveObfuscated(file, xml);
-    return saved ? Result::ok() : Result::fail({});
+    return Result::fail("Not supported");
 }
 
 static String toLowerCamelCase(const String &string)
@@ -410,8 +312,7 @@ Result LegacySerializer::loadFromFile(const File &file, ValueTree &tree) const
 
 Result LegacySerializer::saveToString(String &string, const ValueTree &tree) const
 {
-    string = obfuscateString(tree.toXmlString());
-    return Result::ok();
+    return Result::fail("Not supported");
 }
 
 Result LegacySerializer::loadFromString(const String &string, ValueTree &tree) const

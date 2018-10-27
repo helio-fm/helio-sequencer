@@ -55,24 +55,23 @@
 HelioTheme::HelioTheme() :
     backgroundNoise(ImageCache::getFromMemory(BinaryData::Noise_png, BinaryData::Noise_pngSize)) {}
 
+static const float kNoiseAlpha = 0.0175f;
+
 void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    const float alpha = JUCE_LIVE_CONSTANT(0.0175f);
-    g.setTiledImageFill(static_cast<HelioTheme &>(target->getLookAndFeel()).getBackgroundNoise(), 0, 0, alpha * alphaMultiply);
+    g.setTiledImageFill(static_cast<HelioTheme &>(target->getLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
     g.fillRect(0, 0, target->getWidth(), target->getHeight());
 }
 
 void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    const float alpha = (0.0175f);
-    g.setTiledImageFill(theme.getBackgroundNoise(), 0, 0, alpha * alphaMultiply);
+    g.setTiledImageFill(theme.getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
     g.fillRect(0, 0, g.getClipBounds().getWidth(), g.getClipBounds().getHeight());
 }
 
 void HelioTheme::drawNoiseWithin(Rectangle<float> bounds, Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    const float alpha = (0.0175f);
-    g.setTiledImageFill(static_cast<HelioTheme &>(target->getLookAndFeel()).getBackgroundNoise(), 0, 0, alpha * alphaMultiply);
+    g.setTiledImageFill(static_cast<HelioTheme &>(target->getLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
     g.fillRect(bounds);
 }
 
@@ -847,11 +846,6 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
-
-    // CodeEditorComponent and script highlighting scheme
-    this->setColour(CodeEditorComponent::backgroundColourId, s->getPrimaryGradientColourA().darker(0.35f));
-    this->setColour(CodeEditorComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.1f));
-    this->setColour(CodeEditorComponent::defaultTextColourId, s->getTextColour());
 
     this->setColour(ColourIDs::ScriptEditor::comment, s->getTextColour().withMultipliedAlpha(0.5f));
     this->setColour(ColourIDs::ScriptEditor::error, s->getTextColour().interpolatedWith(Colours::red, 0.75f));

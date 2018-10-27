@@ -701,9 +701,6 @@
           <FILE id="f4aznu" name="RenderDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/RenderDialog.cpp"/>
           <FILE id="ZRs9s2" name="RenderDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/RenderDialog.h"/>
-          <FILE id="VcfFES" name="ScriptDialog.cpp" compile="1" resource="0"
-                file="../../Source/UI/Dialogs/ScriptDialog.cpp"/>
-          <FILE id="NQFdEA" name="ScriptDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/ScriptDialog.h"/>
           <FILE id="NbGM0A" name="TimeSignatureDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.cpp"/>
           <FILE id="ny7iGn" name="TimeSignatureDialog.h" compile="0" resource="0"
@@ -1373,7 +1370,6 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
@@ -1406,7 +1402,6 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
@@ -1440,7 +1435,6 @@
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
@@ -1480,7 +1474,6 @@
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
@@ -1513,7 +1506,6 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
@@ -1540,7 +1532,6 @@
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
@@ -1563,7 +1554,6 @@
     <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_ASIO="1" JUCE_WASAPI="1" JUCE_WASAPI_EXCLUSIVE="1" JUCE_DIRECTSOUND="1"
