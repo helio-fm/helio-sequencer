@@ -1,6 +1,6 @@
 [submodule "ThirdParty/JUCE"]
 	path = ThirdParty/JUCE
-	url = https://github.com/peterrudenko/JUCE.git
+	url = git@github.com:peterrudenko/JUCE.git
 [submodule "ThirdParty/FlatHashMap"]
 	path = ThirdParty/FlatHashMap
 	url = git@github.com:peterrudenko/flat_hash_map.git
