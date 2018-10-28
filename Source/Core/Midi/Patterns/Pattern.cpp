@@ -29,7 +29,7 @@ struct ClipIdGenerator final
     static String generateId(uint8 length = 2)
     {
         String id;
-        Random r;
+        static Random r;
         r.setSeedRandomly();
         static const char idChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         for (size_t i = 0; i < length; ++i)

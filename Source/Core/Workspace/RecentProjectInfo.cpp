@@ -144,11 +144,9 @@ bool RecentProjectInfo::isValid() const
 
 int RecentProjectInfo::compareElements(Ptr first, Ptr second)
 {
-    // todo order, loaded first, etc
-    //if (first->local == nullptr && second->local != nullptr) { return -1; }
-    //if (second->local == nullptr && first->local != nullptr) { return 1; }
-
-    return int(second->local->lastModifiedMs - first->local->lastModifiedMs);
+    const int64 firstLocalTime = first->local != nullptr ? first->local->lastModifiedMs : 0;
+    const int64 secondLocalTime = second->local != nullptr ? second->local->lastModifiedMs : 0;
+    return int(secondLocalTime - firstLocalTime);
 }
 
 ValueTree RecentProjectInfo::serialize() const

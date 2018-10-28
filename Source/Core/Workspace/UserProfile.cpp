@@ -49,18 +49,28 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
         this->avatarThumbnail = Base64::toBase64(block.getData(), block.getSize());
     }
 
-    // Update remote project descriptions
     for (const auto p : dto.getProjects())
     {
-        // TODO
-        //this->findProjectIndexById(p.getId())
+        this->updateRemoteProjectInfo(p);
     }
 
-    // TODO Update sessions info
     for (const auto s : dto.getSessions())
     {
-        // TODO
+        if (auto *session = this->findSession(s.getDeviceId()))
+        {
+            const ScopedWriteLock lock(this->sessionsListLock);
+            session->updateRemoteInfo(s);
+        }
+        else
+        {
+            const ScopedWriteLock lock(this->sessionsListLock);
+            this->sessions.add(new UserSessionInfo(s));
+        }
     }
+
+    this->name = dto.getName();
+    this->login = dto.getLogin();
+    this->profileUrl = dto.getProfileUrl();
 
     this->sendChangeMessage();
 }
@@ -192,6 +202,7 @@ const ReferenceCountedArray<RecentProjectInfo> &UserProfile::getProjects() const
     return this->projects;
 }
 
+// There won't be too much projects and sessions, so linear search should be ok:
 RecentProjectInfo *UserProfile::findProject(const String &id) const
 {
     for (auto *project : this->projects)
@@ -199,6 +210,19 @@ RecentProjectInfo *UserProfile::findProject(const String &id) const
         if (project->getProjectId() == id)
         {
             return project;
+        }
+    }
+
+    return nullptr;
+}
+
+UserSessionInfo *UserProfile::findSession(const String &deviceId) const
+{
+    for (auto *session : this->sessions)
+    {
+        if (session->getDeviceId() == deviceId)
+        {
+            return session;
         }
     }
 

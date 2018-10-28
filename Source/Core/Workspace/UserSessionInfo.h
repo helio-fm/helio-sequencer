@@ -28,6 +28,8 @@ public:
     UserSessionInfo() = default;
     UserSessionInfo(const UserSessionDto &dto);
 
+    void updateRemoteInfo(const UserSessionDto &dto);
+
     String getDeviceId() const noexcept;
     String getPlatformId() const noexcept;
     Time getCreateTime() const noexcept;

@@ -24,6 +24,14 @@ UserSessionInfo::UserSessionInfo(const UserSessionDto &dto) :
     createdAt(dto.getCreateTime()),
     updatedAt(dto.getUpdateTime()) {}
 
+void UserSessionInfo::updateRemoteInfo(const UserSessionDto &dto)
+{
+    jassert(this->deviceId == dto.getDeviceId());
+    jassert(this->platformId == dto.getPlatformId());
+    this->createdAt = Time(dto.getCreateTime());
+    this->updatedAt = Time(dto.getUpdateTime());
+}
+
 String UserSessionInfo::getDeviceId() const noexcept
 {
     return this->deviceId;

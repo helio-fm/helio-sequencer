@@ -27,7 +27,7 @@ struct EventIdGenerator
     static String generateId(uint8 length = 2)
     {
         String id;
-        Random r;
+        static Random r;
         r.setSeedRandomly();
         static const char idChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         for (size_t i = 0; i < length; ++i)
@@ -44,6 +44,7 @@ MidiSequence::MidiSequence(MidiTrack &parentTrack,
     eventDispatcher(dispatcher),
     lastStartBeat(0.f),
     lastEndBeat(0.f) {}
+
 
 void MidiSequence::sort()
 {

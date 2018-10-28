@@ -39,7 +39,6 @@ public:
     void onProjectUnloaded(const String &id);
     void onProjectDeleted(const String &id);
 
-
     //void onSessionDeleted(const String &deviceId);
 
     void clearProfileAndSession();
@@ -70,8 +69,8 @@ public:
 
 private:
 
-    // returns found item's index - or -1, if not found
     RecentProjectInfo *findProject(const String &id) const;
+    UserSessionInfo *findSession(const String &deviceId) const;
 
     Image avatar;
     String avatarThumbnail;
