@@ -32,7 +32,6 @@
 #include "PianoRoll.h"
 #include "PatternRoll.h"
 
-#include "HelioCallout.h"
 #include "SelectionComponent.h"
 #include "PanelBackgroundA.h"
 #include "PanelBackgroundB.h"

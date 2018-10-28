@@ -27,7 +27,6 @@
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
 #include "CachedLabelImage.h"
-#include "HelioCallout.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
 #include "App.h"

@@ -17,7 +17,6 @@
 
 #pragma once
 
-class HelioCallout;
 #include "ColourScheme.h"
 
 #define SHORT_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getShortAnimationLength());

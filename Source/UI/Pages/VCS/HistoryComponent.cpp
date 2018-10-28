@@ -27,7 +27,6 @@
 #include "VersionControlEditor.h"
 #include "RevisionTreeComponent.h"
 #include "ViewportFitProxyComponent.h"
-#include "HelioCallout.h"
 #include "Revision.h"
 #include "CommandIDs.h"
 #include "Icons.h"

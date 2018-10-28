@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "RevisionTreeComponent.h"
 #include "CommandIDs.h"
-#include "HelioCallout.h"
 #include "VersionControl.h"
 #include "HistoryComponent.h"
 #include "RevisionComponent.h"

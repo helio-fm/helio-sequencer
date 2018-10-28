@@ -32,7 +32,7 @@ DialogPanel::DialogPanel()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->setInterceptsMouseClicks(false, false);
@@ -151,13 +151,13 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="0" snapShown="1"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill=" radial: 0 -200R, 0R 0, 0=ff3b5297, 1=ff292c57"
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7.00000000000000000000" fill=" radial: 0 -200R, 0R 0, 0=ff3b5297, 1=ff292c57"
                hasStroke="0"/>
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill="linear: 52% 120%, 48% -20%, 0=3a193477, 1=0"
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7.00000000000000000000" fill="linear: 52% 120%, 48% -20%, 0=3a193477, 1=0"
                hasStroke="0"/>
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill="linear: 52% 130%, 48% -30%, 0=3a193477, 1=0"
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7.00000000000000000000" fill="linear: 52% 130%, 48% -30%, 0=3a193477, 1=0"
                hasStroke="0"/>
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill="linear: 52% 130%, 48% -30%, 0=3a193477, 1=0"
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7.00000000000000000000" fill="linear: 52% 130%, 48% -30%, 0=3a193477, 1=0"
                hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ffb9b9b9"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
