@@ -53,7 +53,7 @@ template <class Key, class T, class HashFn = std::hash<Key>, class EqualKey = st
 using FlatHashMap = ska::flat_hash_map<Key, T, HashFn, EqualKey>;
 
 template <class Value, class HashFn = std::hash<Value>, class EqualKey = std::equal_to<Value>>
-using SparseHashSet = ska::flat_hash_set<Value, HashFn, EqualKey>;
+using FlatHashSet = ska::flat_hash_set<Value, HashFn, EqualKey>;
 
 using HashCode = size_t;
 

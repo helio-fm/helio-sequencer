@@ -156,7 +156,7 @@ protected:
     UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<MidiEvent> midiEvents;
-    mutable SparseHashSet<MidiEvent::Id, StringHash> usedEventIds;
+    mutable FlatHashSet<MidiEvent::Id, StringHash> usedEventIds;
     
 private:
 

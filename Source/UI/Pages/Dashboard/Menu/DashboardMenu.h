@@ -57,7 +57,7 @@ private:
 
     //[UserVariables]
     Workspace *workspace;
-    SparseHashSet<String, StringHash> loadedProjectIds;
+    FlatHashSet<String, StringHash> loadedProjectIds;
     //[/UserVariables]
 
     UniquePointer<ListBox> listBox;
