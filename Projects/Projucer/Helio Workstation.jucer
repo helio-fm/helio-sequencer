@@ -668,8 +668,6 @@
           <FILE id="r5J37w" name="RadioButton.h" compile="0" resource="0" file="../../Source/UI/Common/RadioButton.h"/>
           <FILE id="x6SfEM" name="ScaleEditor.cpp" compile="1" resource="0" file="../../Source/UI/Common/ScaleEditor.cpp"/>
           <FILE id="Ajrl5t" name="ScaleEditor.h" compile="0" resource="0" file="../../Source/UI/Common/ScaleEditor.h"/>
-          <FILE id="SncSXr" name="ShapeComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Common/ShapeComponent.h"/>
           <FILE id="XuVuyC" name="SpectralLogo.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/SpectralLogo.cpp"/>
           <FILE id="c1jtLI" name="SpectralLogo.h" compile="0" resource="0" file="../../Source/UI/Common/SpectralLogo.h"/>
@@ -705,9 +703,6 @@
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.cpp"/>
           <FILE id="ny7iGn" name="TimeSignatureDialog.h" compile="0" resource="0"
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.h"/>
-          <FILE id="Z4BNDb" name="UpdateDialog.cpp" compile="1" resource="0"
-                file="../../Source/UI/Dialogs/UpdateDialog.cpp"/>
-          <FILE id="Gyc7iS" name="UpdateDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/UpdateDialog.h"/>
         </GROUP>
         <GROUP id="{41B9A65A-6B5E-1E5E-01CC-9FDE9CAF4523}" name="Headline">
           <FILE id="LYtBdU" name="Headline.cpp" compile="1" resource="0" file="../../Source/UI/Headline/Headline.cpp"/>
@@ -735,10 +730,6 @@
                 file="../../Source/UI/Headline/HeadlineNavigationPanel.h"/>
         </GROUP>
         <GROUP id="{89960E92-2826-B73B-FFA4-CFBFD275D8BA}" name="Input">
-          <FILE id="ER1gHO" name="LongHoldController.h" compile="0" resource="0"
-                file="../../Source/UI/Input/LongHoldController.h"/>
-          <FILE id="xIjQQl" name="LongHoldListener.h" compile="0" resource="0"
-                file="../../Source/UI/Input/LongHoldListener.h"/>
           <FILE id="OaiUE3" name="LongTapController.h" compile="0" resource="0"
                 file="../../Source/UI/Input/LongTapController.h"/>
           <FILE id="lS3KK2" name="LongTapListener.h" compile="0" resource="0"
@@ -923,9 +914,6 @@
                   file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.cpp"/>
             <FILE id="XZVY6W" name="SimpleSettingsWrapper.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.h"/>
-            <FILE id="Dt6gTd" name="LogComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/LogComponent.cpp"/>
-            <FILE id="ImgYBs" name="LogComponent.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/LogComponent.h"/>
             <FILE id="Lq3FxT" name="SettingsListItemHighlighter.cpp" compile="1"
                   resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp"/>
             <FILE id="weL74E" name="SettingsListItemHighlighter.h" compile="0"
@@ -1411,7 +1399,7 @@
     <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="WO0LHL"
             bigIcon="WO0LHL" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj"
+            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj /Zm123"
             extraLinkerFlags="/OPT:REF /OPT:ICF=5">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"

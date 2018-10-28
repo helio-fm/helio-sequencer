@@ -27,7 +27,6 @@
 #include "RootTreeItem.h"
 #include "SettingsTreeItem.h"
 #include "MainLayout.h"
-#include "LogComponent.h"
 #include "SerializationKeys.h"
 #include "DashboardMenu.h"
 #include "LogoFader.h"
