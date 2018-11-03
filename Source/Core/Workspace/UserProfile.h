@@ -32,10 +32,8 @@ public:
 
     void updateProfile(const UserProfileDto &dto);
 
-    void updateLocalProjectInfo(const String &id, const String &title, const String &path);
-    void updateRemoteProjectInfo(const ProjectDto &info);
-
-    void onProjectLoaded(const String &id);
+    void onProjectLocalInfoUpdated(const String &id, const String &title, const String &path);
+    void onProjectRemoteInfoUpdated(const ProjectDto &info);
     void onProjectUnloaded(const String &id);
     void onProjectDeleted(const String &id);
 

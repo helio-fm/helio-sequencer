@@ -197,7 +197,7 @@ void ProjectTreeItem::safeRename(const String &newName, bool sendNotifications)
         this->broadcastChangeProjectInfo(this->info);
 
         App::Workspace().getUserProfile()
-            .updateLocalProjectInfo(this->getId(), this->getName(),
+            .onProjectLocalInfoUpdated(this->getId(), this->getName(),
                 this->getDocument()->getFullPath());
 
         this->dispatchChangeTreeItemView();
@@ -739,14 +739,17 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
 
 void ProjectTreeItem::onDocumentDidLoad(File &file)
 {
-    App::Workspace().getUserProfile().onProjectLoaded(this->getId());
+    App::Workspace().getUserProfile()
+        .onProjectLocalInfoUpdated(this->getId(), this->getName(),
+            this->getDocument()->getFullPath());
 }
 
 bool ProjectTreeItem::onDocumentSave(File &file)
 {
     const auto projectNode(this->save());
-    // Debug:
+#if DEBUG
     DocumentHelpers::save<XmlSerializer>(file.withFileExtension("xml"), projectNode);
+#endif
     return DocumentHelpers::save<BinarySerializer>(file, projectNode);
 }
 

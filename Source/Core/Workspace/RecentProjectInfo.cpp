@@ -38,6 +38,7 @@ RecentProjectInfo::RecentProjectInfo(const String &localId,
 
 void RecentProjectInfo::updateRemoteInfo(const ProjectDto &remoteInfo)
 {
+    jassert(this->projectId == remoteInfo.getId());
     if (this->remote == nullptr)
     {
         this->remote.reset(new RemoteInfo());
@@ -51,6 +52,7 @@ void RecentProjectInfo::updateRemoteInfo(const ProjectDto &remoteInfo)
 void RecentProjectInfo::updateLocalInfo(const String &localId,
     const String &localTitle, const String &localPath)
 {
+    jassert(this->projectId == localId);
     if (this->local == nullptr)
     {
         this->local.reset(new LocalInfo());
@@ -63,6 +65,7 @@ void RecentProjectInfo::updateLocalInfo(const String &localId,
 
 void RecentProjectInfo::updateLocalTimestampAsNow()
 {
+    jassert(this->local != nullptr);
     if (this->local != nullptr)
     {
         this->local->lastModifiedMs = Time::currentTimeMillis();
@@ -186,6 +189,8 @@ void RecentProjectInfo::deserialize(const ValueTree &tree)
         tree : tree.getChildWithName(RecentProjects::recentProject);
 
     if (!root.isValid()) { return; }
+
+    this->projectId = root.getProperty(RecentProjects::projectId);
 
     const auto localRoot(root.getChildWithName(RecentProjects::localProjectInfo));
     if (localRoot.isValid())

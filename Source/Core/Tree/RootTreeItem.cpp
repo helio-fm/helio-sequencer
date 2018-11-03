@@ -159,7 +159,7 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
     newProject->getDocument()->save();
 
     // notify recent files list
-    App::Workspace().getUserProfile().updateLocalProjectInfo(newProject->getId(),
+    App::Workspace().getUserProfile().onProjectLocalInfoUpdated(newProject->getId(),
         newProject->getName(), newProject->getDocument()->getFullPath());
 
     return newProject;

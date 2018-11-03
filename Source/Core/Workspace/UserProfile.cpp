@@ -51,7 +51,7 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
 
     for (const auto p : dto.getProjects())
     {
-        this->updateRemoteProjectInfo(p);
+        this->onProjectRemoteInfoUpdated(p);
     }
 
     for (const auto s : dto.getSessions())
@@ -75,7 +75,7 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
     this->sendChangeMessage();
 }
 
-void UserProfile::updateLocalProjectInfo(const String &id, const String &title, const String &path)
+void UserProfile::onProjectLocalInfoUpdated(const String &id, const String &title, const String &path)
 {
     if (auto *project = this->findProject(id))
     {
@@ -91,7 +91,7 @@ void UserProfile::updateLocalProjectInfo(const String &id, const String &title, 
     this->sendChangeMessage();
 }
 
-void UserProfile::updateRemoteProjectInfo(const ProjectDto &info)
+void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
 {
     if (auto *project = this->findProject(info.getId()))
     {
@@ -102,17 +102,6 @@ void UserProfile::updateRemoteProjectInfo(const ProjectDto &info)
     {
         const ScopedWriteLock lock(this->projectsListLock);
         this->projects.add(new RecentProjectInfo(info));
-    }
-
-    this->sendChangeMessage();
-}
-
-void UserProfile::onProjectLoaded(const String &id)
-{
-    if (auto *project = this->findProject(id))
-    {
-        const ScopedWriteLock lock(this->projectsListLock);
-        project->updateLocalTimestampAsNow();
     }
 
     this->sendChangeMessage();
