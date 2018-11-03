@@ -68,9 +68,22 @@ ValueTree Delta::serialize() const
 {
     ValueTree tree(Serialization::VCS::delta);
     tree.setProperty(Serialization::VCS::deltaTypeId, this->type.toString(), nullptr);
-    tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate, nullptr);
-    tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter, nullptr);
-    tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter), nullptr);
+    
+    if (this->description.stringToTranslate.isNotEmpty())
+    {
+        tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate, nullptr);
+    }
+
+    if (this->description.stringParameter.isNotEmpty())
+    {
+        tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter, nullptr);
+    }
+
+    if (this->description.intParameter != DeltaDescription::defaultNumChanges)
+    {
+        tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter), nullptr);
+    }
+
     tree.setProperty(Serialization::VCS::deltaId, this->vcsUuid.toString(), nullptr);
     return tree;
 }
@@ -89,8 +102,7 @@ void Delta::deserialize(const ValueTree &tree)
 
     const String descriptionName = root.getProperty(Serialization::VCS::deltaName, {});
     const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, {});
-    const int64 descriptionIntParam =
-        root.getProperty(Serialization::VCS::deltaIntParam, String(DeltaDescription::defaultNumChanges));
+    const int64 descriptionIntParam = root.getProperty(Serialization::VCS::deltaIntParam, String(DeltaDescription::defaultNumChanges));
     
     this->description = DeltaDescription(descriptionName, descriptionIntParam, descriptionStringParam);
 }

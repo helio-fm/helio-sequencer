@@ -18,10 +18,18 @@
 #include "Common.h"
 #include "XmlSerializer.h"
 
+static const String xmlEncoding = "UTF-8";
+
 Result XmlSerializer::saveToFile(File file, const ValueTree &tree) const
 {
-    const auto saved = file.replaceWithText(tree.toXmlString());
-    return saved ? Result::ok() : Result::fail({});
+    UniquePointer<XmlElement> xml(tree.createXml());
+    if (xml != nullptr)
+    {
+        const auto saved = file.replaceWithText(xml->createDocument({}, false, true, xmlEncoding, 120));
+        return saved ? Result::ok() : Result::fail({});
+    }
+
+    return Result::fail({});
 }
 
 Result XmlSerializer::loadFromFile(const File &file, ValueTree &tree) const
@@ -39,8 +47,14 @@ Result XmlSerializer::loadFromFile(const File &file, ValueTree &tree) const
 
 Result XmlSerializer::saveToString(String &string, const ValueTree &tree) const
 {
-    string = tree.toXmlString();
-    return Result::ok();
+    UniquePointer<XmlElement> xml(tree.createXml());
+    if (xml != nullptr)
+    {
+        string = xml->createDocument({}, false, true, xmlEncoding, 120);
+        return Result::ok();
+    }
+
+    return Result::fail({});
 }
 
 Result XmlSerializer::loadFromString(const String &string, ValueTree &tree) const
