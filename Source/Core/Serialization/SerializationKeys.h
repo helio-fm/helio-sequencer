@@ -46,6 +46,7 @@ namespace Serialization
         static const Identifier pianoTrack = "pianoTrack";
         static const Identifier automationTrack = "automationTrack";
         static const Identifier projectTimeline = "projectTimeline";
+        static const Identifier filePath = "filePath";
 
         // Properties
         static const Identifier trackId = "trackId";
@@ -61,11 +62,7 @@ namespace Serialization
         static const Identifier keySignaturesTrackId = "keySignaturesTrackId";
         static const Identifier timeSignaturesTrackId = "timeSignaturesTrackId";
 
-        static const Identifier machineID = "deviceId";
         static const Identifier globalConfig = "config";
-
-        static const Identifier filePath = "filePath";
-
         static const Identifier clipboard = "helioClipboard";
     } // namespace Core
 
@@ -178,7 +175,6 @@ namespace Serialization
 
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
-        static const Identifier lastUsedLogin = "lastUsedLogin";
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
         static const Identifier lastUsedFont = "lastUsedFont";
 
@@ -419,6 +415,12 @@ namespace Serialization
         static const Identifier packItem = "record";
         static const Identifier packItemRevId = "itemId";
         static const Identifier packItemDeltaId = "deltaId";
+
+        static const Identifier remoteCache = "remoteCache";
+        static const Identifier remoteCacheSyncTime = "lastSync";
+        static const Identifier remoteRevision = "revision";
+        static const Identifier remoteRevisionId = "id";
+        static const Identifier remoteRevisionTimeStamp = "ts";
 
         static const Identifier revision = "revision";
         static const Identifier head = "head";

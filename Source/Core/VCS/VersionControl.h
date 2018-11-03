@@ -30,6 +30,7 @@ class VersionControlEditor;
 #include "Revision.h"
 #include "Head.h"
 #include "Pack.h"
+#include "RemoteCache.h"
 #include "StashesRepository.h"
 
 class VersionControl final :
@@ -41,14 +42,19 @@ public:
 
     explicit VersionControl(VCS::TrackedItemsSource &parent);
     ~VersionControl() override;
-    
-    //===------------------------------------------------------------------===//
-    // VCS
-    //===------------------------------------------------------------------===//
 
     VersionControlEditor *createEditor();
-    VCS::Head &getHead() { return this->head; }
-    VCS::Revision::Ptr getRoot() { return this->rootRevision; }
+
+    //===------------------------------------------------------------------===//
+    // Accessors
+    //===------------------------------------------------------------------===//
+
+    VCS::Head &getHead() noexcept { return this->head; }
+    VCS::Revision::Ptr getRoot() noexcept { return this->rootRevision; }
+
+    //===------------------------------------------------------------------===//
+    // Version control: revisions
+    //===------------------------------------------------------------------===//
 
     void moveHead(const VCS::Revision::Ptr revision);
     void checkout(const VCS::Revision::Ptr revision);
@@ -61,6 +67,10 @@ public:
     bool resetAllChanges();
     bool commit(SparseSet<int> selectedItems, const String &message);
     void quickAmendItem(VCS::TrackedItem *targetItem); // for first commit
+
+    //===------------------------------------------------------------------===//
+    // Version control: stashes
+    //===------------------------------------------------------------------===//
 
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
     bool applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash = false);
@@ -75,6 +85,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void syncProject();
+    void updateSyncInfoCache(const Array<RevisionDto> &revisions);
+    VCS::Revision::SyncState getRevisionSyncState(const VCS::Revision::Ptr revision) const;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -96,18 +108,13 @@ protected:
 
     VCS::Pack::Ptr pack;
     VCS::Head head;
+    VCS::RemoteCache remoteCache;
     VCS::StashesRepository::Ptr stashes;
     VCS::Revision::Ptr rootRevision; // the history tree itself
 
 private:
 
     VCS::TrackedItemsSource &parent;
-
-    
-    // TODO
-    //void updateSyncCache(const String &revisionId, Time syncedAt);
-    //SparseHashMap<String, uint64, StringHash> remoteSyncCache;
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
     JUCE_DECLARE_WEAK_REFERENCEABLE(VersionControl)

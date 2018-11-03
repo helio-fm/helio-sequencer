@@ -28,6 +28,13 @@ namespace VCS
     {
     public:
 
+        enum SyncState
+        {
+            NoSync,         // revision is present locally, but it is unknown if remote copy exists
+            ShallowCopy,    // remote revision info has been added to the tree, but data is yet to be fetched
+            FullSync,       // either local revision that was pushed, or a remote that was fully pulled
+        };
+
         using Ptr = ReferenceCountedObjectPtr<Revision>;
 
         Revision(Pack::Ptr pack, const String &name = {});

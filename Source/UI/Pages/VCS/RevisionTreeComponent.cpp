@@ -128,10 +128,10 @@ VCS::Revision::Ptr RevisionTreeComponent::getSelectedRevision() const noexcept
 RevisionComponent *RevisionTreeComponent::initComponents(int depth,
     const VCS::Revision::Ptr revision, RevisionComponent *parentRevisionComponent)
 {
-    // create component for revision
+    const auto state = this->vcs.getRevisionSyncState(revision);
     const bool isHead = (this->vcs.getHead().getHeadingRevision() == revision);
 
-    RevisionComponent *revisionComponent = new RevisionComponent(this->vcs, revision, isHead);
+    auto *revisionComponent = new RevisionComponent(this->vcs, revision, state, isHead);
     revisionComponent->parent = parentRevisionComponent;
     revisionComponent->y = float(depth);
     revisionComponent->number = depth;

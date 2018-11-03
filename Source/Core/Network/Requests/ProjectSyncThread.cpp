@@ -156,10 +156,7 @@ void ProjectSyncThread::run()
             return;
         }
 
-        //App::Workspace().getProjectsList().setTrackedRemote?
-        //App::Session().getUserProfile().addRemoteProject?
-        // TODO! make this project appear in user's projects list (like, call workspace::recentProjectsList.add blah blah)
-        // TODO make clear where remote revisions info is stored (in vcs, a remote list cache?)
+        App::Workspace().getUserProfile().onProjectRemoteInfoUpdated({ this->response.getBody() });
     }
     else if (!this->response.is200())
     {
@@ -168,13 +165,16 @@ void ProjectSyncThread::run()
         return;
     }
 
+    // the info about what revisions are available remotely will be needed by revision tree:
+    this->vcs->updateSyncInfoCache(remoteProject.getRevisions());
+
     RevisionDtosMap remoteRevisions;
     for (const auto child : remoteProject.getRevisions())
     {
         remoteRevisions[child.getId()] = child;
     }
 
-    // Find all new revisions on the remote
+    // find all new revisions on the remote
     Array<RevisionDto> newRemoteRevisions;
     for (const auto &remoteRevision : remoteRevisions)
     {
@@ -184,7 +184,7 @@ void ProjectSyncThread::run()
         }
     }
 
-    // Find all new revisions locally
+    // find all new revisions locally
     ReferenceCountedArray<VCS::Revision> newLocalRevisions;
     for (const auto &localRevision : localRevisions)
     {
@@ -194,7 +194,7 @@ void ProjectSyncThread::run()
         }
     }
 
-    // Everything is up to date
+    // everything is up to date
     if (newLocalRevisions.isEmpty() && newRemoteRevisions.isEmpty())
     {
         if (this->onSyncDone != nullptr)

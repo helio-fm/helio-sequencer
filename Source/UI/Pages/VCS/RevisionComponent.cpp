@@ -37,11 +37,12 @@
 
 //[/MiscUserDefs]
 
-RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, bool isHead)
+RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead)
     : vcs(owner),
       revision(revision),
-      selected(false),
+      isSelected(false),
       isHeadRevision(isHead),
+      viewState(viewState),
       x(0.f),
       y(0.f),
       mod(0.f),
@@ -49,28 +50,24 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
       change(0.f),
       number(0),
       parent(nullptr),
-      wired(nullptr),
       leftmostSibling(nullptr)
 {
-    addAndMakeVisible (revisionDescription = new Label (String(),
-                                                        TRANS("...")));
-    revisionDescription->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    revisionDescription->setJustificationType (Justification::centred);
-    revisionDescription->setEditable (false, false, false);
+    this->revisionDescription.reset(new Label(String(),
+                                               TRANS("...")));
+    this->addAndMakeVisible(revisionDescription.get());
+    this->revisionDescription->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    revisionDescription->setJustificationType(Justification::centred);
+    revisionDescription->setEditable(false, false, false);
 
-    addAndMakeVisible (revisionDate = new Label (String(),
-                                                 TRANS("...")));
-    revisionDate->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    revisionDate->setJustificationType (Justification::centred);
-    revisionDate->setEditable (false, false, false);
+    this->revisionDate.reset(new Label(String(),
+                                        TRANS("...")));
+    this->addAndMakeVisible(revisionDate.get());
+    this->revisionDate->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    revisionDate->setJustificationType(Justification::centred);
+    revisionDate->setEditable(false, false, false);
 
 
     //[UserPreSize]
-    //this->shadow.setShadowProperties(DropShadow(Colours::white.withAlpha(0.125f), 3, Point<int> (0, 0)));
-    //this->setComponentEffect(&shadow);
-
-    //const String &message = this->revision.getProperty(Identifier(Serialization::VCS::commitMessage)).toString();
-    //const int64 timestamp = this->revision.getProperty(Identifier(Serialization::VCS::commitTimeStamp));
     const String &message = this->revision->getMessage();
     const int64 timestamp = this->revision->getTimeStamp();
 
@@ -84,19 +81,12 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
     this->revisionDate->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (150, 40);
+    this->setSize(150, 40);
 
     //[Constructor]
-    if (!this->isHeadRevision)
-    {
-    //    this->background->setAlpha(0.7f);
-    }
-
     this->setSize(REVISION_COMPONENT_WIDTH, REVISION_COMPONENT_HEIGHT);
-
     this->revisionDescription->setFont(this->getHeight() / 3.f);
     this->revisionDate->setFont(this->getHeight() / 4.f);
-
     //[/Constructor]
 }
 
@@ -161,10 +151,25 @@ void RevisionComponent::paint (Graphics& g)
         g.drawRoundedRectangle(0.0f, 0.0f, static_cast<float> (getWidth()), static_cast<float> (getHeight()), 9.000f, 1.0f);
     }
 
-    if (this->selected)
+    if (this->isSelected)
     {
         g.setColour(Colours::white.withAlpha(0.3f));
         g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth()), static_cast<float> (getHeight()), 9.000f, 1.0f);
+    }
+
+    switch (this->viewState)
+    {
+    case VCS::Revision::NoSync:
+
+        break;
+    case VCS::Revision::ShallowCopy:
+
+        break;
+    case VCS::Revision::FullSync:
+
+        break;
+    default:
+        break;
     }
 
     //[/UserPaint]
@@ -175,8 +180,8 @@ void RevisionComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    revisionDescription->setBounds (4, (getHeight() / 2) + 2 - 21, getWidth() - 8, 21);
-    revisionDate->setBounds (4, (getHeight() / 2) + -1, getWidth() - 8, 21);
+    revisionDescription->setBounds(4, (getHeight() / 2) + 2 - 21, getWidth() - 8, 21);
+    revisionDate->setBounds(4, (getHeight() / 2) + -1, getWidth() - 8, 21);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -203,13 +208,8 @@ void RevisionComponent::mouseDown (const MouseEvent& e)
 
 void RevisionComponent::setSelected(bool selected)
 {
-    this->selected = selected;
+    this->isSelected = selected;
     this->repaint();
-}
-
-bool RevisionComponent::isSelected() const
-{
-    return this->selected;
 }
 
 RevisionComponent *RevisionComponent::getLeftmostSibling() const
@@ -262,8 +262,8 @@ RevisionComponent *RevisionComponent::left() const
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RevisionComponent" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner, const VCS::Revision::Ptr revision, bool isHead"
-                 variableInitialisers="vcs(owner)&#10;revision(revision),&#10;selected(false),&#10;isHeadRevision(isHead),&#10;x(0.f),&#10;y(0.f),&#10;mod(0.f),&#10;shift(0.f),&#10;change(0.f),&#10;number(0),&#10;parent(nullptr),&#10;thread(nullptr),&#10;leftmostSibling(nullptr)"
+                 componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead"
+                 variableInitialisers="vcs(owner)&#10;revision(revision),&#10;isSelected(false),&#10;isHeadRevision(isHead),&#10;viewState(viewState),&#10;x(0.f),&#10;y(0.f),&#10;mod(0.f),&#10;shift(0.f),&#10;change(0.f),&#10;number(0),&#10;parent(nullptr),&#10;leftmostSibling(nullptr)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="150" initialHeight="40">
   <METHODS>
@@ -271,20 +271,25 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0Cc 2C 80 1" cornerSize="10" fill="solid: bffffff" hasStroke="0"/>
-    <ROUNDRECT pos="0Cc 1C 80 1" cornerSize="10" fill="solid: d000000" hasStroke="0"/>
-    <ROUNDRECT pos="0Cc 0Rc 35 4" cornerSize="10" fill="solid: 25ffffff" hasStroke="0"/>
-    <ROUNDRECT pos="0Cc 0c 35 4" cornerSize="10" fill="solid: 25ffffff" hasStroke="0"/>
+    <ROUNDRECT pos="0Cc 2C 80 1" cornerSize="10.00000000000000000000" fill="solid: bffffff"
+               hasStroke="0"/>
+    <ROUNDRECT pos="0Cc 1C 80 1" cornerSize="10.00000000000000000000" fill="solid: d000000"
+               hasStroke="0"/>
+    <ROUNDRECT pos="0Cc 0Rc 35 4" cornerSize="10.00000000000000000000" fill="solid: 25ffffff"
+               hasStroke="0"/>
+    <ROUNDRECT pos="0Cc 0c 35 4" cornerSize="10.00000000000000000000" fill="solid: 25ffffff"
+               hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="45b178bfb039403" memberName="revisionDescription"
          virtualName="" explicitFocusOrder="0" pos="4 2Cr 8M 21" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="21" kerning="0" bold="0" italic="0"
-         justification="36"/>
+         fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
   <LABEL name="" id="30ac314958873bc0" memberName="revisionDate" virtualName=""
          explicitFocusOrder="0" pos="4 -1C 8M 21" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

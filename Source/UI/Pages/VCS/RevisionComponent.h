@@ -19,20 +19,20 @@
 
 //[Headers]
 class VersionControl;
-
 #include "Revision.h"
 //[/Headers]
 
 
-class RevisionComponent  : public Component
+class RevisionComponent final : public Component
 {
 public:
 
-    RevisionComponent (VersionControl &owner, const VCS::Revision::Ptr revision, bool isHead);
-
+    RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead);
     ~RevisionComponent();
 
     //[UserMethods]
+
+    // Helpers for tree traverse:
 
     float x;
     float y;
@@ -54,12 +54,11 @@ public:
     RevisionComponent *right() const;
     RevisionComponent *left() const;
 
-    mutable RevisionComponent *leftmostSibling; //  todo private
+    mutable RevisionComponent *leftmostSibling;
+
+    // View details
 
     void setSelected(bool selected);
-    bool isSelected() const;
-
-    bool isHead() const { return this->isHeadRevision; }
 
     //[/UserMethods]
 
@@ -75,10 +74,9 @@ private:
 
     VersionControl &vcs;
 
-    bool selected;
+    bool isSelected;
     bool isHeadRevision;
-
-    DropShadowEffect shadow;
+    VCS::Revision::SyncState viewState;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(RevisionComponent)
 
@@ -86,8 +84,8 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> revisionDescription;
-    ScopedPointer<Label> revisionDate;
+    UniquePointer<Label> revisionDescription;
+    UniquePointer<Label> revisionDate;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionComponent)
 };

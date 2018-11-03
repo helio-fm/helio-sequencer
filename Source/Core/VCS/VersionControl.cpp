@@ -297,7 +297,8 @@ ValueTree VersionControl::serialize() const
     tree.appendChild(this->stashes->serialize(), nullptr);
     tree.appendChild(this->pack->serialize(), nullptr);
     tree.appendChild(this->head.serialize(), nullptr);
-    
+    tree.appendChild(this->remoteCache.serialize(), nullptr);
+
     return tree;
 }
 
@@ -315,6 +316,7 @@ void VersionControl::deserialize(const ValueTree &tree)
 
     this->rootRevision->deserialize(root);
     this->stashes->deserialize(root);
+    this->remoteCache.deserialize(root);
     this->pack->deserialize(root);
 
     {
@@ -334,6 +336,7 @@ void VersionControl::reset()
 {
     this->rootRevision->reset();
     this->head.reset();
+    this->remoteCache.reset();
     this->stashes->reset();
     this->pack->reset();
 }
@@ -356,6 +359,26 @@ void VersionControl::syncProject()
 {
     App::Helio().getResourceSyncService()->syncProject(this,
         this->parent.getVCSId(), this->parent.getVCSName());
+}
+
+void VersionControl::updateSyncInfoCache(const Array<RevisionDto> &revisions)
+{
+    this->remoteCache.updateAvailableRevisions(revisions);
+    this->sendChangeMessage();
+}
+
+Revision::SyncState VersionControl::getRevisionSyncState(const Revision::Ptr revision) const
+{
+    if (!revision->isShallowCopy() && this->remoteCache.hasRevisionTracked(revision))
+    {
+        return Revision::FullSync;
+    }
+    else if (revision->isShallowCopy())
+    {
+        return Revision::ShallowCopy;
+    }
+
+    return Revision::NoSync;
 }
 
 //===----------------------------------------------------------------------===//
