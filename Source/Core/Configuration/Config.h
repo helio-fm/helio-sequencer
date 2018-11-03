@@ -23,7 +23,7 @@ class Config final : private Timer
 {
 public:
 
-    explicit Config(int timeoutToSaveMs = 3000);
+    explicit Config(int timeoutToSaveMs = 10000);
     ~Config() override;
 
     static String getDeviceId();
@@ -58,7 +58,13 @@ private:
     InterProcessLock fileLock;
     File propertiesFile;
     
-    ValueTree config;
+    FlatHashMap<Identifier, var, IdentifierHash> properties;
+    FlatHashMap<Identifier, ValueTree, IdentifierHash> children;
+
+    // As the app development moves forward, some properties
+    // become deprecated, but they will still present in config file,
+    // so we need to track the unused ones and never save them:
+    mutable FlatHashSet<Identifier, IdentifierHash> usedKeys;
 
     bool needsSaving;
     int saveTimeout;

@@ -222,7 +222,6 @@ static String transformXmlTag(const String &tagOrAttribute)
         oldKeys.set("LayerColour", MidiTrackDeltas::trackColour);
         oldKeys.set("LayerInstrument", MidiTrackDeltas::trackInstrument);
         oldKeys.set("LayerController", MidiTrackDeltas::trackController);
-        oldKeys.set("DeviceId", Core::machineID);
         oldKeys.set("HeadIndex", VCS::snapshot);
         oldKeys.set("HeadIndexData", VCS::snapshotData);
         oldKeys.set("annotationsId", Core::annotationsTrackId);

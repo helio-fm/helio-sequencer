@@ -24,13 +24,28 @@
 
 String Config::getDeviceId()
 {
-    const String systemStats =
-        SystemStats::getLogonName() +
-        SystemStats::getComputerName() +
-        SystemStats::getOperatingSystemName() +
-        SystemStats::getCpuVendor();
+    static String kDeviceId;
 
-    return String(CompileTimeHash(systemStats.toUTF8()));
+    if (kDeviceId.isEmpty())
+    {
+        const auto &ids = SystemStats::getDeviceIdentifiers();
+        if (!ids.isEmpty())
+        {
+            kDeviceId = String(CompileTimeHash(ids.joinIntoString({}).toUTF8()));
+        }
+        else
+        {
+            const String systemStats =
+                SystemStats::getLogonName() +
+                SystemStats::getComputerName() +
+                SystemStats::getOperatingSystemName() +
+                SystemStats::getCpuVendor();
+
+            kDeviceId = String(CompileTimeHash(systemStats.toUTF8()));
+        }
+    }
+
+    return kDeviceId;
 }
 
 void Config::set(const Identifier &key, const var &value, bool delayedSave)
@@ -73,14 +88,12 @@ Config::Config(int timeoutToSaveMs) :
     needsSaving(false),
     saveTimeout(timeoutToSaveMs)
 {
-    this->config = ValueTree(Serialization::Core::globalConfig);
     this->propertiesFile = DocumentHelpers::getConfigSlot("settings.helio");
     this->reload();
 }
 
 Config::~Config()
 {
-    this->setProperty(Serialization::Core::machineID, this->getDeviceId(), false);
     this->saveIfNeeded();
 }
 
@@ -98,7 +111,25 @@ bool Config::saveIfNeeded()
         return false;
     }
 
-    if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, this->config))
+    // make sure only the used properties are saved
+    ValueTree cleanedUpConfig(Serialization::Core::globalConfig);
+    for (const auto &i : this->properties)
+    {
+        if (this->usedKeys.contains(i.first))
+        {
+            cleanedUpConfig.setProperty(i.first, i.second, nullptr);
+        }
+    }
+
+    for (const auto &i : this->children)
+    {
+        if (this->usedKeys.contains(i.first))
+        {
+            cleanedUpConfig.appendChild(i.second, nullptr);
+        }
+    }
+
+    if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, cleanedUpConfig))
     {
         needsSaving = false;
         Logger::writeToLog("Config saved: " + this->propertiesFile.getFullPathName());
@@ -121,7 +152,21 @@ bool Config::reload()
 
     if (doc.isValid() && doc.hasType(Serialization::Core::globalConfig))
     {
-        this->config = doc;
+        this->children.clear();
+        this->properties.clear();
+
+        for (int i = 0; i < doc.getNumProperties(); ++i)
+        {
+            const auto key(doc.getPropertyName(i));
+            this->properties[key] = doc[key];
+        }
+
+        for (int i = 0; i < doc.getNumChildren(); ++i)
+        {
+            const auto child(doc.getChild(i));
+            this->children[child.getType()] = child;
+        }
+
         Logger::writeToLog("Config reloaded");
         return true;
     }
@@ -137,19 +182,26 @@ void Config::timerCallback()
 
 void Config::saveConfigFor(const Identifier &key, const Serializable *serializable)
 {
-    const ValueTree existingChild(this->config.getChildWithName(key));
-    this->config.removeChild(existingChild, nullptr);
+    this->usedKeys.emplace(key);
 
     ValueTree root(key);
     root.appendChild(serializable->serialize(), nullptr);
 
-    this->config.appendChild(root, nullptr);
+    this->children[key] = root;
     this->onConfigChanged();
 }
 
 void Config::loadConfigFor(const Identifier &key, Serializable *serializable)
 {
-    const auto tree(this->config.getChildWithName(key));
+    this->usedKeys.emplace(key);
+
+    const auto found = this->children.find(key);
+    if (found == this->children.end())
+    {
+        return;
+    }
+
+    const auto tree = found->second;
     if (tree.isValid() && tree.getChild(0).isValid())
     {
         serializable->deserialize(tree.getChild(0));
@@ -158,7 +210,8 @@ void Config::loadConfigFor(const Identifier &key, Serializable *serializable)
 
 void Config::setProperty(const Identifier &key, const var &value, bool delayedSave)
 {
-    this->config.setProperty(key, value, nullptr);
+    this->usedKeys.emplace(key);
+    this->properties[key] = value;
     if (delayedSave)
     {
         this->onConfigChanged();
@@ -167,12 +220,14 @@ void Config::setProperty(const Identifier &key, const var &value, bool delayedSa
 
 String Config::getProperty(const Identifier &key, const String &fallback) const noexcept
 {
-    return this->config.getProperty(key, fallback);
+    this->usedKeys.emplace(key.toString());
+    const auto found = this->properties.find(key);
+    return (found == this->properties.end()) ? fallback : found->second;
 }
 
 bool Config::containsPropertyOrChild(const Identifier &key) const noexcept
 {
-    return this->config.hasProperty(key) || this->config.getChildWithName(key).isValid();
+    return this->properties.contains(key) || this->children.contains(key);
 }
 
 void Config::onConfigChanged()
