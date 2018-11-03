@@ -1432,7 +1432,7 @@
     <VS2017 targetFolder="../../Projects/VisualStudio2017" extraCompilerFlags="/FC"
             usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
             precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp">
+            smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp" windowsTargetPlatformVersion="10.0.26624">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
@@ -1447,13 +1447,11 @@
         <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"
-                       warningsAreErrors="1"/>
+                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"/>
         <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"
-                       warningsAreErrors="1"/>
+                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>

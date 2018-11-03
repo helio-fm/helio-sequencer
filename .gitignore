@@ -19,6 +19,8 @@
 *.xcscheme
 *.xcworkspacedata
 *.iml
+*.p12
+*.rsa
 xcschememanagement.plist
 
 UserInterfaceState.xcuserstate
