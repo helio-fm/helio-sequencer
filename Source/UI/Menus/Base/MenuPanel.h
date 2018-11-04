@@ -45,7 +45,8 @@ public:
 
     void updateContent(const Menu &commands,
         AnimationType animationType = SlideDown,
-        bool adjustsWidth = true);
+        bool adjustsWidth = true,
+        Component *customFooter = nullptr);
 
     static StringPairArray getColoursList();
     
@@ -82,7 +83,12 @@ private:
     Component *refreshComponentForRow(int rowNumber, bool isRowSelected,
         Component *existingComponentToUpdate) override;
 
-    ScopedPointer<ListBox> listBox;
+    UniquePointer<ListBox> listBox;
+    UniquePointer<Component> customFooter;
+
+    Rectangle<int> getMenuBounds() const;
+    Rectangle<int> getFooterBounds() const;
+    int getFooterHeight() const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuPanel)
 };
