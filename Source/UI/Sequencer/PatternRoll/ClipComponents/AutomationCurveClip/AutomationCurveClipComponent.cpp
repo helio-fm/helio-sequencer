@@ -350,7 +350,10 @@ void AutomationCurveClipComponent::onChangeTrackProperties(MidiTrack *const trac
 
 void AutomationCurveClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->reloadTrack();
+    if (this->sequence != nullptr)
+    {
+        this->reloadTrack();
+    }
 }
 
 void AutomationCurveClipComponent::onAddTrack(MidiTrack *const track)
