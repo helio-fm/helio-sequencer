@@ -202,9 +202,8 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
             String::repeatedString(String::charToString(passwordCharacter), label.getText().length()) :
             label.getText();
 
-        // For large labels assume this is a dialog text,
-        // for every other force fit text into a single line:
-        const int maxLines = (label.getHeight() < 64) ? 1 : 10;
+        // Try to guess the right max number of lines depending on label height and font height:
+        const int maxLines = int(float(label.getHeight()) / font.getHeight());
 
         const float alpha = 0.5f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 12.f) / 2.f;
         const Colour colour = label.findColour(Label::textColourId).withMultipliedAlpha(alpha);

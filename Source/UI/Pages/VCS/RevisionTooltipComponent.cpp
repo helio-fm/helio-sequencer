@@ -36,41 +36,34 @@
 
 //[/MiscUserDefs]
 
-RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const VCS::Revision::Ptr revision)
-    : vcs(owner),
-      revision(revision),
+RevisionTooltipComponent::RevisionTooltipComponent(const VCS::Revision::Ptr revision)
+    : revision(revision),
       revisionItemsOnly()
 {
-    addAndMakeVisible (changesList = new ListBox ("", this));
+    this->changesList.reset(new ListBox("", this));
+    this->addAndMakeVisible(changesList.get());
 
-    addAndMakeVisible (checkoutRevisionButton = new TextButton (String()));
-    checkoutRevisionButton->setButtonText (TRANS("vcs::history::checkout"));
-    checkoutRevisionButton->setConnectedEdges (Button::ConnectedOnTop | Button::ConnectedOnBottom);
-    checkoutRevisionButton->addListener (this);
-
-    addAndMakeVisible (separator = new SeparatorHorizontal());
+    this->separator.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separator.get());
 
     //[UserPreSize]
 
     this->revisionItemsOnly.addArray(this->revision->getItems());
 
-    this->changesList->setMultipleSelectionEnabled(true);
+    this->changesList->setRowSelectedOnMouseDown(false);
+    this->changesList->setMultipleSelectionEnabled(false);
+    this->changesList->setClickingTogglesRowSelection(false);
+
     this->changesList->setRowHeight(REVISION_TOOLTIP_ROW_HEIGHT);
     this->changesList->getViewport()->setScrollBarsShown(true, false);
 
     //[/UserPreSize]
 
-    setSize (320, 220);
+    this->setSize(320, 220);
 
     //[Constructor]
-    const int topBottomMargins = 60;
     const int maxHeight = int(REVISION_TOOLTIP_ROW_HEIGHT * REVISION_TOOLTIP_ROWS_ONSCREEN);
-
-    const int numItems = this->getNumRows();
-    const int listHeight = (numItems * REVISION_TOOLTIP_ROW_HEIGHT);
-    const int newHeight = jmin(maxHeight, listHeight) + topBottomMargins;
-    //const int newHeight = maxHeight + topBottomMargins;
-
+    const int newHeight = jmin(maxHeight, this->getNumRows() * REVISION_TOOLTIP_ROW_HEIGHT);
     this->setSize(this->getWidth(), newHeight);
     this->changesList->updateContent();
     //[/Constructor]
@@ -82,7 +75,6 @@ RevisionTooltipComponent::~RevisionTooltipComponent()
     //[/Destructor_pre]
 
     changesList = nullptr;
-    checkoutRevisionButton = nullptr;
     separator = nullptr;
 
     //[Destructor]
@@ -103,28 +95,10 @@ void RevisionTooltipComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    changesList->setBounds (0, 0, getWidth() - 0, getHeight() - 60);
-    checkoutRevisionButton->setBounds (0, 0 + (getHeight() - 60), getWidth() - 0, 60);
-    separator->setBounds (0, 0 + (getHeight() - 60) - 1, getWidth() - 0, 4);
+    changesList->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
+    separator->setBounds(0, 0 + (getHeight() - 0) - 1, getWidth() - 0, 4);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
-}
-
-void RevisionTooltipComponent::buttonClicked (Button* buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == checkoutRevisionButton)
-    {
-        //[UserButtonCode_checkoutRevisionButton] -- add your button handler code here..
-        this->vcs.checkout(this->revision);
-        this->hide();
-        //[/UserButtonCode_checkoutRevisionButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
 }
 
 void RevisionTooltipComponent::inputAttemptWhenModal()
@@ -139,13 +113,12 @@ void RevisionTooltipComponent::inputAttemptWhenModal()
 
 void RevisionTooltipComponent::hide()
 {
-    this->getParentComponent()->exitModalState(0); // calloutbox?
+    this->getParentComponent()->exitModalState(0);
 }
-
 
 //===----------------------------------------------------------------------===//
 // ListBoxModel
-//
+//===----------------------------------------------------------------------===//
 
 Component *RevisionTooltipComponent::refreshComponentForRow(int rowNumber,
         bool isRowSelected, Component *existingComponentToUpdate)
@@ -161,32 +134,24 @@ Component *RevisionTooltipComponent::refreshComponentForRow(int rowNumber,
     {
         if (auto *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
         {
-            row->updateItemInfo(rowNumber, isLastRow, revRecord);
+            row->updateItemInfo(revRecord, rowNumber, isLastRow, false);
             return existingComponentToUpdate;
         }
     }
     else
     {
-        auto row = new RevisionItemComponent(*this->changesList, this->vcs.getHead());
-        row->updateItemInfo(rowNumber, isLastRow, revRecord);
+        auto *row = new RevisionItemComponent(*this->changesList);
+        row->updateItemInfo(revRecord, rowNumber, isLastRow, false);
         return row;
     }
 
     return nullptr;
 }
 
-void RevisionTooltipComponent::listBoxItemClicked(int row, const MouseEvent &e) {}
-void RevisionTooltipComponent::listBoxItemDoubleClicked(int row, const MouseEvent &e) {}
-
 int RevisionTooltipComponent::getNumRows()
 {
     return this->revisionItemsOnly.size();
 }
-
-void RevisionTooltipComponent::paintListBoxItem(int rowNumber, Graphics &g,
-    int width, int height, bool rowIsSelected) {}
-
-
 //[/MiscUserCode]
 
 #if 0
@@ -195,8 +160,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RevisionTooltipComponent"
                  template="../../../Template" componentName="" parentClasses="public Component, public ListBoxModel"
-                 constructorParams="VersionControl &amp;owner, const VCS::Revision::Ptr revision"
-                 variableInitialisers="vcs(owner),&#10;revision(revision),&#10;revisionItemsOnly()"
+                 constructorParams="const VCS::Revision::Ptr revision" variableInitialisers="revision(revision),&#10;revisionItemsOnly()"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="320" initialHeight="220">
   <METHODS>
@@ -204,11 +168,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 60M" class="ListBox" params="&quot;&quot;, this"/>
-  <TEXTBUTTON name="" id="d22a0ea951756643" memberName="checkoutRevisionButton"
-              virtualName="" explicitFocusOrder="0" pos="0 0R 0M 60" posRelativeX="c5736d336280caba"
-              posRelativeY="d017e5395434bb4f" buttonText="vcs::history::checkout"
-              connectedEdges="12" needsCallback="1" radioGroupId="0"/>
+                    explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params="&quot;&quot;, this"/>
   <JUCERCOMP name="" id="a5ee6384bbe01d79" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 1R 0M 4" posRelativeX="c5736d336280caba"
              posRelativeY="d017e5395434bb4f" sourceFile="../../Themes/SeparatorHorizontal.cpp"
