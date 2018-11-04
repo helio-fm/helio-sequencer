@@ -24,7 +24,7 @@
 #include "RevisionConnectorComponent.h"
 #include "RevisionTooltipComponent.h"
 
-#define CONNECTOR_HEIGHT 30
+#define CONNECTOR_HEIGHT 20
 
 RevisionTreeComponent::RevisionTreeComponent(VersionControl &owner) :
     vcs(owner),

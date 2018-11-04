@@ -20,8 +20,11 @@
 //[Headers]
 class VersionControl;
 #include "Revision.h"
+#include "IconComponent.h"
 //[/Headers]
 
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
 
 class RevisionComponent final : public Component
 {
@@ -86,6 +89,10 @@ private:
 
     UniquePointer<Label> revisionDescription;
     UniquePointer<Label> revisionDate;
+    UniquePointer<SeparatorHorizontalFadingReversed> line2;
+    UniquePointer<SeparatorHorizontalFading> line3;
+    UniquePointer<IconComponent> remoteIndicatorImage;
+    UniquePointer<IconComponent> localIndicatorImage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionComponent)
 };
