@@ -42,7 +42,7 @@ public:
     struct Presets final
     {
         static ScopedPointer<ModalDialogConfirmation> deleteProject();
-        static ScopedPointer<ModalDialogConfirmation> forcePull();
+        static ScopedPointer<ModalDialogConfirmation> forceCheckout();
         static ScopedPointer<ModalDialogConfirmation> resetChanges();
         static ScopedPointer<ModalDialogConfirmation> confirmOpenGL();
     };

@@ -53,12 +53,8 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
     const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
 
     menu.add(MenuItem::item(Icons::push,
-        CommandIDs::VersionControlPush,
-        TRANS("menu::vcs::push"))->disabledIf(!loggedIn)->closesMenu());
-
-    menu.add(MenuItem::item(Icons::pull,
-        CommandIDs::VersionControlPull,
-        TRANS("menu::vcs::pull"))->disabledIf(!loggedIn)->closesMenu());
+        CommandIDs::VersionControlSyncAll,
+        TRANS("menu::vcs::syncall"))->disabledIf(!loggedIn)->closesMenu());
 
     // TODO when stashes are ready
     //menu.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,

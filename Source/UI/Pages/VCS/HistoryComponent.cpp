@@ -29,12 +29,12 @@
 #include "ViewportFitProxyComponent.h"
 #include "Revision.h"
 #include "CommandIDs.h"
+#include "ComponentIDs.h"
 #include "Icons.h"
 
 #include "MainLayout.h"
 #include "ModalDialogConfirmation.h"
 #include "VersionControlHistorySelectionMenu.h"
-#include "RevisionTooltipComponent.h"
 
 //[/MiscUserDefs]
 
@@ -55,6 +55,7 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     this->addAndMakeVisible(separator3.get());
 
     //[UserPreSize]
+    this->setComponentID(ComponentIDs::versionControlHistory);
     //[/UserPreSize]
 
     this->setSize(600, 400);
@@ -100,27 +101,32 @@ void HistoryComponent::resized()
 void HistoryComponent::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-
-    // TODO switch
-
-    // Push: just emitting a modal ui box.
-    //this->vcs.getRemote()->push();
-
-    // Pull:
-    //if (this->vcs.getHead().hasTrackedItemsOnTheStage())
-    //{
-    //    auto confirmationDialog = ModalDialogConfirmation::Presets::forcePull();
-    //    confirmationDialog->onOk = [this]()
-    //    {
-    //        this->vcs.getRemote()->pull();
-    //    };
-    //    App::Layout().showModalComponentUnowned(confirmationDialog.release());
-    //}
-    //else
-    //{
-    //    this->vcs.getRemote()->pull();
-    //}
-
+    switch (commandId)
+    {
+    case CommandIDs::VersionControlCheckout:
+        if (this->vcs.getHead().hasTrackedItemsOnTheStage())
+        {
+            auto confirmationDialog = ModalDialogConfirmation::Presets::forceCheckout();
+            confirmationDialog->onOk = [this]()
+            {
+                this->vcs.checkout(this->revisionTree->getSelectedRevision());
+            };
+            App::Layout().showModalComponentUnowned(confirmationDialog.release());
+        }
+        else
+        {
+            this->vcs.checkout(this->revisionTree->getSelectedRevision());
+        }
+        break;
+    case CommandIDs::VersionControlPushSelected:
+    case CommandIDs::VersionControlPullSelected:
+        // from sync thread's perspective, it doesn't make difference if user wants to push or pull a revision,
+        // because it will perform the necessary action depending on the information it gets from the api:
+        //this->vcs.syncProject(this->revisionTree->getSelectedRevision());
+        break;
+    default:
+        break;
+    }
     //[/UserCode_handleCommandMessage]
 }
 
@@ -138,8 +144,8 @@ void HistoryComponent::clearSelection()
 void HistoryComponent::rebuildRevisionTree()
 {
     this->revisionTree = new RevisionTreeComponent(this->vcs);
-    auto alignerProxy = new ViewportFitProxyComponent(*this->revisionViewport, this->revisionTree, true); // deletes revTree
-    this->revisionViewport->setViewedComponent(alignerProxy, true); // deletes alignerProxy
+    auto *alignerProxy = new ViewportFitProxyComponent(*this->revisionViewport, this->revisionTree, true); // owns revisionTree
+    this->revisionViewport->setViewedComponent(alignerProxy, true); // owns alignerProxy
     alignerProxy->centerTargetToViewport();
 }
 
@@ -176,8 +182,7 @@ ScopedPointer<Component> HistoryComponent::createMenu()
 {
     if (this->revisionTree != nullptr)
     {
-        return { new RevisionTooltipComponent(this->vcs, this->revisionTree->getSelectedRevision()) };
-        //return { new VersionControlHistorySelectionMenu(this->revisionTree->getSelectedRevision(), this->vcs) };
+        return { new VersionControlHistorySelectionMenu(this->revisionTree->getSelectedRevision(), this->vcs) };
     }
 
     jassertfalse;

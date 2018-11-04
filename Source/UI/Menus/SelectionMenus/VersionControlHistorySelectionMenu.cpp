@@ -18,41 +18,39 @@
 #include "Common.h"
 #include "VersionControlHistorySelectionMenu.h"
 #include "VersionControl.h"
+#include "RevisionTooltipComponent.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static MenuPanel::Menu createDefaultPanel()
+static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionControl &vcs)
 {
-    MenuPanel::Menu cmds;
+    MenuPanel::Menu menu;
 
-    cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
-        TRANS("menu::selection::history::checkout")));
+    menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
+        TRANS("menu::selection::history::checkout"))->closesMenu());
 
-    // TODO
-    //cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
-    //    TRANS("menu::selection::history::merge")));
+    const auto syncState = vcs.getRevisionSyncState(revision);
+    const bool needsPush = (syncState == VCS::Revision::NoSync);
+    const bool needsPull = (syncState == VCS::Revision::ShallowCopy);
 
-    return cmds;
+    menu.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPushSelected,
+        TRANS("menu::selection::history::push"))->disabledIf(!needsPush)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPullSelected,
+        TRANS("menu::selection::history::pull"))->disabledIf(!needsPull)->closesMenu());
+
+    return menu;
 }
 
-VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(ValueTree revision, VersionControl &vcs) :
+VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(VCS::Revision::Ptr revision, VersionControl &vcs) :
     revision(revision),
     vcs(vcs)
 {
-    // TODO replace with RevisionComponent
-    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
-}
+    ScopedPointer<Component> content;
+    if (!revision->isShallowCopy())
+    {
+        content.reset(new RevisionTooltipComponent(revision));
+    }
 
-void VersionControlHistorySelectionMenu::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::Back)
-    {
-        this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
-        return;
-    }
-    else if (commandId == CommandIDs::CopyEvents)
-    {
-        this->dismiss();
-        return;
-    }
+    this->updateContent(createDefaultPanel(revision, vcs), MenuPanel::SlideRight, true, content.release());
 }

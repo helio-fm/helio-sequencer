@@ -157,12 +157,8 @@ void StageComponent::handleCommandMessage (int commandId)
         this->selectAll(sendNotification);
         this->resetSelected();
         break;
-    case CommandIDs::VersionControlPush:
+    case CommandIDs::VersionControlSyncAll:
         this->vcs.syncProject();
-        // TODO
-        break;
-    case CommandIDs::VersionControlPull:
-        // TODO
         break;
     default:
         break;
@@ -191,7 +187,7 @@ void StageComponent::clearSelection()
 
 void StageComponent::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (Head *head = dynamic_cast<Head *>(source))
+    if (auto *head = dynamic_cast<Head *>(source))
     {
         if (head->isRebuildingDiff())
         {
@@ -227,14 +223,14 @@ Component *StageComponent::refreshComponentForRow(int rowNumber,
         {
             if (auto *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
             {
-                row->updateItemInfo(rowNumber, isLastRow, revRecord);
+                row->updateItemInfo(revRecord, rowNumber, isLastRow, true);
                 return existingComponentToUpdate;
             }
         }
         else
         {
-            auto *row = new RevisionItemComponent(*this->changesList, this->vcs.getHead());
-            row->updateItemInfo(rowNumber, isLastRow, revRecord);
+            auto *row = new RevisionItemComponent(*this->changesList);
+            row->updateItemInfo(revRecord, rowNumber, isLastRow, true);
             return row;
         }
     }
