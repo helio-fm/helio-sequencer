@@ -19,8 +19,8 @@
 
 #include "ColourScheme.h"
 
-#define SHORT_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getShortAnimationLength());
-#define LONG_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getLongAnimationLength());
+#define SHORT_FADE_TIME (150)
+#define LONG_FADE_TIME (250)
 
 class HelioTheme final : public LookAndFeel_V4
 {
@@ -32,9 +32,6 @@ public:
     void initColours(const ::ColourScheme::Ptr colours);
     void updateBackgroundRenders(bool force = false);
     void updateFont(const Font &font);
-        
-    virtual int getShortAnimationLength() { return 150; }
-    virtual int getLongAnimationLength() { return 250; }
     
     Typeface::Ptr getTypefaceForFont(const Font &) override;
     virtual Image getBackgroundNoise() const { return this->backgroundNoise; }

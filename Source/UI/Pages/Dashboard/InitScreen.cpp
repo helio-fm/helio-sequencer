@@ -51,7 +51,6 @@ InitScreen::InitScreen()
     this->setSize(600, 400);
 
     //[Constructor]
-
     // Debug png logos generator
     //const auto fader = new LogoFader(false);
     //this->addAndMakeVisible(fader);
@@ -62,8 +61,7 @@ InitScreen::InitScreen()
 InitScreen::~InitScreen()
 {
     //[Destructor_pre]
-    //const int animTime = SHORT_FADE_TIME(this);
-    //Desktop::getInstance().getAnimator().fadeOut(this, animTime);
+    Desktop::getInstance().getAnimator().fadeOut(this, SHORT_FADE_TIME);
     //[/Destructor_pre]
 
     headLine = nullptr;
@@ -89,23 +87,8 @@ void InitScreen::paint (Graphics& g)
         g.fillRect (x, y, width, height);
     }
 
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        Colour fillColour1 = Colour (0x1e636363), fillColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> (proportionOfWidth (0.7500f)) - 0.0f + x,
-                                       static_cast<float> (proportionOfHeight (0.6500f)) - 0.0f + y,
-                                       fillColour2,
-                                       0.0f - 0.0f + x,
-                                       static_cast<float> (proportionOfHeight (0.0000f)) - 0.0f + y,
-                                       false));
-        g.fillRect (x, y, width, height);
-    }
-
     //[UserPaint] Add your own custom painting code here..
-    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.f);
+    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.5f);
     //[/UserPaint]
 }
 
@@ -179,8 +162,6 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <RECT pos="0 0 0M 0M" fill="solid: ff48358c" hasStroke="0"/>
-    <RECT pos="0 0 0M 0M" fill="linear: 75% 65%, 0 0%, 0=1e636363, 1=0"
-          hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
              explicitFocusOrder="0" pos="0 32 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"

@@ -18,7 +18,6 @@
 #pragma once
 
 //[Headers]
-class LogoFader;
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontalReversed.h"

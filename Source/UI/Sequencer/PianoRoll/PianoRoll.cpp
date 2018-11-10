@@ -440,8 +440,7 @@ void PianoRoll::hideHelpers()
 {
     if (this->helperHorizontal->isVisible())
     {
-        const int animTime = SHORT_FADE_TIME(this);
-        this->fader.fadeOut(this->helperHorizontal, animTime);
+        this->fader.fadeOut(this->helperHorizontal, SHORT_FADE_TIME);
     }
 }
 
