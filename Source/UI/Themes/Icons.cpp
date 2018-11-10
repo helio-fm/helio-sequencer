@@ -208,16 +208,13 @@ static Image renderVector(Icons::Id id, int maxSize,
     Rectangle<int> area(0, 0, maxSize, maxSize);
     drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
     
-    if (id != Icons::helio) // a hack -_-
-    {
 #if HELIO_DESKTOP
-        GlowEffect glow;
-        glow.setGlowProperties(1.25, iconShadeColour);
-        glow.applyEffect(resultImage, g, 1.f, 1.f);
+    GlowEffect glow;
+    glow.setGlowProperties(1.25, iconShadeColour);
+    glow.applyEffect(resultImage, g, 1.f, 1.f);
 #endif
         
-        drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
-    }
+    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
 
     return resultImage;
 }
