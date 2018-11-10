@@ -122,7 +122,7 @@ void HistoryComponent::handleCommandMessage (int commandId)
     case CommandIDs::VersionControlPullSelected:
         // from sync thread's perspective, it doesn't make difference if user wants to push or pull a revision,
         // because it will perform the necessary action depending on the information it gets from the api:
-        //this->vcs.syncProject(this->revisionTree->getSelectedRevision());
+        this->vcs.syncRevision(this->revisionTree->getSelectedRevision());
         break;
     default:
         break;

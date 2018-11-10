@@ -25,13 +25,19 @@ bool RemoteCache::hasRevisionTracked(const Revision::Ptr revision) const
     return this->fetchCache.contains(revision->getUuid());
 }
 
-void RemoteCache::updateAvailableRevisions(const Array<RevisionDto> &revisions)
+void RemoteCache::updateForRemoteRevisions(const Array<RevisionDto> &revisions)
 {
     for (const auto &child : revisions)
     {
         this->fetchCache[child.getId()] = child.getTimestamp();
     }
 
+    this->lastSyncTime = Time::getCurrentTime();
+}
+
+void RemoteCache::updateForLocalRevision(const Revision::Ptr revision)
+{
+    this->fetchCache[revision->getUuid()] = revision->getTimeStamp();
     this->lastSyncTime = Time::getCurrentTime();
 }
 

@@ -358,12 +358,25 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
 void VersionControl::syncProject()
 {
     App::Helio().getResourceSyncService()->syncProject(this,
-        this->parent.getVCSId(), this->parent.getVCSName());
+        this->parent.getVCSId(), this->parent.getVCSName(), {});
 }
 
-void VersionControl::updateSyncInfoCache(const Array<RevisionDto> &revisions)
+void VersionControl::syncRevision(const VCS::Revision::Ptr revision)
 {
-    this->remoteCache.updateAvailableRevisions(revisions);
+    App::Helio().getResourceSyncService()->syncProject(this,
+        this->parent.getVCSId(), this->parent.getVCSName(),
+        { revision->getUuid() });
+}
+
+void VersionControl::updateLocalSyncCache(const VCS::Revision::Ptr revision)
+{
+    this->remoteCache.updateForLocalRevision(revision);
+    this->sendChangeMessage();
+}
+
+void VersionControl::updateRemoteSyncCache(const Array<RevisionDto> &revisions)
+{
+    this->remoteCache.updateForRemoteRevisions(revisions);
     this->sendChangeMessage();
 }
 

@@ -36,7 +36,8 @@ ProjectSyncThread::~ProjectSyncThread()
 }
 
 void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs,
-    const String &projectId, const String &projectName)
+    const String &projectId, const String &projectName,
+    const Array<String> &revisionIdsToSync)
 {
     if (this->isThreadRunning())
     {
@@ -47,6 +48,7 @@ void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs,
     this->vcs = vcs;
     this->projectId = projectId;
     this->projectName = projectName;
+    this->idsToSync = revisionIdsToSync;
     this->startThread(7);
 }
 
@@ -166,7 +168,7 @@ void ProjectSyncThread::run()
     }
 
     // the info about what revisions are available remotely will be needed by revision tree:
-    this->vcs->updateSyncInfoCache(remoteProject.getRevisions());
+    this->vcs->updateRemoteSyncCache(remoteProject.getRevisions());
 
     RevisionDtosMap remoteRevisions;
     for (const auto child : remoteProject.getRevisions())
@@ -220,26 +222,29 @@ void ProjectSyncThread::run()
     // if anything is needed to pull, fetch all data for each, then update and callback
     for (auto subtree : newRemoteTrees)
     {
-        // todo only pull a revision if that was specified explicitly?
-        const String revisionRoute(ApiRoutes::projectRevision
-            .replace(":projectId", this->projectId)
-            .replace(":revisionId", subtree.second->getUuid()));
-
-        const BackendRequest revisionRequest(revisionRoute);
-        this->response = revisionRequest.get();
-        if (!this->response.is2xx())
+        if (this->idsToSync.isEmpty() || // if empty, sync all
+            this->idsToSync.contains(subtree.second->getUuid()))
         {
-            Logger::writeToLog("Failed to fetch revision data: " + this->response.getErrors().getFirst());
-            callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
-            return;
-        }
+            const String revisionRoute(ApiRoutes::projectRevision
+                .replace(":projectId", this->projectId)
+                .replace(":revisionId", subtree.second->getUuid()));
 
-        const RevisionDto fullRevision(this->response.getBody());
-        const auto revision = this->vcs->updateShallowRevisionData(fullRevision.getId(), fullRevision.getData());
+            const BackendRequest revisionRequest(revisionRoute);
+            this->response = revisionRequest.get();
+            if (!this->response.is2xx())
+            {
+                Logger::writeToLog("Failed to fetch revision data: " + this->response.getErrors().getFirst());
+                callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+                return;
+            }
 
-        if (this->onRevisionPulled != nullptr)
-        {
-            this->onRevisionPulled(revision);
+            const RevisionDto fullRevision(this->response.getBody());
+            const auto revision = this->vcs->updateShallowRevisionData(fullRevision.getId(), fullRevision.getData());
+
+            if (this->onRevisionPulled != nullptr)
+            {
+                this->onRevisionPulled(revision);
+            }
         }
     }
 
@@ -249,7 +254,7 @@ void ProjectSyncThread::run()
 
     // push them recursively, starting from the root, so that
     // each pushed revision already has a valid remote parent
-    for (auto subtree : newLocalTrees)
+    for (auto *subtree : newLocalTrees)
     {
         this->pushSubtreeRecursively(subtree);
     }
@@ -274,32 +279,40 @@ void ProjectSyncThread::run()
     }
 }
 
-void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision *root)
+void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
 {
-    const String revisionRoute(ApiRoutes::projectRevision
-        .replace(":projectId", this->projectId)
-        .replace(":revisionId", root->getUuid()));
-
-    ValueTree payload(ApiKeys::Revisions::revision);
-    payload.setProperty(ApiKeys::Revisions::message, root->getMessage(), nullptr);
-    payload.setProperty(ApiKeys::Revisions::timestamp, String(root->getTimeStamp()), nullptr);
-    payload.setProperty(ApiKeys::Revisions::parentId, (root->getParent() ? root->getParent()->getUuid() : var::null), nullptr);
-    ValueTree data(ApiKeys::Revisions::data);
-    data.addChild(root->serialize(), 0, nullptr);
-    payload.addChild(data, 0, nullptr);
-
-    const BackendRequest revisionRequest(revisionRoute);
-    this->response = revisionRequest.put(payload);
-    if (!this->response.is2xx())
+    if (this->idsToSync.isEmpty() ||
+        this->idsToSync.contains(root->getUuid()))
     {
-        Logger::writeToLog("Failed to put revision data: " + this->response.getErrors().getFirst());
-        callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
-        return;
-    }
-    
-    if (this->onRevisionPushed != nullptr)
-    {
-        this->onRevisionPushed(root);
+        const String revisionRoute(ApiRoutes::projectRevision
+            .replace(":projectId", this->projectId)
+            .replace(":revisionId", root->getUuid()));
+
+        ValueTree payload(ApiKeys::Revisions::revision);
+        payload.setProperty(ApiKeys::Revisions::message, root->getMessage(), nullptr);
+        payload.setProperty(ApiKeys::Revisions::timestamp, String(root->getTimeStamp()), nullptr);
+        payload.setProperty(ApiKeys::Revisions::parentId, (root->getParent() ? root->getParent()->getUuid() : var::null), nullptr);
+
+        ValueTree data(ApiKeys::Revisions::data);
+        data.addChild(root->serialize(), 0, nullptr);
+        payload.addChild(data, 0, nullptr);
+
+        const BackendRequest revisionRequest(revisionRoute);
+        this->response = revisionRequest.put(payload);
+        if (!this->response.is2xx())
+        {
+            Logger::writeToLog("Failed to put revision data: " + this->response.getErrors().getFirst());
+            callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+            return;
+        }
+
+        // notify vcs that revision is available remotely
+        this->vcs->updateLocalSyncCache(root);
+
+        if (this->onRevisionPushed != nullptr)
+        {
+            this->onRevisionPushed(root);
+        }
     }
 
     for (auto *child : root->getChildren())

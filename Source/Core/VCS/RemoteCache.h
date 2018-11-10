@@ -30,7 +30,9 @@ namespace VCS
         RemoteCache() = default;
 
         bool hasRevisionTracked(const Revision::Ptr revision) const;
-        void updateAvailableRevisions(const Array<RevisionDto> &revisions);
+
+        void updateForLocalRevision(const Revision::Ptr revision);
+        void updateForRemoteRevisions(const Array<RevisionDto> &revisions);
 
         //===------------------------------------------------------------------===//
         // Serializable

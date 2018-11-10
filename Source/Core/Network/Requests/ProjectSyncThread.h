@@ -36,16 +36,20 @@ public:
     Function<void(const Array<String> &errors)> onSyncFailed;
 
     void doSync(WeakReference<VersionControl> vcs,
-        const String &projectId, const String &projectName);
+        const String &projectId, const String &projectName,
+        const Array<String> &revisionIdsToSync = {});
 
 private:
     
     void run() override;
-    void pushSubtreeRecursively(VCS::Revision *subtree);
+    void pushSubtreeRecursively(VCS::Revision::Ptr subtree);
     
     String projectId;
     String projectName;
     WeakReference<VersionControl> vcs;
+
+    // If empty, synchronizes all revisions
+    Array<String> idsToSync;
 
     BackendRequest::Response response;
 

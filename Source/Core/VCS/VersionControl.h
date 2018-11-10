@@ -85,7 +85,9 @@ public:
     //===------------------------------------------------------------------===//
 
     void syncProject();
-    void updateSyncInfoCache(const Array<RevisionDto> &revisions);
+    void syncRevision(const VCS::Revision::Ptr revision);
+    void updateLocalSyncCache(const VCS::Revision::Ptr revision);
+    void updateRemoteSyncCache(const Array<RevisionDto> &revisions);
     VCS::Revision::SyncState getRevisionSyncState(const VCS::Revision::Ptr revision) const;
 
     //===------------------------------------------------------------------===//

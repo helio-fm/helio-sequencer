@@ -29,7 +29,8 @@ public:
     ResourceSyncService(const ResourceManagerPool &rm);
 
     void syncProject(WeakReference<VersionControl> vcs,
-        const String &projectId, const String &projectName);
+        const String &projectId, const String &projectName,
+        const Array<String> &revisionIdsToSync);
 
 private:
 

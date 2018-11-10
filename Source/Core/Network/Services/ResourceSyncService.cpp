@@ -30,7 +30,8 @@ ResourceSyncService::ResourceSyncService(const ResourceManagerPool &rm) :
 }
 
 void ResourceSyncService::syncProject(WeakReference<VersionControl> vcs,
-    const String &projectId, const String &projectName)
+    const String &projectId, const String &projectName,
+    const Array<String> &revisionIdsToSync)
 {
     if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
     {
@@ -38,7 +39,7 @@ void ResourceSyncService::syncProject(WeakReference<VersionControl> vcs,
         return;
     }
 
-    this->prepareProjectSyncThread()->doSync(vcs, projectId, projectName);
+    this->prepareProjectSyncThread()->doSync(vcs, projectId, projectName, revisionIdsToSync);
 }
 
 static Identifier getPlatformType()

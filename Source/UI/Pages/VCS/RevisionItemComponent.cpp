@@ -169,13 +169,12 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
 
     this->separator->setVisible(! isLastRow);
 
-    const VCS::RevisionItem::Type itemType = this->revisionItem->getType();
+    const auto itemType = this->revisionItem->getType();
     const String itemTypeStr = this->revisionItem->getTypeAsString();
     const String itemDescription = TRANS(this->revisionItem->getVCSName());
-    String itemDeltas = "";
 
+    String itemDeltas;
     bool needsComma = false;
-
     for (int i = 0; i < this->revisionItem->getNumDeltas(); ++i)
     {
         const VCS::Delta *delta = this->revisionItem->getDelta(i);
@@ -189,11 +188,8 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
         }
     }
 
-    if (itemType == VCS::RevisionItem::Removed)
-    {
-        this->itemLabel->setText(itemTypeStr + " " + itemDescription, dontSendNotification);
-    }
-    else if (itemType == VCS::RevisionItem::Added)
+    if (itemType == VCS::RevisionItem::Added ||
+        itemType == VCS::RevisionItem::Removed)
     {
         this->itemLabel->setText(itemTypeStr + " " + itemDescription, dontSendNotification);
     }
