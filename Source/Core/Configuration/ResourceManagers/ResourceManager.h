@@ -18,10 +18,6 @@
 #pragma once
 
 #include "BaseResource.h"
-#include "DocumentHelpers.h"
-#include "BinarySerializer.h"
-#include "JsonSerializer.h"
-#include "XmlSerializer.h"
 
 // A thing to note: all subclasses should make their
 // deserialization method able to append overridden changes.

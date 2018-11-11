@@ -81,8 +81,6 @@ private:
     bool isHeadRevision;
     VCS::Revision::SyncState viewState;
 
-    JUCE_DECLARE_WEAK_REFERENCEABLE(RevisionComponent)
-
 private:
 
     //[/UserVariables]

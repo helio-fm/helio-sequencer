@@ -64,8 +64,6 @@ private:
     ScopedPointer<Component> selectionComponent;
     VCS::RevisionItem::Ptr revisionItem;
 
-    JUCE_DECLARE_WEAK_REFERENCEABLE(RevisionItemComponent)
-
     //[/UserVariables]
 
     UniquePointer<Label> itemLabel;

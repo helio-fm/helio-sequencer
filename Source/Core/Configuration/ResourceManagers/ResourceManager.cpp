@@ -17,6 +17,10 @@
 
 #include "Common.h"
 #include "ResourceManager.h"
+#include "JsonSerializer.h"
+#include "BinarySerializer.h"
+#include "XmlSerializer.h"
+#include "DocumentHelpers.h"
 
 ResourceManager::ResourceManager(const Identifier &resourceName) :
     resourceName(resourceName) {}

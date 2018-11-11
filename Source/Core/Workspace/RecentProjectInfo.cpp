@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "RecentProjectInfo.h"
 #include "SerializationKeys.h"
+#include "DocumentHelpers.h"
 
 RecentProjectInfo::RecentProjectInfo(const ProjectDto &remoteInfo) :
     projectId(remoteInfo.getId()),
