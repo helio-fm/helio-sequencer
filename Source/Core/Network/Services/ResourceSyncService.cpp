@@ -23,6 +23,33 @@
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
 
+static Identifier getPlatformType()
+{
+    using namespace Serialization::Api;
+
+#if JUCE_WINDOWS
+#if JUCE_32BIT
+    return PlatformTypes::windows32;
+#elif JUCE_64BIT
+    return PlatformTypes::windows64;
+#endif
+#elif JUCE_LINUX
+#if JUCE_32BIT
+    return PlatformTypes::linux32;
+#elif JUCE_64BIT
+    return PlatformTypes::linux64;
+#endif
+#elif JUCE_MAC
+    return PlatformTypes::mac;
+#elif JUCE_IOS
+    return PlatformTypes::ios;
+#elif JUCE_ANDROID
+    return PlatformTypes::android;
+#else
+    jassertfalse;
+#endif
+}
+
 ResourceSyncService::ResourceSyncService(const ResourceManagerPool &rm) :
     resourceManagers(rm)
 {
@@ -35,38 +62,22 @@ void ResourceSyncService::syncProject(WeakReference<VersionControl> vcs,
 {
     if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
     {
-        // TODO error
+        // TODO show error UI
         return;
     }
 
     this->prepareProjectSyncThread()->doSync(vcs, projectId, projectName, revisionIdsToSync);
 }
 
-static Identifier getPlatformType()
+void ResourceSyncService::cloneProject(WeakReference<VersionControl> vcs, const String &projectId)
 {
-    using namespace Serialization::Api;
+    if (auto *thread = this->getRunningThreadFor<ProjectCloneThread>())
+    {
+        // TODO show error UI
+        return;
+    }
 
-#if JUCE_WINDOWS
-  #if JUCE_32BIT
-    return PlatformTypes::windows32;
-  #elif JUCE_64BIT
-    return PlatformTypes::windows64;
-  #endif
-#elif JUCE_LINUX
-  #if JUCE_32BIT
-    return PlatformTypes::linux32;
-  #elif JUCE_64BIT
-    return PlatformTypes::linux64;
-  #endif
-#elif JUCE_MAC
-    return PlatformTypes::mac;
-#elif JUCE_IOS
-    return PlatformTypes::ios;
-#elif JUCE_ANDROID
-    return PlatformTypes::android;
-#else
-    jassertfalse;
-#endif
+    this->prepareProjectCloneThread()->clone(vcs, projectId);
 }
 
 RequestResourceThread *ResourceSyncService::prepareResourceRequestThread()
@@ -141,25 +152,34 @@ ProjectSyncThread *ResourceSyncService::prepareProjectSyncThread()
     
     thread->onFetchDone = []()
     {
-
+        // do nothing? VCS will sendChangeMessage
+        // and views will update themselves on the message thread
     };
 
-    thread->onRevisionPulled = [](const VCS::Revision::Ptr revision)
+    thread->onSyncDone = [](bool nothingToSync)
     {
-
-    };
-
-    thread->onRevisionPushed = [](const VCS::Revision::Ptr revision)
-    {
-
-    };
-
-    thread->onSyncDone = [](int numRevisionsPulled, int numRevisionsPushed)
-    {
-
+        // TODO show either "up to date" or "sync done" message
     };
 
     thread->onSyncFailed = [](const Array<String> &errors)
+    {
+        // TODO: show errors and failure icon
+        Logger::writeToLog("onSyncFailed: " + errors.getFirst());
+    };
+
+    return thread;
+}
+
+ProjectCloneThread *ResourceSyncService::prepareProjectCloneThread()
+{
+    auto *thread = this->getNewThreadFor<ProjectCloneThread>();
+
+    thread->onCloneDone = []()
+    {
+        // TODO switch to project page / roll?
+    };
+
+    thread->onCloneFailed = [](const Array<String> &errors)
     {
         // TODO: show errors and failure icon
         Logger::writeToLog("onSyncFailed: " + errors.getFirst());

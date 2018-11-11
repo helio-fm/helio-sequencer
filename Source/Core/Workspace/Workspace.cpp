@@ -167,19 +167,24 @@ void Workspace::createEmptyProject()
 #endif
 }
 
-bool Workspace::loadRecentProject(RecentProjectInfo::Ptr projectInfo)
+bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
 {
-    const File file(projectInfo->getLocalFile());
+    const File file(info->getLocalFile());
     if (file.existsAsFile())
     {
-        const auto *project = this->treeRoot->openProject(file);
-        return (project != nullptr);
+        return this->treeRoot->openProject(file) != nullptr;
     }
-    //else if (projectInfo->hasRemoteCopy) // and not present locally
-    //{
-    //    // TODO checkout and open
-    //    this->treeRoot->checkoutProject(fileDescription->projectId);
-    //}
+    else if (info->hasRemoteCopy()) // and not present locally
+    {
+        if (this->userProfile.isLoggedIn())
+        {
+            return this->treeRoot->checkoutProject(info->getProjectId(), info->getTitle()) != nullptr;
+        }
+        else
+        {
+            // TODO show message "yo, login"
+        }
+    }
 
     return true;
 }

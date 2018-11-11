@@ -122,7 +122,7 @@ void ProjectSyncThread::run()
     // everything is up to date
     if (newLocalRevisions.isEmpty() && newRemoteRevisions.isEmpty())
     {
-        callbackOnMessageThread(ProjectSyncThread, onSyncDone, 0, 0);
+        callbackOnMessageThread(ProjectSyncThread, onSyncDone, true);
         return;
     }
 
@@ -157,8 +157,6 @@ void ProjectSyncThread::run()
 
             const RevisionDto fullRevision(this->response.getBody());
             const auto revision = this->vcs->updateShallowRevisionData(fullRevision.getId(), fullRevision.getData());
-
-            callbackOnMessageThread(ProjectSyncThread, onRevisionPulled, revision);
         }
     }
 
@@ -187,7 +185,7 @@ void ProjectSyncThread::run()
         return;
     }
 
-    callbackOnMessageThread(ProjectSyncThread, onSyncDone, newRemoteRevisions.size(), newLocalRevisions.size());
+    callbackOnMessageThread(ProjectSyncThread, onSyncDone, false);
 }
 
 void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
@@ -219,8 +217,6 @@ void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
 
         // notify vcs that revision is available remotely
         this->vcs->updateLocalSyncCache(root);
-
-        callbackOnMessageThread(ProjectSyncThread, onRevisionPushed, root);
     }
 
     for (auto *child : root->getChildren())

@@ -19,6 +19,7 @@
 
 #include "BackendService.h"
 #include "ProjectSyncThread.h"
+#include "ProjectCloneThread.h"
 #include "UpdatesCheckThread.h"
 #include "RequestResourceThread.h"
 
@@ -32,9 +33,13 @@ public:
         const String &projectId, const String &projectName,
         const Array<String> &revisionIdsToSync);
 
+    void cloneProject(WeakReference<VersionControl> vcs,
+        const String &projectId);
+
 private:
 
     ProjectSyncThread *prepareProjectSyncThread();
+    ProjectCloneThread *prepareProjectCloneThread();
     UpdatesCheckThread *prepareUpdatesCheckThread();
     RequestResourceThread *prepareResourceRequestThread();
 

@@ -68,12 +68,14 @@ void ProjectCloneThread::run()
         this->vcs->appendSubtree(subtree.second, subtree.first);
     }
 
+    this->newHead = nullptr;
+
     // if anything is needed to pull, fetch all data for each, then update and callback
-    for (const auto revision : remoteProject.getRevisions())
+    for (const auto dto : remoteProject.getRevisions())
     {
         const String revisionRoute(ApiRoutes::projectRevision
             .replace(":projectId", this->projectId)
-            .replace(":revisionId", revision.getId()));
+            .replace(":revisionId", dto.getId()));
 
         const BackendRequest revisionRequest(revisionRoute);
         this->response = revisionRequest.get();
@@ -84,9 +86,25 @@ void ProjectCloneThread::run()
             return;
         }
 
-        const RevisionDto fullRevision(this->response.getBody());
-        this->vcs->updateShallowRevisionData(fullRevision.getId(), fullRevision.getData());
+        const RevisionDto fullData(this->response.getBody());
+        auto revision = this->vcs->updateShallowRevisionData(fullData.getId(), fullData.getData());
+
+        if (revision->getUuid() == remoteProject.getHead())
+        {
+            this->newHead = revision;
+        }
     }
-        
+
+    // checkout the head revision, if any
+    if (this->newHead != nullptr)
+    {
+        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
+        {
+            auto *self = static_cast<ProjectCloneThread *>(ptr);
+            self->vcs->checkout(self->newHead);
+            return nullptr;
+        }, this);
+    }
+
     callbackOnMessageThread(ProjectCloneThread, onCloneDone);
 }

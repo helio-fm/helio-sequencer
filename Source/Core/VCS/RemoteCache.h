@@ -45,8 +45,9 @@ namespace VCS
     private:
 
         void updateFetchCache(const String &revisionId, Time syncedAt);
-        FlatHashMap<String, int64, StringHash> fetchCache;
 
+        ReadWriteLock cacheLock;
+        FlatHashMap<String, int64, StringHash> fetchCache;
         Time lastSyncTime;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RemoteCache)

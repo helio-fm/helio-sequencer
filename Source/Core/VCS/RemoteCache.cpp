@@ -22,11 +22,13 @@ using namespace VCS;
 
 bool RemoteCache::hasRevisionTracked(const Revision::Ptr revision) const
 {
+    ScopedReadLock lock(this->cacheLock);
     return this->fetchCache.contains(revision->getUuid());
 }
 
 void RemoteCache::updateForRemoteRevisions(const Array<RevisionDto> &revisions)
 {
+    ScopedWriteLock lock(this->cacheLock);
     for (const auto &child : revisions)
     {
         this->fetchCache[child.getId()] = child.getTimestamp();
@@ -37,6 +39,7 @@ void RemoteCache::updateForRemoteRevisions(const Array<RevisionDto> &revisions)
 
 void RemoteCache::updateForLocalRevision(const Revision::Ptr revision)
 {
+    ScopedWriteLock lock(this->cacheLock);
     this->fetchCache[revision->getUuid()] = revision->getTimeStamp();
     this->lastSyncTime = Time::getCurrentTime();
 }

@@ -29,9 +29,7 @@ public:
     ~ProjectSyncThread() override;
     
     Function<void()> onFetchDone;
-    Function<void(const VCS::Revision::Ptr revision)> onRevisionPushed;
-    Function<void(const VCS::Revision::Ptr revision)> onRevisionPulled;
-    Function<void(int numRevisionsPulled, int numRevisionsPushed)> onSyncDone;
+    Function<void(bool nothingToSync)> onSyncDone;
     Function<void(const Array<String> &errors)> onSyncFailed;
 
     void doSync(WeakReference<VersionControl> vcs,
@@ -45,6 +43,7 @@ private:
     
     String projectId;
     String projectName;
+    
     WeakReference<VersionControl> vcs;
 
     // If empty, synchronizes all revisions

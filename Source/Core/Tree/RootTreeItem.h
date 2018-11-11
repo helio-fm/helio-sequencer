@@ -35,19 +35,17 @@ public:
     String getName() const noexcept override;
     Image getIcon() const noexcept override;
 
-    bool mightContainSubItems() override
-    { return false; } // hide open/close button
-    
     void showPage() override;
     void recreatePage() override;
-    
+
     void importMidi(const File &file);
 
     //===------------------------------------------------------------------===//
     // Children
     //===------------------------------------------------------------------===//
 
-    ProjectTreeItem *openProject(const File &file, int insertIndex = -1);
+    ProjectTreeItem *openProject(const File &file);
+    ProjectTreeItem *checkoutProject(const String &id, const String &name);
 
     ProjectTreeItem *addDefaultProject(const File &projectLocation);
     ProjectTreeItem *addDefaultProject(const String &projectName);

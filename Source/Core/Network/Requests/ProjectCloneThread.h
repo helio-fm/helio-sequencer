@@ -39,7 +39,8 @@ private:
     
     String projectId;
     WeakReference<VersionControl> vcs;
-    
+    VCS::Revision::Ptr newHead;
+
     BackendRequest::Response response;
 
     friend class BackendService;
