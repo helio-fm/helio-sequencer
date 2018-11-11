@@ -317,10 +317,18 @@
             <FILE id="x663ni" name="BackendRequest.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/BackendRequest.h"/>
             <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
+            <FILE id="i9fTOz" name="ProjectCloneThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectCloneThread.cpp"/>
+            <FILE id="b5QDUQ" name="ProjectCloneThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectCloneThread.h"/>
             <FILE id="hk3NVA" name="ProjectSyncThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Requests/ProjectSyncThread.cpp"/>
             <FILE id="jE9wVo" name="ProjectSyncThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/ProjectSyncThread.h"/>
+            <FILE id="aKd9ZN" name="ProjectSyncHelpers.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectSyncHelpers.cpp"/>
+            <FILE id="lxidmn" name="ProjectSyncHelpers.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectSyncHelpers.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"

@@ -21,35 +21,25 @@
 #include "VersionControl.h"
 #include "Revision.h"
 
-class ProjectSyncThread final : public Thread
+class ProjectCloneThread final : public Thread
 {
 public:
     
-    ProjectSyncThread();
-    ~ProjectSyncThread() override;
+    ProjectCloneThread();
+    ~ProjectCloneThread() override;
     
-    Function<void()> onFetchDone;
-    Function<void(const VCS::Revision::Ptr revision)> onRevisionPushed;
-    Function<void(const VCS::Revision::Ptr revision)> onRevisionPulled;
-    Function<void(int numRevisionsPulled, int numRevisionsPushed)> onSyncDone;
-    Function<void(const Array<String> &errors)> onSyncFailed;
+    Function<void()> onCloneDone;
+    Function<void(const Array<String> &errors)> onCloneFailed;
 
-    void doSync(WeakReference<VersionControl> vcs,
-        const String &projectId, const String &projectName,
-        const Array<String> &revisionIdsToSync = {});
+    void clone(WeakReference<VersionControl> vcs, const String &projectId);
 
 private:
     
     void run() override;
-    void pushSubtreeRecursively(VCS::Revision::Ptr subtree);
     
     String projectId;
-    String projectName;
     WeakReference<VersionControl> vcs;
-
-    // If empty, synchronizes all revisions
-    Array<String> idsToSync;
-
+    
     BackendRequest::Response response;
 
     friend class BackendService;
