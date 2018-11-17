@@ -222,7 +222,7 @@ String Config::getProperty(const Identifier &key, const String &fallback) const 
 {
     this->usedKeys.emplace(key.toString());
     const auto found = this->properties.find(key);
-    return (found == this->properties.end()) ? fallback : found->second;
+    return (found == this->properties.end()) ? fallback : found->second.toString();
 }
 
 bool Config::containsPropertyOrChild(const Identifier &key) const noexcept

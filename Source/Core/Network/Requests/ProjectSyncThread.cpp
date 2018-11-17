@@ -200,7 +200,8 @@ void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
         ValueTree payload(ApiKeys::Revisions::revision);
         payload.setProperty(ApiKeys::Revisions::message, root->getMessage(), nullptr);
         payload.setProperty(ApiKeys::Revisions::timestamp, String(root->getTimeStamp()), nullptr);
-        payload.setProperty(ApiKeys::Revisions::parentId, (root->getParent() ? root->getParent()->getUuid() : var::null), nullptr);
+        payload.setProperty(ApiKeys::Revisions::parentId,
+            (root->getParent() ? var(root->getParent()->getUuid()) : var::null), nullptr);
 
         ValueTree data(ApiKeys::Revisions::data);
         data.addChild(root->serialize(), 0, nullptr);

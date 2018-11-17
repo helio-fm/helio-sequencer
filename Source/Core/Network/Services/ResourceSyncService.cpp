@@ -104,7 +104,7 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
         const auto platformType(getPlatformType());
         for (const auto &version : info.getVersions())
         {
-            if (version.getPlatformType() == platformType)
+            if (version.getPlatformType().equalsIgnoreCase(platformType))
             {
                 // TODO: make update info available on the dashboard page
             }

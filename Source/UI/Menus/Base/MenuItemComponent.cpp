@@ -33,7 +33,8 @@
 #include "MainLayout.h"
 #include "App.h"
 
-#define ICON_MARGIN 8
+#define ICON_MARGIN (8)
+#define MAX_MENU_FONT_SIZE (28.f)
 
 #if JUCE_MAC
 #   define HAS_OPENGL_BUG 1
@@ -367,7 +368,7 @@ void MenuItemComponent::resized()
         this->colourHighlighter->setBounds(this->getLocalBounds());
     }
 
-    const float fontSize = float(this->getHeight() / 2) + 1.f;
+    const float fontSize = jmin(MAX_MENU_FONT_SIZE, float(this->getHeight() / 2) + 1.f);
     this->subLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
     this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
 

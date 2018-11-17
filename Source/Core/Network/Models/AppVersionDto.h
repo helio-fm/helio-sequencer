@@ -28,7 +28,7 @@ struct AppVersionDto final : ApiModel
     String getBuildType() const noexcept { return DTO_PROPERTY(Versions::buildType); }
     String getLink() const noexcept { return DTO_PROPERTY(Versions::link); }
     String getVersion() const noexcept { return DTO_PROPERTY(Versions::version); }
-    Identifier getPlatformType() const noexcept { return DTO_PROPERTY(Versions::platformType); }
+    String getPlatformType() const noexcept { return DTO_PROPERTY(Versions::platformType); }
 
     JUCE_LEAK_DETECTOR(AppVersionDto)
 };
