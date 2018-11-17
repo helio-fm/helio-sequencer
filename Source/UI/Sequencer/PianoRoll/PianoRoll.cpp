@@ -299,8 +299,7 @@ void PianoRoll::hideAllGhostNotes()
 
 void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
-    //Logger::writeToLog("zoomRelative " + String(factor.getY()));
-    const float yZoomThreshold = 0.005f;
+    static const float yZoomThreshold = 0.005f;
 
     if (fabs(factor.getY()) > yZoomThreshold)
     {
@@ -389,8 +388,6 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
     jassert(key >= -128 && key <= 128);
-    //jassert(length > 0.f);
-    //Logger::writeToLog("getEventBounds " + String(key) + ", " + String(beat));
 
     const double startOffsetBeat = this->firstBar * double(BEATS_PER_BAR);
     const double x = this->barWidth * double(beat - startOffsetBeat) / double(BEATS_PER_BAR);
@@ -417,8 +414,7 @@ void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float 
 
 int PianoRoll::getYPositionByKey(int targetKey) const
 {
-    return (this->getHeight() - this->rowHeight) -
-        (targetKey * this->rowHeight);
+    return (this->getHeight() - this->rowHeight) - (targetKey * this->rowHeight);
 }
 
 //===----------------------------------------------------------------------===//
