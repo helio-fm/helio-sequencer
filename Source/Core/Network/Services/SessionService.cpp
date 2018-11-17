@@ -20,6 +20,12 @@
 #include "JsonSerializer.h"
 #include "Config.h"
 
+#include "App.h"
+#include "MainLayout.h"
+#include "ProgressTooltip.h"
+#include "SuccessTooltip.h"
+#include "FailTooltip.h"
+
 // Try to update our sliding session after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
 
@@ -83,7 +89,7 @@ SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfi
     if (token.isNotEmpty())
     {
         // Assuming we're using JWT, try to get token expiry:
-        JsonWebToken jwt(token);
+        const JsonWebToken jwt(token);
         if (jwt.isValid())
         {
             const Time now = Time::getCurrentTime();
@@ -118,16 +124,22 @@ SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfi
 // Sign in / sign out
 //===----------------------------------------------------------------------===//
 
-void SessionService::signIn(const String &provider, AuthCallback callback)
+void SessionService::signIn(const String &provider)
 {
-    if (this->authCallback != nullptr)
+    if (auto *thread = this->getRunningThreadFor<AuthThread>())
     {
         jassertfalse;
-        callback(false, { "Auth is already in progress" });
+        Logger::writeToLog("Auth is already in progress");
         return;
     }
 
-    this->authCallback = callback;
+    ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
+    tooltip->onCancel = [this]() {
+        this->cancelSignInProcess();
+    };
+
+    App::Layout().showModalComponentUnowned(tooltip.release());
+
     this->prepareAuthThread()->requestWebAuth(provider);
 }
 
@@ -136,7 +148,7 @@ void SessionService::cancelSignInProcess()
     if (auto *thread = this->getRunningThreadFor<AuthThread>())
     {
         thread->signalThreadShouldExit();
-        this->authCallback = nullptr;
+        // TODO call authCallback with errors=[TRANS("popup::cancelled")]?
     }
 }
 
@@ -162,6 +174,10 @@ AuthThread *SessionService::prepareAuthThread()
 
     thread->onAuthSessionFinished = [this](const AuthSessionDto session)
     {
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showModalComponentUnowned(new SuccessTooltip());
+
         this->userProfile.setApiToken(session.getToken());
         // Don't call authCallback right now, instead request a user profile and callback when ready
         this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
@@ -169,12 +185,11 @@ AuthThread *SessionService::prepareAuthThread()
 
     thread->onAuthSessionFailed = [this](const Array<String> &errors)
     {
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showTooltip(errors.getFirst());
+        layout.showModalComponentUnowned(new FailTooltip());
         Logger::writeToLog("Login failed: " + errors.getFirst());
-        if (this->authCallback != nullptr)
-        {
-            this->authCallback(false, errors);
-            this->authCallback = nullptr;
-        }
     };
 
     return thread;
@@ -210,20 +225,6 @@ RequestUserProfileThread *SessionService::prepareProfileRequestThread()
     thread->onRequestProfileOk = [this](const UserProfileDto profile)
     {
         this->userProfile.updateProfile(profile);
-        if (this->authCallback != nullptr)
-        {
-            this->authCallback(true, {});
-            this->authCallback = nullptr;
-        }
-    };
-
-    thread->onRequestProfileFailed = [this](const Array<String> &errors)
-    {
-        if (this->authCallback != nullptr)
-        {
-            this->authCallback(false, errors);
-            this->authCallback = nullptr;
-        }
     };
 
     return thread;

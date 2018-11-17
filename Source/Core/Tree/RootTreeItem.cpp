@@ -32,10 +32,11 @@
 #include "AutomationSequence.h"
 #include "AutomationEvent.h"
 #include "ProjectInfo.h"
+#include "WorkspaceMenu.h"
 
+#include "ResourceSyncService.h"
 #include "MainLayout.h"
 #include "Workspace.h"
-#include "WorkspaceMenu.h"
 #include "Icons.h"
 #include "App.h"
 
@@ -70,7 +71,7 @@ void RootTreeItem::recreatePage()
 
 void RootTreeItem::importMidi(const File &file)
 {
-    ProjectTreeItem *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
+    auto *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
     this->addChildTreeItem(project);
     this->addVCS(project);
     project->importMidi(file);
@@ -82,7 +83,7 @@ void RootTreeItem::importMidi(const File &file)
 
 ProjectTreeItem *RootTreeItem::openProject(const File &file)
 {
-    Array<ProjectTreeItem *> myProjects(this->findChildrenOfType<ProjectTreeItem>());
+    const auto myProjects(this->findChildrenOfType<ProjectTreeItem>());
 
     // предварительная проверка на дубликаты - по полному пути
     for (auto *myProject : myProjects)
@@ -123,20 +124,15 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
 
 ProjectTreeItem *RootTreeItem::checkoutProject(const String &id, const String &name)
 {
-    Array<ProjectTreeItem *> myProjects(this->findChildrenOfType<ProjectTreeItem>());
-    Logger::writeToLog("Checking out project: " + name);
+    const auto myProjects(this->findChildrenOfType<ProjectTreeItem>());
+    Logger::writeToLog("Cloning project: " + name);
 
     if (id.isNotEmpty())
     {
         UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(name));
-
-        // on success:
-        //this->addChildTreeItem(project.get(), 1);
-        //App::Workspace().autosave();
-        //return project.release();
-
-        // on failure
-        //project.reset();
+        this->addChildTreeItem(project.get(), 1);
+        App::Helio().getResourceSyncService()->cloneProject(nullptr, id); // TODO project->getVersionControl()
+        return project.release();
     }
 
     return nullptr;

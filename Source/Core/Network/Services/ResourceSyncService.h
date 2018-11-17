@@ -29,12 +29,17 @@ public:
 
     ResourceSyncService(const ResourceManagerPool &rm);
 
-    void syncProject(WeakReference<VersionControl> vcs,
+    void syncRevisions(WeakReference<VersionControl> vcs,
         const String &projectId, const String &projectName,
         const Array<String> &revisionIdsToSync);
 
+    void cancelSyncRevisions();
+
+
     void cloneProject(WeakReference<VersionControl> vcs,
         const String &projectId);
+
+    void cancelCloneProject();
 
 private:
 

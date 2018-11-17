@@ -212,7 +212,7 @@ void MainWindow::createLayoutComponent()
     this->setContentNonOwned(this->layout, false);
 #endif
 
-    this->layout->forceRestoreLastOpenedPage();
+    this->layout->restoreLastOpenedPage();
 }
 
 static ScopedPointer<OpenGLContext> kOpenGLContext(nullptr);

@@ -123,25 +123,25 @@ void Workspace::navigateForwardIfPossible()
 // Accessors
 //===----------------------------------------------------------------------===//
 
-AudioCore &Workspace::getAudioCore()
+AudioCore &Workspace::getAudioCore() noexcept
 {
     jassert(this->audioCore);
     return *this->audioCore;
 }
 
-PluginScanner &Workspace::getPluginManager()
+PluginScanner &Workspace::getPluginManager() noexcept
 {
     jassert(this->audioCore);
     jassert(this->pluginManager);
     return *this->pluginManager;
 }
 
-RootTreeItem *Workspace::getTreeRoot()
+RootTreeItem *Workspace::getTreeRoot() noexcept
 {
     return this->treeRoot.get();
 }
 
-UserProfile &Workspace::getUserProfile()
+UserProfile &Workspace::getUserProfile() noexcept
 {
     return this->userProfile;
 }
@@ -182,14 +182,14 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
         }
         else
         {
-            // TODO show message "yo, login"
+            // TODO show message "yo, login pls"
         }
     }
 
     return true;
 }
 
-void Workspace::unloadProject(const String &targetProjectId)
+void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool deleteRemotely)
 {
     const auto projects = this->treeRoot->findChildrenOfType<ProjectTreeItem>();
     TreeItem *currentShowingItem = this->getActiveTreeItem();
@@ -198,7 +198,7 @@ void Workspace::unloadProject(const String &targetProjectId)
     
     for (auto *project : projects)
     {
-        if (project->getId() == targetProjectId)
+        if (project->getId() == projectId)
         {
             projectToDelete = project;
         }
@@ -231,7 +231,18 @@ void Workspace::unloadProject(const String &targetProjectId)
     
     if (projectToDelete != nullptr)
     {
+        const File localFile(projectToDelete->getDocument()->getFullPath());
         delete projectToDelete;
+
+        if (deleteLocally)
+        {
+            this->userProfile.deleteProjectLocally(projectId);
+        }
+
+        if (deleteRemotely)
+        {
+            this->userProfile.deleteProjectRemotely(projectId);
+        }
     }
     
     if (shouldSwitchToOtherPage)
@@ -244,18 +255,6 @@ void Workspace::unloadProject(const String &targetProjectId)
         {
             this->treeRoot->showPage();
         }
-    }
-}
-
-void Workspace::deleteProject(ProjectTreeItem &project)
-{
-    if (auto *vcsTreeItem = project.findChildOfType<VersionControlTreeItem>())
-    {
-        //vcsTreeItem->deletePermanentlyFromRemoteRepo(); // FIXME
-        const File localProjectFile(project.getDocument()->getFullPath());
-        this->unloadProject(project.getId());
-        this->getUserProfile().onProjectDeleted(project.getId());
-        localProjectFile.deleteFile();
     }
 }
 
@@ -400,7 +399,7 @@ static TreeItem *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
     return nullptr;
 }
 
-void Workspace::activateSubItemWithId(const String &id)
+void Workspace::activateTreeItem(const String &id)
 {
     selectActiveSubItemWithId(this->treeRoot.get(), id);
 }

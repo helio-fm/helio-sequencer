@@ -26,25 +26,24 @@ class PopupMenuComponent : public Component
 public:
 
     explicit PopupMenuComponent(Component *caller) :
-        targetComponent(caller)
-    {}
+        targetComponent(caller) {}
 
     void dismissAsCancelled()
     {
-        App::Layout().showTooltip(nullptr); // hide any tooltip
+        App::Layout().hideTooltipIfAny();
         
         if (this->targetComponent)
         {
             this->targetComponent->postCommandMessage(CommandIDs::PopupMenuDismissedAsCancel);
         }
 
-        this->exitModalState(0); // don't consume mouseclick
+        this->exitModalState(0); // don't consume mouse click
         //this->postCommandMessage(CommandIDs::PopupMenuDismiss);
     }
 
     void dismissAsDone()
     {
-        App::Layout().showTooltip(nullptr); // hide any tooltip
+        App::Layout().hideTooltipIfAny();
 
         if (this->targetComponent)
         {

@@ -25,16 +25,18 @@ public:
 
     DocumentOwner(const String &name, const String &extension)
     {
-        this->document = new Document(*this, name, extension);
+        this->document.reset(new Document(*this, name, extension));
     }
 
     DocumentOwner(const File &existingFile)
     {
-        this->document = new Document(*this, existingFile);
+        this->document.reset(new Document(*this, existingFile));
     }
 
     Document *getDocument() const noexcept
-    { return this->document; }
+    {
+        return this->document.get();
+    }
 
 protected:
 
@@ -49,6 +51,6 @@ protected:
 
 private:
 
-    ScopedPointer<Document> document;
+    UniquePointer<Document> document;
 
 };

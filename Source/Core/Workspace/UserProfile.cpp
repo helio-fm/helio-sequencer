@@ -118,19 +118,47 @@ void UserProfile::onProjectUnloaded(const String &id)
     this->sendChangeMessage();
 }
 
-void UserProfile::onProjectDeleted(const String &id)
+void UserProfile::deleteProjectLocally(const String &id)
 {
     for (auto *project : this->projects)
     {
-        if (project->getProjectId() == id)
+        if (project->getProjectId() == id && project->hasLocalCopy())
         {
-            const ScopedWriteLock lock(this->projectsListLock);
-            this->projects.removeObject(project);
+            project->getLocalFile().deleteFile();
+            project->resetLocalInfo();
+            if (!project->isValid()) // i.e. doesn't have remote copy
+            {
+                const ScopedWriteLock lock(this->projectsListLock);
+                this->projects.removeObject(project);
+            }
             break;
         }
     }
 
     this->sendChangeMessage();
+}
+
+void UserProfile::deleteProjectRemotely(const String &id)
+{
+    for (auto *project : this->projects)
+    {
+        if (project->getProjectId() == id && project->hasRemoteCopy())
+        {
+            //App::Helio().getResourceSyncService()->deleteProject(projectId);
+            //// and then:
+            //project->resetRemoteInfo();
+
+            //if (!project->isValid()) // i.e. doesn't have local copy
+            //{
+            //    const ScopedWriteLock lock(this->projectsListLock);
+            //    this->projects.removeObject(project);
+            //}
+            break;
+        }
+    }
+
+    this->sendChangeMessage();
+
 }
 
 void UserProfile::clearProfileAndSession()

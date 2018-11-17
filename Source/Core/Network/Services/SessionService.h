@@ -30,16 +30,13 @@ public:
     
     SessionService(UserProfile &userProfile);
 
-    using AuthCallback = Function<void(bool, const Array<String> &)>;
-
-    void signIn(const String &provider, AuthCallback callback = nullptr);
+    void signIn(const String &provider);
     void cancelSignInProcess();
     void signOut();
 
 private:
 
     UserProfile &userProfile;
-    AuthCallback authCallback;
 
     AuthThread *prepareAuthThread();
     TokenUpdateThread *prepareTokenUpdateThread();

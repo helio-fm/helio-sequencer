@@ -23,26 +23,26 @@
 #include "MainLayout.h"
 
 Document::Document(DocumentOwner &documentOwner,
-                   const String &defaultName,
-                   const String &defaultExtension) :
+    const String &defaultName,
+    const String &defaultExtension) :
     owner(documentOwner),
     extension(defaultExtension),
     hasChanges(true)
 {
-    const String safeName = File::createLegalFileName(defaultName + "." + defaultExtension);
-
-    this->workingFile = DocumentHelpers::getDocumentSlot(safeName);
-    if (this->workingFile.existsAsFile())
+    if (defaultName.isNotEmpty())
     {
-        this->workingFile = this->workingFile.getNonexistentSibling(true);
-        //Logger::writeToLog("WorkingFile " + this->workingFile.getFullPathName());
+        const auto safeName = File::createLegalFileName(defaultName + "." + defaultExtension);
+        this->workingFile = DocumentHelpers::getDocumentSlot(safeName);
+        if (this->workingFile.existsAsFile())
+        {
+            this->workingFile = this->workingFile.getNonexistentSibling(true);
+        }
     }
 
     this->owner.addChangeListener(this);
 }
 
-Document::Document(DocumentOwner &documentOwner,
-                   const File &existingFile) :
+Document::Document(DocumentOwner &documentOwner, const File &existingFile) :
     owner(documentOwner),
     extension(existingFile.getFileExtension().replace(",", ""))
 {
@@ -86,7 +86,7 @@ void Document::renameFile(const String &newName)
 
     if (this->workingFile.moveFileTo(newFile))
     {
-        Logger::writeToLog("Renaming to " + newFile.getFileName());
+        DBG("Renaming to " + newFile.getFileName());
         this->workingFile = newFile;
     }
 }
@@ -268,11 +268,11 @@ bool Document::internalSave(File result)
         this->workingFile = result;
         this->hasChanges = false;
         this->owner.onDocumentDidSave(result);
-        Logger::writeToLog("Document saved: " + result.getFullPathName());
+        DBG("Document saved: " + result.getFullPathName());
         return true;
     }
 
-    Logger::writeToLog("Document save failed: " + result.getFullPathName());
+    DBG("Document save failed: " + result.getFullPathName());
     return false;
 }
 
@@ -288,6 +288,6 @@ bool Document::internalLoad(File result)
         return true;
     }
     
-    Logger::writeToLog("Document load failed: " + result.getFullPathName());
+    DBG("Document load failed: " + result.getFullPathName());
     return false;
 }

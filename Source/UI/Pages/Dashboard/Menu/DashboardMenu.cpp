@@ -102,7 +102,8 @@ void DashboardMenu::loadFile(RecentProjectInfo::Ptr project)
 {
     if (!this->workspace->loadRecentProject(project))
     {
-        this->workspace->getUserProfile().onProjectDeleted(project->getProjectId());
+        // TODO test if it would be better to just remote the project from the list
+        this->workspace->getUserProfile().deleteProjectLocally(project->getProjectId());
     }
 
     this->updateListContent();
@@ -110,7 +111,7 @@ void DashboardMenu::loadFile(RecentProjectInfo::Ptr project)
 
 void DashboardMenu::unloadFile(RecentProjectInfo::Ptr project)
 {
-    this->workspace->unloadProject(project->getProjectId());
+    this->workspace->unloadProject(project->getProjectId(), false, false);
     this->updateListContent();
 }
 

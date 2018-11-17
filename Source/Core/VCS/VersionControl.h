@@ -84,7 +84,7 @@ public:
     // Network
     //===------------------------------------------------------------------===//
 
-    void syncProject();
+    void syncAllRevisions();
     void syncRevision(const VCS::Revision::Ptr revision);
     void updateLocalSyncCache(const VCS::Revision::Ptr revision);
     void updateRemoteSyncCache(const Array<RevisionDto> &revisions);

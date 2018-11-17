@@ -17,7 +17,7 @@
 
 #pragma once
 
-class GenericTooltip : public Component
+class GenericTooltip final : public Component
 {
 public:
 
@@ -26,6 +26,7 @@ public:
         this->setFocusContainer(false);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
     }
 
     void paint(Graphics &g) override
@@ -47,4 +48,5 @@ private:
 
     String message;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericTooltip)
 };

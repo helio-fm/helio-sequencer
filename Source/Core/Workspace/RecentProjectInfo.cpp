@@ -73,6 +73,16 @@ void RecentProjectInfo::updateLocalTimestampAsNow()
     }
 }
 
+void RecentProjectInfo::resetLocalInfo()
+{
+    this->local = nullptr;
+}
+
+void RecentProjectInfo::resetRemoteInfo()
+{
+    this->remote = nullptr;
+}
+
 String RecentProjectInfo::getProjectId() const noexcept
 {
     return this->projectId;

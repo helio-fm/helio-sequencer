@@ -97,10 +97,9 @@ void TooltipContainer::parentSizeChanged()
 void TooltipContainer::updatePosition()
 {
     this->setCentrePosition(this->getParentWidth() / 2,
-                            this->alignedToBottom ?
-                            (this->getParentHeight() - int(this->getHeight() / 2) - 15) :
-                            ((this->getHeight() / 2) + 15)
-                            );
+        this->alignedToBottom ?
+        (this->getParentHeight() - int(this->getHeight() / 2) - 15) :
+        ((this->getHeight() / 2) + 15));
 }
 
 void TooltipContainer::timerCallback()
@@ -123,16 +122,15 @@ void TooltipContainer::timerCallback()
 void TooltipContainer::showWithComponent(ScopedPointer<Component> newTargetComponent, int timeOutMs)
 {
     const Point<int> clickOrigin =
-    Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
+        Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
 
     this->showWithComponent(newTargetComponent,
-                            Rectangle<int>(clickOrigin, clickOrigin.translated(1, 1)),
-                            timeOutMs);
+        Rectangle<int>(clickOrigin, clickOrigin.translated(1, 1)),
+        timeOutMs);
 }
 
 void TooltipContainer::showWithComponent(ScopedPointer<Component> newTargetComponent,
-                                         Rectangle<int> callerScreenBounds,
-                                         int timeOutMs)
+    Rectangle<int> callerScreenBounds, int timeOutMs)
 {
     if (newTargetComponent == nullptr)
     {
@@ -143,10 +141,10 @@ void TooltipContainer::showWithComponent(ScopedPointer<Component> newTargetCompo
     const Point<int> callerOrigin = callerScreenBounds.getCentre();
 
     const Point<int> topLevelOrigin =
-    this->getTopLevelComponent()->getScreenPosition();
+        this->getTopLevelComponent()->getScreenPosition();
 
     this->alignedToBottom =
-    (callerOrigin - topLevelOrigin).getY() < (this->getTopLevelComponent()->getHeight() / 2);
+        (callerOrigin - topLevelOrigin).getY() < (this->getTopLevelComponent()->getHeight() / 2);
 
     this->clicksCountOnStart = Desktop::getInstance().getMouseButtonClickCounter();
     this->timeCounter = 0;
@@ -174,7 +172,6 @@ void TooltipContainer::showWithComponent(ScopedPointer<Component> newTargetCompo
 void TooltipContainer::hide()
 {
     this->stopTimer();
-
     if (this->isVisible())
     {
         this->animator.fadeOut(this, 250);

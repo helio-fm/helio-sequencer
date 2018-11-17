@@ -20,6 +20,12 @@
 #include "ResourceManager.h"
 #include "Config.h"
 
+#include "App.h"
+#include "MainLayout.h"
+#include "ProgressTooltip.h"
+#include "SuccessTooltip.h"
+#include "FailTooltip.h"
+
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
 
@@ -56,28 +62,47 @@ ResourceSyncService::ResourceSyncService(const ResourceManagerPool &rm) :
     this->prepareUpdatesCheckThread()->checkForUpdates(UPDATE_INFO_TIMEOUT_MS);
 }
 
-void ResourceSyncService::syncProject(WeakReference<VersionControl> vcs,
+void ResourceSyncService::syncRevisions(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName,
     const Array<String> &revisionIdsToSync)
 {
     if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
     {
-        // TODO show error UI
+        //Logger::writeToLog("Warning: attempt to start a revision sync thread while another one is running");
         return;
     }
 
     this->prepareProjectSyncThread()->doSync(vcs, projectId, projectName, revisionIdsToSync);
 }
 
+void ResourceSyncService::cancelSyncRevisions()
+{
+    if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
+    {
+        thread->signalThreadShouldExit();
+    }
+}
+
 void ResourceSyncService::cloneProject(WeakReference<VersionControl> vcs, const String &projectId)
 {
     if (auto *thread = this->getRunningThreadFor<ProjectCloneThread>())
     {
-        // TODO show error UI
+        //Logger::writeToLog("Warning: attempt to start a project clone thread while another one is running");
         return;
     }
 
+    ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
+    App::Layout().showModalComponentUnowned(tooltip.release());
+
     this->prepareProjectCloneThread()->clone(vcs, projectId);
+}
+
+void ResourceSyncService::cancelCloneProject()
+{
+    if (auto *thread = this->getRunningThreadFor<ProjectCloneThread>())
+    {
+        thread->signalThreadShouldExit();
+    }
 }
 
 RequestResourceThread *ResourceSyncService::prepareResourceRequestThread()
@@ -156,15 +181,20 @@ ProjectSyncThread *ResourceSyncService::prepareProjectSyncThread()
         // and views will update themselves on the message thread
     };
 
-    thread->onSyncDone = [](bool nothingToSync)
+    thread->onSyncDone = [this](bool nothingToSync)
     {
-        // TODO show either "up to date" or "sync done" message
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showTooltip(nothingToSync ? TRANS("vcs::sync::uptodate") : TRANS("vcs::sync::done"));
+        layout.showModalComponentUnowned(new SuccessTooltip());
     };
 
     thread->onSyncFailed = [](const Array<String> &errors)
     {
-        // TODO: show errors and failure icon
-        Logger::writeToLog("onSyncFailed: " + errors.getFirst());
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showTooltip(errors.getFirst());
+        layout.showModalComponentUnowned(new FailTooltip());
     };
 
     return thread;
@@ -173,16 +203,25 @@ ProjectSyncThread *ResourceSyncService::prepareProjectSyncThread()
 ProjectCloneThread *ResourceSyncService::prepareProjectCloneThread()
 {
     auto *thread = this->getNewThreadFor<ProjectCloneThread>();
-
+    
     thread->onCloneDone = []()
     {
-        // TODO switch to project page / roll?
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showModalComponentUnowned(new SuccessTooltip());
+        // do nothing? VCS will sendChangeMessage
+        // and views will update themselves on the message thread
     };
 
     thread->onCloneFailed = [](const Array<String> &errors)
     {
-        // TODO: show errors and failure icon
-        Logger::writeToLog("onSyncFailed: " + errors.getFirst());
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showTooltip(errors.getFirst());
+        layout.showModalComponentUnowned(new FailTooltip());
+
+        // TODO find project stub by id and delete
+        //App::Workspace().deleteProject(id)
     };
 
     return thread;

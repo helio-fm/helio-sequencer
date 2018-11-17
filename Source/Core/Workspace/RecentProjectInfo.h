@@ -40,9 +40,11 @@ public:
     bool isValid() const;
 
     void updateRemoteInfo(const ProjectDto &remoteInfo);
-    void updateLocalInfo(const String &localId,
-        const String &localTitle, const String &localPath);
+    void updateLocalInfo(const String &localId, const String &localTitle, const String &localPath);
     void updateLocalTimestampAsNow();
+
+    void resetLocalInfo();
+    void resetRemoteInfo();
 
     using Ptr = ReferenceCountedObjectPtr<RecentProjectInfo>;
     static int compareElements(Ptr first, Ptr second);

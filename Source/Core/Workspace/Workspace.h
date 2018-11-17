@@ -36,17 +36,19 @@ public:
     void init();
     void shutdown();
     bool isInitialized() const noexcept;
+    void stopPlaybackForAllProjects(); // on app suspend / shutdown
 
-    void activateSubItemWithId(const String &id);
+    void activateTreeItem(const String &id);
     WeakReference<TreeItem> getActiveTreeItem() const;
+
     NavigationHistory &getNavigationHistory();
     void navigateBackwardIfPossible();
     void navigateForwardIfPossible();
 
-    AudioCore &getAudioCore();
-    PluginScanner &getPluginManager();
-    UserProfile &getUserProfile();
-    RootTreeItem *getTreeRoot();
+    AudioCore &getAudioCore() noexcept;
+    PluginScanner &getPluginManager() noexcept;
+    UserProfile &getUserProfile() noexcept;
+    RootTreeItem *getTreeRoot() noexcept;
 
     //===------------------------------------------------------------------===//
     // Project management
@@ -55,9 +57,7 @@ public:
     void createEmptyProject();
     bool loadRecentProject(RecentProjectInfo::Ptr file);
     Array<ProjectTreeItem *> getLoadedProjects() const;
-    void stopPlaybackForAllProjects();
-    void unloadProject(const String &id);
-    void deleteProject(ProjectTreeItem &project);
+    void unloadProject(const String &id, bool deleteLocally, bool deleteRemotely);
 
     //===------------------------------------------------------------------===//
     // Save/Load
@@ -67,8 +67,6 @@ public:
     void autosave();
     void importProject(const String &filePattern);
 
-private:
-    
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//

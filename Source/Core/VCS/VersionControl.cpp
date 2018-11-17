@@ -355,15 +355,15 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
 // Network
 //===----------------------------------------------------------------------===//
 
-void VersionControl::syncProject()
+void VersionControl::syncAllRevisions()
 {
-    App::Helio().getResourceSyncService()->syncProject(this,
+    App::Helio().getResourceSyncService()->syncRevisions(this,
         this->parent.getVCSId(), this->parent.getVCSName(), {});
 }
 
 void VersionControl::syncRevision(const VCS::Revision::Ptr revision)
 {
-    App::Helio().getResourceSyncService()->syncProject(this,
+    App::Helio().getResourceSyncService()->syncRevisions(this,
         this->parent.getVCSId(), this->parent.getVCSName(),
         { revision->getUuid() });
 }

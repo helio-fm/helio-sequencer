@@ -53,6 +53,7 @@ class ProjectTreeItem final :
 {
 public:
 
+    ProjectTreeItem();
     explicit ProjectTreeItem(const String &name);
     explicit ProjectTreeItem(const File &existingFile);
     ~ProjectTreeItem() override;

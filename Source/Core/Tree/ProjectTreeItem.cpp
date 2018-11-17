@@ -60,6 +60,13 @@
 #include "Config.h"
 #include "Icons.h"
 
+ProjectTreeItem::ProjectTreeItem() :
+    DocumentOwner({}, "helio"),
+    TreeItem({}, Serialization::Core::project)
+{
+    this->initialize();
+}
+
 ProjectTreeItem::ProjectTreeItem(const String &name) :
     DocumentOwner(name, "helio"),
     TreeItem(name, Serialization::Core::project),

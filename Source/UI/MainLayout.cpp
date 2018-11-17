@@ -104,9 +104,9 @@ void MainLayout::show()
     }
 }
 
-void MainLayout::forceRestoreLastOpenedPage()
+void MainLayout::restoreLastOpenedPage()
 {
-    App::Workspace().activateSubItemWithId(Config::get(Serialization::Config::lastShownPageId));
+    App::Workspace().activateTreeItem(Config::get(Serialization::Config::lastShownPageId));
 }
 
 //===----------------------------------------------------------------------===//
@@ -175,40 +175,44 @@ void MainLayout::hideSelectionMenu()
 }
 
 //===----------------------------------------------------------------------===//
-// UI
+// Tooltips
 //===----------------------------------------------------------------------===//
 
-void MainLayout::showTooltip(const String &message, int timeOutMs)
+void MainLayout::showTooltip(const String &message, int timeoutMs)
 {
-    this->tooltipContainer->showWithComponent(new GenericTooltip(message), timeOutMs);
+    this->tooltipContainer->showWithComponent(new GenericTooltip(message), timeoutMs);
 }
 
-void MainLayout::showTooltip(Component *newTooltip, int timeOutMs)
+void MainLayout::showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeoutMs)
 {
-    this->tooltipContainer->showWithComponent(newTooltip, timeOutMs);
+    this->tooltipContainer->showWithComponent(newTooltip, callerScreenBounds, timeoutMs);
 }
 
-void MainLayout::showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs)
+void MainLayout::hideTooltipIfAny()
 {
-    this->tooltipContainer->showWithComponent(newTooltip, callerScreenBounds, timeOutMs);
+    this->tooltipContainer->showWithComponent(nullptr);
 }
+
+//===----------------------------------------------------------------------===//
+// Modal components
+//===----------------------------------------------------------------------===//
 
 void MainLayout::showModalComponentUnowned(Component *targetComponent)
 {
+    this->hideModalComponentIfAny();
+
     ScopedPointer<Component> ownedTarget(targetComponent);
     this->addChildComponent(ownedTarget);
 
-    const int fadeInTime = 200;
     Desktop::getInstance().getAnimator().animateComponent(ownedTarget,
-        ownedTarget->getBounds(),
-        1.f, fadeInTime, false, 0.0, 0.0);
+        ownedTarget->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
     
     ownedTarget->toFront(false);
     ownedTarget->enterModalState(true, nullptr, true);
     ownedTarget.release();
 }
 
-void MainLayout::hideModalComponentUnowned()
+void MainLayout::hideModalComponentIfAny()
 {
     ScopedPointer<Component> deleter(Component::getCurrentlyModalComponent());
 }

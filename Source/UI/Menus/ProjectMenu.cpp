@@ -133,7 +133,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
         return;
 
         case CommandIDs::UnloadProject:
-            App::Workspace().unloadProject(this->project.getId());
+            App::Workspace().unloadProject(this->project.getId(), false, false);
             this->dismiss();
             return;
 
@@ -148,7 +148,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
                 {
                     if (text == project.getName())
                     {
-                        App::Workspace().deleteProject(project);
+                        App::Workspace().unloadProject(project.getId(), true, true);
                     }
                     else
                     {
@@ -437,7 +437,7 @@ void ProjectMenu::showSetInstrumentMenu()
         {
             if (i >= 0 && i < instruments.size())
             {
-                Logger::writeToLog(instruments[i]->getIdAndHash());
+                DBG(instruments[i]->getIdAndHash());
 
                 const Array<MidiTrackTreeItem *> tracks =
                     this->project.findChildrenOfType<MidiTrackTreeItem>();

@@ -35,9 +35,9 @@ public:
     void onProjectLocalInfoUpdated(const String &id, const String &title, const String &path);
     void onProjectRemoteInfoUpdated(const ProjectDto &info);
     void onProjectUnloaded(const String &id);
-    void onProjectDeleted(const String &id);
 
-    //void onSessionDeleted(const String &deviceId);
+    void deleteProjectLocally(const String &id);
+    void deleteProjectRemotely(const String &id);
 
     void clearProfileAndSession();
 

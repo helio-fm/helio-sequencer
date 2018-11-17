@@ -158,7 +158,7 @@ void StageComponent::handleCommandMessage (int commandId)
         this->resetSelected();
         break;
     case CommandIDs::VersionControlSyncAll:
-        this->vcs.syncProject();
+        this->vcs.syncAllRevisions();
         break;
     default:
         break;
