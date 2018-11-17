@@ -46,32 +46,6 @@
 #include "RootTreeItem.h"
 #include "SerializablePluginDescription.h"
 
-
-//===----------------------------------------------------------------------===//
-// Logger
-//===----------------------------------------------------------------------===//
-
-String DebugLogger::getText() const
-{
-#if JUCE_DEBUG
-    const ScopedReadLock lock(this->logLock);
-    return this->log;
-#else
-    return {};
-#endif
-}
-
-void DebugLogger::logMessage(const String &message)
-{
-#if JUCE_DEBUG
-    const ScopedWriteLock lock(this->logLock);
-    this->log += message;
-    this->log += newLine;
-    Logger::outputDebugString(message);
-    this->sendChangeMessage();
-#endif
-}
-
 //===----------------------------------------------------------------------===//
 // Clipboard
 //===----------------------------------------------------------------------===//
@@ -197,52 +171,23 @@ String App::getAppReadableVersion()
     return v;
 }
 
-// In sql format
-String App::getCurrentTime()
-{
-    const Time &time = Time::getCurrentTime();
-    return App::getSqlFormattedTime(time);
-}
-
-// In sql format
-String App::getSqlFormattedTime(const Time &time)
-{
-    String timeString;
-    timeString << time.getYear() << '-';
-
-    const int month = time.getMonth() + 1;
-    timeString << (month < 10 ? "0" : "") << month << '-';
-
-    const int day = time.getDayOfMonth();
-    timeString << (day < 10 ? "0" : "") << day << ' ';
-
-    const int mins = time.getMinutes();
-    timeString << time.getHours() << (mins < 10 ? ":0" : ":") << mins;
-
-    const int secs = time.getSeconds();
-    timeString << (secs < 10 ? ":0" : ":") << secs;
-
-    return timeString.trimEnd();
-}
-
 bool datesMatchByDay(const Time &date1, const Time &date2)
 {
     return (date1.getYear() == date2.getYear() &&
             date1.getDayOfYear() == date2.getDayOfYear());
 }
 
-bool dateIsToday(const Time &date)
+static bool dateIsToday(const Time &date)
 {
     const Time &now = Time::getCurrentTime();
     return datesMatchByDay(now, date);
 }
 
-bool dateIsYesterday(const Time &date)
+static bool dateIsYesterday(const Time &date)
 {
     const Time &yesterday = Time::getCurrentTime() - RelativeTime::days(1);
     return datesMatchByDay(yesterday, date);
 }
-
 
 String App::getHumanReadableDate(const Time &date)
 {
@@ -288,7 +233,7 @@ void App::dismissAllModalComponents()
 {
     while (Component *modal = Component::getCurrentlyModalComponent(0))
     {
-        Logger::writeToLog("Dismissing a modal component");
+        DBG("Dismissing a modal component");
         modal->exitModalState(0);
         // Unowned components may leak here, use with caution
     }
@@ -305,9 +250,7 @@ void App::initialise(const String &commandLine)
     if (this->runMode == App::NORMAL)
     {
         Desktop::getInstance().setOrientationsEnabled(Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise);
-        
-        Logger::setCurrentLogger(&this->logger);
-        Logger::writeToLog("Helio v" + App::getAppReadableVersion());
+        DBG("Helio v" + App::getAppReadableVersion());
 
         this->config.reset(new class Config());
 
@@ -358,7 +301,7 @@ void App::shutdown()
     {
         TranslationsManager::getInstance().removeChangeListener(this);
 
-        Logger::writeToLog("App::shutdown");
+        DBG("App::shutdown");
 
         this->window = nullptr;
 
@@ -425,13 +368,12 @@ void App::anotherInstanceStarted(const String &commandLine)
 
 void App::unhandledException(const std::exception *e, const String &file, int)
 {
-    Logger::writeToLog("! unhandledException: " + String(e->what()));
+    DBG("! unhandledException: " + String(e->what()));
     jassertfalse;
 }
 
 void App::systemRequestedQuit()
 {
-    Logger::writeToLog("App::systemRequestedQuit");
     if (this->workspace != nullptr)
     {
         this->workspace->stopPlaybackForAllProjects();
@@ -443,8 +385,6 @@ void App::systemRequestedQuit()
 
 void App::suspended()
 {
-    Logger::writeToLog("App::suspended");
-
     if (this->workspace != nullptr)
     {
         this->workspace->stopPlaybackForAllProjects();
@@ -459,8 +399,6 @@ void App::suspended()
 
 void App::resumed()
 {
-    Logger::writeToLog("App::resumed");
-
     if (this->workspace != nullptr)
     {
         this->workspace->getAudioCore().unmute();
@@ -578,7 +516,7 @@ void App::handleAsyncUpdate()
 
 void App::changeListenerCallback(ChangeBroadcaster *source)
 {
-    Logger::writeToLog("Reloading translations");
+    DBG("Reloading translations");
     this->recreateLayout();
 }
 

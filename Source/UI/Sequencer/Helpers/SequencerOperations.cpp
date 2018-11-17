@@ -319,7 +319,6 @@ float SequencerOperations::findStartBeat(const Array<Note> &selection)
         if (startBeat > selection.getUnchecked(i).getBeat())
         {
             startBeat = selection.getUnchecked(i).getBeat();
-            //Logger::writeToLog("> " + String(startBeat));
         }
     }
     
@@ -343,12 +342,10 @@ float SequencerOperations::findEndBeat(const Array<Note> &selection)
     {
         const Note &&nc = selection.getUnchecked(i);
         const float beatPlusLength = nc.getBeat() + nc.getLength();
-        //Logger::writeToLog(String(endBeat) + " < " + String(beatPlusLength) + " = " + String(endBeat < beatPlusLength));
         
         if (endBeat < beatPlusLength)
         {
             endBeat = beatPlusLength;
-            //Logger::writeToLog(String(endBeat) + " <");
         }
     }
     
@@ -673,7 +670,6 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
         if (startBeat != startBeatSnap ||
             endBeat != endBeatSnap)
         {
-            //Logger::writeToLog("snap");
             group0Before.add(nc->getNote());
             group0After.add(nc->getNote().withBeat(startBeatSnap).withLength(lengthSnap));
         }
@@ -726,7 +722,6 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             if (overlappingNote != nullptr)
             {
-                //Logger::writeToLog("edit1");
                 const float newLength = nc->getLength() + deltaBeats;
                 group1Before.add(nc->getNote());
                 group1After.add(nc->getNote().withLength(newLength));
@@ -782,7 +777,6 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             if (overlappingNote != nullptr)
             {
-                //Logger::writeToLog("edit2");
                 group2Before.add(overlappingNote->getNote());
                 group2After.add(overlappingNote->getNote().withDeltaLength(deltaBeats));
             }
@@ -838,7 +832,6 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             if (overlappingNote != nullptr)
             {
                 const float newLength = nc->getLength() - overlappingBeats;
-                //Logger::writeToLog("edit3 " + String(nc->getNote().getLength()) + ":" + String(newLength));
                 group3Before.add(nc->getNote());
                 group3After.add(nc->getNote().withLength(newLength));
             }
@@ -993,7 +986,7 @@ void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, boo
                             fabs(n1.getLength() - n2->getLength()) < 0.01f &&
                             n1.getKey() == n2->getKey())
                         {
-                            Logger::writeToLog("targetHasTheSameNote");
+                            DBG("targetHasTheSameNote");
                             targetHasTheSameNote = true;
                             break;
                         }
@@ -1105,11 +1098,9 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
             { currentChordNotesHasSameBeat = false; }
             
             currentChord.add(sortedSelection->getUnchecked(i));
-            //Logger::writeToLog(String(sortedSelection[i].getKey()) + ", nc " + String(newChordWillStart) + ", ns " + String(newSequenceWillStart));
             
             if (chordEndsHere)
             {
-                //Logger::writeToLog("--");
                 chords.add(currentChord);
                 currentChord.clear();
                 currentChordNotesHasSameBeat = true;
@@ -1340,11 +1331,6 @@ void SequencerOperations::changeVolumeMultiplied(Lasso &selection, float volumeF
         }
         
         pianoLayer->changeGroup(groupBefore, groupAfter, true);
-        
-        //const double t2 = Time::getMillisecondCounterHiRes();
-        //const double t3 = t2 - t1;
-        
-        //Logger::writeToLog(String(t3));
     }
 }
 
@@ -1764,8 +1750,6 @@ void SequencerOperations::invertChord(Lasso &selection,
             prevKey = selectedNotes[i].getKey();
             prevBeat = selectedNotes[i].getBeat();
         }
-        
-        //Logger::writeToLog("Shifting " + String(targetNotes.size()) + " notes");
         
         // step 3. octave shift
         PianoChangeGroup groupBefore, groupAfter;

@@ -236,7 +236,6 @@ bool UndoStack::perform (UndoAction *const newAction)
             this->totalUnitsStored += action->getSizeInUnits();
             actionSet->actions.add(action.release());
             this->newTransaction = false;
-            //Logger::writeToLog("size " + String(actionSet->actions.size()));
             
             this->clearFutureTransactions();
             this->sendChangeMessage();

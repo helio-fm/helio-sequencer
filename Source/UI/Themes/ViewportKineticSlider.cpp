@@ -96,7 +96,6 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
         
         if (holder->viewport == targetViewport)
         {
-            //Logger::writeToLog("found " + String(holder->force.getY()));
             newForce = holder->force;
             break;
         }
@@ -108,7 +107,6 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
     const float newLimitedForceX = jmax(-MAX_FORCE, jmin(MAX_FORCE, newForce.getX()));
     const float newLimitedForceY = jmax(-MAX_FORCE, jmin(MAX_FORCE, newForce.getY()));
     newForce = Point<float>(newLimitedForceX, newLimitedForceY);
-    //Logger::writeToLog("force " + String(newForce.getY()));
     
     Animator::Ptr animator(new Animator());
     animator->viewport = targetViewport;
@@ -120,9 +118,6 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
     {
         this->startTimerHz(60);
     }
-    
-    //Logger::writeToLog("animators " + String(this->animators.size()));
-    //Logger::writeToLog("speedholders " + String(this->dragSpeedHolders.size()));
 }
 
 void ViewportKineticSlider::timerCallback()
@@ -166,7 +161,6 @@ void ViewportKineticSlider::timerCallback()
         holder->offsetAnchor = holder->currentOffset;
         
         Point<float> newForce = dragDelta / timeDelta;
-        //Logger::writeToLog("upd " + String(newForce.getY()));
         
         holder->force = (holder->force * 0.75f) + (newForce * 0.25f);
     }

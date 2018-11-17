@@ -47,7 +47,7 @@ void Workspace::init()
         
         if (! this->autoload())
         {
-            Logger::writeToLog("Workspace autoload failed, creating the empty workspace");
+            DBG("Workspace autoload failed, creating the empty workspace");
             this->failedDeserializationFallback();
         }
         else

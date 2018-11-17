@@ -102,7 +102,6 @@ void KeySignatureLargeComponent::mouseMove (const MouseEvent& e)
 void KeySignatureLargeComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    //Logger::writeToLog("KeySignatureEventComponent::mouseDown");
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
@@ -185,7 +184,6 @@ void KeySignatureLargeComponent::mouseUp (const MouseEvent& e)
 void KeySignatureLargeComponent::mouseDoubleClick (const MouseEvent& e)
 {
     //[UserCode_mouseDoubleClick] -- Add your code here...
-    //Logger::writeToLog("KeySignatureLargeComponent::mouseDoubleClick");
     //[/UserCode_mouseDoubleClick]
 }
 

@@ -94,7 +94,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
         }
     }
 
-    Logger::writeToLog("Opening: " + file.getFullPathName());
+    DBG("Opening: " + file.getFullPathName());
     
     if (file.existsAsFile())
     {
@@ -125,7 +125,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
 ProjectTreeItem *RootTreeItem::checkoutProject(const String &id, const String &name)
 {
     const auto myProjects(this->findChildrenOfType<ProjectTreeItem>());
-    Logger::writeToLog("Cloning project: " + name);
+    DBG("Cloning project: " + name);
 
     if (id.isNotEmpty())
     {

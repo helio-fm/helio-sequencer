@@ -243,9 +243,7 @@ void TrackScroller::mouseDrag(const MouseEvent &event)
 {
     if (! this->mapShouldGetStretched)
     {
-        //Logger::writeToLog(String(newScreenPos.getX()) + ":" + String(newScreenPos.getY()));
         this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
-        //this->screenRange->setCentrePosition(newScreenPos.getX(), newScreenPos.getY());
         this->xyMoveByUser();
     }
 }

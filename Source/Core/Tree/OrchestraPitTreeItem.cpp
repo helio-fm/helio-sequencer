@@ -98,7 +98,7 @@ void OrchestraPitTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &d
                 {
                     jassert(instrument);
                     this->addInstrumentTreeItem(instrument, insertIndex);
-                    Logger::writeToLog("Loaded " + instrument->getName());
+                    DBG("Loaded " + instrument->getName());
                 });
         }
     }

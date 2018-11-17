@@ -365,14 +365,12 @@ void HybridRoll::broadcastRollResized()
 
 void HybridRoll::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)
 {
-    //Logger::writeToLog("HybridRoll::multiTouchZoomEvent");
     this->smoothPanController->cancelPan();
     this->smoothZoomController->zoomRelative(origin, zoom);
 }
 
 void HybridRoll::multiTouchPanEvent(const Point<float> &offset)
 {
-    //Logger::writeToLog("HybridRoll::multiTouchPanEvent");
     //this->smoothZoomController->cancelZoom();
     this->smoothPanController->panByOffset(this->viewport.getViewPosition() + offset.toInt());
 }
@@ -989,7 +987,6 @@ void HybridRoll::longTapEvent(const MouseEvent &e)
         return;
     }
 
-    //Logger::writeToLog("HybridRoll::longTapEvent beginlasso");
     this->lassoComponent->beginLasso(e, this);
 }
 
@@ -1000,8 +997,6 @@ void HybridRoll::mouseDown(const MouseEvent &e)
         this->lassoComponent->endLasso();
         return;
     }
-
-    //Logger::writeToLog("HybridRoll::mouseDown");
 
     if (this->isLassoEvent(e))
     {
@@ -1024,8 +1019,6 @@ void HybridRoll::mouseDrag(const MouseEvent &e)
     {
         return;
     }
-
-    //Logger::writeToLog("HybridRoll::mouseDrag");
 
     if (this->lassoComponent->isDragging())
     {
@@ -1054,8 +1047,6 @@ void HybridRoll::mouseUp(const MouseEvent &e)
     {
         this->endZooming();
     }
-
-    //Logger::writeToLog("HybridRoll::mouseUp");
 
     if (this->lassoComponent->isDragging())
     {
@@ -1424,8 +1415,6 @@ void HybridRoll::handleAsyncUpdate()
     {
         HYBRID_ROLL_BULK_REPAINT_START
 
-        //Logger::writeToLog(this->getComponentID() + " is repainting batch of " + String(this->batchRepaintList.size()));
-
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
             // There are still many cases when a scheduled component is deleted at this time:
@@ -1645,7 +1634,6 @@ void HybridRoll::updateChildrenBounds()
     this->topShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, shadowSize);
     this->bottomShadow->setBounds(viewX, viewY + viewHeight - shadowSize, viewWidth, shadowSize);
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    //Logger::writeToLog("b viewY: " + String(viewY));
     
     if (this->annotationsTrack)
     {
@@ -1690,7 +1678,6 @@ void HybridRoll::updateChildrenPositions()
     this->topShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     this->bottomShadow->setTopLeftPosition(viewX, viewY + viewHeight - shadowSize);
     this->header->setTopLeftPosition(0, viewY);
-    //Logger::writeToLog("p viewY: " + String(viewY));
 
     if (this->annotationsTrack)
     {

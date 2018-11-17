@@ -104,7 +104,7 @@ void Head::setRebuildingDiffMode(bool isBuildingNow)
 
 void Head::mergeStateWith(Revision::Ptr changes)
 {
-    Logger::writeToLog("Head::mergeStateWith " + changes->getUuid());
+    DBG("Head::mergeStateWith " + changes->getUuid());
 
     Revision::Ptr headRevision(this->getHeadingRevision());
     for (auto *changesItem : changes->getItems())
@@ -162,7 +162,7 @@ bool VCS::Head::moveTo(const Revision::Ptr revision)
     // then move from the root back to target revision
     for (const auto *rev : treePath)
     {
-        Logger::writeToLog("VCS head moved to " + rev->getUuid());
+        DBG("VCS head moved to " + rev->getUuid());
 
         // picking all deltas and applying them to current state
         for (auto *item : rev->getItems())
@@ -362,8 +362,6 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
 {
     // Changed и Added RevisionItem'ы нужно применять через resetStateTo
     TrackedItem *targetItem = nullptr;
-
-    //Logger::writeToLog(stateItem->getVCSName());
     
     // ищем в проекте айтем с соответствующим уидом
     for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
@@ -488,8 +486,6 @@ void VCS::Head::deserialize(const ValueTree &tree)
         RevisionItem::Ptr stateItem(new RevisionItem(this->pack, RevisionItem::Added, nullptr));
         stateItem->deserialize(stateElement);
 
-        //Logger::writeToLog("- " + stateItem->getVCSName());
-        
         // import deltas data
         forEachValueTreeChildWithType(dataRoot, dataElement, Serialization::VCS::packItem)
         {
@@ -500,7 +496,6 @@ void VCS::Head::deserialize(const ValueTree &tree)
             if (packItemRevId == stateItem->getUuid().toString())
             {
                 stateItem->importDataForDelta(deltaData, packItemDeltaId);
-                //Logger::writeToLog("+ " + String(packItemDeltaId->getNumChildElements()));
             }
         }
         

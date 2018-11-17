@@ -90,8 +90,6 @@ void InternalPluginFormat::createPluginInstance(const PluginDescription &desc, d
                                                 int initialBufferSize, void *userData,
                                                 void (*callback) (void*, AudioPluginInstance*, const String&))
 {
-    //Logger::writeToLog("InternalPluginFormat::createInstanceFromDescription " + desc.createIdentifierString());
-
     if (desc.uid == this->audioOutDesc.uid ||
         desc.name == this->audioOutDesc.name)
     {

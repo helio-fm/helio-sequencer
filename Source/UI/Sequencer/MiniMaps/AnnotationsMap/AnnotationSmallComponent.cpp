@@ -125,7 +125,6 @@ void AnnotationSmallComponent::updateContent()
         this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
         this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(Colours::white, 0.55f));
         this->textWidth = float(this->annotationLabel->getFont().getStringWidth(this->event.getDescription()));
-        //Logger::writeToLog("AnnotationSmallComponent::updateContent " + String(this->textWidth));
     }
 
     this->repaint();

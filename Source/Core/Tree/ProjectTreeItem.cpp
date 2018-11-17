@@ -940,7 +940,6 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (VersionControl *vcs = dynamic_cast<VersionControl *>(source))
     {
-        //Logger::writeToLog("ProjectTreeItem :: vcs changed, saving " + vcs->getParentName());
         DocumentOwner::sendChangeMessage();
         //this->getDocument()->save();
         

@@ -92,7 +92,7 @@ void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const Strin
     {
         // if appendRevisionId is empty - replace root?
         // todo make clear how to clone projects
-        //Logger::writeToLog("Warning: replacing history remote tree");
+        //DBG("Warning: replacing history remote tree");
         //this->rootRevision = subtree;
     }
     else
@@ -312,7 +312,7 @@ void VersionControl::deserialize(const ValueTree &tree)
     if (!root.isValid()) { return; }
 
     const String headId = root.getProperty(Serialization::VCS::headRevisionId);
-    Logger::writeToLog("Head ID is " + headId);
+    DBG("Head ID is " + headId);
 
     this->rootRevision->deserialize(root);
     this->stashes->deserialize(root);
@@ -323,7 +323,7 @@ void VersionControl::deserialize(const ValueTree &tree)
         const double h1 = Time::getMillisecondCounterHiRes();
         this->head.deserialize(root);
         const double h2 = Time::getMillisecondCounterHiRes();
-        Logger::writeToLog("Loading VCS snapshot done in " + String(h2 - h1) + "ms");
+        DBG("Loading VCS snapshot done in " + String(h2 - h1) + "ms");
     }
     
     if (auto headRevision = this->getRevisionById(this->rootRevision, headId))

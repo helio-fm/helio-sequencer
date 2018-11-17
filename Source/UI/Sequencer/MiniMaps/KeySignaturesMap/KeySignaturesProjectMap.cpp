@@ -60,7 +60,6 @@ KeySignaturesProjectMap<T>::~KeySignaturesProjectMap()
 template<typename T>
 void KeySignaturesProjectMap<T>::resized()
 {
-    //Logger::writeToLog("KeySignaturesProjectMap<T>::resized");
     this->setVisible(false);
 
     T *previous = nullptr;
@@ -357,7 +356,6 @@ float KeySignaturesProjectMap<T>::getBeatByXPosition(int x) const
 template<typename T>
 void KeySignaturesProjectMap<T>::reloadTrackMap()
 {
-    //Logger::writeToLog("KeySignaturesProjectMap<T>::reloadTrackMap");
     if (this->project.getTimeline() == nullptr)
     {
         return;

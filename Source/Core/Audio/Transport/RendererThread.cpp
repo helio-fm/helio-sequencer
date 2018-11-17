@@ -85,7 +85,7 @@ void RendererThread::startRecording(const File &file)
 
         if (writer != nullptr)
         {
-            Logger::writeToLog(file.getFullPathName());
+            DBG(file.getFullPathName());
             fileStream.release(); // (passes responsibility for deleting the stream to the writer object that is now using it)
             this->startThread(9);
         }
@@ -157,7 +157,7 @@ void RendererThread::run()
         subBuffer->instrument = instrument;
         subBuffer->sampleBuffer = AudioSampleBuffer(numOutChannels, bufferSize);
         subBuffers.add(subBuffer);
-        //Logger::writeToLog("Adding instrument: " + String(instrument->getName()));
+        //DBG("Adding instrument: " + String(instrument->getName()));
     }
 
     // step 2. release resources, prepare to play, etc.
@@ -228,7 +228,7 @@ void RendererThread::run()
                 {
                     if (nextMessage.instrument == subBuffer->instrument)
                     {
-                        //Logger::writeToLog("Adding message with frame " + String(messageFrame));
+                        //DBG("Adding message with frame " + String(messageFrame));
                         subBuffer->midiBuffer.addEvent(nextMessage.message, messageFrame);
                     }
                 }
@@ -249,7 +249,7 @@ void RendererThread::run()
             {
                 const ScopedLock lock(graph->getCallbackLock());
                 
-                //Logger::writeToLog("processBlock num midi events: " + String(subBuffer->midiBuffer.getNumEvents()));
+                //DBG("processBlock num midi events: " + String(subBuffer->midiBuffer.getNumEvents()));
                 graph->processBlock(subBuffer->sampleBuffer, subBuffer->midiBuffer);
                 subBuffer->midiBuffer.clear();
 
@@ -289,7 +289,7 @@ void RendererThread::run()
         {
             const ScopedWriteLock pl(this->percentsLock);
             this->percentsDone = float(currentFrame / lastFrame);
-            //Logger::writeToLog("this->percentsDone : " + String(this->percentsDone));
+            //DBG("this->percentsDone : " + String(this->percentsDone));
         }
     }
 

@@ -690,7 +690,7 @@ void HelioTheme::initResources()
     const auto startTime = Time::getMillisecondCounter();
     Array<Font> systemFonts;
     Font::findFonts(systemFonts);
-    Logger::writeToLog("Fonts search done in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+    DBG("Fonts search done in " + String(Time::getMillisecondCounter() - startTime) + " ms");
 
     const Font *noto = nullptr;
     const StringArray notoNames = {"Noto Sans", "Noto Sans UI"};
@@ -700,7 +700,6 @@ void HelioTheme::initResources()
 
     for (const auto &systemFont : systemFonts)
     {
-        // Logger::writeToLog(systemFont.getTypeface()->getName());
         if (notoNames.contains(systemFont.getTypeface()->getName()))
         {
             noto = &systemFont;
@@ -725,7 +724,7 @@ void HelioTheme::initResources()
         this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
     }
 
-    Logger::writeToLog("Using font: " + this->textTypefaceCache->getName());
+    DBG("Using font: " + this->textTypefaceCache->getName());
     Config::set(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
 #endif
 }

@@ -42,7 +42,7 @@ void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs,
 {
     if (this->isThreadRunning())
     {
-        Logger::writeToLog("Warning: failed to start revision sync thread, already running");
+        DBG("Warning: failed to start revision sync thread, already running");
         return;
     }
 
@@ -74,7 +74,7 @@ void ProjectSyncThread::run()
         this->response = createProjectRequest.put(payload);
         if (!this->response.is2xx())
         {
-            Logger::writeToLog("Failed to create the project on remote: " + this->response.getErrors().getFirst());
+            DBG("Failed to create the project on remote: " + this->response.getErrors().getFirst());
             callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
             return;
         }
@@ -83,7 +83,7 @@ void ProjectSyncThread::run()
     }
     else if (!this->response.is200())
     {
-        Logger::writeToLog("Failed to fetch project heads from remote: " + this->response.getErrors().getFirst());
+        DBG("Failed to fetch project heads from remote: " + this->response.getErrors().getFirst());
         callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
         return;
     }
@@ -150,7 +150,7 @@ void ProjectSyncThread::run()
             this->response = revisionRequest.get();
             if (!this->response.is2xx())
             {
-                Logger::writeToLog("Failed to fetch revision data: " + this->response.getErrors().getFirst());
+                DBG("Failed to fetch revision data: " + this->response.getErrors().getFirst());
                 callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
                 return;
             }
@@ -180,7 +180,7 @@ void ProjectSyncThread::run()
     this->response = createProjectRequest.put(payload);
     if (!this->response.is2xx())
     {
-        Logger::writeToLog("Failed to update the project on remote: " + this->response.getErrors().getFirst());
+        DBG("Failed to update the project on remote: " + this->response.getErrors().getFirst());
         callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
         return;
     }
@@ -211,7 +211,7 @@ void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
         this->response = revisionRequest.put(payload);
         if (!this->response.is2xx())
         {
-            Logger::writeToLog("Failed to put revision data: " + this->response.getErrors().getFirst());
+            DBG("Failed to put revision data: " + this->response.getErrors().getFirst());
             callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
             return;
         }

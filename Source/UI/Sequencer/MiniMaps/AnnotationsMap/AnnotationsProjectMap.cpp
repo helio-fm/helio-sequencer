@@ -62,7 +62,6 @@ AnnotationsProjectMap<T>::~AnnotationsProjectMap()
 template<typename T>
 void AnnotationsProjectMap<T>::resized()
 {
-    //Logger::writeToLog("AnnotationsProjectMap<T>::resized");
     this->setVisible(false);
 
     T *previous = nullptr;

@@ -107,7 +107,7 @@ bool Config::saveIfNeeded()
     InterProcessLock::ScopedLockType fLock(this->fileLock);
     if (!fLock.isLocked())
     {
-        Logger::writeToLog("Config !fLock.isLocked()");
+        DBG("Config !fLock.isLocked()");
         return false;
     }
 
@@ -132,7 +132,7 @@ bool Config::saveIfNeeded()
     if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, cleanedUpConfig))
     {
         needsSaving = false;
-        Logger::writeToLog("Config saved: " + this->propertiesFile.getFullPathName());
+        DBG("Config saved: " + this->propertiesFile.getFullPathName());
         return true;
     }
 
@@ -167,7 +167,7 @@ bool Config::reload()
             this->children[child.getType()] = child;
         }
 
-        Logger::writeToLog("Config reloaded");
+        DBG("Config reloaded");
         return true;
     }
 

@@ -413,7 +413,7 @@ void SequencerLayout::filesDropped(const StringArray &filenames,
     if (isInterestedInFileDrag(filenames))
     {
         String filename = filenames.joinIntoString({}, 0, 1);
-        Logger::writeToLog(filename);
+        DBG(filename);
         //importMidiFile(File(filename));
     }
 }

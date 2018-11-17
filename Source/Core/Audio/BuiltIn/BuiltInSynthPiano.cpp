@@ -66,7 +66,6 @@ void BuiltInSynthPiano::processBlock(AudioSampleBuffer &buffer, MidiBuffer &midi
         // Initialization takes about 400ms (i.e. slows app loading way down),
         // and consumes a lot of RAM (though user might never use the built-in piano).
         // So let's do a lazy initialization on first use - i.e. here in processBlock
-        //Logger::writeToLog("BuiltInSynthPiano deferred init.");
         this->initVoices();
         this->initSampler();
     }

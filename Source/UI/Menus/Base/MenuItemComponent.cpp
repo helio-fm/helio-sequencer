@@ -517,13 +517,11 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
 
     if (desc->isToggled && !this->description->isToggled)
     {
-        //Logger::writeToLog(this->description->iconName + " is on");
         this->toggleMarker = new MenuItemComponentMarker();
         this->addAndMakeVisible(this->toggleMarker);
     }
     else if (!desc->isToggled && (this->toggleMarker != nullptr))
     {
-        //Logger::writeToLog("this->toggleMarker = nullptr");
         this->toggleMarker = nullptr;
     }
 

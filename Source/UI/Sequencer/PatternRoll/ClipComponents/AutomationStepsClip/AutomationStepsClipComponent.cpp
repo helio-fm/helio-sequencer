@@ -357,8 +357,6 @@ void AutomationStepsClipComponent::updateEventComponent(AutomationStepEventCompo
 
 void AutomationStepsClipComponent::reloadTrack()
 {
-    //Logger::writeToLog("TriggersTrackMap::reloadSustainPedalTrack");
-    
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         this->removeChildComponent(this->eventComponents.getUnchecked(i));

@@ -35,7 +35,7 @@ void ProjectCloneThread::clone(WeakReference<VersionControl> vcs, const String &
 {
     if (this->isThreadRunning())
     {
-        Logger::writeToLog("Warning: failed to start project clone thread, already running");
+        DBG("Warning: failed to start project clone thread, already running");
         return;
     }
 
@@ -53,7 +53,7 @@ void ProjectCloneThread::run()
     const ProjectDto remoteProject(this->response.getBody());
     if (!this->response.is200())
     {
-        Logger::writeToLog("Failed to clone project from remote: " + this->response.getErrors().getFirst());
+        DBG("Failed to clone project from remote: " + this->response.getErrors().getFirst());
         callbackOnMessageThread(ProjectCloneThread, onCloneFailed, self->response.getErrors());
         return;
     }
@@ -81,7 +81,7 @@ void ProjectCloneThread::run()
         this->response = revisionRequest.get();
         if (!this->response.is2xx())
         {
-            Logger::writeToLog("Failed to fetch revision data: " + this->response.getErrors().getFirst());
+            DBG("Failed to fetch revision data: " + this->response.getErrors().getFirst());
             callbackOnMessageThread(ProjectCloneThread, onCloneFailed, self->response.getErrors());
             return;
         }

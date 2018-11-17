@@ -146,7 +146,6 @@ void RecentProjectRow::setSelected(bool shouldBeSelected)
 
 void RecentProjectRow::updateDescription(const RecentProjectInfo::Ptr file, bool isLoaded, bool isLastRow)
 {
-    //Logger::writeToLog("Updating info for: " + file->title);
     this->targetFile = file;
     this->isFileLoaded = isLoaded;
 

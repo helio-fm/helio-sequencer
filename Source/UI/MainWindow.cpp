@@ -234,7 +234,7 @@ void MainWindow::setOpenGLRendererEnabled(bool shouldBeEnabled)
 
 void MainWindow::attachOpenGLContext()
 {
-    Logger::writeToLog("Attaching OpenGL context.");
+    DBG("Attaching OpenGL context.");
     kOpenGLContext = new OpenGLContext();
     kOpenGLContext->setPixelFormat(OpenGLPixelFormat(8, 8, 0, 0));
     kOpenGLContext->setMultisamplingEnabled(false);
@@ -244,7 +244,7 @@ void MainWindow::attachOpenGLContext()
 
 void MainWindow::detachOpenGLContext()
 {
-    Logger::writeToLog("Detaching OpenGL context.");
+    DBG("Detaching OpenGL context.");
     kOpenGLContext->detach();
     kOpenGLContext = nullptr;
     kOpenGlEnabled = 0;

@@ -37,7 +37,7 @@ void ResourceManager::shutdown()
 
 void ResourceManager::updateBaseResource(const ValueTree &resource)
 {
-    Logger::writeToLog("Updating downloaded resource file for " + this->resourceName.toString());
+    DBG("Updating downloaded resource file for " + this->resourceName.toString());
 
 #if HELIO_DESKTOP
     JsonSerializer serializer(false); // debug
@@ -70,7 +70,7 @@ void ResourceManager::updateUserResource(const BaseResource::Ptr resource)
     this->userResources.appendChild(resource->serialize(), nullptr);
 
     // TODO sync with server?
-    Logger::writeToLog("Updating user's resource file for " + this->resourceName.toString());
+    DBG("Updating user's resource file for " + this->resourceName.toString());
 
     //XmlSerializer serializer; // debug
     //BinarySerializer serializer;
@@ -127,7 +127,7 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(downloadedResource));
         if (tree.isValid())
         {
-            Logger::writeToLog("Found downloaded resource file for " + this->resourceName.toString());
+            DBG("Found downloaded resource file for " + this->resourceName.toString());
             this->deserialize(tree);
             shouldBroadcastChange = true;
         }
@@ -138,7 +138,7 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(builtInResource));
         if (tree.isValid())
         {
-            Logger::writeToLog("Loading built-in resource for " + this->resourceName.toString());
+            DBG("Loading built-in resource for " + this->resourceName.toString());
             this->deserialize(tree);
             shouldBroadcastChange = true;
         }
@@ -152,7 +152,7 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(usersResource));
         if (tree.isValid())
         {
-            Logger::writeToLog("Found users resource file for " + this->resourceName.toString());
+            DBG("Found users resource file for " + this->resourceName.toString());
             this->deserialize(tree);
             this->userResources = tree;
             shouldBroadcastChange = true;

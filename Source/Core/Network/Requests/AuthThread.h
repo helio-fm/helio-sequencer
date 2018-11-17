@@ -42,7 +42,7 @@ public:
     {
         if (this->isThreadRunning())
         {
-            Logger::writeToLog("Warning: failed to start auth thread, already running");
+            DBG("Warning: failed to start auth thread, already running");
             return;
         }
 
@@ -73,13 +73,13 @@ private:
         if (!this->response.isValid() ||
             !this->response.is(201))
         {
-            Logger::writeToLog("Failed to init web auth: " + this->response.getErrors().getFirst());
+            DBG("Failed to init web auth: " + this->response.getErrors().getFirst());
             callbackOnMessageThread(AuthThread, onAuthSessionFailed, self->response.getErrors());
             return;
         }
 
         // Session manager will redirect user in a browser
-        Logger::writeToLog("Initialized web auth, redirecting to: " + this->response.getRedirect());
+        DBG("Initialized web auth, redirecting to: " + this->response.getRedirect());
         callbackOnMessageThread(AuthThread, onAuthSessionInitiated, { self->response.getBody() }, self->response.getRedirect());
 
         // Now check once a second if user has finished authentication
@@ -103,7 +103,7 @@ private:
                 Thread::sleep(100);
                 if (this->threadShouldExit())
                 {
-                    Logger::writeToLog("Canceled web auth process, exiting.");
+                    DBG("Canceled web auth process, exiting.");
                     return; // canceled by user, no callbacks
                 }
             }
@@ -115,7 +115,7 @@ private:
             !this->response.is200() ||
             !this->response.hasProperty(ApiKeys::AuthSession::token))
         {
-            Logger::writeToLog("Failed to finalize web auth: " + this->response.getErrors().getFirst());
+            DBG("Failed to finalize web auth: " + this->response.getErrors().getFirst());
             callbackOnMessageThread(AuthThread, onAuthSessionFailed, self->response.getErrors());
             return;
         }

@@ -77,7 +77,7 @@ void Snapshot::mergeItem(RevisionItem::Ptr newItem)
     }
     else
     {
-        Logger::writeToLog("Cannot merge revision item on nothing!");
+        DBG("Cannot merge revision item on nothing!");
         //this->items.addIfNotAlreadyThere(newItem);
     }
 }

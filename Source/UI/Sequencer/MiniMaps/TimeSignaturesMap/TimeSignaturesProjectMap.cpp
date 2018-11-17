@@ -71,7 +71,6 @@ void TimeSignaturesProjectMap<T>::updateTrackRangeIndicatorsAnchors()
     const double rollLengthInBeats = double(this->rollLastBeat - this->rollFirstBeat);
     const double absStart = double(this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats;
     const double absEnd = double(this->projectLastBeat - this->rollFirstBeat) / rollLengthInBeats;
-    //Logger::writeToLog("updateTrackRangeIndicatorsAnchors: " + String(absStart) + ":" + String(absEnd));
     this->trackStartIndicator->setAnchoredAt(absStart);
     this->trackEndIndicator->setAnchoredAt(absEnd);
 }
@@ -83,7 +82,6 @@ void TimeSignaturesProjectMap<T>::updateTrackRangeIndicatorsAnchors()
 template<typename T>
 void TimeSignaturesProjectMap<T>::resized()
 {
-    //Logger::writeToLog("TimeSignaturesProjectMap<T>::resized");
     this->setVisible(false);
 
     T *previous = nullptr;

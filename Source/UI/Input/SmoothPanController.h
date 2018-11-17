@@ -40,8 +40,6 @@ public:
 
     void panByOffset(Point<int> offset)
     {
-        //Logger::writeToLog("SmoothPan: " + String(offset.getX()) + ", " + String(offset.getY()));
-
         #if SMOOTH_PAN_DISABLED
 
         this->listener.panByOffset(offset.getX(), offset.getY());

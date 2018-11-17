@@ -93,7 +93,6 @@ void Headline::resized()
 
 void Headline::handleAsyncUpdate()
 {
-    //Logger::writeToLog("Headline::handleAsyncUpdate");
     int posX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
     TreeItem *previousItem = nullptr;
 
@@ -176,8 +175,6 @@ void Headline::syncWithTree(NavigationHistory &navHistory, WeakReference<TreeIte
 int Headline::rebuildChain(WeakReference<TreeItem> leaf)
 {
     const float startingAlpha = this->getAlphaForAnimation();
-
-    //Logger::writeToLog("Headline::syncWithTree");
     Array<TreeItem *> branch = createSortedBranchArray(leaf);
 
     // Finds the first inconsistency point in the chain

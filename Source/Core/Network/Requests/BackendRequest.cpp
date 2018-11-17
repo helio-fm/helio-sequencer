@@ -134,8 +134,7 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
     const String responseBody = stream->readEntireStreamAsString();
     if (responseBody.isNotEmpty())
     {
-        Logger::writeToLog("<< Received " + String(response.statusCode) + " " + responseBody); // .substring(0, 128) + (responseBody.length() > 128 ? ".." : ""));
-        //Logger::writeToLog(response.headers.getDescription());
+        DBG("<< Received " + String(response.statusCode) + " " + responseBody); // .substring(0, 128) + (responseBody.length() > 128 ? ".." : ""));
 
         ValueTree parsedResponse;
         response.receipt = this->serializer.loadFromString(responseBody, parsedResponse);
@@ -197,7 +196,7 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
     int i = 0;
     do
     {
-        Logger::writeToLog(">> " + verb + " " + this->apiEndpoint);
+        DBG(">> " + verb + " " + this->apiEndpoint);
         stream = url.createInputStream(false,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
@@ -226,7 +225,7 @@ BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, con
     int i = 0;
     do
     {
-        Logger::writeToLog(">> " + verb + " " + this->apiEndpoint + " " + jsonPayload); // jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
+        DBG(">> " + verb + " " + this->apiEndpoint + " " + jsonPayload); // jsonPayload.substring(0, 64) + (jsonPayload.length() > 64 ? ".." : ""));
         stream = url.createInputStream(true,
             progressCallbackInternal, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,

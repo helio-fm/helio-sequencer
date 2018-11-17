@@ -135,7 +135,6 @@ void Transport::seekToPosition(double absPosition)
     this->calcTimeAndTempoAt(absPosition, timeMs, tempo);
     this->calcTimeAndTempoAt(1.0, realLengthMs, tempo);
     
-    //Logger::writeToLog("absPosition " + String(absPosition));
     this->setSeekPosition(absPosition);
     this->broadcastSeek(absPosition, timeMs, realLengthMs);
 }
@@ -553,8 +552,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     double realLengthMs = 0.0;
     this->calcTimeAndTempoAt(1.0, realLengthMs, tempo);
     this->broadcastTotalTimeChanged(realLengthMs);
-    
-    //Logger::writeToLog("newSeekPosition = " + String(newSeekPosition));
     
     // seek also changed
     this->seekToPosition(newSeekPosition);

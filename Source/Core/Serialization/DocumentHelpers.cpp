@@ -31,7 +31,7 @@ String DocumentHelpers::getTemporaryFolder()
     if (tempFolder.existsAsFile())
     { tempFolder.deleteFile(); }
 
-    //Logger::writeToLog("DocumentHelpers::getTemporaryFolder :: " + tempFolder.getFullPathName());
+    //DBG("DocumentHelpers::getTemporaryFolder :: " + tempFolder.getFullPathName());
 
     return tempFolder.getFullPathName();
 }
@@ -118,7 +118,7 @@ static File getFirstSlot(String location1, String location2, const String &fileN
 
     if (slotExists)
     {
-        Logger::writeToLog("Opening file: " + result.getFullPathName());
+        DBG("Opening file: " + result.getFullPathName());
     }
 
     return result;

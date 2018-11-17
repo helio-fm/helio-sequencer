@@ -68,7 +68,7 @@ void ResourceSyncService::syncRevisions(WeakReference<VersionControl> vcs,
 {
     if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
     {
-        //Logger::writeToLog("Warning: attempt to start a revision sync thread while another one is running");
+        DBG("Warning: attempt to start a revision sync thread while another one is running");
         return;
     }
 
@@ -87,7 +87,7 @@ void ResourceSyncService::cloneProject(WeakReference<VersionControl> vcs, const 
 {
     if (auto *thread = this->getRunningThreadFor<ProjectCloneThread>())
     {
-        //Logger::writeToLog("Warning: attempt to start a project clone thread while another one is running");
+        DBG("Warning: attempt to start a project clone thread while another one is running");
         return;
     }
 
@@ -156,7 +156,7 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
 
         if (everythingIsUpToDate)
         {
-            Logger::writeToLog("All resources are up to date");
+            DBG("All resources are up to date");
         }
 
         // Versions info might have changed:
@@ -165,7 +165,7 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
 
     thread->onUpdatesCheckFailed = [](const Array<String> &errors)
     {
-        Logger::writeToLog("updatesCheckFailed: " + errors.getFirst());
+        DBG("onUpdatesCheckFailed: " + errors.getFirst());
     };
 
     return thread;

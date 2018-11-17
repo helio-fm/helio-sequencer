@@ -94,28 +94,28 @@ SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfi
         {
             const Time now = Time::getCurrentTime();
             const Time expiry = jwt.getExpiry();
-            Logger::writeToLog("Found token expiring " + expiry.toString(true, true));
+            DBG("Found token expiring " + expiry.toString(true, true));
 
             if (expiry < now)
             {
-                Logger::writeToLog("Token seems to be expired, removing");
+                DBG("Token seems to be expired, removing");
                 this->userProfile.clearProfileAndSession();
             }
             else if ((expiry - now).inDays() <= 5)
             {
-                Logger::writeToLog("Attempting to re-issue auth token");
+                DBG("Attempting to re-issue auth token");
                 this->prepareTokenUpdateThread()->updateToken(token, UPDATE_SESSION_TIMEOUT_MS);
             }
             else
             {
-                Logger::writeToLog("Token seems to be ok, skipping session update step");
+                DBG("Token seems to be ok, skipping session update step");
                 this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
             }
 
             return;
         }
 
-        Logger::writeToLog("Warning: auth token seems to be invalid, removing");
+        DBG("Warning: auth token seems to be invalid, removing");
         this->userProfile.clearProfileAndSession();
     }
 }
@@ -129,7 +129,7 @@ void SessionService::signIn(const String &provider)
     if (auto *thread = this->getRunningThreadFor<AuthThread>())
     {
         jassertfalse;
-        Logger::writeToLog("Auth is already in progress");
+        DBG("Auth is already in progress");
         return;
     }
 
@@ -189,7 +189,7 @@ AuthThread *SessionService::prepareAuthThread()
         layout.hideModalComponentIfAny();
         layout.showTooltip(errors.getFirst());
         layout.showModalComponentUnowned(new FailTooltip());
-        Logger::writeToLog("Login failed: " + errors.getFirst());
+        DBG("Login failed: " + errors.getFirst());
     };
 
     return thread;

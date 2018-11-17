@@ -56,22 +56,6 @@ private:
     JUCE_PREVENT_HEAP_ALLOCATION
 };
 
-class DebugLogger final : public Logger, public ChangeBroadcaster
-{
-public:
-
-    DebugLogger() = default;
-    String getText() const;
-    void logMessage(const String &message) override;
-
-private:
-
-    ReadWriteLock logLock;
-    String log;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugLogger)
-};
-
 class App final : public JUCEApplication,
                   private AsyncUpdater,
                   private ChangeListener
@@ -95,8 +79,6 @@ public:
     static bool isRunningOnDesktop();
     
     static String getAppReadableVersion();
-    static String getCurrentTime();
-    static String getSqlFormattedTime(const Time &time);
     static String getHumanReadableDate(const Time &date);
     
     static void dismissAllModalComponents();
@@ -131,7 +113,6 @@ public:
 
 private:
 
-    class DebugLogger logger;
     class Clipboard clipboard;
 
     UniquePointer<class HelioTheme> theme;

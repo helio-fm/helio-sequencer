@@ -166,7 +166,7 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
         const bool isTicked = (info[i] == selectedInstrument);
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, info[i]->getName())->withAction([this, instrument = info[i]]()
         {
-            Logger::writeToLog(instrument->getIdAndHash());
+            DBG(instrument->getIdAndHash());
             const String instrumentId = instrument->getIdAndHash();
             this->trackItem.getChangeInstrumentCallback()(instrumentId);
             this->initDefaultMenu();
