@@ -86,33 +86,34 @@ void VersionControl::cherryPick(const Revision::Ptr revision, const Array<Uuid> 
     }
 }
 
+void VersionControl::replaceHistory(const VCS::Revision::Ptr root)
+{
+    // if parent revision id is empty, this is the root revision
+    // which means we're cloning project and replacing stub root with valid one:
+    DBG("Replacing history tree");
+    this->rootRevision = root;
+    // make sure head doesn't point to replaced revision:
+    this->head.moveTo(this->rootRevision);
+    this->sendChangeMessage();
+}
+
 void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId)
 {
-    if (appendRevisionId.isEmpty())
+    jassert(appendRevisionId.isNotEmpty());
+    if (auto targetRevision = this->getRevisionById(this->rootRevision, appendRevisionId))
     {
-        // if appendRevisionId is empty - replace root?
-        // todo make clear how to clone projects
-        //DBG("Warning: replacing history remote tree");
-        //this->rootRevision = subtree;
-    }
-    else
-    {
-        if (auto targetRevision = this->getRevisionById(this->rootRevision, appendRevisionId))
-        {
-            targetRevision->addChild(subtree);
-            this->sendChangeMessage();
-        }
+        targetRevision->addChild(subtree);
+        this->sendChangeMessage();
     }
 }
 
 Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const ValueTree &data)
 {
-    if (auto targetRevision = this->getRevisionById(this->rootRevision, id))
+    if (auto revision = this->getRevisionById(this->rootRevision, id))
     {
-        targetRevision->deserialize(data);
-        targetRevision->flush();
+        revision->unshallow(this->pack, data);
         this->sendChangeMessage();
-        return targetRevision;
+        return revision;
     }
 
     return nullptr;

@@ -21,6 +21,7 @@
 #include "Config.h"
 
 #include "App.h"
+#include "Workspace.h"
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
@@ -193,7 +194,10 @@ ProjectSyncThread *ResourceSyncService::prepareProjectSyncThread()
     {
         auto &layout = App::Layout();
         layout.hideModalComponentIfAny();
-        layout.showTooltip(errors.getFirst());
+        if (errors.size() > 0)
+        {
+            layout.showTooltip(errors.getFirst());
+        }
         layout.showModalComponentUnowned(new FailTooltip());
     };
 
@@ -213,15 +217,19 @@ ProjectCloneThread *ResourceSyncService::prepareProjectCloneThread()
         // and views will update themselves on the message thread
     };
 
-    thread->onCloneFailed = [](const Array<String> &errors)
+    thread->onCloneFailed = [](const Array<String> &errors, const String &projectId)
     {
         auto &layout = App::Layout();
         layout.hideModalComponentIfAny();
-        layout.showTooltip(errors.getFirst());
+        if (errors.size() > 0)
+        {
+            layout.showTooltip(errors.getFirst());
+        }
         layout.showModalComponentUnowned(new FailTooltip());
 
-        // TODO find project stub by id and delete
-        //App::Workspace().deleteProject(id)
+        // now find project stub by id, unload and delete it locally
+        auto &workspace = App::Workspace();
+        workspace.unloadProject(projectId, true, false);
     };
 
     return thread;

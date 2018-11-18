@@ -34,6 +34,7 @@ struct UserProfileDto final : ApiModel
 
     MemoryBlock &getAvatarData() noexcept { return this->avatarData; }
     const MemoryBlock &getAvatarData() const noexcept { return this->avatarData; }
+    bool hasAvatarData() const noexcept { return this->avatarData.getSize() > 0; }
 
     Array<ProjectDto> getProjects() const { return DTO_CHILDREN(ProjectDto, Projects::projects); }
     Array<UserSessionDto> getSessions() const { return DTO_CHILDREN(UserSessionDto, Sessions::sessions); }

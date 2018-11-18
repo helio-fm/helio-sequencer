@@ -32,6 +32,7 @@
 #include "Icons.h"
 #include "Workspace.h"
 #include "MainLayout.h"
+#include "ResourceSyncService.h"
 
 VersionControlTreeItem::VersionControlTreeItem() :
     TreeItem("Versions", Serialization::Core::versionControl),
@@ -201,6 +202,19 @@ ScopedPointer<Component> VersionControlTreeItem::createMenu()
     }
     
     return nullptr;
+}
+
+//===----------------------------------------------------------------------===//
+// Network
+//===----------------------------------------------------------------------===//
+
+void VersionControlTreeItem::cloneProject()
+{
+    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    if (parentProject != nullptr && this->vcs != nullptr)
+    {
+        App::Helio().getResourceSyncService()->cloneProject(this->vcs.get(), parentProject->getId());
+    }
 }
 
 //===----------------------------------------------------------------------===//

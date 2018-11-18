@@ -54,7 +54,7 @@ void ProjectCloneThread::run()
     if (!this->response.is200())
     {
         DBG("Failed to clone project from remote: " + this->response.getErrors().getFirst());
-        callbackOnMessageThread(ProjectCloneThread, onCloneFailed, self->response.getErrors());
+        callbackOnMessageThread(ProjectCloneThread, onCloneFailed, self->response.getErrors(), self->projectId);
         return;
     }
 
@@ -62,11 +62,14 @@ void ProjectCloneThread::run()
     this->vcs->updateRemoteSyncCache(remoteProject.getRevisions());
         
     // build tree(s) of shallow VCS::Revision from newRemoteRevisions list and append them to VCS
-    const auto newRemoteTrees = ProjectSyncHelpers::constructNewRemoteTrees(remoteProject.getRevisions());
-    for (auto subtree : newRemoteTrees)
+    const auto remoteHistory = ProjectSyncHelpers::constructRemoteTree(remoteProject.getRevisions());
+    if (remoteHistory == nullptr)
     {
-        this->vcs->appendSubtree(subtree.second, subtree.first);
+        DBG("Failed to construct remote history tree");
+        callbackOnMessageThread(ProjectCloneThread, onCloneFailed, {}, self->projectId);
     }
+
+    this->vcs->replaceHistory(remoteHistory);
 
     this->newHead = nullptr;
 
@@ -82,7 +85,7 @@ void ProjectCloneThread::run()
         if (!this->response.is2xx())
         {
             DBG("Failed to fetch revision data: " + this->response.getErrors().getFirst());
-            callbackOnMessageThread(ProjectCloneThread, onCloneFailed, self->response.getErrors());
+            callbackOnMessageThread(ProjectCloneThread, onCloneFailed, self->response.getErrors(), self->projectId);
             return;
         }
 

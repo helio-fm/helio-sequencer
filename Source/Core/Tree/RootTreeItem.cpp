@@ -34,7 +34,6 @@
 #include "ProjectInfo.h"
 #include "WorkspaceMenu.h"
 
-#include "ResourceSyncService.h"
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "Icons.h"
@@ -85,7 +84,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
 {
     const auto myProjects(this->findChildrenOfType<ProjectTreeItem>());
 
-    // предварительная проверка на дубликаты - по полному пути
+    // first check for duplicates (full path)
     for (auto *myProject : myProjects)
     {
         if (myProject->getDocument()->getFullPath() == file.getFullPathName())
@@ -94,8 +93,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
         }
     }
 
-    DBG("Opening: " + file.getFullPathName());
-    
+    DBG("Opening project: " + file.getFullPathName());
     if (file.existsAsFile())
     {
         UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(file));
@@ -106,7 +104,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
             return nullptr;
         }
 
-        // вторая проверка на дубликаты - по id
+        // second check for duplicates (project id)
         for (auto *myProject : myProjects)
         {
             if (myProject->getId() == project->getId())
@@ -124,14 +122,18 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
 
 ProjectTreeItem *RootTreeItem::checkoutProject(const String &id, const String &name)
 {
-    const auto myProjects(this->findChildrenOfType<ProjectTreeItem>());
     DBG("Cloning project: " + name);
-
     if (id.isNotEmpty())
     {
-        UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(name));
+        // construct a stub project with no first revision and no tracks,
+        // only the essential stuff it will need anyway:
+        UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(name, id));
         this->addChildTreeItem(project.get(), 1);
-        App::Helio().getResourceSyncService()->cloneProject(nullptr, id); // TODO project->getVersionControl()
+        UniquePointer<VersionControlTreeItem> vcs(new VersionControlTreeItem());
+        project->addChildTreeItem(vcs.get());
+        project->addChildTreeItem(new PatternEditorTreeItem());
+        vcs->cloneProject();
+        vcs.release();
         return project.release();
     }
 
@@ -185,7 +187,6 @@ VersionControlTreeItem *RootTreeItem::addVCS(TreeItem *parent)
     // чтобы оной в списке изменений всегда показывался как измененный (не добавленный)
     // т.к. удалить его нельзя. и смущать юзера подобными надписями тоже не айс.
     vcs->commitProjectInfo();
-
     return vcs;
 }
 

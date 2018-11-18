@@ -29,7 +29,7 @@ public:
     ~ProjectCloneThread() override;
     
     Function<void()> onCloneDone;
-    Function<void(const Array<String> &errors)> onCloneFailed;
+    Function<void(const Array<String> &errors, const String &projectId)> onCloneFailed;
 
     void clone(WeakReference<VersionControl> vcs, const String &projectId);
 

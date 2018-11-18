@@ -53,14 +53,15 @@ namespace VCS
         void removeChild(Revision::Ptr revision);
 
         void copyDeltasFrom(Revision::Ptr other);
-        
+
+        bool isShallowCopy() const noexcept;
+        void unshallow(Pack::Ptr pack, ValueTree data);
+
         WeakReference<Revision> getParent() const noexcept;
         String getMessage() const noexcept;
         String getUuid() const noexcept;
         int64 getTimeStamp() const noexcept;
-
         bool isEmpty() const noexcept;
-        bool isShallowCopy() const noexcept;
 
         void flush();
 

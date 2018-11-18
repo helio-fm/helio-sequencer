@@ -60,6 +60,7 @@ public:
     void checkout(const VCS::Revision::Ptr revision);
     void cherryPick(const VCS::Revision::Ptr revision, const Array<Uuid> uuids);
 
+    void replaceHistory(const VCS::Revision::Ptr root);
     void appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId);
     VCS::Revision::Ptr updateShallowRevisionData(const String &id, const ValueTree &data);
 

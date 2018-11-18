@@ -30,6 +30,9 @@ struct ProjectSyncHelpers final
 
     static ReferenceCountedArray<VCS::Revision> constructNewLocalTrees(const ReferenceCountedArray<VCS::Revision> &list);
 
-    // Returns a map of <id of a parent to mount to : root revision containing all the children>
-    static RevisionsMap constructNewRemoteTrees(const Array<RevisionDto> &list);
+    // returns a map of <id of a parent to mount to : root revision containing all the children>
+    static RevisionsMap constructRemoteBranches(const Array<RevisionDto> &list);
+
+    // only used when cloning projects, assuming all revisions will fit in one subtree
+    static VCS::Revision::Ptr constructRemoteTree(const Array<RevisionDto> &list);
 };

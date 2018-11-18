@@ -30,16 +30,17 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
     // Resize avatar thumbnail and cache it as png-encoded base64 string:
     const int size = 16;
     this->avatar = { Image::RGB, size, size, true };
-    MemoryInputStream inputStream(dto.getAvatarData(), false);
-    const Image remoteAvatar = ImageFileFormat::loadFrom(inputStream)
-        .rescaled(size, size, Graphics::highResamplingQuality);
 
-    Graphics g(this->avatar);
-    g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
-    g.fillAll();
-
-    if (this->avatar.isValid() && this->avatarThumbnail.isEmpty())
+    if (dto.hasAvatarData()) // && this->avatarThumbnail.isEmpty()
     {
+        MemoryInputStream inputStream(dto.getAvatarData(), false);
+        const Image remoteAvatar = ImageFileFormat::loadFrom(inputStream)
+            .rescaled(size, size, Graphics::highResamplingQuality);
+
+        Graphics g(this->avatar);
+        g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
+        g.fillAll();
+
         MemoryBlock block;
         {
             MemoryOutputStream outStream(block, false);

@@ -435,8 +435,8 @@ void Head::rebuildDiffNow()
 ValueTree VCS::Head::serialize() const
 {
     ValueTree tree(Serialization::VCS::head);
-    ValueTree stateNode(Serialization::VCS::snapshot);
-    ValueTree stateDataNode(Serialization::VCS::snapshotData);
+    ValueTree snapshotNode(Serialization::VCS::snapshot);
+    ValueTree snapshotDataNode(Serialization::VCS::snapshotData);
 
     {
         const ScopedReadLock lock(this->stateLock);
@@ -445,7 +445,7 @@ ValueTree VCS::Head::serialize() const
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
             const auto serializedItem = stateItem->serialize();
-            stateNode.appendChild(serializedItem, nullptr);
+            snapshotNode.appendChild(serializedItem, nullptr);
             
             // exports also deltas data
             for (int j = 0; j < stateItem->getNumDeltas(); ++j)
@@ -457,13 +457,13 @@ ValueTree VCS::Head::serialize() const
                 packItem.setProperty(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString(), nullptr);
                 packItem.appendChild(deltaData, nullptr);
                 
-                stateDataNode.appendChild(packItem, nullptr);
+                snapshotDataNode.appendChild(packItem, nullptr);
             }
         }
     }
     
-    tree.appendChild(stateNode, nullptr);
-    tree.appendChild(stateDataNode, nullptr);
+    tree.appendChild(snapshotNode, nullptr);
+    tree.appendChild(snapshotDataNode, nullptr);
     return tree;
 }
 
@@ -475,31 +475,31 @@ void VCS::Head::deserialize(const ValueTree &tree)
         tree : tree.getChildWithName(Serialization::VCS::head);
     if (!headRoot.isValid()) { return; }
     
-    const auto indexRoot = headRoot.getChildWithName(Serialization::VCS::snapshot);
-    if (!indexRoot.isValid()) { return; }
+    const auto snapshotNode = headRoot.getChildWithName(Serialization::VCS::snapshot);
+    if (!snapshotNode.isValid()) { return; }
 
-    const auto dataRoot = headRoot.getChildWithName(Serialization::VCS::snapshotData);
-    if (!dataRoot.isValid()) { return; }
+    const auto snapshotDataNode = headRoot.getChildWithName(Serialization::VCS::snapshotData);
+    if (!snapshotDataNode.isValid()) { return; }
     
-    forEachValueTreeChildWithType(indexRoot, stateElement, Serialization::VCS::revisionItem)
+    forEachValueTreeChildWithType(snapshotNode, stateElement, Serialization::VCS::revisionItem)
     {
-        RevisionItem::Ptr stateItem(new RevisionItem(this->pack, RevisionItem::Added, nullptr));
-        stateItem->deserialize(stateElement);
+        RevisionItem::Ptr snapshotItem(new RevisionItem(this->pack, RevisionItem::Added, nullptr));
+        snapshotItem->deserialize(stateElement);
 
         // import deltas data
-        forEachValueTreeChildWithType(dataRoot, dataElement, Serialization::VCS::packItem)
+        forEachValueTreeChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
         {
             const String packItemRevId = dataElement.getProperty(Serialization::VCS::packItemRevId);
             const String packItemDeltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
             const auto deltaData = dataElement.getChild(0);
             
-            if (packItemRevId == stateItem->getUuid().toString())
+            if (packItemRevId == snapshotItem->getUuid().toString())
             {
-                stateItem->importDataForDelta(deltaData, packItemDeltaId);
+                snapshotItem->importDataForDelta(deltaData, packItemDeltaId);
             }
         }
         
-        this->state->addItem(stateItem);
+        this->state->addItem(snapshotItem);
     }
 }
 

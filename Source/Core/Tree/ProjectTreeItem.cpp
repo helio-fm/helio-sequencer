@@ -67,10 +67,10 @@ ProjectTreeItem::ProjectTreeItem() :
     this->initialize();
 }
 
-ProjectTreeItem::ProjectTreeItem(const String &name) :
+ProjectTreeItem::ProjectTreeItem(const String &name, const String &id) :
     DocumentOwner(name, "helio"),
     TreeItem(name, Serialization::Core::project),
-    id(Uuid().toString())
+    id(id.isEmpty() ? Uuid().toString() : id)
 {
     this->initialize();
 }

@@ -173,7 +173,7 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
 
     this->deserializeVCSUuid(root);
 
-    this->description = root.getProperty(Serialization::VCS::revisionItemName, "");
+    this->description = root.getProperty(Serialization::VCS::revisionItemName);
 
     const int type = root.getProperty(Serialization::VCS::revisionItemType, Undefined);
     this->vcsItemType = static_cast<Type>(type);

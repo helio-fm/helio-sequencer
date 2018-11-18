@@ -609,7 +609,13 @@ namespace Serialization
             }
         } // namespace V1
     } // namespace Api
-        
+
+    namespace JWT
+    {
+        static const Identifier issuer = "iss";
+        static const Identifier expiry = "exp";
+    } // namespace JWT
+
     namespace Undo
     {
         static const Identifier undoStack = "undoStack";

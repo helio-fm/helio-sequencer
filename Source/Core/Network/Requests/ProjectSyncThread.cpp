@@ -127,8 +127,8 @@ void ProjectSyncThread::run()
     }
 
     // build tree(s) of shallow VCS::Revision from newRemoteRevisions list and append them to VCS
-    const auto newRemoteTrees = ProjectSyncHelpers::constructNewRemoteTrees(newRemoteRevisions);
-    for (auto subtree : newRemoteTrees)
+    const auto newRemoteSubtrees = ProjectSyncHelpers::constructRemoteBranches(newRemoteRevisions);
+    for (auto subtree : newRemoteSubtrees)
     {
         this->vcs->appendSubtree(subtree.second, subtree.first);
     }

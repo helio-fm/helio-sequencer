@@ -60,7 +60,8 @@ bool Revision::isEmpty() const noexcept
 
 bool Revision::isShallowCopy() const noexcept
 {
-    return this->isEmpty() && this->pack == nullptr;
+    // children might me not empty though:
+    return this->deltas.isEmpty() && this->pack == nullptr;
 }
 
 int64 Revision::getTimeStamp() const noexcept
@@ -95,7 +96,7 @@ void Revision::addChild(Revision *child)
     //this->children.insert(0, child);
 }
 
-void VCS::Revision::addChild(Revision::Ptr revision)
+void Revision::addChild(Revision::Ptr revision)
 {
     this->addChild(revision.get());
 }
@@ -109,7 +110,7 @@ void Revision::removeChild(Revision *revision)
     }
 }
 
-void VCS::Revision::removeChild(Revision::Ptr revision)
+void Revision::removeChild(Revision::Ptr revision)
 {
     this->removeChild(revision.get());
 }
@@ -119,9 +120,17 @@ void Revision::addItem(RevisionItem *item)
     this->deltas.add(item);
 }
 
-void VCS::Revision::addItem(RevisionItem::Ptr item)
+void Revision::addItem(RevisionItem::Ptr item)
 {
     this->deltas.add(item);
+}
+
+void Revision::unshallow(Pack::Ptr pack, ValueTree data)
+{
+    jassert(this->isShallowCopy());
+    this->pack = pack;
+    this->deserialize(data);
+    this->flush();
 }
 
 WeakReference<Revision> Revision::getParent() const noexcept

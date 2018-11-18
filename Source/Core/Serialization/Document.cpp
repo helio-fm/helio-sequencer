@@ -98,7 +98,7 @@ void Document::renameFile(const String &newName)
 
 void Document::save()
 {
-    if (this->hasChanges)
+    if (this->hasChanges && this->workingFile.getFullPathName().isNotEmpty())
     {
         this->internalSave(this->workingFile);
     }
@@ -106,7 +106,10 @@ void Document::save()
 
 void Document::forceSave()
 {
-    this->internalSave(this->workingFile);
+    if (this->workingFile.getFullPathName().isNotEmpty())
+    {
+        this->internalSave(this->workingFile);
+    }
 }
 
 void Document::saveAs()

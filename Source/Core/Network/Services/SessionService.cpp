@@ -62,7 +62,8 @@ public:
     {
         if (this->jwt.isValid())
         {
-            return Time(int64(this->jwt.getProperty("exp")) * 1000);
+            using namespace Serialization;
+            return Time(int64(this->jwt.getProperty(JWT::expiry)) * 1000);
         }
 
         return {};
@@ -72,7 +73,8 @@ public:
     {
         if (this->jwt.isValid())
         {
-            return this->jwt.getProperty("iss");
+            using namespace Serialization;
+            return this->jwt.getProperty(JWT::issuer);
         }
 
         return {};
@@ -94,7 +96,7 @@ SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfi
         {
             const Time now = Time::getCurrentTime();
             const Time expiry = jwt.getExpiry();
-            DBG("Found token expiring " + expiry.toString(true, true));
+            DBG("Found token expiring at " + expiry.toString(true, true));
 
             if (expiry < now)
             {
@@ -179,8 +181,9 @@ AuthThread *SessionService::prepareAuthThread()
         layout.showModalComponentUnowned(new SuccessTooltip());
 
         this->userProfile.setApiToken(session.getToken());
-        // Don't call authCallback right now, instead request a user profile and callback when ready
-        this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
+        // don't call authCallback right now, instead request a user profile and callback when ready;
+        // (true) == force request avatar data, as now it might have changed:
+        this->prepareProfileRequestThread()->doRequest(true);
     };
 
     thread->onAuthSessionFailed = [this](const Array<String> &errors)
@@ -202,7 +205,8 @@ TokenUpdateThread *SessionService::prepareTokenUpdateThread()
     thread->onTokenUpdateOk = [this](const String &newToken)
     {
         this->userProfile.setApiToken(newToken);
-        this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
+        // (true) == force request avatar data, as now it might have changed:
+        this->prepareProfileRequestThread()->doRequest(true);
     };
 
     thread->onTokenUpdateFailed = [this](const Array<String> &errors)

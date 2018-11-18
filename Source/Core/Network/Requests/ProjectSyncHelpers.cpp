@@ -56,29 +56,29 @@ ReferenceCountedArray<VCS::Revision> ProjectSyncHelpers::constructNewLocalTrees(
     return trees;
 }
 
-RevisionsMap ProjectSyncHelpers::constructNewRemoteTrees(const Array<RevisionDto> &list)
+struct ShallowRevision final
 {
-    struct ShallowRevision final
-    {
-        VCS::Revision::Ptr revision;
-        RevisionDto associatedDto;
-    };
+    String parentId;
+    VCS::Revision::Ptr revision;
+};
 
-    using ShallowRevisionsMap = FlatHashMap<String, ShallowRevision, StringHash>;
+using ShallowRevisionsMap = FlatHashMap<String, ShallowRevision, StringHash>;
 
+RevisionsMap ProjectSyncHelpers::constructRemoteBranches(const Array<RevisionDto> &list)
+{
     RevisionsMap trees;
     ShallowRevisionsMap lookup;
     for (const auto &dto : list)
     {
         VCS::Revision::Ptr newRevision(new VCS::Revision(dto));
-        lookup[dto.getId()] = { newRevision, dto };
+        lookup[dto.getId()] = { dto.getParentId(), newRevision };
     }
 
     for (const auto &child : lookup)
     {
-        if (lookup.contains(child.second.associatedDto.getParentId()))
+        if (lookup.contains(child.second.parentId))
         {
-            const auto proposedParent = lookup[child.second.associatedDto.getParentId()];
+            const auto proposedParent = lookup[child.second.parentId];
             proposedParent.revision->addChild(child.second.revision);
         }
     }
@@ -87,9 +87,47 @@ RevisionsMap ProjectSyncHelpers::constructNewRemoteTrees(const Array<RevisionDto
     {
         if (child.second.revision->getParent() == nullptr)
         {
-            trees[child.second.associatedDto.getParentId()] = child.second.revision;
+            // despite the parent revision is nullptr (i.e. just missing in the given list),
+            // it's stored parent id should not be empty, otherwise we have different root revisions
+            // locally and remotely, which hopefully should never happen:
+            jassert(child.second.parentId.isNotEmpty());
+            trees[child.second.parentId] = child.second.revision;
         }
     }
 
     return trees;
+}
+
+VCS::Revision::Ptr ProjectSyncHelpers::constructRemoteTree(const Array<RevisionDto> &list)
+{
+    VCS::Revision::Ptr root;
+    ShallowRevisionsMap lookup;
+    for (const auto &dto : list)
+    {
+        VCS::Revision::Ptr newRevision(new VCS::Revision(dto));
+        lookup[dto.getId()] = { dto.getParentId(), newRevision };
+    }
+
+    for (const auto &child : lookup)
+    {
+        if (lookup.contains(child.second.parentId))
+        {
+            const auto proposedParent = lookup[child.second.parentId];
+            proposedParent.revision->addChild(child.second.revision);
+        }
+    }
+
+    for (const auto &child : lookup)
+    {
+        if (child.second.revision->getParent() == nullptr)
+        {
+            // hitting this line means that given list cannot be composed into a single tree,
+            // which should never happen assuming this method is used then cloning a history
+            jassert(root == nullptr);
+            root = child.second.revision;
+        }
+    }
+
+    jassert(root != nullptr);
+    return root;
 }
