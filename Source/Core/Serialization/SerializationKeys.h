@@ -413,7 +413,6 @@ namespace Serialization
 
         static const Identifier pack = "deltaPack";
         static const Identifier packItem = "record";
-        static const Identifier packItemRevId = "itemId";
         static const Identifier packItemDeltaId = "deltaId";
 
         static const Identifier remoteCache = "remoteCache";

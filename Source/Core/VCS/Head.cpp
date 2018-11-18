@@ -32,21 +32,19 @@ using namespace VCS;
 Head::Head(const Head &other) :
     Thread("Diff Thread"),
     targetVcsItemsSource(other.targetVcsItemsSource),
-    pack(other.pack),
     diffOutdated(other.diffOutdated),
     rebuildingDiffMode(false),
     diff(other.diff),
     headingAt(other.headingAt),
     state(new Snapshot(other.state.get())) {}
 
-Head::Head(Pack::Ptr packPtr, TrackedItemsSource &targetProject) :
+Head::Head(TrackedItemsSource &targetProject) :
     Thread("Diff Thread"),
     targetVcsItemsSource(targetProject),
-    pack(packPtr),
     diffOutdated(false),
     rebuildingDiffMode(false),
-    diff(new Revision(packPtr)),
-    headingAt(new Revision(packPtr)),
+    diff(new Revision()),
+    headingAt(new Revision()),
     state(new Snapshot()) {}
 
 Revision::Ptr Head::getHeadingRevision() const
@@ -432,11 +430,10 @@ void Head::rebuildDiffNow()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VCS::Head::serialize() const
+ValueTree Head::serialize() const
 {
     ValueTree tree(Serialization::VCS::head);
     ValueTree snapshotNode(Serialization::VCS::snapshot);
-    ValueTree snapshotDataNode(Serialization::VCS::snapshotData);
 
     {
         const ScopedReadLock lock(this->stateLock);
@@ -446,59 +443,40 @@ ValueTree VCS::Head::serialize() const
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
             const auto serializedItem = stateItem->serialize();
             snapshotNode.appendChild(serializedItem, nullptr);
-            
-            // exports also deltas data
-            for (int j = 0; j < stateItem->getNumDeltas(); ++j)
-            {
-                const auto deltaData = stateItem->serializeDeltaData(j);
-                
-                ValueTree packItem(Serialization::VCS::packItem);
-                packItem.setProperty(Serialization::VCS::packItemRevId, stateItem->getUuid().toString(), nullptr);
-                packItem.setProperty(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString(), nullptr);
-                packItem.appendChild(deltaData, nullptr);
-                
-                snapshotDataNode.appendChild(packItem, nullptr);
-            }
         }
     }
     
     tree.appendChild(snapshotNode, nullptr);
-    tree.appendChild(snapshotDataNode, nullptr);
     return tree;
 }
 
-void VCS::Head::deserialize(const ValueTree &tree)
+void Head::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const auto headRoot = tree.hasType(Serialization::VCS::head) ?
+    const auto root = tree.hasType(Serialization::VCS::head) ?
         tree : tree.getChildWithName(Serialization::VCS::head);
-    if (!headRoot.isValid()) { return; }
+
+    if (!root.isValid()) { return; }
     
-    const auto snapshotNode = headRoot.getChildWithName(Serialization::VCS::snapshot);
+    const auto snapshotNode = root.getChildWithName(Serialization::VCS::snapshot);
     if (!snapshotNode.isValid()) { return; }
 
-    const auto snapshotDataNode = headRoot.getChildWithName(Serialization::VCS::snapshotData);
-    if (!snapshotDataNode.isValid()) { return; }
-    
+    // A temporary workaround, see the comment in VersionControl::deserialize()
+    DeltaDataLookup deltaDataLookup;
+    const auto snapshotDataNode = root.getChildWithName(Serialization::VCS::snapshotData);
+    forEachValueTreeChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
+    {
+        const String deltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
+        const auto deltaData = dataElement.getChild(0);
+        jassert(deltaData.isValid());
+        deltaDataLookup[deltaId] = deltaData;
+    }
+
     forEachValueTreeChildWithType(snapshotNode, stateElement, Serialization::VCS::revisionItem)
     {
-        RevisionItem::Ptr snapshotItem(new RevisionItem(this->pack, RevisionItem::Added, nullptr));
-        snapshotItem->deserialize(stateElement);
-
-        // import deltas data
-        forEachValueTreeChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
-        {
-            const String packItemRevId = dataElement.getProperty(Serialization::VCS::packItemRevId);
-            const String packItemDeltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
-            const auto deltaData = dataElement.getChild(0);
-            
-            if (packItemRevId == snapshotItem->getUuid().toString())
-            {
-                snapshotItem->importDataForDelta(deltaData, packItemDeltaId);
-            }
-        }
-        
+        RevisionItem::Ptr snapshotItem(new RevisionItem(RevisionItem::Added, nullptr));
+        snapshotItem->deserialize(stateElement, deltaDataLookup);
         this->state->addItem(snapshotItem);
     }
 }
@@ -574,7 +552,7 @@ void Head::run()
 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Changed, itemDiff));
                     const ScopedWriteLock itemDiffLock(this->diffLock);
                     this->diff->addItem(revisionRecord);
                 }
@@ -587,7 +565,7 @@ void Head::run()
         if (! foundItemInTarget)
         {
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Removed, emptyDiff));
             const ScopedWriteLock emptyDiffLock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
@@ -622,7 +600,7 @@ void Head::run()
         // copy deltas from targetItem and add `added` record
         if (! foundItemInState)
         {
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
@@ -672,7 +650,7 @@ void Head::rebuildDiffSynchronously()
                 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Changed, itemDiff));
                     const ScopedWriteLock lock(this->diffLock);
                     this->diff->addItem(revisionRecord);
                 }
@@ -685,7 +663,7 @@ void Head::rebuildDiffSynchronously()
         if (! foundItemInTarget)
         {
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Removed, emptyDiff));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
@@ -713,7 +691,7 @@ void Head::rebuildDiffSynchronously()
         // copy deltas from targetItem and add `added` record
         if (! foundItemInState)
         {
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }

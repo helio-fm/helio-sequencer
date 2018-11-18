@@ -22,14 +22,12 @@
 
 using namespace VCS;
 
-Revision::Revision(Pack::Ptr pack, const String &name /*= String::empty*/) :
-    pack(pack),
+Revision::Revision(const String &name /*= String::empty*/) :
     message(name),
     id(Uuid().toString()),
     timestamp(Time::getCurrentTime().toMilliseconds()) {}
 
 Revision::Revision(const RevisionDto &dto) :
-    pack(nullptr),
     message(dto.getMessage()),
     id(dto.getId()),
     timestamp(dto.getTimestamp()) {}
@@ -39,17 +37,7 @@ void Revision::copyDeltasFrom(Revision::Ptr other)
     this->deltas.clearQuick();
     for (auto *revItem : other->deltas)
     {
-        if (this->pack == other->pack)
-        {
-            this->deltas.add(revItem);
-        }
-        else
-        {
-            // when merging two trees with different delta packs,
-            // copy items with new RevisionItem to copy data from the old pack:
-            RevisionItem::Ptr newItem(new RevisionItem(this->pack, revItem->getType(), revItem));
-            this->deltas.add(newItem);
-        }
+        this->deltas.add(revItem);
     }
 }
 
@@ -61,7 +49,7 @@ bool Revision::isEmpty() const noexcept
 bool Revision::isShallowCopy() const noexcept
 {
     // children might me not empty though:
-    return this->deltas.isEmpty() && this->pack == nullptr;
+    return this->deltas.isEmpty();
 }
 
 int64 Revision::getTimeStamp() const noexcept
@@ -125,31 +113,46 @@ void Revision::addItem(RevisionItem::Ptr item)
     this->deltas.add(item);
 }
 
-void Revision::unshallow(Pack::Ptr pack, ValueTree data)
-{
-    jassert(this->isShallowCopy());
-    this->pack = pack;
-    this->deserialize(data);
-    this->flush();
-}
-
 WeakReference<Revision> Revision::getParent() const noexcept
 {
     return this->parent;
 }
 
-// moves items' data from memory to pack
-void Revision::flush()
-{
-    for (auto *revItem : this->deltas)
-    {
-        revItem->flushData();
-    }
-}
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
+
+ValueTree Revision::serializeDeltas() const
+{
+    ValueTree tree(Serialization::VCS::revision);
+
+    for (const auto *revItem : this->deltas)
+    {
+        tree.appendChild(revItem->serialize(), nullptr);
+    }
+
+    return tree;
+}
+
+void Revision::deserializeDeltas(ValueTree data)
+{
+    jassert(this->isShallowCopy());
+
+    const auto root =
+        data.hasType(Serialization::VCS::revision) ?
+        data : data.getChildWithName(Serialization::VCS::revision);
+
+    if (!root.isValid()) { return; }
+
+    this->deltas.clearQuick();
+
+    forEachValueTreeChildWithType(root, e, Serialization::VCS::revisionItem)
+    {
+        RevisionItem::Ptr item(new RevisionItem(RevisionItem::Undefined, nullptr));
+        item->deserialize(e);
+        this->addItem(item);
+    }
+}
 
 ValueTree Revision::serialize() const
 {
@@ -174,6 +177,12 @@ ValueTree Revision::serialize() const
 
 void Revision::deserialize(const ValueTree &tree)
 {
+    // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
+    jassertfalse;
+}
+
+void Revision::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup)
+{
     this->reset();
 
     const auto root =
@@ -182,7 +191,6 @@ void Revision::deserialize(const ValueTree &tree)
 
     if (!root.isValid()) { return; }
 
-    // don't reset pack pointer here
     this->id = root.getProperty(Serialization::VCS::commitId);
     this->message = root.getProperty(Serialization::VCS::commitMessage);
     this->timestamp = root.getProperty(Serialization::VCS::commitTimeStamp);
@@ -191,14 +199,14 @@ void Revision::deserialize(const ValueTree &tree)
     {
         if (e.hasType(Serialization::VCS::revision))
         {
-            Revision::Ptr child(new Revision(this->pack));
-            child->deserialize(e);
+            Revision::Ptr child(new Revision());
+            child->deserialize(e, dataLookup);
             this->addChild(child);
         }
         else if (e.hasType(Serialization::VCS::revisionItem))
         {
-            RevisionItem::Ptr item(new RevisionItem(this->pack, RevisionItem::Undefined, nullptr));
-            item->deserialize(e);
+            RevisionItem::Ptr item(new RevisionItem(RevisionItem::Undefined, nullptr));
+            item->deserialize(e, dataLookup);
             this->addItem(item);
         }
     }
@@ -206,7 +214,6 @@ void Revision::deserialize(const ValueTree &tree)
 
 void Revision::reset()
 {
-    // never reset pack pointer here
     this->id = {};
     this->message = {};
     this->timestamp = 0;

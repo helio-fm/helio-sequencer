@@ -20,7 +20,6 @@
 #include "Serializable.h"
 #include "RevisionItem.h"
 #include "RevisionDto.h"
-#include "Pack.h"
 
 namespace VCS
 {
@@ -37,8 +36,8 @@ namespace VCS
 
         using Ptr = ReferenceCountedObjectPtr<Revision>;
 
-        Revision(Pack::Ptr pack, const String &name = {});
-        Revision(const RevisionDto &remoteDescription);
+        Revision(const String &name = {});
+        Revision(const RevisionDto &remoteDescription); // creates shallow copy
 
         const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
         const ReferenceCountedArray<Revision> &getChildren() const noexcept;
@@ -55,7 +54,6 @@ namespace VCS
         void copyDeltasFrom(Revision::Ptr other);
 
         bool isShallowCopy() const noexcept;
-        void unshallow(Pack::Ptr pack, ValueTree data);
 
         WeakReference<Revision> getParent() const noexcept;
         String getMessage() const noexcept;
@@ -63,19 +61,22 @@ namespace VCS
         int64 getTimeStamp() const noexcept;
         bool isEmpty() const noexcept;
 
-        void flush();
-
         //===--------------------------------------------------------------===//
         // Serializable
         //===--------------------------------------------------------------===//
 
+        // with no properties and no children, but with full deltas data
+        // (to be used in synchronization threads):
+        ValueTree serializeDeltas() const;
+        void deserializeDeltas(ValueTree data);
+
         ValueTree serialize() const;
         void deserialize(const ValueTree &tree);
+        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
         void reset();
 
     private:
 
-        Pack::Ptr pack;
         WeakReference<Revision> parent;
 
         String id;

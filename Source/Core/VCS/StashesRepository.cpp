@@ -20,10 +20,9 @@
 
 using namespace VCS;
 
-StashesRepository::StashesRepository(Pack::Ptr pack) :
-    pack(pack),
-    userStashes(new Revision(pack, "Stashes Root")),
-    quickStash(new Revision(pack)) {}
+StashesRepository::StashesRepository() :
+    userStashes(new Revision("Stashes Root")),
+    quickStash(new Revision()) {}
 
 int StashesRepository::getNumUserStashes() const
 {
@@ -35,12 +34,12 @@ String StashesRepository::getUserStashDescription(int index) const
     return this->getUserStash(index)->getMessage();
 }
 
-Revision::Ptr VCS::StashesRepository::getUserStash(int index) const
+Revision::Ptr StashesRepository::getUserStash(int index) const
 {
     return this->userStashes->getChildren()[index];
 }
 
-Revision::Ptr VCS::StashesRepository::getUserStashWithName(const String &stashName) const
+Revision::Ptr StashesRepository::getUserStashWithName(const String &stashName) const
 {
     for (auto *child : this->userStashes->getChildren())
     {
@@ -50,23 +49,21 @@ Revision::Ptr VCS::StashesRepository::getUserStashWithName(const String &stashNa
         }
     }
     
-    return { new Revision(this->pack) };
+    return { new Revision() };
 }
 
-void VCS::StashesRepository::addStash(Revision::Ptr newStash)
+void StashesRepository::addStash(Revision::Ptr newStash)
 {
     this->userStashes->addChild(newStash);
-    newStash->flush();
-    this->pack->flush();
 }
 
-void VCS::StashesRepository::removeStash(Revision::Ptr stashToRemove)
+void StashesRepository::removeStash(Revision::Ptr stashToRemove)
 {
     // todo sanity checks?
     this->userStashes->removeChild(stashToRemove);
 }
 
-Revision::Ptr VCS::StashesRepository::getQuickStash() const noexcept
+Revision::Ptr StashesRepository::getQuickStash() const noexcept
 {
     return this->quickStash;
 }
@@ -76,25 +73,22 @@ bool StashesRepository::hasQuickStash() const noexcept
     return this->quickStash->isEmpty();
 }
 
-void VCS::StashesRepository::storeQuickStash(Revision::Ptr newStash)
+void StashesRepository::storeQuickStash(Revision::Ptr newStash)
 {
     this->resetQuickStash();
     this->quickStash->copyDeltasFrom(newStash);
-    this->quickStash->flush();
-    this->pack->flush();
 }
 
 void StashesRepository::resetQuickStash()
 {
-    this->quickStash = { new Revision(this->pack,
-        Serialization::VCS::quickStashId.toString()) };
+    this->quickStash = { new Revision(Serialization::VCS::quickStashId.toString()) };
 }
 
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VCS::StashesRepository::serialize() const
+ValueTree StashesRepository::serialize() const
 {
     ValueTree tree(Serialization::VCS::stashesRepository);
     
@@ -111,25 +105,31 @@ ValueTree VCS::StashesRepository::serialize() const
     return tree;
 }
 
-void VCS::StashesRepository::deserialize(const ValueTree &tree)
+void StashesRepository::deserialize(const ValueTree &tree)
+{
+    // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
+    jassertfalse;
+}
+
+void StashesRepository::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup)
 {
     this->reset();
-    
+
     const auto root = tree.hasType(Serialization::VCS::stashesRepository) ?
         tree : tree.getChildWithName(Serialization::VCS::stashesRepository);
-    
+
     if (!root.isValid()) { return; }
 
     const auto userStashesParams = root.getChildWithName(Serialization::VCS::userStashes);
     if (userStashesParams.isValid())
     {
-        this->userStashes->deserialize(userStashesParams);
+        this->userStashes->deserialize(userStashesParams, dataLookup);
     }
-    
+
     const auto quickStashParams = root.getChildWithName(Serialization::VCS::quickStash);
     if (quickStashParams.isValid())
     {
-        this->quickStash->deserialize(quickStashParams);
+        this->quickStash->deserialize(quickStashParams, dataLookup);
     }
 }
 

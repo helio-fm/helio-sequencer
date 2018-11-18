@@ -70,7 +70,7 @@ void Snapshot::mergeItem(RevisionItem::Ptr newItem)
 
         if (diff->hasAnyChanges())
         {
-            RevisionItem::Ptr mergedItem(new RevisionItem(stateItem->getPackPtr(), stateItem->getType(), diff));
+            RevisionItem::Ptr mergedItem(new RevisionItem(stateItem->getType(), diff));
             this->items.removeAllInstancesOf(stateItem);
             this->items.add(mergedItem);
         }
@@ -104,7 +104,7 @@ RevisionItem::Ptr Snapshot::getItemWithSameUuid(RevisionItem::Ptr item) const
 
 RevisionItem::Ptr Snapshot::getItemWithUuid(const Uuid &uuid) const
 {
-    for (auto && item : this->items)
+    for (auto &item : this->items)
     {
         if (item->getUuid() == uuid)
         {

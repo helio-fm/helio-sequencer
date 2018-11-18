@@ -29,7 +29,6 @@ class VersionControlEditor;
 #include "Delta.h"
 #include "Revision.h"
 #include "Head.h"
-#include "Pack.h"
 #include "RemoteCache.h"
 #include "StashesRepository.h"
 
@@ -109,7 +108,6 @@ protected:
 
     VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
 
-    VCS::Pack::Ptr pack;
     VCS::Head head;
     VCS::RemoteCache remoteCache;
     VCS::StashesRepository::Ptr stashes;

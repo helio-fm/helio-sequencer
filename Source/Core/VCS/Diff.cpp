@@ -74,7 +74,7 @@ Delta *Diff::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree VCS::Diff::serializeDeltaData(int deltaIndex) const
+ValueTree VCS::Diff::getDeltaData(int deltaIndex) const
 {
     return this->deltasData[deltaIndex].createCopy(); // fixme is deep copy necessary or a reference is enough?
 }

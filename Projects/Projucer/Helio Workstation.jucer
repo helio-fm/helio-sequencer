@@ -549,8 +549,6 @@
           <FILE id="uzpPWh" name="Diff.h" compile="0" resource="0" file="../../Source/Core/VCS/Diff.h"/>
           <FILE id="OtwnG1" name="Head.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Head.cpp"/>
           <FILE id="eU5eqe" name="Head.h" compile="0" resource="0" file="../../Source/Core/VCS/Head.h"/>
-          <FILE id="BMxiQb" name="Pack.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Pack.cpp"/>
-          <FILE id="abUynR" name="Pack.h" compile="0" resource="0" file="../../Source/Core/VCS/Pack.h"/>
           <FILE id="ijlAbu" name="RemoteCache.cpp" compile="1" resource="0" file="../../Source/Core/VCS/RemoteCache.cpp"/>
           <FILE id="zvFvVW" name="RemoteCache.h" compile="0" resource="0" file="../../Source/Core/VCS/RemoteCache.h"/>
           <FILE id="q9lbK8" name="Revision.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Revision.cpp"/>

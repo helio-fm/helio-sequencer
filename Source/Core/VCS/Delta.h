@@ -98,10 +98,9 @@ namespace VCS
         String getHumanReadableText() const;
         DeltaDescription getDescription() const;
         void setDescription(const DeltaDescription &newDescription);
-        Uuid getUuid() const;
 
-        Identifier getType() const;
-        bool hasType(const Identifier &id) const;
+        Identifier getType() const noexcept;
+        bool hasType(const Identifier &id) const noexcept;
 
         //===--------------------------------------------------------------===//
         // Serializable
@@ -113,7 +112,6 @@ namespace VCS
 
     private:
 
-        Uuid vcsUuid;
         DeltaDescription description;
         Identifier type;
 
@@ -125,4 +123,8 @@ namespace VCS
         ScopedPointer<Delta> delta;
         ValueTree deltaData;
     };
+
+    // A temporary workaround, see the comment in VersionControl::deserialize()
+    typedef FlatHashMap<String, ValueTree, StringHash> DeltaDataLookup;
+
 } // namespace VCS

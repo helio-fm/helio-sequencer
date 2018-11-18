@@ -19,13 +19,11 @@
 
 #include "Snapshot.h"
 #include "Revision.h"
-#include "Pack.h"
 
 namespace VCS
 {
     class TrackedItem;
     class TrackedItemsSource;
-    class DeltaDataSource;
 
     class Head :
         private Thread,
@@ -36,7 +34,7 @@ namespace VCS
     public:
 
         Head(const Head &other);
-        Head(Pack::Ptr packPtr, TrackedItemsSource &targetProject);
+        explicit Head(TrackedItemsSource &targetProject);
 
         Revision::Ptr getHeadingRevision() const;
         
@@ -105,7 +103,6 @@ namespace VCS
     private:
 
         TrackedItemsSource &targetVcsItemsSource;
-        Pack::Ptr pack;
 
         JUCE_LEAK_DETECTOR(Head)
 

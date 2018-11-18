@@ -204,7 +204,7 @@ void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
             (root->getParent() ? var(root->getParent()->getUuid()) : var::null), nullptr);
 
         ValueTree data(ApiKeys::Revisions::data);
-        data.addChild(root->serialize(), 0, nullptr);
+        data.addChild(root->serializeDeltas(), 0, nullptr);
         payload.addChild(data, 0, nullptr);
 
         const BackendRequest revisionRequest(revisionRoute);

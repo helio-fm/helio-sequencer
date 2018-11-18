@@ -18,7 +18,6 @@
 #pragma once
 
 #include "Revision.h"
-#include "Pack.h"
 
 namespace VCS
 {
@@ -26,7 +25,7 @@ namespace VCS
     {
     public:
 
-        explicit StashesRepository(Pack::Ptr pack);
+        StashesRepository();
 
         int getNumUserStashes() const;
         String getUserStashDescription(int index) const;
@@ -47,13 +46,12 @@ namespace VCS
 
         ValueTree serialize() const override;
         void deserialize(const ValueTree &tree) override;
+        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
         void reset() override;
 
         using Ptr = ReferenceCountedObjectPtr<StashesRepository>;
 
     private:
-
-        Pack::Ptr pack;
 
         // root node for the stashes
         Revision::Ptr userStashes;

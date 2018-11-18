@@ -18,7 +18,6 @@
 #pragma once
 
 #include "TrackedItem.h"
-#include "Pack.h"
 
 namespace VCS
 {
@@ -37,24 +36,22 @@ namespace VCS
             Changed = 3
         };
 
-        RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCopy);
+        RevisionItem(Type type, TrackedItem *targetToCopy);
 
-        void flushData(); // move deltas data to pack
-        Pack::Ptr getPackPtr() const;
-        RevisionItem::Type getType() const;
+        RevisionItem::Type getType() const noexcept;
         String getTypeAsString() const;
-        void importDataForDelta(const ValueTree &deltaDataToCopy, const String &deltaUuid);
 
         //===--------------------------------------------------------------===//
         // TrackedItem
         //===--------------------------------------------------------------===//
 
-        int getNumDeltas() const override;
-        Delta *getDelta(int index) const override;
-        ValueTree serializeDeltaData(int deltaIndex) const override;
-        String getVCSName() const override;
-        DiffLogic *getDiffLogic() const override;
-        void resetStateTo(const TrackedItem &newState) override { } // never reset
+        int getNumDeltas() const noexcept override;
+        Delta *getDelta(int index) const noexcept override;
+        ValueTree getDeltaData(int deltaIndex) const noexcept override;
+
+        String getVCSName() const noexcept override;
+        DiffLogic *getDiffLogic() const noexcept override;
+        void resetStateTo(const TrackedItem &newState) noexcept override {} // never reset
     
         //===--------------------------------------------------------------===//
         // Serializable
@@ -62,13 +59,12 @@ namespace VCS
 
         ValueTree serialize() const override;
         void deserialize(const ValueTree &tree) override;
+        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
         void reset() override;
 
         using Ptr = ReferenceCountedObjectPtr<RevisionItem>;
 
     private:
-
-        Pack::Ptr pack;
 
         OwnedArray<Delta> deltas;
         Array<ValueTree> deltasData;
