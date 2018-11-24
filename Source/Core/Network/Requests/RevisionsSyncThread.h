@@ -21,16 +21,19 @@
 #include "VersionControl.h"
 #include "Revision.h"
 
-class ProjectSyncThread final : public Thread
+class RevisionsSyncThread final : public Thread
 {
 public:
     
-    ProjectSyncThread();
-    ~ProjectSyncThread() override;
+    RevisionsSyncThread();
+    ~RevisionsSyncThread() override;
     
     Function<void()> onFetchDone;
     Function<void(bool nothingToSync)> onSyncDone;
     Function<void(const Array<String> &errors)> onSyncFailed;
+
+    void doFetch(WeakReference<VersionControl> vcs,
+        const String &projectId, const String &projectName);
 
     void doSync(WeakReference<VersionControl> vcs,
         const String &projectId, const String &projectName,
@@ -41,6 +44,7 @@ private:
     void run() override;
     void pushSubtreeRecursively(VCS::Revision::Ptr subtree);
     
+    bool fetchOnly;
     String projectId;
     String projectName;
     

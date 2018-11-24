@@ -16,9 +16,9 @@
 */
 
 #include "Common.h"
-#include "ProjectSyncHelpers.h"
+#include "RevisionsSyncHelpers.h"
 
-void ProjectSyncHelpers::buildLocalRevisionsIndex(RevisionsMap &map, VCS::Revision::Ptr root)
+void RevisionsSyncHelpers::buildLocalRevisionsIndex(RevisionsMap &map, VCS::Revision::Ptr root)
 {
     map[root->getUuid()] = root;
     for (auto *child : root->getChildren())
@@ -27,7 +27,7 @@ void ProjectSyncHelpers::buildLocalRevisionsIndex(RevisionsMap &map, VCS::Revisi
     }
 }
 
-bool ProjectSyncHelpers::findParentIn(const String &id, const ReferenceCountedArray<VCS::Revision> &list)
+bool RevisionsSyncHelpers::findParentIn(const String &id, const ReferenceCountedArray<VCS::Revision> &list)
 {
     for (const auto *child : list)
     {
@@ -40,7 +40,7 @@ bool ProjectSyncHelpers::findParentIn(const String &id, const ReferenceCountedAr
     return false;
 }
 
-ReferenceCountedArray<VCS::Revision> ProjectSyncHelpers::constructNewLocalTrees(const ReferenceCountedArray<VCS::Revision> &list)
+ReferenceCountedArray<VCS::Revision> RevisionsSyncHelpers::constructNewLocalTrees(const ReferenceCountedArray<VCS::Revision> &list)
 {
     ReferenceCountedArray<VCS::Revision> trees;
     for (const auto child : list)
@@ -64,7 +64,7 @@ struct ShallowRevision final
 
 using ShallowRevisionsMap = FlatHashMap<String, ShallowRevision, StringHash>;
 
-RevisionsMap ProjectSyncHelpers::constructRemoteBranches(const Array<RevisionDto> &list)
+RevisionsMap RevisionsSyncHelpers::constructRemoteBranches(const Array<RevisionDto> &list)
 {
     RevisionsMap trees;
     ShallowRevisionsMap lookup;
@@ -98,7 +98,7 @@ RevisionsMap ProjectSyncHelpers::constructRemoteBranches(const Array<RevisionDto
     return trees;
 }
 
-VCS::Revision::Ptr ProjectSyncHelpers::constructRemoteTree(const Array<RevisionDto> &list)
+VCS::Revision::Ptr RevisionsSyncHelpers::constructRemoteTree(const Array<RevisionDto> &list)
 {
     VCS::Revision::Ptr root;
     ShallowRevisionsMap lookup;

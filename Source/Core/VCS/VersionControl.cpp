@@ -28,7 +28,7 @@
 
 using namespace VCS;
 
-VersionControl::VersionControl(VCS::TrackedItemsSource &parent) :
+VersionControl::VersionControl(TrackedItemsSource &parent) :
     parent(parent),
     head(parent),
     stashes(new StashesRepository()),
@@ -85,7 +85,7 @@ void VersionControl::cherryPick(const Revision::Ptr revision, const Array<Uuid> 
     }
 }
 
-void VersionControl::replaceHistory(const VCS::Revision::Ptr root)
+void VersionControl::replaceHistory(const Revision::Ptr root)
 {
     // if parent revision id is empty, this is the root revision
     // which means we're cloning project and replacing stub root with valid one:
@@ -96,7 +96,7 @@ void VersionControl::replaceHistory(const VCS::Revision::Ptr root)
     this->sendChangeMessage();
 }
 
-void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId)
+void VersionControl::appendSubtree(const Revision::Ptr subtree, const String &appendRevisionId)
 {
     jassert(appendRevisionId.isNotEmpty());
     if (auto targetRevision = this->getRevisionById(this->rootRevision, appendRevisionId))
@@ -277,6 +277,78 @@ bool VersionControl::applyQuickStash()
     return true;
 }
 
+//===----------------------------------------------------------------------===//
+// ChangeListener
+//===----------------------------------------------------------------------===//
+
+void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
+{
+    // Project changed
+    this->getHead().setDiffOutdated(true);
+}
+
+//===----------------------------------------------------------------------===//
+// Network
+//===----------------------------------------------------------------------===//
+
+void VersionControl::syncAllRevisions()
+{
+    App::Helio().getResourceSyncService()->syncRevisions(this,
+        this->parent.getVCSId(), this->parent.getVCSName(), {});
+}
+
+void VersionControl::fetchRevisionsIfNeeded()
+{
+    if (this->remoteCache.isOutdated())
+    {
+        DBG("Remote revisions cache is outdated, fetching the latest project info");
+        App::Helio().getResourceSyncService()->fetchRevisionsInfo(this,
+            this->parent.getVCSId(), this->parent.getVCSName());
+    }
+}
+
+void VersionControl::syncRevision(const Revision::Ptr revision)
+{
+    // we need to sync the whole branch, i.e. all parents of that revision:
+    Array<String> subtreeToSync = { revision->getUuid() };
+
+    WeakReference<Revision> it = revision.get();
+    while (it->getParent() != nullptr)
+    {
+        it = it->getParent();
+        subtreeToSync.add(it->getUuid());
+    }
+
+    App::Helio().getResourceSyncService()->syncRevisions(this,
+        this->parent.getVCSId(), this->parent.getVCSName(),
+        subtreeToSync);
+}
+
+void VersionControl::updateLocalSyncCache(const Revision::Ptr revision)
+{
+    this->remoteCache.updateForLocalRevision(revision);
+    this->sendChangeMessage();
+}
+
+void VersionControl::updateRemoteSyncCache(const Array<RevisionDto> &revisions)
+{
+    this->remoteCache.updateForRemoteRevisions(revisions);
+    this->sendChangeMessage();
+}
+
+Revision::SyncState VersionControl::getRevisionSyncState(const Revision::Ptr revision) const
+{
+    if (!revision->isShallowCopy() && this->remoteCache.hasRevisionTracked(revision))
+    {
+        return Revision::FullSync;
+    }
+    else if (revision->isShallowCopy())
+    {
+        return Revision::ShallowCopy;
+    }
+
+    return Revision::NoSync;
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -364,59 +436,6 @@ void VersionControl::reset()
     this->head.reset();
     this->remoteCache.reset();
     this->stashes->reset();
-}
-
-//===----------------------------------------------------------------------===//
-// ChangeListener
-//===----------------------------------------------------------------------===//
-
-void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
-{
-    // Project changed
-    this->getHead().setDiffOutdated(true);
-}
-
-//===----------------------------------------------------------------------===//
-// Network
-//===----------------------------------------------------------------------===//
-
-void VersionControl::syncAllRevisions()
-{
-    App::Helio().getResourceSyncService()->syncRevisions(this,
-        this->parent.getVCSId(), this->parent.getVCSName(), {});
-}
-
-void VersionControl::syncRevision(const VCS::Revision::Ptr revision)
-{
-    App::Helio().getResourceSyncService()->syncRevisions(this,
-        this->parent.getVCSId(), this->parent.getVCSName(),
-        { revision->getUuid() });
-}
-
-void VersionControl::updateLocalSyncCache(const VCS::Revision::Ptr revision)
-{
-    this->remoteCache.updateForLocalRevision(revision);
-    this->sendChangeMessage();
-}
-
-void VersionControl::updateRemoteSyncCache(const Array<RevisionDto> &revisions)
-{
-    this->remoteCache.updateForRemoteRevisions(revisions);
-    this->sendChangeMessage();
-}
-
-Revision::SyncState VersionControl::getRevisionSyncState(const Revision::Ptr revision) const
-{
-    if (!revision->isShallowCopy() && this->remoteCache.hasRevisionTracked(revision))
-    {
-        return Revision::FullSync;
-    }
-    else if (revision->isShallowCopy())
-    {
-        return Revision::ShallowCopy;
-    }
-
-    return Revision::NoSync;
 }
 
 //===----------------------------------------------------------------------===//

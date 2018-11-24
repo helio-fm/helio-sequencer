@@ -16,12 +16,12 @@
 */
 
 #include "Common.h"
-#include "ProjectSyncThread.h"
+#include "RevisionsSyncThread.h"
 #include "HelioApiRoutes.h"
 #include "SerializationKeys.h"
 #include "RevisionDto.h"
 #include "ProjectDto.h"
-#include "ProjectSyncHelpers.h"
+#include "RevisionsSyncHelpers.h"
 
 #include "App.h"
 #include "Workspace.h"
@@ -29,14 +29,32 @@
 namespace ApiKeys = Serialization::Api::V1;
 namespace ApiRoutes = Routes::HelioFM::Api;
 
-ProjectSyncThread::ProjectSyncThread() : Thread("Sync") {}
+RevisionsSyncThread::RevisionsSyncThread() :
+    Thread("Sync"), fetchOnly(false) {}
 
-ProjectSyncThread::~ProjectSyncThread()
+RevisionsSyncThread::~RevisionsSyncThread()
 {
     this->stopThread(1000);
 }
 
-void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs,
+void RevisionsSyncThread::doFetch(WeakReference<VersionControl> vcs,
+    const String &projectId, const String &projectName)
+{
+    if (this->isThreadRunning())
+    {
+        DBG("Warning: failed to start revision fetch thread, already running");
+        return;
+    }
+
+    this->fetchOnly = true;
+    this->projectId = projectId;
+    this->projectName = projectName;
+    this->vcs = vcs;
+    this->idsToSync = {};
+    this->startThread(2); // bg fetching is a really low priority task
+}
+
+void RevisionsSyncThread::doSync(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName,
     const Array<String> &revisionIdsToSync)
 {
@@ -46,17 +64,19 @@ void ProjectSyncThread::doSync(WeakReference<VersionControl> vcs,
         return;
     }
 
-    this->vcs = vcs;
+    this->fetchOnly = false;
     this->projectId = projectId;
     this->projectName = projectName;
+
+    this->vcs = vcs;
     this->idsToSync = revisionIdsToSync;
     this->startThread(7);
 }
 
-void ProjectSyncThread::run()
+void RevisionsSyncThread::run()
 {
     RevisionsMap localRevisions;
-    ProjectSyncHelpers::buildLocalRevisionsIndex(localRevisions, this->vcs->getRoot());
+    RevisionsSyncHelpers::buildLocalRevisionsIndex(localRevisions, this->vcs->getRoot());
 
     const String projectRoute(ApiRoutes::project.replace(":projectId", this->projectId));
     const BackendRequest revisionsRequest(projectRoute);
@@ -66,31 +86,35 @@ void ProjectSyncThread::run()
 
     if (this->response.is(404))
     {
-        // Put the project:
-        const BackendRequest createProjectRequest(projectRoute);
-        ValueTree payload(ApiKeys::Projects::project);
-        // head reference will be put later when all revisions are pushed
-        payload.setProperty(ApiKeys::Projects::title, this->projectName, nullptr);
-        this->response = createProjectRequest.put(payload);
-        if (!this->response.is2xx())
+        if (!this->fetchOnly)
         {
-            DBG("Failed to create the project on remote: " + this->response.getErrors().getFirst());
-            callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
-            return;
-        }
+            // Put the project:
+            const BackendRequest createProjectRequest(projectRoute);
+            ValueTree payload(ApiKeys::Projects::project);
+            // head reference will be put later when all revisions are pushed
+            payload.setProperty(ApiKeys::Projects::title, this->projectName, nullptr);
+            this->response = createProjectRequest.put(payload);
+            if (!this->response.is2xx())
+            {
+                DBG("Failed to create the project on remote: " + this->response.getErrors().getFirst());
+                callbackOnMessageThread(RevisionsSyncThread, onSyncFailed, self->response.getErrors());
+                return;
+            }
 
-        App::Workspace().getUserProfile().onProjectRemoteInfoUpdated({ this->response.getBody() });
+            App::Workspace().getUserProfile().onProjectRemoteInfoUpdated({ this->response.getBody() });
+        }
     }
     else if (!this->response.is200())
     {
         DBG("Failed to fetch project heads from remote: " + this->response.getErrors().getFirst());
-        callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+        this->vcs->updateRemoteSyncCache({});
+        callbackOnMessageThread(RevisionsSyncThread, onSyncFailed, self->response.getErrors());
         return;
     }
 
     // the info about what revisions are available remotely will be needed by revision tree:
     this->vcs->updateRemoteSyncCache(remoteProject.getRevisions());
-
+    
     using RevisionDtosMap = FlatHashMap<String, RevisionDto, StringHash>;
 
     RevisionDtosMap remoteRevisions;
@@ -122,19 +146,24 @@ void ProjectSyncThread::run()
     // everything is up to date
     if (newLocalRevisions.isEmpty() && newRemoteRevisions.isEmpty())
     {
-        callbackOnMessageThread(ProjectSyncThread, onSyncDone, true);
+        callbackOnMessageThread(RevisionsSyncThread, onSyncDone, true);
         return;
     }
 
     // build tree(s) of shallow VCS::Revision from newRemoteRevisions list and append them to VCS
-    const auto newRemoteSubtrees = ProjectSyncHelpers::constructRemoteBranches(newRemoteRevisions);
+    const auto newRemoteSubtrees = RevisionsSyncHelpers::constructRemoteBranches(newRemoteRevisions);
     for (auto subtree : newRemoteSubtrees)
     {
         this->vcs->appendSubtree(subtree.second, subtree.first);
     }
 
-    // callback that fetch is done,
-    callbackOnMessageThread(ProjectSyncThread, onFetchDone);
+    // callback that fetch is done and stop if that's all we need
+    callbackOnMessageThread(RevisionsSyncThread, onFetchDone);
+
+    if (this->fetchOnly)
+    {
+        return;
+    }
 
     // if anything is needed to pull, fetch all data for each, then update and callback
     for (const auto dto : newRemoteRevisions)
@@ -151,7 +180,7 @@ void ProjectSyncThread::run()
             if (!this->response.is2xx())
             {
                 DBG("Failed to fetch revision data: " + this->response.getErrors().getFirst());
-                callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+                callbackOnMessageThread(RevisionsSyncThread, onSyncFailed, self->response.getErrors());
                 return;
             }
 
@@ -162,7 +191,7 @@ void ProjectSyncThread::run()
 
     // if anything is needed to push,
     // build tree(s) from newLocalRevisions list
-    const auto newLocalTrees = ProjectSyncHelpers::constructNewLocalTrees(newLocalRevisions);
+    const auto newLocalTrees = RevisionsSyncHelpers::constructNewLocalTrees(newLocalRevisions);
 
     // push them recursively, starting from the root, so that
     // each pushed revision already has a valid remote parent
@@ -181,14 +210,14 @@ void ProjectSyncThread::run()
     if (!this->response.is2xx())
     {
         DBG("Failed to update the project on remote: " + this->response.getErrors().getFirst());
-        callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+        callbackOnMessageThread(RevisionsSyncThread, onSyncFailed, self->response.getErrors());
         return;
     }
 
-    callbackOnMessageThread(ProjectSyncThread, onSyncDone, false);
+    callbackOnMessageThread(RevisionsSyncThread, onSyncDone, false);
 }
 
-void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
+void RevisionsSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
 {
     if (this->idsToSync.isEmpty() ||
         this->idsToSync.contains(root->getUuid()))
@@ -212,7 +241,7 @@ void ProjectSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
         if (!this->response.is2xx())
         {
             DBG("Failed to put revision data: " + this->response.getErrors().getFirst());
-            callbackOnMessageThread(ProjectSyncThread, onSyncFailed, self->response.getErrors());
+            callbackOnMessageThread(RevisionsSyncThread, onSyncFailed, self->response.getErrors());
             return;
         }
 

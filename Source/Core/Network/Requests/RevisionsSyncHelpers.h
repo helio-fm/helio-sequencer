@@ -22,7 +22,7 @@
 
 using RevisionsMap = FlatHashMap<String, VCS::Revision::Ptr, StringHash>;
 
-struct ProjectSyncHelpers final
+struct RevisionsSyncHelpers final
 {
     static void buildLocalRevisionsIndex(RevisionsMap &map, VCS::Revision::Ptr root);
 

@@ -34,6 +34,8 @@ namespace VCS
         void updateForLocalRevision(const Revision::Ptr revision);
         void updateForRemoteRevisions(const Array<RevisionDto> &revisions);
 
+        bool isOutdated() const;
+
         //===------------------------------------------------------------------===//
         // Serializable
         //===------------------------------------------------------------------===//

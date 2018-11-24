@@ -61,6 +61,7 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     this->setSize(600, 400);
 
     //[Constructor]
+    this->vcs.fetchRevisionsIfNeeded();
     //[/Constructor]
 }
 

@@ -43,15 +43,16 @@ namespace VCS
         String getVCSId() const noexcept override { return "<snapshot>"; }
         String getVCSName() const noexcept override { return "<snapshot>"; }
         
-        int getNumTrackedItems() override;
-        TrackedItem *getTrackedItem(int index) override;
+        int getNumTrackedItems() noexcept override;
+        TrackedItem *getTrackedItem(int index) noexcept override;
 
-        RevisionItem::Ptr getItemWithSameUuid(RevisionItem::Ptr item) const;
         RevisionItem::Ptr getItemWithUuid(const Uuid &uuid) const;
 
         void onResetState() override {}
 
     private:
+
+        RevisionItem::Ptr getItemWithSameUuid(RevisionItem::Ptr item) const;
 
         Array<RevisionItem::Ptr> items;
 

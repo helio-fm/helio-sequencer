@@ -86,6 +86,8 @@ public:
 
     void syncAllRevisions();
     void syncRevision(const VCS::Revision::Ptr revision);
+    void fetchRevisionsIfNeeded();
+
     void updateLocalSyncCache(const VCS::Revision::Ptr revision);
     void updateRemoteSyncCache(const Array<RevisionDto> &revisions);
     VCS::Revision::SyncState getRevisionSyncState(const VCS::Revision::Ptr revision) const;

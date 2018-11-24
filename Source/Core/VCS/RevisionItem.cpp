@@ -36,7 +36,9 @@ RevisionItem::RevisionItem(Type type, TrackedItem *targetToCopy) :
         {
             const auto targetDelta = targetToCopy->getDelta(i);
             this->deltas.add(targetDelta->createCopy());
-            this->deltasData.add(targetToCopy->getDeltaData(i));
+            ValueTree data(targetToCopy->getDeltaData(i));
+            this->deltasData.add(data);
+            jassert(!data.getParent().isValid());
         }
     }
 }
@@ -88,7 +90,7 @@ String RevisionItem::getVCSName() const noexcept
     return this->description;
 }
 
-DiffLogic *VCS::RevisionItem::getDiffLogic() const noexcept
+DiffLogic *RevisionItem::getDiffLogic() const noexcept
 {
     return this->logic;
 }
@@ -97,7 +99,7 @@ DiffLogic *VCS::RevisionItem::getDiffLogic() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VCS::RevisionItem::serialize() const
+ValueTree RevisionItem::serialize() const
 {
     ValueTree tree(Serialization::VCS::revisionItem);
 
@@ -111,17 +113,18 @@ ValueTree VCS::RevisionItem::serialize() const
     {
         const auto *delta = this->deltas.getUnchecked(i);
         ValueTree deltaNode(delta->serialize());
-        deltaNode.appendChild(this->getDeltaData(i), nullptr);
-        tree.appendChild(deltaNode, nullptr);
+        const ValueTree deltaData(this->getDeltaData(i));
 
-        // TODO:
-        //tree.appendChild(this->getDeltaData(i), nullptr);
+        // sometimes we need to create copy since value trees cannot be shared between two parents
+        // but Snapshot seems to share revision items on checkout; need to fix this someday:
+        deltaNode.appendChild(deltaData.getParent().isValid() ? deltaData.createCopy() : deltaData, nullptr);
+        tree.appendChild(deltaNode, nullptr);
     }
 
     return tree;
 }
 
-void VCS::RevisionItem::deserialize(const ValueTree &tree)
+void RevisionItem::deserialize(const ValueTree &tree)
 {
     // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
     jassertfalse;
@@ -150,8 +153,6 @@ void RevisionItem::deserialize(const ValueTree &tree, const DeltaDataLookup &dat
 
     for (const auto &e : root)
     {
-        //if (e.getType() == Serialization::VCS::delta) // legacy check
-
         ScopedPointer<Delta> delta(new Delta({}, {}));
         delta->deserialize(e);
 
@@ -173,7 +174,6 @@ void RevisionItem::deserialize(const ValueTree &tree, const DeltaDataLookup &dat
         }
 
         this->deltas.add(delta.release());
-
         jassert(this->deltasData.size() == this->deltas.size());
     }
 }

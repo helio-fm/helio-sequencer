@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "ProjectCloneThread.h"
-#include "ProjectSyncHelpers.h"
+#include "RevisionsSyncHelpers.h"
 #include "HelioApiRoutes.h"
 #include "ProjectDto.h"
 
@@ -62,7 +62,7 @@ void ProjectCloneThread::run()
     this->vcs->updateRemoteSyncCache(remoteProject.getRevisions());
         
     // build tree(s) of shallow VCS::Revision from newRemoteRevisions list and append them to VCS
-    const auto remoteHistory = ProjectSyncHelpers::constructRemoteTree(remoteProject.getRevisions());
+    const auto remoteHistory = RevisionsSyncHelpers::constructRemoteTree(remoteProject.getRevisions());
     if (remoteHistory == nullptr)
     {
         DBG("Failed to construct remote history tree");

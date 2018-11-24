@@ -63,22 +63,34 @@ ResourceSyncService::ResourceSyncService(const ResourceManagerPool &rm) :
     this->prepareUpdatesCheckThread()->checkForUpdates(UPDATE_INFO_TIMEOUT_MS);
 }
 
+void ResourceSyncService::fetchRevisionsInfo(WeakReference<VersionControl> vcs,
+    const String &projectId, const String &projectName)
+{
+    if (auto *thread = this->getRunningThreadFor<RevisionsSyncThread>())
+    {
+        DBG("Warning: attempt to start a revision fetch thread while another one is running");
+        return;
+    }
+
+    this->prepareFetchRevisionsThread()->doFetch(vcs, projectId, projectName);
+}
+
 void ResourceSyncService::syncRevisions(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName,
     const Array<String> &revisionIdsToSync)
 {
-    if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
+    if (auto *thread = this->getRunningThreadFor<RevisionsSyncThread>())
     {
         DBG("Warning: attempt to start a revision sync thread while another one is running");
         return;
     }
 
-    this->prepareProjectSyncThread()->doSync(vcs, projectId, projectName, revisionIdsToSync);
+    this->prepareSyncRevisionsThread()->doSync(vcs, projectId, projectName, revisionIdsToSync);
 }
 
 void ResourceSyncService::cancelSyncRevisions()
 {
-    if (auto *thread = this->getRunningThreadFor<ProjectSyncThread>())
+    if (auto *thread = this->getRunningThreadFor<RevisionsSyncThread>())
     {
         thread->signalThreadShouldExit();
     }
@@ -172,9 +184,9 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
     return thread;
 }
 
-ProjectSyncThread *ResourceSyncService::prepareProjectSyncThread()
+RevisionsSyncThread *ResourceSyncService::prepareSyncRevisionsThread()
 {
-    auto *thread = this->getNewThreadFor<ProjectSyncThread>();
+    auto *thread = this->getNewThreadFor<RevisionsSyncThread>();
     
     thread->onFetchDone = []()
     {
@@ -201,6 +213,14 @@ ProjectSyncThread *ResourceSyncService::prepareProjectSyncThread()
         layout.showModalComponentUnowned(new FailTooltip());
     };
 
+    return thread;
+}
+
+RevisionsSyncThread *ResourceSyncService::prepareFetchRevisionsThread()
+{
+    auto *thread = this->getNewThreadFor<RevisionsSyncThread>();
+    // No callbacks, since fetching is meant to be performed
+    // transparently in a background thread.
     return thread;
 }
 

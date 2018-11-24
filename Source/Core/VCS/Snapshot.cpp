@@ -86,16 +86,15 @@ void Snapshot::mergeItem(RevisionItem::Ptr newItem)
 // TrackedItemsSource
 //===----------------------------------------------------------------------===//
 
-int Snapshot::getNumTrackedItems()
+int Snapshot::getNumTrackedItems() noexcept
 {
     return this->items.size();
 }
 
-TrackedItem *Snapshot::getTrackedItem(int index)
+TrackedItem *Snapshot::getTrackedItem(int index) noexcept
 {
     return this->items[index].get();
 }
-
 
 RevisionItem::Ptr Snapshot::getItemWithSameUuid(RevisionItem::Ptr item) const
 {
