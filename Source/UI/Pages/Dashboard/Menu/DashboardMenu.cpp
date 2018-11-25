@@ -189,7 +189,6 @@ BEGIN_JUCER_METADATA
                  constructorParams="Workspace *parentWorkspace" variableInitialisers="workspace(parentWorkspace)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="500">
-                 initialWidth="450" initialHeight="500">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>

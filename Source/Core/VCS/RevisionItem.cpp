@@ -38,7 +38,7 @@ RevisionItem::RevisionItem(Type type, TrackedItem *targetToCopy) :
             this->deltas.add(targetDelta->createCopy());
             ValueTree data(targetToCopy->getDeltaData(i));
             this->deltasData.add(data);
-            jassert(!data.getParent().isValid());
+            //jassert(!data.getParent().isValid());
         }
     }
 }

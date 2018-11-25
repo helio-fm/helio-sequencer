@@ -92,22 +92,23 @@ void ProjectCloneThread::run()
         const RevisionDto fullData(this->response.getBody());
         auto revision = this->vcs->updateShallowRevisionData(fullData.getId(), fullData.getData());
 
-        if (revision->getUuid() == remoteProject.getHead())
+        // if project's head is null, this will at least point the new head to one of leafs:
+        if ((this->newHead == nullptr && revision->getChildren().isEmpty()) ||
+            revision->getUuid() == remoteProject.getHead())
         {
             this->newHead = revision;
         }
     }
 
-    // checkout the head revision, if any
-    if (this->newHead != nullptr)
+    jassert(this->newHead != nullptr);
+
+    // checkout the head revision
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
     {
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-        {
-            auto *self = static_cast<ProjectCloneThread *>(ptr);
-            self->vcs->checkout(self->newHead);
-            return nullptr;
-        }, this);
-    }
+        auto *self = static_cast<ProjectCloneThread *>(ptr);
+        self->vcs->checkout(self->newHead);
+        return nullptr;
+    }, this);
 
     callbackOnMessageThread(ProjectCloneThread, onCloneDone);
 }

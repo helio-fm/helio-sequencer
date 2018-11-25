@@ -80,8 +80,7 @@ const ReferenceCountedArray<Revision> &Revision::getChildren() const  noexcept
 void Revision::addChild(Revision *child)
 {
     child->parent = this;
-    this->children.add(child); // todo test
-    //this->children.insert(0, child);
+    this->children.add(child);
 }
 
 void Revision::addChild(Revision::Ptr revision)
@@ -149,7 +148,7 @@ void Revision::deserializeDeltas(ValueTree data)
     forEachValueTreeChildWithType(root, e, Serialization::VCS::revisionItem)
     {
         RevisionItem::Ptr item(new RevisionItem(RevisionItem::Undefined, nullptr));
-        item->deserialize(e);
+        item->deserialize(e, {});
         this->addItem(item);
     }
 }
