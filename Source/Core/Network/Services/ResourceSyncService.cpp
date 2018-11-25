@@ -30,33 +30,6 @@
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
 
-static Identifier getPlatformType()
-{
-    using namespace Serialization::Api;
-
-#if JUCE_WINDOWS
-#if JUCE_32BIT
-    return PlatformTypes::windows32;
-#elif JUCE_64BIT
-    return PlatformTypes::windows64;
-#endif
-#elif JUCE_LINUX
-#if JUCE_32BIT
-    return PlatformTypes::linux32;
-#elif JUCE_64BIT
-    return PlatformTypes::linux64;
-#endif
-#elif JUCE_MAC
-    return PlatformTypes::mac;
-#elif JUCE_IOS
-    return PlatformTypes::ios;
-#elif JUCE_ANDROID
-    return PlatformTypes::android;
-#else
-    jassertfalse;
-#endif
-}
-
 ResourceSyncService::ResourceSyncService(const ResourceManagerPool &rm) :
     resourceManagers(rm)
 {
@@ -139,23 +112,12 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
 
     thread->onUpdatesCheckOk = [this](const AppInfoDto info)
     {
-        const auto platformType(getPlatformType());
-        for (const auto &version : info.getVersions())
-        {
-            if (version.getPlatformType().equalsIgnoreCase(platformType))
-            {
-                // TODO: make update info available on the dashboard page
-            }
-        }
-
-        // Check if any available resource has a hash different from stored one
+        // check if any available resource has a hash different from stored one
         // then start threads to fetch those resources (with somewhat random delays)
-
+        Random r;
         AppInfoDto lastUpdatesInfo;
         Config::load(lastUpdatesInfo, Serialization::Config::lastUpdatesInfo);
         bool everythingIsUpToDate = true;
-
-        Random r;
         for (const auto &newResource : info.getResources())
         {
             if (lastUpdatesInfo.resourceSeemsOutdated(newResource))
@@ -172,7 +134,7 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
             DBG("All resources are up to date");
         }
 
-        // Versions info might have changed:
+        // save all anyway, as versions info might have changed:
         Config::save(info, Serialization::Config::lastUpdatesInfo);
     };
 

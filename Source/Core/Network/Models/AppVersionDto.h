@@ -30,5 +30,24 @@ struct AppVersionDto final : ApiModel
     String getVersion() const noexcept { return DTO_PROPERTY(Versions::version); }
     String getPlatformType() const noexcept { return DTO_PROPERTY(Versions::platformType); }
 
+    String getHumanReadableDescription() const noexcept
+    {
+        return (this->getBranch().startsWithIgnoreCase("dev") ? "" : this->getVersion() + " ") +
+            this->getBranch() + ", " + this->getBuildType() +
+            (this->getArchitecture().startsWithIgnoreCase("all") ? "" : ", " + this->getArchitecture());
+    }
+
+    Array<int> getVersionComponents() const
+    {
+        Array<int> result;
+        StringArray components;
+        components.addTokens(this->getVersion(), ".", "");
+        for (const auto &c : components)
+        {
+            result.add(c.getIntValue());
+        }
+        return result;
+    }
+
     JUCE_LEAK_DETECTOR(AppVersionDto)
 };

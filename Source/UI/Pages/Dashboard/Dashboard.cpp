@@ -73,6 +73,8 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->addAndMakeVisible(userProfile.get());
     userProfile->setBounds(400, 24, 272, 32);
 
+    this->updatesInfo.reset(new UpdatesInfoComponent());
+    this->addAndMakeVisible(updatesInfo.get());
 
     //[UserPreSize]
     this->setWantsKeyboardFocus(false);
@@ -104,6 +106,7 @@ Dashboard::~Dashboard()
     separator2 = nullptr;
     loginButton = nullptr;
     userProfile = nullptr;
+    updatesInfo = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -127,6 +130,7 @@ void Dashboard::resized()
     backgroundB->setBounds(getWidth() - (getWidth() - 384), 0, getWidth() - 384, getHeight() - 0);
     backgroundA->setBounds(0, 0, 320, getHeight() - 0);
     projectsList->setBounds(getWidth() - 10 - 376, getHeight() - 10 - (getHeight() - 20), 376, getHeight() - 20);
+    updatesInfo->setBounds(64, getHeight() - 64 - 128, 224, 128);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -195,7 +199,7 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="projectsList" virtualName=""
              explicitFocusOrder="0" pos="10Rr 10Rr 376 20M" sourceFile="Menu/DashboardMenu.cpp"
-             constructorParams="&amp;App::Workspace().getUserProfile()"/>
+             constructorParams="&amp;App::Workspace()"/>
   <JUCERCOMP name="" id="13e51011dd762205" memberName="openProjectButton"
              virtualName="" explicitFocusOrder="0" pos="400 108 271 32" sourceFile="Menu/OpenProjectButton.cpp"
              constructorParams=""/>
@@ -210,6 +214,9 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="f5d48eba3545f546" memberName="userProfile" virtualName=""
              explicitFocusOrder="0" pos="400 24 272 32" sourceFile="UserProfileComponent.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="2558009f569f191b" memberName="updatesInfo" virtualName=""
+             explicitFocusOrder="0" pos="64 64Rr 224 128" sourceFile="UpdatesInfoComponent.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

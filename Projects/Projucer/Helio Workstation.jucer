@@ -321,14 +321,14 @@
                   file="../../Source/Core/Network/Requests/ProjectCloneThread.cpp"/>
             <FILE id="b5QDUQ" name="ProjectCloneThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/ProjectCloneThread.h"/>
-            <FILE id="hk3NVA" name="ProjectSyncThread.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Requests/ProjectSyncThread.cpp"/>
-            <FILE id="jE9wVo" name="ProjectSyncThread.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Requests/ProjectSyncThread.h"/>
-            <FILE id="aKd9ZN" name="ProjectSyncHelpers.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Requests/ProjectSyncHelpers.cpp"/>
-            <FILE id="lxidmn" name="ProjectSyncHelpers.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Requests/ProjectSyncHelpers.h"/>
+            <FILE id="RWmOw5" name="RevisionsSyncHelpers.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncHelpers.cpp"/>
+            <FILE id="iH4zUU" name="RevisionsSyncHelpers.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncHelpers.h"/>
+            <FILE id="oqX7T2" name="RevisionsSyncThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncThread.cpp"/>
+            <FILE id="m6eLsO" name="RevisionsSyncThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncThread.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
@@ -859,6 +859,10 @@
             <FILE id="yJ1nQL" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.h"/>
             <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.cpp"/>
             <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.h"/>
+            <FILE id="D8xNhI" name="UpdatesInfoComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.cpp"/>
+            <FILE id="qpT5aF" name="UpdatesInfoComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.h"/>
             <FILE id="wmerFw" name="UserProfileComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Dashboard/UserProfileComponent.cpp"/>
             <FILE id="LAXjb0" name="UserProfileComponent.h" compile="0" resource="0"
