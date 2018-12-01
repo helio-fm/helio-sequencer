@@ -1,6 +1,6 @@
 [submodule "ThirdParty/JUCE"]
 	path = ThirdParty/JUCE
 	url = git@github.com:peterrudenko/JUCE.git
-[submodule "ThirdParty/FlatHashMap"]
-	path = ThirdParty/FlatHashMap
-	url = git@github.com:peterrudenko/flat_hash_map.git
+[submodule "ThirdParty/HopscotchMap"]
+	path = ThirdParty/HopscotchMap
+	url = git@github.com:peterrudenko/hopscotch-map.git

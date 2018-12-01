@@ -27,6 +27,8 @@
 #pragma warning(disable: 4458)
 // decorated name length exceeded, name was truncated
 #pragma warning(disable: 4503)
+// conditional expression is constant
+#pragma warning(disable: 4127)
 
 //===----------------------------------------------------------------------===//
 // JUCE
@@ -47,13 +49,15 @@
 // A better hash map
 //===----------------------------------------------------------------------===//
 
-#include "../../ThirdParty/FlatHashMap/flat_hash_map.hpp"
+#include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_map.h"
 
 template <class Key, class T, class HashFn = std::hash<Key>, class EqualKey = std::equal_to<Key>>
-using FlatHashMap = ska::flat_hash_map<Key, T, HashFn, EqualKey>;
+using FlatHashMap = tsl::hopscotch_map<Key, T, HashFn, EqualKey>;
+
+#include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_set.h"
 
 template <class Value, class HashFn = std::hash<Value>, class EqualKey = std::equal_to<Value>>
-using FlatHashSet = ska::flat_hash_set<Value, HashFn, EqualKey>;
+using FlatHashSet = tsl::hopscotch_set<Value, HashFn, EqualKey>;
 
 using HashCode = size_t;
 
