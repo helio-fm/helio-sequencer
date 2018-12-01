@@ -78,7 +78,7 @@ void SettingsTreeItem::recreatePage()
     this->settingsList = new ComponentsList(0, 6);
     
     this->translationSettings = new TranslationSettings();
-    const String untranslatedLanguageCaption(CharPointer_UTF8("Language / Sprache / Langue / Idioma / Lingua / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
+    const String untranslatedLanguageCaption(CharPointer_UTF8("Language / Sprache / Langue / \xe8\xaf\xad\xe8\xa8\x80 / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
     this->translationSettingsWrapper = new LabeledSettingsWrapper(this->translationSettings, untranslatedLanguageCaption);
     this->settingsList->addAndMakeVisible(this->translationSettingsWrapper);
 

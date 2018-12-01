@@ -27,17 +27,17 @@ static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionCo
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
-        TRANS("menu::selection::history::checkout"))->closesMenu());
+        TRANS("menu::selection::vcs::checkout"))->closesMenu());
 
     const auto syncState = vcs.getRevisionSyncState(revision);
     const bool needsPush = (syncState == VCS::Revision::NoSync);
     const bool needsPull = (syncState == VCS::Revision::ShallowCopy);
 
     menu.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPushSelected,
-        TRANS("menu::selection::history::push"))->disabledIf(!needsPush)->closesMenu());
+        TRANS("menu::selection::vcs::push"))->disabledIf(!needsPush)->closesMenu());
 
     menu.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPullSelected,
-        TRANS("menu::selection::history::pull"))->disabledIf(!needsPull)->closesMenu());
+        TRANS("menu::selection::vcs::pull"))->disabledIf(!needsPull)->closesMenu());
 
     return menu;
 }

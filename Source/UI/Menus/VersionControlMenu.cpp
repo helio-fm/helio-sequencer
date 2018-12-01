@@ -57,8 +57,8 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
         TRANS("menu::vcs::syncall"))->disabledIf(!loggedIn)->closesMenu());
 
     // TODO when stashes are ready
-    //menu.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,
-    //    TRANS("menu::vcs::pop"))->withSubmenu());
+    //menu.add(MenuItem::item(Icons::stash, CommandIDs::VersionControlPopStash,
+    //    TRANS("menu::vcs::stash"))->withSubmenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }
