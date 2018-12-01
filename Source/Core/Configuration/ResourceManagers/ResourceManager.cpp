@@ -39,9 +39,9 @@ void ResourceManager::updateBaseResource(const ValueTree &resource)
 {
     DBG("Updating downloaded resource file for " + this->resourceName.toString());
 
-#if HELIO_DESKTOP
-    JsonSerializer serializer(false); // debug
-#elif HELIO_MOBILE
+#if DEBUG
+    JsonSerializer serializer(false);
+#else
     BinarySerializer serializer;
 #endif
 
@@ -97,8 +97,7 @@ File ResourceManager::getUsersResourceFile() const
 String ResourceManager::getBuiltInResourceString() const
 {
     int dataSize;
-    const String n = this->resourceName.toString();
-    const String assumedResourceName = n.substring(0, 1).toUpperCase() + n.substring(1) + "_json";
+    const String assumedResourceName = this->resourceName.toString() + "_json";
     if (const auto *data = BinaryData::getNamedResource(assumedResourceName.toUTF8(), dataSize))
     {
         return String::fromUTF8(data, dataSize);

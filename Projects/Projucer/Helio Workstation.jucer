@@ -108,16 +108,16 @@
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
       </GROUP>
-      <FILE id="aMBPbX" name="Noise.png" compile="0" resource="1" file="../../Resources/Noise.png"/>
-      <FILE id="so7ZdZ" name="Arpeggiators.json" compile="0" resource="1"
-            file="../../Resources/Arpeggiators.json"/>
-      <FILE id="XoWHFQ" name="ColourSchemes.json" compile="0" resource="1"
-            file="../../Resources/ColourSchemes.json"/>
-      <FILE id="MfFPAK" name="HotkeySchemes.json" compile="0" resource="1"
-            file="../../Resources/HotkeySchemes.json"/>
-      <FILE id="YgjNxN" name="Scales.json" compile="0" resource="1" file="../../Resources/Scales.json"/>
-      <FILE id="XeVaag" name="Translations.json" compile="0" resource="1"
-            file="../../Resources/Translations.json"/>
+      <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/noise.png"/>
+      <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
+            file="../../Resources/arpeggiators.json"/>
+      <FILE id="XoWHFQ" name="colourSchemes.json" compile="0" resource="1"
+            file="../../Resources/colourSchemes.json"/>
+      <FILE id="MfFPAK" name="hotkeySchemes.json" compile="0" resource="1"
+            file="../../Resources/hotkeySchemes.json"/>
+      <FILE id="YgjNxN" name="scales.json" compile="0" resource="1" file="../../Resources/scales.json"/>
+      <FILE id="XeVaag" name="translations.json" compile="0" resource="1"
+            file="../../Resources/translations.json"/>
     </GROUP>
     <GROUP id="{D7C7CF10-6E05-4F4B-8239-EAE45F06DF85}" name="Source">
       <GROUP id="{F2A6D338-1D87-9C43-B3BB-5AFE01EEE084}" name="Core">

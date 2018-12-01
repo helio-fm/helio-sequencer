@@ -1,4 +1,4 @@
-## ![Vive la culture libre](Resources/Screenshot.png)
+## ![Vive la culture libre](Resources/screenshot-v1.png)
 [Helio Workstation](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
 
 ### Why another sequencer?

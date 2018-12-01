@@ -52,7 +52,7 @@
 #endif
 
 HelioTheme::HelioTheme() :
-    backgroundNoise(ImageCache::getFromMemory(BinaryData::Noise_png, BinaryData::Noise_pngSize)) {}
+    backgroundNoise(ImageCache::getFromMemory(BinaryData::noise_png, BinaryData::noise_pngSize)) {}
 
 static const float kNoiseAlpha = 0.0175f;
 

@@ -232,9 +232,9 @@ ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteP
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
 {
     return { new ModalDialogConfirmation(
-        TRANS("vcs::history::forcecheckout::confirmation"),
-        TRANS("vcs::history::forcecheckout::proceed"),
-        TRANS("vcs::history::forcecheckout::cancel")) };
+        TRANS("dialog::vcs::checkout::warning"),
+        TRANS("dialog::vcs::checkout::proceed"),
+        TRANS("dialog::vcs::checkout::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
