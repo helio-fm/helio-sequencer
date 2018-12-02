@@ -135,7 +135,7 @@ void Head::mergeStateWith(Revision::Ptr changes)
     }
 }
 
-bool VCS::Head::moveTo(const Revision::Ptr revision)
+bool Head::moveTo(const Revision::Ptr revision)
 {
     if (this->isThreadRunning())
     {
@@ -196,18 +196,18 @@ void Head::pointTo(const Revision::Ptr revision)
 }
 
 
-bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
+bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
 {
     if (this->state == nullptr)
     { return false; }
 
     // на входе - один из айтемов диффа
-    VCS::TrackedItem *sourceItem = nullptr;
+    TrackedItem *sourceItem = nullptr;
 
     // ищем в собранном состоянии айтем с соответствующим уидом
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
-        VCS::TrackedItem *item = this->state->getTrackedItem(i);
+        TrackedItem *item = this->state->getTrackedItem(i);
 
         if (item->getUuid() == diffItem->getUuid())
         {
@@ -219,12 +219,12 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
     // обработать тип - добавлено, удалено, изменено
     if (diffItem->getType() == RevisionItem::Changed)
     {
-        VCS::TrackedItem *targetItem = nullptr;
+        TrackedItem *targetItem = nullptr;
 
         // ищем в проекте айтем с соответствующим уидом
         for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            VCS::TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
+            TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {
@@ -241,12 +241,12 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
     }
     else if (diffItem->getType() == RevisionItem::Added)
     {
-        VCS::TrackedItem *targetItem = nullptr;
+        TrackedItem *targetItem = nullptr;
 
         // снова ищем исходный с тем же уидом и вызываем deleteTrackedItem
         for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            VCS::TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
+            TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {
@@ -342,7 +342,7 @@ void Head::cherryPickAll()
     this->targetVcsItemsSource.onResetState();
 }
 
-bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
+bool Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
 {
     if (this->state == nullptr)
     { return false; }
@@ -356,7 +356,7 @@ bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
     return true;
 }
 
-void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
+void Head::checkoutItem(RevisionItem::Ptr stateItem)
 {
     // Changed и Added RevisionItem'ы нужно применять через resetStateTo
     TrackedItem *targetItem = nullptr;

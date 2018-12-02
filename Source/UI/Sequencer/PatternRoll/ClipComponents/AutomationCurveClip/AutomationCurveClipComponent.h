@@ -91,7 +91,6 @@ private:
     void updateCurveComponent(AutomationCurveEventComponent *);
     void reloadTrack();
 
-    HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
 

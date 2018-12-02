@@ -96,7 +96,7 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
             }
         }
 
-        if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
+        if (!deltaFoundInState || dataHasChanged)
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {

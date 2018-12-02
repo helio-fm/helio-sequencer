@@ -87,7 +87,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             }
         }
 
-        if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
+        if (!deltaFoundInState || dataHasChanged)
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {

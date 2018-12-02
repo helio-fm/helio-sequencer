@@ -30,7 +30,6 @@ AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &proj
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
-    roll(roll),
     sequence(sequence)
 {
     this->setAlwaysOnTop(true);
@@ -315,7 +314,6 @@ void AutomationStepsClipComponent::onChangeTrackProperties(MidiTrack *const trac
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
-        if (track->getSequence() != this->sequence) { return; }
         this->updateColours();
         this->repaint();
     }

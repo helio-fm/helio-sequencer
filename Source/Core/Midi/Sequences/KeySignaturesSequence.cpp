@@ -55,7 +55,7 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence, shor
                 static const int flatsMajor[] = { 0, 5, 10, 3, 8, 1, 6, 11 };
                 static const int flatsMinor[] = { 9, 2, 7, 0, 5, 10, 3, 8 };
                 const int rootKey = (n < 0) ?
-                    (isMajor ? flatsMajor[n] : flatsMinor[n]) :
+                    (isMajor ? flatsMajor[-n] : flatsMinor[-n]) :
                     (isMajor ? sharpsMajor[n] : sharpsMinor[n]);
                 const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
                 const KeySignatureEvent signature(this,

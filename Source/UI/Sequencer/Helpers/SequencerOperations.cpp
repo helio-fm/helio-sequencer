@@ -744,7 +744,6 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
 
     do
     {
-        step2HasChanges = false;
         PianoChangeGroup group2Before, group2After;
         
         for (int i = 0; i < selection.getNumSelected(); ++i)
@@ -798,7 +797,6 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
 
     do
     {
-        step3HasChanges = false;
         PianoChangeGroup group3Before, group3After;
         
         for (int i = 0; i < selection.getNumSelected(); ++i)

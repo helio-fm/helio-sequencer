@@ -135,24 +135,20 @@ void ThemeSettingsItem::paint (Graphics& g)
 
         while (i <= j)
         {
-            // show every x'th
-            if (i % 1 == 0)
-            {
-                const int startX1 = barWidth * i;
+            const int startX1 = barWidth * i;
 
-                g.setColour(barStart);
-                g.drawVerticalLine(startX1, lineStartY, lineEndY);
+            g.setColour(barStart);
+            g.drawVerticalLine(startX1, lineStartY, lineEndY);
 
-                g.setColour(barBevel);
-                g.drawVerticalLine(startX1 + 1, lineStartY, lineEndY);
+            g.setColour(barBevel);
+            g.drawVerticalLine(startX1 + 1, lineStartY, lineEndY);
 
-                g.setColour(beatStart);
-                g.drawVerticalLine((barWidth * i + beatWidth * 2), lineStartY, lineEndY);
+            g.setColour(beatStart);
+            g.drawVerticalLine((barWidth * i + beatWidth * 2), lineStartY, lineEndY);
 
-                g.setColour(snapStart);
-                g.drawVerticalLine((barWidth * i + beatWidth), lineStartY, lineEndY);
-                g.drawVerticalLine((barWidth * i + beatWidth * 3), lineStartY, lineEndY);
-            }
+            g.setColour(snapStart);
+            g.drawVerticalLine((barWidth * i + beatWidth), lineStartY, lineEndY);
+            g.drawVerticalLine((barWidth * i + beatWidth * 3), lineStartY, lineEndY);
 
             i++;
         }

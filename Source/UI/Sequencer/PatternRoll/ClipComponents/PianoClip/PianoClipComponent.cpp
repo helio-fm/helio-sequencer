@@ -29,7 +29,6 @@ PianoClipComponent::PianoClipComponent(ProjectTreeItem &project, MidiSequence *s
     HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
-    roll(roll),
     sequence(sequence)
 {
     this->setPaintingIsUnclipped(true);

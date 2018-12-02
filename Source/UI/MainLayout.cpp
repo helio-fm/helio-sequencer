@@ -145,6 +145,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
         source->setPrimarySelection(true);
         App::Workspace().getNavigationHistory().addItemIfNeeded(source);
         this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
+        Config::set(Serialization::Config::lastShownPageId, source->getItemIdentifierString(), false);
     }
 
     if (this->currentContent != nullptr)
@@ -160,8 +161,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
     this->currentContent->setExplicitFocusOrder(1);
     this->currentContent->toFront(false);
-    
-    Config::set(Serialization::Config::lastShownPageId, source->getItemIdentifierString(), false);
 }
 
 void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)

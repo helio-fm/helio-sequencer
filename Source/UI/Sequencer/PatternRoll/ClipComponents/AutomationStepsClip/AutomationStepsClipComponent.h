@@ -86,7 +86,6 @@ private:
     void updateEventComponent(AutomationStepEventComponent *component) const;
     void reloadTrack();
 
-    HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
 

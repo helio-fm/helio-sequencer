@@ -67,7 +67,6 @@ private:
     void reloadTrackMap();
     void repositionAllChildren();
 
-    HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
 

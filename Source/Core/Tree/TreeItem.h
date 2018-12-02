@@ -227,7 +227,7 @@ protected:
 
             if (T *targetTreeItem = dynamic_cast<T *>(child))
             {
-                if (!pickOnlySelectedOnes || (pickOnlySelectedOnes && child->isSelected()))
+                if (!pickOnlySelectedOnes || child->isSelected())
                 {
                     resultArray.add(targetTreeItem);
                 }

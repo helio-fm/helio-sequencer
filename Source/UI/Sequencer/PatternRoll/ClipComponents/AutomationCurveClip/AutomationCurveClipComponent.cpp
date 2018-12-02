@@ -39,7 +39,6 @@ AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectTreeItem &proj
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
-    roll(roll),
     sequence(sequence),
     draggingEvent(nullptr),
     addNewEventMode(false)
