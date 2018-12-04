@@ -1,6 +1,8 @@
 ## ![Vive la culture libre](Resources/Screenshot.png)
 [Helio Workstation](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
 
+[![Backers on Open Collective](https://opencollective.com/helio-workstation/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/helio-workstation/sponsors/badge.svg)](#sponsors) 
+
 ### Why another sequencer?
 
 Most of the DAW interfaces often seem [overcomplicated](http://mashable.com/2015/09/18/german-u-boat/), and they only tend to get more and more bloated over time. Many of them are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
@@ -44,6 +46,36 @@ Helio is a work in progress and still there are many essential features missing,
 Your ideas are also welcome: friendly and lightweight UI is the main development priority in this project, and if you have a vision on how to improve user experience in music composing, feel free to share it.
 
 You could also [make a new translation](https://helio.fm/translations) for your native language or proofread any of existing translations, including English, German, French, Italian, Spanish and Russian.
+
+## Contributors
+
+This project exists thanks to all the people who contribute. 
+<a href="https://github.com/helio-fm/helio-workstation/graphs/contributors"><img src="https://opencollective.com/helio-workstation/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/helio-workstation#backer)]
+
+<a href="https://opencollective.com/helio-workstation#backers" target="_blank"><img src="https://opencollective.com/helio-workstation/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/helio-workstation#sponsor)]
+
+<a href="https://opencollective.com/helio-workstation/sponsor/0/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/1/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/2/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/3/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/4/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/5/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/6/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/7/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/8/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/helio-workstation/sponsor/9/website" target="_blank"><img src="https://opencollective.com/helio-workstation/sponsor/9/avatar.svg"></a>
+
+
 
 ### License and credits
 
