@@ -6,8 +6,9 @@ set -e
 # For develop build, just create a tarball and upload
 cd ${TRAVIS_BUILD_DIR}/Projects/LinuxMakefile/build
 tar --transform 's/.*/\L&/' -czf /tmp/deploy.tar.gz ./Helio
-scp -C /tmp/deploy.tar.gz deploy@helio.fm:/opt/musehackers/files/ci/helio-dev.tar.gz
+scp -C /tmp/deploy.tar.gz deploy@helio.fm:/opt/musehackers/files/ci/helio-dev-64-bit.tar.gz
 
+cd ${TRAVIS_BUILD_DIR}
 sed -i 's,/opt/helio_workstation/,,g' ./Projects/Deployment/Linux/Helio-*-amd64/usr/share/applications/Helio.desktop
 sed -i 's,helio_workstation,helio,g' ./Projects/Deployment/Linux/Helio-*-amd64/usr/share/applications/Helio.desktop
 
@@ -19,7 +20,6 @@ cp ./Projects/Deployment/Linux/Helio*-amd64/usr/share/{icons/hicolor/256x256/app
 
 unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
 
-cd "$TRAVIS_BUILD_DIR"
 wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
 chmod a+x linuxdeployqt-continuous-x86_64.AppImage
 
