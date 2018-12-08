@@ -18,13 +18,13 @@
 #pragma once
 
 #include "TreeItem.h"
+#include "Dashboard.h"
 
 class ProjectTreeItem;
 class VersionControlTreeItem;
 class TrackGroupTreeItem;
 class MidiTrackTreeItem;
 class ScriptTreeItem;
-class Dashboard;
 
 class RootTreeItem final : public TreeItem
 {
@@ -35,21 +35,17 @@ public:
     String getName() const noexcept override;
     Image getIcon() const noexcept override;
 
-    bool mightContainSubItems() override
-    { return false; } // hide open/close button
-    
     void showPage() override;
     void recreatePage() override;
-    
+
     void importMidi(const File &file);
 
     //===------------------------------------------------------------------===//
     // Children
     //===------------------------------------------------------------------===//
 
-    void checkoutProject(const String &name, const String &id, const String &key);
-
-    ProjectTreeItem *openProject(const File &file, int insertIndex = -1);
+    ProjectTreeItem *openProject(const File &file);
+    ProjectTreeItem *checkoutProject(const String &id, const String &name);
 
     ProjectTreeItem *addDefaultProject(const File &projectLocation);
     ProjectTreeItem *addDefaultProject(const String &projectName);

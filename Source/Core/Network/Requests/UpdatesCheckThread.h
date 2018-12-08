@@ -18,40 +18,33 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "UpdatesInfo.h"
+#include "AppInfoDto.h"
 
 class UpdatesCheckThread final : public Thread
 {
 public:
 
-    UpdatesCheckThread() : Thread("UpdatesCheck"), listener(nullptr) {}
+    UpdatesCheckThread() : Thread("UpdatesCheck") {}
 
     ~UpdatesCheckThread() override
     {
         this->stopThread(1000);
     }
 
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void updatesCheckOk(const UpdatesInfo info) = 0;
-        virtual void updatesCheckFailed(const Array<String> &errors) = 0;
-        friend class UpdatesCheckThread;
-    };
-    
-    void checkForUpdates(UpdatesCheckThread::Listener *listener)
+    Function<void(const AppInfoDto info)> onUpdatesCheckOk;
+    Function<void(const Array<String> &errors)> onUpdatesCheckFailed;
+        
+    void checkForUpdates(uint32 delayMs)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
-        this->listener = listener;
+        this->delay = delayMs;
         this->startThread(3);
     }
     
@@ -61,20 +54,22 @@ private:
     {
         namespace ApiRoutes = Routes::HelioFM::Api;
 
-        const HelioApiRequest request(ApiRoutes::requestUpdatesInfo);
+        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
+
+        const BackendRequest request(ApiRoutes::requestUpdatesInfo);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is2xx())
         {
-            callRequestListener(UpdatesCheckThread, updatesCheckFailed, self->response.getErrors());
+            callbackOnMessageThread(UpdatesCheckThread, onUpdatesCheckFailed, self->response.getErrors());
             return;
         }
         
-        callRequestListener(UpdatesCheckThread, updatesCheckOk, { self->response.getBody() });
+        callbackOnMessageThread(UpdatesCheckThread, onUpdatesCheckOk, { self->response.getBody() });
     }
     
-    HelioApiRequest::Response response;
-    UpdatesCheckThread::Listener *listener;
+    uint32 delay;
+    BackendRequest::Response response;
     
     friend class BackendService;
 };

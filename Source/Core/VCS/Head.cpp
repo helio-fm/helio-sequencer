@@ -20,7 +20,6 @@
 #include "TrackedItemsSource.h"
 #include "ProjectTreeItem.h"
 #include "TrackedItem.h"
-#include "HeadState.h"
 #include "App.h"
 
 #include "Diff.h"
@@ -33,37 +32,27 @@ using namespace VCS;
 Head::Head(const Head &other) :
     Thread("Diff Thread"),
     targetVcsItemsSource(other.targetVcsItemsSource),
-    pack(other.pack),
     diffOutdated(other.diffOutdated),
     rebuildingDiffMode(false),
     diff(other.diff),
     headingAt(other.headingAt),
-    state(new HeadState(other.state))
-{
-}
+    state(new Snapshot(other.state.get())) {}
 
-Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
+Head::Head(TrackedItemsSource &targetProject) :
     Thread("Diff Thread"),
     targetVcsItemsSource(targetProject),
-    pack(packPtr),
     diffOutdated(false),
     rebuildingDiffMode(false),
-    diff(Revision::create(packPtr)),
-    headingAt(Revision::create(packPtr)),
-    state(nullptr)
-{
-    if (targetVcsItemsSource != nullptr)
-    {
-        this->state = new HeadState();
-    }
-}
+    diff(new Revision()),
+    headingAt(new Revision()),
+    state(new Snapshot()) {}
 
-ValueTree Head::getHeadingRevision() const
+Revision::Ptr Head::getHeadingRevision() const
 {
     return this->headingAt;
 }
 
-ValueTree Head::getDiff() const
+Revision::Ptr Head::getDiff() const
 {
     const ScopedReadLock lock(this->diffLock);
     return this->diff;
@@ -71,31 +60,21 @@ ValueTree Head::getDiff() const
 
 bool Head::hasAnythingOnTheStage() const
 {
-    const int numProps = this->getDiff().getNumProperties();
-    return (numProps > 0);
+    return !this->getDiff()->getItems().isEmpty();
 }
 
 bool Head::hasTrackedItemsOnTheStage() const
 {
-    const int numProps = this->getDiff().getNumProperties();
-    
-    for (int i = 0; i < numProps; ++i)
+    for (const auto *revRecord : this->getDiff()->getItems())
     {
-        const Identifier id = this->getDiff().getPropertyName(i);
-        const var property = this->getDiff().getProperty(id);
-        
-        if (RevisionItem *revRecord = dynamic_cast<RevisionItem *>(property.getObject()))
+        if (revRecord->getType() != RevisionItem::Added)
         {
-            if (revRecord->getType() != RevisionItem::Added)
-            {
-                return true;
-            }
+            return true;
         }
     }
     
     return false;
 }
-
 
 bool Head::isDiffOutdated() const
 {
@@ -121,103 +100,86 @@ void Head::setRebuildingDiffMode(bool isBuildingNow)
     this->rebuildingDiffMode = isBuildingNow;
 }
 
-void Head::mergeStateWith(ValueTree changes)
+void Head::mergeStateWith(Revision::Ptr changes)
 {
-    Logger::writeToLog("Head::mergeStateWith " + Revision::getUuid(changes));
+    DBG("Head::mergeStateWith " + changes->getUuid());
 
-    ValueTree headRevision(this->getHeadingRevision());
-
-    for (int i = 0; i < changes.getNumProperties(); ++i)
+    Revision::Ptr headRevision(this->getHeadingRevision());
+    for (auto *changesItem : changes->getItems())
     {
-        Identifier id = changes.getPropertyName(i);
-        const var property = changes.getProperty(id);
-
-        if (RevisionItem *changesItem = dynamic_cast<RevisionItem *>(property.getObject()))
+        if (changesItem->getType() == RevisionItem::Added)
         {
-            if (changesItem->getType() == RevisionItem::Added)
+            if (this->state != nullptr)
             {
-                if (this->state != nullptr)
-                {
-                    this->state->addItem(changesItem);
-                }
+                this->state->addItem(changesItem);
             }
-            else if (changesItem->getType() == RevisionItem::Removed)
+        }
+        else if (changesItem->getType() == RevisionItem::Removed)
+        {
+            if (this->state != nullptr)
             {
-                if (this->state != nullptr)
-                {
-                    this->state->removeItem(changesItem);
-                }
+                this->state->removeItem(changesItem);
             }
-            else if (changesItem->getType() == RevisionItem::Changed)
+        }
+        else if (changesItem->getType() == RevisionItem::Changed)
+        {
+            if (this->state != nullptr)
             {
-                if (this->state != nullptr)
-                {
-                    this->state->mergeItem(changesItem);
-                }
+                this->state->mergeItem(changesItem);
             }
-            else { jassertfalse; }
+        }
+        else
+        {
+            jassertfalse;
         }
     }
 }
 
-bool VCS::Head::moveTo(const ValueTree revision)
+bool Head::moveTo(const Revision::Ptr revision)
 {
     if (this->isThreadRunning())
     {
         this->stopThread(DIFF_BUILD_THREAD_STOP_TIMEOUT);
     }
 
-    if (this->targetVcsItemsSource != nullptr)
+    // first, reset the snapshot state
     {
-        // здесь надо будет пройтись до корня и запомнить все ревизии
-        Array<ValueTree> treePath;
-        ValueTree currentRevision(revision);
+        const ScopedWriteLock lock(this->stateLock);
+        this->state.reset(new Snapshot());
+    }
 
-        // сначала обнуляем состояние
+    // a path from the root to current revision
+    ReferenceCountedArray<Revision> treePath;
+    Revision::Ptr currentRevision(revision);
+    while (currentRevision != nullptr)
+    {
+        treePath.insert(0, currentRevision);
+        currentRevision = currentRevision->getParent();
+    }
+
+    // then move from the root back to target revision
+    for (const auto *rev : treePath)
+    {
+        DBG("VCS head moved to " + rev->getUuid());
+
+        // picking all deltas and applying them to current state
+        for (auto *item : rev->getItems())
         {
-            const ScopedWriteLock lock(this->stateLock);
-            this->state = new HeadState();
-        }
-
-        while (currentRevision.isValid())
-        {
-            treePath.insert(0, currentRevision);
-            currentRevision = currentRevision.getParent();
-        }
-
-        // затем, идти по ним в обратном порядке - от корня
-        for (auto && i : treePath)
-        {
-            const ValueTree rev(i);
-
-            Logger::writeToLog("VCS head moved to " + Revision::getUuid(rev));
-
-            // собираем все дельты и применяем их к текущему состоянию
-            for (int j = 0; j < rev.getNumProperties(); ++j)
+            if (item->getType() == RevisionItem::Added)
             {
-                Identifier id = rev.getPropertyName(j);
-                const var &property = rev.getProperty(id);
-
-                if (RevisionItem *item = dynamic_cast<RevisionItem *>(property.getObject()))
-                {
-                    if (item->getType() == RevisionItem::Added)
-                    {
-                        // ::Ptr сам создастся конструктором из указателя и увеличит его счетчик ссылок
-                        this->state->addItem(item);
-                    }
-                    else if (item->getType() == RevisionItem::Removed)
-                    {
-                        this->state->removeItem(item);
-                    }
-                    else if (item->getType() == RevisionItem::Changed)
-                    {
-                        this->state->mergeItem(item);
-                    }
-                    else
-                    {
-                        jassertfalse;
-                    }
-                }
+                this->state->addItem(item);
+            }
+            else if (item->getType() == RevisionItem::Removed)
+            {
+                this->state->removeItem(item);
+            }
+            else if (item->getType() == RevisionItem::Changed)
+            {
+                this->state->mergeItem(item);
+            }
+            else
+            {
+                jassertfalse;
             }
         }
     }
@@ -227,28 +189,25 @@ bool VCS::Head::moveTo(const ValueTree revision)
     return true;
 }
 
-void Head::pointTo(const ValueTree revision)
+void Head::pointTo(const Revision::Ptr revision)
 {
     this->headingAt = revision;
     this->setDiffOutdated(true);
 }
 
 
-bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
+bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return false; }
-
     if (this->state == nullptr)
     { return false; }
 
     // на входе - один из айтемов диффа
-    VCS::TrackedItem *sourceItem = nullptr;
+    TrackedItem *sourceItem = nullptr;
 
     // ищем в собранном состоянии айтем с соответствующим уидом
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
-        VCS::TrackedItem *item = this->state->getTrackedItem(i);
+        TrackedItem *item = this->state->getTrackedItem(i);
 
         if (item->getUuid() == diffItem->getUuid())
         {
@@ -260,12 +219,12 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
     // обработать тип - добавлено, удалено, изменено
     if (diffItem->getType() == RevisionItem::Changed)
     {
-        VCS::TrackedItem *targetItem = nullptr;
+        TrackedItem *targetItem = nullptr;
 
         // ищем в проекте айтем с соответствующим уидом
-        for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+        for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            VCS::TrackedItem *item = this->targetVcsItemsSource->getTrackedItem(i);
+            TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {
@@ -282,12 +241,12 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
     }
     else if (diffItem->getType() == RevisionItem::Added)
     {
-        VCS::TrackedItem *targetItem = nullptr;
+        TrackedItem *targetItem = nullptr;
 
         // снова ищем исходный с тем же уидом и вызываем deleteTrackedItem
-        for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+        for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            VCS::TrackedItem *item = this->targetVcsItemsSource->getTrackedItem(i);
+            TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {
@@ -298,14 +257,14 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
 
         if (targetItem)
         {
-            return this->targetVcsItemsSource->deleteTrackedItem(targetItem);
+            return this->targetVcsItemsSource.deleteTrackedItem(targetItem);
         }
     }
     else if (diffItem->getType() == RevisionItem::Removed)
     {
         const Identifier logicType(sourceItem->getDiffLogic()->getType());
         const Uuid id(sourceItem->getUuid());
-        this->targetVcsItemsSource->initTrackedItem(logicType, id, *sourceItem);
+        this->targetVcsItemsSource.initTrackedItem(logicType, id, *sourceItem);
         return true;
     }
 
@@ -314,9 +273,6 @@ bool Head::resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem)
 
 void Head::checkout()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     if (this->state == nullptr)
     { return; }
 
@@ -324,9 +280,9 @@ void Head::checkout()
     {
         Array<TrackedItem *> itemsToClear;
 
-        for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+        for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            TrackedItem *ti = this->targetVcsItemsSource->getTrackedItem(i);
+            TrackedItem *ti = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (this->state->getItemWithUuid(ti->getUuid()) != nullptr)
             {
@@ -336,7 +292,7 @@ void Head::checkout()
 
         for (auto i : itemsToClear)
         {
-            this->targetVcsItemsSource->deleteTrackedItem(i);
+            this->targetVcsItemsSource.deleteTrackedItem(i);
         }
     }
 
@@ -346,14 +302,11 @@ void Head::checkout()
         this->checkoutItem(stateItem);
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
 }
 
 void Head::cherryPick(const Array<Uuid> uuids)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     if (this->state == nullptr)
     { return; }
 
@@ -372,14 +325,11 @@ void Head::cherryPick(const Array<Uuid> uuids)
         }
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
 }
 
 void Head::cherryPickAll()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-    
     if (this->state == nullptr)
     { return; }
     
@@ -389,14 +339,11 @@ void Head::cherryPickAll()
         this->checkoutItem(stateItem);
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
 }
 
-bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
+bool Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return false; }
-    
     if (this->state == nullptr)
     { return false; }
 
@@ -405,24 +352,19 @@ bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
         this->resetChangedItemToState(item);
     }
 
-    this->targetVcsItemsSource->onResetState();
+    this->targetVcsItemsSource.onResetState();
     return true;
 }
 
-void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
+void Head::checkoutItem(RevisionItem::Ptr stateItem)
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     // Changed и Added RevisionItem'ы нужно применять через resetStateTo
     TrackedItem *targetItem = nullptr;
-
-    //Logger::writeToLog(stateItem->getVCSName());
     
     // ищем в проекте айтем с соответствующим уидом
-    for (int j = 0; j < this->targetVcsItemsSource->getNumTrackedItems(); ++j)
+    for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
     {
-        TrackedItem *item = this->targetVcsItemsSource->getTrackedItem(j);
+        TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(j);
 
         if (item->getUuid() == stateItem->getUuid())
         {
@@ -446,7 +388,7 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
             
             const Identifier logicType(stateItem->getDiffLogic()->getType());
             const Uuid id(stateItem->getUuid());
-            this->targetVcsItemsSource->initTrackedItem(logicType, id, *stateItem);
+            this->targetVcsItemsSource.initTrackedItem(logicType, id, *stateItem);
         }
         else
         {
@@ -457,7 +399,7 @@ void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)
     {
         if (targetItem)
         {
-            this->targetVcsItemsSource->deleteTrackedItem(targetItem);
+            this->targetVcsItemsSource.deleteTrackedItem(targetItem);
         }
     }
 }
@@ -488,11 +430,10 @@ void Head::rebuildDiffNow()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VCS::Head::serialize() const
+ValueTree Head::serialize() const
 {
     ValueTree tree(Serialization::VCS::head);
-    ValueTree stateNode(Serialization::VCS::headIndex);
-    ValueTree stateDataNode(Serialization::VCS::headIndexData);
+    ValueTree snapshotNode(Serialization::VCS::snapshot);
 
     {
         const ScopedReadLock lock(this->stateLock);
@@ -501,70 +442,48 @@ ValueTree VCS::Head::serialize() const
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
             const auto serializedItem = stateItem->serialize();
-            stateNode.appendChild(serializedItem, nullptr);
-            
-            // exports also deltas data
-            for (int j = 0; j < stateItem->getNumDeltas(); ++j)
-            {
-                const auto deltaData = stateItem->serializeDeltaData(j);
-                
-                ValueTree packItem(Serialization::VCS::packItem);
-                packItem.setProperty(Serialization::VCS::packItemRevId, stateItem->getUuid().toString(), nullptr);
-                packItem.setProperty(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString(), nullptr);
-                packItem.appendChild(deltaData, nullptr);
-                
-                stateDataNode.appendChild(packItem, nullptr);
-            }
+            snapshotNode.appendChild(serializedItem, nullptr);
         }
     }
     
-    tree.appendChild(stateNode, nullptr);
-    tree.appendChild(stateDataNode, nullptr);
+    tree.appendChild(snapshotNode, nullptr);
     return tree;
 }
 
-void VCS::Head::deserialize(const ValueTree &tree)
+void Head::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const auto headRoot = tree.hasType(Serialization::VCS::head) ?
+    const auto root = tree.hasType(Serialization::VCS::head) ?
         tree : tree.getChildWithName(Serialization::VCS::head);
-    if (!headRoot.isValid()) { return; }
-    
-    const auto indexRoot = headRoot.getChildWithName(Serialization::VCS::headIndex);
-    if (!indexRoot.isValid()) { return; }
 
-    const auto dataRoot = headRoot.getChildWithName(Serialization::VCS::headIndexData);
-    if (!dataRoot.isValid()) { return; }
+    if (!root.isValid()) { return; }
     
-    forEachValueTreeChildWithType(indexRoot, stateElement, Serialization::VCS::revisionItem)
+    const auto snapshotNode = root.getChildWithName(Serialization::VCS::snapshot);
+    if (!snapshotNode.isValid()) { return; }
+
+    // A temporary workaround, see the comment in VersionControl::deserialize()
+    DeltaDataLookup deltaDataLookup;
+    const auto snapshotDataNode = root.getChildWithName(Serialization::VCS::snapshotData);
+    forEachValueTreeChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
     {
-        RevisionItem::Ptr stateItem(new RevisionItem(this->pack, RevisionItem::Added, nullptr));
-        stateItem->deserialize(stateElement);
+        const String deltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
+        const auto deltaData = dataElement.getChild(0);
+        jassert(deltaData.isValid());
+        deltaDataLookup[deltaId] = deltaData;
+    }
 
-        //Logger::writeToLog("- " + stateItem->getVCSName());
-        
-        // import deltas data
-        forEachValueTreeChildWithType(dataRoot, dataElement, Serialization::VCS::packItem)
-        {
-            const String packItemRevId = dataElement.getProperty(Serialization::VCS::packItemRevId);
-            const String packItemDeltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
-            const auto deltaData = dataElement.getChild(0);
-            
-            if (packItemRevId == stateItem->getUuid().toString())
-            {
-                stateItem->importDataForDelta(deltaData, packItemDeltaId);
-                //Logger::writeToLog("+ " + String(packItemDeltaId->getNumChildElements()));
-            }
-        }
-        
-        this->state->addItem(stateItem);
+    forEachValueTreeChildWithType(snapshotNode, stateElement, Serialization::VCS::revisionItem)
+    {
+        RevisionItem::Ptr snapshotItem(new RevisionItem(RevisionItem::Added, nullptr));
+        snapshotItem->deserialize(stateElement, deltaDataLookup);
+        this->state->addItem(snapshotItem);
     }
 }
 
 void Head::reset()
 {
-    this->state = new HeadState();
+    this->state.reset(new Snapshot());
     this->setDiffOutdated(true);
 }
 
@@ -585,9 +504,6 @@ void Head::changeListenerCallback(ChangeBroadcaster *source)
 
 void Head::run()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-
     if (this->state == nullptr)
     { return; }
     
@@ -596,8 +512,7 @@ void Head::run()
 
     {
         const ScopedWriteLock lock(this->diffLock);
-        this->diff.removeAllChildren(nullptr);
-        this->diff.removeAllProperties(nullptr);
+        this->diff->reset();
     }
 
     const ScopedReadLock threadStateLock(this->stateLock);
@@ -614,10 +529,10 @@ void Head::run()
         bool foundItemInTarget = false;
         const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
 
-        // записи удаления рассматриваем позже
+        // will check `removed` records later
         if (stateItem->getType() == RevisionItem::Removed) { continue; }
 
-        for (int j = 0; j < this->targetVcsItemsSource->getNumTrackedItems(); ++j)
+        for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
             if (this->threadShouldExit())
             {
@@ -626,9 +541,9 @@ void Head::run()
                 return;
             }
 
-            TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(j); // i.e. LayerTreeItem
+            TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. LayerTreeItem
 
-            // айтем из состояния - существует в проекте. добавляем запись changed, если нужно.
+            // state item exists in project, adding `changed` record, if needed
             if (stateItem->getUuid() == targetItem->getUuid())
             {
                 foundItemInTarget = true;
@@ -637,32 +552,27 @@ void Head::run()
 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
-                    var revisionVar(revisionRecord.get());
-
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Changed, itemDiff));
                     const ScopedWriteLock itemDiffLock(this->diffLock);
-                    this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
+                    this->diff->addItem(revisionRecord);
                 }
 
                 break;
             }
         }
 
-        // айтем из состояния - в проекте не найден. добавляем запись removed.
+        // state item was not found in project, adding `removed` record
         if (! foundItemInTarget)
         {
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
-            var revisionVar(revisionRecord.get());
-
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Removed, emptyDiff));
             const ScopedWriteLock emptyDiffLock(this->diffLock);
-            this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
+            this->diff->addItem(revisionRecord);
         }
     }
 
-    // теперь ищем айтемы в проекте, которые отсутствуют - или удалены - в состоянии
-    for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+    // search for project item that are missing (or deleted) in the state
+    for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
     {
         if (this->threadShouldExit())
         {
@@ -672,7 +582,7 @@ void Head::run()
         }
 
         bool foundItemInState = false;
-        TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(i);
+        TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(i);
 
         for (int j = 0; j < this->state->getNumTrackedItems(); ++j)
         {
@@ -687,14 +597,12 @@ void Head::run()
             }
         }
 
-        // и добавляем запись - added, с дельтами, которые тупо копируем у targetItem
+        // copy deltas from targetItem and add `added` record
         if (! foundItemInState)
         {
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
-            var revisionVar(revisionRecord.get());
-
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
             const ScopedWriteLock lock(this->diffLock);
-            this->diff.setProperty(targetItem->getUuid().toString(), revisionVar, nullptr);
+            this->diff->addItem(revisionRecord);
         }
     }
 
@@ -703,12 +611,9 @@ void Head::run()
     this->sendChangeMessage();
 }
 
-// warning код практически дублирует Head::run
+// FIXME: lots of duplicate code form Head::run
 void Head::rebuildDiffSynchronously()
 {
-    if (this->targetVcsItemsSource == nullptr)
-    { return; }
-    
     if (this->state == nullptr)
     { return; }
     
@@ -719,8 +624,7 @@ void Head::rebuildDiffSynchronously()
     
     {
         const ScopedWriteLock lock(this->diffLock);
-        this->diff.removeAllChildren(nullptr);
-        this->diff.removeAllProperties(nullptr);
+        this->diff->reset();
     }
     
     const ScopedReadLock rebuildStateLock(this->stateLock);
@@ -730,14 +634,14 @@ void Head::rebuildDiffSynchronously()
         bool foundItemInTarget = false;
         const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
         
-        // записи удаления рассматриваем позже
+        // will check `removed` records later
         if (stateItem->getType() == RevisionItem::Removed) { continue; }
         
-        for (int j = 0; j < this->targetVcsItemsSource->getNumTrackedItems(); ++j)
+        for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
-            TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(j); // i.e. LayerTreeItem
+            TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. LayerTreeItem
             
-            // айтем из состояния - существует в проекте. добавляем запись changed, если нужно.
+            // state item exists in project, adding `changed` record, if needed
             if (stateItem->getUuid() == targetItem->getUuid())
             {
                 foundItemInTarget = true;
@@ -746,35 +650,30 @@ void Head::rebuildDiffSynchronously()
                 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
-                    var revisionVar(revisionRecord.get());
-                    
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Changed, itemDiff));
                     const ScopedWriteLock lock(this->diffLock);
-                    this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
+                    this->diff->addItem(revisionRecord);
                 }
                 
                 break;
             }
         }
         
-        // айтем из состояния - в проекте не найден. добавляем запись removed.
+        // state item was not found in project, adding `removed` record
         if (! foundItemInTarget)
         {
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-            
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
-            var revisionVar(revisionRecord.get());
-            
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Removed, emptyDiff));
             const ScopedWriteLock lock(this->diffLock);
-            this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
+            this->diff->addItem(revisionRecord);
         }
     }
     
-    // теперь ищем айтемы в проекте, которые отсутствуют - или удалены - в состоянии
-    for (int i = 0; i < this->targetVcsItemsSource->getNumTrackedItems(); ++i)
+    // search for project item that are missing (or deleted) in the state
+    for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
     {
         bool foundItemInState = false;
-        TrackedItem *targetItem = this->targetVcsItemsSource->getTrackedItem(i);
+        TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(i);
         
         for (int j = 0; j < this->state->getNumTrackedItems(); ++j)
         {
@@ -789,14 +688,12 @@ void Head::rebuildDiffSynchronously()
             }
         }
         
-        // и добавляем запись - added, с дельтами, которые тупо копируем у targetItem
+        // copy deltas from targetItem and add `added` record
         if (! foundItemInState)
         {
-            RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
-            var revisionVar(revisionRecord.get());
-            
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
             const ScopedWriteLock lock(this->diffLock);
-            this->diff.setProperty(targetItem->getUuid().toString(), revisionVar, nullptr);
+            this->diff->addItem(revisionRecord);
         }
     }
     

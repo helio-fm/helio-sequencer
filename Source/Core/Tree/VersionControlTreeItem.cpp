@@ -23,23 +23,24 @@
 #include "Head.h"
 #include "ProjectInfo.h"
 #include "ProjectTimeline.h"
-#include "RecentFilesList.h"
-#include "MainLayout.h"
-#include "App.h"
 #include "FailTooltip.h"
 #include "SuccessTooltip.h"
-#include "Icons.h"
 #include "VersionControlMenu.h"
 #include "VersionControlEditor.h"
-#include "HybridRoll.h"
-#include "App.h"
-#include "Workspace.h"
 
-VersionControlTreeItem::VersionControlTreeItem(const String &withExistingId, const String &withExistingKey) :
+#include "App.h"
+#include "Icons.h"
+#include "Workspace.h"
+#include "MainLayout.h"
+#include "ResourceSyncService.h"
+
+VersionControlTreeItem::VersionControlTreeItem() :
     TreeItem("Versions", Serialization::Core::versionControl),
-    vcs(nullptr),
-    existingId(withExistingId),
-    existingKey(withExistingKey) {}
+    vcs(nullptr)
+{
+    this->initVCS();
+    this->initEditor();
+}
 
 VersionControlTreeItem::~VersionControlTreeItem()
 {
@@ -67,7 +68,7 @@ void VersionControlTreeItem::showPage()
     if (this->editor != nullptr)
     {
         this->editor->updateState();
-        App::Layout().showPage(this->editor, this);
+        App::Layout().showPage(this->editor.get(), this);
     }
 }
 
@@ -77,41 +78,26 @@ void VersionControlTreeItem::recreatePage()
     this->initEditor();
 }
 
-String VersionControlTreeItem::getId() const
-{
-    if (this->vcs)
-    {
-        return this->vcs->getPublicId();
-    }
-
-    return {};
-}
-
 String VersionControlTreeItem::getName() const noexcept
 {
     return TRANS("tree::vcs");
 }
 
-void countStatsFor(ValueTree rootRevision, int &numRevivions, int &numDeltas)
-{
-    for (int i = 0; i < rootRevision.getNumProperties(); ++i)
-    {
-        const Identifier id(rootRevision.getPropertyName(i));
-        const var property(rootRevision.getProperty(id));
+//===----------------------------------------------------------------------===//
+// Stats
+//===----------------------------------------------------------------------===//
 
-        if (VCS::RevisionItem *revItem = dynamic_cast<VCS::RevisionItem *>(property.getObject()))
-        {
-            numDeltas += revItem->getNumDeltas();
-        }
+static void countStatsFor(const VCS::Revision::Ptr rootRevision, int &numRevisions, int &numDeltas)
+{
+    for (const auto *revItem : rootRevision->getItems())
+    {
+        numDeltas += revItem->getNumDeltas();
     }
 
-    const int numChildren = rootRevision.getNumChildren();
-    numRevivions += numChildren;
-
-    for (int i = 0; i < numChildren; ++i)
+    numRevisions += rootRevision->getChildren().size();
+    for (auto *childRevision : rootRevision->getChildren())
     {
-        ValueTree childRevision(rootRevision.getChild(i));
-        countStatsFor(childRevision, numRevivions, numDeltas);
+        countStatsFor(childRevision, numRevisions, numDeltas);
     }
 }
 
@@ -119,23 +105,27 @@ String VersionControlTreeItem::getStatsString() const
 {
     if (this->vcs)
     {
-        ValueTree root(this->vcs->getRoot());
-        
+        const auto root(this->vcs->getRoot());
+
         int numRevisions = 1;
         int numDeltas = 0;
         countStatsFor(root, numRevisions, numDeltas);
 
-        return String(TRANS_PLURAL("{x} revisions", numRevisions) + " " + TRANS("common::and") + " " + TRANS_PLURAL("{x} deltas", numDeltas));
+        return String(TRANS_PLURAL("{x} revisions", numRevisions) + " " +
+            TRANS("common::and") + " " + TRANS_PLURAL("{x} deltas", numDeltas));
     }
 
-    return {};
+    return{};
 }
+
+//===----------------------------------------------------------------------===//
+// Version Control
+//===----------------------------------------------------------------------===//
 
 void VersionControlTreeItem::commitProjectInfo()
 {
-    ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-
-    if (parentProject && this->vcs)
+    const auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    if (parentProject != nullptr && this->vcs != nullptr)
     {
         this->vcs->quickAmendItem(parentProject->getProjectInfo());
         this->vcs->quickAmendItem(parentProject->getTimeline());
@@ -182,8 +172,11 @@ void VersionControlTreeItem::toggleQuickStash()
 void VersionControlTreeItem::onItemAddedToTree(bool sendNotifications)
 {
     // Could be still uninitialized at this moment
-    this->initVCS();
-    this->initEditor();
+    if (this->vcs == nullptr)
+    {
+        this->initVCS();
+        this->initEditor();
+    }
 }
 
 void VersionControlTreeItem::onItemDeletedFromTree(bool sendNotifications)
@@ -193,7 +186,7 @@ void VersionControlTreeItem::onItemDeletedFromTree(bool sendNotifications)
 }
 
 //===----------------------------------------------------------------------===//
-// Popup
+// Menu
 //===----------------------------------------------------------------------===//
 
 bool VersionControlTreeItem::hasMenu() const noexcept
@@ -212,6 +205,19 @@ ScopedPointer<Component> VersionControlTreeItem::createMenu()
 }
 
 //===----------------------------------------------------------------------===//
+// Network
+//===----------------------------------------------------------------------===//
+
+void VersionControlTreeItem::cloneProject()
+{
+    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    if (parentProject != nullptr && this->vcs != nullptr)
+    {
+        App::Helio().getResourceSyncService()->cloneProject(this->vcs.get(), parentProject->getId());
+    }
+}
+
+//===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
@@ -220,7 +226,7 @@ ValueTree VersionControlTreeItem::serialize() const
     ValueTree tree(Serialization::Core::treeItem);
     tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
 
-    if (this->vcs)
+    if (this->vcs != nullptr)
     {
         tree.appendChild(this->vcs->serialize(), nullptr);
     }
@@ -233,7 +239,7 @@ void VersionControlTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    if (this->vcs)
+    if (this->vcs != nullptr)
     {
         forEachValueTreeChildWithType(tree, e, Serialization::Core::versionControl)
         {
@@ -247,7 +253,7 @@ void VersionControlTreeItem::deserialize(const ValueTree &tree)
 
 void VersionControlTreeItem::reset()
 {
-    if (this->vcs)
+    if (this->vcs != nullptr)
     {
         this->vcs->reset();
     }
@@ -261,9 +267,9 @@ void VersionControlTreeItem::initVCS()
     auto *parentProject = this->findParentOfType<ProjectTreeItem>();
     if (parentProject != nullptr && this->vcs == nullptr)
     {
-        this->vcs = new VersionControl(parentProject, this->existingId, this->existingKey);
+        this->vcs.reset(new VersionControl(*parentProject));
         this->vcs->addChangeListener(parentProject);
-        parentProject->addChangeListener(this->vcs);
+        parentProject->addChangeListener(this->vcs.get());
     }
 }
 
@@ -272,7 +278,7 @@ void VersionControlTreeItem::shutdownVCS()
     auto *parentProject = this->findParentOfType<ProjectTreeItem>();
     if (parentProject != nullptr && this->vcs != nullptr)
     {
-        parentProject->removeChangeListener(this->vcs);
+        parentProject->removeChangeListener(this->vcs.get());
         this->vcs->removeChangeListener(parentProject);
     }
 }
@@ -280,25 +286,23 @@ void VersionControlTreeItem::shutdownVCS()
 void VersionControlTreeItem::initEditor()
 {
     this->shutdownEditor();
+    
     auto *parentProject = this->findParentOfType<ProjectTreeItem>();
-    if (parentProject != nullptr &&
-        this->vcs != nullptr)
+    if (parentProject != nullptr && this->vcs != nullptr)
     {
-        this->editor = this->vcs->createEditor();
-        this->vcs->addChangeListener(this->editor);
-        parentProject->addChangeListener(this->editor);
+        this->editor.reset(this->vcs->createEditor());
+        this->vcs->addChangeListener(this->editor.get());
+        parentProject->addChangeListener(this->editor.get());
     }
 }
 
 void VersionControlTreeItem::shutdownEditor()
 {
     auto *parentProject = this->findParentOfType<ProjectTreeItem>();
-    if (parentProject != nullptr &&
-        this->vcs != nullptr &&
-        this->editor != nullptr)
+    if (parentProject != nullptr && this->vcs != nullptr && this->editor != nullptr)
     {
-        parentProject->removeChangeListener(this->editor);
-        this->vcs->removeChangeListener(this->editor);
+        parentProject->removeChangeListener(this->editor.get());
+        this->vcs->removeChangeListener(this->editor.get());
         this->editor = nullptr;
     }
 }

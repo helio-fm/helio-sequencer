@@ -82,6 +82,10 @@ String ColourScheme::getName() const noexcept
     return this->name;
 }
 
+#ifndef JUCE_LIVE_CONSTANT
+#   define JUCE_LIVE_CONSTANT(x) (x)
+#endif
+
 Colour ColourScheme::getPrimaryGradientColourA() const
 {
     const Colour c(this->colours[UI::Colours::primaryGradientA]);

@@ -20,17 +20,17 @@
 class VersionControl;
 
 #include "MenuPanel.h"
+#include "Revision.h"
 
 class VersionControlHistorySelectionMenu final : public MenuPanel
 {
 public:
     
-    VersionControlHistorySelectionMenu(ValueTree revision, VersionControl &vcs);
-    void handleCommandMessage(int commandId) override;
+    VersionControlHistorySelectionMenu(VCS::Revision::Ptr revision, VersionControl &vcs);
     
 private:
 
-    ValueTree revision;
+    VCS::Revision::Ptr revision;
     VersionControl &vcs;
 
 };

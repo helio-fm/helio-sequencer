@@ -205,9 +205,9 @@ namespace CommandIDs
 
         // Version control
         VersionControlToggleQuickStash  = 0x4060,
-        VersionControlPush              = 0x4061,
-        VersionControlPull              = 0x4062,
-        VersionControlForcePull         = 0x4063,
+        VersionControlPushSelected      = 0x4061,
+        VersionControlPullSelected      = 0x4062,
+        VersionControlSyncAll           = 0x4063,
         VersionControlResetAll          = 0x4064,
         VersionControlCommitAll         = 0x4065,
         VersionControlSelectAll         = 0x4066,

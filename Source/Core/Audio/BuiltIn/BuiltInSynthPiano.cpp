@@ -26,11 +26,29 @@
 struct PianoSample final
 {
     PianoSample() = default;
-    PianoSample(const PianoSample &other);
-    PianoSample(int lowKey, int highKey, int rootKey,
-        const char *sourceData, int sourceDataSize);
+    PianoSample(const PianoSample &other) :
+        sourceData(other.sourceData),
+        sourceDataSize(other.sourceDataSize),
+        midiNoteForNormalPitch(other.midiNoteForNormalPitch),
+        midiNotes(other.midiNotes) {}
 
-    ScopedPointer<AudioFormatReader> createReader();
+    PianoSample(int lowKey, int highKey, int rootKey,
+        const char *sourceData, int sourceDataSize) :
+        sourceData(sourceData),
+        sourceDataSize(sourceDataSize),
+        midiNoteForNormalPitch(rootKey)
+    {
+        for (int i = lowKey; i <= highKey; ++i)
+        {
+            this->midiNotes.setBit(i);
+        }
+    }
+
+    ScopedPointer<AudioFormatReader> createReader()
+    {
+        static FlacAudioFormat flac;
+        return flac.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
+    }
 
     const char *sourceData;
     int sourceDataSize;
@@ -66,7 +84,6 @@ void BuiltInSynthPiano::processBlock(AudioSampleBuffer &buffer, MidiBuffer &midi
         // Initialization takes about 400ms (i.e. slows app loading way down),
         // and consumes a lot of RAM (though user might never use the built-in piano).
         // So let's do a lazy initialization on first use - i.e. here in processBlock
-        //Logger::writeToLog("BuiltInSynthPiano deferred init.");
         this->initVoices();
         this->initSampler();
     }
@@ -107,28 +124,4 @@ void BuiltInSynthPiano::initSampler()
             s.midiNotes, s.midiNoteForNormalPitch,
             ATTACK_TIME, RELEASE_TIME, MAX_PLAY_TIME));
     }
-}
-
-PianoSample::PianoSample(const PianoSample &other) :
-    sourceData(other.sourceData),
-    sourceDataSize(other.sourceDataSize),
-    midiNoteForNormalPitch(other.midiNoteForNormalPitch),
-    midiNotes(other.midiNotes) {}
-
-PianoSample::PianoSample(int lowKey, int highKey,
-    int rootKey, const char *sourceData, int sourceDataSize) :
-    sourceData(sourceData),
-    sourceDataSize(sourceDataSize),
-    midiNoteForNormalPitch(rootKey)
-{
-    for (int i = lowKey; i <= highKey; ++i)
-    {
-        this->midiNotes.setBit(i);
-    }
-}
-
-juce::ScopedPointer<juce::AudioFormatReader> PianoSample::createReader()
-{
-    FlacAudioFormat flac;
-    return flac.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
 }

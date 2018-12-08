@@ -92,12 +92,10 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
 {
     if (value)
     {
-        //Logger::writeToLog("setQuickSelectLayerMode true");
         this->setMouseCursor(MouseCursor::CrosshairCursor);
     }
     else
     {
-        //Logger::writeToLog("setQuickSelectLayerMode false");
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
 }
@@ -180,9 +178,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         return;
     }
     
-    //const double transportPosition = this->roll.getTransportPositionByBeat(this->getBeat());
-    //Logger::writeToLog("Beat: " + String(this->getBeat()) + ", transport position: " + String(transportPosition));
-    
     if (e.mods.isRightButtonDown() &&
         this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
@@ -257,8 +252,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 note->startDragging(shouldSendMidi);
             }
         }
-
-        //DBG("Note: " + String(note) + " " + String(beat) + " " + String(length));
     }
     else if (e.mods.isMiddleButtonDown())
     {

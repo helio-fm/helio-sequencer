@@ -18,40 +18,33 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
+#include "UserProfileDto.h"
 #include "UserProfile.h"
 
 class RequestUserProfileThread final : public Thread
 {
 public:
 
-    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr), profile({}) {}
+    RequestUserProfileThread() : Thread("RequestUserProfile"), profile({}) {}
     ~RequestUserProfileThread() override
     {
         this->stopThread(1000);
     }
 
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void requestProfileOk(const UserProfile profile) = 0;
-        virtual void requestProfileFailed(const Array<String> &errors) = 0;
-        friend class RequestUserProfileThread;
-    };
-    
-    void requestUserProfile(RequestUserProfileThread::Listener *authListener, UserProfile existingProfile)
+    Function<void(const UserProfileDto profile)> onRequestProfileOk;
+    Function<void(const Array<String> &errors)> onRequestProfileFailed;
+
+    void doRequest(bool fetchAvatarData)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
-        this->profile = existingProfile;
-        this->listener = authListener;
+        this->shouldFetchAvatar = fetchAvatarData;
         this->startThread(3);
     }
     
@@ -62,38 +55,29 @@ private:
         namespace ApiKeys = Serialization::Api::V1;
         namespace ApiRoutes = Routes::HelioFM::Api;
 
-        const HelioApiRequest request(ApiRoutes::requestUserProfile);
+        const BackendRequest request(ApiRoutes::requestUserProfile);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is200())
         {
-            callRequestListener(RequestUserProfileThread, requestProfileFailed, self->response.getErrors());
+            callbackOnMessageThread(RequestUserProfileThread, onRequestProfileFailed, self->response.getErrors());
         }
 
-        const String newProfileAvatarUrl = UserProfile(this->response.getBody(), {}).getAvatarUrl();
-        Image profileAvatar = this->profile.getAvatar();
+        this->profile = { this->response.getBody(), {} };
 
-        if (newProfileAvatarUrl != this->profile.getAvatarUrl())
+        if (this->shouldFetchAvatar)
         {
-            const int s = 16; // local avatar thumbnail size
-            profileAvatar = { Image::RGB, s, s, true };
-            MemoryBlock downloadedData;
-            URL(newProfileAvatarUrl).readEntireBinaryStream(downloadedData, false);
-            MemoryInputStream inputStream(downloadedData, false);
-            Image remoteAvatar = ImageFileFormat::loadFrom(inputStream).rescaled(s, s, Graphics::highResamplingQuality);
-            Graphics g(profileAvatar);
-            g.setTiledImageFill(remoteAvatar, 0, 0, 1.f);
-            g.fillAll();
+            const String newProfileAvatarUrl = UserProfileDto(this->response.getBody(), {}).getAvatarUrl();
+            URL(newProfileAvatarUrl).readEntireBinaryStream(this->profile.getAvatarData(), false);
         }
 
-        this->profile = { this->response.getBody(), profileAvatar };
-
-        callRequestListener(RequestUserProfileThread, requestProfileOk, self->profile);
+        callbackOnMessageThread(RequestUserProfileThread, onRequestProfileOk, self->profile);
     }
     
-    UserProfile profile;
-    HelioApiRequest::Response response;
-    RequestUserProfileThread::Listener *listener;
-    
+    bool shouldFetchAvatar = false;
+
+    UserProfileDto profile;
+    BackendRequest::Response response;
+
     friend class BackendService;
 };

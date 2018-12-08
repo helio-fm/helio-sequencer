@@ -68,7 +68,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
     {
         const Delta *myDelta = this->target.getDelta(i);
 
-        const auto myDeltaData(this->target.serializeDeltaData(i));
+        const auto myDeltaData(this->target.getDeltaData(i));
         ValueTree stateDeltaData;
 
         bool deltaFoundInState = false;
@@ -81,13 +81,13 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             if (myDelta->hasType(stateDelta->getType()))
             {
                 deltaFoundInState = true;
-                stateDeltaData = initialState.serializeDeltaData(j);
+                stateDeltaData = initialState.getDeltaData(j);
                 dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
 
-        if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
+        if (!deltaFoundInState || dataHasChanged)
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
@@ -132,7 +132,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
-        const auto stateDeltaData(initialState.serializeDeltaData(i));
+        const auto stateDeltaData(initialState.getDeltaData(i));
 
         bool deltaFoundInChanges = false;
 
@@ -154,7 +154,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            const auto targetDeltaData(this->target.serializeDeltaData(j));
+            const auto targetDeltaData(this->target.getDeltaData(j));
 
             if (stateDelta->hasType(targetDelta->getType()))
             {
@@ -275,7 +275,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            const auto targetDeltaData(this->target.serializeDeltaData(j));
+            const auto targetDeltaData(this->target.getDeltaData(j));
             const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
             if (foundMissingClip)
             {

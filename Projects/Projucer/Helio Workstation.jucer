@@ -7,7 +7,7 @@
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
               cppLanguageStandard="14" usePrecompiledHeaders="0" precompiledHeaderFileName=""
               precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko"
-              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Popups/ChordBuilder&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes">
+              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Popups/ChordBuilder&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <GROUP id="{566A42BA-3539-AB6F-C7F2-BD3408E4047E}" name="Samples">
@@ -108,27 +108,20 @@
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
       </GROUP>
-      <FILE id="aMBPbX" name="Noise.png" compile="0" resource="1" file="../../Resources/Noise.png"/>
-      <FILE id="so7ZdZ" name="Arpeggiators.json" compile="0" resource="1"
-            file="../../Resources/Arpeggiators.json"/>
-      <FILE id="XoWHFQ" name="ColourSchemes.json" compile="0" resource="1"
-            file="../../Resources/ColourSchemes.json"/>
-      <FILE id="MfFPAK" name="HotkeySchemes.json" compile="0" resource="1"
-            file="../../Resources/HotkeySchemes.json"/>
-      <FILE id="YgjNxN" name="Scales.json" compile="0" resource="1" file="../../Resources/Scales.json"/>
-      <FILE id="XeVaag" name="Translations.json" compile="0" resource="1"
-            file="../../Resources/Translations.json"/>
+      <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/noise.png"/>
+      <FILE id="DQTpOG" name="logo-v2.png" compile="0" resource="1" file="../../Resources/logo-v2.png"/>
+      <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
+            file="../../Resources/arpeggiators.json"/>
+      <FILE id="XoWHFQ" name="colourSchemes.json" compile="0" resource="1"
+            file="../../Resources/colourSchemes.json"/>
+      <FILE id="MfFPAK" name="hotkeySchemes.json" compile="0" resource="1"
+            file="../../Resources/hotkeySchemes.json"/>
+      <FILE id="YgjNxN" name="scales.json" compile="0" resource="1" file="../../Resources/scales.json"/>
+      <FILE id="XeVaag" name="translations.json" compile="0" resource="1"
+            file="../../Resources/translations.json"/>
     </GROUP>
     <GROUP id="{D7C7CF10-6E05-4F4B-8239-EAE45F06DF85}" name="Source">
       <GROUP id="{F2A6D338-1D87-9C43-B3BB-5AFE01EEE084}" name="Core">
-        <GROUP id="{EB8E59B1-1108-D097-8611-160C73AF66AC}" name="App">
-          <FILE id="GGZGiM" name="App.cpp" compile="1" resource="0" file="../../Source/Core/App/App.cpp"/>
-          <FILE id="HIqX8g" name="App.h" compile="0" resource="0" file="../../Source/Core/App/App.h"/>
-          <FILE id="R6femh" name="Logger.h" compile="0" resource="0" file="../../Source/Core/App/Logger.h"/>
-          <FILE id="ranq7g" name="Clipboard.h" compile="0" resource="0" file="../../Source/Core/App/Clipboard.h"/>
-          <FILE id="n2Lsdn" name="Workspace.cpp" compile="1" resource="0" file="../../Source/Core/App/Workspace.cpp"/>
-          <FILE id="sncesv" name="Workspace.h" compile="0" resource="0" file="../../Source/Core/App/Workspace.h"/>
-        </GROUP>
         <GROUP id="{C21ADAA4-EF22-DB83-6A0D-E8AC7E9B05DF}" name="Audio">
           <GROUP id="{735E5D69-BA85-2788-E3C0-566143134659}" name="BuiltIn">
             <FILE id="B3bOVQ" name="BuiltInSynthAudioPlugin.cpp" compile="1" resource="0"
@@ -302,16 +295,41 @@
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
           <GROUP id="{A1687DD1-8D95-2592-A933-804A188EC204}" name="Models">
             <FILE id="AHl4xW" name="ApiModel.h" compile="0" resource="0" file="../../Source/Core/Network/Models/ApiModel.h"/>
-            <FILE id="RlWKKH" name="AuthSession.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AuthSession.h"/>
-            <FILE id="y1LaCU" name="UpdatesInfo.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UpdatesInfo.h"/>
-            <FILE id="ERB820" name="UserProfile.h" compile="0" resource="0" file="../../Source/Core/Network/Models/UserProfile.h"/>
+            <FILE id="h0FG8Z" name="AppInfoDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AppInfoDto.h"/>
+            <FILE id="Gr5lGI" name="AppResourceDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/AppResourceDto.h"/>
+            <FILE id="LD7eu0" name="AppVersionDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/AppVersionDto.h"/>
+            <FILE id="FTRg8N" name="AuthSessionDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/AuthSessionDto.h"/>
+            <FILE id="wlq5uy" name="ProjectDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/ProjectDto.h"/>
+            <FILE id="DOA3wc" name="ProjectsListDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/ProjectsListDto.h"/>
+            <FILE id="m2ytBT" name="RevisionDto.h" compile="0" resource="0" file="../../Source/Core/Network/Models/RevisionDto.h"/>
+            <FILE id="JbvARx" name="UserProfileDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/UserProfileDto.h"/>
+            <FILE id="cLakY7" name="UserResourceDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/UserResourceDto.h"/>
+            <FILE id="EY6gpo" name="UserSessionDto.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Models/UserSessionDto.h"/>
           </GROUP>
           <GROUP id="{BF645CFC-E5C3-362D-D4B5-CFF3106A0CDB}" name="Requests">
-            <FILE id="ChYQjB" name="HelioApiRequest.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Requests/HelioApiRequest.cpp"/>
-            <FILE id="Zri11i" name="HelioApiRequest.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Requests/HelioApiRequest.h"/>
+            <FILE id="MpOqfA" name="BackendRequest.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/BackendRequest.cpp"/>
+            <FILE id="x663ni" name="BackendRequest.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/BackendRequest.h"/>
             <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
+            <FILE id="i9fTOz" name="ProjectCloneThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectCloneThread.cpp"/>
+            <FILE id="b5QDUQ" name="ProjectCloneThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectCloneThread.h"/>
+            <FILE id="RWmOw5" name="RevisionsSyncHelpers.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncHelpers.cpp"/>
+            <FILE id="iH4zUU" name="RevisionsSyncHelpers.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncHelpers.h"/>
+            <FILE id="oqX7T2" name="RevisionsSyncThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncThread.cpp"/>
+            <FILE id="m6eLsO" name="RevisionsSyncThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/RevisionsSyncThread.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
@@ -326,14 +344,14 @@
           <GROUP id="{4D47E5BE-9508-0751-0896-8550519A0BB6}" name="Services">
             <FILE id="QeLQ6I" name="BackendService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/BackendService.h"/>
+            <FILE id="X60dwC" name="ResourceSyncService.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Services/ResourceSyncService.cpp"/>
+            <FILE id="hUPJJL" name="ResourceSyncService.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Services/ResourceSyncService.h"/>
             <FILE id="uoRx7M" name="SessionService.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Services/SessionService.cpp"/>
             <FILE id="cWX3ze" name="SessionService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/SessionService.h"/>
-            <FILE id="X60dwC" name="UpdatesService.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Services/UpdatesService.cpp"/>
-            <FILE id="hUPJJL" name="UpdatesService.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Services/UpdatesService.h"/>
           </GROUP>
           <FILE id="wvwATY" name="HelioApiRoutes.h" compile="0" resource="0"
                 file="../../Source/Core/Network/HelioApiRoutes.h"/>
@@ -392,10 +410,6 @@
           <FILE id="cf5hpo" name="XmlSerializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/XmlSerializer.h"/>
         </GROUP>
         <GROUP id="{979A75EC-73DC-C02F-D56E-866D72FF00D2}" name="Tree">
-          <FILE id="rSZUTM" name="RecentFilesList.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/RecentFilesList.cpp"/>
-          <FILE id="yxTjr8" name="RecentFilesList.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/RecentFilesList.h"/>
           <FILE id="CE6G1K" name="AudioPluginTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/AudioPluginTreeItem.cpp"/>
           <FILE id="RL4cbn" name="AudioPluginTreeItem.h" compile="0" resource="0"
@@ -459,10 +473,6 @@
                 resource="0" file="../../Source/Core/Tree/TreeItemChildrenSerializer.cpp"/>
           <FILE id="icgfCb" name="TreeItemChildrenSerializer.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/TreeItemChildrenSerializer.h"/>
-          <FILE id="uyg8lp" name="TreeNavigationHistory.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/TreeNavigationHistory.cpp"/>
-          <FILE id="r7T3TH" name="TreeNavigationHistory.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/TreeNavigationHistory.h"/>
           <FILE id="S6tz1q" name="VersionControlTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/VersionControlTreeItem.cpp"/>
           <FILE id="Dvn4Zj" name="VersionControlTreeItem.h" compile="0" resource="0"
@@ -540,16 +550,15 @@
           <FILE id="uzpPWh" name="Diff.h" compile="0" resource="0" file="../../Source/Core/VCS/Diff.h"/>
           <FILE id="OtwnG1" name="Head.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Head.cpp"/>
           <FILE id="eU5eqe" name="Head.h" compile="0" resource="0" file="../../Source/Core/VCS/Head.h"/>
-          <FILE id="byUomD" name="HeadState.cpp" compile="1" resource="0" file="../../Source/Core/VCS/HeadState.cpp"/>
-          <FILE id="Dy1Fn9" name="HeadState.h" compile="0" resource="0" file="../../Source/Core/VCS/HeadState.h"/>
-          <FILE id="SguYRb" name="Key.h" compile="0" resource="0" file="../../Source/Core/VCS/Key.h"/>
-          <FILE id="BMxiQb" name="Pack.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Pack.cpp"/>
-          <FILE id="abUynR" name="Pack.h" compile="0" resource="0" file="../../Source/Core/VCS/Pack.h"/>
+          <FILE id="ijlAbu" name="RemoteCache.cpp" compile="1" resource="0" file="../../Source/Core/VCS/RemoteCache.cpp"/>
+          <FILE id="zvFvVW" name="RemoteCache.h" compile="0" resource="0" file="../../Source/Core/VCS/RemoteCache.h"/>
           <FILE id="q9lbK8" name="Revision.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Revision.cpp"/>
           <FILE id="ZfIrA5" name="Revision.h" compile="0" resource="0" file="../../Source/Core/VCS/Revision.h"/>
           <FILE id="uYfQO0" name="RevisionItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/VCS/RevisionItem.cpp"/>
           <FILE id="PYjhVf" name="RevisionItem.h" compile="0" resource="0" file="../../Source/Core/VCS/RevisionItem.h"/>
+          <FILE id="pcmXt5" name="Snapshot.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Snapshot.cpp"/>
+          <FILE id="fP52lO" name="Snapshot.h" compile="0" resource="0" file="../../Source/Core/VCS/Snapshot.h"/>
           <FILE id="pbbYnx" name="StashesRepository.cpp" compile="1" resource="0"
                 file="../../Source/Core/VCS/StashesRepository.cpp"/>
           <FILE id="epEI48" name="StashesRepository.h" compile="0" resource="0"
@@ -562,6 +571,26 @@
           <FILE id="OPbju4" name="VersionControl.h" compile="0" resource="0"
                 file="../../Source/Core/VCS/VersionControl.h"/>
         </GROUP>
+        <GROUP id="{A9E09602-2CF8-76CD-746F-EEFDBEF045A8}" name="Workspace">
+          <FILE id="VDMSxT" name="NavigationHistory.cpp" compile="1" resource="0"
+                file="../../Source/Core/Workspace/NavigationHistory.cpp"/>
+          <FILE id="KYXXgO" name="NavigationHistory.h" compile="0" resource="0"
+                file="../../Source/Core/Workspace/NavigationHistory.h"/>
+          <FILE id="AJZki2" name="RecentProjectInfo.cpp" compile="1" resource="0"
+                file="../../Source/Core/Workspace/RecentProjectInfo.cpp"/>
+          <FILE id="K03ht6" name="RecentProjectInfo.h" compile="0" resource="0"
+                file="../../Source/Core/Workspace/RecentProjectInfo.h"/>
+          <FILE id="LUtAvf" name="UserSessionInfo.cpp" compile="1" resource="0"
+                file="../../Source/Core/Workspace/UserSessionInfo.cpp"/>
+          <FILE id="EYK85b" name="UserSessionInfo.h" compile="0" resource="0"
+                file="../../Source/Core/Workspace/UserSessionInfo.h"/>
+          <FILE id="HRCp8k" name="UserProfile.cpp" compile="1" resource="0" file="../../Source/Core/Workspace/UserProfile.cpp"/>
+          <FILE id="ETmxaf" name="UserProfile.h" compile="0" resource="0" file="../../Source/Core/Workspace/UserProfile.h"/>
+          <FILE id="uIZV8G" name="Workspace.cpp" compile="1" resource="0" file="../../Source/Core/Workspace/Workspace.cpp"/>
+          <FILE id="jS6gW8" name="Workspace.h" compile="0" resource="0" file="../../Source/Core/Workspace/Workspace.h"/>
+        </GROUP>
+        <FILE id="k2o7hr" name="App.cpp" compile="1" resource="0" file="../../Source/Core/App.cpp"/>
+        <FILE id="pufwt2" name="App.h" compile="0" resource="0" file="../../Source/Core/App.h"/>
       </GROUP>
       <GROUP id="{A07E2735-B226-A3C9-CC16-ED6079B86FEB}" name="UI">
         <GROUP id="{079417AE-DCB0-E5C9-4E06-B34561861CD5}" name="Common">
@@ -648,8 +677,6 @@
           <FILE id="r5J37w" name="RadioButton.h" compile="0" resource="0" file="../../Source/UI/Common/RadioButton.h"/>
           <FILE id="x6SfEM" name="ScaleEditor.cpp" compile="1" resource="0" file="../../Source/UI/Common/ScaleEditor.cpp"/>
           <FILE id="Ajrl5t" name="ScaleEditor.h" compile="0" resource="0" file="../../Source/UI/Common/ScaleEditor.h"/>
-          <FILE id="SncSXr" name="ShapeComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Common/ShapeComponent.h"/>
           <FILE id="XuVuyC" name="SpectralLogo.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/SpectralLogo.cpp"/>
           <FILE id="c1jtLI" name="SpectralLogo.h" compile="0" resource="0" file="../../Source/UI/Common/SpectralLogo.h"/>
@@ -681,16 +708,10 @@
           <FILE id="f4aznu" name="RenderDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/RenderDialog.cpp"/>
           <FILE id="ZRs9s2" name="RenderDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/RenderDialog.h"/>
-          <FILE id="VcfFES" name="ScriptDialog.cpp" compile="1" resource="0"
-                file="../../Source/UI/Dialogs/ScriptDialog.cpp"/>
-          <FILE id="NQFdEA" name="ScriptDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/ScriptDialog.h"/>
           <FILE id="NbGM0A" name="TimeSignatureDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.cpp"/>
           <FILE id="ny7iGn" name="TimeSignatureDialog.h" compile="0" resource="0"
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.h"/>
-          <FILE id="Z4BNDb" name="UpdateDialog.cpp" compile="1" resource="0"
-                file="../../Source/UI/Dialogs/UpdateDialog.cpp"/>
-          <FILE id="Gyc7iS" name="UpdateDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/UpdateDialog.h"/>
         </GROUP>
         <GROUP id="{41B9A65A-6B5E-1E5E-01CC-9FDE9CAF4523}" name="Headline">
           <FILE id="LYtBdU" name="Headline.cpp" compile="1" resource="0" file="../../Source/UI/Headline/Headline.cpp"/>
@@ -718,10 +739,6 @@
                 file="../../Source/UI/Headline/HeadlineNavigationPanel.h"/>
         </GROUP>
         <GROUP id="{89960E92-2826-B73B-FFA4-CFBFD275D8BA}" name="Input">
-          <FILE id="ER1gHO" name="LongHoldController.h" compile="0" resource="0"
-                file="../../Source/UI/Input/LongHoldController.h"/>
-          <FILE id="xIjQQl" name="LongHoldListener.h" compile="0" resource="0"
-                file="../../Source/UI/Input/LongHoldListener.h"/>
           <FILE id="OaiUE3" name="LongTapController.h" compile="0" resource="0"
                 file="../../Source/UI/Input/LongTapController.h"/>
           <FILE id="lS3KK2" name="LongTapListener.h" compile="0" resource="0"
@@ -843,6 +860,10 @@
             <FILE id="yJ1nQL" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.h"/>
             <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.cpp"/>
             <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.h"/>
+            <FILE id="D8xNhI" name="UpdatesInfoComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.cpp"/>
+            <FILE id="qpT5aF" name="UpdatesInfoComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.h"/>
             <FILE id="wmerFw" name="UserProfileComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Dashboard/UserProfileComponent.cpp"/>
             <FILE id="LAXjb0" name="UserProfileComponent.h" compile="0" resource="0"
@@ -906,9 +927,6 @@
                   file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.cpp"/>
             <FILE id="XZVY6W" name="SimpleSettingsWrapper.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.h"/>
-            <FILE id="Dt6gTd" name="LogComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/LogComponent.cpp"/>
-            <FILE id="ImgYBs" name="LogComponent.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/LogComponent.h"/>
             <FILE id="Lq3FxT" name="SettingsListItemHighlighter.cpp" compile="1"
                   resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp"/>
             <FILE id="weL74E" name="SettingsListItemHighlighter.h" compile="0"
@@ -1331,7 +1349,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="../../Projects/macOS" bigIcon="WO0LHL" smallIcon="WO0LHL"
+    <XCODE_MAC targetFolder="../../Projects/macOS" bigIcon="DQTpOG" smallIcon="DQTpOG"
                customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;  &#9;&lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;  &#9;&lt;string&gt;public.app-category.music&lt;/string&gt;&#10;  &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
                documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8"
@@ -1343,7 +1361,7 @@
                        customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
         <CONFIGURATION name="Release" osxCompatibility="10.7 SDK" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
-                       stripLocalSymbols="0" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"
+                       stripLocalSymbols="1" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"
                        codeSigningIdentity="Developer ID Application" customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1352,16 +1370,16 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <XCODE_IPHONE targetFolder="../../Projects/iOS" bigIcon="WO0LHL" UIFileSharingEnabled="1"
-                  UIStatusBarHidden="1" smallIcon="WO0LHL" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
+    <XCODE_IPHONE targetFolder="../../Projects/iOS" bigIcon="DQTpOG" UIFileSharingEnabled="1"
+                  UIStatusBarHidden="1" smallIcon="DQTpOG" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0"
                   customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;CFBundleIdentifier&lt;/key&gt;&#10;    &lt;string&gt;fm.helio.mobile&lt;/string&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;"
                   iosScreenOrientation="landscape" customXcodeResourceFolders=""
@@ -1383,41 +1401,39 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
-    <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="WO0LHL"
-            bigIcon="WO0LHL" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
+    <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="DQTpOG"
+            bigIcon="DQTpOG" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC">
+            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj /Zm123"
+            extraLinkerFlags="/OPT:REF /OPT:ICF=5">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" isDebug="1" optimisation="1" targetName="Helio"
-                       wholeProgramOptimisation="1" enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
+                       enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1"/>
         <CONFIGURATION name="Debug 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" isDebug="1" optimisation="1" targetName="Helio"
-                       wholeProgramOptimisation="1" enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
+                       enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1"/>
         <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" isDebug="0" optimisation="3" targetName="Helio"
-                       useRuntimeLibDLL="0" wholeProgramOptimisation="1" enableIncrementalLinking="1"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       linkTimeOptimisation="0"/>
+                       useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
         <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" isDebug="0" optimisation="3" targetName="Helio"
-                       useRuntimeLibDLL="0" enableIncrementalLinking="1" wholeProgramOptimisation="1"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       linkTimeOptimisation="0"/>
+                       useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
+                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
@@ -1427,12 +1443,14 @@
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <VS2017 targetFolder="../../Projects/VisualStudio2017" extraCompilerFlags="/FC"
+    <VS2017 targetFolder="../../Projects/VisualStudio2017" extraCompilerFlags="/FC /Gy /bigobj"
             usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
             precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            smallIcon="WO0LHL" bigIcon="WO0LHL" toolset="v140_xp" windowsTargetPlatformVersion="10.0.26624">
+            smallIcon="DQTpOG" bigIcon="DQTpOG" toolset="v140_xp" extraLinkerFlags="/OPT:REF /OPT:ICF=5"
+            windowsTargetPlatformVersion="10.0.26624">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
@@ -1447,15 +1465,16 @@
         <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"/>
+                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
+                       warningsAreErrors="1"/>
         <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="1"/>
+                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
+                       warningsAreErrors="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
@@ -1465,10 +1484,11 @@
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
-    <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" bigIcon="WO0LHL"
-                smallIcon="WO0LHL" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess"
+    <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" bigIcon="DQTpOG"
+                smallIcon="DQTpOG" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess"
                 cppLanguageStandard="-std=c++14" extraLinkerFlags="" usePrecompiledHeaders="1"
                 precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*">
       <CONFIGURATIONS>
@@ -1487,12 +1507,12 @@
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
     <ANDROIDSTUDIO targetFolder="../../Projects/Android" androidSDKPath="~/Android/Sdk/"
@@ -1513,7 +1533,6 @@
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
@@ -1523,6 +1542,7 @@
         <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </ANDROIDSTUDIO>
   </EXPORTFORMATS>
@@ -1536,17 +1556,16 @@
     <MODULES id="juce_events" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
     <MODULES id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULES id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_ASIO="1" JUCE_WASAPI="1" JUCE_WASAPI_EXCLUSIVE="1" JUCE_DIRECTSOUND="1"
                JUCE_ALSA="1" JUCE_JACK="1" JUCE_USE_CDREADER="0" JUCE_USE_CDBURNER="0"
                JUCE_USE_FLAC="1" JUCE_USE_OGGVORBIS="0" JUCE_USE_MP3AUDIOFORMAT="0"
                JUCE_USE_LAME_AUDIO_FORMAT="0" JUCE_USE_WINDOWS_MEDIA_FORMAT="0"
-               JUCE_CHECK_MEMORY_LEAKS="1" JUCE_USE_CURL="1" JUCE_USE_XSHM="1"
-               JUCE_USE_XRENDER="0" JUCE_USE_XCURSOR="1" JUCE_WEB_BROWSER="0"
-               JUCE_PLUGINHOST_VST="1" JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1"
-               JUCE_CATCH_UNHANDLED_EXCEPTIONS="1" JUCE_ALLOW_STATIC_NULL_VARIABLES="1"
+               JUCE_USE_CURL="1" JUCE_USE_XSHM="1" JUCE_USE_XRENDER="0" JUCE_USE_XCURSOR="1"
+               JUCE_WEB_BROWSER="0" JUCE_PLUGINHOST_VST="1" JUCE_PLUGINHOST_VST3="1"
+               JUCE_PLUGINHOST_AU="1" JUCE_CATCH_UNHANDLED_EXCEPTIONS="1" JUCE_ALLOW_STATIC_NULL_VARIABLES="1"
                JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="1" JUCE_USE_ANDROID_OPENSLES="1"
                JUCE_USE_ANDROID_OBOE="0" JUCE_BELA="0" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="0"
                JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING="1"

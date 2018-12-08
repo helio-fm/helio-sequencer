@@ -19,7 +19,7 @@
 
 //[Headers]
 #include "TreeItem.h"
-#include "TreeNavigationHistory.h"
+#include "NavigationHistory.h"
 
 class HeadlineItem;
 class HeadlineItemDataSource;
@@ -43,7 +43,7 @@ public:
     ~Headline();
 
     //[UserMethods]
-    void syncWithTree(TreeNavigationHistory &history, WeakReference<TreeItem> leaf);
+    void syncWithTree(NavigationHistory &history, WeakReference<TreeItem> leaf);
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
     //[/UserMethods]

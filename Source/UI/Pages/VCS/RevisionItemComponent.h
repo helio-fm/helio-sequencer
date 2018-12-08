@@ -20,29 +20,26 @@
 //[Headers]
 #include "DraggingListBoxComponent.h"
 #include "RevisionItem.h"
-#include "Head.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorHorizontal.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
 
-class RevisionItemComponent  : public DraggingListBoxComponent
+class RevisionItemComponent final : public DraggingListBoxComponent
 {
 public:
 
-    RevisionItemComponent (ListBox &parentListBox, VCS::Head &owner);
-
+    RevisionItemComponent(ListBox &parentListBox);
     ~RevisionItemComponent();
 
     //[UserMethods]
 
-    void updateItemInfo(int rowNumber, bool isLastRow, VCS::RevisionItem::Ptr revisionItemInfo);
+    void updateItemInfo(VCS::RevisionItem::Ptr revisionItem,
+        int rowNumber, bool isLastRow, bool isSelectable);
+
     void select() const;
     void deselect() const;
 
-    VCS::RevisionItem::Ptr getRevisionItem()
-    {
-        return this->revisionItem;
-    }
+    VCS::RevisionItem::Ptr getRevisionItem() const noexcept;
 
     void setSelected(bool shouldBeSelected) override;
 
@@ -65,17 +62,13 @@ private:
     int row;
 
     ScopedPointer<Component> selectionComponent;
-
     VCS::RevisionItem::Ptr revisionItem;
-    VCS::Head &head;
-
-    JUCE_DECLARE_WEAK_REFERENCEABLE(RevisionItemComponent)
 
     //[/UserVariables]
 
-    ScopedPointer<Label> itemLabel;
-    ScopedPointer<Label> deltasLabel;
-    ScopedPointer<SeparatorHorizontal> separator;
+    UniquePointer<Label> itemLabel;
+    UniquePointer<Label> deltasLabel;
+    UniquePointer<SeparatorHorizontalFading> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionItemComponent)
 };

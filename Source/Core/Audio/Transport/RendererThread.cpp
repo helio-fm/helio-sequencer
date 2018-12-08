@@ -40,7 +40,6 @@ float RendererThread::getPercentsComplete() const
     return this->percentsDone;
 }
 
-
 void RendererThread::startRecording(const File &file)
 {
     this->transport.rebuildSequencesIfNeeded();
@@ -67,22 +66,26 @@ void RendererThread::startRecording(const File &file)
             this->percentsDone = 0.f;
         }
         
-        if (file.getFileExtension().toLowerCase() == ".wav")
+        // 16 bits per sample should be enough for anybody :)
+        // ..wanna fight about it? https://people.xiph.org/~xiphmont/demo/neil-young.html
+        const int bitDepth = 16;
+
+        if (file.getFileExtension().endsWithIgnoreCase("wav"))
         {
             WavAudioFormat wavFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
+            this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
         }
-        else if (file.getFileExtension().toLowerCase() == ".flac")
+        else if (file.getFileExtension().endsWithIgnoreCase("flac"))
         {
             FlacAudioFormat flacFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
+            this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
         }
 
         if (writer != nullptr)
         {
-            Logger::writeToLog(file.getFullPathName());
+            DBG(file.getFullPathName());
             fileStream.release(); // (passes responsibility for deleting the stream to the writer object that is now using it)
             this->startThread(9);
         }
@@ -107,7 +110,6 @@ bool RendererThread::isRecording() const
     //return (this->writer != nullptr) && this->isThreadRunning();
     return this->isThreadRunning();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Thread
@@ -155,7 +157,7 @@ void RendererThread::run()
         subBuffer->instrument = instrument;
         subBuffer->sampleBuffer = AudioSampleBuffer(numOutChannels, bufferSize);
         subBuffers.add(subBuffer);
-        //Logger::writeToLog("Adding instrument: " + String(instrument->getName()));
+        //DBG("Adding instrument: " + String(instrument->getName()));
     }
 
     // step 2. release resources, prepare to play, etc.
@@ -226,7 +228,7 @@ void RendererThread::run()
                 {
                     if (nextMessage.instrument == subBuffer->instrument)
                     {
-                        //Logger::writeToLog("Adding message with frame " + String(messageFrame));
+                        //DBG("Adding message with frame " + String(messageFrame));
                         subBuffer->midiBuffer.addEvent(nextMessage.message, messageFrame);
                     }
                 }
@@ -247,7 +249,7 @@ void RendererThread::run()
             {
                 const ScopedLock lock(graph->getCallbackLock());
                 
-                //Logger::writeToLog("processBlock num midi events: " + String(subBuffer->midiBuffer.getNumEvents()));
+                //DBG("processBlock num midi events: " + String(subBuffer->midiBuffer.getNumEvents()));
                 graph->processBlock(subBuffer->sampleBuffer, subBuffer->midiBuffer);
                 subBuffer->midiBuffer.clear();
 
@@ -287,7 +289,7 @@ void RendererThread::run()
         {
             const ScopedWriteLock pl(this->percentsLock);
             this->percentsDone = float(currentFrame / lastFrame);
-            //Logger::writeToLog("this->percentsDone : " + String(this->percentsDone));
+            //DBG("this->percentsDone : " + String(this->percentsDone));
         }
     }
 

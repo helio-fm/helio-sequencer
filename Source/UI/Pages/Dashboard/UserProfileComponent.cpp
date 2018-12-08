@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "App.h"
-#include "SessionService.h"
+#include "Workspace.h"
 #include "UserProfile.h"
 //[/MiscUserDefs]
 
@@ -100,13 +100,13 @@ void UserProfileComponent::resized()
 //[MiscUserCode]
 void UserProfileComponent::updateProfileInfo()
 {
-    const auto *session = App::Helio().getSessionService();
-    if (session->isLoggedIn())
+    const auto &userProfile = App::Workspace().getUserProfile();
+    if (userProfile.isLoggedIn())
     {
-        this->avatar->setIconImage(session->getUserProfile().getAvatar());
-        this->nameLabel->setText("/" + session->getUserProfile().getLogin(), dontSendNotification);
+        this->avatar->setIconImage(userProfile.getAvatar());
+        this->nameLabel->setText("/" + userProfile.getLogin(), dontSendNotification);
         this->clickHandler->onClick = []() {
-            URL(App::Helio().getSessionService()->getUserProfile().getProfileUrl()).launchInDefaultBrowser();
+            URL(App::Workspace().getUserProfile().getProfileUrl()).launchInDefaultBrowser();
         };
     }
 }

@@ -86,12 +86,11 @@ private:
     void updateEventComponent(AutomationStepEventComponent *component) const;
     void reloadTrack();
 
-    HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
 
     OwnedArray<AutomationStepEventComponent> eventComponents;
-    SparseHashMap<AutomationEvent, AutomationStepEventComponent *, MidiEventHash> eventsHash;
+    FlatHashMap<AutomationEvent, AutomationStepEventComponent *, MidiEventHash> eventsHash;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationStepsClipComponent)
 };

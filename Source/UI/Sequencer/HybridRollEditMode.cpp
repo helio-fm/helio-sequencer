@@ -134,7 +134,6 @@ MouseCursor HybridRollEditMode::getCursor() const
 
 void HybridRollEditMode::unsetLastMode()
 {
-    //Logger::writeToLog("Unsetting to " + String(this->previousMode));
     Mode temp = this->mode;
     this->mode = this->previousMode;
     this->previousMode = temp;

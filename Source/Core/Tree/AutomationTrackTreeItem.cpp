@@ -87,7 +87,7 @@ VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree AutomationTrackTreeItem::serializeDeltaData(int deltaIndex) const
+ValueTree AutomationTrackTreeItem::getDeltaData(int deltaIndex) const
 {
     using namespace Serialization::VCS;
     if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackPath))
@@ -134,7 +134,7 @@ void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
-        const auto newDeltaData(newState.serializeDeltaData(i));
+        const auto newDeltaData(newState.getDeltaData(i));
         
         if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {

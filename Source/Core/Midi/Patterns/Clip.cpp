@@ -220,13 +220,6 @@ void Clip::applyChanges(const Clip &other)
     this->updateCaches();
 }
 
-HashCode Clip::hashCode() const noexcept
-{
-    const HashCode code = static_cast<HashCode>(this->beat)
-        + static_cast<HashCode>(this->getId().hashCode());
-    return code;
-}
-
 Clip::Id Clip::createId() const noexcept
 {
     if (this->pattern != nullptr)

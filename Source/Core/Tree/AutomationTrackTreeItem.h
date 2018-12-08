@@ -34,7 +34,7 @@ public:
 
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    ValueTree serializeDeltaData(int deltaIndex) const override;
+    ValueTree getDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
 

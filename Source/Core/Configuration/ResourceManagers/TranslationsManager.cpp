@@ -42,10 +42,8 @@ struct PluralEquationWrapper: public DynamicObject
     {
         if (args.numArguments > 0)
         {
-            if (PluralEquationWrapper *thisObject =
-                dynamic_cast<PluralEquationWrapper *>(args.thisObject.getObject()))
+            if (auto *thisObject = dynamic_cast<PluralEquationWrapper *>(args.thisObject.getObject()))
             {
-                //Logger::writeToLog("PluralEquationWrapper::detect " + args.arguments[0].toString());
                 thisObject->translator.equationResult = args.arguments[0].toString();
             }
         }
@@ -91,7 +89,7 @@ void TranslationsManager::loadLocaleWithName(const String &localeName)
 {
     if (this->currentTranslation->name == localeName)
     {
-        Logger::writeToLog(localeName + "translation is already loaded, skipping");
+        DBG(localeName + "translation is already loaded, skipping");
         return;
     }
 
@@ -150,7 +148,6 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
         return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
     }
 
-    //const double startTime = Time::getMillisecondCounterHiRes();
     const int64 absTargetNumber = (targetNumber > 0 ? targetNumber : -targetNumber);
 
     const String expessionToEvaluate =
@@ -158,16 +155,11 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
         Translations::wrapperMethodName + "(" +
         this->currentTranslation->pluralEquation.replace(Translations::metaSymbol, String(absTargetNumber)) + ")";
 
-    //Logger::writeToLog("expessionToEvaluate: " + expessionToEvaluate);
-
-    Result result = this->engine->execute(expessionToEvaluate);
-    //const double elapsedMs = Time::getMillisecondCounterHiRes() - startTime;
-
+    const Result result = this->engine->execute(expessionToEvaluate);
     if (!result.failed())
     {
         const String pluralForm = this->equationResult;
         auto *targetPlurals = this->currentTranslation->plurals[baseLiteral].get();
-        //Logger::writeToLog("(Execution time: " + String (elapsedMs, 2) + " milliseconds): " + pluralForm);
         const auto translation = targetPlurals->find(pluralForm);
         if (translation != targetPlurals->end())
         {

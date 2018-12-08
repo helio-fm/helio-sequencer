@@ -261,8 +261,6 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
 
                 if (this->timeDistanceIndicator == nullptr)
                 {
-                    //Logger::writeToLog("HybridRollHeader::initTimeDistanceIndicatorIfPossible " + String(distance));
-                    
                     // todo rebuild sequences if not playing, do nothing if playing
                     this->transport.stopPlayback();
                     

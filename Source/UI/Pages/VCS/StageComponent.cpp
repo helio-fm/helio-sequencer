@@ -157,6 +157,9 @@ void StageComponent::handleCommandMessage (int commandId)
         this->selectAll(sendNotification);
         this->resetSelected();
         break;
+    case CommandIDs::VersionControlSyncAll:
+        this->vcs.syncAllRevisions();
+        break;
     default:
         break;
     }
@@ -184,7 +187,7 @@ void StageComponent::clearSelection()
 
 void StageComponent::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (Head *head = dynamic_cast<Head *>(source))
+    if (auto *head = dynamic_cast<Head *>(source))
     {
         if (head->isRebuildingDiff())
         {
@@ -209,28 +212,25 @@ Component *StageComponent::refreshComponentForRow(int rowNumber,
     const ScopedReadLock lock(this->diffLock);
 
     // juce out-of-range fix
-    const int numProps = this->lastDiff.getNumProperties();
-    const bool isLastRow = (rowNumber == (numProps - 1));
+    const int numRecords = this->stageDeltas.size();
+    const bool isLastRow = (rowNumber == (numRecords - 1));
 
-    if (rowNumber >= numProps) { return existingComponentToUpdate; }
-
-    const Identifier id = this->lastDiff.getPropertyName(rowNumber);
-    const var property = this->lastDiff.getProperty(id);
-
-    if (RevisionItem *revRecord = dynamic_cast<RevisionItem *>(property.getObject()))
+    if (rowNumber >= numRecords) { return existingComponentToUpdate; }
+    
+    if (auto *revRecord = this->stageDeltas[rowNumber].get())
     {
         if (existingComponentToUpdate != nullptr)
         {
-            if (RevisionItemComponent *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
+            if (auto *row = dynamic_cast<RevisionItemComponent *>(existingComponentToUpdate))
             {
-                row->updateItemInfo(rowNumber, isLastRow, revRecord);
+                row->updateItemInfo(revRecord, rowNumber, isLastRow, true);
                 return existingComponentToUpdate;
             }
         }
         else
         {
-            auto row = new RevisionItemComponent(*this->changesList, this->vcs.getHead());
-            row->updateItemInfo(rowNumber, isLastRow, revRecord);
+            auto *row = new RevisionItemComponent(*this->changesList);
+            row->updateItemInfo(revRecord, rowNumber, isLastRow, true);
             return row;
         }
     }
@@ -258,7 +258,7 @@ void StageComponent::selectedRowsChanged(int lastRowSelected)
 int StageComponent::getNumRows()
 {
     const ScopedReadLock lock(this->diffLock);
-    const int numProps = this->lastDiff.getNumProperties();
+    const int numProps = this->stageDeltas.size();
     return numProps;
 }
 
@@ -269,7 +269,8 @@ int StageComponent::getNumRows()
 void StageComponent::updateList()
 {
     const ScopedWriteLock lock(this->diffLock);
-    this->lastDiff = this->vcs.getHead().getDiff().createCopy();
+    this->stageDeltas.clearQuick();
+    this->stageDeltas.addArray(this->vcs.getHead().getDiff()->getItems());
     this->changesList->deselectAllRows();
     this->changesList->updateContent();
     this->repaint();
@@ -278,7 +279,7 @@ void StageComponent::updateList()
 void StageComponent::clearList()
 {
     const ScopedWriteLock lock(this->diffLock);
-    this->lastDiff = ValueTree();
+    this->stageDeltas.clearQuick();
     this->changesList->deselectAllRows();
     this->changesList->updateContent();
     this->repaint();

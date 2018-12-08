@@ -24,51 +24,23 @@
 #include "RequestUserProfileThread.h"
 #include "UpdatesCheckThread.h"
 
-class SessionService final :
-    public ChangeBroadcaster,
-    private BackendService,
-    private AuthThread::Listener,
-    private TokenUpdateThread::Listener,
-    private RequestUserProfileThread::Listener
+class SessionService final : private BackendService
 {
 public:
     
-    SessionService();
+    SessionService(UserProfile &userProfile);
 
-    using AuthCallback = Function<void(bool, const Array<String> &)>;
-
-    static String getApiToken();
-    static bool isLoggedIn();
-
-    const UserProfile &getUserProfile() const noexcept;
-    
-    void signIn(const String &provider, AuthCallback callback = nullptr);
+    void signIn(const String &provider);
     void cancelSignInProcess();
     void signOut();
 
 private:
 
-    void timerCallback() override;
-    static void setApiToken(const String &token);
+    UserProfile &userProfile;
 
-    UserProfile userProfile;
-    void resetUserProfile();
+    AuthThread *prepareAuthThread();
+    TokenUpdateThread *prepareTokenUpdateThread();
+    RequestUserProfileThread *prepareProfileRequestThread();
 
-    AuthCallback authCallback;
-
-private:
-    
-    // will be called on the message thread:
-    
-    void authSessionInitiated(const AuthSession session, const String &redirect) override;
-    void authSessionFinished(const AuthSession session) override;
-    void authSessionFailed(const Array<String> &errors) override;
-
-    void requestProfileOk(const UserProfile profile) override;
-    void requestProfileFailed(const Array<String> &errors) override;
-
-    void tokenUpdateOk(const String &newToken) override;
-    void tokenUpdateFailed(const Array<String> &errors) override;
-    void tokenUpdateNoResponse() override;
-
+    JUCE_DECLARE_NON_COPYABLE(SessionService)
 };

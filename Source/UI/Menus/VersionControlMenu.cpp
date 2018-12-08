@@ -21,6 +21,10 @@
 #include "StageComponent.h"
 #include "VersionControl.h"
 
+#include "App.h"
+#include "Workspace.h"
+#include "UserProfile.h"
+
 #include "MenuPanel.h"
 #include "CommandIDs.h"
 #include "Icons.h"
@@ -46,18 +50,15 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
         CommandIDs::VersionControlResetAll,
         TRANS("menu::vcs::resetall"))->closesMenu());
 
-    // TODO push-pull
-    menu.add(MenuItem::item(Icons::push,
-        CommandIDs::VersionControlPush,
-        TRANS("menu::vcs::push"))->disabledIf(true)->closesMenu());
+    const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
 
-    menu.add(MenuItem::item(Icons::pull,
-        CommandIDs::VersionControlPull,
-        TRANS("menu::vcs::pull"))->disabledIf(true)->closesMenu());
+    menu.add(MenuItem::item(Icons::push,
+        CommandIDs::VersionControlSyncAll,
+        TRANS("menu::vcs::syncall"))->disabledIf(!loggedIn)->closesMenu());
 
     // TODO when stashes are ready
-    //menu.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,
-    //    TRANS("menu::vcs::pop"))->withSubmenu());
+    //menu.add(MenuItem::item(Icons::stash, CommandIDs::VersionControlPopStash,
+    //    TRANS("menu::vcs::stash"))->withSubmenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }

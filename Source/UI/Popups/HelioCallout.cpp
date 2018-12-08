@@ -82,7 +82,6 @@ HelioCallout::~HelioCallout()
     }
 #endif
     
-    //Logger::writeToLog("HelioCallout::~HelioCallout");
     kClickCounterOnPopupClose = Desktop::getInstance().getMouseButtonClickCounter();
 }
 
@@ -285,9 +284,6 @@ void HelioCallout::findTargetPointAndUpdateBounds()
         
         const Rectangle<int> pageBounds = App::Layout().getPageBounds();
         const Rectangle<int> pointBounds = clickBounds.expanded(CALLOUT_FRAME_MARGIN).constrainedWithin(pageBounds);
-        
-        //Logger::writeToLog(String(this->clickPointAbs.getX()) + ":" + String(this->clickPointAbs.getY()));
-        //Logger::writeToLog(String(pointBounds.getX()) + ":" + String(pointBounds.getY()));
         
         this->pointToAndFit(pointBounds, pageBounds);
     }

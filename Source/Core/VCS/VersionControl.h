@@ -29,73 +29,69 @@ class VersionControlEditor;
 #include "Delta.h"
 #include "Revision.h"
 #include "Head.h"
-#include "HeadState.h"
-#include "Pack.h"
+#include "RemoteCache.h"
 #include "StashesRepository.h"
 
-#include "Key.h"
-
-class VersionControl :
+class VersionControl final :
     public Serializable,
     public ChangeListener,
     public ChangeBroadcaster
 {
 public:
 
-    explicit VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
-                   const String &existingId = "",
-                   const String &existingKeyBase64 = "");
-
+    explicit VersionControl(VCS::TrackedItemsSource &parent);
     ~VersionControl() override;
 
-
-    //===------------------------------------------------------------------===//
-    // Push-pull stuff
-    //===------------------------------------------------------------------===//
-
-    inline String getParentName() const
-    { return this->parentItem->getVCSName(); }
-
-    inline String getPublicId() const
-    { return this->publicId; }
-
-    inline MemoryBlock getKey()
-    { return this->key.getKeyData(); }
-
-    inline int64 getVersion() const
-    { return this->historyMergeVersion; }
-
-    inline void incrementVersion()
-    { this->historyMergeVersion += 1; }
-
-    String calculateHash() const;
-    void mergeWith(VersionControl &remoteHistory);
-
-    //===------------------------------------------------------------------===//
-    // VCS
-    //===------------------------------------------------------------------===//
-
     VersionControlEditor *createEditor();
-    VCS::Head &getHead() { return this->head; }
-    ValueTree getRoot() { return this->rootRevision; }
 
-    void moveHead(const ValueTree revision);
-    void checkout(const ValueTree revision);
-    void cherryPick(const ValueTree revision, const Array<Uuid> uuids);
+    //===------------------------------------------------------------------===//
+    // Accessors
+    //===------------------------------------------------------------------===//
+
+    VCS::Head &getHead() noexcept { return this->head; }
+    VCS::Revision::Ptr getRoot() noexcept { return this->rootRevision; }
+
+    //===------------------------------------------------------------------===//
+    // Version control: revisions
+    //===------------------------------------------------------------------===//
+
+    void moveHead(const VCS::Revision::Ptr revision);
+    void checkout(const VCS::Revision::Ptr revision);
+    void cherryPick(const VCS::Revision::Ptr revision, const Array<Uuid> uuids);
+
+    void replaceHistory(const VCS::Revision::Ptr root);
+    void appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId);
+    VCS::Revision::Ptr updateShallowRevisionData(const String &id, const ValueTree &data);
 
     bool resetChanges(SparseSet<int> selectedItems);
     bool resetAllChanges();
     bool commit(SparseSet<int> selectedItems, const String &message);
-    void quickAmendItem(VCS::TrackedItem *targetItem); // for projectinfo
+    void quickAmendItem(VCS::TrackedItem *targetItem); // for first commit
+
+    //===------------------------------------------------------------------===//
+    // Version control: stashes
+    //===------------------------------------------------------------------===//
 
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
-    bool applyStash(const ValueTree stash, bool shouldKeepStash = false);
+    bool applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash = false);
     bool applyStash(const String &stashId, bool shouldKeepStash = false);
     
     bool hasQuickStash() const;
     bool quickStashAll();
     bool applyQuickStash();
-    
+
+    //===------------------------------------------------------------------===//
+    // Network
+    //===------------------------------------------------------------------===//
+
+    void syncAllRevisions();
+    void syncRevision(const VCS::Revision::Ptr revision);
+    void fetchRevisionsIfNeeded();
+
+    void updateLocalSyncCache(const VCS::Revision::Ptr revision);
+    void updateRemoteSyncCache(const Array<RevisionDto> &revisions);
+    VCS::Revision::SyncState getRevisionSyncState(const VCS::Revision::Ptr revision) const;
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -108,30 +104,21 @@ public:
     // ChangeListener
     //===------------------------------------------------------------------===//
 
-    void changeListenerCallback(ChangeBroadcaster* source) override;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
     
 protected:
 
-    StringArray recursiveGetHashes(const ValueTree revision) const;
-    void recursiveTreeMerge(ValueTree localRevision, ValueTree remoteRevision);
-    ValueTree getRevisionById(const ValueTree startFrom, const String &id) const;
+    VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
 
-    VCS::Pack::Ptr pack;
-    VCS::StashesRepository::Ptr stashes;
     VCS::Head head;
-
-    // the history tree itself
-    ValueTree rootRevision;
-    WeakReference<VCS::TrackedItemsSource> parentItem;
-
-protected:
-
-    String publicId;
-    VCS::Key key;
-    int64 historyMergeVersion;
+    VCS::RemoteCache remoteCache;
+    VCS::StashesRepository::Ptr stashes;
+    VCS::Revision::Ptr rootRevision; // the history tree itself
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
+    VCS::TrackedItemsSource &parent;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(VersionControl)
 };

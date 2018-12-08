@@ -34,7 +34,7 @@ public:
     ~MainLayout() override;
 
     void show();
-    void forceRestoreLastOpenedPage();
+    void restoreLastOpenedPage();
 
     Rectangle<int> getPageBounds() const;
     static constexpr int getScrollerHeight() { return (40 + 32); }
@@ -53,16 +53,21 @@ public:
     void broadcastCommandMessage(int commandId);
 
     //===------------------------------------------------------------------===//
-    // UI
+    // Tooltip: non-modal and can only be one at the time
     //===------------------------------------------------------------------===//
 
-    // FIXME: these ones assume that modal component will delete itself eventually
-    // which sucks, please rework into some better ownership model:
-    void showTooltip(const String &message, int timeOutMs = 15000);
-    void showTooltip(Component *newTooltip, int timeOutMs = 15000);
-    void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
+    void showTooltip(const String &message, int timeoutMs = 15000);
+    void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeoutMs = 15000);
+    void hideTooltipIfAny();
+
+    //===------------------------------------------------------------------===//
+    // Modal components (like dialogs)
+    //===------------------------------------------------------------------===//
+
+    // modal components are unowned (which sucks, but we still need
+    // to let modal dialogs delete themselves when they want to):
     void showModalComponentUnowned(Component *targetComponent);
-    void hideModalComponentUnowned();
+    void hideModalComponentIfAny();
 
     //===------------------------------------------------------------------===//
     // Component

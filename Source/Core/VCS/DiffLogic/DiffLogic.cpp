@@ -26,7 +26,7 @@
 
 using namespace VCS;
 
-class DummyDiffLogic : public AutomationTrackDiffLogic
+class DummyDiffLogic final : public AutomationTrackDiffLogic
 {
 public:
     
@@ -35,7 +35,7 @@ public:
     
     const Identifier getType() const override
     {
-        return "DummyDiffLogic";
+        return "none";
     }
 };
 
@@ -64,5 +64,6 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &
         return new ProjectInfoDiffLogic(targetItem);
     }
 
+    jassertfalse;
     return new DummyDiffLogic(targetItem);
 }

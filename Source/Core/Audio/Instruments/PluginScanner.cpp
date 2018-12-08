@@ -121,7 +121,7 @@ void PluginScanner::runInitialScan()
 {
     if (this->isWorking())
     {
-        Logger::writeToLog("PluginScanner scan thread is already running!");
+        DBG("PluginScanner scan thread is already running!");
         return;
     }
     
@@ -166,7 +166,7 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
 {
     if (this->isWorking())
     {
-        Logger::writeToLog("PluginScanner scan thread is already running!");
+        DBG("PluginScanner scan thread is already running!");
         return;
     }
         
@@ -224,7 +224,7 @@ void PluginScanner::run()
             for (const auto &pluginPath : uncheckedList)
             {
 #if SAFE_SCAN
-                Logger::writeToLog("Safe scanning: " + pluginPath);
+                DBG("Safe scanning: " + pluginPath);
 
                 const Uuid tempFileName;
                 const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
@@ -270,7 +270,7 @@ void PluginScanner::run()
 
                 tempFile.deleteFile();
 #else
-                Logger::writeToLog("Unsafe scanning: " + pluginPath);
+                DBG("Unsafe scanning: " + pluginPath);
 
                 KnownPluginList knownPluginList;
                 OwnedArray<PluginDescription> typesFound;
@@ -306,7 +306,7 @@ void PluginScanner::run()
             const ScopedWriteLock lock(this->workingFlagLock);
             this->working = false;
             
-            Logger::writeToLog("Done scanning for audio plugins");
+            DBG("Done scanning for audio plugins");
             this->sendChangeMessage();
         }
         

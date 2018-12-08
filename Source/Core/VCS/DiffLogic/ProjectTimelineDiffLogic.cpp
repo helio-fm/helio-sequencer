@@ -72,7 +72,7 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
     {
         const Delta *myDelta = this->target.getDelta(i);
 
-        const auto myDeltaData(this->target.serializeDeltaData(i));
+        const auto myDeltaData(this->target.getDeltaData(i));
         ValueTree stateDeltaData;
 
         bool deltaFoundInState = false;
@@ -84,14 +84,14 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
 
             if (myDelta->hasType(stateDelta->getType()))
             {
-                stateDeltaData = initialState.serializeDeltaData(j);
+                stateDeltaData = initialState.getDeltaData(j);
                 deltaFoundInState = (stateDeltaData.isValid());
                 dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
 
-        if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
+        if (!deltaFoundInState || dataHasChanged)
         {
             if (myDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
             {
@@ -121,7 +121,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
-        const auto stateDeltaData(initialState.serializeDeltaData(i));
+        const auto stateDeltaData(initialState.getDeltaData(i));
 
         // for every supported type we need to spit out 
         // a delta of type eventsAdded with all events merged in there
@@ -146,7 +146,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            const auto targetDeltaData(this->target.serializeDeltaData(j));
+            const auto targetDeltaData(this->target.getDeltaData(j));
 
             const bool bothDeltasAreAnnotationType =
                 checkIfDeltaIsAnnotationType(stateDelta) && checkIfDeltaIsAnnotationType(targetDelta);
@@ -282,7 +282,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            const auto targetDeltaData(this->target.serializeDeltaData(j));
+            const auto targetDeltaData(this->target.getDeltaData(j));
 
             const bool foundMissingKeySignature = !stateHasKeySignatures && checkIfDeltaIsKeySignatureType(targetDelta);
             const bool foundMissingTimeSignature = !stateHasTimeSignatures && checkIfDeltaIsTimeSignatureType(targetDelta);

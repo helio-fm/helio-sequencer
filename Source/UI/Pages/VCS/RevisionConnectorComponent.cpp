@@ -53,7 +53,7 @@ void RevisionConnectorComponent::resizeToFit()
 void RevisionConnectorComponent::paint(Graphics &g)
 {
     //g.setColour(this->findColour(HistoryComponent::connectorColourId));
-    g.setColour(Colours::white.withAlpha(0.15f));
+    g.setColour(Colours::white.withAlpha(0.2f));
     g.fillPath(this->linePath);
 }
 
@@ -86,7 +86,7 @@ void RevisionConnectorComponent::resized()
                            x2, y1 + dy * (1.f - curviness),
                            x2, y2);
 
-    PathStrokeType stroke(2.0f, PathStrokeType::beveled, PathStrokeType::butt);
+    PathStrokeType stroke(1.0f, PathStrokeType::beveled, PathStrokeType::butt);
     stroke.createStrokedPath(linePath, linePath);
 
     this->linePath.setUsingNonZeroWinding(false);

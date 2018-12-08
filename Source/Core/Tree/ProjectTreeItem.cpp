@@ -41,7 +41,6 @@
 #include "MidiTrack.h"
 #include "MidiEvent.h"
 #include "TrackedItem.h"
-#include "RecentFilesList.h"
 #include "HybridRoll.h"
 #include "UndoStack.h"
 
@@ -61,16 +60,25 @@
 #include "Config.h"
 #include "Icons.h"
 
-ProjectTreeItem::ProjectTreeItem(const String &name) :
+ProjectTreeItem::ProjectTreeItem() :
+    DocumentOwner({}, "helio"),
+    TreeItem({}, Serialization::Core::project)
+{
+    this->initialize();
+}
+
+ProjectTreeItem::ProjectTreeItem(const String &name, const String &id) :
     DocumentOwner(name, "helio"),
-    TreeItem(name, Serialization::Core::project)
+    TreeItem(name, Serialization::Core::project),
+    id(id.isEmpty() ? Uuid().toString() : id)
 {
     this->initialize();
 }
 
 ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
     DocumentOwner(existingFile),
-    TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project)
+    TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project),
+    id(Uuid().toString())
 {
     this->initialize();
 }
@@ -85,9 +93,7 @@ void ProjectTreeItem::initialize()
 
     this->transport = new Transport(App::Workspace().getAudioCore());
     this->addListener(this->transport);
-    
-    this->recentFilesList = &App::Workspace().getRecentFilesList();
-    
+        
     this->info = new ProjectInfo(*this);
     this->vcsItems.add(this->info);
     
@@ -101,21 +107,13 @@ void ProjectTreeItem::initialize()
 
 ProjectTreeItem::~ProjectTreeItem()
 {
-    // the main policy: all data is to be autosaved
     this->getDocument()->save();
     
     this->transport->stopPlayback();
     this->transport->stopRender();
 
     // remember as the recent file
-    if (this->recentFilesList != nullptr)
-    {
-        this->recentFilesList->
-        onProjectStateChanged(this->getName(),
-                              this->getDocument()->getFullPath(),
-                              this->getId(),
-                              false);
-    }
+    App::Workspace().getUserProfile().onProjectUnloaded(this->getId());
 
     this->projectPage = nullptr;
 
@@ -131,38 +129,9 @@ ProjectTreeItem::~ProjectTreeItem()
     this->autosaver = nullptr;
 }
 
-void ProjectTreeItem::deletePermanently()
+String ProjectTreeItem::getId() const noexcept
 {
-    if (auto vcsTreeItem = this->findChildOfType<VersionControlTreeItem>())
-    {
-        // TODO
-        //vcsTreeItem->deletePermanentlyFromRemoteRepo();
-    }
-    else
-    {
-        // normally, this should never happen
-        File localProjectFile(this->getDocument()->getFullPath());
-        App::Workspace().unloadProjectById(this->getId());
-        localProjectFile.deleteFile();
-        
-        if (this->recentFilesList != nullptr)
-        {
-            this->recentFilesList->cleanup();
-        }
-    }
-}
-
-String ProjectTreeItem::getId() const
-{
-    VersionControlTreeItem *vcsTreeItem =
-        this->findChildOfType<VersionControlTreeItem>();
-
-    if (vcsTreeItem != nullptr)
-    {
-        return vcsTreeItem->getId();
-    }
-
-    return {};
+    return this->id;
 }
 
 String ProjectTreeItem::getStats() const
@@ -226,12 +195,6 @@ void ProjectTreeItem::safeRename(const String &newName, bool sendNotifications)
         return;
     }
     
-    // notify recent files list
-    if (this->recentFilesList != nullptr)
-    {
-        this->recentFilesList->removeById(this->getId());
-    }
-
     this->name = newName;
     
     this->getDocument()->renameFile(newName);
@@ -240,14 +203,9 @@ void ProjectTreeItem::safeRename(const String &newName, bool sendNotifications)
     {
         this->broadcastChangeProjectInfo(this->info);
 
-        if (this->recentFilesList != nullptr)
-        {
-            this->recentFilesList->
-                onProjectStateChanged(this->getName(),
-                    this->getDocument()->getFullPath(),
-                    this->getId(),
-                    true);
-        }
+        App::Workspace().getUserProfile()
+            .onProjectLocalInfoUpdated(this->getId(), this->getName(),
+                this->getDocument()->getFullPath());
 
         this->dispatchChangeTreeItemView();
     }
@@ -292,6 +250,7 @@ WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const noexcept
 {
     return this->lastShownTrack;
 }
+
 
 void ProjectTreeItem::setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea)
 {
@@ -518,6 +477,7 @@ ValueTree ProjectTreeItem::save() const
     ValueTree tree(Serialization::Core::project);
 
     tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
+    tree.setProperty(Serialization::Core::projectId, this->id, nullptr);
 
     tree.appendChild(this->info->serialize(), nullptr);
     tree.appendChild(this->timeline->serialize(), nullptr);
@@ -538,6 +498,8 @@ void ProjectTreeItem::load(const ValueTree &tree)
         tree : tree.getChildWithName(Serialization::Core::project);
 
     if (!root.isValid()) { return; }
+
+    this->id = root.getProperty(Serialization::Core::projectId, Uuid().toString());
 
     this->info->deserialize(root);
     this->timeline->deserialize(root);
@@ -784,21 +746,17 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
 
 void ProjectTreeItem::onDocumentDidLoad(File &file)
 {
-    if (this->recentFilesList != nullptr)
-    {
-        this->recentFilesList->
-        onProjectStateChanged(this->getName(),
-                              this->getDocument()->getFullPath(),
-                              this->getId(),
-                              true);
-    }
+    App::Workspace().getUserProfile()
+        .onProjectLocalInfoUpdated(this->getId(), this->getName(),
+            this->getDocument()->getFullPath());
 }
 
 bool ProjectTreeItem::onDocumentSave(File &file)
 {
     const auto projectNode(this->save());
-    // Debug:
+#if DEBUG
     DocumentHelpers::save<XmlSerializer>(file.withFileExtension("xml"), projectNode);
+#endif
     return DocumentHelpers::save<BinarySerializer>(file, projectNode);
 }
 
@@ -893,6 +851,11 @@ MidiSequence *ProjectTreeItem::getSequenceByTrackId(const String &trackId)
 // VCS::TrackedItemsSource
 //===----------------------------------------------------------------------===//
 
+String ProjectTreeItem::getVCSId() const
+{
+    return this->getId();
+}
+
 String ProjectTreeItem::getVCSName() const
 {
     return this->getName();
@@ -977,7 +940,6 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (VersionControl *vcs = dynamic_cast<VersionControl *>(source))
     {
-        //Logger::writeToLog("ProjectTreeItem :: vcs changed, saving " + vcs->getParentName());
         DocumentOwner::sendChangeMessage();
         //this->getDocument()->save();
         

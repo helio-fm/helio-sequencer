@@ -91,8 +91,8 @@ void SuccessTooltip::parentHierarchyChanged()
 void SuccessTooltip::timerCallback()
 {
     this->stopTimer();
+    ScopedPointer<Component> deleter(this);
     Desktop::getInstance().getAnimator().fadeOut(this, FADEOUT_TIMS_MS);
-    delete this;
 }
 //[/MiscUserCode]
 

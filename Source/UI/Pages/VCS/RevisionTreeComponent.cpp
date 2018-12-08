@@ -18,14 +18,13 @@
 #include "Common.h"
 #include "RevisionTreeComponent.h"
 #include "CommandIDs.h"
-#include "HelioCallout.h"
 #include "VersionControl.h"
 #include "HistoryComponent.h"
 #include "RevisionComponent.h"
 #include "RevisionConnectorComponent.h"
 #include "RevisionTooltipComponent.h"
 
-#define CONNECTOR_HEIGHT 30
+#define CONNECTOR_HEIGHT 20
 
 RevisionTreeComponent::RevisionTreeComponent(VersionControl &owner) :
     vcs(owner),
@@ -62,7 +61,7 @@ void RevisionTreeComponent::deselectAll(bool sendNotification)
         }
     }
 
-    this->selectedRevision = {};
+    this->selectedRevision = nullptr;
 
     auto *editor = this->findParentEditor();
     if (editor != nullptr && sendNotification)
@@ -116,7 +115,7 @@ void RevisionTreeComponent::handleCommandMessage(int commandId)
 //    }
 //}
 
-ValueTree RevisionTreeComponent::getSelectedRevision() const noexcept
+VCS::Revision::Ptr RevisionTreeComponent::getSelectedRevision() const noexcept
 {
     return this->selectedRevision;
 }
@@ -127,12 +126,12 @@ ValueTree RevisionTreeComponent::getSelectedRevision() const noexcept
 //===----------------------------------------------------------------------===//
 
 RevisionComponent *RevisionTreeComponent::initComponents(int depth,
-    const ValueTree revision, RevisionComponent *parentRevisionComponent)
+    const VCS::Revision::Ptr revision, RevisionComponent *parentRevisionComponent)
 {
-    // create component for revision
+    const auto state = this->vcs.getRevisionSyncState(revision);
     const bool isHead = (this->vcs.getHead().getHeadingRevision() == revision);
 
-    RevisionComponent *revisionComponent = new RevisionComponent(this->vcs, revision, isHead);
+    auto *revisionComponent = new RevisionComponent(this->vcs, revision, state, isHead);
     revisionComponent->parent = parentRevisionComponent;
     revisionComponent->y = float(depth);
     revisionComponent->number = depth;
@@ -140,12 +139,10 @@ RevisionComponent *RevisionTreeComponent::initComponents(int depth,
 
     this->addAndMakeVisible(revisionComponent);
 
-    for (int i = 0; i < revision.getNumChildren(); ++i)
+    for (const auto childRevision : revision->getChildren())
     {
-        RevisionComponent *child =
-            this->initComponents(depth + 1,
-                revision.getChild(i), revisionComponent);
-        revisionComponent->children.add(child);
+        auto *childComponent = this->initComponents(depth + 1, childRevision, revisionComponent);
+        revisionComponent->children.add(childComponent);
     }
 
     return revisionComponent;

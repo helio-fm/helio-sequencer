@@ -50,8 +50,8 @@ private:
     String author;
     String pluralEquation;
 
-    using TranslationMap = SparseHashMap<String, String, StringHash>;
-    using PluralsMap = SparseHashMap<String, UniquePointer<TranslationMap>, StringHash>;
+    using TranslationMap = FlatHashMap<String, String, StringHash>;
+    using PluralsMap = FlatHashMap<String, UniquePointer<TranslationMap>, StringHash>;
 
     TranslationMap singulars;
     PluralsMap plurals;

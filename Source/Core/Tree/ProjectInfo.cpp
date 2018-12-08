@@ -71,7 +71,7 @@ VCS::Delta *ProjectInfo::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree ProjectInfo::serializeDeltaData(int deltaIndex) const
+ValueTree ProjectInfo::getDeltaData(int deltaIndex) const
 {
     if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectLicense))
     {
@@ -104,7 +104,7 @@ void ProjectInfo::resetStateTo(const TrackedItem &newState)
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
-        const auto newDeltaData(newState.serializeDeltaData(i));
+        const auto newDeltaData(newState.getDeltaData(i));
         
         if (newDelta->hasType(ProjectInfoDeltas::projectLicense))
         {

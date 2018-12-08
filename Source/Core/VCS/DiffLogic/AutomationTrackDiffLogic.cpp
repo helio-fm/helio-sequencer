@@ -77,7 +77,7 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
     {
         const Delta *myDelta = this->target.getDelta(i);
 
-        const auto myDeltaData(this->target.serializeDeltaData(i));
+        const auto myDeltaData(this->target.getDeltaData(i));
         ValueTree stateDeltaData;
 
         bool deltaFoundInState = false;
@@ -90,13 +90,13 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
             if (myDelta->getType() == stateDelta->getType())
             {
                 deltaFoundInState = true;
-                stateDeltaData = initialState.serializeDeltaData(j);
+                stateDeltaData = initialState.getDeltaData(j);
                 dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
 
-        if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
+        if (!deltaFoundInState || dataHasChanged)
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
@@ -142,7 +142,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
-        const auto stateDeltaData(initialState.serializeDeltaData(i));
+        const auto stateDeltaData(initialState.getDeltaData(i));
 
         bool deltaFoundInChanges = false;
 
@@ -164,7 +164,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            const auto targetDeltaData(this->target.serializeDeltaData(j));
+            const auto targetDeltaData(this->target.getDeltaData(j));
 
             const bool typesMatchStrictly =
                 (stateDelta->getType() == targetDelta->getType());
@@ -291,7 +291,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            const auto targetDeltaData(this->target.serializeDeltaData(j));
+            const auto targetDeltaData(this->target.getDeltaData(j));
             const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
             if (foundMissingClip)
             {

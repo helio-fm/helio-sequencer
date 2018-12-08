@@ -313,10 +313,8 @@ inline String keyName(int key)
 
 #define SHOW_CHORD_TOOLTIP(ROOT_KEY, FUNCTION_NAME) \
 if (! App::isRunningOnPhone()) { \
-    Component *tip =\
-    new ChordTooltip(ROOT_KEY,\
-                     this->scale->getLocalizedName(),\
-                     FUNCTION_NAME);\
+    auto *tip = new ChordTooltip(ROOT_KEY,\
+        this->scale->getLocalizedName(), FUNCTION_NAME);\
     App::Layout().showTooltip(tip, this->getScreenBounds());\
 }
 
@@ -329,7 +327,7 @@ void ChordBuilder::onPopupButtonFirstAction(PopupButton *button)
         const double retinaScale = Desktop::getInstance().getDisplays().getMainDisplay().scale;
         const bool draggedThePopup = (double(dragDistance) > retinaScale);
         if (draggedThePopup || dragPositionNotInitialized) {
-            App::Layout().showTooltip(nullptr); // hide if any
+            App::Layout().hideTooltipIfAny();
             this->buildNewNote(true);
         } else {
             //App::Helio()->showTooltip(createLabel(rootKey));

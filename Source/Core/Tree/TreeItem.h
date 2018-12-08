@@ -190,10 +190,10 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    var getDragSourceDescription() override;
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-    bool isInterestedInFileDrag(const StringArray &files) override { return false; }
-    void filesDropped(const StringArray &files, int insertIndex) override {}
+    void itemDropped(const DragAndDropTarget::SourceDetails &, int) override;
+    bool isInterestedInFileDrag(const StringArray &) override { return false; }
+    void filesDropped(const StringArray &, int) override {}
+    var getDragSourceDescription() override { return{}; }
 
     //===------------------------------------------------------------------===//
     // Adding nodes to the tree and removing them
@@ -227,7 +227,7 @@ protected:
 
             if (T *targetTreeItem = dynamic_cast<T *>(child))
             {
-                if (!pickOnlySelectedOnes || (pickOnlySelectedOnes && child->isSelected()))
+                if (!pickOnlySelectedOnes || child->isSelected())
                 {
                     resultArray.add(targetTreeItem);
                 }

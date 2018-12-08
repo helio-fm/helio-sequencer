@@ -27,7 +27,7 @@ class VersionControlTreeItem final : public TreeItem
 {
 public:
 
-    VersionControlTreeItem(const String &existingId = {}, const String &existingKey = {});
+    VersionControlTreeItem();
     ~VersionControlTreeItem() override;
 
     String getName() const noexcept override;
@@ -35,19 +35,23 @@ public:
 
     void showPage() override;
     void recreatePage() override;
-    
-    String getId() const;
     String getStatsString() const;
     
     void commitProjectInfo();
     void toggleQuickStash();
-    
+
     //===------------------------------------------------------------------===//
     // Tree
     //===------------------------------------------------------------------===//
 
     void onItemAddedToTree(bool sendNotifications) override;
     void onItemDeletedFromTree(bool sendNotifications) override;
+
+    //===------------------------------------------------------------------===//
+    // Network
+    //===------------------------------------------------------------------===//
+
+    void cloneProject();
 
     //===------------------------------------------------------------------===//
     // Menu
@@ -66,14 +70,11 @@ public:
 
 protected:
 
-    ScopedPointer<VersionControl> vcs;
-    ScopedPointer<VersionControlEditor> editor;
+    UniquePointer<VersionControl> vcs;
+    UniquePointer<VersionControlEditor> editor;
 
 private:
-
-    String existingId;
-    String existingKey;
-    
+        
     void initVCS();
     void shutdownVCS();
     

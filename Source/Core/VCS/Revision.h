@@ -17,39 +17,76 @@
 
 #pragma once
 
+#include "Serializable.h"
 #include "RevisionItem.h"
-#include "Pack.h"
+#include "RevisionDto.h"
 
 namespace VCS
 {
-    // First, this class was a wrapped around ValueTree
-    // But once JUCE developers have decided to make ValueTree final,
-    // I had to turn this into a set of static helper functions
-
-    class Revision final
+    class Revision final : public Serializable, public ReferenceCountedObject
     {
     public:
 
-        static ValueTree create(Pack::Ptr pack, const String &name = {});
-        static void copyProperties(ValueTree one, ValueTree another);
-        static void copyDeltas(ValueTree one, ValueTree another);
+        enum SyncState
+        {
+            NoSync,         // revision is present locally, but it is unknown if remote copy exists
+            ShallowCopy,    // remote revision info has been added to the tree, but data is yet to be fetched
+            FullSync,       // either local revision that was pushed, or a remote that was fully pulled
+        };
 
-        static uint32 calculateHash(ValueTree revision);
-        static void incrementVersion(ValueTree revision);
-        static void flush(ValueTree revision);
+        using Ptr = ReferenceCountedObjectPtr<Revision>;
 
-        static String getMessage(ValueTree revision);
-        static String getUuid(ValueTree revision);
-        static int64 getTimeStamp(ValueTree revision);
-        static bool isEmpty(ValueTree revision);
+        Revision(const String &name = {});
+        Revision(const RevisionDto &remoteDescription); // creates shallow copy
+
+        const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
+        const ReferenceCountedArray<Revision> &getChildren() const noexcept;
+
+        void addItem(RevisionItem *item);
+        void addItem(RevisionItem::Ptr item);
+
+        void addChild(Revision *revision);
+        void addChild(Revision::Ptr revision);
+
+        void removeChild(Revision *revision);
+        void removeChild(Revision::Ptr revision);
+
+        void copyDeltasFrom(Revision::Ptr other);
+
+        bool isShallowCopy() const noexcept;
+
+        WeakReference<Revision> getParent() const noexcept;
+        String getMessage() const noexcept;
+        String getUuid() const noexcept;
+        int64 getTimeStamp() const noexcept;
+        bool isEmpty() const noexcept;
 
         //===--------------------------------------------------------------===//
         // Serializable
         //===--------------------------------------------------------------===//
 
-        static ValueTree serialize(ValueTree revision);
-        static void deserialize(ValueTree revision, const ValueTree &tree);
-        static void reset(ValueTree revision);
+        // with no properties and no children, but with full deltas data
+        // (to be used in synchronization threads):
+        ValueTree serializeDeltas() const;
+        void deserializeDeltas(ValueTree data);
 
+        ValueTree serialize() const;
+        void deserialize(const ValueTree &tree);
+        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
+        void reset();
+
+    private:
+
+        WeakReference<Revision> parent;
+
+        String id;
+        String message;
+        int64 timestamp;
+
+        ReferenceCountedArray<Revision> children;
+        ReferenceCountedArray<RevisionItem> deltas;
+
+        JUCE_DECLARE_WEAK_REFERENCEABLE(Revision)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Revision)
     };
 }  // namespace VCS

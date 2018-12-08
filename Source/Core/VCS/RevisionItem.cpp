@@ -21,12 +21,9 @@
 
 using namespace VCS;
 
-RevisionItem::RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCopy) :
-    vcsItemType(type),
-    pack(packPtr)
+RevisionItem::RevisionItem(Type type, TrackedItem *targetToCopy) :
+    vcsItemType(type)
 {
-    jassert(packPtr.get() != nullptr);
-
     if (targetToCopy != nullptr)
     {
         this->description = targetToCopy->getVCSName();
@@ -39,27 +36,14 @@ RevisionItem::RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCo
         {
             const auto targetDelta = targetToCopy->getDelta(i);
             this->deltas.add(targetDelta->createCopy());
-            this->deltasData.add(targetToCopy->serializeDeltaData(i));
+            ValueTree data(targetToCopy->getDeltaData(i));
+            this->deltasData.add(data);
+            //jassert(!data.getParent().isValid());
         }
     }
 }
 
-void RevisionItem::flushData()
-{
-    for (int i = 0; i < this->deltasData.size(); ++i)
-    {
-        this->pack->setDeltaDataFor(this->getUuid(), this->deltas[i]->getUuid(), this->deltasData[i]);
-    }
-
-    this->deltasData.clear();
-}
-
-Pack::Ptr RevisionItem::getPackPtr() const
-{
-    return this->pack;
-}
-
-RevisionItem::Type RevisionItem::getType() const
+RevisionItem::Type RevisionItem::getType() const noexcept
 {
     return this->vcsItemType;
 }
@@ -82,69 +66,40 @@ String RevisionItem::getTypeAsString() const
     return {};
 }
 
-void VCS::RevisionItem::importDataForDelta(const ValueTree &deltaDataToCopy, const String &deltaUuid)
-{
-    for (int i = 0; i < this->deltas.size(); ++i)
-    {
-        const Delta *delta = this->deltas[i];
-        
-        if (delta->getUuid().toString() == deltaUuid)
-        {
-            while (this->deltasData.size() <= i)
-            {
-                this->deltasData.add(ValueTree("dummy"));
-            }
-            
-            const ValueTree deepCopy(deltaDataToCopy.createCopy());
-            this->deltasData.set(i, deepCopy);
-            break;
-        }
-    }
-}
-
-
 //===----------------------------------------------------------------------===//
 // TrackedItem
 //===----------------------------------------------------------------------===//
 
-int RevisionItem::getNumDeltas() const
+int RevisionItem::getNumDeltas() const noexcept
 {
     return this->deltas.size();
 }
 
-Delta *RevisionItem::getDelta(int index) const
+Delta *RevisionItem::getDelta(int index) const noexcept
 {
     return this->deltas[index];
 }
 
-ValueTree VCS::RevisionItem::serializeDeltaData(int deltaIndex) const
+ValueTree RevisionItem::getDeltaData(int deltaIndex) const noexcept
 {
-    if (deltaIndex < this->deltasData.size())
-    {
-        // at this point revision item represents uncommitted changes
-        // and it already has all the data:
-        return ValueTree(this->deltasData[deltaIndex]);
-    }
-
-    return this->pack->createDeltaDataFor(this->getUuid(), this->deltas[deltaIndex]->getUuid());
+    return this->deltasData[deltaIndex];
 }
 
-String RevisionItem::getVCSName() const
+String RevisionItem::getVCSName() const noexcept
 {
     return this->description;
 }
 
-DiffLogic *VCS::RevisionItem::getDiffLogic() const
+DiffLogic *RevisionItem::getDiffLogic() const noexcept
 {
     return this->logic;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VCS::RevisionItem::serialize() const
+ValueTree RevisionItem::serialize() const
 {
     ValueTree tree(Serialization::VCS::revisionItem);
 
@@ -154,15 +109,28 @@ ValueTree VCS::RevisionItem::serialize() const
     tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName(), nullptr);
     tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString(), nullptr);
 
-    for (auto delta : this->deltas)
+    for (int i = 0; i < this->deltas.size(); ++i)
     {
-        tree.appendChild(delta->serialize(), nullptr);
+        const auto *delta = this->deltas.getUnchecked(i);
+        ValueTree deltaNode(delta->serialize());
+        const ValueTree deltaData(this->getDeltaData(i));
+
+        // sometimes we need to create copy since value trees cannot be shared between two parents
+        // but Snapshot seems to share revision items on checkout; need to fix this someday:
+        deltaNode.appendChild(deltaData.getParent().isValid() ? deltaData.createCopy() : deltaData, nullptr);
+        tree.appendChild(deltaNode, nullptr);
     }
 
     return tree;
 }
 
-void VCS::RevisionItem::deserialize(const ValueTree &tree)
+void RevisionItem::deserialize(const ValueTree &tree)
+{
+    // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
+    jassertfalse;
+}
+
+void RevisionItem::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup)
 {
     this->reset();
 
@@ -173,14 +141,13 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
 
     this->deserializeVCSUuid(root);
 
-    this->description = root.getProperty(Serialization::VCS::revisionItemName, "");
+    this->description = root.getProperty(Serialization::VCS::revisionItemName);
 
     const int type = root.getProperty(Serialization::VCS::revisionItemType, Undefined);
     this->vcsItemType = static_cast<Type>(type);
 
     const String logicType = root.getProperty(Serialization::VCS::revisionItemDiffLogic);
-
-    jassert(logicType != "");
+    jassert(logicType.isNotEmpty());
 
     this->logic = DiffLogic::createLogicFor(*this, logicType);
 
@@ -188,13 +155,32 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
     {
         ScopedPointer<Delta> delta(new Delta({}, {}));
         delta->deserialize(e);
+
+        // either we already have saved data, or the lookup table is provided:
+        jassert((e.getNumChildren() == 0 && dataLookup.size() > 0) || (e.getNumChildren() == 1 && dataLookup.size() == 0));
+
+        if (e.getNumChildren() == 1)
+        {
+            this->deltasData.add(e.getChild(0));
+        }
+        else
+        {
+            const String deltaId = e.getProperty(Serialization::VCS::deltaId);
+            if (dataLookup.contains(deltaId))
+            {
+                const auto data = dataLookup.at(deltaId);
+                this->deltasData.add(data);
+            }
+        }
+
         this->deltas.add(delta.release());
+        jassert(this->deltasData.size() == this->deltas.size());
     }
 }
 
 void RevisionItem::reset()
 {
     this->deltas.clear();
-    this->description = "";
+    this->description.clear();
     this->vcsItemType = Undefined;
 }

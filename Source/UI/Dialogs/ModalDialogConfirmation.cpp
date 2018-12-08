@@ -229,12 +229,12 @@ ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteP
         TRANS("dialog::deleteproject::cancel")) };
 }
 
-ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forcePull()
+ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
 {
     return { new ModalDialogConfirmation(
-        TRANS("vcs::history::forcepull::confirmation"),
-        TRANS("vcs::history::forcepull::proceed"),
-        TRANS("vcs::history::forcepull::cancel")) };
+        TRANS("dialog::vcs::checkout::warning"),
+        TRANS("dialog::vcs::checkout::proceed"),
+        TRANS("dialog::vcs::checkout::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()

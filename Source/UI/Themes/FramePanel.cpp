@@ -34,7 +34,7 @@ FramePanel::FramePanel()
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     //[/Constructor]
@@ -103,8 +103,8 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="2" fill="solid: 0" hasStroke="1"
-               stroke="0.7, mitered, butt" strokeColour="solid: 77ffffff"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="2.00000000000000000000" fill="solid: 0"
+               hasStroke="1" stroke="0.7, mitered, butt" strokeColour="solid: 77ffffff"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

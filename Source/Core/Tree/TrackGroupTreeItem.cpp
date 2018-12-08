@@ -131,8 +131,6 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
     
     if (shouldSelectAll || forceSelectAll)
     {
-        //Logger::writeToLog(rootNode->getName() + " shouldSelectAll");
-        
         rootNode->setSelected(true, false, dontSendNotification);
 
         for (signed int i = (rootNode->getNumSubItems() - 1); i >= 0 ; --i)
@@ -151,8 +149,6 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
         // (если нажат шифт или выделен кто-то из его соседей)
         if (activeItem)
         {
-            //Logger::writeToLog(String(activeItem->getNumSelectedSiblings()));
-            
             if (shiftPressed || activeItem->getNumSelectedSiblings() > 1)
             {
                 activeItem->setSelected(false, false, sendNotification);
@@ -162,8 +158,6 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
     }
     else
     {
-        //Logger::writeToLog(rootNode->getName() + " ! shouldSelectAll");
-        
         // если в группе есть активный слой, выделяем его, снимаем выделение с остального
         // todo? если в группе есть активный слой, но, кроме этой группы, есть еще то-то выделенное,
         // ставим активным один из тех выделенных элементов, а с группы все снимаем?

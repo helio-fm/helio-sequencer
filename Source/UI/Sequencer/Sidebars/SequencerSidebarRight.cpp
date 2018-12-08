@@ -178,7 +178,6 @@ void SequencerSidebarRight::resized()
     annotationsButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
     playButton->setBounds((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
     //[UserResized] Add your own custom resize handling here..
-    //Logger::writeToLog("HybridRollCommandPanel updateContent");
     // a hack for themes changing
     this->listBox->updateContent();
     this->annotationsButton->resized();

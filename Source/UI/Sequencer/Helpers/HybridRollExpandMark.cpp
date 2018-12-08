@@ -99,7 +99,6 @@ void HybridRollExpandMark::updatePosition()
     const float barOffset = this->bar - this->roll.getFirstBar();
     const int xOffset = int(barOffset * this->roll.getBarWidth());
     const int newWidth = int(this->roll.getBarWidth() * this->numBars);
-    //Logger::writeToLog(String(xOffset));
     this->setBounds(xOffset, 0, newWidth, this->getParentHeight());
 }
 

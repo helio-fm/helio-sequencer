@@ -68,9 +68,6 @@ Playhead::~Playhead()
 void Playhead::onSeek(double absolutePosition,
     double currentTimeMs, double totalTimeMs)
 {
-    //Logger::writeToLog("Playhead::onSeek " + String(newPosition));
-    //Logger::writeToLog(this->getName() + " onSeek newPosition = " + String(newPosition));
-
     {
         SpinLock::ScopedLockType lock(this->lastCorrectPositionLock);
         this->lastCorrectPosition = absolutePosition;
@@ -89,7 +86,6 @@ void Playhead::onSeek(double absolutePosition,
 
 void Playhead::onTempoChanged(double msPerQuarter)
 {
-    //Logger::writeToLog("Playhead::onTempoChanged " + String(newTempo));
     SpinLock::ScopedLockType lock(this->anchorsLock);
     this->msPerQuarterNote = jmax(msPerQuarter, 0.01);
         
@@ -112,7 +108,6 @@ void Playhead::onPlay()
         this->timerStartPosition = this->lastCorrectPosition;
     }
 
-    //Logger::writeToLog("   !!!!! Playhead startTimer");
     this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
 }
 
@@ -144,8 +139,6 @@ void Playhead::timerCallback()
 
 void Playhead::handleAsyncUpdate()
 {
-    //Logger::writeToLog("Playhead::handleAsyncUpdate");
-
     if (this->isTimerRunning())
     {
         this->tick();

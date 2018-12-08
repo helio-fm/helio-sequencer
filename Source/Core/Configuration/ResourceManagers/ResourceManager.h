@@ -18,10 +18,6 @@
 #pragma once
 
 #include "BaseResource.h"
-#include "DocumentHelpers.h"
-#include "BinarySerializer.h"
-#include "JsonSerializer.h"
-#include "XmlSerializer.h"
 
 // A thing to note: all subclasses should make their
 // deserialization method able to append overridden changes.
@@ -89,4 +85,8 @@ private:
     ValueTree userResources;
 
     DummyBaseResource comparator;
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE(ResourceManager)
 };
+
+using ResourceManagerPool = FlatHashMap<Identifier, WeakReference<ResourceManager>, IdentifierHash>;

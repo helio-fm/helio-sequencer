@@ -21,20 +21,21 @@
 // Pragmas
 //===----------------------------------------------------------------------===//
 
-// Unreferenced formal parameter
+// unreferenced formal parameter
 #pragma warning(disable: 4100)
-// Hides class member
+// hides class member
 #pragma warning(disable: 4458)
-// std::uninitialized_copy::_Unchecked_iterators::_Deprecate
-#pragma warning(disable: 4996)
+// decorated name length exceeded, name was truncated
+#pragma warning(disable: 4503)
+// conditional expression is constant
+#pragma warning(disable: 4127)
 
 //===----------------------------------------------------------------------===//
 // JUCE
 //===----------------------------------------------------------------------===//
 
-#if !defined JUCE_ANDROID
+#if JUCE_LINUX
 #   define JUCE_USE_FREETYPE_AMALGAMATED 1
-#   define JUCE_AMALGAMATED_INCLUDE 1
 #endif
 
 #include "JuceHeader.h"
@@ -45,28 +46,26 @@
 #include <math.h>
 
 //===----------------------------------------------------------------------===//
-// SparsePP
+// A better hash map
 //===----------------------------------------------------------------------===//
 
-#include "../../ThirdParty/SparseHashMap/sparsepp/spp.h"
+#include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_map.h"
 
-template <class Key, class T, class HashFcn = spp::spp_hash<Key>, class EqualKey = std::equal_to<Key>>
-using SparseHashMap = spp::sparse_hash_map<Key, T, HashFcn, EqualKey>;
+template <class Key, class T, class HashFn = std::hash<Key>, class EqualKey = std::equal_to<Key>>
+using FlatHashMap = tsl::hopscotch_map<Key, T, HashFn, EqualKey>;
 
-template <class Value, class HashFcn = spp::spp_hash<Value>, class EqualKey = std::equal_to<Value>>
-using SparseHashSet = spp::sparse_hash_set<Value, HashFcn, EqualKey>;
+#include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_set.h"
+
+template <class Value, class HashFn = std::hash<Value>, class EqualKey = std::equal_to<Value>>
+using FlatHashSet = tsl::hopscotch_set<Value, HashFn, EqualKey>;
 
 using HashCode = size_t;
-
-#if !defined HASH_CODE_MAX
-#   define HASH_CODE_MAX SIZE_MAX
-#endif
 
 struct StringHash
 {
     inline HashCode operator()(const juce::String &key) const noexcept
     {
-        return static_cast<HashCode>(key.hashCode()) % HASH_CODE_MAX;
+        return static_cast<HashCode>(key.hashCode());
     }
 };
 
@@ -74,7 +73,7 @@ struct IdentifierHash
 {
     inline HashCode operator()(const juce::Identifier &key) const noexcept
     {
-        return static_cast<HashCode>(key.toString().hashCode()) % HASH_CODE_MAX;
+        return static_cast<HashCode>(key.toString().hashCode());
     }
 
     static int generateHash(const Identifier& key, int upperLimit) noexcept
@@ -109,7 +108,7 @@ inline float roundf(float x)
 // Beat is essentially a quarter-note
 #define BEATS_PER_BAR 4
 
-// Defines a maximum available resolution
+// Defines the maximum available resolution
 #define TICKS_PER_BEAT 16
 
 #define VELOCITY_SAVE_ACCURACY 1024.f
@@ -123,11 +122,14 @@ inline float roundBeat(float beat)
 #define forEachValueTreeChildWithType(parentElement, child, requiredType) \
     for (const auto &child : parentElement) if (child.hasType(requiredType))
 
-#define callMessageThreadFrom(threadType, function) \
+#define callbackOnMessageThread(cls, function, ...) \
     MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \
         { \
-            const auto self = static_cast<threadType *>(ptr); \
-            function(self); \
+            const auto *self = static_cast<cls *>(ptr); \
+            if (self->function != nullptr) \
+            { \
+                self->function(__VA_ARGS__); \
+            } \
             return nullptr; \
         }, this)
 

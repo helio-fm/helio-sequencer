@@ -177,7 +177,7 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
             this->instrument->addNodeToFreeSpace(pluginDescription, [this](Instrument *instrument)
             {
                 this->updateChildrenEditors();
-                Logger::writeToLog("Added " + instrument->getName());
+                DBG("Added " + instrument->getName());
             });
         }
     }

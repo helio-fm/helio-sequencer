@@ -153,7 +153,6 @@ void AnnotationLargeComponent::mouseMove (const MouseEvent& e)
 void AnnotationLargeComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    //Logger::writeToLog("AnnotationEventComponent::mouseDown");
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
@@ -236,7 +235,6 @@ void AnnotationLargeComponent::mouseUp (const MouseEvent& e)
 void AnnotationLargeComponent::mouseDoubleClick (const MouseEvent& e)
 {
     //[UserCode_mouseDoubleClick] -- Add your code here...
-    //Logger::writeToLog("AnnotationLargeComponent::mouseDoubleClick");
     //[/UserCode_mouseDoubleClick]
 }
 
@@ -270,7 +268,6 @@ void AnnotationLargeComponent::updateContent()
     {
         this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
         this->textWidth = float(this->annotationLabel->getFont().getStringWidth(this->event.getDescription()));
-        //Logger::writeToLog("AnnotationLargeComponent::updateContent " + String(this->textWidth));
     }
 
     this->repaint();

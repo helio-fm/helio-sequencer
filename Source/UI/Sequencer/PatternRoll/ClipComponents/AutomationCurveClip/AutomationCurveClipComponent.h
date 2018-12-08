@@ -91,12 +91,11 @@ private:
     void updateCurveComponent(AutomationCurveEventComponent *);
     void reloadTrack();
 
-    HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
 
     OwnedArray<AutomationCurveEventComponent> eventComponents;
-    SparseHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;
+    FlatHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;
 
     AutomationCurveEventComponent *draggingEvent;
     bool addNewEventMode;

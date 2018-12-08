@@ -24,7 +24,6 @@
 #include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
-#include "HelioCallout.h"
 #include "AnnotationMenu.h"
 #include "KeySignatureDialog.h"
 #include "App.h"
@@ -61,7 +60,6 @@ KeySignaturesProjectMap<T>::~KeySignaturesProjectMap()
 template<typename T>
 void KeySignaturesProjectMap<T>::resized()
 {
-    //Logger::writeToLog("KeySignaturesProjectMap<T>::resized");
     this->setVisible(false);
 
     T *previous = nullptr;
@@ -358,7 +356,6 @@ float KeySignaturesProjectMap<T>::getBeatByXPosition(int x) const
 template<typename T>
 void KeySignaturesProjectMap<T>::reloadTrackMap()
 {
-    //Logger::writeToLog("KeySignaturesProjectMap<T>::reloadTrackMap");
     if (this->project.getTimeline() == nullptr)
     {
         return;

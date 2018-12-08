@@ -61,14 +61,6 @@ public:
 
     const Id &getId() const noexcept;
     float getBeat() const noexcept;
-    
-    inline HashCode hashCode() const noexcept
-    {
-        const HashCode code =
-            static_cast<HashCode>(this->beat)
-            + static_cast<HashCode>(this->getId().hashCode());
-        return code;
-    }
 
     friend inline bool operator==(const MidiEvent &l, const MidiEvent &r)
     {
@@ -93,12 +85,23 @@ protected:
 
     Id createId() const noexcept;
 
+    friend struct MidiEventHash;
+
 };
 
 struct MidiEventHash
 {
     inline HashCode operator()(const MidiEvent &key) const noexcept
     {
-        return key.hashCode() % HASH_CODE_MAX;
+        // Earlier, this function looked like this:
+        //const HashCode code =
+        //    static_cast<HashCode>(key.beat)
+        //    + static_cast<HashCode>(key.getId().hashCode());
+
+        // For simplicity's sake we assume that id is not empty
+        // and is at least of 2 characters (which it should be in all cases).
+        // This is unsafe and all, but should work
+        const auto *ptr = key.id.getCharPointer().getAddress();
+        return 64 * static_cast<HashCode>(ptr[0]) + static_cast<HashCode>(ptr[1]);
     }
 };

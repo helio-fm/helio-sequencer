@@ -29,7 +29,6 @@ PianoClipComponent::PianoClipComponent(ProjectTreeItem &project, MidiSequence *s
     HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
-    roll(roll),
     sequence(sequence)
 {
     this->setPaintingIsUnclipped(true);
@@ -133,7 +132,10 @@ void PianoClipComponent::onChangeTrackProperties(MidiTrack *const track)
 
 void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->reloadTrackMap();
+    if (this->sequence != nullptr)
+    {
+        this->reloadTrackMap();
+    }
 }
 
 void PianoClipComponent::onAddTrack(MidiTrack *const track)

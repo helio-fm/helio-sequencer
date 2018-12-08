@@ -23,41 +23,17 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 #include "SerializationKeys.h"
+#include "ResourceSyncService.h"
+#include "App.h"
 
 using namespace VCS;
 
-VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
-                               const String &existingId,
-                               const String &existingKeyBase64) :
-    pack(new Pack()),
-    stashes(new StashesRepository(pack)),
-    head(pack, parent),
-    rootRevision(Revision::create(pack, "root")),
-    parentItem(parent),
-    historyMergeVersion(1)
+VersionControl::VersionControl(TrackedItemsSource &parent) :
+    parent(parent),
+    head(parent),
+    stashes(new StashesRepository()),
+    rootRevision(new Revision(TRANS("defaults::newproject::firstcommit")))
 {
-    // both existing id and key should be empty or not at the same time.
-    jassert((existingId.isEmpty() && existingKeyBase64.isEmpty()) ||
-            (existingId.isNotEmpty() && existingKeyBase64.isNotEmpty()));
-    
-    if (existingId.isNotEmpty())
-    {
-        this->publicId = existingId;
-    }
-    else
-    {
-        Uuid id1;
-        Uuid id2;
-        this->publicId = id1.toString() + id2.toString();
-    }
-    
-    if (existingKeyBase64.isNotEmpty())
-    {
-        this->key.restoreFromBase64(existingKeyBase64);
-    }
-
-    this->rootRevision = Revision::create(this->pack, TRANS("defaults::newproject::firstcommit"));
-
     MessageManagerLock lock;
     this->addChangeListener(&this->head);
     this->head.moveTo(this->rootRevision);
@@ -75,166 +51,21 @@ VersionControlEditor *VersionControl::createEditor()
 }
 
 //===----------------------------------------------------------------------===//
-// Push-pull stuff
-//===----------------------------------------------------------------------===//
-
-String VersionControl::calculateHash() const
-{
-    // StringArray и sort - чтоб не зависеть от порядка чайлдов.
-    StringArray ids(this->recursiveGetHashes(this->rootRevision));
-    ids.sort(true);
-    return String(CompileTimeHash(ids.joinIntoString("").toUTF8()));
-}
-
-StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
-{
-    StringArray sum;
-
-    for (int i = 0; i < revision.getNumChildren(); ++i)
-    {
-        ValueTree child(revision.getChild(i));
-        sum.addArray(this->recursiveGetHashes(child));
-    }
-
-    const uint32 revisionSum(Revision::calculateHash(revision));
-    sum.add(String(revisionSum));
-    return sum;
-}
-
-void VersionControl::mergeWith(VersionControl &remoteHistory)
-{
-    this->recursiveTreeMerge(this->getRoot(), remoteHistory.getRoot());
-
-    this->publicId = remoteHistory.getPublicId();
-    this->historyMergeVersion = remoteHistory.getVersion();
-
-    ValueTree newHeadRevision(this->getRevisionById(this->rootRevision,
-        Revision::getUuid(remoteHistory.getHead().getHeadingRevision())));
-
-    if (! Revision::isEmpty(newHeadRevision))
-    {
-        this->head.moveTo(newHeadRevision);
-    }
-
-    this->pack->flush();
-    this->sendChangeMessage();
-}
-
-void VersionControl::recursiveTreeMerge(ValueTree localRevision,
-    ValueTree remoteRevision)
-{
-    // сначала мерж двух ревизий.
-    // проход по чайлдам идет потом, чтоб head.moveTo у чайлда имел дело
-    // с уже смерженным родителем.
-
-    if (Revision::calculateHash(localRevision) != Revision::calculateHash(remoteRevision))
-    {
-        Revision::copyProperties(localRevision, remoteRevision);
-        Revision::flush(localRevision);
-
-        // amend не работает
-        //Revision headRevision(this->head.getHeadingRevision());
-        //this->head.moveTo(localRevision);
-
-        //this->head.mergeHeadWith(remoteRevision,
-        //                         remoteRevision.getMessage(),
-        //                         remoteRevision.getTimeStamp());
-
-        //localRevision.setProperty(Serialization::VCS::commitId, remoteRevision.getUuid(), nullptr);
-        //localRevision.setProperty(Serialization::VCS::commitVersion, remoteRevision.getVersion(), nullptr);
-        //localRevision.flushData();
-
-        //this->head.moveTo(headRevision);
-    }
-
-    // затем пройтись по чайлдам.
-    // аналогичные - смержить этой же процедурой.
-    // несуществующие локально - скопировать.
-    // новые локально - оставить в покое.
-
-    for (int i = 0; i < remoteRevision.getNumChildren(); ++i)
-    {
-        ValueTree remoteChild(remoteRevision.getChild(i));
-        bool remoteChildExistsInLocal = false;
-
-        for (int j = 0; j < localRevision.getNumChildren(); ++j)
-        {
-            ValueTree localChild(localRevision.getChild(j));
-            if (Revision::getUuid(localChild) == Revision::getUuid(remoteChild))
-            {
-                this->recursiveTreeMerge(localChild, remoteChild);
-                remoteChildExistsInLocal = true;
-                break;
-            }
-        }
-
-        // копируем, тоже рекурсией.
-        if (!remoteChildExistsInLocal)
-        {
-            // скопировать все свойства, кроме пака. только свойства, не чайлдов.
-            ValueTree newLocalChild(Revision::create(this->pack));
-            Revision::copyProperties(newLocalChild, remoteChild);
-            Revision::flush(newLocalChild);
-            localRevision.appendChild(newLocalChild, nullptr);
-            this->recursiveTreeMerge(newLocalChild, remoteChild);
-        }
-    }
-
-    // должно работать.
-
-    // остается вопрос, как мы отличим up to date
-    // от new/outdated?
-    // на сервер отдается хэш от уидов всех айтемов.
-    // тогда мы точно сможем сказать, изменилась ли история.
-    // если изменилась, то ни версия, ни таймштамп истории здесь не критерий.
-    // качаем, и - что дальше?
-    // ступор.
-    //===------------------------------------------------------------------===//
-    // что, если увеличивать счетчик только после мержа двух историй?
-    // окей. представь 2 девайса:
-    // 1   1   1
-    // 1a  1   1b
-    // 1a<<1   1b   должен выдать ошибку (разные хэши, одинаковые версии)
-    // 1a>>1   1b   разные хэши, должен смержить серверную версию с локальной, увеличить счетчики у обеих
-    // 2   2   1b   так?
-    // 2   2 <<1b   ошибка, нельзя пушить на более позднюю версию
-    // 2   2 >>1b   должен сделать пулл, смержить локальную с серверной, увеличить счетчик у локальной
-    // 2   2   2b
-    // 2   2 <<2b   разные хэши, должен смержить серверную версию с локальной, увеличить счетчики у обеих
-    // 2   3   3    так?
-    // 2c  3   3    сделал изменения
-    // 2c>>3   3    ошибка, нельзя пушить на более позднюю версию
-    // 2с<<3   3    должен сделать пулл, смержить локальную с серверной, увеличить счетчик у локальной
-    // 3с  3   3
-    // и так далее, да, схема должна работать.
-    //===------------------------------------------------------------------===//
-    // итак, пулл разрешен только если серверная версия больше.
-    // если версии равны и равны хэши - up to date
-    // остальное - ошибка.
-    //===------------------------------------------------------------------===//
-    // пуш разрешен, только если локальная версия больше, либо версии равны, но не равны хэши
-    // если версии и хэши равны - up to date
-    // остальное - ошибка.
-    //===------------------------------------------------------------------===//
-}
-
-
-//===----------------------------------------------------------------------===//
 // VCS
 //===----------------------------------------------------------------------===//
 
-void VersionControl::moveHead(const ValueTree revision)
+void VersionControl::moveHead(const Revision::Ptr revision)
 {
-    if (! Revision::isEmpty(revision))
+    if (! revision->isEmpty())
     {
         this->head.moveTo(revision);
         this->sendChangeMessage();
     }
 }
 
-void VersionControl::checkout(const ValueTree revision)
+void VersionControl::checkout(const Revision::Ptr revision)
 {
-    if (! Revision::isEmpty(revision))
+    if (! revision->isEmpty())
     {
         this->head.moveTo(revision);
         this->head.checkout();
@@ -242,11 +73,11 @@ void VersionControl::checkout(const ValueTree revision)
     }
 }
 
-void VersionControl::cherryPick(const ValueTree revision, const Array<Uuid> uuids)
+void VersionControl::cherryPick(const Revision::Ptr revision, const Array<Uuid> uuids)
 {
-    if (! Revision::isEmpty(revision))
+    if (! revision->isEmpty())
     {
-        ValueTree headRevision(this->head.getHeadingRevision());
+        auto headRevision(this->head.getHeadingRevision());
         this->head.moveTo(revision);
         this->head.cherryPick(uuids);
         this->head.moveTo(headRevision);
@@ -254,13 +85,44 @@ void VersionControl::cherryPick(const ValueTree revision, const Array<Uuid> uuid
     }
 }
 
+void VersionControl::replaceHistory(const Revision::Ptr root)
+{
+    // if parent revision id is empty, this is the root revision
+    // which means we're cloning project and replacing stub root with valid one:
+    DBG("Replacing history tree");
+    this->rootRevision = root;
+    // make sure head doesn't point to replaced revision:
+    this->head.moveTo(this->rootRevision);
+    this->sendChangeMessage();
+}
+
+void VersionControl::appendSubtree(const Revision::Ptr subtree, const String &appendRevisionId)
+{
+    jassert(appendRevisionId.isNotEmpty());
+    if (auto targetRevision = this->getRevisionById(this->rootRevision, appendRevisionId))
+    {
+        targetRevision->addChild(subtree);
+        this->sendChangeMessage();
+    }
+}
+
+Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const ValueTree &data)
+{
+    if (auto revision = this->getRevisionById(this->rootRevision, id))
+    {
+        revision->deserializeDeltas(data);
+        this->sendChangeMessage();
+        return revision;
+    }
+
+    return nullptr;
+}
+
 void VersionControl::quickAmendItem(TrackedItem *targetItem)
 {
-    RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
-    this->head.getHeadingRevision().setProperty(revisionRecord->getUuid().toString(), var(revisionRecord.get()), nullptr);
+    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
+    this->head.getHeadingRevision()->addItem(revisionRecord);
     this->head.moveTo(this->head.getHeadingRevision());
-    Revision::flush(this->head.getHeadingRevision());
-    this->pack->flush();
     this->sendChangeMessage();
 }
 
@@ -268,19 +130,14 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 {
     if (selectedItems.size() == 0) { return false; }
 
-    ValueTree allChanges(this->head.getDiff());
+    Revision::Ptr allChanges(this->head.getDiff());
     Array<RevisionItem::Ptr> changesToReset;
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
         const int index = selectedItems[i];
-
-        if (index >= allChanges.getNumProperties()) { return false; }
-
-        const Identifier id(allChanges.getPropertyName(index));
-        const var property(allChanges.getProperty(id));
-
-        if (RevisionItem *item = dynamic_cast<RevisionItem *>(property.getObject()))
+        if (index >= allChanges->getItems().size()) { return false; }
+        if (auto *item = allChanges->getItems()[index].get())
         {
             changesToReset.add(item);
         }
@@ -292,17 +149,12 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 
 bool VersionControl::resetAllChanges()
 {
-    ValueTree allChanges(this->head.getDiff());
+    Revision::Ptr allChanges(this->head.getDiff());
     Array<RevisionItem::Ptr> changesToReset;
 
-    for (int i = 0; i < allChanges.getNumProperties(); ++i)
+    for (auto *item : allChanges->getItems())
     {
-        const Identifier id(allChanges.getPropertyName(i));
-        const var property(allChanges.getProperty(id));
-        if (RevisionItem *item = dynamic_cast<RevisionItem *>(property.getObject()))
-        {
-            changesToReset.add(item);
-        }
+        changesToReset.add(item);
     }
     
     this->head.resetChanges(changesToReset);
@@ -313,30 +165,24 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 {
     if (selectedItems.size() == 0) { return false; }
 
-    ValueTree newRevision(Revision::create(this->pack, message));
-    ValueTree allChanges(this->head.getDiff().createCopy());
+    Revision::Ptr newRevision(new Revision(message));
+    Revision::Ptr allChanges(this->head.getDiff());
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
         const int index = selectedItems[i];
-
-        if (index >= allChanges.getNumProperties()) { return false; }
-
-        const Identifier id(allChanges.getPropertyName(index));
-        const var property(allChanges.getProperty(id));
-
-        newRevision.setProperty(id, property, nullptr);
+        if (index >= allChanges->getItems().size()) { return false; }
+        if (auto *item = allChanges->getItems()[index].get())
+        {
+            newRevision->addItem(item);
+        }
     }
 
-    ValueTree headingRevision(this->head.getHeadingRevision());
+    Revision::Ptr headingRevision(this->head.getHeadingRevision());
+    if (headingRevision == nullptr) { return false; }
 
-    if (!headingRevision.isValid()) { return false; }
-
-    headingRevision.appendChild(newRevision, nullptr);
+    headingRevision->addChild(newRevision);
     this->head.moveTo(newRevision);
-
-    Revision::flush(newRevision);
-    this->pack->flush();
 
     this->sendChangeMessage();
     return true;
@@ -352,19 +198,14 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
 {
     if (selectedItems.size() == 0) { return false; }
     
-    ValueTree newRevision(Revision::create(this->pack, message));
-    ValueTree allChanges(this->head.getDiff().createCopy());
+    Revision::Ptr newRevision(new Revision(message));
+    Revision::Ptr allChanges(this->head.getDiff());
     
     for (int i = 0; i < selectedItems.size(); ++i)
     {
         const int index = selectedItems[i];
-        
-        if (index >= allChanges.getNumProperties()) { return false; }
-        
-        const Identifier id(allChanges.getPropertyName(index));
-        const var property(allChanges.getProperty(id));
-        
-        newRevision.setProperty(id, property, nullptr);
+        if (index >= allChanges->getItems().size()) { return false; }
+        newRevision->addItem(allChanges->getItems()[index]);
     }
     
     this->stashes->addStash(newRevision);
@@ -378,11 +219,11 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
     return true;
 }
 
-bool VersionControl::applyStash(const ValueTree stash, bool shouldKeepStash)
+bool VersionControl::applyStash(const Revision::Ptr stash, bool shouldKeepStash)
 {
-    if (! Revision::isEmpty(stash))
+    if (! stash->isEmpty())
     {
-        ValueTree headRevision(this->head.getHeadingRevision());
+        Revision::Ptr headRevision(this->head.getHeadingRevision());
         this->head.moveTo(stash);
         this->head.cherryPickAll();
         this->head.moveTo(headRevision);
@@ -414,7 +255,7 @@ bool VersionControl::quickStashAll()
     if (this->hasQuickStash())
     { return false; }
 
-    ValueTree allChanges(this->head.getDiff().createCopy());
+    Revision::Ptr allChanges(this->head.getDiff());
     this->stashes->storeQuickStash(allChanges);
     this->resetAllChanges();
 
@@ -436,6 +277,78 @@ bool VersionControl::applyQuickStash()
     return true;
 }
 
+//===----------------------------------------------------------------------===//
+// ChangeListener
+//===----------------------------------------------------------------------===//
+
+void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
+{
+    // Project changed
+    this->getHead().setDiffOutdated(true);
+}
+
+//===----------------------------------------------------------------------===//
+// Network
+//===----------------------------------------------------------------------===//
+
+void VersionControl::syncAllRevisions()
+{
+    App::Helio().getResourceSyncService()->syncRevisions(this,
+        this->parent.getVCSId(), this->parent.getVCSName(), {});
+}
+
+void VersionControl::fetchRevisionsIfNeeded()
+{
+    if (this->remoteCache.isOutdated())
+    {
+        DBG("Remote revisions cache is outdated, fetching the latest project info");
+        App::Helio().getResourceSyncService()->fetchRevisionsInfo(this,
+            this->parent.getVCSId(), this->parent.getVCSName());
+    }
+}
+
+void VersionControl::syncRevision(const Revision::Ptr revision)
+{
+    // we need to sync the whole branch, i.e. all parents of that revision:
+    Array<String> subtreeToSync = { revision->getUuid() };
+
+    WeakReference<Revision> it = revision.get();
+    while (it->getParent() != nullptr)
+    {
+        it = it->getParent();
+        subtreeToSync.add(it->getUuid());
+    }
+
+    App::Helio().getResourceSyncService()->syncRevisions(this,
+        this->parent.getVCSId(), this->parent.getVCSName(),
+        subtreeToSync);
+}
+
+void VersionControl::updateLocalSyncCache(const Revision::Ptr revision)
+{
+    this->remoteCache.updateForLocalRevision(revision);
+    this->sendChangeMessage();
+}
+
+void VersionControl::updateRemoteSyncCache(const Array<RevisionDto> &revisions)
+{
+    this->remoteCache.updateForRemoteRevisions(revisions);
+    this->sendChangeMessage();
+}
+
+Revision::SyncState VersionControl::getRevisionSyncState(const Revision::Ptr revision) const
+{
+    if (!revision->isShallowCopy() && this->remoteCache.hasRevisionTracked(revision))
+    {
+        return Revision::FullSync;
+    }
+    else if (revision->isShallowCopy())
+    {
+        return Revision::ShallowCopy;
+    }
+
+    return Revision::NoSync;
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -445,16 +358,13 @@ ValueTree VersionControl::serialize() const
 {
     ValueTree tree(Serialization::Core::versionControl);
 
-    tree.setProperty(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion), nullptr);
-    tree.setProperty(Serialization::VCS::vcsHistoryId, this->publicId, nullptr);
-    tree.setProperty(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()), nullptr);
+    tree.setProperty(Serialization::VCS::headRevisionId, this->head.getHeadingRevision()->getUuid(), nullptr);
     
-    tree.appendChild(this->key.serialize(), nullptr);
-    tree.appendChild(Revision::serialize(this->rootRevision), nullptr);
+    tree.appendChild(this->rootRevision->serialize(), nullptr);
     tree.appendChild(this->stashes->serialize(), nullptr);
-    tree.appendChild(this->pack->serialize(), nullptr);
     tree.appendChild(this->head.serialize(), nullptr);
-    
+    tree.appendChild(this->remoteCache.serialize(), nullptr);
+
     return tree;
 }
 
@@ -467,90 +377,85 @@ void VersionControl::deserialize(const ValueTree &tree)
 
     if (!root.isValid()) { return; }
 
-    const String timeStamp = root.getProperty(Serialization::VCS::vcsHistoryVersion);
-    this->historyMergeVersion = timeStamp.getLargeIntValue();
-
-    this->publicId = root.getProperty(Serialization::VCS::vcsHistoryId, this->publicId);
-
     const String headId = root.getProperty(Serialization::VCS::headRevisionId);
-    Logger::writeToLog("Head ID is " + headId);
+    DBG("Head ID is " + headId);
 
-    this->key.deserialize(root);
-    Revision::deserialize(this->rootRevision, root);
-    this->stashes->deserialize(root);
-    this->pack->deserialize(root);
+    DeltaDataLookup deltaDataLookup;
+    const auto packNode = root.hasType(Serialization::VCS::pack) ?
+        root : root.getChildWithName(Serialization::VCS::pack);
+
+    if (packNode.isValid())
+    {
+        /*
+            This block is another kind of hack to support legacy file format.
+
+            First, VCS had a Pack class, which was designed to manage all weighty
+            deltas data and flush it on disk by the chance to keep memory free,
+            and then only load these chunks when they are needed (e.g. on the checkout).
+
+            Eventually it brought much more problems than benefits,
+            so I ripped it off, but deltas data still have to be put in place
+            manually, when reading the old file format (because of this,
+            we call the overloaded deserialize/2 function). All these hacks
+            are meant to be removed in a year or two once the next version is released.
+
+            Conclusion: premature optimization considered harmful.
+        */
+
+        forEachValueTreeChildWithType(packNode, e, Serialization::VCS::packItem)
+        {
+            const auto deltaId = e.getProperty(Serialization::VCS::packItemDeltaId);
+            jassert(e.getNumChildren() == 1);
+            const auto deltaData(e.getChild(0));
+            jassert(deltaData.isValid());
+            deltaDataLookup[deltaId] = deltaData;
+        }
+    }
+
+    this->rootRevision->deserialize(root, deltaDataLookup);
+    this->stashes->deserialize(root, deltaDataLookup);
+
+    this->remoteCache.deserialize(root);
 
     {
         const double h1 = Time::getMillisecondCounterHiRes();
         this->head.deserialize(root);
         const double h2 = Time::getMillisecondCounterHiRes();
-        Logger::writeToLog("Loading index done in " + String(h2 - h1) + "ms");
+        DBG("Loading VCS snapshot done in " + String(h2 - h1) + "ms");
     }
     
-    ValueTree headRevision(this->getRevisionById(this->rootRevision, headId));
-
-    // здесь мы раньше полностью десериализовали состояние хэда.
-    // если дерево истории со временеи становится большим, moveTo со всеми мержами занимает кучу времени.
-    // если работать в десятками тысяч событий, загрузка индекса длится ~2ms, а пересборка индекса - ~500ms
-    // поэтому moveTo убираем, оставляем pointTo
-    
-    if (! Revision::isEmpty(headRevision))
+    if (auto headRevision = this->getRevisionById(this->rootRevision, headId))
     {
-        //const double t1 = Time::getMillisecondCounterHiRes();
-
         this->head.pointTo(headRevision);
-        //this->head.moveTo(headRevision);
-
-        //const double t2 = Time::getMillisecondCounterHiRes();
-        //Logger::writeToLog("Building index done in " + String(t2 - t1) + "ms");
     }
-//#endif
 }
 
 void VersionControl::reset()
 {
-    Revision::reset(this->rootRevision);
+    this->rootRevision->reset();
     this->head.reset();
+    this->remoteCache.reset();
     this->stashes->reset();
-    this->pack->reset();
 }
-
-
-//===----------------------------------------------------------------------===//
-// ChangeListener
-//===----------------------------------------------------------------------===//
-
-void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
-{
-    // Project changed
-    this->getHead().setDiffOutdated(true);
-}
-
 
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
-ValueTree VersionControl::getRevisionById(const ValueTree startFrom, const String &id) const
+Revision::Ptr VersionControl::getRevisionById(const Revision::Ptr startFrom, const String &id) const
 {
-    //Logger::writeToLog("getRevisionById, iterating " + startFrom.getUuid());
-
-    if (Revision::getUuid(startFrom) == id)
+    if (startFrom->getUuid() == id)
     {
         return startFrom;
     }
 
-    for (int i = 0; i < startFrom.getNumChildren(); ++i)
+    for (auto *child : startFrom->getChildren())
     {
-        ValueTree child(startFrom.getChild(i));
-        ValueTree search(this->getRevisionById(child, id));
-
-        if (! Revision::isEmpty(search))
+        if (auto search = this->getRevisionById(child, id))
         {
-            //Logger::writeToLog("search ok, returning " + search.getUuid());
             return search;
         }
     }
 
-    return Revision::create(this->pack);
+    return nullptr;
 }

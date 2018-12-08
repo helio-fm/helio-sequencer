@@ -24,7 +24,6 @@
 #include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
-#include "HelioCallout.h"
 #include "AnnotationMenu.h"
 
 #include "AnnotationDialog.h"
@@ -63,7 +62,6 @@ AnnotationsProjectMap<T>::~AnnotationsProjectMap()
 template<typename T>
 void AnnotationsProjectMap<T>::resized()
 {
-    //Logger::writeToLog("AnnotationsProjectMap<T>::resized");
     this->setVisible(false);
 
     T *previous = nullptr;

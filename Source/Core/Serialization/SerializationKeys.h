@@ -36,6 +36,7 @@ namespace Serialization
         static const Identifier instrumentRoot = "instrument";
 
         static const Identifier project = "project";
+        static const Identifier projectId = "projectId";
         static const Identifier projectInfo = "projectInfo";
         static const Identifier projectTimeStamp = "projectTimeStamp";
         static const Identifier versionControl = "versionControl";
@@ -45,6 +46,7 @@ namespace Serialization
         static const Identifier pianoTrack = "pianoTrack";
         static const Identifier automationTrack = "automationTrack";
         static const Identifier projectTimeline = "projectTimeline";
+        static const Identifier filePath = "filePath";
 
         // Properties
         static const Identifier trackId = "trackId";
@@ -60,18 +62,7 @@ namespace Serialization
         static const Identifier keySignaturesTrackId = "keySignaturesTrackId";
         static const Identifier timeSignaturesTrackId = "timeSignaturesTrackId";
 
-        static const Identifier machineID = "deviceId";
         static const Identifier globalConfig = "config";
-
-        static const Identifier recentFiles = "recentFiles";
-        static const Identifier recentFileItem = "file";
-        static const Identifier recentFileTitle = "title";
-        static const Identifier recentFilePath = "path";
-        static const Identifier recentFileProjectId = "id";
-        static const Identifier recentFileTime = "time";
-
-        static const Identifier filePath = "filePath";
-
         static const Identifier clipboard = "helioClipboard";
     } // namespace Core
 
@@ -180,12 +171,10 @@ namespace Serialization
         static const Identifier activeWorkspace = "activeWorkspace";
         static const Identifier activeColourScheme = "activeColourScheme";
         static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
-        static const Identifier activeUserProfile = "activeUserProfile";
         static const Identifier currentLocale = "currentLocale";
 
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
-        static const Identifier lastUsedLogin = "lastUsedLogin";
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
         static const Identifier lastUsedFont = "lastUsedFont";
 
@@ -382,13 +371,41 @@ namespace Serialization
         static const Identifier firstBeat = "firstBeat";
     } // namespace Clipboard
 
+    namespace User
+    {
+        namespace Profile
+        {
+            static const Identifier userProfile = "userProfile";
+            static const Identifier url = "url";
+            static const Identifier name = "name";
+            static const Identifier login = "login";
+            static const Identifier thumbnail = "thumbnail";
+        } // namespace Profile
+
+        namespace RecentProjects
+        {
+            static const Identifier recentProject = "recentProject";
+            static const Identifier localProjectInfo = "localProjectInfo";
+            static const Identifier remotelProjectInfo = "remotelProjectInfo";
+            static const Identifier path = "path";
+            static const Identifier file = "file";
+            static const Identifier title = "title";
+            static const Identifier projectId = "id";
+            static const Identifier updatedAt = "updatedAt";
+        } // namespace RecentProjects
+
+        namespace Sessions
+        {
+            static const Identifier session = "session";
+            static const Identifier deviceId = "deviceId";
+            static const Identifier platformId = "platformId";
+            static const Identifier createdAt = "createdAt";
+            static const Identifier updatedAt = "updatedAt";
+        } // namespace Sessions
+    } // namespace User
+
     namespace VCS
     {
-        static const Identifier vcsHistoryKey = "historyKey";
-        static const Identifier vcsHistoryKeyData = "data";
-        static const Identifier vcsHistoryId = "historyId";
-        static const Identifier vcsHistoryVersion = "historyVersion";
-        
         static const Identifier stashesRepository = "stashesRepository";
         static const Identifier userStashes = "userStashes";
         static const Identifier quickStash = "quickStash";
@@ -396,17 +413,21 @@ namespace Serialization
 
         static const Identifier pack = "deltaPack";
         static const Identifier packItem = "record";
-        static const Identifier packItemRevId = "itemId";
         static const Identifier packItemDeltaId = "deltaId";
+
+        static const Identifier remoteCache = "remoteCache";
+        static const Identifier remoteCacheSyncTime = "lastSync";
+        static const Identifier remoteRevision = "revision";
+        static const Identifier remoteRevisionId = "id";
+        static const Identifier remoteRevisionTimeStamp = "ts";
 
         static const Identifier revision = "revision";
         static const Identifier head = "head";
-        static const Identifier headIndex = "snapshot";
-        static const Identifier headIndexData = "snapshotData";
+        static const Identifier snapshot = "snapshot";
+        static const Identifier snapshotData = "snapshotData";
         static const Identifier headRevisionId = "headRevisionId";
         static const Identifier commitMessage = "message";
         static const Identifier commitTimeStamp = "date";
-        static const Identifier commitVersion = "version";
         static const Identifier commitId = "id";
 
         static const Identifier vcsItemId = "vcsId";
@@ -482,48 +503,30 @@ namespace Serialization
 
     namespace Api
     {
-        // Session
+        // Config keys
         static const Identifier sessionToken = "sessionToken";
         static const Identifier sessionUserProfile = "sessionUserProfile";
-
         static const Identifier updatesInfo = "updatesInfo";
-
-        namespace PlatformIds
-        {
-            static const Identifier windows32 = "windows32";
-            static const Identifier windows64 = "windows64";
-            static const Identifier linux32 = "linux32";
-            static const Identifier linux64 = "linux64";
-            static const Identifier mac = "mac";
-            static const Identifier ios = "ios";
-            static const Identifier android = "android";
-            static const Identifier unknown = "unknown";
-        }
-
+        
         // JSON keys
         namespace V1
         {
-            static const Identifier rootNode = "data";
-            static const Identifier rootErrorsNode = "errors";
-
             static const Identifier status = "status";
             static const Identifier message = "message";
 
             static const Identifier user = "user";
-            static const Identifier session = "session";
             static const Identifier token = "token";
             static const Identifier bearer = "bearer";
+            static const Identifier session = "session";
             static const Identifier deviceId = "deviceId";
             static const Identifier platformId = "platformId";
 
             namespace Identity
             {
                 static const Identifier name = "name";
-                static const Identifier email = "email";
                 static const Identifier login = "login";
                 static const Identifier profileUrl = "profileUrl";
                 static const Identifier avatarUrl = "avatar";
-                static const Identifier avatarThumbnail = "avatarThumbnail";
                 static const Identifier password = "password";
                 static const Identifier passwordConfirmation = "passwordConfirmation";
             }
@@ -531,6 +534,7 @@ namespace Serialization
             namespace AuthSession
             {
                 static const Identifier id = "id";
+                static const Identifier session = "session";
                 static const Identifier secret = "secretKey";
                 static const Identifier provider = "provider";
                 static const Identifier appName = "appName";
@@ -542,17 +546,63 @@ namespace Serialization
 
             namespace Resources
             {
-                static const Identifier versionInfo = "versionInfo";
-                static const Identifier version = "version";
-                static const Identifier platformId = "platformId";
-                static const Identifier link = "link";
-                static const Identifier resourceInfo = "resourceInfo";
-                static const Identifier resourceName = "resourceName";
+                static const Identifier resources = "resources";
+                static const Identifier type = "type";
                 static const Identifier hash = "hash";
+                static const Identifier name = "name";
+                static const Identifier updatedAt = "updatedAt";
+            }
+
+            namespace Versions
+            {
+                static const Identifier versions = "versions";
+                static const Identifier branch = "branch";
+                static const Identifier architecture = "architecture";
+                static const Identifier platformType = "platformType";
+                static const Identifier buildType = "buildType";
+                static const Identifier version = "version";
+                static const Identifier link = "link";
+            }
+
+            namespace Sessions
+            {
+                static const Identifier sessions = "sessions";
+                static const Identifier createdAt = "createdAt";
+                static const Identifier updatedAt = "updatedAt";
+                static const Identifier deviceId = "deviceId";
+                static const Identifier platformId = "platformId";
+            }
+
+            namespace Projects
+            {
+                static const Identifier project = "project";
+                static const Identifier projects = "projects";
+                static const Identifier id = "id";
+                static const Identifier title = "title";
+                static const Identifier alias = "alias";
+                static const Identifier head = "head";
+                static const Identifier updatedAt = "updatedAt";
+            }
+
+            namespace Revisions
+            {
+                static const Identifier revision = "revision";
+                static const Identifier revisions = "revisions";
+                static const Identifier id = "id";
+                static const Identifier message = "message";
+                static const Identifier timestamp = "timestamp";
+                static const Identifier parentId = "parentId";
+                static const Identifier data = "data";
             }
         } // namespace V1
     } // namespace Api
-        
+
+    namespace JWT
+    {
+        static const Identifier issuer = "iss";
+        static const Identifier expiry = "exp";
+    } // namespace JWT
+
     namespace Undo
     {
         static const Identifier undoStack = "undoStack";

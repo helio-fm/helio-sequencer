@@ -17,11 +17,11 @@
 
 #pragma once
 
-class BackendService : protected Timer
+class BackendService
 {
 protected:
 
-    ~BackendService() override
+    virtual ~BackendService()
     {
         for (auto *thread : this->requestThreads)
         {

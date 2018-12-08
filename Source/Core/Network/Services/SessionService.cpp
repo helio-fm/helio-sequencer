@@ -20,96 +20,129 @@
 #include "JsonSerializer.h"
 #include "Config.h"
 
+#include "App.h"
+#include "MainLayout.h"
+#include "ProgressTooltip.h"
+#include "SuccessTooltip.h"
+#include "FailTooltip.h"
+
 // Try to update our sliding session after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
 
-SessionService::SessionService() : userProfile({})
+class JsonWebToken final
 {
-    Config::load(this->userProfile, Serialization::Config::activeUserProfile);
-    const String token = SessionService::getApiToken();
+public:
+
+    JsonWebToken(const String &token)
+    {
+        if (token.isNotEmpty())
+        {
+            StringArray blocks;
+            blocks.addTokens(token, ".", "");
+            if (blocks.size() == 3)
+            {
+                MemoryBlock block;
+                {
+                    MemoryOutputStream outStream(block, false);
+                    Base64::convertFromBase64(outStream, blocks[1]);
+                }
+
+                const JsonSerializer decoder;
+                decoder.loadFromString(block.toString(), this->jwt);
+            }
+        }
+    }
+
+    const bool isValid() const noexcept
+    {
+        return this->jwt.isValid();
+    }
+
+    const Time getExpiry() const
+    {
+        if (this->jwt.isValid())
+        {
+            using namespace Serialization;
+            return Time(int64(this->jwt.getProperty(JWT::expiry)) * 1000);
+        }
+
+        return {};
+    }
+
+    const String getIssuer() const
+    {
+        if (this->jwt.isValid())
+        {
+            using namespace Serialization;
+            return this->jwt.getProperty(JWT::issuer);
+        }
+
+        return {};
+    }
+
+private:
+
+    ValueTree jwt;
+};
+
+SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfile)
+{
+    const auto token = this->userProfile.getApiToken();
     if (token.isNotEmpty())
     {
         // Assuming we're using JWT, try to get token expiry:
-        StringArray jwtBlocks;
-        jwtBlocks.addTokens(token, ".", "");
-        if (jwtBlocks.size() == 3)
+        const JsonWebToken jwt(token);
+        if (jwt.isValid())
         {
-            MemoryBlock block;
+            const Time now = Time::getCurrentTime();
+            const Time expiry = jwt.getExpiry();
+            DBG("Found token expiring at " + expiry.toString(true, true));
+
+            if (expiry < now)
             {
-                MemoryOutputStream outStream(block, false);
-                Base64::convertFromBase64(outStream, jwtBlocks[1]);
+                DBG("Token seems to be expired, removing");
+                this->userProfile.clearProfileAndSession();
+            }
+            else if ((expiry - now).inDays() <= 5)
+            {
+                DBG("Attempting to re-issue auth token");
+                this->prepareTokenUpdateThread()->updateToken(token, UPDATE_SESSION_TIMEOUT_MS);
+            }
+            else
+            {
+                DBG("Token seems to be ok, skipping session update step");
+                this->prepareProfileRequestThread()->doRequest(this->userProfile.needsAvatarImage());
             }
 
-            ValueTree jwt;
-            static JsonSerializer decoder;
-            if (decoder.loadFromString(block.toString(), jwt).wasOk())
-            {
-                const Time now = Time::getCurrentTime();
-                const Time expiry(int64(jwt.getProperty("exp")) * 1000);
-                Logger::writeToLog("Found token expiring " + expiry.toString(true, true));
-                if (expiry < now)
-                {
-                    Logger::writeToLog("Token seems to be expired, removing");
-                    SessionService::setApiToken({});
-                    this->resetUserProfile();
-                }
-                else if ((expiry - now).inDays() <= 5)
-                {
-                    Logger::writeToLog("Attempting to re-issue auth token");
-                    this->startTimer(UPDATE_SESSION_TIMEOUT_MS);
-                }
-
-                return;
-            }
+            return;
         }
 
-        Logger::writeToLog("Warning: auth token seems to be invalid, removing");
-        SessionService::setApiToken({});
-        this->resetUserProfile();
+        DBG("Warning: auth token seems to be invalid, removing");
+        this->userProfile.clearProfileAndSession();
     }
-}
-
-String SessionService::getApiToken()
-{
-    return Config::get(Serialization::Api::sessionToken, {});
-}
-
-void SessionService::setApiToken(const String &token)
-{
-    Config::set(Serialization::Api::sessionToken, token);
-}
-
-bool SessionService::isLoggedIn()
-{
-    return SessionService::getApiToken().isNotEmpty();
-}
-
-const UserProfile &SessionService::getUserProfile() const noexcept
-{
-    return this->userProfile;
-}
-
-void SessionService::resetUserProfile()
-{
-    this->userProfile.reset();
-    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
 }
 
 //===----------------------------------------------------------------------===//
 // Sign in / sign out
 //===----------------------------------------------------------------------===//
 
-void SessionService::signIn(const String &provider, AuthCallback callback)
+void SessionService::signIn(const String &provider)
 {
-    if (this->authCallback != nullptr)
+    if (auto *thread = this->getRunningThreadFor<AuthThread>())
     {
-        jassertfalse; // You should never hit this line
-        callback(false, { "Auth is already in progress" });
+        jassertfalse;
+        DBG("Auth is already in progress");
         return;
     }
 
-    this->authCallback = callback;
-    this->getNewThreadFor<AuthThread>()->requestWebAuth(this, provider);
+    ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
+    tooltip->onCancel = [this]() {
+        this->cancelSignInProcess();
+    };
+
+    App::Layout().showModalComponentUnowned(tooltip.release());
+
+    this->prepareAuthThread()->requestWebAuth(provider);
 }
 
 void SessionService::cancelSignInProcess()
@@ -117,103 +150,86 @@ void SessionService::cancelSignInProcess()
     if (auto *thread = this->getRunningThreadFor<AuthThread>())
     {
         thread->signalThreadShouldExit();
-        this->authCallback = nullptr;
+        // TODO call authCallback with errors=[TRANS("popup::cancelled")]?
     }
 }
 
 void SessionService::signOut()
 {
-    // TODO: need to erase token on server?
-    this->resetUserProfile();
-    SessionService::setApiToken({});
+    // TODO: need to erase token on server, and then:
+    this->userProfile.clearProfileAndSession();
 }
 
 //===----------------------------------------------------------------------===//
 // Updating session
 //===----------------------------------------------------------------------===//
 
-void SessionService::timerCallback()
+AuthThread *SessionService::prepareAuthThread()
 {
-    this->stopTimer();
-    const String token = SessionService::getApiToken();
-    this->getNewThreadFor<TokenUpdateThread>()->updateToken(this, token);
-}
+    auto *thread = this->getNewThreadFor<AuthThread>();
 
-//===----------------------------------------------------------------------===//
-// SignInThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionService::authSessionInitiated(const AuthSession session, const String &redirect)
-{
-    jassert(redirect.isNotEmpty());
-    URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
-}
-
-void SessionService::authSessionFinished(const AuthSession session)
-{
-    SessionService::setApiToken(session.getToken());
-    // Don't call authCallback right now, instead request a user profile and callback when ready
-    this->getNewThreadFor<RequestUserProfileThread>()->requestUserProfile(this, this->userProfile);
-    this->sendChangeMessage();
-}
-
-void SessionService::authSessionFailed(const Array<String> &errors)
-{
-    Logger::writeToLog("Login failed: " + errors.getFirst());
-    if (this->authCallback != nullptr)
+    thread->onAuthSessionInitiated = [](const AuthSessionDto session, const String &redirect)
     {
-        this->authCallback(false, errors);
-        this->authCallback = nullptr;
-    }
-    this->sendChangeMessage();
-}
+        jassert(redirect.isNotEmpty());
+        URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
+    };
 
-//===----------------------------------------------------------------------===//
-// RequestUserProfileThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionService::requestProfileOk(const UserProfile profile)
-{
-    this->userProfile = profile;
-    Config::save(this->userProfile, Serialization::Config::activeUserProfile);
-    if (this->authCallback != nullptr)
+    thread->onAuthSessionFinished = [this](const AuthSessionDto session)
     {
-        this->authCallback(true, {});
-        this->authCallback = nullptr;
-    }
-    this->sendChangeMessage();
-}
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showModalComponentUnowned(new SuccessTooltip());
 
-void SessionService::requestProfileFailed(const Array<String> &errors)
-{
-    this->resetUserProfile();
-    if (this->authCallback != nullptr)
+        this->userProfile.setApiToken(session.getToken());
+        // don't call authCallback right now, instead request a user profile and callback when ready;
+        // (true) == force request avatar data, as now it might have changed:
+        this->prepareProfileRequestThread()->doRequest(true);
+    };
+
+    thread->onAuthSessionFailed = [this](const Array<String> &errors)
     {
-        this->authCallback(false, errors);
-        this->authCallback = nullptr;
-    }
-    this->sendChangeMessage();
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showTooltip(errors.getFirst());
+        layout.showModalComponentUnowned(new FailTooltip());
+        DBG("Login failed: " + errors.getFirst());
+    };
+
+    return thread;
 }
 
-//===----------------------------------------------------------------------===//
-// TokenUpdateThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionService::tokenUpdateOk(const String &newToken)
+TokenUpdateThread *SessionService::prepareTokenUpdateThread()
 {
-    SessionService::setApiToken(newToken);
-    this->sendChangeMessage();
+    auto *thread = this->getNewThreadFor<TokenUpdateThread>();
+
+    thread->onTokenUpdateOk = [this](const String &newToken)
+    {
+        this->userProfile.setApiToken(newToken);
+        // (true) == force request avatar data, as now it might have changed:
+        this->prepareProfileRequestThread()->doRequest(true);
+    };
+
+    thread->onTokenUpdateFailed = [this](const Array<String> &errors)
+    {
+        // This might be the case of connection error,
+        // so we should not reset the token and profile
+        if (!errors.isEmpty())
+        {
+            this->userProfile.clearProfileAndSession();
+        }
+    };
+
+    return thread;
 }
 
-void SessionService::tokenUpdateFailed(const Array<String> &errors)
+RequestUserProfileThread *SessionService::prepareProfileRequestThread()
 {
-    this->resetUserProfile();
-    SessionService::setApiToken({});
-    this->sendChangeMessage();
-}
+    auto *thread = this->getNewThreadFor<RequestUserProfileThread>();
 
-void SessionService::tokenUpdateNoResponse()
-{
-    // This might be the case of connection error,
-    // so we should not reset the token and profile
+    thread->onRequestProfileOk = [this](const UserProfileDto profile)
+    {
+        this->userProfile.updateProfile(profile);
+    };
+
+    return thread;
 }

@@ -23,11 +23,9 @@
 #include "Dashboard.h"
 
 //[MiscUserDefs]
-#include "HelioCallout.h"
 #include "RootTreeItem.h"
 #include "SettingsTreeItem.h"
 #include "MainLayout.h"
-#include "LogComponent.h"
 #include "SerializationKeys.h"
 #include "DashboardMenu.h"
 #include "LogoFader.h"
@@ -75,6 +73,8 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->addAndMakeVisible(userProfile.get());
     userProfile->setBounds(400, 24, 272, 32);
 
+    this->updatesInfo.reset(new UpdatesInfoComponent());
+    this->addAndMakeVisible(updatesInfo.get());
 
     //[UserPreSize]
     this->setWantsKeyboardFocus(false);
@@ -85,15 +85,15 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->setSize(600, 400);
 
     //[Constructor]
-    this->updateLoginAndProfileButtons();
-    App::Helio().getSessionService()->addChangeListener(this);
+    this->updateProfileViews();
+    App::Workspace().getUserProfile().addChangeListener(this);
     //[/Constructor]
 }
 
 Dashboard::~Dashboard()
 {
     //[Destructor_pre]
-    App::Helio().getSessionService()->removeChangeListener(this);
+    App::Workspace().getUserProfile().removeChangeListener(this);
     //[/Destructor_pre]
 
     skew = nullptr;
@@ -106,6 +106,7 @@ Dashboard::~Dashboard()
     separator2 = nullptr;
     loginButton = nullptr;
     userProfile = nullptr;
+    updatesInfo = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -129,6 +130,7 @@ void Dashboard::resized()
     backgroundB->setBounds(getWidth() - (getWidth() - 384), 0, getWidth() - 384, getHeight() - 0);
     backgroundA->setBounds(0, 0, 320, getHeight() - 0);
     projectsList->setBounds(getWidth() - 10 - 376, getHeight() - 10 - (getHeight() - 20), 376, getHeight() - 20);
+    updatesInfo->setBounds(64, getHeight() - 64 - 128, 224, 128);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -145,22 +147,24 @@ void Dashboard::visibilityChanged()
     //[/UserCode_visibilityChanged]
 }
 
+
 //[MiscUserCode]
 void Dashboard::changeListenerCallback(ChangeBroadcaster *source)
 {
-    // Listens to session service
-    this->updateLoginAndProfileButtons();
+    // Listens to user profile changes:
+    this->updateProfileViews();
 }
 
-void Dashboard::updateLoginAndProfileButtons()
+void Dashboard::updateProfileViews()
 {
-    const bool loggedIn = App::Helio().getSessionService()->isLoggedIn();
+    const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
     this->loginButton->setVisible(!loggedIn);
     this->userProfile->setVisible(loggedIn);
     if (loggedIn)
     {
         this->userProfile->updateProfileInfo();
     }
+    this->projectsList->updateListContent();
 }
 //[/MiscUserCode]
 
@@ -210,6 +214,9 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="f5d48eba3545f546" memberName="userProfile" virtualName=""
              explicitFocusOrder="0" pos="400 24 272 32" sourceFile="UserProfileComponent.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="2558009f569f191b" memberName="updatesInfo" virtualName=""
+             explicitFocusOrder="0" pos="64 64Rr 224 128" sourceFile="UpdatesInfoComponent.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

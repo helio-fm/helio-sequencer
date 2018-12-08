@@ -32,7 +32,7 @@ SeparatorVertical::SeparatorVertical()
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (32, 32);
+    this->setSize(32, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -54,11 +54,23 @@ void SeparatorVertical::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x0b000000));
-    g.fillRect (1, 0, 1, getHeight() - 0);
+    {
+        int x = 1, y = 0, width = 1, height = getHeight() - 0;
+        Colour fillColour = Colour (0x0b000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0x09ffffff));
-    g.fillRect (2, 0, 1, getHeight() - 0);
+    {
+        int x = 2, y = 0, width = 1, height = getHeight() - 0;
+        Colour fillColour = Colour (0x09ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif

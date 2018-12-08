@@ -18,28 +18,27 @@
 #pragma once
 
 #include "Revision.h"
-#include "Pack.h"
 
 namespace VCS
 {
-    class StashesRepository : public ReferenceCountedObject, public Serializable
+    class StashesRepository final : public ReferenceCountedObject, public Serializable
     {
     public:
 
-        explicit StashesRepository(Pack::Ptr pack);
+        StashesRepository();
 
         int getNumUserStashes() const;
         String getUserStashDescription(int index) const;
-        ValueTree getUserStash(int index) const;
-        ValueTree getUserStashWithName(const String &stashName) const;
+        Revision::Ptr getUserStash(int index) const;
+        Revision::Ptr getUserStashWithName(const String &stashName) const;
         
-        ValueTree getQuickStash() const;
-        bool hasQuickStash() const;
-        void storeQuickStash(ValueTree newStash);
+        Revision::Ptr getQuickStash() const noexcept;
+        bool hasQuickStash() const noexcept;
+        void storeQuickStash(Revision::Ptr newStash);
         void resetQuickStash();
         
-        void addStash(ValueTree newStash);
-        void removeStash(ValueTree stashToRemove);
+        void addStash(Revision::Ptr newStash);
+        void removeStash(Revision::Ptr stashToRemove);
 
         //===--------------------------------------------------------------===//
         // Serializable
@@ -47,19 +46,18 @@ namespace VCS
 
         ValueTree serialize() const override;
         void deserialize(const ValueTree &tree) override;
+        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
         void reset() override;
 
         using Ptr = ReferenceCountedObjectPtr<StashesRepository>;
 
     private:
 
-        Pack::Ptr pack;
-
         // root node for the stashes
-        ValueTree userStashes;
+        Revision::Ptr userStashes;
 
         // root node for quick-toggled changes
-        ValueTree quickStash;
+        Revision::Ptr quickStash;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StashesRepository);
     };

@@ -299,8 +299,7 @@ void PianoRoll::hideAllGhostNotes()
 
 void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
-    //Logger::writeToLog("zoomRelative " + String(factor.getY()));
-    const float yZoomThreshold = 0.005f;
+    static const float yZoomThreshold = 0.005f;
 
     if (fabs(factor.getY()) > yZoomThreshold)
     {
@@ -389,8 +388,6 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
     jassert(key >= -128 && key <= 128);
-    //jassert(length > 0.f);
-    //Logger::writeToLog("getEventBounds " + String(key) + ", " + String(beat));
 
     const double startOffsetBeat = this->firstBar * double(BEATS_PER_BAR);
     const double x = this->barWidth * double(beat - startOffsetBeat) / double(BEATS_PER_BAR);
@@ -417,8 +414,7 @@ void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float 
 
 int PianoRoll::getYPositionByKey(int targetKey) const
 {
-    return (this->getHeight() - this->rowHeight) -
-        (targetKey * this->rowHeight);
+    return (this->getHeight() - this->rowHeight) - (targetKey * this->rowHeight);
 }
 
 //===----------------------------------------------------------------------===//
@@ -440,8 +436,7 @@ void PianoRoll::hideHelpers()
 {
     if (this->helperHorizontal->isVisible())
     {
-        const int animTime = SHORT_FADE_TIME(this);
-        this->fader.fadeOut(this->helperHorizontal, animTime);
+        this->fader.fadeOut(this->helperHorizontal, SHORT_FADE_TIME);
     }
 }
 
@@ -1074,7 +1069,7 @@ void PianoRoll::paint(Graphics &g)
 #if DEBUG
         if (index < 0)
         {
-            Logger::writeToLog("Missing " + key->toString());
+            DBG("Missing " + key->toString());
             jassert(index >= 0);
         }
 #endif
@@ -1359,11 +1354,11 @@ void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)
 #if DEBUG
     if (duplicateSchemeIndex < 0)
     {
-        Logger::writeToLog("Added scheme " + key.toString());
+        DBG("Added scheme " + key.toString());
     }
     else
     {
-        Logger::writeToLog("Ignored duplicate " + key.toString());
+        DBG("Ignored duplicate " + key.toString());
     }
 #endif
 }
@@ -1377,7 +1372,6 @@ void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
         if (k != &key &&
             HighlightingScheme::compareElements<KeySignatureEvent, KeySignatureEvent>(k, &key) == 0)
         {
-            //Logger::writeToLog("Refuse to delete a scheme");
             return;
         }
     }
@@ -1391,11 +1385,11 @@ void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
 #if DEBUG
     if (index >= 0)
     {
-        Logger::writeToLog("Removed scheme " + key.toString());
+        DBG("Removed scheme " + key.toString());
     }
     else
     {
-        Logger::writeToLog("Failed to remove scheme " + key.toString());
+        DBG("Failed to remove scheme " + key.toString());
         jassertfalse;
     }
 #endif

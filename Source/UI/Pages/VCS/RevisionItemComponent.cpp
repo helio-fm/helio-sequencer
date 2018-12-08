@@ -38,11 +38,10 @@ public:
     void paint(Graphics &g) override
     {
         const float height = float(this->getHeight());
-
-        const Colour colour1(Colours::white.withAlpha(0.02f));
-        const Colour colour2(Colours::white.withAlpha(0.01f));
+        const auto colour1(Colours::white.withAlpha(0.02f));
+        const auto colour2(Colours::white.withAlpha(0.01f));
         g.setGradientFill(ColourGradient(colour1, 0.f, 0.f, colour2, 0.f, float(this->getHeight()), false));
-        g.fillRoundedRectangle (5.0f, 2.0f, static_cast<float> (getWidth() - 10), static_cast<float> (getHeight() - 8), 2.000f);
+        g.fillRoundedRectangle (5.0f, 2.0f, float(this->getWidth() - 10), float(this->getHeight() - 8), 2.f);
     }
 };
 
@@ -58,15 +57,12 @@ public:
     void paint(Graphics &g) override
     {
         const float height = float(this->getHeight());
-        Image imgOk(Icons::findByName(Icons::apply, int(height * 0.7f)));
+        const auto imgOk(Icons::findByName(Icons::apply, int(height * 0.7f)));
 
-        //g.setColour(Colours::black.withAlpha(0.08f));
-        //g.fillRoundedRectangle(0.f, 0.f, float(this->getWidth()), float(this->getHeight()), 2.f);
-
-        const Colour colour1(Colours::black.withAlpha(0.07f));
-        const Colour colour2(Colours::black.withAlpha(0.1f));
+        const auto colour1(Colours::black.withAlpha(0.07f));
+        const auto colour2(Colours::black.withAlpha(0.1f));
         g.setGradientFill(ColourGradient(colour1, 0.f, 0.f, colour2, 0.f, float(this->getHeight()), false));
-        g.fillRoundedRectangle (5.0f, 2.0f, static_cast<float> (getWidth() - 10), static_cast<float> (getHeight() - 8), 2.000f);
+        g.fillRoundedRectangle (5.0f, 2.0f, float(this->getWidth() - 10), float(this->getHeight() - 8), 2.f);
 
         g.setOpacity(0.35f);
         const int rightTextBorder = this->getWidth() - this->getHeight() / 2 - 5;
@@ -76,25 +72,27 @@ public:
 
 //[/MiscUserDefs]
 
-RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox, VCS::Head &owner)
+RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
     : DraggingListBoxComponent(parentListBox.getViewport()),
       list(parentListBox),
-      head(owner),
       row(0)
 {
-    addAndMakeVisible (itemLabel = new Label (String(),
-                                              TRANS("...")));
-    itemLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    itemLabel->setJustificationType (Justification::centredLeft);
-    itemLabel->setEditable (false, false, false);
+    this->itemLabel.reset(new Label(String(),
+                                     TRANS("...")));
+    this->addAndMakeVisible(itemLabel.get());
+    this->itemLabel->setFont(Font (Font::getDefaultSerifFontName(), 18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    itemLabel->setJustificationType(Justification::centredLeft);
+    itemLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (deltasLabel = new Label (String(),
-                                                TRANS("...")));
-    deltasLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    deltasLabel->setJustificationType (Justification::topLeft);
-    deltasLabel->setEditable (false, false, false);
+    this->deltasLabel.reset(new Label(String(),
+                                       TRANS("...")));
+    this->addAndMakeVisible(deltasLabel.get());
+    this->deltasLabel->setFont(Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    deltasLabel->setJustificationType(Justification::topLeft);
+    deltasLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (separator = new SeparatorHorizontal());
+    this->separator.reset(new SeparatorHorizontalFading());
+    this->addAndMakeVisible(separator.get());
 
     //[UserPreSize]
     this->selectionComponent = new RevisionItemSelectionComponent();
@@ -105,7 +103,7 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox, VCS::Head &
         this->findColour(Label::textColourId).withMultipliedAlpha(0.75f));
     //[/UserPreSize]
 
-    setSize (500, 70);
+    this->setSize(500, 70);
 
     //[Constructor]
     this->itemLabel->setInterceptsMouseClicks(false, false);
@@ -142,31 +140,41 @@ void RevisionItemComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    itemLabel->setBounds (5, 3, getWidth() - 10, 24);
-    deltasLabel->setBounds (10, 3 + 24 - 2, getWidth() - 90, getHeight() - 34);
-    separator->setBounds (10, getHeight() - 1 - 3, getWidth() - 20, 3);
+    itemLabel->setBounds(5, 3, getWidth() - 10, 24);
+    deltasLabel->setBounds(10, 24, getWidth() - 90, 38);
+    separator->setBounds(10, getHeight() - 1 - 2, getWidth() - 20, 2);
     //[UserResized] Add your own custom resize handling here..
-    this->selectionComponent->setBounds(this->getLocalBounds());
+
+    if (this->isEnabled())
+    {
+        this->selectionComponent->setBounds(this->getLocalBounds());
+    }
+    else
+    {
+        deltasLabel->setBounds(10, 25, getWidth() - 30, getHeight() - 32);
+    }
+
     //[/UserResized]
 }
 
 
 //[MiscUserCode]
 
-void RevisionItemComponent::updateItemInfo(int rowNumber, bool isLastRow, VCS::RevisionItem::Ptr revisionItemInfo)
+void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemInfo,
+    int rowNumber, bool isLastRow, bool isSelectable)
 {
     this->row = rowNumber;
     this->revisionItem = revisionItemInfo;
+    this->setEnabled(isSelectable);
 
     this->separator->setVisible(! isLastRow);
 
-    const VCS::RevisionItem::Type itemType = this->revisionItem->getType();
+    const auto itemType = this->revisionItem->getType();
     const String itemTypeStr = this->revisionItem->getTypeAsString();
     const String itemDescription = TRANS(this->revisionItem->getVCSName());
-    String itemDeltas = "";
 
+    String itemDeltas;
     bool needsComma = false;
-
     for (int i = 0; i < this->revisionItem->getNumDeltas(); ++i)
     {
         const VCS::Delta *delta = this->revisionItem->getDelta(i);
@@ -180,11 +188,8 @@ void RevisionItemComponent::updateItemInfo(int rowNumber, bool isLastRow, VCS::R
         }
     }
 
-    if (itemType == VCS::RevisionItem::Removed)
-    {
-        this->itemLabel->setText(itemTypeStr + " " + itemDescription, dontSendNotification);
-    }
-    else if (itemType == VCS::RevisionItem::Added)
+    if (itemType == VCS::RevisionItem::Added ||
+        itemType == VCS::RevisionItem::Removed)
     {
         this->itemLabel->setText(itemTypeStr + " " + itemDescription, dontSendNotification);
     }
@@ -201,6 +206,8 @@ void RevisionItemComponent::updateItemInfo(int rowNumber, bool isLastRow, VCS::R
         this->selectionComponent->setVisible(this->isSelected());
         this->selectionComponent->setAlpha(this->isSelected() ? 1.f : 0.f);
     }
+
+    this->resized();
 }
 
 void RevisionItemComponent::select() const
@@ -211,6 +218,11 @@ void RevisionItemComponent::select() const
 void RevisionItemComponent::deselect() const
 {
     if (this->isSelected()) { this->invertSelection(); }
+}
+
+VCS::RevisionItem::Ptr RevisionItemComponent::getRevisionItem() const noexcept
+{
+    return this->revisionItem;
 }
 
 void RevisionItemComponent::setSelected(bool shouldBeSelected)
@@ -247,22 +259,22 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RevisionItemComponent" template="../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
-                 constructorParams="ListBox &amp;parentListBox, VCS::Head &amp;owner"
-                 variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;list(parentListBox),&#10;head(owner),&#10;row(0)"
+                 constructorParams="ListBox &amp;parentListBox" variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;list(parentListBox),&#10;row(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="70">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="itemLabel" virtualName=""
          explicitFocusOrder="0" pos="5 3 10M 24" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <LABEL name="" id="12427a53408d61ee" memberName="deltasLabel" virtualName=""
-         explicitFocusOrder="0" pos="10 2R 90M 34M" posRelativeY="c261305e2de1ebf2"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default sans-serif font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="9"/>
+         explicitFocusOrder="0" pos="10 24 90M 38" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
+         fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="9"/>
   <JUCERCOMP name="" id="2e5e217f3d476ef8" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="10 1Rr 20M 3" sourceFile="../../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="10 1Rr 20M 2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

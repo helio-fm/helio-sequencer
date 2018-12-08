@@ -22,13 +22,8 @@
 #include "LoginButton.h"
 
 //[MiscUserDefs]
-#include "App.h"
-#include "MainLayout.h"
 #include "SessionService.h"
-#include "UserProfile.h"
-#include "ProgressTooltip.h"
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
+#include "UserProfileDto.h"
 //[/MiscUserDefs]
 
 LoginButton::LoginButton()
@@ -51,25 +46,7 @@ LoginButton::LoginButton()
 
     //[UserPreSize]
     this->clickHandler->onClick = [this]() {
-        ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
-        tooltip->onCancel = []() {
-            App::Helio().getSessionService()->cancelSignInProcess();
-        };
-
-        App::Layout().showModalComponentUnowned(tooltip.release());
-        App::Helio().getSessionService()->signIn("Github", [this](bool succeeded, const Array<String> &errors) {
-            App::Layout().hideModalComponentUnowned();
-            if (succeeded)
-            {
-                App::Layout().showModalComponentUnowned(new SuccessTooltip());
-                //this->switchToUserProfile();
-            }
-            else
-            {
-                App::Layout().showTooltip(errors.getFirst());
-                App::Layout().showModalComponentUnowned(new FailTooltip());
-            }
-        });
+        App::Helio().getSessionService()->signIn("Github");
     };
     //[/UserPreSize]
 

@@ -44,10 +44,10 @@ namespace VCS
 
         int getNumDeltas() const override;
         Delta *getDelta(int index) const override;
-        ValueTree serializeDeltaData(int deltaIndex) const override;
+        ValueTree getDeltaData(int deltaIndex) const override;
         String getVCSName() const override;
         DiffLogic *getDiffLogic() const override;
-        void resetStateTo(const TrackedItem &newState) override { }
+        void resetStateTo(const TrackedItem &newState) override {}
 
     protected:
 

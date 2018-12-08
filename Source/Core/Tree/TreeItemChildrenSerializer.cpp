@@ -50,7 +50,7 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
 
         TreeItem *child = nullptr;
 
-        if (type == Core::project)              { child = new ProjectTreeItem(""); }
+        if (type == Core::project)              { child = new ProjectTreeItem(); }
         else if (type == Core::settings)        { child = new SettingsTreeItem(); }
         else if (type == Core::trackGroup)      { child = new TrackGroupTreeItem(""); }
         else if (type == Core::pianoTrack)      { child = new PianoTrackTreeItem(""); }

@@ -18,64 +18,51 @@
 #pragma once
 
 //[Headers]
-#include "VersionControl.h"
 #include "Revision.h"
+#include "RevisionItem.h"
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontal.h"
 
 class RevisionTooltipComponent final : public Component,
-                                       public ListBoxModel,
-                                       public Button::Listener
+                                       public ListBoxModel
 {
 public:
 
-    RevisionTooltipComponent(VersionControl &owner, const ValueTree revision);
+    RevisionTooltipComponent(const VCS::Revision::Ptr revision);
     ~RevisionTooltipComponent();
 
     //[UserMethods]
 
-    //===----------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
     // ListBoxModel
-    //
-
-    Component *refreshComponentForRow(int rowNumber,
-            bool isRowSelected, Component *existingComponentToUpdate) override;
-
-    void listBoxItemClicked(int row, const MouseEvent &e) override;
-
-    void listBoxItemDoubleClicked(int row, const MouseEvent &e) override;
+    //===------------------------------------------------------------------===//
 
     int getNumRows() override;
+    Component *refreshComponentForRow(int row, bool isRowSelected, Component *c) override;
 
-    void paintListBoxItem(int rowNumber, Graphics &g,
-                                  int width, int height, bool rowIsSelected) override;
+    void listBoxItemClicked(int, const MouseEvent &) override {}
+    void listBoxItemDoubleClicked(int, const MouseEvent &) override {}
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
     void inputAttemptWhenModal() override;
 
 
 private:
 
     //[UserVariables]
-
     void hide();
 
-    VersionControl &vcs;
-
-    const ValueTree revision;
-
-    ValueTree revisionItemsOnly;
-
+    const VCS::Revision::Ptr revision;
+    ReferenceCountedArray<VCS::RevisionItem> revisionItemsOnly;
     //[/UserVariables]
 
-    ScopedPointer<ListBox> changesList;
-    ScopedPointer<TextButton> checkoutRevisionButton;
-    ScopedPointer<SeparatorHorizontal> separator;
+    UniquePointer<ListBox> changesList;
+    UniquePointer<SeparatorHorizontal> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionTooltipComponent)
 };

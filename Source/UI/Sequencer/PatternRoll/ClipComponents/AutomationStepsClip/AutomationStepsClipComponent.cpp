@@ -30,7 +30,6 @@ AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &proj
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
-    roll(roll),
     sequence(sequence)
 {
     this->setAlwaysOnTop(true);
@@ -315,7 +314,6 @@ void AutomationStepsClipComponent::onChangeTrackProperties(MidiTrack *const trac
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
-        if (track->getSequence() != this->sequence) { return; }
         this->updateColours();
         this->repaint();
     }
@@ -323,7 +321,10 @@ void AutomationStepsClipComponent::onChangeTrackProperties(MidiTrack *const trac
 
 void AutomationStepsClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->reloadTrack();
+    if (this->sequence != nullptr)
+    {
+        this->reloadTrack();
+    }
 }
 
 void AutomationStepsClipComponent::onAddTrack(MidiTrack *const track)
@@ -354,8 +355,6 @@ void AutomationStepsClipComponent::updateEventComponent(AutomationStepEventCompo
 
 void AutomationStepsClipComponent::reloadTrack()
 {
-    //Logger::writeToLog("TriggersTrackMap::reloadSustainPedalTrack");
-    
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         this->removeChildComponent(this->eventComponents.getUnchecked(i));

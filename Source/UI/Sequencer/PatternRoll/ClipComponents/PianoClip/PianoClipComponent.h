@@ -67,11 +67,10 @@ private:
     void reloadTrackMap();
     void repositionAllChildren();
 
-    HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
 
-    SparseHashMap<Note, UniquePointer<PianoSequenceMapNoteComponent>, MidiEventHash> componentsMap;
+    FlatHashMap<Note, UniquePointer<PianoSequenceMapNoteComponent>, MidiEventHash> componentsMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoClipComponent)
 };

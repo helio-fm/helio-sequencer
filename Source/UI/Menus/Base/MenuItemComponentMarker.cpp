@@ -30,7 +30,7 @@ MenuItemComponentMarker::MenuItemComponentMarker()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (64, 64);
+    this->setSize(64, 64);
 
     //[Constructor]
     //[/Constructor]

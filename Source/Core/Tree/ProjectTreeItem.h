@@ -31,7 +31,6 @@ class Transport;
 class ProjectInfo;
 class ProjectTimeline;
 class UndoStack;
-class RecentFilesList;
 class Pattern;
 class MidiTrack;
 class Clip;
@@ -54,13 +53,12 @@ class ProjectTreeItem final :
 {
 public:
 
-    explicit ProjectTreeItem(const String &name);
+    ProjectTreeItem();
+    explicit ProjectTreeItem(const String &name, const String &id = {});
     explicit ProjectTreeItem(const File &existingFile);
     ~ProjectTreeItem() override;
     
-    void deletePermanently();
-    
-    String getId() const;
+    String getId() const noexcept;
     String getStats() const;
 
     Transport &getTransport() const noexcept;
@@ -96,8 +94,7 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
+    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &) override;
 
     //===------------------------------------------------------------------===//
     // Undos
@@ -162,6 +159,7 @@ public:
     // VCS::TrackedItemsSource
     //===------------------------------------------------------------------===//
 
+    String getVCSId() const override;
     String getVCSName() const override;
     int getNumTrackedItems() override;
     VCS::TrackedItem *getTrackedItem(int index) override;
@@ -202,7 +200,6 @@ private:
 
     ScopedPointer<Autosaver> autosaver;
     ScopedPointer<Transport> transport;
-    WeakReference<RecentFilesList> recentFilesList;
 
     ScopedPointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
@@ -222,13 +219,15 @@ private:
 
 private:
 
+    String id;
+
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
 
     ScopedPointer<UndoStack> undoStack;
 
     mutable bool isTracksCacheOutdated;
-    mutable SparseHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
+    mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
     void rebuildTracksRefsCacheIfNeeded() const;
 
 };

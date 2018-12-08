@@ -39,7 +39,6 @@ AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectTreeItem &proj
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
-    roll(roll),
     sequence(sequence),
     draggingEvent(nullptr),
     addNewEventMode(false)
@@ -350,7 +349,10 @@ void AutomationCurveClipComponent::onChangeTrackProperties(MidiTrack *const trac
 
 void AutomationCurveClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->reloadTrack();
+    if (this->sequence != nullptr)
+    {
+        this->reloadTrack();
+    }
 }
 
 void AutomationCurveClipComponent::onAddTrack(MidiTrack *const track)

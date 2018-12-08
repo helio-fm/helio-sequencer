@@ -29,7 +29,7 @@ Script &Script::operator=(const Script &other)
 
     this->name = other.name;
     this->type = other.type;
-    this->content.replaceAllContent(other.content.getAllContent());
+    //this->content.replaceAllContent(other.content.getAllContent());
     return *this;
 }
 

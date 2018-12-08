@@ -17,6 +17,10 @@
 
 #include "Common.h"
 #include "ResourceManager.h"
+#include "JsonSerializer.h"
+#include "BinarySerializer.h"
+#include "XmlSerializer.h"
+#include "DocumentHelpers.h"
 
 ResourceManager::ResourceManager(const Identifier &resourceName) :
     resourceName(resourceName) {}
@@ -33,11 +37,11 @@ void ResourceManager::shutdown()
 
 void ResourceManager::updateBaseResource(const ValueTree &resource)
 {
-    Logger::writeToLog("Updating downloaded resource file for " + this->resourceName.toString());
+    DBG("Updating downloaded resource file for " + this->resourceName.toString());
 
-#if HELIO_DESKTOP
-    JsonSerializer serializer(false); // debug
-#elif HELIO_MOBILE
+#if DEBUG
+    JsonSerializer serializer(false);
+#else
     BinarySerializer serializer;
 #endif
 
@@ -66,7 +70,7 @@ void ResourceManager::updateUserResource(const BaseResource::Ptr resource)
     this->userResources.appendChild(resource->serialize(), nullptr);
 
     // TODO sync with server?
-    Logger::writeToLog("Updating user's resource file for " + this->resourceName.toString());
+    DBG("Updating user's resource file for " + this->resourceName.toString());
 
     //XmlSerializer serializer; // debug
     //BinarySerializer serializer;
@@ -93,8 +97,7 @@ File ResourceManager::getUsersResourceFile() const
 String ResourceManager::getBuiltInResourceString() const
 {
     int dataSize;
-    const String n = this->resourceName.toString();
-    const String assumedResourceName = n.substring(0, 1).toUpperCase() + n.substring(1) + "_json";
+    const String assumedResourceName = this->resourceName.toString() + "_json";
     if (const auto *data = BinaryData::getNamedResource(assumedResourceName.toUTF8(), dataSize))
     {
         return String::fromUTF8(data, dataSize);
@@ -123,7 +126,7 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(downloadedResource));
         if (tree.isValid())
         {
-            Logger::writeToLog("Found downloaded resource file for " + this->resourceName.toString());
+            DBG("Found downloaded resource file for " + this->resourceName.toString());
             this->deserialize(tree);
             shouldBroadcastChange = true;
         }
@@ -134,7 +137,7 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(builtInResource));
         if (tree.isValid())
         {
-            Logger::writeToLog("Loading built-in resource for " + this->resourceName.toString());
+            DBG("Loading built-in resource for " + this->resourceName.toString());
             this->deserialize(tree);
             shouldBroadcastChange = true;
         }
@@ -148,7 +151,7 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(usersResource));
         if (tree.isValid())
         {
-            Logger::writeToLog("Found users resource file for " + this->resourceName.toString());
+            DBG("Found users resource file for " + this->resourceName.toString());
             this->deserialize(tree);
             this->userResources = tree;
             shouldBroadcastChange = true;

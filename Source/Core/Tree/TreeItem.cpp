@@ -21,7 +21,6 @@
 #include "SerializationKeys.h"
 #include "App.h"
 #include "MainLayout.h"
-#include "HelioCallout.h"
 
 const String TreeItem::xPathSeparator = "/";
 
@@ -381,11 +380,6 @@ void TreeItem::recreateSubtreePages()
 //===----------------------------------------------------------------------===//
 // Dragging
 //===----------------------------------------------------------------------===//
-
-var TreeItem::getDragSourceDescription()
-{
-    return {};
-}
 
 void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {

@@ -18,7 +18,7 @@
 #pragma once
 
 #include "HelioApiRoutes.h"
-#include "HelioApiRequest.h"
+#include "BackendRequest.h"
 #include "SerializationKeys.h"
 
 class TokenCheckThread final : public Thread
@@ -57,7 +57,7 @@ private:
     
     void run() override
     {
-        const HelioApiRequest request(HelioFM::Api::V1::tokenCheck);
+        const BackendRequest request(HelioFM::Api::V1::tokenCheck);
         this->response = request.get();
 
         if (this->response.receipt.failed() || this->response.statusCode == 500)
@@ -75,7 +75,7 @@ private:
         callMessageThreadListenerFrom(TokenCheckThread, tokenCheckOk);
     }
 
-    HelioApiRequest::Response response;
+    BackendRequest::Response response;
     TokenCheckThread::Listener *listener;
     
     friend class BackendService;

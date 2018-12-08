@@ -100,6 +100,8 @@ private:
     mutable String keyString;
     void updateCaches() const;
 
+    friend struct ClipHash;
+
     JUCE_LEAK_DETECTOR(Clip);
 };
 
@@ -107,6 +109,9 @@ struct ClipHash
 {
     inline HashCode operator()(const Clip &key) const noexcept
     {
-        return key.hashCode() % HASH_CODE_MAX;
+        //const HashCode code = static_cast<HashCode>(key.beat)
+        //    + static_cast<HashCode>(key.getId().hashCode());
+        const auto *ptr = key.id.getCharPointer().getAddress();
+        return 64 * static_cast<HashCode>(ptr[0]) + static_cast<HashCode>(ptr[1]);
     }
 };

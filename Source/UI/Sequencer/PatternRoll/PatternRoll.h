@@ -156,7 +156,7 @@ private:
 
     ScopedPointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
 
-    using ClipComponentsMap = SparseHashMap<const Clip, UniquePointer<ClipComponent>, ClipHash>;
+    using ClipComponentsMap = FlatHashMap<Clip, UniquePointer<ClipComponent>, ClipHash>;
     ClipComponentsMap clipComponents;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRoll)

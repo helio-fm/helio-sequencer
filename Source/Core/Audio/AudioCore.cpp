@@ -94,7 +94,7 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
             jassert(instrument);
             this->broadcastInstrumentAdded(instrument);
             callback(instrument);
-            Logger::writeToLog("Loaded " + instrument->getName());
+            DBG("Loaded " + instrument->getName());
         });
 }
 
@@ -175,7 +175,7 @@ void AudioCore::initDefaultInstrument()
 
 void AudioCore::autodetectDeviceSetup()
 {
-    Logger::writeToLog("AudioCore::autodetectDeviceSetup");
+    DBG("AudioCore::autodetectDeviceSetup");
     
     // requesting 0 inputs and only 2 outputs because of freaking alsa
     this->deviceManager.initialise(0, 2, nullptr, true);
@@ -357,7 +357,7 @@ void AudioCore::deserializeDeviceManager(const ValueTree &tree)
 
 ValueTree AudioCore::serialize() const
 {
-    Logger::writeToLog("AudioCore::serialize");
+    DBG("AudioCore::serialize");
     using namespace Serialization;
 
     // serializes all settings and instruments (with their graphs)
@@ -380,7 +380,7 @@ ValueTree AudioCore::serialize() const
 
 void AudioCore::deserialize(const ValueTree &tree)
 {
-    Logger::writeToLog("AudioCore::deserialize");
+    DBG("AudioCore::deserialize");
     using namespace Serialization;
 
     // re-creates deviceManager's graph each time on deserialization

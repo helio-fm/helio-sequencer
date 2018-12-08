@@ -152,14 +152,12 @@ void PlayerThread::run()
 
             if (this->transport.isLooped())
             {
-                //Logger::writeToLog("Seek to time " + String(startPositionInTime));
                 sequences.seekToTime(startPositionInTime);
                 prevTimeStamp = startPositionInTime;
                 continue;
             }
             else
             {
-                //Logger::writeToLog("Track finished");
                 sendHoldingNotesOffAndMidiStop();
                 this->transport.allNotesControllersAndSoundOff();
 
@@ -238,7 +236,6 @@ void PlayerThread::run()
             }
             else
             {
-                //Logger::writeToLog(String(wrapper.message.getNoteNumber()));
                 wrapper.listener->addMessageToQueue(wrapper.message);
             }
             

@@ -19,20 +19,23 @@
 
 //[Headers]
 class VersionControl;
-
 #include "Revision.h"
+#include "IconComponent.h"
 //[/Headers]
 
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
 
-class RevisionComponent  : public Component
+class RevisionComponent final : public Component
 {
 public:
 
-    RevisionComponent (VersionControl &owner, const ValueTree revision, bool isHead);
-
+    RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead);
     ~RevisionComponent();
 
     //[UserMethods]
+
+    // Helpers for tree traverse:
 
     float x;
     float y;
@@ -41,7 +44,7 @@ public:
     float change;
     int number;
 
-    const ValueTree revision;
+    const VCS::Revision::Ptr revision;
 
     RevisionComponent *parent;
     RevisionComponent *ancestor;
@@ -54,12 +57,11 @@ public:
     RevisionComponent *right() const;
     RevisionComponent *left() const;
 
-    mutable RevisionComponent *leftmostSibling; //  todo private
+    mutable RevisionComponent *leftmostSibling;
+
+    // View details
 
     void setSelected(bool selected);
-    bool isSelected() const;
-
-    bool isHead() const { return this->isHeadRevision; }
 
     //[/UserMethods]
 
@@ -75,19 +77,20 @@ private:
 
     VersionControl &vcs;
 
-    bool selected;
+    bool isSelected;
     bool isHeadRevision;
-
-    DropShadowEffect shadow;
-
-    JUCE_DECLARE_WEAK_REFERENCEABLE(RevisionComponent)
+    VCS::Revision::SyncState viewState;
 
 private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> revisionDescription;
-    ScopedPointer<Label> revisionDate;
+    UniquePointer<Label> revisionDescription;
+    UniquePointer<Label> revisionDate;
+    UniquePointer<SeparatorHorizontalFadingReversed> line2;
+    UniquePointer<SeparatorHorizontalFading> line3;
+    UniquePointer<IconComponent> remoteIndicatorImage;
+    UniquePointer<IconComponent> localIndicatorImage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionComponent)
 };

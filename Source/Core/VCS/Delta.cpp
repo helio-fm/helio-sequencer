@@ -31,8 +31,7 @@ Delta *Delta::createCopy() const
 
 Delta::Delta(const Delta &other) :
     type(other.type),
-    description(other.description),
-    vcsUuid(other.vcsUuid) {}
+    description(other.description) {}
 
 String Delta::getHumanReadableText() const
 {
@@ -49,17 +48,12 @@ void Delta::setDescription(const DeltaDescription &newDescription)
     this->description = newDescription;
 }
 
-Uuid Delta::getUuid() const
-{
-    return this->vcsUuid;
-}
-
-Identifier Delta::getType() const
+Identifier Delta::getType() const noexcept
 {
     return this->type;
 }
 
-bool Delta::hasType(const Identifier &id) const
+bool Delta::hasType(const Identifier &id) const noexcept
 {
     return (this->type == id);
 }
@@ -67,11 +61,23 @@ bool Delta::hasType(const Identifier &id) const
 ValueTree Delta::serialize() const
 {
     ValueTree tree(Serialization::VCS::delta);
-    tree.setProperty(Serialization::VCS::deltaTypeId, this->type.toString(), nullptr);
-    tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate, nullptr);
-    tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter, nullptr);
-    tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter), nullptr);
-    tree.setProperty(Serialization::VCS::deltaId, this->vcsUuid.toString(), nullptr);
+    //tree.setProperty(Serialization::VCS::deltaTypeId, this->type.toString(), nullptr);
+    
+    if (this->description.stringToTranslate.isNotEmpty())
+    {
+        tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate, nullptr);
+    }
+
+    if (this->description.stringParameter.isNotEmpty())
+    {
+        tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter, nullptr);
+    }
+
+    if (this->description.intParameter != DeltaDescription::defaultNumChanges)
+    {
+        tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter), nullptr);
+    }
+
     return tree;
 }
 
@@ -84,15 +90,20 @@ void Delta::deserialize(const ValueTree &tree)
 
     if (!root.isValid()) { return; }
 
-    this->vcsUuid = root.getProperty(Serialization::VCS::deltaId, this->vcsUuid.toString());
-    this->type = root.getProperty(Serialization::VCS::deltaTypeId, undefinedDelta).toString();
+    if (root.getNumChildren() == 1)
+    {
+        this->type = root.getChild(0).getType();
+    }
+    else
+    {
+        this->type = root.getProperty(Serialization::VCS::deltaTypeId, undefinedDelta).toString();
+    }
 
     const String descriptionName = root.getProperty(Serialization::VCS::deltaName, {});
     const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, {});
-    const int64 descriptionIntParam =
-        root.getProperty(Serialization::VCS::deltaIntParam, String(DeltaDescription::defaultNumChanges));
+    const int64 descriptionIntParam = root.getProperty(Serialization::VCS::deltaIntParam, String(DeltaDescription::defaultNumChanges));
     
-    this->description = DeltaDescription(descriptionName, descriptionIntParam, descriptionStringParam);
+    this->description = { descriptionName, descriptionIntParam, descriptionStringParam };
 }
 
 void Delta::reset() {}

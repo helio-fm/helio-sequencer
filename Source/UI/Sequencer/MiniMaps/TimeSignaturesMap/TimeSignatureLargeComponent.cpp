@@ -115,7 +115,6 @@ void TimeSignatureLargeComponent::mouseMove (const MouseEvent& e)
 void TimeSignatureLargeComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    //Logger::writeToLog("TimeSignatureEventComponent::mouseDown");
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
@@ -198,7 +197,6 @@ void TimeSignatureLargeComponent::mouseUp (const MouseEvent& e)
 void TimeSignatureLargeComponent::mouseDoubleClick (const MouseEvent& e)
 {
     //[UserCode_mouseDoubleClick] -- Add your code here...
-    //Logger::writeToLog("TimeSignatureLargeComponent::mouseDoubleClick");
     //[/UserCode_mouseDoubleClick]
 }
 

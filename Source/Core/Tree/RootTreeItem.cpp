@@ -31,13 +31,11 @@
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "AutomationEvent.h"
-#include "RecentFilesList.h"
 #include "ProjectInfo.h"
+#include "WorkspaceMenu.h"
 
 #include "MainLayout.h"
 #include "Workspace.h"
-#include "WorkspaceMenu.h"
-#include "Dashboard.h"
 #include "Icons.h"
 #include "App.h"
 
@@ -72,7 +70,7 @@ void RootTreeItem::recreatePage()
 
 void RootTreeItem::importMidi(const File &file)
 {
-    ProjectTreeItem *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
+    auto *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
     this->addChildTreeItem(project);
     this->addVCS(project);
     project->importMidi(file);
@@ -82,42 +80,12 @@ void RootTreeItem::importMidi(const File &file)
 // Children
 //===----------------------------------------------------------------------===//
 
-void RootTreeItem::checkoutProject(const String &name, const String &id, const String &key)
+ProjectTreeItem *RootTreeItem::openProject(const File &file)
 {
-    Array<ProjectTreeItem *> myProjects(this->findChildrenOfType<ProjectTreeItem>());
-    
-    for (auto myProject : myProjects)
-    {
-        if (myProject->getId() == id)
-        {
-            return;
-        }
-    }
-    
-    this->setOpen(true);
-    auto newProject = new ProjectTreeItem(name);
-    this->addChildTreeItem(newProject);
-    
-    auto vcs = new VersionControlTreeItem(id, key);
-    newProject->addChildTreeItem(vcs);
-    
-    // TODO
-    //vcs->checkout();
-    App::Workspace().autosave();
-}
+    const auto myProjects(this->findChildrenOfType<ProjectTreeItem>());
 
-ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*= -1 */)
-{
-    Array<ProjectTreeItem *> myProjects(this->findChildrenOfType<ProjectTreeItem>());
-
-#if HELIO_DESKTOP
-    const int insertIndexCorrection = (insertIndex == 0) ? 1 : insertIndex;
-#elif HELIO_MOBILE
-    const int insertIndexCorrection = insertIndex;
-#endif
-
-    // предварительная проверка на дубликаты - по полному пути
-    for (auto myProject : myProjects)
+    // first check for duplicates (full path)
+    for (auto *myProject : myProjects)
     {
         if (myProject->getDocument()->getFullPath() == file.getFullPathName())
         {
@@ -125,33 +93,48 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
         }
     }
 
-    Logger::writeToLog("Opening: " + file.getFullPathName());
-    
+    DBG("Opening project: " + file.getFullPathName());
     if (file.existsAsFile())
     {
-        auto project = new ProjectTreeItem(file);
-        this->addChildTreeItem(project, insertIndexCorrection);
+        UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(file));
+        this->addChildTreeItem(project.get(), 1);
 
         if (!project->getDocument()->load(file.getFullPathName()))
         {
-            App::Workspace().getRecentFilesList().removeByPath(file.getFullPathName());
-            delete project;
             return nullptr;
         }
 
-        // вторая проверка на дубликаты - по id
-        for (auto myProject : myProjects)
+        // second check for duplicates (project id)
+        for (auto *myProject : myProjects)
         {
             if (myProject->getId() == project->getId())
             {
-                App::Workspace().getRecentFilesList().removeByPath(file.getFullPathName());
-                delete project;
                 return nullptr;
             }
         }
 
         App::Workspace().autosave();
-        return project;
+        return project.release();
+    }
+
+    return nullptr;
+}
+
+ProjectTreeItem *RootTreeItem::checkoutProject(const String &id, const String &name)
+{
+    DBG("Cloning project: " + name);
+    if (id.isNotEmpty())
+    {
+        // construct a stub project with no first revision and no tracks,
+        // only the essential stuff it will need anyway:
+        UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(name, id));
+        this->addChildTreeItem(project.get(), 1);
+        UniquePointer<VersionControlTreeItem> vcs(new VersionControlTreeItem());
+        project->addChildTreeItem(vcs.get());
+        project->addChildTreeItem(new PatternEditorTreeItem());
+        vcs->cloneProject();
+        vcs.release();
+        return project.release();
     }
 
     return nullptr;
@@ -160,7 +143,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
 ProjectTreeItem *RootTreeItem::addDefaultProject(const String &projectName)
 {
     this->setOpen(true);
-    auto newProject = new ProjectTreeItem(projectName);
+    auto *newProject = new ProjectTreeItem(projectName);
     this->addChildTreeItem(newProject);
     return this->createDefaultProjectChildren(newProject);
 }
@@ -168,7 +151,7 @@ ProjectTreeItem *RootTreeItem::addDefaultProject(const String &projectName)
 ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
 {
     this->setOpen(true);
-    auto newProject = new ProjectTreeItem(projectLocation);
+    auto *newProject = new ProjectTreeItem(projectLocation);
     this->addChildTreeItem(newProject);
     return this->createDefaultProjectChildren(newProject);
 }
@@ -189,11 +172,9 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
     newProject->getDocument()->save();
 
     // notify recent files list
-    App::Workspace().getRecentFilesList().
-    onProjectStateChanged(newProject->getName(),
-                          newProject->getDocument()->getFullPath(),
-                          newProject->getId(),
-                          true);
+    App::Workspace().getUserProfile().onProjectLocalInfoUpdated(newProject->getId(),
+        newProject->getName(), newProject->getDocument()->getFullPath());
+
     return newProject;
 }
 
@@ -206,20 +187,19 @@ VersionControlTreeItem *RootTreeItem::addVCS(TreeItem *parent)
     // чтобы оной в списке изменений всегда показывался как измененный (не добавленный)
     // т.к. удалить его нельзя. и смущать юзера подобными надписями тоже не айс.
     vcs->commitProjectInfo();
-
     return vcs;
 }
 
 TrackGroupTreeItem *RootTreeItem::addGroup(TreeItem *parent, const String &name)
 {
-    auto group = new TrackGroupTreeItem(name);
+    auto *group = new TrackGroupTreeItem(name);
     parent->addChildTreeItem(group);
     return group;
 }
 
 MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &name)
 {
-    MidiTrackTreeItem *item = new PianoTrackTreeItem(name);
+    auto *item = new PianoTrackTreeItem(name);
     const Clip clip(item->getPattern());
     item->getPattern()->insert(clip, false);
     parent->addChildTreeItem(item);
@@ -228,11 +208,11 @@ MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &n
 
 MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
-    MidiTrackTreeItem *item = new AutomationTrackTreeItem(name);
+    auto *item = new AutomationTrackTreeItem(name);
     const Clip clip(item->getPattern());
     item->getPattern()->insert(clip, false);
     item->setTrackControllerNumber(controllerNumber, false);
-    AutomationSequence *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
+    auto *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
     itemLayer->insert(AutomationEvent(itemLayer, 0.f, 0.5f), false);
     itemLayer->insert(AutomationEvent(itemLayer, BEATS_PER_BAR, 0.5f), false);

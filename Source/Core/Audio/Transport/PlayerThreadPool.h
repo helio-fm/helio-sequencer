@@ -84,7 +84,7 @@ private:
             }
         }
 
-        Logger::writeToLog("Warning: all playback threads are busy, adding one");
+        DBG("Warning: all playback threads are busy, adding one");
         return this->players.add(new PlayerThread(transport));
     }
 
@@ -101,7 +101,7 @@ private:
                 return;
             }
 
-            Logger::writeToLog("Removing a stale playback thread");
+            DBG("Removing a stale playback thread");
             this->players.remove(0);
         }
     }

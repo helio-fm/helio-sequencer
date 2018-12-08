@@ -62,10 +62,10 @@ inline static constexpr int rowHeight()
 
 //void dumpDebugInfo(Array<MidiTrack *> tracks)
 //{
-//    Logger::writeToLog("--- tracks:");
+//    DBG("--- tracks:");
 //    for (int i = 0; i < tracks.size(); i++)
 //    {
-//        Logger::writeToLog(tracks[i]->getTrackName());
+//        DBG(tracks[i]->getTrackName());
 //    }
 //}
 
@@ -302,10 +302,10 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 
 //void debugTracksOrder(Array<MidiTrack *> tracks)
 //{
-//    Logger::writeToLog("---------------------");
+//    DBG("---------------------");
 //    for (const auto *track : tracks)
 //    {
-//        Logger::writeToLog(track->getTrackName());
+//        DBG(track->getTrackName());
 //    }
 //}
 
