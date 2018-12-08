@@ -2,20 +2,14 @@
 
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Helio\Resources\PianoSamples">
-      <UniqueIdentifier>{D564A210-32F4-1A63-5994-C8DC392FABAB}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Resources\Fonts">
-      <UniqueIdentifier>{668D523E-64E8-4FB3-061E-8C8971BC19FD}</UniqueIdentifier>
+    <Filter Include="Helio\Resources\Samples">
+      <UniqueIdentifier>{F44E5A42-5F63-EDB4-3295-9D3A72C1FEBA}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Resources\Icons">
       <UniqueIdentifier>{408F7FE0-B4E5-2CBD-2A2E-970F3A7C6943}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Resources">
       <UniqueIdentifier>{362F8081-11C1-8EEC-992C-BAF083C649FB}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\Core\App">
-      <UniqueIdentifier>{587FCDFA-1A48-ED32-8DA7-FE8112596419}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\Core\Audio\BuiltIn">
       <UniqueIdentifier>{0C77D3CE-9F7F-3FA4-2FB3-9E59CB3DA790}</UniqueIdentifier>
@@ -65,6 +59,9 @@
     <Filter Include="Helio\Source\Core\Network">
       <UniqueIdentifier>{6506945C-5148-CBEC-ABD1-970A46A0A028}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\Core\Scripting">
+      <UniqueIdentifier>{37913ED7-207A-981D-79CD-39C9C7D53F55}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\Core\Serialization">
       <UniqueIdentifier>{D69D548A-6A26-222A-71ED-D2EB05619228}</UniqueIdentifier>
     </Filter>
@@ -82,6 +79,9 @@
     </Filter>
     <Filter Include="Helio\Source\Core\VCS">
       <UniqueIdentifier>{53FAEC2A-FCDD-67B3-CD1A-D0134248E356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\Core\Workspace">
+      <UniqueIdentifier>{0D37E127-979C-C0E0-8A3E-ECAC62E8466D}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\Core">
       <UniqueIdentifier>{54BC896B-E0F6-600F-E5F4-536141549909}</UniqueIdentifier>
@@ -107,17 +107,23 @@
     <Filter Include="Helio\Source\UI\Menus\Base">
       <UniqueIdentifier>{E7C161C0-52E5-3C1E-521E-F061E5D5B0E1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\UI\Menus\SelectionMenus">
+      <UniqueIdentifier>{9445A2CF-F09D-D677-DE91-290760A29351}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\UI\Menus">
       <UniqueIdentifier>{03297047-B5EB-E5B2-48B2-9C83E006A546}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Dashboard\Menu">
+      <UniqueIdentifier>{FA8F7E6A-8EE3-ADF2-D2EB-A1316597BFB1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Dashboard">
+      <UniqueIdentifier>{48E58D3F-ABFE-5CE9-D2F5-5BEC523D14A1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Pages\Instruments\Editor">
       <UniqueIdentifier>{B00307DF-F77B-7AED-F918-34C956DA2823}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Pages\Instruments">
       <UniqueIdentifier>{519BD902-4BE0-1292-DDE1-6C0E58D85626}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\Pages\Intro">
-      <UniqueIdentifier>{09DBB790-6B9B-8495-EFA9-C5A5E9F12B34}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Pages\Project">
       <UniqueIdentifier>{16BCEB16-D877-8583-51B1-944E2DEA8FCB}</UniqueIdentifier>
@@ -128,12 +134,6 @@
     <Filter Include="Helio\Source\UI\Pages\VCS">
       <UniqueIdentifier>{3A315DC8-9F68-E509-C641-AB08D3CA59A0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Pages\Workspace\Menu">
-      <UniqueIdentifier>{40A7C051-971A-7AE4-E09C-47B19C637F10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\Pages\Workspace">
-      <UniqueIdentifier>{1BCE6E5D-8959-22D8-08AF-E14D8BEDB82A}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Source\UI\Pages">
       <UniqueIdentifier>{FC00852E-591C-1BEE-0BFB-6EDA0613BE67}</UniqueIdentifier>
     </Filter>
@@ -143,20 +143,23 @@
     <Filter Include="Helio\Source\UI\Popups">
       <UniqueIdentifier>{97C2C14B-E622-7A8D-30C8-F6BE30B326A5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Sequencer\AnnotationsMap">
-      <UniqueIdentifier>{40A4623C-B436-8ABC-24FF-726991126D83}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\Sequencer\AutomationMap">
-      <UniqueIdentifier>{AA851AD4-CBBB-12BB-23DF-F45C8A07007E}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Source\UI\Sequencer\Header">
       <UniqueIdentifier>{AEC214EA-4021-28CB-DFC1-18ED89D5560A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Sequencer\Helpers">
       <UniqueIdentifier>{B9140FA4-A12C-DD38-14BE-F83DF81F0C53}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Sequencer\KeySignaturesMap">
-      <UniqueIdentifier>{31E16807-CD04-3BC1-7BE0-2C230A651A33}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip">
+      <UniqueIdentifier>{81B17674-F7AF-B027-5C32-8EE053AA269B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip">
+      <UniqueIdentifier>{69781EDB-CFFB-8C78-0E5A-BA13C2B09073}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip">
+      <UniqueIdentifier>{98AFE905-55D5-EEC3-EA47-9BEB56474654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\PatternRoll\ClipComponents">
+      <UniqueIdentifier>{EFF20334-D214-2AE8-4E31-70202361D54F}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Sequencer\PatternRoll">
       <UniqueIdentifier>{37D29535-0F05-653F-2AAB-0914C631FE05}</UniqueIdentifier>
@@ -164,26 +167,29 @@
     <Filter Include="Helio\Source\UI\Sequencer\PianoRoll">
       <UniqueIdentifier>{18A4F578-97AC-2664-037E-9193CA4BF2A9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Sequencer\TimeSignaturesMap">
-      <UniqueIdentifier>{77620830-14AB-CB3D-A946-E096EE98CB38}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Sequencer\Sidebars">
+      <UniqueIdentifier>{2A26B62A-D27E-E8A1-0FC1-CD62E5AAD057}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Sequencer\TrackMap">
-      <UniqueIdentifier>{40F606FB-0B2C-890A-ED39-5437F06979E2}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Sequencer\MiniMaps\AnnotationsMap">
+      <UniqueIdentifier>{9172511C-5299-879A-B37D-F8B8359D9BC0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Sequencer\TriggersMap">
-      <UniqueIdentifier>{082F47A7-9A9C-6341-63AA-30D1BED36745}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap">
+      <UniqueIdentifier>{F3729582-8027-D052-46A1-45E5C74DE0D3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\MiniMaps\PianoMap">
+      <UniqueIdentifier>{81834BC9-6192-DFA7-6767-431F0B43651B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap">
+      <UniqueIdentifier>{5433AEAF-BA4D-E2A9-DA84-58C3BC21EDAB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\MiniMaps">
+      <UniqueIdentifier>{439959A1-D3BE-C320-E49F-EA02EA35233B}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Sequencer">
       <UniqueIdentifier>{51F62DE5-3494-7C22-D76B-2980A4C15C10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Sidebars">
-      <UniqueIdentifier>{D8D108EB-AED3-51BB-D824-D7CCCCCBF580}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Source\UI\Themes">
       <UniqueIdentifier>{77ADD7C9-7DC0-864A-411A-3D71D415931E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\Tree">
-      <UniqueIdentifier>{9D14293C-3CFD-AA49-0BEC-292A24F1EB55}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI">
       <UniqueIdentifier>{9C2E0FB4-0B0D-95BC-2CBB-DF47D4698F9F}</UniqueIdentifier>
@@ -290,6 +296,54 @@
     <Filter Include="JUCE Modules\juce_audio_processors\format">
       <UniqueIdentifier>{86737735-F6BA-F64A-5EC7-5C9F36755F79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source">
+      <UniqueIdentifier>{4DC60E78-BBC0-B540-63A2-37E14ABBEF09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\thread\include">
+      <UniqueIdentifier>{80C72173-A1E1-C3C5-9288-B889CE2EAFEA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\thread\source">
+      <UniqueIdentifier>{4138B955-AA0B-FA86-DBF9-404CAFFFA866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\thread">
+      <UniqueIdentifier>{2B4166B8-F470-F07C-4F51-D2DAAAECBB18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base">
+      <UniqueIdentifier>{9C295115-C0CD-3129-1C4D-FB53299B23FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base">
+      <UniqueIdentifier>{65526A8B-3447-9DF0-FD5D-00D111126027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui">
+      <UniqueIdentifier>{A54A1F5C-F32F-F97B-9E8A-69922B770A54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst">
+      <UniqueIdentifier>{B90A44F3-B62D-B5C0-81A2-683D2650AEE6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x">
+      <UniqueIdentifier>{0723C856-9C0F-5AF7-81B2-1986BC1E09E3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces">
+      <UniqueIdentifier>{DAF30656-5915-0E45-C4E4-54439617D525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common">
+      <UniqueIdentifier>{9266EA90-6A0A-5DDB-9CB7-966BEF03BA5C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting">
+      <UniqueIdentifier>{9C713CBA-A9E2-5F4E-F83C-2CAB8533913C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst">
+      <UniqueIdentifier>{63571A07-9AA3-5BB0-1103-0B42A2E6BC9E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source">
+      <UniqueIdentifier>{314F43F2-BC8F-B464-EAE7-86B9675454E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk">
+      <UniqueIdentifier>{874C5D0C-6D29-68EE-38BB-26200B56BC89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK">
+      <UniqueIdentifier>{86BAA7A7-DC50-35B6-910B-932AEAF257F2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\juce_audio_processors\format_types">
       <UniqueIdentifier>{6B7BE34D-1BC1-C7B9-111F-C55CA8250943}</UniqueIdentifier>
     </Filter>
@@ -304,21 +358,6 @@
     </Filter>
     <Filter Include="JUCE Modules\juce_audio_processors">
       <UniqueIdentifier>{67BE498C-9E1F-C73A-B99A-387C034CE680}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_audio_utils\audio_cd">
-      <UniqueIdentifier>{1A9C8538-959B-25E3-473D-B462C9A9D458}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_audio_utils\gui">
-      <UniqueIdentifier>{AA9F594C-DFAF-C0A7-0CCD-9F90E54D3A01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_audio_utils\native">
-      <UniqueIdentifier>{230BF784-34F4-3BE8-46D4-54E6B67E5E9E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_audio_utils\players">
-      <UniqueIdentifier>{39F680F3-5161-4D1C-EAD0-3911ED808874}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_audio_utils">
-      <UniqueIdentifier>{3197198B-A978-E330-C7FB-07E5CE8236C7}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\juce_core\containers">
       <UniqueIdentifier>{42F7BE9D-3C8A-AE26-289B-8F355C068036}</UniqueIdentifier>
@@ -376,15 +415,6 @@
     </Filter>
     <Filter Include="JUCE Modules\juce_core">
       <UniqueIdentifier>{BAA582FA-40B7-320E-EE7A-4C3892C7BE72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_cryptography\encryption">
-      <UniqueIdentifier>{89B3E447-34BE-C691-638E-09796C6B647E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_cryptography\hashing">
-      <UniqueIdentifier>{9BE78436-DBF4-658C-579B-ED19FFD0EB5D}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_cryptography">
-      <UniqueIdentifier>{21E7FA61-9E0A-4BA1-04B7-AF47AFA9CB8B}</UniqueIdentifier>
     </Filter>
     <Filter Include="JUCE Modules\juce_data_structures\app_properties">
       <UniqueIdentifier>{632B4C79-AF7D-BFB5-D006-5AE67F607130}</UniqueIdentifier>
@@ -464,6 +494,9 @@
     <Filter Include="JUCE Modules\juce_gui_basics\components">
       <UniqueIdentifier>{E4EA47E5-B41C-2A19-1783-7E9104096ECD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\juce_gui_basics\desktop">
+      <UniqueIdentifier>{B331BC33-9770-3DB5-73F2-BC2469ECCF7F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\juce_gui_basics\drawables">
       <UniqueIdentifier>{46A17AC9-0BFF-B5CE-26D6-B9D1992C88AC}</UniqueIdentifier>
     </Filter>
@@ -539,12 +572,6 @@
     <Filter Include="JUCE Modules\juce_opengl">
       <UniqueIdentifier>{9FBFF5E5-56F1-34A1-2C85-F760DA2B1EB7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JUCE Modules\juce_osc\osc">
-      <UniqueIdentifier>{EEE9B92C-AD26-4BEA-4D95-3F859090EA9F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="JUCE Modules\juce_osc">
-      <UniqueIdentifier>{B1DE8DB1-C00A-12C0-D690-8B3C9504A60A}</UniqueIdentifier>
-    </Filter>
     <Filter Include="JUCE Modules">
       <UniqueIdentifier>{FE955B6B-68AC-AA07-70D8-2413F6DB65C8}</UniqueIdentifier>
     </Filter>
@@ -553,12 +580,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Core\App\App.cpp">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\App\Workspace.cpp">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthAudioPlugin.cpp">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
@@ -598,9 +619,6 @@
     <ClCompile Include="..\..\Source\Core\Audio\Transport\Transport.cpp">
       <Filter>Helio\Source\Core\Audio\Transport</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\AudiobusOutput.mm">
-      <Filter>Helio\Source\Core\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\AudioCore.cpp">
       <Filter>Helio\Source\Core\Audio</Filter>
     </ClCompile>
@@ -614,6 +632,9 @@
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Scale.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Script.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp">
@@ -632,6 +653,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.cpp">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.cpp">
@@ -685,26 +709,41 @@
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <Filter>Helio\Source\Core\Midi</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\HelioApiRequest.cpp">
+    <ClCompile Include="..\..\Source\Core\Network\Requests\BackendRequest.cpp">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\PullThread.cpp">
+    <ClCompile Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.cpp">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\PushThread.cpp">
+    <ClCompile Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.cpp">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\RemovalThread.cpp">
+    <ClCompile Include="..\..\Source\Core\Network\Requests\RevisionsSyncThread.cpp">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\SyncThread.cpp">
-      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Services\ResourceSyncService.cpp">
+      <Filter>Helio\Source\Core\Network\Services</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Network\Services\SessionService.cpp">
       <Filter>Helio\Source\Core\Network\Services</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\Services\UpdatesService.cpp">
-      <Filter>Helio\Source\Core\Network\Services</Filter>
+    <ClCompile Include="..\..\Source\Core\Scripting\KeySignatureClass.cpp">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Scripting\NoteClass.cpp">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Scripting\ScaleClass.cpp">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Scripting\ScriptingHelpers.cpp">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Scripting\SelectionTransformExecutor.cpp">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Scripting\TimeSignatureClass.cpp">
+      <Filter>Helio\Source\Core\Scripting</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Serialization\Autosaver.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
@@ -727,22 +766,19 @@
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\RecentFilesList.cpp">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\AudioPluginTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\InstrumentsRootTreeItem.cpp">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\InstrumentTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\MidiTrackTreeItem.cpp">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Tree\OrchestraPitTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\PatternEditorTreeItem.cpp">
@@ -773,9 +809,6 @@
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\TreeItemChildrenSerializer.cpp">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\TreeNavigationHistory.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\VersionControlTreeItem.cpp">
@@ -829,9 +862,6 @@
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\VCS\Client.cpp">
-      <Filter>Helio\Source\Core\VCS</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\Delta.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClCompile>
@@ -841,10 +871,7 @@
     <ClCompile Include="..\..\Source\Core\VCS\Head.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\VCS\HeadState.cpp">
-      <Filter>Helio\Source\Core\VCS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\VCS\Pack.cpp">
+    <ClCompile Include="..\..\Source\Core\VCS\RemoteCache.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\Revision.cpp">
@@ -853,11 +880,32 @@
     <ClCompile Include="..\..\Source\Core\VCS\RevisionItem.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\VCS\Snapshot.cpp">
+      <Filter>Helio\Source\Core\VCS</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\StashesRepository.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\VersionControl.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Workspace\NavigationHistory.cpp">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Workspace\RecentProjectInfo.cpp">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Workspace\UserSessionInfo.cpp">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Workspace\UserProfile.cpp">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Workspace\Workspace.cpp">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\App.cpp">
+      <Filter>Helio\Source\Core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.cpp">
       <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
@@ -889,7 +937,10 @@
     <ClCompile Include="..\..\Source\UI\Common\DraggingListBoxComponent.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\FatalErrorScreen.cpp">
+    <ClCompile Include="..\..\Source\UI\Common\FineTuningComponentDragger.cpp">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\FineTuningValueIndicator.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp">
@@ -902,6 +953,9 @@
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\ModeIndicatorComponent.cpp">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\OverlayButton.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\PlayButton.cpp">
@@ -925,9 +979,6 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\AnnotationDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Dialogs\AuthorizationDialog.cpp">
-      <Filter>Helio\Source\UI\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Dialogs\FadingDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
@@ -946,9 +997,6 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Dialogs\UpdateDialog.cpp">
-      <Filter>Helio\Source\UI\Dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Headline\Headline.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
@@ -961,56 +1009,101 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemArrow.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.cpp">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandItemComponent.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponent.cpp">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandItemComponentMarker.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.cpp">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuPanel.cpp">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\AnnotationCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\AudioPluginSelectionMenu.cpp">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\InstrumentNodeSelectionMenu.cpp">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\PatternRollSelectionMenu.cpp">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\PianoRollSelectionMenu.cpp">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlHistorySelectionMenu.cpp">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.cpp">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\AnnotationMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\InstrumentCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\InstrumentMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\MidiTrackCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\MidiTrackMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\PatternEditorCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\OrchestraPitMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\PatternRollSelectionCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\ProjectMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\PianoRollSelectionCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\TimelineMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\ProjectCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\TimelineCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\VersionControlMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\WorkspaceMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\VCSCommandPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\DashboardMenu.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\LoginButton.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Dashboard.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\InitScreen.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\LogoFader.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp">
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
@@ -1027,46 +1120,28 @@
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.cpp">
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentRow.cpp">
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.cpp">
       <Filter>Helio\Source\UI\Pages\Instruments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentsPage.cpp">
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.cpp">
       <Filter>Helio\Source\UI\Pages\Instruments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Intro\InitScreen.cpp">
-      <Filter>Helio\Source\UI\Pages\Intro</Filter>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPage.cpp">
-      <Filter>Helio\Source\UI\Pages\Project</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.cpp">
-      <Filter>Helio\Source\UI\Pages\Project</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPagePhone.cpp">
       <Filter>Helio\Source\UI\Pages\Project</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\AudioSettings.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\AuthSettings.cpp">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\IntroSettingsWrapper.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\LogComponent.cpp">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\OpenGLSettings.cpp">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\PluginsList.cpp">
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SimpleSettingsWrapper.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.cpp">
@@ -1088,6 +1163,9 @@
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\UserInterfaceSettings.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\HistoryComponent.cpp">
@@ -1113,39 +1191,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.cpp">
-      <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhone.cpp">
-      <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhoneViewportContent.cpp">
-      <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\RecentProjectRow.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\SignInRow.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\WorkspaceMenu.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\LogoFader.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\LogoImage.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Workspace\WorkspacePage.cpp">
-      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.cpp">
       <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
@@ -1177,26 +1222,8 @@
     <ClCompile Include="..\..\Source\UI\Popups\TooltipContainer.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationSmallComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationsTrackMap.cpp">
-      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationCurveHelper.cpp">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventsConnector.cpp">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationTrackMap.cpp">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\ClipRangeIndicator.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.cpp">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
@@ -1219,44 +1246,53 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\TrackStartIndicator.cpp">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\ComponentConnectorCurve.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\InsertSpaceHelper.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\PatternOperations.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureLargeComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\SequencerOperations.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureSmallComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignaturesTrackMap.cpp">
-      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveHelper.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveEventComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\AutomationClipComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveEventsConnector.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip\AutomationStepsClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip\AutomationStepEventComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\MidiTrackHeader.cpp">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip\AutomationStepEventsConnector.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip\PianoClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\ClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\DummyClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.cpp">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
@@ -1273,32 +1309,47 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.cpp">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureSmallComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignaturesTrackMap.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationLargeComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\AnnotationsMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\PianoTrackMap.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationSmallComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\AnnotationsMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\TrackScroller.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationsProjectMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\AnnotationsMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\TrackScrollerScreen.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignatureLargeComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignatureSmallComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventConnector.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignaturesProjectMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.cpp">
-      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\PianoProjectMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScroller.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScrollerScreen.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureLargeComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureSmallComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignaturesProjectMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\HybridRoll.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
@@ -1321,43 +1372,13 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\SequencerOperations.cpp">
-      <Filter>Helio\Source\UI\Sequencer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\NavigationSidebar.cpp">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\ToolsSidebar.cpp">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ComponentFader.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\FontSerializer.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\HelioTheme.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\Icons.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\LightShadowDownwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\LightShadowLeftwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\LightShadowRightwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\LightShadowUpwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\LighterShadowDownwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\LighterShadowUpwards.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\FramePanel.cpp">
@@ -1390,10 +1411,13 @@
     <ClCompile Include="..\..\Source\UI\Themes\SeparatorVertical.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Themes\SeparatorVerticalSkew.cpp">
+      <Filter>Helio\Source\UI\Themes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ShadowDownwards.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowHorizontalFading.cpp">
+    <ClCompile Include="..\..\Source\UI\Themes\ShadowUpwards.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ShadowLeftwards.cpp">
@@ -1402,29 +1426,8 @@
     <ClCompile Include="..\..\Source\UI\Themes\ShadowRightwards.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowUpwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponent.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponentCompact.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponentDefault.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemMarkerDefault.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemMarkerCompact.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemMenuButton.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainLayout.cpp">
       <Filter>Helio\Source\UI</Filter>
@@ -1439,6 +1442,9 @@
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
+      <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.cpp">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.cpp">
@@ -1552,6 +1558,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_android_Midi.cpp">
       <Filter>JUCE Modules\juce_audio_devices\native</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_android_Oboe.cpp">
+      <Filter>JUCE Modules\juce_audio_devices\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_android_OpenSL.cpp">
       <Filter>JUCE Modules\juce_audio_devices\native</Filter>
     </ClCompile>
@@ -1559,6 +1568,9 @@
       <Filter>JUCE Modules\juce_audio_devices\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_linux_ALSA.cpp">
+      <Filter>JUCE Modules\juce_audio_devices\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_linux_Bela.cpp">
       <Filter>JUCE Modules\juce_audio_devices\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_linux_JackAudio.cpp">
@@ -1774,10 +1786,79 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format\juce_AudioPluginFormatManager.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\baseiids.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fbuffer.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fdebug.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fobject.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstreamer.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstring.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\updatehandler.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\thread\source\flock.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\thread\source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\conststringtable.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\coreiids.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\funknown.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponent.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponentbase.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vsteditcontroller.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstinitiids.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstparameters.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.mm">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_LegacyAudioParameter.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_VST3PluginFormat.cpp">
@@ -1796,6 +1877,9 @@
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorGraph.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorParameterGroup.cpp">
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_GenericAudioProcessorEditor.cpp">
@@ -1825,70 +1909,10 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.mm">
       <Filter>JUCE Modules\juce_audio_processors</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\audio_cd</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_android_BluetoothMidiDevicePairingDialogue.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_ios_BluetoothMidiDevicePairingDialogue.mm">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_linux_AudioCDReader.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_linux_BluetoothMidiDevicePairingDialogue.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_AudioCDBurner.mm">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_AudioCDReader.mm">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_BluetoothMidiDevicePairingDialogue.mm">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win_BluetoothMidiDevicePairingDialogue.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDBurner.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDReader.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\players</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.cpp">
-      <Filter>JUCE Modules\juce_audio_utils\players</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp">
-      <Filter>JUCE Modules\juce_audio_utils</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.mm">
-      <Filter>JUCE Modules\juce_audio_utils</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_AbstractFifo.cpp">
+      <Filter>JUCE Modules\juce_core\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_ArrayBase.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_DynamicObject.cpp">
@@ -1900,7 +1924,16 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_NamedValueSet.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_OwnedArray.cpp">
+      <Filter>JUCE Modules\juce_core\containers</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_PropertySet.cpp">
+      <Filter>JUCE Modules\juce_core\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_ReferenceCountedArray.cpp">
+      <Filter>JUCE Modules\juce_core\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_SparseSet.cpp">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_Variant.cpp">
@@ -1953,6 +1986,9 @@
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_MemoryBlock.cpp">
       <Filter>JUCE Modules\juce_core\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_ConsoleApplication.cpp">
+      <Filter>JUCE Modules\juce_core\misc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Result.cpp">
       <Filter>JUCE Modules\juce_core\misc</Filter>
@@ -2074,6 +2110,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\streams\juce_SubregionStream.cpp">
       <Filter>JUCE Modules\juce_core\streams</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\streams\juce_URLInputSource.cpp">
+      <Filter>JUCE Modules\juce_core\streams</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\system\juce_SystemStats.cpp">
       <Filter>JUCE Modules\juce_core\system</Filter>
     </ClCompile>
@@ -2188,30 +2227,6 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\juce_core.mm">
       <Filter>JUCE Modules\juce_core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_BlowFish.cpp">
-      <Filter>JUCE Modules\juce_cryptography\encryption</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_Primes.cpp">
-      <Filter>JUCE Modules\juce_cryptography\encryption</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_RSAKey.cpp">
-      <Filter>JUCE Modules\juce_cryptography\encryption</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_MD5.cpp">
-      <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_SHA256.cpp">
-      <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_Whirlpool.cpp">
-      <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.cpp">
-      <Filter>JUCE Modules\juce_cryptography</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.mm">
-      <Filter>JUCE Modules\juce_cryptography</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.cpp">
       <Filter>JUCE Modules\juce_data_structures\app_properties</Filter>
     </ClCompile>
@@ -2255,6 +2270,9 @@
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_events\interprocess\juce_InterprocessConnectionServer.cpp">
+      <Filter>JUCE Modules\juce_events\interprocess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_events\interprocess\juce_NetworkServiceDiscovery.cpp">
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_events\messages\juce_ApplicationBase.cpp">
@@ -2662,11 +2680,14 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\components\juce_ComponentListener.cpp">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\components\juce_Desktop.cpp">
-      <Filter>JUCE Modules\juce_gui_basics\components</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\components\juce_ModalComponentManager.cpp">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\desktop\juce_Desktop.cpp">
+      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\desktop\juce_Displays.cpp">
+      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\drawables\juce_Drawable.cpp">
       <Filter>JUCE Modules\juce_gui_basics\drawables</Filter>
@@ -2953,6 +2974,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\properties\juce_ChoicePropertyComponent.cpp">
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\properties\juce_MultiChoicePropertyComponent.cpp">
+      <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\properties\juce_PropertyComponent.cpp">
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClCompile>
@@ -3172,33 +3196,6 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.mm">
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCAddress.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCArgument.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCBundle.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCMessage.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCReceiver.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCSender.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCTimeTag.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCTypes.cpp">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.cpp">
-      <Filter>JUCE Modules\juce_osc</Filter>
-    </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
@@ -3206,27 +3203,6 @@
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData3.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData4.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData5.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData6.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData7.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData8.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData9.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData10.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_basics.cpp">
@@ -3241,13 +3217,7 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_processors.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_utils.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_core.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_cryptography.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_data_structures.cpp">
@@ -3268,23 +3238,8 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_opengl.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_osc.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Core\App\App.h">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\App\Logger.h">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\App\Clipboard.h">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\App\Workspace.h">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthAudioPlugin.h">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
@@ -3321,6 +3276,9 @@
     <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThread.h">
       <Filter>Helio\Source\Core\Audio\Transport</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThreadPool.h">
+      <Filter>Helio\Source\Core\Audio\Transport</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\ProjectSequencesWrapper.h">
       <Filter>Helio\Source\Core\Audio\Transport</Filter>
     </ClInclude>
@@ -3332,9 +3290,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\TransportListener.h">
       <Filter>Helio\Source\Core\Audio\Transport</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Audio\AudiobusOutput.h">
-      <Filter>Helio\Source\Core\Audio</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\AudioCore.h">
       <Filter>Helio\Source\Core\Audio</Filter>
@@ -3354,6 +3309,9 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Script.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
@@ -3370,6 +3328,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.h">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.h">
@@ -3426,40 +3387,55 @@
     <ClInclude Include="..\..\Source\Core\Network\Models\ApiModel.h">
       <Filter>Helio\Source\Core\Network\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Models\UpdatesInfo.h">
+    <ClInclude Include="..\..\Source\Core\Network\Models\AppInfoDto.h">
       <Filter>Helio\Source\Core\Network\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Models\UserProfile.h">
+    <ClInclude Include="..\..\Source\Core\Network\Models\AppResourceDto.h">
       <Filter>Helio\Source\Core\Network\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\HelioApiRequest.h">
+    <ClInclude Include="..\..\Source\Core\Network\Models\AppVersionDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Models\AuthSessionDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Models\ProjectDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Models\ProjectsListDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Models\RevisionDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Models\UserProfileDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Models\UserResourceDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Models\UserSessionDto.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\BackendRequest.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\PullThread.h">
+    <ClInclude Include="..\..\Source\Core\Network\Requests\AuthThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\PushThread.h">
+    <ClInclude Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\RemovalThread.h">
+    <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\SyncMessage.h">
-      <Filter>Helio\Source\Core\Network\Requests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\SyncThread.h">
+    <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestResourceThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestUserProfileThread.h">
-      <Filter>Helio\Source\Core\Network\Requests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\SignInThread.h">
-      <Filter>Helio\Source\Core\Network\Requests</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\SignUpThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\Requests\TokenCheckThread.h">
@@ -3474,14 +3450,32 @@
     <ClInclude Include="..\..\Source\Core\Network\Services\BackendService.h">
       <Filter>Helio\Source\Core\Network\Services</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Services\SessionService.h">
+    <ClInclude Include="..\..\Source\Core\Network\Services\ResourceSyncService.h">
       <Filter>Helio\Source\Core\Network\Services</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Services\UpdatesService.h">
+    <ClInclude Include="..\..\Source\Core\Network\Services\SessionService.h">
       <Filter>Helio\Source\Core\Network\Services</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\HelioApiRoutes.h">
       <Filter>Helio\Source\Core\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Scripting\KeySignatureClass.h">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Scripting\NoteClass.h">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Scripting\ScaleClass.h">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Scripting\ScriptingHelpers.h">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Scripting\SelectionTransformExecutor.h">
+      <Filter>Helio\Source\Core\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Scripting\TimeSignatureClass.h">
+      <Filter>Helio\Source\Core\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\Autosaver.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
@@ -3519,16 +3513,10 @@
     <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\RecentFilesList.h">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\AudioPluginTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.h">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\InstrumentsRootTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentTreeItem.h">
@@ -3538,6 +3526,9 @@
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\MidiTrackSource.h">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Tree\OrchestraPitTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\PatternEditorTreeItem.h">
@@ -3577,9 +3568,6 @@
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\TreeItemChildrenSerializer.h">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\TreeNavigationHistory.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\VersionControlTreeItem.h">
@@ -3636,9 +3624,6 @@
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Client.h">
-      <Filter>Helio\Source\Core\VCS</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\Delta.h">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClInclude>
@@ -3648,19 +3633,16 @@
     <ClInclude Include="..\..\Source\Core\VCS\Head.h">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\HeadState.h">
-      <Filter>Helio\Source\Core\VCS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Key.h">
-      <Filter>Helio\Source\Core\VCS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Pack.h">
+    <ClInclude Include="..\..\Source\Core\VCS\RemoteCache.h">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\Revision.h">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\RevisionItem.h">
+      <Filter>Helio\Source\Core\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\VCS\Snapshot.h">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\StashesRepository.h">
@@ -3674,6 +3656,24 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\VersionControl.h">
       <Filter>Helio\Source\Core\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Workspace\NavigationHistory.h">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Workspace\RecentProjectInfo.h">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Workspace\UserSessionInfo.h">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Workspace\UserProfile.h">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Workspace\Workspace.h">
+      <Filter>Helio\Source\Core\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\App.h">
+      <Filter>Helio\Source\Core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.h">
       <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
@@ -3714,7 +3714,10 @@
     <ClInclude Include="..\..\Source\UI\Common\DraggingListBoxComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\FatalErrorScreen.h">
+    <ClInclude Include="..\..\Source\UI\Common\FineTuningComponentDragger.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\FineTuningValueIndicator.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\KeySelector.h">
@@ -3744,6 +3747,9 @@
     <ClInclude Include="..\..\Source\UI\Common\ModeIndicatorComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\OverlayButton.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\PlayButton.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -3756,9 +3762,6 @@
     <ClInclude Include="..\..\Source\UI\Common\ScaleEditor.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\ShapeComponent.h">
-      <Filter>Helio\Source\UI\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\SpectralLogo.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -3766,9 +3769,6 @@
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\AnnotationDialog.h">
-      <Filter>Helio\Source\UI\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Dialogs\AuthorizationDialog.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\FadingDialog.h">
@@ -3789,9 +3789,6 @@
     <ClInclude Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Dialogs\UpdateDialog.h">
-      <Filter>Helio\Source\UI\Dialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Headline\Headline.h">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
@@ -3804,17 +3801,14 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemArrow.h">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemDataSource.h">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h">
       <Filter>Helio\Source\UI\Headline</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Input\LongHoldController.h">
-      <Filter>Helio\Source\UI\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Input\LongHoldListener.h">
-      <Filter>Helio\Source\UI\Input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Input\LongTapController.h">
       <Filter>Helio\Source\UI\Input</Filter>
@@ -3840,50 +3834,92 @@
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomListener.h">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandItemComponent.h">
+    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponent.h">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandItemComponentMarker.h">
+    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.h">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuPanel.h">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\AnnotationCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\AudioPluginSelectionMenu.h">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\InstrumentNodeSelectionMenu.h">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\PatternRollSelectionMenu.h">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\PianoRollSelectionMenu.h">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlHistorySelectionMenu.h">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.h">
+      <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\AnnotationMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\InstrumentCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\InstrumentMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\MidiTrackCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\MidiTrackMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\PatternEditorCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\PatternRollSelectionCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\ProjectMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\PianoRollSelectionCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\TimelineMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\ProjectCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\TimelineCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\VersionControlMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\WorkspaceMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\VCSCommandPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\DashboardMenu.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\LoginButton.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Dashboard.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\InitScreen.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\LogoFader.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.h">
+      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h">
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
@@ -3900,28 +3936,19 @@
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.h">
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentRow.h">
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.h">
       <Filter>Helio\Source\UI\Pages\Instruments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsPage.h">
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.h">
       <Filter>Helio\Source\UI\Pages\Instruments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Intro\InitScreen.h">
-      <Filter>Helio\Source\UI\Pages\Intro</Filter>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.h">
+      <Filter>Helio\Source\UI\Pages\Instruments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPage.h">
       <Filter>Helio\Source\UI\Pages\Project</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.h">
-      <Filter>Helio\Source\UI\Pages\Project</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPagePhone.h">
-      <Filter>Helio\Source\UI\Pages\Project</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\AuthSettings.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ColourChangeButton.h">
@@ -3930,19 +3957,10 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\IntroSettingsWrapper.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\LogComponent.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\OpenGLSettings.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\PluginsList.h">
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SimpleSettingsWrapper.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.h">
@@ -3964,6 +3982,9 @@
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\UserInterfaceSettings.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\HistoryComponent.h">
@@ -3989,39 +4010,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.h">
-      <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhone.h">
-      <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhoneViewportContent.h">
-      <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.h">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.h">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\RecentProjectRow.h">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\SignInRow.h">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\WorkspaceMenu.h">
-      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\LogoFader.h">
-      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\LogoImage.h">
-      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Workspace\WorkspacePage.h">
-      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.h">
       <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
@@ -4071,26 +4059,8 @@
     <ClInclude Include="..\..\Source\UI\Popups\TooltipContainer.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationSmallComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationsTrackMap.h">
-      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationCurveHelper.h">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventsConnector.h">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationTrackMap.h">
-      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\ClipRangeIndicator.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.h">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
@@ -4113,44 +4083,56 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\TrackStartIndicator.h">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\ComponentConnectorCurve.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\InsertSpaceHelper.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\PatternOperations.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureLargeComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\SequencerOperations.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureSmallComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignaturesTrackMap.h">
-      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveHelper.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveEventComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\AutomationClipComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveEventsConnector.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip\AutomationStepsClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip\AutomationStepEventComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\MidiTrackHeader.h">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip\AutomationStepEventsConnector.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationStepsClip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip\PianoClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip\PianoSequenceMapNoteComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\ClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\DummyClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.h">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
@@ -4167,32 +4149,50 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.h">
+      <Filter>Helio\Source\UI\Sequencer\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureSmallComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.h">
+      <Filter>Helio\Source\UI\Sequencer\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignaturesTrackMap.h">
-      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationLargeComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\AnnotationsMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\PianoTrackMap.h">
-      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationSmallComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\AnnotationsMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\TrackScroller.h">
-      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationsProjectMap.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\AnnotationsMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\TrackScrollerScreen.h">
-      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignatureLargeComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignatureSmallComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventConnector.h">
-      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignaturesProjectMap.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.h">
-      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\PianoProjectMap.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\ProjectMapNoteComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScroller.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScrollerScreen.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureLargeComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureSmallComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignaturesProjectMap.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\HybridRoll.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
@@ -4221,46 +4221,16 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\SequencerOperations.h">
-      <Filter>Helio\Source\UI\Sequencer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\NavigationSidebar.h">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\ToolsSidebar.h">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\ComponentFader.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\DialogBackground.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\FontSerializer.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\HelioTheme.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\Icons.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\LightShadowDownwards.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\LightShadowLeftwards.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\LightShadowRightwards.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\LightShadowUpwards.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\LighterShadowDownwards.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\LighterShadowUpwards.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\FramePanel.h">
@@ -4293,10 +4263,16 @@
     <ClInclude Include="..\..\Source\UI\Themes\SeparatorVertical.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Themes\SeparatorVerticalSkew.h">
+      <Filter>Helio\Source\UI\Themes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Themes\ShadowComponent.h">
+      <Filter>Helio\Source\UI\Themes</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\ShadowDownwards.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\ShadowHorizontalFading.h">
+    <ClInclude Include="..\..\Source\UI\Themes\ShadowUpwards.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\ShadowLeftwards.h">
@@ -4305,29 +4281,8 @@
     <ClInclude Include="..\..\Source\UI\Themes\ShadowRightwards.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\ShadowUpwards.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\ViewportKineticSlider.h">
       <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponent.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponentCompact.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponentDefault.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemMarkerDefault.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemMarkerCompact.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemMenuButton.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainLayout.h">
       <Filter>Helio\Source\UI</Filter>
@@ -4345,6 +4300,9 @@
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
+      <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.h">
       <Filter>JUCE Modules\juce_audio_basics\buffers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h">
@@ -4791,6 +4749,189 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format\juce_AudioPluginFormatManager.h">
       <Filter>JUCE Modules\juce_audio_processors\format</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\classfactoryhelpers.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fbuffer.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fdebug.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fobject.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstreamer.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstring.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\updatehandler.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\thread\include\flock.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\thread\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\conststringtable.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\falignpop.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\falignpush.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\fplatform.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\fstrdefs.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ftypes.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\funknown.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\futils.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\fvariant.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ibstream.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\icloneable.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ipersistent.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ipluginbase.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\istringresult.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\iupdatehandler.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\smartpointer.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui\iplugview.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui\iplugviewcontentscalesupport.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstattributes.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstaudioprocessor.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstautomationstate.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstchannelcontextinfo.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstcomponent.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstcontextmenu.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivsteditcontroller.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstevents.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivsthostapplication.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstinterappaudio.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmessage.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmidicontrollers.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstnoteexpression.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstparameterchanges.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstplugview.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstprefetchablesupport.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstprocesscontext.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstrepresentation.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstunits.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstpshpack4.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstspeaker.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffect.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffectx.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstfxstore.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponent.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponentbase.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vsteditcontroller.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstparameters.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClInclude>
@@ -4807,9 +4948,6 @@
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_VSTCommon.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_VSTInterface.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_VSTMidiEventList.h">
@@ -4834,6 +4972,9 @@
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorParameter.h">
+      <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessorParameterGroup.h">
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_GenericAudioProcessorEditor.h">
@@ -4869,47 +5010,11 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\utilities\juce_AudioProcessorValueTreeState.h">
       <Filter>JUCE Modules\juce_audio_processors\utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\utilities\juce_RangedAudioParameter.h">
+      <Filter>JUCE Modules\juce_audio_processors\utilities</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.h">
       <Filter>JUCE Modules\juce_audio_processors</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDBurner.h">
-      <Filter>JUCE Modules\juce_audio_utils\audio_cd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\audio_cd\juce_AudioCDReader.h">
-      <Filter>JUCE Modules\juce_audio_utils\audio_cd</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioAppComponent.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioDeviceSelectorComponent.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnail.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailBase.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_AudioVisualiserComponent.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_BluetoothMidiDevicePairingDialogue.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\gui\juce_MidiKeyboardComponent.h">
-      <Filter>JUCE Modules\juce_audio_utils\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_AudioProcessorPlayer.h">
-      <Filter>JUCE Modules\juce_audio_utils\players</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\players\juce_SoundPlayer.h">
-      <Filter>JUCE Modules\juce_audio_utils\players</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.h">
-      <Filter>JUCE Modules\juce_audio_utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_AbstractFifo.h">
       <Filter>JUCE Modules\juce_core\containers</Filter>
@@ -4918,6 +5023,9 @@
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_ArrayAllocationBase.h">
+      <Filter>JUCE Modules\juce_core\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_ArrayBase.h">
       <Filter>JUCE Modules\juce_core\containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_DynamicObject.h">
@@ -5031,6 +5139,9 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_HeapBlock.h">
       <Filter>JUCE Modules\juce_core\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_HeavyweightLeakedObjectDetector.h">
+      <Filter>JUCE Modules\juce_core\memory</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_LeakedObjectDetector.h">
       <Filter>JUCE Modules\juce_core\memory</Filter>
     </ClInclude>
@@ -5058,6 +5169,9 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_WeakReference.h">
       <Filter>JUCE Modules\juce_core\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_ConsoleApplication.h">
+      <Filter>JUCE Modules\juce_core\misc</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Result.h">
       <Filter>JUCE Modules\juce_core\misc</Filter>
     </ClInclude>
@@ -5080,6 +5194,9 @@
       <Filter>JUCE Modules\juce_core\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_mac_ClangBugWorkaround.h">
+      <Filter>JUCE Modules\juce_core\native</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_mac_linux_IPAddress.h">
       <Filter>JUCE Modules\juce_core\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_osx_ObjCHelpers.h">
@@ -5131,6 +5248,9 @@
       <Filter>JUCE Modules\juce_core\streams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\streams\juce_SubregionStream.h">
+      <Filter>JUCE Modules\juce_core\streams</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\streams\juce_URLInputSource.h">
       <Filter>JUCE Modules\juce_core\streams</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\system\juce_CompilerSupport.h">
@@ -5304,27 +5424,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\juce_core.h">
       <Filter>JUCE Modules\juce_core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_BlowFish.h">
-      <Filter>JUCE Modules\juce_cryptography\encryption</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_Primes.h">
-      <Filter>JUCE Modules\juce_cryptography\encryption</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\encryption\juce_RSAKey.h">
-      <Filter>JUCE Modules\juce_cryptography\encryption</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_MD5.h">
-      <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_SHA256.h">
-      <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\hashing\juce_Whirlpool.h">
-      <Filter>JUCE Modules\juce_cryptography\hashing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.h">
-      <Filter>JUCE Modules\juce_cryptography</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h">
       <Filter>JUCE Modules\juce_data_structures\app_properties</Filter>
     </ClInclude>
@@ -5377,6 +5476,9 @@
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_events\interprocess\juce_InterprocessConnectionServer.h">
+      <Filter>JUCE Modules\juce_events\interprocess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_events\interprocess\juce_NetworkServiceDiscovery.h">
       <Filter>JUCE Modules\juce_events\interprocess</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_events\messages\juce_ApplicationBase.h">
@@ -5655,11 +5757,14 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\components\juce_ComponentListener.h">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\components\juce_Desktop.h">
-      <Filter>JUCE Modules\juce_gui_basics\components</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\components\juce_ModalComponentManager.h">
       <Filter>JUCE Modules\juce_gui_basics\components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\desktop\juce_Desktop.h">
+      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\desktop\juce_Displays.h">
+      <Filter>JUCE Modules\juce_gui_basics\desktop</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\drawables\juce_Drawable.h">
       <Filter>JUCE Modules\juce_gui_basics\drawables</Filter>
@@ -5928,6 +6033,9 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\properties\juce_ChoicePropertyComponent.h">
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\properties\juce_MultiChoicePropertyComponent.h">
+      <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\properties\juce_PropertyComponent.h">
       <Filter>JUCE Modules\juce_gui_basics\properties</Filter>
     </ClInclude>
@@ -6048,6 +6156,9 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\embedding\juce_NSViewComponent.h">
       <Filter>JUCE Modules\juce_gui_extra\embedding</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\embedding\juce_ScopedDPIAwarenessDisabler.h">
+      <Filter>JUCE Modules\juce_gui_extra\embedding</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\embedding\juce_UIViewComponent.h">
       <Filter>JUCE Modules\juce_gui_extra\embedding</Filter>
     </ClInclude>
@@ -6162,33 +6273,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.h">
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCAddress.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCArgument.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCBundle.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCMessage.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCReceiver.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCSender.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCTimeTag.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\osc\juce_OSCTypes.h">
-      <Filter>JUCE Modules\juce_osc\osc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.h">
-      <Filter>JUCE Modules\juce_osc</Filter>
-    </ClInclude>
     <ClInclude Include="..\Projucer\JuceLibraryCode\AppConfig.h">
       <Filter>JUCE Library Code</Filter>
     </ClInclude>
@@ -6200,361 +6284,286 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Resources\Icon.png">
-      <Filter>Helio\Resources</Filter>
+    <None Include="..\..\Resources\Samples\C2v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\Logo.png">
-      <Filter>Helio\Resources</Filter>
+    <None Include="..\..\Resources\Samples\C3v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A0v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\C4v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A1v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\C5v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A2v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\C6v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A3v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\F#2v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A4v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\F#3v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A5v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\F#4v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A6v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\F#5v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\A7v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
+    <None Include="..\..\Resources\Samples\F#6v9.flac">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
-    <None Include="..\..\Resources\PianoSamples\C1v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\C2v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\C3v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\C4v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\C5v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\C6v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\C7v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\C8v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\D#1v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\D#2v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\D#3v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\D#4v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\D#5v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\D#6v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\D#7v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\F#1v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\F#2v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\F#3v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\F#4v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\F#5v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\F#6v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\PianoSamples\F#7v9.ogg">
-      <Filter>Helio\Resources\PianoSamples</Filter>
-    </None>
-    <None Include="..\..\Resources\Fonts\lato.fnt">
-      <Filter>Helio\Resources\Fonts</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\angle-double-down.svg">
+    <None Include="..\..\Resources\Icons\annotation.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\angle-double-left.svg">
+    <None Include="..\..\Resources\Icons\apply.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\angle-double-right.svg">
+    <None Include="..\..\Resources\Icons\arpeggiate.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\angle-double-up.svg">
+    <None Include="..\..\Resources\Icons\audioPlugin.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\angle-down.svg">
+    <None Include="..\..\Resources\Icons\automationTrack.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\angle-left.svg">
+    <None Include="..\..\Resources\Icons\back.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\angle-right.svg">
+    <None Include="..\..\Resources\Icons\browse.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\angle-up.svg">
+    <None Include="..\..\Resources\Icons\chordTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\arpeggiator.svg">
+    <None Include="..\..\Resources\Icons\close.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\arrow-back.svg">
+    <None Include="..\..\Resources\Icons\colour.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\arrow-forward.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\arrow-left2.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\arrow-right2.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\arrows.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\beamed_note.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\bezier.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\brush.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\check.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\chevron-left2.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\chevron-right2.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\clef.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\cloud-download.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\cloud-upload.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\cloud2.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\clouds.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\columns.svg">
+    <None Include="..\..\Resources\Icons\commit.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\copy.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\crop.svg">
+    <None Include="..\..\Resources\Icons\create.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\cup.svg">
+    <None Include="..\..\Resources\Icons\cropTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\cursor2.svg">
+    <None Include="..\..\Resources\Icons\cursorTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\diskette.svg">
+    <None Include="..\..\Resources\Icons\cut.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\download2.svg">
+    <None Include="..\..\Resources\Icons\cutterTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\drive.svg">
+    <None Include="..\..\Resources\Icons\down.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\eight_note.svg">
+    <None Include="..\..\Resources\Icons\dragTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\ellipsis-h.svg">
+    <None Include="..\..\Resources\Icons\drawTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\ellipsis-v.svg">
+    <None Include="..\..\Resources\Icons\ellipsis.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\folder-open.svg">
+    <None Include="..\..\Resources\Icons\eraserTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\folder.svg">
+    <None Include="..\..\Resources\Icons\expand.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\folder2.svg">
+    <None Include="..\..\Resources\Icons\fail.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\heptagram2.svg">
+    <None Include="..\..\Resources\Icons\forward.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\history.svg">
+    <None Include="..\..\Resources\Icons\github.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\hourglass.svg">
+    <None Include="..\..\Resources\Icons\helio.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\insert-space.svg">
+    <None Include="..\..\Resources\Icons\instrument.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\key.svg">
+    <None Include="..\..\Resources\Icons\instrumentNode.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\knob.svg">
+    <None Include="..\..\Resources\Icons\list.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\logo2.svg">
+    <None Include="..\..\Resources\Icons\local.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\marquee.svg">
+    <None Include="..\..\Resources\Icons\login.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\menu.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\minus2.svg">
+    <None Include="..\..\Resources\Icons\mute.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\microphone.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\orchestraPit.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\pageDown.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\pageUp.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\paste.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\pause2.svg">
+    <None Include="..\..\Resources\Icons\patterns.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\pencil.svg">
+    <None Include="..\..\Resources\Icons\pause.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\pencil4.svg">
+    <None Include="..\..\Resources\Icons\piano.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\play2.svg">
+    <None Include="..\..\Resources\Icons\pianoTrack.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\plus2.svg">
+    <None Include="..\..\Resources\Icons\play.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\poetry.svg">
+    <None Include="..\..\Resources\Icons\progressIndicator.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\quote.svg">
+    <None Include="..\..\Resources\Icons\project.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\reroute.svg">
+    <None Include="..\..\Resources\Icons\pull.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\roman1.svg">
+    <None Include="..\..\Resources\Icons\push.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\roman2.svg">
+    <None Include="..\..\Resources\Icons\redo.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\roman3.svg">
+    <None Include="..\..\Resources\Icons\refactor.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\roman4.svg">
+    <None Include="..\..\Resources\Icons\remote.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\roman5.svg">
+    <None Include="..\..\Resources\Icons\remove.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\roman6.svg">
+    <None Include="..\..\Resources\Icons\render.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\roman7.svg">
+    <None Include="..\..\Resources\Icons\reset.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\saxophone.svg">
+    <None Include="..\..\Resources\Icons\revision.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\scissors.svg">
+    <None Include="..\..\Resources\Icons\routing.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\settings2.svg">
+    <None Include="..\..\Resources\Icons\script.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\switch.svg">
+    <None Include="..\..\Resources\Icons\selectionTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\terminal.svg">
+    <None Include="..\..\Resources\Icons\selection.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\times.svg">
+    <None Include="..\..\Resources\Icons\selectAll.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\toggle-off.svg">
+    <None Include="..\..\Resources\Icons\selectNone.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\toggle-on.svg">
+    <None Include="..\..\Resources\Icons\settings.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\updown.svg">
+    <None Include="..\..\Resources\Icons\stretchLeft.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\volume-off.svg">
+    <None Include="..\..\Resources\Icons\stretchRight.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\volume-up.svg">
+    <None Include="..\..\Resources\Icons\submenu.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\waveform.svg">
+    <None Include="..\..\Resources\Icons\success.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\wipe-space.svg">
+    <None Include="..\..\Resources\Icons\toggleOff.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\zoom-in.svg">
+    <None Include="..\..\Resources\Icons\toggleOn.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\zoom-out.svg">
+    <None Include="..\..\Resources\Icons\trackGroup.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Noise.png">
+    <None Include="..\..\Resources\Icons\undo.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\unmute.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\up.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\versionControl.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\volume.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\zoomIn.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\zoomOut.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\zoomTool.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\noise.png">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\Arpeggiators.json">
+    <None Include="..\..\Resources\logo-v2.png">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\ColourSchemes.json">
+    <None Include="..\..\Resources\arpeggiators.json">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\HotkeySchemes.json">
+    <None Include="..\..\Resources\colourSchemes.json">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\Scales.json">
+    <None Include="..\..\Resources\hotkeySchemes.json">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\Translations.json">
+    <None Include="..\..\Resources\scales.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\translations.json">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
@@ -6562,6 +6571,21 @@
     </None>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\Ogg Vorbis Licence.txt">
       <Filter>JUCE Modules\juce_audio_formats\codecs\oggvorbis</Filter>
+    </None>
+    <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\LICENSE.txt">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base</Filter>
+    </None>
+    <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\LICENSE.txt">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces</Filter>
+    </None>
+    <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\LICENSE.txt">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk</Filter>
+    </None>
+    <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\LICENSE.txt">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK</Filter>
+    </None>
+    <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\README.md">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK</Filter>
     </None>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt">
       <Filter>JUCE Modules\juce_graphics\image_formats\jpglib</Filter>

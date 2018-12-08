@@ -9783,89 +9783,90 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x6d41bb36:  numBytes = 142885; return F4v9_flac;
         case 0xd522e815:  numBytes = 128539; return F5v9_flac;
         case 0x3d0414f4:  numBytes = 154079; return F6v9_flac;
-        case 0x5625a954:  numBytes = 360; return annotation_svg;
-        case 0x844d0a13:  numBytes = 340; return apply_svg;
-        case 0x4ab08df4:  numBytes = 345; return arpeggiate_svg;
-        case 0x887aafce:  numBytes = 584; return audioPlugin_svg;
-        case 0x5bd41619:  numBytes = 1482; return automationTrack_svg;
-        case 0x7e70270c:  numBytes = 464; return back_svg;
-        case 0xf6383f2f:  numBytes = 394; return browse_svg;
-        case 0x68af1fb9:  numBytes = 594; return chordTool_svg;
-        case 0xe3430f9d:  numBytes = 569; return close_svg;
-        case 0x52ffe571:  numBytes = 645; return colour_svg;
-        case 0x3cb6a35c:  numBytes = 939; return commit_svg;
-        case 0xe1dcda9a:  numBytes = 1881; return copy_svg;
-        case 0x51a1b0a1:  numBytes = 501; return create_svg;
-        case 0xda9259ed:  numBytes = 287; return cropTool_svg;
-        case 0x660f8cb3:  numBytes = 537; return cursorTool_svg;
-        case 0x433f7ee7:  numBytes = 798; return cut_svg;
-        case 0x7f791efc:  numBytes = 593; return cutterTool_svg;
-        case 0x5514f147:  numBytes = 463; return down_svg;
-        case 0x4fd7e891:  numBytes = 924; return dragTool_svg;
-        case 0x941ed8a1:  numBytes = 1148; return drawTool_svg;
-        case 0xa83d7df6:  numBytes = 645; return ellipsis_svg;
-        case 0x5097a5e9:  numBytes = 661; return eraserTool_svg;
-        case 0x2030ef3f:  numBytes = 458; return expand_svg;
-        case 0x284005c3:  numBytes = 526; return fail_svg;
-        case 0x628f95ea:  numBytes = 421; return forward_svg;
-        case 0x76676008:  numBytes = 1966; return github_svg;
-        case 0x423ac39a:  numBytes = 25191; return helio_svg;
-        case 0x74a8060c:  numBytes = 2919; return instrument_svg;
-        case 0x5daabbae:  numBytes = 743; return instrumentNode_svg;
-        case 0x503a1f43:  numBytes = 692; return list_svg;
-        case 0xb82f1f90:  numBytes = 623; return local_svg;
-        case 0x998b008e:  numBytes = 1708; return login_svg;
-        case 0xdc083b84:  numBytes = 478; return menu_svg;
-        case 0x33c78b3e:  numBytes = 1481; return mute_svg;
-        case 0xf53ee1cf:  numBytes = 467; return microphone_svg;
-        case 0x51884f53:  numBytes = 2838; return orchestraPit_svg;
-        case 0xe9dbb8f6:  numBytes = 699; return pageDown_svg;
-        case 0x4fe11e2f:  numBytes = 706; return pageUp_svg;
-        case 0xc95d8ab8:  numBytes = 3086; return paste_svg;
-        case 0xf53d4b08:  numBytes = 215; return patterns_svg;
-        case 0x3175289b:  numBytes = 359; return pause_svg;
-        case 0x46869e6e:  numBytes = 441; return piano_svg;
-        case 0x1829c627:  numBytes = 1336; return pianoTrack_svg;
-        case 0x7000bed9:  numBytes = 279; return play_svg;
-        case 0xc7132b07:  numBytes = 3318; return progressIndicator_svg;
-        case 0xc800043e:  numBytes = 2039; return project_svg;
-        case 0x5e26f16a:  numBytes = 506; return pull_svg;
-        case 0x69e07fbf:  numBytes = 424; return push_svg;
-        case 0xd20918a3:  numBytes = 404; return redo_svg;
-        case 0x96cbd1e7:  numBytes = 1218; return refactor_svg;
-        case 0x3e1652eb:  numBytes = 411; return remote_svg;
-        case 0x41800429:  numBytes = 423; return remove_svg;
-        case 0x4731743b:  numBytes = 2997; return render_svg;
-        case 0x78a5cb74:  numBytes = 489; return reset_svg;
-        case 0xb57c4000:  numBytes = 1018; return revision_svg;
-        case 0x82fa7b6b:  numBytes = 743; return routing_svg;
-        case 0xcdd760f0:  numBytes = 775; return script_svg;
-        case 0x756354e9:  numBytes = 1639; return selectionTool_svg;
-        case 0x3df9b931:  numBytes = 1983; return selection_svg;
-        case 0xf4c5be2a:  numBytes = 2282; return selectAll_svg;
-        case 0x8cc91df9:  numBytes = 2405; return selectNone_svg;
-        case 0x1fdee048:  numBytes = 3459; return settings_svg;
-        case 0x8ba0a851:  numBytes = 464; return stretchLeft_svg;
-        case 0x231e903c:  numBytes = 464; return stretchRight_svg;
-        case 0x2687b9c4:  numBytes = 464; return submenu_svg;
-        case 0xb46c7428:  numBytes = 426; return success_svg;
-        case 0x2a9081a0:  numBytes = 805; return toggleOff_svg;
-        case 0x3b9bcc78:  numBytes = 617; return toggleOn_svg;
-        case 0x475dff99:  numBytes = 414; return trackGroup_svg;
-        case 0xe5c4b489:  numBytes = 485; return undo_svg;
-        case 0x8ebff0d7:  numBytes = 2482; return unmute_svg;
-        case 0xcdfe36c0:  numBytes = 466; return up_svg;
-        case 0x9916f08a:  numBytes = 1378; return versionControl_svg;
-        case 0xa37ab7bf:  numBytes = 262; return volume_svg;
-        case 0xc82285fd:  numBytes = 942; return zoomIn_svg;
-        case 0x86a456a0:  numBytes = 790; return zoomOut_svg;
-        case 0x100cd030:  numBytes = 652; return zoomTool_svg;
-        case 0xb3e40b64:  numBytes = 317; return Noise_png;
-        case 0x9d3ca20d:  numBytes = 70; return Arpeggiators_json;
-        case 0xaf771725:  numBytes = 2753; return ColourSchemes_json;
-        case 0x932a5b4b:  numBytes = 12761; return HotkeySchemes_json;
-        case 0x67f906de:  numBytes = 3563; return Scales_json;
-        case 0xe3299f05:  numBytes = 271571; return Translations_json;
+        case 0x5625a954:  numBytes = 335; return annotation_svg;
+        case 0x844d0a13:  numBytes = 297; return apply_svg;
+        case 0x4ab08df4:  numBytes = 309; return arpeggiate_svg;
+        case 0x887aafce:  numBytes = 493; return audioPlugin_svg;
+        case 0x5bd41619:  numBytes = 942; return automationTrack_svg;
+        case 0x7e70270c:  numBytes = 363; return back_svg;
+        case 0xf6383f2f:  numBytes = 321; return browse_svg;
+        case 0x68af1fb9:  numBytes = 542; return chordTool_svg;
+        case 0xe3430f9d:  numBytes = 469; return close_svg;
+        case 0x52ffe571:  numBytes = 549; return colour_svg;
+        case 0x3cb6a35c:  numBytes = 577; return commit_svg;
+        case 0xe1dcda9a:  numBytes = 1276; return copy_svg;
+        case 0x51a1b0a1:  numBytes = 408; return create_svg;
+        case 0xda9259ed:  numBytes = 212; return cropTool_svg;
+        case 0x660f8cb3:  numBytes = 367; return cursorTool_svg;
+        case 0x433f7ee7:  numBytes = 560; return cut_svg;
+        case 0x7f791efc:  numBytes = 494; return cutterTool_svg;
+        case 0x5514f147:  numBytes = 360; return down_svg;
+        case 0x4fd7e891:  numBytes = 741; return dragTool_svg;
+        case 0x941ed8a1:  numBytes = 785; return drawTool_svg;
+        case 0xa83d7df6:  numBytes = 527; return ellipsis_svg;
+        case 0x5097a5e9:  numBytes = 513; return eraserTool_svg;
+        case 0x2030ef3f:  numBytes = 408; return expand_svg;
+        case 0x284005c3:  numBytes = 469; return fail_svg;
+        case 0x628f95ea:  numBytes = 365; return forward_svg;
+        case 0x76676008:  numBytes = 1616; return github_svg;
+        case 0x423ac39a:  numBytes = 1034; return helio_svg;
+        case 0x74a8060c:  numBytes = 1677; return instrument_svg;
+        case 0x5daabbae:  numBytes = 658; return instrumentNode_svg;
+        case 0x503a1f43:  numBytes = 585; return list_svg;
+        case 0xb82f1f90:  numBytes = 564; return local_svg;
+        case 0x998b008e:  numBytes = 816; return login_svg;
+        case 0xdc083b84:  numBytes = 376; return menu_svg;
+        case 0x33c78b3e:  numBytes = 721; return mute_svg;
+        case 0xf53ee1cf:  numBytes = 374; return microphone_svg;
+        case 0x51884f53:  numBytes = 1643; return orchestraPit_svg;
+        case 0xe9dbb8f6:  numBytes = 586; return pageDown_svg;
+        case 0x4fe11e2f:  numBytes = 594; return pageUp_svg;
+        case 0xc95d8ab8:  numBytes = 1604; return paste_svg;
+        case 0xf53d4b08:  numBytes = 191; return patterns_svg;
+        case 0x3175289b:  numBytes = 323; return pause_svg;
+        case 0x46869e6e:  numBytes = 378; return piano_svg;
+        case 0x1829c627:  numBytes = 771; return pianoTrack_svg;
+        case 0x7000bed9:  numBytes = 245; return play_svg;
+        case 0xc7132b07:  numBytes = 2816; return progressIndicator_svg;
+        case 0xc800043e:  numBytes = 1416; return project_svg;
+        case 0x5e26f16a:  numBytes = 360; return pull_svg;
+        case 0x69e07fbf:  numBytes = 225; return push_svg;
+        case 0xd20918a3:  numBytes = 292; return redo_svg;
+        case 0x96cbd1e7:  numBytes = 1038; return refactor_svg;
+        case 0x3e1652eb:  numBytes = 377; return remote_svg;
+        case 0x41800429:  numBytes = 396; return remove_svg;
+        case 0x4731743b:  numBytes = 2055; return render_svg;
+        case 0x78a5cb74:  numBytes = 461; return reset_svg;
+        case 0xb57c4000:  numBytes = 641; return revision_svg;
+        case 0x82fa7b6b:  numBytes = 658; return routing_svg;
+        case 0xcdd760f0:  numBytes = 410; return script_svg;
+        case 0x756354e9:  numBytes = 1334; return selectionTool_svg;
+        case 0x3df9b931:  numBytes = 1197; return selection_svg;
+        case 0xf4c5be2a:  numBytes = 1408; return selectAll_svg;
+        case 0x8cc91df9:  numBytes = 1517; return selectNone_svg;
+        case 0x1fdee048:  numBytes = 1182; return settings_svg;
+        case 0x8ba0a851:  numBytes = 363; return stretchLeft_svg;
+        case 0x231e903c:  numBytes = 365; return stretchRight_svg;
+        case 0x2687b9c4:  numBytes = 365; return submenu_svg;
+        case 0xb46c7428:  numBytes = 340; return success_svg;
+        case 0x2a9081a0:  numBytes = 669; return toggleOff_svg;
+        case 0x3b9bcc78:  numBytes = 510; return toggleOn_svg;
+        case 0x475dff99:  numBytes = 284; return trackGroup_svg;
+        case 0xe5c4b489:  numBytes = 321; return undo_svg;
+        case 0x8ebff0d7:  numBytes = 1501; return unmute_svg;
+        case 0xcdfe36c0:  numBytes = 363; return up_svg;
+        case 0x9916f08a:  numBytes = 873; return versionControl_svg;
+        case 0xa37ab7bf:  numBytes = 236; return volume_svg;
+        case 0xc82285fd:  numBytes = 704; return zoomIn_svg;
+        case 0x86a456a0:  numBytes = 618; return zoomOut_svg;
+        case 0x100cd030:  numBytes = 579; return zoomTool_svg;
+        case 0x3c71eb84:  numBytes = 317; return noise_png;
+        case 0xe05deb51:  numBytes = 25962; return logov2_png;
+        case 0xb278622d:  numBytes = 64; return arpeggiators_json;
+        case 0x41b35b05:  numBytes = 2664; return colourSchemes_json;
+        case 0x25669f2b:  numBytes = 12761; return hotkeySchemes_json;
+        case 0x048f5efe:  numBytes = 3513; return scales_json;
+        case 0xf8655f25:  numBytes = 95522; return translations_json;
         default: break;
     }
 
@@ -9962,12 +9963,13 @@ const char* namedResourceList[] =
     "zoomIn_svg",
     "zoomOut_svg",
     "zoomTool_svg",
-    "Noise_png",
-    "Arpeggiators_json",
-    "ColourSchemes_json",
-    "HotkeySchemes_json",
-    "Scales_json",
-    "Translations_json"
+    "noise_png",
+    "logov2_png",
+    "arpeggiators_json",
+    "colourSchemes_json",
+    "hotkeySchemes_json",
+    "scales_json",
+    "translations_json"
 };
 
 const char* originalFilenames[] =
@@ -10059,12 +10061,13 @@ const char* originalFilenames[] =
     "zoomIn.svg",
     "zoomOut.svg",
     "zoomTool.svg",
-    "Noise.png",
-    "Arpeggiators.json",
-    "ColourSchemes.json",
-    "HotkeySchemes.json",
-    "Scales.json",
-    "Translations.json"
+    "noise.png",
+    "logo-v2.png",
+    "arpeggiators.json",
+    "colourSchemes.json",
+    "hotkeySchemes.json",
+    "scales.json",
+    "translations.json"
 };
 
 const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)

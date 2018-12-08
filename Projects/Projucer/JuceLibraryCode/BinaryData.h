@@ -39,256 +39,259 @@ namespace BinaryData
     const int            F6v9_flacSize = 154079;
 
     extern const char*   annotation_svg;
-    const int            annotation_svgSize = 360;
+    const int            annotation_svgSize = 335;
 
     extern const char*   apply_svg;
-    const int            apply_svgSize = 340;
+    const int            apply_svgSize = 297;
 
     extern const char*   arpeggiate_svg;
-    const int            arpeggiate_svgSize = 345;
+    const int            arpeggiate_svgSize = 309;
 
     extern const char*   audioPlugin_svg;
-    const int            audioPlugin_svgSize = 584;
+    const int            audioPlugin_svgSize = 493;
 
     extern const char*   automationTrack_svg;
-    const int            automationTrack_svgSize = 1482;
+    const int            automationTrack_svgSize = 942;
 
     extern const char*   back_svg;
-    const int            back_svgSize = 464;
+    const int            back_svgSize = 363;
 
     extern const char*   browse_svg;
-    const int            browse_svgSize = 394;
+    const int            browse_svgSize = 321;
 
     extern const char*   chordTool_svg;
-    const int            chordTool_svgSize = 594;
+    const int            chordTool_svgSize = 542;
 
     extern const char*   close_svg;
-    const int            close_svgSize = 569;
+    const int            close_svgSize = 469;
 
     extern const char*   colour_svg;
-    const int            colour_svgSize = 645;
+    const int            colour_svgSize = 549;
 
     extern const char*   commit_svg;
-    const int            commit_svgSize = 939;
+    const int            commit_svgSize = 577;
 
     extern const char*   copy_svg;
-    const int            copy_svgSize = 1881;
+    const int            copy_svgSize = 1276;
 
     extern const char*   create_svg;
-    const int            create_svgSize = 501;
+    const int            create_svgSize = 408;
 
     extern const char*   cropTool_svg;
-    const int            cropTool_svgSize = 287;
+    const int            cropTool_svgSize = 212;
 
     extern const char*   cursorTool_svg;
-    const int            cursorTool_svgSize = 537;
+    const int            cursorTool_svgSize = 367;
 
     extern const char*   cut_svg;
-    const int            cut_svgSize = 798;
+    const int            cut_svgSize = 560;
 
     extern const char*   cutterTool_svg;
-    const int            cutterTool_svgSize = 593;
+    const int            cutterTool_svgSize = 494;
 
     extern const char*   down_svg;
-    const int            down_svgSize = 463;
+    const int            down_svgSize = 360;
 
     extern const char*   dragTool_svg;
-    const int            dragTool_svgSize = 924;
+    const int            dragTool_svgSize = 741;
 
     extern const char*   drawTool_svg;
-    const int            drawTool_svgSize = 1148;
+    const int            drawTool_svgSize = 785;
 
     extern const char*   ellipsis_svg;
-    const int            ellipsis_svgSize = 645;
+    const int            ellipsis_svgSize = 527;
 
     extern const char*   eraserTool_svg;
-    const int            eraserTool_svgSize = 661;
+    const int            eraserTool_svgSize = 513;
 
     extern const char*   expand_svg;
-    const int            expand_svgSize = 458;
+    const int            expand_svgSize = 408;
 
     extern const char*   fail_svg;
-    const int            fail_svgSize = 526;
+    const int            fail_svgSize = 469;
 
     extern const char*   forward_svg;
-    const int            forward_svgSize = 421;
+    const int            forward_svgSize = 365;
 
     extern const char*   github_svg;
-    const int            github_svgSize = 1966;
+    const int            github_svgSize = 1616;
 
     extern const char*   helio_svg;
-    const int            helio_svgSize = 25191;
+    const int            helio_svgSize = 1034;
 
     extern const char*   instrument_svg;
-    const int            instrument_svgSize = 2919;
+    const int            instrument_svgSize = 1677;
 
     extern const char*   instrumentNode_svg;
-    const int            instrumentNode_svgSize = 743;
+    const int            instrumentNode_svgSize = 658;
 
     extern const char*   list_svg;
-    const int            list_svgSize = 692;
+    const int            list_svgSize = 585;
 
     extern const char*   local_svg;
-    const int            local_svgSize = 623;
+    const int            local_svgSize = 564;
 
     extern const char*   login_svg;
-    const int            login_svgSize = 1708;
+    const int            login_svgSize = 816;
 
     extern const char*   menu_svg;
-    const int            menu_svgSize = 478;
+    const int            menu_svgSize = 376;
 
     extern const char*   mute_svg;
-    const int            mute_svgSize = 1481;
+    const int            mute_svgSize = 721;
 
     extern const char*   microphone_svg;
-    const int            microphone_svgSize = 467;
+    const int            microphone_svgSize = 374;
 
     extern const char*   orchestraPit_svg;
-    const int            orchestraPit_svgSize = 2838;
+    const int            orchestraPit_svgSize = 1643;
 
     extern const char*   pageDown_svg;
-    const int            pageDown_svgSize = 699;
+    const int            pageDown_svgSize = 586;
 
     extern const char*   pageUp_svg;
-    const int            pageUp_svgSize = 706;
+    const int            pageUp_svgSize = 594;
 
     extern const char*   paste_svg;
-    const int            paste_svgSize = 3086;
+    const int            paste_svgSize = 1604;
 
     extern const char*   patterns_svg;
-    const int            patterns_svgSize = 215;
+    const int            patterns_svgSize = 191;
 
     extern const char*   pause_svg;
-    const int            pause_svgSize = 359;
+    const int            pause_svgSize = 323;
 
     extern const char*   piano_svg;
-    const int            piano_svgSize = 441;
+    const int            piano_svgSize = 378;
 
     extern const char*   pianoTrack_svg;
-    const int            pianoTrack_svgSize = 1336;
+    const int            pianoTrack_svgSize = 771;
 
     extern const char*   play_svg;
-    const int            play_svgSize = 279;
+    const int            play_svgSize = 245;
 
     extern const char*   progressIndicator_svg;
-    const int            progressIndicator_svgSize = 3318;
+    const int            progressIndicator_svgSize = 2816;
 
     extern const char*   project_svg;
-    const int            project_svgSize = 2039;
+    const int            project_svgSize = 1416;
 
     extern const char*   pull_svg;
-    const int            pull_svgSize = 506;
+    const int            pull_svgSize = 360;
 
     extern const char*   push_svg;
-    const int            push_svgSize = 424;
+    const int            push_svgSize = 225;
 
     extern const char*   redo_svg;
-    const int            redo_svgSize = 404;
+    const int            redo_svgSize = 292;
 
     extern const char*   refactor_svg;
-    const int            refactor_svgSize = 1218;
+    const int            refactor_svgSize = 1038;
 
     extern const char*   remote_svg;
-    const int            remote_svgSize = 411;
+    const int            remote_svgSize = 377;
 
     extern const char*   remove_svg;
-    const int            remove_svgSize = 423;
+    const int            remove_svgSize = 396;
 
     extern const char*   render_svg;
-    const int            render_svgSize = 2997;
+    const int            render_svgSize = 2055;
 
     extern const char*   reset_svg;
-    const int            reset_svgSize = 489;
+    const int            reset_svgSize = 461;
 
     extern const char*   revision_svg;
-    const int            revision_svgSize = 1018;
+    const int            revision_svgSize = 641;
 
     extern const char*   routing_svg;
-    const int            routing_svgSize = 743;
+    const int            routing_svgSize = 658;
 
     extern const char*   script_svg;
-    const int            script_svgSize = 775;
+    const int            script_svgSize = 410;
 
     extern const char*   selectionTool_svg;
-    const int            selectionTool_svgSize = 1639;
+    const int            selectionTool_svgSize = 1334;
 
     extern const char*   selection_svg;
-    const int            selection_svgSize = 1983;
+    const int            selection_svgSize = 1197;
 
     extern const char*   selectAll_svg;
-    const int            selectAll_svgSize = 2282;
+    const int            selectAll_svgSize = 1408;
 
     extern const char*   selectNone_svg;
-    const int            selectNone_svgSize = 2405;
+    const int            selectNone_svgSize = 1517;
 
     extern const char*   settings_svg;
-    const int            settings_svgSize = 3459;
+    const int            settings_svgSize = 1182;
 
     extern const char*   stretchLeft_svg;
-    const int            stretchLeft_svgSize = 464;
+    const int            stretchLeft_svgSize = 363;
 
     extern const char*   stretchRight_svg;
-    const int            stretchRight_svgSize = 464;
+    const int            stretchRight_svgSize = 365;
 
     extern const char*   submenu_svg;
-    const int            submenu_svgSize = 464;
+    const int            submenu_svgSize = 365;
 
     extern const char*   success_svg;
-    const int            success_svgSize = 426;
+    const int            success_svgSize = 340;
 
     extern const char*   toggleOff_svg;
-    const int            toggleOff_svgSize = 805;
+    const int            toggleOff_svgSize = 669;
 
     extern const char*   toggleOn_svg;
-    const int            toggleOn_svgSize = 617;
+    const int            toggleOn_svgSize = 510;
 
     extern const char*   trackGroup_svg;
-    const int            trackGroup_svgSize = 414;
+    const int            trackGroup_svgSize = 284;
 
     extern const char*   undo_svg;
-    const int            undo_svgSize = 485;
+    const int            undo_svgSize = 321;
 
     extern const char*   unmute_svg;
-    const int            unmute_svgSize = 2482;
+    const int            unmute_svgSize = 1501;
 
     extern const char*   up_svg;
-    const int            up_svgSize = 466;
+    const int            up_svgSize = 363;
 
     extern const char*   versionControl_svg;
-    const int            versionControl_svgSize = 1378;
+    const int            versionControl_svgSize = 873;
 
     extern const char*   volume_svg;
-    const int            volume_svgSize = 262;
+    const int            volume_svgSize = 236;
 
     extern const char*   zoomIn_svg;
-    const int            zoomIn_svgSize = 942;
+    const int            zoomIn_svgSize = 704;
 
     extern const char*   zoomOut_svg;
-    const int            zoomOut_svgSize = 790;
+    const int            zoomOut_svgSize = 618;
 
     extern const char*   zoomTool_svg;
-    const int            zoomTool_svgSize = 652;
+    const int            zoomTool_svgSize = 579;
 
-    extern const char*   Noise_png;
-    const int            Noise_pngSize = 317;
+    extern const char*   noise_png;
+    const int            noise_pngSize = 317;
 
-    extern const char*   Arpeggiators_json;
-    const int            Arpeggiators_jsonSize = 70;
+    extern const char*   logov2_png;
+    const int            logov2_pngSize = 25962;
 
-    extern const char*   ColourSchemes_json;
-    const int            ColourSchemes_jsonSize = 2753;
+    extern const char*   arpeggiators_json;
+    const int            arpeggiators_jsonSize = 64;
 
-    extern const char*   HotkeySchemes_json;
-    const int            HotkeySchemes_jsonSize = 12761;
+    extern const char*   colourSchemes_json;
+    const int            colourSchemes_jsonSize = 2664;
 
-    extern const char*   Scales_json;
-    const int            Scales_jsonSize = 3563;
+    extern const char*   hotkeySchemes_json;
+    const int            hotkeySchemes_jsonSize = 12761;
 
-    extern const char*   Translations_json;
-    const int            Translations_jsonSize = 271571;
+    extern const char*   scales_json;
+    const int            scales_jsonSize = 3513;
+
+    extern const char*   translations_json;
+    const int            translations_jsonSize = 95522;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 93;
+    const int namedResourceListSize = 94;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
