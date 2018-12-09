@@ -213,6 +213,8 @@ static String transformXmlTag(const String &tagOrAttribute)
     static HashMap<String, Identifier> oldKeys;
     if (oldKeys.size() == 0)
     {
+        oldKeys.set("ProjectInfo", Core::projectInfo);
+        oldKeys.set("ProjectTimeline", Core::projectTimeline);
         oldKeys.set("ProjectLicense", ProjectInfoDeltas::projectLicense);
         oldKeys.set("ProjectFullName", ProjectInfoDeltas::projectTitle);
         oldKeys.set("ProjectAuthor", ProjectInfoDeltas::projectAuthor);
