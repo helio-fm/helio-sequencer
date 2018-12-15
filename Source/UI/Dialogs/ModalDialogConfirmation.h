@@ -63,7 +63,6 @@ private:
     //[UserVariables]
     void cancel();
     void okay();
-    void disappear();
     //[/UserVariables]
 
     ScopedPointer<DialogPanel> background;

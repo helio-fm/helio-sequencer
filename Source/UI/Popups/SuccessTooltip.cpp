@@ -46,7 +46,6 @@ SuccessTooltip::SuccessTooltip()
 SuccessTooltip::~SuccessTooltip()
 {
     //[Destructor_pre]
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     imageRange = nullptr;
@@ -91,8 +90,7 @@ void SuccessTooltip::parentHierarchyChanged()
 void SuccessTooltip::timerCallback()
 {
     this->stopTimer();
-    ScopedPointer<Component> deleter(this);
-    Desktop::getInstance().getAnimator().fadeOut(this, FADEOUT_TIMS_MS);
+    this->dismiss();
 }
 //[/MiscUserCode]
 

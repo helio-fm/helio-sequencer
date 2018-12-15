@@ -151,7 +151,6 @@ TimeSignatureDialog::~TimeSignatureDialog()
 {
     //[Destructor_pre]
     textEditor->removeListener(this);
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -217,7 +216,7 @@ void TimeSignatureDialog::buttonClicked(Button* buttonThatWasClicked)
         else
         {
             this->removeEvent();
-            this->disappear();
+            this->dismiss();
         }
         //[/UserButtonCode_removeEventButton]
     }
@@ -226,7 +225,7 @@ void TimeSignatureDialog::buttonClicked(Button* buttonThatWasClicked)
         //[UserButtonCode_okButton] -- add your button handler code here..
         if (textEditor->getText().isNotEmpty())
         {
-            this->disappear();
+            this->dismiss();
         }
         //[/UserButtonCode_okButton]
     }
@@ -350,11 +349,6 @@ void TimeSignatureDialog::cancelChangesIfAny()
     }
 }
 
-void TimeSignatureDialog::disappear()
-{
-    delete this;
-}
-
 void TimeSignatureDialog::textEditorTextChanged(TextEditor&)
 {
     this->updateOkButtonState();
@@ -393,7 +387,7 @@ void TimeSignatureDialog::textEditorFocusLost(TextEditor&)
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->removeEventButton.get())
     {
-        this->disappear();
+        this->dismiss();
     }
     else
     {
@@ -421,7 +415,7 @@ void TimeSignatureDialog::cancelAndDisappear()
         this->originalSequence->undo(); // Discards new event
     }
 
-    this->disappear();
+    this->dismiss();
 }
 
 //[/MiscUserCode]

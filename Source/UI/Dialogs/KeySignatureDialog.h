@@ -85,7 +85,6 @@ private:
     const Array<Scale::Ptr> defaultScales;
 
     inline void cancelAndDisappear();
-    inline void disappear();
     inline void updateOkButtonState();
 
     bool addsNewEvent;

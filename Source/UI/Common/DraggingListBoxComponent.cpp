@@ -132,7 +132,7 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
     
     if (this->parentViewport != nullptr)
     {
-        BailOutChecker checker(this);
+        const BailOutChecker checker(this);
         this->parentViewport->setViewPosition(0, this->parentViewport->getViewPosition().getY() - forwardWheel);
         
         // If viewport is owned by Listbox,

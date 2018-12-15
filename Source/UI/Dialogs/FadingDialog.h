@@ -28,12 +28,13 @@ public:
 
 protected:
     
-    void fadeOut();
+    void dismiss();
     virtual void updatePosition();
-
-    SafePointer<Component> background;
     
 private:
-    
+
+    void fadeOut();
+    SafePointer<Component> background;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FadingDialog)
 };

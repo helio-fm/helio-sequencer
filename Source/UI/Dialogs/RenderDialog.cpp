@@ -113,7 +113,6 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
 RenderDialog::~RenderDialog()
 {
     //[Destructor_pre]
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -184,8 +183,7 @@ void RenderDialog::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_cancelButton] -- add your button handler code here..
         this->stopRender();
-
-        delete this;
+        this->dismiss();
         //[/UserButtonCode_cancelButton]
     }
 
@@ -245,7 +243,7 @@ void RenderDialog::handleCommandMessage (int commandId)
         Transport &transport = this->project.getTransport();
         if (! transport.isRendering())
         {
-            delete this;
+            this->dismiss();
         }
     }
     else if (commandId == CommandIDs::Browse)

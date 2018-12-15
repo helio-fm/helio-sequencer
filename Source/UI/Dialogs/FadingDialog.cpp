@@ -54,6 +54,12 @@ void FadingDialog::parentHierarchyChanged()
 #endif
 }
 
+void FadingDialog::dismiss()
+{
+    this->fadeOut();
+    delete this;
+}
+
 void FadingDialog::fadeOut()
 {
     const int fadeoutTime = 200;

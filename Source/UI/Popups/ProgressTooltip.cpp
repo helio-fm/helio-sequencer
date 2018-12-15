@@ -49,8 +49,6 @@ ProgressTooltip::ProgressTooltip(bool cancellable)
 ProgressTooltip::~ProgressTooltip()
 {
     //[Destructor_pre]
-    FadingDialog::fadeOut();
-    //Desktop::getInstance().getAnimator().fadeOut(this, PROGRESS_TOOLTIP_FADEOUT_TIMS_MS);
     //[/Destructor_pre]
 
     progressIndicator = nullptr;
@@ -138,12 +136,7 @@ void ProgressTooltip::cancel()
         this->onCancel();
     }
 
-    this->disappear();
-}
-
-void ProgressTooltip::disappear()
-{
-    delete this;
+    this->dismiss();
 }
 //[/MiscUserCode]
 

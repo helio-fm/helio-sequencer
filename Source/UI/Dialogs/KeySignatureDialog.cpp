@@ -162,7 +162,6 @@ KeySignatureDialog::~KeySignatureDialog()
     this->comboPrimer->cleanup();
     this->transport.stopPlayback();
     this->scaleNameEditor->removeListener(this);
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -234,7 +233,7 @@ void KeySignatureDialog::buttonClicked(Button* buttonThatWasClicked)
         else
         {
             this->removeEvent();
-            this->disappear();
+            this->dismiss();
         }
         //[/UserButtonCode_removeEventButton]
     }
@@ -243,7 +242,7 @@ void KeySignatureDialog::buttonClicked(Button* buttonThatWasClicked)
         //[UserButtonCode_okButton] -- add your button handler code here..
         if (this->scaleNameEditor->getText().isNotEmpty())
         {
-            this->disappear();
+            this->dismiss();
         }
         //[/UserButtonCode_okButton]
     }
@@ -424,11 +423,6 @@ bool KeySignatureDialog::cancelChangesIfAny()
     return false;
 }
 
-void KeySignatureDialog::disappear()
-{
-    delete this;
-}
-
 void KeySignatureDialog::cancelAndDisappear()
 {
     this->cancelChangesIfAny(); // Discards possible changes
@@ -439,7 +433,7 @@ void KeySignatureDialog::cancelAndDisappear()
         this->originalSequence->undo(); // Discards new event
     }
 
-    this->disappear();
+    this->dismiss();
 }
 
 void KeySignatureDialog::onKeyChanged(int key)
@@ -507,7 +501,7 @@ void KeySignatureDialog::textEditorFocusLost(TextEditor &)
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->removeEventButton.get())
     {
-        this->disappear();
+        this->dismiss();
     }
     else
     {
