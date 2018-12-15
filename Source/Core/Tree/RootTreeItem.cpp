@@ -171,10 +171,6 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
     newProject->broadcastChangeViewBeatRange(range.getX(), range.getY());
     newProject->getDocument()->save();
 
-    // notify recent files list
-    App::Workspace().getUserProfile().onProjectLocalInfoUpdated(newProject->getId(),
-        newProject->getName(), newProject->getDocument()->getFullPath());
-
     return newProject;
 }
 
