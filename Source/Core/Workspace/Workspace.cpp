@@ -200,6 +200,7 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
         else
         {
             // TODO show message "yo, login pls"
+            return true;
         }
     }
 

@@ -51,7 +51,13 @@ void ProjectCloneThread::run()
     this->response = revisionsRequest.get();
 
     const ProjectDto remoteProject(this->response.getBody());
-    if (!this->response.is200())
+    if (this->response.is(404))
+    {
+        DBG("Attempted to clone non-existing project, removing");
+        callbackOnMessageThread(ProjectCloneThread, onProjectMissing, self->projectId);
+        return;
+    }
+    else if (!this->response.is200())
     {
         DBG("Failed to clone project from remote: " + this->response.getErrors().getFirst());
         callbackOnMessageThread(ProjectCloneThread, onCloneFailed, self->response.getErrors(), self->projectId);

@@ -213,6 +213,17 @@ ProjectCloneThread *ResourceSyncService::prepareProjectCloneThread()
         // and views will update themselves on the message thread
     };
 
+    thread->onProjectMissing = [](const String &projectId)
+    {
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+
+        // unload and delete the stub, remove remote info
+        auto &workspace = App::Workspace();
+        workspace.unloadProject(projectId, true, false);
+        workspace.getUserProfile().onProjectRemoteInfoReset(projectId);
+    };
+
     thread->onCloneFailed = [](const Array<String> &errors, const String &projectId)
     {
         auto &layout = App::Layout();

@@ -47,12 +47,15 @@ void ProjectDeleteThread::run()
     const String projectRoute(ApiRoutes::project.replace(":projectId", this->projectId));
     const BackendRequest revisionsRequest(projectRoute);
     this->response = revisionsRequest.del();
-    if (!this->response.is200())
+
+    // expect "no content" for successful delete or "not found",
+    // when not found, just pretend we have deleted it successfully:
+    if (this->response.is(404) || this->response.is(204))
     {
-        DBG("Failed to delete project from remote: " + this->response.getErrors().getFirst());
-        callbackOnMessageThread(ProjectDeleteThread, onDeleteFailed, self->response.getErrors(), self->projectId);
+        callbackOnMessageThread(ProjectDeleteThread, onDeleteDone, self->projectId);
         return;
     }
 
-    callbackOnMessageThread(ProjectDeleteThread, onDeleteDone, self->projectId);
+    DBG("Failed to delete project from remote: " + this->response.getErrors().getFirst());
+    callbackOnMessageThread(ProjectDeleteThread, onDeleteFailed, self->response.getErrors(), self->projectId);
 }
