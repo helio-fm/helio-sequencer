@@ -19,6 +19,7 @@
 #include "UserProfile.h"
 #include "SessionService.h"
 #include "SerializationKeys.h"
+#include "ResourceSyncService.h"
 #include "Config.h"
 #include "App.h"
 
@@ -31,7 +32,7 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
     const int size = 16;
     this->avatar = { Image::RGB, size, size, true };
 
-    if (dto.hasAvatarData()) // && this->avatarThumbnail.isEmpty()
+    if (dto.hasAvatarData())
     {
         MemoryInputStream inputStream(dto.getAvatarData(), false);
         const Image remoteAvatar = ImageFileFormat::loadFrom(inputStream)
@@ -76,7 +77,8 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
     this->sendChangeMessage();
 }
 
-void UserProfile::onProjectLocalInfoUpdated(const String &id, const String &title, const String &path)
+void UserProfile::onProjectLocalInfoUpdated(const String &id,
+    const String &title, const String &path)
 {
     if (auto *project = this->findProject(id))
     {
@@ -108,6 +110,34 @@ void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
     this->sendChangeMessage();
 }
 
+void UserProfile::onProjectLocalInfoReset(const String &id)
+{
+    if (auto *project = this->findProject(id))
+    {
+        project->resetLocalInfo();
+        if (!project->isValid()) // i.e. doesn't have a remote copy
+        {
+            const ScopedWriteLock lock(this->projectsListLock);
+            this->projects.removeObject(project);
+        }
+        this->sendChangeMessage();
+    }
+}
+
+void UserProfile::onProjectRemoteInfoReset(const String &id)
+{
+    if (auto *project = this->findProject(id))
+    {
+        project->resetRemoteInfo();
+        if (!project->isValid()) // i.e. doesn't have a local copy
+        {
+            const ScopedWriteLock lock(this->projectsListLock);
+            this->projects.removeObject(project);
+        }
+        this->sendChangeMessage();
+    }
+}
+
 void UserProfile::onProjectUnloaded(const String &id)
 {
     if (auto *project = this->findProject(id))
@@ -121,45 +151,28 @@ void UserProfile::onProjectUnloaded(const String &id)
 
 void UserProfile::deleteProjectLocally(const String &id)
 {
-    for (auto *project : this->projects)
+    if (auto *project = this->findProject(id))
     {
-        if (project->getProjectId() == id && project->hasLocalCopy())
+        if (project->hasLocalCopy())
         {
             project->getLocalFile().deleteFile();
-            project->resetLocalInfo();
-            if (!project->isValid()) // i.e. doesn't have remote copy
-            {
-                const ScopedWriteLock lock(this->projectsListLock);
-                this->projects.removeObject(project);
-            }
-            break;
+            this->onProjectLocalInfoReset(id);
         }
     }
-
-    this->sendChangeMessage();
 }
 
 void UserProfile::deleteProjectRemotely(const String &id)
 {
-    for (auto *project : this->projects)
+    if (auto *project = this->findProject(id))
     {
-        if (project->getProjectId() == id && project->hasRemoteCopy())
+        if (project->hasRemoteCopy())
         {
-            //App::Helio().getResourceSyncService()->deleteProject(projectId);
-            //// and then:
-            //project->resetRemoteInfo();
-
-            //if (!project->isValid()) // i.e. doesn't have local copy
-            //{
-            //    const ScopedWriteLock lock(this->projectsListLock);
-            //    this->projects.removeObject(project);
-            //}
-            break;
+            // sync service will call onProjectRemoteInfoReset(id) when done:
+            App::Helio().getResourceSyncService()->deleteProject(id);
         }
     }
 
     this->sendChangeMessage();
-
 }
 
 void UserProfile::clearProfileAndSession()
@@ -220,7 +233,8 @@ const ReferenceCountedArray<RecentProjectInfo> &UserProfile::getProjects() const
     return this->projects;
 }
 
-// There won't be too much projects and sessions, so linear search should be ok:
+// there won't be too much projects, so linear search should be ok
+// (might have to replace this with binary search someday though)
 RecentProjectInfo *UserProfile::findProject(const String &id) const
 {
     for (auto *project : this->projects)

@@ -322,6 +322,10 @@
                   file="../../Source/Core/Network/Requests/ProjectCloneThread.cpp"/>
             <FILE id="b5QDUQ" name="ProjectCloneThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/ProjectCloneThread.h"/>
+            <FILE id="Yxtd96" name="ProjectDeleteThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectDeleteThread.cpp"/>
+            <FILE id="B5BEtA" name="ProjectDeleteThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/ProjectDeleteThread.h"/>
             <FILE id="RWmOw5" name="RevisionsSyncHelpers.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Requests/RevisionsSyncHelpers.cpp"/>
             <FILE id="iH4zUU" name="RevisionsSyncHelpers.h" compile="0" resource="0"

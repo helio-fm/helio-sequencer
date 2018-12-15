@@ -31,7 +31,7 @@ ProjectCloneThread::~ProjectCloneThread()
     this->stopThread(1000);
 }
 
-void ProjectCloneThread::clone(WeakReference<VersionControl> vcs, const String &projectId)
+void ProjectCloneThread::doClone(WeakReference<VersionControl> vcs, const String &projectId)
 {
     if (this->isThreadRunning())
     {

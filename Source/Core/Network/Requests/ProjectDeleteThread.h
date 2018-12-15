@@ -18,29 +18,25 @@
 #pragma once
 
 #include "BackendRequest.h"
-#include "VersionControl.h"
 #include "Revision.h"
 
-class ProjectCloneThread final : public Thread
+class ProjectDeleteThread final : public Thread
 {
 public:
-    
-    ProjectCloneThread();
-    ~ProjectCloneThread() override;
-    
-    Function<void()> onCloneDone;
-    Function<void(const Array<String> &errors, const String &projectId)> onCloneFailed;
 
-    void doClone(WeakReference<VersionControl> vcs, const String &projectId);
+    ProjectDeleteThread();
+    ~ProjectDeleteThread() override;
+
+    Function<void(const String &projectId)> onDeleteDone;
+    Function<void(const Array<String> &errors, const String &projectId)> onDeleteFailed;
+
+    void doDelete(const String &projectId);
 
 private:
-    
-    void run() override;
-    
-    String projectId;
-    WeakReference<VersionControl> vcs;
-    VCS::Revision::Ptr newHead;
 
+    void run() override;
+
+    String projectId;
     BackendRequest::Response response;
 
     friend class BackendService;
