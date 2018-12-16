@@ -94,10 +94,7 @@ ModalDialogInput::~ModalDialogInput()
 {
     //[Destructor_pre]
     this->stopTimer();
-
     textEditor->removeListener(this);
-
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -251,12 +248,17 @@ void ModalDialogInput::textEditorFocusLost(TextEditor &ed)
 
 void ModalDialogInput::cancel()
 {
+    const BailOutChecker checker(this);
+
     if (this->onCancel != nullptr)
     {
         this->onCancel(this->input);
     }
 
-    this->disappear();
+    if (!checker.shouldBailOut())
+    {
+        this->dismiss();
+    }
 }
 
 void ModalDialogInput::okay()
@@ -266,17 +268,17 @@ void ModalDialogInput::okay()
         return;
     }
 
+    const BailOutChecker checker(this);
+
     if (this->onOk != nullptr)
     {
         this->onOk(this->input);
     }
 
-    this->disappear();
-}
-
-void ModalDialogInput::disappear()
-{
-    delete this;
+    if (!checker.shouldBailOut())
+    {
+        this->dismiss();
+    }
 }
 
 void ModalDialogInput::updateOkButtonState()

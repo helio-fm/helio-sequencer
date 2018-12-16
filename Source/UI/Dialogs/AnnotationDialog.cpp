@@ -169,7 +169,6 @@ AnnotationDialog::~AnnotationDialog()
 {
     //[Destructor_pre]
     this->textEditor->removeListener(this);
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -237,7 +236,7 @@ void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
         else
         {
             this->removeEvent();
-            this->disappear();
+            this->dismiss();
         }
         //[/UserButtonCode_removeEventButton]
     }
@@ -246,7 +245,7 @@ void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_okButton] -- add your button handler code here..
         if (textEditor->getText().isNotEmpty())
         {
-            this->disappear();
+            this->dismiss();
         }
         //[/UserButtonCode_okButton]
     }
@@ -380,11 +379,6 @@ void AnnotationDialog::cancelChangesIfAny()
     }
 }
 
-void AnnotationDialog::disappear()
-{
-    delete this;
-}
-
 void AnnotationDialog::textEditorTextChanged(TextEditor&)
 {
     this->updateOkButtonState();
@@ -416,7 +410,7 @@ void AnnotationDialog::textEditorFocusLost(TextEditor&)
         focusedComponent != this->okButton &&
         focusedComponent != this->removeEventButton)
     {
-        this->disappear();
+        this->dismiss();
     }
     else
     {
@@ -444,7 +438,7 @@ void AnnotationDialog::cancelAndDisappear()
         this->originalSequence->undo(); // Discards new event
     }
 
-    this->disappear();
+    this->dismiss();
 }
 //[/MiscUserCode]
 

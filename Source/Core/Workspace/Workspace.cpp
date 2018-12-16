@@ -153,17 +153,26 @@ UserProfile &Workspace::getUserProfile() noexcept
 void Workspace::createEmptyProject()
 {
     const String newProjectName = TRANS("defaults::newproject::name");
+
 #if HELIO_DESKTOP
     const String fileName = newProjectName + ".helio";
     FileChooser fc(TRANS("dialog::workspace::createproject::caption"),
-                   DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
+        DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
     
     if (fc.browseForFileToSave(true))
     {
-        this->treeRoot->addDefaultProject(fc.getResult());
+        if (auto *p = this->treeRoot->addDefaultProject(fc.getResult()))
+        {
+            this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+                p->getName(), p->getDocument()->getFullPath());
+        }
     }
 #else
-    this->treeRoot->addDefaultProject(newProjectName);
+    if (auto *p = this->treeRoot->addDefaultProject(newProjectName))
+    {
+        this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+            p->getName(), p->getDocument()->getFullPath());
+    }
 #endif
 }
 
@@ -178,11 +187,20 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
     {
         if (this->userProfile.isLoggedIn())
         {
-            return this->treeRoot->checkoutProject(info->getProjectId(), info->getTitle()) != nullptr;
+            if (auto *p = this->treeRoot->checkoutProject(info->getProjectId(), info->getTitle()))
+            {
+                this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+                    p->getName(), p->getDocument()->getFullPath());
+
+                return true;
+            }
+
+            return false;
         }
         else
         {
             // TODO show message "yo, login pls"
+            return true;
         }
     }
 
@@ -315,15 +333,16 @@ void Workspace::failedDeserializationFallback()
     TreeItem *settings = new SettingsTreeItem();
     this->treeRoot->addChildTreeItem(settings);
     
-    //TreeItem *scripts = new ScriptsRootTreeItem(*this);
-    //this->treeRoot->addChildTreeItem(scripts);
-    
     TreeItem *instruments = new OrchestraPitTreeItem();
     this->treeRoot->addChildTreeItem(instruments);
     
-    ProjectTreeItem *project = this->treeRoot->addDefaultProject(TRANS("defaults::newproject::name"));
-    project->setSelected(true, false);
-    project->showPage();
+    if (auto *p = this->treeRoot->addDefaultProject(TRANS("defaults::newproject::name")))
+    {
+        this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+            p->getName(), p->getDocument()->getFullPath());
+        p->setSelected(true, false);
+        p->showPage();
+    }
     
     this->wasInitialized = true;
     this->autosave();

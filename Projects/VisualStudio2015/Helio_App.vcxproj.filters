@@ -715,6 +715,9 @@
     <ClCompile Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.cpp">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\ProjectDeleteThread.cpp">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.cpp">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
@@ -3424,6 +3427,9 @@
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\ProjectDeleteThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.h">

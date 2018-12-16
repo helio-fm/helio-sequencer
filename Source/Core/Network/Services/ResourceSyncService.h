@@ -20,6 +20,7 @@
 #include "BackendService.h"
 #include "RevisionsSyncThread.h"
 #include "ProjectCloneThread.h"
+#include "ProjectDeleteThread.h"
 #include "UpdatesCheckThread.h"
 #include "RequestResourceThread.h"
 
@@ -46,9 +47,14 @@ public:
 
     void cancelCloneProject();
 
+    void deleteProject(const String &projectId);
+
+
 private:
 
     ProjectCloneThread *prepareProjectCloneThread();
+    ProjectDeleteThread *prepareProjectDeleteThread();
+
     RevisionsSyncThread *prepareSyncRevisionsThread();
     RevisionsSyncThread *prepareFetchRevisionsThread();
 

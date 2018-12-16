@@ -155,6 +155,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/MidiTrack_6604020d.o \
   $(JUCE_OBJDIR)/BackendRequest_7a512d9e.o \
   $(JUCE_OBJDIR)/ProjectCloneThread_838580b1.o \
+  $(JUCE_OBJDIR)/ProjectDeleteThread_df81aeb5.o \
   $(JUCE_OBJDIR)/RevisionsSyncHelpers_6a382a95.o \
   $(JUCE_OBJDIR)/RevisionsSyncThread_7ea15884.o \
   $(JUCE_OBJDIR)/ResourceSyncService_3cb65bad.o \
@@ -652,6 +653,11 @@ $(JUCE_OBJDIR)/BackendRequest_7a512d9e.o: ../../Source/Core/Network/Requests/Bac
 $(JUCE_OBJDIR)/ProjectCloneThread_838580b1.o: ../../Source/Core/Network/Requests/ProjectCloneThread.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ProjectCloneThread.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ProjectDeleteThread_df81aeb5.o: ../../Source/Core/Network/Requests/ProjectDeleteThread.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ProjectDeleteThread.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/RevisionsSyncHelpers_6a382a95.o: ../../Source/Core/Network/Requests/RevisionsSyncHelpers.cpp

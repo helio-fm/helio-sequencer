@@ -80,7 +80,7 @@ void ResourceSyncService::cloneProject(WeakReference<VersionControl> vcs, const 
     ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
     App::Layout().showModalComponentUnowned(tooltip.release());
 
-    this->prepareProjectCloneThread()->clone(vcs, projectId);
+    this->prepareProjectCloneThread()->doClone(vcs, projectId);
 }
 
 void ResourceSyncService::cancelCloneProject()
@@ -89,6 +89,20 @@ void ResourceSyncService::cancelCloneProject()
     {
         thread->signalThreadShouldExit();
     }
+}
+
+void ResourceSyncService::deleteProject(const String &projectId)
+{
+    if (auto *thread = this->getRunningThreadFor<ProjectDeleteThread>())
+    {
+        DBG("Warning: attempt to start a project delete thread while another one is running");
+        return;
+    }
+
+    ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
+    App::Layout().showModalComponentUnowned(tooltip.release());
+
+    this->prepareProjectDeleteThread()->doDelete(projectId);
 }
 
 RequestResourceThread *ResourceSyncService::prepareResourceRequestThread()
@@ -199,6 +213,17 @@ ProjectCloneThread *ResourceSyncService::prepareProjectCloneThread()
         // and views will update themselves on the message thread
     };
 
+    thread->onProjectMissing = [](const String &projectId)
+    {
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+
+        // unload and delete the stub, remove remote info
+        auto &workspace = App::Workspace();
+        workspace.unloadProject(projectId, true, false);
+        workspace.getUserProfile().onProjectRemoteInfoReset(projectId);
+    };
+
     thread->onCloneFailed = [](const Array<String> &errors, const String &projectId)
     {
         auto &layout = App::Layout();
@@ -212,6 +237,34 @@ ProjectCloneThread *ResourceSyncService::prepareProjectCloneThread()
         // now find project stub by id, unload and delete it locally
         auto &workspace = App::Workspace();
         workspace.unloadProject(projectId, true, false);
+    };
+
+    return thread;
+}
+
+ProjectDeleteThread *ResourceSyncService::prepareProjectDeleteThread()
+{
+    auto *thread = this->getNewThreadFor<ProjectDeleteThread>();
+
+    thread->onDeleteDone = [](const String &projectId)
+    {
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        layout.showModalComponentUnowned(new SuccessTooltip());
+
+        auto &workspace = App::Workspace();
+        workspace.getUserProfile().onProjectRemoteInfoReset(projectId);
+    };
+
+    thread->onDeleteFailed = [](const Array<String> &errors, const String &projectId)
+    {
+        auto &layout = App::Layout();
+        layout.hideModalComponentIfAny();
+        if (errors.size() > 0)
+        {
+            layout.showTooltip(errors.getFirst());
+        }
+        layout.showModalComponentUnowned(new FailTooltip());
     };
 
     return thread;

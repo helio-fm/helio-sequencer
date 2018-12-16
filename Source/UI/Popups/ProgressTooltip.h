@@ -49,7 +49,6 @@ private:
     //[UserVariables]
     bool isCancellable;
     void cancel();
-    void disappear();
     //[/UserVariables]
 
     UniquePointer<ProgressIndicator> progressIndicator;

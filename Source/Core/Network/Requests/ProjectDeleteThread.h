@@ -17,24 +17,27 @@
 
 #pragma once
 
-class FadingDialog : public Component
+#include "BackendRequest.h"
+#include "Revision.h"
+
+class ProjectDeleteThread final : public Thread
 {
 public:
-    
-    FadingDialog();
-    ~FadingDialog() override;
 
-    void parentHierarchyChanged() override;
+    ProjectDeleteThread();
+    ~ProjectDeleteThread() override;
 
-protected:
-    
-    void dismiss();
-    virtual void updatePosition();
-    
+    Function<void(const String &projectId)> onDeleteDone;
+    Function<void(const Array<String> &errors, const String &projectId)> onDeleteFailed;
+
+    void doDelete(const String &projectId);
+
 private:
 
-    void fadeOut();
-    SafePointer<Component> background;
+    void run() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FadingDialog)
+    String projectId;
+    BackendRequest::Response response;
+
+    friend class BackendService;
 };

@@ -33,7 +33,11 @@ public:
     void updateProfile(const UserProfileDto &dto);
 
     void onProjectLocalInfoUpdated(const String &id, const String &title, const String &path);
+    void onProjectLocalInfoReset(const String &id);
+
     void onProjectRemoteInfoUpdated(const ProjectDto &info);
+    void onProjectRemoteInfoReset(const String &id);
+
     void onProjectUnloaded(const String &id);
 
     void deleteProjectLocally(const String &id);

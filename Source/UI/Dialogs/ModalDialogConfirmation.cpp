@@ -68,7 +68,6 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
 ModalDialogConfirmation::~ModalDialogConfirmation()
 {
     //[Destructor_pre]
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -194,27 +193,35 @@ void ModalDialogConfirmation::inputAttemptWhenModal()
 //[MiscUserCode]
 void ModalDialogConfirmation::cancel()
 {
+    const BailOutChecker checker(this);
+
     if (this->onCancel != nullptr)
     {
         this->onCancel();
     }
 
-    this->disappear();
+    if (!checker.shouldBailOut())
+    {
+        this->dismiss();
+    }
 }
 
 void ModalDialogConfirmation::okay()
 {
+    const BailOutChecker checker(this);
+
     if (this->onOk != nullptr)
     {
         this->onOk();
     }
 
-    this->disappear();
-}
-
-void ModalDialogConfirmation::disappear()
-{
-    delete this;
+    // a user might have created another dialog in onOk
+    // and showed it as a modal component, which destroyed this,
+    // because there can only be one model component:
+    if (!checker.shouldBailOut())
+    {
+        this->dismiss();
+    }
 }
 
 //===----------------------------------------------------------------------===//

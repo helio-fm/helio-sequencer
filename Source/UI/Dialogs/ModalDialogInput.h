@@ -72,7 +72,6 @@ private:
     void cancel();
     void okay();
 
-    void disappear();
     void updateOkButtonState();
     void timerCallback() override;
 

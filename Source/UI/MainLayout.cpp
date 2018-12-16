@@ -198,6 +198,9 @@ void MainLayout::hideTooltipIfAny()
 
 void MainLayout::showModalComponentUnowned(Component *targetComponent)
 {
+    // showing a dialog when another one is still present is kinda suspicious
+    //jassert(Component::getCurrentlyModalComponent() == nullptr);
+
     this->hideModalComponentIfAny();
 
     ScopedPointer<Component> ownedTarget(targetComponent);

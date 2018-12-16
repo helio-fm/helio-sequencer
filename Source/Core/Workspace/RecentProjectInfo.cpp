@@ -152,8 +152,10 @@ bool RecentProjectInfo::hasRemoteCopy() const noexcept
 
 bool RecentProjectInfo::isValid() const
 {
-    return this->hasRemoteCopy() ||
+    const bool isFoundSomewhere = this->hasRemoteCopy() ||
         (this->hasLocalCopy() && this->getLocalFile().existsAsFile());
+
+    return this->projectId.isNotEmpty() && isFoundSomewhere;
 }
 
 int RecentProjectInfo::compareElements(Ptr first, Ptr second)
