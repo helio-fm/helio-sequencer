@@ -330,6 +330,7 @@
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\BackendRequest.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\ProjectDeleteThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\RevisionsSyncThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Services\ResourceSyncService.cpp"/>
@@ -2338,6 +2339,7 @@
     <ClInclude Include="..\..\Source\Core\Network\Requests\BackendRequest.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\AuthThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.h"/>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\ProjectDeleteThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestResourceThread.h"/>

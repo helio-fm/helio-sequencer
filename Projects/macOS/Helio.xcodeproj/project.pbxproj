@@ -66,6 +66,7 @@
 		04F39011739E859E1C586524 = {isa = PBXBuildFile; fileRef = F2FCCDE78737C5ADD5E74958; };
 		B12FD080703109AD94BD3E95 = {isa = PBXBuildFile; fileRef = 7C717E154B357B1F04730416; };
 		FC6839723628253E29EF8FC8 = {isa = PBXBuildFile; fileRef = 310B427849EA3D5FD0BB3F82; };
+		0C84EBB5A3A105CB21A9D4E1 = {isa = PBXBuildFile; fileRef = 3AC04802D52DDD60C55C7FCB; };
 		5DAA8F17D334FFD9968AE077 = {isa = PBXBuildFile; fileRef = ACCF3484DDFCA65FCB435017; };
 		07F3A3532E2C4452ED2ACED1 = {isa = PBXBuildFile; fileRef = DC652073B48E01E79421C4D2; };
 		9DC96E8658645657A026B2BC = {isa = PBXBuildFile; fileRef = 12E7FE27F54734F791B11FFB; };
@@ -503,6 +504,7 @@
 		38F77D254EEDB3C3C286D7B0 = {isa = PBXFileReference; lastKnownFileType = file.svg; name = mute.svg; path = ../../Resources/Icons/mute.svg; sourceTree = "SOURCE_ROOT"; };
 		39C0791FE8A0F15901967A25 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Workspace.cpp; path = ../../Source/Core/Workspace/Workspace.cpp; sourceTree = "SOURCE_ROOT"; };
 		3AAAB5AEA13401FD81162200 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VersionControlTreeItem.h; path = ../../Source/Core/Tree/VersionControlTreeItem.h; sourceTree = "SOURCE_ROOT"; };
+		3AC04802D52DDD60C55C7FCB = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectDeleteThread.cpp; path = ../../Source/Core/Network/Requests/ProjectDeleteThread.cpp; sourceTree = "SOURCE_ROOT"; };
 		3AE00D9C56D5F626DE5D0F5B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationSmallComponent.h; path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationSmallComponent.h; sourceTree = "SOURCE_ROOT"; };
 		3AFA2C7B955DD6E33554EABF = {isa = PBXFileReference; lastKnownFileType = file.svg; name = stretchLeft.svg; path = ../../Resources/Icons/stretchLeft.svg; sourceTree = "SOURCE_ROOT"; };
 		3B4394424BA31D6732F531AC = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TooltipContainer.cpp; path = ../../Source/UI/Popups/TooltipContainer.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -783,6 +785,7 @@
 		9341F7A7129BAAD48BB57835 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeySignatureLargeComponent.h; path = ../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureLargeComponent.h; sourceTree = "SOURCE_ROOT"; };
 		93B3FFFB3429BFB971AB435A = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioPluginsListComponent.h; path = ../../Source/UI/Pages/Instruments/AudioPluginsListComponent.h; sourceTree = "SOURCE_ROOT"; };
 		9410AE5E508649C9C3AC49BF = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimelineWarningMarker.h; path = ../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.h; sourceTree = "SOURCE_ROOT"; };
+		942BCA24921DA3941A5AAEF8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectDeleteThread.h; path = ../../Source/Core/Network/Requests/ProjectDeleteThread.h; sourceTree = "SOURCE_ROOT"; };
 		947A84D70A59D8A47BC73985 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SelectableComponent.h; path = ../../Source/UI/Sequencer/SelectableComponent.h; sourceTree = "SOURCE_ROOT"; };
 		9480E6EDDF5246F5A0239075 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutomationCurveClipComponent.cpp; path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveClipComponent.cpp; sourceTree = "SOURCE_ROOT"; };
 		94B84BF4F5DC214AAE259B39 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutomationEventActions.cpp; path = ../../Source/Core/Undo/Actions/AutomationEventActions.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -1325,6 +1328,8 @@
 					6C14C72E2614A24862D83D69,
 					310B427849EA3D5FD0BB3F82,
 					B03D55A203855EADA068B640,
+					3AC04802D52DDD60C55C7FCB,
+					942BCA24921DA3941A5AAEF8,
 					ACCF3484DDFCA65FCB435017,
 					7D81C2BE5F911552D79E9331,
 					DC652073B48E01E79421C4D2,
@@ -2231,6 +2236,7 @@
 					04F39011739E859E1C586524,
 					B12FD080703109AD94BD3E95,
 					FC6839723628253E29EF8FC8,
+					0C84EBB5A3A105CB21A9D4E1,
 					5DAA8F17D334FFD9968AE077,
 					07F3A3532E2C4452ED2ACED1,
 					9DC96E8658645657A026B2BC,

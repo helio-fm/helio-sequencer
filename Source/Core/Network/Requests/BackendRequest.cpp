@@ -134,7 +134,7 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
     const String responseBody = stream->readEntireStreamAsString();
     if (responseBody.isNotEmpty())
     {
-        DBG("<< Received " << response.statusCode << " " 
+        DBG("<< Received " << response.statusCode << " " // << responseBody);
             << responseBody.substring(0, 128) << (responseBody.length() > 128 ? ".." : ""));
 
         ValueTree parsedResponse;
