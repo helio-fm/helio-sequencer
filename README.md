@@ -35,7 +35,7 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 
 ## Links
 
- * [Homepage](https://helio.fm/) with all latest builds.
+ * [Homepage](https://helio.fm) with all latest builds and its [source code](https://github.com/helio-fm/muse-hackers).
  * Project page at [KVR database](https://www.kvraudio.com/product/helio-workstation-by-peter-rudenko).
  * Some [screencasts on Youtube](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/).
  * [Discussion](https://news.ycombinator.com/item?id=14212054) at HN.
@@ -43,11 +43,13 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 
 ## Contributing
 
-Helio is a work in progress and still there are many essential features missing, so pull requests are appreciated.
+Helio is still a work in progress with many essential features missing, and there are several ways you could help:
 
-Your ideas are also welcome: friendly and lightweight UI is the main development priority in this project, and if you have a vision on how to improve user experience in music composing, feel free to share it.
+* [Proofread and improve the translation](https://helio.fm/translations) for your native language.
 
-You could also [make a new translation](https://helio.fm/translations) for your native language or proofread any of existing translations, including English, German, French, Italian, Spanish and Russian.
+* Your ideas are welcome: friendly and lightweight UI is the main development priority in this project, and if you have a vision on how to improve user experience in music composing, feel free to share it.
+
+* Implement new features: some guys were asking me if I have any tasks for them to start working on. But, as a sole unpaid developer with limited amount of time and interest, I'm not planning/decomposing stories or organising the board, instead I only work on the parts that are fun and important for me at the moment. If you feel like contributing and don't know where to start, my suggestion is that you do the same: find a missing feature or behavior you're lacking the most, and make the app a little more convinient for yourself. Anyway, feel free to ask questions and create incomplete PR's to get intermediate feedback.
 
 
 ## Contributors
@@ -67,14 +69,7 @@ Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon
 Polish - Dawid Bugajski  
 
 
-## Backers
-
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/helio-workstation#backer)]
-
-<a href="https://opencollective.com/helio-workstation#backers" target="_blank"><img src="https://opencollective.com/helio-workstation/backers.svg?width=890"></a>
-
-
-## Sponsors
+### Sponsors
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/helio-workstation#sponsor)]
 
