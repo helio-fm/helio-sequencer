@@ -8,6 +8,15 @@ cd ${TRAVIS_BUILD_DIR}/Projects/LinuxMakefile/build
 tar --transform 's/.*/\L&/' -czf /tmp/deploy.tar.gz ./Helio
 scp -C /tmp/deploy.tar.gz deploy@helio.fm:/opt/musehackers/files/ci/helio-dev-64-bit.tar.gz
 
+# Create deb package
+cd ${TRAVIS_BUILD_DIR}/Projects
+mkdir -p ./Deployment/Linux/Debian/x64/usr/bin
+cp ./LinuxMakefile/build/Helio ./Deployment/Linux/Debian/x64/usr/bin/helio
+chmod +x ./Deployment/Linux/Debian/x64/usr/bin/helio
+
+dpkg-deb --build ./Deployment/Linux/Debian/x64
+scp -C ./Deployment/Linux/Debian/x64.deb deploy@helio.fm:/opt/musehackers/files/ci/helio-dev-64-bit.deb
+
 # Create AppImage
 cd ${TRAVIS_BUILD_DIR}
 mkdir -p ./Projects/Deployment/Linux/AppImage/x64/usr/bin
