@@ -28,11 +28,11 @@ addons_shortcuts:
     apt:
       sources: [ 'ubuntu-toolchain-r-test' ]
       packages: [ 'g++-6', 'gcc-6', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  addons_gcc6: &gcc7
+  # Use old enough compiler and no unsupported packages so that release build runs on older systems:
+  addons_gcc4: &gcc4
     ssh_known_hosts: helio.fm
     apt:
-      sources: [ 'ubuntu-toolchain-r-test' ]
-      packages: [ 'g++-7', 'gcc-7', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+      packages: [ 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
   addons_deploy: &deploy
     ssh_known_hosts: helio.fm
 
@@ -54,11 +54,11 @@ matrix:
       dist: trusty
       addons: *gcc6
       env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
-    - name: "gcc 7, release build, 64-bit, deploy"
+    - name: "gcc 4, release build, 64-bit, deploy"
       os: linux
       dist: trusty
-      addons: *gcc7
-      env: DEPLOY=true CC=gcc-7 CXX=g++-7 CONFIG=Release64 DISPLAY=localhost:1.0
+      addons: *gcc4
+      env: DEPLOY=true CONFIG=Release64 DISPLAY=localhost:1.0
     - name: "xcode 10, release and deploy"
       os: osx
       osx_image: xcode10
