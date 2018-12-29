@@ -36,7 +36,7 @@ struct AppInfoDto final : ApiModel
         bool hasInfoForNewResource = false;
         forEachValueTreeChildWithType(this->data, resourceData, Serialization::Api::V1::Resources::resources)
         {
-            const AppResourceDto oldResource({ resourceData });
+            const AppResourceDto oldResource(resourceData);
             if (oldResource.getType() == newResource.getType())
             {
                 hasInfoForNewResource = true;

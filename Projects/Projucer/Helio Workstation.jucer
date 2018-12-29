@@ -1498,10 +1498,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="Helio"/>
-        <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Helio" linuxArchitecture="-m32" linkTimeOptimisation="1"/>
-        <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Helio" linuxArchitecture="-m64" linkTimeOptimisation="1"/>
+        <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="6"
+                       targetName="Helio" linuxArchitecture="-m32"/>
+        <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="6"
+                       targetName="Helio" linuxArchitecture="-m64"/>
         <CONFIGURATION name="Travis" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="1"
                        targetName="Helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
