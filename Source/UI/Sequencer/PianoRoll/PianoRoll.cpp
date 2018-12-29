@@ -42,7 +42,7 @@
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
-#include "ChordBuilder.h"
+#include "ScalerTool.h"
 #include "SelectionComponent.h"
 #include "HybridRollEditMode.h"
 #include "HelioCallout.h"
@@ -815,7 +815,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
     // "Add chord" dialog
     if (! this->project.getEditMode().forbidsAddingEvents())
     {
-        auto popup = new ChordBuilder(this, this->activeTrack->getSequence());
+        auto popup = new ScalerTool(this, this->activeTrack->getSequence());
         const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
         popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
         App::Layout().addAndMakeVisible(popup);

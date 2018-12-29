@@ -19,7 +19,7 @@
 #include "Common.h"
 //[/Headers]
 
-#include "ChordBuilder.h"
+#include "ScalerTool.h"
 
 //[MiscUserDefs]
 #include "NotePopupListener.h"
@@ -68,7 +68,7 @@ static Array<String> localizedFunctionNames()
     };
 }
 
-class ScalesCommandPanel : public MenuPanel
+class ScalesCommandPanel final : public MenuPanel
 {
 public:
 
@@ -89,7 +89,7 @@ public:
             commandId <= (CommandIDs::SelectScale + this->scales.size()))
         {
             const int scaleIndex = commandId - CommandIDs::SelectScale;
-            if (ChordBuilder *builder = dynamic_cast<ChordBuilder *>(this->getParentComponent()))
+            if (auto *builder = dynamic_cast<ScalerTool *>(this->getParentComponent()))
             {
                 builder->applyScale(this->scales[scaleIndex]);
             }
@@ -103,7 +103,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesCommandPanel)
 };
 
-class FunctionsCommandPanel : public MenuPanel
+class FunctionsCommandPanel final : public MenuPanel
 {
 public:
 
@@ -134,7 +134,7 @@ public:
             commandId <= (CommandIDs::SelectFunction + 7))
         {
             const int functionIndex = commandId - CommandIDs::SelectFunction;
-            if (ChordBuilder *builder = dynamic_cast<ChordBuilder *>(this->getParentComponent()))
+            if (auto *builder = dynamic_cast<ScalerTool *>(this->getParentComponent()))
             {
                 builder->applyFunction((Scale::Function)functionIndex);
             }
@@ -148,7 +148,7 @@ private:
 
 //[/MiscUserDefs]
 
-ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
+ScalerTool::ScalerTool(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       sequence(layer),
@@ -159,10 +159,13 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
       scale(defaultScales[0]),
       function(Scale::Tonic)
 {
-    addAndMakeVisible (newNote = new PopupCustomButton (createLabel("+")));
-    addAndMakeVisible (scalesList = new ScalesCommandPanel (this->defaultScales));
+    this->newNote.reset(new PopupCustomButton(createLabel("+")));
+    this->addAndMakeVisible(newNote.get());
+    this->scalesList.reset(new ScalesCommandPanel(this->defaultScales));
+    this->addAndMakeVisible(scalesList.get());
 
-    addAndMakeVisible (functionsList = new FunctionsCommandPanel());
+    this->functionsList.reset(new FunctionsCommandPanel());
+    this->addAndMakeVisible(functionsList.get());
 
 
     //[UserPreSize]
@@ -179,7 +182,7 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
     jassert(this->scale != nullptr);
     //[/UserPreSize]
 
-    setSize (500, 500);
+    this->setSize(500, 500);
 
     //[Constructor]
 
@@ -194,7 +197,7 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
     //[/Constructor]
 }
 
-ChordBuilder::~ChordBuilder()
+ScalerTool::~ScalerTool()
 {
     //[Destructor_pre]
     this->stopSound();
@@ -208,7 +211,7 @@ ChordBuilder::~ChordBuilder()
     //[/Destructor]
 }
 
-void ChordBuilder::paint (Graphics& g)
+void ScalerTool::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -237,19 +240,19 @@ void ChordBuilder::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void ChordBuilder::resized()
+void ScalerTool::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    newNote->setBounds (proportionOfWidth (0.5000f) - (proportionOfWidth (0.1280f) / 2), proportionOfHeight (0.5000f) - (proportionOfHeight (0.1280f) / 2), proportionOfWidth (0.1280f), proportionOfHeight (0.1280f));
-    scalesList->setBounds ((getWidth() / 2) + -140 - (172 / 2), (getHeight() / 2) - (224 / 2), 172, 224);
-    functionsList->setBounds ((getWidth() / 2) + 140 - (176 / 2), (getHeight() / 2) - (224 / 2), 176, 224);
+    newNote->setBounds(proportionOfWidth (0.5000f) - (proportionOfWidth (0.1280f) / 2), proportionOfHeight (0.5000f) - (proportionOfHeight (0.1280f) / 2), proportionOfWidth (0.1280f), proportionOfHeight (0.1280f));
+    scalesList->setBounds((getWidth() / 2) + -140 - (172 / 2), (getHeight() / 2) - (224 / 2), 172, 224);
+    functionsList->setBounds((getWidth() / 2) + 140 - (176 / 2), (getHeight() / 2) - (224 / 2), 176, 224);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void ChordBuilder::parentHierarchyChanged()
+void ScalerTool::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->detectKeyAndBeat();
@@ -258,7 +261,7 @@ void ChordBuilder::parentHierarchyChanged()
     //[/UserCode_parentHierarchyChanged]
 }
 
-void ChordBuilder::handleCommandMessage (int commandId)
+void ScalerTool::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     Component::handleCommandMessage(commandId);
@@ -270,7 +273,7 @@ void ChordBuilder::handleCommandMessage (int commandId)
     //[/UserCode_handleCommandMessage]
 }
 
-bool ChordBuilder::keyPressed (const KeyPress& key)
+bool ScalerTool::keyPressed (const KeyPress& key)
 {
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
@@ -283,7 +286,7 @@ bool ChordBuilder::keyPressed (const KeyPress& key)
     //[/UserCode_keyPressed]
 }
 
-void ChordBuilder::inputAttemptWhenModal()
+void ScalerTool::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
     //this->cancelChangesIfAny();
@@ -294,7 +297,7 @@ void ChordBuilder::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-void ChordBuilder::onPopupsResetState(PopupButton *button)
+void ScalerTool::onPopupsResetState(PopupButton *button)
 {
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
@@ -318,9 +321,9 @@ if (! App::isRunningOnPhone()) { \
     App::Layout().showTooltip(tip, this->getScreenBounds());\
 }
 
-void ChordBuilder::onPopupButtonFirstAction(PopupButton *button)
+void ScalerTool::onPopupButtonFirstAction(PopupButton *button)
 {
-    if (button == this->newNote)
+    if (button == this->newNote.get())
     {
         const int dragDistance = this->draggingStartPosition.getDistanceFrom(this->draggingEndPosition);
         const bool dragPositionNotInitialized = (this->draggingStartPosition.getDistanceFromOrigin() == 0);
@@ -337,22 +340,22 @@ void ChordBuilder::onPopupButtonFirstAction(PopupButton *button)
     }
 }
 
-void ChordBuilder::onPopupButtonSecondAction(PopupButton *button)
+void ScalerTool::onPopupButtonSecondAction(PopupButton *button)
 {
     this->dismissAsDone();
 }
 
-void ChordBuilder::onPopupButtonStartDragging(PopupButton *button)
+void ScalerTool::onPopupButtonStartDragging(PopupButton *button)
 {
-    if (button == this->newNote)
+    if (button == this->newNote.get())
     {
         this->draggingStartPosition = this->getPosition();
     }
 }
 
-bool ChordBuilder::onPopupButtonDrag(PopupButton *button)
+bool ScalerTool::onPopupButtonDrag(PopupButton *button)
 {
-    if (button == this->newNote)
+    if (button == this->newNote.get())
     {
         const Point<int> dragDelta = this->newNote->getDragDelta();
         this->setTopLeftPosition(this->getPosition() + dragDelta);
@@ -372,15 +375,15 @@ bool ChordBuilder::onPopupButtonDrag(PopupButton *button)
     return false;
 }
 
-void ChordBuilder::onPopupButtonEndDragging(PopupButton *button)
+void ScalerTool::onPopupButtonEndDragging(PopupButton *button)
 {
-    if (button == this->newNote)
+    if (button == this->newNote.get())
     {
         this->draggingEndPosition = this->getPosition();
     }
 }
 
-void ChordBuilder::applyScale(const Scale::Ptr scale)
+void ScalerTool::applyScale(const Scale::Ptr scale)
 {
     const auto funName = localizedFunctionNames();
     const String rootKey = keyName(this->targetKey);
@@ -399,7 +402,7 @@ void ChordBuilder::applyScale(const Scale::Ptr scale)
     }
 }
 
-void ChordBuilder::applyFunction(Scale::Function function)
+void ScalerTool::applyFunction(Scale::Function function)
 {
     const auto funName = localizedFunctionNames();
     const String rootKey = keyName(this->targetKey);
@@ -419,7 +422,7 @@ void ChordBuilder::applyFunction(Scale::Function function)
 
 static const float kDefaultChordVelocity = 0.35f;
 
-void ChordBuilder::buildChord(Array<int> keys)
+void ScalerTool::buildChord(Array<int> keys)
 {
     if (keys.size() == 0) { return;  }
 
@@ -444,7 +447,7 @@ void ChordBuilder::buildChord(Array<int> keys)
     }
 }
 
-void ChordBuilder::buildNewNote(bool shouldSendMidiMessage)
+void ScalerTool::buildNewNote(bool shouldSendMidiMessage)
 {
     if (PianoSequence *pianoSequence = dynamic_cast<PianoSequence *>(this->sequence))
     {
@@ -471,7 +474,7 @@ void ChordBuilder::buildNewNote(bool shouldSendMidiMessage)
     }
 }
 
-void ChordBuilder::cancelChangesIfAny()
+void ScalerTool::cancelChangesIfAny()
 {
     if (this->hasMadeChanges)
     {
@@ -480,7 +483,7 @@ void ChordBuilder::cancelChangesIfAny()
     }
 }
 
-bool ChordBuilder::detectKeyAndBeat()
+bool ScalerTool::detectKeyAndBeat()
 {
     Point<int> myCentreRelativeToRoll = this->roll->getLocalPoint(this->getParentComponent(), this->getBounds().getCentre());
     int newKey = 0;
@@ -494,12 +497,12 @@ bool ChordBuilder::detectKeyAndBeat()
 // Shorthands
 //===----------------------------------------------------------------------===//
 
-void ChordBuilder::stopSound()
+void ScalerTool::stopSound()
 {
     this->roll->getTransport().allNotesControllersAndSoundOff();
 }
 
-void ChordBuilder::sendMidiMessage(const MidiMessage &message)
+void ScalerTool::sendMidiMessage(const MidiMessage &message)
 {
     const String layerId = this->sequence->getTrackId();
     this->roll->getTransport().sendMidiMessage(layerId, message);
@@ -511,9 +514,9 @@ void ChordBuilder::sendMidiMessage(const MidiMessage &message)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ChordBuilder" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="ScalerTool" template="../../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(Scale::getDefaultScalesCache()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
+                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(ScalesManager::getInstance().getScales()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>
@@ -523,10 +526,10 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="140Cc 0Cc 180 237" cornerSize="2" fill="solid: 77000000"
+    <ROUNDRECT pos="140Cc 0Cc 180 237" cornerSize="2.00000000000000000000" fill="solid: 77000000"
                hasStroke="0"/>
-    <ROUNDRECT pos="-140Cc 0Cc 180 237" cornerSize="2" fill="solid: 77000000"
-               hasStroke="0"/>
+    <ROUNDRECT pos="-140Cc 0Cc 180 237" cornerSize="2.00000000000000000000"
+               fill="solid: 77000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="6b3cbe21e2061b28" memberName="newNote" virtualName=""
              explicitFocusOrder="0" pos="50%c 50%c 12.8% 12.8%" sourceFile="../PopupCustomButton.cpp"

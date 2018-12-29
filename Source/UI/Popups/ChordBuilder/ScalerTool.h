@@ -30,14 +30,13 @@ class FunctionsCommandPanel;
 
 #include "../PopupCustomButton.h"
 
-class ChordBuilder  : public PopupMenuComponent,
-                      public PopupButtonOwner
+class ScalerTool final : public PopupMenuComponent,
+                         public PopupButtonOwner
 {
 public:
 
-    ChordBuilder (PianoRoll *caller, MidiSequence *layer);
-
-    ~ChordBuilder();
+    ScalerTool(PianoRoll *caller, MidiSequence *layer);
+    ~ScalerTool();
 
     //[UserMethods]
 
@@ -92,9 +91,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PopupCustomButton> newNote;
-    ScopedPointer<ScalesCommandPanel> scalesList;
-    ScopedPointer<FunctionsCommandPanel> functionsList;
+    UniquePointer<PopupCustomButton> newNote;
+    UniquePointer<ScalesCommandPanel> scalesList;
+    UniquePointer<FunctionsCommandPanel> functionsList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordBuilder)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScalerTool)
 };

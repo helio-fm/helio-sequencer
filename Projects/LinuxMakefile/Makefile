@@ -315,8 +315,8 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/RevisionTreeComponent_2b8f217e.o \
   $(JUCE_OBJDIR)/StageComponent_f36288f.o \
   $(JUCE_OBJDIR)/VersionControlEditor_c12aa262.o \
-  $(JUCE_OBJDIR)/ChordBuilder_b1861b03.o \
   $(JUCE_OBJDIR)/ChordTooltip_3e97876b.o \
+  $(JUCE_OBJDIR)/ScalerTool_16c8a0c4.o \
   $(JUCE_OBJDIR)/FailTooltip_99f74519.o \
   $(JUCE_OBJDIR)/HelioCallout_90a2f131.o \
   $(JUCE_OBJDIR)/PopupButton_5c5e0092.o \
@@ -1455,14 +1455,14 @@ $(JUCE_OBJDIR)/VersionControlEditor_c12aa262.o: ../../Source/UI/Pages/VCS/Versio
 	@echo "Compiling VersionControlEditor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ChordBuilder_b1861b03.o: ../../Source/UI/Popups/ChordBuilder/ChordBuilder.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ChordBuilder.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/ChordTooltip_3e97876b.o: ../../Source/UI/Popups/ChordBuilder/ChordTooltip.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ChordTooltip.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ScalerTool_16c8a0c4.o: ../../Source/UI/Popups/ChordBuilder/ScalerTool.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ScalerTool.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/FailTooltip_99f74519.o: ../../Source/UI/Popups/FailTooltip.cpp

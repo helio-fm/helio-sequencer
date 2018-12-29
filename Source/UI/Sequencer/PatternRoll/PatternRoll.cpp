@@ -32,7 +32,7 @@
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
-#include "ChordBuilder.h"
+#include "ScalerTool.h"
 #include "SelectionComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"

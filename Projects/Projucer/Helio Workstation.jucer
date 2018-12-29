@@ -999,12 +999,11 @@
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
           <GROUP id="{3FB0D61A-1FFE-0A39-417B-2FEE93BBBF9D}" name="ChordBuilder">
-            <FILE id="WhejjN" name="ChordBuilder.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Popups/ChordBuilder/ChordBuilder.cpp"/>
-            <FILE id="uDNSUS" name="ChordBuilder.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordBuilder/ChordBuilder.h"/>
             <FILE id="sNR6Ht" name="ChordTooltip.cpp" compile="1" resource="0"
                   file="../../Source/UI/Popups/ChordBuilder/ChordTooltip.cpp"/>
             <FILE id="vAlztw" name="ChordTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordBuilder/ChordTooltip.h"/>
+            <FILE id="c2tOHX" name="ScalerTool.cpp" compile="1" resource="0" file="../../Source/UI/Popups/ChordBuilder/ScalerTool.cpp"/>
+            <FILE id="PCPwNY" name="ScalerTool.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordBuilder/ScalerTool.h"/>
           </GROUP>
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/CenteredTooltipComponent.h"/>

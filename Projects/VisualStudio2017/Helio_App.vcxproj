@@ -490,8 +490,8 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\StageComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ScalerTool.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\FailTooltip.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\HelioCallout.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\PopupButton.cpp"/>
@@ -2535,8 +2535,8 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.h"/>
+    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ScalerTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\FailTooltip.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\GenericTooltip.h"/>

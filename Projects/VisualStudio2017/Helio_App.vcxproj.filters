@@ -1195,10 +1195,10 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.cpp">
+    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.cpp">
       <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.cpp">
+    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ScalerTool.cpp">
       <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\FailTooltip.cpp">
@@ -4017,10 +4017,10 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.h">
+    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.h">
       <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.h">
+    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ScalerTool.h">
       <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
