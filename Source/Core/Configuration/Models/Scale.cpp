@@ -69,13 +69,13 @@ Scale::Ptr Scale::getChromaticScale()
     return s;
 }
 
-inline static Array<int> getNaturalMiniorKeys()
+inline static Array<int> getNaturalMinorKeys()
 { return { 0, 2, 3, 5, 7, 8, 10 }; }
 
-Scale::Ptr Scale::getNaturalMiniorScale()
+Scale::Ptr Scale::getNaturalMinorScale()
 {
     Scale::Ptr s(new Scale());
-    s->keys = getNaturalMiniorKeys();
+    s->keys = getNaturalMinorKeys();
     s->name = TRANS("Aeolian");
     return s;
 }

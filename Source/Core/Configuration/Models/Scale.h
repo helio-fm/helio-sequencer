@@ -94,7 +94,7 @@ public:
     //===------------------------------------------------------------------===//
 
     static Scale::Ptr getChromaticScale();
-    static Scale::Ptr getNaturalMiniorScale();
+    static Scale::Ptr getNaturalMinorScale();
     static Scale::Ptr getNaturalMajorScale();
 
     //===------------------------------------------------------------------===//
