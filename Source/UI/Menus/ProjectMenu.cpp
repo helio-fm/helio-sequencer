@@ -195,9 +195,14 @@ ValueTree ProjectMenu::createAutoTrackTempate(const String &name, int controller
     // init with a couple of events
     const float cv1 = newItem->isOnOffAutomationTrack() ? 1.f : 0.5f;
     const float cv2 = newItem->isOnOffAutomationTrack() ? 0.f : 0.5f;
-    const float firstBeat = this->project.getProjectRangeInBeats().getX();
+
+    const auto beatRange = this->project.getProjectRangeInBeats();
+    const float firstBeat = beatRange.getX();
+    const float lastBeat = beatRange.getY();
+
     itemLayer->insert(AutomationEvent(itemLayer, firstBeat, cv1), false);
-    itemLayer->insert(AutomationEvent(itemLayer, firstBeat + BEATS_PER_BAR, cv2), false);
+    // second event is placed at the end of the track for convenience:
+    itemLayer->insert(AutomationEvent(itemLayer, lastBeat, cv2), false);
 
     return newItem->serialize();
 }

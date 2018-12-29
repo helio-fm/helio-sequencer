@@ -28,6 +28,7 @@
 #include "SettingsTreeItem.h"
 #include "OrchestraPitTreeItem.h"
 #include "VersionControlTreeItem.h"
+#include "MidiTrackTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
 #include "Dashboard.h"
@@ -165,6 +166,7 @@ void Workspace::createEmptyProject()
         {
             this->userProfile.onProjectLocalInfoUpdated(p->getId(),
                 p->getName(), p->getDocument()->getFullPath());
+            p->selectChildOfType<MidiTrackTreeItem>();
         }
     }
 #else
@@ -172,6 +174,7 @@ void Workspace::createEmptyProject()
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
+        p->selectChildOfType<MidiTrackTreeItem>();
     }
 #endif
 }
@@ -340,8 +343,7 @@ void Workspace::failedDeserializationFallback()
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
-        p->setSelected(true, false);
-        p->showPage();
+        p->selectChildOfType<MidiTrackTreeItem>();
     }
     
     this->wasInitialized = true;

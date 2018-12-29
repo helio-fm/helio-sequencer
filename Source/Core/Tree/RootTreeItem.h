@@ -50,12 +50,6 @@ public:
     ProjectTreeItem *addDefaultProject(const File &projectLocation);
     ProjectTreeItem *addDefaultProject(const String &projectName);
     ProjectTreeItem *createDefaultProjectChildren(ProjectTreeItem *newProject);
-
-    VersionControlTreeItem *addVCS(TreeItem *parent);
-    TrackGroupTreeItem *addGroup(TreeItem *parent, const String &name);
-    MidiTrackTreeItem *addPianoTrack(TreeItem *parent, const String &name);
-    MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber);
-    ScriptTreeItem *addScript(TreeItem *parent, const String &path);
     
     //===------------------------------------------------------------------===//
     // Menu

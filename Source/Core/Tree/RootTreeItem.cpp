@@ -20,6 +20,7 @@
 
 #include "TreeItemChildrenSerializer.h"
 #include "ProjectTreeItem.h"
+#include "ProjectTimeline.h"
 #include "VersionControlTreeItem.h"
 #include "PatternEditorTreeItem.h"
 #include "TrackGroupTreeItem.h"
@@ -28,8 +29,10 @@
 
 #include "Pattern.h"
 #include "MidiTrack.h"
-#include "MidiSequence.h"
+#include "PianoSequence.h"
 #include "AutomationSequence.h"
+#include "KeySignaturesSequence.h"
+#include "TimeSignaturesSequence.h"
 #include "AutomationEvent.h"
 #include "ProjectInfo.h"
 #include "WorkspaceMenu.h"
@@ -66,14 +69,6 @@ void RootTreeItem::showPage()
 void RootTreeItem::recreatePage()
 {
     this->dashboard = new Dashboard(App::Layout());
-}
-
-void RootTreeItem::importMidi(const File &file)
-{
-    auto *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
-    this->addChildTreeItem(project);
-    this->addVCS(project);
-    project->importMidi(file);
 }
 
 //===----------------------------------------------------------------------===//
@@ -140,14 +135,7 @@ ProjectTreeItem *RootTreeItem::checkoutProject(const String &id, const String &n
     return nullptr;
 }
 
-ProjectTreeItem *RootTreeItem::addDefaultProject(const String &projectName)
-{
-    this->setOpen(true);
-    auto *newProject = new ProjectTreeItem(projectName);
-    this->addChildTreeItem(newProject);
-    return this->createDefaultProjectChildren(newProject);
-}
-
+// this one is for desktops
 ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
 {
     this->setOpen(true);
@@ -156,25 +144,16 @@ ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
     return this->createDefaultProjectChildren(newProject);
 }
 
-ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *newProject)
+// this one is for mobiles, where we don't have file chooser dialog
+ProjectTreeItem *RootTreeItem::addDefaultProject(const String &projectName)
 {
-    this->addVCS(newProject);
-    newProject->addChildTreeItem(new PatternEditorTreeItem());
-
-    this->addPianoTrack(newProject, "Arps")->setTrackColour(Colours::orangered, true);
-    this->addPianoTrack(newProject, "Counterpoint")->setTrackColour(Colours::gold, true);
-    this->addPianoTrack(newProject, "Melodic")->setTrackColour(Colours::chartreuse, true);
-    this->addAutoLayer(newProject, "Tempo", MidiTrack::tempoController)->setTrackColour(Colours::floralwhite, true);
-
-    newProject->broadcastReloadProjectContent();
-    const auto range = newProject->broadcastChangeProjectBeatRange();
-    newProject->broadcastChangeViewBeatRange(range.getX(), range.getY());
-    newProject->getDocument()->save();
-
-    return newProject;
+    this->setOpen(true);
+    auto *newProject = new ProjectTreeItem(projectName);
+    this->addChildTreeItem(newProject);
+    return this->createDefaultProjectChildren(newProject);
 }
 
-VersionControlTreeItem *RootTreeItem::addVCS(TreeItem *parent)
+static VersionControlTreeItem *addVCS(TreeItem *parent)
 {
     auto vcs = new VersionControlTreeItem();
     parent->addChildTreeItem(vcs);
@@ -186,14 +165,7 @@ VersionControlTreeItem *RootTreeItem::addVCS(TreeItem *parent)
     return vcs;
 }
 
-TrackGroupTreeItem *RootTreeItem::addGroup(TreeItem *parent, const String &name)
-{
-    auto *group = new TrackGroupTreeItem(name);
-    parent->addChildTreeItem(group);
-    return group;
-}
-
-MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &name)
+static PianoTrackTreeItem *addPianoTrack(TreeItem *parent, const String &name)
 {
     auto *item = new PianoTrackTreeItem(name);
     const Clip clip(item->getPattern());
@@ -202,7 +174,7 @@ MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &n
     return item;
 }
 
-MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
+static MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
     auto *item = new AutomationTrackTreeItem(name);
     const Clip clip(item->getPattern());
@@ -211,8 +183,66 @@ MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &na
     auto *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
     itemLayer->insert(AutomationEvent(itemLayer, 0.f, 0.5f), false);
-    itemLayer->insert(AutomationEvent(itemLayer, BEATS_PER_BAR, 0.5f), false);
+    itemLayer->insert(AutomationEvent(itemLayer, BEATS_PER_BAR * 4, 0.5f), false);
     return item;
+}
+
+void RootTreeItem::importMidi(const File &file)
+{
+    auto *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
+    this->addChildTreeItem(project);
+    addVCS(project);
+    project->importMidi(file);
+}
+
+// someday this all should be reworked into xml/json template based generator:
+ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *project)
+{
+    addVCS(project);
+    project->addChildTreeItem(new PatternEditorTreeItem());
+
+    {
+        auto *t1 = addPianoTrack(project, "Melodic");
+        auto *s1 = static_cast<PianoSequence *>(t1->getSequence());
+        // the lick reigns supreme:
+        s1->insert(Note(s1, MIDDLE_C, 0.f, 1.f, 0.5f), false);
+        s1->insert(Note(s1, MIDDLE_C + 2, 1.f, 1.f, 0.5f), false);
+        s1->insert(Note(s1, MIDDLE_C + 3, 2.f, 1.f, 0.5f), false);
+        s1->insert(Note(s1, MIDDLE_C + 5, 3.f, 1.f, 0.5f), false);
+        s1->insert(Note(s1, MIDDLE_C + 2, 4.f, 2.f, 0.5f), false);
+        s1->insert(Note(s1, MIDDLE_C - 2, 6.f, 1.f, 0.5f), false);
+        s1->insert(Note(s1, MIDDLE_C, 7.f, 9.f, 0.5f), false);
+        t1->setTrackColour(Colours::orangered, true);
+    }
+
+    {
+        auto *t2 = addPianoTrack(project, "Arps");
+        auto *s2 = static_cast<PianoSequence *>(t2->getSequence());
+        s2->insert(Note(s2, MIDDLE_C - 12, 0.f, 16.f, 0.25f), false);
+        t2->setTrackColour(Colours::royalblue, true);
+    }
+
+    {
+        auto *t3 = addPianoTrack(project, "Counterpoint");
+        auto *s3 = static_cast<PianoSequence *>(t3->getSequence());
+        s3->insert(Note(s3, MIDDLE_C - 24, 0.f, 16.f, 0.25f), false);
+        t3->setTrackColour(Colours::gold, true);
+    }
+
+    addAutoLayer(project, "Tempo", MidiTrack::tempoController)->setTrackColour(Colours::floralwhite, true);
+
+    auto *ks = static_cast<KeySignaturesSequence *>(project->getTimeline()->getKeySignatures()->getSequence());
+    ks->insert(KeySignatureEvent(ks, Scale::getNaturalMinorScale(), 0.f, 0), false);
+
+    auto *ts = static_cast<TimeSignaturesSequence *>(project->getTimeline()->getTimeSignatures()->getSequence());
+    ts->insert(TimeSignatureEvent(ts, 0.f, 4, 4), false);
+
+    project->broadcastReloadProjectContent();
+    const auto range = project->broadcastChangeProjectBeatRange();
+    project->broadcastChangeViewBeatRange(range.getX(), range.getY());
+    project->getDocument()->save();
+
+    return project;
 }
 
 //===----------------------------------------------------------------------===//

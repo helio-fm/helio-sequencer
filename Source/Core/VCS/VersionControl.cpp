@@ -120,6 +120,9 @@ Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const 
 
 void VersionControl::quickAmendItem(TrackedItem *targetItem)
 {
+    // warning: this is not a fully-functional amend,
+    // it is only used when a new tracked item is added to revision;
+    // changes and deletions to committed items will not work:
     RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
     this->head.getHeadingRevision()->addItem(revisionRecord);
     this->head.moveTo(this->head.getHeadingRevision());
