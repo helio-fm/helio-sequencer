@@ -43,6 +43,7 @@ private:
     Path internalPath1;
     Path internalPath2;
     Path internalPath3;
+    Path internalPath4;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItemArrow)
 };
