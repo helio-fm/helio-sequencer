@@ -75,6 +75,12 @@ namespace Serialization
         static const Identifier scalePeriod = "period";
         static const Identifier scaleIntervals = "intervals";
 
+        // Chords
+        static const Identifier chords = "chords";
+        static const Identifier chord = "chord";
+        static const Identifier chordName = "name";
+        static const Identifier chordScaleKeys = "scaleKeys";
+
         // Sequences
         static const Identifier track = "track";
         static const Identifier automation = "automation";

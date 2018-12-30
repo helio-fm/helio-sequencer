@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Chord.h"
 #include "BaseResource.h"
 
 #define CHROMATIC_SCALE_SIZE 12
@@ -64,10 +65,8 @@ public:
     int getSize() const noexcept;
     String getLocalizedName() const;
 
-    // Render target scale chords into chromatic scale (tonic = 0)
-    Array<int> getPowerChord(Function fun, bool restrictToOneOctave) const;
-    Array<int> getTriad(Function fun, bool restrictToOneOctave) const;
-    Array<int> getSeventhChord(Function fun, bool restrictToOneOctave) const;
+    // Render target chord into chromatic scale (tonic = 0)
+    Array<int> getChord(const Chord::Ptr chord, Function fun, bool oneOctave) const;
 
     Array<int> getUpScale() const;
     Array<int> getDownScale() const;
@@ -84,9 +83,10 @@ public:
     int getScaleKey(int chormaticKey) const;
 
     // Key (input and returned) starts from 0
-    int getChromaticKey(int key, bool shouldRestrictToOneOctave = false) const noexcept;
+    int getChromaticKey(int key, bool restrictToOneOctave = false) const noexcept;
 
-    // Base octave size - like chromatic octave for diatonic scales (hard-coded to 12, FIXME in future)
+    // Base octave size - like chromatic octave for diatonic scales
+    // (hard-coded to 12, FIXME in future)
     int getBasePeriod() const noexcept;
 
     //===------------------------------------------------------------------===//
