@@ -20,7 +20,7 @@
 #include "HotkeyScheme.h"
 #include "ResourceManager.h"
 
-class HotkeySchemesManager : public ResourceManager
+class HotkeySchemesManager final : public ResourceManager
 {
 public:
 

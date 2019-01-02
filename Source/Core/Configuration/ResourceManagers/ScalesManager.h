@@ -20,7 +20,7 @@
 #include "Scale.h"
 #include "ResourceManager.h"
 
-class ScalesManager : public ResourceManager
+class ScalesManager final : public ResourceManager
 {
 public:
 

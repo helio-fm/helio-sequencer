@@ -17,26 +17,20 @@
 
 #pragma once
 
-#include "ColourScheme.h"
+#include "Chord.h"
 #include "ResourceManager.h"
 
-class ColourSchemesManager final : public ResourceManager
+class ChordsManager final : public ResourceManager
 {
 public:
 
-    static ColourSchemesManager &getInstance()
+    static ChordsManager &getInstance()
     {
-        static ColourSchemesManager Instance;
+        static ChordsManager Instance;
         return Instance;
     }
 
-    inline const Array<ColourScheme::Ptr> getSchemes() const
-    {
-        return this->getResources<ColourScheme>();
-    }
-
-    ColourScheme::Ptr getCurrentScheme() const;
-    void setCurrentScheme(const ColourScheme::Ptr scheme);
+    const Array<Chord::Ptr> getChords() const;
 
 private:
 
@@ -46,10 +40,24 @@ private:
 
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
+    void reset() override;
 
 private:
 
-    ColourSchemesManager();
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemesManager)
+    struct ChordsComparator final : public DummyBaseResource
+    {
+        ChordsComparator(const StringArray &order);
+        int compareElements(const BaseResource::Ptr first,
+            const BaseResource::Ptr second) const override;
+        const StringArray &order;
+    };
+
+    ChordsComparator chordsComparator;
+    const BaseResource &getResourceComparator() const override;
+
+    StringArray order;
+
+    ChordsManager();
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordsManager)
 
 };

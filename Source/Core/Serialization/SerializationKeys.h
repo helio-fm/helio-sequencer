@@ -193,6 +193,7 @@ namespace Serialization
     namespace Resources
     {
         static const Identifier scales = "scales";
+        static const Identifier chords = "chords";
         static const Identifier scripts = "scripts";
         static const Identifier arpeggiators = "arpeggiators";
         static const Identifier translations = "translations";
