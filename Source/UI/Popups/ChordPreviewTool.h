@@ -20,13 +20,14 @@
 //[Headers]
 //[/Headers]
 
+#include "PopupCustomButton.h"
 
-class ChordTooltip final : public Component
+class ChordBuilderTool final : public Component
 {
 public:
 
-    ChordTooltip(String rootKey, String scale, String function);
-    ~ChordTooltip();
+    ChordBuilderTool();
+    ~ChordBuilderTool();
 
     //[UserMethods]
     //[/UserMethods]
@@ -40,12 +41,8 @@ private:
     //[UserVariables]
     //[/UserVariables]
 
-    UniquePointer<Label> rootKeyLabel;
-    UniquePointer<Label> functionLabel;
-    UniquePointer<Label> scaleLabel;
-    UniquePointer<Label> rooKeyValue;
-    UniquePointer<Label> functionValue;
-    UniquePointer<Label> scaleValue;
+    UniquePointer<PopupCustomButton> newNote;
+    UniquePointer<ChordsCommandPanel> chordsList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordTooltip)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordBuilderTool)
 };

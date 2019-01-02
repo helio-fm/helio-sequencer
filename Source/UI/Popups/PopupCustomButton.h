@@ -22,12 +22,11 @@
 //[/Headers]
 
 
-class PopupCustomButton  : public PopupButton
+class PopupCustomButton final : public PopupButton
 {
 public:
 
-    PopupCustomButton (Component *newOwnedComponent);
-
+    PopupCustomButton(Component *newOwnedComponent);
     ~PopupCustomButton();
 
     //[UserMethods]

@@ -26,41 +26,47 @@
 
 ChordTooltip::ChordTooltip(String rootKey, String scale, String function)
 {
-    addAndMakeVisible (rootKeyLabel = new Label (String(),
-                                                 TRANS("popup::chord::rootkey")));
-    rootKeyLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    rootKeyLabel->setJustificationType (Justification::centredRight);
-    rootKeyLabel->setEditable (false, false, false);
+    this->rootKeyLabel.reset(new Label(String(),
+                                        TRANS("popup::chord::rootkey")));
+    this->addAndMakeVisible(rootKeyLabel.get());
+    this->rootKeyLabel->setFont(Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    rootKeyLabel->setJustificationType(Justification::centredRight);
+    rootKeyLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (functionLabel = new Label (String(),
-                                                  TRANS("popup::chord::function")));
-    functionLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    functionLabel->setJustificationType (Justification::centredRight);
-    functionLabel->setEditable (false, false, false);
+    this->functionLabel.reset(new Label(String(),
+                                         TRANS("popup::chord::function")));
+    this->addAndMakeVisible(functionLabel.get());
+    this->functionLabel->setFont(Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    functionLabel->setJustificationType(Justification::centredRight);
+    functionLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (scaleLabel = new Label (String(),
-                                               TRANS("popup::chord::scale")));
-    scaleLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    scaleLabel->setJustificationType (Justification::centredRight);
-    scaleLabel->setEditable (false, false, false);
+    this->scaleLabel.reset(new Label(String(),
+                                      TRANS("popup::chord::scale")));
+    this->addAndMakeVisible(scaleLabel.get());
+    this->scaleLabel->setFont(Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    scaleLabel->setJustificationType(Justification::centredRight);
+    scaleLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (rooKeyValue = new Label (String(),
-                                                TRANS("...")));
-    rooKeyValue->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    rooKeyValue->setJustificationType (Justification::centredLeft);
-    rooKeyValue->setEditable (false, false, false);
+    this->rooKeyValue.reset(new Label(String(),
+                                       TRANS("...")));
+    this->addAndMakeVisible(rooKeyValue.get());
+    this->rooKeyValue->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    rooKeyValue->setJustificationType(Justification::centredLeft);
+    rooKeyValue->setEditable(false, false, false);
 
-    addAndMakeVisible (functionValue = new Label (String(),
-                                                  TRANS("...")));
-    functionValue->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    functionValue->setJustificationType (Justification::centredLeft);
-    functionValue->setEditable (false, false, false);
+    this->functionValue.reset(new Label(String(),
+                                         TRANS("...")));
+    this->addAndMakeVisible(functionValue.get());
+    this->functionValue->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    functionValue->setJustificationType(Justification::centredLeft);
+    functionValue->setEditable(false, false, false);
 
-    addAndMakeVisible (scaleValue = new Label (String(),
-                                               TRANS("...")));
-    scaleValue->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    scaleValue->setJustificationType (Justification::centredLeft);
-    scaleValue->setEditable (false, false, false);
+    this->scaleValue.reset(new Label(String(),
+                                      TRANS("...")));
+    this->addAndMakeVisible(scaleValue.get());
+    this->scaleValue->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    scaleValue->setJustificationType(Justification::centredLeft);
+    scaleValue->setEditable(false, false, false);
 
 
     //[UserPreSize]
@@ -69,7 +75,7 @@ ChordTooltip::ChordTooltip(String rootKey, String scale, String function)
     functionValue->setText(function, dontSendNotification);
     //[/UserPreSize]
 
-    setSize (500, 80);
+    this->setSize(500, 80);
 
     //[Constructor]
     //[/Constructor]
@@ -105,12 +111,12 @@ void ChordTooltip::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    rootKeyLabel->setBounds ((getWidth() / 2) + -98 - 128, (getHeight() / 2) + -24 - (22 / 2), 128, 22);
-    functionLabel->setBounds ((getWidth() / 2) + -98 - 128, (getHeight() / 2) + 24 - (22 / 2), 128, 22);
-    scaleLabel->setBounds ((getWidth() / 2) + -98 - 128, (getHeight() / 2) - (22 / 2), 128, 22);
-    rooKeyValue->setBounds ((getWidth() / 2) + -98, (getHeight() / 2) + -24 - (22 / 2), 340, 22);
-    functionValue->setBounds ((getWidth() / 2) + -98, (getHeight() / 2) + 24 - (22 / 2), 340, 22);
-    scaleValue->setBounds ((getWidth() / 2) + -98, (getHeight() / 2) - (22 / 2), 340, 22);
+    rootKeyLabel->setBounds((getWidth() / 2) + -98 - 128, (getHeight() / 2) + -24 - (22 / 2), 128, 22);
+    functionLabel->setBounds((getWidth() / 2) + -98 - 128, (getHeight() / 2) + 24 - (22 / 2), 128, 22);
+    scaleLabel->setBounds((getWidth() / 2) + -98 - 128, (getHeight() / 2) - (22 / 2), 128, 22);
+    rooKeyValue->setBounds((getWidth() / 2) + -98, (getHeight() / 2) + -24 - (22 / 2), 340, 22);
+    functionValue->setBounds((getWidth() / 2) + -98, (getHeight() / 2) + 24 - (22 / 2), 340, 22);
+    scaleValue->setBounds((getWidth() / 2) + -98, (getHeight() / 2) - (22 / 2), 340, 22);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -123,7 +129,7 @@ void ChordTooltip::resized()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ChordTooltip" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="ChordTooltip" template="../../Template"
                  componentName="" parentClasses="public Component" constructorParams="String rootKey, String scale, String function"
                  variableInitialisers="" snapPixels="4" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="500" initialHeight="80">
@@ -131,33 +137,33 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="15f9a8211950d493" memberName="rootKeyLabel" virtualName=""
          explicitFocusOrder="0" pos="-98Cr -24Cc 128 22" labelText="popup::chord::rootkey"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="34"/>
+         fontname="Default serif font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="a099f8af50cb617c" memberName="functionLabel" virtualName=""
          explicitFocusOrder="0" pos="-98Cr 24Cc 128 22" labelText="popup::chord::function"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="34"/>
+         fontname="Default serif font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="cfca17160c720838" memberName="scaleLabel" virtualName=""
          explicitFocusOrder="0" pos="-98Cr 0Cc 128 22" labelText="popup::chord::scale"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="34"/>
+         fontname="Default serif font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="9aa11c8ad14cfb53" memberName="rooKeyValue" virtualName=""
          explicitFocusOrder="0" pos="-98C -24Cc 340 22" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="cd15c9237a49389c" memberName="functionValue" virtualName=""
          explicitFocusOrder="0" pos="-98C 24Cc 340 22" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="3354bc8b8e7454a6" memberName="scaleValue" virtualName=""
          explicitFocusOrder="0" pos="-98C 0Cc 340 22" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

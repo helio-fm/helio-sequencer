@@ -34,7 +34,7 @@ PopupCustomButton::PopupCustomButton(Component *newOwnedComponent)
     this->addAndMakeVisible(this->ownedComponent);
     //[/UserPreSize]
 
-    setSize (48, 48);
+    this->setSize(48, 48);
 
     //[Constructor]
     //[/Constructor]

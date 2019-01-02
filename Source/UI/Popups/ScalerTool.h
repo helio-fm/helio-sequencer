@@ -28,7 +28,7 @@ class FunctionsCommandPanel;
 #include "PopupMenuComponent.h"
 //[/Headers]
 
-#include "../PopupCustomButton.h"
+#include "PopupCustomButton.h"
 
 class ScalerTool final : public PopupMenuComponent,
                          public PopupButtonOwner

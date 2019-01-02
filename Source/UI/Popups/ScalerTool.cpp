@@ -514,7 +514,7 @@ void ScalerTool::sendMidiMessage(const MidiMessage &message)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ScalerTool" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="ScalerTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
                  constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(ScalesManager::getInstance().getScales()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -532,7 +532,7 @@ BEGIN_JUCER_METADATA
                fill="solid: 77000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="6b3cbe21e2061b28" memberName="newNote" virtualName=""
-             explicitFocusOrder="0" pos="50%c 50%c 12.8% 12.8%" sourceFile="../PopupCustomButton.cpp"
+             explicitFocusOrder="0" pos="50%c 50%c 12.8% 12.8%" sourceFile="PopupCustomButton.cpp"
              constructorParams="createLabel(&quot;+&quot;)"/>
   <GENERICCOMPONENT name="" id="5186723628bce1d6" memberName="scalesList" virtualName=""
                     explicitFocusOrder="0" pos="-140Cc 0Cc 172 224" class="ScalesCommandPanel"
