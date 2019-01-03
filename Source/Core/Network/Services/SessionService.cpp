@@ -106,7 +106,7 @@ SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfi
             else if ((expiry - now).inDays() <= 5)
             {
                 DBG("Attempting to re-issue auth token");
-                this->prepareTokenUpdateThread()->updateToken(token, UPDATE_SESSION_TIMEOUT_MS);
+                this->prepareTokenUpdateThread()->updateToken(UPDATE_SESSION_TIMEOUT_MS);
             }
             else
             {

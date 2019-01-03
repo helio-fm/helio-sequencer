@@ -523,7 +523,6 @@ namespace Serialization
 
             static const Identifier user = "user";
             static const Identifier token = "token";
-            static const Identifier bearer = "bearer";
             static const Identifier session = "session";
             static const Identifier deviceId = "deviceId";
             static const Identifier platformId = "platformId";
