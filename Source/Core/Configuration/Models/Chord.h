@@ -23,17 +23,6 @@ class Chord final : public BaseResource
 {
 public:
 
-    enum Key
-    {
-        I = 0,
-        II = 1,
-        III = 2,
-        IV = 3,
-        V = 4,
-        VI = 5,
-        VII = 6
-    };
-
     Chord() noexcept;
     Chord(const Chord &other) noexcept;
     explicit Chord(const String &name) noexcept;
@@ -42,14 +31,32 @@ public:
     Identifier getResourceIdProperty() const override;
     using Ptr = ReferenceCountedObjectPtr<Chord>;
 
+    enum Key // meaning: in-scale key
+    {
+        I = 0,
+        II = 1,
+        III = 2,
+        IV = 3,
+        V = 4,
+        VI = 5,
+        VII = 6,
+        VIII = 7,
+        IX = 8,
+        X = 9,
+        XI = 10,
+        XII = 11,
+        XIII = 12,
+        XIV = 13
+    };
+
     const Array<Key> &getScaleKeys() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
-    static Chord::Ptr getPowerChord();
     static Chord::Ptr getTriad();
+    static Chord::Ptr getPowerChord();
     static Chord::Ptr getSeventhChord();
 
     //===------------------------------------------------------------------===//

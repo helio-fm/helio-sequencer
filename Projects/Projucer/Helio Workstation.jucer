@@ -112,6 +112,7 @@
       <FILE id="DQTpOG" name="logo-v2.png" compile="0" resource="1" file="../../Resources/logo-v2.png"/>
       <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
             file="../../Resources/arpeggiators.json"/>
+      <FILE id="eMl1Wx" name="chords.json" compile="0" resource="1" file="../../Resources/chords.json"/>
       <FILE id="XoWHFQ" name="colourSchemes.json" compile="0" resource="1"
             file="../../Resources/colourSchemes.json"/>
       <FILE id="MfFPAK" name="hotkeySchemes.json" compile="0" resource="1"

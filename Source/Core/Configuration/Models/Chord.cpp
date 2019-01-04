@@ -27,7 +27,11 @@ Chord::Chord(const Chord &other) noexcept :
 Chord::Chord(const String &name) noexcept :
     name(name) {}
 
-Chord::Ptr Chord::getTriad() noexcept
+//===----------------------------------------------------------------------===//
+// Hard-coded defaults
+//===----------------------------------------------------------------------===//
+
+Chord::Ptr Chord::getTriad()
 {
     Chord::Ptr s(new Chord());
     s->scaleKeys = { Key::I, Key::III, Key::V };
@@ -35,7 +39,7 @@ Chord::Ptr Chord::getTriad() noexcept
     return s;
 }
 
-Chord::Ptr Chord::getPowerChord() noexcept
+Chord::Ptr Chord::getPowerChord()
 {
     Chord::Ptr s(new Chord());
     s->scaleKeys = { Key::I, Key::V };
@@ -43,7 +47,7 @@ Chord::Ptr Chord::getPowerChord() noexcept
     return s;
 }
 
-Chord::Ptr Chord::getSeventhChord() noexcept
+Chord::Ptr Chord::getSeventhChord()
 {
     Chord::Ptr s(new Chord());
     s->scaleKeys = { Key::I, Key::III, Key::V, Key::VII };
@@ -106,7 +110,7 @@ void Chord::deserialize(const ValueTree &tree)
     tokens.addTokens(keysString, true);
     for (auto key : tokens)
     {
-        this->scaleKeys.add(Key(jlimit(0, 6, key.getIntValue() - 1)));
+        this->scaleKeys.add(Key(jlimit(0, 13, key.getIntValue() - 1)));
     }
 }
 

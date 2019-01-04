@@ -22,7 +22,6 @@ class NoteComponent;
 class MidiSequence;
 class PianoRoll;
 class ScalesCommandPanel;
-class FunctionsCommandPanel;
 
 #include "Scale.h"
 #include "PopupMenuComponent.h"
@@ -50,7 +49,6 @@ public:
     void onPopupButtonEndDragging(PopupButton *button) override;
 
     void applyScale(const Scale::Ptr scale);
-    void applyFunction(Scale::Function function);
 
     //[/UserMethods]
 
@@ -93,7 +91,7 @@ private:
 
     UniquePointer<PopupCustomButton> newNote;
     UniquePointer<ScalesCommandPanel> scalesList;
-    UniquePointer<FunctionsCommandPanel> functionsList;
+    Path internalPath1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScalerTool)
 };

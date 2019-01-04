@@ -38,13 +38,13 @@
 #include "Icons.h"
 #include "ColourIDs.h"
 
-#define NEWCHORD_POPUP_MENU_SIZE            (500)
-#define NEWCHORD_POPUP_LABEL_SIZE           (32)
-#define NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH  (4)
+#define SCALER_POPUP_MENU_SIZE            (500)
+#define SCALER_POPUP_LABEL_SIZE           (32)
+#define SCALER_POPUP_DEFAULT_NOTE_LENGTH  (4)
 
 static Label *createLabel(const String &text)
 {
-    const int size = NEWCHORD_POPUP_LABEL_SIZE;
+    const int size = SCALER_POPUP_LABEL_SIZE;
     auto newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
@@ -53,19 +53,6 @@ static Label *createLabel(const String &text)
     const float autoFontSize = float(size - 5.f);
     newLabel->setFont(Font(Font::getDefaultSerifFontName(), autoFontSize, Font::plain));
     return newLabel;
-}
-
-static Array<String> localizedFunctionNames()
-{
-    return {
-        TRANS("popup::chord::function::1"),
-        TRANS("popup::chord::function::2"),
-        TRANS("popup::chord::function::3"),
-        TRANS("popup::chord::function::4"),
-        TRANS("popup::chord::function::5"),
-        TRANS("popup::chord::function::6"),
-        TRANS("popup::chord::function::7")
-    };
 }
 
 class ScalesCommandPanel final : public MenuPanel
@@ -77,8 +64,8 @@ public:
         MenuPanel::Menu cmds;
         for (int i = 0; i < scales.size(); ++i)
         {
-            cmds.add(MenuItem::item(Icons::empty,
-                CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->withAlignment(MenuItem::Right));
+            cmds.add(MenuItem::item(Icons::empty, CommandIDs::SelectScale + i,
+                scales[i]->getLocalizedName())->withAlignment(MenuItem::Right));
         }
         this->updateContent(cmds, MenuPanel::SlideLeft, false);
     }
@@ -103,49 +90,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesCommandPanel)
 };
 
-class FunctionsCommandPanel final : public MenuPanel
-{
-public:
-
-    FunctionsCommandPanel()
-    {
-        const auto funName = localizedFunctionNames();
-        MenuPanel::Menu cmds;
-        cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 6, "VII - " + funName[6]));
-        cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 5, "VI - " + funName[5]));
-        cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 4, "V - " + funName[4]));
-        cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 3, "IV - " + funName[3]));
-        cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 2, "III - " + funName[2]));
-        cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 1, "II - " + funName[1]));
-        cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction, "I - " + funName[0]));
-        this->updateContent(cmds, MenuPanel::SlideRight, false);
-    }
-
-    void handleCommandMessage(int commandId) override
-    {
-        if (commandId >= CommandIDs::SelectFunction &&
-            commandId <= (CommandIDs::SelectFunction + 7))
-        {
-            const int functionIndex = commandId - CommandIDs::SelectFunction;
-            if (auto *builder = dynamic_cast<ScalerTool *>(this->getParentComponent()))
-            {
-                builder->applyFunction((Scale::Function)functionIndex);
-            }
-        }
-    }
-
-private:
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FunctionsCommandPanel)
-};
-
 //[/MiscUserDefs]
 
 ScalerTool::ScalerTool(PianoRoll *caller, MidiSequence *layer)
@@ -164,8 +108,14 @@ ScalerTool::ScalerTool(PianoRoll *caller, MidiSequence *layer)
     this->scalesList.reset(new ScalesCommandPanel(this->defaultScales));
     this->addAndMakeVisible(scalesList.get());
 
-    this->functionsList.reset(new FunctionsCommandPanel());
-    this->addAndMakeVisible(functionsList.get());
+    internalPath1.startNewSubPath (275.0f, 140.0f);
+    internalPath1.lineTo (350.0f, 150.0f);
+    internalPath1.lineTo (340.0f, 380.0f);
+    internalPath1.lineTo (160.0f, 380.0f);
+    internalPath1.lineTo (150.0f, 150.0f);
+    internalPath1.lineTo (225.0f, 140.0f);
+    internalPath1.lineTo (250.0f, 100.0f);
+    internalPath1.closeSubPath();
 
 
     //[UserPreSize]
@@ -186,7 +136,7 @@ ScalerTool::ScalerTool(PianoRoll *caller, MidiSequence *layer)
 
     //[Constructor]
 
-    this->setSize(NEWCHORD_POPUP_MENU_SIZE, NEWCHORD_POPUP_MENU_SIZE);
+    this->setSize(SCALER_POPUP_MENU_SIZE, SCALER_POPUP_MENU_SIZE);
 
     this->setFocusContainer(true);
 
@@ -205,7 +155,6 @@ ScalerTool::~ScalerTool()
 
     newNote = nullptr;
     scalesList = nullptr;
-    functionsList = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -217,23 +166,12 @@ void ScalerTool::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        float x = static_cast<float> ((getWidth() / 2) + 140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (237 / 2)), width = 180.0f, height = 237.0f;
+        float x = 0, y = 0;
         Colour fillColour = Colour (0x77000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::Callout::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.fillRoundedRectangle (x, y, width, height, 2.000f);
-    }
-
-    {
-        float x = static_cast<float> ((getWidth() / 2) + -140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (237 / 2)), width = 180.0f, height = 237.0f;
-        Colour fillColour = Colour (0x77000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::Callout::fill);
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRoundedRectangle (x, y, width, height, 2.000f);
+        g.fillPath (internalPath1, AffineTransform::translation(x, y));
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -245,9 +183,8 @@ void ScalerTool::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    newNote->setBounds(proportionOfWidth (0.5000f) - (proportionOfWidth (0.1280f) / 2), proportionOfHeight (0.5000f) - (proportionOfHeight (0.1280f) / 2), proportionOfWidth (0.1280f), proportionOfHeight (0.1280f));
-    scalesList->setBounds((getWidth() / 2) + -140 - (172 / 2), (getHeight() / 2) - (224 / 2), 172, 224);
-    functionsList->setBounds((getWidth() / 2) + 140 - (176 / 2), (getHeight() / 2) - (224 / 2), 176, 224);
+    newNote->setBounds(proportionOfWidth (0.5000f) - (proportionOfWidth (0.1280f) / 2), proportionOfHeight (0.1200f) - (proportionOfHeight (0.1280f) / 2), proportionOfWidth (0.1280f), proportionOfHeight (0.1280f));
+    scalesList->setBounds((getWidth() / 2) - (172 / 2), (getHeight() / 2) + 14 - (224 / 2), 172, 224);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -289,7 +226,6 @@ bool ScalerTool::keyPressed (const KeyPress& key)
 void ScalerTool::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
-    //this->cancelChangesIfAny();
     this->dismissAsCancelled();
     //[/UserCode_inputAttemptWhenModal]
 }
@@ -402,24 +338,6 @@ void ScalerTool::applyScale(const Scale::Ptr scale)
     }
 }
 
-void ScalerTool::applyFunction(Scale::Function function)
-{
-    const auto funName = localizedFunctionNames();
-    const String rootKey = keyName(this->targetKey);
-    if (this->function != function)
-    {
-        this->function = function;
-        this->buildChord(this->scale->getTriad(this->function, true));
-        SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
-    }
-    else
-    {
-        // Alternate mode on second click
-        this->buildChord(this->scale->getSeventhChord(this->function, false));
-        SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
-    }
-}
-
 static const float kDefaultChordVelocity = 0.35f;
 
 void ScalerTool::buildChord(Array<int> keys)
@@ -438,7 +356,7 @@ void ScalerTool::buildChord(Array<int> keys)
         for (int offset : keys)
         {
             const int key = jmin(128, jmax(0, this->targetKey + offset));
-            Note note(pianoLayer, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kDefaultChordVelocity);
+            Note note(pianoLayer, key, this->targetBeat, SCALER_POPUP_DEFAULT_NOTE_LENGTH, kDefaultChordVelocity);
             pianoLayer->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kDefaultChordVelocity));
         }
@@ -462,7 +380,7 @@ void ScalerTool::buildNewNote(bool shouldSendMidiMessage)
 
         const int key = jmin(128, jmax(0, this->targetKey));
 
-        Note note1(pianoSequence, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kDefaultChordVelocity);
+        Note note1(pianoSequence, key, this->targetBeat, SCALER_POPUP_DEFAULT_NOTE_LENGTH, kDefaultChordVelocity);
         pianoSequence->insert(note1, true);
 
         if (shouldSendMidiMessage)
@@ -526,20 +444,14 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="140Cc 0Cc 180 237" cornerSize="2.00000000000000000000" fill="solid: 77000000"
-               hasStroke="0"/>
-    <ROUNDRECT pos="-140Cc 0Cc 180 237" cornerSize="2.00000000000000000000"
-               fill="solid: 77000000" hasStroke="0"/>
+    <PATH pos="0 0 100 100" fill="solid: 77000000" hasStroke="0" nonZeroWinding="1">s 275 140 l 350 150 l 340 380 l 160 380 l 150 150 l 225 140 l 250 100 x</PATH>
   </BACKGROUND>
   <JUCERCOMP name="" id="6b3cbe21e2061b28" memberName="newNote" virtualName=""
-             explicitFocusOrder="0" pos="50%c 50%c 12.8% 12.8%" sourceFile="PopupCustomButton.cpp"
+             explicitFocusOrder="0" pos="50%c 12%c 12.8% 12.8%" sourceFile="PopupCustomButton.cpp"
              constructorParams="createLabel(&quot;+&quot;)"/>
   <GENERICCOMPONENT name="" id="5186723628bce1d6" memberName="scalesList" virtualName=""
-                    explicitFocusOrder="0" pos="-140Cc 0Cc 172 224" class="ScalesCommandPanel"
+                    explicitFocusOrder="0" pos="0Cc 14Cc 172 224" class="ScalesCommandPanel"
                     params="this-&gt;defaultScales"/>
-  <GENERICCOMPONENT name="" id="2b87eb6e536e9c5b" memberName="functionsList" virtualName=""
-                    explicitFocusOrder="0" pos="140Cc 0Cc 176 224" class="FunctionsCommandPanel"
-                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

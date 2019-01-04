@@ -18,11 +18,15 @@
 #pragma once
 
 //[Headers]
+class ChordsCommandPanel;
+
+#include "PopupMenuComponent.h"
 //[/Headers]
 
 #include "PopupCustomButton.h"
 
-class ChordBuilderTool final : public Component
+class ChordBuilderTool final : public PopupMenuComponent,
+                               public PopupButtonOwner
 {
 public:
 
@@ -30,19 +34,38 @@ public:
     ~ChordBuilderTool();
 
     //[UserMethods]
+
+    void onPopupsResetState(PopupButton *button) override;
+
+    void onPopupButtonFirstAction(PopupButton *button) override;
+    void onPopupButtonSecondAction(PopupButton *button) override;
+
+    void onPopupButtonStartDragging(PopupButton *button) override;
+    bool onPopupButtonDrag(PopupButton *button) override;
+    void onPopupButtonEndDragging(PopupButton *button) override;
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void parentHierarchyChanged() override;
+    void handleCommandMessage (int commandId) override;
+    bool keyPressed (const KeyPress& key) override;
+    void inputAttemptWhenModal() override;
 
 
 private:
 
     //[UserVariables]
+
+    Point<int> draggingStartPosition;
+    Point<int> draggingEndPosition;
+
     //[/UserVariables]
 
     UniquePointer<PopupCustomButton> newNote;
     UniquePointer<ChordsCommandPanel> chordsList;
+    Path internalPath1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordBuilderTool)
 };
