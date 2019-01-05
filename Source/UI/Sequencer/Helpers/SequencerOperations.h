@@ -19,14 +19,15 @@
 
 class Transport;
 class ProjectTreeItem;
-class Lasso;
 class MidiSequence;
 class MidiTrackTreeItem;
 class MidiTrack;
 class Pattern;
 class Clipboard;
+class PianoSequence;
 
 #include "Note.h"
+#include "Lasso.h"
 #include "AutomationEvent.h"
 #include "Scale.h"
 #include "Arpeggiator.h"
@@ -39,7 +40,10 @@ struct SequencerOperations final
     static float findEndBeat(const WeakReference<Lasso> selection);
     static float findStartBeat(const Array<Note> &selection);
     static float findEndBeat(const Array<Note> &selection);
-    
+
+    static PianoSequence *getPianoSequence(const Lasso &selection);
+    static PianoSequence *getPianoSequence(const SelectionProxyArray::Ptr selection);
+
     static void wipeSpace(Array<MidiTrack *> tracks, float startBeat, float endBeat,
         bool shouldKeepCroppedNotes = true,  bool shouldCheckpoint = true);
     
@@ -83,7 +87,9 @@ struct SequencerOperations final
     
     static void invertChord(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);
-    
+
+    static void rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
+
     static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
         WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
 

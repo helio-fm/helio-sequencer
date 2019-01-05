@@ -23,6 +23,8 @@
 #include "Lasso.h"
 #include "PianoRollSelectionMenu.h"
 #include "PatternRollSelectionMenu.h"
+#include "ProjectTreeItem.h"
+#include "ProjectTimeline.h"
 
 //===----------------------------------------------------------------------===//
 // Base class
@@ -79,7 +81,8 @@ public:
 
     ScopedPointer<Component> createMenu() override
     {
-        return { new PianoRollSelectionMenu(this->lasso, this->project) };
+        return { new PianoRollSelectionMenu(this->lasso,
+            this->project.getTimeline()->getKeySignatures()) };
     }
 
     Image getIcon() const override

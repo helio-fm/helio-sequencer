@@ -44,6 +44,7 @@ public:
         const Clip &clip, double timeOffset, double timeFactor) const override;
     
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
+    Note withKey(Key newKey) const noexcept;
     Note withBeat(float newBeat) const noexcept;
     Note withKeyBeat(Key newKey, float newBeat) const noexcept;
     Note withKeyLength(Key newKey, float newLength) const noexcept;

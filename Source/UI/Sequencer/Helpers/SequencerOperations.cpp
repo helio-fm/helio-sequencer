@@ -19,7 +19,6 @@
 #include "SequencerOperations.h"
 #include "ProjectTreeItem.h"
 #include "App.h"
-#include "Lasso.h"
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
@@ -43,7 +42,7 @@ using AnnotationChangeGroup = Array<AnnotationEvent>;
 using AutoChangeGroup = Array<AutomationEvent>;
 
 template <typename T>
-class ChangeGroupProxy : public T, public ReferenceCountedObject
+class ChangeGroupProxy final : public T, public ReferenceCountedObject
 {
 public:
     ChangeGroupProxy() {}
@@ -267,11 +266,17 @@ bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint)
 // More helpers
 //===----------------------------------------------------------------------===//
 
-static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
+PianoSequence *SequencerOperations::getPianoSequence(const SelectionProxyArray::Ptr selection)
 {
     const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
-    PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
-    return pianoLayer;
+    PianoSequence *pianoSequence = static_cast<PianoSequence *>(firstEvent.getSequence());
+    return pianoSequence;
+}
+
+PianoSequence *SequencerOperations::getPianoSequence(const Lasso &selection)
+{
+    // assumes all selection only contains notes of a single sequence
+    return static_cast<PianoSequence *>(selection.getFirstAs<NoteComponent>()->getNote().getSequence());
 }
 
 float SequencerOperations::findStartBeat(const Lasso &selection)
@@ -1696,8 +1701,8 @@ void SequencerOperations::invertChord(Lasso &selection,
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto trackSelection(s.second);
-        PianoSequence *pianoLayer = getPianoSequence(trackSelection);
-        jassert(pianoLayer);
+        auto *pianoSequence = getPianoSequence(trackSelection);
+        jassert(pianoSequence);
 
         const int numSelected = trackSelection->size();
         
@@ -1762,12 +1767,12 @@ void SequencerOperations::invertChord(Lasso &selection,
         {
             if (! didCheckpoint)
             {
-                pianoLayer->checkpoint();
+                pianoSequence->checkpoint();
                 didCheckpoint = true;
             }
         }
         
-        pianoLayer->changeGroup(groupBefore, groupAfter, true);
+        pianoSequence->changeGroup(groupBefore, groupAfter, true);
         
         // step 4. make em sound, if needed
         if (transport != nullptr && numSelected < 8)
@@ -1775,11 +1780,40 @@ void SequencerOperations::invertChord(Lasso &selection,
             for (int i = 0; i < numSelected; ++i)
             {
                 NoteComponent *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                transport->sendMidiMessage(pianoLayer->getTrackId(),
-                    MidiMessage::noteOn(pianoLayer->getChannel(), nc->getKey(), nc->getVelocity()));
+                transport->sendMidiMessage(pianoSequence->getTrackId(),
+                    MidiMessage::noteOn(pianoSequence->getChannel(), nc->getKey(), nc->getVelocity()));
             }
         }
     }
+}
+
+void SequencerOperations::rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence);
+
+    PianoChangeGroup groupBefore, groupAfter;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        const auto periodNumber = nc->getKey() % scaleA->getBasePeriod();
+        const auto inScaleKey = scaleA->getScaleKey(nc->getKey());
+        const auto newChromaticKey = scaleB->getChromaticKey(inScaleKey) + scaleB->getBasePeriod() * periodNumber;
+        groupBefore.add(nc->getNote());
+        groupAfter.add(nc->getNote().withKey(newChromaticKey));
+    }
+
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    sequence->changeGroup(groupBefore, groupAfter, true);
 }
 
 // Tries to detect if there's a one key signature that affects the whole sequence.
@@ -1790,7 +1824,7 @@ bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip
     const auto startBeat = SequencerOperations::findStartBeat(selection) + clip.getBeat();
     const auto endBeat = SequencerOperations::findEndBeat(selection) + clip.getBeat();
 
-    if (const auto keySignatures = dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
+    if (const auto *keySignatures = dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
     {
         if (keySignatures->size() == 0)
         {

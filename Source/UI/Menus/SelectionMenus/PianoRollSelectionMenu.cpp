@@ -21,6 +21,7 @@
 #include "Lasso.h"
 #include "SequencerOperations.h"
 
+#include "ScalesManager.h"
 #include "ArpeggiatorsManager.h"
 #include "Arpeggiator.h"
 #include "NoteComponent.h"
@@ -56,8 +57,11 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
         this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideLeft);
     }));
 
+    const bool canArpeggiate = (this->lasso->getNumSelected() > 1) && (this->harmonicContextScale != nullptr);
+
     menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS("menu::selection::notes::arpeggiate"))->
+        disabledIf(!canArpeggiate)->
         withSubmenu()->withAction([this]()
     {
         this->updateContent(this->createArpsPanel(), MenuPanel::SlideLeft);
@@ -82,21 +86,60 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
-
+    
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
         TRANS("menu::selection::notes::totrack"))->closesMenu());
 
     // TODO
     // Cleanup
-    // Invert up
-    // Invert down
-    // Period up
-    // Period down
+    // Invert up, Invert down
+    // Period up, Period down - really worths mentioning here? only for mobile versions?
+
+    // Not implemented:
     // Double time
     // Half time
 
     //menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
     //menu.add(MenuItem::item(Icons::trash, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::selection::piano::cleanup")));
+
+    const bool canRescale = (this->harmonicContextScale != nullptr);
+
+    menu.add(MenuItem::item(Icons::arpeggiate, // todo new icon for this
+        TRANS("menu::selection::notes::rescale"))->disabledIf(!canRescale)->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createScalesPanel(), MenuPanel::SlideLeft);
+    }));
+
+    return menu;
+}
+
+MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
+{
+    MenuPanel::Menu menu;
+
+    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideRight);
+    }));
+
+    const auto &scales = ScalesManager::getInstance().getScales();
+    for (int i = 0; i < scales.size(); ++i)
+    {
+        menu.add(MenuItem::item(Icons::arpeggiate, scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
+        {
+            if (this->harmonicContextScale == nullptr)
+            {
+                jassertfalse;
+                this->dismiss();
+                return;
+            }
+
+            const auto &scales = ScalesManager::getInstance().getScales();
+            SequencerOperations::rescale(*this->lasso, this->harmonicContextScale, scales[i], true);
+            this->dismiss();
+            return;
+        }));
+    }
 
     return menu;
 }
@@ -126,54 +169,53 @@ MenuPanel::Menu PianoRollSelectionMenu::createTimeDivisionsPanel()
 
 MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
 {
-    MenuPanel::Menu cmds;
+    MenuPanel::Menu menu;
 
-    cmds.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
-    cmds.add(MenuItem::item(Icons::create,
+    menu.add(MenuItem::item(Icons::create,
         CommandIDs::CreateArpeggiatorFromSelection, TRANS("menu::arpeggiators::create")));
 
     const auto arps = ArpeggiatorsManager::getInstance().getArps();
     for (int i = 0; i < arps.size(); ++i)
     {
-        cmds.add(MenuItem::item(Icons::arpeggiate, arps.getUnchecked(i)->getName())->withAction([this, i]()
+        menu.add(MenuItem::item(Icons::arpeggiate, arps.getUnchecked(i)->getName())->withAction([this, i]()
         {
-            if (this->lasso->getNumSelected() < 2)
+            if (this->lasso->getNumSelected() < 2 || this->harmonicContextScale == nullptr)
             {
-                App::Layout().showTooltip(TRANS("menu::arpeggiators::error"));
-                this->dismiss();
-                return;
-            }
-
-            Note::Key rootKey = -1;
-            Scale::Ptr scale = nullptr;
-
-            const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
-            const auto keySignatures = this->project.getTimeline()->getKeySignatures();
-            if (!SequencerOperations::findHarmonicContext(*this->lasso, clip, keySignatures, scale, rootKey))
-            {
-                App::Layout().showTooltip(TRANS("menu::arpeggiators::error"));
+                jassertfalse;
                 this->dismiss();
                 return;
             }
 
             const auto arps = ArpeggiatorsManager::getInstance().getArps();
-            SequencerOperations::arpeggiate(*this->lasso, scale, rootKey, arps[i], false, false, true);
+            SequencerOperations::arpeggiate(*this->lasso, this->harmonicContextScale,
+                this->harmonicContextKey, arps[i], false, false, true);
+
             this->dismiss();
             return;
         }));
     }
 
-    return cmds;
+    return menu;
 }
 
-PianoRollSelectionMenu::PianoRollSelectionMenu(WeakReference<Lasso> lasso, const ProjectTreeItem &project) :
-    lasso(lasso),
-    project(project)
+PianoRollSelectionMenu::PianoRollSelectionMenu(WeakReference<Lasso> lasso, WeakReference<MidiTrack> keySignatures) :
+    lasso(lasso)
 {
+    if (this->lasso->getNumSelected() > 0)
+    {
+        const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
+        if (!SequencerOperations::findHarmonicContext(*this->lasso, clip, keySignatures,
+            this->harmonicContextScale, this->harmonicContextKey))
+        {
+            DBG("Warning: harmonic context could not be detected");
+        }
+    }
+
     this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
 }
 
@@ -190,25 +232,13 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
         // 3. App checks that the entire sequence is within single scale and adds arp model
         // 4. User select a number of chords and clicks `arpeggiate`
 
-        if (this->lasso->getNumSelected() < 2)
+        if (this->lasso->getNumSelected() < 2 || this->harmonicContextScale == nullptr)
         {
-            App::Layout().showTooltip(TRANS("menu::arpeggiators::error"));
+            jassertfalse;
             this->dismiss();
             return;
         }
-
-        const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
-        const auto keySignatures = this->project.getTimeline()->getKeySignatures();
-
-        Note::Key rootKey = -1;
-        Scale::Ptr scale = nullptr;
-        if (!SequencerOperations::findHarmonicContext(*this->lasso, clip, keySignatures, scale, rootKey))
-        {
-            App::Layout().showTooltip(TRANS("menu::arpeggiators::error"));
-            this->dismiss();
-            return;
-        }
-
+        
         Array<Note> selectedNotes;
         for (int i = 0; i < this->lasso->getNumSelected(); ++i)
         {
@@ -217,9 +247,9 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
         }
 
         auto newArpDialog = ModalDialogInput::Presets::newArpeggiator();
-        newArpDialog->onOk = [scale, rootKey, selectedNotes](const String &name)
+        newArpDialog->onOk = [this, selectedNotes](const String &name)
         {
-            Arpeggiator::Ptr arp(new Arpeggiator(name, scale, selectedNotes, rootKey));
+            Arpeggiator::Ptr arp(new Arpeggiator(name, this->harmonicContextScale, selectedNotes, this->harmonicContextKey));
             App::Helio().getResourceManagerFor(Serialization::Resources::arpeggiators).updateUserResource(arp);
         };
 

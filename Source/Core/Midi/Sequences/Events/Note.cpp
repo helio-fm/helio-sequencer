@@ -66,6 +66,13 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
 
 #define MIN_LENGTH (1.f / TICKS_PER_BEAT)
 
+Note Note::withKey(Key newKey) const noexcept
+{
+    Note other(*this);
+    other.key = jlimit(0, 128, newKey);
+    return other;
+}
+
 Note Note::withBeat(float newBeat) const noexcept
 {
     Note other(*this);
