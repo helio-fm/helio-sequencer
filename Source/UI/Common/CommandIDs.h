@@ -197,11 +197,12 @@ namespace CommandIDs
         CleanupOverlaps                 = 0x4058,
         InvertChordUp                   = 0x4059,
         InvertChordDown                 = 0x405a,
-        
+
         ShowArpeggiatorsPanel           = 0x405b,
         ShowVolumePanel                 = 0x405c,
-        TweakVolumeRandom               = 0x405d,
-        TweakVolumeFadeOut              = 0x405e,
+        ShowRescalePanel                = 0x404d,
+        TweakVolumeRandom               = 0x405e,
+        TweakVolumeFadeOut              = 0x405f,
 
         // Version control
         VersionControlToggleQuickStash  = 0x4060,

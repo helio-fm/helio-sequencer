@@ -1012,6 +1012,10 @@
                 file="../../Source/UI/Popups/ChordPreviewTool.cpp"/>
           <FILE id="Zxgqax" name="ChordPreviewTool.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/ChordPreviewTool.h"/>
+          <FILE id="Ydy0Pq" name="RescalePreviewTool.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/RescalePreviewTool.cpp"/>
+          <FILE id="pFtL7N" name="RescalePreviewTool.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/RescalePreviewTool.h"/>
           <FILE id="E6xP8G" name="ChordTooltip.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/ChordTooltip.cpp"/>
           <FILE id="uN3aKh" name="ChordTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordTooltip.h"/>

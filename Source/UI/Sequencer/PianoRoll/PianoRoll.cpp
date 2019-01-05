@@ -17,48 +17,50 @@
 
 #include "Common.h"
 #include "PianoRoll.h"
-#include "App.h"
-#include "Workspace.h"
-#include "MainWindow.h"
-#include "MainLayout.h"
 #include "AudioCore.h"
-#include "HybridRollHeader.h"
 #include "Pattern.h"
 #include "MidiSequence.h"
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
 #include "AnnotationsSequence.h"
+#include "PianoTrackActions.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
 #include "VersionControlTreeItem.h"
-#include "MidiTrackTreeItem.h"
 #include "ModalDialogInput.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
 #include "HelperRectangle.h"
+#include "HybridRollHeader.h"
 #include "KnifeToolHelper.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
-#include "HelioTheme.h"
-#include "ScalerTool.h"
 #include "SelectionComponent.h"
 #include "HybridRollEditMode.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
+#include "RescalePreviewTool.h"
+#include "ChordPreviewTool.h"
+#include "ArpPreviewTool.h"
 #include "SequencerOperations.h"
 #include "SerializationKeys.h"
-#include "ComponentIDs.h"
-#include "ColourIDs.h"
-#include "Config.h"
-#include "Icons.h"
 #include "ArpeggiatorsManager.h"
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
 #include "LassoListeners.h"
 #include "UndoStack.h"
-#include "PianoTrackActions.h"
+
+#include "App.h"
+#include "Workspace.h"
+#include "MainWindow.h"
+#include "MainLayout.h"
+#include "HelioTheme.h"
+#include "ComponentIDs.h"
+#include "ColourIDs.h"
+#include "Config.h"
+#include "Icons.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
@@ -815,7 +817,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
     // "Add chord" dialog
     if (! this->project.getEditMode().forbidsAddingEvents())
     {
-        auto popup = new ScalerTool(this, this->activeTrack->getSequence());
+        auto *popup = new ChordPreviewTool(this, this->activeTrack->getSequence());
         const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
         popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
         App::Layout().addAndMakeVisible(popup);
@@ -971,24 +973,21 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::invertChord(this->getLassoSelection(), -12, true, &this->getTransport());
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
-        {
-            // TODO
-            //const Arpeggiator::Ptr arp(new Arpeggiator("Test", scale, sequence, root);
-            //ArpeggiatorsManager::getInstance().updateUserResource(arp);
-        }
+        // TODO
         break;
     case CommandIDs::ShowArpeggiatorsPanel:
-        // TODO
-        //if (const auto arp = ArpeggiatorsManager::getInstance().getResourceById<Arpeggiator::Ptr>("Test"))
-        //{
-        //    const auto &selection = this->getLassoSelection();
-        //    if (selection.getNumSelected() > 1)
-        //    {
-        //        const auto sequences = this->project.getTimeline()->getKeySignatures()->getSequence();
-        //        const auto key = sequences->getFirstEvent<KeySignatureEvent>(selection.getFirstAs<Note>()->getBeat());
-        //        SequencerOperations::arpeggiate(this->getLassoSelection(), key.getScale(), key.getRootKey(), arp);
-        //    }
-        //}
+        if (auto *panel = ArpPreviewTool::createWithinContext(this->getLassoSelection(),
+            this->project.getTimeline()->getKeySignatures(), *this))
+        {
+            HelioCallout::emit(panel, this, true);
+        }
+        break;
+    case CommandIDs::ShowRescalePanel:
+        if (auto *panel = RescalePreviewTool::createWithinContext(this->getLassoSelection(),
+            this->project.getTimeline()->getKeySignatures(), *this))
+        {
+            HelioCallout::emit(panel, this, true);
+        }
         break;
     case CommandIDs::ShowVolumePanel:
         if (this->selection.getNumSelected() > 0)
