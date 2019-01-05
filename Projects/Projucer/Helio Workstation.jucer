@@ -1004,6 +1004,10 @@
           </GROUP>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
+          <FILE id="jgaJ0Q" name="ArpPreviewTool.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/ArpPreviewTool.cpp"/>
+          <FILE id="vMrO1F" name="ArpPreviewTool.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/ArpPreviewTool.h"/>
           <FILE id="icyLny" name="ChordPreviewTool.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/ChordPreviewTool.cpp"/>
           <FILE id="Zxgqax" name="ChordPreviewTool.h" compile="0" resource="0"

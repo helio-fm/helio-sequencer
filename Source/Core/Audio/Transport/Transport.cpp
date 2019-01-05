@@ -252,21 +252,20 @@ bool Transport::isPlaying() const
     return this->player->isPlaying();
 }
 
-bool Transport::isLooped() const
+bool Transport::isLooped() const noexcept
 {
-    return this->loopedMode;
+    return this->loopedMode.get();
 }
 
-double Transport::getLoopStart() const
+double Transport::getLoopStart() const noexcept
 {
-    return this->loopStart;
+    return this->loopStart.get();
 }
 
-double Transport::getLoopEnd() const
+double Transport::getLoopEnd() const noexcept
 {
-    return this->loopEnd;
+    return this->loopEnd.get();
 }
-
 
 void Transport::startRender(const String &fileName)
 {

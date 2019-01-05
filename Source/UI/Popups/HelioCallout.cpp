@@ -247,8 +247,6 @@ void HelioCallout::inputAttemptWhenModal()
 
 void HelioCallout::handleCommandMessage(int commandId)
 {
-    Component::handleCommandMessage(commandId);
-    
     if (commandId == CommandIDs::HideCallout)
     {
         this->exitModalState(0);
@@ -266,6 +264,8 @@ bool HelioCallout::keyPressed(const KeyPress &key)
 {
     if (key.isKeyCode(KeyPress::escapeKey))
     {
+        // give a chance to hosted component to react to escape key:
+        this->contentComponent.postCommandMessage(CommandIDs::Cancel);
         this->inputAttemptWhenModal();
         return true;
     }

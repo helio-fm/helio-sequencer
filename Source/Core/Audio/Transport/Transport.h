@@ -57,9 +57,9 @@ public:
     void probeSequence(const MidiMessageSequence &sequence);
 
     void startPlaybackLooped(double absLoopStart, double absLoopEnd);
-    bool isLooped() const;
-    double getLoopStart() const;
-    double getLoopEnd() const;
+    bool isLooped() const noexcept;
+    double getLoopStart() const noexcept;
+    double getLoopEnd() const noexcept;
     
     void startPlayback();
     bool isPlaying() const;
@@ -73,8 +73,7 @@ public:
     float getRenderingPercentsComplete() const;
     
     void calcTimeAndTempoAt(const double absPosition,
-                            double &outTimeMs,
-                            double &outTempo);
+        double &outTimeMs, double &outTempo);
 
     MidiMessage findFirstTempoEvent();
 
@@ -142,8 +141,7 @@ protected:
     void broadcastPlay();
     void broadcastStop();
     void broadcastSeek(const double newPosition,
-                       const double currentTimeMs,
-                       const double totalTimeMs);
+        const double currentTimeMs, const double totalTimeMs);
 
 private:
     
@@ -172,11 +170,9 @@ private:
     
 private:
     
-    bool loopedMode;
-    double loopStart;
-    double loopEnd;
-    
-private:
+    Atomic<bool> loopedMode;
+    Atomic<double> loopStart;
+    Atomic<double> loopEnd;
 
     Atomic<double> seekPosition;
     Atomic<double> totalTime;
