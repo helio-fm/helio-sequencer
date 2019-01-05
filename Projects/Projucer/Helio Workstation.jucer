@@ -1011,8 +1011,6 @@
           <FILE id="E6xP8G" name="ChordTooltip.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/ChordTooltip.cpp"/>
           <FILE id="uN3aKh" name="ChordTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordTooltip.h"/>
-          <FILE id="mlAEyz" name="ScalerTool.cpp" compile="1" resource="0" file="../../Source/UI/Popups/ScalerTool.cpp"/>
-          <FILE id="VghbFx" name="ScalerTool.h" compile="0" resource="0" file="../../Source/UI/Popups/ScalerTool.h"/>
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/CenteredTooltipComponent.h"/>
           <FILE id="euPsem" name="FailTooltip.cpp" compile="1" resource="0" file="../../Source/UI/Popups/FailTooltip.cpp"/>
