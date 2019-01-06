@@ -31,7 +31,7 @@
 
 #include "CommandIDs.h"
 
-#define CHORD_BUILDER_LABEL_SIZE           (32)
+#define CHORD_BUILDER_LABEL_SIZE           (28)
 #define CHORD_BUILDER_NOTE_LENGTH          (4)
 
 #define SHOW_CHORD_TOOLTIP(ROOT_KEY, FUNCTION_NAME) \
@@ -59,24 +59,25 @@ static Label *createLabel(const String &text)
     return newLabel;
 }
 
-static Array<String> localizedFunctionNames()
-{
-    return{
-        TRANS("popup::chord::function::1"),
-        TRANS("popup::chord::function::2"),
-        TRANS("popup::chord::function::3"),
-        TRANS("popup::chord::function::4"),
-        TRANS("popup::chord::function::5"),
-        TRANS("popup::chord::function::6"),
-        TRANS("popup::chord::function::7")
-    };
-}
+//static Array<String> localizedFunctionNames()
+//{
+//    return {
+//        TRANS("popup::chord::function::1"),
+//        TRANS("popup::chord::function::2"),
+//        TRANS("popup::chord::function::3"),
+//        TRANS("popup::chord::function::4"),
+//        TRANS("popup::chord::function::5"),
+//        TRANS("popup::chord::function::6"),
+//        TRANS("popup::chord::function::7")
+//    };
+//}
 //[/MiscUserDefs]
 
 ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, WeakReference<KeySignaturesSequence> harmonicContext)
     : PopupMenuComponent(&caller),
       roll(caller),
       sequence(target),
+      harmonicContext(harmonicContext),
       defaultChords(ChordsManager::getInstance().getChords()),
       hasMadeChanges(false),
       draggingStartPosition(0, 0),
@@ -98,10 +99,15 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
     {
         const auto chord = this->defaultChords.getUnchecked(i);
         const float radians = float(i) * (MathConstants<float>::twoPi / float(numChordsToDisplay));
-        const auto centreOffset = Point<int>(0, -200).transformedBy(AffineTransform::rotation(radians, 0, 0));
-        const auto buttonPosition = this->getLocalBounds().getCentre() + centreOffset;
-        // TODO colors
-        auto *chordButton = this->chordButtons.add(new PopupCustomButton(createLabel(chord->getName())));
+        // 10 items fit well in a radius of 150, but the more chords there are, the larger r should be:
+        const int radius = 150 + jlimit(0, 8, numChordsToDisplay - 10) * 10;
+        const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
+        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.55f, 1.f, 0.6f);
+        auto *chordButton = this->chordButtons.add(new PopupCustomButton(createLabel(chord->getName()), colour));
+        chordButton->setSize(this->proportionOfWidth(0.14f), this->proportionOfHeight(0.14f));
+        const auto buttonSizeOffset = chordButton->getLocalBounds().getCentre();
+        const auto buttonPosition = this->getLocalBounds().getCentre() + centreOffset - buttonSizeOffset;
+
         chordButton->setTopLeftPosition(buttonPosition);
         this->addAndMakeVisible(chordButton);
     }
@@ -130,8 +136,6 @@ void ChordPreviewTool::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
-
-    g.fillAll (Colour (0xff323e44));
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -394,7 +398,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="ChordPreviewTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
                  constructorParams="PianoRoll &amp;caller, WeakReference&lt;PianoSequence&gt; target, WeakReference&lt;KeySignaturesSequence&gt; harmonicContext"
-                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;defaultChords(ChordsManager::getInstance().getChords()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
+                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;harmonicContext(harmonicContext),&#10;defaultChords(ChordsManager::getInstance().getChords()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>
@@ -403,7 +407,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
-  <BACKGROUND backgroundColour="ff323e44"/>
+  <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="6b3cbe21e2061b28" memberName="newChord" virtualName=""
              explicitFocusOrder="0" pos="50%c 50%c 12.8% 12.8%" sourceFile="PopupCustomButton.cpp"
              constructorParams="createLabel(&quot;+&quot;)"/>

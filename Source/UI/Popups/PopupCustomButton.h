@@ -17,33 +17,20 @@
 
 #pragma once
 
-//[Headers]
 #include "PopupButton.h"
-//[/Headers]
-
 
 class PopupCustomButton final : public PopupButton
 {
 public:
 
-    PopupCustomButton(Component *newOwnedComponent);
-    ~PopupCustomButton();
+    PopupCustomButton(Component *newOwnedComponent,
+        Colour colour = Colours::black.withAlpha(0.45f));
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
-
     ScopedPointer<Component> ownedComponent;
-
-    //[/UserVariables]
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupCustomButton)
 };

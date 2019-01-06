@@ -17,45 +17,36 @@
 
 #pragma once
 
-//[Headers]
 class PopupButtonHighlighter;
 class PopupButtonConfirmation;
 
 #include "PopupButtonOwner.h"
 #include "ComponentFader.h"
-//[/Headers]
 
-
-class PopupButton  : public Component,
-                     private Timer
+class PopupButton : public Component, private Timer
 {
 public:
 
-    PopupButton (bool shouldShowConfirmImage);
-
+    PopupButton(bool shouldShowConfirmImage,
+        Colour colour = Colours::black.withAlpha(0.5f));
     ~PopupButton();
 
-    //[UserMethods]
-    float getRadiusDelta() const;
-    Point<int> getDragDelta() const;
+    float getRadiusDelta() const noexcept;
+    const Colour &getColour() const noexcept;
+    Point<int> getDragDelta() const noexcept;
     void setState(bool clicked);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    bool hitTest (int x, int y) override;
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    bool hitTest(int x, int y) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
 
-    //[UserVariables]
-
-    void onAction();
     void updateChildren();
     void timerCallback() override;
 
@@ -65,16 +56,17 @@ private:
     bool firstClickDone;
     bool showConfirmImage;
 
+    const Colour colour;
+
     ComponentDragger dragger;
     Point<int> anchor;
 
     ComponentFader fader;
 
-    //[/UserVariables]
-
-    ScopedPointer<PopupButtonHighlighter> mouseOverHighlighter;
-    ScopedPointer<PopupButtonHighlighter> mouseDownHighlighter;
-    ScopedPointer<PopupButtonConfirmation> confirmationMark;
+    UniquePointer<PopupButtonHighlighter> mouseOverHighlighter;
+    UniquePointer<PopupButtonHighlighter> mouseDownHighlighter;
+    UniquePointer<PopupButtonConfirmation> confirmationMark;
+    Path internalPath1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupButton)
 };
