@@ -47,7 +47,7 @@ public:
                     Base64::convertFromBase64(outStream, blocks[1]);
                 }
 
-                const JsonSerializer decoder;
+                static const JsonSerializer decoder;
                 decoder.loadFromString(block.toString(), this->jwt);
             }
         }

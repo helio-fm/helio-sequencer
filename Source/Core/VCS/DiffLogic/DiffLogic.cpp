@@ -51,7 +51,7 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &
     {
         return new PianoTrackDiffLogic(targetItem);
     }
-    if (type == Serialization::Core::automationTrack)
+    else if (type == Serialization::Core::automationTrack)
     {
         return new AutomationTrackDiffLogic(targetItem);
     }
@@ -64,6 +64,6 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &
         return new ProjectInfoDiffLogic(targetItem);
     }
 
-    jassertfalse;
+    //jassertfalse;
     return new DummyDiffLogic(targetItem);
 }

@@ -302,25 +302,6 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
             s.addEvent(eventNoteOff);
         }
 
-        double timeOffset = double(scaleKeys.size() + 1.0) * timeFactor;
-
-        // Then play triad chord
-        const auto triadKeys = scale->getTriad(Scale::Tonic, false);
-        for (int i = 0; i < triadKeys.size(); ++i)
-        {
-            const int key = MIDDLE_C + this->key + triadKeys.getUnchecked(i);
-
-            MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
-            eventNoteOn.setTimeStamp(timeOffset);
-
-            MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
-            const double endTime = double(timeOffset + 0.5f) * timeFactor;
-            eventNoteOff.setTimeStamp(endTime);
-
-            s.addEvent(eventNoteOn);
-            s.addEvent(eventNoteOff);
-        }
-
         s.updateMatchedPairs();
         this->transport.probeSequence(s);
         //this->playButton->setPlaying(true);

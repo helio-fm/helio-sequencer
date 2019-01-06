@@ -135,6 +135,7 @@ void ResourceManager::reloadResources()
     {
         const String builtInResource(this->getBuiltInResourceString());
         const auto tree(DocumentHelpers::load(builtInResource));
+        jassert(builtInResource.isEmpty() || tree.isValid());
         if (tree.isValid())
         {
             DBG("Loading built-in resource for " + this->resourceName.toString());
