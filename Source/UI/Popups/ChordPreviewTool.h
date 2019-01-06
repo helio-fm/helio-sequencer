@@ -18,20 +18,27 @@
 #pragma once
 
 //[Headers]
-class ChordsCommandPanel;
+class Transport;
+class PianoRoll;
+class MidiSequence;
+class PianoSequence;
+class KeySignaturesSequence;
 
+#include "Note.h"
+#include "Chord.h"
+#include "Scale.h"
 #include "PopupMenuComponent.h"
 //[/Headers]
 
 #include "PopupCustomButton.h"
 
-class ChordBuilderTool final : public PopupMenuComponent,
+class ChordPreviewTool final : public PopupMenuComponent,
                                public PopupButtonOwner
 {
 public:
 
-    ChordBuilderTool();
-    ~ChordBuilderTool();
+    ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, WeakReference<KeySignaturesSequence> harmonicContext);
+    ~ChordPreviewTool();
 
     //[UserMethods]
 
@@ -57,15 +64,36 @@ public:
 private:
 
     //[UserVariables]
-
     Point<int> draggingStartPosition;
     Point<int> draggingEndPosition;
 
+    PianoRoll &roll;
+    WeakReference<PianoSequence> sequence;
+
+    bool hasMadeChanges;
+    void undoChangesIfAny();
+
+    // detected on the fly as the user drags the tool around:
+    int targetKey;
+    float targetBeat;
+    Note::Key root;
+    Scale::Ptr scale;
+    // using project context:
+    WeakReference<KeySignaturesSequence> harmonicContext;
+    bool detectKeyBeatAndContext();
+
+    Array<Chord::Ptr> defaultChords;
+
+    OwnedArray<PopupCustomButton> chordButtons;
+    void buildChord(const Chord::Ptr chord);
+    void buildNewNote(bool shouldSendMidiMessage);
+
+    void stopSound();
+    void sendMidiMessage(const MidiMessage &message);
+
     //[/UserVariables]
 
-    UniquePointer<PopupCustomButton> newNote;
-    UniquePointer<ChordsCommandPanel> chordsList;
-    Path internalPath1;
+    UniquePointer<PopupCustomButton> newChord;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordBuilderTool)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordPreviewTool)
 };

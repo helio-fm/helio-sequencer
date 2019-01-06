@@ -23,6 +23,7 @@
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
 #include "AnnotationsSequence.h"
+#include "KeySignaturesSequence.h"
 #include "PianoTrackActions.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
@@ -817,7 +818,11 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
     // "Add chord" dialog
     if (! this->project.getEditMode().forbidsAddingEvents())
     {
-        auto *popup = new ChordPreviewTool(this, this->activeTrack->getSequence());
+        auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(this->project.getTimeline()->getKeySignatures()->getSequence());
+        jassert(harmonicContext);
+        auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
+        jassert(pianoSequence);
+        auto *popup = new ChordPreviewTool(*this, pianoSequence, harmonicContext);
         const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
         popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
         App::Layout().addAndMakeVisible(popup);

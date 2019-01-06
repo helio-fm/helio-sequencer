@@ -49,6 +49,8 @@ public:
         XIV = 13
     };
 
+    const bool isValid() const noexcept;
+    const String &getName() const noexcept;
     const Array<Key> &getScaleKeys() const noexcept;
 
     //===------------------------------------------------------------------===//

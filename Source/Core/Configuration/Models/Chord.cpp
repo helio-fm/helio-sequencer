@@ -70,6 +70,16 @@ Identifier Chord::getResourceIdProperty() const
     return Serialization::Midi::chordName;
 }
 
+const bool Chord::isValid() const noexcept
+{
+    return !this->scaleKeys.isEmpty();
+}
+
+const String &Chord::getName() const noexcept
+{
+    return this->name;
+}
+
 const Array<Chord::Key> &Chord::getScaleKeys() const noexcept
 {
     return this->scaleKeys;
