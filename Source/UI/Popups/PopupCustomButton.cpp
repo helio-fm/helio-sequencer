@@ -18,8 +18,8 @@
 #include "Common.h"
 #include "PopupCustomButton.h"
 
-PopupCustomButton::PopupCustomButton(Component *newOwnedComponent, Colour colour) :
-    PopupButton(true, colour),
+PopupCustomButton::PopupCustomButton(Component *newOwnedComponent, ShapeType shapeType, Colour colour) :
+    PopupButton(true, shapeType, colour),
     ownedComponent(newOwnedComponent)
 {
     this->ownedComponent->setInterceptsMouseClicks(false, false);

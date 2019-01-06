@@ -86,6 +86,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
     this->newChord.reset(new PopupCustomButton(createLabel("+")));
     this->addAndMakeVisible(newChord.get());
 
+
     //[UserPreSize]
     //[/UserPreSize]
 
@@ -102,14 +103,14 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
         // 10 items fit well in a radius of 150, but the more chords there are, the larger r should be:
         const int radius = 150 + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
-        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.55f, 1.f, 0.6f);
-        auto *chordButton = this->chordButtons.add(new PopupCustomButton(createLabel(chord->getName()), colour));
-        chordButton->setSize(this->proportionOfWidth(0.14f), this->proportionOfHeight(0.14f));
-        const auto buttonSizeOffset = chordButton->getLocalBounds().getCentre();
+        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.4f);
+        auto *button = this->chordButtons.add(new PopupCustomButton(createLabel(chord->getName()), PopupButton::Hex, colour));
+        button->setSize(this->proportionOfWidth(0.135f), this->proportionOfHeight(0.135f));
+        const auto buttonSizeOffset = button->getLocalBounds().getCentre();
         const auto buttonPosition = this->getLocalBounds().getCentre() + centreOffset - buttonSizeOffset;
 
-        chordButton->setTopLeftPosition(buttonPosition);
-        this->addAndMakeVisible(chordButton);
+        button->setTopLeftPosition(buttonPosition);
+        this->addAndMakeVisible(button);
     }
 
     this->setFocusContainer(true);
@@ -146,7 +147,7 @@ void ChordPreviewTool::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    newChord->setBounds(proportionOfWidth (0.5000f) - (proportionOfWidth (0.1280f) / 2), proportionOfHeight (0.5000f) - (proportionOfHeight (0.1280f) / 2), proportionOfWidth (0.1280f), proportionOfHeight (0.1280f));
+    newChord->setBounds((getWidth() / 2) - (proportionOfWidth (0.1400f) / 2), (getHeight() / 2) - (proportionOfHeight (0.1400f) / 2), proportionOfWidth (0.1400f), proportionOfHeight (0.1400f));
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -337,7 +338,6 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     bool hasChanges = (newKey != this->targetKey);
     this->targetKey = newKey;
 
-
     const KeySignatureEvent *context = nullptr;
     for (int i = 0; i < this->harmonicContext->size(); ++i)
     {
@@ -363,7 +363,6 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
 
         this->scale = context->getScale();
         this->root = context->getRootKey();
-        return true;
     }
     else
     {
@@ -408,9 +407,9 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="6b3cbe21e2061b28" memberName="newChord" virtualName=""
-             explicitFocusOrder="0" pos="50%c 50%c 12.8% 12.8%" sourceFile="PopupCustomButton.cpp"
-             constructorParams="createLabel(&quot;+&quot;)"/>
+  <GENERICCOMPONENT name="" id="e7f368456de9aae7" memberName="newChord" virtualName=""
+                    explicitFocusOrder="0" pos="0Cc 0Cc 14% 14%" class="PopupCustomButton"
+                    params="createLabel(&quot;+&quot;)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

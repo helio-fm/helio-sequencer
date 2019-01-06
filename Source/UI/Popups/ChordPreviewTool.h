@@ -28,9 +28,9 @@ class KeySignaturesSequence;
 #include "Chord.h"
 #include "Scale.h"
 #include "PopupMenuComponent.h"
+#include "PopupCustomButton.h"
 //[/Headers]
 
-#include "PopupCustomButton.h"
 
 class ChordPreviewTool final : public PopupMenuComponent,
                                public PopupButtonOwner

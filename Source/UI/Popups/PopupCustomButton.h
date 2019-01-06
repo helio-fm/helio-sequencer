@@ -24,6 +24,7 @@ class PopupCustomButton final : public PopupButton
 public:
 
     PopupCustomButton(Component *newOwnedComponent,
+        ShapeType shapeType = Circle,
         Colour colour = Colours::black.withAlpha(0.45f));
 
     void resized() override;

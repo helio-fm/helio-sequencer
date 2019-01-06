@@ -17,22 +17,42 @@
 
 #pragma once
 
-class PopupButtonHighlighter;
-class PopupButtonConfirmation;
-
 #include "PopupButtonOwner.h"
 #include "ComponentFader.h"
+
+class PopupButtonHighlighter final : public Component
+{
+public:
+    PopupButtonHighlighter(const PopupButton &parent);
+    void paint(Graphics &g) override;
+private:
+    const PopupButton &button;
+};
+
+class PopupButtonConfirmation final : public Component
+{
+public:
+    explicit PopupButtonConfirmation(const PopupButton &parent);
+    void paint(Graphics &g) override;
+private:
+    const PopupButton &button;
+    Path clickConfirmImage;
+};
 
 class PopupButton : public Component, private Timer
 {
 public:
 
-    PopupButton(bool shouldShowConfirmImage,
+    enum ShapeType
+    {
+        Circle,
+        Hex
+    };
+
+    PopupButton(bool shouldShowConfirmImage, ShapeType shapeType = Circle,
         Colour colour = Colours::black.withAlpha(0.5f));
-    ~PopupButton();
 
     float getRadiusDelta() const noexcept;
-    const Colour &getColour() const noexcept;
     Point<int> getDragDelta() const noexcept;
     void setState(bool clicked);
 
@@ -63,10 +83,15 @@ private:
 
     ComponentFader fader;
 
+    friend class PopupButtonHighlighter;
+    friend class PopupButtonConfirmation;
+
     UniquePointer<PopupButtonHighlighter> mouseOverHighlighter;
     UniquePointer<PopupButtonHighlighter> mouseDownHighlighter;
     UniquePointer<PopupButtonConfirmation> confirmationMark;
-    Path internalPath1;
+
+    ShapeType shapeType;
+    Path shape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupButton)
 };
