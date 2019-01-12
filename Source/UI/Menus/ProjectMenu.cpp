@@ -160,7 +160,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
             };
 
             App::Layout().showModalComponentUnowned(confirmationDialog.release());
-            this->dismiss();
             return;
         }
     }
@@ -298,7 +297,6 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
                 };
 
                 App::Layout().showModalComponentUnowned(inputDialog.release());
-                this->dismiss();
             }));
     }
 
