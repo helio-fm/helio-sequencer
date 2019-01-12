@@ -254,7 +254,6 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
         };
 
         App::Layout().showModalComponentUnowned(newArpDialog.release());
-        this->dismiss();
         return;
     }
 }

@@ -51,7 +51,6 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
         dialog->onOk = this->instrumentNode.getRenameCallback();
         App::Layout().showModalComponentUnowned(dialog.release());
-        this->dismiss();
     }));
 
     // TODO:
