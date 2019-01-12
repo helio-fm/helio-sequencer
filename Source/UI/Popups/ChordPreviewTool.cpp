@@ -72,6 +72,7 @@ static Array<String> localizedFunctionNames()
         TRANS("popup::chord::function::7")
     };
 }
+//[/MiscUserDefs]
 
 ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext)
     : PopupMenuComponent(&caller),
@@ -245,7 +246,7 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
 
         if (keyHasChanged)
         {
-            const String rootKey = keyName(this->targetKey);
+            const auto rootKey = keyName(this->targetKey + this->clip.getKey());
             App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
         }
 
@@ -289,7 +290,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
     const auto period = this->targetKey / this->scale->getBasePeriod();
     const auto periodOffset = period * this->scale->getBasePeriod();
-    const auto targetKeyOffset = this->targetKey % this->scale->getBasePeriod();
+    const auto targetKeyOffset = (this->targetKey + this->clip.getKey()) % this->scale->getBasePeriod();
     const auto chromaticFnOffset = (targetKeyOffset - this->root);
     const auto scaleFnOffset = this->scale->getScaleKey(chromaticFnOffset);
     if (scaleFnOffset >= 0) // todo just use nearest neighbor key in scale?
@@ -306,12 +307,13 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
         //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
 
         static const auto fnNames = localizedFunctionNames();
-        SHOW_CHORD_TOOLTIP(keyName(this->targetKey), fnNames[scaleFnOffset]);
+        SHOW_CHORD_TOOLTIP(keyName(this->targetKey + this->clip.getKey()), fnNames[scaleFnOffset]);
 
         for (const auto inScaleChordKey : chord->getScaleKeys())
         {
             const auto inScaleKey = scaleFnOffset + inScaleChordKey;
-            const int key = jlimit(0, 128, periodOffset + this->root + this->scale->getChromaticKey(inScaleKey));
+            const auto finalOffset = periodOffset + this->root - this->clip.getKey();
+            const int key = jlimit(0, 128, finalOffset + this->scale->getChromaticKey(inScaleKey));
             Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
             this->sequence->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
@@ -369,13 +371,13 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     for (int i = 0; i < this->harmonicContext->size(); ++i)
     {
         const auto *event = this->harmonicContext->getUnchecked(i);
-        if (context == nullptr || event->getBeat() <= this->targetBeat)
+        if (context == nullptr || event->getBeat() <= (this->targetBeat + this->clip.getBeat()))
         {
             // Take the first one no matter where it resides;
             // If event is still before the sequence start, update the context anyway:
             context = static_cast<const KeySignatureEvent *>(event);
         }
-        else if (event->getBeat() > this->targetBeat)
+        else if (event->getBeat() > (this->targetBeat + this->clip.getBeat()))
         {
             // No need to look further
             break;
