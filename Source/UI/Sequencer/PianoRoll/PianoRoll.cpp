@@ -994,6 +994,12 @@ void PianoRoll::handleCommandMessage(int commandId)
             HelioCallout::emit(panel, this, true);
         }
         break;
+    case CommandIDs::ShowScalePanel:
+        // TODO
+        break;
+    case CommandIDs::ShowChordPanel:
+        // TODO
+        break;
     case CommandIDs::ShowVolumePanel:
         if (this->selection.getNumSelected() > 0)
         {
