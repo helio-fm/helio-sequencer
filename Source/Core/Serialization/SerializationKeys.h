@@ -79,7 +79,7 @@ namespace Serialization
         static const Identifier chords = "chords";
         static const Identifier chord = "chord";
         static const Identifier chordName = "name";
-        static const Identifier chordScaleKeys = "scaleKeys";
+        static const Identifier chordScaleKeys = "keys";
 
         // Sequences
         static const Identifier track = "track";

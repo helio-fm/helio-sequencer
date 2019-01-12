@@ -28,6 +28,7 @@
 #include "ChordsManager.h"
 #include "KeySignaturesSequence.h"
 #include "KeySignatureEvent.h"
+#include "ChordTooltip.h"
 
 #include "CommandIDs.h"
 
@@ -59,24 +60,24 @@ static Label *createLabel(const String &text)
     return newLabel;
 }
 
-//static Array<String> localizedFunctionNames()
-//{
-//    return {
-//        TRANS("popup::chord::function::1"),
-//        TRANS("popup::chord::function::2"),
-//        TRANS("popup::chord::function::3"),
-//        TRANS("popup::chord::function::4"),
-//        TRANS("popup::chord::function::5"),
-//        TRANS("popup::chord::function::6"),
-//        TRANS("popup::chord::function::7")
-//    };
-//}
-//[/MiscUserDefs]
+static Array<String> localizedFunctionNames()
+{
+    return {
+        TRANS("popup::chord::function::1"),
+        TRANS("popup::chord::function::2"),
+        TRANS("popup::chord::function::3"),
+        TRANS("popup::chord::function::4"),
+        TRANS("popup::chord::function::5"),
+        TRANS("popup::chord::function::6"),
+        TRANS("popup::chord::function::7")
+    };
+}
 
-ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, WeakReference<KeySignaturesSequence> harmonicContext)
+ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext)
     : PopupMenuComponent(&caller),
       roll(caller),
       sequence(target),
+      clip(clip),
       harmonicContext(harmonicContext),
       defaultChords(ChordsManager::getInstance().getChords()),
       hasMadeChanges(false),
@@ -103,12 +104,12 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
         // 10 items fit well in a radius of 150, but the more chords there are, the larger r should be:
         const int radius = 150 + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
-        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.4f);
+        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.45f);
         auto *button = this->chordButtons.add(new PopupCustomButton(createLabel(chord->getName()), PopupButton::Hex, colour));
         button->setSize(this->proportionOfWidth(0.135f), this->proportionOfHeight(0.135f));
+        button->setUserData(chord->getResourceId());
         const auto buttonSizeOffset = button->getLocalBounds().getCentre();
         const auto buttonPosition = this->getLocalBounds().getCentre() + centreOffset - buttonSizeOffset;
-
         button->setTopLeftPosition(buttonPosition);
         this->addAndMakeVisible(button);
     }
@@ -212,8 +213,10 @@ void ChordPreviewTool::onPopupButtonFirstAction(PopupButton *button)
     if (button != this->newChord.get())
     {
         App::Layout().hideTooltipIfAny();
-        //this->buildChord(todo);
-        //SHOW_CHORD_TOOLTIP(this->root, )
+        if (auto chord = this->findChordFor(button))
+        {
+            this->buildChord(chord);
+        }
     }
 }
 
@@ -267,31 +270,56 @@ void ChordPreviewTool::onPopupButtonEndDragging(PopupButton *button)
 
 static const float kDefaultChordVelocity = 0.35f;
 
+Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
+{
+    for (const auto chord : this->defaultChords)
+    {
+        if (chord->getResourceId() == button->getUserData())
+        {
+            return chord;
+        }
+    }
+
+    return nullptr;
+}
+
 void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 {
     if (!chord->isValid()) { return; }
 
-    this->undoChangesIfAny();
-    this->stopSound();
-
-    if (!this->hasMadeChanges)
+    const auto period = this->targetKey / this->scale->getBasePeriod();
+    const auto periodOffset = period * this->scale->getBasePeriod();
+    const auto targetKeyOffset = this->targetKey % this->scale->getBasePeriod();
+    const auto chromaticFnOffset = (targetKeyOffset - this->root);
+    const auto scaleFnOffset = this->scale->getScaleKey(chromaticFnOffset);
+    if (scaleFnOffset >= 0) // todo just use nearest neighbor key in scale?
     {
-        this->sequence->checkpoint();
+        this->undoChangesIfAny();
+        this->stopSound();
+
+        if (!this->hasMadeChanges)
+        {
+            this->sequence->checkpoint();
+        }
+
+        // a hack for stop sound events not mute the forthcoming notes
+        //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
+
+        static const auto fnNames = localizedFunctionNames();
+        SHOW_CHORD_TOOLTIP(keyName(this->targetKey), fnNames[scaleFnOffset]);
+
+        for (const auto inScaleChordKey : chord->getScaleKeys())
+        {
+            const auto inScaleKey = scaleFnOffset + inScaleChordKey;
+            const int key = jlimit(0, 128, periodOffset + this->root + this->scale->getChromaticKey(inScaleKey));
+            Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
+            this->sequence->insert(note, true);
+            this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
+                key + this->clip.getKey(), kDefaultChordVelocity));
+        }
+
+        this->hasMadeChanges = true;
     }
-
-    // a hack for stop sound events not mute the forthcoming notes
-    //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
-
-    for (const auto inScaleKey : chord->getScaleKeys())
-    {
-        // todo offset from target key to root key
-        const int key = jmin(128, jmax(0, this->root + this->scale->getChromaticKey(inScaleKey)));
-        Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
-        this->sequence->insert(note, true);
-        this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kDefaultChordVelocity));
-    }
-
-    this->hasMadeChanges = true;
 }
 
 void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
@@ -308,14 +336,13 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
         this->sequence->checkpoint();
     }
 
-    const int key = jmin(128, jmax(0, this->targetKey));
-
-    Note note1(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
-    this->sequence->insert(note1, true);
-
+    const int key = jlimit(0, 128, this->targetKey);
+    Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
+    this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
     {
-        this->sendMidiMessage(MidiMessage::noteOn(note1.getTrackChannel(), key, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
+            key + this->clip.getKey(), kDefaultChordVelocity));
     }
 
     this->hasMadeChanges = true;
@@ -396,8 +423,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ChordPreviewTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll &amp;caller, WeakReference&lt;PianoSequence&gt; target, WeakReference&lt;KeySignaturesSequence&gt; harmonicContext"
-                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;harmonicContext(harmonicContext),&#10;defaultChords(ChordsManager::getInstance().getChords()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
+                 constructorParams="PianoRoll &amp;caller, WeakReference&lt;PianoSequence&gt; target, const Clip &amp;clip, WeakReference&lt;KeySignaturesSequence&gt; harmonicContext"
+                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;clip(clip),&#10;harmonicContext(harmonicContext),&#10;defaultChords(ChordsManager::getInstance().getChords()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>

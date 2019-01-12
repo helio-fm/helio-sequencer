@@ -55,6 +55,8 @@ public:
     float getRadiusDelta() const noexcept;
     Point<int> getDragDelta() const noexcept;
     void setState(bool clicked);
+    void setUserData(const String &data);
+    const String &getUserData() const noexcept;
 
     void paint(Graphics &g) override;
     void resized() override;
@@ -77,6 +79,7 @@ private:
     bool showConfirmImage;
 
     const Colour colour;
+    String userData;
 
     ComponentDragger dragger;
     Point<int> anchor;

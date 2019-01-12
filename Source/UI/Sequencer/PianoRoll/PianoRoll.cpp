@@ -822,7 +822,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
         jassert(harmonicContext);
         auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
         jassert(pianoSequence);
-        auto *popup = new ChordPreviewTool(*this, pianoSequence, harmonicContext);
+        auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext);
         const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
         popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
         App::Layout().addAndMakeVisible(popup);

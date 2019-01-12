@@ -25,6 +25,7 @@ class PianoSequence;
 class KeySignaturesSequence;
 
 #include "Note.h"
+#include "Clip.h"
 #include "Chord.h"
 #include "Scale.h"
 #include "PopupMenuComponent.h"
@@ -37,7 +38,7 @@ class ChordPreviewTool final : public PopupMenuComponent,
 {
 public:
 
-    ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, WeakReference<KeySignaturesSequence> harmonicContext);
+    ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext);
     ~ChordPreviewTool();
 
     //[UserMethods]
@@ -67,8 +68,9 @@ private:
     Point<int> draggingStartPosition;
     Point<int> draggingEndPosition;
 
-    PianoRoll &roll;
+    const PianoRoll &roll;
     WeakReference<PianoSequence> sequence;
+    const Clip clip;
 
     bool hasMadeChanges;
     void undoChangesIfAny();
@@ -85,6 +87,8 @@ private:
     Array<Chord::Ptr> defaultChords;
 
     OwnedArray<PopupCustomButton> chordButtons;
+
+    Chord::Ptr findChordFor(PopupButton *button) const;
     void buildChord(const Chord::Ptr chord);
     void buildNewNote(bool shouldSendMidiMessage);
 

@@ -145,8 +145,8 @@ void PopupButton::paint (Graphics& g)
             float(this->getHeight()) - (outline1 + outline2 + r) * 2.f);
 
     case Hex:
-        g.setColour(Colours::black.withAlpha(0.9f));
-        g.strokePath(this->shape, PathStrokeType(outline2));
+        g.setColour(Colours::black.withAlpha(0.85f));
+        g.strokePath(this->shape, PathStrokeType(3.f));
 
         g.setColour(this->colour);
         g.fillPath(this->shape);
@@ -319,6 +319,16 @@ void PopupButton::setState(bool clicked)
 #endif
 
     this->updateChildren();
+}
+
+void PopupButton::setUserData(const String &data)
+{
+    this->userData = data;
+}
+
+const String &PopupButton::getUserData() const noexcept
+{
+    return this->userData;
 }
 
 float PopupButton::getRadiusDelta() const noexcept
