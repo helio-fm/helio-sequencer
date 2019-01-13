@@ -19,7 +19,7 @@
 
 class Lasso;
 class MidiTrack;
-class HybridRoll;
+class PianoRoll;
 
 #include "Arpeggiator.h"
 #include "MenuPanel.h"
@@ -30,11 +30,11 @@ class ArpPreviewTool final : public MenuPanel
 {
 public:
 
-    ArpPreviewTool(Lasso &lasso, HybridRoll &roll,
+    ArpPreviewTool(PianoRoll &roll,
         Note::Key keyContext, Scale::Ptr scaleContext);
 
-    static ArpPreviewTool *createWithinContext(Lasso &lasso,
-        WeakReference<MidiTrack> keySignatures, HybridRoll &roll);
+    static ArpPreviewTool *createWithinContext(PianoRoll &roll,
+        WeakReference<MidiTrack> keySignatures);
 
     void handleCommandMessage(int commandId) override;
 
@@ -43,8 +43,7 @@ private:
     void dismissAsync();
     void undoIfNeeded();
 
-    Lasso &lasso;
-    HybridRoll &roll;
+    PianoRoll &roll;
 
     Note::Key keyContext;
     Scale::Ptr scaleContext;

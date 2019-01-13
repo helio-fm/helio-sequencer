@@ -531,6 +531,9 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             this->batchRepaintList.add(component);
             this->triggerAsyncUpdate(); // instead of updateBounds
 
+            // arpeggiators preview cannot work without that:
+            this->selection.addToSelection(component);
+
             if (this->addNewNoteMode && isActive)
             {
                 this->newNoteDragging = component;
@@ -991,15 +994,15 @@ void PianoRoll::handleCommandMessage(int commandId)
         // TODO
         break;
     case CommandIDs::ShowArpeggiatorsPanel:
-        if (auto *panel = ArpPreviewTool::createWithinContext(this->getLassoSelection(),
-            this->project.getTimeline()->getKeySignatures(), *this))
+        if (auto *panel = ArpPreviewTool::createWithinContext(*this,
+            this->project.getTimeline()->getKeySignatures()))
         {
             HelioCallout::emit(panel, this, true);
         }
         break;
     case CommandIDs::ShowRescalePanel:
-        if (auto *panel = RescalePreviewTool::createWithinContext(this->getLassoSelection(),
-            this->project.getTimeline()->getKeySignatures(), *this))
+        if (auto *panel = RescalePreviewTool::createWithinContext(*this,
+            this->project.getTimeline()->getKeySignatures()))
         {
             HelioCallout::emit(panel, this, true);
         }

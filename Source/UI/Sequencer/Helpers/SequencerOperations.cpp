@@ -288,7 +288,7 @@ float SequencerOperations::findStartBeat(const Lasso &selection)
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        NoteComponent *note = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        const auto *note = static_cast<NoteComponent *>(selection.getSelectedItem(i));
         startBeat = jmin(startBeat, note->getBeat());
     }
     
@@ -304,7 +304,7 @@ float SequencerOperations::findEndBeat(const Lasso &selection)
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        const NoteComponent *nc = static_cast<const NoteComponent *>(selection.getSelectedItem(i));
+        const auto *nc = static_cast<const NoteComponent *>(selection.getSelectedItem(i));
         const float beatPlusLength = nc->getBeat() + nc->getLength();
         endBeat = jmax(endBeat, beatPlusLength);
     }
@@ -1044,156 +1044,129 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
     }
     
     bool didCheckpoint = !shouldCheckpoint;
-    PianoChangeGroupsPerLayer deferredRemovals;
-    PianoChangeGroupsPerLayer deferredInsertions;
+    Array<Note> sortedRemovals;
+    Array<Note> insertions;
 
-    for (const auto &s : selection.getGroupedSelections())
+    // 1. sort selection
+    for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        const auto trackSelection(s.second);
-        PianoSequence *pianoLayer = getPianoSequence(trackSelection);
-        
-        jassert(pianoLayer);
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        sortedRemovals.addSorted(nc->getNote(), nc->getNote());
+    }
 
-        // 1. sort selection
-        PianoChangeGroupProxy::Ptr sortedSelection(new PianoChangeGroupProxy());
-        
-        for (int l = 0; l < trackSelection->size(); ++l)
-        {
-            NoteComponent *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(l));
-            sortedSelection->addSorted(nc->getNote(), nc->getNote());
-        }
-        
-        const float selectionStartBeat = SequencerOperations::findStartBeat(*sortedSelection);
-        
-        
-        // 2. split chords (and sequences)
-        Array<PianoChangeGroup> chords;
-        
-        float prevBeat = 0.f;
-        int prevKey = 0;
-        
-        float nextBeat = 0.f;
-        int nextKey = 128;
-        
-        PianoChangeGroup currentChord;
-        bool currentChordNotesHasSameBeat = true;
-        
-        for (int i = 0; i < sortedSelection->size(); ++i)
-        {
-            if (i != (sortedSelection->size() - 1))
-            {
-                nextKey = sortedSelection->getUnchecked(i + 1).getKey();
-                nextBeat = sortedSelection->getUnchecked(i + 1).getBeat();
-            }
-            else
-            {
-                nextKey = sortedSelection->getUnchecked(i).getKey() - 12;
-                nextBeat = sortedSelection->getUnchecked(i).getBeat() - 12;
-            }
-            
-            const bool beatWillChange = (sortedSelection->getUnchecked(i).getBeat() != nextBeat);
-            const bool newChordWillStart = (beatWillChange && currentChord.size() > 1 && currentChordNotesHasSameBeat);
-            const bool newSequenceWillStart = (sortedSelection->getUnchecked(i).getKey() > prevKey &&
-                                               sortedSelection->getUnchecked(i).getKey() > nextKey);
-            const bool chordEndsHere = newChordWillStart || newSequenceWillStart;
-            
-            if (beatWillChange)
-            { currentChordNotesHasSameBeat = false; }
-            
-            currentChord.add(sortedSelection->getUnchecked(i));
-            
-            if (chordEndsHere)
-            {
-                chords.add(currentChord);
-                currentChord.clear();
-                currentChordNotesHasSameBeat = true;
-            }
-            
-            prevKey = sortedSelection->getUnchecked(i).getKey();
-            prevBeat = sortedSelection->getUnchecked(i).getBeat();
-        }
-        
-        // 3. arpeggiate every chord
-        PianoChangeGroupProxy::Ptr result(new PianoChangeGroupProxy());
-        
-        int arpKeyIndex = 0;
-        float arpBeatOffset = 0.f;
-        const float arpSequenceLength = arp->getSequenceLength();
-        
-        if (chords.size() == 0)
-        {
-            return false;
-        }
-        
-        for (int i = 0; i < chords.size(); ++i)
-        {
-            const auto &chord = chords.getUnchecked(i);
-            const float chordEnd = SequencerOperations::findEndBeat(chord);
+    // 2. split chords
+    Array<PianoChangeGroup> chords;
 
-            if (reversed)
-            {
-                // TODO sort chord keys in reverse order
-            }
+    float prevBeat = 0.f;
+    int prevKey = 0;
 
-            // Arp sequence as is
-            while (1)
+    float nextBeat = 0.f;
+    int nextKey = 128;
+
+    PianoChangeGroup currentChord;
+    bool currentChordNotesHasSameBeat = true;
+
+    for (int i = 0; i < sortedRemovals.size(); ++i)
+    {
+        if (i != (sortedRemovals.size() - 1))
+        {
+            nextKey = sortedRemovals.getUnchecked(i + 1).getKey();
+            nextBeat = sortedRemovals.getUnchecked(i + 1).getBeat();
+        }
+        else
+        {
+            nextKey = sortedRemovals.getUnchecked(i).getKey() - 12;
+            nextBeat = sortedRemovals.getUnchecked(i).getBeat() - 12;
+        }
+
+        const bool beatWillChange = (sortedRemovals.getUnchecked(i).getBeat() != nextBeat);
+        const bool newChordWillStart = (beatWillChange && currentChord.size() > 1 && currentChordNotesHasSameBeat);
+        const bool newSequenceWillStart = (sortedRemovals.getUnchecked(i).getKey() > prevKey &&
+            sortedRemovals.getUnchecked(i).getKey() > nextKey);
+
+        const bool chordEndsHere = newChordWillStart || newSequenceWillStart;
+
+        if (beatWillChange)
+        {
+            currentChordNotesHasSameBeat = false;
+        }
+
+        currentChord.add(sortedRemovals.getUnchecked(i));
+
+        if (chordEndsHere)
+        {
+            chords.add(currentChord);
+            currentChord.clear();
+            currentChordNotesHasSameBeat = true;
+        }
+
+        prevKey = sortedRemovals.getUnchecked(i).getKey();
+        prevBeat = sortedRemovals.getUnchecked(i).getBeat();
+    }
+
+    const float selectionStartBeat = SequencerOperations::findStartBeat(sortedRemovals);
+        
+    // 3. arpeggiate every chord
+    int arpKeyIndex = 0;
+    float arpBeatOffset = 0.f;
+    const float arpSequenceLength = arp->getSequenceLength();
+        
+    if (chords.size() == 0)
+    {
+        return false;
+    }
+        
+    for (int i = 0; i < chords.size(); ++i)
+    {
+        const auto &chord = chords.getUnchecked(i);
+        const float chordEnd = SequencerOperations::findEndBeat(chord);
+
+        if (reversed)
+        {
+            // TODO sort chord keys in reverse order
+        }
+
+        // Arp sequence as is
+        while (1)
+        {
+            const float beatOffset = selectionStartBeat + arpBeatOffset;
+            const float nextNoteBeat = beatOffset + arp->getBeatFor(arpKeyIndex);
+            if (nextNoteBeat >= chordEnd)
             {
-                const float beatOffset = selectionStartBeat + arpBeatOffset;
-                const float nextNoteBeat = beatOffset + arp->getBeatFor(arpKeyIndex);
-                if (nextNoteBeat >= chordEnd)
+                if (limitToChord)
                 {
-                    if (limitToChord)
-                    {
-                        // Every next chord is arpeggiated from the start of arp sequence
-                        arpKeyIndex = 0;
-                        arpBeatOffset = chordEnd - selectionStartBeat;
-                    }
-                        
-                    break;
-                }
-
-                result->add(arp->mapArpKeyIntoChordSpace(arpKeyIndex,
-                    beatOffset, chord, chordScale, chordRoot));
-
-                arpKeyIndex++;
-                if (arpKeyIndex >= arp->getNumKeys())
-                {
+                    // Every next chord is arpeggiated from the start of arp sequence
                     arpKeyIndex = 0;
-                    arpBeatOffset += arpSequenceLength;
+                    arpBeatOffset = chordEnd - selectionStartBeat;
                 }
+                        
+                break;
+            }
+
+            insertions.add(arp->mapArpKeyIntoChordSpace(arpKeyIndex,
+                beatOffset, chord, chordScale, chordRoot));
+
+            arpKeyIndex++;
+            if (arpKeyIndex >= arp->getNumKeys())
+            {
+                arpKeyIndex = 0;
+                arpBeatOffset += arpSequenceLength;
             }
         }
-        
-        // 4. remove selection and add result
-        if (! didCheckpoint)
-        {
-            pianoLayer->checkpoint();
-            didCheckpoint = true;
-        }
-        
-        deferredRemovals.set(pianoLayer->getTrackId(), sortedSelection);
-        deferredInsertions.set(pianoLayer->getTrackId(), result);
+    }
+
+    // 4. remove selection and add result
+    auto *pianoSequence = getPianoSequence(selection);
+    jassert(pianoSequence);
+
+    if (! didCheckpoint)
+    {
+        pianoSequence->checkpoint();
+        didCheckpoint = true;
     }
     
-    // events removals
-    PianoChangeGroupsPerLayer::Iterator deferredRemovalIterator(deferredRemovals);
-    while (deferredRemovalIterator.next())
-    {
-        PianoChangeGroupProxy::Ptr groupToRemove(deferredRemovalIterator.getValue());
-        MidiSequence *midiLayer = groupToRemove->getFirst().getSequence();
-        PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
-        pianoLayer->removeGroup(*groupToRemove, true);
-    }
-    
-    // events insertions
-    PianoChangeGroupsPerLayer::Iterator deferredInsertionsIterator(deferredInsertions);
-    while (deferredInsertionsIterator.next())
-    {
-        PianoChangeGroupProxy::Ptr groupToInsert(deferredInsertionsIterator.getValue());
-        MidiSequence *midiLayer = groupToInsert->getFirst().getSequence();
-        PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
-        pianoLayer->insertGroup(*groupToInsert, true);
-    }
+    pianoSequence->removeGroup(sortedRemovals, true);
+    pianoSequence->insertGroup(insertions, true);
  
     return true;
 }
@@ -1801,11 +1774,15 @@ void SequencerOperations::rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Pt
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto *nc = selection.getItemAs<NoteComponent>(i);
-        const auto periodNumber = nc->getKey() % scaleA->getBasePeriod();
-        const auto inScaleKey = scaleA->getScaleKey(nc->getKey());
-        const auto newChromaticKey = scaleB->getChromaticKey(inScaleKey) + scaleB->getBasePeriod() * periodNumber;
-        groupBefore.add(nc->getNote());
-        groupAfter.add(nc->getNote().withKey(newChromaticKey));
+        const auto key = nc->getKey(); // todo clip offset
+        const auto periodNumber = key / scaleA->getBasePeriod();
+        const auto inScaleKey = scaleA->getScaleKey(key);
+        if (inScaleKey >= 0)
+        {
+            const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber + scaleB->getChromaticKey(inScaleKey);
+            groupBefore.add(nc->getNote());
+            groupAfter.add(nc->getNote().withKey(newChromaticKey));
+        }
     }
 
     if (shouldCheckpoint)
