@@ -191,7 +191,12 @@ bool operator!=(const Scale &l, const Scale &r)
 
 bool Scale::isEquivalentTo(const Scale::Ptr other) const
 {
-    return this->keys == other->keys;
+    if (other != nullptr)
+    {
+        return this->keys == other->keys;
+    }
+
+    return false;
 }
 
 //===----------------------------------------------------------------------===//

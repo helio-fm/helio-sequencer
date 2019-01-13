@@ -217,8 +217,6 @@ void ScalePreviewTool::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0xff545454));
-
     {
         float x = static_cast<float> ((getWidth() / 2) + 140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (232 / 2)), width = 180.0f, height = 232.0f;
         Colour fillColour = Colour (0x77000000);
@@ -534,7 +532,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="keyPressed (const KeyPress&amp; key)"/>
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
-  <BACKGROUND backgroundColour="ff545454">
+  <BACKGROUND backgroundColour="0">
     <ROUNDRECT pos="140Cc 0Cc 180 232" cornerSize="2.00000000000000000000" fill="solid: 77000000"
                hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: 33000000"/>
     <ROUNDRECT pos="-140Cc 0Cc 180 232" cornerSize="2.00000000000000000000"

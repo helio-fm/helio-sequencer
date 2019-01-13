@@ -19,7 +19,7 @@
 
 class Lasso;
 class MidiTrack;
-class HybridRoll;
+class PianoRoll;
 
 #include "MenuPanel.h"
 #include "Scale.h"
@@ -29,11 +29,11 @@ class RescalePreviewTool final : public MenuPanel
 {
 public:
 
-    RescalePreviewTool(Lasso &lasso, HybridRoll &roll,
+    RescalePreviewTool(PianoRoll &roll,
         Note::Key keyContext, Scale::Ptr scaleContext);
     
-    static RescalePreviewTool *createWithinContext(Lasso &lasso,
-        WeakReference<MidiTrack> keySignatures, HybridRoll &roll);
+    static RescalePreviewTool *createWithinContext(PianoRoll &roll,
+        WeakReference<MidiTrack> keySignatures);
 
     void handleCommandMessage(int commandId) override;
 
@@ -42,8 +42,7 @@ private:
     void dismissAsync();
     void undoIfNeeded();
 
-    Lasso &lasso;
-    HybridRoll &roll;
+    PianoRoll &roll;
 
     Note::Key keyContext;
     Scale::Ptr scaleContext;

@@ -17,8 +17,9 @@
 
 #include "Common.h"
 #include "RescalePreviewTool.h"
-#include "HybridRoll.h"
+#include "PianoRoll.h"
 #include "Transport.h"
+#include "MidiTrack.h"
 #include "Lasso.h"
 
 #include "ScalesManager.h"
@@ -28,29 +29,28 @@
 
 #include "CommandIDs.h"
 
-RescalePreviewTool *RescalePreviewTool::createWithinContext(Lasso &lasso,
-    WeakReference<MidiTrack> keySignatures, HybridRoll &roll)
+RescalePreviewTool *RescalePreviewTool::createWithinContext(PianoRoll &roll,
+    WeakReference<MidiTrack> keySignatures)
 {
-    if (lasso.getNumSelected() > 0)
+    if (roll.getLassoSelection().getNumSelected() > 0)
     {
         Note::Key key;
         Scale::Ptr scale = nullptr;
-        const Clip &clip = lasso.getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(lasso, clip, keySignatures, scale, key))
+        const Clip &clip = roll.getLassoSelection().getFirstAs<NoteComponent>()->getClip();
+        if (!SequencerOperations::findHarmonicContext(roll.getLassoSelection(), clip, keySignatures, scale, key))
         {
             DBG("Warning: harmonic context could not be detected");
             return nullptr;
         }
 
-        return new RescalePreviewTool(lasso, roll, key, scale);
+        return new RescalePreviewTool(roll, key, scale);
     }
 
     return nullptr;
 }
 
-RescalePreviewTool::RescalePreviewTool(Lasso &lasso, HybridRoll &roll,
+RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
     Note::Key keyContext, Scale::Ptr scaleContext) :
-    lasso(lasso),
     roll(roll),
     keyContext(keyContext),
     scaleContext(scaleContext),
@@ -61,7 +61,7 @@ RescalePreviewTool::RescalePreviewTool(Lasso &lasso, HybridRoll &roll,
     // but adds undos and starts/stops playback of the selected fragment
 
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::cancel"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::close, TRANS("menu::cancel"))->withAction([this]()
     {
         this->undoIfNeeded();
         this->dismissAsync();
@@ -81,25 +81,30 @@ RescalePreviewTool::RescalePreviewTool(Lasso &lasso, HybridRoll &roll,
 
             auto &transport = this->roll.getTransport();
             const auto scales = ScalesManager::getInstance().getScales();
-            if (scales[i] != this->lastChosenScale && !transport.isPlaying())
+            if (!scales[i]->isEquivalentTo(this->lastChosenScale))
             {
+                transport.stopPlayback();
                 const bool needsCheckpoint = !this->hasMadeChanges;
                 this->undoIfNeeded();
 
-                SequencerOperations::rescale(this->lasso, this->scaleContext, scales[i], needsCheckpoint);
+                SequencerOperations::rescale(this->roll.getLassoSelection(),
+                    this->scaleContext, scales[i], needsCheckpoint);
 
                 this->lastChosenScale = scales[i];
                 this->hasMadeChanges = true;
+            }
 
-                const auto firstBeat = SequencerOperations::findStartBeat(this->lasso);
-                const auto lastBeat = SequencerOperations::findEndBeat(this->lasso);
-                const auto loopStart = this->roll.getTransportPositionByBeat(firstBeat);
-                const auto loopEnd = this->roll.getTransportPositionByBeat(lastBeat);
-                transport.startPlaybackLooped(loopStart, loopEnd);
+            if (transport.isPlaying())
+            {
+                transport.stopPlayback();
             }
             else
             {
-                transport.stopPlayback();
+                const auto firstBeat = this->roll.getLassoStartBeat();
+                const auto lastBeat = this->roll.getLassoEndBeat();
+                const auto loopStart = this->roll.getTransportPositionByBeat(firstBeat);
+                const auto loopEnd = this->roll.getTransportPositionByBeat(lastBeat);
+                transport.startPlaybackLooped(loopStart, loopEnd);
             }
         }));
     }
@@ -127,7 +132,6 @@ void RescalePreviewTool::undoIfNeeded()
 {
     if (this->hasMadeChanges)
     {
-        auto *sequence = SequencerOperations::getPianoSequence(this->lasso);
-        sequence->undo();
+        this->roll.getActiveTrack()->getSequence()->undo();
     }
 }
