@@ -785,6 +785,16 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
     }
 }
 
+float PianoRoll::getLassoStartBeat() const
+{
+    return this->activeClip.getBeat() + SequencerOperations::findStartBeat(this->selection);
+}
+
+float PianoRoll::getLassoEndBeat() const
+{
+    return this->activeClip.getBeat() + SequencerOperations::findEndBeat(this->selection);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
