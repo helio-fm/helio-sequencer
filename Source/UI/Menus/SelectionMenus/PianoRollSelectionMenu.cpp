@@ -176,8 +176,8 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
-    menu.add(MenuItem::item(Icons::create,
-        CommandIDs::CreateArpeggiatorFromSelection, TRANS("menu::arpeggiators::create")));
+    menu.add(MenuItem::item(Icons::create, CommandIDs::CreateArpeggiatorFromSelection,
+        TRANS("menu::arpeggiators::create"))->closesMenu());
 
     const auto arps = ArpeggiatorsManager::getInstance().getArps();
     for (int i = 0; i < arps.size(); ++i)
@@ -217,43 +217,4 @@ PianoRollSelectionMenu::PianoRollSelectionMenu(WeakReference<Lasso> lasso, WeakR
     }
 
     this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
-}
-
-void PianoRollSelectionMenu::handleCommandMessage(int commandId)
-{
-    jassert(this->lasso != nullptr);
-    
-    // FIXME: move this into PianoRoll and assign a hotkey
-    if (commandId == CommandIDs::CreateArpeggiatorFromSelection)
-    {
-        // A scenario from user's perspective:
-        // 1. User creates a sequence of notes strictly within a certain scale,
-        // 2. User selects `create arpeggiator from sequence`
-        // 3. App checks that the entire sequence is within single scale and adds arp model
-        // 4. User select a number of chords and clicks `arpeggiate`
-
-        if (this->lasso->getNumSelected() < 2 || this->harmonicContextScale == nullptr)
-        {
-            jassertfalse;
-            this->dismiss();
-            return;
-        }
-        
-        Array<Note> selectedNotes;
-        for (int i = 0; i < this->lasso->getNumSelected(); ++i)
-        {
-            const auto nc = static_cast<NoteComponent *>(this->lasso->getSelectedItem(i));
-            selectedNotes.add(nc->getNote());
-        }
-
-        auto newArpDialog = ModalDialogInput::Presets::newArpeggiator();
-        newArpDialog->onOk = [this, selectedNotes](const String &name)
-        {
-            Arpeggiator::Ptr arp(new Arpeggiator(name, this->harmonicContextScale, selectedNotes, this->harmonicContextKey));
-            App::Helio().getResourceManagerFor(Serialization::Resources::arpeggiators).updateUserResource(arp);
-        };
-
-        App::Layout().showModalComponentUnowned(newArpDialog.release());
-        return;
-    }
 }

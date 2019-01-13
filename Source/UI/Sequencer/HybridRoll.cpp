@@ -1109,9 +1109,11 @@ void HybridRoll::handleCommandMessage(int commandId)
         this->project.getEditMode().setMode(HybridRollEditMode::chordBuilderMode);
         break;
     case CommandIDs::Undo:
+        this->deselectAll();
         this->project.undo();
         break;
     case CommandIDs::Redo:
+        this->deselectAll();
         this->project.redo();
         break;
     case CommandIDs::ZoomIn:

@@ -31,8 +31,6 @@ public:
     PianoRollSelectionMenu(WeakReference<Lasso> lasso,
         WeakReference<MidiTrack> keySignatures);
 
-    void handleCommandMessage(int commandId) override;
-    
 private:
 
     WeakReference<Lasso> lasso;

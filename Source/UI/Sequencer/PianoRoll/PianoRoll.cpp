@@ -828,7 +828,6 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
-    // "Add chord" dialog
     if (! this->project.getEditMode().forbidsAddingEvents())
     {
         auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(this->project.getTimeline()->getKeySignatures()->getSequence());
@@ -991,7 +990,30 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::invertChord(this->getLassoSelection(), -12, true, &this->getTransport());
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
-        // TODO
+        if (this->selection.getNumSelected() >= 2)
+        {
+            Array<Note> selectedNotes;
+            for (int i = 0; i < this->selection.getNumSelected(); ++i)
+            {
+                const auto nc = static_cast<NoteComponent *>(this->selection.getSelectedItem(i));
+                selectedNotes.add(nc->getNote());
+            }
+
+            Note::Key contextKey = 0;
+            Scale::Ptr contextScale = nullptr;
+            if (SequencerOperations::findHarmonicContext(this->selection, this->activeClip,
+                this->project.getTimeline()->getKeySignatures(), contextScale, contextKey))
+            {
+                auto newArpDialog = ModalDialogInput::Presets::newArpeggiator();
+                newArpDialog->onOk = [contextScale, contextKey, selectedNotes](const String &name)
+                {
+                    Arpeggiator::Ptr arp(new Arpeggiator(name, contextScale, selectedNotes, contextKey));
+                    App::Helio().getResourceManagerFor(Serialization::Resources::arpeggiators).updateUserResource(arp);
+                };
+
+                App::Layout().showModalComponentUnowned(newArpDialog.release());
+            }
+        }
         break;
     case CommandIDs::ShowArpeggiatorsPanel:
         if (auto *panel = ArpPreviewTool::createWithinContext(*this,
