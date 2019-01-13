@@ -51,14 +51,17 @@ public:
 };
 //[/MiscUserDefs]
 
-PlayButton::PlayButton()
+PlayButton::PlayButton(WeakReference<Component> eventReceiver)
     : HighlightedComponent(),
+      eventReceiver(eventReceiver),
       playing(false)
 {
-    addAndMakeVisible (playIcon = new IconComponent (Icons::play));
+    this->playIcon.reset(new IconComponent(Icons::play));
+    this->addAndMakeVisible(playIcon.get());
     playIcon->setName ("playIcon");
 
-    addAndMakeVisible (pauseIcon = new IconComponent (Icons::pause));
+    this->pauseIcon.reset(new IconComponent(Icons::pause));
+    this->addAndMakeVisible(pauseIcon.get());
     pauseIcon->setName ("pauseIcon");
 
 
@@ -73,7 +76,7 @@ PlayButton::PlayButton()
     this->setOpaque(false);
     //[/UserPreSize]
 
-    setSize (64, 64);
+    this->setSize(64, 64);
 
     //[Constructor]
     //[/Constructor]
@@ -105,8 +108,8 @@ void PlayButton::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    playIcon->setBounds ((getWidth() / 2) + 1 - ((getWidth() - 24) / 2), (getHeight() / 2) - ((getHeight() - 24) / 2), getWidth() - 24, getHeight() - 24);
-    pauseIcon->setBounds ((getWidth() / 2) + -1 - ((getWidth() - 24) / 2), (getHeight() / 2) - ((getHeight() - 24) / 2), getWidth() - 24, getHeight() - 24);
+    playIcon->setBounds((getWidth() / 2) + 1 - ((getWidth() - 24) / 2), (getHeight() / 2) - ((getHeight() - 24) / 2), getWidth() - 24, getHeight() - 24);
+    pauseIcon->setBounds((getWidth() / 2) + -1 - ((getWidth() - 24) / 2), (getHeight() / 2) - ((getHeight() - 24) / 2), getWidth() - 24, getHeight() - 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -114,13 +117,17 @@ void PlayButton::resized()
 void PlayButton::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    if (this->playing)
+    const auto command = this->playing ?
+        CommandIDs::TransportPausePlayback :
+        CommandIDs::TransportStartPlayback;
+
+    if (this->eventReceiver != nullptr)
     {
-        App::Layout().broadcastCommandMessage(CommandIDs::TransportPausePlayback);
+        this->eventReceiver->postCommandMessage(command);
     }
     else
     {
-        App::Layout().broadcastCommandMessage(CommandIDs::TransportStartPlayback);
+        App::Layout().broadcastCommandMessage(command);
     }
     //[/UserCode_mouseDown]
 }
@@ -135,14 +142,14 @@ void PlayButton::setPlaying(bool isPlaying)
     if (this->playing)
     {
         MessageManagerLock lock;
-        this->animator.fadeIn(this->pauseIcon, 100);
-        this->animator.fadeOut(this->playIcon, 100);
+        this->animator.fadeIn(this->pauseIcon.get(), 100);
+        this->animator.fadeOut(this->playIcon.get(), 100);
     }
     else
     {
         MessageManagerLock lock;
-        this->animator.fadeIn(this->playIcon, 150);
-        this->animator.fadeOut(this->pauseIcon, 150);
+        this->animator.fadeIn(this->playIcon.get(), 150);
+        this->animator.fadeOut(this->pauseIcon.get(), 150);
     }
 }
 
@@ -159,7 +166,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PlayButton" template="../../Template"
                  componentName="" parentClasses="public HighlightedComponent"
-                 constructorParams="" variableInitialisers="HighlightedComponent(),&#10;playing(false)"
+                 constructorParams="WeakReference&lt;Component&gt; eventReceiver"
+                 variableInitialisers="HighlightedComponent(),&#10;eventReceiver(eventReceiver),&#10;playing(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="64" initialHeight="64">
   <METHODS>

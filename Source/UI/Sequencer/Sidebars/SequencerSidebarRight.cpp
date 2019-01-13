@@ -88,7 +88,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
     this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)));
     this->addAndMakeVisible(annotationsButton.get());
 
-    this->playButton.reset(new PlayButton());
+    this->playButton.reset(new PlayButton(nullptr));
     this->addAndMakeVisible(playButton.get());
 
     //[UserPreSize]
@@ -501,7 +501,7 @@ BEGIN_JUCER_METADATA
                     params="this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
-             constructorParams=""/>
+             constructorParams="nullptr"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

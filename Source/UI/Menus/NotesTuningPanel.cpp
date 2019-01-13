@@ -155,7 +155,7 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
     this->resetButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::reset, CommandIDs::ResetVolumeChanges)));
     this->addAndMakeVisible(resetButton.get());
 
-    this->playButton.reset(new PlayButton());
+    this->playButton.reset(new PlayButton(nullptr));
     this->addAndMakeVisible(playButton.get());
     this->sliderSineButton.reset(new PopupButton(false));
     this->addAndMakeVisible(sliderSineButton.get());
@@ -509,7 +509,7 @@ BEGIN_JUCER_METADATA
                     params="this, nullptr, MenuItem::item(Icons::reset, CommandIDs::ResetVolumeChanges)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="16C 198c 48 48" sourceFile="../Common/PlayButton.cpp"
-             constructorParams=""/>
+             constructorParams="nullptr"/>
   <JUCERCOMP name="" id="922ef78567538854" memberName="sliderSineButton" virtualName=""
              explicitFocusOrder="0" pos="0Cc 0Cc 56 56" posRelativeX="bdc5e7b689607511"
              posRelativeY="bdc5e7b689607511" sourceFile="../Popups/PopupButton.cpp"

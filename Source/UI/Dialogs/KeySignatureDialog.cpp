@@ -80,7 +80,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     this->scaleEditor.reset(new ScaleEditor());
     this->addAndMakeVisible(scaleEditor.get());
 
-    this->playButton.reset(new PlayButton());
+    this->playButton.reset(new PlayButton(this));
     this->addAndMakeVisible(playButton.get());
     this->scaleNameEditor.reset(new TextEditor(String()));
     this->addAndMakeVisible(scaleNameEditor.get());
@@ -554,7 +554,7 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <JUCERCOMP name="" id="a80d33e93bb4cadb" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="25Rr 148 40 40" sourceFile="../Common/PlayButton.cpp"
-             constructorParams=""/>
+             constructorParams="this"/>
   <TEXTEDITOR name="" id="3f330f1d57714294" memberName="scaleNameEditor" virtualName=""
               explicitFocusOrder="0" pos="-20Cc 152 100M 32" initialText=""
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
