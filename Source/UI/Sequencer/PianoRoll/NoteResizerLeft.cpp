@@ -149,22 +149,18 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
     if (scaleFactorChanged)
     {
         this->noteComponent->checkpointIfNeeded();
-        for (const auto &s : selection.getGroupedSelections())
+        Array<Note> groupDragBefore, groupDragAfter;
+
+        for (int i = 0; i < selection.getNumSelected(); ++i)
         {
-            const auto sequenceSelection(s.second);
-            Array<Note> groupDragBefore, groupDragAfter;
-
-            for (int i = 0; i < selection.getNumSelected(); ++i)
-            {
-                NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-                groupDragBefore.add(nc->getNote());
-                groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
-            }
-
-            const auto &event = sequenceSelection->getFirstAs<NoteComponent>()->getNote();
-            PianoSequence *pianoLayer = static_cast<PianoSequence *>(event.getSequence());
-            pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            groupDragBefore.add(nc->getNote());
+            groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
         }
+
+        const auto &event = selection.getFirstAs<NoteComponent>()->getNote();
+        PianoSequence *pianoLayer = static_cast<PianoSequence *>(event.getSequence());
+        pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
     }
 
     this->updateBounds(this->noteComponent);

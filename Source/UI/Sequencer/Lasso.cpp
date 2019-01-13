@@ -72,7 +72,7 @@ void Lasso::invalidateCacheAndResetId()
     this->selectionsCache.clear();
 }
 
-const Lasso::Lasso::GroupedSelections &Lasso::getGroupedSelections() const
+const Lasso::GroupedSelections &Lasso::getGroupedSelections() const
 {
     if (this->selectionsCache.size() == 0)
     {
