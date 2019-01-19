@@ -44,6 +44,7 @@
 #include "NotesTuningPanel.h"
 #include "RescalePreviewTool.h"
 #include "ChordPreviewTool.h"
+#include "ScalePreviewTool.h"
 #include "ArpPreviewTool.h"
 #include "SequencerOperations.h"
 #include "SerializationKeys.h"
@@ -830,14 +831,8 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
     if (! this->project.getEditMode().forbidsAddingEvents())
     {
-        auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(this->project.getTimeline()->getKeySignatures()->getSequence());
-        jassert(harmonicContext);
-        auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
-        jassert(pianoSequence);
-        auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext);
         const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
-        popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
-        App::Layout().addAndMakeVisible(popup);
+        this->showChordTool(e.mods.isAnyModifierKeyDown() ? ScalePreview : ChordPreview, e2.getPosition());
     }
 }
 
@@ -1030,10 +1025,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ShowScalePanel:
-        // TODO
+        this->showChordTool(ScalePreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowChordPanel:
-        // TODO
+        this->showChordTool(ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
         if (this->selection.getNumSelected() > 0)
@@ -1547,4 +1542,33 @@ int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const 
     }
 
     return -1;
+}
+
+void PianoRoll::showChordTool(ToolType type, Point<int> position)
+{
+    auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
+    jassert(pianoSequence);
+
+    switch (type)
+    {
+    case PianoRoll::ScalePreview:
+        if (pianoSequence != nullptr)
+        {
+            auto *popup = new ScalePreviewTool(this, pianoSequence);
+            popup->setTopLeftPosition(position - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
+            App::Layout().addAndMakeVisible(popup);
+        }
+        break;
+    case PianoRoll::ChordPreview:
+        if (auto *harmonicContext =
+            dynamic_cast<KeySignaturesSequence *>(this->project.getTimeline()->getKeySignatures()->getSequence()))
+        {
+            auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext);
+            popup->setTopLeftPosition(position - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
+            App::Layout().addAndMakeVisible(popup);
+        }
+        break;
+    default:
+        break;
+    }
 }

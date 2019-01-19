@@ -1613,6 +1613,24 @@ Point<float> HybridRoll::getMouseOffset(Point<float> mouseScreenPosition) const
     return Point<float>(x, y);
 }
 
+Point<int> HybridRoll::getDefaultPositionForPopup() const
+{
+    // a point where pop-ups will appear when keypress is hit or toolbar button is clicked
+    // on desktop, if mouse position is within a roll, use it, instead, use main layout centre
+#if HELIO_DESKTOP
+    const auto mousePositionWithinApp =
+        Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt() -
+        App::Layout().getScreenBounds().getPosition();
+
+    if (App::Layout().getPageBounds().contains(mousePositionWithinApp))
+    {
+        return mousePositionWithinApp;
+    }
+#endif
+
+    return App::Layout().getPageBounds().getCentre();
+}
+
 void HybridRoll::updateBounds()
 {
     const int newWidth = int(this->getNumBars() * this->barWidth);

@@ -105,7 +105,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     const bool canRescale = (this->harmonicContextScale != nullptr);
 
     menu.add(MenuItem::item(Icons::arpeggiate, // todo new icon for this
-        TRANS("menu::selection::notes::rescale"))->disabledIf(!canRescale)->withTimer()->withAction([this]()
+        TRANS("menu::selection::notes::rescale"))->disabledIf(!canRescale)->withSubmenu()->withAction([this]()
     {
         this->updateContent(this->createScalesPanel(), MenuPanel::SlideLeft);
     }));

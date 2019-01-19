@@ -208,6 +208,16 @@ private:
 
 private:
 
+    enum ToolType
+    {
+        ScalePreview,
+        ChordPreview
+    };
+
+    void showChordTool(ToolType type, Point<int> position);
+
+private:
+
     class HighlightingScheme final
     {
     public:
