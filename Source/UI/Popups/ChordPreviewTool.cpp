@@ -28,24 +28,10 @@
 #include "ChordsManager.h"
 #include "KeySignaturesSequence.h"
 #include "KeySignatureEvent.h"
-#include "ChordTooltip.h"
-
 #include "CommandIDs.h"
 
 #define CHORD_BUILDER_LABEL_SIZE           (28)
 #define CHORD_BUILDER_NOTE_LENGTH          (4)
-
-#define SHOW_CHORD_TOOLTIP(ROOT_KEY, FUNCTION_NAME) \
-if (! App::isRunningOnPhone()) { \
-    auto *tip = new ChordTooltip(ROOT_KEY, \
-        this->scale->getLocalizedName(), FUNCTION_NAME); \
-    App::Layout().showTooltip(tip, this->getScreenBounds()); \
-}
-
-static inline String keyName(int key)
-{
-    return MidiMessage::getMidiNoteName(key, true, true, 3);
-}
 
 static Label *createLabel(const String &text)
 {
@@ -246,7 +232,7 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
 
         if (keyHasChanged)
         {
-            const auto rootKey = keyName(this->targetKey + this->clip.getKey());
+            const auto rootKey = MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3);
             App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
         }
 
@@ -306,8 +292,15 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
         // a hack for stop sound events not mute the forthcoming notes
         //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
 
-        static const auto fnNames = localizedFunctionNames();
-        SHOW_CHORD_TOOLTIP(keyName(this->targetKey + this->clip.getKey()), fnNames[scaleFnOffset]);
+        if (!App::isRunningOnPhone())
+        {
+            static const auto fnNames = localizedFunctionNames();
+            const String tooltip = MidiMessage::getMidiNoteName(this->root, true, false, 3) + " " + this->scale->getLocalizedName()
+                + ", " + fnNames[scaleFnOffset] + ", " + MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3)
+                + " " + chord->getName();
+
+            App::Layout().showTooltip(tooltip);
+        }
 
         for (const auto inScaleChordKey : chord->getScaleKeys())
         {

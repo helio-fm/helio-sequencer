@@ -22,14 +22,12 @@
 #include "ScalePreviewTool.h"
 
 //[MiscUserDefs]
-#include "NotePopupListener.h"
 #include "NoteComponent.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
 #include "Note.h"
 #include "App.h"
 #include "Config.h"
-#include "ChordTooltip.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
 #include "ScalesManager.h"
@@ -323,9 +321,8 @@ inline String keyName(int key)
 
 #define SHOW_CHORD_TOOLTIP(ROOT_KEY, FUNCTION_NAME) \
 if (! App::isRunningOnPhone()) { \
-    auto *tip = new ChordTooltip(ROOT_KEY,\
-        this->scale->getLocalizedName(), FUNCTION_NAME);\
-    App::Layout().showTooltip(tip, this->getScreenBounds());\
+    const String tip = ROOT_KEY + " " + this->scale->getLocalizedName() + ", " + FUNCTION_NAME; \
+    App::Layout().showTooltip(tip); \
 }
 
 void ScalePreviewTool::onPopupButtonFirstAction(PopupButton *button)

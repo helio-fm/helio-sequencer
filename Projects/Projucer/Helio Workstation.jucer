@@ -1020,9 +1020,6 @@
                 file="../../Source/UI/Popups/RescalePreviewTool.cpp"/>
           <FILE id="pFtL7N" name="RescalePreviewTool.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/RescalePreviewTool.h"/>
-          <FILE id="E6xP8G" name="ChordTooltip.cpp" compile="1" resource="0"
-                file="../../Source/UI/Popups/ChordTooltip.cpp"/>
-          <FILE id="uN3aKh" name="ChordTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordTooltip.h"/>
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/CenteredTooltipComponent.h"/>
           <FILE id="euPsem" name="FailTooltip.cpp" compile="1" resource="0" file="../../Source/UI/Popups/FailTooltip.cpp"/>
@@ -1032,8 +1029,6 @@
           <FILE id="CM2odV" name="HelioCallout.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/HelioCallout.cpp"/>
           <FILE id="IPhSkz" name="HelioCallout.h" compile="0" resource="0" file="../../Source/UI/Popups/HelioCallout.h"/>
-          <FILE id="ezyOwA" name="NotePopupListener.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/NotePopupListener.h"/>
           <FILE id="wYUdKs" name="PopupButton.cpp" compile="1" resource="0" file="../../Source/UI/Popups/PopupButton.cpp"/>
           <FILE id="cL1fC7" name="PopupButton.h" compile="0" resource="0" file="../../Source/UI/Popups/PopupButton.h"/>
           <FILE id="oCbbhn" name="PopupButtonOwner.h" compile="0" resource="0"
@@ -1042,10 +1037,6 @@
                 file="../../Source/UI/Popups/PopupCustomButton.cpp"/>
           <FILE id="jScuWZ" name="PopupCustomButton.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupCustomButton.h"/>
-          <FILE id="fs64FI" name="PopupImageButton.cpp" compile="1" resource="0"
-                file="../../Source/UI/Popups/PopupImageButton.cpp"/>
-          <FILE id="ocZQ53" name="PopupImageButton.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/PopupImageButton.h"/>
           <FILE id="Z8rbjQ" name="PopupMenuComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupMenuComponent.h"/>
           <FILE id="IHNxez" name="ProgressIndicator.h" compile="0" resource="0"

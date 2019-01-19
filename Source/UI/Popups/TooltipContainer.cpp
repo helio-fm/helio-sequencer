@@ -29,18 +29,25 @@ TooltipContainer::TooltipContainer()
     : hideTimeout(-1),
       tooltipComponent(nullptr)
 {
-    addAndMakeVisible (tooltipComponent = new Component());
+    this->tooltipComponent.reset(new Component());
+    this->addAndMakeVisible(tooltipComponent.get());
 
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
     this->setVisible(false);
+
+#if HELIO_MOBILE
     //[/UserPreSize]
 
-    setSize (450, 80);
+    this->setSize(450, 80);
 
     //[Constructor]
+#elif HELIO_DESKTOP
+    this->setSize(450, 64);
+#endif
+
     //[/Constructor]
 }
 
@@ -60,8 +67,14 @@ void TooltipContainer::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x90000000));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 15.000f);
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour = Colour (0x90000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 8.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -72,7 +85,7 @@ void TooltipContainer::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    tooltipComponent->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
+    tooltipComponent->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -98,8 +111,8 @@ void TooltipContainer::updatePosition()
 {
     this->setCentrePosition(this->getParentWidth() / 2,
         this->alignedToBottom ?
-        (this->getParentHeight() - int(this->getHeight() / 2) - 15) :
-        ((this->getHeight() / 2) + 15));
+        (this->getParentHeight() - int(this->getHeight() / 2) - 48) :
+        ((this->getHeight() / 2) + 48));
 }
 
 void TooltipContainer::timerCallback()
@@ -156,15 +169,15 @@ void TooltipContainer::showWithComponent(ScopedPointer<Component> newTargetCompo
     }
 
     this->animator.cancelAllAnimations(false);
-    this->removeChildComponent(this->tooltipComponent);
+    this->removeChildComponent(this->tooltipComponent.get());
     this->stopTimer();
 
     this->updatePosition();
     this->hideTimeout = (timeOutMs > 0) ? timeOutMs : (1000 * 60 * 60);
     this->startTimer(TIMER_MILLISECONDS);
 
-    this->tooltipComponent = newTargetComponent;
-    this->addAndMakeVisible(this->tooltipComponent);
+    this->tooltipComponent.reset(newTargetComponent.release());
+    this->addAndMakeVisible(this->tooltipComponent.get());
     this->resized();
     this->toFront(false);
 }
@@ -175,7 +188,7 @@ void TooltipContainer::hide()
     if (this->isVisible())
     {
         this->animator.fadeOut(this, 250);
-        this->tooltipComponent = new Component(); // empty, but not nullptr
+        this->tooltipComponent.reset(new Component()); // empty, but not nullptr
         this->setVisible(false);
     }
 }
@@ -196,7 +209,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentSizeChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="15" fill="solid: 90000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="8.00000000000000000000" fill="solid: 90000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="e34a5396d7dac4f8" memberName="tooltipComponent" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 0M" class="Component" params=""/>
