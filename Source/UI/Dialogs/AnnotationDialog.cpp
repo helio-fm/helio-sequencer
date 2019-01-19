@@ -121,7 +121,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
 
         this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::annotation::add::cancel"));
+        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
     }
     else
     {

@@ -315,15 +315,15 @@ ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::renameInstrument(cons
     return { new ModalDialogInput(name,
         TRANS("dialog::instrument::rename::caption"),
         TRANS("dialog::instrument::rename::proceed"),
-        TRANS("dialog::instrument::rename::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::changeTimeSignature(const String &name)
 {
     return { new ModalDialogInput(name,
-        TRANS("dialog::timesignature::change::caption"),
-        TRANS("dialog::timesignature::change::proceed"),
-        TRANS("dialog::timesignature::change::cancel")) };
+        TRANS("dialog::timesignature::edit::caption"),
+        TRANS("dialog::timesignature::edit::apply"),
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::renameTrack(const String &name)
@@ -331,7 +331,7 @@ ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::renameTrack(const Str
     return { new ModalDialogInput(name,
         TRANS("dialog::renametrack::caption"),
         TRANS("dialog::renametrack::proceed"),
-        TRANS("dialog::renametrack::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
@@ -340,7 +340,7 @@ ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
         TRANS("defaults::newtrack::name"),
         TRANS("dialog::addtrack::caption"),
         TRANS("dialog::addtrack::proceed"),
-        TRANS("dialog::addtrack::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirmation()
@@ -348,7 +348,7 @@ ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirma
     return { new ModalDialogInput({},
         TRANS("dialog::deleteproject::confirm::caption"),
         TRANS("dialog::deleteproject::confirm::proceed"),
-        TRANS("dialog::deleteproject::confirm::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &name)
@@ -356,7 +356,7 @@ ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &
     return { new ModalDialogInput(name,
         TRANS("dialog::vcs::commit::caption"),
         TRANS("dialog::vcs::commit::proceed"),
-        TRANS("dialog::vcs::commit::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
@@ -364,7 +364,7 @@ ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
     return { new ModalDialogInput({},
         TRANS("dialog::addarp::caption"),
         TRANS("dialog::addarp::proceed"),
-        TRANS("dialog::addarp::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 //[/MiscUserCode]

@@ -118,7 +118,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
 
         this->messageLabel->setText(TRANS("dialog::keysignature::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::keysignature::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::keysignature::add::cancel"));
+        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
     }
     else
     {
