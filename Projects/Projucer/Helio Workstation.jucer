@@ -31,6 +31,8 @@
               file="../../Resources/Icons/automationTrack.svg"/>
         <FILE id="pQYljb" name="back.svg" compile="0" resource="1" file="../../Resources/Icons/back.svg"/>
         <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
+        <FILE id="X70Jbq" name="chordBuilder.svg" compile="0" resource="1"
+              file="../../Resources/Icons/chordBuilder.svg"/>
         <FILE id="htquXC" name="chordTool.svg" compile="0" resource="1" file="../../Resources/Icons/chordTool.svg"/>
         <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
         <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
@@ -54,9 +56,14 @@
         <FILE id="bpruBj" name="instrument.svg" compile="0" resource="1" file="../../Resources/Icons/instrument.svg"/>
         <FILE id="lF6noc" name="instrumentNode.svg" compile="0" resource="1"
               file="../../Resources/Icons/instrumentNode.svg"/>
+        <FILE id="vN18jv" name="inverseDown.svg" compile="0" resource="1" file="../../Resources/Icons/inverseDown.svg"/>
+        <FILE id="yctt0l" name="inverseUp.svg" compile="0" resource="1" file="../../Resources/Icons/inverseUp.svg"/>
         <FILE id="Tp3StV" name="list.svg" compile="0" resource="1" file="../../Resources/Icons/list.svg"/>
         <FILE id="vkA7la" name="local.svg" compile="0" resource="1" file="../../Resources/Icons/local.svg"/>
         <FILE id="femQww" name="login.svg" compile="0" resource="1" file="../../Resources/Icons/login.svg"/>
+        <FILE id="W65FcT" name="mediaForward.svg" compile="0" resource="1"
+              file="../../Resources/Icons/mediaForward.svg"/>
+        <FILE id="Xm4528" name="mediaRewind.svg" compile="0" resource="1" file="../../Resources/Icons/mediaRewind.svg"/>
         <FILE id="wJUWRt" name="menu.svg" compile="0" resource="1" file="../../Resources/Icons/menu.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
         <FILE id="oF6DEi" name="microphone.svg" compile="0" resource="1" file="../../Resources/Icons/microphone.svg"/>
@@ -95,6 +102,10 @@
               file="../../Resources/Icons/stretchRight.svg"/>
         <FILE id="WGyFGT" name="submenu.svg" compile="0" resource="1" file="../../Resources/Icons/submenu.svg"/>
         <FILE id="iXez1E" name="success.svg" compile="0" resource="1" file="../../Resources/Icons/success.svg"/>
+        <FILE id="xSJsDX" name="timelineNext.svg" compile="0" resource="1"
+              file="../../Resources/Icons/timelineNext.svg"/>
+        <FILE id="h32iIk" name="timelinePrevious.svg" compile="0" resource="1"
+              file="../../Resources/Icons/timelinePrevious.svg"/>
         <FILE id="Qc9pV4" name="toggleOff.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOff.svg"/>
         <FILE id="PwfEJV" name="toggleOn.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOn.svg"/>
         <FILE id="BBNAVx" name="trackGroup.svg" compile="0" resource="1" file="../../Resources/Icons/trackGroup.svg"/>

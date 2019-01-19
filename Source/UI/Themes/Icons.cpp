@@ -125,16 +125,24 @@ void Icons::initBuiltInImages()
     setIconForKey(cutterTool);
     setIconForKey(eraserTool);
     setIconForKey(chordTool);
+    setIconForKey(chordBuilder);
     setIconForKey(stretchLeft);
     setIconForKey(stretchRight);
+    setIconForKey(inverseDown);
+    setIconForKey(inverseUp);
     setIconForKey(expand);
 
     setIconForKey(up);
     setIconForKey(down);
     setIconForKey(back);
     setIconForKey(forward);
+    setIconForKey(mediaForward);
+    setIconForKey(mediaRewind);
+
     setIconForKey(pageUp);
     setIconForKey(pageDown);
+    setIconForKey(timelineNext);
+    setIconForKey(timelinePrevious);
 
     setIconForKey(menu);
     setIconForKey(submenu);
