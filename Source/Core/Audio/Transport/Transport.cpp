@@ -40,9 +40,6 @@ Transport::Transport(OrchestraPit &orchestraPit) :
     trackEndMs(0.0),
     sequencesAreOutdated(true),
     totalTime(500.0 * 8.0),
-    loopedMode(false),
-    loopStart(0.0),
-    loopEnd(0.0),
     projectFirstBeat(0.f),
     projectLastBeat(DEFAULT_NUM_BARS * BEATS_PER_BAR)
 {
@@ -173,7 +170,6 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
 {
     this->sequences.clear();
     this->sequencesAreOutdated = true; // will update on the next playback
-    this->loopedMode = false;
 
     MidiMessageSequence fixedSequence(sequence);
     const double startPositionInTime = this->getSeekPosition() * this->getTotalTime();
@@ -207,12 +203,11 @@ void Transport::startPlayback()
         this->allNotesControllersAndSoundOff();
     }
     
-    this->loopedMode = false;
     this->player->startPlayback();
     this->broadcastPlay();
 }
 
-void Transport::startPlaybackLooped(double absLoopStart, double absLoopEnd)
+void Transport::startPlaybackFragment(double absLoopStart, double absLoopEnd, bool looped)
 {
     this->rebuildSequencesIfNeeded();
     
@@ -221,12 +216,8 @@ void Transport::startPlaybackLooped(double absLoopStart, double absLoopEnd)
         this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
     }
-    
-    this->loopedMode = true;
-    this->loopStart = jmax(0.0, absLoopStart);
-    this->loopEnd = jmin(1.0, absLoopEnd);
-    
-    this->player->startPlayback();
+        
+    this->player->startPlayback(absLoopStart, absLoopEnd, looped);
     this->broadcastPlay();
 }
 
@@ -236,7 +227,6 @@ void Transport::stopPlayback()
     {
         this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
-        this->loopedMode = false;
         this->seekToPosition(this->getSeekPosition());
         this->broadcastStop();
     }
@@ -250,21 +240,6 @@ void Transport::toggleStatStopPlayback()
 bool Transport::isPlaying() const
 {
     return this->player->isPlaying();
-}
-
-bool Transport::isLooped() const noexcept
-{
-    return this->loopedMode.get();
-}
-
-double Transport::getLoopStart() const noexcept
-{
-    return this->loopStart.get();
-}
-
-double Transport::getLoopEnd() const noexcept
-{
-    return this->loopEnd.get();
 }
 
 void Transport::startRender(const String &fileName)

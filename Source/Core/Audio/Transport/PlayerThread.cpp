@@ -36,9 +36,13 @@ PlayerThread::~PlayerThread()
 // Thread
 //===----------------------------------------------------------------------===//
 
-void PlayerThread::startPlayback(bool shouldBroadcastTransportEvents /*= true*/)
+void PlayerThread::startPlayback(double start, double end,
+    bool shouldLoop, bool shouldBroadcastTransportEvents)
 {
     this->broadcastMode = shouldBroadcastTransportEvents;
+    this->loopedMode = shouldLoop;
+    this->absStartPosition = jlimit(0.0, 1.0, start);
+    this->absEndPosition = jlimit(0.0, 1.0, end);
     this->startThread(10);
 }
 
@@ -53,12 +57,9 @@ void PlayerThread::run()
     double tempoAtTheEndOfTrack = 0.0;
     this->transport.calcTimeAndTempoAt(1.0, totalTimeMs, tempoAtTheEndOfTrack);
     
-    const double absStartPosition = this->transport.isLooped() ? this->transport.getLoopStart() : this->transport.getSeekPosition();
-    const double absEndPosition = this->transport.isLooped() ? this->transport.getLoopEnd() : 1.0;
-    
     double currentTimeMs = 0.0;
     double msPerQuarter = 0.0;
-    this->transport.calcTimeAndTempoAt(absStartPosition, currentTimeMs, msPerQuarter);
+    this->transport.calcTimeAndTempoAt(this->absStartPosition, currentTimeMs, msPerQuarter);
     
     if (this->broadcastMode)
     {
@@ -66,8 +67,8 @@ void PlayerThread::run()
     }
     
     const double totalTime = this->transport.getTotalTime();
-    const double startPositionInTime = absStartPosition * totalTime;
-    const double endPositionInTime = absEndPosition * totalTime;
+    const double startPositionInTime = this->absStartPosition * totalTime;
+    const double endPositionInTime = this->absEndPosition * totalTime;
     
     sequences.seekToTime(startPositionInTime);
     double prevTimeStamp = startPositionInTime;
@@ -154,7 +155,7 @@ void PlayerThread::run()
 
             Time::waitForMillisecondCounter(targetTime);
 
-            if (this->transport.isLooped())
+            if (this->loopedMode)
             {
                 sequences.seekToTime(startPositionInTime);
                 prevTimeStamp = startPositionInTime;
@@ -179,7 +180,7 @@ void PlayerThread::run()
         }
 
         const bool shouldRewind =
-            (this->transport.isLooped() &&
+            (this->loopedMode &&
             (wrapper.message.getTimeStamp() > endPositionInTime));
 
         const double nextEventTimeStamp =

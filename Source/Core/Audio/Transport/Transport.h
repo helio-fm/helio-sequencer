@@ -56,12 +56,9 @@ public:
     
     void probeSequence(const MidiMessageSequence &sequence);
 
-    void startPlaybackLooped(double absLoopStart, double absLoopEnd);
-    bool isLooped() const noexcept;
-    double getLoopStart() const noexcept;
-    double getLoopEnd() const noexcept;
-    
     void startPlayback();
+    void startPlaybackFragment(double absStart, double absEnd, bool looped = false);
+
     bool isPlaying() const;
     void stopPlayback();
     void toggleStatStopPlayback();
@@ -169,10 +166,6 @@ private:
     void removeLinkForTrack(const MidiTrack *track);
     
 private:
-    
-    Atomic<bool> loopedMode;
-    Atomic<double> loopStart;
-    Atomic<double> loopEnd;
 
     Atomic<double> seekPosition;
     Atomic<double> totalTime;

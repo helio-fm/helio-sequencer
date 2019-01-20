@@ -103,9 +103,9 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
             {
                 const auto firstBeat = this->roll.getLassoStartBeat();
                 const auto lastBeat = this->roll.getLassoEndBeat();
-                const auto loopStart = this->roll.getTransportPositionByBeat(firstBeat);
-                const auto loopEnd = this->roll.getTransportPositionByBeat(lastBeat);
-                transport.startPlaybackLooped(loopStart, loopEnd);
+                const auto fragmentStart = this->roll.getTransportPositionByBeat(firstBeat);
+                const auto fragmentEnd = this->roll.getTransportPositionByBeat(lastBeat);
+                transport.startPlaybackFragment(fragmentStart - 0.001, fragmentEnd);
             }
         }));
     }

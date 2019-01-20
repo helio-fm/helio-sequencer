@@ -51,7 +51,19 @@ public:
             this->currentPlayer = findNextFreePlayer();
         }
 
-        this->currentPlayer->startPlayback(shouldBroadcastTransportEvents);
+        this->currentPlayer->startPlayback(this->transport.getSeekPosition(), 1.0,
+            false, shouldBroadcastTransportEvents);
+    }
+
+    void startPlayback(double start, double end, bool loopedMode, bool shouldBroadcast = true)
+    {
+        if (this->currentPlayer->isThreadRunning())
+        {
+            this->currentPlayer->signalThreadShouldExit();
+            this->currentPlayer = findNextFreePlayer();
+        }
+
+        this->currentPlayer->startPlayback(start, end, loopedMode, shouldBroadcast);
     }
 
     void stopPlayback()
