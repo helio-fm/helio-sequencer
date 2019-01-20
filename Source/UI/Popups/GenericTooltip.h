@@ -32,8 +32,12 @@ public:
     void paint(Graphics &g) override
     {
         const Rectangle<int> messageBounds(this->getLocalBounds().reduced(10, 10));
-        g.setColour(Colours::white.withAlpha(0.8f));
-        g.setFont(30.f);
+        g.setColour(Colours::white.withAlpha(0.85f));
+#if HELIO_DESKTOP
+        g.setFont(21.f);
+#elif HELIO_MOBILE
+        g.setFont(28.f);
+#endif
         g.drawFittedText(this->message,
                          messageBounds.getX(),
                          messageBounds.getY(),

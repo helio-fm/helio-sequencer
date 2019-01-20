@@ -26,17 +26,17 @@ class FunctionsCommandPanel;
 
 #include "Scale.h"
 #include "PopupMenuComponent.h"
+#include "PopupCustomButton.h"
 //[/Headers]
 
-#include "../PopupCustomButton.h"
 
-class ScalerTool final : public PopupMenuComponent,
-                         public PopupButtonOwner
+class ScalePreviewTool final : public PopupMenuComponent,
+                               public PopupButtonOwner
 {
 public:
 
-    ScalerTool(PianoRoll *caller, MidiSequence *layer);
-    ~ScalerTool();
+    ScalePreviewTool(PianoRoll *caller, MidiSequence *layer);
+    ~ScalePreviewTool();
 
     //[UserMethods]
 
@@ -91,9 +91,9 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<PopupCustomButton> newNote;
     UniquePointer<ScalesCommandPanel> scalesList;
     UniquePointer<FunctionsCommandPanel> functionsList;
+    UniquePointer<PopupCustomButton> newNote;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScalerTool)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScalePreviewTool)
 };

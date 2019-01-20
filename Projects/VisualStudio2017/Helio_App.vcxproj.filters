@@ -137,9 +137,6 @@
     <Filter Include="Helio\Source\UI\Pages">
       <UniqueIdentifier>{FC00852E-591C-1BEE-0BFB-6EDA0613BE67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Popups\ChordBuilder">
-      <UniqueIdentifier>{5D9E923B-DBB8-E56B-5598-7093DB60D402}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Source\UI\Popups">
       <UniqueIdentifier>{97C2C14B-E622-7A8D-30C8-F6BE30B326A5}</UniqueIdentifier>
     </Filter>
@@ -625,6 +622,9 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Arpeggiator.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Chord.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\ColourScheme.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
@@ -644,6 +644,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ChordsManager.cpp">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.cpp">
@@ -1195,11 +1198,17 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.cpp">
-      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
+    <ClCompile Include="..\..\Source\UI\Popups\ArpPreviewTool.cpp">
+      <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ScalerTool.cpp">
-      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
+    <ClCompile Include="..\..\Source\UI\Popups\ChordPreviewTool.cpp">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Popups\RescalePreviewTool.cpp">
+      <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\FailTooltip.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
@@ -1211,9 +1220,6 @@
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\PopupCustomButton.cpp">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\PopupImageButton.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ProgressTooltip.cpp">
@@ -3303,6 +3309,9 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Arpeggiator.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Chord.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\ColourScheme.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
@@ -3322,6 +3331,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ChordsManager.h">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.h">
@@ -4017,11 +4029,17 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.h">
-      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
+    <ClInclude Include="..\..\Source\UI\Popups\ArpPreviewTool.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ScalerTool.h">
-      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
+    <ClInclude Include="..\..\Source\UI\Popups\ChordPreviewTool.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\RescalePreviewTool.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
       <Filter>Helio\Source\UI\Popups</Filter>
@@ -4035,9 +4053,6 @@
     <ClInclude Include="..\..\Source\UI\Popups\HelioCallout.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\NotePopupListener.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButton.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
@@ -4045,9 +4060,6 @@
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\PopupCustomButton.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\PopupImageButton.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\PopupMenuComponent.h">
@@ -6341,6 +6353,9 @@
     <None Include="..\..\Resources\Icons\browse.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\chordBuilder.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\chordTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -6407,6 +6422,12 @@
     <None Include="..\..\Resources\Icons\instrumentNode.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\inverseDown.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\inverseUp.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\list.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -6414,6 +6435,12 @@
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\login.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\mediaForward.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\mediaRewind.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\menu.svg">
@@ -6518,6 +6545,12 @@
     <None Include="..\..\Resources\Icons\success.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\timelineNext.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\timelinePrevious.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\toggleOff.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -6558,6 +6591,9 @@
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\arpeggiators.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\chords.json">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\colourSchemes.json">

@@ -75,6 +75,12 @@ namespace Serialization
         static const Identifier scalePeriod = "period";
         static const Identifier scaleIntervals = "intervals";
 
+        // Chords
+        static const Identifier chords = "chords";
+        static const Identifier chord = "chord";
+        static const Identifier chordName = "name";
+        static const Identifier chordScaleKeys = "keys";
+
         // Sequences
         static const Identifier track = "track";
         static const Identifier automation = "automation";
@@ -187,6 +193,7 @@ namespace Serialization
     namespace Resources
     {
         static const Identifier scales = "scales";
+        static const Identifier chords = "chords";
         static const Identifier scripts = "scripts";
         static const Identifier arpeggiators = "arpeggiators";
         static const Identifier translations = "translations";
@@ -516,7 +523,6 @@ namespace Serialization
 
             static const Identifier user = "user";
             static const Identifier token = "token";
-            static const Identifier bearer = "bearer";
             static const Identifier session = "session";
             static const Identifier deviceId = "deviceId";
             static const Identifier platformId = "platformId";

@@ -17,36 +17,38 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
+class Lasso;
+class MidiTrack;
+class PianoRoll;
 
+#include "MenuPanel.h"
+#include "Scale.h"
+#include "Note.h"
 
-class ChordTooltip  : public Component
+class RescalePreviewTool final : public MenuPanel
 {
 public:
 
-    ChordTooltip (String rootKey, String scale, String function);
+    RescalePreviewTool(PianoRoll &roll,
+        Note::Key keyContext, Scale::Ptr scaleContext);
+    
+    static RescalePreviewTool *createWithinContext(PianoRoll &roll,
+        WeakReference<MidiTrack> keySignatures);
 
-    ~ChordTooltip();
-
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
+    void dismissAsync();
+    void undoIfNeeded();
 
-    ScopedPointer<Label> rootKeyLabel;
-    ScopedPointer<Label> functionLabel;
-    ScopedPointer<Label> scaleLabel;
-    ScopedPointer<Label> rooKeyValue;
-    ScopedPointer<Label> functionValue;
-    ScopedPointer<Label> scaleValue;
+    PianoRoll &roll;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordTooltip)
+    Note::Key keyContext;
+    Scale::Ptr scaleContext;
+
+    bool hasMadeChanges;
+    Scale::Ptr lastChosenScale;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RescalePreviewTool)
 };

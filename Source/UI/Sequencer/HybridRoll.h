@@ -333,6 +333,8 @@ protected:
     void continueDragging(const MouseEvent &e);
     Point<float> getMouseOffset(Point<float> mouseScreenPosition) const;
 
+    Point<int> getDefaultPositionForPopup() const;
+
     void startZooming();
     void continueZooming(const MouseEvent &e);
     void endZooming();

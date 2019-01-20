@@ -19,17 +19,15 @@
 #include "Common.h"
 //[/Headers]
 
-#include "ScalerTool.h"
+#include "ScalePreviewTool.h"
 
 //[MiscUserDefs]
-#include "NotePopupListener.h"
 #include "NoteComponent.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
 #include "Note.h"
 #include "App.h"
 #include "Config.h"
-#include "ChordTooltip.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
 #include "ScalesManager.h"
@@ -89,7 +87,7 @@ public:
             commandId <= (CommandIDs::SelectScale + this->scales.size()))
         {
             const int scaleIndex = commandId - CommandIDs::SelectScale;
-            if (auto *builder = dynamic_cast<ScalerTool *>(this->getParentComponent()))
+            if (auto *builder = dynamic_cast<ScalePreviewTool *>(this->getParentComponent()))
             {
                 builder->applyScale(this->scales[scaleIndex]);
             }
@@ -134,7 +132,7 @@ public:
             commandId <= (CommandIDs::SelectFunction + 7))
         {
             const int functionIndex = commandId - CommandIDs::SelectFunction;
-            if (auto *builder = dynamic_cast<ScalerTool *>(this->getParentComponent()))
+            if (auto *builder = dynamic_cast<ScalePreviewTool *>(this->getParentComponent()))
             {
                 builder->applyFunction((Scale::Function)functionIndex);
             }
@@ -148,7 +146,7 @@ private:
 
 //[/MiscUserDefs]
 
-ScalerTool::ScalerTool(PianoRoll *caller, MidiSequence *layer)
+ScalePreviewTool::ScalePreviewTool(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       sequence(layer),
@@ -159,13 +157,14 @@ ScalerTool::ScalerTool(PianoRoll *caller, MidiSequence *layer)
       scale(defaultScales[0]),
       function(Scale::Tonic)
 {
-    this->newNote.reset(new PopupCustomButton(createLabel("+")));
-    this->addAndMakeVisible(newNote.get());
     this->scalesList.reset(new ScalesCommandPanel(this->defaultScales));
     this->addAndMakeVisible(scalesList.get());
 
     this->functionsList.reset(new FunctionsCommandPanel());
     this->addAndMakeVisible(functionsList.get());
+
+    this->newNote.reset(new PopupCustomButton(createLabel("+")));
+    this->addAndMakeVisible(newNote.get());
 
 
     //[UserPreSize]
@@ -197,62 +196,68 @@ ScalerTool::ScalerTool(PianoRoll *caller, MidiSequence *layer)
     //[/Constructor]
 }
 
-ScalerTool::~ScalerTool()
+ScalePreviewTool::~ScalePreviewTool()
 {
     //[Destructor_pre]
     this->stopSound();
     //[/Destructor_pre]
 
-    newNote = nullptr;
     scalesList = nullptr;
     functionsList = nullptr;
+    newNote = nullptr;
 
     //[Destructor]
     //[/Destructor]
 }
 
-void ScalerTool::paint (Graphics& g)
+void ScalePreviewTool::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
     {
-        float x = static_cast<float> ((getWidth() / 2) + 140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (237 / 2)), width = 180.0f, height = 237.0f;
+        float x = static_cast<float> ((getWidth() / 2) + 140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (232 / 2)), width = 180.0f, height = 232.0f;
         Colour fillColour = Colour (0x77000000);
+        Colour strokeColour = Colour (0x33000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         fillColour = this->findColour(ColourIDs::Callout::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRoundedRectangle (x, y, width, height, 2.000f);
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 2.000f, 1.000f);
     }
 
     {
-        float x = static_cast<float> ((getWidth() / 2) + -140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (237 / 2)), width = 180.0f, height = 237.0f;
+        float x = static_cast<float> ((getWidth() / 2) + -140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (232 / 2)), width = 180.0f, height = 232.0f;
         Colour fillColour = Colour (0x77000000);
+        Colour strokeColour = Colour (0x33000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         fillColour = this->findColour(ColourIDs::Callout::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRoundedRectangle (x, y, width, height, 2.000f);
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 2.000f, 1.000f);
     }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
 
-void ScalerTool::resized()
+void ScalePreviewTool::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    newNote->setBounds(proportionOfWidth (0.5000f) - (proportionOfWidth (0.1280f) / 2), proportionOfHeight (0.5000f) - (proportionOfHeight (0.1280f) / 2), proportionOfWidth (0.1280f), proportionOfHeight (0.1280f));
     scalesList->setBounds((getWidth() / 2) + -140 - (172 / 2), (getHeight() / 2) - (224 / 2), 172, 224);
     functionsList->setBounds((getWidth() / 2) + 140 - (176 / 2), (getHeight() / 2) - (224 / 2), 176, 224);
+    newNote->setBounds((getWidth() / 2) - (proportionOfWidth (0.1400f) / 2), (getHeight() / 2) - (proportionOfHeight (0.1400f) / 2), proportionOfWidth (0.1400f), proportionOfHeight (0.1400f));
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void ScalerTool::parentHierarchyChanged()
+void ScalePreviewTool::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->detectKeyAndBeat();
@@ -261,7 +266,7 @@ void ScalerTool::parentHierarchyChanged()
     //[/UserCode_parentHierarchyChanged]
 }
 
-void ScalerTool::handleCommandMessage (int commandId)
+void ScalePreviewTool::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     Component::handleCommandMessage(commandId);
@@ -273,7 +278,7 @@ void ScalerTool::handleCommandMessage (int commandId)
     //[/UserCode_handleCommandMessage]
 }
 
-bool ScalerTool::keyPressed (const KeyPress& key)
+bool ScalePreviewTool::keyPressed (const KeyPress& key)
 {
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
@@ -286,7 +291,7 @@ bool ScalerTool::keyPressed (const KeyPress& key)
     //[/UserCode_keyPressed]
 }
 
-void ScalerTool::inputAttemptWhenModal()
+void ScalePreviewTool::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
     //this->cancelChangesIfAny();
@@ -297,7 +302,7 @@ void ScalerTool::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-void ScalerTool::onPopupsResetState(PopupButton *button)
+void ScalePreviewTool::onPopupsResetState(PopupButton *button)
 {
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
@@ -316,12 +321,11 @@ inline String keyName(int key)
 
 #define SHOW_CHORD_TOOLTIP(ROOT_KEY, FUNCTION_NAME) \
 if (! App::isRunningOnPhone()) { \
-    auto *tip = new ChordTooltip(ROOT_KEY,\
-        this->scale->getLocalizedName(), FUNCTION_NAME);\
-    App::Layout().showTooltip(tip, this->getScreenBounds());\
+    const String tip = ROOT_KEY + " " + this->scale->getLocalizedName() + ", " + FUNCTION_NAME; \
+    App::Layout().showTooltip(tip); \
 }
 
-void ScalerTool::onPopupButtonFirstAction(PopupButton *button)
+void ScalePreviewTool::onPopupButtonFirstAction(PopupButton *button)
 {
     if (button == this->newNote.get())
     {
@@ -340,12 +344,12 @@ void ScalerTool::onPopupButtonFirstAction(PopupButton *button)
     }
 }
 
-void ScalerTool::onPopupButtonSecondAction(PopupButton *button)
+void ScalePreviewTool::onPopupButtonSecondAction(PopupButton *button)
 {
     this->dismissAsDone();
 }
 
-void ScalerTool::onPopupButtonStartDragging(PopupButton *button)
+void ScalePreviewTool::onPopupButtonStartDragging(PopupButton *button)
 {
     if (button == this->newNote.get())
     {
@@ -353,7 +357,7 @@ void ScalerTool::onPopupButtonStartDragging(PopupButton *button)
     }
 }
 
-bool ScalerTool::onPopupButtonDrag(PopupButton *button)
+bool ScalePreviewTool::onPopupButtonDrag(PopupButton *button)
 {
     if (button == this->newNote.get())
     {
@@ -375,7 +379,7 @@ bool ScalerTool::onPopupButtonDrag(PopupButton *button)
     return false;
 }
 
-void ScalerTool::onPopupButtonEndDragging(PopupButton *button)
+void ScalePreviewTool::onPopupButtonEndDragging(PopupButton *button)
 {
     if (button == this->newNote.get())
     {
@@ -383,7 +387,7 @@ void ScalerTool::onPopupButtonEndDragging(PopupButton *button)
     }
 }
 
-void ScalerTool::applyScale(const Scale::Ptr scale)
+void ScalePreviewTool::applyScale(const Scale::Ptr scale)
 {
     const auto funName = localizedFunctionNames();
     const String rootKey = keyName(this->targetKey);
@@ -391,38 +395,38 @@ void ScalerTool::applyScale(const Scale::Ptr scale)
     {
         this->scale = scale;
         Config::save(this->scale.get(), Serialization::Config::lastUsedScale);
-        this->buildChord(this->scale->getTriad(this->function, true));
+        this->buildChord(this->scale->getChord(Chord::getTriad(), this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
     else
     {
         // Alternate mode on second click
-        this->buildChord(this->scale->getSeventhChord(this->function, false));
+        this->buildChord(this->scale->getChord(Chord::getSeventhChord(), this->function, false));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
 }
 
-void ScalerTool::applyFunction(Scale::Function function)
+void ScalePreviewTool::applyFunction(Scale::Function function)
 {
     const auto funName = localizedFunctionNames();
     const String rootKey = keyName(this->targetKey);
     if (this->function != function)
     {
         this->function = function;
-        this->buildChord(this->scale->getTriad(this->function, true));
+        this->buildChord(this->scale->getChord(Chord::getTriad(), this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
     else
     {
         // Alternate mode on second click
-        this->buildChord(this->scale->getSeventhChord(this->function, false));
+        this->buildChord(this->scale->getChord(Chord::getSeventhChord(), this->function, false));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
 }
 
 static const float kDefaultChordVelocity = 0.35f;
 
-void ScalerTool::buildChord(Array<int> keys)
+void ScalePreviewTool::buildChord(Array<int> keys)
 {
     if (keys.size() == 0) { return;  }
 
@@ -447,7 +451,7 @@ void ScalerTool::buildChord(Array<int> keys)
     }
 }
 
-void ScalerTool::buildNewNote(bool shouldSendMidiMessage)
+void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
 {
     if (PianoSequence *pianoSequence = dynamic_cast<PianoSequence *>(this->sequence))
     {
@@ -474,7 +478,7 @@ void ScalerTool::buildNewNote(bool shouldSendMidiMessage)
     }
 }
 
-void ScalerTool::cancelChangesIfAny()
+void ScalePreviewTool::cancelChangesIfAny()
 {
     if (this->hasMadeChanges)
     {
@@ -483,7 +487,7 @@ void ScalerTool::cancelChangesIfAny()
     }
 }
 
-bool ScalerTool::detectKeyAndBeat()
+bool ScalePreviewTool::detectKeyAndBeat()
 {
     Point<int> myCentreRelativeToRoll = this->roll->getLocalPoint(this->getParentComponent(), this->getBounds().getCentre());
     int newKey = 0;
@@ -497,12 +501,12 @@ bool ScalerTool::detectKeyAndBeat()
 // Shorthands
 //===----------------------------------------------------------------------===//
 
-void ScalerTool::stopSound()
+void ScalePreviewTool::stopSound()
 {
     this->roll->getTransport().allNotesControllersAndSoundOff();
 }
 
-void ScalerTool::sendMidiMessage(const MidiMessage &message)
+void ScalePreviewTool::sendMidiMessage(const MidiMessage &message)
 {
     const String layerId = this->sequence->getTrackId();
     this->roll->getTransport().sendMidiMessage(layerId, message);
@@ -514,7 +518,7 @@ void ScalerTool::sendMidiMessage(const MidiMessage &message)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ScalerTool" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="ScalePreviewTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
                  constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(ScalesManager::getInstance().getScales()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -526,20 +530,21 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="140Cc 0Cc 180 237" cornerSize="2.00000000000000000000" fill="solid: 77000000"
-               hasStroke="0"/>
-    <ROUNDRECT pos="-140Cc 0Cc 180 237" cornerSize="2.00000000000000000000"
-               fill="solid: 77000000" hasStroke="0"/>
+    <ROUNDRECT pos="140Cc 0Cc 180 232" cornerSize="2.00000000000000000000" fill="solid: 77000000"
+               hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: 33000000"/>
+    <ROUNDRECT pos="-140Cc 0Cc 180 232" cornerSize="2.00000000000000000000"
+               fill="solid: 77000000" hasStroke="1" stroke="1, mitered, butt"
+               strokeColour="solid: 33000000"/>
   </BACKGROUND>
-  <JUCERCOMP name="" id="6b3cbe21e2061b28" memberName="newNote" virtualName=""
-             explicitFocusOrder="0" pos="50%c 50%c 12.8% 12.8%" sourceFile="../PopupCustomButton.cpp"
-             constructorParams="createLabel(&quot;+&quot;)"/>
   <GENERICCOMPONENT name="" id="5186723628bce1d6" memberName="scalesList" virtualName=""
                     explicitFocusOrder="0" pos="-140Cc 0Cc 172 224" class="ScalesCommandPanel"
                     params="this-&gt;defaultScales"/>
   <GENERICCOMPONENT name="" id="2b87eb6e536e9c5b" memberName="functionsList" virtualName=""
                     explicitFocusOrder="0" pos="140Cc 0Cc 176 224" class="FunctionsCommandPanel"
                     params=""/>
+  <GENERICCOMPONENT name="" id="e7f368456de9aae7" memberName="newNote" virtualName=""
+                    explicitFocusOrder="0" pos="0Cc 0Cc 14% 14%" class="PopupCustomButton"
+                    params="createLabel(&quot;+&quot;)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

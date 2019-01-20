@@ -109,7 +109,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
 
         this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::timesignature::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::timesignature::add::cancel"));
+        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
     }
     else
     {

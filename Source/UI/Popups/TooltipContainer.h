@@ -21,13 +21,12 @@
 //[/Headers]
 
 
-class TooltipContainer  : public Component,
-                          private Timer
+class TooltipContainer final : public Component,
+                               private Timer
 {
 public:
 
-    TooltipContainer ();
-
+    TooltipContainer();
     ~TooltipContainer();
 
     //[UserMethods]
@@ -64,7 +63,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Component> tooltipComponent;
+    UniquePointer<Component> tooltipComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TooltipContainer)
 };

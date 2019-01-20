@@ -20,7 +20,7 @@
 #include "ColourScheme.h"
 #include "ResourceManager.h"
 
-class ColourSchemesManager : public ResourceManager
+class ColourSchemesManager final : public ResourceManager
 {
 public:
 

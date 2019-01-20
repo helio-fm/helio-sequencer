@@ -7,7 +7,7 @@
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
               cppLanguageStandard="11" usePrecompiledHeaders="0" precompiledHeaderFileName=""
               precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko"
-              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Popups/ChordBuilder&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes">
+              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <GROUP id="{566A42BA-3539-AB6F-C7F2-BD3408E4047E}" name="Samples">
@@ -31,6 +31,8 @@
               file="../../Resources/Icons/automationTrack.svg"/>
         <FILE id="pQYljb" name="back.svg" compile="0" resource="1" file="../../Resources/Icons/back.svg"/>
         <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
+        <FILE id="X70Jbq" name="chordBuilder.svg" compile="0" resource="1"
+              file="../../Resources/Icons/chordBuilder.svg"/>
         <FILE id="htquXC" name="chordTool.svg" compile="0" resource="1" file="../../Resources/Icons/chordTool.svg"/>
         <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
         <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
@@ -54,9 +56,14 @@
         <FILE id="bpruBj" name="instrument.svg" compile="0" resource="1" file="../../Resources/Icons/instrument.svg"/>
         <FILE id="lF6noc" name="instrumentNode.svg" compile="0" resource="1"
               file="../../Resources/Icons/instrumentNode.svg"/>
+        <FILE id="vN18jv" name="inverseDown.svg" compile="0" resource="1" file="../../Resources/Icons/inverseDown.svg"/>
+        <FILE id="yctt0l" name="inverseUp.svg" compile="0" resource="1" file="../../Resources/Icons/inverseUp.svg"/>
         <FILE id="Tp3StV" name="list.svg" compile="0" resource="1" file="../../Resources/Icons/list.svg"/>
         <FILE id="vkA7la" name="local.svg" compile="0" resource="1" file="../../Resources/Icons/local.svg"/>
         <FILE id="femQww" name="login.svg" compile="0" resource="1" file="../../Resources/Icons/login.svg"/>
+        <FILE id="W65FcT" name="mediaForward.svg" compile="0" resource="1"
+              file="../../Resources/Icons/mediaForward.svg"/>
+        <FILE id="Xm4528" name="mediaRewind.svg" compile="0" resource="1" file="../../Resources/Icons/mediaRewind.svg"/>
         <FILE id="wJUWRt" name="menu.svg" compile="0" resource="1" file="../../Resources/Icons/menu.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
         <FILE id="oF6DEi" name="microphone.svg" compile="0" resource="1" file="../../Resources/Icons/microphone.svg"/>
@@ -95,6 +102,10 @@
               file="../../Resources/Icons/stretchRight.svg"/>
         <FILE id="WGyFGT" name="submenu.svg" compile="0" resource="1" file="../../Resources/Icons/submenu.svg"/>
         <FILE id="iXez1E" name="success.svg" compile="0" resource="1" file="../../Resources/Icons/success.svg"/>
+        <FILE id="xSJsDX" name="timelineNext.svg" compile="0" resource="1"
+              file="../../Resources/Icons/timelineNext.svg"/>
+        <FILE id="h32iIk" name="timelinePrevious.svg" compile="0" resource="1"
+              file="../../Resources/Icons/timelinePrevious.svg"/>
         <FILE id="Qc9pV4" name="toggleOff.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOff.svg"/>
         <FILE id="PwfEJV" name="toggleOn.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOn.svg"/>
         <FILE id="BBNAVx" name="trackGroup.svg" compile="0" resource="1" file="../../Resources/Icons/trackGroup.svg"/>
@@ -112,6 +123,7 @@
       <FILE id="DQTpOG" name="logo-v2.png" compile="0" resource="1" file="../../Resources/logo-v2.png"/>
       <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
             file="../../Resources/arpeggiators.json"/>
+      <FILE id="eMl1Wx" name="chords.json" compile="0" resource="1" file="../../Resources/chords.json"/>
       <FILE id="XoWHFQ" name="colourSchemes.json" compile="0" resource="1"
             file="../../Resources/colourSchemes.json"/>
       <FILE id="MfFPAK" name="hotkeySchemes.json" compile="0" resource="1"
@@ -191,6 +203,8 @@
             <FILE id="RINluc" name="BaseResource.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/BaseResource.h"/>
             <FILE id="PPLAJz" name="Arpeggiator.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Arpeggiator.cpp"/>
             <FILE id="Q2i1s3" name="Arpeggiator.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Arpeggiator.h"/>
+            <FILE id="QZ6Tgo" name="Chord.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Chord.cpp"/>
+            <FILE id="t0TaVM" name="Chord.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Chord.h"/>
             <FILE id="d87zUP" name="ColourScheme.cpp" compile="1" resource="0"
                   file="../../Source/Core/Configuration/Models/ColourScheme.cpp"/>
             <FILE id="GqYFIc" name="ColourScheme.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/ColourScheme.h"/>
@@ -213,6 +227,9 @@
                   file="../../Source/Core/Configuration/ResourceManagers/ArpeggiatorsManager.cpp"/>
             <FILE id="U5rt0x" name="ArpeggiatorsManager.h" compile="0" resource="0"
                   file="../../Source/Core/Configuration/ResourceManagers/ArpeggiatorsManager.h"/>
+            <FILE id="kG1xgX" name="ChordsManager.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/ResourceManagers/ChordsManager.cpp"/>
+            <FILE id="n1G07p" name="ChordsManager.h" compile="0" resource="0" file="../../Source/Core/Configuration/ResourceManagers/ChordsManager.h"/>
             <FILE id="fRRy3T" name="ColourSchemesManager.cpp" compile="1" resource="0"
                   file="../../Source/Core/Configuration/ResourceManagers/ColourSchemesManager.cpp"/>
             <FILE id="tOWmMH" name="ColourSchemesManager.h" compile="0" resource="0"
@@ -998,13 +1015,22 @@
           </GROUP>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
-          <GROUP id="{3FB0D61A-1FFE-0A39-417B-2FEE93BBBF9D}" name="ChordBuilder">
-            <FILE id="sNR6Ht" name="ChordTooltip.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Popups/ChordBuilder/ChordTooltip.cpp"/>
-            <FILE id="vAlztw" name="ChordTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordBuilder/ChordTooltip.h"/>
-            <FILE id="c2tOHX" name="ScalerTool.cpp" compile="1" resource="0" file="../../Source/UI/Popups/ChordBuilder/ScalerTool.cpp"/>
-            <FILE id="PCPwNY" name="ScalerTool.h" compile="0" resource="0" file="../../Source/UI/Popups/ChordBuilder/ScalerTool.h"/>
-          </GROUP>
+          <FILE id="jgaJ0Q" name="ArpPreviewTool.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/ArpPreviewTool.cpp"/>
+          <FILE id="vMrO1F" name="ArpPreviewTool.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/ArpPreviewTool.h"/>
+          <FILE id="icyLny" name="ChordPreviewTool.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/ChordPreviewTool.cpp"/>
+          <FILE id="Zxgqax" name="ChordPreviewTool.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/ChordPreviewTool.h"/>
+          <FILE id="mlAEyz" name="ScalePreviewTool.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/ScalePreviewTool.cpp"/>
+          <FILE id="VghbFx" name="ScalePreviewTool.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/ScalePreviewTool.h"/>
+          <FILE id="Ydy0Pq" name="RescalePreviewTool.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/RescalePreviewTool.cpp"/>
+          <FILE id="pFtL7N" name="RescalePreviewTool.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/RescalePreviewTool.h"/>
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/CenteredTooltipComponent.h"/>
           <FILE id="euPsem" name="FailTooltip.cpp" compile="1" resource="0" file="../../Source/UI/Popups/FailTooltip.cpp"/>
@@ -1014,8 +1040,6 @@
           <FILE id="CM2odV" name="HelioCallout.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/HelioCallout.cpp"/>
           <FILE id="IPhSkz" name="HelioCallout.h" compile="0" resource="0" file="../../Source/UI/Popups/HelioCallout.h"/>
-          <FILE id="ezyOwA" name="NotePopupListener.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/NotePopupListener.h"/>
           <FILE id="wYUdKs" name="PopupButton.cpp" compile="1" resource="0" file="../../Source/UI/Popups/PopupButton.cpp"/>
           <FILE id="cL1fC7" name="PopupButton.h" compile="0" resource="0" file="../../Source/UI/Popups/PopupButton.h"/>
           <FILE id="oCbbhn" name="PopupButtonOwner.h" compile="0" resource="0"
@@ -1024,10 +1048,6 @@
                 file="../../Source/UI/Popups/PopupCustomButton.cpp"/>
           <FILE id="jScuWZ" name="PopupCustomButton.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupCustomButton.h"/>
-          <FILE id="fs64FI" name="PopupImageButton.cpp" compile="1" resource="0"
-                file="../../Source/UI/Popups/PopupImageButton.cpp"/>
-          <FILE id="ocZQ53" name="PopupImageButton.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/PopupImageButton.h"/>
           <FILE id="Z8rbjQ" name="PopupMenuComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupMenuComponent.h"/>
           <FILE id="IHNxez" name="ProgressIndicator.h" compile="0" resource="0"

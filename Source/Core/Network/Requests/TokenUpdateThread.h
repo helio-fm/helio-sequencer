@@ -35,7 +35,7 @@ public:
     Function<void(const String &newToken)> onTokenUpdateOk;
     Function<void(const Array<String> &errors)> onTokenUpdateFailed;
 
-    void updateToken(String lastValidToken, uint32 delayMs)
+    void updateToken(uint32 delayMs)
     {
         if (this->isThreadRunning())
         {
@@ -43,7 +43,6 @@ public:
         }
 
         this->delay = delayMs;
-        this->oldToken = lastValidToken;
         this->startThread(3);
     }
     
@@ -56,9 +55,7 @@ private:
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
-        // Construct payload object:
         ValueTree session(ApiKeys::session);
-        session.setProperty(ApiKeys::bearer, this->oldToken, nullptr);
         session.setProperty(ApiKeys::deviceId, Config::getDeviceId(), nullptr);
         session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName(), nullptr);
 
@@ -78,7 +75,6 @@ private:
     }
     
     uint32 delay;
-    String oldToken;
     BackendRequest::Response response;
     
     friend class BackendService;

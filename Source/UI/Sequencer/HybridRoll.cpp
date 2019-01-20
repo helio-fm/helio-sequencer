@@ -1105,13 +1105,12 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeEraser:
         this->project.getEditMode().setMode(HybridRollEditMode::eraserMode);
         break;
-    case CommandIDs::EditModeChordBuilder:
-        this->project.getEditMode().setMode(HybridRollEditMode::chordBuilderMode);
-        break;
     case CommandIDs::Undo:
+        this->deselectAll();
         this->project.undo();
         break;
     case CommandIDs::Redo:
+        this->deselectAll();
         this->project.redo();
         break;
     case CommandIDs::ZoomIn:
@@ -1120,10 +1119,13 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::ZoomOut:
         this->zoomOutImpulse();
         break;
+    case CommandIDs::TimelineJumpNext:
+        // TODO
+    case CommandIDs::TimelineJumpPrevious:
+        // TODO
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
-        //if (!this->project.getEditMode().isMode(HybridRollEditMode::dragMode))
-        { this->setSpaceDraggingMode(true); }
+        this->setSpaceDraggingMode(true);
         break;
     case CommandIDs::EndDragViewport:
         this->header->setSoundProbeMode(false);
@@ -1609,6 +1611,24 @@ Point<float> HybridRoll::getMouseOffset(Point<float> mouseScreenPosition) const
     y = (y > h) ? h : y;
 
     return Point<float>(x, y);
+}
+
+Point<int> HybridRoll::getDefaultPositionForPopup() const
+{
+    // a point where pop-ups will appear when keypress is hit or toolbar button is clicked
+    // on desktop, if mouse position is within a roll, use it, instead, use main layout centre
+#if HELIO_DESKTOP
+    const auto mousePositionWithinApp =
+        Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt() -
+        App::Layout().getScreenBounds().getPosition();
+
+    if (App::Layout().getPageBounds().contains(mousePositionWithinApp))
+    {
+        return mousePositionWithinApp;
+    }
+#endif
+
+    return App::Layout().getPageBounds().getCentre();
 }
 
 void HybridRoll::updateBounds()

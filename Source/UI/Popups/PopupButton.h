@@ -17,45 +17,58 @@
 
 #pragma once
 
-//[Headers]
-class PopupButtonHighlighter;
-class PopupButtonConfirmation;
-
 #include "PopupButtonOwner.h"
 #include "ComponentFader.h"
-//[/Headers]
 
+class PopupButtonHighlighter final : public Component
+{
+public:
+    PopupButtonHighlighter(const PopupButton &parent);
+    void paint(Graphics &g) override;
+private:
+    const PopupButton &button;
+};
 
-class PopupButton  : public Component,
-                     private Timer
+class PopupButtonConfirmation final : public Component
+{
+public:
+    explicit PopupButtonConfirmation(const PopupButton &parent);
+    void paint(Graphics &g) override;
+private:
+    const PopupButton &button;
+    Path clickConfirmImage;
+};
+
+class PopupButton : public Component, private Timer
 {
 public:
 
-    PopupButton (bool shouldShowConfirmImage);
+    enum ShapeType
+    {
+        Circle,
+        Hex
+    };
 
-    ~PopupButton();
+    PopupButton(bool shouldShowConfirmImage, ShapeType shapeType = Circle,
+        Colour colour = Colours::black.withAlpha(0.5f));
 
-    //[UserMethods]
-    float getRadiusDelta() const;
-    Point<int> getDragDelta() const;
+    float getRadiusDelta() const noexcept;
+    Point<int> getDragDelta() const noexcept;
     void setState(bool clicked);
-    //[/UserMethods]
+    void setUserData(const String &data);
+    const String &getUserData() const noexcept;
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    bool hitTest (int x, int y) override;
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    bool hitTest(int x, int y) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
 
-    //[UserVariables]
-
-    void onAction();
     void updateChildren();
     void timerCallback() override;
 
@@ -65,16 +78,23 @@ private:
     bool firstClickDone;
     bool showConfirmImage;
 
+    const Colour colour;
+    String userData;
+
     ComponentDragger dragger;
     Point<int> anchor;
 
     ComponentFader fader;
 
-    //[/UserVariables]
+    friend class PopupButtonHighlighter;
+    friend class PopupButtonConfirmation;
 
-    ScopedPointer<PopupButtonHighlighter> mouseOverHighlighter;
-    ScopedPointer<PopupButtonHighlighter> mouseDownHighlighter;
-    ScopedPointer<PopupButtonConfirmation> confirmationMark;
+    UniquePointer<PopupButtonHighlighter> mouseOverHighlighter;
+    UniquePointer<PopupButtonHighlighter> mouseDownHighlighter;
+    UniquePointer<PopupButtonConfirmation> confirmationMark;
+
+    ShapeType shapeType;
+    Path shape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupButton)
 };

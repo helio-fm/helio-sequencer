@@ -18,25 +18,30 @@
 #pragma once
 
 class Lasso;
-class ProjectTreeItem;
+class MidiTrack;
 
 #include "MenuPanel.h"
+#include "Scale.h"
+#include "Note.h"
 
-class PianoRollSelectionMenu : public MenuPanel
+class PianoRollSelectionMenu final : public MenuPanel
 {
 public:
     
-    PianoRollSelectionMenu(WeakReference<Lasso> lasso, const ProjectTreeItem &project);
-    void handleCommandMessage(int commandId) override;
-    
+    PianoRollSelectionMenu(WeakReference<Lasso> lasso,
+        WeakReference<MidiTrack> keySignatures);
+
 private:
 
     WeakReference<Lasso> lasso;
-    const ProjectTreeItem &project;
+
+    Note::Key harmonicContextKey = -1;
+    Scale::Ptr harmonicContextScale = nullptr;
 
     MenuPanel::Menu createDefaultPanel();
     MenuPanel::Menu createRefactoringPanel();
     MenuPanel::Menu createTimeDivisionsPanel();
+    MenuPanel::Menu createScalesPanel();
     MenuPanel::Menu createArpsPanel();
 
 };

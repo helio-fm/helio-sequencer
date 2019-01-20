@@ -20,17 +20,6 @@
 #include "SerializationKeys.h"
 #include "ResourceCache.h"
 
-enum Key
-{
-    I = 0,
-    II = 1,
-    III = 2,
-    IV = 3,
-    V = 4,
-    VI = 5,
-    VII = 6
-};
-
 Scale::Scale() noexcept :
     basePeriod(CHROMATIC_SCALE_SIZE) {}
 
@@ -115,28 +104,14 @@ String Scale::getLocalizedName() const
     return TRANS(this->name);
 }
 
-Array<int> Scale::getPowerChord(Function fun, bool oneOctave) const
+Array<int> Scale::getChord(Chord::Ptr chord, Function fun, bool oneOctave) const
 {
-    return {
-        this->getChromaticKey(Key::I + fun, oneOctave),
-        this->getChromaticKey(Key::V + fun, oneOctave) };
-}
-
-Array<int> Scale::getTriad(Function fun, bool oneOctave) const
-{
-    return {
-        this->getChromaticKey(Key::I + fun, oneOctave),
-        this->getChromaticKey(Key::III + fun, oneOctave),
-        this->getChromaticKey(Key::V + fun, oneOctave) };
-}
-
-Array<int> Scale::getSeventhChord(Function fun, bool oneOctave) const
-{
-    return {
-        this->getChromaticKey(Key::I + fun, oneOctave),
-        this->getChromaticKey(Key::III + fun, oneOctave),
-        this->getChromaticKey(Key::V + fun, oneOctave),
-        this->getChromaticKey(Key::VII + fun, oneOctave) };
+    Array<int> result;
+    for (const Chord::Key key : chord->getScaleKeys())
+    {
+        result.add(this->getChromaticKey(key + fun, oneOctave));
+    }
+    return result;
 }
 
 Array<int> Scale::getUpScale() const
@@ -157,7 +132,7 @@ Array<int> Scale::getDownScale() const
 
 bool Scale::seemsMinor() const noexcept
 {
-    return this->getChromaticKey(Key::III) == 3;
+    return this->getChromaticKey(Chord::Key::III) == 3;
 }
 
 // Wraps a chromatic key (may be negative)
@@ -216,7 +191,12 @@ bool operator!=(const Scale &l, const Scale &r)
 
 bool Scale::isEquivalentTo(const Scale::Ptr other) const
 {
-    return this->keys == other->keys;
+    if (other != nullptr)
+    {
+        return this->keys == other->keys;
+    }
+
+    return false;
 }
 
 //===----------------------------------------------------------------------===//
@@ -280,7 +260,7 @@ void Scale::deserialize(const ValueTree &tree)
     for (auto token : tokens)
     {
         this->keys.add(key);
-        key += token.getIntValue();
+        key = jlimit(0, this->basePeriod, key + token.getIntValue());
     }
 }
 

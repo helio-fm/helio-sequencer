@@ -139,6 +139,9 @@ public:
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
+    float getLassoStartBeat() const;
+    float getLassoEndBeat() const;
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -205,6 +208,16 @@ private:
 
 private:
 
+    enum ToolType
+    {
+        ScalePreview,
+        ChordPreview
+    };
+
+    void showChordTool(ToolType type, Point<int> position);
+
+private:
+
     class HighlightingScheme final
     {
     public:
@@ -265,5 +278,5 @@ private:
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll);
 };

@@ -88,7 +88,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
     this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)));
     this->addAndMakeVisible(annotationsButton.get());
 
-    this->playButton.reset(new PlayButton());
+    this->playButton.reset(new PlayButton(nullptr));
     this->addAndMakeVisible(playButton.get());
 
     //[UserPreSize]
@@ -249,19 +249,6 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         }
     }
     break;
-
-    case CommandIDs::TweakNotesVolume:
-        if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
-        {
-            if (roll->getLassoSelection().getNumSelected() == 0)
-            {
-                roll->selectAll();
-            }
-
-            HelioCallout::emit(new NotesTuningPanel(roll->getProject(), *roll), roll, true);
-        }
-        break;
-
     default:
         break;
     }
@@ -294,12 +281,9 @@ void SequencerSidebarRight::recreateMenu()
 
     if (this->menuMode == PianoRollTools)
     {
-        //const bool chordBuilderMode = this->project.getEditMode().isMode(HybridRollEditMode::chordBuilderMode);
-        //this->menu.add(MenuItem::item(Icons::chordTool, CommandIDs::EditModeChordBuilder)->toggled(chordBuilderMode));
-
-        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::TweakNotesVolume));
-        //this->menu.add(MenuItem::item(Icons::refactor, CommandIDs::RefactorNotes));
-        //this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ArpeggiateNotes));
+        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel));
+        this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
+        this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel));
         //this->menu.add(MenuItem::item(Icons::script, CommandIDs::RunScriptTransform));
 
         this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
@@ -501,7 +485,7 @@ BEGIN_JUCER_METADATA
                     params="this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
-             constructorParams=""/>
+             constructorParams="nullptr"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -148,9 +148,9 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
         response.body = parsedResponse;
 
         // Try to parse errors
-        using namespace Serialization;
         if (response.statusCode < 200 || response.statusCode >= 400)
         {
+            using namespace Serialization;
             for (int i = 0; i < parsedResponse.getNumProperties(); ++i)
             {
                 const auto key = parsedResponse.getPropertyName(i);

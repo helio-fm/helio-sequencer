@@ -23,12 +23,11 @@
 //[/Headers]
 
 
-class PlayButton  : public HighlightedComponent
+class PlayButton final : public HighlightedComponent
 {
 public:
 
-    PlayButton ();
-
+    PlayButton(WeakReference<Component> eventReceiver);
     ~PlayButton();
 
     //[UserMethods]
@@ -48,12 +47,13 @@ private:
 
     ComponentAnimator animator;
 
+    WeakReference<Component> eventReceiver;
     bool playing;
 
     //[/UserVariables]
 
-    ScopedPointer<IconComponent> playIcon;
-    ScopedPointer<IconComponent> pauseIcon;
+    UniquePointer<IconComponent> playIcon;
+    UniquePointer<IconComponent> pauseIcon;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayButton)
 };

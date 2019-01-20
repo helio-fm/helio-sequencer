@@ -47,7 +47,7 @@ public:
                     Base64::convertFromBase64(outStream, blocks[1]);
                 }
 
-                const JsonSerializer decoder;
+                static const JsonSerializer decoder;
                 decoder.loadFromString(block.toString(), this->jwt);
             }
         }
@@ -106,7 +106,7 @@ SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfi
             else if ((expiry - now).inDays() <= 5)
             {
                 DBG("Attempting to re-issue auth token");
-                this->prepareTokenUpdateThread()->updateToken(token, UPDATE_SESSION_TIMEOUT_MS);
+                this->prepareTokenUpdateThread()->updateToken(UPDATE_SESSION_TIMEOUT_MS);
             }
             else
             {

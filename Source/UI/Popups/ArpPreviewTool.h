@@ -17,33 +17,39 @@
 
 #pragma once
 
-//[Headers]
-#include "Icons.h"
-#include "PopupButton.h"
-//[/Headers]
+class Lasso;
+class MidiTrack;
+class PianoRoll;
 
+#include "Arpeggiator.h"
+#include "MenuPanel.h"
+#include "Scale.h"
+#include "Note.h"
 
-class PopupImageButton  : public PopupButton
+class ArpPreviewTool final : public MenuPanel
 {
 public:
 
-    PopupImageButton (Icons::Id iconId, bool shouldShowConfirmImage);
+    ArpPreviewTool(PianoRoll &roll,
+        Note::Key keyContext, Scale::Ptr scaleContext);
 
-    ~PopupImageButton();
+    static ArpPreviewTool *createWithinContext(PianoRoll &roll,
+        WeakReference<MidiTrack> keySignatures);
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
-    Path shape;
-    //[/UserVariables]
+    void dismissAsync();
+    void undoIfNeeded();
 
+    PianoRoll &roll;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupImageButton)
+    Note::Key keyContext;
+    Scale::Ptr scaleContext;
+
+    bool hasMadeChanges;
+    Arpeggiator::Ptr lastChosenArp;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpPreviewTool)
 };

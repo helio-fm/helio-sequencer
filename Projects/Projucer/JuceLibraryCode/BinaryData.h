@@ -59,6 +59,9 @@ namespace BinaryData
     extern const char*   browse_svg;
     const int            browse_svgSize = 321;
 
+    extern const char*   chordBuilder_svg;
+    const int            chordBuilder_svgSize = 852;
+
     extern const char*   chordTool_svg;
     const int            chordTool_svgSize = 542;
 
@@ -125,6 +128,12 @@ namespace BinaryData
     extern const char*   instrumentNode_svg;
     const int            instrumentNode_svgSize = 658;
 
+    extern const char*   inverseDown_svg;
+    const int            inverseDown_svgSize = 330;
+
+    extern const char*   inverseUp_svg;
+    const int            inverseUp_svgSize = 328;
+
     extern const char*   list_svg;
     const int            list_svgSize = 585;
 
@@ -133,6 +142,12 @@ namespace BinaryData
 
     extern const char*   login_svg;
     const int            login_svgSize = 816;
+
+    extern const char*   mediaForward_svg;
+    const int            mediaForward_svgSize = 345;
+
+    extern const char*   mediaRewind_svg;
+    const int            mediaRewind_svgSize = 283;
 
     extern const char*   menu_svg;
     const int            menu_svgSize = 376;
@@ -236,6 +251,12 @@ namespace BinaryData
     extern const char*   success_svg;
     const int            success_svgSize = 340;
 
+    extern const char*   timelineNext_svg;
+    const int            timelineNext_svgSize = 122;
+
+    extern const char*   timelinePrevious_svg;
+    const int            timelinePrevious_svgSize = 117;
+
     extern const char*   toggleOff_svg;
     const int            toggleOff_svgSize = 669;
 
@@ -278,20 +299,23 @@ namespace BinaryData
     extern const char*   arpeggiators_json;
     const int            arpeggiators_jsonSize = 64;
 
+    extern const char*   chords_json;
+    const int            chords_jsonSize = 623;
+
     extern const char*   colourSchemes_json;
     const int            colourSchemes_jsonSize = 2664;
 
     extern const char*   hotkeySchemes_json;
-    const int            hotkeySchemes_jsonSize = 12761;
+    const int            hotkeySchemes_jsonSize = 12997;
 
     extern const char*   scales_json;
-    const int            scales_jsonSize = 3513;
+    const int            scales_jsonSize = 3563;
 
     extern const char*   translations_json;
     const int            translations_jsonSize = 95522;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 94;
+    const int namedResourceListSize = 102;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

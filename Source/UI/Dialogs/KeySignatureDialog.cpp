@@ -80,7 +80,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     this->scaleEditor.reset(new ScaleEditor());
     this->addAndMakeVisible(scaleEditor.get());
 
-    this->playButton.reset(new PlayButton());
+    this->playButton.reset(new PlayButton(this));
     this->addAndMakeVisible(playButton.get());
     this->scaleNameEditor.reset(new TextEditor(String()));
     this->addAndMakeVisible(scaleNameEditor.get());
@@ -118,7 +118,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
 
         this->messageLabel->setText(TRANS("dialog::keysignature::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::keysignature::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::keysignature::add::cancel"));
+        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
     }
     else
     {
@@ -296,25 +296,6 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
 
             MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
             const double endTime = double(i + 0.5) * timeFactor;
-            eventNoteOff.setTimeStamp(endTime);
-
-            s.addEvent(eventNoteOn);
-            s.addEvent(eventNoteOff);
-        }
-
-        double timeOffset = double(scaleKeys.size() + 1.0) * timeFactor;
-
-        // Then play triad chord
-        const auto triadKeys = scale->getTriad(Scale::Tonic, false);
-        for (int i = 0; i < triadKeys.size(); ++i)
-        {
-            const int key = MIDDLE_C + this->key + triadKeys.getUnchecked(i);
-
-            MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
-            eventNoteOn.setTimeStamp(timeOffset);
-
-            MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
-            const double endTime = double(timeOffset + 0.5f) * timeFactor;
             eventNoteOff.setTimeStamp(endTime);
 
             s.addEvent(eventNoteOn);
@@ -573,7 +554,7 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <JUCERCOMP name="" id="a80d33e93bb4cadb" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="25Rr 148 40 40" sourceFile="../Common/PlayButton.cpp"
-             constructorParams=""/>
+             constructorParams="this"/>
   <TEXTEDITOR name="" id="3f330f1d57714294" memberName="scaleNameEditor" virtualName=""
               explicitFocusOrder="0" pos="-20Cc 152 100M 32" initialText=""
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"

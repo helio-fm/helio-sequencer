@@ -233,7 +233,7 @@ ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteP
     return { new ModalDialogConfirmation(
         TRANS("dialog::deleteproject::caption"),
         TRANS("dialog::deleteproject::proceed"),
-        TRANS("dialog::deleteproject::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
@@ -241,7 +241,7 @@ ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCh
     return { new ModalDialogConfirmation(
         TRANS("dialog::vcs::checkout::warning"),
         TRANS("dialog::vcs::checkout::proceed"),
-        TRANS("dialog::vcs::checkout::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
@@ -249,7 +249,7 @@ ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetCh
     return { new ModalDialogConfirmation(
         TRANS("dialog::vcs::reset::caption"),
         TRANS("dialog::vcs::reset::proceed"),
-        TRANS("dialog::vcs::reset::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
@@ -257,7 +257,7 @@ ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirm
     return { new ModalDialogConfirmation(
         TRANS("dialog::opengl::caption"),
         TRANS("dialog::opengl::proceed"),
-        TRANS("dialog::opengl::cancel")) };
+        TRANS("dialog::common::cancel")) };
 }
 
 //[/MiscUserCode]

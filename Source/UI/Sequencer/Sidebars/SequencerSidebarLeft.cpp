@@ -237,20 +237,16 @@ void SequencerSidebarLeft::recreateMenu()
     this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
     this->menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip));
 
-    /* TODO:
     // Jump to playhead position (or start following playhead when playing)
     //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::ZoomEntireClip));
 
     // Jump to the next anchor (timeline event or say clip)
-    this->menu.add(MenuItem::item(Icons::stretchLeft, CommandIDs::ZoomEntireClip));
-    this->menu.add(MenuItem::item(Icons::stretchLeft, CommandIDs::ZoomEntireClip));
-    this->menu.add(MenuItem::item(Icons::stretchRight, CommandIDs::ZoomEntireClip));
-    this->menu.add(MenuItem::item(Icons::stretchRight, CommandIDs::ZoomEntireClip));
+    //this->menu.add(MenuItem::item(Icons::mediaForward, CommandIDs::TimelineJumpNext));
+    //this->menu.add(MenuItem::item(Icons::mediaRewind, CommandIDs::TimelineJumpPrevious));
 
     // Focus on next/previous track
-    this->menu.add(MenuItem::item(Icons::pageUp, CommandIDs::ZoomEntireClip));
-    this->menu.add(MenuItem::item(Icons::pageDown, CommandIDs::ZoomEntireClip));
-    */
+    //this->menu.add(MenuItem::item(Icons::pageUp, CommandIDs::ZoomEntireClip));
+    //this->menu.add(MenuItem::item(Icons::pageDown, CommandIDs::ZoomEntireClip));
 }
 
 Component *SequencerSidebarLeft::refreshComponentForRow(int rowNumber,

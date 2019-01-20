@@ -139,6 +139,9 @@
         // Panels
         { "receiver": "PianoRoll", "command": "ShowVolumePanel", "key": "V" },
         { "receiver": "PianoRoll", "command": "ShowArpeggiatorsPanel", "key": "A" },
+        { "receiver": "PianoRoll", "command": "ShowRescalePanel", "key": "R" },
+        { "receiver": "PianoRoll", "command": "ShowScalePanel", "key": "S" },
+        { "receiver": "PianoRoll", "command": "ShowChordPanel", "key": "C" },
 
         // Arpeggiators
         { "receiver": "PianoRoll", "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },

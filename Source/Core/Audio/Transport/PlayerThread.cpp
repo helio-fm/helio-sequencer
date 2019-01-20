@@ -71,7 +71,11 @@ void PlayerThread::run()
     
     sequences.seekToTime(startPositionInTime);
     double prevTimeStamp = startPositionInTime;
-    
+    if (this->broadcastMode)
+    {
+        this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+    }
+
     // This hack is here to keep track of still playing events
     // to be able to send noteOff's when playback interrupts.
     struct HoldingNote final
@@ -154,6 +158,10 @@ void PlayerThread::run()
             {
                 sequences.seekToTime(startPositionInTime);
                 prevTimeStamp = startPositionInTime;
+                if (this->broadcastMode)
+                {
+                    this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+                }
                 continue;
             }
             else
@@ -214,6 +222,10 @@ void PlayerThread::run()
         {
             sequences.seekToTime(startPositionInTime);
             prevTimeStamp = startPositionInTime;
+            if (this->broadcastMode)
+            {
+                this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+            }
         }
         else
         {

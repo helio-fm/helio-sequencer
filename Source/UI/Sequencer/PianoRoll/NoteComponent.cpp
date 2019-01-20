@@ -32,9 +32,9 @@
 #define RESIZE_CORNER 10
 #define MAX_DRAG_POLYPHONY 8
 
-static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
+static PianoSequence *getPianoSequence(const Lasso &selection)
 {
-    const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
+    const auto &firstEvent = selection.getFirstAs<NoteComponent>()->getNote();
     return static_cast<PianoSequence *>(firstEvent.getSequence());;
 }
 
@@ -310,20 +310,15 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 this->stopSound();
             }
 
-            for (const auto &s : selection.getGroupedSelections())
+            Array<Note> groupBefore, groupAfter;
+            for (int i = 0; i < selection.getNumSelected(); ++i)
             {
-                const auto trackSelection(s.second);
-                Array<Note> groupBefore, groupAfter;
-
-                for (int i = 0; i < trackSelection->size(); ++i)
-                {
-                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                    groupBefore.add(nc->getNote());
-                    groupAfter.add(nc->continueInitializing(deltaLength, deltaKey, shouldSendMidi));
-                }
-
-                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+                const auto *nc = selection.getItemAs<NoteComponent>(i);
+                groupBefore.add(nc->getNote());
+                groupAfter.add(nc->continueInitializing(deltaLength, deltaKey, shouldSendMidi));
             }
+
+            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -338,20 +333,16 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto &s : selection.getGroupedSelections())
+            Array<Note> groupBefore, groupAfter;
+
+            for (int i = 0; i < selection.getNumSelected(); ++i)
             {
-                const auto trackSelection(s.second);
-                Array<Note> groupBefore, groupAfter;
-                
-                for (int i = 0; i < trackSelection->size(); ++i)
-                {
-                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                    groupBefore.add(nc->getNote());
-                    groupAfter.add(nc->continueResizingRight(deltaLength));
-                }
-                
-                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+                const auto *nc = selection.getItemAs<NoteComponent>(i);
+                groupBefore.add(nc->getNote());
+                groupAfter.add(nc->continueResizingRight(deltaLength));
             }
+                
+            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -366,20 +357,16 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto &s : selection.getGroupedSelections())
+            Array<Note> groupBefore, groupAfter;
+                
+            for (int i = 0; i < selection.getNumSelected(); ++i)
             {
-                const auto trackSelection(s.second);
-                Array<Note> groupBefore, groupAfter;
-                
-                for (int i = 0; i < trackSelection->size(); ++i)
-                {
-                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                    groupBefore.add(nc->getNote());
-                    groupAfter.add(nc->continueResizingLeft(deltaLength));
-                }
-                
-                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+                const auto *nc = selection.getItemAs<NoteComponent>(i);
+                groupBefore.add(nc->getNote());
+                groupAfter.add(nc->continueResizingLeft(deltaLength));
             }
+                
+            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -394,20 +381,16 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto &s : selection.getGroupedSelections())
+            Array<Note> groupBefore, groupAfter;
+                
+            for (int i = 0; i < selection.getNumSelected(); ++i)
             {
-                const auto trackSelection(s.second);
-                Array<Note> groupBefore, groupAfter;
-                
-                for (int i = 0; i < trackSelection->size(); ++i)
-                {
-                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                    groupBefore.add(nc->getNote());
-                    groupAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
-                }
-                
-                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+                const auto *nc = selection.getItemAs<NoteComponent>(i);
+                groupBefore.add(nc->getNote());
+                groupAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
             }
+                
+            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -422,20 +405,16 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto &s : selection.getGroupedSelections())
+            Array<Note> groupBefore, groupAfter;
+                
+            for (int i = 0; i < selection.getNumSelected(); ++i)
             {
-                const auto trackSelection(s.second);
-                Array<Note> groupBefore, groupAfter;
-                
-                for (int i = 0; i < trackSelection->size(); ++i)
-                {
-                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                    groupBefore.add(nc->getNote());
-                    groupAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
-                }
-                
-                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+                const auto *nc = selection.getItemAs<NoteComponent>(i);
+                groupBefore.add(nc->getNote());
+                groupAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
             }
+                
+            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -494,41 +473,31 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 this->stopSound();
             }
             
-            for (const auto &s : selection.getGroupedSelections())
+            Array<Note> groupBefore, groupAfter;
+            for (int i = 0; i < selection.getNumSelected(); ++i)
             {
-                const auto trackSelection(s.second);
-                Array<Note> groupBefore, groupAfter;
-                
-                for (int i = 0; i < trackSelection->size(); ++i)
-                {
-                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                    groupBefore.add(nc->getNote());
-                    groupAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
-                }
-                
-                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+                const auto *nc = selection.getItemAs<NoteComponent>(i);
+                groupBefore.add(nc->getNote());
+                groupAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
             }
+                
+            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
     }
     else if (this->state == Tuning)
     {
         this->checkpointIfNeeded();
         
-        for (const auto &s : selection.getGroupedSelections())
+        Array<Note> groupBefore, groupAfter;
+        for (int i = 0; i < selection.getNumSelected(); ++i)
         {
-            const auto trackSelection(s.second);
-            Array<Note> groupBefore, groupAfter;
-            
-            for (int i = 0; i < trackSelection->size(); ++i)
-            {
-                const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueTuning(e));
-                this->getRoll().setDefaultNoteVolume(groupAfter.getLast().getVelocity());
-            }
-            
-            getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+            const auto *nc = selection.getItemAs<NoteComponent>(i);
+            groupBefore.add(nc->getNote());
+            groupAfter.add(nc->continueTuning(e));
+            this->getRoll().setDefaultNoteVolume(groupAfter.getLast().getVelocity());
         }
+
+        getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
     }
 }
 

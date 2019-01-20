@@ -27,6 +27,7 @@
 #include "HotkeySchemesManager.h"
 #include "ArpeggiatorsManager.h"
 #include "ScalesManager.h"
+#include "ChordsManager.h"
 #include "ScriptsManager.h"
 
 #include "HelioTheme.h"
@@ -265,6 +266,7 @@ void App::initialise(const String &commandLine)
         this->resourceManagers[colourSchemes] = &ColourSchemesManager::getInstance();
         this->resourceManagers[hotkeySchemes] = &HotkeySchemesManager::getInstance();
         this->resourceManagers[scales] = &ScalesManager::getInstance();
+        this->resourceManagers[chords] = &ChordsManager::getInstance();
         this->resourceManagers[scripts] = &ScriptsManager::getInstance();
 
         for (auto i : this->resourceManagers)

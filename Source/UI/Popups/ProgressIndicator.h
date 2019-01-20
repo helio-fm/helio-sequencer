@@ -22,10 +22,10 @@
 #include "Icons.h"
 #define PROGRESS_INDICATOR_UPDATE_TIMS_MS 17
 
-class ProgressIndicator : public Component,
-                          private Timer
+class ProgressIndicator final : public Component, private Timer
 {
 public:
+
     ProgressIndicator() : indicatorDegree(0)
     {
         this->setInterceptsMouseClicks(false, false);
