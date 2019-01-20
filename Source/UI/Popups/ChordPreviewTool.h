@@ -84,6 +84,7 @@ private:
     WeakReference<KeySignaturesSequence> harmonicContext;
     bool detectKeyBeatAndContext();
 
+    Scale::Ptr defaultScale;
     Array<Chord::Ptr> defaultChords;
 
     OwnedArray<PopupCustomButton> chordButtons;

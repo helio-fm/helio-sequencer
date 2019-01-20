@@ -1011,6 +1011,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ShowArpeggiatorsPanel:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
         if (auto *panel = ArpPreviewTool::createWithinContext(*this,
             this->project.getTimeline()->getKeySignatures()))
         {
@@ -1018,6 +1019,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ShowRescalePanel:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
         if (auto *panel = RescalePreviewTool::createWithinContext(*this,
             this->project.getTimeline()->getKeySignatures()))
         {
@@ -1031,10 +1033,8 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->showChordTool(ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
-        if (this->selection.getNumSelected() > 0)
-        {
-            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
-        }
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
         break;
     case CommandIDs::TweakVolumeRandom:
         HYBRID_ROLL_BULK_REPAINT_START

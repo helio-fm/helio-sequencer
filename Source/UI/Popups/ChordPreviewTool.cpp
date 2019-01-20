@@ -82,7 +82,8 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
 
     //[Constructor]
 
-    //sequence(static_cast<PianoSequence *>(targetTrack->getSequence()))
+    this->defaultScale = Scale::getNaturalMajorScale();
+
     const int numChordsToDisplay = jmin(16, this->defaultChords.size());
     for (int i = 0; i < numChordsToDisplay; ++i)
     {
@@ -388,8 +389,8 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     }
     else
     {
-        // TODO use C Ionian as fallback context!
-        jassertfalse;
+        this->scale = this->defaultScale;
+        this->root = 0;
     }
 
     return hasChanges;

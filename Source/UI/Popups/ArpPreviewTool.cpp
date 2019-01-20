@@ -41,7 +41,7 @@ ArpPreviewTool *ArpPreviewTool::createWithinContext(PianoRoll &roll,
             clip, keySignatures, scale, key))
         {
             DBG("Warning: harmonic context could not be detected");
-            return nullptr;
+            return new ArpPreviewTool(roll, 0, Scale::getNaturalMajorScale());
         }
 
         return new ArpPreviewTool(roll, key, scale);
