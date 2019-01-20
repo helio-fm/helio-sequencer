@@ -17,13 +17,14 @@
 
 #pragma once
 
+class MidiEvent;
 class ProjectTreeItem;
 
 #include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectEventDispatcher.h"
 
-class ProjectTimeline :
+class ProjectTimeline final :
     public ProjectEventDispatcher,
     public VCS::TrackedItem,
     public Serializable
@@ -36,6 +37,13 @@ public:
     MidiTrack *getAnnotations() const noexcept;
     MidiTrack *getTimeSignatures() const noexcept;
     MidiTrack *getKeySignatures() const noexcept;
+
+    //===------------------------------------------------------------------===//
+    // Navigation helpers
+    //===------------------------------------------------------------------===//
+
+    float findNextAnchorBeat(float beat) const;
+    float findPreviousAnchorBeat(float beat) const;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

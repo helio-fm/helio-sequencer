@@ -95,6 +95,7 @@ public:
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
+    float getSeekBeat() const;
     void scrollToSeekPosition();
     float getPositionForNewTimelineEvent() const;
     void insertAnnotationWithinScreen(const String &annotation);

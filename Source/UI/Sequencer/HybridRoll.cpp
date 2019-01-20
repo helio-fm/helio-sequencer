@@ -581,14 +581,20 @@ double HybridRoll::getTransportPositionByXPosition(int xPosition, double canvasW
 
 double HybridRoll::getTransportPositionByBeat(float targetBeat) const
 {
+    const auto targetBeatSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, targetBeat);
     const double projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-    return double(targetBeat - this->projectFirstBeat) / projectLengthInBeats;
+    return double(targetBeatSafe - this->projectFirstBeat) / projectLengthInBeats;
 }
 
 float HybridRoll::getBeatByTransportPosition(double absSeekPosition) const
 {
     const double projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
     return float(projectLengthInBeats * absSeekPosition) + this->projectFirstBeat;
+}
+
+float HybridRoll::getSeekBeat() const
+{
+    return this->getBeatByTransportPosition(this->getTransport().getSeekPosition());
 }
 
 float HybridRoll::getBarByXPosition(int xPosition) const
@@ -1120,9 +1126,25 @@ void HybridRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse();
         break;
     case CommandIDs::TimelineJumpNext:
-        // TODO
+        if (!this->project.getTransport().isPlaying())
+        {
+            this->stopFollowingPlayhead();
+            const auto beat = this->project.getTimeline()->findNextAnchorBeat(this->getSeekBeat());
+            const auto newSeek = this->getTransportPositionByBeat(beat);
+            this->getTransport().seekToPosition(newSeek);
+            this->scrollToSeekPosition();
+        }
+        break;
     case CommandIDs::TimelineJumpPrevious:
-        // TODO
+        if (!this->project.getTransport().isPlaying())
+        {
+            this->stopFollowingPlayhead();
+            const auto beat = this->project.getTimeline()->findPreviousAnchorBeat(this->getSeekBeat());
+            const auto newSeek = this->getTransportPositionByBeat(beat);
+            this->getTransport().seekToPosition(newSeek);
+            this->scrollToSeekPosition();
+        }
+        break;
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
         this->setSpaceDraggingMode(true);
@@ -1141,15 +1163,12 @@ void HybridRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::TransportStartPlayback:
-        if (this->project.getTransport().isPlaying())
+        if (!this->project.getTransport().isPlaying())
         {
-            this->startFollowingPlayhead();
-        }
-        else
-        {
+            this->stopFollowingPlayhead();
             this->project.getTransport().startPlayback();
-            this->startFollowingPlayhead();
         }
+        this->startFollowingPlayhead();
         break;
     case CommandIDs::TransportPausePlayback:
         if (this->project.getTransport().isPlaying())
@@ -1166,7 +1185,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         App::Workspace().getAudioCore().unmute();
         break;
     case CommandIDs::VersionControlToggleQuickStash:
-        if (auto vcs = this->project.findChildOfType<VersionControlTreeItem>())
+        if (auto *vcs = this->project.findChildOfType<VersionControlTreeItem>())
         {
             this->deselectAll(); // a couple of hacks, instead will need to improve event system
             this->getTransport().stopPlayback(); // with a pre-reset callback or so
@@ -1174,7 +1193,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::AddAnnotation:
-        if (AnnotationsSequence *sequence = dynamic_cast<AnnotationsSequence *>
+        if (auto *sequence = dynamic_cast<AnnotationsSequence *>
             (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
@@ -1183,7 +1202,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::AddTimeSignature:
-        if (TimeSignaturesSequence *sequence = dynamic_cast<TimeSignaturesSequence *>
+        if (auto *sequence = dynamic_cast<TimeSignaturesSequence *>
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
@@ -1192,7 +1211,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::AddKeySignature:
-        if (KeySignaturesSequence *sequence = dynamic_cast<KeySignaturesSequence *>
+        if (auto *sequence = dynamic_cast<KeySignaturesSequence *>
             (this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
@@ -1335,14 +1354,12 @@ void HybridRoll::resetAllOversaturationIndicators()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onSeek(double absolutePosition,
-    double currentTimeMs, double totalTimeMs)
+void HybridRoll::onSeek(double absolutePosition, double, double)
 {
     this->lastTransportPosition = absolutePosition;
 }
 
 void HybridRoll::onTempoChanged(double msPerQuarter) {}
-
 void HybridRoll::onTotalTimeChanged(double timeMs) {}
 
 void HybridRoll::onPlay()
@@ -1356,7 +1373,6 @@ void HybridRoll::onStop()
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     // todo sync screen back to playhead?
     this->stopFollowingPlayhead();
-    //this->scrollToSeekPosition();
 #endif
 }
 
@@ -1367,15 +1383,9 @@ bool HybridRoll::isFollowingPlayhead() const noexcept
 
 void HybridRoll::startFollowingPlayhead()
 {
-    if (this->isFollowingPlayhead())
-    {
-        return;
-    }
-
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
     this->shouldFollowPlayhead = true;
-    this->triggerAsyncUpdate();
 #endif
 }
 
@@ -1388,8 +1398,6 @@ void HybridRoll::stopFollowingPlayhead()
 
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     this->stopTimer();
-    // this introduces the case when I change a note during playback, and the note component position is not updated
-    //this->cancelPendingUpdate();
     this->shouldFollowPlayhead = false;
 #endif
 }
@@ -1398,7 +1406,7 @@ void HybridRoll::scrollToSeekPosition()
 {
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     this->startFollowingPlayhead();
-    this->startTimer(8);
+    this->startTimer(7);
 #else
     const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
     this->viewport.setViewPosition(playheadX - (this->viewport.getViewWidth() / 3), this->viewport.getViewPositionY());
@@ -1434,14 +1442,13 @@ void HybridRoll::handleAsyncUpdate()
     }
 
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
-    if (this->shouldFollowPlayhead &&
-        !this->smoothZoomController->isZooming())
+    if (this->shouldFollowPlayhead && !this->smoothZoomController->isZooming())
     {
         const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
 
         if (fabs(this->playheadOffset) > 1.0)
         {
-            this->playheadOffset *= 0.975;
+            this->playheadOffset *= 0.75;
         }
         else
         {
@@ -1449,7 +1456,7 @@ void HybridRoll::handleAsyncUpdate()
         }
 
         this->viewport.setViewPosition(playheadX - int(this->playheadOffset) - (this->viewport.getViewWidth() / 2),
-                                       this->viewport.getViewPositionY());
+            this->viewport.getViewPositionY());
 
         this->updateChildrenPositions();
     }
@@ -1475,10 +1482,9 @@ void HybridRoll::triggerBatchRepaintFor(FloatBoundsComponent *target)
 
 void HybridRoll::hiResTimerCallback()
 {
-    if (fabs(this->playheadOffset) < 0.01)
+    if (fabs(this->playheadOffset) < 0.1)
     {
         MessageManagerLock lock(Thread::getCurrentThread());
-
         if (lock.lockWasGained())
         {
             this->stopFollowingPlayhead();

@@ -240,9 +240,9 @@ void SequencerSidebarLeft::recreateMenu()
     // Jump to playhead position (or start following playhead when playing)
     //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::ZoomEntireClip));
 
-    // Jump to the next anchor (timeline event or say clip)
-    //this->menu.add(MenuItem::item(Icons::mediaForward, CommandIDs::TimelineJumpNext));
-    //this->menu.add(MenuItem::item(Icons::mediaRewind, CommandIDs::TimelineJumpPrevious));
+    // Jump to the next anchor, i.e. any timeline event
+    this->menu.add(MenuItem::item(Icons::mediaRewind, CommandIDs::TimelineJumpPrevious));
+    this->menu.add(MenuItem::item(Icons::mediaForward, CommandIDs::TimelineJumpNext));
 
     // Focus on next/previous track
     //this->menu.add(MenuItem::item(Icons::pageUp, CommandIDs::ZoomEntireClip));

@@ -26,7 +26,7 @@
 
 // A simple wrappers around the sequences
 // We don't need any patterns here
-class AnnotationsTrack : public EmptyMidiTrack
+class AnnotationsTrack final : public EmptyMidiTrack
 {
 public:
 
@@ -42,7 +42,7 @@ public:
     ProjectTimeline &timeline;
 };
 
-class TimeSignaturesTrack : public EmptyMidiTrack
+class TimeSignaturesTrack final : public EmptyMidiTrack
 {
 public:
 
@@ -58,7 +58,7 @@ public:
     ProjectTimeline &timeline;
 };
 
-class KeySignaturesTrack : public EmptyMidiTrack
+class KeySignaturesTrack final : public EmptyMidiTrack
 {
 public:
 
@@ -120,6 +120,55 @@ MidiTrack *ProjectTimeline::getTimeSignatures() const noexcept
 MidiTrack *ProjectTimeline::getKeySignatures() const noexcept
 {
     return this->keySignaturesTrack;
+}
+
+//===----------------------------------------------------------------------===//
+// Navigation helpers
+//===----------------------------------------------------------------------===//
+
+static float findNextTrackAnchor(MidiTrack *track, float beat)
+{
+    for (int i = 0; i < track->getSequence()->size(); ++i)
+    {
+        const auto *current = track->getSequence()->getUnchecked(i);
+        if (current->getBeat() > beat)
+        {
+            return current->getBeat();
+        }
+    }
+
+    return FLT_MAX;
+}
+
+static float findPreviousTrackAnchor(MidiTrack *track, float beat)
+{
+    for (int i = track->getSequence()->size(); i --> 0                        ;)
+    {
+        const auto *current = track->getSequence()->getUnchecked(i);
+        if (current->getBeat() < beat)
+        {
+            return current->getBeat();
+        }
+    }
+
+    return -FLT_MAX;
+}
+
+// finds the nearest timeline event, like key or time signature, or annotation
+float ProjectTimeline::findNextAnchorBeat(float beat) const
+{
+    const auto keyEvent = findNextTrackAnchor(this->keySignaturesTrack, beat);
+    const auto timeEvent = findNextTrackAnchor(this->timeSignaturesTrack, beat);
+    const auto annotation = findNextTrackAnchor(this->annotationsTrack, beat);
+    return jmin(keyEvent, timeEvent, annotation);
+}
+
+float ProjectTimeline::findPreviousAnchorBeat(float beat) const
+{
+    const auto keyEvent = findPreviousTrackAnchor(this->keySignaturesTrack, beat);
+    const auto timeEvent = findPreviousTrackAnchor(this->timeSignaturesTrack, beat);
+    const auto annotation = findPreviousTrackAnchor(this->annotationsTrack, beat);
+    return jmax(keyEvent, timeEvent, annotation);
 }
 
 //===----------------------------------------------------------------------===//

@@ -97,7 +97,9 @@
         { "receiver": "PianoRoll", "command": "ZoomIn", "key": "Z" },
         { "receiver": "PianoRoll", "command": "ZoomOut", "key": "Shift + Z" },
         { "receiver": "PianoRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
-        { "receiver": "PianoRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
+        { "receiver": "PianoRoll", "command": "ZoomEntireClip", "key": "Control + Tab" },
+        { "receiver": "PianoRoll", "command": "TimelineJumpNext", "key": "." },
+        { "receiver": "PianoRoll", "command": "TimelineJumpPrevious", "key": "," },
 
         // Selection
         { "receiver": "PianoRoll", "command": "SelectAllEvents", "key": "Command + A" },
@@ -131,7 +133,6 @@
         { "receiver": "PianoRoll", "command": "EditModePan", "key": "3" },
         { "receiver": "PianoRoll", "command": "EditModeKnife", "key": "4" },
         { "receiver": "PianoRoll", "command": "EditModeEraser", "key": "5" },
-        { "receiver": "PianoRoll", "command": "EditModeChordBuilder", "key": "6" },
 
         // Version control
         { "receiver": "PianoRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
@@ -139,12 +140,10 @@
         // Panels
         { "receiver": "PianoRoll", "command": "ShowVolumePanel", "key": "V" },
         { "receiver": "PianoRoll", "command": "ShowArpeggiatorsPanel", "key": "A" },
+        { "receiver": "PianoRoll", "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },
         { "receiver": "PianoRoll", "command": "ShowRescalePanel", "key": "R" },
         { "receiver": "PianoRoll", "command": "ShowScalePanel", "key": "S" },
         { "receiver": "PianoRoll", "command": "ShowChordPanel", "key": "C" },
-
-        // Arpeggiators
-        { "receiver": "PianoRoll", "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },
 
         // ------------------------------------
         // Pattern roll's specific
@@ -186,7 +185,9 @@
         { "receiver": "PatternRoll", "command": "ZoomIn", "key": "Z" },
         { "receiver": "PatternRoll", "command": "ZoomOut", "key": "Shift + Z" },
         { "receiver": "PatternRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
-        { "receiver": "PatternRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
+        { "receiver": "PatternRoll", "command": "ZoomEntireClip", "key": "Control + Tab" },
+        { "receiver": "PatternRoll", "command": "TimelineJumpNext", "key": "." },
+        { "receiver": "PatternRoll", "command": "TimelineJumpPrevious", "key": "," },
 
         // Selection
         { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Command + A" },
