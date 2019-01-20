@@ -93,10 +93,8 @@ namespace CommandIDs
         Undo                            = 0x1900,
         Redo                            = 0x1901,
 
-        RefactorNotes                   = 0x200c,
-        ScriptedTransform               = 0x200d,
-        ArpeggiateNotes                 = 0x200e,
-        TweakNotesVolume                = 0x200f,
+        TimelineJumpNext                = 0x2000,
+        TimelineJumpPrevious            = 0x2001,
 
         ShowAnnotations                 = 0x2010,
         ResetVolumeChanges              = 0x2011,

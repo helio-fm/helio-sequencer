@@ -249,19 +249,6 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         }
     }
     break;
-
-    case CommandIDs::TweakNotesVolume:
-        if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
-        {
-            if (roll->getLassoSelection().getNumSelected() == 0)
-            {
-                roll->selectAll();
-            }
-
-            HelioCallout::emit(new NotesTuningPanel(roll->getProject(), *roll), roll, true);
-        }
-        break;
-
     default:
         break;
     }
@@ -294,12 +281,9 @@ void SequencerSidebarRight::recreateMenu()
 
     if (this->menuMode == PianoRollTools)
     {
-        //const bool chordBuilderMode = this->project.getEditMode().isMode(HybridRollEditMode::chordBuilderMode);
-        //this->menu.add(MenuItem::item(Icons::chordTool, CommandIDs::EditModeChordBuilder)->toggled(chordBuilderMode));
-
-        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::TweakNotesVolume));
-        //this->menu.add(MenuItem::item(Icons::refactor, CommandIDs::RefactorNotes));
-        //this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ArpeggiateNotes));
+        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel));
+        this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
+        this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel));
         //this->menu.add(MenuItem::item(Icons::script, CommandIDs::RunScriptTransform));
 
         this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));

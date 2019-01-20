@@ -1549,6 +1549,8 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
     auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
     jassert(pianoSequence);
 
+    this->deselectAll();
+
     switch (type)
     {
     case PianoRoll::ScalePreview:

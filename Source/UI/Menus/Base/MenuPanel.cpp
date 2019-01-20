@@ -97,15 +97,12 @@ StringPairArray MenuPanel::getColoursList()
     c.set(TRANS("colours::red"),            Colours::red.toString());
     c.set(TRANS("colours::crimson"),        Colours::crimson.toString());
     c.set(TRANS("colours::deeppink"),       Colours::deeppink.toString());
-    //c.set(TRANS("colours::fuchsia"),        Colours::fuchsia.toString());
     c.set(TRANS("colours::darkviolet"),     Colours::darkviolet.toString());
     c.set(TRANS("colours::blueviolet"),     Colours::blueviolet.toString());
     c.set(TRANS("colours::blue"),           Colours::blue.toString());
     c.set(TRANS("colours::royalblue"),      Colours::royalblue.toString());
-    //c.set(TRANS("colours::aqua"),           Colours::aqua.toString());
     c.set(TRANS("colours::springgreen"),    Colours::springgreen.toString());
     c.set(TRANS("colours::lime"),           Colours::lime.toString());
-    //c.set(TRANS("colours::chartreuse"),     Colours::chartreuse.toString());
     c.set(TRANS("colours::greenyellow"),    Colours::greenyellow.toString());
     c.set(TRANS("colours::gold"),           Colours::gold.toString());
     c.set(TRANS("colours::darkorange"),     Colours::darkorange.toString());

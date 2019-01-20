@@ -1105,9 +1105,6 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeEraser:
         this->project.getEditMode().setMode(HybridRollEditMode::eraserMode);
         break;
-    case CommandIDs::EditModeChordBuilder:
-        this->project.getEditMode().setMode(HybridRollEditMode::chordBuilderMode);
-        break;
     case CommandIDs::Undo:
         this->deselectAll();
         this->project.undo();
@@ -1122,10 +1119,13 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::ZoomOut:
         this->zoomOutImpulse();
         break;
+    case CommandIDs::TimelineJumpNext:
+        // TODO
+    case CommandIDs::TimelineJumpPrevious:
+        // TODO
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
-        //if (!this->project.getEditMode().isMode(HybridRollEditMode::dragMode))
-        { this->setSpaceDraggingMode(true); }
+        this->setSpaceDraggingMode(true);
         break;
     case CommandIDs::EndDragViewport:
         this->header->setSoundProbeMode(false);

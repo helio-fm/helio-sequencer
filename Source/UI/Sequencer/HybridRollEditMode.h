@@ -31,8 +31,7 @@ public:
         zoomMode                         = 0x04,
         dragMode                         = 0x05,
         knifeMode                        = 0x06,
-        eraserMode                       = 0x07,
-        chordBuilderMode                 = 0x08,
+        eraserMode                       = 0x07
     };
     
     HybridRollEditMode() = default;

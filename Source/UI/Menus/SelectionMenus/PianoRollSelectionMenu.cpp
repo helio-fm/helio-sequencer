@@ -90,17 +90,19 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
         TRANS("menu::selection::notes::totrack"))->closesMenu());
 
+    const bool canInvert = this->lasso->getNumSelected() > 1;
+
+    menu.add(MenuItem::item(Icons::inverseUp, CommandIDs::InvertChordUp,
+        TRANS("menu::refactoring::inverseup"))->disabledIf(!canInvert)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::inverseDown, CommandIDs::InvertChordDown,
+        TRANS("menu::refactoring::inversedown"))->disabledIf(!canInvert)->closesMenu());
+
     // TODO
     // Cleanup
-    // Invert up, Invert down
-    // Period up, Period down - really worths mentioning here? only for mobile versions?
-
     // Not implemented:
     // Double time
     // Half time
-
-    //menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
-    //menu.add(MenuItem::item(Icons::trash, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::selection::piano::cleanup")));
 
     const bool canRescale = (this->harmonicContextScale != nullptr);
 
