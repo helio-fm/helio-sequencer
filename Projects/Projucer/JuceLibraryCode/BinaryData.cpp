@@ -9790,6 +9790,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x5bd41619:  numBytes = 942; return automationTrack_svg;
         case 0x7e70270c:  numBytes = 363; return back_svg;
         case 0xf6383f2f:  numBytes = 321; return browse_svg;
+        case 0xebc721c4:  numBytes = 852; return chordBuilder_svg;
         case 0x68af1fb9:  numBytes = 542; return chordTool_svg;
         case 0xe3430f9d:  numBytes = 469; return close_svg;
         case 0x52ffe571:  numBytes = 549; return colour_svg;
@@ -9812,9 +9813,13 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x423ac39a:  numBytes = 1034; return helio_svg;
         case 0x74a8060c:  numBytes = 1677; return instrument_svg;
         case 0x5daabbae:  numBytes = 658; return instrumentNode_svg;
+        case 0xc48b0097:  numBytes = 330; return inverseDown_svg;
+        case 0x4b4fda10:  numBytes = 328; return inverseUp_svg;
         case 0x503a1f43:  numBytes = 585; return list_svg;
         case 0xb82f1f90:  numBytes = 564; return local_svg;
         case 0x998b008e:  numBytes = 816; return login_svg;
+        case 0x3d55b766:  numBytes = 345; return mediaForward_svg;
+        case 0x98a343e4:  numBytes = 283; return mediaRewind_svg;
         case 0xdc083b84:  numBytes = 376; return menu_svg;
         case 0x33c78b3e:  numBytes = 721; return mute_svg;
         case 0xf53ee1cf:  numBytes = 374; return microphone_svg;
@@ -9849,6 +9854,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x231e903c:  numBytes = 365; return stretchRight_svg;
         case 0x2687b9c4:  numBytes = 365; return submenu_svg;
         case 0xb46c7428:  numBytes = 340; return success_svg;
+        case 0x764b2e79:  numBytes = 122; return timelineNext_svg;
+        case 0xc81723fd:  numBytes = 117; return timelinePrevious_svg;
         case 0x2a9081a0:  numBytes = 669; return toggleOff_svg;
         case 0x3b9bcc78:  numBytes = 510; return toggleOn_svg;
         case 0x475dff99:  numBytes = 284; return trackGroup_svg;
@@ -9863,9 +9870,10 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x3c71eb84:  numBytes = 317; return noise_png;
         case 0xe05deb51:  numBytes = 25962; return logov2_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
+        case 0xd1d24c90:  numBytes = 623; return chords_json;
         case 0x41b35b05:  numBytes = 2664; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 12761; return hotkeySchemes_json;
-        case 0x048f5efe:  numBytes = 3513; return scales_json;
+        case 0x25669f2b:  numBytes = 12997; return hotkeySchemes_json;
+        case 0x048f5efe:  numBytes = 3563; return scales_json;
         case 0xf8655f25:  numBytes = 95522; return translations_json;
         default: break;
     }
@@ -9893,6 +9901,7 @@ const char* namedResourceList[] =
     "automationTrack_svg",
     "back_svg",
     "browse_svg",
+    "chordBuilder_svg",
     "chordTool_svg",
     "close_svg",
     "colour_svg",
@@ -9915,9 +9924,13 @@ const char* namedResourceList[] =
     "helio_svg",
     "instrument_svg",
     "instrumentNode_svg",
+    "inverseDown_svg",
+    "inverseUp_svg",
     "list_svg",
     "local_svg",
     "login_svg",
+    "mediaForward_svg",
+    "mediaRewind_svg",
     "menu_svg",
     "mute_svg",
     "microphone_svg",
@@ -9952,6 +9965,8 @@ const char* namedResourceList[] =
     "stretchRight_svg",
     "submenu_svg",
     "success_svg",
+    "timelineNext_svg",
+    "timelinePrevious_svg",
     "toggleOff_svg",
     "toggleOn_svg",
     "trackGroup_svg",
@@ -9966,6 +9981,7 @@ const char* namedResourceList[] =
     "noise_png",
     "logov2_png",
     "arpeggiators_json",
+    "chords_json",
     "colourSchemes_json",
     "hotkeySchemes_json",
     "scales_json",
@@ -9991,6 +10007,7 @@ const char* originalFilenames[] =
     "automationTrack.svg",
     "back.svg",
     "browse.svg",
+    "chordBuilder.svg",
     "chordTool.svg",
     "close.svg",
     "colour.svg",
@@ -10013,9 +10030,13 @@ const char* originalFilenames[] =
     "helio.svg",
     "instrument.svg",
     "instrumentNode.svg",
+    "inverseDown.svg",
+    "inverseUp.svg",
     "list.svg",
     "local.svg",
     "login.svg",
+    "mediaForward.svg",
+    "mediaRewind.svg",
     "menu.svg",
     "mute.svg",
     "microphone.svg",
@@ -10050,6 +10071,8 @@ const char* originalFilenames[] =
     "stretchRight.svg",
     "submenu.svg",
     "success.svg",
+    "timelineNext.svg",
+    "timelinePrevious.svg",
     "toggleOff.svg",
     "toggleOn.svg",
     "trackGroup.svg",
@@ -10064,6 +10087,7 @@ const char* originalFilenames[] =
     "noise.png",
     "logo-v2.png",
     "arpeggiators.json",
+    "chords.json",
     "colourSchemes.json",
     "hotkeySchemes.json",
     "scales.json",
