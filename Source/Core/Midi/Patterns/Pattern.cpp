@@ -314,6 +314,32 @@ bool Pattern::changeGroup(Array<Clip> &groupBefore, Array<Clip> &groupAfter, boo
 }
 
 //===----------------------------------------------------------------------===//
+// Batch actions
+//===----------------------------------------------------------------------===//
+
+void Pattern::transposeAll(int keyDelta, bool shouldCheckpoint)
+{
+    if (this->size() > 0)
+    {
+        Array<Clip> groupBefore, groupAfter;
+
+        for (int i = 0; i < this->size(); ++i)
+        {
+            const Clip clip = *this->clips.getUnchecked(i);
+            groupBefore.add(clip);
+            groupAfter.add(clip.withDeltaKey(keyDelta));
+        }
+
+        if (shouldCheckpoint)
+        {
+            this->checkpoint();
+        }
+
+        this->changeGroup(groupBefore, groupAfter, true);
+    }
+}
+
+//===----------------------------------------------------------------------===//
 // Events change listener
 //===----------------------------------------------------------------------===//
 

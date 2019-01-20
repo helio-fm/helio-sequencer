@@ -67,6 +67,9 @@ public:
     bool removeGroup(Array<Clip> &clips, bool undoable);
     bool changeGroup(Array<Clip> &clipsBefore, Array<Clip> &clipsAfter, bool undoable);
 
+    // Batch actions:
+    void transposeAll(int keyDelta, bool checkpoint);
+
     //===------------------------------------------------------------------===//
     // Array wrapper
     //===------------------------------------------------------------------===//

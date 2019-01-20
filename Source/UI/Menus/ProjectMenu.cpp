@@ -58,9 +58,9 @@ void ProjectMenu::handleCommandMessage(int commandId)
         case CommandIDs::AddTempoController:
         {
             bool hasTempoTrack = false;
-            Array<AutomationTrackTreeItem *> autos = this->project.findChildrenOfType<AutomationTrackTreeItem>();
+            const auto autoTracks = this->project.findChildrenOfType<AutomationTrackTreeItem>();
             
-            for (auto i : autos)
+            for (auto *i : autoTracks)
             {
                 if (i->getTrackControllerNumber() == MidiTrack::tempoController)
                 {
@@ -88,45 +88,29 @@ void ProjectMenu::handleCommandMessage(int commandId)
             return;
         }
 
-        // FIXME: change clips, don't transpose sequences!
         case CommandIDs::ProjectTransposeUp:
         {
-            Array<MidiTrack *> tracks = this->project.getTracks();
-            bool didCheckpoint = false;
-            
+            this->project.checkpoint();
+            const auto tracks = this->project.getTracks();
             for (int i = 0; i < tracks.size(); ++i)
             {
-                if (auto *pianoSequence = dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
+                if (dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
                 {
-                    if (! didCheckpoint)
-                    {
-                        didCheckpoint = true;
-                        pianoSequence->checkpoint();
-                    }
-                    
-                    pianoSequence->transposeAll(1, false);
+                    tracks.getUnchecked(i)->getPattern()->transposeAll(1, false);
                 }
             }
         }
         return;
 
-        // FIXME: change clips, don't transpose sequences!
         case CommandIDs::ProjectTransposeDown:
         {
-            Array<MidiTrack *> tracks = this->project.getTracks();
-            bool didCheckpoint = false;
-            
+            this->project.checkpoint();
+            const auto tracks = this->project.getTracks();
             for (int i = 0; i < tracks.size(); ++i)
             {
-                if (auto *pianoSequence = dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
+                if (dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
                 {
-                    if (! didCheckpoint)
-                    {
-                        didCheckpoint = true;
-                        pianoSequence->checkpoint();
-                    }
-
-                    pianoSequence->transposeAll(-1, false);
+                    tracks.getUnchecked(i)->getPattern()->transposeAll(-1, false);
                 }
             }
         }

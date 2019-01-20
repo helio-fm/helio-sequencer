@@ -242,39 +242,6 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
 }
 
 //===----------------------------------------------------------------------===//
-// Batch operations
-//===----------------------------------------------------------------------===//
-
-void PianoSequence::transposeAll(int keyDelta, bool shouldCheckpoint)
-{
-    if (this->midiEvents.size() == 0)
-    {
-        return;
-    }
-
-    Array<Note> groupBefore, groupAfter;
-
-    for (int i = 0; i < this->midiEvents.size(); ++i)
-    {
-        if (Note *n = dynamic_cast<Note *>(this->midiEvents.getUnchecked(i)))
-        {
-            Note n1 = *n;
-            Note n2 = n1.withDeltaKey(keyDelta);
-
-            groupBefore.add(n1);
-            groupAfter.add(n2);
-        }
-    }
-
-    if (shouldCheckpoint)
-    {
-        this->checkpoint();
-    }
-
-    this->changeGroup(groupBefore, groupAfter, true);
-}
-
-//===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
 
