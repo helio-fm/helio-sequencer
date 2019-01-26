@@ -52,7 +52,7 @@ void RevisionConnectorComponent::resizeToFit()
 
 void RevisionConnectorComponent::paint(Graphics &g)
 {
-    //g.setColour(this->findColour(HistoryComponent::connectorColourId));
+    //g.setColour(findDefaultColour(HistoryComponent::connectorColourId));
     g.setColour(Colours::white.withAlpha(0.2f));
     g.fillPath(this->linePath);
 }

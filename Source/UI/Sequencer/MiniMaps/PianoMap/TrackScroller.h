@@ -87,7 +87,7 @@ public:
     // Additional horizontal dragger
     //===------------------------------------------------------------------===//
     
-    class HorizontalDragHelper : public HelperRectangle
+    class HorizontalDragHelper final : public HelperRectangle
     {
     public:
         
@@ -120,7 +120,7 @@ public:
             g.fillRect(this->getLocalBounds());
         }
         
-        class MoveConstrainer : public ComponentBoundsConstrainer
+        class MoveConstrainer final : public ComponentBoundsConstrainer
         {
         public:
             explicit MoveConstrainer(TrackScroller &scrollerRef) : scroller(scrollerRef) {}

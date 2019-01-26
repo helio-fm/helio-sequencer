@@ -137,7 +137,7 @@ void SequencerSidebarLeft::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
     //[/UserPaint]
 }

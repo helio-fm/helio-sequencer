@@ -344,7 +344,6 @@
 		03A9BA8C4B5BE7895A80A0F0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PanelBackgroundA.h; path = ../../Source/UI/Themes/PanelBackgroundA.h; sourceTree = "SOURCE_ROOT"; };
 		049110EFE86677978F8FA611 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryData.cpp; path = ../Projucer/JuceLibraryCode/BinaryData.cpp; sourceTree = "SOURCE_ROOT"; };
 		04B95C3CFF70E3037015E8C8 = {isa = PBXFileReference; lastKnownFileType = file.svg; name = ellipsis.svg; path = ../../Resources/Icons/ellipsis.svg; sourceTree = "SOURCE_ROOT"; };
-		04C81AF56FBEDE0AEC3EB57D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColourChangeButton.h; path = ../../Source/UI/Pages/Settings/ColourChangeButton.h; sourceTree = "SOURCE_ROOT"; };
 		058846F81FAAAB9F76A32CE7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RecentProjectInfo.cpp; path = ../../Source/Core/Workspace/RecentProjectInfo.cpp; sourceTree = "SOURCE_ROOT"; };
 		05893E09D724205647BBB7E6 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RecentProjectRow.h; path = ../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h; sourceTree = "SOURCE_ROOT"; };
 		058B64FFC210C4F1AD2B2042 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Headline.h; path = ../../Source/UI/Headline/Headline.h; sourceTree = "SOURCE_ROOT"; };
@@ -1724,7 +1723,6 @@
 		B37054AC8BA2ED4BCF44C0E7 = {isa = PBXGroup; children = (
 					8036860876900AF36E06FF02,
 					3274EE0D7653072660EED41E,
-					04C81AF56FBEDE0AEC3EB57D,
 					8D5E4B7612CD7AA5C3880C31,
 					E126076F062300172614B713,
 					30EE086674D5E760D36E1BF1,

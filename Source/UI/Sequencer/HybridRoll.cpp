@@ -113,10 +113,10 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     lastTransportPosition(0.0),
     playheadOffset(0.0),
     shouldFollowPlayhead(false),
-    barLineColour(this->findColour(ColourIDs::Roll::barLine)),
-    barLineBevelColour(this->findColour(ColourIDs::Roll::barLineBevel)),
-    beatLineColour(this->findColour(ColourIDs::Roll::beatLine)),
-    snapLineColour(this->findColour(ColourIDs::Roll::snapLine))
+    barLineColour(findDefaultColour(ColourIDs::Roll::barLine)),
+    barLineBevelColour(findDefaultColour(ColourIDs::Roll::barLineBevel)),
+    beatLineColour(findDefaultColour(ColourIDs::Roll::beatLine)),
+    snapLineColour(findDefaultColour(ColourIDs::Roll::snapLine))
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);

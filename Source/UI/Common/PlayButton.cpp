@@ -28,18 +28,19 @@
 #include "ColourIDs.h"
 #include "CommandIDs.h"
 
-class PlayButtonHighlighter : public Component
+class PlayButtonHighlighter final : public Component
 {
 public:
 
     PlayButtonHighlighter()
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
     }
 
     void paint(Graphics &g) override
     {
-        const Colour colour1(this->findColour(ColourIDs::Icons::fill).withAlpha(0.1f));
+        const Colour colour1(findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.1f));
         const int h = this->getHeight();
         const Rectangle<float> r(this->getLocalBounds()
                                  .withSizeKeepingCentre(h, h)

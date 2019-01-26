@@ -26,40 +26,39 @@ public:
     HelperRectangle()
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
     }
 
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::fill));
-        g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
+        g.setColour(findDefaultColour(ColourIDs::HelperRectangle::fill));
+        g.fillRect(this->getLocalBounds());
     }
-
 };
 
-
-class HelperRectangleVertical : public HelperRectangle
+class HelperRectangleVertical final : public HelperRectangle
 {
 public:
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::fill));
-        g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
+        g.setColour(findDefaultColour(ColourIDs::HelperRectangle::fill));
+        g.fillRect(this->getLocalBounds());
 
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::outline));
+        g.setColour(findDefaultColour(ColourIDs::HelperRectangle::outline));
         g.drawVerticalLine(0, 0.f, float(this->getHeight()));
         g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
     }
 };
 
-class HelperRectangleHorizontal : public HelperRectangle
+class HelperRectangleHorizontal final : public HelperRectangle
 {
 public:
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::fill));
-        g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
+        g.setColour(findDefaultColour(ColourIDs::HelperRectangle::fill));
+        g.fillRect(this->getLocalBounds());
 
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::outline));
+        g.setColour(findDefaultColour(ColourIDs::HelperRectangle::outline));
         g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
         g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
     }

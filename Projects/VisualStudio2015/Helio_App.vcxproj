@@ -2520,7 +2520,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\ColourChangeButton.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SimpleSettingsWrapper.h"/>

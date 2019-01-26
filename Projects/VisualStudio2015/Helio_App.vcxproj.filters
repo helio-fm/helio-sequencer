@@ -3969,9 +3969,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\ColourChangeButton.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>

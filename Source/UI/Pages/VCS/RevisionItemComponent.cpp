@@ -100,7 +100,7 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
 
     // Gray out details a bit:
     this->deltasLabel->setColour(Label::textColourId,
-        this->findColour(Label::textColourId).withMultipliedAlpha(0.75f));
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.75f));
     //[/UserPreSize]
 
     this->setSize(500, 70);

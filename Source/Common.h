@@ -133,6 +133,8 @@ inline float roundBeat(float beat)
             return nullptr; \
         }, this)
 
+#define findDefaultColour(x) LookAndFeel::getDefaultLookAndFeel().findColour(x)
+
 // Implements compile-time FNV1a hash:
 constexpr uint32 fnv1a_32_val = 0x811c9dc5;
 constexpr uint64 fnv1a_32_prime = 0x1000193;

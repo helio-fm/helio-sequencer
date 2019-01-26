@@ -133,10 +133,10 @@ int HelioCallout::getBorderSize() const noexcept
 
 void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedImage)
 {
-    g.setColour(this->findColour(ColourIDs::Callout::fill));
+    g.setColour(findDefaultColour(ColourIDs::Callout::fill));
     g.fillPath(path);
 
-    g.setColour(this->findColour(ColourIDs::Callout::frame));
+    g.setColour(findDefaultColour(ColourIDs::Callout::frame));
     g.strokePath(path, PathStrokeType(1.0f));
 }
 

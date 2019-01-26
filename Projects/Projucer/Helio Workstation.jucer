@@ -934,8 +934,6 @@
             <FILE id="zErgDe" name="AudioSettings.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/AudioSettings.cpp"/>
             <FILE id="qPsjoy" name="AudioSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/AudioSettings.h"/>
-            <FILE id="sCV3Ea" name="ColourChangeButton.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/ColourChangeButton.h"/>
             <FILE id="V92mWI" name="ComponentsList.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/ComponentsList.cpp"/>
             <FILE id="cSvomJ" name="ComponentsList.h" compile="0" resource="0"

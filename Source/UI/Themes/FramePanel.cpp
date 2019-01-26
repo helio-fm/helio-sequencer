@@ -68,7 +68,7 @@ void FramePanel::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(this->findColour(ColourIDs::Panel::border));
+    g.setColour(findDefaultColour(ColourIDs::Panel::border));
 
     const float w = float(this->getWidth());
     const float h = float(this->getHeight());

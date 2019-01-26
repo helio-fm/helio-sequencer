@@ -44,7 +44,9 @@ Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
         const auto magicNumber = static_cast<uint64>(fileStream.readInt64());
         if (magicNumber == kHelioHeaderV2)
         {
-            tree = ValueTree::readFromStream(fileStream);
+            // without a buffered stream, loading speed sucks soo hard on Windows:
+            BufferedInputStream bufferedStream(fileStream, 4096);
+            tree = ValueTree::readFromStream(bufferedStream);
             return Result::ok();
         }
     }

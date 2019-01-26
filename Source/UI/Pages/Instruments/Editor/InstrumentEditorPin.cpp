@@ -37,14 +37,14 @@ void InstrumentEditorPin::paint(Graphics &g)
     const float h = float(this->getHeight());
     const bool isMidiChannel = (this->index == Instrument::midiChannelNumber);
 
-    g.setColour(this->findColour(shadowPin));
+    g.setColour(findDefaultColour(shadowPin));
     g.drawEllipse(3.f, 4.f, w - 6.f, h - 6.f, 4.f);
 
     const int colourId = isMidiChannel ?
         (this->isInput ? midiIn : midiOut) :
         (this->isInput ? audioIn : audioOut);
 
-    g.setColour(this->findColour(colourId));
+    g.setColour(findDefaultColour(colourId));
     g.drawEllipse(3.f, 3.f, w - 6.f, h - 6.f, 4.f);
 }
 

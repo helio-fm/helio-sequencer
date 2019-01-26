@@ -40,8 +40,8 @@ Playhead::Playhead(HybridRoll &parentRoll,
     timerStartPosition(0.0),
     listener(movementListener)
 {
-    this->mainColour = this->findColour(ColourIDs::Roll::playhead);
-    this->shadeColour = this->findColour(ColourIDs::Roll::playheadShade);
+    this->mainColour = findDefaultColour(ColourIDs::Roll::playhead);
+    this->shadeColour = findDefaultColour(ColourIDs::Roll::playheadShade);
 
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);

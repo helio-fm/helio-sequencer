@@ -232,10 +232,10 @@ void TrackScroller::paint(Graphics &g)
     g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
 
-    g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineDark));
+    g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineDark));
     g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
 
-    g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineLight));
+    g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineLight));
     g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
 }
 

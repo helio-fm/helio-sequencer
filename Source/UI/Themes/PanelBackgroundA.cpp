@@ -62,7 +62,7 @@ void PanelBackgroundA::paint (Graphics& g)
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
         Colour fillColour = Colour (0xff5156a1);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::BackgroundA::fill);
+        fillColour = findDefaultColour(ColourIDs::BackgroundA::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
@@ -79,7 +79,7 @@ void PanelBackgroundA::paint (Graphics& g)
     }
     else
     {
-        g.setColour(this->findColour(ColourIDs::BackgroundA::fill));
+        g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill));
         g.fillRect(this->getLocalBounds());
     }
     //[/UserPaint]

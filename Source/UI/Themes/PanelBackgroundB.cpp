@@ -78,7 +78,7 @@ void PanelBackgroundB::paint (Graphics& g)
     }
     else
     {
-        g.setColour(this->findColour(ColourIDs::BackgroundB::fill));
+        g.setColour(findDefaultColour(ColourIDs::BackgroundB::fill));
         g.fillRect(this->getLocalBounds());
     }
 

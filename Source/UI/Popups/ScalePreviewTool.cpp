@@ -220,7 +220,7 @@ void ScalePreviewTool::paint (Graphics& g)
         Colour fillColour = Colour (0x77000000);
         Colour strokeColour = Colour (0x33000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::Callout::fill);
+        fillColour = findDefaultColour(ColourIDs::Callout::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRoundedRectangle (x, y, width, height, 2.000f);
@@ -233,7 +233,7 @@ void ScalePreviewTool::paint (Graphics& g)
         Colour fillColour = Colour (0x77000000);
         Colour strokeColour = Colour (0x33000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::Callout::fill);
+        fillColour = findDefaultColour(ColourIDs::Callout::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRoundedRectangle (x, y, width, height, 2.000f);

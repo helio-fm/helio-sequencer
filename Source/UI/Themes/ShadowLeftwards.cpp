@@ -30,7 +30,7 @@ ShadowLeftwards::ShadowLeftwards(ShadowType type)
 {
 
     //[UserPreSize]
-    this->lineColour = this->findColour(ColourIDs::Common::borderLineDark);
+    this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark);
     //[/UserPreSize]
 
     this->setSize(40, 400);

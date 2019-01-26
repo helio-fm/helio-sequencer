@@ -121,7 +121,7 @@ void InstrumentEditorConnector::getPoints(float &x1, float &y1, float &x2, float
 
 void InstrumentEditorConnector::paint(Graphics &g)
 {
-    g.setColour(this->findColour(ColourIDs::Instrument::shadowConnector));
+    g.setColour(findDefaultColour(ColourIDs::Instrument::shadowConnector));
     g.fillPath(linePath, AffineTransform::translation(0, 1));
     
     const bool isMidiConnector =
@@ -129,8 +129,8 @@ void InstrumentEditorConnector::paint(Graphics &g)
         this->connection.destination.channelIndex == Instrument::midiChannelNumber);
 
     const Colour lineColour = isMidiConnector ?
-        this->findColour(ColourIDs::Instrument::midiConnector) :
-        this->findColour(ColourIDs::Instrument::audioConnector);
+        findDefaultColour(ColourIDs::Instrument::midiConnector) :
+        findDefaultColour(ColourIDs::Instrument::audioConnector);
 
     g.setColour(lineColour);
     g.fillPath(linePath);
