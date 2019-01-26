@@ -537,8 +537,8 @@ void ProjectTreeItem::load(const ValueTree &tree)
 void ProjectTreeItem::importMidi(const File &file)
 {
     MidiFile tempFile;
-    ScopedPointer<InputStream> in(new FileInputStream(file));
-    const bool readOk = tempFile.readFrom(*in);
+    FileInputStream in(file);
+    const bool readOk = tempFile.readFrom(in);
 
     if (!readOk)
     {

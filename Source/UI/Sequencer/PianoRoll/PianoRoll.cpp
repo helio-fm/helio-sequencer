@@ -64,7 +64,6 @@
 #include "Config.h"
 #include "Icons.h"
 
-#define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
 
 #define forEachEventOfGivenTrack(map, child, track) \
@@ -1086,23 +1085,20 @@ void PianoRoll::resized()
 
 void PianoRoll::paint(Graphics &g)
 {
-    const auto sequences = this->project.getTimeline()->getKeySignatures()->getSequence();
+    const auto *keysSequence = this->project.getTimeline()->getKeySignatures()->getSequence();
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = paintStartX + this->viewport.getViewWidth();
 
-    // Seems that OpenGL renders non-power-of-2 textures incorrectly?
-    // This is just a quick hack, please FIXME:
-    const float paintOffsetY = MainWindow::isOpenGLRendererEnabled() ?
-        float(HYBRID_ROLL_HEADER_HEIGHT + 1) : float(HYBRID_ROLL_HEADER_HEIGHT);
+    static const float paintOffsetY = float(HYBRID_ROLL_HEADER_HEIGHT);
 
     int prevBarX = paintStartX;
     const HighlightingScheme *prevScheme = nullptr;
     const int y = this->viewport.getViewPositionY();
     const int h = this->viewport.getViewHeight();
 
-    for (int nextKeyIdx = 0; nextKeyIdx < sequences->size(); ++nextKeyIdx)
+    for (int nextKeyIdx = 0; nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
     {
-        const auto key = static_cast<KeySignatureEvent *>(sequences->getUnchecked(nextKeyIdx));
+        const auto *key = static_cast<KeySignatureEvent *>(keysSequence->getUnchecked(nextKeyIdx));
         const int barX = int(((key->getBeat() / float(BEATS_PER_BAR)) - this->firstBar)  * this->barWidth);
         const int index = this->binarySearchForHighlightingScheme(key);
 
@@ -1114,7 +1110,7 @@ void PianoRoll::paint(Graphics &g)
         }
 #endif
 
-        const auto s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
+        const auto *s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
         const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
         g.setFillType(fillType);
 
@@ -1135,7 +1131,7 @@ void PianoRoll::paint(Graphics &g)
 
     if (prevBarX < paintEndX)
     {
-        const auto s = (prevScheme == nullptr) ? this->defaultHighlighting : prevScheme;
+        const auto *s = (prevScheme == nullptr) ? this->defaultHighlighting : prevScheme;
         const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
         g.setFillType(fillType);
         g.fillRect(prevBarX, y, paintEndX - prevBarX, h);
@@ -1439,12 +1435,22 @@ Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const
 {
     Array<Image> result;
     const auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    for (int j = 0; j <= PIANOROLL_MAX_ROW_HEIGHT; ++j)
+    for (int j = 0; j < PIANOROLL_MIN_ROW_HEIGHT; ++j)
+    {
+        result.add({});
+    }
+    for (int j = PIANOROLL_MIN_ROW_HEIGHT; j <= PIANOROLL_MAX_ROW_HEIGHT; ++j)
     {
         result.add(PianoRoll::renderRowsPattern(theme, scheme->getScale(), scheme->getRootKey(), j));
     }
     return result;
 }
+
+// pre-rendered tiles are used in paint() method to fill the background,
+// but OpenGL doesn't work well with non-power-of-2 textures
+// and the smaller the texture is, the uglier it is displayed,
+// that's why I ended up rendering 6 octaves here instead of one:
+#define NUM_ROWS_TO_RENDER (CHROMATIC_SCALE_SIZE * 6)
 
 Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     const Scale::Ptr scale, int root, int height)
@@ -1454,7 +1460,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
         return Image(Image::RGB, 1, 1, true);
     }
 
-    Image patternImage(Image::RGB, 16, height * ROWS_OF_TWO_OCTAVES, false);
+    Image patternImage(Image::RGB, 4, height * NUM_ROWS_TO_RENDER, false);
     Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKey);
@@ -1477,7 +1483,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
 
     // draw rows
     for (int i = lastOctaveReminder;
-        (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((posY + previousHeight) >= 0.0f);
+        (i < NUM_ROWS_TO_RENDER + lastOctaveReminder) && ((posY + previousHeight) >= 0.0f);
         i++)
     {
         const int noteNumber = (i % 12);
