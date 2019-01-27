@@ -151,19 +151,27 @@ void ProjectMenu::handleCommandMessage(int commandId)
 
 ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
 {
-    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
+    ScopedPointer<MidiTrackTreeItem> newItem(new PianoTrackTreeItem(name));
     
     // We need to have at least one clip on a pattern:
     const Clip clip(newItem->getPattern());
     newItem->getPattern()->insert(clip, false);
 
+    Random r;
+    const auto colours = MenuPanel::getColoursList().getAllValues();
+    const int ci = r.nextInt(colours.size());
+    newItem->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
     newItem->setTrackInstrumentId(instrumentId, false);
+
+    // TODO insert a single note?
+
     return newItem->serialize();
 }
 
-ValueTree ProjectMenu::createAutoTrackTempate(const String &name, int controllerNumber, const String &instrumentId) const
+ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
+    int controllerNumber, const String &instrumentId) const
 {
-    ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
+    ScopedPointer<MidiTrackTreeItem> newItem(new AutomationTrackTreeItem(name));
 
     // We need to have at least one clip on a pattern:
     const Clip clip(newItem->getPattern());

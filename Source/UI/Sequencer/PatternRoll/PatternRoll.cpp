@@ -469,10 +469,10 @@ void PatternRoll::zoomAbsolute(const Point<float> &zoom)
     HybridRoll::zoomAbsolute(zoom);
 }
 
-float PatternRoll::getZoomFactorY() const
+float PatternRoll::getZoomFactorY() const noexcept
 {
-    const float &viewHeight = float(this->viewport.getViewHeight());
-    return (viewHeight / float(this->getHeight()));
+    const float viewHeight = float(this->viewport.getViewHeight());
+    return viewHeight / float(this->getHeight());
 }
 
 //===----------------------------------------------------------------------===//

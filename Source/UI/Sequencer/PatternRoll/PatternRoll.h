@@ -17,8 +17,8 @@
 
 #pragma once
 
-#define PATTERN_ROLL_CLIP_HEIGHT 60
-#define PATTERN_ROLL_TRACK_HEADER_HEIGHT 4
+#define PATTERN_ROLL_CLIP_HEIGHT 48
+#define PATTERN_ROLL_TRACK_HEADER_HEIGHT 3
 
 class CutPointMark;
 class ClipComponent;
@@ -94,7 +94,7 @@ public:
 
     void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
     void zoomAbsolute(const Point<float> &zoom) override;
-    float getZoomFactorY() const override;
+    float getZoomFactorY() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component

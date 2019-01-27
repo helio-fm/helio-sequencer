@@ -17,7 +17,6 @@
 
 #pragma once
 
-class Instrument;
 class OrchestraPit;
 class PlayerThread;
 class PlayerThreadPool;
@@ -27,6 +26,7 @@ class RendererThread;
 #include "ProjectSequencesWrapper.h"
 #include "ProjectListener.h"
 #include "OrchestraListener.h"
+#include "Instrument.h"
 
 class Transport final : public Serializable,
                         public ProjectListener,
@@ -159,9 +159,10 @@ private:
     ProjectSequences sequences;
     bool sequencesAreOutdated;
     
-    Array<const MidiTrack *> tracksCache;
-    HashMap<String, Instrument *> linksCache; // layer id : instrument
-    
+    // linksCache is <track id : instrument>
+    mutable Array<const MidiTrack *> tracksCache;
+    mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> linksCache;
+
     void updateLinkForTrack(const MidiTrack *track);
     void removeLinkForTrack(const MidiTrack *track);
     

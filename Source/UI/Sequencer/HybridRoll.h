@@ -161,8 +161,8 @@ public:
 
     void zoomAbsolute(const Point<float> &zoom) override;
     void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
-    float getZoomFactorX() const override;
-    float getZoomFactorY() const override;
+    float getZoomFactorX() const noexcept override;
+    float getZoomFactorY() const noexcept override;
 
     void zoomInImpulse(float factor = 1.f);
     void zoomOutImpulse(float factor = 1.f);
@@ -193,8 +193,8 @@ public:
     inline float getFirstBeat() const noexcept { return this->firstBar * float(BEATS_PER_BAR); }
     
     void setBarRange(float first, float last);
-    inline float getNumBars() const { return this->lastBar - this->firstBar; }
-    inline float getNumBeats() const { return this->getNumBars() * BEATS_PER_BAR; }
+    inline float getNumBars() const noexcept { return this->lastBar - this->firstBar; }
+    inline float getNumBeats() const noexcept { return this->getNumBars() * BEATS_PER_BAR; }
 
     virtual void setBarWidth(const float newBarWidth);
     float getBarWidth() const noexcept { return this->barWidth; }

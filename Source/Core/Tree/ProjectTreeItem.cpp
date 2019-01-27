@@ -693,10 +693,9 @@ void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
 
 Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
 {
-    const Point<float> &beatRange = this->getProjectRangeInBeats();
-
-    const float &firstBeat = beatRange.getX();
-    const float &lastBeat = beatRange.getY();
+    const auto beatRange = this->getProjectRangeInBeats();
+    const float firstBeat = beatRange.getX();
+    const float lastBeat = beatRange.getY();
     
     // FIXME
     // changeListeners.call iterates listeners list in it's order

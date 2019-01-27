@@ -498,23 +498,18 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
 
 void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
-    //this->stopFollowingPlayhead();
-
-    const float &newWidth = this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH * zoom.getX();
-    const float &barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BAR_WIDTH);
-    const float &viewWidth = float(this->viewport.getViewWidth());
-    const float &newBarWidth = floorf(viewWidth / barsOnNewScreen + .5f);
+    const float newWidth = this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH * zoom.getX();
+    const float barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BAR_WIDTH);
+    const float viewWidth = float(this->viewport.getViewWidth());
+    const float newBarWidth = floorf(viewWidth / barsOnNewScreen + .5f);
     this->setBarWidth(newBarWidth);
-
     this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
 }
 
 void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
-    //this->stopFollowingPlayhead();
-
-    const Point<float> oldViewPosition = this->viewport.getViewPosition().toFloat();
-    const Point<float> absoluteOrigin = oldViewPosition + origin;
+    const auto oldViewPosition = this->viewport.getViewPosition().toFloat();
+    const auto absoluteOrigin = oldViewPosition + origin;
     const float oldWidth = float(this->getWidth());
 
     float newBarWidth = this->getBarWidth() + (factor.getX() * this->getBarWidth());
@@ -537,16 +532,16 @@ void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &fa
     this->updateChildrenPositions();
 }
 
-float HybridRoll::getZoomFactorX() const
+float HybridRoll::getZoomFactorX() const noexcept
 {
-    const float &numBars = this->getNumBars();
-    const float &viewWidth = float(this->viewport.getViewWidth());
-    const float &barWidth = float(this->getBarWidth());
-    const float &barsOnScreen = (viewWidth / barWidth);
-    return (barsOnScreen / numBars);
+    const float numBars = this->getNumBars();
+    const float viewWidth = float(this->viewport.getViewWidth());
+    const float barWidth = float(this->getBarWidth());
+    const float barsOnScreen = (viewWidth / barWidth);
+    return barsOnScreen / numBars;
 }
 
-float HybridRoll::getZoomFactorY() const
+float HybridRoll::getZoomFactorY() const noexcept
 {
     return 1.f;
 }
@@ -1075,10 +1070,10 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
 
-    const float &inititalSpeed = this->smoothZoomController->getInitialZoomSpeed();
+    const float inititalSpeed = this->smoothZoomController->getInitialZoomSpeed();
     const float forwardWheel = wheel.deltaY * (wheel.isReversed ? -inititalSpeed : inititalSpeed);
     const float beatWidth = (this->barWidth / BEATS_PER_BAR);
-    const Point<float> mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
+    const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
     if (event.mods.isAnyModifierKeyDown())
     {
         this->startSmoothZoom(mouseOffset, Point<float>(0.f, forwardWheel));
@@ -1112,7 +1107,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         this->project.getEditMode().setMode(HybridRollEditMode::eraserMode);
         break;
     case CommandIDs::Undo:
-        this->deselectAll();
+        this->deselectAll(); // FIXME: don't drop selection if there are only event changes
         this->project.undo();
         break;
     case CommandIDs::Redo:

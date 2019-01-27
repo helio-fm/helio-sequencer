@@ -76,14 +76,7 @@ public:
     {
         const auto ca = Colour::fromString(a);
         const auto cb = Colour::fromString(b);
-
-        if (a < b) {
-            return -1;
-        } else if (a > b) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return (a < b) ? -1 : (a > b ? 1 : 0);
     }
 };
 
@@ -111,7 +104,7 @@ StringPairArray MenuPanel::getColoursList()
     return c;
 }
 
-#define ANIM_TIME_MS 200
+#define ANIM_TIME_MS 175
 #define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 

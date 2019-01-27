@@ -125,17 +125,17 @@ void TrackScroller::xyMoveByUser()
 {
     if (this->roll != nullptr)
     {
-        const Rectangle<float> &screenRangeBounds = this->screenRange->getRealBounds();
+        const auto screenRangeBounds = this->screenRange->getRealBounds();
 
-        const float &mw = float(this->getWidth()) - screenRangeBounds.getWidth();
-        const float &propX = screenRangeBounds.getTopLeft().getX() / mw;
-        const float &mh = float(this->getHeight()) - screenRangeBounds.getHeight();
-        const float &propY = screenRangeBounds.getTopLeft().getY() / mh;
+        const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
+        const float propX = screenRangeBounds.getTopLeft().getX() / mw;
+        const float mh = float(this->getHeight()) - screenRangeBounds.getHeight();
+        const float propY = screenRangeBounds.getTopLeft().getY() / mh;
 
         // fixes for header height delta
-        const float &hh = float(HYBRID_ROLL_HEADER_HEIGHT);
-        const float &rollHeight = float(this->roll->getHeight());
-        const float &propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
+        const float hh = float(HYBRID_ROLL_HEADER_HEIGHT);
+        const float rollHeight = float(this->roll->getHeight());
+        const float propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
         this->roll->panProportionally(propX, propY2);
 
         const auto p = this->getIndicatorBounds();
@@ -154,11 +154,11 @@ void TrackScroller::xMoveByUser()
 {
     if (this->roll != nullptr)
     {
-        const Rectangle<float> &screenRangeBounds = this->screenRange->getRealBounds();
+        const auto screenRangeBounds = this->screenRange->getRealBounds();
 
-        const float &mw = float(this->getWidth()) - screenRangeBounds.getWidth();
-        const float &propX = screenRangeBounds.getTopLeft().getX() / mw;
-        const float &propY = float(this->roll->getViewport().getViewPositionY()) /
+        const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
+        const float propX = screenRangeBounds.getTopLeft().getX() / mw;
+        const float propY = float(this->roll->getViewport().getViewPositionY()) /
             float(this->roll->getHeight() - this->roll->getViewport().getViewHeight());
 
         this->roll->panProportionally(propX, propY);
@@ -179,14 +179,14 @@ void TrackScroller::resizeByUser()
 {
     if (this->roll != nullptr)
     {
-        const float &w = float(this->screenRange->getWidth());
-        const float &h = float(this->screenRange->getHeight());
+        const float w = float(this->screenRange->getWidth());
+        const float h = float(this->screenRange->getHeight());
 
-        const float &mw = float(this->getWidth());
-        const float &propX = (w / mw);
+        const float mw = float(this->getWidth());
+        const float propX = (w / mw);
 
-        const float &mh = float(this->getHeight());
-        const float &propY = (h / mh);
+        const float mh = float(this->getHeight());
+        const float propY = (h / mh);
 
         const Point<float> proportional(propX, propY);
         this->roll->zoomAbsolute(proportional);

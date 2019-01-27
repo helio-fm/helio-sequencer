@@ -600,14 +600,7 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
     g.setFont(font);
     g.setColour(Colours::white.withAlpha(0.125f));
 
-    String title = "Helio " + App::getAppReadableVersion();
-
-#if JUCE_64BIT
-    title += " (64-bit)";
-#elif JUCE_32BIT
-    title += " (32-bit)";
-#endif
-
+    const String title = "Helio " + App::getAppReadableVersion();
     const int textW = font.getStringWidth(title);
     g.drawText(title, titleSpaceX + 2, 0, textW, h - 2, Justification::centredLeft, true);
 #endif

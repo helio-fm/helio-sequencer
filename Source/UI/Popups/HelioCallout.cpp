@@ -45,9 +45,9 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     const Rectangle<int> b = parentWorkspace->getScreenBounds();
 
 #if HELIO_DESKTOP
-    const Point<float> p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
+    const auto p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
 #elif HELIO_MOBILE
-    const Point<float> p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
+    const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
 #endif
 
     this->clickPointAbs = Point<float>(p.getX() / float(b.getWidth()), p.getY() / float(b.getHeight()));

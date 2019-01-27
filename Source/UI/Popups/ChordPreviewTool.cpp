@@ -291,14 +291,17 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
         }
 
         // a hack for stop sound events not mute the forthcoming notes
-        //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
+        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
 
         if (!App::isRunningOnPhone())
         {
             static const auto fnNames = localizedFunctionNames();
-            const String tooltip = MidiMessage::getMidiNoteName(this->root, true, false, 3) + " " + this->scale->getLocalizedName()
-                + ", " + fnNames[scaleFnOffset] + ", " + MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3)
-                + " " + chord->getName();
+            const String tooltip =
+                MidiMessage::getMidiNoteName(this->root, true, false, 3) + " "
+                + this->scale->getLocalizedName() + ", "
+                + fnNames[scaleFnOffset] + ", "
+                + MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3) + " "
+                + chord->getName();
 
             App::Layout().showTooltip(tooltip);
         }
@@ -308,7 +311,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             const auto inScaleKey = scaleFnOffset + inScaleChordKey;
             const auto finalOffset = periodOffset + this->root - this->clip.getKey();
             const int key = jlimit(0, 128, finalOffset + this->scale->getChromaticKey(inScaleKey));
-            Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
+            const Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
             this->sequence->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
                 key + this->clip.getKey(), kDefaultChordVelocity));
@@ -332,8 +335,13 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
         this->sequence->checkpoint();
     }
 
+    // a hack for stop sound events not mute the forthcoming notes
+    Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 9);
+
     const int key = jlimit(0, 128, this->targetKey);
-    Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
+    const Note note(this->sequence.get(), key, this->targetBeat,
+        CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
+
     this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
     {
@@ -356,8 +364,13 @@ void ChordPreviewTool::undoChangesIfAny()
 bool ChordPreviewTool::detectKeyBeatAndContext()
 {
     int newKey = 0;
-    const auto myCentreRelativeToRoll = this->roll.getLocalPoint(this->getParentComponent(), this->getBounds().getCentre());
-    this->roll.getRowsColsByMousePosition(myCentreRelativeToRoll.x, myCentreRelativeToRoll.y, newKey, this->targetBeat);
+    const auto myCentreRelativeToRoll =
+        this->roll.getLocalPoint(this->getParentComponent(),
+            this->getBounds().getCentre());
+
+    this->roll.getRowsColsByMousePosition(myCentreRelativeToRoll.x,
+        myCentreRelativeToRoll.y, newKey, this->targetBeat);
+
     bool hasChanges = (newKey != this->targetKey);
     this->targetKey = newKey;
 

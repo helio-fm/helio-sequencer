@@ -443,11 +443,13 @@ struct JsonFormatter final
 
             if (childGroupOfSameType.size() == 1)
             {
-                writeObject(out, childGroupOfSameType.getFirst(), indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
+                writeObject(out, childGroupOfSameType.getFirst(),
+                    indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
             }
             else
             {
-                writeArray(out, childGroupOfSameType, indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
+                writeArray(out, childGroupOfSameType,
+                    indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
             }
 
             GroupedChildren::Iterator endCheck(i);

@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Transport.h"
-#include "Instrument.h"
 #include "OrchestraPit.h"
 #include "PlayerThread.h"
 #include "RendererThread.h"
@@ -32,6 +31,8 @@
 #include "HybridRoll.h"
 #include "SerializationKeys.h"
 #include "PlayerThreadPool.h"
+
+#define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 
 Transport::Transport(OrchestraPit &orchestraPit) :
     orchestra(orchestraPit),
@@ -157,7 +158,7 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
                 if (noteOn <= targetFlatTime && noteOff > targetFlatTime)
                 {
                     MidiMessage messageTimestampedAsNow(noteOnHolder->message);
-                    messageTimestampedAsNow.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+                    messageTimestampedAsNow.setTimeStamp(TIME_NOW);
                     seq->listener->addMessageToQueue(messageTimestampedAsNow);
                 }
             }
@@ -285,45 +286,45 @@ float Transport::getRenderingPercentsComplete() const
 // Sending messages at real-time
 //===----------------------------------------------------------------------===//
 
-void Transport::sendMidiMessage(const String &layerId, const MidiMessage &message) const
+void Transport::sendMidiMessage(const String &trackId, const MidiMessage &message) const
 {
     MidiMessage messageTimestampedAsNow(message);
     
 #if HELIO_MOBILE
     // iSEM tends to hang >_< if too many messages are send simultaniously
-    messageTimestampedAsNow.setTimeStamp(Time::getMillisecondCounter() + (rand() % 50));
+    messageTimestampedAsNow.setTimeStamp(TIME_NOW + float(rand() % 50) * 0.01);
 #elif HELIO_DESKTOP
-    messageTimestampedAsNow.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+    messageTimestampedAsNow.setTimeStamp(TIME_NOW);
 #endif
     
-    MidiMessageCollector *collector =
-    &this->linksCache[layerId]->getProcessorPlayer().getMidiMessageCollector();
-    
-    collector->addMessageToQueue(messageTimestampedAsNow);
+    auto &collector = this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
+    collector.addMessageToQueue(messageTimestampedAsNow);
 }
 
 void Transport::allNotesAndControllersOff() const
 {
-    const int c = 1;
+    static const int c = 1;
     //for (int c = 1; c <= 16; ++c)
     {
-        const MidiMessage notesOff(MidiMessage::allNotesOff(c));
-        const MidiMessage controllersOff(MidiMessage::allControllersOff(c));
+        MidiMessage notesOff(MidiMessage::allNotesOff(c));
+        MidiMessage controllersOff(MidiMessage::allControllersOff(c));
         
-        Array<MidiMessageCollector *>duplicateCollectors;
+        Array<const MidiMessageCollector *> duplicateCollectors;
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
             const String &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
-            
-            MidiMessageCollector *collector =
-                &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
+            auto *collector = &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
             if (! duplicateCollectors.contains(collector))
             {
-                this->sendMidiMessage(trackId, notesOff);
-                this->sendMidiMessage(trackId, controllersOff);
                 duplicateCollectors.add(collector);
+
+                notesOff.setTimeStamp(TIME_NOW);
+                collector->addMessageToQueue(notesOff);
+
+                controllersOff.setTimeStamp(TIME_NOW);
+                collector->addMessageToQueue(controllersOff);
             }
         }
     }
@@ -331,27 +332,31 @@ void Transport::allNotesAndControllersOff() const
 
 void Transport::allNotesControllersAndSoundOff() const
 {
-    const int c = 1;
+    static const int c = 1;
     //for (int c = 1; c <= 16; ++c)
     {
-        const MidiMessage notesOff(MidiMessage::allNotesOff(c));
-        const MidiMessage soundOff(MidiMessage::allSoundOff(c));
-        const MidiMessage controllersOff(MidiMessage::allControllersOff(c));
+        MidiMessage notesOff(MidiMessage::allNotesOff(c));
+        MidiMessage soundOff(MidiMessage::allSoundOff(c));
+        MidiMessage controllersOff(MidiMessage::allControllersOff(c));
         
-        Array<MidiMessageCollector *>duplicateCollectors;
+        Array<const MidiMessageCollector *> duplicateCollectors;
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
-            const String &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
-            
-            MidiMessageCollector *collector =
-               &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
+            const auto &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
+            auto *collector = &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
             if (! duplicateCollectors.contains(collector))
             {
-                this->sendMidiMessage(trackId, notesOff);
-                this->sendMidiMessage(trackId, controllersOff);
-                this->sendMidiMessage(trackId, soundOff);
+                notesOff.setTimeStamp(TIME_NOW);
+                collector->addMessageToQueue(notesOff);
+
+                controllersOff.setTimeStamp(TIME_NOW);
+                collector->addMessageToQueue(controllersOff);
+
+                soundOff.setTimeStamp(TIME_NOW);
+                collector->addMessageToQueue(soundOff);
+
                 duplicateCollectors.add(collector);
             }
         }
@@ -610,7 +615,7 @@ void Transport::rebuildSequencesIfNeeded()
 
         for (const auto *track : this->tracksCache)
         {
-            auto *instrument = this->linksCache[track->getTrackId()];
+            auto instrument = this->linksCache[track->getTrackId()];
             jassert(instrument != nullptr);
 
             ScopedPointer<SequenceWrapper> wrapper(new SequenceWrapper());
@@ -659,7 +664,7 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentID()))
         {
             // corresponding node already exists, lets add
-            this->linksCache.set(track->getTrackId(), instrument);
+            this->linksCache[track->getTrackId()] = instrument;
             return;
         }
     }
@@ -671,19 +676,18 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentHash()))
         {
-            this->linksCache.set(track->getTrackId(), instrument);
+            this->linksCache[track->getTrackId()] = instrument;
             return;
         }
     }
     
     // set default instrument, if none found
-    this->linksCache.set(track->getTrackId(),
-        this->orchestra.getInstruments().getFirst());
+    this->linksCache[track->getTrackId()] =  this->orchestra.getInstruments().getFirst();
 }
 
 void Transport::removeLinkForTrack(const MidiTrack *track)
 {
-    this->linksCache.remove(track->getTrackId());
+    this->linksCache.erase(track->getTrackId());
 }
 
 //===----------------------------------------------------------------------===//

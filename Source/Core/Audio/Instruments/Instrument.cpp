@@ -761,9 +761,9 @@ void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputC
     {
         const ScopedLock sl(lock);
 
-        if (processor != nullptr)
+        if (this->processor != nullptr)
         {
-            const ScopedLock sl2(processor->getCallbackLock());
+            const ScopedLock sl2(this->processor->getCallbackLock());
 
             if (!this->processor->isSuspended())
             {

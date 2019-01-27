@@ -184,7 +184,7 @@ void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack,
 
     forEachEventComponent(this->patternMap, e)
     {
-        const auto nc = e.second.get();
+        auto *nc = e.second.get();
         const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
         const auto key = nc->getKey() + activeClip.getKey();
         nc->setActive(isActive, true);
@@ -197,6 +197,8 @@ void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack,
             focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
         }
     }
+
+    // FIXME: zoom empty tracks properly
 
     this->updateActiveRangeIndicator();
 
@@ -336,20 +338,19 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
 
 void PianoRoll::zoomAbsolute(const Point<float> &zoom)
 {
-    const float &newHeight = (this->getNumRows() * PIANOROLL_MAX_ROW_HEIGHT) * zoom.getY();
-    const float &rowsOnNewScreen = float(newHeight / PIANOROLL_MAX_ROW_HEIGHT);
-    const float &viewHeight = float(this->viewport.getViewHeight());
-    const float &newRowHeight = floorf(viewHeight / rowsOnNewScreen + .5f);
+    const float newHeight = (this->getNumRows() * PIANOROLL_MAX_ROW_HEIGHT) * zoom.getY();
+    const float rowsOnNewScreen = float(newHeight / PIANOROLL_MAX_ROW_HEIGHT);
+    const float viewHeight = float(this->viewport.getViewHeight());
+    const float newRowHeight = floorf(viewHeight / rowsOnNewScreen + .5f);
 
     this->setRowHeight(int(newRowHeight));
 
     HybridRoll::zoomAbsolute(zoom);
 }
 
-float PianoRoll::getZoomFactorY() const
+float PianoRoll::getZoomFactorY() const noexcept
 {
-    const float &viewHeight = float(this->viewport.getViewHeight());
-    return (viewHeight / float(this->getHeight()));
+    return float(this->viewport.getViewHeight()) / float(this->getHeight());
 }
 
 void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
@@ -532,7 +533,10 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             this->triggerAsyncUpdate(); // instead of updateBounds
 
             // arpeggiators preview cannot work without that:
-            this->selection.addToSelection(component);
+            if (isActive)
+            {
+                this->selection.addToSelection(component);
+            }
 
             if (this->addNewNoteMode && isActive)
             {

@@ -47,10 +47,7 @@ MultiTouchController::MultiTouchController(MultiTouchListener &parent) :
     center2(0, 0),
     finger1On(false),
     finger2On(false),
-    gesture(NoMultitouch)
-{
-
-}
+    gesture(NoMultitouch) {}
 
 void MultiTouchController::mouseDown(const MouseEvent &event)
 {
@@ -87,14 +84,14 @@ void MultiTouchController::mouseDrag(const MouseEvent &event)
         this->center2 = this->listener.getMultiTouchOrigin(event.position);
     }
     
-    const Point<float> f1DragLength = (this->finger1Anchor - this->finger1Position);
-    const Point<float> f2DragLength = (this->finger2Anchor - this->finger2Position);
-    const Point<float> midDragLength = (f1DragLength + f2DragLength) / 2;
-    const Point<float> dragOffset = (midDragLength - this->dragDiff).toFloat() * 3;
+    const auto f1DragLength = (this->finger1Anchor - this->finger1Position);
+    const auto f2DragLength = (this->finger2Anchor - this->finger2Position);
+    const auto midDragLength = (f1DragLength + f2DragLength) / 2;
+    const auto dragOffset = (midDragLength - this->dragDiff).toFloat() * 3;
     
     const float vZoomLength = fabs(this->finger2Position.getX() - this->finger1Position.getX());
     const float hZoomLength = fabs(this->finger2Position.getY() - this->finger1Position.getY());
-    const Point<float>zoomOffset = (Point<float>(vZoomLength, hZoomLength) - this->zoomDiff) * Point<float>(ZOOM_V_SPEED, ZOOM_H_SPEED);
+    const auto zoomOffset = (Point<float>(vZoomLength, hZoomLength) - this->zoomDiff) * Point<float>(ZOOM_V_SPEED, ZOOM_H_SPEED);
 
     const Point<float> diffV(0.f, zoomOffset.getY());
     this->listener.multiTouchCancelPan();

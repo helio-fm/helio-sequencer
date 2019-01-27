@@ -165,8 +165,14 @@ String App::getAppReadableVersion()
 
         if (String(APP_VERSION_NAME).isNotEmpty())
         {
-            v << " (" << APP_VERSION_NAME << ")";
+            v << " \"" << APP_VERSION_NAME << "\"";
         }
+
+#if JUCE_64BIT
+        v << " (64-bit)";
+#elif JUCE_32BIT
+        v << " (32-bit)";
+#endif
     }
 
     return v;

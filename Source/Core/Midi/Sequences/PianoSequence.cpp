@@ -224,6 +224,11 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
             const Note &oldParams = groupBefore.getUnchecked(i);
             const Note &newParams = groupAfter.getUnchecked(i);
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+            // if you're hitting this assertion, one of the reasons might be
+            // allowing user to somehow select notes of different clips simultaneously,
+            // and then editing the selection, which leads to applying the same
+            // transformation to one set of notes twice, which is kinda nonsense,
+            // so make sure the selection is always limited to active track and clip:
             jassert(index >= 0);
             if (index >= 0)
             {
