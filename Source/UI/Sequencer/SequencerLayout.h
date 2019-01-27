@@ -33,7 +33,7 @@ class Clip;
 #define SEQUENCER_SIDEBAR_WIDTH (44)
 #define SEQUENCER_SIDEBAR_ROW_HEIGHT (38)
 
-class SequencerLayout :
+class SequencerLayout final :
     public Component,
     public Serializable,
     public FileDragAndDropTarget

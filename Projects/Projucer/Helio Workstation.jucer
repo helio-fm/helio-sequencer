@@ -957,6 +957,13 @@
             <FILE id="NQm5bG" name="SettingsPage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/SettingsPage.cpp"/>
             <FILE id="KbKtdO" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SettingsPage.h"/>
+            <FILE id="g2CPHD" name="SyncSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/SyncSettings.cpp"/>
+            <FILE id="RuPabg" name="SyncSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SyncSettings.h"/>
+            <FILE id="oljvEb" name="SyncSettingsItem.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/SyncSettingsItem.cpp"/>
+            <FILE id="Lga7QR" name="SyncSettingsItem.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/SyncSettingsItem.h"/>
             <FILE id="wyFYMy" name="ThemeSettings.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/ThemeSettings.cpp"/>
             <FILE id="lKlRWH" name="ThemeSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/ThemeSettings.h"/>
