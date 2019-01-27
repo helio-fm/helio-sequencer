@@ -22,22 +22,19 @@
 #include "MenuPanel.h"
 //[/Headers]
 
-#include "../Themes/PanelBackgroundC.h"
 #include "../Themes/ShadowDownwards.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 
-class MobileComboBox  : public Component
+class MobileComboBox final : public Component
 {
 public:
 
-    MobileComboBox (WeakReference<Component> editor);
-
+    MobileComboBox(WeakReference<Component> editor, WeakReference<Component> primer);
     ~MobileComboBox();
 
     //[UserMethods]
 
     void initMenu(MenuPanel::Menu menu);
-    void initText(TextEditor *editor);
 
     class Trigger final : public IconButton
     {
@@ -54,13 +51,15 @@ public:
         Primer();
         ~Primer() override;
         void handleCommandMessage(int commandId) override;
-        void initWith(WeakReference<Component> textEditor, MenuPanel::Menu menu);
+        void initWith(WeakReference<Component> textEditor, MenuPanel::Menu menu,
+            ScopedPointer<Component> customBackground = nullptr);
+
         void updateMenu(MenuPanel::Menu menu);
         void cleanup();
     private:
         ComponentAnimator animator;
-        ScopedPointer<MobileComboBox> combo;
-        ScopedPointer<MobileComboBox::Trigger> comboTrigger;
+        UniquePointer<MobileComboBox> combo;
+        UniquePointer<MobileComboBox::Trigger> comboTrigger;
         WeakReference<Component> textEditor;
     };
     //[/UserMethods]
@@ -75,17 +74,21 @@ public:
 private:
 
     //[UserVariables]
-    WeakReference<MobileComboBox::Primer> primer;
+    void initText(TextEditor *editor);
+    void initText(Label *label);
+    void initBackground(ScopedPointer<Component> bg);
+
+    WeakReference<Component> primer;
     WeakReference<Component> editor;
     ComponentAnimator animator;
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundC> background;
-    ScopedPointer<MenuPanel> menu;
-    ScopedPointer<MobileComboBox::Trigger> triggerButtton;
-    ScopedPointer<ShadowDownwards> shadow;
-    ScopedPointer<SeparatorHorizontalReversed> separator;
-    ScopedPointer<Label> currentNameLabel;
+    UniquePointer<Component> background;
+    UniquePointer<MenuPanel> menu;
+    UniquePointer<MobileComboBox::Trigger> triggerButtton;
+    UniquePointer<ShadowDownwards> shadow;
+    UniquePointer<SeparatorHorizontalReversed> separator;
+    UniquePointer<Label> currentNameLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MobileComboBox)
 };

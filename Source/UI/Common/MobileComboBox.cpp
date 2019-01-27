@@ -23,24 +23,32 @@
 
 //[MiscUserDefs]
 #include "MenuPanel.h"
-
+#include "PanelBackgroundC.h"
 //[/MiscUserDefs]
 
-MobileComboBox::MobileComboBox(WeakReference<Component> editor)
-    : editor(editor)
+MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Component> primer)
+    : editor(editor),
+      primer(primer)
 {
-    addAndMakeVisible (background = new PanelBackgroundC());
-    addAndMakeVisible (menu = new MenuPanel());
+    this->background.reset(new Component());
+    this->addAndMakeVisible(background.get());
 
-    addAndMakeVisible (triggerButtton = new MobileComboBox::Trigger());
+    this->menu.reset(new MenuPanel());
+    this->addAndMakeVisible(menu.get());
 
-    addAndMakeVisible (shadow = new ShadowDownwards(Light));
-    addAndMakeVisible (separator = new SeparatorHorizontalReversed());
-    addAndMakeVisible (currentNameLabel = new Label (String(),
-                                                     TRANS("...")));
-    currentNameLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    currentNameLabel->setJustificationType (Justification::centredLeft);
-    currentNameLabel->setEditable (false, false, false);
+    this->triggerButtton.reset(new MobileComboBox::Trigger());
+    this->addAndMakeVisible(triggerButtton.get());
+
+    this->shadow.reset(new ShadowDownwards(Light));
+    this->addAndMakeVisible(shadow.get());
+    this->separator.reset(new SeparatorHorizontalReversed());
+    this->addAndMakeVisible(separator.get());
+    this->currentNameLabel.reset(new Label(String(),
+                                            TRANS("...")));
+    this->addAndMakeVisible(currentNameLabel.get());
+    this->currentNameLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    currentNameLabel->setJustificationType(Justification::centredLeft);
+    currentNameLabel->setEditable(false, false, false);
 
 
     //[UserPreSize]
@@ -48,7 +56,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor)
     this->currentNameLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (400, 300);
+    this->setSize(400, 300);
 
     //[Constructor]
     //[/Constructor]
@@ -84,13 +92,23 @@ void MobileComboBox::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    menu->setBounds (2, 34, getWidth() - 4, getHeight() - 34);
-    triggerButtton->setBounds (getWidth() - 32, 0, 32, 32);
-    shadow->setBounds (1, 33, getWidth() - 2, 16);
-    separator->setBounds (1, 32, getWidth() - 2, 2);
-    currentNameLabel->setBounds (0, 0, getWidth() - 0, 32);
+    background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
+    menu->setBounds(2, 34, getWidth() - 4, getHeight() - 34);
+    triggerButtton->setBounds(getWidth() - 32, 0, 32, 32);
+    shadow->setBounds(1, 33, getWidth() - 2, 16);
+    separator->setBounds(1, 32, getWidth() - 2, 2);
+    currentNameLabel->setBounds(0, 0, getWidth() - 0, 32);
     //[UserResized] Add your own custom resize handling here..
+
+    // a hack to prevent sending `resized` message to menu
+    // and thus to prevent it from starting its animation,
+    // until my own animation is complete:
+    if (this->primer == nullptr ||
+        this->getLocalBounds() != this->primer->getLocalBounds())
+    {
+        this->menu->setBounds(0, 0, 0, 0);
+    }
+
     //[/UserResized]
 }
 
@@ -143,6 +161,20 @@ void MobileComboBox::initText(TextEditor *editor)
     this->currentNameLabel->setText(editor->getText(), dontSendNotification);
 }
 
+void MobileComboBox::initText(Label *label)
+{
+    this->currentNameLabel->setFont(label->getFont());
+    this->currentNameLabel->setText(label->getText(), dontSendNotification);
+}
+
+void MobileComboBox::initBackground(ScopedPointer<Component> customBackground)
+{
+    this->background.reset(customBackground != nullptr ?
+        customBackground.release() : new PanelBackgroundC());
+    this->addAndMakeVisible(this->background.get());
+    this->background->toBack();
+}
+
 MobileComboBox::Primer::Primer()
 {
     this->setInterceptsMouseClicks(false, false);
@@ -153,16 +185,18 @@ MobileComboBox::Primer::~Primer()
     this->cleanup();
 }
 
-void MobileComboBox::Primer::initWith(WeakReference<Component> editor, MenuPanel::Menu menu)
+void MobileComboBox::Primer::initWith(WeakReference<Component> editor,
+    MenuPanel::Menu menu, ScopedPointer<Component> customBackground)
 {
     this->toFront(false);
     this->textEditor = editor;
-    this->combo = new MobileComboBox(editor);
+    this->combo.reset(new MobileComboBox(editor, this));
     this->combo->initMenu(menu);
-    this->comboTrigger = new MobileComboBox::Trigger(this);
+    this->combo->initBackground(customBackground);
+    this->comboTrigger.reset(new MobileComboBox::Trigger(this));
     if (this->textEditor != nullptr)
     {
-        this->textEditor->addAndMakeVisible(this->comboTrigger);
+        this->textEditor->addAndMakeVisible(this->comboTrigger.get());
     }
 }
 
@@ -183,17 +217,23 @@ void MobileComboBox::Primer::handleCommandMessage(int commandId)
         this->combo != nullptr)
     {
         // Show combo
-        this->getParentComponent()->addAndMakeVisible(this->combo);
+        this->combo->setAlpha(1.f);
+        if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
+        {
+            this->combo->initText(ed);
+        }
+        else if (auto *label = dynamic_cast<Label *>(this->textEditor.get()))
+        {
+            this->combo->initText(label);
+        }
+        this->getParentComponent()->addAndMakeVisible(this->combo.get());
         this->combo->setBounds(this->textEditor->getBounds());
-        this->combo->setAlpha(0.f);
-        if (TextEditor *ed = dynamic_cast<TextEditor *>(this->textEditor.get())) { this->combo->initText(ed); }
-        this->animator.animateComponent(this->combo, this->getBounds(), 1.f, 200, false, 1.0, 0.0);
+        this->animator.animateComponent(this->combo.get(), this->getBounds(), 1.f, 150, false, 1.0, 0.0);
     }
 }
 
 MobileComboBox::Trigger::Trigger(WeakReference<Component> listener) :
-    IconButton(Icons::findByName(Icons::down, 16), CommandIDs::ToggleShowHideCombo, listener)
-{}
+    IconButton(Icons::findByName(Icons::down, 16), CommandIDs::ToggleShowHideCombo, listener) {}
 
 void MobileComboBox::Trigger::parentHierarchyChanged()
 {
@@ -207,11 +247,11 @@ void MobileComboBox::Trigger::parentSizeChanged()
 
 void MobileComboBox::Trigger::updateBounds()
 {
-    if (Component *parent = this->getParentComponent())
+    if (const auto *parent = this->getParentComponent())
     {
-        const int w = 32;
+        const int w = 64;
         const int h = 32;
-        const int x = parent->getWidth() - w;
+        const int x = parent->getWidth() - w / 2 - 16;
         const int y = 0;
         this->setBounds(x, y, w, h);
         this->setAlwaysOnTop(true);
@@ -225,22 +265,20 @@ void MobileComboBox::Trigger::updateBounds()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MobileComboBox" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="WeakReference&lt;Component&gt; editor"
-                 variableInitialisers="editor(editor)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="400"
-                 initialHeight="300">
+                 componentName="" parentClasses="public Component" constructorParams="WeakReference&lt;Component&gt; editor, WeakReference&lt;Component&gt; primer"
+                 variableInitialisers="editor(editor),&#10;primer(primer)" snapPixels="8"
+                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
+                 initialWidth="400" initialHeight="300">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="481c8ae8d7eec9f7" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
-             constructorParams=""/>
+  <GENERICCOMPONENT name="" id="481c8ae8d7eec9f7" memberName="background" virtualName=""
+                    explicitFocusOrder="0" pos="0 0 0M 0M" class="Component" params=""/>
   <GENERICCOMPONENT name="" id="2226274fea88e6e8" memberName="menu" virtualName=""
-                    explicitFocusOrder="0" pos="2 34 4M 34M" class="CommandPanel"
-                    params=""/>
+                    explicitFocusOrder="0" pos="2 34 4M 34M" class="MenuPanel" params=""/>
   <GENERICCOMPONENT name="" id="8ec691832b64961b" memberName="triggerButtton" virtualName=""
                     explicitFocusOrder="0" pos="0Rr 0 32 32" class="MobileComboBox::Trigger"
                     params=""/>
@@ -253,7 +291,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="cc2095775f3aaed2" memberName="currentNameLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0 0M 32" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
