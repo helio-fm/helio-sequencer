@@ -84,6 +84,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
     {
         if (myProject->getDocument()->getFullPath() == file.getFullPathName())
         {
+            myProject->selectChildOfType<PianoTrackTreeItem>();
             return nullptr;
         }
     }
@@ -104,11 +105,14 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
         {
             if (myProject->getId() == project->getId())
             {
+                myProject->selectChildOfType<PianoTrackTreeItem>();
                 return nullptr;
             }
         }
 
         App::Workspace().autosave();
+
+        project->selectChildOfType<PianoTrackTreeItem>();
         return project.release();
     }
 
