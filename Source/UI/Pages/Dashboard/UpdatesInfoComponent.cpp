@@ -18,8 +18,11 @@
 //[Headers]
 #include "Common.h"
 #include "Config.h"
+#include "MenuPanel.h"
 #include "AppInfoDto.h"
 #include "SerializationKeys.h"
+#include "PanelBackgroundA.h"
+#include "App.h"
 //[/Headers]
 
 #include "UpdatesInfoComponent.h"
@@ -29,11 +32,14 @@
 
 UpdatesInfoComponent::UpdatesInfoComponent()
 {
+    this->comboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(comboPrimer.get());
+
     this->label.reset(new Label(String(),
-                                 TRANS("Updates info")));
+                                 TRANS("update::proceed")));
     this->addAndMakeVisible(label.get());
-    this->label->setFont(Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
-    label->setJustificationType(Justification::centred);
+    this->label->setFont(Font (17.00f, Font::plain).withTypefaceStyle ("Regular"));
+    label->setJustificationType(Justification::centredBottom);
     label->setEditable(false, false, false);
 
 
@@ -41,15 +47,43 @@ UpdatesInfoComponent::UpdatesInfoComponent()
 
     // here we assume that backend response will only contain
     // the updates info for the current platform, so that
-    // we don't need to filter it:
+    // we don't need to filter them,
 
-    AppInfoDto updatesInfo;
-    Config::load(updatesInfo, Serialization::Config::lastUpdatesInfo);
-    Array<AppVersionDto> versions = updatesInfo.getVersions();
+    // but
+    // the returned latest version can still be the same
+    // as current one, so filtering them anyway:
 
-    for (const auto &version : versions)
+    AppInfoDto appInfo;
+    Config::load(appInfo, Serialization::Config::lastUpdatesInfo);
+
+    bool hasNewerStable = false;
+    for (const auto &v : appInfo.getVersions())
     {
-        this->label->setText(this->label->getText() + "\n" + version.getHumanReadableDescription(), dontSendNotification);
+        if (v.isLaterThanCurrentVersion())
+        {
+            this->versions.add(v);
+            hasNewerStable = hasNewerStable || !v.isDevelopmentBuild();
+        }
+    }
+
+    if (hasNewerStable)
+    {
+        //this->label->setText("v" + App::getAppReadableVersion(), dontSendNotification);
+        this->label->setAlpha(0.5f);
+
+        MenuPanel::Menu menu;
+        for (int i = 0; i < this->versions.size(); ++i)
+        {
+            const auto &version = this->versions.getUnchecked(i);
+            menu.add(MenuItem::item(Icons::helio, CommandIDs::SelectVersion + i,
+                version.getHumanReadableDescription()));
+        }
+
+        this->comboPrimer->initWith(this->label.get(), menu, { new PanelBackgroundA() });
+    }
+    else
+    {
+        this->label->setVisible(false);
     }
 
     //[/UserPreSize]
@@ -65,6 +99,7 @@ UpdatesInfoComponent::~UpdatesInfoComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
+    comboPrimer = nullptr;
     label = nullptr;
 
     //[Destructor]
@@ -85,9 +120,24 @@ void UpdatesInfoComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    label->setBounds(8, 0, getWidth() - 16, getHeight() - 0);
+    comboPrimer->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
+    label->setBounds((getWidth() / 2) - ((getWidth() - 56) / 2), 2, getWidth() - 56, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
+}
+
+void UpdatesInfoComponent::handleCommandMessage (int commandId)
+{
+    //[UserCode_handleCommandMessage] -- Add your code here...
+    const int idx = commandId - CommandIDs::SelectVersion;
+    if (idx >= 0 && idx < this->versions.size())
+    {
+        // what TODO here instead of just opening a browser?
+        const auto version = this->versions.getReference(idx);
+        jassert(version.getLink().isNotEmpty());
+        URL(version.getLink()).launchInDefaultBrowser();
+    }
+    //[/UserCode_handleCommandMessage]
 }
 
 
@@ -102,12 +152,18 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="128">
+  <METHODS>
+    <METHOD name="handleCommandMessage (int commandId)"/>
+  </METHODS>
   <BACKGROUND backgroundColour="0"/>
+  <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
+                    explicitFocusOrder="0" pos="0 0 0M 0M" class="MobileComboBox::Primer"
+                    params=""/>
   <LABEL name="" id="94cfd29b32ea20f9" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="8 0 16M 0M" labelText="Updates info"
+         explicitFocusOrder="0" pos="0Cc 2 56M 24" labelText="update::proceed"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="15.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
+         fontname="Default font" fontsize="17.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="20"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

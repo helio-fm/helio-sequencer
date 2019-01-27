@@ -29,6 +29,7 @@ namespace CommandIDs
         RootTreeItemPressed             = 0x0006,
         HideDialog                      = 0x0007,
         HideCallout                     = 0x0008,
+        DismissModalDialogAsync         = 0x0009,
 
         // TimeSignatureCommandPanel
         ChangeTimeSignature             = 0x0010,
@@ -149,14 +150,13 @@ namespace CommandIDs
         ProjectBatchMenu                = 0x2092,
         ProjectBatchMenuBack            = 0x2093,
 
-        AddTempoController              = 0x2500,
-        BatchChangeInstrument           = 0x2600,
+        AddTempoController              = 0x2100,
+        BatchChangeInstrument           = 0x2110,
 
-        DismissModalDialogAsync         = 0x3000,
-
-        SelectFunction                  = 0x3010,
-        SelectScale                     = 0x3011, // more ids reserved for sub-items
-        SelectTimeSignature             = 0x3200, // more ids reserved for sub-items
+        SelectFunction                  = 0x2120, // more ids reserved for sub-items
+        SelectScale                     = 0x2200, // more ids reserved for sub-items
+        SelectTimeSignature             = 0x2300, // more ids reserved for sub-items
+        SelectVersion                   = 0x2400, // more ids reserved for sub-items
 
         SwitchBetweenRolls              = 0x3300,
         SwitchToEditMode                = 0x3301,

@@ -18,6 +18,8 @@
 #pragma once
 
 //[Headers]
+#include "AppVersionDto.h"
+#include "MobileComboBox.h"
 //[/Headers]
 
 
@@ -33,13 +35,16 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
+    Array<AppVersionDto> versions;
     //[/UserVariables]
 
+    UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> label;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UpdatesInfoComponent)

@@ -17,18 +17,6 @@
 
 #pragma once
 
-#if HELIO_DESKTOP
-#   define APP_VERSION_MAJOR "2"
-#   define APP_VERSION_MINOR "0"
-#   define APP_VERSION_REVISION "0"
-#   define APP_VERSION_NAME ""
-#elif HELIO_MOBILE
-#   define APP_VERSION_MAJOR "2"
-#   define APP_VERSION_MINOR "0"
-#   define APP_VERSION_REVISION "0"
-#   define APP_VERSION_NAME ""
-#endif
-
 class MainWindow;
 class Workspace;
 class MainLayout;

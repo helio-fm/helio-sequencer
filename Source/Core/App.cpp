@@ -56,7 +56,7 @@ String Clipboard::getCurrentContentAsString() const
     if (this->clipboard.isValid())
     {
         String text;
-        static  XmlSerializer serializer;
+        static XmlSerializer serializer;
         serializer.saveToString(text, this->clipboard);
         return text;
     }
@@ -66,7 +66,7 @@ String Clipboard::getCurrentContentAsString() const
 
 const ValueTree &Clipboard::getData() const noexcept
 {
-    return clipboard;
+    return this->clipboard;
 }
 
 void Clipboard::copy(const ValueTree &data, bool mirrorToSystemClipboard /*= false*/)

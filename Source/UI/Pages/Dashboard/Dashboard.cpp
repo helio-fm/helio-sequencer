@@ -55,26 +55,28 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->addAndMakeVisible(projectsList.get());
     this->openProjectButton.reset(new OpenProjectButton());
     this->addAndMakeVisible(openProjectButton.get());
-    openProjectButton->setBounds(400, 108, 271, 32);
+    openProjectButton->setBounds(400, 60, 271, 32);
 
     this->createProjectButton.reset(new CreateProjectButton());
     this->addAndMakeVisible(createProjectButton.get());
-    createProjectButton->setBounds(400, 68, 271, 32);
+    createProjectButton->setBounds(400, 20, 271, 32);
 
     this->separator2.reset(new SeparatorHorizontalFadingReversed());
     this->addAndMakeVisible(separator2.get());
-    separator2->setBounds(264, 60, 488, 3);
+    separator2->setBounds(264, 104, 488, 3);
 
     this->loginButton.reset(new LoginButton());
     this->addAndMakeVisible(loginButton.get());
-    loginButton->setBounds(400, 24, 272, 32);
+    loginButton->setBounds(400, 120, 272, 32);
 
     this->userProfile.reset(new UserProfileComponent());
     this->addAndMakeVisible(userProfile.get());
-    userProfile->setBounds(400, 24, 272, 32);
+    userProfile->setBounds(400, 120, 272, 32);
 
     this->updatesInfo.reset(new UpdatesInfoComponent());
     this->addAndMakeVisible(updatesInfo.get());
+    updatesInfo->setBounds(88, 352, 184, 128);
+
 
     //[UserPreSize]
     this->setWantsKeyboardFocus(false);
@@ -130,7 +132,6 @@ void Dashboard::resized()
     backgroundB->setBounds(getWidth() - (getWidth() - 384), 0, getWidth() - 384, getHeight() - 0);
     backgroundA->setBounds(0, 0, 320, getHeight() - 0);
     projectsList->setBounds(getWidth() - 10 - 376, getHeight() - 10 - (getHeight() - 20), 376, getHeight() - 20);
-    updatesInfo->setBounds(64, getHeight() - 64 - 128, 224, 128);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -201,22 +202,22 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="10Rr 10Rr 376 20M" sourceFile="Menu/DashboardMenu.cpp"
              constructorParams="&amp;App::Workspace()"/>
   <JUCERCOMP name="" id="13e51011dd762205" memberName="openProjectButton"
-             virtualName="" explicitFocusOrder="0" pos="400 108 271 32" sourceFile="Menu/OpenProjectButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="400 60 271 32" sourceFile="Menu/OpenProjectButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="c748db515539334" memberName="createProjectButton"
-             virtualName="" explicitFocusOrder="0" pos="400 68 271 32" sourceFile="Menu/CreateProjectButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="400 20 271 32" sourceFile="Menu/CreateProjectButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="26985c577d404f94" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="264 60 488 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             explicitFocusOrder="0" pos="264 104 488 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2ed6285515243e89" memberName="loginButton" virtualName=""
-             explicitFocusOrder="0" pos="400 24 272 32" sourceFile="Menu/LoginButton.cpp"
+             explicitFocusOrder="0" pos="400 120 272 32" sourceFile="Menu/LoginButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="f5d48eba3545f546" memberName="userProfile" virtualName=""
-             explicitFocusOrder="0" pos="400 24 272 32" sourceFile="UserProfileComponent.cpp"
+             explicitFocusOrder="0" pos="400 120 272 32" sourceFile="UserProfileComponent.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2558009f569f191b" memberName="updatesInfo" virtualName=""
-             explicitFocusOrder="0" pos="64 64Rr 224 128" sourceFile="UpdatesInfoComponent.cpp"
+             explicitFocusOrder="0" pos="88 352 184 128" sourceFile="UpdatesInfoComponent.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

@@ -30,9 +30,14 @@ struct AppVersionDto final : ApiModel
     String getVersion() const noexcept { return DTO_PROPERTY(Versions::version); }
     String getPlatformType() const noexcept { return DTO_PROPERTY(Versions::platformType); }
 
+    bool isDevelopmentBuild() const noexcept
+    {
+        return this->getBranch().startsWithIgnoreCase("dev");
+    }
+
     String getHumanReadableDescription() const noexcept
     {
-        return (this->getBranch().startsWithIgnoreCase("dev") ? "" : this->getVersion() + " ") +
+        return (this->isDevelopmentBuild() ? "" : this->getVersion() + " ") +
             this->getBranch() + ", " + this->getBuildType() +
             (this->getArchitecture().startsWithIgnoreCase("all") ? "" : ", " + this->getArchitecture());
     }
@@ -46,7 +51,26 @@ struct AppVersionDto final : ApiModel
         {
             result.add(c.getIntValue());
         }
+        while (result.size() < 3)
+        {
+            result.add(0);
+        }
         return result;
+    }
+
+    bool isLaterThanCurrentVersion() const
+    {
+        if (this->isDevelopmentBuild())
+        {
+            return true;
+        }
+
+        static const int v0 = String(APP_VERSION_MAJOR).getIntValue();
+        static const int v1 = String(APP_VERSION_MINOR).getIntValue();
+        static const int v2 = String(APP_VERSION_REVISION).getIntValue();
+        const auto v = this->getVersionComponents();
+        return (v[0] > v0) || (v[0] == v0 && v[1] > v1) ||
+            (v[0] == v0 && v[1] == v1 && v[2] > v2);
     }
 
     JUCE_LEAK_DETECTOR(AppVersionDto)
