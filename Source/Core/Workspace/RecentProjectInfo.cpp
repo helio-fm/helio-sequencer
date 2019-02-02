@@ -183,7 +183,7 @@ ValueTree RecentProjectInfo::serialize() const
 
     if (this->remote != nullptr)
     {
-        ValueTree remoteRoot(RecentProjects::remotelProjectInfo);
+        ValueTree remoteRoot(RecentProjects::remoteProjectInfo);
         remoteRoot.setProperty(RecentProjects::path, this->remote->alias, nullptr);
         remoteRoot.setProperty(RecentProjects::title, this->remote->title, nullptr);
         remoteRoot.setProperty(RecentProjects::updatedAt, this->remote->lastModifiedMs, nullptr);
@@ -214,7 +214,7 @@ void RecentProjectInfo::deserialize(const ValueTree &tree)
         this->local->lastModifiedMs = localRoot.getProperty(RecentProjects::updatedAt);
     }
 
-    const auto remoteRoot(root.getChildWithName(RecentProjects::remotelProjectInfo));
+    const auto remoteRoot(root.getChildWithName(RecentProjects::remoteProjectInfo));
     if (remoteRoot.isValid())
     {
         this->remote.reset(new RemoteInfo());

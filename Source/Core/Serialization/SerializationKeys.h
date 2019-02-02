@@ -384,7 +384,7 @@ namespace Serialization
         {
             static const Identifier recentProject = "recentProject";
             static const Identifier localProjectInfo = "localProjectInfo";
-            static const Identifier remotelProjectInfo = "remotelProjectInfo";
+            static const Identifier remoteProjectInfo = "remoteProjectInfo";
             static const Identifier path = "path";
             static const Identifier file = "file";
             static const Identifier title = "title";
