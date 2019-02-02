@@ -28,7 +28,6 @@
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
 #include "CommandIDs.h"
-#include "App.h"
 
 TimeSignatureMenu::TimeSignatureMenu(ProjectTreeItem &parentProject, 
     const TimeSignatureEvent &targetEvent) :

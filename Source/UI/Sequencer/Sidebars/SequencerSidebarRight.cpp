@@ -37,7 +37,6 @@
 #include "TimeSignatureMenu.h"
 #include "SequencerOperations.h"
 #include "NotesTuningPanel.h"
-#include "App.h"
 #include "MainLayout.h"
 #include "SequencerLayout.h"
 #include "Workspace.h"

@@ -28,9 +28,7 @@
 #include "TimeSignatureMenu.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
-
 #include "TimeSignatureDialog.h"
-#include "App.h"
 #include "MainLayout.h"
 
 template<typename T>

@@ -21,13 +21,11 @@
 #include "Transport.h"
 #include "MidiTrack.h"
 #include "Lasso.h"
-
-#include "ArpeggiatorsManager.h"
 #include "SequencerOperations.h"
 #include "PianoSequence.h"
 #include "NoteComponent.h"
-
 #include "CommandIDs.h"
+#include "Config.h"
 
 ArpPreviewTool *ArpPreviewTool::createWithinContext(PianoRoll &roll,
     WeakReference<MidiTrack> keySignatures)

@@ -21,7 +21,6 @@
 #include "SerializationKeys.h"
 #include "ResourceSyncService.h"
 #include "Config.h"
-#include "App.h"
 
 static UserSessionInfo kSessionsSort;
 static RecentProjectInfo kProjectsSort;

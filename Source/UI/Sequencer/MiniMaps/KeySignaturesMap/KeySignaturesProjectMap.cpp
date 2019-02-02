@@ -26,7 +26,6 @@
 #include "HybridRoll.h"
 #include "AnnotationMenu.h"
 #include "KeySignatureDialog.h"
-#include "App.h"
 #include "MainLayout.h"
 
 template<typename T>

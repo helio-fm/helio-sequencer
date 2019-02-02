@@ -61,14 +61,17 @@ public:
     static class Config &Config() noexcept;
     static class Clipboard &Clipboard() noexcept;
 
-    static Point<double> getScreenInCm();
     static bool isRunningOnPhone();
     static bool isRunningOnTablet();
     static bool isRunningOnDesktop();
     
+    static String getDeviceId();
     static String getAppReadableVersion();
     static String getHumanReadableDate(const Time &date);
-    
+
+    static String translate(const String &singular);
+    static String translate(const String &plural, int64 number);
+
     static void dismissAllModalComponents();
 
     //===------------------------------------------------------------------===//
@@ -82,10 +85,9 @@ public:
     const String getApplicationName() override;
     const String getApplicationVersion() override;
 
-    void unhandledException(const std::exception *e, const String &message, int) override;
-
     bool moreThanOneInstanceAllowed() override;
-    void anotherInstanceStarted(const String &commandLine) override;
+    void anotherInstanceStarted(const String &) override;
+    void unhandledException(const std::exception *, const String &, int) override;
     void systemRequestedQuit() override;
     void suspended() override;
     void resumed() override;
@@ -94,10 +96,8 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    HelioTheme *getTheme() const noexcept;
     SessionService *getSessionService() const noexcept;
     ResourceSyncService *getResourceSyncService() const noexcept;
-    ResourceManager &getResourceManagerFor(const Identifier &id) const;
 
 private:
 
@@ -111,16 +111,10 @@ private:
     UniquePointer<class SessionService> sessionService;
     UniquePointer<class ResourceSyncService> resourceSyncService;
 
-    ResourceManagerPool resourceManagers;
-
 private:
-
-    String getMacAddressList();
-
+    
     void checkPlugin(const String &markerFile);
     void changeListenerCallback(ChangeBroadcaster *source) override;
-
-private:
 
     enum RunMode
     {

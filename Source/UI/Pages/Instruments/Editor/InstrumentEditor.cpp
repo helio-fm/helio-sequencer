@@ -30,7 +30,6 @@
 #include "AudioCore.h"
 #include "Icons.h"
 #include "MainLayout.h"
-#include "App.h"
 
 static const AudioProcessorGraph::NodeID idZero;
 

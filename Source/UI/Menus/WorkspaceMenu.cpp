@@ -24,7 +24,6 @@
 #include "PianoTrackTreeItem.h"
 #include "Workspace.h"
 #include "CommandIDs.h"
-#include "App.h"
 
 WorkspaceMenu::WorkspaceMenu(Workspace &workspace) :
     workspace(workspace)

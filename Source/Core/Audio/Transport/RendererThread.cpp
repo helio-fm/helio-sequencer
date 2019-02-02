@@ -19,7 +19,6 @@
 #include "RendererThread.h"
 #include "Instrument.h"
 #include "SerializationKeys.h"
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 

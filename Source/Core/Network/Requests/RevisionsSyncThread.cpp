@@ -22,8 +22,6 @@
 #include "RevisionDto.h"
 #include "ProjectDto.h"
 #include "RevisionsSyncHelpers.h"
-
-#include "App.h"
 #include "Workspace.h"
 
 namespace ApiKeys = Serialization::Api::V1;

@@ -24,7 +24,6 @@
 #include "MainLayout.h"
 #include "CommandIDs.h"
 #include "Icons.h"
-#include "App.h"
 
 InstrumentMenu::InstrumentMenu(InstrumentTreeItem &instrumentNode, PluginScanner &scanner) :
     instrumentNode(instrumentNode),

@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "TranslationsManager.h"
 #include "SerializationKeys.h"
-#include "App.h"
 #include "Config.h"
 #include "BinaryData.h"
 #include "DocumentHelpers.h"

@@ -38,7 +38,6 @@
 #include "AutomationTrackActions.h"
 #include "UndoStack.h"
 #include "Workspace.h"
-#include "App.h"
 
 MidiTrackMenu::MidiTrackMenu(MidiTrackTreeItem &parentLayer) :
     trackItem(parentLayer)

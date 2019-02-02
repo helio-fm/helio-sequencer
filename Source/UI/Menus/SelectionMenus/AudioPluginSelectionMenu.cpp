@@ -25,7 +25,6 @@
 #include "Instrument.h"
 #include "CommandIDs.h"
 #include "Icons.h"
-#include "App.h"
 
 AudioPluginSelectionMenu::AudioPluginSelectionMenu(const PluginDescription pd,
     OrchestraPitTreeItem &orchestraNode, PluginScanner &scanner) :

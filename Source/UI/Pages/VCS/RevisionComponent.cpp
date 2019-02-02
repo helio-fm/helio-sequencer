@@ -25,7 +25,6 @@
 #include "VersionControl.h"
 #include "RevisionTreeComponent.h"
 #include "SerializationKeys.h"
-#include "App.h"
 //[/MiscUserDefs]
 
 RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead)

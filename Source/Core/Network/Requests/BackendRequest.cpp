@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "BackendRequest.h"
 #include "HelioApiRoutes.h"
-#include "App.h"
 #include "Workspace.h"
 #include "UserProfile.h"
 

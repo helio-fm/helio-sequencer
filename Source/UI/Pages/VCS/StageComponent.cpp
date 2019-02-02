@@ -35,7 +35,6 @@
 
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
-#include "App.h"
 #include "FailTooltip.h"
 
 using namespace VCS;

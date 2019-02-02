@@ -23,8 +23,6 @@
 #include "SerializationKeys.h"
 #include "HelioTheme.h"
 #include "BinaryData.h"
-#include "ColourSchemesManager.h"
-#include "App.h"
 
 class WorkspaceAndroidProxy final : public Component
 {

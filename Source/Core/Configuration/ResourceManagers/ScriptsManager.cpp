@@ -20,7 +20,6 @@
 #include "Script.h"
 #include "SerializationKeys.h"
 #include "DocumentHelpers.h"
-#include "App.h"
 #include "Config.h"
 
 ScriptsManager::ScriptsManager() :

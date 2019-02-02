@@ -28,7 +28,6 @@
 #include "MidiSequence.h"
 #include "ModalDialogInput.h"
 #include "CommandIDs.h"
-#include "App.h"
 
 template<typename T>
 const T *findSelectedEventOfType(MidiSequence *const sequence, HybridRoll *const roll,

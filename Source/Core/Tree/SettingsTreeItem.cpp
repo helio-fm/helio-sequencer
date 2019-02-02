@@ -29,7 +29,6 @@
 #include "LabeledSettingsWrapper.h"
 #include "SimpleSettingsWrapper.h"
 #include "SettingsPage.h"
-#include "App.h"
 #include "Workspace.h"
 
 SettingsTreeItem::SettingsTreeItem() :

@@ -21,13 +21,11 @@
 #include "Transport.h"
 #include "MidiTrack.h"
 #include "Lasso.h"
-
-#include "ScalesManager.h"
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
 #include "PianoSequence.h"
-
 #include "CommandIDs.h"
+#include "Config.h"
 
 RescalePreviewTool *RescalePreviewTool::createWithinContext(PianoRoll &roll,
     WeakReference<MidiTrack> keySignatures)

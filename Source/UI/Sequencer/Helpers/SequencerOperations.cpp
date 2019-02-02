@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "SequencerOperations.h"
 #include "ProjectTreeItem.h"
-#include "App.h"
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"

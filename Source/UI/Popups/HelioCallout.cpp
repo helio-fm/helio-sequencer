@@ -22,7 +22,6 @@
 #include "DialogBackground.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
-#include "App.h"
 
 static int kClickCounterOnPopupClose = 0;
 static int kClickCounterOnPopupStart = 0;

@@ -40,7 +40,6 @@
 #include "CutPointMark.h"
 #include "RenderDialog.h"
 #include "SuccessTooltip.h"
-#include "App.h"
 #include "Workspace.h"
 #include "MainLayout.h"
 #include "AudioCore.h"

@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Config.h"
-#include "App.h"
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 #include "SerializationKeys.h"

@@ -22,7 +22,6 @@
 #include "HistoryComponent.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 #include "RevisionTreeComponent.h"

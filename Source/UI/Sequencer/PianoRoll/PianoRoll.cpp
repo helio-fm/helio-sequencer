@@ -48,13 +48,10 @@
 #include "ArpPreviewTool.h"
 #include "SequencerOperations.h"
 #include "SerializationKeys.h"
-#include "ArpeggiatorsManager.h"
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
 #include "LassoListeners.h"
 #include "UndoStack.h"
-
-#include "App.h"
 #include "Workspace.h"
 #include "MainWindow.h"
 #include "MainLayout.h"

@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Revision.h"
 #include "SerializationKeys.h"
-#include "App.h"
 
 using namespace VCS;
 

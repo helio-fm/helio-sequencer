@@ -22,11 +22,10 @@
 #include "SyncSettings.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "MainWindow.h"
-#include "TranslationsManager.h"
 #include "SyncSettingsItem.h"
 #include "HelioApiRoutes.h"
+#include "Config.h"
 
 #if HELIO_DESKTOP
 #   define SYNC_SETTINGS_ROW_HEIGHT (32)

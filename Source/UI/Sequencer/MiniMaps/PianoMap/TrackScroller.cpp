@@ -24,8 +24,6 @@
 #include "PanelBackgroundC.h"
 #include "Origami.h"
 #include "ColourIDs.h"
-#include "App.h"
-
 #include "HelioTheme.h"
 #include "ProjectTreeItem.h"
 #include "PianoProjectMap.h"

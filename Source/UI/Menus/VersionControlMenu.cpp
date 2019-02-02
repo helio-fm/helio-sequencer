@@ -21,7 +21,6 @@
 #include "StageComponent.h"
 #include "VersionControl.h"
 
-#include "App.h"
 #include "Workspace.h"
 #include "UserProfile.h"
 

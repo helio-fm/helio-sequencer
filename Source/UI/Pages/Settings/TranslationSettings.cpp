@@ -22,11 +22,10 @@
 #include "TranslationSettings.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "MainWindow.h"
-#include "TranslationsManager.h"
 #include "TranslationSettingsItem.h"
 #include "HelioApiRoutes.h"
+#include "Config.h"
 
 #if HELIO_DESKTOP
 #   define TRANSLATION_SETTINGS_ROW_HEIGHT (32)

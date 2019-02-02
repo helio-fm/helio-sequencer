@@ -26,7 +26,6 @@
 #include "HelioTheme.h"
 #include "Icons.h"
 #include "IconComponent.h"
-#include "App.h"
 
 class RecentFileSelectionComponent final : public Component
 {

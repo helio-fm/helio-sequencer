@@ -25,8 +25,6 @@
 #include "Instrument.h"
 #include "AudioPluginEditorPage.h"
 #include "SerializationKeys.h"
-
-#include "App.h"
 #include "PluginWindow.h"
 
 class HelioAudioProcessorEditor : public GenericAudioProcessorEditor

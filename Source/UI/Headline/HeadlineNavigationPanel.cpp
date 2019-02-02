@@ -27,7 +27,6 @@
 #include "HeadlineDropdown.h"
 #include "ColourIDs.h"
 #include "Workspace.h"
-#include "App.h"
 //[/MiscUserDefs]
 
 HeadlineNavigationPanel::HeadlineNavigationPanel()

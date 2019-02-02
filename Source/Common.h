@@ -152,11 +152,11 @@ inline constexpr uint32 CompileTimeHash(const char *const str, const uint32 valu
 // Internationalization
 //===----------------------------------------------------------------------===//
 
-#include "TranslationsManager.h"
+#include "App.h"
 
 #if defined TRANS
 #   undef TRANS
 #endif
 
-#define TRANS(stringLiteral) TranslationsManager::getInstance().translate(stringLiteral)
-#define TRANS_PLURAL(stringLiteral, intValue) TranslationsManager::getInstance().translate(stringLiteral, intValue)
+#define TRANS(singular) App::translate(singular)
+#define TRANS_PLURAL(plural, number) App::translate(plural, number)

@@ -18,8 +18,6 @@
 #include "Common.h"
 #include "Icons.h"
 #include "BinaryData.h"
-#include "App.h"
-#include "HelioTheme.h"
 #include "ColourIDs.h"
 
 static String toLowerCamelCase(const String &string)
@@ -276,8 +274,8 @@ Image Icons::findByName(Icons::Id id, int maxSize)
         return prerenderedVectors[nameKey];
     }
     
-    const Colour iconBaseColour(App::Helio().getTheme()->findColour(ColourIDs::Icons::fill));
-    const Colour iconShadeColour(App::Helio().getTheme()->findColour(ColourIDs::Icons::shadow));
+    const Colour iconBaseColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::fill));
+    const Colour iconShadeColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::shadow));
     const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
     prerenderedVectors.set(nameKey, prerenderedImage);
 

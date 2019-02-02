@@ -20,7 +20,6 @@
 #include "TooltipContainer.h"
 #include "Headline.h"
 #include "HelioTheme.h"
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "Config.h"
@@ -35,13 +34,10 @@
 #include "VersionControlTreeItem.h"
 #include "InitScreen.h"
 #include "SequencerLayout.h"
-#include "ColourSchemesManager.h"
-#include "HotkeySchemesManager.h"
 #include "JsonSerializer.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "Workspace.h"
-#include "App.h"
 
 MainLayout::MainLayout() :
     currentContent(nullptr)

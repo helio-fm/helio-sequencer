@@ -38,7 +38,6 @@
 #include "AudioCore.h"
 #include "ColourIDs.h"
 #include "CommandIDs.h"
-#include "App.h"
 
 static inline constexpr int getAudioMonitorHeight()
 {

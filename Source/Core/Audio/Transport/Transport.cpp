@@ -25,7 +25,6 @@
 #include "MidiTrack.h"
 #include "Clip.h"
 #include "Pattern.h"
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "HybridRoll.h"

@@ -30,8 +30,6 @@
 #include "RootTreeItem.h"
 #include "MainLayout.h"
 #include "ColourIDs.h"
-#include "App.h"
-
 #include "TreeItem.h"
 
 static constexpr int getPadding() { return 4; }

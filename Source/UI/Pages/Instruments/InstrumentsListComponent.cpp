@@ -28,7 +28,6 @@
 #include "Instrument.h"
 #include "MainLayout.h"
 #include "Icons.h"
-#include "App.h"
 //[/MiscUserDefs]
 
 InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot)

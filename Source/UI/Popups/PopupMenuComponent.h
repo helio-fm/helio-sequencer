@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "App.h"
 #include "MainLayout.h"
 #include "CommandIDs.h"
 

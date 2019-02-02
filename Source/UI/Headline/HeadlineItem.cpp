@@ -29,7 +29,6 @@
 #include "CachedLabelImage.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
-#include "App.h"
 //[/MiscUserDefs]
 
 HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent)

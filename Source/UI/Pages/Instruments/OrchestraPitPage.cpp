@@ -26,12 +26,10 @@
 #include "OrchestraPitTreeItem.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
-#include "App.h"
 #include "MenuItemComponent.h"
 #include "Icons.h"
 #include "ProgressTooltip.h"
 #include "CommandIDs.h"
-#include "App.h"
 #include "Workspace.h"
 #include "ComponentIDs.h"
 //[/MiscUserDefs]

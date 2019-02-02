@@ -56,7 +56,7 @@ private:
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
         ValueTree session(ApiKeys::session);
-        session.setProperty(ApiKeys::deviceId, Config::getDeviceId(), nullptr);
+        session.setProperty(ApiKeys::deviceId, App::getDeviceId(), nullptr);
         session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName(), nullptr);
 
         const BackendRequest request(ApiRoutes::tokenUpdate);

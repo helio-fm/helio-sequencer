@@ -30,7 +30,6 @@
 #include "AudioPluginSelectionMenu.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
-#include "App.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 

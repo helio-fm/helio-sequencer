@@ -29,11 +29,8 @@
 #include "Workspace.h"
 #include "PianoRoll.h"
 #include "Config.h"
-#include "App.h"
-
 #include "SettingsListItemHighlighter.h"
 #include "SettingsListItemSelection.h"
-#include "ColourSchemesManager.h"
 #include "ColourIDs.h"
 
 class ThemeSettingsItemHighlighter : public Component

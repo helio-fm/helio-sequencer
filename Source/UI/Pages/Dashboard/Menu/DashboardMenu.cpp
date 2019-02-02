@@ -26,7 +26,6 @@
 #include "ProjectTreeItem.h"
 #include "MainLayout.h"
 #include "Workspace.h"
-#include "App.h"
 #include "CommandIDs.h"
 #include "ComponentIDs.h"
 

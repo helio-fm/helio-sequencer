@@ -16,7 +16,6 @@
 */
 
 #include "Common.h"
-#include "App.h"
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 #include "TrackedItem.h"
@@ -24,7 +23,6 @@
 #include "SerializationKeys.h"
 #include "SerializationKeys.h"
 #include "ResourceSyncService.h"
-#include "App.h"
 
 using namespace VCS;
 

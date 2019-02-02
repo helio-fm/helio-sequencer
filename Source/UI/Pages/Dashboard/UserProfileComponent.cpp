@@ -22,7 +22,6 @@
 #include "UserProfileComponent.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "Workspace.h"
 #include "UserProfile.h"
 //[/MiscUserDefs]

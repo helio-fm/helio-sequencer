@@ -28,8 +28,6 @@
 #include "OrchestraPit.h"
 #include "OrchestraPitTreeItem.h"
 #include "AudioPluginTreeItem.h"
-
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 

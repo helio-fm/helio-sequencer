@@ -60,7 +60,6 @@
 #include "AnnotationDialog.h"
 #include "TimeSignatureDialog.h"
 
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"

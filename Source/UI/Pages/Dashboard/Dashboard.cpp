@@ -29,7 +29,6 @@
 #include "SerializationKeys.h"
 #include "DashboardMenu.h"
 #include "LogoFader.h"
-#include "App.h"
 #include "Workspace.h"
 #include "SessionService.h"
 #include "IconComponent.h"

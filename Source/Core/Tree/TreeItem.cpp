@@ -19,7 +19,6 @@
 #include "TreeItem.h"
 #include "TreeItemChildrenSerializer.h"
 #include "SerializationKeys.h"
-#include "App.h"
 #include "MainLayout.h"
 
 const String TreeItem::xPathSeparator = "/";

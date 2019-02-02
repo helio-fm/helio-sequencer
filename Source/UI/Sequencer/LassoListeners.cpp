@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "LassoListeners.h"
-#include "App.h"
 #include "MainLayout.h"
 #include "Icons.h"
 #include "Lasso.h"

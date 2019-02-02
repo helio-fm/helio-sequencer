@@ -19,7 +19,6 @@
 #include "ProjectMenu.h"
 #include "ProjectTreeItem.h"
 #include "Icons.h"
-#include "App.h"
 #include "ModalDialogInput.h"
 #include "ModalDialogConfirmation.h"
 #include "PianoTrackTreeItem.h"
@@ -39,7 +38,6 @@
 #include "AutomationTrackActions.h"
 #include "Pattern.h"
 #include "UndoStack.h"
-#include "App.h"
 #include "Workspace.h"
 #include "CommandIDs.h"
 

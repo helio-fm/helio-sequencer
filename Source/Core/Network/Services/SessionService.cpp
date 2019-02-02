@@ -19,8 +19,6 @@
 #include "SessionService.h"
 #include "JsonSerializer.h"
 #include "Config.h"
-
-#include "App.h"
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"

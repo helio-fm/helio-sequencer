@@ -21,7 +21,6 @@
 #include "CommandIDs.h"
 #include "MainLayout.h"
 #include "MainWindow.h"
-#include "App.h"
 
 #define DIALOG_HAS_BACKGROUND 1
 //#define DIALOG_HAS_BACKGROUND 0

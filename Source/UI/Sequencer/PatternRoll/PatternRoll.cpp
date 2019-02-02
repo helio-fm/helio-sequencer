@@ -51,7 +51,6 @@
 #include "ColourIDs.h"
 #include "Config.h"
 #include "Icons.h"
-#include "App.h"
 
 #define DEFAULT_CLIP_LENGTH 1.0f
 

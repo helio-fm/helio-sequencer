@@ -22,7 +22,6 @@
 #include "SerializationKeys.h"
 #include "AuthSessionDto.h"
 #include "Config.h"
-#include "App.h"
 
 class AuthThread final : public Thread
 {
@@ -65,7 +64,7 @@ private:
         initSession.setProperty(ApiKeys::AuthSession::appName, "Helio", nullptr);
         initSession.setProperty(ApiKeys::AuthSession::appVersion, App::getAppReadableVersion(), nullptr);
         initSession.setProperty(ApiKeys::AuthSession::appPlatform, SystemStats::getOperatingSystemName(), nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::deviceId, Config::getDeviceId(), nullptr);
+        initSession.setProperty(ApiKeys::AuthSession::deviceId, App::getDeviceId(), nullptr);
 
         const BackendRequest initWebAuthRequest(ApiRoutes::initWebAuth);
         this->response = initWebAuthRequest.post(initSession);

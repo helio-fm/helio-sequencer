@@ -29,9 +29,8 @@
 #include "IconComponent.h"
 #include "Icons.h"
 #include "HotkeyScheme.h"
-#include "HotkeySchemesManager.h"
 #include "MainLayout.h"
-#include "App.h"
+#include "Config.h"
 
 #define ICON_MARGIN (8)
 #define MAX_MENU_FONT_SIZE (28.f)

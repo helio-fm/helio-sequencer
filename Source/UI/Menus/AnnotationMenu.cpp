@@ -28,7 +28,6 @@
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
 #include "CommandIDs.h"
-#include "App.h"
 
 AnnotationMenu::AnnotationMenu(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation) :
     project(parentProject),

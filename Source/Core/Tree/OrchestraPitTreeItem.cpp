@@ -27,7 +27,6 @@
 #include "PluginScanner.h"
 #include "OrchestraPitMenu.h"
 #include "SerializationKeys.h"
-#include "App.h"
 #include "Workspace.h"
 
 OrchestraPitTreeItem::OrchestraPitTreeItem() :

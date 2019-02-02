@@ -20,13 +20,11 @@
 #include "OrchestraPitTreeItem.h"
 #include "Icons.h"
 #include "CommandIDs.h"
-#include "App.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Document.h"
 #include "PluginScanner.h"
 #include "Workspace.h"
-#include "App.h"
 
 OrchestraPitMenu::OrchestraPitMenu(OrchestraPitTreeItem &parentOrchestra) :
     instrumentsRoot(parentOrchestra)

@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 #include "Icons.h"
 #include "IconComponent.h"
-#include "App.h"
 #include "Workspace.h"
 //[/MiscUserDefs]
 

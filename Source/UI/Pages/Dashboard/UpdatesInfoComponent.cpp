@@ -22,7 +22,6 @@
 #include "AppInfoDto.h"
 #include "SerializationKeys.h"
 #include "PanelBackgroundA.h"
-#include "App.h"
 //[/Headers]
 
 #include "UpdatesInfoComponent.h"

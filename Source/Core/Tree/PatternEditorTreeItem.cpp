@@ -19,7 +19,6 @@
 #include "PatternEditorTreeItem.h"
 #include "TreeItemChildrenSerializer.h"
 #include "Icons.h"
-#include "App.h"
 #include "MainLayout.h"
 #include "ProjectTreeItem.h"
 #include "SerializationKeys.h"

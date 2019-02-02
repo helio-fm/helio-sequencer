@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 #include "VersionControl.h"
 #include "MainLayout.h"
-#include "App.h"
 //[/MiscUserDefs]
 
 VersionControlEditor::VersionControlEditor(VersionControl &versionControl)

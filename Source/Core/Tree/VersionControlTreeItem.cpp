@@ -27,8 +27,6 @@
 #include "SuccessTooltip.h"
 #include "VersionControlMenu.h"
 #include "VersionControlEditor.h"
-
-#include "App.h"
 #include "Icons.h"
 #include "Workspace.h"
 #include "MainLayout.h"

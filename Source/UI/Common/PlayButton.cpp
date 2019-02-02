@@ -22,7 +22,6 @@
 #include "PlayButton.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "MainLayout.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"

@@ -25,10 +25,10 @@
 #include "PianoSequence.h"
 #include "PianoRoll.h"
 #include "Transport.h"
-#include "ChordsManager.h"
 #include "KeySignaturesSequence.h"
 #include "KeySignatureEvent.h"
 #include "CommandIDs.h"
+#include "Config.h"
 
 #define CHORD_BUILDER_LABEL_SIZE           (28)
 #define CHORD_BUILDER_NOTE_LENGTH          (4)

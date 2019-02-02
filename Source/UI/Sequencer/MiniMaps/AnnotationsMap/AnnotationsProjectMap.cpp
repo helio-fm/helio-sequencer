@@ -25,9 +25,7 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "AnnotationMenu.h"
-
 #include "AnnotationDialog.h"
-#include "App.h"
 #include "MainLayout.h"
 
 template<typename T>

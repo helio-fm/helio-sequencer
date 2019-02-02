@@ -22,15 +22,12 @@
 #include "UserInterfaceSettings.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "SerializationKeys.h"
 #include "ProjectTreeItem.h"
 #include "BinaryData.h"
 #include "ThemeSettingsItem.h"
 #include "MenuPanel.h"
 #include "ModalDialogConfirmation.h"
-
-#include "App.h"
 #include "Config.h"
 #include "HelioTheme.h"
 #include "Workspace.h"

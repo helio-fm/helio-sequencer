@@ -19,7 +19,6 @@
 #include "Document.h"
 #include "DocumentOwner.h"
 #include "DocumentHelpers.h"
-#include "App.h"
 #include "MainLayout.h"
 
 Document::Document(DocumentOwner &documentOwner,

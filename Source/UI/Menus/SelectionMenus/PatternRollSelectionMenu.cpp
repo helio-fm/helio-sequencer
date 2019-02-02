@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "PatternRollSelectionMenu.h"
 #include "ClipComponent.h"
-#include "App.h"
 #include "Lasso.h"
 #include "CommandIDs.h"
 #include "Icons.h"

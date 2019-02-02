@@ -22,7 +22,6 @@
 #include "InstrumentEditorPin.h"
 #include "PluginWindow.h"
 
-#include "App.h"
 #include "Workspace.h"
 #include "RootTreeItem.h"
 #include "InstrumentTreeItem.h"

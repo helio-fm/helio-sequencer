@@ -22,17 +22,13 @@
 #include "ThemeSettings.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "SerializationKeys.h"
 #include "ProjectTreeItem.h"
 #include "BinaryData.h"
 #include "ThemeSettingsItem.h"
 #include "MenuPanel.h"
 #include "ColourScheme.h"
-#include "ColourSchemesManager.h"
 #include "ModalDialogConfirmation.h"
-
-#include "App.h"
 #include "Config.h"
 #include "HelioTheme.h"
 #include "Workspace.h"

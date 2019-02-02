@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "DocumentOwner.h"
-#include "App.h"
 #include "MainLayout.h"
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"

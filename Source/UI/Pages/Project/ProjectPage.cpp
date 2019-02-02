@@ -28,7 +28,6 @@
 #include "ProjectInfo.h"
 #include "HelioTheme.h"
 #include "HelioCallout.h"
-#include "App.h"
 #include "ProjectMenu.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]

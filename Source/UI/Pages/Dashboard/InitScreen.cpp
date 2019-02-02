@@ -22,7 +22,6 @@
 #include "InitScreen.h"
 
 //[MiscUserDefs]
-#include "App.h"
 #include "LogoFader.h"
 #include "MainWindow.h"
 #include "HelioTheme.h"
@@ -30,7 +29,6 @@
 #include "Workspace.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
-#include "App.h"
 //[/MiscUserDefs]
 
 InitScreen::InitScreen()

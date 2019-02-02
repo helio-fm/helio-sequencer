@@ -54,7 +54,6 @@
 #include "SequencerLayout.h"
 #include "MainLayout.h"
 #include "Workspace.h"
-#include "App.h"
 
 #include "SerializationKeys.h"
 #include "Config.h"

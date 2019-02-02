@@ -20,7 +20,6 @@
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
 #include "DocumentHelpers.h"
-#include "App.h"
 #include "Config.h"
 
 ColourSchemesManager::ColourSchemesManager() :

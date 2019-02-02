@@ -20,8 +20,6 @@
 #include "TrackedItemsSource.h"
 #include "ProjectTreeItem.h"
 #include "TrackedItem.h"
-#include "App.h"
-
 #include "Diff.h"
 #include "DiffLogic.h"
 
