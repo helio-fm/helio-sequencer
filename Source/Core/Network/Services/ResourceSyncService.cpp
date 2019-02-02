@@ -108,9 +108,9 @@ RequestResourceThread *ResourceSyncService::prepareResourceRequestThread()
 
     thread->onRequestResourceOk = [this](const Identifier &resourceId, const ValueTree &resource)
     {
-        if (App::Config().getResourceManagers().contains(resourceId))
+        if (App::Config().getAllResources().contains(resourceId))
         {
-            App::Config().getResourceManagers().at(resourceId)->updateBaseResource(resource);
+            App::Config().getAllResources().at(resourceId)->updateBaseResource(resource);
         }
     };
     

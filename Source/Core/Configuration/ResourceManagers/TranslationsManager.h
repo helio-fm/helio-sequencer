@@ -29,7 +29,7 @@ public:
 
     inline const Array<Translation::Ptr> getAll() const
     {
-        return this->getResources<Translation>();
+        return this->getAllResources<Translation>();
     }
 
     const Translation::Ptr getCurrent() const noexcept;

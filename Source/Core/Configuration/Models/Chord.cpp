@@ -65,11 +65,6 @@ String Chord::getResourceId() const
     return this->name;
 }
 
-Identifier Chord::getResourceIdProperty() const
-{
-    return Serialization::Midi::chordName;
-}
-
 const bool Chord::isValid() const noexcept
 {
     return !this->scaleKeys.isEmpty();

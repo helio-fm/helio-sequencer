@@ -22,7 +22,6 @@ class BaseResource : public Serializable, public ReferenceCountedObject
 public:
 
     virtual String getResourceId() const = 0;
-    virtual Identifier getResourceIdProperty() const = 0;
 
     using Ptr = ReferenceCountedObjectPtr<BaseResource>;
 
@@ -37,7 +36,6 @@ class DummyBaseResource : public BaseResource
 {
 public:
     String getResourceId() const override { return {}; }
-    Identifier getResourceIdProperty() const override { return {}; }
     ValueTree serialize() const override { return {}; }
     void deserialize(const ValueTree &tree) override {}
     void reset() override {}

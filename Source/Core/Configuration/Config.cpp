@@ -36,27 +36,27 @@ Config::Config(int timeoutToSaveMs) :
     this->chordsManager.reset(new ChordsManager());
 
     using namespace Serialization::Resources;
-    this->resourceManagers[translations] = this->translationsManager.get();
-    this->resourceManagers[arpeggiators] = this->arpeggiatorsManager.get();
-    this->resourceManagers[colourSchemes] = this->colourSchemesManager.get();
-    this->resourceManagers[hotkeySchemes] = this->hotkeySchemesManager.get();
-    this->resourceManagers[scripts] = this->scriptsManager.get();
-    this->resourceManagers[scales] = this->scalesManager.get();
-    this->resourceManagers[chords] = this->chordsManager.get();
+    this->resources[translations] = this->translationsManager.get();
+    this->resources[arpeggiators] = this->arpeggiatorsManager.get();
+    this->resources[colourSchemes] = this->colourSchemesManager.get();
+    this->resources[hotkeySchemes] = this->hotkeySchemesManager.get();
+    this->resources[scripts] = this->scriptsManager.get();
+    this->resources[scales] = this->scalesManager.get();
+    this->resources[chords] = this->chordsManager.get();
 }
 
 Config::~Config()
 {
     this->saveIfNeeded();
 
-    this->translationsManager = nullptr;
-    this->arpeggiatorsManager = nullptr;
-    this->colourSchemesManager = nullptr;
-    this->hotkeySchemesManager = nullptr;
-    this->scriptsManager = nullptr;
-    this->scalesManager = nullptr;
     this->chordsManager = nullptr;
-    this->resourceManagers.clear();
+    this->scalesManager = nullptr;
+    this->scriptsManager = nullptr;
+    this->hotkeySchemesManager = nullptr;
+    this->colourSchemesManager = nullptr;
+    this->arpeggiatorsManager = nullptr;
+    this->translationsManager = nullptr;
+    this->resources.clear();
 }
 
 void Config::initResources()
@@ -87,7 +87,7 @@ void Config::initResources()
         }
     }
 
-    for (auto manager : this->resourceManagers)
+    for (auto manager : this->resources)
     {
         manager.second->reloadResources();
     }
@@ -205,9 +205,9 @@ void Config::onConfigChanged()
     }
 }
 
-ResourceManagerPool &Config::getResourceManagers() noexcept
+ResourceManagerLookup &Config::getAllResources() noexcept
 {
-    return this->resourceManagers;
+    return this->resources;
 }
 
 ChordsManager *Config::getChords() const noexcept

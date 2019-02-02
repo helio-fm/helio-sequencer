@@ -28,7 +28,7 @@ public:
 
     inline const Array<Script::Ptr> getAll() const
     {
-        return this->getResources<Script>();
+        return this->getAllResources<Script>();
     }
 
 private:

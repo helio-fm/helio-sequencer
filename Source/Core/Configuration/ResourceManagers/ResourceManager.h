@@ -31,7 +31,7 @@ public:
     void reloadResources();
 
     template<typename T>
-    const Array<typename T::Ptr> getResources() const
+    const Array<typename T::Ptr> getAllResources() const
     {
         Array<typename T::Ptr> result;
 
@@ -43,6 +43,20 @@ public:
                     typename T::Ptr(static_cast<T *>(baseConfig.second.get())));
             }
         }
+
+        for (const auto &userConfig : this->userResources)
+        {
+            result.addSorted(this->getResourceComparator(),
+                typename T::Ptr(static_cast<T *>(userConfig.second.get())));
+        }
+
+        return result;
+    }
+
+    template<typename T>
+    const Array<typename T::Ptr> getUserResources() const
+    {
+        Array<typename T::Ptr> result;
 
         for (const auto &userConfig : this->userResources)
         {
@@ -99,4 +113,4 @@ private:
     JUCE_DECLARE_WEAK_REFERENCEABLE(ResourceManager)
 };
 
-using ResourceManagerPool = FlatHashMap<Identifier, WeakReference<ResourceManager>, IdentifierHash>;
+using ResourceManagerLookup = FlatHashMap<Identifier, WeakReference<ResourceManager>, IdentifierHash>;

@@ -41,7 +41,6 @@ public:
     //===------------------------------------------------------------------===//
 
     String getResourceId() const override;
-    Identifier getResourceIdProperty() const override;
 
 private:
 

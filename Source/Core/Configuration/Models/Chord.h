@@ -28,7 +28,6 @@ public:
     explicit Chord(const String &name) noexcept;
 
     String getResourceId() const override;
-    Identifier getResourceIdProperty() const override;
     using Ptr = ReferenceCountedObjectPtr<Chord>;
 
     enum Key // meaning: in-scale key

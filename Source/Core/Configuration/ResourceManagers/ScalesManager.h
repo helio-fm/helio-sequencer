@@ -28,7 +28,7 @@ public:
 
     inline const Array<Scale::Ptr> getAll() const
     {
-        return this->getResources<Scale>();
+        return this->getAllResources<Scale>();
     }
 
 private:

@@ -235,11 +235,6 @@ String HotkeyScheme::getResourceId() const
     return this->name;
 }
 
-Identifier HotkeyScheme::getResourceIdProperty() const
-{
-    return Serialization::UI::Hotkeys::schemeName;
-}
-
 bool operator==(const HotkeyScheme &l, const HotkeyScheme &r)
 {
     return &l == &r || l.name == r.name;

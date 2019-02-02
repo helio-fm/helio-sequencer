@@ -53,11 +53,6 @@ String Script::getResourceId() const
     return this->name;
 }
 
-Identifier Script::getResourceIdProperty() const
-{
-    return Serialization::Scripts::name;
-}
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//

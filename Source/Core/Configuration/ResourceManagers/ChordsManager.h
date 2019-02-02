@@ -28,7 +28,7 @@ public:
 
     inline const Array<Chord::Ptr> getAll() const
     {
-        return this->getResources<Chord>();
+        return this->getAllResources<Chord>();
     }
 
 private:

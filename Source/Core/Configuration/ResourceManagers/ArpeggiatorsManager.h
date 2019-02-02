@@ -28,7 +28,7 @@ public:
 
     inline const Array<Arpeggiator::Ptr> getAll() const
     {
-        return this->getResources<Arpeggiator>();
+        return this->getAllResources<Arpeggiator>();
     }
 
 private:

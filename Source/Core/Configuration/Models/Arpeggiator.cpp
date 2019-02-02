@@ -287,11 +287,6 @@ String Arpeggiator::getResourceId() const
     return this->name;
 }
 
-Identifier Arpeggiator::getResourceIdProperty() const
-{
-    return Serialization::Arps::name;
-}
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//

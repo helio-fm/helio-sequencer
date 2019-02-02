@@ -51,7 +51,7 @@ public:
     ColourSchemesManager *getColourSchemes() const noexcept;
     HotkeySchemesManager *getHotkeySchemes() const noexcept;
 
-    ResourceManagerPool &getResourceManagers() noexcept;
+    ResourceManagerLookup &getAllResources() noexcept;
 
 private:
 
@@ -78,7 +78,8 @@ private:
     UniquePointer<ScriptsManager> scriptsManager;
     UniquePointer<ScalesManager> scalesManager;
     UniquePointer<ChordsManager> chordsManager;
-    ResourceManagerPool resourceManagers;
+
+    ResourceManagerLookup resources;
 
     bool needsSaving;
     int saveTimeout;

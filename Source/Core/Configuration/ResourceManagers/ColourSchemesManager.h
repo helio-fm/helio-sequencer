@@ -28,7 +28,7 @@ public:
 
     inline const Array<ColourScheme::Ptr> getAll() const
     {
-        return this->getResources<ColourScheme>();
+        return this->getAllResources<ColourScheme>();
     }
 
     ColourScheme::Ptr getCurrent() const;

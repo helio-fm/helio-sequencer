@@ -209,11 +209,6 @@ String Scale::getResourceId() const
     return this->name;
 }
 
-Identifier Scale::getResourceIdProperty() const
-{
-    return Serialization::Midi::scaleName;
-}
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//

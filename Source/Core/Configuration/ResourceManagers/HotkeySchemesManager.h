@@ -28,7 +28,7 @@ public:
 
     inline const Array<HotkeyScheme::Ptr> getAll() const noexcept
     {
-        return this->getResources<HotkeyScheme>();
+        return this->getAllResources<HotkeyScheme>();
     }
 
     const HotkeyScheme::Ptr getCurrent() const noexcept;

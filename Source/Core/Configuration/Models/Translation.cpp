@@ -96,8 +96,3 @@ String Translation::getResourceId() const
 {
     return this->id; // i.e. "en", "ru" - should be unique
 }
-
-Identifier Translation::getResourceIdProperty() const
-{
-    return Serialization::Translations::id;
-}
