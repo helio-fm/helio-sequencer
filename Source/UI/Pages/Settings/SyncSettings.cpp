@@ -39,38 +39,53 @@ SyncSettings::SyncSettings()
     this->resourcesList.reset(new ListBox());
     this->addAndMakeVisible(resourcesList.get());
 
-    this->shadow.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(shadow.get());
 
     //[UserPreSize]
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(true);
     this->setOpaque(true);
-
-    this->resourcesList->setModel(this);
-    this->resourcesList->setRowHeight(SYNC_SETTINGS_ROW_HEIGHT);
-    this->resourcesList->getViewport()->setScrollBarsShown(true, false);
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     this->setSize(600, 265);
 
     //[Constructor]
-    //const auto resources(TranslationsManager::getInstance().getAvailableLocales());
-    //this->setSize(600, 40 + locales.size() * SYNC_SETTINGS_ROW_HEIGHT);
 
-    // TODO listen all resource managers
-    //TranslationsManager::getInstance().addChangeListener(this);
+    // how to collect and update references to all resources? problems:
+    //  - user profile does not store remotely-stored resources info
+    // App::Workspace().getUserProfile().get
+
+    for (auto resource : App::Config().getAllResources())
+    {
+        const auto resourceType = resource.first;
+        const auto configs = resource.second->getUserResources<BaseResource>();
+        for (const auto config : configs)
+        {
+            this->keys.add(resourceType + "/" + config->getResourceId());
+            this->resources.add(config);
+        }
+
+        resource.second->addChangeListener(this);
+    }
+
+    this->setSize(600, this->keys.size() * SYNC_SETTINGS_ROW_HEIGHT);
+
+    this->resourcesList->setModel(this);
+    this->resourcesList->setRowHeight(SYNC_SETTINGS_ROW_HEIGHT);
+    this->resourcesList->getViewport()->setScrollBarsShown(true, false);
     //[/Constructor]
 }
 
 SyncSettings::~SyncSettings()
 {
     //[Destructor_pre]
-    //TranslationsManager::getInstance().removeChangeListener(this);
+    for (auto resource : App::Config().getAllResources())
+    {
+        resource.second->removeChangeListener(this);
+    }
     //[/Destructor_pre]
 
     resourcesList = nullptr;
-    shadow = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -91,7 +106,6 @@ void SyncSettings::resized()
     //[/UserPreResize]
 
     resourcesList->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    shadow->setBounds(0, -1, getWidth() - 0, 11);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -105,48 +119,42 @@ void SyncSettings::resized()
 
 void SyncSettings::changeListenerCallback(ChangeBroadcaster *source)
 {
-    this->resourcesList->updateContent();
+    // FIXME! re-read all resources? kinda overkill?
+    //this->resourcesList->updateContent();
 }
 
 //===----------------------------------------------------------------------===//
 // ListBoxModel
 //===----------------------------------------------------------------------===//
 
-Component *SyncSettings::refreshComponentForRow(int rowNumber, bool isRowSelected,
-    Component *existingComponentToUpdate)
+Component *SyncSettings::refreshComponentForRow(int rowNumber,
+    bool isRowSelected, Component *existingComponentToUpdate)
 {
-    //if (rowNumber >= resources.size()) { return existingComponentToUpdate; }
-
-    //const bool isSynced = false; // TODO;
-    //const bool isLastRow = (rowNumber == resources.size() - 1);
-    //const String localeDescription(resources[rowNumber]->getId());
-
-    //if (existingComponentToUpdate != nullptr)
-    //{
-    //    if (auto *row = dynamic_cast<SyncSettingsItem *>(existingComponentToUpdate))
-    //    {
-    //        row->updateDescription(isLastRow, isSynced, resources[rowNumber]->getName());
-    //    }
-    //}
-    //else
-    //{
-    //    auto *row = new SyncSettingsItem(*this->resourcesList);
-    //    row->updateDescription(isLastRow, isSynced, resources[rowNumber]->getName());
-    //    return row;
-    //}
+    if (rowNumber < this->keys.size())
+    {
+        const bool isSynced = false; // TODO;
+        const bool isLastRow = (rowNumber == this->keys.size() - 1);
+        if (existingComponentToUpdate != nullptr)
+        {
+            if (auto *row = dynamic_cast<SyncSettingsItem *>(existingComponentToUpdate))
+            {
+                row->updateDescription(isLastRow, isSynced, this->keys.getReference(rowNumber));
+            }
+        }
+        else
+        {
+            auto *row = new SyncSettingsItem(*this->resourcesList);
+            row->updateDescription(isLastRow, isSynced, this->keys.getReference(rowNumber));
+            return row;
+        }
+    }
 
     return existingComponentToUpdate;
 }
 
 int SyncSettings::getNumRows()
 {
-    // TODO
-    return 0;
-}
-
-int SyncSettings::getRowHeight() const noexcept
-{
-    return this->resourcesList->getRowHeight();
+    return this->keys.size();
 }
 
 //[/MiscUserCode]
@@ -160,13 +168,9 @@ BEGIN_JUCER_METADATA
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
                  initialHeight="265">
-  <BACKGROUND backgroundColour="4d4d4d"/>
+  <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="5005ba29a3a1bbc6" memberName="resourcesList" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params=""/>
-  <JUCERCOMP name="" id="34270fb50cf926d8" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 -1 0M 11" posRelativeX="c5bde2fac9c39997"
-             posRelativeY="c5bde2fac9c39997" posRelativeW="c5bde2fac9c39997"
-             sourceFile="../../Themes/SeparatorHorizontal.cpp" constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

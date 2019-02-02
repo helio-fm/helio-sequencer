@@ -36,31 +36,35 @@
 
 TranslationSettings::TranslationSettings()
 {
-    addAndMakeVisible (translationsList = new ListBox());
+    this->translationsList.reset(new ListBox());
+    this->addAndMakeVisible(translationsList.get());
 
-    addAndMakeVisible (helpButton = new TextButton (String()));
-    helpButton->setButtonText (TRANS("settings::language::help"));
-    helpButton->addListener (this);
+    this->helpButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(helpButton.get());
+    helpButton->setButtonText(TRANS("settings::language::help"));
+    helpButton->addListener(this);
 
-    addAndMakeVisible (shadow = new SeparatorHorizontal());
+    this->shadow.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(shadow.get());
 
     //[UserPreSize]
     this->setOpaque(true);
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
 
     this->availableTranslations = App::Config().getTranslations()->getAll();
     this->currentTranslation = App::Config().getTranslations()->getCurrent();
+    //[/UserPreSize]
+
+    this->setSize(600, 265);
+
+    //[Constructor]
+    this->setSize(600, 40 + this->availableTranslations.size() * TRANSLATION_SETTINGS_ROW_HEIGHT);
 
     this->translationsList->setModel(this);
     this->translationsList->setRowHeight(TRANSLATION_SETTINGS_ROW_HEIGHT);
     this->translationsList->getViewport()->setScrollBarsShown(true, false);
-    //[/UserPreSize]
-
-    setSize (600, 265);
-
-    //[Constructor]
-    this->setSize(600, 40 + this->availableTranslations.size() * TRANSLATION_SETTINGS_ROW_HEIGHT);
     this->scrollToSelectedLocale();
 
     App::Config().getTranslations()->addChangeListener(this);
@@ -95,19 +99,19 @@ void TranslationSettings::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    translationsList->setBounds (0, 0, getWidth() - 0, getHeight() - 40);
-    helpButton->setBounds (48, getHeight() - 2 - 32, getWidth() - 96, 32);
-    shadow->setBounds (48 + 0, (getHeight() - 2 - 32) + -1, (getWidth() - 96) - 0, 11);
+    translationsList->setBounds(0, 0, getWidth() - 0, getHeight() - 40);
+    helpButton->setBounds(48, getHeight() - 2 - 32, getWidth() - 96, 32);
+    shadow->setBounds(48 + 0, (getHeight() - 2 - 32) + -1, (getWidth() - 96) - 0, 11);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void TranslationSettings::buttonClicked (Button* buttonThatWasClicked)
+void TranslationSettings::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == helpButton)
+    if (buttonThatWasClicked == helpButton.get())
     {
         //[UserButtonCode_helpButton] -- add your button handler code here..
         using namespace Routes::HelioFM;
@@ -188,12 +192,6 @@ int TranslationSettings::getNumRows()
 {
     return this->availableTranslations.size();
 }
-
-int TranslationSettings::getRowHeight() const noexcept
-{
-    return this->translationsList->getRowHeight();
-}
-
 //[/MiscUserCode]
 
 #if 0

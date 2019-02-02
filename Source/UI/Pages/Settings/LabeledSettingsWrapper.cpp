@@ -41,6 +41,7 @@ LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const
 
 
     //[UserPreSize]
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     this->setSize(600, 400);

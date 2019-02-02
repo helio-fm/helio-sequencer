@@ -30,8 +30,8 @@ FramePanel::FramePanel()
 
     //[UserPreSize]
     this->setOpaque(true);
-    this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(600, 400);

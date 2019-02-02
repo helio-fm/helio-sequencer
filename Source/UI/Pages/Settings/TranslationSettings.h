@@ -40,17 +40,14 @@ public:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-    Component *refreshComponentForRow(int, bool, Component*) override;
-    void listBoxItemClicked(int rowNumber, const MouseEvent &e) override {}
-    void paintListBoxItem(int rowNumber, Graphics &g,
-        int width, int height, bool rowIsSelected) override {}
-    int getRowHeight() const noexcept;
+    Component *refreshComponentForRow(int, bool, Component *) override;
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
 
 
 private:
@@ -69,9 +66,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<ListBox> translationsList;
-    ScopedPointer<TextButton> helpButton;
-    ScopedPointer<SeparatorHorizontal> shadow;
+    UniquePointer<ListBox> translationsList;
+    UniquePointer<TextButton> helpButton;
+    UniquePointer<SeparatorHorizontal> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TranslationSettings)
 };

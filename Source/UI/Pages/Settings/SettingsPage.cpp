@@ -31,24 +31,24 @@ SettingsPage::SettingsPage(Component *settingsList)
     this->viewport.reset(new Viewport(String()));
     this->addAndMakeVisible(viewport.get());
     viewport->setScrollBarsShown (true, false);
-    viewport->setScrollBarThickness (18);
+    viewport->setScrollBarThickness (30);
 
 
     //[UserPreSize]
-    this->viewport->setViewedComponent(settingsList, false);
+    this->setFocusContainer(true);
+    this->setWantsKeyboardFocus(true);
+    this->setPaintingIsUnclipped(true);
 
-#if HELIO_MOBILE
-    this->viewport->setScrollBarThickness(32);
-#else
+#if HELIO_DESKTOP
     this->viewport->setScrollBarThickness(2);
 #endif
+
+    this->viewport->setViewedComponent(settingsList, false);
     //[/UserPreSize]
 
     this->setSize(600, 400);
 
     //[Constructor]
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
     //[/Constructor]
 }
 
@@ -67,13 +67,9 @@ SettingsPage::~SettingsPage()
 void SettingsPage::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-#if 0
     //[/UserPrePaint]
 
-    g.fillAll (Colours::white);
-
     //[UserPaint] Add your own custom painting code here..
-#endif
     //[/UserPaint]
 }
 
@@ -83,10 +79,10 @@ void SettingsPage::resized()
     //[/UserPreResize]
 
     background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    viewport->setBounds(20, 20, getWidth() - 40, getHeight() - 40);
+    viewport->setBounds(16, 16, getWidth() - 32, getHeight() - 32);
     //[UserResized] Add your own custom resize handling here..
     this->viewport->getViewedComponent()->
-    setSize(this->viewport->getMaximumVisibleWidth(),
+        setSize(this->viewport->getMaximumVisibleWidth(),
             this->viewport->getViewedComponent()->getHeight());
     //[/UserResized]
 }
@@ -103,13 +99,13 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component" constructorParams="Component *settingsList"
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ffffffff"/>
+  <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="e130bb0b9ed67f09" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <VIEWPORT name="" id="1df16503f554b532" memberName="viewport" virtualName=""
-            explicitFocusOrder="0" pos="20 20 40M 40M" vscroll="1" hscroll="0"
-            scrollbarThickness="18" contentType="0" jucerFile="" contentClass=""
+            explicitFocusOrder="0" pos="16 16 32M 32M" vscroll="1" hscroll="0"
+            scrollbarThickness="30" contentType="0" jucerFile="" contentClass=""
             constructorParams=""/>
 </JUCER_COMPONENT>
 

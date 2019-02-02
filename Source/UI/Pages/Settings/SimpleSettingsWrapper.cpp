@@ -32,6 +32,7 @@ SimpleSettingsWrapper::SimpleSettingsWrapper(Component *targetComponent)
     this->addAndMakeVisible(panel.get());
 
     //[UserPreSize]
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     this->setSize(600, 400);
@@ -55,12 +56,9 @@ SimpleSettingsWrapper::~SimpleSettingsWrapper()
 void SimpleSettingsWrapper::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    if (this->target != nullptr)
-    {
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    }
     //[/UserPaint]
 }
 

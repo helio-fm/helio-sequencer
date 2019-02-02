@@ -37,7 +37,7 @@ public:
     void setSelected(bool shouldBeSelected) override;
 
     void updateDescription(bool isLastRowInList, bool isSynced, const String &resourceName);
-    
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -48,14 +48,7 @@ public:
 private:
 
     //[UserVariables]
-
-    ComponentAnimator selectionAnimator;
-    ScopedPointer<Component> selectionComponent;
-
     Component *createHighlighterComponent() override;
-
-    friend class TranslationSettings;
-
     //[/UserVariables]
 
     UniquePointer<SeparatorHorizontal> separator;

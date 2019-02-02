@@ -18,9 +18,9 @@
 #pragma once
 
 //[Headers]
+#include "BaseResource.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorHorizontal.h"
 
 class SyncSettings final : public Component,
                            public ListBoxModel,
@@ -37,17 +37,9 @@ public:
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
-    Component *refreshComponentForRow(int, bool, Component*) override;
-
     int getNumRows() override;
-
-    void paintListBoxItem(int rowNumber, Graphics &g,
-                                  int width, int height,
-                                  bool rowIsSelected) override {}
-
-    void listBoxItemClicked(int rowNumber, const MouseEvent &e) override {}
-
-    int getRowHeight() const noexcept;
+    Component *refreshComponentForRow(int, bool, Component *) override;
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
     //[/UserMethods]
 
@@ -59,10 +51,11 @@ private:
 
     //[UserVariables]
     void changeListenerCallback(ChangeBroadcaster *source) override;
+    Array<String> keys;
+    Array<BaseResource::Ptr> resources;
     //[/UserVariables]
 
     UniquePointer<ListBox> resourcesList;
-    UniquePointer<SeparatorHorizontal> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SyncSettings)
 };

@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "Icons.h"
-
 #include "SettingsListItemHighlighter.h"
 #include "SettingsListItemSelection.h"
 //[/MiscUserDefs]
@@ -40,8 +39,6 @@ SyncSettingsItem::SyncSettingsItem(ListBox &parentListBox)
 
 
     //[UserPreSize]
-    this->selectionComponent = new SettingsListItemSelection();
-    this->addChildComponent(this->selectionComponent);
     //[/UserPreSize]
 
     this->setSize(350, 32);
@@ -80,7 +77,6 @@ void SyncSettingsItem::resized()
     separator->setBounds(40, getHeight() - 2, getWidth() - 46, 2);
     toggleButton->setBounds(8, (getHeight() / 2) + -1 - (24 / 2), getWidth() - 14, 24);
     //[UserResized] Add your own custom resize handling here..
-    this->selectionComponent->setBounds(this->getLocalBounds());
     //[/UserResized]
 }
 
@@ -106,6 +102,7 @@ void SyncSettingsItem::setSelected(bool shouldBeSelected)
 {
     if (shouldBeSelected)
     {
+        this->toggleButton->setToggleState(!this->toggleButton->getToggleState(), dontSendNotification);
         // TODO call backend
     }
 }
@@ -121,7 +118,6 @@ Component *SyncSettingsItem::createHighlighterComponent()
 {
     return new SettingsListItemHighlighter();
 }
-
 //[/MiscUserCode]
 
 #if 0

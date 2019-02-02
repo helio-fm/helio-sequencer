@@ -38,8 +38,8 @@ public:
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
-    Component *refreshComponentForRow(int, bool, Component*) override;
     int getNumRows() override;
+    Component *refreshComponentForRow(int, bool, Component*) override;
     void paintListBoxItem(int, Graphics&, int, int, bool) override {}
     void listBoxItemClicked(int, const MouseEvent &) override {}
 

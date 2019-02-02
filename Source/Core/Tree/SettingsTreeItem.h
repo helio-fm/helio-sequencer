@@ -47,8 +47,8 @@ private:
     ScopedPointer<Component> themeSettingsWrapper;
     ScopedPointer<Component> translationSettings;
     ScopedPointer<Component> translationSettingsWrapper;
-    ScopedPointer<Component> authSettings;
-    ScopedPointer<Component> authSettingsWrapper;
+    ScopedPointer<Component> syncSettings;
+    ScopedPointer<Component> syncSettingsWrapper;
     ScopedPointer<Component> settingsPage;
 
 };

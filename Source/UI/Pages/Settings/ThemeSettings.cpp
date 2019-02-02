@@ -51,13 +51,10 @@ ThemeSettings::ThemeSettings()
     this->setOpaque(true);
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
 
     this->schemes = App::Config().getColourSchemes()->getAll();
     this->currentScheme = App::Config().getColourSchemes()->getCurrent();
-
-    this->themesList->setModel(this);
-    this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
-    this->themesList->getViewport()->setScrollBarsShown(true, false);
     //[/UserPreSize]
 
     this->setSize(600, 350);
@@ -65,6 +62,11 @@ ThemeSettings::ThemeSettings()
     //[Constructor]
     const int numSchemes = this->schemes.size();
     this->setSize(600, 16 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
+
+    this->themesList->setModel(this);
+    this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
+    this->themesList->getViewport()->setScrollBarsShown(true, false);
+
     App::Config().getColourSchemes()->addChangeListener(this);
     //[/Constructor]
 }

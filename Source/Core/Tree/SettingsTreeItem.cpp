@@ -18,18 +18,22 @@
 #include "Common.h"
 #include "SettingsTreeItem.h"
 #include "TreeItemChildrenSerializer.h"
-#include "MainLayout.h"
-#include "Icons.h"
 #include "SerializationKeys.h"
+
+#include "SyncSettings.h"
 #include "AudioSettings.h"
-#include "UserInterfaceSettings.h"
 #include "ThemeSettings.h"
+#include "UserInterfaceSettings.h"
 #include "TranslationSettings.h"
-#include "ComponentsList.h"
+
 #include "LabeledSettingsWrapper.h"
 #include "SimpleSettingsWrapper.h"
+
+#include "ComponentsList.h"
 #include "SettingsPage.h"
+#include "MainLayout.h"
 #include "Workspace.h"
+#include "Icons.h"
 
 SettingsTreeItem::SettingsTreeItem() :
     TreeItem("Settings", Serialization::Core::settings)
@@ -62,8 +66,8 @@ void SettingsTreeItem::showPage()
 void SettingsTreeItem::recreatePage()
 {
     this->settingsPage = nullptr;
-    this->authSettingsWrapper = nullptr;
-    this->authSettings = nullptr;
+    this->syncSettingsWrapper = nullptr;
+    this->syncSettings = nullptr;
     this->translationSettingsWrapper = nullptr;
     this->translationSettings = nullptr;
     this->uiSettingsWrapper = nullptr;
@@ -94,6 +98,10 @@ void SettingsTreeItem::recreatePage()
     this->audioSettings = new AudioSettings(App::Workspace().getAudioCore());
     this->audioSettingsWrapper = new LabeledSettingsWrapper(this->audioSettings, TRANS("settings::audio"));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper);
+
+    this->syncSettings = new SyncSettings();
+    this->syncSettingsWrapper = new LabeledSettingsWrapper(this->syncSettings, TRANS("settings::sync"));
+    this->settingsList->addAndMakeVisible(this->syncSettingsWrapper);
 
     this->settingsPage = new SettingsPage(this->settingsList);
 }
