@@ -28,8 +28,7 @@ class ResourceSyncService final : private BackendService
 {
 public:
 
-    ResourceSyncService(const ResourceManagerPool &rm);
-
+    ResourceSyncService();
 
     void fetchRevisionsInfo(WeakReference<VersionControl> vcs,
         const String &projectId, const String &projectName);
@@ -60,6 +59,4 @@ private:
 
     UpdatesCheckThread *prepareUpdatesCheckThread();
     RequestResourceThread *prepareResourceRequestThread();
-
-    ResourceManagerPool resourceManagers;
 };

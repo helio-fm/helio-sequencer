@@ -27,12 +27,12 @@ HotkeySchemesManager::HotkeySchemesManager() :
 
 HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
 {
-    if (Config::contains(Serialization::Config::activeHotkeyScheme))
+    if (App::Config().containsProperty(Serialization::Config::activeHotkeyScheme))
     {
-        Config::load(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
+        App::Config().load(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
     }
 
-    if (const auto firstScheme = this->getSchemes().getFirst())
+    if (const auto firstScheme = this->getAll().getFirst())
     {
         return firstScheme;
     }
@@ -41,17 +41,17 @@ HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
     return { new HotkeyScheme() };
 }
 
-const HotkeyScheme::Ptr HotkeySchemesManager::getCurrentScheme() const noexcept
+const HotkeyScheme::Ptr HotkeySchemesManager::getCurrent() const noexcept
 {
     jassert(this->activeScheme != nullptr);
     return this->activeScheme;
 }
 
-void HotkeySchemesManager::setCurrentScheme(const HotkeyScheme::Ptr scheme)
+void HotkeySchemesManager::setCurrent(const HotkeyScheme::Ptr scheme)
 {
     jassert(scheme != nullptr);
     this->activeScheme = scheme;
-    Config::save(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
+    App::Config().save(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
 }
 
 void HotkeySchemesManager::deserializeResources(const ValueTree &tree, Resources &outResources)

@@ -21,15 +21,6 @@
 #include "SessionService.h"
 #include "ResourceSyncService.h"
 
-#include "TranslationsManager.h"
-#include "ArpeggiatorsManager.h"
-#include "ColourSchemesManager.h"
-#include "HotkeySchemesManager.h"
-#include "ArpeggiatorsManager.h"
-#include "ScalesManager.h"
-#include "ChordsManager.h"
-#include "ScriptsManager.h"
-
 #include "HelioTheme.h"
 #include "PluginScanner.h"
 #include "Config.h"
@@ -86,35 +77,35 @@ void Clipboard::copy(const ValueTree &data, bool mirrorToSystemClipboard /*= fal
 
 class App &App::Helio() noexcept
 {
-    return *static_cast<App *>(JUCEApplicationBase::getInstance());
+    return *static_cast<App *>(getInstance());
 }
 
 class Workspace &App::Workspace() noexcept
 {
-    return *static_cast<App *>(JUCEApplicationBase::getInstance())->workspace;
+    return *static_cast<App *>(getInstance())->workspace;
 }
 
 class MainLayout &App::Layout() noexcept
 {
-    return *static_cast<App *>(JUCEApplicationBase::getInstance())->window->layout;
+    return *static_cast<App *>(getInstance())->window->layout;
 }
 
 class MainWindow &App::Window() noexcept
 {
-    return *static_cast<App *>(JUCEApplicationBase::getInstance())->window;
+    return *static_cast<App *>(getInstance())->window;
 }
 
 class Config &App::Config() noexcept
 {
-    return *static_cast<App *>(JUCEApplicationBase::getInstance())->config;
+    return *static_cast<App *>(getInstance())->config;
 }
 
 class Clipboard &App::Clipboard() noexcept
 {
-    return static_cast<App *>(JUCEApplicationBase::getInstance())->clipboard;
+    return static_cast<App *>(getInstance())->clipboard;
 }
 
-Point<double> App::getScreenInCm()
+static Point<double> getScreenInCm()
 {
     Rectangle<int> screenArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
     const double retinaFactor = Desktop::getInstance().getDisplays().getMainDisplay().scale;
@@ -126,7 +117,7 @@ Point<double> App::getScreenInCm()
 
 bool App::isRunningOnPhone()
 {
-    const auto cmSize = App::getScreenInCm();
+    const auto cmSize = getScreenInCm();
     return (cmSize.x < 15.0 || cmSize.y < 8.0);
 }
 
@@ -146,6 +137,44 @@ bool App::isRunningOnDesktop()
 #elif HELIO_DESKTOP
     return true;
 #endif
+}
+
+String App::getDeviceId()
+{
+    static String kDeviceId;
+
+    if (kDeviceId.isEmpty())
+    {
+        const auto &ids = SystemStats::getDeviceIdentifiers();
+        if (!ids.isEmpty())
+        {
+            kDeviceId = String(CompileTimeHash(ids.joinIntoString({}).toUTF8()));
+        }
+        else
+        {
+            const String systemStats =
+                SystemStats::getLogonName() +
+                SystemStats::getComputerName() +
+                SystemStats::getOperatingSystemName() +
+                SystemStats::getCpuVendor();
+
+            kDeviceId = String(CompileTimeHash(systemStats.toUTF8()));
+        }
+    }
+
+    return kDeviceId;
+}
+
+String App::translate(const String &singular)
+{
+    return static_cast<App *>(getInstance())->config->
+        getTranslations()->translate(singular);
+}
+
+String App::translate(const String &plural, int64 number)
+{
+    return static_cast<App *>(getInstance())->config->
+        getTranslations()->translate(plural, number);
 }
 
 String App::getAppReadableVersion()
@@ -256,38 +285,26 @@ void App::initialise(const String &commandLine)
 
     if (this->runMode == App::NORMAL)
     {
-        Desktop::getInstance().setOrientationsEnabled(Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise);
         DBG("Helio v" + App::getAppReadableVersion());
 
+        const auto album = Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise;
+        Desktop::getInstance().setOrientationsEnabled(album);
+        
         this->config.reset(new class Config());
+        this->config->initResources();
 
-        this->theme.reset(new HelioTheme());
+        this->theme.reset(new class HelioTheme());
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
     
-        // TODO: get rid of singletons someday
-        using namespace Serialization::Resources;
-        this->resourceManagers[translations] = &TranslationsManager::getInstance();
-        this->resourceManagers[arpeggiators] = &ArpeggiatorsManager::getInstance();
-        this->resourceManagers[colourSchemes] = &ColourSchemesManager::getInstance();
-        this->resourceManagers[hotkeySchemes] = &HotkeySchemesManager::getInstance();
-        this->resourceManagers[scales] = &ScalesManager::getInstance();
-        this->resourceManagers[chords] = &ChordsManager::getInstance();
-        this->resourceManagers[scripts] = &ScriptsManager::getInstance();
-
-        for (auto i : this->resourceManagers)
-        {
-            i.second->initialise();
-        }
-
         this->workspace.reset(new class Workspace());
         this->window.reset(new MainWindow());
 
         // Prepare back-end APIs communication services
         this->sessionService.reset(new SessionService(this->workspace->getUserProfile()));
-        this->resourceSyncService.reset(new ResourceSyncService(this->resourceManagers));
+        this->resourceSyncService.reset(new ResourceSyncService());
 
-        TranslationsManager::getInstance().addChangeListener(this);
+        this->config->getTranslations()->addChangeListener(this);
         
         // Desktop versions will be initialised by InitScreen component.
 #if HELIO_MOBILE
@@ -307,7 +324,7 @@ void App::shutdown()
 {
     if (this->runMode == App::NORMAL)
     {
-        TranslationsManager::getInstance().removeChangeListener(this);
+        this->config->getTranslations()->removeChangeListener(this);
 
         DBG("App::shutdown");
 
@@ -331,14 +348,7 @@ void App::shutdown()
         // Clear cache to avoid leak check to fire.
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
-
-        for (auto i : this->resourceManagers)
-        {
-            i.second->shutdown();
-        }
-
-        this->resourceManagers.clear();
-        
+                
         Logger::setCurrentLogger(nullptr);
     }
 }
@@ -431,29 +441,9 @@ ResourceSyncService *App::getResourceSyncService() const noexcept
     return this->resourceSyncService.get();
 }
 
-HelioTheme *App::getTheme() const noexcept
-{
-    return this->theme.get();
-}
-
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
-
-String App::getMacAddressList()
-{
-    Array<MACAddress> macAddresses;
-    MACAddress::findAllAddresses(macAddresses);
-
-    StringArray addressStrings;
-
-    for (const auto &macAddresse : macAddresses)
-    {
-        addressStrings.add(macAddresse.toString());
-    }
-
-    return addressStrings.joinIntoString(", ");
-}
 
 App::RunMode App::detectRunMode(const String &commandLine) const
 {
@@ -521,17 +511,10 @@ void App::handleAsyncUpdate()
     this->quit();
 }
 
-
 void App::changeListenerCallback(ChangeBroadcaster *source)
 {
     DBG("Reloading translations");
     this->recreateLayout();
-}
-
-ResourceManager &App::getResourceManagerFor(const Identifier &id) const
-{
-    jassert(this->resourceManagers.contains(id));
-    return *this->resourceManagers.at(id);
 }
 
 START_JUCE_APPLICATION(App)

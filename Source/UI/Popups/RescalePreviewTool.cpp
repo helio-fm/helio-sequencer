@@ -65,7 +65,7 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
         this->dismissAsync();
     }));
 
-    const auto scales = ScalesManager::getInstance().getScales();
+    const auto scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
         menu.add(MenuItem::item(Icons::arpeggiate,
@@ -78,7 +78,7 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
             }
 
             auto &transport = this->roll.getTransport();
-            const auto scales = ScalesManager::getInstance().getScales();
+            const auto scales = App::Config().getScales()->getAll();
             if (!scales[i]->isEquivalentTo(this->lastChosenScale))
             {
                 transport.stopPlayback();

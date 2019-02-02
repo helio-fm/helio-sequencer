@@ -208,12 +208,12 @@ String UserProfile::getApiToken() const
 {
     // Kinda legacy, it should have been stored in profile
     // but let's keep it as is for now
-    return Config::get(Serialization::Api::sessionToken, {});
+    return App::Config().getProperty(Serialization::Api::sessionToken, {});
 }
 
 void UserProfile::setApiToken(const String &token)
 {
-    Config::set(Serialization::Api::sessionToken, token);
+    App::Config().setProperty(Serialization::Api::sessionToken, token);
     this->sendChangeMessage();
 }
 

@@ -148,7 +148,7 @@ ScalePreviewTool::ScalePreviewTool(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       sequence(layer),
-      defaultScales(ScalesManager::getInstance().getScales()),
+      defaultScales(App::Config().getScales()->getAll()),
       hasMadeChanges(false),
       draggingStartPosition(0, 0),
       draggingEndPosition(0, 0),
@@ -166,10 +166,10 @@ ScalePreviewTool::ScalePreviewTool(PianoRoll *caller, MidiSequence *layer)
 
 
     //[UserPreSize]
-    if (Config::contains(Serialization::Config::lastUsedScale))
+    if (App::Config().containsProperty(Serialization::Config::lastUsedScale))
     {
         Scale::Ptr s(new Scale());
-        Config::load(s.get(), Serialization::Config::lastUsedScale);
+        App::Config().load(s.get(), Serialization::Config::lastUsedScale);
         if (s->isValid())
         {
             this->scale = s;
@@ -392,7 +392,7 @@ void ScalePreviewTool::applyScale(const Scale::Ptr scale)
     if (this->scale != scale)
     {
         this->scale = scale;
-        Config::save(this->scale.get(), Serialization::Config::lastUsedScale);
+        App::Config().save(this->scale.get(), Serialization::Config::lastUsedScale);
         this->buildChord(this->scale->getChord(Chord::getTriad(), this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
@@ -518,7 +518,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ScalePreviewTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(ScalesManager::getInstance().getScales()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
+                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(App::Config().getScales()->getAll()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>

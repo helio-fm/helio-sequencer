@@ -24,19 +24,15 @@ class HotkeySchemesManager final : public ResourceManager
 {
 public:
 
-    static HotkeySchemesManager &getInstance()
-    {
-        static HotkeySchemesManager Instance;
-        return Instance;
-    }
+    HotkeySchemesManager();
 
-    inline const Array<HotkeyScheme::Ptr> getSchemes() const noexcept
+    inline const Array<HotkeyScheme::Ptr> getAll() const noexcept
     {
         return this->getResources<HotkeyScheme>();
     }
 
-    const HotkeyScheme::Ptr getCurrentScheme() const noexcept;
-    void setCurrentScheme(const HotkeyScheme::Ptr scheme);
+    const HotkeyScheme::Ptr getCurrent() const noexcept;
+    void setCurrent(const HotkeyScheme::Ptr scheme);
 
 private:
 
@@ -45,8 +41,7 @@ private:
 
     HotkeyScheme::Ptr activeScheme;
     HotkeyScheme::Ptr findActiveScheme() const;
-    
-    HotkeySchemesManager();
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HotkeySchemesManager)
 
 };

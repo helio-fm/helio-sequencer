@@ -63,7 +63,7 @@ MenuItem::Ptr MenuItem::empty()
 inline static String findHotkeyText(int commandId)
 {
 #if HELIO_DESKTOP
-    return HotkeySchemesManager::getInstance().getCurrentScheme()->findHotkeyDescription(commandId);
+    return App::Config().getHotkeySchemes()->getCurrent()->findHotkeyDescription(commandId);
 #elif HELIO_MOBILE
     // Don't show any hotkeys on mobile devices
     return {};

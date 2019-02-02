@@ -66,7 +66,7 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
         this->dismissAsync();
     }));
 
-    const auto arps = ArpeggiatorsManager::getInstance().getArps();
+    const auto arps = App::Config().getArpeggiators()->getAll();
     for (int i = 0; i < arps.size(); ++i)
     {
         menu.add(MenuItem::item(Icons::arpeggiate,
@@ -79,7 +79,7 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
             }
 
             auto &transport = this->roll.getTransport();
-            const auto arps = ArpeggiatorsManager::getInstance().getArps();
+            const auto arps = App::Config().getArpeggiators()->getAll();
             if (arps[i] != this->lastChosenArp)
             {
                 transport.stopPlayback();

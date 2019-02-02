@@ -45,6 +45,13 @@ TranslationSettings::TranslationSettings()
     addAndMakeVisible (shadow = new SeparatorHorizontal());
 
     //[UserPreSize]
+    this->setOpaque(true);
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+
+    this->availableTranslations = App::Config().getTranslations()->getAll();
+    this->currentTranslation = App::Config().getTranslations()->getCurrent();
+
     this->translationsList->setModel(this);
     this->translationsList->setRowHeight(TRANSLATION_SETTINGS_ROW_HEIGHT);
     this->translationsList->getViewport()->setScrollBarsShown(true, false);
@@ -53,23 +60,17 @@ TranslationSettings::TranslationSettings()
     setSize (600, 265);
 
     //[Constructor]
-    const auto locales(TranslationsManager::getInstance().getAvailableLocales());
-    this->setSize(600, 40 + locales.size() * TRANSLATION_SETTINGS_ROW_HEIGHT);
-
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(true);
-    this->setOpaque(true);
-
+    this->setSize(600, 40 + this->availableTranslations.size() * TRANSLATION_SETTINGS_ROW_HEIGHT);
     this->scrollToSelectedLocale();
 
-    TranslationsManager::getInstance().addChangeListener(this);
+    App::Config().getTranslations()->addChangeListener(this);
     //[/Constructor]
 }
 
 TranslationSettings::~TranslationSettings()
 {
     //[Destructor_pre]
-    TranslationsManager::getInstance().removeChangeListener(this);
+    App::Config().getTranslations()->removeChangeListener(this);
     //[/Destructor_pre]
 
     translationsList = nullptr;
@@ -125,12 +126,9 @@ void TranslationSettings::buttonClicked (Button* buttonThatWasClicked)
 void TranslationSettings::scrollToSelectedLocale()
 {
     int selectedRow = 0;
-    const auto locales(TranslationsManager::getInstance().getAvailableLocales());
-    const auto currentLocale(TranslationsManager::getInstance().getCurrentLocale());
-
-    for (int i = 0; i < locales.size(); ++i)
+    for (int i = 0; i < this->availableTranslations.size(); ++i)
     {
-        if (const bool isCurrentLocale = (locales[i]->getName() == currentLocale->getName()))
+        if (this->availableTranslations[i] == this->currentTranslation)
         {
             selectedRow = i;
             break;
@@ -140,49 +138,46 @@ void TranslationSettings::scrollToSelectedLocale()
     this->translationsList->scrollToEnsureRowIsOnscreen(selectedRow);
 }
 
-
 //===----------------------------------------------------------------------===//
 // ChangeListener
-//
+//===----------------------------------------------------------------------===//
 
 void TranslationSettings::changeListenerCallback(ChangeBroadcaster *source)
 {
+    this->availableTranslations = App::Config().getTranslations()->getAll();
+    this->currentTranslation = App::Config().getTranslations()->getCurrent();
     this->translationsList->updateContent();
     this->scrollToSelectedLocale();
 }
 
-
 //===----------------------------------------------------------------------===//
 // ListBoxModel
-//
+//===----------------------------------------------------------------------===//
 
-Component *TranslationSettings::refreshComponentForRow(int rowNumber, bool isRowSelected,
-                                                    Component *existingComponentToUpdate)
+Component *TranslationSettings::refreshComponentForRow(int rowNumber,
+    bool isRowSelected, Component *existingComponentToUpdate)
 {
-    const auto locales(TranslationsManager::getInstance().getAvailableLocales());
-    const auto currentLocale(TranslationsManager::getInstance().getCurrentLocale());
+    if (rowNumber >= this->availableTranslations.size())
+    {
+        return existingComponentToUpdate;
+    }
 
-    if (rowNumber >= locales.size()) { return existingComponentToUpdate; }
-
-    const bool isCurrentLocale = (locales[rowNumber]->getName() == currentLocale->getName());
-    const bool isLastRow = (rowNumber == locales.size() - 1);
-    const String localeDescription(locales[rowNumber]->getId());
+    const bool isLastRow = (rowNumber == this->availableTranslations.size() - 1);
+    const String localeName(this->availableTranslations[rowNumber]->getName());
+    const String localeId(this->availableTranslations[rowNumber]->getId());
+    const bool isCurrentLocale = this->availableTranslations[rowNumber] == this->currentTranslation;
 
     if (existingComponentToUpdate != nullptr)
     {
         if (auto *row = dynamic_cast<TranslationSettingsItem *>(existingComponentToUpdate))
         {
-            row->updateDescription(isLastRow, isCurrentLocale,
-                                   locales[rowNumber]->getName(),
-                                   localeDescription);
+            row->updateDescription(isLastRow, isCurrentLocale, localeName, localeId);
         }
     }
     else
     {
-        auto row = new TranslationSettingsItem(*this->translationsList);
-        row->updateDescription(isLastRow, isCurrentLocale,
-                               locales[rowNumber]->getName(),
-                               localeDescription);
+        auto *row = new TranslationSettingsItem(*this->translationsList);
+        row->updateDescription(isLastRow, isCurrentLocale, localeName, localeId);
         return row;
     }
 
@@ -191,8 +186,12 @@ Component *TranslationSettings::refreshComponentForRow(int rowNumber, bool isRow
 
 int TranslationSettings::getNumRows()
 {
-    const int numRows = TranslationsManager::getInstance().getAvailableLocales().size();
-    return numRows;
+    return this->availableTranslations.size();
+}
+
+int TranslationSettings::getRowHeight() const noexcept
+{
+    return this->translationsList->getRowHeight();
 }
 
 //[/MiscUserCode]

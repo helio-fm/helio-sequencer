@@ -122,7 +122,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
         this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideRight);
     }));
 
-    const auto &scales = ScalesManager::getInstance().getScales();
+    const auto &scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
         menu.add(MenuItem::item(Icons::arpeggiate, scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
@@ -134,7 +134,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
                 return;
             }
 
-            const auto &scales = ScalesManager::getInstance().getScales();
+            const auto &scales = App::Config().getScales()->getAll();
             SequencerOperations::rescale(*this->lasso, this->harmonicContextScale, scales[i], true);
             this->dismiss();
             return;
@@ -179,7 +179,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
     menu.add(MenuItem::item(Icons::create, CommandIDs::CreateArpeggiatorFromSelection,
         TRANS("menu::arpeggiators::create"))->closesMenu());
 
-    const auto arps = ArpeggiatorsManager::getInstance().getArps();
+    const auto arps = App::Config().getArpeggiators()->getAll();
     for (int i = 0; i < arps.size(); ++i)
     {
         menu.add(MenuItem::item(Icons::arpeggiate, arps.getUnchecked(i)->getName())->withAction([this, i]()
@@ -191,7 +191,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
                 return;
             }
 
-            const auto arps = ArpeggiatorsManager::getInstance().getArps();
+            const auto arps = App::Config().getArpeggiators()->getAll();
             SequencerOperations::arpeggiate(*this->lasso, this->harmonicContextScale,
                 this->harmonicContextKey, arps[i], false, false, true);
 

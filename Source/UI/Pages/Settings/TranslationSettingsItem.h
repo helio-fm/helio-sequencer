@@ -24,20 +24,18 @@ class Console;
 
 #include "../../Themes/SeparatorHorizontal.h"
 
-class TranslationSettingsItem  : public DraggingListBoxComponent
+class TranslationSettingsItem final : public DraggingListBoxComponent
 {
 public:
 
-    TranslationSettingsItem (ListBox &parentListBox);
-
+    TranslationSettingsItem(ListBox &parentListBox);
     ~TranslationSettingsItem();
 
     //[UserMethods]
 
     void setSelected(bool shouldBeSelected) override;
-
     void updateDescription(bool isLastRowInList, bool isCurrentLocale,
-                           const String &localeName, const String &localeAuthor);
+        const String &localeName, const String &localeId);
 
     //[/UserMethods]
 
@@ -58,9 +56,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> localeLabel;
-    ScopedPointer<Label> authorLabel;
-    ScopedPointer<SeparatorHorizontal> separator;
+    UniquePointer<Label> localeLabel;
+    UniquePointer<Label> idLabel;
+    UniquePointer<SeparatorHorizontal> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TranslationSettingsItem)
 };

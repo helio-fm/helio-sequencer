@@ -24,25 +24,19 @@ class ColourSchemesManager final : public ResourceManager
 {
 public:
 
-    static ColourSchemesManager &getInstance()
-    {
-        static ColourSchemesManager Instance;
-        return Instance;
-    }
+    ColourSchemesManager();
 
-    inline const Array<ColourScheme::Ptr> getSchemes() const
+    inline const Array<ColourScheme::Ptr> getAll() const
     {
         return this->getResources<ColourScheme>();
     }
 
-    ColourScheme::Ptr getCurrentScheme() const;
-    void setCurrentScheme(const ColourScheme::Ptr scheme);
+    ColourScheme::Ptr getCurrent() const;
+    void setCurrent(const ColourScheme::Ptr scheme);
 
 private:
 
     void deserializeResources(const ValueTree &tree, Resources &outResources) override;
-
-    ColourSchemesManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemesManager)
 
 };

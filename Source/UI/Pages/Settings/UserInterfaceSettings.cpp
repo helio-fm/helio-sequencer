@@ -89,7 +89,7 @@ UserInterfaceSettings::UserInterfaceSettings()
     //[Constructor]
     MenuPanel::Menu fontsMenu;
     Font::findFonts(this->systemFonts);
-    const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont);
+    const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
 
     for (int i = 0; i < this->systemFonts.size(); ++i)
     {

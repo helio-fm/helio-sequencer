@@ -21,79 +21,126 @@
 #include "XmlSerializer.h"
 #include "SerializationKeys.h"
 
-String Config::getDeviceId()
-{
-    static String kDeviceId;
-
-    if (kDeviceId.isEmpty())
-    {
-        const auto &ids = SystemStats::getDeviceIdentifiers();
-        if (!ids.isEmpty())
-        {
-            kDeviceId = String(CompileTimeHash(ids.joinIntoString({}).toUTF8()));
-        }
-        else
-        {
-            const String systemStats =
-                SystemStats::getLogonName() +
-                SystemStats::getComputerName() +
-                SystemStats::getOperatingSystemName() +
-                SystemStats::getCpuVendor();
-
-            kDeviceId = String(CompileTimeHash(systemStats.toUTF8()));
-        }
-    }
-
-    return kDeviceId;
-}
-
-void Config::set(const Identifier &key, const var &value, bool delayedSave)
-{
-    App::Config().setProperty(key, value, delayedSave);
-}
-
-String Config::get(const Identifier &key, const String &defaultReturnValue)
-{
-    return App::Config().getProperty(key, defaultReturnValue);
-}
-
-bool Config::contains(const Identifier &key)
-{
-    return App::Config().containsPropertyOrChild(key);
-}
-
-void Config::save(const Serializable *serializer, const Identifier &key)
-{
-    App::Config().saveConfigFor(key, serializer);
-}
-
-void Config::save(const Serializable &serializer, const Identifier &key)
-{
-    App::Config().saveConfigFor(key, &serializer);
-}
-
-void Config::load(Serializable *serializer, const Identifier &key)
-{
-    App::Config().loadConfigFor(key, serializer);
-}
-
-void Config::load(Serializable &serializer, const Identifier &key)
-{
-    App::Config().loadConfigFor(key, &serializer);
-}
-
 Config::Config(int timeoutToSaveMs) :
     fileLock("Config Lock"),
     needsSaving(false),
-    saveTimeout(timeoutToSaveMs)
+    saveTimeout(timeoutToSaveMs),
+    propertiesFile(DocumentHelpers::getConfigSlot("settings.helio"))
 {
-    this->propertiesFile = DocumentHelpers::getConfigSlot("settings.helio");
-    this->reload();
+    this->translationsManager.reset(new TranslationsManager());
+    this->arpeggiatorsManager.reset(new ArpeggiatorsManager());
+    this->colourSchemesManager.reset(new ColourSchemesManager());
+    this->hotkeySchemesManager.reset(new HotkeySchemesManager());
+    this->scriptsManager.reset(new ScriptsManager());
+    this->scalesManager.reset(new ScalesManager());
+    this->chordsManager.reset(new ChordsManager());
+
+    using namespace Serialization::Resources;
+    this->resourceManagers[translations] = this->translationsManager.get();
+    this->resourceManagers[arpeggiators] = this->arpeggiatorsManager.get();
+    this->resourceManagers[colourSchemes] = this->colourSchemesManager.get();
+    this->resourceManagers[hotkeySchemes] = this->hotkeySchemesManager.get();
+    this->resourceManagers[scripts] = this->scriptsManager.get();
+    this->resourceManagers[scales] = this->scalesManager.get();
+    this->resourceManagers[chords] = this->chordsManager.get();
 }
 
 Config::~Config()
 {
     this->saveIfNeeded();
+
+    this->translationsManager = nullptr;
+    this->arpeggiatorsManager = nullptr;
+    this->colourSchemesManager = nullptr;
+    this->hotkeySchemesManager = nullptr;
+    this->scriptsManager = nullptr;
+    this->scalesManager = nullptr;
+    this->chordsManager = nullptr;
+    this->resourceManagers.clear();
+}
+
+void Config::initResources()
+{
+    if (this->propertiesFile.existsAsFile())
+    {
+        InterProcessLock::ScopedLockType fLock(this->fileLock);
+
+        const ValueTree doc(DocumentHelpers::load<XmlSerializer>(this->propertiesFile));
+        if (doc.isValid() && doc.hasType(Serialization::Core::globalConfig))
+        {
+            this->children.clear();
+            this->properties.clear();
+
+            for (int i = 0; i < doc.getNumProperties(); ++i)
+            {
+                const auto key(doc.getPropertyName(i));
+                this->properties[key] = doc[key];
+            }
+
+            for (int i = 0; i < doc.getNumChildren(); ++i)
+            {
+                const auto child(doc.getChild(i));
+                this->children[child.getType()] = child;
+            }
+
+            DBG("Config reloaded");
+        }
+    }
+
+    for (auto manager : this->resourceManagers)
+    {
+        manager.second->reloadResources();
+    }
+}
+
+void Config::save(const Serializable *serializable, const Identifier &key)
+{
+    this->usedKeys.emplace(key);
+
+    ValueTree root(key);
+    root.appendChild(serializable->serialize(), nullptr);
+
+    this->children[key] = root;
+    this->onConfigChanged();
+}
+
+void Config::load(Serializable *serializable, const Identifier &key)
+{
+    this->usedKeys.emplace(key);
+
+    const auto found = this->children.find(key);
+    if (found == this->children.end())
+    {
+        return;
+    }
+
+    const auto tree = found->second;
+    if (tree.isValid() && tree.getChild(0).isValid())
+    {
+        serializable->deserialize(tree.getChild(0));
+    }
+}
+
+void Config::setProperty(const Identifier &key, const var &value, bool delayedSave)
+{
+    this->usedKeys.emplace(key);
+    this->properties[key] = value;
+    if (delayedSave)
+    {
+        this->onConfigChanged();
+    }
+}
+
+String Config::getProperty(const Identifier &key, const String &fallback) const noexcept
+{
+    this->usedKeys.emplace(key.toString());
+    const auto found = this->properties.find(key);
+    return (found == this->properties.end()) ? fallback : found->second.toString();
+}
+
+bool Config::containsProperty(const Identifier &key) const noexcept
+{
+    return this->properties.contains(key) || this->children.contains(key);
 }
 
 bool Config::saveIfNeeded()
@@ -138,95 +185,10 @@ bool Config::saveIfNeeded()
     return false;
 }
 
-bool Config::reload()
-{
-    if (!this->propertiesFile.existsAsFile())
-    {
-        return false;
-    }
-
-    InterProcessLock::ScopedLockType fLock(this->fileLock);
-
-    const ValueTree doc(DocumentHelpers::load<XmlSerializer>(this->propertiesFile));
-
-    if (doc.isValid() && doc.hasType(Serialization::Core::globalConfig))
-    {
-        this->children.clear();
-        this->properties.clear();
-
-        for (int i = 0; i < doc.getNumProperties(); ++i)
-        {
-            const auto key(doc.getPropertyName(i));
-            this->properties[key] = doc[key];
-        }
-
-        for (int i = 0; i < doc.getNumChildren(); ++i)
-        {
-            const auto child(doc.getChild(i));
-            this->children[child.getType()] = child;
-        }
-
-        DBG("Config reloaded");
-        return true;
-    }
-
-    return false;
-}
-
 void Config::timerCallback()
 {
     this->saveIfNeeded();
     this->stopTimer();
-}
-
-void Config::saveConfigFor(const Identifier &key, const Serializable *serializable)
-{
-    this->usedKeys.emplace(key);
-
-    ValueTree root(key);
-    root.appendChild(serializable->serialize(), nullptr);
-
-    this->children[key] = root;
-    this->onConfigChanged();
-}
-
-void Config::loadConfigFor(const Identifier &key, Serializable *serializable)
-{
-    this->usedKeys.emplace(key);
-
-    const auto found = this->children.find(key);
-    if (found == this->children.end())
-    {
-        return;
-    }
-
-    const auto tree = found->second;
-    if (tree.isValid() && tree.getChild(0).isValid())
-    {
-        serializable->deserialize(tree.getChild(0));
-    }
-}
-
-void Config::setProperty(const Identifier &key, const var &value, bool delayedSave)
-{
-    this->usedKeys.emplace(key);
-    this->properties[key] = value;
-    if (delayedSave)
-    {
-        this->onConfigChanged();
-    }
-}
-
-String Config::getProperty(const Identifier &key, const String &fallback) const noexcept
-{
-    this->usedKeys.emplace(key.toString());
-    const auto found = this->properties.find(key);
-    return (found == this->properties.end()) ? fallback : found->second.toString();
-}
-
-bool Config::containsPropertyOrChild(const Identifier &key) const noexcept
-{
-    return this->properties.contains(key) || this->children.contains(key);
 }
 
 void Config::onConfigChanged()
@@ -241,4 +203,44 @@ void Config::onConfigChanged()
     {
         this->saveIfNeeded();
     }
+}
+
+ResourceManagerPool &Config::getResourceManagers() noexcept
+{
+    return this->resourceManagers;
+}
+
+ChordsManager *Config::getChords() const noexcept
+{
+    return this->chordsManager.get();
+}
+
+ScalesManager *Config::getScales() const noexcept
+{
+    return this->scalesManager.get();
+}
+
+ScriptsManager *Config::getScripts() const noexcept
+{
+    return this->scriptsManager.get();
+}
+
+TranslationsManager *Config::getTranslations() const noexcept
+{
+    return this->translationsManager.get();
+}
+
+ArpeggiatorsManager *Config::getArpeggiators() const noexcept
+{
+    return this->arpeggiatorsManager.get();
+}
+
+ColourSchemesManager *Config::getColourSchemes() const noexcept
+{
+    return this->colourSchemesManager.get();
+}
+
+HotkeySchemesManager *Config::getHotkeySchemes() const noexcept
+{
+    return this->hotkeySchemesManager.get();
 }

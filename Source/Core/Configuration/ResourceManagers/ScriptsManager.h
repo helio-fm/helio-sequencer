@@ -24,13 +24,9 @@ class ScriptsManager final : public ResourceManager
 {
 public:
 
-    static ScriptsManager &getInstance()
-    {
-        static ScriptsManager Instance;
-        return Instance;
-    }
+    ScriptsManager();
 
-    inline const Array<Script::Ptr> getScripts() const
+    inline const Array<Script::Ptr> getAll() const
     {
         return this->getResources<Script>();
     }
@@ -38,7 +34,5 @@ public:
 private:
 
     void deserializeResources(const ValueTree &tree, Resources &outResources) override;
-
-    ScriptsManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptsManager)
 };

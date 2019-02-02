@@ -98,10 +98,10 @@ MainWindow::MainWindow() :
     // HelioTheme has been set up previously in App init procedure
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
-        ht->initColours(ColourSchemesManager::getInstance().getCurrentScheme());
+        ht->initColours(App::Config().getColourSchemes()->getCurrent());
     }
 
-    const String openGLState = Config::get(Serialization::Config::openGLState);
+    const String openGLState = App::Config().getProperty(Serialization::Config::openGLState);
 
 #if JUCE_MAC || JUCE_ANDROID
     const bool shouldEnableOpenGLByDefault = openGLState.isEmpty();
@@ -221,12 +221,12 @@ void MainWindow::setOpenGLRendererEnabled(bool shouldBeEnabled)
     if (shouldBeEnabled && (kOpenGLContext == nullptr))
     {
         this->attachOpenGLContext();
-        Config::set(Serialization::Config::openGLState, Serialization::Config::enabledState.toString());
+        App::Config().setProperty(Serialization::Config::openGLState, Serialization::Config::enabledState.toString());
     }
     else if (!shouldBeEnabled && (kOpenGLContext != nullptr))
     {
         this->detachOpenGLContext();
-        Config::set(Serialization::Config::openGLState, Serialization::Config::disabledState.toString());
+        App::Config().setProperty(Serialization::Config::openGLState, Serialization::Config::disabledState.toString());
     }
 }
 

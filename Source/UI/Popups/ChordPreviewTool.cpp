@@ -66,7 +66,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
       sequence(target),
       clip(clip),
       harmonicContext(harmonicContext),
-      defaultChords(ChordsManager::getInstance().getChords()),
+      defaultChords(App::Config().getChords()->getAll()),
       hasMadeChanges(false),
       draggingStartPosition(0, 0),
       draggingEndPosition(0, 0)
@@ -433,7 +433,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="ChordPreviewTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
                  constructorParams="PianoRoll &amp;caller, WeakReference&lt;PianoSequence&gt; target, const Clip &amp;clip, WeakReference&lt;KeySignaturesSequence&gt; harmonicContext"
-                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;clip(clip),&#10;harmonicContext(harmonicContext),&#10;defaultChords(ChordsManager::getInstance().getChords()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
+                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;clip(clip),&#10;harmonicContext(harmonicContext),&#10;defaultChords(App::Config().getChords()->getAll()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>

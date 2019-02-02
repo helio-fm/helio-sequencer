@@ -53,7 +53,7 @@ UpdatesInfoComponent::UpdatesInfoComponent()
     // as current one, so filtering them anyway:
 
     AppInfoDto appInfo;
-    Config::load(appInfo, Serialization::Config::lastUpdatesInfo);
+    App::Config().load(&appInfo, Serialization::Config::lastUpdatesInfo);
 
     bool hasNewerStable = false;
     for (const auto &v : appInfo.getVersions())

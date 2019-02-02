@@ -19,6 +19,14 @@
 
 class Serializable;
 
+#include "TranslationsManager.h"
+#include "ArpeggiatorsManager.h"
+#include "ColourSchemesManager.h"
+#include "HotkeySchemesManager.h"
+#include "ScriptsManager.h"
+#include "ScalesManager.h"
+#include "ChordsManager.h"
+
 class Config final : private Timer
 {
 public:
@@ -26,32 +34,29 @@ public:
     explicit Config(int timeoutToSaveMs = 10000);
     ~Config() override;
 
-    static String getDeviceId();
+    void initResources();
 
-    static bool contains(const Identifier &key);
-    static void set(const Identifier &key, const var &value, bool delayedSave = true);
-    static String get(const Identifier &key, const String &fallback = {});
+    void save(const Serializable *serializable, const Identifier &key);
+    void load(Serializable *serializable, const Identifier &key);
 
-    static void save(const Serializable *serializer, const Identifier &key);
-    static void save(const Serializable &serializer, const Identifier &key);
-    static void load(Serializable *serializer, const Identifier &key);
-    static void load(Serializable &serializer, const Identifier &key);
+    void setProperty(const Identifier &key, const var &value, bool delayedSave = true);
+    String getProperty(const Identifier &key, const String &fallback = {}) const noexcept;
+    bool containsProperty(const Identifier &key) const noexcept;
+
+    ChordsManager *getChords() const noexcept;
+    ScalesManager *getScales() const noexcept;
+    ScriptsManager *getScripts() const noexcept;
+    TranslationsManager *getTranslations() const noexcept;
+    ArpeggiatorsManager *getArpeggiators() const noexcept;
+    ColourSchemesManager *getColourSchemes() const noexcept;
+    HotkeySchemesManager *getHotkeySchemes() const noexcept;
+
+    ResourceManagerPool &getResourceManagers() noexcept;
 
 private:
 
     void onConfigChanged();
     bool saveIfNeeded();
-    bool reload();
-
-    void saveConfigFor(const Identifier &key, const Serializable *serializer);
-    void loadConfigFor(const Identifier &key, Serializable *serializer);
-
-    void setProperty(const Identifier &key, const var &value, bool delayedSave);
-    String getProperty(const Identifier &key, const String &fallback) const noexcept;
-
-    bool containsPropertyOrChild(const Identifier &key) const noexcept;
-
-private:
 
     void timerCallback() override;
 
@@ -65,6 +70,15 @@ private:
     // become deprecated, but they will still present in config file,
     // so we need to track the unused ones and never save them:
     mutable FlatHashSet<Identifier, IdentifierHash> usedKeys;
+
+    UniquePointer<TranslationsManager> translationsManager;
+    UniquePointer<ArpeggiatorsManager> arpeggiatorsManager;
+    UniquePointer<ColourSchemesManager> colourSchemesManager;
+    UniquePointer<HotkeySchemesManager> hotkeySchemesManager;
+    UniquePointer<ScriptsManager> scriptsManager;
+    UniquePointer<ScalesManager> scalesManager;
+    UniquePointer<ChordsManager> chordsManager;
+    ResourceManagerPool resourceManagers;
 
     bool needsSaving;
     int saveTimeout;

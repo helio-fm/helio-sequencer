@@ -26,7 +26,7 @@
 #include "KeySignaturesSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
-#include "ScalesManager.h"
+#include "Config.h"
 
 static inline void copyColourIfSpecified(Label& l, TextEditor& ed, int colourID, int targetColourID)
 {
@@ -41,7 +41,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       originalEvent(editedEvent),
       originalSequence(keySequence),
       ownerComponent(owner),
-      defaultScales(ScalesManager::getInstance().getScales()),
+      defaultScales(App::Config().getScales()->getAll()),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false),
       key(0)
@@ -509,7 +509,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
                  constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(ScalesManager::getInstance().getScales()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
+                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(App::Config().getScales()->getAll()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="460" initialHeight="260">
   <METHODS>

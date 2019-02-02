@@ -1003,7 +1003,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                 newArpDialog->onOk = [contextScale, contextKey, selectedNotes](const String &name)
                 {
                     Arpeggiator::Ptr arp(new Arpeggiator(name, contextScale, selectedNotes, contextKey));
-                    App::Helio().getResourceManagerFor(Serialization::Resources::arpeggiators).updateUserResource(arp);
+                    App::Config().getArpeggiators()->updateUserResource(arp);
                 };
 
                 App::Layout().showModalComponentUnowned(newArpDialog.release());

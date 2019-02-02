@@ -25,16 +25,16 @@
 ColourSchemesManager::ColourSchemesManager() :
     ResourceManager(Serialization::Resources::colourSchemes) {}
 
-ColourScheme::Ptr ColourSchemesManager::getCurrentScheme() const
+ColourScheme::Ptr ColourSchemesManager::getCurrent() const
 {
-    if (Config::contains(Serialization::Config::activeColourScheme))
+    if (App::Config().containsProperty(Serialization::Config::activeColourScheme))
     {
         ColourScheme::Ptr cs(new ColourScheme());
-        Config::load(cs.get(), Serialization::Config::activeColourScheme);
+        App::Config().load(cs.get(), Serialization::Config::activeColourScheme);
         return cs;
     }
 
-    if (const auto firstScheme = this->getSchemes().getFirst())
+    if (const auto firstScheme = this->getAll().getFirst())
     {
         return firstScheme;
     }
@@ -43,9 +43,9 @@ ColourScheme::Ptr ColourSchemesManager::getCurrentScheme() const
     return { new ColourScheme() };
 }
 
-void ColourSchemesManager::setCurrentScheme(const ColourScheme::Ptr scheme)
+void ColourSchemesManager::setCurrent(const ColourScheme::Ptr scheme)
 {
-    Config::save(scheme.get(), Serialization::Config::activeColourScheme);
+    App::Config().save(scheme.get(), Serialization::Config::activeColourScheme);
 }
 
 void ColourSchemesManager::deserializeResources(const ValueTree &tree, Resources &outResources)

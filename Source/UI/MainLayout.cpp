@@ -54,7 +54,7 @@ MainLayout::MainLayout() :
     this->addAndMakeVisible(this->headline);
 
     // TODO make it able for user to select a scheme in settings page
-    this->hotkeyScheme = HotkeySchemesManager::getInstance().getCurrentScheme();
+    this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
 
     this->setPaintingIsUnclipped(true);
     this->setOpaque(false);
@@ -102,7 +102,7 @@ void MainLayout::show()
 
 void MainLayout::restoreLastOpenedPage()
 {
-    App::Workspace().activateTreeItem(Config::get(Serialization::Config::lastShownPageId));
+    App::Workspace().activateTreeItem(App::Config().getProperty(Serialization::Config::lastShownPageId));
 }
 
 //===----------------------------------------------------------------------===//
@@ -141,7 +141,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
         source->setPrimarySelection(true);
         App::Workspace().getNavigationHistory().addItemIfNeeded(source);
         this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
-        Config::set(Serialization::Config::lastShownPageId, source->getItemIdentifierString(), false);
+        App::Config().setProperty(Serialization::Config::lastShownPageId, source->getItemIdentifierString(), false);
     }
 
     if (this->currentContent != nullptr)
@@ -278,7 +278,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
-            auto scheme = ColourSchemesManager::getInstance().getCurrentScheme();
+            auto scheme = App::Config()::getColourSchemes()->getCurrent();
             ht->updateBackgroundRenders(true);
             ht->initColours(scheme);
             this->repaint();

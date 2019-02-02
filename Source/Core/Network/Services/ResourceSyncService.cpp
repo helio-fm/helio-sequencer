@@ -28,8 +28,7 @@
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
 
-ResourceSyncService::ResourceSyncService(const ResourceManagerPool &rm) :
-    resourceManagers(rm)
+ResourceSyncService::ResourceSyncService()
 {
     this->prepareUpdatesCheckThread()->checkForUpdates(UPDATE_INFO_TIMEOUT_MS);
 }
@@ -109,9 +108,9 @@ RequestResourceThread *ResourceSyncService::prepareResourceRequestThread()
 
     thread->onRequestResourceOk = [this](const Identifier &resourceId, const ValueTree &resource)
     {
-        if (this->resourceManagers.contains(resourceId))
+        if (App::Config().getResourceManagers().contains(resourceId))
         {
-            this->resourceManagers.at(resourceId)->updateBaseResource(resource);
+            App::Config().getResourceManagers().at(resourceId)->updateBaseResource(resource);
         }
     };
     
@@ -128,7 +127,7 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
         // then start threads to fetch those resources (with somewhat random delays)
         Random r;
         AppInfoDto lastUpdatesInfo;
-        Config::load(lastUpdatesInfo, Serialization::Config::lastUpdatesInfo);
+        App::Config().load(&lastUpdatesInfo, Serialization::Config::lastUpdatesInfo);
         bool everythingIsUpToDate = true;
         for (const auto &newResource : info.getResources())
         {
@@ -147,7 +146,7 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
         }
 
         // save all anyway, as versions info might have changed:
-        Config::save(info, Serialization::Config::lastUpdatesInfo);
+        App::Config().save(&info, Serialization::Config::lastUpdatesInfo);
     };
 
     thread->onUpdatesCheckFailed = [](const Array<String> &errors)

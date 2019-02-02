@@ -24,13 +24,9 @@ class ArpeggiatorsManager final : public ResourceManager
 {
 public:
 
-    static ArpeggiatorsManager &getInstance()
-    {
-        static ArpeggiatorsManager Instance;
-        return Instance;
-    }
+    ArpeggiatorsManager();
 
-    inline const Array<Arpeggiator::Ptr> getArps() const
+    inline const Array<Arpeggiator::Ptr> getAll() const
     {
         return this->getResources<Arpeggiator>();
     }
@@ -38,7 +34,6 @@ public:
 private:
     
     void deserializeResources(const ValueTree &tree, Resources &outResources) override;
-    
-    ArpeggiatorsManager();
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
 };

@@ -303,14 +303,14 @@ void Workspace::autosave()
         return;
     }
     
-    Config::save(this, Serialization::Config::activeWorkspace);
+    App::Config().save(this, Serialization::Config::activeWorkspace);
 }
 
 bool Workspace::autoload()
 {
-    if (Config::contains(Serialization::Config::activeWorkspace))
+    if (App::Config().containsProperty(Serialization::Config::activeWorkspace))
     {
-        Config::load(this, Serialization::Config::activeWorkspace);
+        App::Config().load(this, Serialization::Config::activeWorkspace);
         return true;
     }
     else

@@ -52,7 +52,8 @@ ThemeSettings::ThemeSettings()
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
 
-    this->currentScheme = ColourSchemesManager::getInstance().getCurrentScheme();
+    this->schemes = App::Config().getColourSchemes()->getAll();
+    this->currentScheme = App::Config().getColourSchemes()->getCurrent();
 
     this->themesList->setModel(this);
     this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
@@ -62,16 +63,16 @@ ThemeSettings::ThemeSettings()
     this->setSize(600, 350);
 
     //[Constructor]
-    const int numSchemes = ColourSchemesManager::getInstance().getSchemes().size();
+    const int numSchemes = this->schemes.size();
     this->setSize(600, 16 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
-    ColourSchemesManager::getInstance().addChangeListener(this);
+    App::Config().getColourSchemes()->addChangeListener(this);
     //[/Constructor]
 }
 
 ThemeSettings::~ThemeSettings()
 {
     //[Destructor_pre]
-    ColourSchemesManager::getInstance().removeChangeListener(this);
+    App::Config().getColourSchemes()->removeChangeListener(this);
     //[/Destructor_pre]
 
     fontComboPrimer = nullptr;
@@ -110,6 +111,8 @@ void ThemeSettings::resized()
 
 void ThemeSettings::changeListenerCallback(ChangeBroadcaster *source)
 {
+    this->schemes = App::Config().getColourSchemes()->getAll();
+    this->currentScheme = App::Config().getColourSchemes()->getCurrent();
     this->themesList->updateContent();
 }
 
@@ -120,24 +123,28 @@ void ThemeSettings::changeListenerCallback(ChangeBroadcaster *source)
 Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-    const auto &schemes = ColourSchemesManager::getInstance().getSchemes();
+    if (rowNumber >= this->schemes.size())
+    {
+        return existingComponentToUpdate;
+    }
 
-    if (rowNumber >= schemes.size()) { return existingComponentToUpdate; }
+    const bool isCurrentScheme =
+        (this->currentScheme->getResourceId() ==
+            this->schemes[rowNumber]->getResourceId());
 
-    const bool isCurrentScheme = (this->currentScheme->getResourceId() == schemes[rowNumber]->getResourceId());
-    const bool isLastRow = (rowNumber == schemes.size() - 1);
+    const bool isLastRow = (rowNumber == this->schemes.size() - 1);
 
     if (existingComponentToUpdate != nullptr)
     {
         if (ThemeSettingsItem *row = dynamic_cast<ThemeSettingsItem *>(existingComponentToUpdate))
         {
-            row->updateDescription(isLastRow, isCurrentScheme, schemes[rowNumber]);
+            row->updateDescription(isLastRow, isCurrentScheme, this->schemes[rowNumber]);
         }
     }
     else
     {
         auto row = new ThemeSettingsItem(*this->themesList);
-        row->updateDescription(isLastRow, isCurrentScheme, schemes[rowNumber]);
+        row->updateDescription(isLastRow, isCurrentScheme, this->schemes[rowNumber]);
         return row;
     }
 
@@ -146,8 +153,7 @@ Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelect
 
 int ThemeSettings::getNumRows()
 {
-    const auto &themes = ColourSchemesManager::getInstance().getSchemes();
-    return themes.size();
+    return this->schemes.size();
 }
 //[/MiscUserCode]
 

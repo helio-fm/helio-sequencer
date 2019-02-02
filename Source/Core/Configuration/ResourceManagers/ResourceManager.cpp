@@ -18,17 +18,13 @@
 #include "Common.h"
 #include "ResourceManager.h"
 #include "JsonSerializer.h"
+#include "BinarySerializer.h"
 #include "DocumentHelpers.h"
 
 ResourceManager::ResourceManager(const Identifier &resourceType) :
     resourceType(resourceType) {}
 
-void ResourceManager::initialise()
-{
-    this->reloadResources();
-}
-
-void ResourceManager::shutdown()
+ResourceManager::~ResourceManager()
 {
     this->reset();
 }

@@ -24,13 +24,9 @@ class ChordsManager final : public ResourceManager
 {
 public:
 
-    static ChordsManager &getInstance()
-    {
-        static ChordsManager Instance;
-        return Instance;
-    }
+    ChordsManager();
 
-    inline const Array<Chord::Ptr> getChords() const
+    inline const Array<Chord::Ptr> getAll() const
     {
         return this->getResources<Chord>();
     }
@@ -50,9 +46,7 @@ private:
 
     ChordsComparator chordsComparator;
     const BaseResource &getResourceComparator() const override;
-
     StringArray order;
 
-    ChordsManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordsManager)
 };

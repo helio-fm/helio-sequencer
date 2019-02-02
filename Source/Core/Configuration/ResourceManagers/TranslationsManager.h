@@ -24,21 +24,15 @@ class TranslationsManager final : public ResourceManager
 {
 public:
 
-    static TranslationsManager &getInstance()
-    {
-        static TranslationsManager Instance;
-        return Instance;
-    }
+    TranslationsManager();
+    ~TranslationsManager() override;
 
-    void initialise() override;
-    void shutdown() override;
-
-    inline const Array<Translation::Ptr> getAvailableLocales() const
+    inline const Array<Translation::Ptr> getAll() const
     {
         return this->getResources<Translation>();
     }
 
-    const Translation::Ptr getCurrentLocale() const noexcept;
+    const Translation::Ptr getCurrent() const noexcept;
 
     void loadLocaleWithId(const String &localeId);
 
@@ -62,9 +56,7 @@ private:
     Translation::Ptr fallbackTranslation;
 
     String getSelectedLocaleId() const;
-
     friend struct PluralEquationWrapper;
 
-    TranslationsManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationsManager)
 };

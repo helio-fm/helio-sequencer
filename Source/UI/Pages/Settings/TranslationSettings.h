@@ -18,6 +18,7 @@
 #pragma once
 
 //[Headers]
+#include "Translation.h"
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontal.h"
@@ -34,24 +35,16 @@ public:
 
     //[UserMethods]
 
-    //===----------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
     // ListBoxModel
-    //
-
-    Component *refreshComponentForRow(int, bool, Component*) override;
+    //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-
-    void paintListBoxItem(int rowNumber, Graphics &g,
-                                  int width, int height,
-                                  bool rowIsSelected) override {}
-
+    Component *refreshComponentForRow(int, bool, Component*) override;
     void listBoxItemClicked(int rowNumber, const MouseEvent &e) override {}
-
-    int getRowHeight() const
-    {
-        return this->translationsList->getRowHeight();
-    }
+    void paintListBoxItem(int rowNumber, Graphics &g,
+        int width, int height, bool rowIsSelected) override {}
+    int getRowHeight() const noexcept;
 
     //[/UserMethods]
 
@@ -64,13 +57,15 @@ private:
 
     //[UserVariables]
 
-    //===----------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
     // ChangeListener
-    //
+    //===------------------------------------------------------------------===//
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-
     void scrollToSelectedLocale();
+
+    Array<Translation::Ptr> availableTranslations;
+    Translation::Ptr currentTranslation;
 
     //[/UserVariables]
 

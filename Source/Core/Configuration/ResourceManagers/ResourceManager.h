@@ -19,20 +19,16 @@
 
 #include "BaseResource.h"
 
-// A thing to note: all subclasses should make their
-// deserialization method able to append overridden changes.
-// And they should not reset in a while - base reloadResources() will manage proper resetting.
-
-// TODO: monitor user's file changes!
+// TODO: monitor user's file changes?
 
 class ResourceManager : public ChangeBroadcaster
 {
 public:
 
-    ResourceManager(const Identifier &resourceName);
+    explicit ResourceManager(const Identifier &resourceType);
+    ~ResourceManager() override;
 
-    virtual void initialise();
-    virtual void shutdown();
+    void reloadResources();
 
     template<typename T>
     const Array<typename T::Ptr> getResources() const
@@ -80,8 +76,6 @@ public:
 
 protected:
 
-    void reloadResources();
-
     virtual File getDownloadedResourceFile() const;
     virtual File getUsersResourceFile() const;
     virtual String getBuiltInResourceString() const;
@@ -93,7 +87,8 @@ protected:
 
     // customized Serializable:
     virtual ValueTree serializeResources(const Resources &resources);
-    virtual void deserializeResources(const ValueTree &tree, Resources &outResources) = 0;
+    virtual void deserializeResources(const ValueTree &tree,
+        Resources &outResources) = 0;
     virtual void reset();
 
 private: 

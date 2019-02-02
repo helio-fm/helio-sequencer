@@ -290,7 +290,7 @@ void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
 {
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
-        ColourSchemesManager::getInstance().setCurrentScheme(colours);
+        App::Config().getColourSchemes()->setCurrent(colours);
         ht->initColours(colours);
         ht->updateBackgroundRenders(true);
         if (this->getTopLevelComponent() != nullptr)

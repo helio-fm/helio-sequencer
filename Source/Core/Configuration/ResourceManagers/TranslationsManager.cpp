@@ -56,22 +56,17 @@ struct PluralEquationWrapper final : public DynamicObject
 };
 
 TranslationsManager::TranslationsManager() :
-    ResourceManager(Serialization::Resources::translations) {}
-
-void TranslationsManager::initialise()
+    ResourceManager(Serialization::Resources::translations)
 {
     this->engine = new JavascriptEngine();
     this->engine->maximumExecutionTime = RelativeTime::milliseconds(200);
-    
+
     PluralEquationWrapper::Ptr pluralEquationWrapper(new PluralEquationWrapper(*this));
     this->engine->registerNativeObject(Serialization::Translations::wrapperClassName, pluralEquationWrapper.get());
-    
-    this->reloadResources();
 }
 
-void TranslationsManager::shutdown()
+TranslationsManager::~TranslationsManager()
 {
-    this->reset();
     this->engine = nullptr;
 }
 
@@ -79,7 +74,7 @@ void TranslationsManager::shutdown()
 // Translations
 //===----------------------------------------------------------------------===//
 
-const Translation::Ptr TranslationsManager::getCurrentLocale() const noexcept
+const Translation::Ptr TranslationsManager::getCurrent() const noexcept
 {
     return this->currentTranslation;
 }
@@ -95,7 +90,7 @@ void TranslationsManager::loadLocaleWithId(const String &localeId)
     if (const auto translation = this->getResourceById<Translation>(localeId))
     {
         this->currentTranslation = translation;
-        Config::set(Serialization::Config::currentLocale, localeId);
+        App::Config().setProperty(Serialization::Config::currentLocale, localeId);
         this->sendChangeMessage();
     }
 }
@@ -219,9 +214,9 @@ void TranslationsManager::reset()
 String TranslationsManager::getSelectedLocaleId() const
 {
    
-    if (Config::contains(Serialization::Config::currentLocale))
+    if (App::Config().containsProperty(Serialization::Config::currentLocale))
     {
-        return Config::get(Serialization::Config::currentLocale, fallbackTranslationId);
+        return App::Config().getProperty(Serialization::Config::currentLocale, fallbackTranslationId);
     }
     
     const String systemLocale =

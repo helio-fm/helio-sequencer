@@ -23,14 +23,10 @@
 class ScalesManager final : public ResourceManager
 {
 public:
+  
+    ScalesManager();
 
-    static ScalesManager &getInstance()
-    {
-        static ScalesManager Instance;
-        return Instance;
-    }
-
-    inline const Array<Scale::Ptr> getScales() const
+    inline const Array<Scale::Ptr> getAll() const
     {
         return this->getResources<Scale>();
     }
@@ -50,10 +46,7 @@ private:
 
     ScalesComparator scalesComparator;
     const BaseResource &getResourceComparator() const override;
-
     StringArray order;
 
-    ScalesManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesManager)
-
 };

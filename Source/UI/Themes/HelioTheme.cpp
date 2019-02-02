@@ -671,9 +671,9 @@ void HelioTheme::initResources()
     this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
 #elif HELIO_DESKTOP
 
-    if (Config::contains(Serialization::Config::lastUsedFont))
+    if (App::Config().containsProperty(Serialization::Config::lastUsedFont))
     {
-        const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont);
+        const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
         Font lastUsedFont(lastUsedFontName, 10, Font::plain);
         this->textTypefaceCache = Typeface::createSystemTypefaceFor(lastUsedFont);
         return;
@@ -717,7 +717,7 @@ void HelioTheme::initResources()
     }
 
     DBG("Using font: " + this->textTypefaceCache->getName());
-    Config::set(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
+    App::Config().setProperty(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
 #endif
 }
 
@@ -726,7 +726,7 @@ void HelioTheme::updateFont(const Font &font)
     Typeface::clearTypefaceCache();
     this->textTypefaceCache = Typeface::createSystemTypefaceFor(font);
     const String fontName = font.getTypeface()->getName();
-    Config::set(Serialization::Config::lastUsedFont, fontName);
+    App::Config().setProperty(Serialization::Config::lastUsedFont, fontName);
 }
 
 void HelioTheme::initColours(const ::ColourScheme::Ptr s)
