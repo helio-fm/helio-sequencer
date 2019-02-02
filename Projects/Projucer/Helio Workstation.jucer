@@ -601,6 +601,10 @@
                 file="../../Source/Core/Workspace/RecentProjectInfo.cpp"/>
           <FILE id="K03ht6" name="RecentProjectInfo.h" compile="0" resource="0"
                 file="../../Source/Core/Workspace/RecentProjectInfo.h"/>
+          <FILE id="NHkfzM" name="SyncedConfigurationInfo.cpp" compile="1" resource="0"
+                file="../../Source/Core/Workspace/SyncedConfigurationInfo.cpp"/>
+          <FILE id="gfeFWG" name="SyncedConfigurationInfo.h" compile="0" resource="0"
+                file="../../Source/Core/Workspace/SyncedConfigurationInfo.h"/>
           <FILE id="LUtAvf" name="UserSessionInfo.cpp" compile="1" resource="0"
                 file="../../Source/Core/Workspace/UserSessionInfo.cpp"/>
           <FILE id="EYK85b" name="UserSessionInfo.h" compile="0" resource="0"

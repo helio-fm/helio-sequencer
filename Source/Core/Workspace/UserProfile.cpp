@@ -50,22 +50,26 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
         this->avatarThumbnail = Base64::toBase64(block.getData(), block.getSize());
     }
 
-    for (const auto p : dto.getProjects())
+    for (const auto &p : dto.getProjects())
     {
         this->onProjectRemoteInfoUpdated(p);
     }
 
-    for (const auto s : dto.getSessions())
     {
-        if (auto *session = this->findSession(s.getDeviceId()))
+        const ScopedWriteLock lock(this->sessionsListLock);
+        this->sessions.clearQuick();
+        for (const auto &s : dto.getSessions())
         {
-            const ScopedWriteLock lock(this->sessionsListLock);
-            session->updateRemoteInfo(s);
-        }
-        else
-        {
-            const ScopedWriteLock lock(this->sessionsListLock);
             this->sessions.add(new UserSessionInfo(s));
+        }
+    }
+
+    {
+        const ScopedWriteLock lock(this->resourcesListLock);
+        this->resources.clearQuick();
+        for (const auto &r : dto.getResources())
+        {
+            this->resources.add(new SyncedConfigurationInfo(r));
         }
     }
 

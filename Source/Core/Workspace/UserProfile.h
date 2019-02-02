@@ -19,6 +19,7 @@
 
 #include "Serializable.h"
 #include "RecentProjectInfo.h"
+#include "SyncedConfigurationInfo.h"
 #include "UserSessionInfo.h"
 #include "UserProfileDto.h"
 #include "ProjectDto.h"
@@ -87,6 +88,9 @@ private:
 
     ReadWriteLock sessionsListLock;
     ReferenceCountedArray<UserSessionInfo> sessions;
+
+    ReadWriteLock resourcesListLock;
+    ReferenceCountedArray<SyncedConfigurationInfo> resources;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserProfile)
     JUCE_DECLARE_WEAK_REFERENCEABLE(UserProfile)

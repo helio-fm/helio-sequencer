@@ -22,6 +22,7 @@
 #include "SyncSettings.h"
 
 //[MiscUserDefs]
+#include "Workspace.h"
 #include "MainWindow.h"
 #include "SyncSettingsItem.h"
 #include "HelioApiRoutes.h"
@@ -68,6 +69,8 @@ SyncSettings::SyncSettings()
         resource.second->addChangeListener(this);
     }
 
+    App::Workspace().getUserProfile().addChangeListener(this);
+
     this->setSize(600, this->keys.size() * SYNC_SETTINGS_ROW_HEIGHT);
 
     this->resourcesList->setModel(this);
@@ -79,6 +82,8 @@ SyncSettings::SyncSettings()
 SyncSettings::~SyncSettings()
 {
     //[Destructor_pre]
+    App::Workspace().getUserProfile().removeChangeListener(this);
+
     for (auto resource : App::Config().getAllResources())
     {
         resource.second->removeChangeListener(this);
@@ -119,8 +124,17 @@ void SyncSettings::resized()
 
 void SyncSettings::changeListenerCallback(ChangeBroadcaster *source)
 {
-    // FIXME! re-read all resources? kinda overkill?
-    //this->resourcesList->updateContent();
+    if (auto *profile = dynamic_cast<UserProfile *>(source))
+    {
+        // will update checkpoints on synced resources:
+        this->resourcesList->updateContent();
+    }
+    else if (auto *resourceManager = dynamic_cast<ResourceManager *>(source))
+    {
+        // FIXME! re-read all resources? kinda overkill?
+        // then update the list content as well:
+        //this->resourcesList->updateContent();
+    }
 }
 
 //===----------------------------------------------------------------------===//
