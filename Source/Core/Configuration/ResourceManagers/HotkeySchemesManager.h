@@ -40,15 +40,8 @@ public:
 
 private:
 
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
     void reset() override;
-
-private:
 
     HotkeyScheme::Ptr activeScheme;
     HotkeyScheme::Ptr findActiveScheme() const;

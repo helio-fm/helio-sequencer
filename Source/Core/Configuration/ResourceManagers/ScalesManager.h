@@ -30,19 +30,15 @@ public:
         return Instance;
     }
 
-    const Array<Scale::Ptr> getScales() const;
+    inline const Array<Scale::Ptr> getScales() const
+    {
+        return this->getResources<Scale>();
+    }
 
 private:
 
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
     void reset() override;
-
-private:
 
     struct ScalesComparator final : public DummyBaseResource
     {

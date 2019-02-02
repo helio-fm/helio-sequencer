@@ -30,19 +30,15 @@ public:
         return Instance;
     }
 
-    const Array<Chord::Ptr> getChords() const;
+    inline const Array<Chord::Ptr> getChords() const
+    {
+        return this->getResources<Chord>();
+    }
 
 private:
 
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
     void reset() override;
-
-private:
 
     struct ChordsComparator final : public DummyBaseResource
     {
@@ -59,5 +55,4 @@ private:
 
     ChordsManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordsManager)
-
 };

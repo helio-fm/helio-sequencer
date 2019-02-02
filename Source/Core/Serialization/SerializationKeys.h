@@ -69,14 +69,12 @@ namespace Serialization
     namespace Midi
     {
         // Scales
-        static const Identifier scales = "scales";
         static const Identifier scale = "scale";
         static const Identifier scaleName = "name";
         static const Identifier scalePeriod = "period";
         static const Identifier scaleIntervals = "intervals";
 
         // Chords
-        static const Identifier chords = "chords";
         static const Identifier chord = "chord";
         static const Identifier chordName = "name";
         static const Identifier chordScaleKeys = "keys";
@@ -220,7 +218,6 @@ namespace Serialization
 
         namespace Hotkeys
         {
-            static const Identifier schemes = "hotkeySchemes";
             static const Identifier scheme = "hotkeyScheme";
             static const Identifier schemeName = "name";
             static const Identifier keyPress = "keyPress";
@@ -233,7 +230,6 @@ namespace Serialization
 
         namespace Colours
         {
-            static const Identifier schemes = "colourSchemes";
             static const Identifier scheme = "colourScheme";
             static const Identifier colourMap = "colourMap";
             static const Identifier name = "name";
@@ -271,12 +267,11 @@ namespace Serialization
         static const Identifier wrapperClassName = "pluralForm";
         static const Identifier wrapperMethodName = "detect";
 
-        static const Identifier translations = "translations";
+        static const Identifier translation = "translation";
         static const Identifier locale = "locale";
         static const Identifier literal = "literal";
         static const Identifier author = "author";
         static const Identifier name = "name";
-        static const Identifier translation = "translation";
         static const Identifier id = "id";
 
         static const Identifier pluralEquation = "pluralEquation";
@@ -287,8 +282,6 @@ namespace Serialization
     namespace Scripts
     {
         static const Identifier script = "script";
-        static const Identifier scripts = "scripts";
-
         static const Identifier name = "name";
         static const Identifier type = "type";
         static const Identifier content = "content";
@@ -339,8 +332,6 @@ namespace Serialization
     namespace Arps
     {
         static const Identifier arpeggiator = "arpeggiator";
-        static const Identifier arpeggiators = "arpeggiators";
-
         static const Identifier name = "name";
         static const Identifier sequence = "sequence";
         static const Identifier isReversed = "isReversed";

@@ -23,11 +23,6 @@ ChordsManager::ChordsManager() :
     ResourceManager(Serialization::Resources::chords),
     chordsComparator(this->order) {}
 
-const Array<Chord::Ptr> ChordsManager::getChords() const
-{
-    return this->getResources<Chord>();
-}
-
 ChordsManager::ChordsComparator::ChordsComparator(const StringArray &order) :
     order(order) {}
 
@@ -51,27 +46,10 @@ const BaseResource &ChordsManager::getResourceComparator() const
     return this->chordsComparator;
 }
 
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-ValueTree ChordsManager::serialize() const
+void ChordsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
 {
-    ValueTree tree(Serialization::Midi::chords);
-
-    Resources::Iterator i(this->resources);
-    while (i.next())
-    {
-        tree.appendChild(i.getValue()->serialize(), nullptr);
-    }
-
-    return tree;
-}
-
-void ChordsManager::deserialize(const ValueTree &tree)
-{
-    const auto root = tree.hasType(Serialization::Midi::chords) ?
-        tree : tree.getChildWithName(Serialization::Midi::chords);
+    const auto root = tree.hasType(Serialization::Resources::chords) ?
+        tree : tree.getChildWithName(Serialization::Resources::chords);
 
     if (!root.isValid()) { return; }
 
@@ -79,7 +57,7 @@ void ChordsManager::deserialize(const ValueTree &tree)
     {
         Chord::Ptr chord(new Chord());
         chord->deserialize(chordNode);
-        this->resources.set(chord->getResourceId(), chord);
+        outResources[chord->getResourceId()] = chord;
         this->order.add(chord->getResourceId());
     }
 }

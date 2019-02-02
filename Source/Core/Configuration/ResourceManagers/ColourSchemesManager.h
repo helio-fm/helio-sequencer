@@ -40,14 +40,7 @@ public:
 
 private:
 
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-
-private:
+    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
 
     ColourSchemesManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemesManager)

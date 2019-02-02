@@ -26,34 +26,17 @@
 ScriptsManager::ScriptsManager() :
     ResourceManager(Serialization::Resources::scripts) {}
 
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-ValueTree ScriptsManager::serialize() const
+void ScriptsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
 {
-    ValueTree tree(Serialization::Scripts::scripts);
+    const auto root = tree.hasType(Serialization::Resources::scripts) ?
+        tree : tree.getChildWithName(Serialization::Resources::scripts);
 
-    Resources::Iterator i(this->resources);
-    while (i.next())
-    {
-        tree.appendChild(i.getValue()->serialize(), nullptr);
-    }
-    
-    return tree;
-}
-
-void ScriptsManager::deserialize(const ValueTree &tree)
-{
-    const auto root = tree.hasType(Serialization::Scripts::scripts) ?
-        tree : tree.getChildWithName(Serialization::Scripts::scripts);
-    
     if (!root.isValid()) { return; }
-    
+
     forEachValueTreeChildWithType(root, scriptNode, Serialization::Scripts::script)
     {
         Script::Ptr script(new Script());
         script->deserialize(scriptNode);
-        this->resources.set(script->getResourceId(), script);
+        outResources[script->getResourceId()] = script;
     }
 }

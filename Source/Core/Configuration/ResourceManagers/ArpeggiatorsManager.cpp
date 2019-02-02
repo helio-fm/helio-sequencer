@@ -26,34 +26,17 @@
 ArpeggiatorsManager::ArpeggiatorsManager() :
     ResourceManager(Serialization::Resources::arpeggiators) {}
 
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-ValueTree ArpeggiatorsManager::serialize() const
+void ArpeggiatorsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
 {
-    ValueTree tree(Serialization::Arps::arpeggiators);
+    const auto root = tree.hasType(Serialization::Resources::arpeggiators) ?
+        tree : tree.getChildWithName(Serialization::Resources::arpeggiators);
 
-    Resources::Iterator i(this->resources);
-    while (i.next())
-    {
-        tree.appendChild(i.getValue()->serialize(), nullptr);
-    }
-    
-    return tree;
-}
-
-void ArpeggiatorsManager::deserialize(const ValueTree &tree)
-{
-    const auto root = tree.hasType(Serialization::Arps::arpeggiators) ?
-        tree : tree.getChildWithName(Serialization::Arps::arpeggiators);
-    
     if (!root.isValid()) { return; }
-    
+
     forEachValueTreeChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
     {
         Arpeggiator::Ptr arp(new Arpeggiator());
         arp->deserialize(arpNode);
-        this->resources.set(arp->getResourceId(), arp);
+        outResources[arp->getResourceId()] = arp;
     }
 }

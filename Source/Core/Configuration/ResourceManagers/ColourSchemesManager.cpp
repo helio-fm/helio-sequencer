@@ -35,13 +35,12 @@ ColourScheme::Ptr ColourSchemesManager::getCurrentScheme() const
         return cs;
     }
 
-    if (this->resources.size() > 0)
+    if (const auto firstScheme = this->getSchemes().getFirst())
     {
-        Resources::Iterator i(this->resources);
-        i.next();
-        return { static_cast<ColourScheme *>(i.getValue().get()) };
+        return firstScheme;
     }
 
+    jassertfalse;
     return { new ColourScheme() };
 }
 
@@ -50,34 +49,17 @@ void ColourSchemesManager::setCurrentScheme(const ColourScheme::Ptr scheme)
     Config::save(scheme.get(), Serialization::Config::activeColourScheme);
 }
 
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-ValueTree ColourSchemesManager::serialize() const
+void ColourSchemesManager::deserializeResources(const ValueTree &tree, Resources &outResources)
 {
-    ValueTree tree(Serialization::UI::Colours::schemes);
-    
-    Resources::Iterator i(this->resources);
-    while (i.next())
-    {
-        tree.appendChild(i.getValue()->serialize(), nullptr);
-    }
-    
-    return tree;
-}
+    const auto root = tree.hasType(Serialization::Resources::colourSchemes) ?
+        tree : tree.getChildWithName(Serialization::Resources::colourSchemes);
 
-void ColourSchemesManager::deserialize(const ValueTree &tree)
-{
-    const auto root = tree.hasType(Serialization::UI::Colours::schemes) ?
-        tree : tree.getChildWithName(Serialization::UI::Colours::schemes);
-    
     if (!root.isValid()) { return; }
-    
+
     forEachValueTreeChildWithType(root, schemeNode, Serialization::UI::Colours::scheme)
     {
         ColourScheme::Ptr scheme(new ColourScheme());
         scheme->deserialize(schemeNode);
-        this->resources.set(scheme->getResourceId(), scheme);
+        outResources[scheme->getResourceId()] = scheme;
     }
 }

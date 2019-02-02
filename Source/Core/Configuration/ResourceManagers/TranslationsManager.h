@@ -40,7 +40,7 @@ public:
 
     const Translation::Ptr getCurrentLocale() const noexcept;
 
-    void loadLocaleWithName(const String &localeName);
+    void loadLocaleWithId(const String &localeId);
 
     //===------------------------------------------------------------------===//
     // Helpers
@@ -50,18 +50,9 @@ public:
     String translate(const String &baseLiteral, int64 targetNumber);
     
 private:
-    
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-    
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    void reset() override;
 
-private:
-        
-    TranslationsManager();
+    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
+    void reset() override;
 
     ScopedPointer<JavascriptEngine> engine;
     String equationResult;
@@ -73,9 +64,7 @@ private:
     String getSelectedLocaleId() const;
 
     friend struct PluralEquationWrapper;
-    
-private:
 
+    TranslationsManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationsManager)
-
 };

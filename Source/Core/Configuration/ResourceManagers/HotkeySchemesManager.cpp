@@ -33,11 +33,9 @@ HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
         Config::load(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
     }
 
-    if (this->resources.size() > 0)
+    if (const auto firstScheme = this->getSchemes().getFirst())
     {
-        Resources::Iterator i(this->resources);
-        i.next();
-        return  { static_cast<HotkeyScheme *>(i.getValue().get()) };
+        return firstScheme;
     }
 
     jassertfalse;
@@ -57,35 +55,18 @@ void HotkeySchemesManager::setCurrentScheme(const HotkeyScheme::Ptr scheme)
     Config::save(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
 }
 
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-ValueTree HotkeySchemesManager::serialize() const
+void HotkeySchemesManager::deserializeResources(const ValueTree &tree, Resources &outResources)
 {
-    ValueTree tree(Serialization::UI::Hotkeys::schemes);
-    
-    Resources::Iterator i(this->resources);
-    while (i.next())
-    {
-        tree.appendChild(i.getValue()->serialize(), nullptr);
-    }
-    
-    return tree;
-}
+    const auto root = tree.hasType(Serialization::Resources::hotkeySchemes) ?
+        tree : tree.getChildWithName(Serialization::Resources::hotkeySchemes);
 
-void HotkeySchemesManager::deserialize(const ValueTree &tree)
-{
-    const auto root = tree.hasType(Serialization::UI::Hotkeys::schemes) ?
-        tree : tree.getChildWithName(Serialization::UI::Hotkeys::schemes);
-    
     if (!root.isValid()) { return; }
-    
+
     forEachValueTreeChildWithType(root, schemeNode, Serialization::UI::Hotkeys::scheme)
     {
         HotkeyScheme::Ptr hs(new HotkeyScheme());
         hs->deserialize(schemeNode);
-        this->resources.set(hs->getResourceId(), hs);
+        outResources[hs->getResourceId()] = hs;
     }
 
     this->activeScheme = this->findActiveScheme();

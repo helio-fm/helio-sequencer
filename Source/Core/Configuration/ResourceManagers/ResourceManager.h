@@ -25,7 +25,7 @@
 
 // TODO: monitor user's file changes!
 
-class ResourceManager : public Serializable, public ChangeBroadcaster
+class ResourceManager : public ChangeBroadcaster
 {
 public:
 
@@ -38,33 +38,47 @@ public:
     const Array<typename T::Ptr> getResources() const
     {
         Array<typename T::Ptr> result;
-        Resources::Iterator i(this->resources);
-        while (i.next())
+
+        for (const auto &baseConfig : this->baseResources)
+        {
+            if (!this->userResources.contains(baseConfig.first))
+            {
+                result.addSorted(this->getResourceComparator(),
+                    typename T::Ptr(static_cast<T *>(baseConfig.second.get())));
+            }
+        }
+
+        for (const auto &userConfig : this->userResources)
         {
             result.addSorted(this->getResourceComparator(),
-                typename T::Ptr(static_cast<T *>(i.getValue().get())));
+                typename T::Ptr(static_cast<T *>(userConfig.second.get())));
         }
 
         return result;
     }
 
     template<typename T>
-    const T getResourceById(const String &resourceId) const
+    const typename T::Ptr getResourceById(const String &resourceId) const
     {
-        return static_cast<T>(this->resources[resourceId]);
-    }
+        const auto foundUserResource = this->userResources.find(resourceId);
+        if (foundUserResource != this->userResources.end())
+        {
+            return typename T::Ptr(static_cast<T *>(foundUserResource->second.get()));
+        }
 
-    const int size() const noexcept
-    {
-        return this->resources.size();
-    }
+        const auto foundBaseResource = this->baseResources.find(resourceId);
+        if (foundBaseResource != this->baseResources.end())
+        {
+            return typename T::Ptr(static_cast<T *>(foundBaseResource->second.get()));
+        }
 
+        return nullptr;
+    }
+    
     void updateBaseResource(const ValueTree &resource);
     void updateUserResource(const BaseResource::Ptr resource);
 
 protected:
-
-    void reset() override;
 
     void reloadResources();
 
@@ -73,18 +87,19 @@ protected:
     virtual String getBuiltInResourceString() const;
     virtual const BaseResource &getResourceComparator() const;
 
-    using Resources = HashMap<String, BaseResource::Ptr>;
-    Resources resources;
-    
+    using Resources = FlatHashMap<String, BaseResource::Ptr, StringHash>;
+    Resources baseResources;
+    Resources userResources;
+
+    // customized Serializable:
+    virtual ValueTree serializeResources(const Resources &resources);
+    virtual void deserializeResources(const ValueTree &tree, Resources &outResources) = 0;
+    virtual void reset();
+
 private: 
 
-    const Identifier resourceName;
-
-    // Just keep user's data so that we are able to append
-    // more to it and re-save back:
-    ValueTree userResources;
-
-    DummyBaseResource comparator;
+    const Identifier resourceType;
+    const DummyBaseResource comparator;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(ResourceManager)
 };

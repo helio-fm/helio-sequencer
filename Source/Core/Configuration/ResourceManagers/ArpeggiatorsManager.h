@@ -37,16 +37,8 @@ public:
 
 private:
     
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
+    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
     
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    
-private:
-
     ArpeggiatorsManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
-
 };

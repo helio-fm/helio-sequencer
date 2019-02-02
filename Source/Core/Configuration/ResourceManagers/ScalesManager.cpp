@@ -27,11 +27,6 @@ ScalesManager::ScalesManager() :
     ResourceManager(Serialization::Resources::scales),
     scalesComparator(this->order) {}
 
-const Array<Scale::Ptr> ScalesManager::getScales() const
-{
-    return this->getResources<Scale>();
-}
-
 ScalesManager::ScalesComparator::ScalesComparator(const StringArray &order) :
     order(order) {}
 
@@ -60,36 +55,23 @@ const BaseResource &ScalesManager::getResourceComparator() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree ScalesManager::serialize() const
-{
-    ValueTree tree(Serialization::Midi::scales);
-    
-    Resources::Iterator i(this->resources);
-    while (i.next())
-    {
-        tree.appendChild(i.getValue()->serialize(), nullptr);
-    }
-    
-    return tree;
-}
-
 // The comparator just makes sure that some most common scale names
 // have priorities over others, and such scales, if present,
 // should be displayed at the top of the list with the following order.
 #define NUM_ORDERED_SCALES 17
 
-void ScalesManager::deserialize(const ValueTree &tree)
+void ScalesManager::deserializeResources(const ValueTree &tree, Resources &outResources)
 {
-    const auto root = tree.hasType(Serialization::Midi::scales) ?
-        tree : tree.getChildWithName(Serialization::Midi::scales);
-    
+    const auto root = tree.hasType(Serialization::Resources::scales) ?
+        tree : tree.getChildWithName(Serialization::Resources::scales);
+
     if (!root.isValid()) { return; }
-    
+
     forEachValueTreeChildWithType(root, scaleNode, Serialization::Midi::scale)
     {
         Scale::Ptr scale(new Scale());
         scale->deserialize(scaleNode);
-        this->resources.set(scale->getResourceId(), scale);
+        outResources[scale->getResourceId()] = scale;
 
         if (this->order.size() < NUM_ORDERED_SCALES)
         {

@@ -55,7 +55,9 @@ void Translation::deserialize(const ValueTree &tree)
 
     this->name = root.getProperty(Translations::name);
     this->author = root.getProperty(Translations::author);
-    this->pluralEquation = root.getProperty(Translations::pluralEquation);
+    this->pluralEquation = Translations::wrapperClassName + "." +
+        Translations::wrapperMethodName + "(" +
+        root.getProperty(Translations::pluralEquation, "1") + ")";
 
     forEachValueTreeChildWithType(root, pluralLiteral, Translations::pluralLiteral)
     {

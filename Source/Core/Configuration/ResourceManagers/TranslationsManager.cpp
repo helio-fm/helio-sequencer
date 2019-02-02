@@ -26,7 +26,7 @@
 #include "JsonSerializer.h"
 #include "BinarySerializer.h"
 
-struct PluralEquationWrapper: public DynamicObject
+struct PluralEquationWrapper final : public DynamicObject
 {
     explicit PluralEquationWrapper(TranslationsManager &owner) : translator(owner)
     {
@@ -85,26 +85,19 @@ const Translation::Ptr TranslationsManager::getCurrentLocale() const noexcept
     return this->currentTranslation;
 }
 
-void TranslationsManager::loadLocaleWithName(const String &localeName)
+void TranslationsManager::loadLocaleWithId(const String &localeId)
 {
-    if (this->currentTranslation->name == localeName)
+    if (this->currentTranslation->id == localeId)
     {
-        DBG(localeName + "translation is already loaded, skipping");
+        DBG(localeId + "translation is already loaded, skipping");
         return;
     }
 
-    Resources::Iterator i(this->resources);
-    while (i.next())
+    if (const auto translation = this->getResourceById<Translation>(localeId))
     {
-        const Translation::Ptr translation = static_cast<Translation *>(i.getValue().get());
-        if (translation->name == localeName)
-        {
-            this->currentTranslation = translation;
-            const auto localeId = i.getKey();
-            Config::set(Serialization::Config::currentLocale, localeId);
-            this->sendChangeMessage();
-            return;
-        }
+        this->currentTranslation = translation;
+        Config::set(Serialization::Config::currentLocale, localeId);
+        this->sendChangeMessage();
     }
 }
 
@@ -116,23 +109,26 @@ String TranslationsManager::translate(const String &text)
 {
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
-    if (this->currentTranslation->singulars.contains(text))
+    const auto foundCurrentSingular = this->currentTranslation->singulars.find(text);
+    if (foundCurrentSingular != this->currentTranslation->singulars.end())
     {
-        return this->currentTranslation->singulars[text];
+        return foundCurrentSingular->second;
     }
 
-    if (this->currentTranslation->plurals.contains(text))
+    const auto foundCurrentPlural = this->currentTranslation->plurals.find(text);
+    if (foundCurrentPlural != this->currentTranslation->plurals.end())
     {
-        const auto *plurals = this->currentTranslation->plurals[text].get();
+        const auto *plurals = foundCurrentPlural->second.get();
         if (plurals->size() > 0)
         {
             return plurals->begin()->second;
         }
     }
 
-    if (this->fallbackTranslation->singulars.contains(text))
+    const auto foundFallbackSingular = this->fallbackTranslation->singulars.find(text);
+    if (foundFallbackSingular != this->fallbackTranslation->singulars.end())
     {
-        return this->fallbackTranslation->singulars[text];
+        return foundFallbackSingular->second;
     }
 
     return text;
@@ -143,27 +139,24 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
     using namespace Serialization;
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
-    if (!this->currentTranslation->plurals.contains(baseLiteral))
+    const auto foundPlural = this->currentTranslation->plurals.find(baseLiteral);
+    if (foundPlural == this->currentTranslation->plurals.end())
     {
         return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
     }
 
-    const int64 absTargetNumber = (targetNumber > 0 ? targetNumber : -targetNumber);
-
     const String expessionToEvaluate =
-        Translations::wrapperClassName + "." +
-        Translations::wrapperMethodName + "(" +
-        this->currentTranslation->pluralEquation.replace(Translations::metaSymbol, String(absTargetNumber)) + ")";
+        this->currentTranslation->pluralEquation.replace(Translations::metaSymbol,
+            String(targetNumber > 0 ? targetNumber : -targetNumber));
 
     const Result result = this->engine->execute(expessionToEvaluate);
     if (!result.failed())
     {
         const String pluralForm = this->equationResult;
-        auto *targetPlurals = this->currentTranslation->plurals[baseLiteral].get();
-        const auto translation = targetPlurals->find(pluralForm);
-        if (translation != targetPlurals->end())
+        const auto foundTranslation = foundPlural->second->find(pluralForm);
+        if (foundTranslation != foundPlural->second->end())
         {
-            return translation->second.replace(Translations::metaSymbol, String(targetNumber));
+            return foundTranslation->second.replace(Translations::metaSymbol, String(targetNumber));
         }
     }
 
@@ -176,36 +169,27 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
 
 const static String fallbackTranslationId = "en";
 
-ValueTree TranslationsManager::serialize() const
+void TranslationsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
 {
-    ValueTree emptyXml(Serialization::Translations::translations);
-    // TODO
-    return emptyXml;
-}
+    const auto root = tree.hasType(Serialization::Resources::translations) ?
+        tree : tree.getChildWithName(Serialization::Resources::translations);
 
-void TranslationsManager::deserialize(const ValueTree &tree)
-{
-    using namespace Serialization;
-
-    const auto root = tree.hasType(Translations::translations) ?
-        tree : tree.getChildWithName(Translations::translations);
-    
     if (!root.isValid()) { return; }
 
     const String selectedLocaleId = this->getSelectedLocaleId();
 
     // First, fill up the available translations
-    forEachValueTreeChildWithType(root, translationRoot, Translations::locale)
+    forEachValueTreeChildWithType(root, translationRoot, Serialization::Translations::locale)
     {
         Translation::Ptr translation(new Translation());
         translation->deserialize(translationRoot);
-        this->resources.set(translation->getResourceId(), translation);
-        
+        outResources[translation->getResourceId()] = translation;
+
         if (translation->id == selectedLocaleId)
         {
             this->currentTranslation = translation;
         }
-        
+
         if (translation->id == fallbackTranslationId)
         {
             this->fallbackTranslation = translation;
@@ -244,7 +228,8 @@ String TranslationsManager::getSelectedLocaleId() const
     const String systemLocale =
         SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
     
-    if (this->resources.contains(systemLocale))
+    if (this->userResources.contains(systemLocale) ||
+        this->baseResources.contains(systemLocale))
     {
         return systemLocale;
     }
