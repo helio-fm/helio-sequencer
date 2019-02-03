@@ -203,10 +203,15 @@ bool Scale::isEquivalentTo(const Scale::Ptr other) const
 // BaseResource
 //===----------------------------------------------------------------------===//
 
-String Scale::getResourceId() const
+String Scale::getResourceId() const noexcept
 {
     // Assumed to be unique:
     return this->name;
+}
+
+Identifier Scale::getResourceType() const noexcept
+{
+    return Serialization::Resources::scales;
 }
 
 //===----------------------------------------------------------------------===//

@@ -81,13 +81,13 @@ public:
     // BaseResource
     //===------------------------------------------------------------------===//
 
-    String getResourceId() const override;
+    String getResourceId() const noexcept override;
+    Identifier getResourceType() const noexcept override;
 
 private:
 
     ColourMap colours;
     String name;
 
-    JUCE_LEAK_DETECTOR(ColourScheme);
-
+    JUCE_LEAK_DETECTOR(ColourScheme)
 };

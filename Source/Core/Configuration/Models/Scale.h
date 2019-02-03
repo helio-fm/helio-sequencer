@@ -30,7 +30,8 @@ public:
     Scale(const Scale &other) noexcept;
     explicit Scale(const String &name) noexcept;
 
-    String getResourceId() const override;
+    String getResourceId() const noexcept override;
+    Identifier getResourceType() const noexcept override;
     using Ptr = ReferenceCountedObjectPtr<Scale>;
 
     Scale::Ptr withName(const String &name) const noexcept;

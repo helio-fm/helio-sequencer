@@ -261,7 +261,12 @@ void ColourScheme::reset()
     this->colours.set(UI::Colours::iconShadow, Colours::white.withAlpha(0.115f));
 }
 
-String ColourScheme::getResourceId() const
+String ColourScheme::getResourceId() const noexcept
 {
     return this->name;
+}
+
+Identifier ColourScheme::getResourceType() const noexcept
+{
+    return Serialization::Resources::colourSchemes;
 }

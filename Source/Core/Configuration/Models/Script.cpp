@@ -47,10 +47,14 @@ Script::Script(const String &name, const Identifier &type, const String &content
 // BaseResource
 //===----------------------------------------------------------------------===//
 
-String Script::getResourceId() const
+String Script::getResourceId() const noexcept
 {
-    // Assumed to be unique?:
     return this->name;
+}
+
+Identifier Script::getResourceType() const noexcept
+{
+    return Serialization::Resources::scripts;
 }
 
 //===----------------------------------------------------------------------===//

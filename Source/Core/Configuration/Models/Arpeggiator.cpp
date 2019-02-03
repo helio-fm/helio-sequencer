@@ -281,10 +281,15 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
 // BaseResource
 //===----------------------------------------------------------------------===//
 
-String Arpeggiator::getResourceId() const
+String Arpeggiator::getResourceId() const noexcept
 {
     // Assumed to be unique:
     return this->name;
+}
+
+Identifier Arpeggiator::getResourceType() const noexcept
+{
+    return Serialization::Resources::arpeggiators;
 }
 
 //===----------------------------------------------------------------------===//

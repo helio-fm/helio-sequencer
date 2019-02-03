@@ -23,6 +23,8 @@ public:
 
     virtual String getResourceId() const = 0;
 
+    virtual Identifier getResourceType() const = 0;
+
     using Ptr = ReferenceCountedObjectPtr<BaseResource>;
 
     virtual int compareElements(const BaseResource::Ptr first,
@@ -36,6 +38,7 @@ class DummyBaseResource : public BaseResource
 {
 public:
     String getResourceId() const override { return {}; }
+    Identifier getResourceType() const override { return {}; }
     ValueTree serialize() const override { return {}; }
     void deserialize(const ValueTree &tree) override {}
     void reset() override {}

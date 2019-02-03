@@ -230,9 +230,14 @@ HotkeyScheme &HotkeyScheme::operator=(const HotkeyScheme &other)
 // BaseResource
 //===----------------------------------------------------------------------===//
 
-String HotkeyScheme::getResourceId() const
+String HotkeyScheme::getResourceId() const noexcept
 {
     return this->name;
+}
+
+Identifier HotkeyScheme::getResourceType() const noexcept
+{
+    return Serialization::Resources::hotkeySchemes;
 }
 
 bool operator==(const HotkeyScheme &l, const HotkeyScheme &r)

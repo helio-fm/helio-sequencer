@@ -92,7 +92,12 @@ void Translation::reset()
 // BaseResource
 //===----------------------------------------------------------------------===//
 
-String Translation::getResourceId() const
+String Translation::getResourceId() const noexcept
 {
     return this->id; // i.e. "en", "ru" - should be unique
+}
+
+Identifier Translation::getResourceType() const noexcept
+{
+    return Serialization::Resources::translations;
 }

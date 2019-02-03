@@ -61,7 +61,8 @@ public:
     // BaseResource
     //===------------------------------------------------------------------===//
 
-    String getResourceId() const override;
+    String getResourceId() const noexcept override;
+    Identifier getResourceType() const noexcept override;
 
 private:
 
