@@ -53,7 +53,6 @@
 #include "LassoListeners.h"
 #include "UndoStack.h"
 #include "Workspace.h"
-#include "MainWindow.h"
 #include "MainLayout.h"
 #include "HelioTheme.h"
 #include "ComponentIDs.h"

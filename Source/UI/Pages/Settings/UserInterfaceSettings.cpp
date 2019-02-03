@@ -31,7 +31,6 @@
 #include "Config.h"
 #include "HelioTheme.h"
 #include "Workspace.h"
-#include "MainWindow.h"
 #include "MainLayout.h"
 
 #define THEME_SETTINGS_ROW_HEIGHT (46)
@@ -160,7 +159,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
 
             dialog->onOk = [this]()
             {
-                App::Window().setOpenGLRendererEnabled(true);
+                App::setOpenGLRendererEnabled(true);
                 this->updateButtons();
             };
 
@@ -176,7 +175,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == defaultRendererButton.get())
     {
         //[UserButtonCode_defaultRendererButton] -- add your button handler code here..
-        App::Window().setOpenGLRendererEnabled(false);
+        App::setOpenGLRendererEnabled(false);
         this->updateButtons();
         //[/UserButtonCode_defaultRendererButton]
     }
@@ -202,9 +201,9 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
         commandId <= (CommandIDs::SelectFont + this->systemFonts.size()))
     {
         const int fontIndex = commandId - CommandIDs::SelectFont;
-        if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
+        if (auto *theme = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
-            ht->updateFont(this->systemFonts[fontIndex]);
+            theme->updateFont(this->systemFonts[fontIndex]);
             SafePointer<Component> window = this->getTopLevelComponent();
             App::Helio().recreateLayout();
             if (window != nullptr)
@@ -221,7 +220,7 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
 //[MiscUserCode]
 void UserInterfaceSettings::updateButtons()
 {
-    const bool openGLEnabled = MainWindow::isOpenGLRendererEnabled();
+    const bool openGLEnabled = App::isOpenGLRendererEnabled();
     this->defaultRendererButton->setToggleState(!openGLEnabled, dontSendNotification);
     this->openGLRendererButton->setToggleState(openGLEnabled, dontSendNotification);
 }

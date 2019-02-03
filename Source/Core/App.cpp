@@ -33,10 +33,133 @@
 #include "SerializationKeys.h"
 
 #include "Icons.h"
-#include "MainWindow.h"
 #include "Workspace.h"
 #include "RootTreeItem.h"
 #include "SerializablePluginDescription.h"
+
+//===----------------------------------------------------------------------===//
+// Window
+//===----------------------------------------------------------------------===//
+
+#if JUCE_WINDOWS || JUCE_LINUX
+#   define HELIO_HAS_CUSTOM_TITLEBAR 1
+#else
+#   define HELIO_HAS_CUSTOM_TITLEBAR 0
+#endif
+
+class MainWindow final : public DocumentWindow
+{
+public:
+
+    MainWindow(bool enableOpenGl = false) :
+        DocumentWindow("Helio", Colours::darkgrey, DocumentWindow::allButtons)
+    {
+        this->setWantsKeyboardFocus(false);
+
+#if HELIO_DESKTOP
+
+        //this->setResizeLimits(568, 320, 8192, 8192); // phone size test
+        this->setResizeLimits(1024, 650, 8192, 8192); // production
+
+#if HELIO_HAS_CUSTOM_TITLEBAR
+        this->setResizable(true, true);
+        this->setUsingNativeTitleBar(false);
+#else
+        this->setResizable(true, false);
+        this->setUsingNativeTitleBar(true);
+#endif
+
+        this->setBounds(int(0.1f * this->getParentWidth()),
+            int(0.1f * this->getParentHeight()),
+            jmin(1280, int(0.85f * this->getParentWidth())),
+            jmin(768, int(0.85f * this->getParentHeight())));
+
+#endif
+
+#if JUCE_IOS
+        this->setVisible(false);
+#endif
+
+#if JUCE_ANDROID
+        this->setFullScreen(true);
+        Desktop::getInstance().setKioskModeComponent(this);
+#endif
+
+        if (enableOpenGl)
+        {
+            this->attachOpenGLContext();
+        }
+
+        this->createLayoutComponent();
+        this->setVisible(true);
+
+#if JUCE_IOS
+        Desktop::getInstance().setKioskModeComponent(this);
+#endif
+    }
+
+    ~MainWindow() override
+    {
+        this->detachOpenGLContextIfAny();
+        this->dismissLayoutComponent();
+    }
+
+private:
+
+#if HELIO_HAS_CUSTOM_TITLEBAR
+    BorderSize<int> getBorderThickness() override
+    {
+        return BorderSize<int>(0);
+    }
+#endif
+
+    void closeButtonPressed() override
+    {
+        JUCEApplication::getInstance()->systemRequestedQuit();
+    }
+
+    void attachOpenGLContext()
+    {
+        DBG("Attaching OpenGL context.");
+        this->openGLContext.reset(new OpenGLContext());
+        this->openGLContext->setPixelFormat(OpenGLPixelFormat(8, 8, 0, 0));
+        this->openGLContext->setMultisamplingEnabled(false);
+        this->openGLContext->attachTo(*this);
+    }
+
+    void detachOpenGLContextIfAny()
+    {
+        if (this->openGLContext != nullptr)
+        {
+            DBG("Detaching OpenGL context.");
+            this->openGLContext->detach();
+            this->openGLContext = nullptr;
+        }
+    }
+
+    void dismissLayoutComponent()
+    {
+        this->clearContentComponent();
+        this->layout = nullptr;
+    }
+
+    void createLayoutComponent()
+    {
+        this->layout.reset(new MainLayout());
+        // optionally, in future:
+        // this->setContentOwned(new ScaledComponentProxy(this->layout), false);
+        this->setContentNonOwned(this->layout.get(), false);
+        this->layout->restoreLastOpenedPage();
+    }
+
+    UniquePointer<MainLayout> layout;
+    UniquePointer<OpenGLContext> openGLContext;
+    
+    friend class App;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
+};
+
 
 //===----------------------------------------------------------------------===//
 // Clipboard
@@ -72,7 +195,7 @@ void Clipboard::copy(const ValueTree &data, bool mirrorToSystemClipboard /*= fal
 
 
 //===----------------------------------------------------------------------===//
-// Static
+// App
 //===----------------------------------------------------------------------===//
 
 class App &App::Helio() noexcept
@@ -88,11 +211,6 @@ class Workspace &App::Workspace() noexcept
 class MainLayout &App::Layout() noexcept
 {
     return *static_cast<App *>(getInstance())->window->layout;
-}
-
-class MainWindow &App::Window() noexcept
-{
-    return *static_cast<App *>(getInstance())->window;
 }
 
 class Config &App::Config() noexcept
@@ -269,10 +387,36 @@ void App::dismissAllModalComponents()
 {
     while (Component *modal = Component::getCurrentlyModalComponent(0))
     {
+        jassertfalse;
         DBG("Dismissing a modal component");
         modal->exitModalState(0);
         // Unowned components may leak here, use with caution
     }
+}
+
+void App::setOpenGLRendererEnabled(bool shouldBeEnabled)
+{
+    auto *window = static_cast<App *>(getInstance())->window.get();
+    auto *config = static_cast<App *>(getInstance())->config.get();
+
+    if (shouldBeEnabled && !isOpenGLRendererEnabled())
+    {
+        window->attachOpenGLContext();
+        config->setProperty(Serialization::Config::openGLState,
+            Serialization::Config::enabledState.toString());
+    }
+    else if (!shouldBeEnabled && isOpenGLRendererEnabled())
+    {
+        window->detachOpenGLContextIfAny();
+        config->setProperty(Serialization::Config::openGLState,
+            Serialization::Config::disabledState.toString());
+    }
+}
+
+
+bool App::isOpenGLRendererEnabled() noexcept
+{
+    return static_cast<App *>(getInstance())->window->openGLContext != nullptr;
 }
 
 //===----------------------------------------------------------------------===//
@@ -295,10 +439,22 @@ void App::initialise(const String &commandLine)
 
         this->theme.reset(new class HelioTheme());
         this->theme->initResources();
+        this->theme->initColours(this->config->getColourSchemes()->getCurrent());
+
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
     
         this->workspace.reset(new class Workspace());
-        this->window.reset(new MainWindow());
+
+#if JUCE_ANDROID
+        const bool enableOpenGL = true;
+#else
+        const auto opeGlState =
+            this->config->getProperty(Serialization::Config::openGLState);
+        const bool enableOpenGL = opeGlState.isEmpty() ||
+            (opeGlState == Serialization::Config::enabledState.toString());
+#endif
+
+        this->window.reset(new MainWindow(enableOpenGL));
 
         // Prepare back-end APIs communication services
         this->sessionService.reset(new SessionService(this->workspace->getUserProfile()));
@@ -411,7 +567,7 @@ void App::suspended()
     }
     
 #if JUCE_ANDROID
-    this->window->detachOpenGLContext();
+    this->window->detachOpenGLContextIfAny();
 #endif
 }
 

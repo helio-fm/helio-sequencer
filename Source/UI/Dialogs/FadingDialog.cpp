@@ -20,7 +20,6 @@
 #include "DialogBackground.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
-#include "MainWindow.h"
 
 #define DIALOG_HAS_BACKGROUND 1
 //#define DIALOG_HAS_BACKGROUND 0
@@ -63,7 +62,7 @@ void FadingDialog::fadeOut()
 {
     const int fadeoutTime = 200;
     auto &animator = Desktop::getInstance().getAnimator();
-    if (MainWindow::isOpenGLRendererEnabled())
+    if (App::isOpenGLRendererEnabled())
     {
         animator.animateComponent(this, this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 0.0);
     }

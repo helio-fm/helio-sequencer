@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "HelioTheme.h"
-#include "MainWindow.h"
 #include "SequencerSidebarLeft.h"
 #include "BinaryData.h"
 #include "Icons.h"
@@ -25,7 +24,6 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-#include "MainWindow.h"
 #include "HybridRoll.h"
 #include "InstrumentEditor.h"
 #include "HelperRectangle.h"

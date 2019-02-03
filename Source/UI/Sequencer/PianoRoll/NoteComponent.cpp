@@ -26,8 +26,6 @@
 #include "SelectionComponent.h"
 #include "SequencerOperations.h"
 #include "Transport.h"
-#include "App.h"
-#include "MainWindow.h"
 
 #define RESIZE_CORNER 10
 #define MAX_DRAG_POLYPHONY 8

@@ -647,6 +647,8 @@
           </GROUP>
           <FILE id="sxp8Vs" name="CachedLabelImage.h" compile="0" resource="0"
                 file="../../Source/UI/Common/CachedLabelImage.h"/>
+          <FILE id="Bc9CRs" name="ScaledComponentProxy.h" compile="0" resource="0"
+                file="../../Source/UI/Common/ScaledComponentProxy.h"/>
           <FILE id="CY4MW2" name="ColourButton.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/ColourButton.cpp"/>
           <FILE id="VrkDkH" name="ColourButton.h" compile="0" resource="0" file="../../Source/UI/Common/ColourButton.h"/>
@@ -1373,8 +1375,6 @@
         </GROUP>
         <FILE id="PkRsJW" name="MainLayout.cpp" compile="1" resource="0" file="../../Source/UI/MainLayout.cpp"/>
         <FILE id="hDwgZW" name="MainLayout.h" compile="0" resource="0" file="../../Source/UI/MainLayout.h"/>
-        <FILE id="Szz4y0" name="MainWindow.cpp" compile="1" resource="0" file="../../Source/UI/MainWindow.cpp"/>
-        <FILE id="TyXZte" name="MainWindow.h" compile="0" resource="0" file="../../Source/UI/MainWindow.h"/>
       </GROUP>
       <FILE id="ElYokW" name="Common.cpp" compile="1" resource="0" file="../../Source/Common.cpp"/>
       <FILE id="ZpjqOm" name="Common.h" compile="0" resource="0" file="../../Source/Common.h"/>

@@ -25,7 +25,6 @@
 #include "HybridRoll.h"
 #include "MidiSequence.h"
 #include "MenuItemComponent.h"
-#include "MainWindow.h"
 
 MenuPanel::MenuPanel() :
     lastAnimationType(AnimationType::None),

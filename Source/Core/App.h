@@ -17,13 +17,11 @@
 
 #pragma once
 
-class MainWindow;
+class Config;
 class Workspace;
+class MainWindow;
 class MainLayout;
 class HelioTheme;
-class Config;
-class ApiCore;
-class AudioCore;
 class SessionService;
 class ResourceSyncService;
 
@@ -55,10 +53,9 @@ public:
     //===------------------------------------------------------------------===//
 
     static class App &Helio() noexcept;
-    static class Workspace &Workspace() noexcept;
-    static class MainLayout &Layout() noexcept;
-    static class MainWindow &Window() noexcept;
     static class Config &Config() noexcept;
+    static class MainLayout &Layout() noexcept;
+    static class Workspace &Workspace() noexcept;
     static class Clipboard &Clipboard() noexcept;
 
     static bool isRunningOnPhone();
@@ -73,6 +70,17 @@ public:
     static String translate(const String &plural, int64 number);
 
     static void dismissAllModalComponents();
+    static bool isOpenGLRendererEnabled() noexcept;
+    static void setOpenGLRendererEnabled(bool shouldBeEnabled);
+    
+    //===------------------------------------------------------------------===//
+    // Accessors
+    //===------------------------------------------------------------------===//
+
+    SessionService *getSessionService() const noexcept;
+    ResourceSyncService *getResourceSyncService() const noexcept;
+
+private:
 
     //===------------------------------------------------------------------===//
     // JUCEApplication
@@ -91,13 +99,6 @@ public:
     void systemRequestedQuit() override;
     void suspended() override;
     void resumed() override;
-
-    //===------------------------------------------------------------------===//
-    // Accessors
-    //===------------------------------------------------------------------===//
-
-    SessionService *getSessionService() const noexcept;
-    ResourceSyncService *getResourceSyncService() const noexcept;
 
 private:
 
@@ -126,5 +127,4 @@ private:
     App::RunMode runMode;
     
     void handleAsyncUpdate() override;
-
 };

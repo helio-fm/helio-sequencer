@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "Workspace.h"
-#include "MainWindow.h"
 #include "SyncSettingsItem.h"
 #include "HelioApiRoutes.h"
 #include "Config.h"

@@ -335,7 +335,7 @@ void ScalePreviewTool::onPopupButtonFirstAction(PopupButton *button)
             App::Layout().hideTooltipIfAny();
             this->buildNewNote(true);
         } else {
-            //App::Helio()->showTooltip(createLabel(rootKey));
+            //App::Layout()->showTooltip(createLabel(rootKey));
             this->buildNewNote(true);
             this->dismissAsDone();
         }

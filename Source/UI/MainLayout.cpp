@@ -24,7 +24,6 @@
 #include "AudioCore.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "MainWindow.h"
 #include "RootTreeItem.h"
 #include "GenericTooltip.h"
 #include "MidiTrackTreeItem.h"

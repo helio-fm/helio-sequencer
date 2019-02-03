@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 #include "HeadlineItem.h"
 #include "IconComponent.h"
-#include "MainWindow.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
 #include "SequencerLayout.h"
@@ -269,7 +268,7 @@ void Headline::hideSelectionMenu()
 
 float Headline::getAlphaForAnimation() const noexcept
 {
-    return MainWindow::isOpenGLRendererEnabled() ? 0.f : 1.f;
+    return App::isOpenGLRendererEnabled() ? 0.f : 1.f;
 }
 
 int Headline::getChainWidth() const noexcept

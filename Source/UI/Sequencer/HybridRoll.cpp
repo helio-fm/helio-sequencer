@@ -45,8 +45,6 @@
 
 #include "Transport.h"
 #include "IconComponent.h"
-
-#include "MainWindow.h"
 #include "PlayerThread.h"
 
 #include "ProjectTimeline.h"

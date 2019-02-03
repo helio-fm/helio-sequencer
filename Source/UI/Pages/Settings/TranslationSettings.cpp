@@ -22,7 +22,6 @@
 #include "TranslationSettings.h"
 
 //[MiscUserDefs]
-#include "MainWindow.h"
 #include "TranslationSettingsItem.h"
 #include "HelioApiRoutes.h"
 #include "Config.h"

@@ -84,17 +84,13 @@ private:
 
     ComponentFader fader;
     
-    ScopedPointer<Component> initScreen;
-    SafePointer<Component> currentContent;
-
     ScopedPointer<Headline> headline;
-
+    ScopedPointer<Component> initScreen;
     ScopedPointer<TooltipContainer> tooltipContainer;
     
+    SafePointer<Component> currentContent;
+
     HotkeyScheme::Ptr hotkeyScheme;
     
-private:
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainLayout)
-
 };
