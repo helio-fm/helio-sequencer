@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 #include "Workspace.h"
 #include "SyncSettingsItem.h"
-#include "HelioApiRoutes.h"
 #include "Config.h"
 
 #if HELIO_DESKTOP

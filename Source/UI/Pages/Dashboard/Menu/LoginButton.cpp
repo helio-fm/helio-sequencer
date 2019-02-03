@@ -22,6 +22,7 @@
 #include "LoginButton.h"
 
 //[MiscUserDefs]
+#include "Network.h"
 #include "SessionService.h"
 #include "UserProfileDto.h"
 //[/MiscUserDefs]
@@ -46,7 +47,7 @@ LoginButton::LoginButton()
 
     //[UserPreSize]
     this->clickHandler->onClick = [this]() {
-        App::Helio().getSessionService()->signIn("Github");
+        App::Network().getSessionService()->signIn("Github");
     };
     //[/UserPreSize]
 

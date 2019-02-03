@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "HelioApiRoutes.h"
 #include "BackendRequest.h"
+#include "Network.h"
 
 class RequestResourceThread final : public Thread
 {
@@ -49,11 +49,9 @@ private:
     
     void run() override
     {
-        namespace ApiRoutes = Routes::HelioFM::Api;
-
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
-        const String uri = ApiRoutes::requestResource + "/" + this->resourceId;
+        const String uri = Routes::Api::requestResource + "/" + this->resourceId;
         const BackendRequest request(uri);
         this->response = request.get();
 

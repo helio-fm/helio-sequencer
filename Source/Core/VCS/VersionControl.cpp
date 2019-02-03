@@ -22,7 +22,8 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 #include "SerializationKeys.h"
-#include "ResourceSyncService.h"
+#include "Network.h"
+#include "ProjectSyncService.h"
 
 using namespace VCS;
 
@@ -294,7 +295,7 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
 
 void VersionControl::syncAllRevisions()
 {
-    App::Helio().getResourceSyncService()->syncRevisions(this,
+    App::Network().getProjectSyncService()->syncRevisions(this,
         this->parent.getVCSId(), this->parent.getVCSName(), {});
 }
 
@@ -303,7 +304,7 @@ void VersionControl::fetchRevisionsIfNeeded()
     if (this->remoteCache.isOutdated())
     {
         DBG("Remote revisions cache is outdated, fetching the latest project info");
-        App::Helio().getResourceSyncService()->fetchRevisionsInfo(this,
+        App::Network().getProjectSyncService()->fetchRevisionsInfo(this,
             this->parent.getVCSId(), this->parent.getVCSName());
     }
 }
@@ -320,7 +321,7 @@ void VersionControl::syncRevision(const Revision::Ptr revision)
         subtreeToSync.add(it->getUuid());
     }
 
-    App::Helio().getResourceSyncService()->syncRevisions(this,
+    App::Network().getProjectSyncService()->syncRevisions(this,
         this->parent.getVCSId(), this->parent.getVCSName(),
         subtreeToSync);
 }

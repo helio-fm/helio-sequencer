@@ -18,11 +18,10 @@
 #include "Common.h"
 #include "ProjectCloneThread.h"
 #include "RevisionsSyncHelpers.h"
-#include "HelioApiRoutes.h"
 #include "ProjectDto.h"
+#include "Network.h"
 
 namespace ApiKeys = Serialization::Api::V1;
-namespace ApiRoutes = Routes::HelioFM::Api;
 
 ProjectCloneThread::ProjectCloneThread() : Thread("Clone") {}
 
@@ -46,7 +45,7 @@ void ProjectCloneThread::doClone(WeakReference<VersionControl> vcs, const String
 
 void ProjectCloneThread::run()
 {
-    const String projectRoute(ApiRoutes::project.replace(":projectId", this->projectId));
+    const String projectRoute(Routes::Api::project.replace(":projectId", this->projectId));
     const BackendRequest revisionsRequest(projectRoute);
     this->response = revisionsRequest.get();
 
@@ -82,7 +81,7 @@ void ProjectCloneThread::run()
     // if anything is needed to pull, fetch all data for each, then update and callback
     for (const auto dto : remoteProject.getRevisions())
     {
-        const String revisionRoute(ApiRoutes::projectRevision
+        const String revisionRoute(Routes::Api::projectRevision
             .replace(":projectId", this->projectId)
             .replace(":revisionId", dto.getId()));
 

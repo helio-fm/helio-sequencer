@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include "HelioApiRoutes.h"
 #include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "AppInfoDto.h"
+#include "Network.h"
 
 class UpdatesCheckThread final : public Thread
 {
@@ -52,7 +52,7 @@ private:
     
     void run() override
     {
-        namespace ApiRoutes = Routes::HelioFM::Api;
+        namespace ApiRoutes = Routes::Api;
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 

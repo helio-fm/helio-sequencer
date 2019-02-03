@@ -205,7 +205,7 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
         {
             theme->updateFont(this->systemFonts[fontIndex]);
             SafePointer<Component> window = this->getTopLevelComponent();
-            App::Helio().recreateLayout();
+            App::recreateLayout();
             if (window != nullptr)
             {
                 window->resized();

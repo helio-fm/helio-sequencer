@@ -17,9 +17,9 @@
 
 #include "Common.h"
 #include "BackendRequest.h"
-#include "HelioApiRoutes.h"
 #include "Workspace.h"
 #include "UserProfile.h"
+#include "Network.h"
 
 // Let OS set the default timeout:
 #define CONNECTION_TIMEOUT_MS (0)
@@ -191,7 +191,7 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
 {
     Response response;
     ScopedPointer<InputStream> stream;
-    const auto url = URL(Routes::HelioFM::Api::baseURL + this->apiEndpoint);
+    const auto url = URL(Routes::Api::baseURL + this->apiEndpoint);
 
     int i = 0;
     do
@@ -219,7 +219,7 @@ BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, con
         return response;
     }
 
-    const auto url = URL(Routes::HelioFM::Api::baseURL + this->apiEndpoint)
+    const auto url = URL(Routes::Api::baseURL + this->apiEndpoint)
         .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8()));
 
     int i = 0;

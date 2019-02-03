@@ -17,15 +17,15 @@
 
 #include "Common.h"
 #include "RevisionsSyncThread.h"
-#include "HelioApiRoutes.h"
 #include "SerializationKeys.h"
 #include "RevisionDto.h"
 #include "ProjectDto.h"
 #include "RevisionsSyncHelpers.h"
 #include "Workspace.h"
+#include "Network.h"
 
 namespace ApiKeys = Serialization::Api::V1;
-namespace ApiRoutes = Routes::HelioFM::Api;
+namespace ApiRoutes = Routes::Api;
 
 RevisionsSyncThread::RevisionsSyncThread() :
     Thread("Sync"), fetchOnly(false) {}

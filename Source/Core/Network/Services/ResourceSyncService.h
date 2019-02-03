@@ -18,11 +18,6 @@
 #pragma once
 
 #include "BackendService.h"
-#include "RevisionsSyncThread.h"
-#include "ProjectCloneThread.h"
-#include "ProjectDeleteThread.h"
-#include "UpdatesCheckThread.h"
-#include "RequestResourceThread.h"
 
 class ResourceSyncService final : private BackendService
 {
@@ -30,33 +25,6 @@ public:
 
     ResourceSyncService();
 
-    void fetchRevisionsInfo(WeakReference<VersionControl> vcs,
-        const String &projectId, const String &projectName);
-
-
-    void syncRevisions(WeakReference<VersionControl> vcs,
-        const String &projectId, const String &projectName,
-        const Array<String> &revisionIdsToSync);
-
-    void cancelSyncRevisions();
-
-
-    void cloneProject(WeakReference<VersionControl> vcs,
-        const String &projectId);
-
-    void cancelCloneProject();
-
-    void deleteProject(const String &projectId);
-
-
 private:
 
-    ProjectCloneThread *prepareProjectCloneThread();
-    ProjectDeleteThread *prepareProjectDeleteThread();
-
-    RevisionsSyncThread *prepareSyncRevisionsThread();
-    RevisionsSyncThread *prepareFetchRevisionsThread();
-
-    UpdatesCheckThread *prepareUpdatesCheckThread();
-    RequestResourceThread *prepareResourceRequestThread();
 };

@@ -169,7 +169,7 @@ AuthThread *SessionService::prepareAuthThread()
     thread->onAuthSessionInitiated = [](const AuthSessionDto session, const String &redirect)
     {
         jassert(redirect.isNotEmpty());
-        URL(Routes::HelioFM::Web::baseURL + redirect).launchInDefaultBrowser();
+        URL(Routes::Web::baseURL + redirect).launchInDefaultBrowser();
     };
 
     thread->onAuthSessionFinished = [this](const AuthSessionDto session)

@@ -18,8 +18,7 @@
 #include "Common.h"
 #include "App.h"
 #include "AudioCore.h"
-#include "SessionService.h"
-#include "ResourceSyncService.h"
+#include "Network.h"
 
 #include "HelioTheme.h"
 #include "PluginScanner.h"
@@ -198,11 +197,6 @@ void Clipboard::copy(const ValueTree &data, bool mirrorToSystemClipboard /*= fal
 // App
 //===----------------------------------------------------------------------===//
 
-class App &App::Helio() noexcept
-{
-    return *static_cast<App *>(getInstance());
-}
-
 class Workspace &App::Workspace() noexcept
 {
     return *static_cast<App *>(getInstance())->workspace;
@@ -216,6 +210,11 @@ class MainLayout &App::Layout() noexcept
 class Config &App::Config() noexcept
 {
     return *static_cast<App *>(getInstance())->config;
+}
+
+class Network &App::Network() noexcept
+{
+    return *static_cast<App *>(getInstance())->network;
 }
 
 class Clipboard &App::Clipboard() noexcept
@@ -373,14 +372,17 @@ String App::getHumanReadableDate(const Time &date)
 
 void App::recreateLayout()
 {
-    this->window->dismissLayoutComponent();
+    auto *window = static_cast<App *>(getInstance())->window.get();
+    auto *workspace = static_cast<App *>(getInstance())->workspace.get();
 
-    if (TreeItem *root = this->workspace->getTreeRoot())
+    window->dismissLayoutComponent();
+
+    if (auto *root = workspace->getTreeRoot())
     {
         root->recreateSubtreePages();
     }
 
-    this->window->createLayoutComponent();
+    window->createLayoutComponent();
 }
 
 void App::dismissAllModalComponents()
@@ -425,7 +427,12 @@ bool App::isOpenGLRendererEnabled() noexcept
 
 void App::initialise(const String &commandLine)
 {
-    this->runMode = this->detectRunMode(commandLine);
+    this->runMode = App::NORMAL;
+    if (commandLine.isNotEmpty() &&
+        DocumentHelpers::getTempSlot(commandLine).existsAsFile())
+    {
+        this->runMode = App::PLUGIN_CHECK;
+    }
 
     if (this->runMode == App::NORMAL)
     {
@@ -437,10 +444,11 @@ void App::initialise(const String &commandLine)
         this->config.reset(new class Config());
         this->config->initResources();
 
-        this->theme.reset(new class HelioTheme());
-        this->theme->initResources();
-        this->theme->initColours(this->config->getColourSchemes()->getCurrent());
+        ScopedPointer<HelioTheme> helioTheme(new HelioTheme());
+        helioTheme->initResources();
+        helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
 
+        this->theme.reset(helioTheme.release());
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
     
         this->workspace.reset(new class Workspace());
@@ -456,9 +464,7 @@ void App::initialise(const String &commandLine)
 
         this->window.reset(new MainWindow(enableOpenGL));
 
-        // Prepare back-end APIs communication services
-        this->sessionService.reset(new SessionService(this->workspace->getUserProfile()));
-        this->resourceSyncService.reset(new ResourceSyncService());
+        this->network.reset(new class Network(*this->workspace.get()));
 
         this->config->getTranslations()->addChangeListener(this);
         
@@ -486,8 +492,7 @@ void App::shutdown()
 
         this->window = nullptr;
 
-        this->resourceSyncService = nullptr;
-        this->sessionService = nullptr;
+        this->network = nullptr;
 
         this->workspace->shutdown();
         this->workspace = nullptr;
@@ -584,33 +589,8 @@ void App::resumed()
 }
 
 //===----------------------------------------------------------------------===//
-// Accessors
-//===----------------------------------------------------------------------===//
-
-SessionService *App::getSessionService() const noexcept
-{
-    return this->sessionService.get();
-}
-
-ResourceSyncService *App::getResourceSyncService() const noexcept
-{
-    return this->resourceSyncService.get();
-}
-
-//===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
-
-App::RunMode App::detectRunMode(const String &commandLine) const
-{
-    if (commandLine.isNotEmpty() &&
-        DocumentHelpers::getTempSlot(commandLine).existsAsFile())
-    {
-        return App::PLUGIN_CHECK;
-    }
-
-    return App::NORMAL;
-}
 
 void App::checkPlugin(const String &markerFile)
 {

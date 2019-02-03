@@ -17,10 +17,10 @@
 
 #include "Common.h"
 #include "ProjectDeleteThread.h"
-#include "HelioApiRoutes.h"
+#include "Network.h"
 
 namespace ApiKeys = Serialization::Api::V1;
-namespace ApiRoutes = Routes::HelioFM::Api;
+namespace ApiRoutes = Routes::Api;
 
 ProjectDeleteThread::ProjectDeleteThread() :
     Thread("DeleteProject") {}

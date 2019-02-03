@@ -30,7 +30,8 @@
 #include "Icons.h"
 #include "Workspace.h"
 #include "MainLayout.h"
-#include "ResourceSyncService.h"
+#include "Network.h"
+#include "ProjectSyncService.h"
 
 VersionControlTreeItem::VersionControlTreeItem() :
     TreeItem("Versions", Serialization::Core::versionControl),
@@ -211,7 +212,8 @@ void VersionControlTreeItem::cloneProject()
     auto *parentProject = this->findParentOfType<ProjectTreeItem>();
     if (parentProject != nullptr && this->vcs != nullptr)
     {
-        App::Helio().getResourceSyncService()->cloneProject(this->vcs.get(), parentProject->getId());
+        App::Network().getProjectSyncService()->
+            cloneProject(this->vcs.get(), parentProject->getId());
     }
 }
 

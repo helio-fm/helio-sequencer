@@ -365,6 +365,10 @@
           <GROUP id="{4D47E5BE-9508-0751-0896-8550519A0BB6}" name="Services">
             <FILE id="QeLQ6I" name="BackendService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/BackendService.h"/>
+            <FILE id="K9GFiH" name="ProjectSyncService.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Services/ProjectSyncService.cpp"/>
+            <FILE id="IiZN5c" name="ProjectSyncService.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Services/ProjectSyncService.h"/>
             <FILE id="X60dwC" name="ResourceSyncService.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Services/ResourceSyncService.cpp"/>
             <FILE id="hUPJJL" name="ResourceSyncService.h" compile="0" resource="0"
@@ -374,8 +378,8 @@
             <FILE id="cWX3ze" name="SessionService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/SessionService.h"/>
           </GROUP>
-          <FILE id="wvwATY" name="HelioApiRoutes.h" compile="0" resource="0"
-                file="../../Source/Core/Network/HelioApiRoutes.h"/>
+          <FILE id="ZNZV5h" name="Network.cpp" compile="1" resource="0" file="../../Source/Core/Network/Network.cpp"/>
+          <FILE id="bgfCFA" name="Network.h" compile="0" resource="0" file="../../Source/Core/Network/Network.h"/>
         </GROUP>
         <GROUP id="{C7A47464-29EB-7B1A-915F-52EB77152651}" name="Scripting">
           <FILE id="Sj4cRm" name="KeySignatureClass.cpp" compile="1" resource="0"

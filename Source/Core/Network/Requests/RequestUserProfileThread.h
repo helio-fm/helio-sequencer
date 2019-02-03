@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "HelioApiRoutes.h"
 #include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
@@ -53,7 +52,7 @@ private:
     void run() override
     {
         namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api;
+        namespace ApiRoutes = Routes::Api;
 
         const BackendRequest request(ApiRoutes::requestUserProfile);
         this->response = request.get();

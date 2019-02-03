@@ -17,10 +17,10 @@
 
 #pragma once
 
-#include "HelioApiRoutes.h"
 #include "BackendRequest.h"
 #include "SerializationKeys.h"
 #include "AuthSessionDto.h"
+#include "Network.h"
 #include "Config.h"
 
 class AuthThread final : public Thread
@@ -56,7 +56,7 @@ private:
         jassert(this->provider.isNotEmpty());
 
         namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api;
+        namespace ApiRoutes = Routes::Api;
 
         // Construct payload object:
         ValueTree initSession(ApiKeys::AuthSession::session);

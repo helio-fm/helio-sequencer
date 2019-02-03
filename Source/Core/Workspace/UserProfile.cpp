@@ -19,7 +19,8 @@
 #include "UserProfile.h"
 #include "SessionService.h"
 #include "SerializationKeys.h"
-#include "ResourceSyncService.h"
+#include "ProjectSyncService.h"
+#include "Network.h"
 #include "Config.h"
 
 static UserSessionInfo kSessionsSort;
@@ -171,7 +172,7 @@ void UserProfile::deleteProjectRemotely(const String &id)
         if (project->hasRemoteCopy())
         {
             // sync service will call onProjectRemoteInfoReset(id) when done:
-            App::Helio().getResourceSyncService()->deleteProject(id);
+            App::Network().getProjectSyncService()->deleteProject(id);
         }
     }
 

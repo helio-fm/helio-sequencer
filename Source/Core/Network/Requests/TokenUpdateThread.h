@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "HelioApiRoutes.h"
 #include "BackendRequest.h"
 #include "Config.h"
 #include "SerializationKeys.h"
@@ -51,7 +50,7 @@ private:
     void run() override
     {
         namespace ApiKeys = Serialization::Api::V1;
-        namespace ApiRoutes = Routes::HelioFM::Api;
+        namespace ApiRoutes = Routes::Api;
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 

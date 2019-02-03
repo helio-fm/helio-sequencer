@@ -18,12 +18,10 @@
 #pragma once
 
 class Config;
+class Network;
 class Workspace;
 class MainWindow;
 class MainLayout;
-class HelioTheme;
-class SessionService;
-class ResourceSyncService;
 
 class Clipboard final
 {
@@ -52,8 +50,8 @@ public:
     // Static
     //===------------------------------------------------------------------===//
 
-    static class App &Helio() noexcept;
     static class Config &Config() noexcept;
+    static class Network &Network() noexcept;
     static class MainLayout &Layout() noexcept;
     static class Workspace &Workspace() noexcept;
     static class Clipboard &Clipboard() noexcept;
@@ -69,24 +67,18 @@ public:
     static String translate(const String &singular);
     static String translate(const String &plural, int64 number);
 
+    static void recreateLayout();
     static void dismissAllModalComponents();
+
     static bool isOpenGLRendererEnabled() noexcept;
     static void setOpenGLRendererEnabled(bool shouldBeEnabled);
     
-    //===------------------------------------------------------------------===//
-    // Accessors
-    //===------------------------------------------------------------------===//
-
-    SessionService *getSessionService() const noexcept;
-    ResourceSyncService *getResourceSyncService() const noexcept;
-
 private:
 
     //===------------------------------------------------------------------===//
     // JUCEApplication
     //===------------------------------------------------------------------===//
 
-    void recreateLayout();
     void initialise(const String &commandLine) override;
     void shutdown() override;
 
@@ -104,13 +96,11 @@ private:
 
     class Clipboard clipboard;
 
-    UniquePointer<class HelioTheme> theme;
+    UniquePointer<class LookAndFeel> theme;
     UniquePointer<class Config> config;
     UniquePointer<class Workspace> workspace;
     UniquePointer<class MainWindow> window;
-
-    UniquePointer<class SessionService> sessionService;
-    UniquePointer<class ResourceSyncService> resourceSyncService;
+    UniquePointer<class Network> network;
 
 private:
     
@@ -123,7 +113,6 @@ private:
         PLUGIN_CHECK
     };
 
-    App::RunMode detectRunMode(const String &commandLine) const;
     App::RunMode runMode;
     
     void handleAsyncUpdate() override;

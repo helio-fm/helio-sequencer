@@ -22,8 +22,9 @@
 #include "TranslationSettings.h"
 
 //[MiscUserDefs]
+#include "BackendRequest.h"
 #include "TranslationSettingsItem.h"
-#include "HelioApiRoutes.h"
+#include "Network.h"
 #include "Config.h"
 
 #if HELIO_DESKTOP
@@ -113,8 +114,7 @@ void TranslationSettings::buttonClicked(Button* buttonThatWasClicked)
     if (buttonThatWasClicked == helpButton.get())
     {
         //[UserButtonCode_helpButton] -- add your button handler code here..
-        using namespace Routes::HelioFM;
-        URL updateUrl(Web::baseURL + Web::translationsURL);
+        URL updateUrl(Routes::Web::baseURL + Routes::Web::translationsURL);
         updateUrl.launchInDefaultBrowser();
         //[/UserButtonCode_helpButton]
     }
