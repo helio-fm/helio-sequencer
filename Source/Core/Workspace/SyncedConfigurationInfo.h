@@ -31,7 +31,7 @@ public:
 
 
 
-    bool needsSynchronization(const BaseResource::Ptr local) const;
+    //bool needsSynchronization(const BaseResource::Ptr local) const;
 
     using Ptr = ReferenceCountedObjectPtr<SyncedConfigurationInfo>;
     static int compareElements(Ptr first, Ptr second);

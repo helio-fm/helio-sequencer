@@ -400,6 +400,11 @@ namespace Serialization
             static const Identifier createdAt = "createdAt";
             static const Identifier updatedAt = "updatedAt";
         } // namespace Sessions
+
+        namespace Configurations
+        {
+            static const Identifier resource = "resource";
+        } // namespace Sessions
     } // namespace User
 
     namespace VCS

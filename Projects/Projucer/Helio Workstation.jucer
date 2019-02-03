@@ -335,6 +335,10 @@
             <FILE id="x663ni" name="BackendRequest.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/BackendRequest.h"/>
             <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
+            <FILE id="CbLqvf" name="ConfigurationSyncThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/ConfigurationSyncThread.cpp"/>
+            <FILE id="qvfg9W" name="ConfigurationSyncThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/ConfigurationSyncThread.h"/>
             <FILE id="i9fTOz" name="ProjectCloneThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Requests/ProjectCloneThread.cpp"/>
             <FILE id="b5QDUQ" name="ProjectCloneThread.h" compile="0" resource="0"

@@ -54,13 +54,17 @@ public:
     String getApiToken() const;
     void setApiToken(const String &token);
 
-    const ReferenceCountedArray<UserSessionInfo> &getSessions() const noexcept;
-    const ReferenceCountedArray<RecentProjectInfo> &getProjects() const noexcept;
-
     bool needsAvatarImage() const noexcept;
     Image getAvatar() const noexcept;
     String getLogin() const noexcept;
     String getProfileUrl() const noexcept;
+
+    using ProjectsList = ReferenceCountedArray<RecentProjectInfo, CriticalSection>;
+    using SessionsList = ReferenceCountedArray<UserSessionInfo, CriticalSection>;
+    using ResourcesList = ReferenceCountedArray<SyncedConfigurationInfo, CriticalSection>;
+
+    const SessionsList &getSessions() const noexcept;
+    const ProjectsList &getProjects() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -83,14 +87,9 @@ private:
     String login;
     String profileUrl;
 
-    ReadWriteLock projectsListLock;
-    ReferenceCountedArray<RecentProjectInfo> projects;
-
-    ReadWriteLock sessionsListLock;
-    ReferenceCountedArray<UserSessionInfo> sessions;
-
-    ReadWriteLock resourcesListLock;
-    ReferenceCountedArray<SyncedConfigurationInfo> resources;
+    SessionsList sessions;
+    ProjectsList projects;
+    ResourcesList resources;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserProfile)
     JUCE_DECLARE_WEAK_REFERENCEABLE(UserProfile)

@@ -16,24 +16,34 @@
 */
 
 #include "Common.h"
-#include "SyncedConfigurationInfo.h"
+#include "ConfigurationSyncThread.h"
+#include "SerializationKeys.h"
+#include "Network.h"
 
-SyncedConfigurationInfo::SyncedConfigurationInfo(const UserResourceDto &remote)
+namespace ApiKeys = Serialization::Api::V1;
+namespace ApiRoutes = Routes::Api;
+
+ConfigurationSyncThread::ConfigurationSyncThread() :
+    Thread("Sync") {}
+
+ConfigurationSyncThread::~ConfigurationSyncThread()
 {
-
+    this->stopThread(1000);
 }
 
-ValueTree SyncedConfigurationInfo::serialize() const
+void ConfigurationSyncThread::run()
 {
-    
-}
+    WaitableEvent::wait();
 
-void SyncedConfigurationInfo::deserialize(const ValueTree &tree)
-{
+    while (!this->threadShouldExit())
+    {
+        // while queue is not empty:
+        while (!resourcesToUpload.isEmpty() && !resourcesToDelete.isEmpty())
+        {
+            //
+        }
 
-}
-
-void SyncedConfigurationInfo::reset()
-{
-
+        callbackOnMessageThread(ConfigurationSyncThread, onQueueEmptied);
+        WaitableEvent::wait();
+    }
 }

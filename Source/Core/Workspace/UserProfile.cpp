@@ -56,22 +56,16 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
         this->onProjectRemoteInfoUpdated(p);
     }
 
+    this->sessions.clearQuick();
+    for (const auto &s : dto.getSessions())
     {
-        const ScopedWriteLock lock(this->sessionsListLock);
-        this->sessions.clearQuick();
-        for (const auto &s : dto.getSessions())
-        {
-            this->sessions.add(new UserSessionInfo(s));
-        }
+        this->sessions.add(new UserSessionInfo(s));
     }
 
+    this->resources.clearQuick();
+    for (const auto &r : dto.getResources())
     {
-        const ScopedWriteLock lock(this->resourcesListLock);
-        this->resources.clearQuick();
-        for (const auto &r : dto.getResources())
-        {
-            this->resources.add(new SyncedConfigurationInfo(r));
-        }
+        this->resources.add(new SyncedConfigurationInfo(r));
     }
 
     this->name = dto.getName();
@@ -86,12 +80,10 @@ void UserProfile::onProjectLocalInfoUpdated(const String &id,
 {
     if (auto *project = this->findProject(id))
     {
-        const ScopedWriteLock lock(this->projectsListLock);
         project->updateLocalInfo(id, title, path);
     }
     else
     {
-        const ScopedWriteLock lock(this->projectsListLock);
         this->projects.add(new RecentProjectInfo(id, title, path));
     }
 
@@ -102,12 +94,10 @@ void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
 {
     if (auto *project = this->findProject(info.getId()))
     {
-        const ScopedWriteLock lock(this->projectsListLock);
         project->updateRemoteInfo(info);
     }
     else
     {
-        const ScopedWriteLock lock(this->projectsListLock);
         this->projects.add(new RecentProjectInfo(info));
     }
 
@@ -121,7 +111,6 @@ void UserProfile::onProjectLocalInfoReset(const String &id)
         project->resetLocalInfo();
         if (!project->isValid()) // i.e. doesn't have a remote copy
         {
-            const ScopedWriteLock lock(this->projectsListLock);
             this->projects.removeObject(project);
         }
         this->sendChangeMessage();
@@ -135,7 +124,6 @@ void UserProfile::onProjectRemoteInfoReset(const String &id)
         project->resetRemoteInfo();
         if (!project->isValid()) // i.e. doesn't have a local copy
         {
-            const ScopedWriteLock lock(this->projectsListLock);
             this->projects.removeObject(project);
         }
         this->sendChangeMessage();
@@ -146,7 +134,6 @@ void UserProfile::onProjectUnloaded(const String &id)
 {
     if (auto *project = this->findProject(id))
     {
-        const ScopedWriteLock lock(this->projectsListLock);
         project->updateLocalTimestampAsNow();
     }
 
@@ -227,12 +214,12 @@ bool UserProfile::isLoggedIn() const
     return this->getApiToken().isNotEmpty();
 }
 
-const ReferenceCountedArray<UserSessionInfo> &UserProfile::getSessions() const noexcept
+const UserProfile::SessionsList &UserProfile::getSessions() const noexcept
 {
     return this->sessions;
 }
 
-const ReferenceCountedArray<RecentProjectInfo> &UserProfile::getProjects() const noexcept
+const UserProfile::ProjectsList &UserProfile::getProjects() const noexcept
 {
     return this->projects;
 }
@@ -273,7 +260,6 @@ ValueTree UserProfile::serialize() const
 {
     using namespace Serialization::User;
 
-    const ScopedReadLock lock(this->projectsListLock);
     ValueTree tree(Profile::userProfile);
 
     if (this->profileUrl.isNotEmpty())
@@ -306,6 +292,11 @@ ValueTree UserProfile::serialize() const
         tree.appendChild(session->serialize(), nullptr);
     }
 
+    for (const auto *resource : this->resources)
+    {
+        tree.appendChild(resource->serialize(), nullptr);
+    }
+
     return tree;
 }
 
@@ -334,28 +325,29 @@ void UserProfile::deserialize(const ValueTree &tree)
         this->avatar = ImageFileFormat::loadFrom(block.getData(), block.getSize());
     }
 
+    forEachValueTreeChildWithType(root, child, RecentProjects::recentProject)
     {
-        const ScopedWriteLock lock(this->projectsListLock);
-        forEachValueTreeChildWithType(root, child, RecentProjects::recentProject)
+        RecentProjectInfo::Ptr p(new RecentProjectInfo());
+        p->deserialize(child);
+        if (p->isValid())
         {
-            RecentProjectInfo::Ptr p(new RecentProjectInfo());
-            p->deserialize(child);
-            if (p->isValid())
-            {
-                this->projects.addSorted(kProjectsSort, p.get());
-            }
+            this->projects.addSorted(kProjectsSort, p.get());
         }
     }
     
+    forEachValueTreeChildWithType(root, child, Sessions::session)
     {
-        const ScopedWriteLock lock(this->sessionsListLock);
-        forEachValueTreeChildWithType(root, child, Sessions::session)
-        {
-            UserSessionInfo::Ptr s(new UserSessionInfo());
-            s->deserialize(child);
-            // TODO store JWT as well? remove current session if stale?
-            this->sessions.addSorted(kSessionsSort, s.get());
-        }
+        UserSessionInfo::Ptr s(new UserSessionInfo());
+        s->deserialize(child);
+        // TODO store JWT as well? remove current session if stale?
+        this->sessions.addSorted(kSessionsSort, s.get());
+    }
+
+    forEachValueTreeChildWithType(root, child, Configurations::resource)
+    {
+        SyncedConfigurationInfo::Ptr s(new SyncedConfigurationInfo());
+        s->deserialize(child);
+        this->resources.add(s.get());
     }
 
     // TODO scan documents folder for existing projects not present in the list?
@@ -368,7 +360,6 @@ void UserProfile::deserialize(const ValueTree &tree)
 
 void UserProfile::reset()
 {
-    const ScopedWriteLock lock(this->projectsListLock);
     this->projects.clearQuick();
     this->sessions.clearQuick();
     this->sendChangeMessage();

@@ -18,6 +18,7 @@
 #pragma once
 
 #include "BackendService.h"
+#include "BaseResource.h"
 
 class ResourceSyncService final : private BackendService
 {
@@ -25,6 +26,11 @@ public:
 
     ResourceSyncService();
 
+    void doSync(BaseResource::Ptr resource);
+    void doDelete(BaseResource::Ptr resource);
+
 private:
+
+
 
 };
