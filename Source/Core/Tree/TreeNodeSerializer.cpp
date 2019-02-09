@@ -30,9 +30,9 @@
 
 void TreeNodeSerializer::serializeChildren(const TreeNode &parentItem, ValueTree &parent)
 {
-    for (int i = 0; i < parentItem.getNumSubItems(); ++i)
+    for (int i = 0; i < parentItem.getNumChildren(); ++i)
     {
-        if (TreeViewItem *sub = parentItem.getSubItem(i))
+        if (auto *sub = parentItem.getChild(i))
         {
             TreeNode *treeItem = static_cast<TreeNode *>(sub);
             parent.appendChild(treeItem->serialize(), nullptr);

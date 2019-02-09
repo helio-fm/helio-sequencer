@@ -17,34 +17,60 @@
 
 #pragma once
 
-#if HELIO_DESKTOP
-#   define TREE_LARGE_ICON_HEIGHT (24)
-#   define TREE_ITEM_HEIGHT (32)
-#   define TREE_FONT_SIZE (18)
-#elif HELIO_MOBILE
-#   define TREE_LARGE_ICON_HEIGHT (32)
-#   define TREE_ITEM_HEIGHT (42)
-#   define TREE_FONT_SIZE (20)
-#endif
-
 #include "HeadlineItemDataSource.h"
 
-// TODO: rename as TreeNode and remove TreeViewItem dependency;
-// rename children as well, like ProjectTreeItem -> ProjectNode
+class TreeNodeBase
+{
+public:
 
-class TreeNode :
-    public Serializable,
-    public TreeViewItem,
-    public HeadlineItemDataSource
+    TreeNodeBase();
+    virtual ~TreeNodeBase() {}
+
+    int getNumChildren() const noexcept;
+    TreeNodeBase *getChild(int index) const noexcept;
+    TreeNodeBase *getParent() const noexcept;
+
+    void addChild(TreeNodeBase *newNode, int insertPosition = -1);
+    bool removeChild(int index, bool deleteNode = true);
+
+    int getIndexInParent() const noexcept;
+    String getNodeIdentifier() const;
+
+    bool isSelected() const noexcept;
+    void setSelected(bool shouldBeSelected, bool deselectOthersFirst,
+        NotificationType shouldNotify = sendNotification);
+
+protected:
+
+    virtual void itemSelectionChanged(bool isNowSelected) {}
+
+private:
+
+    TreeNodeBase *getTopLevelNode() noexcept;
+    void deselectAllRecursively(TreeNodeBase *toIgnore);
+
+    TreeNodeBase *parent = nullptr;
+    OwnedArray<TreeNodeBase> children;
+
+    bool selected : 1;
+    int uid = 0;
+
+};
+
+#if HELIO_DESKTOP
+#   define TREE_NODE_ICON_HEIGHT (24)
+#elif HELIO_MOBILE
+#   define TREE_NODE_ICON_HEIGHT (32)
+#endif
+
+class TreeNode : public TreeNodeBase,
+                 public Serializable,
+                 public HeadlineItemDataSource
 {
 public:
 
     TreeNode(const String &name, const Identifier &type);
     ~TreeNode() override;
-    
-    static TreeNode *getSelectedItem(Component *anyComponentInTree);
-    static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeNode> &selectedNodes);
-    static bool isNodeInChildren(TreeNode *nodeToScan, TreeNode *nodeToCheck);
 
     int getNumSelectedSiblings() const;
     int getNumSelectedChildren() const;
@@ -88,9 +114,9 @@ public:
     template<typename T>
     T *findParentOfType() const
     {
-        const TreeViewItem *rootItem = this;
+        const TreeNodeBase *rootItem = this;
 
-        while (TreeViewItem *item = rootItem->getParentItem())
+        while (TreeNodeBase *item = rootItem->getParent())
         {
             rootItem = item;
 
@@ -104,11 +130,11 @@ public:
     template<typename T>
     T *findChildOfType() const
     {
-        const TreeViewItem *rootItem = this;
+        const TreeNodeBase *rootItem = this;
 
-        for (int i = 0; i < rootItem->getNumSubItems(); ++i)
+        for (int i = 0; i < rootItem->getNumChildren(); ++i)
         {
-            if (T *childOfType = dynamic_cast<T *>(rootItem->getSubItem(i)))
+            if (T *childOfType = dynamic_cast<T *>(rootItem->getChild(i)))
             { return childOfType; }
         }
 
@@ -167,18 +193,16 @@ public:
 
     inline TreeNode *getRootTreeItem()
     {
-        TreeViewItem *item = this;
+        TreeNodeBase *item = this;
         
-        while (item->getParentItem())
+        while (item->getParent())
         {
-            item = item->getParentItem();
+            item = item->getParent();
         }
         
         return static_cast<TreeNode *>(item);
     }
 
-    String getUniqueName() const override;
-    bool mightContainSubItems() override;
     bool isSelectedOrHasSelectedChild() const;
 
     //===------------------------------------------------------------------===//
@@ -188,15 +212,6 @@ public:
     virtual void showPage() = 0;
     virtual void recreatePage() {}
     void recreateSubtreePages();
-
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    void itemDropped(const DragAndDropTarget::SourceDetails &, int) override;
-    bool isInterestedInFileDrag(const StringArray &) override { return false; }
-    void filesDropped(const StringArray &, int) override {}
-    var getDragSourceDescription() override { return{}; }
 
     //===------------------------------------------------------------------===//
     // Adding nodes to the tree and removing them
@@ -218,15 +233,15 @@ public:
 
 protected:
 
-    void dispatchChangeTreeItemView();
+    void dispatchChangeTreeNodeViews();
     void itemSelectionChanged(bool isNowSelected) override;
 
     template<typename T, typename ArrayType>
     static void collectChildrenOfType(const TreeNode *rootNode, ArrayType &resultArray, bool pickOnlySelectedOnes)
     {
-        for (int i = 0; i < rootNode->getNumSubItems(); ++i)
+        for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
-            TreeNode *child = static_cast<TreeNode *>(rootNode->getSubItem(i));
+            TreeNode *child = static_cast<TreeNode *>(rootNode->getChild(i));
 
             if (T *targetTreeItem = dynamic_cast<T *>(child))
             {
@@ -236,7 +251,7 @@ protected:
                 }
             }
 
-            if (child->getNumSubItems() > 0)
+            if (child->getNumChildren() > 0)
             {
                 TreeNode::collectChildrenOfType<T, ArrayType>(child, resultArray, pickOnlySelectedOnes);
             }
@@ -245,16 +260,16 @@ protected:
 
     static void collectSelectedSubItems(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
     {
-        for (int i = 0; i < rootNode->getNumSubItems(); ++i)
+        for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
-            TreeNode *child = static_cast<TreeNode *>(rootNode->getSubItem(i));
+            TreeNode *child = static_cast<TreeNode *>(rootNode->getChild(i));
         
             if (child->isSelected())
             {
                 resultArray.add(child);
             }
         
-            if (child->getNumSubItems() > 0)
+            if (child->getNumChildren() > 0)
             {
                 TreeNode::collectSelectedSubItems(child, resultArray);
             }
@@ -263,16 +278,16 @@ protected:
 
     static void collectActiveSubItems(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
     {
-        for (int i = 0; i < rootNode->getNumSubItems(); ++i)
+        for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
-            TreeNode *child = static_cast<TreeNode *>(rootNode->getSubItem(i));
+            TreeNode *child = static_cast<TreeNode *>(rootNode->getChild(i));
         
             if (child->isPrimarySelection())
             {
                 resultArray.add(child);
             }
         
-            if (child->getNumSubItems() > 0)
+            if (child->getNumChildren() > 0)
             {
                 TreeNode::collectActiveSubItems(child, resultArray);
             }
@@ -284,10 +299,8 @@ protected:
 
     bool isPrimarySelectedItem;
 
-    void removeItemFromParent();
-    void deleteAllSubItems();
-
-    static void openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen);
+    void removeNodeFromParent();
+    void deleteAllChildren();
 
     //===------------------------------------------------------------------===//
     // HeadlineItemDataSource

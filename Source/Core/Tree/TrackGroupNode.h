@@ -38,13 +38,6 @@ public:
     void safeRename(const String &newName, bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    var getDragSourceDescription() override;
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-
-    //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 

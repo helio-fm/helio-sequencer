@@ -141,7 +141,6 @@ ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
 // this one is for desktops
 ProjectNode *RootNode::addDefaultProject(const File &projectLocation)
 {
-    this->setOpen(true);
     auto *newProject = new ProjectNode(projectLocation);
     this->addChildTreeItem(newProject);
     return this->createDefaultProjectChildren(newProject);
@@ -150,7 +149,6 @@ ProjectNode *RootNode::addDefaultProject(const File &projectLocation)
 // this one is for mobiles, where we don't have file chooser dialog
 ProjectNode *RootNode::addDefaultProject(const String &projectName)
 {
-    this->setOpen(true);
     auto *newProject = new ProjectNode(projectName);
     this->addChildTreeItem(newProject);
     return this->createDefaultProjectChildren(newProject);

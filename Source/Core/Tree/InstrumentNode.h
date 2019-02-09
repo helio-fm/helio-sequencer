@@ -46,15 +46,7 @@ public:
     bool hasInstrumentWithNodeId(uint32 nodeId) const;
     TreeNode *findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const;
     String getInstrumentIdAndHash() const;
-
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    var getDragSourceDescription() override;
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
+    
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//

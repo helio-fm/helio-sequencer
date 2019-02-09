@@ -36,14 +36,6 @@ public:
     void recreatePage() override;
 
     //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
-    //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 

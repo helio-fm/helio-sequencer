@@ -69,9 +69,9 @@ void TrackGroupNode::removeAllEmptyGroupsInProject(ProjectNode *project)
 
 void TrackGroupNode::sortByNameAmongSiblings()
 {
-    if (TreeNode *parentItem = dynamic_cast<TreeNode *>(this->getParentItem()))
+    if (TreeNode *parentItem = dynamic_cast<TreeNode *>(this->getParent()))
     {
-        parentItem->removeSubItem(this->getIndexInParent(), false);
+        parentItem->removeChild(this->getIndexInParent(), false);
         
         // пройти по всем чайлдам группы
         // и вставить в нужное место, глядя на имена.
@@ -80,15 +80,15 @@ void TrackGroupNode::sortByNameAmongSiblings()
         int insertIndex = 0;
         String previousChildName = "";
         
-        for (int i = 0; i < parentItem->getNumSubItems(); ++i)
+        for (int i = 0; i < parentItem->getNumChildren(); ++i)
         {
             String currentChildName;
             
-            if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(parentItem->getSubItem(i)))
+            if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(parentItem->getChild(i)))
             {
                 currentChildName = layerGroupItem->getName();
             }
-            else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(parentItem->getSubItem(i)))
+            else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(parentItem->getChild(i)))
             {
                 currentChildName = layerItem->getName();
             }
@@ -133,13 +133,13 @@ static void applySelectionPolicyForGroup(TrackGroupNode *rootNode, bool forceSel
     {
         rootNode->setSelected(true, false, dontSendNotification);
 
-        for (signed int i = (rootNode->getNumSubItems() - 1); i >= 0 ; --i)
+        for (signed int i = (rootNode->getNumChildren() - 1); i >= 0 ; --i)
         {
-            if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getSubItem(i)))
+            if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getChild(i)))
             {
-                rootNode->getSubItem(i)->setSelected(true, false, sendNotification);
+                rootNode->getChild(i)->setSelected(true, false, sendNotification);
             }
-            else if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootNode->getSubItem(i)))
+            else if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootNode->getChild(i)))
             {
                 applySelectionPolicyForGroup(group, true);
             }
@@ -164,9 +164,9 @@ static void applySelectionPolicyForGroup(TrackGroupNode *rootNode, bool forceSel
         
         bool hasActiveChild = false;
         
-        for (int i = 0; i < rootNode->getNumSubItems(); ++i)
+        for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
-            if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getSubItem(i)))
+            if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getChild(i)))
             {
                 if (layerItem->isPrimarySelection())
                 {
@@ -185,13 +185,13 @@ static void applySelectionPolicyForGroup(TrackGroupNode *rootNode, bool forceSel
             {
                 rootNode->setSelected(false, false, sendNotification);
                 
-                for (int i = 0; i < rootNode->getNumSubItems(); ++i)
+                for (int i = 0; i < rootNode->getNumChildren(); ++i)
                 {
-                    if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getSubItem(i)))
+                    if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getChild(i)))
                     {
-                        rootNode->getSubItem(i)->setSelected(false, false, sendNotification);
+                        rootNode->getChild(i)->setSelected(false, false, sendNotification);
                     }
-                    else if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootNode->getSubItem(i)))
+                    else if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootNode->getChild(i)))
                     {
                         applySelectionPolicyForGroup(group);
                     }
@@ -236,29 +236,4 @@ bool TrackGroupNode::hasMenu() const noexcept
 ScopedPointer<Component> TrackGroupNode::createMenu()
 {
     return nullptr;
-}
-
-//===----------------------------------------------------------------------===//
-// Dragging
-//===----------------------------------------------------------------------===//
-
-var TrackGroupNode::getDragSourceDescription()
-{
-    return Serialization::Core::trackGroup.toString();
-}
-
-bool TrackGroupNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
-{
-    if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    {
-        TreeNode *selected = TreeNode::getSelectedItem(treeView);
-
-        if (TreeNode::isNodeInChildren(selected, this))
-        { return false; }
-
-        return (dragSourceDetails.description == Serialization::Core::track.toString()) ||
-               (dragSourceDetails.description == Serialization::Core::trackGroup.toString());
-    }
-
-    return false;
 }

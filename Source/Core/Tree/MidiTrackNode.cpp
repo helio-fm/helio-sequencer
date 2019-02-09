@@ -151,7 +151,7 @@ void MidiTrackNode::setTrackName(const String &val, bool sendNotifications)
     if (sendNotifications)
     {
         this->dispatchChangeTrackProperties(this);
-        this->dispatchChangeTreeItemView();
+        this->dispatchChangeTreeNodeViews();
     }
 }
 
@@ -168,7 +168,7 @@ void MidiTrackNode::setTrackColour(const Colour &val, bool sendNotifications)
         if (sendNotifications)
         {
             this->dispatchChangeTrackProperties(this);
-            this->dispatchChangeTreeItemView();
+            this->dispatchChangeTreeNodeViews();
         }
     }
 }
@@ -187,7 +187,7 @@ void MidiTrackNode::setTrackInstrumentId(const String &val, bool sendNotificatio
         {
             this->dispatchChangeTrackProperties(this);
             // instrument id is not displayed anywhere, fix this is it does someday
-            //this->dispatchChangeTreeItemView();
+            //this->dispatchChangeTreeNodeViews();
         }
     }
 }
@@ -206,7 +206,7 @@ void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
         {
             this->dispatchChangeTrackProperties(this);
             // controller value is not displayed anywhere, fix this is it does someday
-            //this->dispatchChangeTreeItemView();
+            //this->dispatchChangeTreeNodeViews();
         }
     }
 }
@@ -224,7 +224,7 @@ void MidiTrackNode::setTrackMuted(bool shouldBeMuted, bool sendNotifications)
         if (sendNotifications)
         {
             this->dispatchChangeTrackProperties(this);
-            this->dispatchChangeTreeItemView();
+            this->dispatchChangeTreeNodeViews();
         }
     }
 }
@@ -245,18 +245,22 @@ Pattern *MidiTrackNode::getPattern() const noexcept
 
 String MidiTrackNode::getXPath() const noexcept
 {
-    const TreeViewItem *rootItem = this;
+    const TreeNodeBase *rootItem = this;
     String xpath = this->getName();
 
-    while (TreeViewItem *item = rootItem->getParentItem())
+    while (TreeNodeBase *item = rootItem->getParent())
     {
         rootItem = item;
 
         if (ProjectNode *parentProject = dynamic_cast<ProjectNode *>(item))
-        { return xpath; }
+        {
+            return xpath;
+        }
 
         if (TreeNode *treeItem = dynamic_cast<TreeNode *>(item))
-        { xpath = treeItem->getName() + TreeNode::xPathSeparator + xpath; }
+        {
+            xpath = treeItem->getName() + TreeNode::xPathSeparator + xpath;
+        }
     }
 
     return xpath;
@@ -282,11 +286,10 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
     for (int i = 0; i < (parts.size() - 1); ++i)
     {
         bool foundSubGroup = false;
-        rootItem->setOpen(true);
 
-        for (int j = 0; j < rootItem->getNumSubItems(); ++j)
+        for (int j = 0; j < rootItem->getNumChildren(); ++j)
         {
-            if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootItem->getSubItem(j)))
+            if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootItem->getChild(j)))
             {
                 if (group->getName() == parts[i])
                 {
@@ -308,22 +311,22 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
 
     this->name = TreeNode::createSafeName(parts[parts.size() - 1]);
 
-    this->getParentItem()->removeSubItem(this->getIndexInParent(), false);
+    this->getParent()->removeChild(this->getIndexInParent(), false);
 
     // and insert into the right place depending on path
     bool foundRightPlace = false;
     int insertIndex = 0;
     String previousChildName = "";
 
-    for (int i = 0; i < rootItem->getNumSubItems(); ++i)
+    for (int i = 0; i < rootItem->getNumChildren(); ++i)
     {
         String currentChildName;
 
-        if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(rootItem->getSubItem(i)))
+        if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(rootItem->getChild(i)))
         {
             currentChildName = layerGroupItem->getName();
         }
-        else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootItem->getSubItem(i)))
+        else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootItem->getChild(i)))
         {
             currentChildName = layerItem->getName();
         }
@@ -476,7 +479,7 @@ void MidiTrackNode::onItemDeletedFromTree(bool sendNotifications)
         }
 
         // Then disconnect from the tree
-        this->removeItemFromParent();
+        this->removeNodeFromParent();
         TrackGroupNode::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }

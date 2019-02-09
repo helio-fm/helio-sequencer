@@ -49,7 +49,7 @@ InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
 InstrumentNode::~InstrumentNode()
 {
     // cleanup UI before unplugging an instrument
-    this->deleteAllSubItems();
+    this->deleteAllChildren();
     this->removeInstrumentEditor();
 
     if (!this->instrument.wasObjectDeleted())
@@ -144,45 +144,6 @@ TreeNode *InstrumentNode::findAudioPluginEditorForNodeId(AudioProcessorGraph::No
     return nullptr;
 }
 
-
-//===----------------------------------------------------------------------===//
-// Dragging
-//===----------------------------------------------------------------------===//
-
-var InstrumentNode::getDragSourceDescription()
-{
-    return Serialization::Core::instrumentRoot.toString();
-}
-
-bool InstrumentNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
-{
-    const bool isInterested =
-        (nullptr != dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()));
-
-    if (isInterested)
-    { this->setOpen(true); }
-
-    return isInterested;
-}
-
-void InstrumentNode::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
-{
-    if (ListBox *list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
-    {
-        if (auto pd = dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()))
-        {
-            const PluginDescription pluginDescription(pd->pluginDescription);
-            this->instrument->addNodeToFreeSpace(pluginDescription, [this](Instrument *instrument)
-            {
-                this->updateChildrenEditors();
-                DBG("Added " + instrument->getName());
-            });
-        }
-    }
-
-    TreeNode::itemDropped(dragSourceDetails, insertIndex);
-}
-
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
@@ -199,7 +160,7 @@ ScopedPointer<Component> InstrumentNode::createMenu()
 
 void InstrumentNode::updateChildrenEditors()
 {
-    this->deleteAllSubItems();
+    this->deleteAllChildren();
 
     for (int i = 0; i < this->instrument->getNumNodes(); ++i)
     {
@@ -286,7 +247,7 @@ void InstrumentNode::removeInstrumentEditor()
 
 void InstrumentNode::notifyOrchestraChanged()
 {
-    if (auto orchestra = dynamic_cast<OrchestraPitNode *>(this->getParentItem()))
+    if (auto *orchestra = dynamic_cast<OrchestraPitNode *>(this->getParent()))
     {
         orchestra->sendChangeMessage();
     }

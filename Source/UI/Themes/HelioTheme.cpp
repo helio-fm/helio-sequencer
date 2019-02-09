@@ -768,12 +768,6 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.05f));
     this->setColour(TableHeaderComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.04f));
     this->setColour(TableHeaderComponent::textColourId, s->getTextColour().withMultipliedAlpha(0.75f));
-
-    // Tree stuff
-    this->setColour(TreeView::linesColourId, Colours::white.withAlpha(0.1f));
-    this->setColour(TreeView::selectedItemBackgroundColourId, Colours::transparentBlack);
-    this->setColour(TreeView::backgroundColourId, Colours::transparentBlack);
-    this->setColour(TreeView::dragAndDropIndicatorColourId, Colours::black.withAlpha(0.15f));
    
     // Helio colours:
 

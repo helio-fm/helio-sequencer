@@ -178,7 +178,7 @@ HybridRoll *ProjectNode::getLastFocusedRoll() const
 
 Image ProjectNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::project, TREE_LARGE_ICON_HEIGHT);
+    return Icons::findByName(Icons::project, TREE_NODE_ICON_HEIGHT);
 }
 
 void ProjectNode::showPage()
@@ -206,7 +206,7 @@ void ProjectNode::safeRename(const String &newName, bool sendNotifications)
             .onProjectLocalInfoUpdated(this->getId(), this->getName(),
                 this->getDocument()->getFullPath());
 
-        this->dispatchChangeTreeItemView();
+        this->dispatchChangeTreeNodeViews();
     }
 }
 
@@ -276,16 +276,6 @@ bool ProjectNode::hasMenu() const noexcept
 ScopedPointer<Component> ProjectNode::createMenu()
 {
     return new ProjectMenu(*this, MenuPanel::SlideRight);
-}
-
-//===----------------------------------------------------------------------===//
-// Dragging
-//===----------------------------------------------------------------------===//
-
-bool ProjectNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
-{
-    return (dragSourceDetails.description == Serialization::Core::track.toString()) ||
-           (dragSourceDetails.description == Serialization::Core::trackGroup.toString());
 }
 
 //===----------------------------------------------------------------------===//

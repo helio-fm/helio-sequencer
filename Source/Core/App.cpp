@@ -389,7 +389,7 @@ void App::dismissAllModalComponents()
 {
     while (Component *modal = Component::getCurrentlyModalComponent(0))
     {
-        jassertfalse;
+        //jassertfalse;
         DBG("Dismissing a modal component");
         modal->exitModalState(0);
         // Unowned components may leak here, use with caution

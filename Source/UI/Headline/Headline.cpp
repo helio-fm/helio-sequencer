@@ -103,7 +103,7 @@ void Headline::handleAsyncUpdate()
         HeadlineItem *child = this->chain.getUnchecked(i);
 
         TreeNode *treeItem = static_cast<TreeNode *>(child->getDataSource().get());
-        if (treeItem == nullptr || (previousItem != nullptr && treeItem->getParentItem() != previousItem))
+        if (treeItem == nullptr || (previousItem != nullptr && treeItem->getParent() != previousItem))
         {
             // An item inserted or removed, need to re-sync the whole chain:
             TreeNode *lastItem = static_cast<TreeNode *>(this->chain.getLast()->getDataSource().get());
@@ -148,9 +148,9 @@ Array<TreeNode *> createSortedBranchArray(WeakReference<TreeNode> leaf)
     Array<TreeNode *> items;
     TreeNode *item = leaf;
     items.add(item);
-    while (item->getParentItem() != nullptr)
+    while (item->getParent() != nullptr)
     {
-        item = static_cast<TreeNode *>(item->getParentItem());
+        item = static_cast<TreeNode *>(item->getParent());
         items.add(item);
     }
 

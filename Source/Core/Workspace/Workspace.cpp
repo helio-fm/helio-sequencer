@@ -378,29 +378,29 @@ void Workspace::importProject(const String &filePattern)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
+static void addAllActiveItemIds(TreeNodeBase *item, ValueTree &parent)
 {
     if (TreeNode *treeItem = dynamic_cast<TreeNode *>(item))
     {
         if (treeItem->isPrimarySelection())
         {
             ValueTree child(Serialization::Core::selectedTreeNode);
-            child.setProperty(Serialization::Core::treeNodeId, item->getItemIdentifierString(), nullptr);
+            child.setProperty(Serialization::Core::treeNodeId, item->getNodeIdentifier(), nullptr);
             parent.appendChild(child, nullptr);
         }
         
-        for (int i = 0; i < item->getNumSubItems(); ++i)
+        for (int i = 0; i < item->getNumChildren(); ++i)
         {
-            addAllActiveItemIds(item->getSubItem(i), parent);
+            addAllActiveItemIds(item->getChild(i), parent);
         }
     }
 }
 
-static TreeNode *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
+static TreeNode *selectActiveSubItemWithId(TreeNodeBase *item, const String &id)
 {
     if (auto *treeItem = dynamic_cast<TreeNode *>(item))
     {
-        if (treeItem->getItemIdentifierString() == id)
+        if (treeItem->getNodeIdentifier() == id)
         {
             treeItem->setPrimarySelection(true);
             treeItem->setSelected(true, true);
@@ -408,9 +408,9 @@ static TreeNode *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
             return treeItem;
         }
         
-        for (int i = 0; i < item->getNumSubItems(); ++i)
+        for (int i = 0; i < item->getNumChildren(); ++i)
         {
-            if (auto *subItem = selectActiveSubItemWithId(item->getSubItem(i), id))
+            if (auto *subItem = selectActiveSubItemWithId(item->getChild(i), id))
             {
                 return subItem;
             }
@@ -496,7 +496,7 @@ void Workspace::deserialize(const ValueTree &tree)
     if (! foundActiveNode)
     {
         // Fallback to the main page
-        selectActiveSubItemWithId(this->treeRoot.get(), this->treeRoot->getItemIdentifierString());
+        selectActiveSubItemWithId(this->treeRoot.get(), this->treeRoot->getNodeIdentifier());
     }
 }
 

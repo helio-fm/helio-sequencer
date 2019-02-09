@@ -113,9 +113,9 @@ void hideMarkersRecursive(WeakReference<TreeNode> startFrom)
     jassert(startFrom != nullptr);
     startFrom->setPrimarySelection(false);
 
-    for (int i = 0; i < startFrom->getNumSubItems(); ++i)
+    for (int i = 0; i < startFrom->getNumChildren(); ++i)
     {
-        if (TreeNode *childOfType = dynamic_cast<TreeNode *>(startFrom->getSubItem(i)))
+        if (TreeNode *childOfType = dynamic_cast<TreeNode *>(startFrom->getChild(i)))
         {
             hideMarkersRecursive(childOfType);
         }
@@ -140,7 +140,7 @@ void MainLayout::showPage(Component *page, TreeNode *source)
         source->setPrimarySelection(true);
         App::Workspace().getNavigationHistory().addItemIfNeeded(source);
         this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
-        App::Config().setProperty(Serialization::Config::lastShownPageId, source->getItemIdentifierString(), false);
+        App::Config().setProperty(Serialization::Config::lastShownPageId, source->getNodeIdentifier(), false);
     }
 
     if (this->currentContent != nullptr)

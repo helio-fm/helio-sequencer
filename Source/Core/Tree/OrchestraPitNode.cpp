@@ -22,7 +22,6 @@
 #include "InstrumentNode.h"
 #include "Instrument.h"
 #include "MainLayout.h"
-#include "AudioCore.h"
 #include "Icons.h"
 #include "PluginScanner.h"
 #include "OrchestraPitMenu.h"
@@ -37,7 +36,7 @@ OrchestraPitNode::OrchestraPitNode() :
 
 Image OrchestraPitNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::orchestraPit, TREE_LARGE_ICON_HEIGHT);
+    return Icons::findByName(Icons::orchestraPit, TREE_NODE_ICON_HEIGHT);
 }
 
 String OrchestraPitNode::getName() const noexcept
@@ -68,41 +67,6 @@ bool OrchestraPitNode::hasMenu() const noexcept
 ScopedPointer<Component> OrchestraPitNode::createMenu()
 {
     return new OrchestraPitMenu(*this);
-}
-
-//===----------------------------------------------------------------------===//
-// Dragging
-//===----------------------------------------------------------------------===//
-
-bool OrchestraPitNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
-{
-    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrumentRoot.toString());
-    isInterested |= (nullptr != dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()));
-
-    if (isInterested)
-    { this->setOpen(true); }
-
-    return isInterested;
-}
-
-void OrchestraPitNode::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
-{
-    if (auto list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
-    {
-        if (auto pd = dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()))
-        {
-            PluginDescription pluginDescription(pd->pluginDescription);
-            App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
-                [this, insertIndex](Instrument *instrument)
-                {
-                    jassert(instrument);
-                    this->addInstrumentTreeItem(instrument, insertIndex);
-                    DBG("Loaded " + instrument->getName());
-                });
-        }
-    }
-
-    TreeNode::itemDropped(dragSourceDetails, insertIndex);
 }
 
 //===----------------------------------------------------------------------===//

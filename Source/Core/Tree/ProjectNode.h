@@ -89,13 +89,7 @@ public:
 
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
-
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &) override;
-
+    
     //===------------------------------------------------------------------===//
     // Undos
     //===------------------------------------------------------------------===//

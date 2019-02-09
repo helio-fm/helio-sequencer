@@ -103,6 +103,7 @@ void TranslationSettingsItem::setSelected(bool shouldBeSelected)
     if (shouldBeSelected)
     {
         App::Config().getTranslations()->loadLocaleWithId(this->idLabel->getText());
+        App::recreateLayout();
     }
 }
 
