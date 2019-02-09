@@ -18,31 +18,41 @@
 #pragma once
 
 #include "BackendRequest.h"
+#include "SyncedConfigurationInfo.h"
 #include "BaseResource.h"
 
-class ConfigurationSyncThread final : public Thread, public WaitableEvent
+class UserConfigSyncThread final : public Thread, public WaitableEvent
 {
 public:
 
-    ConfigurationSyncThread();
-    ~ConfigurationSyncThread() override;
+    UserConfigSyncThread();
+    ~UserConfigSyncThread() override;
 
     Function<void()> onQueueEmptied;
-    Function<void(const BaseResource::Ptr resource)> onResourceDeleted;
-    Function<void(const BaseResource::Ptr resource)> onResourceUpdated;
+    Function<void(const Array<String> &errors)> onSyncError;
+    Function<void(const UserResourceDto resource)> onResourceFetched;
+    Function<void(const UserResourceDto resource)> onResourceUpdated;
+    Function<void(const Identifier &type, const String &name)> onResourceDeleted;
 
-    void queueConfigurationUpload(ReferenceCountedArray<BaseResource> resources);
-    void queueConfigurationDelete(ReferenceCountedArray<BaseResource> resources);
+    void queueGetConfiguration(const SyncedConfigurationInfo::Ptr resource);
+    void queuePutConfiguration(const BaseResource::Ptr resource);
+    void queueDeleteConfiguration(const BaseResource::Ptr resource);
 
 private:
 
     void run() override;
 
-    // If empty, synchronizes all revisions
-    ReferenceCountedArray<BaseResource, CriticalSection> resourcesToUpload;
+    ReferenceCountedArray<SyncedConfigurationInfo, CriticalSection> resourcesToGet;
+    ReferenceCountedArray<BaseResource, CriticalSection> resourcesToPut;
     ReferenceCountedArray<BaseResource, CriticalSection> resourcesToDelete;
 
+    bool areQueuesEmpty() const;
+
     BackendRequest::Response response;
+    Identifier deletedConfigType;
+    String deletedConfigName;
 
     friend class BackendService;
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE(UserConfigSyncThread)
 };

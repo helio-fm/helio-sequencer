@@ -20,7 +20,7 @@
 #include "BackendService.h"
 #include "AuthThread.h"
 #include "TokenUpdateThread.h"
-#include "RequestResourceThread.h"
+#include "BaseConfigSyncThread.h"
 #include "RequestUserProfileThread.h"
 #include "UpdatesCheckThread.h"
 

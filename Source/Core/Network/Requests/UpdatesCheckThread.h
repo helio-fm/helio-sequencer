@@ -56,7 +56,7 @@ private:
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
-        const BackendRequest request(ApiRoutes::requestUpdatesInfo);
+        const BackendRequest request(ApiRoutes::updatesInfo);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is2xx())

@@ -335,10 +335,12 @@
             <FILE id="x663ni" name="BackendRequest.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/BackendRequest.h"/>
             <FILE id="xZKyfW" name="AuthThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/AuthThread.h"/>
-            <FILE id="CbLqvf" name="ConfigurationSyncThread.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Requests/ConfigurationSyncThread.cpp"/>
-            <FILE id="qvfg9W" name="ConfigurationSyncThread.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Requests/ConfigurationSyncThread.h"/>
+            <FILE id="tezH4X" name="BaseConfigSyncThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/BaseConfigSyncThread.h"/>
+            <FILE id="CbLqvf" name="UserConfigSyncThread.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Network/Requests/UserConfigSyncThread.cpp"/>
+            <FILE id="qvfg9W" name="UserConfigSyncThread.h" compile="0" resource="0"
+                  file="../../Source/Core/Network/Requests/UserConfigSyncThread.h"/>
             <FILE id="i9fTOz" name="ProjectCloneThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Network/Requests/ProjectCloneThread.cpp"/>
             <FILE id="b5QDUQ" name="ProjectCloneThread.h" compile="0" resource="0"
@@ -355,8 +357,6 @@
                   file="../../Source/Core/Network/Requests/RevisionsSyncThread.cpp"/>
             <FILE id="m6eLsO" name="RevisionsSyncThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RevisionsSyncThread.h"/>
-            <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestUserProfileThread.h"/>
             <FILE id="TQIxzu" name="TokenCheckThread.h" compile="0" resource="0"

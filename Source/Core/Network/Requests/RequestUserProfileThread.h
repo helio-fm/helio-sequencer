@@ -54,7 +54,7 @@ private:
         namespace ApiKeys = Serialization::Api::V1;
         namespace ApiRoutes = Routes::Api;
 
-        const BackendRequest request(ApiRoutes::requestUserProfile);
+        const BackendRequest request(ApiRoutes::userProfile);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is200())

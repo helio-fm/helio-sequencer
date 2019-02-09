@@ -28,5 +28,7 @@ struct UserResourceDto final : ApiModel
     String getHash() const noexcept { return DTO_PROPERTY(Resources::hash); }
     Time getUpdateTime() const noexcept { return Time(DTO_PROPERTY(Resources::updatedAt)); }
 
+    ValueTree getData() const noexcept { return DTO_CHILD(Resources::data); }
+
     JUCE_LEAK_DETECTOR(UserResourceDto)
 };

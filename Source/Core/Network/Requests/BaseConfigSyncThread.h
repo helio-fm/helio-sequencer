@@ -20,20 +20,20 @@
 #include "BackendRequest.h"
 #include "Network.h"
 
-class RequestResourceThread final : public Thread
+class BaseConfigSyncThread final : public Thread
 {
 public:
     
-    RequestResourceThread() : Thread("RequestResource") {}
-    ~RequestResourceThread() override
+    BaseConfigSyncThread() : Thread("BaseConfigSync") {}
+    ~BaseConfigSyncThread() override
     {
         this->stopThread(1000);
     }
     
-    Function<void(const Identifier &resourceId, const ValueTree &resource)> onRequestResourceOk;
-    Function<void(const Identifier &resourceId, const Array<String> &errors)> onRequestResourceFailed;
+    Function<void(const Identifier &resourceType, const ValueTree &resource)> onRequestResourceOk;
+    Function<void(const Identifier &resourceType, const Array<String> &errors)> onRequestResourceFailed;
     
-    void requestResource(const Identifier &resourceId, uint32 delayMs)
+    void requestResource(const Identifier &resourceType, uint32 delayMs)
     {
         if (this->isThreadRunning())
         {
@@ -41,7 +41,7 @@ public:
         }
 
         this->delay = delayMs;
-        this->resourceId = resourceId;
+        this->resourceType = resourceType;
         this->startThread(3);
     }
     
@@ -51,23 +51,23 @@ private:
     {
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
-        const String uri = Routes::Api::requestResource + "/" + this->resourceId;
+        const String uri = Routes::Api::baseResource.replace(":resourceType", this->resourceType);
         const BackendRequest request(uri);
         this->response = request.get();
 
         if (!this->response.isValid() || !this->response.is2xx())
         {
-            callbackOnMessageThread(RequestResourceThread, onRequestResourceFailed,
-                self->resourceId, self->response.getErrors());
+            callbackOnMessageThread(BaseConfigSyncThread, onRequestResourceFailed,
+                self->resourceType, self->response.getErrors());
             return;
         }
 
-        callbackOnMessageThread(RequestResourceThread, onRequestResourceOk,
-            self->resourceId, self->response.getChild(self->resourceId));
+        callbackOnMessageThread(BaseConfigSyncThread, onRequestResourceOk,
+            self->resourceType, self->response.getChild(self->resourceType));
     }
     
     uint32 delay;
-    Identifier resourceId;
+    Identifier resourceType;
     BackendRequest::Response response;
     
     friend class BackendService;
