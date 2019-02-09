@@ -99,8 +99,8 @@ namespace Serialization
 
         // Properties
 
-        // Notes are the most common records in the savefile
-        // therefore their properties are so 
+        // notes are the most common records in the savefile
+        // therefore their properties are shortened
         static const Identifier id = "id";
         static const Identifier key = "key";
         static const Identifier timestamp = "ts";
@@ -404,7 +404,11 @@ namespace Serialization
         namespace Configurations
         {
             static const Identifier resource = "resource";
-        } // namespace Sessions
+            static const Identifier type = "type";
+            static const Identifier name = "name";
+            static const Identifier hash = "hash";
+            static const Identifier updatedAt = "updatedAt";
+        } // namespace Configurations
     } // namespace User
 
     namespace VCS
@@ -548,10 +552,12 @@ namespace Serialization
 
             namespace Resources
             {
+                static const Identifier resource = "resource";
                 static const Identifier resources = "resources";
                 static const Identifier type = "type";
                 static const Identifier hash = "hash";
                 static const Identifier name = "name";
+                static const Identifier data = "data";
                 static const Identifier updatedAt = "updatedAt";
             }
 

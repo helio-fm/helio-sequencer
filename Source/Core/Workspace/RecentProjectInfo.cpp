@@ -158,8 +158,14 @@ bool RecentProjectInfo::isValid() const
     return this->projectId.isNotEmpty() && isFoundSomewhere;
 }
 
-int RecentProjectInfo::compareElements(Ptr first, Ptr second)
+int RecentProjectInfo::compareElements(RecentProjectInfo *first, RecentProjectInfo *second)
 {
+    jassert(first != nullptr && second != nullptr);
+    if (first == second || first->projectId == second->projectId)
+    {
+        return 0;
+    }
+
     const int64 firstLocalTime = first->local != nullptr ? first->local->lastModifiedMs : 0;
     const int64 secondLocalTime = second->local != nullptr ? second->local->lastModifiedMs : 0;
     return int(secondLocalTime - firstLocalTime);

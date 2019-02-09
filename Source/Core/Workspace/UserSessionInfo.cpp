@@ -52,8 +52,14 @@ Time UserSessionInfo::getUpdateTime() const noexcept
     return this->updatedAt;
 }
 
-int UserSessionInfo::compareElements(Ptr first, Ptr second)
+int UserSessionInfo::compareElements(UserSessionInfo *first, UserSessionInfo *second)
 {
+    jassert(first != nullptr && second != nullptr);
+    if (first == second || first->deviceId == second->deviceId)
+    {
+        return 0;
+    }
+
     return int(first->updatedAt.toMilliseconds() - second->updatedAt.toMilliseconds());
 }
 

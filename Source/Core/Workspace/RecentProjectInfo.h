@@ -47,7 +47,7 @@ public:
     void resetRemoteInfo();
 
     using Ptr = ReferenceCountedObjectPtr<RecentProjectInfo>;
-    static int compareElements(Ptr first, Ptr second);
+    static int compareElements(RecentProjectInfo *first, RecentProjectInfo *second);
 
     //===------------------------------------------------------------------===//
     // Serializable

@@ -36,7 +36,7 @@ public:
     Time getUpdateTime() const noexcept;
 
     using Ptr = ReferenceCountedObjectPtr<UserSessionInfo>;
-    static int compareElements(Ptr first, Ptr second);
+    static int compareElements(UserSessionInfo *first, UserSessionInfo *second);
 
     //===------------------------------------------------------------------===//
     // Serializable

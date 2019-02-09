@@ -29,12 +29,17 @@ public:
     SyncedConfigurationInfo() = default;
     SyncedConfigurationInfo(const UserResourceDto &remote);
 
+    Identifier getType() const noexcept;
+    String getName() const noexcept;
 
-
-    //bool needsSynchronization(const BaseResource::Ptr local) const;
+    bool equals(const BaseResource::Ptr resource) const noexcept;
 
     using Ptr = ReferenceCountedObjectPtr<SyncedConfigurationInfo>;
-    static int compareElements(Ptr first, Ptr second);
+
+    static int compareElements(const SyncedConfigurationInfo *first,
+        const SyncedConfigurationInfo *second);
+    static int compareElements(const Identifier &type, const String &id,
+        const SyncedConfigurationInfo *obj);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -46,9 +51,10 @@ public:
 
 private:
 
-
-    Time remotelyUpdatedAt;
-    Time locallyUpdatedAt;
+    Identifier type;
+    String name;
+    String hash;
+    Time updatedAt;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyncedConfigurationInfo)
 };

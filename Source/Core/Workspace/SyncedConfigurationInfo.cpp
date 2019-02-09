@@ -18,22 +18,74 @@
 #include "Common.h"
 #include "SyncedConfigurationInfo.h"
 
-SyncedConfigurationInfo::SyncedConfigurationInfo(const UserResourceDto &remote)
-{
-
-}
+SyncedConfigurationInfo::SyncedConfigurationInfo(const UserResourceDto &remote) :
+    type(remote.getType()),
+    name(remote.getName()),
+    hash(remote.getHash()),
+    updatedAt(remote.getUpdateTime()) {}
 
 ValueTree SyncedConfigurationInfo::serialize() const
 {
-    
+    using namespace Serialization::User;
+    ValueTree root(Configurations::resource);
+
+    root.setProperty(Configurations::type, this->type.toString(), nullptr);
+    root.setProperty(Configurations::name, this->name, nullptr);
+    root.setProperty(Configurations::hash, this->hash, nullptr);
+    root.setProperty(Configurations::updatedAt, this->updatedAt.toMilliseconds(), nullptr);
+
+    return root;
+}
+
+Identifier SyncedConfigurationInfo::getType() const noexcept
+{
+    return this->type;
+}
+
+String SyncedConfigurationInfo::getName() const noexcept
+{
+    return this->name;
 }
 
 void SyncedConfigurationInfo::deserialize(const ValueTree &tree)
 {
+    this->reset();
+    using namespace Serialization::User;
 
+    const auto root = tree.hasType(Configurations::resource) ?
+        tree : tree.getChildWithName(Configurations::resource);
+
+    if (!root.isValid()) { return; }
+
+    this->type = root.getProperty(Configurations::type).toString();
+    this->name = root.getProperty(Configurations::name);
+    this->hash = root.getProperty(Configurations::hash);
+    this->updatedAt = Time(root.getProperty(Configurations::updatedAt));
 }
 
-void SyncedConfigurationInfo::reset()
-{
+void SyncedConfigurationInfo::reset() {}
 
+int SyncedConfigurationInfo::compareElements(const SyncedConfigurationInfo *first,
+    const SyncedConfigurationInfo *second)
+{
+    jassert(first != nullptr && second != nullptr);
+    if (first == second)
+    {
+        return 0;
+    }
+
+    return compareElements(first->type, first->name, second);
+}
+
+int SyncedConfigurationInfo::compareElements(const Identifier &type, const String &id,
+    const SyncedConfigurationInfo *obj)
+{
+    const auto typeCompare = type.toString().compare(obj->type.toString());
+    return typeCompare == 0 ? id.compare(obj->name) : typeCompare;
+}
+
+bool SyncedConfigurationInfo::equals(const BaseResource::Ptr resource) const noexcept
+{
+    return this->type == resource->getResourceType() &&
+        this->name == resource->getResourceId();
 }
