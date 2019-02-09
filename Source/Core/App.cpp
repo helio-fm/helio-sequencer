@@ -466,7 +466,8 @@ void App::initialise(const String &commandLine)
 
         this->network.reset(new class Network(*this->workspace.get()));
 
-        this->config->getTranslations()->addChangeListener(this);
+        // see the comment in changeListenerCallback
+        //this->config->getTranslations()->addChangeListener(this);
         
         // Desktop versions will be initialised by InitScreen component.
 #if HELIO_MOBILE
@@ -486,7 +487,7 @@ void App::shutdown()
 {
     if (this->runMode == App::NORMAL)
     {
-        this->config->getTranslations()->removeChangeListener(this);
+        //this->config->getTranslations()->removeChangeListener(this);
 
         DBG("App::shutdown");
 
@@ -649,8 +650,11 @@ void App::handleAsyncUpdate()
 
 void App::changeListenerCallback(ChangeBroadcaster *source)
 {
-    DBG("Reloading translations");
-    this->recreateLayout();
+    // after some testing I find this behaviour not great at all, i.e. unpredictable and glitchy
+    // maybe instead this should start a timer and check if there are no modal components and
+    // no user activity for some time - and then recreate the layout:
+    //DBG("Reloading translations");
+    //this->recreateLayout();
 }
 
 START_JUCE_APPLICATION(App)
