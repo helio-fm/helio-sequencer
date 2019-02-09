@@ -27,6 +27,11 @@ public:
     TranslationsManager();
     ~TranslationsManager() override;
 
+    BaseResource::Ptr createResource() const override
+    {
+        return { new Translation() };
+    }
+
     inline const Array<Translation::Ptr> getAll() const
     {
         return this->getAllResources<Translation>();

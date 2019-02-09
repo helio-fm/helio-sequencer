@@ -21,14 +21,12 @@
 #include "RevisionsSyncThread.h"
 #include "ProjectCloneThread.h"
 #include "ProjectDeleteThread.h"
-#include "UpdatesCheckThread.h"
-#include "RequestResourceThread.h"
 
 class ProjectSyncService final : private BackendService
 {
 public:
 
-    ProjectSyncService();
+    ProjectSyncService() = default;
 
     void fetchRevisionsInfo(WeakReference<VersionControl> vcs,
         const String &projectId, const String &projectName);
@@ -56,7 +54,4 @@ private:
 
     RevisionsSyncThread *prepareSyncRevisionsThread();
     RevisionsSyncThread *prepareFetchRevisionsThread();
-
-    UpdatesCheckThread *prepareUpdatesCheckThread();
-    RequestResourceThread *prepareResourceRequestThread();
 };

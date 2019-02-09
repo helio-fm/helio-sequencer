@@ -46,6 +46,10 @@ public:
 
     void clearProfileAndSession();
 
+    void onConfigurationInfoUpdated(const UserResourceDto &resource);
+    void onConfigurationInfoReset(const Identifier &type, const String &name);
+
+
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
@@ -59,12 +63,15 @@ public:
     String getLogin() const noexcept;
     String getProfileUrl() const noexcept;
 
+    bool hasSyncedConfiguration(const Identifier &type, const String &name) const;
+
     using ProjectsList = ReferenceCountedArray<RecentProjectInfo, CriticalSection>;
     using SessionsList = ReferenceCountedArray<UserSessionInfo, CriticalSection>;
     using ResourcesList = ReferenceCountedArray<SyncedConfigurationInfo, CriticalSection>;
 
     const SessionsList &getSessions() const noexcept;
     const ProjectsList &getProjects() const noexcept;
+    const ResourcesList &getResources() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -78,6 +85,7 @@ private:
 
     RecentProjectInfo *findProject(const String &id) const;
     UserSessionInfo *findSession(const String &deviceId) const;
+    SyncedConfigurationInfo *findResource(const Identifier &type, const String &name) const;
 
     Image avatar;
     String avatarThumbnail;

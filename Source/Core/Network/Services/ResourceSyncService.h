@@ -17,7 +17,12 @@
 
 #pragma once
 
+#include "UpdatesCheckThread.h"
+#include "BaseConfigSyncThread.h"
+#include "UserConfigSyncThread.h"
+
 #include "BackendService.h"
+#include "SyncedConfigurationInfo.h"
 #include "BaseResource.h"
 
 class ResourceSyncService final : private BackendService
@@ -26,11 +31,16 @@ public:
 
     ResourceSyncService();
 
-    void doSync(BaseResource::Ptr resource);
-    void doDelete(BaseResource::Ptr resource);
+    void queueSync(const BaseResource::Ptr resource);
+    void queueDelete(const BaseResource::Ptr resource);
+    void queueFetch(const SyncedConfigurationInfo::Ptr resource);
 
 private:
 
+    UserConfigSyncThread *prepareSyncThread();
+    WeakReference<UserConfigSyncThread> synchronizer;
 
+    UpdatesCheckThread *prepareUpdatesCheckThread();
+    BaseConfigSyncThread *prepareResourceRequestThread();
 
 };

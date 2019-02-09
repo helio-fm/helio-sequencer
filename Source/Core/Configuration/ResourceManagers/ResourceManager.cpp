@@ -21,6 +21,8 @@
 #include "BinarySerializer.h"
 #include "DocumentHelpers.h"
 
+// TODO: monitor user's file changes?
+
 ResourceManager::ResourceManager(const Identifier &resourceType) :
     resourceType(resourceType) {}
 

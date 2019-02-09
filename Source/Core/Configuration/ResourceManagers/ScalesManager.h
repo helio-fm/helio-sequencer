@@ -25,6 +25,11 @@ class ScalesManager final : public ResourceManager
 public:
   
     ScalesManager();
+    
+    BaseResource::Ptr createResource() const override
+    {
+        return { new Scale() };
+    }
 
     inline const Array<Scale::Ptr> getAll() const
     {

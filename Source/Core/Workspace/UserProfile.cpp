@@ -20,11 +20,13 @@
 #include "SessionService.h"
 #include "SerializationKeys.h"
 #include "ProjectSyncService.h"
+#include "ResourceSyncService.h"
 #include "Network.h"
 #include "Config.h"
 
 static UserSessionInfo kSessionsSort;
 static RecentProjectInfo kProjectsSort;
+static SyncedConfigurationInfo kResourcesSort;
 
 void UserProfile::updateProfile(const UserProfileDto &dto)
 {
@@ -59,13 +61,30 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
     this->sessions.clearQuick();
     for (const auto &s : dto.getSessions())
     {
-        this->sessions.add(new UserSessionInfo(s));
+        this->sessions.addSorted(kSessionsSort, new UserSessionInfo(s));
     }
 
+    const auto &localConfig = App::Config().getAllResources();
     this->resources.clearQuick();
     for (const auto &r : dto.getResources())
     {
-        this->resources.add(new SyncedConfigurationInfo(r));
+        bool isPresentLocally = false;
+        // to detect which resources are missing locally, and schedule fetching them:
+        const auto foundType = localConfig.find(r.getType());
+        if (foundType != localConfig.end())
+        {
+            isPresentLocally = foundType->second->containsUserResourceWithId(r.getName());
+        }
+
+        const int i = this->resources.addSorted(kResourcesSort, new SyncedConfigurationInfo(r));
+
+        if (!isPresentLocally)
+        {
+            DBG("Found new user configuration to be synced: " + r.getType() + "/" + r.getName());
+            const auto configToFetch = this->resources[i];
+            // should there be a more elegant way to do that?
+            App::Network().getResourceSyncService()->queueFetch(configToFetch);
+        }
     }
 
     this->name = dto.getName();
@@ -75,8 +94,73 @@ void UserProfile::updateProfile(const UserProfileDto &dto)
     this->sendChangeMessage();
 }
 
-void UserProfile::onProjectLocalInfoUpdated(const String &id,
-    const String &title, const String &path)
+void UserProfile::onConfigurationInfoUpdated(const UserResourceDto &dto)
+{
+    for (const auto resource : this->resources)
+    {
+        if (resource->getName() == dto.getName() &&
+            resource->getType().toString() == dto.getType())
+        {
+            // already has that info, no need to send change message;
+            return;
+        }
+    }
+
+    this->resources.addSorted(kResourcesSort, new SyncedConfigurationInfo(dto));
+    this->sendChangeMessage();
+}
+
+void UserProfile::onConfigurationInfoReset(const Identifier &type, const String &name)
+{
+    for (int i = 0; i < this->resources.size(); ++i)
+    {
+        const auto resource = this->resources.getUnchecked(i);
+        if (resource->getType() == type && resource->getName() == name)
+        {
+            this->resources.remove(i);
+            this->sendChangeMessage();
+            return;
+        }
+    }
+}
+
+bool UserProfile::hasSyncedConfiguration(const Identifier &type, const String &name) const
+{
+    // this check will be called each time user profile sends change message
+    // for each found resource, to check if it is synced;
+    // but as synced resource list is sorted, we can use binary search:
+
+    int start = 0;
+    int end = this->resources.size();
+    while (start < end)
+    {
+        if (kResourcesSort.compareElements(type, name,
+            this->resources.getObjectPointerUnchecked(start)) == 0)
+        {
+            return true;
+        }
+
+        const auto halfway = (start + end) / 2;
+        if (halfway == start)
+        {
+            return false;
+        }
+
+        if (kResourcesSort.compareElements(type, name,
+            this->resources.getObjectPointerUnchecked(halfway)) >= 0)
+        {
+            start = halfway;
+        }
+        else
+        {
+            end = halfway;
+        }
+    }
+
+    return false;
+}
+
+void UserProfile::onProjectLocalInfoUpdated(const String &id, const String &title, const String &path)
 {
     if (auto *project = this->findProject(id))
     {
@@ -84,7 +168,7 @@ void UserProfile::onProjectLocalInfoUpdated(const String &id,
     }
     else
     {
-        this->projects.add(new RecentProjectInfo(id, title, path));
+        this->projects.addSorted(kProjectsSort, new RecentProjectInfo(id, title, path));
     }
 
     this->sendChangeMessage();
@@ -98,7 +182,7 @@ void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
     }
     else
     {
-        this->projects.add(new RecentProjectInfo(info));
+        this->projects.addSorted(kProjectsSort, new RecentProjectInfo(info));
     }
 
     this->sendChangeMessage();
@@ -224,6 +308,11 @@ const UserProfile::ProjectsList &UserProfile::getProjects() const noexcept
     return this->projects;
 }
 
+const UserProfile::ResourcesList &UserProfile::getResources() const noexcept
+{
+    return this->resources;
+}
+
 // there won't be too much projects, so linear search should be ok
 // (might have to replace this with binary search someday though)
 RecentProjectInfo *UserProfile::findProject(const String &id) const
@@ -347,7 +436,7 @@ void UserProfile::deserialize(const ValueTree &tree)
     {
         SyncedConfigurationInfo::Ptr s(new SyncedConfigurationInfo());
         s->deserialize(child);
-        this->resources.add(s.get());
+        this->resources.addSorted(kResourcesSort, s.get());
     }
 
     // TODO scan documents folder for existing projects not present in the list?

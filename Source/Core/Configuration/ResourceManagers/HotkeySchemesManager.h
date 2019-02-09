@@ -26,6 +26,11 @@ public:
 
     HotkeySchemesManager();
 
+    BaseResource::Ptr createResource() const override
+    {
+        return { new HotkeyScheme() };
+    }
+
     inline const Array<HotkeyScheme::Ptr> getAll() const noexcept
     {
         return this->getAllResources<HotkeyScheme>();

@@ -25,14 +25,6 @@
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
 
-// Try to update resources and versions info after:
-#define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
-
-ProjectSyncService::ProjectSyncService()
-{
-    this->prepareUpdatesCheckThread()->checkForUpdates(UPDATE_INFO_TIMEOUT_MS);
-}
-
 void ProjectSyncService::fetchRevisionsInfo(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName)
 {
@@ -100,61 +92,6 @@ void ProjectSyncService::deleteProject(const String &projectId)
     App::Layout().showModalComponentUnowned(tooltip.release());
 
     this->prepareProjectDeleteThread()->doDelete(projectId);
-}
-
-RequestResourceThread *ProjectSyncService::prepareResourceRequestThread()
-{
-    auto *thread = this->getNewThreadFor<RequestResourceThread>();
-
-    thread->onRequestResourceOk = [this](const Identifier &resourceId, const ValueTree &resource)
-    {
-        if (App::Config().getAllResources().contains(resourceId))
-        {
-            App::Config().getAllResources().at(resourceId)->updateBaseResource(resource);
-        }
-    };
-    
-    return thread;
-}
-
-UpdatesCheckThread *ProjectSyncService::prepareUpdatesCheckThread()
-{
-    auto *thread = this->getNewThreadFor<UpdatesCheckThread>();
-
-    thread->onUpdatesCheckOk = [this](const AppInfoDto info)
-    {
-        // check if any available resource has a hash different from stored one
-        // then start threads to fetch those resources (with somewhat random delays)
-        Random r;
-        AppInfoDto lastUpdatesInfo;
-        App::Config().load(&lastUpdatesInfo, Serialization::Config::lastUpdatesInfo);
-        bool everythingIsUpToDate = true;
-        for (const auto &newResource : info.getResources())
-        {
-            if (lastUpdatesInfo.resourceSeemsOutdated(newResource))
-            {
-                // I just don't want to fire all requests at once:
-                const auto delay = r.nextInt(5) * 1000;
-                this->prepareResourceRequestThread()->requestResource(newResource.getType(), delay);
-                everythingIsUpToDate = false;
-            }
-        }
-
-        if (everythingIsUpToDate)
-        {
-            DBG("All resources are up to date");
-        }
-
-        // save all anyway, as versions info might have changed:
-        App::Config().save(&info, Serialization::Config::lastUpdatesInfo);
-    };
-
-    thread->onUpdatesCheckFailed = [](const Array<String> &errors)
-    {
-        DBG("onUpdatesCheckFailed: " + errors.getFirst());
-    };
-
-    return thread;
 }
 
 RevisionsSyncThread *ProjectSyncService::prepareSyncRevisionsThread()

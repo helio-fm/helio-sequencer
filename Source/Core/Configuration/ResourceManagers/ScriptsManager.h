@@ -26,6 +26,11 @@ public:
 
     ScriptsManager();
 
+    BaseResource::Ptr createResource() const override
+    {
+        return { new Script() };
+    }
+
     inline const Array<Script::Ptr> getAll() const
     {
         return this->getAllResources<Script>();

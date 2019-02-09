@@ -19,8 +19,6 @@
 
 #include "BaseResource.h"
 
-// TODO: monitor user's file changes?
-
 class ResourceManager : public ChangeBroadcaster
 {
 public:
@@ -30,7 +28,7 @@ public:
 
     void reloadResources();
 
-    template<typename T>
+    template<typename T = BaseResource>
     const Array<typename T::Ptr> getAllResources() const
     {
         Array<typename T::Ptr> result;
@@ -53,7 +51,7 @@ public:
         return result;
     }
 
-    template<typename T>
+    template<typename T = BaseResource>
     const Array<typename T::Ptr> getUserResources() const
     {
         Array<typename T::Ptr> result;
@@ -67,7 +65,7 @@ public:
         return result;
     }
 
-    template<typename T>
+    template<typename T = BaseResource>
     const typename T::Ptr getResourceById(const String &resourceId) const
     {
         const auto foundUserResource = this->userResources.find(resourceId);
@@ -84,7 +82,28 @@ public:
 
         return nullptr;
     }
-    
+
+    template<typename T = BaseResource>
+    const typename T::Ptr getUserResourceById(const String &resourceId) const
+    {
+        const auto foundUserResource = this->userResources.find(resourceId);
+        if (foundUserResource != this->userResources.end())
+        {
+            return typename T::Ptr(static_cast<T *>(foundUserResource->second.get()));
+        }
+        
+        return nullptr;
+    }
+
+    template<typename T = BaseResource>
+    const bool containsUserResourceWithId(const String &resourceId) const
+    {
+        const auto foundUserResource = this->userResources.find(resourceId);
+        return foundUserResource != this->userResources.end();
+    }
+
+    virtual BaseResource::Ptr createResource() const = 0;
+
     void updateBaseResource(const ValueTree &resource);
     void updateUserResource(const BaseResource::Ptr resource);
 
