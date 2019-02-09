@@ -288,15 +288,16 @@ void ThemeSettingsItem::resized()
 //[MiscUserCode]
 void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
 {
-    if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
+    if (auto *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
         App::Config().getColourSchemes()->setCurrent(colours);
         ht->initColours(colours);
         ht->updateBackgroundRenders(true);
-        if (this->getTopLevelComponent() != nullptr)
+        SafePointer<Component> window = this->getTopLevelComponent();
+        if (window != nullptr)
         {
-            this->getTopLevelComponent()->resized();
-            this->getTopLevelComponent()->repaint();
+            window->resized();
+            window->repaint();
         }
         App::recreateLayout();
     }

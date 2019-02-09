@@ -51,8 +51,12 @@ private:
 
     //[UserVariables]
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    Array<String> keys;
-    Array<BaseResource::Ptr> resources;
+
+    Array<bool> syncFlags;
+    ReferenceCountedArray<BaseResource> resources;
+
+    void reloadConfigsList();
+    void reloadSyncFlags();
     //[/UserVariables]
 
     UniquePointer<ListBox> resourcesList;

@@ -18,7 +18,6 @@
 #pragma once
 
 //[Headers]
-class Console;
 #include "DraggingListBoxComponent.h"
 //[/Headers]
 

@@ -24,6 +24,7 @@
 //[MiscUserDefs]
 #include "Workspace.h"
 #include "SyncSettingsItem.h"
+#include "UserProfile.h"
 #include "Config.h"
 
 #if HELIO_DESKTOP
@@ -49,27 +50,18 @@ SyncSettings::SyncSettings()
     this->setSize(600, 265);
 
     //[Constructor]
-
-    // how to collect and update references to all resources? problems:
-    //  - user profile does not store remotely-stored resources info
-    // App::Workspace().getUserProfile().get
-
-    for (auto resource : App::Config().getAllResources())
-    {
-        const auto resourceType = resource.first;
-        const auto configs = resource.second->getUserResources<BaseResource>();
-        for (const auto config : configs)
-        {
-            this->keys.add(resourceType + "/" + config->getResourceId());
-            this->resources.add(config);
-        }
-
-        resource.second->addChangeListener(this);
-    }
+    
+    this->reloadConfigsList();
+    this->reloadSyncFlags();
 
     App::Workspace().getUserProfile().addChangeListener(this);
 
-    this->setSize(600, this->keys.size() * SYNC_SETTINGS_ROW_HEIGHT);
+    for (auto configType : App::Config().getAllResources())
+    {
+        configType.second->addChangeListener(this);
+    }
+
+    this->setSize(600, this->resources.size() * SYNC_SETTINGS_ROW_HEIGHT);
 
     this->resourcesList->setModel(this);
     this->resourcesList->setRowHeight(SYNC_SETTINGS_ROW_HEIGHT);
@@ -80,12 +72,12 @@ SyncSettings::SyncSettings()
 SyncSettings::~SyncSettings()
 {
     //[Destructor_pre]
-    App::Workspace().getUserProfile().removeChangeListener(this);
-
     for (auto resource : App::Config().getAllResources())
     {
         resource.second->removeChangeListener(this);
     }
+
+    App::Workspace().getUserProfile().removeChangeListener(this);
     //[/Destructor_pre]
 
     resourcesList = nullptr;
@@ -124,14 +116,20 @@ void SyncSettings::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (auto *profile = dynamic_cast<UserProfile *>(source))
     {
+        // profile might have updated its user resource list,
+        // so we need to find out which ones are present:
+        this->reloadSyncFlags();
         // will update checkpoints on synced resources:
         this->resourcesList->updateContent();
+        // (worth noting that profile sends change messages quite frequently)
     }
     else if (auto *resourceManager = dynamic_cast<ResourceManager *>(source))
     {
-        // FIXME! re-read all resources? kinda overkill?
+        // re-read all configs (this shouldn't happen too often anyway)
+        this->reloadConfigsList();
+        this->reloadSyncFlags();
         // then update the list content as well:
-        //this->resourcesList->updateContent();
+        this->resourcesList->updateContent();
     }
 }
 
@@ -142,21 +140,21 @@ void SyncSettings::changeListenerCallback(ChangeBroadcaster *source)
 Component *SyncSettings::refreshComponentForRow(int rowNumber,
     bool isRowSelected, Component *existingComponentToUpdate)
 {
-    if (rowNumber < this->keys.size())
+    if (rowNumber < this->resources.size())
     {
-        const bool isSynced = false; // TODO;
-        const bool isLastRow = (rowNumber == this->keys.size() - 1);
+        const bool isSynced = this->syncFlags[rowNumber];
+        const bool isLastRow = (rowNumber == this->resources.size() - 1);
         if (existingComponentToUpdate != nullptr)
         {
             if (auto *row = dynamic_cast<SyncSettingsItem *>(existingComponentToUpdate))
             {
-                row->updateDescription(isLastRow, isSynced, this->keys.getReference(rowNumber));
+                row->updateDescription(isLastRow, isSynced, this->resources.getUnchecked(rowNumber));
             }
         }
         else
         {
             auto *row = new SyncSettingsItem(*this->resourcesList);
-            row->updateDescription(isLastRow, isSynced, this->keys.getReference(rowNumber));
+            row->updateDescription(isLastRow, isSynced, this->resources.getUnchecked(rowNumber));
             return row;
         }
     }
@@ -166,9 +164,33 @@ Component *SyncSettings::refreshComponentForRow(int rowNumber,
 
 int SyncSettings::getNumRows()
 {
-    return this->keys.size();
+    return this->resources.size();
 }
 
+void SyncSettings::reloadConfigsList()
+{
+    this->resources.clearQuick();
+    this->syncFlags.clearQuick();
+    for (auto configType : App::Config().getAllResources())
+    {
+        for (const auto config : configType.second->getUserResources())
+        {
+            this->resources.add(config);
+            this->syncFlags.add(false);
+        }
+    }
+}
+
+void SyncSettings::reloadSyncFlags()
+{
+    const auto &profile = App::Workspace().getUserProfile();
+    for (int i = 0; i < this->resources.size(); ++i)
+    {
+        this->syncFlags.set(i,
+            profile.hasSyncedConfiguration(this->resources.getUnchecked(i)->getResourceType(),
+                this->resources.getUnchecked(i)->getResourceId()));
+    }
+}
 //[/MiscUserCode]
 
 #if 0

@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class Console;
+#include "BaseResource.h"
 #include "DraggingListBoxComponent.h"
 //[/Headers]
 
@@ -36,7 +36,7 @@ public:
 
     void setSelected(bool shouldBeSelected) override;
 
-    void updateDescription(bool isLastRowInList, bool isSynced, const String &resourceName);
+    void updateDescription(bool isLastRowInList, bool isSynced, const BaseResource::Ptr resource);
 
     //[/UserMethods]
 
@@ -49,6 +49,7 @@ private:
 
     //[UserVariables]
     Component *createHighlighterComponent() override;
+    BaseResource::Ptr resource;
     //[/UserVariables]
 
     UniquePointer<SeparatorHorizontal> separator;

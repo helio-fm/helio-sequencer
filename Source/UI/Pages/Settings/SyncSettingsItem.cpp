@@ -22,9 +22,11 @@
 #include "SyncSettingsItem.h"
 
 //[MiscUserDefs]
-#include "Icons.h"
 #include "SettingsListItemHighlighter.h"
 #include "SettingsListItemSelection.h"
+#include "ResourceSyncService.h"
+#include "Network.h"
+#include "Icons.h"
 //[/MiscUserDefs]
 
 SyncSettingsItem::SyncSettingsItem(ListBox &parentListBox)
@@ -102,15 +104,25 @@ void SyncSettingsItem::setSelected(bool shouldBeSelected)
 {
     if (shouldBeSelected)
     {
-        this->toggleButton->setToggleState(!this->toggleButton->getToggleState(), dontSendNotification);
-        // TODO call backend
+        const bool newSyncState = !this->toggleButton->getToggleState();
+        auto *syncService = App::Network().getResourceSyncService();
+        if (newSyncState)
+        {
+            syncService->queueSync(this->resource);
+        }
+        else
+        {
+            syncService->queueDelete(this->resource);
+        }
+        this->toggleButton->setToggleState(newSyncState, dontSendNotification);
     }
 }
 
-void SyncSettingsItem::updateDescription(bool isLastRowInList, bool isSynced, const String &resourceName)
+void SyncSettingsItem::updateDescription(bool isLastRowInList, bool isSynced, const BaseResource::Ptr resource)
 {
+    this->resource = resource;
     this->separator->setVisible(!isLastRowInList);
-    this->toggleButton->setButtonText(resourceName);
+    this->toggleButton->setButtonText(resource->getResourceType().toString() + "/" + resource->getResourceId());
     this->toggleButton->setToggleState(isSynced, dontSendNotification);
 }
 
