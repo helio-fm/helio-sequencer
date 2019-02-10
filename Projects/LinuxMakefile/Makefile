@@ -156,12 +156,15 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TimeSignaturesSequence_5fa7c98d.o \
   $(JUCE_OBJDIR)/MidiTrack_6604020d.o \
   $(JUCE_OBJDIR)/BackendRequest_7a512d9e.o \
+  $(JUCE_OBJDIR)/UserConfigSyncThread_281a0595.o \
   $(JUCE_OBJDIR)/ProjectCloneThread_838580b1.o \
   $(JUCE_OBJDIR)/ProjectDeleteThread_df81aeb5.o \
   $(JUCE_OBJDIR)/RevisionsSyncHelpers_6a382a95.o \
   $(JUCE_OBJDIR)/RevisionsSyncThread_7ea15884.o \
+  $(JUCE_OBJDIR)/ProjectSyncService_904c332a.o \
   $(JUCE_OBJDIR)/ResourceSyncService_3cb65bad.o \
   $(JUCE_OBJDIR)/SessionService_7b0612a8.o \
+  $(JUCE_OBJDIR)/Network_fc4306a6.o \
   $(JUCE_OBJDIR)/KeySignatureClass_f5399760.o \
   $(JUCE_OBJDIR)/NoteClass_f17feca7.o \
   $(JUCE_OBJDIR)/ScaleClass_6ebbf737.o \
@@ -175,22 +178,22 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/JsonSerializer_97d7162a.o \
   $(JUCE_OBJDIR)/LegacySerializer_6e2748b.o \
   $(JUCE_OBJDIR)/XmlSerializer_489b3c03.o \
-  $(JUCE_OBJDIR)/AudioPluginTreeItem_b465d4fa.o \
-  $(JUCE_OBJDIR)/AutomationTrackTreeItem_d8af2c5.o \
-  $(JUCE_OBJDIR)/InstrumentTreeItem_fc13b882.o \
-  $(JUCE_OBJDIR)/MidiTrackTreeItem_1dfb63b.o \
-  $(JUCE_OBJDIR)/OrchestraPitTreeItem_47206189.o \
-  $(JUCE_OBJDIR)/PatternEditorTreeItem_35a7d6ae.o \
-  $(JUCE_OBJDIR)/PianoTrackTreeItem_850d2d9d.o \
+  $(JUCE_OBJDIR)/AudioPluginNode_28638ab.o \
+  $(JUCE_OBJDIR)/AutomationTrackNode_e0dff3f6.o \
+  $(JUCE_OBJDIR)/InstrumentNode_69832033.o \
+  $(JUCE_OBJDIR)/MidiTrackNode_12dce26c.o \
+  $(JUCE_OBJDIR)/OrchestraPitNode_9ee364ba.o \
+  $(JUCE_OBJDIR)/PatternEditorNode_ffd5345f.o \
+  $(JUCE_OBJDIR)/PianoTrackNode_f7a15ace.o \
   $(JUCE_OBJDIR)/ProjectInfo_52f6a347.o \
   $(JUCE_OBJDIR)/ProjectTimeline_9655ff5a.o \
-  $(JUCE_OBJDIR)/ProjectTreeItem_334546ea.o \
-  $(JUCE_OBJDIR)/RootTreeItem_3b150bd.o \
-  $(JUCE_OBJDIR)/SettingsTreeItem_c1194ffe.o \
-  $(JUCE_OBJDIR)/TrackGroupTreeItem_8371d50f.o \
-  $(JUCE_OBJDIR)/TreeItem_3983613b.o \
-  $(JUCE_OBJDIR)/TreeItemChildrenSerializer_7365544c.o \
-  $(JUCE_OBJDIR)/VersionControlTreeItem_f871c280.o \
+  $(JUCE_OBJDIR)/ProjectNode_8b4c229b.o \
+  $(JUCE_OBJDIR)/RootNode_a3140dee.o \
+  $(JUCE_OBJDIR)/SettingsNode_1b17d5af.o \
+  $(JUCE_OBJDIR)/TrackGroupNode_96578b40.o \
+  $(JUCE_OBJDIR)/TreeNode_364484aa.o \
+  $(JUCE_OBJDIR)/TreeNodeSerializer_1d017f1c.o \
+  $(JUCE_OBJDIR)/VersionControlNode_a601d931.o \
   $(JUCE_OBJDIR)/AnnotationEventActions_e2dc4268.o \
   $(JUCE_OBJDIR)/AutomationTrackActions_7e56b4ff.o \
   $(JUCE_OBJDIR)/AutomationEventActions_ba8f9c50.o \
@@ -218,6 +221,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/VersionControl_bc67ed3f.o \
   $(JUCE_OBJDIR)/NavigationHistory_39a99bf.o \
   $(JUCE_OBJDIR)/RecentProjectInfo_9bf049eb.o \
+  $(JUCE_OBJDIR)/SyncedConfigurationInfo_f19402c9.o \
   $(JUCE_OBJDIR)/UserSessionInfo_61ea4378.o \
   $(JUCE_OBJDIR)/UserProfile_63ae89bd.o \
   $(JUCE_OBJDIR)/Workspace_e70d39f4.o \
@@ -291,7 +295,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/AudioPluginEditorPage_d260a64d.o \
   $(JUCE_OBJDIR)/InstrumentEditor_e7548c16.o \
   $(JUCE_OBJDIR)/InstrumentEditorConnector_813d7c21.o \
-  $(JUCE_OBJDIR)/InstrumentEditorNode_355634b8.o \
+  $(JUCE_OBJDIR)/InstrumentComponent_f2b63e3e.o \
   $(JUCE_OBJDIR)/InstrumentEditorPin_387238a9.o \
   $(JUCE_OBJDIR)/AudioPluginsListComponent_27b60455.o \
   $(JUCE_OBJDIR)/InstrumentsListComponent_2905dadd.o \
@@ -304,6 +308,8 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/SettingsListItemHighlighter_e14317a8.o \
   $(JUCE_OBJDIR)/SettingsListItemSelection_3054dbd3.o \
   $(JUCE_OBJDIR)/SettingsPage_ab9efe01.o \
+  $(JUCE_OBJDIR)/SyncSettings_7b017e8d.o \
+  $(JUCE_OBJDIR)/SyncSettingsItem_6f05f040.o \
   $(JUCE_OBJDIR)/ThemeSettings_1f7e5e07.o \
   $(JUCE_OBJDIR)/ThemeSettingsItem_c2b282ba.o \
   $(JUCE_OBJDIR)/TranslationSettings_f4a7f26f.o \
@@ -398,7 +404,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ShadowRightwards_a7d8422e.o \
   $(JUCE_OBJDIR)/ViewportKineticSlider_45304cab.o \
   $(JUCE_OBJDIR)/MainLayout_4f58d3f.o \
-  $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/Common_6ff75bf4.o \
   $(JUCE_OBJDIR)/BinaryData_7821001c.o \
   $(JUCE_OBJDIR)/BinaryData2_8c1f1960.o \
@@ -663,6 +668,11 @@ $(JUCE_OBJDIR)/BackendRequest_7a512d9e.o: ../../Source/Core/Network/Requests/Bac
 	@echo "Compiling BackendRequest.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/UserConfigSyncThread_281a0595.o: ../../Source/Core/Network/Requests/UserConfigSyncThread.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling UserConfigSyncThread.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/ProjectCloneThread_838580b1.o: ../../Source/Core/Network/Requests/ProjectCloneThread.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ProjectCloneThread.cpp"
@@ -683,6 +693,11 @@ $(JUCE_OBJDIR)/RevisionsSyncThread_7ea15884.o: ../../Source/Core/Network/Request
 	@echo "Compiling RevisionsSyncThread.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/ProjectSyncService_904c332a.o: ../../Source/Core/Network/Services/ProjectSyncService.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ProjectSyncService.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/ResourceSyncService_3cb65bad.o: ../../Source/Core/Network/Services/ResourceSyncService.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ResourceSyncService.cpp"
@@ -691,6 +706,11 @@ $(JUCE_OBJDIR)/ResourceSyncService_3cb65bad.o: ../../Source/Core/Network/Service
 $(JUCE_OBJDIR)/SessionService_7b0612a8.o: ../../Source/Core/Network/Services/SessionService.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SessionService.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Network_fc4306a6.o: ../../Source/Core/Network/Network.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Network.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/KeySignatureClass_f5399760.o: ../../Source/Core/Scripting/KeySignatureClass.cpp
@@ -758,39 +778,39 @@ $(JUCE_OBJDIR)/XmlSerializer_489b3c03.o: ../../Source/Core/Serialization/XmlSeri
 	@echo "Compiling XmlSerializer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/AudioPluginTreeItem_b465d4fa.o: ../../Source/Core/Tree/AudioPluginTreeItem.cpp
+$(JUCE_OBJDIR)/AudioPluginNode_28638ab.o: ../../Source/Core/Tree/AudioPluginNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AudioPluginTreeItem.cpp"
+	@echo "Compiling AudioPluginNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/AutomationTrackTreeItem_d8af2c5.o: ../../Source/Core/Tree/AutomationTrackTreeItem.cpp
+$(JUCE_OBJDIR)/AutomationTrackNode_e0dff3f6.o: ../../Source/Core/Tree/AutomationTrackNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AutomationTrackTreeItem.cpp"
+	@echo "Compiling AutomationTrackNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/InstrumentTreeItem_fc13b882.o: ../../Source/Core/Tree/InstrumentTreeItem.cpp
+$(JUCE_OBJDIR)/InstrumentNode_69832033.o: ../../Source/Core/Tree/InstrumentNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InstrumentTreeItem.cpp"
+	@echo "Compiling InstrumentNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/MidiTrackTreeItem_1dfb63b.o: ../../Source/Core/Tree/MidiTrackTreeItem.cpp
+$(JUCE_OBJDIR)/MidiTrackNode_12dce26c.o: ../../Source/Core/Tree/MidiTrackNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MidiTrackTreeItem.cpp"
+	@echo "Compiling MidiTrackNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/OrchestraPitTreeItem_47206189.o: ../../Source/Core/Tree/OrchestraPitTreeItem.cpp
+$(JUCE_OBJDIR)/OrchestraPitNode_9ee364ba.o: ../../Source/Core/Tree/OrchestraPitNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling OrchestraPitTreeItem.cpp"
+	@echo "Compiling OrchestraPitNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PatternEditorTreeItem_35a7d6ae.o: ../../Source/Core/Tree/PatternEditorTreeItem.cpp
+$(JUCE_OBJDIR)/PatternEditorNode_ffd5345f.o: ../../Source/Core/Tree/PatternEditorNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PatternEditorTreeItem.cpp"
+	@echo "Compiling PatternEditorNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PianoTrackTreeItem_850d2d9d.o: ../../Source/Core/Tree/PianoTrackTreeItem.cpp
+$(JUCE_OBJDIR)/PianoTrackNode_f7a15ace.o: ../../Source/Core/Tree/PianoTrackNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PianoTrackTreeItem.cpp"
+	@echo "Compiling PianoTrackNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ProjectInfo_52f6a347.o: ../../Source/Core/Tree/ProjectInfo.cpp
@@ -803,39 +823,39 @@ $(JUCE_OBJDIR)/ProjectTimeline_9655ff5a.o: ../../Source/Core/Tree/ProjectTimelin
 	@echo "Compiling ProjectTimeline.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ProjectTreeItem_334546ea.o: ../../Source/Core/Tree/ProjectTreeItem.cpp
+$(JUCE_OBJDIR)/ProjectNode_8b4c229b.o: ../../Source/Core/Tree/ProjectNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ProjectTreeItem.cpp"
+	@echo "Compiling ProjectNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/RootTreeItem_3b150bd.o: ../../Source/Core/Tree/RootTreeItem.cpp
+$(JUCE_OBJDIR)/RootNode_a3140dee.o: ../../Source/Core/Tree/RootNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling RootTreeItem.cpp"
+	@echo "Compiling RootNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/SettingsTreeItem_c1194ffe.o: ../../Source/Core/Tree/SettingsTreeItem.cpp
+$(JUCE_OBJDIR)/SettingsNode_1b17d5af.o: ../../Source/Core/Tree/SettingsNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SettingsTreeItem.cpp"
+	@echo "Compiling SettingsNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TrackGroupTreeItem_8371d50f.o: ../../Source/Core/Tree/TrackGroupTreeItem.cpp
+$(JUCE_OBJDIR)/TrackGroupNode_96578b40.o: ../../Source/Core/Tree/TrackGroupNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TrackGroupTreeItem.cpp"
+	@echo "Compiling TrackGroupNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TreeItem_3983613b.o: ../../Source/Core/Tree/TreeItem.cpp
+$(JUCE_OBJDIR)/TreeNode_364484aa.o: ../../Source/Core/Tree/TreeNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TreeItem.cpp"
+	@echo "Compiling TreeNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TreeItemChildrenSerializer_7365544c.o: ../../Source/Core/Tree/TreeItemChildrenSerializer.cpp
+$(JUCE_OBJDIR)/TreeNodeSerializer_1d017f1c.o: ../../Source/Core/Tree/TreeNodeSerializer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TreeItemChildrenSerializer.cpp"
+	@echo "Compiling TreeNodeSerializer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/VersionControlTreeItem_f871c280.o: ../../Source/Core/Tree/VersionControlTreeItem.cpp
+$(JUCE_OBJDIR)/VersionControlNode_a601d931.o: ../../Source/Core/Tree/VersionControlNode.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling VersionControlTreeItem.cpp"
+	@echo "Compiling VersionControlNode.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/AnnotationEventActions_e2dc4268.o: ../../Source/Core/Undo/Actions/AnnotationEventActions.cpp
@@ -971,6 +991,11 @@ $(JUCE_OBJDIR)/NavigationHistory_39a99bf.o: ../../Source/Core/Workspace/Navigati
 $(JUCE_OBJDIR)/RecentProjectInfo_9bf049eb.o: ../../Source/Core/Workspace/RecentProjectInfo.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling RecentProjectInfo.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SyncedConfigurationInfo_f19402c9.o: ../../Source/Core/Workspace/SyncedConfigurationInfo.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SyncedConfigurationInfo.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/UserSessionInfo_61ea4378.o: ../../Source/Core/Workspace/UserSessionInfo.cpp
@@ -1338,9 +1363,9 @@ $(JUCE_OBJDIR)/InstrumentEditorConnector_813d7c21.o: ../../Source/UI/Pages/Instr
 	@echo "Compiling InstrumentEditorConnector.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/InstrumentEditorNode_355634b8.o: ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorNode.cpp
+$(JUCE_OBJDIR)/InstrumentComponent_f2b63e3e.o: ../../Source/UI/Pages/Instruments/Editor/InstrumentComponent.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling InstrumentEditorNode.cpp"
+	@echo "Compiling InstrumentComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/InstrumentEditorPin_387238a9.o: ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.cpp
@@ -1401,6 +1426,16 @@ $(JUCE_OBJDIR)/SettingsListItemSelection_3054dbd3.o: ../../Source/UI/Pages/Setti
 $(JUCE_OBJDIR)/SettingsPage_ab9efe01.o: ../../Source/UI/Pages/Settings/SettingsPage.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SettingsPage.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SyncSettings_7b017e8d.o: ../../Source/UI/Pages/Settings/SyncSettings.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SyncSettings.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/SyncSettingsItem_6f05f040.o: ../../Source/UI/Pages/Settings/SyncSettingsItem.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling SyncSettingsItem.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ThemeSettings_1f7e5e07.o: ../../Source/UI/Pages/Settings/ThemeSettings.cpp
@@ -1871,11 +1906,6 @@ $(JUCE_OBJDIR)/ViewportKineticSlider_45304cab.o: ../../Source/UI/Themes/Viewport
 $(JUCE_OBJDIR)/MainLayout_4f58d3f.o: ../../Source/UI/MainLayout.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MainLayout.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/MainWindow_5f9c9b05.o: ../../Source/UI/MainWindow.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MainWindow.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/Common_6ff75bf4.o: ../../Source/Common.cpp

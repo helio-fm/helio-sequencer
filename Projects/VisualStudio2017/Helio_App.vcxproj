@@ -331,12 +331,15 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\BackendRequest.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\UserConfigSyncThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\ProjectDeleteThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\RevisionsSyncThread.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Network\Services\ProjectSyncService.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Services\ResourceSyncService.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Services\SessionService.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Network\Network.cpp"/>
     <ClCompile Include="..\..\Source\Core\Scripting\KeySignatureClass.cpp"/>
     <ClCompile Include="..\..\Source\Core\Scripting\NoteClass.cpp"/>
     <ClCompile Include="..\..\Source\Core\Scripting\ScaleClass.cpp"/>
@@ -350,22 +353,22 @@
     <ClCompile Include="..\..\Source\Core\Serialization\JsonSerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\LegacySerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\AudioPluginTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\InstrumentTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\MidiTrackTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\OrchestraPitTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\PatternEditorTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\PianoTrackTreeItem.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\AudioPluginNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\InstrumentNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\MidiTrackNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\OrchestraPitNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\PatternEditorNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\PianoTrackNode.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\ProjectInfo.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\ProjectTimeline.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\ProjectTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\RootTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\SettingsTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\TrackGroupTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\TreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\TreeItemChildrenSerializer.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\VersionControlTreeItem.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\ProjectNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\RootNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\SettingsNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\TrackGroupNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\TreeNode.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\TreeNodeSerializer.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\VersionControlNode.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\AnnotationEventActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\AutomationTrackActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\AutomationEventActions.cpp"/>
@@ -393,6 +396,7 @@
     <ClCompile Include="..\..\Source\Core\VCS\VersionControl.cpp"/>
     <ClCompile Include="..\..\Source\Core\Workspace\NavigationHistory.cpp"/>
     <ClCompile Include="..\..\Source\Core\Workspace\RecentProjectInfo.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Workspace\SyncedConfigurationInfo.cpp"/>
     <ClCompile Include="..\..\Source\Core\Workspace\UserSessionInfo.cpp"/>
     <ClCompile Include="..\..\Source\Core\Workspace\UserProfile.cpp"/>
     <ClCompile Include="..\..\Source\Core\Workspace\Workspace.cpp"/>
@@ -466,7 +470,7 @@
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorNode.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.cpp"/>
@@ -479,6 +483,8 @@
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsPage.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SyncSettings.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SyncSettingsItem.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettings.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettings.cpp"/>
@@ -573,7 +579,6 @@
     <ClCompile Include="..\..\Source\UI\Themes\ShadowRightwards.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainLayout.cpp"/>
-    <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
     <ClCompile Include="..\..\Source\Common.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -587,15 +592,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_CatmullRomInterpolator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_IIRFilter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_LagrangeInterpolator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\midi\juce_MidiBuffer.cpp">
@@ -668,6 +664,15 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\synthesisers\juce_Synthesiser.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_CatmullRomInterpolator.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_IIRFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp">
@@ -961,6 +966,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\pluginterfacesupport.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1127,6 +1135,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_android_Files.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_android_JNIHelpers.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_android_Misc.cpp">
@@ -1352,6 +1363,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueWithDefault.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.cpp">
@@ -2343,19 +2357,21 @@
     <ClInclude Include="..\..\Source\Core\Network\Models\UserSessionDto.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\BackendRequest.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\AuthThread.h"/>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\BaseConfigSyncThread.h"/>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\UserConfigSyncThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\ProjectCloneThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\ProjectDeleteThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncThread.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\RequestResourceThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestUserProfileThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\TokenCheckThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\TokenUpdateThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\UpdatesCheckThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Services\BackendService.h"/>
+    <ClInclude Include="..\..\Source\Core\Network\Services\ProjectSyncService.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Services\ResourceSyncService.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Services\SessionService.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\HelioApiRoutes.h"/>
+    <ClInclude Include="..\..\Source\Core\Network\Network.h"/>
     <ClInclude Include="..\..\Source\Core\Scripting\KeySignatureClass.h"/>
     <ClInclude Include="..\..\Source\Core\Scripting\NoteClass.h"/>
     <ClInclude Include="..\..\Source\Core\Scripting\ScaleClass.h"/>
@@ -2374,26 +2390,26 @@
     <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\LegacySerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\AudioPluginTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\InstrumentTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\MidiTrackTreeItem.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\AudioPluginNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\InstrumentNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\MidiTrackNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\MidiTrackSource.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\OrchestraPitTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\PatternEditorTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\PianoTrackTreeItem.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\OrchestraPitNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\PatternEditorNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\PianoTrackNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectInfo.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectTimeline.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectEventDispatcher.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectListener.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\ProjectTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\RootTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\SafeTreeItemPointer.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\SettingsTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\TrackGroupTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\TreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\TreeItemChildrenSerializer.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\VersionControlTreeItem.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\ProjectNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\RootNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\SafeNodePointer.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\SettingsNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\TrackGroupNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\TreeNode.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\TreeNodeSerializer.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\VersionControlNode.h"/>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\AnnotationEventActions.h"/>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\AutomationTrackActions.h"/>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\AutomationEventActions.h"/>
@@ -2424,6 +2440,7 @@
     <ClInclude Include="..\..\Source\Core\VCS\VersionControl.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\NavigationHistory.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\RecentProjectInfo.h"/>
+    <ClInclude Include="..\..\Source\Core\Workspace\SyncedConfigurationInfo.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\UserSessionInfo.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\UserProfile.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\Workspace.h"/>
@@ -2435,6 +2452,7 @@
     <ClInclude Include="..\..\Source\UI\Common\Origami\OrigamiHorizontal.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\OrigamiVertical.h"/>
     <ClInclude Include="..\..\Source\UI\Common\CachedLabelImage.h"/>
+    <ClInclude Include="..\..\Source\UI\Common\ScaledComponentProxy.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ColourButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ColourSwatches.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ColourIDs.h"/>
@@ -2513,7 +2531,7 @@
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorNode.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.h"/>
@@ -2526,6 +2544,8 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SyncSettings.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SyncSettingsItem.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettings.h"/>
@@ -2631,7 +2651,6 @@
     <ClInclude Include="..\..\Source\UI\Themes\ShadowRightwards.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\ViewportKineticSlider.h"/>
     <ClInclude Include="..\..\Source\UI\MainLayout.h"/>
-    <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
     <ClInclude Include="..\..\Source\Common.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\audio_play_head\juce_AudioPlayHead.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.h"/>
@@ -2639,12 +2658,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioProcessLoadMeasurer.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_CatmullRomInterpolator.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_Decibels.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_IIRFilter.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_LagrangeInterpolator.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_LinearSmoothedValue.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_Reverb.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\midi\juce_MidiBuffer.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\midi\juce_MidiFile.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\midi\juce_MidiKeyboardState.h"/>
@@ -2672,6 +2685,13 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_ReverbAudioSource.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_ToneGeneratorAudioSource.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\synthesisers\juce_Synthesiser.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_ADSR.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_CatmullRomInterpolator.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_Decibels.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_IIRFilter.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LinearSmoothedValue.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_Reverb.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioDeviceManager.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODevice.h"/>
@@ -2809,6 +2829,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\istringresult.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\iupdatehandler.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\smartpointer.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\typesizecheck.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui\iplugview.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\gui\iplugviewcontentscalesupport.h"/>
@@ -2824,8 +2845,11 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstinterappaudio.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmessage.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmidicontrollers.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstmidilearn.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstnoteexpression.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstparameterchanges.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstphysicalui.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstpluginterfacesupport.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstplugview.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstprefetchablesupport.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\ivstprocesscontext.h"/>
@@ -2834,18 +2858,17 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstpshpack4.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstspeaker.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffect.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffectx.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstfxstore.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\pluginterfacesupport.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstbus.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponent.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstcomponentbase.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vsteditcontroller.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstparameters.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\vestige\vestige.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_VST3Common.h"/>
@@ -2934,8 +2957,8 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_android_JNIHelpers.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_BasicNativeHeaders.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_mac_ClangBugWorkaround.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_mac_linux_IPAddress.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_osx_ObjCHelpers.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_posix_IPAddress.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_posix_SharedCode.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\native\juce_win32_ComSmartPtr.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\network\juce_IPAddress.h"/>
@@ -3407,6 +3430,7 @@
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\LICENSE.txt"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\LICENSE.txt"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\README.md"/>
+    <None Include="..\..\ThirdParty\JUCE\modules\juce_core\native\java\README.txt"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\libpng_readme.txt"/>
     <None Include=".\icon.ico"/>
