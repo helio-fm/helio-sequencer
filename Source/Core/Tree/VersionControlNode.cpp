@@ -16,9 +16,9 @@
 */
 
 #include "Common.h"
-#include "VersionControlTreeItem.h"
-#include "TreeItemChildrenSerializer.h"
-#include "ProjectTreeItem.h"
+#include "VersionControlNode.h"
+#include "TreeNodeSerializer.h"
+#include "ProjectNode.h"
 #include "VersionControl.h"
 #include "Head.h"
 #include "ProjectInfo.h"
@@ -33,26 +33,26 @@
 #include "Network.h"
 #include "ProjectSyncService.h"
 
-VersionControlTreeItem::VersionControlTreeItem() :
-    TreeItem("Versions", Serialization::Core::versionControl),
+VersionControlNode::VersionControlNode() :
+    TreeNode("Versions", Serialization::Core::versionControl),
     vcs(nullptr)
 {
     this->initVCS();
     this->initEditor();
 }
 
-VersionControlTreeItem::~VersionControlTreeItem()
+VersionControlNode::~VersionControlNode()
 {
     this->shutdownEditor();
     this->shutdownVCS();
 }
 
-Image VersionControlTreeItem::getIcon() const noexcept
+Image VersionControlNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::versionControl, HEADLINE_ICON_SIZE);
 }
 
-void VersionControlTreeItem::showPage()
+void VersionControlNode::showPage()
 {
     if (this->vcs == nullptr)
     {
@@ -71,13 +71,13 @@ void VersionControlTreeItem::showPage()
     }
 }
 
-void VersionControlTreeItem::recreatePage()
+void VersionControlNode::recreatePage()
 {
     this->shutdownEditor();
     this->initEditor();
 }
 
-String VersionControlTreeItem::getName() const noexcept
+String VersionControlNode::getName() const noexcept
 {
     return TRANS("tree::vcs");
 }
@@ -100,7 +100,7 @@ static void countStatsFor(const VCS::Revision::Ptr rootRevision, int &numRevisio
     }
 }
 
-String VersionControlTreeItem::getStatsString() const
+String VersionControlNode::getStatsString() const
 {
     if (this->vcs)
     {
@@ -121,9 +121,9 @@ String VersionControlTreeItem::getStatsString() const
 // Version Control
 //===----------------------------------------------------------------------===//
 
-void VersionControlTreeItem::commitProjectInfo()
+void VersionControlNode::commitProjectInfo()
 {
-    const auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    const auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs != nullptr)
     {
         this->vcs->quickAmendItem(parentProject->getProjectInfo());
@@ -131,7 +131,7 @@ void VersionControlTreeItem::commitProjectInfo()
     }
 }
 
-void VersionControlTreeItem::toggleQuickStash()
+void VersionControlNode::toggleQuickStash()
 {
     if (! this->vcs)
     { return; }
@@ -168,7 +168,7 @@ void VersionControlTreeItem::toggleQuickStash()
 // Tree
 //===----------------------------------------------------------------------===//
 
-void VersionControlTreeItem::onItemAddedToTree(bool sendNotifications)
+void VersionControlNode::onItemAddedToTree(bool sendNotifications)
 {
     // Could be still uninitialized at this moment
     if (this->vcs == nullptr)
@@ -178,7 +178,7 @@ void VersionControlTreeItem::onItemAddedToTree(bool sendNotifications)
     }
 }
 
-void VersionControlTreeItem::onItemDeletedFromTree(bool sendNotifications)
+void VersionControlNode::onItemDeletedFromTree(bool sendNotifications)
 {
     this->shutdownEditor();
     this->shutdownVCS();
@@ -188,12 +188,12 @@ void VersionControlTreeItem::onItemDeletedFromTree(bool sendNotifications)
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool VersionControlTreeItem::hasMenu() const noexcept
+bool VersionControlNode::hasMenu() const noexcept
 {
     return this->vcs != nullptr;
 }
 
-ScopedPointer<Component> VersionControlTreeItem::createMenu()
+ScopedPointer<Component> VersionControlNode::createMenu()
 {
     if (this->vcs != nullptr)
     {
@@ -207,9 +207,9 @@ ScopedPointer<Component> VersionControlTreeItem::createMenu()
 // Network
 //===----------------------------------------------------------------------===//
 
-void VersionControlTreeItem::cloneProject()
+void VersionControlNode::cloneProject()
 {
-    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs != nullptr)
     {
         App::Network().getProjectSyncService()->
@@ -221,21 +221,21 @@ void VersionControlTreeItem::cloneProject()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VersionControlTreeItem::serialize() const
+ValueTree VersionControlNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
+    ValueTree tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
 
     if (this->vcs != nullptr)
     {
         tree.appendChild(this->vcs->serialize(), nullptr);
     }
 
-    TreeItemChildrenSerializer::serializeChildren(*this, tree);
+    TreeNodeSerializer::serializeChildren(*this, tree);
     return tree;
 }
 
-void VersionControlTreeItem::deserialize(const ValueTree &tree)
+void VersionControlNode::deserialize(const ValueTree &tree)
 {
     this->reset();
 
@@ -248,23 +248,23 @@ void VersionControlTreeItem::deserialize(const ValueTree &tree)
     }
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(tree);
+    TreeNode::deserialize(tree);
 }
 
-void VersionControlTreeItem::reset()
+void VersionControlNode::reset()
 {
     if (this->vcs != nullptr)
     {
         this->vcs->reset();
     }
 
-    TreeItem::reset();
+    TreeNode::reset();
 }
 
 
-void VersionControlTreeItem::initVCS()
+void VersionControlNode::initVCS()
 {
-    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs == nullptr)
     {
         this->vcs.reset(new VersionControl(*parentProject));
@@ -273,9 +273,9 @@ void VersionControlTreeItem::initVCS()
     }
 }
 
-void VersionControlTreeItem::shutdownVCS()
+void VersionControlNode::shutdownVCS()
 {
-    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs != nullptr)
     {
         parentProject->removeChangeListener(this->vcs.get());
@@ -283,11 +283,11 @@ void VersionControlTreeItem::shutdownVCS()
     }
 }
 
-void VersionControlTreeItem::initEditor()
+void VersionControlNode::initEditor()
 {
     this->shutdownEditor();
     
-    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs != nullptr)
     {
         this->editor.reset(this->vcs->createEditor());
@@ -296,9 +296,9 @@ void VersionControlTreeItem::initEditor()
     }
 }
 
-void VersionControlTreeItem::shutdownEditor()
+void VersionControlNode::shutdownEditor()
 {
-    auto *parentProject = this->findParentOfType<ProjectTreeItem>();
+    auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs != nullptr && this->editor != nullptr)
     {
         parentProject->removeChangeListener(this->editor.get());

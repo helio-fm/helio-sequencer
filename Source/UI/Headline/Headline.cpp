@@ -93,7 +93,7 @@ void Headline::resized()
 void Headline::handleAsyncUpdate()
 {
     int posX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
-    TreeItem *previousItem = nullptr;
+    TreeNode *previousItem = nullptr;
 
     const bool hasSelectionItem = this->selectionItem != nullptr &&
         !this->selectionItem->getDataSource().wasObjectDeleted();
@@ -102,11 +102,11 @@ void Headline::handleAsyncUpdate()
     {
         HeadlineItem *child = this->chain.getUnchecked(i);
 
-        TreeItem *treeItem = static_cast<TreeItem *>(child->getDataSource().get());
+        TreeNode *treeItem = static_cast<TreeNode *>(child->getDataSource().get());
         if (treeItem == nullptr || (previousItem != nullptr && treeItem->getParentItem() != previousItem))
         {
             // An item inserted or removed, need to re-sync the whole chain:
-            TreeItem *lastItem = static_cast<TreeItem *>(this->chain.getLast()->getDataSource().get());
+            TreeNode *lastItem = static_cast<TreeNode *>(this->chain.getLast()->getDataSource().get());
             jassert(lastItem != nullptr);
             posX = this->rebuildChain(lastItem);
             if (hasSelectionItem)
@@ -118,7 +118,7 @@ void Headline::handleAsyncUpdate()
             break;
         }
 
-        previousItem = static_cast<TreeItem *>(treeItem);
+        previousItem = static_cast<TreeNode *>(treeItem);
 
         const auto boundsBefore = child->getBounds();
         child->updateContent();
@@ -143,18 +143,18 @@ void Headline::handleAsyncUpdate()
     }
 }
 
-Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
+Array<TreeNode *> createSortedBranchArray(WeakReference<TreeNode> leaf)
 {
-    Array<TreeItem *> items;
-    TreeItem *item = leaf;
+    Array<TreeNode *> items;
+    TreeNode *item = leaf;
     items.add(item);
     while (item->getParentItem() != nullptr)
     {
-        item = static_cast<TreeItem *>(item->getParentItem());
+        item = static_cast<TreeNode *>(item->getParentItem());
         items.add(item);
     }
 
-    Array<TreeItem *> result;
+    Array<TreeNode *> result;
     for (int i = items.size(); i --> 0; )
     {
         result.add(items[i]);
@@ -163,7 +163,7 @@ Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
     return result;
 }
 
-void Headline::syncWithTree(NavigationHistory &navHistory, WeakReference<TreeItem> leaf)
+void Headline::syncWithTree(NavigationHistory &navHistory, WeakReference<TreeNode> leaf)
 {
     // Removes selection menu item, if any
     this->hideSelectionMenu();
@@ -171,10 +171,10 @@ void Headline::syncWithTree(NavigationHistory &navHistory, WeakReference<TreeIte
     this->navPanel->updateState(navHistory.canGoBackward(), navHistory.canGoForward());
 }
 
-int Headline::rebuildChain(WeakReference<TreeItem> leaf)
+int Headline::rebuildChain(WeakReference<TreeNode> leaf)
 {
     const float startingAlpha = this->getAlphaForAnimation();
-    Array<TreeItem *> branch = createSortedBranchArray(leaf);
+    Array<TreeNode *> branch = createSortedBranchArray(leaf);
 
     // Finds the first inconsistency point in the chain
     int firstInvalidUnitIndex = 0;

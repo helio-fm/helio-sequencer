@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "AutomationTrackActions.h"
 #include "MidiTrackSource.h"
-#include "AutomationTrackTreeItem.h"
+#include "AutomationTrackNode.h"
 #include "SerializationKeys.h"
 
 //===----------------------------------------------------------------------===//
@@ -26,11 +26,11 @@
 //===----------------------------------------------------------------------===//
 
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) noexcept :
+    WeakReference<TreeNode> parentTreeItem) noexcept :
     UndoAction(source), parentTreeItem(parentTreeItem) {}
 
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem,
+    WeakReference<TreeNode> parentTreeItem,
     ValueTree targetSerializedState,
     const String &xPath) noexcept :
     UndoAction(source),
@@ -40,7 +40,7 @@ AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source
 
 bool AutomationTrackInsertAction::perform()
 {
-    MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
+    MidiTrackNode *track = new AutomationTrackNode("empty");
     track->deserialize(this->trackState);
     this->parentTreeItem->addChildTreeItem(track);
 
@@ -52,8 +52,8 @@ bool AutomationTrackInsertAction::perform()
 
 bool AutomationTrackInsertAction::undo()
 {
-    if (AutomationTrackTreeItem *treeItem =
-        this->source.findTrackById<AutomationTrackTreeItem>(this->trackId))
+    if (AutomationTrackNode *treeItem =
+        this->source.findTrackById<AutomationTrackNode>(this->trackId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
@@ -96,11 +96,11 @@ void AutomationTrackInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) noexcept :
+    WeakReference<TreeNode> parentTreeItem) noexcept :
     UndoAction(source), parentTreeItem(parentTreeItem) {}
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem, const String &trackId) noexcept :
+    WeakReference<TreeNode> parentTreeItem, const String &trackId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackId(trackId),
@@ -108,8 +108,8 @@ AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source
 
 bool AutomationTrackRemoveAction::perform()
 {
-    if (AutomationTrackTreeItem *treeItem =
-        this->source.findTrackById<AutomationTrackTreeItem>(this->trackId))
+    if (AutomationTrackNode *treeItem =
+        this->source.findTrackById<AutomationTrackNode>(this->trackId))
     {
         this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
@@ -124,7 +124,7 @@ bool AutomationTrackRemoveAction::undo()
 {
     if (this->serializedTreeItem.isValid())
     {
-        MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
+        MidiTrackNode *track = new AutomationTrackNode("empty");
         track->deserialize(this->serializedTreeItem);
         this->parentTreeItem->addChildTreeItem(track);
         track->setTrackName(this->trackName, true);

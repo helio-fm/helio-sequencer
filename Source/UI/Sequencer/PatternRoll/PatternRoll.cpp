@@ -22,11 +22,11 @@
 #include "AudioCore.h"
 #include "HybridRollHeader.h"
 #include "Pattern.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
-#include "VersionControlTreeItem.h"
-#include "PatternEditorTreeItem.h"
-#include "ProjectTreeItem.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
+#include "VersionControlNode.h"
+#include "PatternEditorNode.h"
+#include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "ClipComponent.h"
 #include "SmoothZoomController.h"
@@ -68,7 +68,7 @@ inline static constexpr int rowHeight()
 //    }
 //}
 
-PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
+PatternRoll::PatternRoll(ProjectNode &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true),
@@ -94,7 +94,7 @@ void PatternRoll::selectAll()
 }
 
 static ClipComponent *createClipComponentFor(MidiTrack *track,
-    const Clip &clip, ProjectTreeItem &project, HybridRoll &roll)
+    const Clip &clip, ProjectNode &project, HybridRoll &roll)
 {
     auto *sequence = track->getSequence();
     jassert(sequence != nullptr);
@@ -582,7 +582,7 @@ void PatternRoll::handleCommandMessage(int commandId)
                 }
             }
 
-            auto *trackNode = this->project.findTrackById<MidiTrackTreeItem>(trackId);
+            auto *trackNode = this->project.findTrackById<MidiTrackNode>(trackId);
             auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
             inputDialog->onOk = trackNode->getRenameCallback();
             App::Layout().showModalComponentUnowned(inputDialog.release());

@@ -19,7 +19,7 @@
 #include "MenuPanel.h"
 
 #include "MainLayout.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "PlayerThread.h"
 #include "Icons.h"
 #include "HybridRoll.h"

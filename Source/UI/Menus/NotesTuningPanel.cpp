@@ -28,7 +28,7 @@
 #include "MidiTrack.h"
 #include "MidiSequence.h"
 #include "NoteComponent.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Transport.h"
 #include "CommandIDs.h"
 #include "MenuItemComponent.h"
@@ -124,7 +124,7 @@ private:
 
 //[/MiscUserDefs]
 
-NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &targetRoll)
+NotesTuningPanel::NotesTuningPanel(ProjectNode &parentProject, PianoRoll &targetRoll)
     : roll(targetRoll),
       project(parentProject),
       hasMadeChanges(false)
@@ -470,7 +470,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="NotesTuningPanel" template="../../Template"
                  componentName="" parentClasses="public Component, public ChangeBroadcaster, private TransportListener"
-                 constructorParams="ProjectTreeItem &amp;parentProject, PianoRoll &amp;targetRoll"
+                 constructorParams="ProjectNode &amp;parentProject, PianoRoll &amp;targetRoll"
                  variableInitialisers="roll(targetRoll),&#10;project(parentProject),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="250" initialHeight="222">

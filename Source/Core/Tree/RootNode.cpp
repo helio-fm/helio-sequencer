@@ -16,16 +16,16 @@
 */
 
 #include "Common.h"
-#include "RootTreeItem.h"
+#include "RootNode.h"
 
-#include "TreeItemChildrenSerializer.h"
-#include "ProjectTreeItem.h"
+#include "TreeNodeSerializer.h"
+#include "ProjectNode.h"
 #include "ProjectTimeline.h"
-#include "VersionControlTreeItem.h"
-#include "PatternEditorTreeItem.h"
-#include "TrackGroupTreeItem.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
+#include "VersionControlNode.h"
+#include "PatternEditorNode.h"
+#include "TrackGroupNode.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
 
 #include "Pattern.h"
 #include "MidiTrack.h"
@@ -41,21 +41,21 @@
 #include "Workspace.h"
 #include "Icons.h"
 
-RootTreeItem::RootTreeItem(const String &name) :
-    TreeItem(name, Serialization::Core::root) {}
+RootNode::RootNode(const String &name) :
+    TreeNode(name, Serialization::Core::root) {}
 
-String RootTreeItem::getName() const noexcept
+String RootNode::getName() const noexcept
 {
     // TODO: if user is logged in, show his name rather than default value?
     return TRANS("tree::root");
 }
 
-Image RootTreeItem::getIcon() const noexcept
+Image RootNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::helio, HEADLINE_ICON_SIZE);
 }
 
-void RootTreeItem::showPage()
+void RootNode::showPage()
 {
     if (this->dashboard == nullptr)
     {
@@ -65,7 +65,7 @@ void RootTreeItem::showPage()
     App::Layout().showPage(this->dashboard, this);
 }
 
-void RootTreeItem::recreatePage()
+void RootNode::recreatePage()
 {
     this->dashboard = new Dashboard(App::Layout());
 }
@@ -74,16 +74,16 @@ void RootTreeItem::recreatePage()
 // Children
 //===----------------------------------------------------------------------===//
 
-ProjectTreeItem *RootTreeItem::openProject(const File &file)
+ProjectNode *RootNode::openProject(const File &file)
 {
-    const auto myProjects(this->findChildrenOfType<ProjectTreeItem>());
+    const auto myProjects(this->findChildrenOfType<ProjectNode>());
 
     // first check for duplicates (full path)
     for (auto *myProject : myProjects)
     {
         if (myProject->getDocument()->getFullPath() == file.getFullPathName())
         {
-            myProject->selectChildOfType<PianoTrackTreeItem>();
+            myProject->selectChildOfType<PianoTrackNode>();
             return nullptr;
         }
     }
@@ -91,7 +91,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
     DBG("Opening project: " + file.getFullPathName());
     if (file.existsAsFile())
     {
-        UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(file));
+        UniquePointer<ProjectNode> project(new ProjectNode(file));
         this->addChildTreeItem(project.get(), 1);
 
         if (!project->getDocument()->load(file.getFullPathName()))
@@ -104,32 +104,32 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file)
         {
             if (myProject->getId() == project->getId())
             {
-                myProject->selectChildOfType<PianoTrackTreeItem>();
+                myProject->selectChildOfType<PianoTrackNode>();
                 return nullptr;
             }
         }
 
         App::Workspace().autosave();
 
-        project->selectChildOfType<PianoTrackTreeItem>();
+        project->selectChildOfType<PianoTrackNode>();
         return project.release();
     }
 
     return nullptr;
 }
 
-ProjectTreeItem *RootTreeItem::checkoutProject(const String &id, const String &name)
+ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
 {
     DBG("Cloning project: " + name);
     if (id.isNotEmpty())
     {
         // construct a stub project with no first revision and no tracks,
         // only the essential stuff it will need anyway:
-        UniquePointer<ProjectTreeItem> project(new ProjectTreeItem(name, id));
+        UniquePointer<ProjectNode> project(new ProjectNode(name, id));
         this->addChildTreeItem(project.get(), 1);
-        UniquePointer<VersionControlTreeItem> vcs(new VersionControlTreeItem());
+        UniquePointer<VersionControlNode> vcs(new VersionControlNode());
         project->addChildTreeItem(vcs.get());
-        project->addChildTreeItem(new PatternEditorTreeItem());
+        project->addChildTreeItem(new PatternEditorNode());
         vcs->cloneProject();
         vcs.release();
         return project.release();
@@ -139,26 +139,26 @@ ProjectTreeItem *RootTreeItem::checkoutProject(const String &id, const String &n
 }
 
 // this one is for desktops
-ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
+ProjectNode *RootNode::addDefaultProject(const File &projectLocation)
 {
     this->setOpen(true);
-    auto *newProject = new ProjectTreeItem(projectLocation);
+    auto *newProject = new ProjectNode(projectLocation);
     this->addChildTreeItem(newProject);
     return this->createDefaultProjectChildren(newProject);
 }
 
 // this one is for mobiles, where we don't have file chooser dialog
-ProjectTreeItem *RootTreeItem::addDefaultProject(const String &projectName)
+ProjectNode *RootNode::addDefaultProject(const String &projectName)
 {
     this->setOpen(true);
-    auto *newProject = new ProjectTreeItem(projectName);
+    auto *newProject = new ProjectNode(projectName);
     this->addChildTreeItem(newProject);
     return this->createDefaultProjectChildren(newProject);
 }
 
-static VersionControlTreeItem *addVCS(TreeItem *parent)
+static VersionControlNode *addVCS(TreeNode *parent)
 {
-    auto vcs = new VersionControlTreeItem();
+    auto vcs = new VersionControlNode();
     parent->addChildTreeItem(vcs);
 
     // при создании рутовой ноды vcs, туда надо первым делом коммитить пустой ProjectInfo,
@@ -168,18 +168,18 @@ static VersionControlTreeItem *addVCS(TreeItem *parent)
     return vcs;
 }
 
-static PianoTrackTreeItem *addPianoTrack(TreeItem *parent, const String &name)
+static PianoTrackNode *addPianoTrack(TreeNode *parent, const String &name)
 {
-    auto *item = new PianoTrackTreeItem(name);
+    auto *item = new PianoTrackNode(name);
     const Clip clip(item->getPattern());
     item->getPattern()->insert(clip, false);
     parent->addChildTreeItem(item);
     return item;
 }
 
-static MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
+static MidiTrackNode *addAutoLayer(TreeNode *parent, const String &name, int controllerNumber)
 {
-    auto *item = new AutomationTrackTreeItem(name);
+    auto *item = new AutomationTrackNode(name);
     const Clip clip(item->getPattern());
     item->getPattern()->insert(clip, false);
     item->setTrackControllerNumber(controllerNumber, false);
@@ -190,19 +190,19 @@ static MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int
     return item;
 }
 
-void RootTreeItem::importMidi(const File &file)
+void RootNode::importMidi(const File &file)
 {
-    auto *project = new ProjectTreeItem(file.getFileNameWithoutExtension());
+    auto *project = new ProjectNode(file.getFileNameWithoutExtension());
     this->addChildTreeItem(project);
     addVCS(project);
     project->importMidi(file);
 }
 
 // someday this all should be reworked into xml/json template based generator:
-ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *project)
+ProjectNode *RootNode::createDefaultProjectChildren(ProjectNode *project)
 {
     addVCS(project);
-    project->addChildTreeItem(new PatternEditorTreeItem());
+    project->addChildTreeItem(new PatternEditorNode());
 
     {
         auto *t1 = addPianoTrack(project, "Melodic");
@@ -252,12 +252,12 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *pro
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool RootTreeItem::hasMenu() const noexcept
+bool RootNode::hasMenu() const noexcept
 {
     return true;
 }
 
-ScopedPointer<Component> RootTreeItem::createMenu()
+ScopedPointer<Component> RootNode::createMenu()
 {
     return new WorkspaceMenu(App::Workspace());
 }
@@ -266,13 +266,13 @@ ScopedPointer<Component> RootTreeItem::createMenu()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void RootTreeItem::deserialize(const ValueTree &tree)
+void RootNode::deserialize(const ValueTree &tree)
 {
-    const auto root = tree.hasType(Serialization::Core::treeItem) ?
-        tree : tree.getChildWithName(Serialization::Core::treeItem);
+    const auto root = tree.hasType(Serialization::Core::treeNode) ?
+        tree : tree.getChildWithName(Serialization::Core::treeNode);
 
     if (root.isValid())
     {
-        TreeItem::deserialize(root);
+        TreeNode::deserialize(root);
     }
 }

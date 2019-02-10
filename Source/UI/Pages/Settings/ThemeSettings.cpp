@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "SerializationKeys.h"
-#include "ProjectTreeItem.h"
 #include "BinaryData.h"
 #include "ThemeSettingsItem.h"
 #include "MenuPanel.h"

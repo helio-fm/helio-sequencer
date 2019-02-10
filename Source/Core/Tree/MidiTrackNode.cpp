@@ -16,11 +16,11 @@
 */
 
 #include "Common.h"
-#include "MidiTrackTreeItem.h"
-#include "TrackGroupTreeItem.h"
+#include "MidiTrackNode.h"
+#include "TrackGroupNode.h"
 
-#include "TreeItemChildrenSerializer.h"
-#include "ProjectTreeItem.h"
+#include "TreeNodeSerializer.h"
+#include "ProjectNode.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Icons.h"
@@ -31,7 +31,7 @@
 #include "PianoRoll.h"
 #include "Note.h"
 
-#include "InstrumentTreeItem.h"
+#include "InstrumentNode.h"
 #include "Instrument.h"
 
 #include "MidiTrackMenu.h"
@@ -39,8 +39,8 @@
 #include "UndoStack.h"
 #include "MidiTrackActions.h"
 
-MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type) :
-    TreeItem(name, type),
+MidiTrackNode::MidiTrackNode(const String &name, const Identifier &type) :
+    TreeNode(name, type),
     id(Uuid().toString()),
     colour(Colours::white),
     channel(1),
@@ -48,25 +48,25 @@ MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type)
     mute(false),
     solo(false)
 {
-    this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
+    this->lastFoundParent = this->findParentOfType<ProjectNode>();
     // do not dispatch new track events here,
     // as newly created track is not attached to any parent
 }
 
-MidiTrackTreeItem::~MidiTrackTreeItem()
+MidiTrackNode::~MidiTrackNode()
 {
 
 }
 
-void MidiTrackTreeItem::showPage()
+void MidiTrackNode::showPage()
 {
-    if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
+    if (ProjectNode *parentProject = this->findParentOfType<ProjectNode>())
     {
         parentProject->showLinearEditor(this, this);
     }
 }
 
-void MidiTrackTreeItem::safeRename(const String &newName, bool sendNotifications)
+void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
 {
     String fixedName = newName.replace("\\", "/");
     
@@ -78,7 +78,7 @@ void MidiTrackTreeItem::safeRename(const String &newName, bool sendNotifications
     this->setXPath(fixedName, sendNotifications);
 }
 
-void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence, short timeFormat)
+void MidiTrackNode::importMidi(const MidiMessageSequence &sequence, short timeFormat)
 {
     this->sequence->importMidi(sequence, timeFormat);
 }
@@ -87,12 +87,12 @@ void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence, short ti
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//
 
-String MidiTrackTreeItem::getVCSName() const
+String MidiTrackNode::getVCSName() const
 {
     return this->getXPath();
 }
 
-ValueTree MidiTrackTreeItem::serializeClipsDelta() const
+ValueTree MidiTrackNode::serializeClipsDelta() const
 {
     ValueTree tree(Serialization::VCS::PatternDeltas::clipsAdded);
 
@@ -105,7 +105,7 @@ ValueTree MidiTrackTreeItem::serializeClipsDelta() const
     return tree;
 }
 
-void MidiTrackTreeItem::resetClipsDelta(const ValueTree &state)
+void MidiTrackNode::resetClipsDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::PatternDeltas::clipsAdded));
 
@@ -125,27 +125,27 @@ void MidiTrackTreeItem::resetClipsDelta(const ValueTree &state)
 // MidiTrack
 //===----------------------------------------------------------------------===//
 
-const String &MidiTrackTreeItem::getTrackId() const noexcept
+const String &MidiTrackNode::getTrackId() const noexcept
 {
     return this->id;
 }
 
-void MidiTrackTreeItem::setTrackId(const String &val)
+void MidiTrackNode::setTrackId(const String &val)
 {
     this->id = val;
 }
 
-String MidiTrackTreeItem::getTrackName() const noexcept
+String MidiTrackNode::getTrackName() const noexcept
 {
     return this->getXPath();
 }
 
-int MidiTrackTreeItem::getTrackChannel() const noexcept
+int MidiTrackNode::getTrackChannel() const noexcept
 {
     return this->channel;
 }
 
-void MidiTrackTreeItem::setTrackName(const String &val, bool sendNotifications)
+void MidiTrackNode::setTrackName(const String &val, bool sendNotifications)
 {
     this->safeRename(val, sendNotifications);
     if (sendNotifications)
@@ -155,12 +155,12 @@ void MidiTrackTreeItem::setTrackName(const String &val, bool sendNotifications)
     }
 }
 
-Colour MidiTrackTreeItem::getTrackColour() const noexcept
+Colour MidiTrackNode::getTrackColour() const noexcept
 {
     return this->colour;
 }
 
-void MidiTrackTreeItem::setTrackColour(const Colour &val, bool sendNotifications)
+void MidiTrackNode::setTrackColour(const Colour &val, bool sendNotifications)
 {
     if (this->colour != val)
     {
@@ -173,12 +173,12 @@ void MidiTrackTreeItem::setTrackColour(const Colour &val, bool sendNotifications
     }
 }
 
-String MidiTrackTreeItem::getTrackInstrumentId() const noexcept
+String MidiTrackNode::getTrackInstrumentId() const noexcept
 {
     return this->instrumentId;
 }
 
-void MidiTrackTreeItem::setTrackInstrumentId(const String &val, bool sendNotifications)
+void MidiTrackNode::setTrackInstrumentId(const String &val, bool sendNotifications)
 {
     if (this->instrumentId != val)
     {
@@ -192,12 +192,12 @@ void MidiTrackTreeItem::setTrackInstrumentId(const String &val, bool sendNotific
     }
 }
 
-int MidiTrackTreeItem::getTrackControllerNumber() const noexcept
+int MidiTrackNode::getTrackControllerNumber() const noexcept
 {
     return this->controllerNumber;
 }
 
-void MidiTrackTreeItem::setTrackControllerNumber(int val, bool sendNotifications)
+void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
 {
     if (this->controllerNumber != val)
     {
@@ -211,12 +211,12 @@ void MidiTrackTreeItem::setTrackControllerNumber(int val, bool sendNotifications
     }
 }
 
-bool MidiTrackTreeItem::isTrackMuted() const noexcept
+bool MidiTrackNode::isTrackMuted() const noexcept
 {
     return this->mute;
 }
 
-void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted, bool sendNotifications)
+void MidiTrackNode::setTrackMuted(bool shouldBeMuted, bool sendNotifications)
 {
     if (this->mute != shouldBeMuted)
     {
@@ -229,12 +229,12 @@ void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted, bool sendNotifications
     }
 }
 
-MidiSequence *MidiTrackTreeItem::getSequence() const noexcept
+MidiSequence *MidiTrackNode::getSequence() const noexcept
 {
     return this->sequence;
 }
 
-Pattern *MidiTrackTreeItem::getPattern() const noexcept
+Pattern *MidiTrackNode::getPattern() const noexcept
 {
     return this->pattern;
 }
@@ -243,7 +243,7 @@ Pattern *MidiTrackTreeItem::getPattern() const noexcept
 // ProjectEventDispatcher
 //===----------------------------------------------------------------------===//
 
-String MidiTrackTreeItem::getXPath() const noexcept
+String MidiTrackNode::getXPath() const noexcept
 {
     const TreeViewItem *rootItem = this;
     String xpath = this->getName();
@@ -252,17 +252,17 @@ String MidiTrackTreeItem::getXPath() const noexcept
     {
         rootItem = item;
 
-        if (ProjectTreeItem *parentProject = dynamic_cast<ProjectTreeItem *>(item))
+        if (ProjectNode *parentProject = dynamic_cast<ProjectNode *>(item))
         { return xpath; }
 
-        if (TreeItem *treeItem = dynamic_cast<TreeItem *>(item))
-        { xpath = treeItem->getName() + TreeItem::xPathSeparator + xpath; }
+        if (TreeNode *treeItem = dynamic_cast<TreeNode *>(item))
+        { xpath = treeItem->getName() + TreeNode::xPathSeparator + xpath; }
     }
 
     return xpath;
 }
 
-void MidiTrackTreeItem::setXPath(const String &path, bool sendNotifications)
+void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
 {
     if (path == this->getXPath())
     {
@@ -272,9 +272,9 @@ void MidiTrackTreeItem::setXPath(const String &path, bool sendNotifications)
     // Split path and move the item into a target place in a tree
     // If no matching groups found, create them
 
-    StringArray parts(StringArray::fromTokens(path, TreeItem::xPathSeparator, "'"));
+    StringArray parts(StringArray::fromTokens(path, TreeNode::xPathSeparator, "'"));
 
-    TreeItem *rootItem = this->lastFoundParent;
+    TreeNode *rootItem = this->lastFoundParent;
 
     jassert(rootItem != nullptr);
     jassert(parts.size() >= 1);
@@ -286,7 +286,7 @@ void MidiTrackTreeItem::setXPath(const String &path, bool sendNotifications)
 
         for (int j = 0; j < rootItem->getNumSubItems(); ++j)
         {
-            if (TrackGroupTreeItem *group = dynamic_cast<TrackGroupTreeItem *>(rootItem->getSubItem(j)))
+            if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootItem->getSubItem(j)))
             {
                 if (group->getName() == parts[i])
                 {
@@ -299,14 +299,14 @@ void MidiTrackTreeItem::setXPath(const String &path, bool sendNotifications)
 
         if (! foundSubGroup)
         {
-            auto group = new TrackGroupTreeItem(parts[i]);
+            auto group = new TrackGroupNode(parts[i]);
             rootItem->addChildTreeItem(group);
             group->sortByNameAmongSiblings();
             rootItem = group;
         }
     }
 
-    this->name = TreeItem::createSafeName(parts[parts.size() - 1]);
+    this->name = TreeNode::createSafeName(parts[parts.size() - 1]);
 
     this->getParentItem()->removeSubItem(this->getIndexInParent(), false);
 
@@ -319,11 +319,11 @@ void MidiTrackTreeItem::setXPath(const String &path, bool sendNotifications)
     {
         String currentChildName;
 
-        if (TrackGroupTreeItem *layerGroupItem = dynamic_cast<TrackGroupTreeItem *>(rootItem->getSubItem(i)))
+        if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(rootItem->getSubItem(i)))
         {
             currentChildName = layerGroupItem->getName();
         }
-        else if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootItem->getSubItem(i)))
+        else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootItem->getSubItem(i)))
         {
             currentChildName = layerItem->getName();
         }
@@ -350,13 +350,13 @@ void MidiTrackTreeItem::setXPath(const String &path, bool sendNotifications)
     rootItem->addChildTreeItem(this, insertIndex, sendNotifications);
     
     // Cleanup all empty groups
-    if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
+    if (ProjectNode *parentProject = this->findParentOfType<ProjectNode>())
     {
-        TrackGroupTreeItem::removeAllEmptyGroupsInProject(parentProject);
+        TrackGroupNode::removeAllEmptyGroupsInProject(parentProject);
     }
 }
 
-void MidiTrackTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void MidiTrackNode::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -364,7 +364,7 @@ void MidiTrackTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const Mid
     }
 }
 
-void MidiTrackTreeItem::dispatchAddEvent(const MidiEvent &event)
+void MidiTrackNode::dispatchAddEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -372,7 +372,7 @@ void MidiTrackTreeItem::dispatchAddEvent(const MidiEvent &event)
     }
 }
 
-void MidiTrackTreeItem::dispatchRemoveEvent(const MidiEvent &event)
+void MidiTrackNode::dispatchRemoveEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -380,7 +380,7 @@ void MidiTrackTreeItem::dispatchRemoveEvent(const MidiEvent &event)
     }
 }
 
-void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiSequence *const layer)
+void MidiTrackNode::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
     jassert(layer == this->sequence);
     if (this->lastFoundParent != nullptr)
@@ -389,7 +389,7 @@ void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiSequence *const layer)
     }
 }
 
-void MidiTrackTreeItem::dispatchChangeTrackProperties(MidiTrack *const track)
+void MidiTrackNode::dispatchChangeTrackProperties(MidiTrack *const track)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -397,7 +397,7 @@ void MidiTrackTreeItem::dispatchChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void MidiTrackTreeItem::dispatchChangeProjectBeatRange()
+void MidiTrackNode::dispatchChangeProjectBeatRange()
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -405,7 +405,7 @@ void MidiTrackTreeItem::dispatchChangeProjectBeatRange()
     }
 }
 
-void MidiTrackTreeItem::dispatchAddClip(const Clip &clip)
+void MidiTrackNode::dispatchAddClip(const Clip &clip)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -413,7 +413,7 @@ void MidiTrackTreeItem::dispatchAddClip(const Clip &clip)
     }
 }
 
-void MidiTrackTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
+void MidiTrackNode::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -421,7 +421,7 @@ void MidiTrackTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newC
     }
 }
 
-void MidiTrackTreeItem::dispatchRemoveClip(const Clip &clip)
+void MidiTrackNode::dispatchRemoveClip(const Clip &clip)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -429,7 +429,7 @@ void MidiTrackTreeItem::dispatchRemoveClip(const Clip &clip)
     }
 }
 
-void MidiTrackTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
+void MidiTrackNode::dispatchPostRemoveClip(Pattern *const pattern)
 {
     jassert(pattern == this->pattern);
     if (this->lastFoundParent != nullptr)
@@ -438,7 +438,7 @@ void MidiTrackTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
     }
 }
 
-ProjectTreeItem *MidiTrackTreeItem::getProject() const noexcept
+ProjectNode *MidiTrackNode::getProject() const noexcept
 {
     jassert(this->lastFoundParent != nullptr);
     return this->lastFoundParent;
@@ -448,9 +448,9 @@ ProjectTreeItem *MidiTrackTreeItem::getProject() const noexcept
 // Add to tree and remove from tree callbacks
 //===----------------------------------------------------------------------===//
 
-void MidiTrackTreeItem::onItemAddedToTree(bool sendNotifications)
+void MidiTrackNode::onItemAddedToTree(bool sendNotifications)
 {
-    auto *newParent = this->findParentOfType<ProjectTreeItem>();
+    auto *newParent = this->findParentOfType<ProjectNode>();
     jassert(newParent != nullptr);
 
     const bool parentHasChanged = (this->lastFoundParent != newParent);
@@ -464,9 +464,9 @@ void MidiTrackTreeItem::onItemAddedToTree(bool sendNotifications)
     }
 }
 
-void MidiTrackTreeItem::onItemDeletedFromTree(bool sendNotifications)
+void MidiTrackNode::onItemDeletedFromTree(bool sendNotifications)
 {
-    this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
+    this->lastFoundParent = this->findParentOfType<ProjectNode>();
     if (this->lastFoundParent != nullptr)
     {
         if (sendNotifications)
@@ -477,7 +477,7 @@ void MidiTrackTreeItem::onItemDeletedFromTree(bool sendNotifications)
 
         // Then disconnect from the tree
         this->removeItemFromParent();
-        TrackGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
+        TrackGroupNode::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
 
@@ -485,12 +485,12 @@ void MidiTrackTreeItem::onItemDeletedFromTree(bool sendNotifications)
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool MidiTrackTreeItem::hasMenu() const noexcept
+bool MidiTrackNode::hasMenu() const noexcept
 {
     return true;
 }
 
-ScopedPointer<Component> MidiTrackTreeItem::createMenu()
+ScopedPointer<Component> MidiTrackNode::createMenu()
 {
     return new MidiTrackMenu(*this);
 }
@@ -499,7 +499,7 @@ ScopedPointer<Component> MidiTrackTreeItem::createMenu()
 // Callbacks
 //===----------------------------------------------------------------------===//
 
-Function<void(const String &text)> MidiTrackTreeItem::getRenameCallback()
+Function<void(const String &text)> MidiTrackNode::getRenameCallback()
 {
     return [this](const String &text)
     {
@@ -513,7 +513,7 @@ Function<void(const String &text)> MidiTrackTreeItem::getRenameCallback()
     };
 }
 
-Function<void(const String &text)> MidiTrackTreeItem::getChangeColourCallback()
+Function<void(const String &text)> MidiTrackNode::getChangeColourCallback()
 {
     return [this](const String &text)
     {
@@ -528,7 +528,7 @@ Function<void(const String &text)> MidiTrackTreeItem::getChangeColourCallback()
     };
 }
 
-Function<void(const String &instrumentId)> MidiTrackTreeItem::getChangeInstrumentCallback()
+Function<void(const String &instrumentId)> MidiTrackNode::getChangeInstrumentCallback()
 {
     return [this](const String &instrumentId)
     {

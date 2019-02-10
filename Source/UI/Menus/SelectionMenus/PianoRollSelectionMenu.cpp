@@ -24,7 +24,6 @@
 #include "Arpeggiator.h"
 #include "NoteComponent.h"
 
-#include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "MidiTrack.h"
 

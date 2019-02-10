@@ -20,7 +20,7 @@
 //[Headers]
 class IconComponent;
 class RecentFilesComponent;
-class RootTreeItem;
+class RootNode;
 class MainLayout;
 class ComponentsList;
 class LogoFader;

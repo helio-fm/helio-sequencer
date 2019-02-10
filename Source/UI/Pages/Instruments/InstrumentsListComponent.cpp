@@ -22,7 +22,7 @@
 #include "InstrumentsListComponent.h"
 
 //[MiscUserDefs]
-#include "OrchestraPitTreeItem.h"
+#include "OrchestraPitNode.h"
 #include "OrchestraPitPage.h"
 #include "InstrumentMenu.h"
 #include "Instrument.h"
@@ -30,7 +30,7 @@
 #include "Icons.h"
 //[/MiscUserDefs]
 
-InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot)
+InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot)
     : pluginScanner(pluginScanner),
       instrumentsRoot(instrumentsRoot)
 {
@@ -113,7 +113,7 @@ void InstrumentsListComponent::clearSelection()
 void InstrumentsListComponent::updateListContent()
 {
     this->instrumentIcon = Icons::findByName(Icons::instrument, int(INSTRUMENTSLIST_ROW_HEIGHT * 0.75f));
-    this->instruments = this->instrumentsRoot.findChildrenRefsOfType<InstrumentTreeItem>();
+    this->instruments = this->instrumentsRoot.findChildrenRefsOfType<InstrumentNode>();
     this->instrumentsList->updateContent();
     this->clearSelection();
 }
@@ -233,7 +233,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="InstrumentsListComponent"
                  template="../../../Template" componentName="" parentClasses="public Component, public ListBoxModel, public HeadlineItemDataSource"
-                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitTreeItem &amp;instrumentsRoot"
+                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitNode &amp;instrumentsRoot"
                  variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">

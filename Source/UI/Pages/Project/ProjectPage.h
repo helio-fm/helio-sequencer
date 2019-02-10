@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "TransportListener.h"
 //[/Headers]
@@ -34,7 +34,7 @@ class ProjectPage final : public Component,
 {
 public:
 
-    ProjectPage(ProjectTreeItem &parentProject);
+    ProjectPage(ProjectNode &parentProject);
     ~ProjectPage();
 
     //[UserMethods]
@@ -52,7 +52,7 @@ private:
 
     //[UserVariables]
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
     MidiKeyboardState state;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;

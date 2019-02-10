@@ -18,8 +18,8 @@
 #pragma once
 
 class Instrument;
-class ProjectTreeItem;
-class MidiTrackTreeItem;
+class ProjectNode;
+class MidiTrackNode;
 
 #include "MenuPanel.h"
 
@@ -27,12 +27,12 @@ class ProjectMenu final : public MenuPanel
 {
 public:
     
-    ProjectMenu(ProjectTreeItem &parentProject, AnimationType animationType);    
+    ProjectMenu(ProjectNode &parentProject, AnimationType animationType);    
     void handleCommandMessage(int commandId) override;
     
 private:
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
 
     void showMainMenu(AnimationType animationType);
     void showBatchActionsMenu(AnimationType animationType);

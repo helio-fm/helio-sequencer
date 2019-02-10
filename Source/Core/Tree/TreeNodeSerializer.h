@@ -17,12 +17,12 @@
 
 #pragma once
 
-class TreeItem;
+class TreeNode;
 
-class TreeItemChildrenSerializer
+class TreeNodeSerializer
 {
 public:
 
-    static void serializeChildren(const TreeItem &parentItem, ValueTree &parent);
-    static void deserializeChildren(TreeItem &parentItem, const ValueTree &parent);
+    static void serializeChildren(const TreeNode &parentItem, ValueTree &parent);
+    static void deserializeChildren(TreeNode &parentItem, const ValueTree &parent);
 };

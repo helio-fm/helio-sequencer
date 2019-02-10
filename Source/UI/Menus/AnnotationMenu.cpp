@@ -17,19 +17,19 @@
 
 #include "Common.h"
 #include "AnnotationMenu.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "AnnotationsSequence.h"
-#include "PianoTrackTreeItem.h"
+#include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
 #include "CommandIDs.h"
 
-AnnotationMenu::AnnotationMenu(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation) :
+AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent &targetAnnotation) :
     project(parentProject),
     annotation(targetAnnotation)
 {

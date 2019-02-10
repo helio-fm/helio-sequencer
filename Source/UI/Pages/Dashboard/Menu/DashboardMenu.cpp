@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "RecentProjectRow.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "CommandIDs.h"

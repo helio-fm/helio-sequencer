@@ -16,14 +16,14 @@
 */
 
 #include "Common.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 
-#include "TreeItemChildrenSerializer.h"
-#include "TrackGroupTreeItem.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
-#include "PatternEditorTreeItem.h"
-#include "VersionControlTreeItem.h"
+#include "TreeNodeSerializer.h"
+#include "TrackGroupNode.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
+#include "PatternEditorNode.h"
+#include "VersionControlNode.h"
 #include "VersionControl.h"
 
 #include "PianoTrackActions.h"
@@ -59,30 +59,30 @@
 #include "Config.h"
 #include "Icons.h"
 
-ProjectTreeItem::ProjectTreeItem() :
+ProjectNode::ProjectNode() :
     DocumentOwner({}, "helio"),
-    TreeItem({}, Serialization::Core::project)
+    TreeNode({}, Serialization::Core::project)
 {
     this->initialize();
 }
 
-ProjectTreeItem::ProjectTreeItem(const String &name, const String &id) :
+ProjectNode::ProjectNode(const String &name, const String &id) :
     DocumentOwner(name, "helio"),
-    TreeItem(name, Serialization::Core::project),
+    TreeNode(name, Serialization::Core::project),
     id(id.isEmpty() ? Uuid().toString() : id)
 {
     this->initialize();
 }
 
-ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
+ProjectNode::ProjectNode(const File &existingFile) :
     DocumentOwner(existingFile),
-    TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project),
+    TreeNode(existingFile.getFileNameWithoutExtension(), Serialization::Core::project),
     id(Uuid().toString())
 {
     this->initialize();
 }
 
-void ProjectTreeItem::initialize()
+void ProjectNode::initialize()
 {
     this->isTracksCacheOutdated = true;
     
@@ -104,7 +104,7 @@ void ProjectTreeItem::initialize()
     this->recreatePage();
 }
 
-ProjectTreeItem::~ProjectTreeItem()
+ProjectNode::~ProjectNode()
 {
     this->getDocument()->save();
     
@@ -128,14 +128,14 @@ ProjectTreeItem::~ProjectTreeItem()
     this->autosaver = nullptr;
 }
 
-String ProjectTreeItem::getId() const noexcept
+String ProjectNode::getId() const noexcept
 {
     return this->id;
 }
 
-String ProjectTreeItem::getStats() const
+String ProjectNode::getStats() const
 {
-    Array<MidiTrackTreeItem *> layerItems(this->findChildrenOfType<MidiTrackTreeItem>());
+    Array<MidiTrackNode *> layerItems(this->findChildrenOfType<MidiTrackNode>());
     
     int numEvents = 0;
     int numLayers = layerItems.size();
@@ -148,46 +148,46 @@ String ProjectTreeItem::getStats() const
     return String(TRANS_PLURAL("{x} layers", numLayers) + " " + TRANS("common::and") + " " + TRANS_PLURAL("{x} events", numEvents));
 }
 
-Transport &ProjectTreeItem::getTransport() const noexcept
+Transport &ProjectNode::getTransport() const noexcept
 {
     jassert(this->transport);
     return (*this->transport);
 }
 
-ProjectInfo *ProjectTreeItem::getProjectInfo() const noexcept
+ProjectInfo *ProjectNode::getProjectInfo() const noexcept
 {
     jassert(this->info);
     return this->info;
 }
 
-ProjectTimeline *ProjectTreeItem::getTimeline() const noexcept
+ProjectTimeline *ProjectNode::getTimeline() const noexcept
 {
     jassert(this->timeline);
     return this->timeline;
 }
 
-HybridRollEditMode &ProjectTreeItem::getEditMode() noexcept
+HybridRollEditMode &ProjectNode::getEditMode() noexcept
 {
     return this->rollEditMode;
 }
 
-HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
+HybridRoll *ProjectNode::getLastFocusedRoll() const
 {
     return this->sequencerLayout->getRoll();
 }
 
-Image ProjectTreeItem::getIcon() const noexcept
+Image ProjectNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::project, TREE_LARGE_ICON_HEIGHT);
 }
 
-void ProjectTreeItem::showPage()
+void ProjectNode::showPage()
 {
     this->projectPage->updateContent();
     App::Layout().showPage(this->projectPage, this);
 }
 
-void ProjectTreeItem::safeRename(const String &newName, bool sendNotifications)
+void ProjectNode::safeRename(const String &newName, bool sendNotifications)
 {
     if (newName == this->getName())
     {
@@ -210,7 +210,7 @@ void ProjectTreeItem::safeRename(const String &newName, bool sendNotifications)
     }
 }
 
-void ProjectTreeItem::recreatePage()
+void ProjectNode::recreatePage()
 {
     ValueTree layoutState(Serialization::UI::sequencer);
     if (this->sequencerLayout || this->projectPage)
@@ -225,19 +225,19 @@ void ProjectTreeItem::recreatePage()
     this->sequencerLayout->deserialize(layoutState);
 }
 
-void ProjectTreeItem::showPatternEditor(WeakReference<TreeItem> source)
+void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
 {
     jassert(source != nullptr);
     this->sequencerLayout->showPatternEditor();
     App::Layout().showPage(this->sequencerLayout, source);
 }
 
-void ProjectTreeItem::showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source)
+void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source)
 {
     jassert(source != nullptr);
     jassert(activeTrack != nullptr);
 
-    if (const auto *pianoTrack = dynamic_cast<PianoTrackTreeItem *>(activeTrack.get()))
+    if (const auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get()))
     {
         this->sequencerLayout->showLinearEditor(activeTrack);
         this->lastShownTrack = source;
@@ -245,15 +245,15 @@ void ProjectTreeItem::showLinearEditor(WeakReference<MidiTrack> activeTrack, Wea
     }
 }
 
-WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const noexcept
+WeakReference<TreeNode> ProjectNode::getLastShownTrack() const noexcept
 {
     return this->lastShownTrack;
 }
 
 
-void ProjectTreeItem::setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea)
+void ProjectNode::setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea)
 {
-    if (auto *item = dynamic_cast<PianoTrackTreeItem *>(track))
+    if (auto *item = dynamic_cast<PianoTrackNode *>(track))
     {
         // FIXME: as we have to switch to target tree item,
         // it will activate its 1st clip on showPage
@@ -268,12 +268,12 @@ void ProjectTreeItem::setEditableScope(MidiTrack *track, const Clip &clip, bool 
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool ProjectTreeItem::hasMenu() const noexcept
+bool ProjectNode::hasMenu() const noexcept
 {
     return true;
 }
 
-ScopedPointer<Component> ProjectTreeItem::createMenu()
+ScopedPointer<Component> ProjectNode::createMenu()
 {
     return new ProjectMenu(*this, MenuPanel::SlideRight);
 }
@@ -282,7 +282,7 @@ ScopedPointer<Component> ProjectTreeItem::createMenu()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool ProjectNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     return (dragSourceDetails.description == Serialization::Core::track.toString()) ||
            (dragSourceDetails.description == Serialization::Core::trackGroup.toString());
@@ -292,17 +292,17 @@ bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDe
 // Undos
 //===----------------------------------------------------------------------===//
 
-UndoStack *ProjectTreeItem::getUndoStack() const noexcept
+UndoStack *ProjectNode::getUndoStack() const noexcept
 {
     return this->undoStack.get();
 }
 
-void ProjectTreeItem::checkpoint()
+void ProjectNode::checkpoint()
 {
     this->getUndoStack()->beginNewTransaction({});
 }
 
-void ProjectTreeItem::undo()
+void ProjectNode::undo()
 {
     if (this->getUndoStack()->canUndo())
     {
@@ -311,7 +311,7 @@ void ProjectTreeItem::undo()
     }
 }
 
-void ProjectTreeItem::redo()
+void ProjectNode::redo()
 {
     if (this->getUndoStack()->canRedo())
     {
@@ -319,20 +319,20 @@ void ProjectTreeItem::redo()
     }
 }
 
-void ProjectTreeItem::clearUndoHistory()
+void ProjectNode::clearUndoHistory()
 {
     this->getUndoStack()->clearUndoHistory();
 }
 
-void ProjectTreeItem::removeTrack(const MidiTrack &track)
+void ProjectNode::removeTrack(const MidiTrack &track)
 {
     const String &trackId = track.getTrackId();
 
-    if (dynamic_cast<const PianoTrackTreeItem *>(&track))
+    if (dynamic_cast<const PianoTrackNode *>(&track))
     {
         this->getUndoStack()->perform(new PianoTrackRemoveAction(*this, this, trackId));
     }
-    else if (dynamic_cast<const AutomationTrackTreeItem *>(&track))
+    else if (dynamic_cast<const AutomationTrackNode *>(&track))
     {
         this->getUndoStack()->perform(new AutomationTrackRemoveAction(*this, this, trackId));
     }
@@ -342,7 +342,7 @@ void ProjectTreeItem::removeTrack(const MidiTrack &track)
 // Project
 //===----------------------------------------------------------------------===//
 
-Array<MidiTrack *> ProjectTreeItem::getTracks() const
+Array<MidiTrack *> ProjectNode::getTracks() const
 {
     const ScopedReadLock lock(this->tracksListLock);
     Array<MidiTrack *> tracks;
@@ -358,7 +358,7 @@ Array<MidiTrack *> ProjectTreeItem::getTracks() const
     return tracks;
 }
 
-Array<MidiTrack *> ProjectTreeItem::getSelectedTracks() const
+Array<MidiTrack *> ProjectNode::getSelectedTracks() const
 {
     const ScopedReadLock lock(this->tracksListLock);
     Array<MidiTrack *> tracks;
@@ -366,10 +366,10 @@ Array<MidiTrack *> ProjectTreeItem::getSelectedTracks() const
     return tracks;
 }
 
-void ProjectTreeItem::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected /*= false*/) const
+void ProjectNode::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected /*= false*/) const
 {
-    const Array<MidiTrackTreeItem *> treeItems =
-        this->findChildrenOfType<MidiTrackTreeItem>();
+    const Array<MidiTrackNode *> treeItems =
+        this->findChildrenOfType<MidiTrackNode>();
     
     for (int i = 0; i < treeItems.size(); ++i)
     {
@@ -380,7 +380,7 @@ void ProjectTreeItem::collectTracks(Array<MidiTrack *> &resultArray, bool onlySe
     }
 }
 
-Point<float> ProjectTreeItem::getProjectRangeInBeats() const
+Point<float> ProjectNode::getProjectRangeInBeats() const
 {
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
@@ -417,7 +417,7 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
     return { firstBeat, lastBeat };
 }
 
-StringArray ProjectTreeItem::getAllTrackNames() const
+StringArray ProjectNode::getAllTrackNames() const
 {
     StringArray names;
     this->rebuildTracksRefsCacheIfNeeded();
@@ -432,17 +432,17 @@ StringArray ProjectTreeItem::getAllTrackNames() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree ProjectTreeItem::serialize() const
+ValueTree ProjectNode::serialize() const
 {
     this->getDocument()->save();
 
-    ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
+    ValueTree tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
     tree.setProperty(Serialization::Core::filePath, this->getDocument()->getFullPath(), nullptr);
     return tree;
 }
 
-void ProjectTreeItem::deserialize(const ValueTree &tree)
+void ProjectNode::deserialize(const ValueTree &tree)
 {
     this->reset();
 
@@ -458,24 +458,24 @@ void ProjectTreeItem::deserialize(const ValueTree &tree)
     this->getDocument()->load(fullPathFile, relativePathFile);
 }
 
-void ProjectTreeItem::reset()
+void ProjectNode::reset()
 {
     this->transport->seekToPosition(0.f);
     this->vcsItems.clear();
     this->vcsItems.add(this->info);
     this->vcsItems.add(this->timeline);
     this->undoStack->clearUndoHistory();
-    TreeItem::reset();
+    TreeNode::reset();
     // TODO test if we need that really (I suggest we don't):
     //this->broadcastReloadProjectContent();
     //this->broadcastChangeProjectBeatRange();
 }
 
-ValueTree ProjectTreeItem::save() const
+ValueTree ProjectNode::save() const
 {
     ValueTree tree(Serialization::Core::project);
 
-    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
     tree.setProperty(Serialization::Core::projectId, this->id, nullptr);
 
     tree.appendChild(this->info->serialize(), nullptr);
@@ -484,12 +484,12 @@ ValueTree ProjectTreeItem::save() const
     tree.appendChild(this->transport->serialize(), nullptr);
     tree.appendChild(this->sequencerLayout->serialize(), nullptr);
 
-    TreeItemChildrenSerializer::serializeChildren(*this, tree);
+    TreeNodeSerializer::serializeChildren(*this, tree);
 
     return tree;
 }
 
-void ProjectTreeItem::load(const ValueTree &tree)
+void ProjectNode::load(const ValueTree &tree)
 {
     this->reset();
 
@@ -504,13 +504,13 @@ void ProjectTreeItem::load(const ValueTree &tree)
     this->timeline->deserialize(root);
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(root);
+    TreeNode::deserialize(root);
 
     // Legacy support: if no pattern set manager found, create one
-    if (nullptr == this->findChildOfType<PatternEditorTreeItem>())
+    if (nullptr == this->findChildOfType<PatternEditorNode>())
     {
         // Try to place it after 'Versions' (presumably, index 1)
-        this->addChildTreeItem(new PatternEditorTreeItem(), 1);
+        this->addChildTreeItem(new PatternEditorNode(), 1);
     }
 
     this->broadcastReloadProjectContent();
@@ -533,7 +533,7 @@ void ProjectTreeItem::load(const ValueTree &tree)
     this->sequencerLayout->deserialize(root);
 }
 
-void ProjectTreeItem::importMidi(const File &file)
+void ProjectNode::importMidi(const File &file)
 {
     MidiFile tempFile;
     FileInputStream in(file);
@@ -552,7 +552,7 @@ void ProjectTreeItem::importMidi(const File &file)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(i);
         const String trackName = "Track " + String(i);
-        MidiTrackTreeItem *track = new PianoTrackTreeItem(trackName);
+        MidiTrackNode *track = new PianoTrackNode(trackName);
 
         const Clip clip(track->getPattern());
         track->getPattern()->insert(clip, false);
@@ -575,19 +575,19 @@ void ProjectTreeItem::importMidi(const File &file)
 // ProjectListeners management
 //===----------------------------------------------------------------------===//
 
-void ProjectTreeItem::addListener(ProjectListener *listener)
+void ProjectNode::addListener(ProjectListener *listener)
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->changeListeners.add(listener);
 }
 
-void ProjectTreeItem::removeListener(ProjectListener *listener)
+void ProjectNode::removeListener(ProjectListener *listener)
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->changeListeners.remove(listener);
 }
 
-void ProjectTreeItem::removeAllListeners()
+void ProjectNode::removeAllListeners()
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->changeListeners.clear();
@@ -598,7 +598,7 @@ void ProjectTreeItem::removeAllListeners()
 // Broadcaster
 //===----------------------------------------------------------------------===//
 
-void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void ProjectNode::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     //jassert(oldEvent.isValid()); // old event is allowed to be un-owned
     jassert(newEvent.isValid());
@@ -606,27 +606,27 @@ void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const Midi
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastAddEvent(const MidiEvent &event)
+void ProjectNode::broadcastAddEvent(const MidiEvent &event)
 {
     jassert(event.isValid());
     this->changeListeners.call(&ProjectListener::onAddMidiEvent, event);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
+void ProjectNode::broadcastRemoveEvent(const MidiEvent &event)
 {
     jassert(event.isValid());
     this->changeListeners.call(&ProjectListener::onRemoveMidiEvent, event);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastPostRemoveEvent(MidiSequence *const layer)
+void ProjectNode::broadcastPostRemoveEvent(MidiSequence *const layer)
 {
     this->changeListeners.call(&ProjectListener::onPostRemoveMidiEvent, layer);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
+void ProjectNode::broadcastAddTrack(MidiTrack *const track)
 {
     this->isTracksCacheOutdated = true;
 
@@ -640,7 +640,7 @@ void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
+void ProjectNode::broadcastRemoveTrack(MidiTrack *const track)
 {
     this->isTracksCacheOutdated = true;
 
@@ -654,43 +654,43 @@ void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeTrackProperties(MidiTrack *const track)
+void ProjectNode::broadcastChangeTrackProperties(MidiTrack *const track)
 {
     this->changeListeners.call(&ProjectListener::onChangeTrackProperties, track);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastAddClip(const Clip &clip)
+void ProjectNode::broadcastAddClip(const Clip &clip)
 {
     this->changeListeners.call(&ProjectListener::onAddClip, clip);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeClip(const Clip &oldClip, const Clip &newClip)
+void ProjectNode::broadcastChangeClip(const Clip &oldClip, const Clip &newClip)
 {
     this->changeListeners.call(&ProjectListener::onChangeClip, oldClip, newClip);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastRemoveClip(const Clip &clip)
+void ProjectNode::broadcastRemoveClip(const Clip &clip)
 {
     this->changeListeners.call(&ProjectListener::onRemoveClip, clip);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastPostRemoveClip(Pattern *const pattern)
+void ProjectNode::broadcastPostRemoveClip(Pattern *const pattern)
 {
     this->changeListeners.call(&ProjectListener::onPostRemoveClip, pattern);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
+void ProjectNode::broadcastChangeProjectInfo(const ProjectInfo *info)
 {
     this->changeListeners.call(&ProjectListener::onChangeProjectInfo, info);
     this->sendChangeMessage();
 }
 
-Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
+Point<float> ProjectNode::broadcastChangeProjectBeatRange()
 {
     const auto beatRange = this->getProjectRangeInBeats();
     const float firstBeat = beatRange.getX();
@@ -710,13 +710,13 @@ Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
     return beatRange;
 }
 
-void ProjectTreeItem::broadcastReloadProjectContent()
+void ProjectNode::broadcastReloadProjectContent()
 {
     this->changeListeners.call(&ProjectListener::onReloadProjectContent, this->getTracks());
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
+void ProjectNode::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->changeListeners.call(&ProjectListener::onChangeViewBeatRange, firstBeat, lastBeat);
     // this->sendChangeMessage(); the project itself didn't change, so dont call this
@@ -727,7 +727,7 @@ void ProjectTreeItem::broadcastChangeViewBeatRange(float firstBeat, float lastBe
 // DocumentOwner
 //===----------------------------------------------------------------------===//
 
-bool ProjectTreeItem::onDocumentLoad(File &file)
+bool ProjectNode::onDocumentLoad(File &file)
 {
     if (file.existsAsFile())
     {
@@ -742,14 +742,14 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
     return false;
 }
 
-void ProjectTreeItem::onDocumentDidLoad(File &file)
+void ProjectNode::onDocumentDidLoad(File &file)
 {
     App::Workspace().getUserProfile()
         .onProjectLocalInfoUpdated(this->getId(), this->getName(),
             this->getDocument()->getFullPath());
 }
 
-bool ProjectTreeItem::onDocumentSave(File &file)
+bool ProjectNode::onDocumentSave(File &file)
 {
     const auto projectNode(this->save());
 #if DEBUG
@@ -758,7 +758,7 @@ bool ProjectTreeItem::onDocumentSave(File &file)
     return DocumentHelpers::save<BinarySerializer>(file, projectNode);
 }
 
-void ProjectTreeItem::onDocumentImport(File &file)
+void ProjectNode::onDocumentImport(File &file)
 {
     if (file.hasFileExtension("mid") || file.hasFileExtension("midi"))
     {
@@ -766,7 +766,7 @@ void ProjectTreeItem::onDocumentImport(File &file)
     }
 }
 
-bool ProjectTreeItem::onDocumentExport(File &file)
+bool ProjectNode::onDocumentExport(File &file)
 {
     if (file.hasFileExtension("mid") || file.hasFileExtension("midi"))
     {
@@ -777,7 +777,7 @@ bool ProjectTreeItem::onDocumentExport(File &file)
     return false;
 }
 
-void ProjectTreeItem::exportMidi(File &file) const
+void ProjectNode::exportMidi(File &file) const
 {
     MidiFile tempFile;
     static const double midiClock = 960.0;
@@ -817,13 +817,13 @@ void ProjectTreeItem::exportMidi(File &file) const
 // MidiTrackSource
 //===----------------------------------------------------------------------===//
 
-MidiTrack *ProjectTreeItem::getTrackById(const String &trackId)
+MidiTrack *ProjectNode::getTrackById(const String &trackId)
 {
     this->rebuildTracksRefsCacheIfNeeded();
     return this->tracksRefsCache[trackId].get();
 }
 
-Pattern *ProjectTreeItem::getPatternByTrackId(const String &trackId)
+Pattern *ProjectNode::getPatternByTrackId(const String &trackId)
 {
     this->rebuildTracksRefsCacheIfNeeded();
     if (auto track = this->tracksRefsCache[trackId].get())
@@ -834,7 +834,7 @@ Pattern *ProjectTreeItem::getPatternByTrackId(const String &trackId)
     return nullptr;
 }
 
-MidiSequence *ProjectTreeItem::getSequenceByTrackId(const String &trackId)
+MidiSequence *ProjectNode::getSequenceByTrackId(const String &trackId)
 {
     this->rebuildTracksRefsCacheIfNeeded();
     if (auto track = this->tracksRefsCache[trackId].get())
@@ -849,34 +849,34 @@ MidiSequence *ProjectTreeItem::getSequenceByTrackId(const String &trackId)
 // VCS::TrackedItemsSource
 //===----------------------------------------------------------------------===//
 
-String ProjectTreeItem::getVCSId() const
+String ProjectNode::getVCSId() const
 {
     return this->getId();
 }
 
-String ProjectTreeItem::getVCSName() const
+String ProjectNode::getVCSName() const
 {
     return this->getName();
 }
 
-int ProjectTreeItem::getNumTrackedItems()
+int ProjectNode::getNumTrackedItems()
 {
     const ScopedReadLock lock(this->vcsInfoLock);
     return this->vcsItems.size();
 }
 
-VCS::TrackedItem *ProjectTreeItem::getTrackedItem(int index)
+VCS::TrackedItem *ProjectNode::getTrackedItem(int index)
 {
     const ScopedReadLock lock(this->vcsInfoLock);
     return const_cast<VCS::TrackedItem *>(this->vcsItems[index]);
 }
 
-VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type,
+VCS::TrackedItem *ProjectNode::initTrackedItem(const Identifier &type,
     const Uuid &id, const VCS::TrackedItem &newState)
 {
     if (type == Serialization::Core::pianoTrack)
     {
-        auto *track = new PianoTrackTreeItem("");
+        auto *track = new PianoTrackNode("");
         track->setVCSUuid(id);
         this->addChildTreeItem(track, -1, false);
         // add explicitly, since we aren't going to receive a notification:
@@ -887,7 +887,7 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type,
     }
     if (type == Serialization::Core::automationTrack)
     {
-        auto *track = new AutomationTrackTreeItem("");
+        auto *track = new AutomationTrackNode("");
         track->setVCSUuid(id);
         this->addChildTreeItem(track, -1, false);
         this->isTracksCacheOutdated = true;
@@ -911,11 +911,11 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type,
     return nullptr;
 }
 
-bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
+bool ProjectNode::deleteTrackedItem(VCS::TrackedItem *item)
 {
-    if (auto *treeItem = dynamic_cast<MidiTrackTreeItem *>(item))
+    if (auto *treeItem = dynamic_cast<MidiTrackNode *>(item))
     {
-        TreeItem::deleteItem(treeItem, false); // don't broadcastRemoveTrack
+        TreeNode::deleteItem(treeItem, false); // don't broadcastRemoveTrack
         this->vcsItems.removeAllInstancesOf(item);
         this->isTracksCacheOutdated = true;
         return true;
@@ -924,7 +924,7 @@ bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
     return false;
 }
 
-void ProjectTreeItem::onResetState()
+void ProjectNode::onResetState()
 {
     this->broadcastReloadProjectContent();
     this->broadcastChangeProjectBeatRange();
@@ -934,7 +934,7 @@ void ProjectTreeItem::onResetState()
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
-void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
+void ProjectNode::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (VersionControl *vcs = dynamic_cast<VersionControl *>(source))
     {
@@ -949,7 +949,7 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
     }
 }
 
-void ProjectTreeItem::rebuildTracksRefsCacheIfNeeded() const
+void ProjectNode::rebuildTracksRefsCacheIfNeeded() const
 {
     if (this->isTracksCacheOutdated)
     {

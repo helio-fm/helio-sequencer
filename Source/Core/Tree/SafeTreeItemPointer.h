@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 
 template <class TreeItemType>
 class SafeTreeItemPointer
@@ -57,5 +57,5 @@ public:
     bool operator!= (TreeItemType* component) const noexcept   { return weakRef != component; }
 
 private:
-    WeakReference<TreeItem> weakRef;
+    WeakReference<TreeNode> weakRef;
 };

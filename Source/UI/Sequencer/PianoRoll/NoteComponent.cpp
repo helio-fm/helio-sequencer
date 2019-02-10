@@ -19,7 +19,7 @@
 #include "NoteComponent.h"
 #include "PianoSequence.h"
 #include "PianoRoll.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MidiSequence.h"
 #include "MidiTrack.h"
 #include "Note.h"

@@ -17,42 +17,40 @@
 
 #pragma once
 
-#include "TreeItem.h"
+#include "TreeNode.h"
+#include "Dashboard.h"
 
-class VersionControl;
-class VersionControlEditor;
-class ProjectTreeItem;
+class ProjectNode;
+class VersionControlNode;
+class TrackGroupNode;
+class MidiTrackNode;
+class ScriptTreeItem;
 
-class VersionControlTreeItem final : public TreeItem
+class RootNode final : public TreeNode
 {
 public:
 
-    VersionControlTreeItem();
-    ~VersionControlTreeItem() override;
+    explicit RootNode(const String &name);
 
     String getName() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
-    String getStatsString() const;
+
+    void importMidi(const File &file);
+
+    //===------------------------------------------------------------------===//
+    // Children
+    //===------------------------------------------------------------------===//
+
+    ProjectNode *openProject(const File &file);
+    ProjectNode *checkoutProject(const String &id, const String &name);
+
+    ProjectNode *addDefaultProject(const File &projectLocation);
+    ProjectNode *addDefaultProject(const String &projectName);
+    ProjectNode *createDefaultProjectChildren(ProjectNode *newProject);
     
-    void commitProjectInfo();
-    void toggleQuickStash();
-
-    //===------------------------------------------------------------------===//
-    // Tree
-    //===------------------------------------------------------------------===//
-
-    void onItemAddedToTree(bool sendNotifications) override;
-    void onItemDeletedFromTree(bool sendNotifications) override;
-
-    //===------------------------------------------------------------------===//
-    // Network
-    //===------------------------------------------------------------------===//
-
-    void cloneProject();
-
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
@@ -64,21 +62,10 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
-    void reset() override;
-
-protected:
-
-    UniquePointer<VersionControl> vcs;
-    UniquePointer<VersionControlEditor> editor;
 
 private:
-        
-    void initVCS();
-    void shutdownVCS();
-    
-    void initEditor();
-    void shutdownEditor();
+
+    ScopedPointer<Dashboard> dashboard;
 
 };

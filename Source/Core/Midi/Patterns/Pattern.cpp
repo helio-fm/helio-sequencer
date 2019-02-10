@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "Pattern.h"
 #include "PatternActions.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "ProjectEventDispatcher.h"
 #include "UndoStack.h"
 #include "SerializationKeys.h"
@@ -51,7 +51,7 @@ Pattern::Pattern(MidiTrack &parentTrack,
 // Accessors
 //===----------------------------------------------------------------------===//
 
-ProjectTreeItem *Pattern::getProject() const noexcept
+ProjectNode *Pattern::getProject() const noexcept
 {
     return this->eventDispatcher.getProject();
 }

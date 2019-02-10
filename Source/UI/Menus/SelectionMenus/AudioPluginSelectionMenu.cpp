@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "AudioPluginSelectionMenu.h"
-#include "OrchestraPitTreeItem.h"
-#include "InstrumentTreeItem.h"
+#include "OrchestraPitNode.h"
+#include "InstrumentNode.h"
 #include "PluginScanner.h"
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -27,7 +27,7 @@
 #include "Icons.h"
 
 AudioPluginSelectionMenu::AudioPluginSelectionMenu(const PluginDescription pd,
-    OrchestraPitTreeItem &orchestraNode, PluginScanner &scanner) :
+    OrchestraPitNode &orchestraNode, PluginScanner &scanner) :
     pluginDescription(pd),
     orchestraNode(orchestraNode),
     pluginScanner(scanner)
@@ -50,7 +50,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
         this->dismiss();
     }));
 
-    const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentTreeItem>();
+    const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentNode>();
     menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::selection::plugin::plug"))->
         withSubmenu()->disabledIf(instruments.isEmpty())->withAction([this]()
     {
@@ -75,7 +75,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
 
-    const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentTreeItem>();
+    const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentNode>();
     for (const auto instrumentNode : instruments)
     {
         menu.add(MenuItem::item(Icons::instrument, instrumentNode->getName())->withAction([this, instrumentNode]()

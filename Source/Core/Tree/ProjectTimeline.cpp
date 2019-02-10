@@ -20,7 +20,7 @@
 #include "AnnotationsSequence.h"
 #include "TimeSignaturesSequence.h"
 #include "KeySignaturesSequence.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Pattern.h"
 #include "Icons.h"
 
@@ -74,7 +74,7 @@ public:
     ProjectTimeline &timeline;
 };
 
-ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject, String trackName) :
+ProjectTimeline::ProjectTimeline(ProjectNode &parentProject, String trackName) :
     project(parentProject),
     annotationsTrackId(Uuid().toString()),
     timeSignaturesTrackId(Uuid().toString()),
@@ -306,7 +306,7 @@ void ProjectTimeline::dispatchChangeClip(const Clip &oldClip, const Clip &newCli
 void ProjectTimeline::dispatchRemoveClip(const Clip &clip) {}
 void ProjectTimeline::dispatchPostRemoveClip(Pattern *const pattern) {}
 
-ProjectTreeItem *ProjectTimeline::getProject() const noexcept
+ProjectNode *ProjectTimeline::getProject() const noexcept
 {
     return &this->project;
 }

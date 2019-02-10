@@ -21,7 +21,7 @@
 #include "HeadlineItemDataSource.h"
 #include "ComponentFader.h"
 
-class InstrumentEditorNode;
+class InstrumentComponent;
 class InstrumentEditorConnector;
 class InstrumentEditorPin;
 class AudioCore;
@@ -39,7 +39,7 @@ public:
     void selectNode(AudioProcessorGraph::NodeID id);
     void updateComponents();
 
-    InstrumentEditorNode *getComponentForNode(AudioProcessorGraph::NodeID id) const;
+    InstrumentComponent *getComponentForNode(AudioProcessorGraph::NodeID id) const;
     InstrumentEditorConnector *getComponentForConnection(AudioProcessorGraph::Connection conn) const;
     InstrumentEditorPin *findPinAt(const int x, const int y) const;
 

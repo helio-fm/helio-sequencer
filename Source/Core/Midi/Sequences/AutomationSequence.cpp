@@ -19,9 +19,9 @@
 #include "AutomationSequence.h"
 #include "AutomationEventActions.h"
 
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "ProjectListener.h"
-#include "MidiTrackTreeItem.h"
+#include "MidiTrackNode.h"
 #include "UndoStack.h"
 
 AutomationSequence::AutomationSequence(MidiTrack &track,

@@ -35,7 +35,7 @@ class Pattern;
 class MidiTrack;
 class Clip;
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 #include "DocumentOwner.h"
 #include "Transport.h"
 #include "TrackedItemsSource.h"
@@ -44,8 +44,8 @@ class Clip;
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"
 
-class ProjectTreeItem final :
-    public TreeItem,
+class ProjectNode final :
+    public TreeNode,
     public DocumentOwner,
     public MidiTrackSource,
     public VCS::TrackedItemsSource,  // vcs stuff
@@ -53,10 +53,10 @@ class ProjectTreeItem final :
 {
 public:
 
-    ProjectTreeItem();
-    explicit ProjectTreeItem(const String &name, const String &id = {});
-    explicit ProjectTreeItem(const File &existingFile);
-    ~ProjectTreeItem() override;
+    ProjectNode();
+    explicit ProjectNode(const String &name, const String &id = {});
+    explicit ProjectNode(const File &existingFile);
+    ~ProjectNode() override;
     
     String getId() const noexcept;
     String getStats() const;
@@ -77,9 +77,9 @@ public:
 
     void safeRename(const String &newName, bool sendNotifications) override;
 
-    void showPatternEditor(WeakReference<TreeItem> source);
-    void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source);
-    WeakReference<TreeItem> getLastShownTrack() const noexcept;
+    void showPatternEditor(WeakReference<TreeNode> source);
+    void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
+    WeakReference<TreeNode> getLastShownTrack() const noexcept;
 
     void setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea = false);
 
@@ -209,7 +209,7 @@ private:
     ScopedPointer<ProjectInfo> info;
     ScopedPointer<ProjectTimeline> timeline;
 
-    WeakReference<TreeItem> lastShownTrack;
+    WeakReference<TreeNode> lastShownTrack;
 
 private:
 

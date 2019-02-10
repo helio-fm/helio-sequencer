@@ -18,8 +18,8 @@
 #pragma once
 
 class AudioCore;
-class ProjectTreeItem;
-class RootTreeItem;
+class ProjectNode;
+class RootNode;
 class PluginScanner;
 
 #include "DocumentOwner.h"
@@ -39,7 +39,7 @@ public:
     void stopPlaybackForAllProjects(); // on app suspend / shutdown
 
     void activateTreeItem(const String &id);
-    WeakReference<TreeItem> getActiveTreeItem() const;
+    WeakReference<TreeNode> getActiveTreeItem() const;
 
     NavigationHistory &getNavigationHistory();
     void navigateBackwardIfPossible();
@@ -48,7 +48,7 @@ public:
     AudioCore &getAudioCore() noexcept;
     PluginScanner &getPluginManager() noexcept;
     UserProfile &getUserProfile() noexcept;
-    RootTreeItem *getTreeRoot() noexcept;
+    RootNode *getTreeRoot() noexcept;
 
     //===------------------------------------------------------------------===//
     // Project management
@@ -56,7 +56,7 @@ public:
 
     void createEmptyProject();
     bool loadRecentProject(RecentProjectInfo::Ptr file);
-    Array<ProjectTreeItem *> getLoadedProjects() const;
+    Array<ProjectNode *> getLoadedProjects() const;
     void unloadProject(const String &id, bool deleteLocally, bool deleteRemotely);
 
     //===------------------------------------------------------------------===//
@@ -84,7 +84,7 @@ private:
     UniquePointer<AudioCore> audioCore;
     UniquePointer<PluginScanner> pluginManager;
     
-    UniquePointer<RootTreeItem> treeRoot;
+    UniquePointer<RootNode> treeRoot;
     NavigationHistory navigationHistory;
 
     void failedDeserializationFallback();

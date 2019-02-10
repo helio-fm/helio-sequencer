@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "MidiSequence.h"
 #include "ProjectEventDispatcher.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "UndoStack.h"
 #include "MidiTrack.h"
 
@@ -165,7 +165,7 @@ MidiTrack *MidiSequence::getTrack() const noexcept
     return &this->track;
 }
 
-ProjectTreeItem *MidiSequence::getProject() const noexcept
+ProjectNode *MidiSequence::getProject() const noexcept
 {
     return this->eventDispatcher.getProject();
 }

@@ -20,13 +20,13 @@
 class AudioPlugin;
 class AudioPluginEditor;
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 
-class AudioPluginTreeItem final : public TreeItem
+class AudioPluginNode final : public TreeNode
 {
 public:
 
-    AudioPluginTreeItem(AudioProcessorGraph::NodeID pluginID, const String &name);
+    AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name);
 
     Image getIcon() const noexcept override;
     AudioProcessorGraph::NodeID getNodeId() const noexcept;

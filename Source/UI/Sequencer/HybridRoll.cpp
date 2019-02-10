@@ -28,7 +28,7 @@
 #include "MidiEventComponent.h"
 #include "MidiSequence.h"
 #include "SelectionComponent.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 
 #include "ShadowDownwards.h"
 #include "ShadowUpwards.h"
@@ -53,7 +53,7 @@
 #include "TimeSignaturesSequence.h"
 #include "SequencerOperations.h"
 #include "HybridRollListener.h"
-#include "VersionControlTreeItem.h"
+#include "VersionControlNode.h"
 
 #include "AnnotationDialog.h"
 #include "TimeSignatureDialog.h"
@@ -85,7 +85,7 @@ template class TimeSignaturesProjectMap<TimeSignatureLargeComponent>;
 template class KeySignaturesProjectMap<KeySignatureLargeComponent>;
 
 
-HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
+HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     WeakReference<AudioMonitor> audioMonitor,
     bool hasAnnotationsTrack,
     bool hasKeySignaturesTrack,
@@ -219,7 +219,7 @@ Transport &HybridRoll::getTransport() const noexcept
     return this->project.getTransport();
 }
 
-ProjectTreeItem &HybridRoll::getProject() const noexcept
+ProjectNode &HybridRoll::getProject() const noexcept
 {
     return this->project;
 }
@@ -1177,7 +1177,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         App::Workspace().getAudioCore().unmute();
         break;
     case CommandIDs::VersionControlToggleQuickStash:
-        if (auto *vcs = this->project.findChildOfType<VersionControlTreeItem>())
+        if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
         {
             this->deselectAll(); // a couple of hacks, instead will need to improve event system
             this->getTransport().stopPlayback(); // with a pre-reset callback or so

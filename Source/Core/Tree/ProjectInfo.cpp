@@ -17,12 +17,12 @@
 
 #include "Common.h"
 #include "ProjectInfo.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Delta.h"
 
 using namespace Serialization::VCS;
 
-ProjectInfo::ProjectInfo(ProjectTreeItem &parent) : project(parent)
+ProjectInfo::ProjectInfo(ProjectNode &parent) : project(parent)
 {
     this->vcsDiffLogic = new VCS::ProjectInfoDiffLogic(*this);
 

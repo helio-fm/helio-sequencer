@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "InstrumentMenu.h"
-#include "InstrumentTreeItem.h"
+#include "InstrumentNode.h"
 #include "Instrument.h"
 #include "ModalDialogInput.h"
 #include "PluginScanner.h"
@@ -25,7 +25,7 @@
 #include "CommandIDs.h"
 #include "Icons.h"
 
-InstrumentMenu::InstrumentMenu(InstrumentTreeItem &instrumentNode, PluginScanner &scanner) :
+InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode, PluginScanner &scanner) :
     instrumentNode(instrumentNode),
     pluginScanner(scanner)
 {
@@ -70,7 +70,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 
     menu.add(MenuItem::item(Icons::remove, TRANS("menu::instrument::delete"))->withAction([this]()
     {
-        TreeItem::deleteItem(&this->instrumentNode, true);
+        TreeNode::deleteItem(&this->instrumentNode, true);
         this->dismiss();
     }));
 

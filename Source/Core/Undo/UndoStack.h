@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "UndoAction.h"
 
@@ -25,7 +25,7 @@ class UndoStack final : public ChangeBroadcaster, public Serializable
 {
 public:
 
-    explicit UndoStack(ProjectTreeItem &parentProject,
+    explicit UndoStack(ProjectNode &parentProject,
         int maxNumberOfUnitsToKeep = 30000,
         int minimumTransactionsToKeep = 30);
     
@@ -57,11 +57,11 @@ private:
     void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;
     int getNumActionsInCurrentTransaction() const;
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
     struct ActionSet final : public Serializable
     {
-        ActionSet(ProjectTreeItem &project, const String &transactionName);
+        ActionSet(ProjectNode &project, const String &transactionName);
 
         bool perform() const;
         bool undo() const;
@@ -76,7 +76,7 @@ private:
         OwnedArray<UndoAction> actions;
         String name;
 
-        ProjectTreeItem &project;
+        ProjectNode &project;
     };
     
     OwnedArray<ActionSet> transactions;

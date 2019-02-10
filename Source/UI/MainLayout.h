@@ -20,7 +20,7 @@
 class HeadlineItemDataSource;
 class TransientTreeItem;
 class TooltipContainer;
-class TreeItem;
+class TreeNode;
 class Headline;
 
 #include "ComponentFader.h"
@@ -43,7 +43,7 @@ public:
     // Pages and headline
     //===------------------------------------------------------------------===//
 
-    void showPage(Component *page, TreeItem *source);
+    void showPage(Component *page, TreeNode *source);
     bool isShowingPage(Component *page) const noexcept;
 
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);

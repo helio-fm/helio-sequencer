@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "HelioTheme.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "SerializationKeys.h"
 #include "IconComponent.h"
 #include "Workspace.h"

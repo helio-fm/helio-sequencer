@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 
 class NavigationHistoryLock final
 {
@@ -39,15 +39,15 @@ public:
     bool canGoForward() const;
     bool canGoBackward() const;
     
-    WeakReference<TreeItem> goBack();
-    WeakReference<TreeItem> goForward();
+    WeakReference<TreeNode> goBack();
+    WeakReference<TreeNode> goForward();
     
-    WeakReference<TreeItem> getCurrentItem() const;
-    bool addItemIfNeeded(TreeItem *item);
+    WeakReference<TreeNode> getCurrentItem() const;
+    bool addItemIfNeeded(TreeNode *item);
     
 private:
     
-    Array<WeakReference<TreeItem>> list;
+    Array<WeakReference<TreeNode>> list;
     
     // A way to prevent new items from being added when navigating back/forward
     WeakReference<NavigationHistoryLock> historyLock;

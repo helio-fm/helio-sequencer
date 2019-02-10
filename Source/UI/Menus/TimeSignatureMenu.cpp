@@ -17,19 +17,19 @@
 
 #include "Common.h"
 #include "TimeSignatureMenu.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "TimeSignatureEvent.h"
 #include "TimeSignaturesSequence.h"
-#include "PianoTrackTreeItem.h"
+#include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
 #include "CommandIDs.h"
 
-TimeSignatureMenu::TimeSignatureMenu(ProjectTreeItem &parentProject, 
+TimeSignatureMenu::TimeSignatureMenu(ProjectNode &parentProject, 
     const TimeSignatureEvent &targetEvent) :
     project(parentProject),
     event(targetEvent)

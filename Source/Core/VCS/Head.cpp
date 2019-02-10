@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "Head.h"
 #include "TrackedItemsSource.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "TrackedItem.h"
 #include "Diff.h"
 #include "DiffLogic.h"

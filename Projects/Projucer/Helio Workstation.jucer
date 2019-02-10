@@ -439,36 +439,35 @@
           <FILE id="cf5hpo" name="XmlSerializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/XmlSerializer.h"/>
         </GROUP>
         <GROUP id="{979A75EC-73DC-C02F-D56E-866D72FF00D2}" name="Tree">
-          <FILE id="CE6G1K" name="AudioPluginTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/AudioPluginTreeItem.cpp"/>
-          <FILE id="RL4cbn" name="AudioPluginTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/AudioPluginTreeItem.h"/>
-          <FILE id="UVWEdm" name="AutomationTrackTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/AutomationTrackTreeItem.cpp"/>
-          <FILE id="K82RYP" name="AutomationTrackTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/AutomationTrackTreeItem.h"/>
-          <FILE id="qbLi9m" name="InstrumentTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/InstrumentTreeItem.cpp"/>
-          <FILE id="HYta5A" name="InstrumentTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/InstrumentTreeItem.h"/>
-          <FILE id="HFh5gQ" name="MidiTrackTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/MidiTrackTreeItem.cpp"/>
-          <FILE id="TIdQYG" name="MidiTrackTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/MidiTrackTreeItem.h"/>
+          <FILE id="CE6G1K" name="AudioPluginNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/AudioPluginNode.cpp"/>
+          <FILE id="RL4cbn" name="AudioPluginNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/AudioPluginNode.h"/>
+          <FILE id="UVWEdm" name="AutomationTrackNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/AutomationTrackNode.cpp"/>
+          <FILE id="K82RYP" name="AutomationTrackNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/AutomationTrackNode.h"/>
+          <FILE id="qbLi9m" name="InstrumentNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/InstrumentNode.cpp"/>
+          <FILE id="HYta5A" name="InstrumentNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/InstrumentNode.h"/>
+          <FILE id="HFh5gQ" name="MidiTrackNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/MidiTrackNode.cpp"/>
+          <FILE id="TIdQYG" name="MidiTrackNode.h" compile="0" resource="0" file="../../Source/Core/Tree/MidiTrackNode.h"/>
           <FILE id="wvDyFy" name="MidiTrackSource.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/MidiTrackSource.h"/>
-          <FILE id="Gfzq58" name="OrchestraPitTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/OrchestraPitTreeItem.cpp"/>
-          <FILE id="mOhFF1" name="OrchestraPitTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/OrchestraPitTreeItem.h"/>
-          <FILE id="UWSr5u" name="PatternEditorTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/PatternEditorTreeItem.cpp"/>
-          <FILE id="ALNCy6" name="PatternEditorTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/PatternEditorTreeItem.h"/>
-          <FILE id="LNAQbu" name="PianoTrackTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/PianoTrackTreeItem.cpp"/>
-          <FILE id="ioqyfh" name="PianoTrackTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/PianoTrackTreeItem.h"/>
+          <FILE id="Gfzq58" name="OrchestraPitNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/OrchestraPitNode.cpp"/>
+          <FILE id="mOhFF1" name="OrchestraPitNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/OrchestraPitNode.h"/>
+          <FILE id="UWSr5u" name="PatternEditorNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/PatternEditorNode.cpp"/>
+          <FILE id="ALNCy6" name="PatternEditorNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/PatternEditorNode.h"/>
+          <FILE id="LNAQbu" name="PianoTrackNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/PianoTrackNode.cpp"/>
+          <FILE id="ioqyfh" name="PianoTrackNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/PianoTrackNode.h"/>
           <FILE id="tKVO8v" name="ProjectInfo.cpp" compile="1" resource="0" file="../../Source/Core/Tree/ProjectInfo.cpp"/>
           <FILE id="IEWN1c" name="ProjectInfo.h" compile="0" resource="0" file="../../Source/Core/Tree/ProjectInfo.h"/>
           <FILE id="SwcYq5" name="ProjectTimeline.cpp" compile="1" resource="0"
@@ -479,33 +478,29 @@
                 file="../../Source/Core/Tree/ProjectEventDispatcher.h"/>
           <FILE id="inh3nZ" name="ProjectListener.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/ProjectListener.h"/>
-          <FILE id="CKexRS" name="ProjectTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/ProjectTreeItem.cpp"/>
-          <FILE id="wdnaf6" name="ProjectTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/ProjectTreeItem.h"/>
-          <FILE id="pmK6z1" name="RootTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/RootTreeItem.cpp"/>
-          <FILE id="VkPEVe" name="RootTreeItem.h" compile="0" resource="0" file="../../Source/Core/Tree/RootTreeItem.h"/>
-          <FILE id="j4W2l9" name="SafeTreeItemPointer.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/SafeTreeItemPointer.h"/>
-          <FILE id="nBROIk" name="SettingsTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/SettingsTreeItem.cpp"/>
-          <FILE id="ustDr6" name="SettingsTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/SettingsTreeItem.h"/>
-          <FILE id="LvVZ86" name="TrackGroupTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/TrackGroupTreeItem.cpp"/>
-          <FILE id="eUdOwJ" name="TrackGroupTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/TrackGroupTreeItem.h"/>
-          <FILE id="p4vaGG" name="TreeItem.cpp" compile="1" resource="0" file="../../Source/Core/Tree/TreeItem.cpp"/>
-          <FILE id="nnj8WS" name="TreeItem.h" compile="0" resource="0" file="../../Source/Core/Tree/TreeItem.h"/>
-          <FILE id="cKuziz" name="TreeItemChildrenSerializer.cpp" compile="1"
-                resource="0" file="../../Source/Core/Tree/TreeItemChildrenSerializer.cpp"/>
-          <FILE id="icgfCb" name="TreeItemChildrenSerializer.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/TreeItemChildrenSerializer.h"/>
-          <FILE id="S6tz1q" name="VersionControlTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/VersionControlTreeItem.cpp"/>
-          <FILE id="Dvn4Zj" name="VersionControlTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/VersionControlTreeItem.h"/>
+          <FILE id="CKexRS" name="ProjectNode.cpp" compile="1" resource="0" file="../../Source/Core/Tree/ProjectNode.cpp"/>
+          <FILE id="wdnaf6" name="ProjectNode.h" compile="0" resource="0" file="../../Source/Core/Tree/ProjectNode.h"/>
+          <FILE id="pmK6z1" name="RootNode.cpp" compile="1" resource="0" file="../../Source/Core/Tree/RootNode.cpp"/>
+          <FILE id="VkPEVe" name="RootNode.h" compile="0" resource="0" file="../../Source/Core/Tree/RootNode.h"/>
+          <FILE id="j4W2l9" name="SafeNodePointer.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/SafeNodePointer.h"/>
+          <FILE id="nBROIk" name="SettingsNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/SettingsNode.cpp"/>
+          <FILE id="ustDr6" name="SettingsNode.h" compile="0" resource="0" file="../../Source/Core/Tree/SettingsNode.h"/>
+          <FILE id="LvVZ86" name="TrackGroupNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/TrackGroupNode.cpp"/>
+          <FILE id="eUdOwJ" name="TrackGroupNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/TrackGroupNode.h"/>
+          <FILE id="p4vaGG" name="TreeNode.cpp" compile="1" resource="0" file="../../Source/Core/Tree/TreeNode.cpp"/>
+          <FILE id="nnj8WS" name="TreeNode.h" compile="0" resource="0" file="../../Source/Core/Tree/TreeNode.h"/>
+          <FILE id="cKuziz" name="TreeNodeSerializer.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/TreeNodeSerializer.cpp"/>
+          <FILE id="icgfCb" name="TreeNodeSerializer.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/TreeNodeSerializer.h"/>
+          <FILE id="S6tz1q" name="VersionControlNode.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/VersionControlNode.cpp"/>
+          <FILE id="Dvn4Zj" name="VersionControlNode.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/VersionControlNode.h"/>
         </GROUP>
         <GROUP id="{5F3058BB-3437-9D35-0144-C18A49149B25}" name="Undo">
           <GROUP id="{1601DB60-4D9C-DB85-3BF4-68029B0F5C7E}" name="Actions">
@@ -918,10 +913,10 @@
                     resource="0" file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.cpp"/>
               <FILE id="yKMdnv" name="InstrumentEditorConnector.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.h"/>
-              <FILE id="HMxxKn" name="InstrumentEditorNode.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorNode.cpp"/>
-              <FILE id="D9u9vs" name="InstrumentEditorNode.h" compile="0" resource="0"
-                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorNode.h"/>
+              <FILE id="HMxxKn" name="InstrumentComponent.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentComponent.cpp"/>
+              <FILE id="D9u9vs" name="InstrumentComponent.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentComponent.h"/>
               <FILE id="mhSIce" name="InstrumentEditorPin.cpp" compile="1" resource="0"
                     file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.cpp"/>
               <FILE id="NK73De" name="InstrumentEditorPin.h" compile="0" resource="0"

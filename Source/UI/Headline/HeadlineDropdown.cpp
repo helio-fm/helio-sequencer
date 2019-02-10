@@ -27,10 +27,10 @@
 #include "PanelBackgroundB.h"
 #include "HeadlineItemDataSource.h"
 #include "MenuPanel.h"
-#include "RootTreeItem.h"
+#include "RootNode.h"
 #include "MainLayout.h"
 #include "ColourIDs.h"
-#include "TreeItem.h"
+#include "TreeNode.h"
 
 static constexpr int getPadding() { return 4; }
 
@@ -55,32 +55,6 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     //[Constructor]
     if (this->item != nullptr)
     {
-        // Debug: create tree panel for the root
-        /*
-        if (RootTreeItem *rootItem = dynamic_cast<RootTreeItem *>(this->item.get()))
-        {
-            ScopedPointer<TreeView> treeView(new TreeView());
-            treeView->setFocusContainer(false);
-            treeView->setWantsKeyboardFocus(false);
-            treeView->setRootItem(rootItem);
-            treeView->getRootItem()->setOpen(true);
-            treeView->setRootItemVisible(true);
-            treeView->setDefaultOpenness(true);
-            treeView->getViewport()->setWantsKeyboardFocus(false);
-            treeView->getViewport()->setScrollBarsShown(false, false);
-            treeView->setOpenCloseButtonsVisible(false);
-            treeView->setIndentSize(4);
-            const auto treeContentBounds =
-                treeView->getViewport()->getViewedComponent()->getLocalBounds();
-            const auto w = treeContentBounds.getWidth();
-            const auto h = jmin(treeContentBounds.getHeight(), App::Layout().getHeight() - 180);
-            treeView->setSize(w, h);
-            this->content = treeView.release();
-            this->addAndMakeVisible(this->content);
-            this->syncWidthWithContent();
-        } else
-        */
-
         if (ScopedPointer<Component> menu = this->item->createMenu())
         {
             this->content.reset(menu.release());

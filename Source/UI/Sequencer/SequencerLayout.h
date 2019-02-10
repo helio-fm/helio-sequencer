@@ -23,7 +23,7 @@ class HybridRoll;
 class RollsSwitchingProxy;
 class MidiTrack;
 class TrackScroller;
-class ProjectTreeItem;
+class ProjectNode;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
 class Origami;
@@ -40,7 +40,7 @@ class SequencerLayout final :
 {
 public:
 
-    explicit SequencerLayout(ProjectTreeItem &parentProject);
+    explicit SequencerLayout(ProjectNode &parentProject);
     ~SequencerLayout() override;
 
     void showPatternEditor();
@@ -79,7 +79,7 @@ private:
 
 private:
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
     ScopedPointer<Viewport> pianoViewport;
     ScopedPointer<Viewport> patternViewport;

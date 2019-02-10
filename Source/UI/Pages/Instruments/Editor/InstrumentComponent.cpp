@@ -16,16 +16,16 @@
 */
 
 #include "Common.h"
-#include "InstrumentEditorNode.h"
+#include "InstrumentComponent.h"
 #include "Instrument.h"
 #include "InstrumentEditor.h"
 #include "InstrumentEditorPin.h"
 #include "PluginWindow.h"
 
 #include "Workspace.h"
-#include "RootTreeItem.h"
-#include "InstrumentTreeItem.h"
-#include "AudioPluginTreeItem.h"
+#include "RootNode.h"
+#include "InstrumentNode.h"
+#include "AudioPluginNode.h"
 
 #if HELIO_DESKTOP
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 1
@@ -37,7 +37,7 @@
 #   define PIN_SIZE (25)
 #endif
 
-InstrumentEditorNode::InstrumentEditorNode(WeakReference<Instrument> instrument,
+InstrumentComponent::InstrumentComponent(WeakReference<Instrument> instrument,
     AudioProcessorGraph::NodeID nodeId) :
     instrument(instrument),
     nodeId(nodeId),
@@ -52,18 +52,18 @@ InstrumentEditorNode::InstrumentEditorNode(WeakReference<Instrument> instrument,
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
 
-InstrumentEditorNode::~InstrumentEditorNode()
+InstrumentComponent::~InstrumentComponent()
 {
     this->deleteAllChildren();
 }
 
-void InstrumentEditorNode::mouseDown(const MouseEvent &e)
+void InstrumentComponent::mouseDown(const MouseEvent &e)
 {
     this->originalPos = this->localPointToGlobal(Point<int>());
     this->toFront(false);
 }
 
-void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
+void InstrumentComponent::mouseDrag(const MouseEvent &e)
 {
     Point<int> pos(this->originalPos + Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY()));
 
@@ -80,7 +80,7 @@ void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
     this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
-void InstrumentEditorNode::mouseUp(const MouseEvent &e)
+void InstrumentComponent::mouseUp(const MouseEvent &e)
 {
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
@@ -109,7 +109,7 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
 #else
             const auto instrumentTreeItems =
                 App::Workspace().getTreeRoot()->
-                findChildrenOfType<InstrumentTreeItem>();
+                findChildrenOfType<InstrumentNode>();
 
             for (auto *instrumentTreeItem : instrumentTreeItems)
             {
@@ -132,7 +132,7 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
     }
 }
 
-bool InstrumentEditorNode::hitTest(int x, int y)
+bool InstrumentComponent::hitTest(int x, int y)
 {
     const int xCenter = this->getWidth() / 2;
     const int yCenter = this->getHeight() / 2;
@@ -144,7 +144,7 @@ bool InstrumentEditorNode::hitTest(int x, int y)
     return (dx * dx) + (dy * dy) < (r * r);
 }
 
-void InstrumentEditorNode::paint(Graphics &g)
+void InstrumentComponent::paint(Graphics &g)
 {
     const auto w = float(this->getWidth());
     const auto h = float(this->getHeight());
@@ -167,7 +167,7 @@ void InstrumentEditorNode::paint(Graphics &g)
     g.drawFittedText(this->getName(), getLocalBounds().reduced(this->pinSize * 2, this->pinSize), Justification::centred, 3, 1.f);
 }
 
-void InstrumentEditorNode::resized()
+void InstrumentComponent::resized()
 {
     const int xCenter = this->getWidth() / 2;
     const int yCenter = this->getHeight() / 2;
@@ -194,7 +194,7 @@ void InstrumentEditorNode::resized()
     }
 }
 
-void InstrumentEditorNode::getPinPos(const int index, const bool isInput, float &x, float &y)
+void InstrumentComponent::getPinPos(const int index, const bool isInput, float &x, float &y)
 {
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
@@ -210,13 +210,13 @@ void InstrumentEditorNode::getPinPos(const int index, const bool isInput, float 
     }
 }
 
-void InstrumentEditorNode::setSelected(bool selected)
+void InstrumentComponent::setSelected(bool selected)
 {
     this->isSelected = selected;
     this->repaint();
 }
 
-void InstrumentEditorNode::update()
+void InstrumentComponent::update()
 {
     const AudioProcessorGraph::Node::Ptr f(this->instrument->getNodeForId(nodeId));
 
@@ -277,7 +277,7 @@ void InstrumentEditorNode::update()
     }
 }
 
-InstrumentEditor *InstrumentEditorNode::getParentEditor() const noexcept
+InstrumentEditor *InstrumentComponent::getParentEditor() const noexcept
 {
     return this->findParentComponentOfClass<InstrumentEditor>();
 }

@@ -34,7 +34,7 @@ class PatternRoll final : public HybridRoll
 {
 public:
 
-    PatternRoll(ProjectTreeItem &parentProject,
+    PatternRoll(ProjectNode &parentProject,
         Viewport &viewportRef,
         WeakReference<AudioMonitor> clippingDetector);
 

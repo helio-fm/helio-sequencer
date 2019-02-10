@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "PianoTrackActions.h"
 #include "MidiTrackSource.h"
-#include "PianoTrackTreeItem.h"
+#include "PianoTrackNode.h"
 #include "SerializationKeys.h"
 
 //===----------------------------------------------------------------------===//
@@ -26,12 +26,12 @@
 //===----------------------------------------------------------------------===//
 
 PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) noexcept :
+    WeakReference<TreeNode> parentTreeItem) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem) {}
 
 PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem,
+    WeakReference<TreeNode> parentTreeItem,
     ValueTree targetSerializedState,
     const String &xPath) noexcept :
     UndoAction(source),
@@ -41,7 +41,7 @@ PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
 
 bool PianoTrackInsertAction::perform()
 {
-    MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
+    MidiTrackNode *track = new PianoTrackNode("empty");
     track->deserialize(this->trackState);
 
     this->parentTreeItem->addChildTreeItem(track);
@@ -53,8 +53,8 @@ bool PianoTrackInsertAction::perform()
 
 bool PianoTrackInsertAction::undo()
 {
-    if (PianoTrackTreeItem *treeItem =
-        this->source.findTrackById<PianoTrackTreeItem>(this->trackId))
+    if (PianoTrackNode *treeItem =
+        this->source.findTrackById<PianoTrackNode>(this->trackId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
@@ -97,12 +97,12 @@ void PianoTrackInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) noexcept :
+    WeakReference<TreeNode> parentTreeItem) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem) {}
 
 PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem,
+    WeakReference<TreeNode> parentTreeItem,
     const String &trackId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
@@ -111,8 +111,8 @@ PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
 
 bool PianoTrackRemoveAction::perform()
 {
-    if (PianoTrackTreeItem *treeItem =
-        this->source.findTrackById<PianoTrackTreeItem>(this->trackId))
+    if (PianoTrackNode *treeItem =
+        this->source.findTrackById<PianoTrackNode>(this->trackId))
     {
         this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
@@ -127,7 +127,7 @@ bool PianoTrackRemoveAction::undo()
 {
     if (this->serializedTreeItem.isValid())
     {
-        MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
+        MidiTrackNode *track = new PianoTrackNode("empty");
         track->deserialize(this->serializedTreeItem);
         this->parentTreeItem->addChildTreeItem(track);
         track->setTrackName(this->trackName, true);

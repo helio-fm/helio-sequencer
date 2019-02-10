@@ -39,7 +39,7 @@ bool NavigationHistory::canGoBackward() const
     return (this->currentPageIndex > 0);
 }
 
-WeakReference<TreeItem> NavigationHistory::goBack()
+WeakReference<TreeNode> NavigationHistory::goBack()
 {
     if (!this->canGoBackward())
     {
@@ -71,7 +71,7 @@ WeakReference<TreeItem> NavigationHistory::goBack()
     return this->list[this->currentPageIndex];
 }
 
-WeakReference<TreeItem> NavigationHistory::goForward()
+WeakReference<TreeNode> NavigationHistory::goForward()
 {
     if (! this->canGoForward())
     {
@@ -104,12 +104,12 @@ WeakReference<TreeItem> NavigationHistory::goForward()
     return this->list[this->currentPageIndex];
 }
 
-WeakReference<TreeItem> NavigationHistory::getCurrentItem() const
+WeakReference<TreeNode> NavigationHistory::getCurrentItem() const
 {
     return this->list[this->currentPageIndex];
 }
 
-bool NavigationHistory::addItemIfNeeded(TreeItem *item)
+bool NavigationHistory::addItemIfNeeded(TreeNode *item)
 {
     if (this->historyLock != nullptr)
     {

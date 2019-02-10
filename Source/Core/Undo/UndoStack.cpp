@@ -19,8 +19,7 @@
 #include "UndoStack.h"
 #include "UndoAction.h"
 #include "SerializationKeys.h"
-
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 
 #include "MidiTrackActions.h"
 #include "PianoTrackActions.h"
@@ -36,7 +35,7 @@
 
 using namespace Serialization;
 
-UndoStack::ActionSet::ActionSet(ProjectTreeItem &project, const String &transactionName) :
+UndoStack::ActionSet::ActionSet(ProjectNode &project, const String &transactionName) :
     project(project),
     name(transactionName) {}
     
@@ -159,7 +158,7 @@ UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &t
     return nullptr;
 }
 
-UndoStack::UndoStack(ProjectTreeItem &parentProject,
+UndoStack::UndoStack(ProjectNode &parentProject,
     int maxNumberOfUnitsToKeep,
     int minimumTransactions) :
     project(parentProject),

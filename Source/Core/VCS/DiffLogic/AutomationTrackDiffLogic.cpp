@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AutomationTrackDiffLogic.h"
-#include "AutomationTrackTreeItem.h"
+#include "AutomationTrackNode.h"
 #include "PatternDiffHelpers.h"
 #include "AutomationEvent.h"
 #include "AutomationSequence.h"

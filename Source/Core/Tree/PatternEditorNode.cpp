@@ -16,38 +16,38 @@
 */
 
 #include "Common.h"
-#include "PatternEditorTreeItem.h"
-#include "TreeItemChildrenSerializer.h"
+#include "PatternEditorNode.h"
+#include "TreeNodeSerializer.h"
 #include "Icons.h"
 #include "MainLayout.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "SerializationKeys.h"
 
-PatternEditorTreeItem::PatternEditorTreeItem() :
-    TreeItem("Patterns", Serialization::Core::patternSet) {}
+PatternEditorNode::PatternEditorNode() :
+    TreeNode("Patterns", Serialization::Core::patternSet) {}
 
-Image PatternEditorTreeItem::getIcon() const noexcept
+Image PatternEditorNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::patterns, HEADLINE_ICON_SIZE);
 }
 
-void PatternEditorTreeItem::showPage()
+void PatternEditorNode::showPage()
 {
-    if (ProjectTreeItem *parentProject =
-        this->findParentOfType<ProjectTreeItem>())
+    if (ProjectNode *parentProject =
+        this->findParentOfType<ProjectNode>())
     {
         parentProject->showPatternEditor(this);
     }
 }
 
-void PatternEditorTreeItem::recreatePage() {}
+void PatternEditorNode::recreatePage() {}
 
-String PatternEditorTreeItem::getName() const noexcept
+String PatternEditorNode::getName() const noexcept
 {
     return TRANS("tree::patterns");
 }
 
-String PatternEditorTreeItem::getStatsString() const
+String PatternEditorNode::getStatsString() const
 {
     // TODO
     return {};
@@ -57,17 +57,17 @@ String PatternEditorTreeItem::getStatsString() const
 // Popup
 //===----------------------------------------------------------------------===//
 
-bool PatternEditorTreeItem::hasMenu() const noexcept
+bool PatternEditorNode::hasMenu() const noexcept
 {
     return false;
 }
 
-ScopedPointer<Component> PatternEditorTreeItem::createMenu()
+ScopedPointer<Component> PatternEditorNode::createMenu()
 {
     //TODO
 
-    //if (ProjectTreeItem *parentProject =
-    //    this->findParentOfType<ProjectTreeItem>())
+    //if (ProjectNode *parentProject =
+    //    this->findParentOfType<ProjectNode>())
     //{
     //    return new PatternEditorCommandPanel(*parentProject);
     //}

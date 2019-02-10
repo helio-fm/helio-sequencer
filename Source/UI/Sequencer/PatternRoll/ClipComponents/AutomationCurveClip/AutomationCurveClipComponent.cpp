@@ -20,7 +20,7 @@
 #include "AutomationCurveEventComponent.h"
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationCurveHelper.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "PlayerThread.h"
@@ -35,7 +35,7 @@
 #   define TRACKMAP_TEMPO_HELPER_DIAMETER (20.f)
 #endif
 
-AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectTreeItem &project,
+AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectNode &project,
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),

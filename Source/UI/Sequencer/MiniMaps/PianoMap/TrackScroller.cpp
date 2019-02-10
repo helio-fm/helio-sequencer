@@ -25,7 +25,6 @@
 #include "Origami.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
-#include "ProjectTreeItem.h"
 #include "PianoProjectMap.h"
 
 TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :

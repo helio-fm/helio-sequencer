@@ -19,10 +19,10 @@
 
 //[Headers]
 class PluginScanner;
-class OrchestraPitTreeItem;
+class OrchestraPitNode;
 
 #include "HeadlineItemDataSource.h"
-#include "InstrumentTreeItem.h"
+#include "InstrumentNode.h"
 
 #if HELIO_DESKTOP
 #   define INSTRUMENTSLIST_ROW_HEIGHT (48)
@@ -39,7 +39,7 @@ class InstrumentsListComponent final : public Component,
 {
 public:
 
-    InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot);
+    InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot);
     ~InstrumentsListComponent();
 
     //[UserMethods]
@@ -77,9 +77,9 @@ private:
 
     //[UserVariables]
     PluginScanner &pluginScanner;
-    OrchestraPitTreeItem &instrumentsRoot;
+    OrchestraPitNode &instrumentsRoot;
 
-    Array<WeakReference<InstrumentTreeItem>> instruments;
+    Array<WeakReference<InstrumentNode>> instruments;
     Image instrumentIcon;
     //[/UserVariables]
 

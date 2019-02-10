@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AnnotationsProjectMap.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Transport.h"
 #include "MidiSequence.h"
 #include "ProjectTimeline.h"
@@ -29,7 +29,7 @@
 #include "MainLayout.h"
 
 template<typename T>
-AnnotationsProjectMap<T>::AnnotationsProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
+AnnotationsProjectMap<T>::AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),

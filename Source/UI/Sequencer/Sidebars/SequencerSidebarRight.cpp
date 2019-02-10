@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "Transport.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "PlayerThread.h"
 #include "Icons.h"
 #include "HybridRoll.h"
@@ -52,7 +52,7 @@
 
 //[/MiscUserDefs]
 
-SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
+SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     : project(parent),
       lastSeekTime(0.0),
       lastTotalTime(0.0),
@@ -448,7 +448,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="SequencerSidebarRight" template="../../../Template"
                  componentName="" parentClasses="public Component, protected TransportListener, protected AsyncUpdater, protected ListBoxModel, protected ChangeListener, protected Timer"
-                 constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
+                 constructorParams="ProjectNode &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="48" initialHeight="640">
   <METHODS>

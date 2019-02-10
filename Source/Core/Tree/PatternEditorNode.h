@@ -17,17 +17,13 @@
 
 #pragma once
 
-class Instrument;
-class InstrumentTreeItem;
+#include "TreeNode.h"
 
-#include "TreeItem.h"
-#include "OrchestraPitPage.h"
-
-class OrchestraPitTreeItem final : public TreeItem
+class PatternEditorNode final : public TreeNode
 {
 public:
 
-    OrchestraPitTreeItem();
+    PatternEditorNode();
 
     String getName() const noexcept override;
     Image getIcon() const noexcept override;
@@ -35,28 +31,13 @@ public:
     void showPage() override;
     void recreatePage() override;
 
-    //===------------------------------------------------------------------===//
-    // Dragging
-    //===------------------------------------------------------------------===//
-
-    var getDragSourceDescription() override { return {}; }
-    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
+    String getStatsString() const;
+    
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
-
-private:
-    
-    friend class OrchestraPitPage;
-    friend class OrchestraPitMenu;
-    friend class AudioPluginSelectionMenu;
-    
-    InstrumentTreeItem *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
-    ScopedPointer<OrchestraPitPage> instrumentsPage;
 
 };

@@ -22,12 +22,12 @@ class PluginWindow;
 
 #include "Instrument.h"
 
-class InstrumentEditorNode : public Component
+class InstrumentComponent : public Component
 {
 public:
 
-    InstrumentEditorNode(WeakReference<Instrument> instrument, AudioProcessorGraph::NodeID nodeId);
-    ~InstrumentEditorNode() override;
+    InstrumentComponent(WeakReference<Instrument> instrument, AudioProcessorGraph::NodeID nodeId);
+    ~InstrumentComponent() override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -60,5 +60,5 @@ private:
     bool hitTest(int x, int y) override;
 
     InstrumentEditor *getParentEditor() const noexcept;
-    InstrumentEditorNode(const InstrumentEditorNode &);
+    InstrumentComponent(const InstrumentComponent &);
 };

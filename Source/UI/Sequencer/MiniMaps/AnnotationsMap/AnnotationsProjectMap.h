@@ -21,7 +21,7 @@
 #include "ProjectListener.h"
 
 class HybridRoll;
-class ProjectTreeItem;
+class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
 
@@ -32,7 +32,7 @@ class AnnotationsProjectMap :
 {
 public:
 
-    AnnotationsProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
+    AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
     ~AnnotationsProjectMap() override;
 
     void alignAnnotationComponent(T *nc);
@@ -93,7 +93,7 @@ private:
     float rollLastBeat;
     
     HybridRoll &roll;
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
     ComponentAnimator animator;
 

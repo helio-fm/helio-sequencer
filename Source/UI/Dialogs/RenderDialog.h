@@ -21,7 +21,7 @@
 #include "FadingDialog.h"
 
 class DocumentOwner;
-class ProjectTreeItem;
+class ProjectNode;
 class ProgressIndicator;
 class MenuItemComponent;
 //[/Headers]
@@ -38,7 +38,7 @@ class RenderDialog final : public FadingDialog,
 {
 public:
 
-    RenderDialog(ProjectTreeItem &parentProject, const File &renderTo, const String &formatExtension);
+    RenderDialog(ProjectNode &parentProject, const File &renderTo, const String &formatExtension);
     ~RenderDialog();
 
     //[UserMethods]
@@ -68,7 +68,7 @@ private:
     void stopTrackingProgress();
 
     ComponentAnimator animator;
-    ProjectTreeItem &project;
+    ProjectNode &project;
 
     String extension;
     bool shouldRenderAfterDialogCompletes;

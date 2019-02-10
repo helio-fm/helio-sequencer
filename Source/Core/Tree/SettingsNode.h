@@ -17,27 +17,38 @@
 
 #pragma once
 
-#include "TreeItem.h"
+class ComponentsList;
 
-class PatternEditorTreeItem final : public TreeItem
+#include "TreeNode.h"
+
+class SettingsNode final : public TreeNode
 {
 public:
 
-    PatternEditorTreeItem();
-
+    SettingsNode();
+    
     String getName() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
 
-    String getStatsString() const;
-    
-    //===------------------------------------------------------------------===//
-    // Menu
-    //===------------------------------------------------------------------===//
-
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
+
+private:
+
+    ScopedPointer<ComponentsList> settingsList;
+    ScopedPointer<Component> audioSettings;
+    ScopedPointer<Component> audioSettingsWrapper;
+    ScopedPointer<Component> uiSettings;
+    ScopedPointer<Component> uiSettingsWrapper;
+    ScopedPointer<Component> themeSettings;
+    ScopedPointer<Component> themeSettingsWrapper;
+    ScopedPointer<Component> translationSettings;
+    ScopedPointer<Component> translationSettingsWrapper;
+    ScopedPointer<Component> syncSettings;
+    ScopedPointer<Component> syncSettingsWrapper;
+    ScopedPointer<Component> settingsPage;
 
 };

@@ -23,7 +23,7 @@ class WaveformAudioMonitorComponent;
 class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
 class MenuItemComponent;
-class ProjectTreeItem;
+class ProjectNode;
 class AudioMonitor;
 
 #include "ComponentFader.h"
@@ -41,7 +41,7 @@ class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
 {
 public:
 
-    SequencerSidebarLeft(ProjectTreeItem &project);
+    SequencerSidebarLeft(ProjectNode &project);
     ~SequencerSidebarLeft();
 
     //[UserMethods]
@@ -60,7 +60,7 @@ public:
 private:
 
     //[UserVariables]
-    ProjectTreeItem &project;
+    ProjectNode &project;
 
     ComponentFader buttonFader;
     ComponentAnimator animator;

@@ -20,7 +20,7 @@
 #include "Clip.h"
 
 class ProjectEventDispatcher;
-class ProjectTreeItem;
+class ProjectNode;
 class UndoStack;
 class MidiTrack;
 
@@ -124,7 +124,7 @@ protected:
     float lastEndBeat;
     float lastStartBeat;
 
-    ProjectTreeItem *getProject() const noexcept;
+    ProjectNode *getProject() const noexcept;
     UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<Clip> clips;

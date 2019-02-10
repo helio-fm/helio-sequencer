@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-#include "TreeItem.h"
+#include "TreeNode.h"
 #include "NavigationHistory.h"
 
 class HeadlineItem;
@@ -43,7 +43,7 @@ public:
     ~Headline();
 
     //[UserMethods]
-    void syncWithTree(NavigationHistory &history, WeakReference<TreeItem> leaf);
+    void syncWithTree(NavigationHistory &history, WeakReference<TreeNode> leaf);
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
     //[/UserMethods]
@@ -58,7 +58,7 @@ private:
 
     // A way to receive a single coalesced update from multiple signaling sub-items:
     void handleAsyncUpdate() override;
-    int rebuildChain(WeakReference<TreeItem> leaf);
+    int rebuildChain(WeakReference<TreeNode> leaf);
     int getChainWidth() const noexcept;
 
     ComponentAnimator animator;

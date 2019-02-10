@@ -17,55 +17,68 @@
 
 #pragma once
 
-#include "PianoTrackDiffLogic.h"
-#include "MidiTrackTreeItem.h"
+#include "TreeNode.h"
 
-class PianoTrackTreeItem final : public MidiTrackTreeItem
+class VersionControl;
+class VersionControlEditor;
+class ProjectNode;
+
+class VersionControlNode final : public TreeNode
 {
 public:
 
-    explicit PianoTrackTreeItem(const String &name);
+    VersionControlNode();
+    ~VersionControlNode() override;
 
+    String getName() const noexcept override;
     Image getIcon() const noexcept override;
 
-    static void selectAllPianoSiblings(PianoTrackTreeItem *layerItem);
-
-    //===------------------------------------------------------------------===//
-    // VCS::TrackedItem
-    //===------------------------------------------------------------------===//
-
-    int getNumDeltas() const override;
-    VCS::Delta *getDelta(int index) const override;
-    ValueTree getDeltaData(int deltaIndex) const override;
-    VCS::DiffLogic *getDiffLogic() const override;
-    void resetStateTo(const VCS::TrackedItem &newState) override;
+    void showPage() override;
+    void recreatePage() override;
+    String getStatsString() const;
     
+    void commitProjectInfo();
+    void toggleQuickStash();
+
+    //===------------------------------------------------------------------===//
+    // Tree
+    //===------------------------------------------------------------------===//
+
+    void onItemAddedToTree(bool sendNotifications) override;
+    void onItemDeletedFromTree(bool sendNotifications) override;
+
+    //===------------------------------------------------------------------===//
+    // Network
+    //===------------------------------------------------------------------===//
+
+    void cloneProject();
+
+    //===------------------------------------------------------------------===//
+    // Menu
+    //===------------------------------------------------------------------===//
+
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
+    void reset() override;
 
-    //===------------------------------------------------------------------===//
-    // Deltas
-    //===------------------------------------------------------------------===//
+protected:
 
-    ValueTree serializePathDelta() const;
-    ValueTree serializeMuteDelta() const;
-    ValueTree serializeColourDelta() const;
-    ValueTree serializeInstrumentDelta() const;
-    ValueTree serializeEventsDelta() const;
-
-    void resetPathDelta(const ValueTree &state);
-    void resetMuteDelta(const ValueTree &state);
-    void resetColourDelta(const ValueTree &state);
-    void resetInstrumentDelta(const ValueTree &state);
-    void resetEventsDelta(const ValueTree &state);
+    UniquePointer<VersionControl> vcs;
+    UniquePointer<VersionControlEditor> editor;
 
 private:
-
-    ScopedPointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
-    OwnedArray<VCS::Delta> deltas;
+        
+    void initVCS();
+    void shutdownVCS();
+    
+    void initEditor();
+    void shutdownEditor();
 
 };

@@ -17,38 +17,38 @@
 
 #pragma once
 
-class ComponentsList;
+#include "TreeNode.h"
 
-#include "TreeItem.h"
+class ProjectNode;
+class MidiTrackNode;
 
-class SettingsTreeItem final : public TreeItem
+class TrackGroupNode final : public TreeNode
 {
 public:
 
-    SettingsTreeItem();
+    explicit TrackGroupNode(const String &name);
+
+    static void removeAllEmptyGroupsInProject(ProjectNode *project); // sanitize the tree
     
-    String getName() const noexcept override;
+    void sortByNameAmongSiblings();
+
     Image getIcon() const noexcept override;
 
     void showPage() override;
-    void recreatePage() override;
+    void safeRename(const String &newName, bool sendNotifications) override;
+
+    //===------------------------------------------------------------------===//
+    // Dragging
+    //===------------------------------------------------------------------===//
+
+    var getDragSourceDescription() override;
+    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
+
+    //===------------------------------------------------------------------===//
+    // Menu
+    //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
-
-private:
-
-    ScopedPointer<ComponentsList> settingsList;
-    ScopedPointer<Component> audioSettings;
-    ScopedPointer<Component> audioSettingsWrapper;
-    ScopedPointer<Component> uiSettings;
-    ScopedPointer<Component> uiSettingsWrapper;
-    ScopedPointer<Component> themeSettings;
-    ScopedPointer<Component> themeSettingsWrapper;
-    ScopedPointer<Component> translationSettings;
-    ScopedPointer<Component> translationSettingsWrapper;
-    ScopedPointer<Component> syncSettings;
-    ScopedPointer<Component> syncSettingsWrapper;
-    ScopedPointer<Component> settingsPage;
 
 };

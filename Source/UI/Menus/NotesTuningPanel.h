@@ -21,7 +21,7 @@
 #include "TransportListener.h"
 
 class PianoRoll;
-class ProjectTreeItem;
+class ProjectNode;
 class NotesTuningDiagram;
 class MenuItemComponent;
 //[/Headers]
@@ -39,7 +39,7 @@ class NotesTuningPanel final : public Component,
 {
 public:
 
-    NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &targetRoll);
+    NotesTuningPanel(ProjectNode &parentProject, PianoRoll &targetRoll);
     ~NotesTuningPanel();
 
     //[UserMethods]
@@ -57,7 +57,7 @@ private:
     //[UserVariables]
 
     PianoRoll &roll;
-    ProjectTreeItem &project;
+    ProjectNode &project;
 
     bool hasMadeChanges;
 

@@ -19,7 +19,7 @@
 
 //[Headers]
 class PluginScanner;
-class OrchestraPitTreeItem;
+class OrchestraPitNode;
 class MenuItemComponent;
 
 #include "HeadlineItemDataSource.h"
@@ -43,7 +43,7 @@ class AudioPluginsListComponent final : public Component,
 {
 public:
 
-    AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot);
+    AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot);
     ~AudioPluginsListComponent();
 
     //[UserMethods]
@@ -86,7 +86,7 @@ private:
 
     //[UserVariables]
     PluginScanner &pluginScanner;
-    OrchestraPitTreeItem &instrumentsRoot;
+    OrchestraPitNode &instrumentsRoot;
     //[/UserVariables]
 
     UniquePointer<TableListBox> pluginsList;

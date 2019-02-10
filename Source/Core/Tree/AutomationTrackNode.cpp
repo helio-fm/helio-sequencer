@@ -16,76 +16,48 @@
 */
 
 #include "Common.h"
-#include "PianoTrackTreeItem.h"
-#include "PianoSequence.h"
-#include "ProjectTreeItem.h"
-#include "TreeItemChildrenSerializer.h"
+#include "AutomationTrackNode.h"
+#include "AutomationSequence.h"
+#include "TreeNodeSerializer.h"
 #include "Icons.h"
 #include "Pattern.h"
 
-#include "MainLayout.h"
-#include "Instrument.h"
-#include "OrchestraPit.h"
-
-#include "Delta.h"
-#include "PianoTrackDiffLogic.h"
-
-PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
-    MidiTrackTreeItem(name, Serialization::Core::pianoTrack)
+AutomationTrackNode::AutomationTrackNode(const String &name) :
+    MidiTrackNode(name, Serialization::Core::automationTrack)
 {
-    this->sequence = new PianoSequence(*this, *this);
+    this->sequence = new AutomationSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
 
-    // this will be set by transport
-    //this->layer->setInstrumentId(this->workspace.getDefaultInstrument()->getInstrumentID());
-
-    this->vcsDiffLogic = new VCS::PianoTrackDiffLogic(*this);
+    this->vcsDiffLogic = new VCS::AutomationTrackDiffLogic(*this);
 
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackMute));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackColour));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
-    this->deltas.add(new VCS::Delta({}, PianoSequenceDeltas::notesAdded));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackController));
+    this->deltas.add(new VCS::Delta({}, AutoSequenceDeltas::eventsAdded));
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
 }
 
-Image PianoTrackTreeItem::getIcon() const noexcept
+Image AutomationTrackNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::pianoTrack, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::automationTrack, HEADLINE_ICON_SIZE);
 }
 
-int PianoTrackTreeItem::getNumDeltas() const
+//===----------------------------------------------------------------------===//
+// VCS::TrackedItem
+//===----------------------------------------------------------------------===//
+
+int AutomationTrackNode::getNumDeltas() const
 {
     return this->deltas.size();
 }
 
-void PianoTrackTreeItem::selectAllPianoSiblings(PianoTrackTreeItem *layerItem)
-{
-    // select all layers in the project
-    const auto pianoTreeItems = layerItem->getProject()->findChildrenOfType<PianoTrackTreeItem>();
-    
-    for (PianoTrackTreeItem *siblingPianoItem : pianoTreeItems)
-    {
-        if (siblingPianoItem != layerItem) // already selected, so don't blink twice
-        {
-            siblingPianoItem->setSelected(false, false, sendNotification);
-            siblingPianoItem->setSelected(true, false, sendNotification);
-        }
-    }
-    
-    layerItem->setSelected(false, false, sendNotification);
-    layerItem->setSelected(true, false, sendNotification);
-}
-
-//===----------------------------------------------------------------------===//
-// VCS stuff
-//===----------------------------------------------------------------------===//
-
-VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
+VCS::Delta *AutomationTrackNode::getDelta(int index) const
 {
     using namespace Serialization::VCS;
-    if (this->deltas[index]->hasType(PianoSequenceDeltas::notesAdded))
+    if (this->deltas[index]->hasType(AutoSequenceDeltas::eventsAdded))
     {
         const int numEvents = this->getSequence()->size();
 
@@ -95,7 +67,7 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
         }
         else
         {
-            this->deltas[index]->setDescription(VCS::DeltaDescription("{x} notes", numEvents));
+            this->deltas[index]->setDescription(VCS::DeltaDescription("{x} events", numEvents));
         }
     }
     else if (this->deltas[index]->hasType(PatternDeltas::clipsAdded))
@@ -115,7 +87,7 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree PianoTrackTreeItem::getDeltaData(int deltaIndex) const
+ValueTree AutomationTrackNode::getDeltaData(int deltaIndex) const
 {
     using namespace Serialization::VCS;
     if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackPath))
@@ -134,7 +106,11 @@ ValueTree PianoTrackTreeItem::getDeltaData(int deltaIndex) const
     {
         return this->serializeInstrumentDelta();
     }
-    else if (this->deltas[deltaIndex]->hasType(PianoSequenceDeltas::notesAdded))
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackController))
+    {
+        return this->serializeControllerDelta();
+    }
+    else if (this->deltas[deltaIndex]->hasType(AutoSequenceDeltas::eventsAdded))
     {
         return this->serializeEventsDelta();
     }
@@ -147,12 +123,12 @@ ValueTree PianoTrackTreeItem::getDeltaData(int deltaIndex) const
     return {};
 }
 
-VCS::DiffLogic *PianoTrackTreeItem::getDiffLogic() const
+VCS::DiffLogic *AutomationTrackNode::getDiffLogic() const
 {
     return this->vcsDiffLogic;
 }
 
-void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
+void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)
 {
     using namespace Serialization::VCS;
     for (int i = 0; i < newState.getNumDeltas(); ++i)
@@ -176,13 +152,14 @@ void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
         {
             this->resetInstrumentDelta(newDeltaData);
         }
-        // the current layer state is supposed to have
-        // a single note delta of type PianoSequenceDeltas::notesAdded
-        else if (newDelta->hasType(PianoSequenceDeltas::notesAdded))
+        else if (newDelta->hasType(MidiTrackDeltas::trackController))
+        {
+            this->resetControllerDelta(newDeltaData);
+        }
+        else if (newDelta->hasType(AutoSequenceDeltas::eventsAdded))
         {
             this->resetEventsDelta(newDeltaData);
         }
-        // same rule applies to clips state:
         else if (newDelta->hasType(PatternDeltas::clipsAdded))
         {
             this->resetClipsDelta(newDeltaData);
@@ -195,33 +172,33 @@ void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree PianoTrackTreeItem::serialize() const
+ValueTree AutomationTrackNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeItem);
+    ValueTree tree(Serialization::Core::treeNode);
 
     this->serializeVCSUuid(tree);
 
-    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
-    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
 
     this->serializeTrackProperties(tree);
 
     tree.appendChild(this->sequence->serialize(), nullptr);
     tree.appendChild(this->pattern->serialize(), nullptr);
 
-    TreeItemChildrenSerializer::serializeChildren(*this, tree);
+    TreeNodeSerializer::serializeChildren(*this, tree);
 
     return tree;
 }
 
-void PianoTrackTreeItem::deserialize(const ValueTree &tree)
+void AutomationTrackNode::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     this->deserializeVCSUuid(tree);
     this->deserializeTrackProperties(tree);
 
-    forEachValueTreeChildWithType(tree, e, Serialization::Midi::track)
+    forEachValueTreeChildWithType(tree, e, Serialization::Midi::automation)
     {
         this->sequence->deserialize(e);
     }
@@ -232,7 +209,7 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
     }
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(tree);
+    TreeNode::deserialize(tree);
 }
 
 
@@ -240,7 +217,9 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
 // Deltas
 //===----------------------------------------------------------------------===//
 
-ValueTree PianoTrackTreeItem::serializePathDelta() const
+// TODO move this in MidiTrackNode
+
+ValueTree AutomationTrackNode::serializePathDelta() const
 {
     using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackPath);
@@ -248,7 +227,7 @@ ValueTree PianoTrackTreeItem::serializePathDelta() const
     return tree;
 }
 
-ValueTree PianoTrackTreeItem::serializeMuteDelta() const
+ValueTree AutomationTrackNode::serializeMuteDelta() const
 {
     using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackMute);
@@ -256,7 +235,7 @@ ValueTree PianoTrackTreeItem::serializeMuteDelta() const
     return tree;
 }
 
-ValueTree PianoTrackTreeItem::serializeColourDelta() const
+ValueTree AutomationTrackNode::serializeColourDelta() const
 {
     using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackColour);
@@ -264,7 +243,7 @@ ValueTree PianoTrackTreeItem::serializeColourDelta() const
     return tree;
 }
 
-ValueTree PianoTrackTreeItem::serializeInstrumentDelta() const
+ValueTree AutomationTrackNode::serializeInstrumentDelta() const
 {
     using namespace Serialization::VCS;
     ValueTree tree(MidiTrackDeltas::trackInstrument);
@@ -272,9 +251,18 @@ ValueTree PianoTrackTreeItem::serializeInstrumentDelta() const
     return tree;
 }
 
-ValueTree PianoTrackTreeItem::serializeEventsDelta() const
+ValueTree AutomationTrackNode::serializeControllerDelta() const
 {
-    ValueTree tree(Serialization::VCS::PianoSequenceDeltas::notesAdded);
+    using namespace Serialization::VCS;
+    ValueTree tree(MidiTrackDeltas::trackController);
+    tree.setProperty(delta, this->getTrackControllerNumber(), nullptr);
+    return tree;
+}
+
+ValueTree AutomationTrackNode::serializeEventsDelta() const
+{
+    ValueTree tree(Serialization::VCS::AutoSequenceDeltas::eventsAdded);
+
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
         const MidiEvent *event = this->getSequence()->getUnchecked(i);
@@ -284,14 +272,15 @@ ValueTree PianoTrackTreeItem::serializeEventsDelta() const
     return tree;
 }
 
-void PianoTrackTreeItem::resetPathDelta(const ValueTree &state)
+
+void AutomationTrackNode::resetPathDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path, false);
 }
 
-void PianoTrackTreeItem::resetMuteDelta(const ValueTree &state)
+void AutomationTrackNode::resetMuteDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackMute));
     const String &muteState(state.getProperty(Serialization::VCS::delta));
@@ -303,7 +292,7 @@ void PianoTrackTreeItem::resetMuteDelta(const ValueTree &state)
     }
 }
 
-void PianoTrackTreeItem::resetColourDelta(const ValueTree &state)
+void AutomationTrackNode::resetColourDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
     const String &colourString(state.getProperty(Serialization::VCS::delta));
@@ -315,21 +304,28 @@ void PianoTrackTreeItem::resetColourDelta(const ValueTree &state)
     }
 }
 
-void PianoTrackTreeItem::resetInstrumentDelta(const ValueTree &state)
+void AutomationTrackNode::resetInstrumentDelta(const ValueTree &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
     const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 
-void PianoTrackTreeItem::resetEventsDelta(const ValueTree &state)
+void AutomationTrackNode::resetControllerDelta(const ValueTree &state)
 {
-    jassert(state.hasType(Serialization::VCS::PianoSequenceDeltas::notesAdded));
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackController));
+    const int ccNumber(state.getProperty(Serialization::VCS::delta));
+    this->setTrackControllerNumber(ccNumber, false);
+}
 
+void AutomationTrackNode::resetEventsDelta(const ValueTree &state)
+{
+    jassert(state.hasType(Serialization::VCS::AutoSequenceDeltas::eventsAdded));
     this->getSequence()->reset();
-    forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
+
+    forEachValueTreeChildWithType(state, e, Serialization::Midi::automationEvent)
     {
-        this->getSequence()->checkoutEvent<Note>(e);
+        this->getSequence()->checkoutEvent<AutomationEvent>(e);
     }
 
     this->getSequence()->updateBeatRange(false);

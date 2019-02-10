@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "MenuPanel.h"
 
@@ -25,10 +25,10 @@ class TimelineMenu final : public MenuPanel
 {
 public:
     
-    explicit TimelineMenu(ProjectTreeItem &parentProject);
+    explicit TimelineMenu(ProjectNode &parentProject);
     
 private:
     
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
 };

@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "PianoTrackDiffLogic.h"
-#include "PianoTrackTreeItem.h"
+#include "PianoTrackNode.h"
 #include "PatternDiffHelpers.h"
 #include "Note.h"
 #include "PianoSequence.h"

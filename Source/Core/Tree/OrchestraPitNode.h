@@ -17,32 +17,31 @@
 
 #pragma once
 
-#include "TreeItem.h"
+class Instrument;
+class InstrumentNode;
 
-class ProjectTreeItem;
-class MidiTrackTreeItem;
+#include "TreeNode.h"
+#include "OrchestraPitPage.h"
 
-class TrackGroupTreeItem final : public TreeItem
+class OrchestraPitNode final : public TreeNode
 {
 public:
 
-    explicit TrackGroupTreeItem(const String &name);
+    OrchestraPitNode();
 
-    static void removeAllEmptyGroupsInProject(ProjectTreeItem *project); // sanitize the tree
-    
-    void sortByNameAmongSiblings();
-
+    String getName() const noexcept override;
     Image getIcon() const noexcept override;
 
     void showPage() override;
-    void safeRename(const String &newName, bool sendNotifications) override;
+    void recreatePage() override;
 
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
 
-    var getDragSourceDescription() override;
+    var getDragSourceDescription() override { return {}; }
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
+    void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
 
     //===------------------------------------------------------------------===//
     // Menu
@@ -50,5 +49,14 @@ public:
 
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
+
+private:
+    
+    friend class OrchestraPitPage;
+    friend class OrchestraPitMenu;
+    friend class AudioPluginSelectionMenu;
+    
+    InstrumentNode *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
+    ScopedPointer<OrchestraPitPage> instrumentsPage;
 
 };

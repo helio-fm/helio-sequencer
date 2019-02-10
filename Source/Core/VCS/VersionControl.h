@@ -20,7 +20,7 @@
 class ProjectInfo;
 class VersionControlEditor;
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 #include "TrackedItemsSource.h"
 #include "SafeTreeItemPointer.h"
 

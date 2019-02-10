@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "PianoClipComponent.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MidiSequence.h"
 #include "PianoSequence.h"
 #include "PlayerThread.h"
@@ -25,7 +25,7 @@
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 
-PianoClipComponent::PianoClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
+PianoClipComponent::PianoClipComponent(ProjectNode &project, MidiSequence *sequence,
     HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),

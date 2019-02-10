@@ -19,7 +19,7 @@
 #include "InstrumentEditorConnector.h"
 #include "Instrument.h"
 #include "InstrumentEditor.h"
-#include "InstrumentEditorNode.h"
+#include "InstrumentComponent.h"
 #include "ColourIDs.h"
 
 InstrumentEditorConnector::InstrumentEditorConnector(WeakReference<Instrument> instrument) :
@@ -105,13 +105,13 @@ void InstrumentEditorConnector::getPoints(float &x1, float &y1, float &x2, float
 
     if (InstrumentEditor *const hostPanel = this->getGraphPanel())
     {
-        if (InstrumentEditorNode *srcNodeComp =
+        if (InstrumentComponent *srcNodeComp =
             hostPanel->getComponentForNode(this->connection.source.nodeID))
         {
             srcNodeComp->getPinPos(this->connection.source.channelIndex, false, x1, y1);
         }
 
-        if (InstrumentEditorNode *dstNodeComp =
+        if (InstrumentComponent *dstNodeComp =
             hostPanel->getComponentForNode(this->connection.destination.nodeID))
         {
             dstNodeComp->getPinPos(this->connection.destination.channelIndex, true, x2, y2);

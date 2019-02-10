@@ -26,7 +26,7 @@
 #include "MenuItemComponent.h"
 #include "OrchestraPit.h"
 #include "OrchestraPitPage.h"
-#include "OrchestraPitTreeItem.h"
+#include "OrchestraPitNode.h"
 #include "AudioPluginSelectionMenu.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
@@ -45,7 +45,7 @@ enum ColumnIds
 
 //[/MiscUserDefs]
 
-AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot)
+AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot)
     : pluginScanner(pluginScanner),
       instrumentsRoot(instrumentsRoot)
 {
@@ -354,7 +354,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AudioPluginsListComponent"
                  template="../../../Template" componentName="" parentClasses="public Component, public TableListBoxModel, public HeadlineItemDataSource"
-                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitTreeItem &amp;instrumentsRoot"
+                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitNode &amp;instrumentsRoot"
                  variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">

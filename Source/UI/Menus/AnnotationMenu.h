@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class ProjectNode;
 class AnnotationEvent;
 
 #include "MenuPanel.h"
@@ -26,12 +26,12 @@ class AnnotationMenu final : public MenuPanel
 {
 public:
     
-    AnnotationMenu(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation);
+    AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent &targetAnnotation);
     void handleCommandMessage(int commandId) override;
     
 private:
     
     const AnnotationEvent &annotation;
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
 };

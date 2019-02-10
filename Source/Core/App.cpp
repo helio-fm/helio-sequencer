@@ -33,7 +33,7 @@
 
 #include "Icons.h"
 #include "Workspace.h"
-#include "RootTreeItem.h"
+#include "RootNode.h"
 #include "SerializablePluginDescription.h"
 
 //===----------------------------------------------------------------------===//

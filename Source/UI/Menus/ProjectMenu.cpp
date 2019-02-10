@@ -17,14 +17,14 @@
 
 #include "Common.h"
 #include "ProjectMenu.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Icons.h"
 #include "ModalDialogInput.h"
 #include "ModalDialogConfirmation.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
-#include "VersionControlTreeItem.h"
-#include "PatternEditorTreeItem.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
+#include "VersionControlNode.h"
+#include "PatternEditorNode.h"
 #include "AutomationSequence.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
@@ -43,7 +43,7 @@
 
 #define NUM_CONTROLLERS_TO_SHOW 80
 
-ProjectMenu::ProjectMenu(ProjectTreeItem &parentProject, AnimationType animationType) :
+ProjectMenu::ProjectMenu(ProjectNode &parentProject, AnimationType animationType) :
     project(parentProject)
 {
     this->showMainMenu(animationType);
@@ -56,7 +56,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
         case CommandIDs::AddTempoController:
         {
             bool hasTempoTrack = false;
-            const auto autoTracks = this->project.findChildrenOfType<AutomationTrackTreeItem>();
+            const auto autoTracks = this->project.findChildrenOfType<AutomationTrackNode>();
             
             for (auto *i : autoTracks)
             {
@@ -149,7 +149,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
 
 ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
 {
-    ScopedPointer<MidiTrackTreeItem> newItem(new PianoTrackTreeItem(name));
+    ScopedPointer<MidiTrackNode> newItem(new PianoTrackNode(name));
     
     // We need to have at least one clip on a pattern:
     const Clip clip(newItem->getPattern());
@@ -169,7 +169,7 @@ ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String 
 ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
     int controllerNumber, const String &instrumentId) const
 {
-    ScopedPointer<MidiTrackTreeItem> newItem(new AutomationTrackTreeItem(name));
+    ScopedPointer<MidiTrackNode> newItem(new AutomationTrackNode(name));
 
     // We need to have at least one clip on a pattern:
     const Clip clip(newItem->getPattern());
@@ -337,7 +337,7 @@ void ProjectMenu::showControllersMenuForInstrument(WeakReference<Instrument> ins
                 String(i) + ": " + TRANS(controllerName))->withAction([this, controllerNumber = i, instrument]()
                 {
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
-                    const String trackName = TreeItem::createSafeName(MidiMessage::getControllerName(controllerNumber));
+                    const String trackName = TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));
                     const ValueTree autoTrackParams = this->createAutoTrackTempate(trackName, controllerNumber, instrumentId);
 
                     this->project.getUndoStack()->beginNewTransaction();
@@ -400,7 +400,7 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
 
     //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::cleanup")));
 
-    const auto &tracks = this->project.findChildrenOfType<MidiTrackTreeItem>();
+    const auto &tracks = this->project.findChildrenOfType<MidiTrackNode>();
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     if (instruments.size() > 1 && tracks.size() > 0)
     {
@@ -432,8 +432,8 @@ void ProjectMenu::showSetInstrumentMenu()
             {
                 DBG(instruments[i]->getIdAndHash());
 
-                const Array<MidiTrackTreeItem *> tracks =
-                    this->project.findChildrenOfType<MidiTrackTreeItem>();
+                const Array<MidiTrackNode *> tracks =
+                    this->project.findChildrenOfType<MidiTrackNode>();
 
                 if (tracks.size() > 0)
                 {

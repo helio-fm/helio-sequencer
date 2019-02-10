@@ -21,7 +21,7 @@ class MidiTrackSource;
 
 #include "AutomationSequence.h"
 #include "UndoAction.h"
-#include "TreeItem.h"
+#include "TreeNode.h"
 
 //===----------------------------------------------------------------------===//
 // Insert
@@ -32,10 +32,10 @@ class AutomationTrackInsertAction final : public UndoAction
 public:
 
     AutomationTrackInsertAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem) noexcept;
+        WeakReference<TreeNode> parentTreeItem) noexcept;
     
     AutomationTrackInsertAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem,
+        WeakReference<TreeNode> parentTreeItem,
         ValueTree serializedState,
         const String &xPath) noexcept;
 
@@ -49,7 +49,7 @@ public:
     
 private:
 
-    WeakReference<TreeItem> parentTreeItem;
+    WeakReference<TreeNode> parentTreeItem;
 
     String trackId;
     String trackName;
@@ -69,10 +69,10 @@ class AutomationTrackRemoveAction final : public UndoAction
 public:
 
     AutomationTrackRemoveAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem) noexcept;
+        WeakReference<TreeNode> parentTreeItem) noexcept;
     
     AutomationTrackRemoveAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem,
+        WeakReference<TreeNode> parentTreeItem,
         const String &trackId) noexcept;
 
     bool perform() override;
@@ -85,7 +85,7 @@ public:
     
 private:
 
-    WeakReference<TreeItem> parentTreeItem;
+    WeakReference<TreeNode> parentTreeItem;
 
     String trackId;
     int numEvents;

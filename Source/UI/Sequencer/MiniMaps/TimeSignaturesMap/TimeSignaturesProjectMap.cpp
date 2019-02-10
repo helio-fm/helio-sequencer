@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "TimeSignaturesProjectMap.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Transport.h"
 #include "MidiSequence.h"
 #include "ProjectTimeline.h"
@@ -32,7 +32,7 @@
 #include "MainLayout.h"
 
 template<typename T>
-TimeSignaturesProjectMap<T>::TimeSignaturesProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
+TimeSignaturesProjectMap<T>::TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),

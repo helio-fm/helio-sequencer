@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiEvent;
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
@@ -31,7 +31,7 @@ class ProjectTimeline final :
 {
 public:
 
-    ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
+    ProjectTimeline(ProjectNode &parentProject, String trackName);
     ~ProjectTimeline() override;
 
     MidiTrack *getAnnotations() const noexcept;
@@ -73,7 +73,7 @@ public:
     void dispatchChangeTrackProperties(MidiTrack *const track) override;
     void dispatchChangeProjectBeatRange() override;
 
-    ProjectTreeItem *getProject() const noexcept override;
+    ProjectNode *getProject() const noexcept override;
         
     //===------------------------------------------------------------------===//
     // Serializable
@@ -102,7 +102,7 @@ private:
 
     OwnedArray<VCS::Delta> deltas;
     
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
     String annotationsTrackId;
     String timeSignaturesTrackId;

@@ -20,7 +20,7 @@
 class Lasso;
 class PianoRollMenuSource;
 class PatternRollMenuSource;
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "Icons.h"
 #include "HeadlineItemDataSource.h"
@@ -49,7 +49,7 @@ private:
 class PianoRollSelectionMenuManager final : public SelectionMenuManager
 {
 public:
-    PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectTreeItem &project);
+    PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectNode &project);
 };
 
 class PatternRollSelectionMenuManager final : public SelectionMenuManager

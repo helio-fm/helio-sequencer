@@ -16,43 +16,43 @@
 */
 
 #include "Common.h"
-#include "TreeItem.h"
-#include "TreeItemChildrenSerializer.h"
+#include "TreeNode.h"
+#include "TreeNodeSerializer.h"
 #include "SerializationKeys.h"
 #include "MainLayout.h"
 
-const String TreeItem::xPathSeparator = "/";
+const String TreeNode::xPathSeparator = "/";
 
-String TreeItem::createSafeName(const String &name)
+String TreeNode::createSafeName(const String &name)
 {
-    return File::createLegalFileName(name).removeCharacters(TreeItem::xPathSeparator);
+    return File::createLegalFileName(name).removeCharacters(TreeNode::xPathSeparator);
 }
 
-TreeItem::TreeItem(const String &name, const Identifier &type) :
-    name(TreeItem::createSafeName(name)),
+TreeNode::TreeNode(const String &name, const Identifier &type) :
+    name(TreeNode::createSafeName(name)),
     type(type.toString()),
     isPrimarySelectedItem(false) {}
 
-TreeItem::~TreeItem()
+TreeNode::~TreeNode()
 {
     this->removeAllChangeListeners();
     this->deleteAllSubItems();
     this->removeItemFromParent();
 }
 
-void TreeItem::setPrimarySelection(bool isSelected) noexcept
+void TreeNode::setPrimarySelection(bool isSelected) noexcept
 {
     this->isPrimarySelectedItem = isSelected;
 }
 
-bool TreeItem::isPrimarySelection() const noexcept
+bool TreeNode::isPrimarySelection() const noexcept
 {
     return this->isPrimarySelectedItem;
 }
 
-int TreeItem::getNumSelectedSiblings() const
+int TreeNode::getNumSelectedSiblings() const
 {
-    if (TreeItem *parent = dynamic_cast<TreeItem *>(this->getParentItem()))
+    if (TreeNode *parent = dynamic_cast<TreeNode *>(this->getParentItem()))
     {
         return parent->getNumSelectedChildren();
     }
@@ -60,7 +60,7 @@ int TreeItem::getNumSelectedSiblings() const
     return 0;
 }
 
-int TreeItem::getNumSelectedChildren() const
+int TreeNode::getNumSelectedChildren() const
 {
     int res = 0;
 
@@ -72,9 +72,9 @@ int TreeItem::getNumSelectedChildren() const
     return res;
 }
 
-bool TreeItem::haveAllSiblingsSelected() const
+bool TreeNode::haveAllSiblingsSelected() const
 {
-    if (TreeItem *parent = dynamic_cast<TreeItem *>(this->getParentItem()))
+    if (TreeNode *parent = dynamic_cast<TreeNode *>(this->getParentItem()))
     {
         if (parent->haveAllChildrenSelected())
         {
@@ -85,7 +85,7 @@ bool TreeItem::haveAllSiblingsSelected() const
     return false;
 }
 
-bool TreeItem::haveAllChildrenSelected() const
+bool TreeNode::haveAllChildrenSelected() const
 {
     for (int i = 0; i < this->getNumSubItems(); ++i)
     {
@@ -98,9 +98,9 @@ bool TreeItem::haveAllChildrenSelected() const
     return true;
 }
 
-bool TreeItem::haveAllChildrenSelectedWithDeepSearch() const
+bool TreeNode::haveAllChildrenSelectedWithDeepSearch() const
 {
-    Array<TreeItem *> allChildren(this->findChildrenOfType<TreeItem>());
+    Array<TreeNode *> allChildren(this->findChildrenOfType<TreeNode>());
 
     for (int i = 0; i < allChildren.size(); ++i)
     {
@@ -117,16 +117,16 @@ bool TreeItem::haveAllChildrenSelectedWithDeepSearch() const
 // Rename
 //===----------------------------------------------------------------------===//
 
-void TreeItem::safeRename(const String &newName, bool sendNotifications)
+void TreeNode::safeRename(const String &newName, bool sendNotifications)
 {
-    this->name = TreeItem::createSafeName(newName);
+    this->name = TreeNode::createSafeName(newName);
     if (sendNotifications)
     {
         this->dispatchChangeTreeItemView();
     }
 }
 
-String TreeItem::getName() const noexcept 
+String TreeNode::getName() const noexcept 
 {
     return this->name;
 }
@@ -135,7 +135,7 @@ String TreeItem::getName() const noexcept
 // Menu
 //===----------------------------------------------------------------------===//
 
-void TreeItem::itemSelectionChanged(bool isNowSelected)
+void TreeNode::itemSelectionChanged(bool isNowSelected)
 {
     if (isNowSelected)
     {
@@ -147,15 +147,15 @@ void TreeItem::itemSelectionChanged(bool isNowSelected)
 // Cleanup
 //===----------------------------------------------------------------------===//
 
-bool TreeItem::deleteItem(TreeItem *itemToDelete, bool sendNotifications)
+bool TreeNode::deleteItem(TreeNode *itemToDelete, bool sendNotifications)
 {
     if (!itemToDelete) { return false; }
     if (itemToDelete->getRootTreeItem() == itemToDelete) { return false; }
 
-    WeakReference<TreeItem> moveFocusTo = nullptr;
-    WeakReference<TreeItem> parent = dynamic_cast<TreeItem *>(itemToDelete->getParentItem());
+    WeakReference<TreeNode> moveFocusTo = nullptr;
+    WeakReference<TreeNode> parent = dynamic_cast<TreeNode *>(itemToDelete->getParentItem());
 
-    const auto *activeItem = TreeItem::getActiveItem<TreeItem>(itemToDelete->getRootTreeItem());
+    const auto *activeItem = TreeNode::getActiveItem<TreeNode>(itemToDelete->getRootTreeItem());
     if (itemToDelete->isPrimarySelection() || (activeItem == nullptr))
     {
         moveFocusTo = parent;
@@ -183,14 +183,14 @@ bool TreeItem::deleteItem(TreeItem *itemToDelete, bool sendNotifications)
                 break;
             }
 
-            parent = dynamic_cast<TreeItem *>(parent->getParentItem());
+            parent = dynamic_cast<TreeNode *>(parent->getParentItem());
         }
     }
 
     return true;
 }
 
-void TreeItem::deleteAllSubItems()
+void TreeNode::deleteAllSubItems()
 {
     while (this->getNumSubItems() > 0)
     {
@@ -198,13 +198,13 @@ void TreeItem::deleteAllSubItems()
     }
 }
 
-void TreeItem::removeItemFromParent()
+void TreeNode::removeItemFromParent()
 {
-    if (TreeItem *parent = dynamic_cast<TreeItem *>(this->getParentItem()))
+    if (TreeNode *parent = dynamic_cast<TreeNode *>(this->getParentItem()))
     {
         for (int i = 0; i < parent->getNumSubItems(); ++i)
         {
-            if (TreeItem *item = dynamic_cast<TreeItem *>(parent->getSubItem(i)))
+            if (TreeNode *item = dynamic_cast<TreeNode *>(parent->getSubItem(i)))
             {
                 if (item == this)
                 {
@@ -215,24 +215,24 @@ void TreeItem::removeItemFromParent()
     }
 }
 
-static void notifySubtreeParentChanged(TreeItem *node, bool sendNotifications)
+static void notifySubtreeParentChanged(TreeNode *node, bool sendNotifications)
 {
     node->onItemAddedToTree(sendNotifications);
 
     for (int i = 0; i < node->getNumSubItems(); ++i)
     {
-        TreeItem *child = static_cast<TreeItem *>(node->getSubItem(i));
+        TreeNode *child = static_cast<TreeNode *>(node->getSubItem(i));
         notifySubtreeParentChanged(child, sendNotifications);
     }
 }
 
-void TreeItem::addChildTreeItem(TreeItem *child, int insertIndex /*= -1*/, bool sendNotifications /*= true*/)
+void TreeNode::addChildTreeItem(TreeNode *child, int insertIndex /*= -1*/, bool sendNotifications /*= true*/)
 {
     this->addSubItem(child, insertIndex);
     notifySubtreeParentChanged(child, sendNotifications);
 }
 
-void TreeItem::dispatchChangeTreeItemView()
+void TreeNode::dispatchChangeTreeItemView()
 {
     this->sendChangeMessage(); // update listeners
     this->treeHasChanged(); // updates ownerView, if any
@@ -242,36 +242,36 @@ void TreeItem::dispatchChangeTreeItemView()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void TreeItem::reset()
+void TreeNode::reset()
 {
     this->deleteAllSubItems();
 }
 
-ValueTree TreeItem::serialize() const
+ValueTree TreeNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
-    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
-    TreeItemChildrenSerializer::serializeChildren(*this, tree);
+    ValueTree tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
+    TreeNodeSerializer::serializeChildren(*this, tree);
     return tree;
 }
 
-void TreeItem::deserialize(const ValueTree &tree)
+void TreeNode::deserialize(const ValueTree &tree)
 {
     // Do not reset here, subclasses may rely
     // on this method in their deserialization
     //this->reset();
 
-    this->name = tree.getProperty(Serialization::Core::treeItemName);
+    this->name = tree.getProperty(Serialization::Core::treeNodeName);
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, tree);
+    TreeNodeSerializer::deserializeChildren(*this, tree);
 }
 
 
 
 // protected static
 
-void TreeItem::openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen)
+void TreeNode::openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen)
 {
     item.setOpen(shouldOpen);
 
@@ -284,7 +284,7 @@ void TreeItem::openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen)
     }
 }
 
-void TreeItem::getAllSelectedItems(Component *componentInTree, OwnedArray<TreeItem> &selectedNodes)
+void TreeNode::getAllSelectedItems(Component *componentInTree, OwnedArray<TreeNode> &selectedNodes)
 {
     TreeView *tree = dynamic_cast <TreeView *>(componentInTree);
 
@@ -297,13 +297,13 @@ void TreeItem::getAllSelectedItems(Component *componentInTree, OwnedArray<TreeIt
 
         for (int i = 0; i < numSelected; ++i)
         {
-            if (TreeItem *p = dynamic_cast <TreeItem *>(tree->getSelectedItem(i)))
+            if (TreeNode *p = dynamic_cast <TreeNode *>(tree->getSelectedItem(i)))
             { selectedNodes.add(p); }
         }
     }
 }
 
-TreeItem *TreeItem::getSelectedItem(Component *componentInTree)
+TreeNode *TreeNode::getSelectedItem(Component *componentInTree)
 {
     TreeView *tree = dynamic_cast<TreeView *>(componentInTree);
 
@@ -316,7 +316,7 @@ TreeItem *TreeItem::getSelectedItem(Component *componentInTree)
 
         for (int i = 0; i < numSelected; ++i)
         {
-            if (TreeItem *p = dynamic_cast<TreeItem *>(tree->getSelectedItem(i)))
+            if (TreeNode *p = dynamic_cast<TreeNode *>(tree->getSelectedItem(i)))
             {
                 return p;
             }
@@ -326,48 +326,48 @@ TreeItem *TreeItem::getSelectedItem(Component *componentInTree)
     return nullptr;
 }
 
-bool TreeItem::isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck)
+bool TreeNode::isNodeInChildren(TreeNode *nodeToScan, TreeNode *nodeToCheck)
 {
     if (nodeToScan == nodeToCheck) { return true; }
 
     for (int i = 0; i < nodeToScan->getNumSubItems(); ++i)
     {
-        TreeItem *child = static_cast<TreeItem *>(nodeToScan->getSubItem(i));
+        TreeNode *child = static_cast<TreeNode *>(nodeToScan->getSubItem(i));
 
         if (child == nodeToCheck) { return true; }
 
-        if (TreeItem::isNodeInChildren(child, nodeToCheck)) { return true; }
+        if (TreeNode::isNodeInChildren(child, nodeToCheck)) { return true; }
     }
 
     return false;
 }
 
-String TreeItem::getUniqueName() const
+String TreeNode::getUniqueName() const
 {
     return String(this->getIndexInParent());
 }
 
-bool TreeItem::mightContainSubItems()
+bool TreeNode::mightContainSubItems()
 {
     return (this->getNumSubItems() > 0);
 }
 
-bool TreeItem::isSelectedOrHasSelectedChild() const
+bool TreeNode::isSelectedOrHasSelectedChild() const
 {
     if (this->isSelected())
     {
         return true;
     }
 
-    Array<TreeItem *> children;
-    TreeItem::collectChildrenOfType<TreeItem, Array<TreeItem *>>(this, children, true);
+    Array<TreeNode *> children;
+    TreeNode::collectChildrenOfType<TreeNode, Array<TreeNode *>>(this, children, true);
     return !children.isEmpty();
 }
 
-void TreeItem::recreateSubtreePages()
+void TreeNode::recreateSubtreePages()
 {
-    Array<TreeItem *> subtree;
-    this->collectChildrenOfType<TreeItem>(this, subtree, false);
+    Array<TreeNode *> subtree;
+    this->collectChildrenOfType<TreeNode>(this, subtree, false);
     this->recreatePage();
 
     for (int i = 0; i < subtree.size(); ++i)
@@ -380,11 +380,11 @@ void TreeItem::recreateSubtreePages()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
+void TreeNode::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
     if (TreeView *tree = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
     {
-        TreeItem *selected = TreeItem::getSelectedItem(tree);
+        TreeNode *selected = TreeNode::getSelectedItem(tree);
 
         if (!selected) { return; }
 
@@ -394,7 +394,7 @@ void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDet
 
         for (int i = 0; i < parent->getNumSubItems(); ++i)
         {
-            if (TreeItem *item = dynamic_cast<TreeItem *>(parent->getSubItem(i)))
+            if (TreeNode *item = dynamic_cast<TreeNode *>(parent->getSubItem(i)))
             {
                 if (item == selected)
                 {

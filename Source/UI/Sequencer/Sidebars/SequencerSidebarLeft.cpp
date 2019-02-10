@@ -24,14 +24,14 @@
 //[MiscUserDefs]
 
 #include "MainLayout.h"
-#include "TreeItem.h"
+#include "TreeNode.h"
 #include "SerializationKeys.h"
 #include "GenericAudioMonitorComponent.h"
 #include "WaveformAudioMonitorComponent.h"
 #include "SpectrogramAudioMonitorComponent.h"
 #include "ModeIndicatorComponent.h"
 #include "MenuItemComponent.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "HelioTheme.h"
 #include "IconComponent.h"
 #include "Icons.h"
@@ -46,7 +46,7 @@ static inline constexpr int getAudioMonitorHeight()
 
 //[/MiscUserDefs]
 
-SequencerSidebarLeft::SequencerSidebarLeft(ProjectTreeItem &project)
+SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     : project(project)
 {
     this->shadow.reset(new ShadowUpwards(Light));
@@ -289,7 +289,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="SequencerSidebarLeft" template="../../../Template"
                  componentName="" parentClasses="public ModeIndicatorOwnerComponent, protected ListBoxModel"
-                 constructorParams="ProjectTreeItem &amp;project" variableInitialisers="project(project)"
+                 constructorParams="ProjectNode &amp;project" variableInitialisers="project(project)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="48" initialHeight="640">
   <METHODS>

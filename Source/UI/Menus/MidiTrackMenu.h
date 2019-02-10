@@ -17,7 +17,7 @@
 
 #pragma once
 
-class MidiTrackTreeItem;
+class MidiTrackNode;
 
 #include "MenuPanel.h"
 
@@ -25,7 +25,7 @@ class MidiTrackMenu final : public MenuPanel
 {
 public:
     
-    explicit MidiTrackMenu(MidiTrackTreeItem &parentLayer);
+    explicit MidiTrackMenu(MidiTrackNode &parentLayer);
     void handleCommandMessage(int commandId) override;
     
 private:
@@ -34,6 +34,6 @@ private:
     void initColorSelectionMenu();
     void initInstrumentSelectionMenu();
 
-    MidiTrackTreeItem &trackItem;
+    MidiTrackNode &trackItem;
     
 };

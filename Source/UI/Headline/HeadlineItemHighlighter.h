@@ -19,7 +19,7 @@
 
 //[Headers]
 #include "HighlightedComponent.h"
-#include "TreeItem.h"
+#include "TreeNode.h"
 
 class IconComponent;
 class HeadlineItemDataSource;

@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "PluginScanner.h"
-#include "OrchestraPitTreeItem.h"
+#include "OrchestraPitNode.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "MenuItemComponent.h"
@@ -34,7 +34,7 @@
 #include "ComponentIDs.h"
 //[/MiscUserDefs]
 
-OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot)
+OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot)
     : pluginScanner(pluginScanner),
       instrumentsRoot(instrumentsRoot)
 {
@@ -204,7 +204,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="OrchestraPitPage" template="../../../Template"
                  componentName="" parentClasses="public Component, public ChangeListener"
-                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitTreeItem &amp;instrumentsRoot"
+                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitNode &amp;instrumentsRoot"
                  variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
                  snapPixels="4" snapActive="1" snapShown="0" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">

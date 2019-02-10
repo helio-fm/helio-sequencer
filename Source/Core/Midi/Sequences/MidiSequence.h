@@ -21,7 +21,7 @@
 #include "MidiEvent.h"
 #include "ProjectEventDispatcher.h"
 
-class ProjectTreeItem;
+class ProjectNode;
 class MidiTrack;
 class UndoStack;
 
@@ -152,7 +152,7 @@ protected:
     float lastStartBeat;
 
     ProjectEventDispatcher &eventDispatcher;
-    ProjectTreeItem *getProject() const noexcept;
+    ProjectNode *getProject() const noexcept;
     UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<MidiEvent> midiEvents;

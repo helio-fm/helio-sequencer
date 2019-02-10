@@ -21,7 +21,7 @@ class MidiTrackSource;
 
 #include "PianoSequence.h"
 #include "UndoAction.h"
-#include "TreeItem.h"
+#include "TreeNode.h"
 
 //===----------------------------------------------------------------------===//
 // Insert
@@ -32,10 +32,10 @@ class PianoTrackInsertAction final : public UndoAction
 public:
 
     PianoTrackInsertAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem) noexcept;
+        WeakReference<TreeNode> parentTreeItem) noexcept;
 
     PianoTrackInsertAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem,
+        WeakReference<TreeNode> parentTreeItem,
         ValueTree serializedState,
         const String &xPath) noexcept;
 
@@ -49,7 +49,7 @@ public:
     
 private:
 
-    WeakReference<TreeItem> parentTreeItem;
+    WeakReference<TreeNode> parentTreeItem;
 
     String trackId;
     String trackName;
@@ -68,10 +68,10 @@ class PianoTrackRemoveAction final : public UndoAction
 public:
 
     PianoTrackRemoveAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem) noexcept;
+        WeakReference<TreeNode> parentTreeItem) noexcept;
     
     PianoTrackRemoveAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem,
+        WeakReference<TreeNode> parentTreeItem,
         const String &trackId) noexcept;
 
     bool perform() override;
@@ -84,7 +84,7 @@ public:
     
 private:
 
-    WeakReference<TreeItem> parentTreeItem;
+    WeakReference<TreeNode> parentTreeItem;
 
     String trackId;
     int numEvents;

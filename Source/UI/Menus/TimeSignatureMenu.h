@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class ProjectNode;
 class TimeSignatureEvent;
 
 #include "MenuPanel.h"
@@ -26,12 +26,12 @@ class TimeSignatureMenu final : public MenuPanel
 {
 public:
     
-    TimeSignatureMenu(ProjectTreeItem &parentProject, const TimeSignatureEvent &targetEvent);
+    TimeSignatureMenu(ProjectNode &parentProject, const TimeSignatureEvent &targetEvent);
     void handleCommandMessage(int commandId) override;
     
 private:
     
     const TimeSignatureEvent &event;
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
 };

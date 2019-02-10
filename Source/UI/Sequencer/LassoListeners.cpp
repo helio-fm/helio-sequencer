@@ -22,7 +22,7 @@
 #include "Lasso.h"
 #include "PianoRollSelectionMenu.h"
 #include "PatternRollSelectionMenu.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "ProjectTimeline.h"
 
 //===----------------------------------------------------------------------===//
@@ -73,7 +73,7 @@ class PianoRollMenuSource final : public HeadlineItemDataSource
 {
 public:
 
-    PianoRollMenuSource(WeakReference<Lasso> lasso, const ProjectTreeItem &project) :
+    PianoRollMenuSource(WeakReference<Lasso> lasso, const ProjectNode &project) :
         lasso(lasso), project(project) {}
 
     bool hasMenu() const noexcept override { return true; }
@@ -99,7 +99,7 @@ public:
 
 private:
 
-    const ProjectTreeItem &project;
+    const ProjectNode &project;
     WeakReference<Lasso> lasso;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollMenuSource);
@@ -107,7 +107,7 @@ private:
 
 // Piano roll needs at least 2 events to be selected to show selection menu
 // I just don't want it to appear too frequently
-PianoRollSelectionMenuManager::PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectTreeItem &project) :
+PianoRollSelectionMenuManager::PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectNode &project) :
     SelectionMenuManager(lasso, 2)
 {
     this->menu = new PianoRollMenuSource(lasso, project);

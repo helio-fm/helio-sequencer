@@ -21,9 +21,9 @@
 #include "PianoRoll.h"
 #include "PatternRoll.h"
 #include "LassoListeners.h"
-#include "ProjectTreeItem.h"
-#include "PianoTrackTreeItem.h"
-#include "PatternEditorTreeItem.h"
+#include "ProjectNode.h"
+#include "PianoTrackNode.h"
+#include "PatternEditorNode.h"
 #include "TrackScroller.h"
 #include "PianoProjectMap.h"
 #include "SerializationKeys.h"
@@ -250,7 +250,7 @@ private:
 // Sequencer Itself
 //===----------------------------------------------------------------------===//
 
-SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
+SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     project(parentProject),
     pianoRoll(nullptr)
 {
@@ -459,7 +459,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
     case CommandIDs::ExportMidi:
 #if JUCE_IOS
         {
-            const String safeName = TreeItem::createSafeName(this->project.getName()) + ".mid";
+            const String safeName = TreeNode::createSafeName(this->project.getName()) + ".mid";
             File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
             this->project.exportMidi(midiExport);
             App::Layout().showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
@@ -481,7 +481,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
         {
             if (this->project.getLastShownTrack() == nullptr)
             {
-                this->project.selectChildOfType<PianoTrackTreeItem>();
+                this->project.selectChildOfType<PianoTrackNode>();
             }
             else
             {
@@ -490,7 +490,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
         }
         else
         {
-            this->project.selectChildOfType<PatternEditorTreeItem>();
+            this->project.selectChildOfType<PatternEditorNode>();
         }
         break;
     default:

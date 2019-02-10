@@ -23,8 +23,8 @@
 #include "Dashboard.h"
 
 //[MiscUserDefs]
-#include "RootTreeItem.h"
-#include "SettingsTreeItem.h"
+#include "RootNode.h"
+#include "SettingsNode.h"
 #include "MainLayout.h"
 #include "SerializationKeys.h"
 #include "DashboardMenu.h"

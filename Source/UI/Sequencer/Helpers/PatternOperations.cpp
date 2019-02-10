@@ -18,10 +18,10 @@
 #include "Common.h"
 #include "PatternOperations.h"
 #include "SequencerOperations.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "UndoStack.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
 #include "Note.h"
@@ -44,7 +44,7 @@ static String generateTransactionId(int commandId, const Lasso &selection)
     return String(commandId) + String(selection.getId());
 }
 
-void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint)
+void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0) { return; }
 
@@ -227,7 +227,7 @@ static String generateNextNameForNewTrack(const String &name, const StringArray 
     return newName;
 }
 
-void PatternOperations::cutClip(ProjectTreeItem &project, const Clip &clip, float relativeCutBeat, bool shouldCheckpoint)
+void PatternOperations::cutClip(ProjectNode &project, const Clip &clip, float relativeCutBeat, bool shouldCheckpoint)
 {
     MidiTrack *track = clip.getPattern()->getTrack();
     const auto allTrackNames(project.getAllTrackNames());
@@ -238,7 +238,7 @@ void PatternOperations::cutClip(ProjectTreeItem &project, const Clip &clip, floa
     // Create a new track - either piano or automation, depending on the selected one.
     // Delete events and perform track insert action, where track name would have a suffix like "counterpoint 3".
 
-    if (auto *pianoTrack = dynamic_cast<PianoTrackTreeItem *>(track))
+    if (auto *pianoTrack = dynamic_cast<PianoTrackNode *>(track))
     {
         Array<Note> intersectedEvents;
         Array<float> intersectionPoints;
@@ -277,7 +277,7 @@ void PatternOperations::cutClip(ProjectTreeItem &project, const Clip &clip, floa
         sequence->removeGroup(eventsToBeMoved, true);
         project.getUndoStack()->perform(new PianoTrackInsertAction(project, &project, trackTemplate, newName));
     }
-    else if (auto *autoTrack = dynamic_cast<AutomationTrackTreeItem *>(track))
+    else if (auto *autoTrack = dynamic_cast<AutomationTrackNode *>(track))
     {
         Array<AutomationEvent> eventsToBeMoved;
         auto *sequence = static_cast<AutomationSequence *>(track->getSequence());

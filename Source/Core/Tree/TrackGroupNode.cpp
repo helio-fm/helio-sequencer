@@ -16,25 +16,25 @@
 */
 
 #include "Common.h"
-#include "TrackGroupTreeItem.h"
-#include "ProjectTreeItem.h"
+#include "TrackGroupNode.h"
+#include "ProjectNode.h"
 
-#include "TreeItemChildrenSerializer.h"
-#include "PianoTrackTreeItem.h"
+#include "TreeNodeSerializer.h"
+#include "PianoTrackNode.h"
 #include "MainLayout.h"
 #include "Icons.h"
 
 #define GROUP_COMPACT_SEPARATOR 5
 
-TrackGroupTreeItem::TrackGroupTreeItem(const String &name) :
-    TreeItem(name, Serialization::Core::trackGroup) {}
+TrackGroupNode::TrackGroupNode(const String &name) :
+    TreeNode(name, Serialization::Core::trackGroup) {}
 
-Image TrackGroupTreeItem::getIcon() const noexcept
+Image TrackGroupNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::trackGroup, HEADLINE_ICON_SIZE);
 }
 
-void TrackGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
+void TrackGroupNode::removeAllEmptyGroupsInProject(ProjectNode *project)
 {
     if (project != nullptr)
     {
@@ -42,13 +42,13 @@ void TrackGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
         
         do
         {
-            Array<TrackGroupTreeItem *> groupsToDelete;
-            Array<TrackGroupTreeItem *> groups(project->findChildrenOfType<TrackGroupTreeItem>());
+            Array<TrackGroupNode *> groupsToDelete;
+            Array<TrackGroupNode *> groups(project->findChildrenOfType<TrackGroupNode>());
             
             for (int i = 0; i < groups.size(); ++i)
             {
-                TrackGroupTreeItem *group = groups.getUnchecked(i);
-                Array<TreeItem *> groupChildren(group->findChildrenOfType<TreeItem>());
+                TrackGroupNode *group = groups.getUnchecked(i);
+                Array<TreeNode *> groupChildren(group->findChildrenOfType<TreeNode>());
                 
                 if (groupChildren.size() == 0)
                 {
@@ -60,16 +60,16 @@ void TrackGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
             
             for (int i = 0; i < groupsToDelete.size(); ++i)
             {
-                TreeItem::deleteItem(groupsToDelete.getUnchecked(i), true);
+                TreeNode::deleteItem(groupsToDelete.getUnchecked(i), true);
             }
         }
         while (numGroupsDeleted > 0);
     }
 }
 
-void TrackGroupTreeItem::sortByNameAmongSiblings()
+void TrackGroupNode::sortByNameAmongSiblings()
 {
-    if (TreeItem *parentItem = dynamic_cast<TreeItem *>(this->getParentItem()))
+    if (TreeNode *parentItem = dynamic_cast<TreeNode *>(this->getParentItem()))
     {
         parentItem->removeSubItem(this->getIndexInParent(), false);
         
@@ -84,11 +84,11 @@ void TrackGroupTreeItem::sortByNameAmongSiblings()
         {
             String currentChildName;
             
-            if (TrackGroupTreeItem *layerGroupItem = dynamic_cast<TrackGroupTreeItem *>(parentItem->getSubItem(i)))
+            if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(parentItem->getSubItem(i)))
             {
                 currentChildName = layerGroupItem->getName();
             }
-            else if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(parentItem->getSubItem(i)))
+            else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(parentItem->getSubItem(i)))
             {
                 currentChildName = layerItem->getName();
             }
@@ -116,7 +116,7 @@ void TrackGroupTreeItem::sortByNameAmongSiblings()
 }
 
 // Deprecated, we no longer use tree view and multi-track selection
-static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forceSelectAll = false)
+static void applySelectionPolicyForGroup(TrackGroupNode *rootNode, bool forceSelectAll = false)
 {
     const bool shiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
     bool shouldSelectAll = shiftPressed;
@@ -127,7 +127,7 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
     }
     
     // ищем активный слой по всему проекту
-    MidiTrackTreeItem *activeItem = TreeItem::getActiveItem<MidiTrackTreeItem>(rootNode->getRootTreeItem());
+    MidiTrackNode *activeItem = TreeNode::getActiveItem<MidiTrackNode>(rootNode->getRootTreeItem());
     
     if (shouldSelectAll || forceSelectAll)
     {
@@ -135,11 +135,11 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
 
         for (signed int i = (rootNode->getNumSubItems() - 1); i >= 0 ; --i)
         {
-            if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootNode->getSubItem(i)))
+            if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getSubItem(i)))
             {
                 rootNode->getSubItem(i)->setSelected(true, false, sendNotification);
             }
-            else if (TrackGroupTreeItem *group = dynamic_cast<TrackGroupTreeItem *>(rootNode->getSubItem(i)))
+            else if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootNode->getSubItem(i)))
             {
                 applySelectionPolicyForGroup(group, true);
             }
@@ -166,7 +166,7 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
         
         for (int i = 0; i < rootNode->getNumSubItems(); ++i)
         {
-            if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootNode->getSubItem(i)))
+            if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getSubItem(i)))
             {
                 if (layerItem->isPrimarySelection())
                 {
@@ -187,11 +187,11 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
                 
                 for (int i = 0; i < rootNode->getNumSubItems(); ++i)
                 {
-                    if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootNode->getSubItem(i)))
+                    if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootNode->getSubItem(i)))
                     {
                         rootNode->getSubItem(i)->setSelected(false, false, sendNotification);
                     }
-                    else if (TrackGroupTreeItem *group = dynamic_cast<TrackGroupTreeItem *>(rootNode->getSubItem(i)))
+                    else if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootNode->getSubItem(i)))
                     {
                         applySelectionPolicyForGroup(group);
                     }
@@ -204,23 +204,23 @@ static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forc
     }
 }
 
-void TrackGroupTreeItem::showPage()
+void TrackGroupNode::showPage()
 {
     applySelectionPolicyForGroup(this);
     
-    Array<MidiTrackTreeItem *> subTracks(this->findChildrenOfType<MidiTrackTreeItem>());
+    Array<MidiTrackNode *> subTracks(this->findChildrenOfType<MidiTrackNode>());
     if (! subTracks.isEmpty())
     {
-        if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
+        if (ProjectNode *parentProject = this->findParentOfType<ProjectNode>())
         {
             parentProject->showLinearEditor(subTracks.getFirst(), this);
         }
     }
 }
 
-void TrackGroupTreeItem::safeRename(const String &newName, bool sendNotifications)
+void TrackGroupNode::safeRename(const String &newName, bool sendNotifications)
 {
-    TreeItem::safeRename(newName, sendNotifications);
+    TreeNode::safeRename(newName, sendNotifications);
     this->sortByNameAmongSiblings();
 }
 
@@ -228,12 +228,12 @@ void TrackGroupTreeItem::safeRename(const String &newName, bool sendNotification
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool TrackGroupTreeItem::hasMenu() const noexcept
+bool TrackGroupNode::hasMenu() const noexcept
 {
     return false;
 }
 
-ScopedPointer<Component> TrackGroupTreeItem::createMenu()
+ScopedPointer<Component> TrackGroupNode::createMenu()
 {
     return nullptr;
 }
@@ -242,18 +242,18 @@ ScopedPointer<Component> TrackGroupTreeItem::createMenu()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-var TrackGroupTreeItem::getDragSourceDescription()
+var TrackGroupNode::getDragSourceDescription()
 {
     return Serialization::Core::trackGroup.toString();
 }
 
-bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool TrackGroupNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
     {
-        TreeItem *selected = TreeItem::getSelectedItem(treeView);
+        TreeNode *selected = TreeNode::getSelectedItem(treeView);
 
-        if (TreeItem::isNodeInChildren(selected, this))
+        if (TreeNode::isNodeInChildren(selected, this))
         { return false; }
 
         return (dragSourceDetails.description == Serialization::Core::track.toString()) ||

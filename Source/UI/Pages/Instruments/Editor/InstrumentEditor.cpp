@@ -23,7 +23,7 @@
 #include "PanelBackgroundC.h"
 
 #include "InstrumentEditorPin.h"
-#include "InstrumentEditorNode.h"
+#include "InstrumentComponent.h"
 #include "InstrumentEditorConnector.h"
 #include "InstrumentNodeSelectionMenu.h"
 
@@ -81,11 +81,11 @@ void InstrumentEditor::changeListenerCallback(ChangeBroadcaster *)
     this->updateComponents();
 }
 
-InstrumentEditorNode *InstrumentEditor::getComponentForNode(AudioProcessorGraph::NodeID id) const
+InstrumentComponent *InstrumentEditor::getComponentForNode(AudioProcessorGraph::NodeID id) const
 {
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto fc = dynamic_cast<InstrumentEditorNode *>(this->getChildComponent(i))) {
+        if (auto fc = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i))) {
             if (fc->nodeId == id)
             { return fc; }
         }
@@ -114,7 +114,7 @@ InstrumentEditorPin *InstrumentEditor::findPinAt(const int x, const int y) const
 {
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto fc = dynamic_cast<InstrumentEditorNode *>(this->getChildComponent(i)))
+        if (auto fc = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
         {
             if (auto pin = dynamic_cast<InstrumentEditorPin *>(fc->getComponentAt(x - fc->getX(), y - fc->getY())))
             {
@@ -132,7 +132,7 @@ void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto node = dynamic_cast<InstrumentEditorNode *>(this->getChildComponent(i)))
+        if (auto node = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
         {
             node->setSelected(node->nodeId == this->selectedNode);
         }
@@ -152,7 +152,7 @@ void InstrumentEditor::updateComponents()
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto fc = dynamic_cast<InstrumentEditorNode *>(getChildComponent(i)))
+        if (auto fc = dynamic_cast<InstrumentComponent *>(getChildComponent(i)))
         {
             fc->update();
         }
@@ -179,7 +179,7 @@ void InstrumentEditor::updateComponents()
         const AudioProcessorGraph::Node::Ptr f(instrument->getNode(i));
         if (this->getComponentForNode(f->nodeID) == nullptr)
         {
-            auto const comp = new InstrumentEditorNode(instrument, f->nodeID);
+            auto const comp = new InstrumentComponent(instrument, f->nodeID);
             this->addAndMakeVisible(comp);
             comp->update();
         }

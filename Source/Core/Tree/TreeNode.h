@@ -29,19 +29,22 @@
 
 #include "HeadlineItemDataSource.h"
 
-class TreeItem :
+// TODO: rename as TreeNode and remove TreeViewItem dependency;
+// rename children as well, like ProjectTreeItem -> ProjectNode
+
+class TreeNode :
     public Serializable,
     public TreeViewItem,
     public HeadlineItemDataSource
 {
 public:
 
-    TreeItem(const String &name, const Identifier &type);
-    ~TreeItem() override;
+    TreeNode(const String &name, const Identifier &type);
+    ~TreeNode() override;
     
-    static TreeItem *getSelectedItem(Component *anyComponentInTree);
-    static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeItem> &selectedNodes);
-    static bool isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck);
+    static TreeNode *getSelectedItem(Component *anyComponentInTree);
+    static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeNode> &selectedNodes);
+    static bool isNodeInChildren(TreeNode *nodeToScan, TreeNode *nodeToCheck);
 
     int getNumSelectedSiblings() const;
     int getNumSelectedChildren() const;
@@ -60,7 +63,7 @@ public:
     void setPrimarySelection(bool isSelected) noexcept;
 
     template<typename T>
-    static T *getActiveItem(TreeItem *root)
+    static T *getActiveItem(TreeNode *root)
     {
         if (root == nullptr)
         {
@@ -128,7 +131,7 @@ public:
     Array<T *> findChildrenOfType(bool pickOnlySelectedOnes = false) const
     {
         Array<T *> children;
-        TreeItem::collectChildrenOfType<T, Array<T *>>(this, children, pickOnlySelectedOnes);
+        TreeNode::collectChildrenOfType<T, Array<T *>>(this, children, pickOnlySelectedOnes);
         return children;
     }
 
@@ -136,21 +139,21 @@ public:
     Array<WeakReference<T>> findChildrenRefsOfType(bool pickOnlySelectedOnes = false) const
     {
         Array<WeakReference<T>> children;
-        TreeItem::collectChildrenOfType<T, Array<WeakReference<T>>>(this, children, pickOnlySelectedOnes);
+        TreeNode::collectChildrenOfType<T, Array<WeakReference<T>>>(this, children, pickOnlySelectedOnes);
         return children;
     }
 
-    Array<TreeItem *> findSelectedSubItems() const
+    Array<TreeNode *> findSelectedSubItems() const
     {
-        Array<TreeItem *> selection;
-        TreeItem::collectSelectedSubItems(this, selection);
+        Array<TreeNode *> selection;
+        TreeNode::collectSelectedSubItems(this, selection);
         return selection;
     }
 
-    TreeItem *findPrimaryActiveItem() const
+    TreeNode *findPrimaryActiveItem() const
     {
-        Array<TreeItem *> activeItems;
-        TreeItem::collectActiveSubItems(this, activeItems);
+        Array<TreeNode *> activeItems;
+        TreeNode::collectActiveSubItems(this, activeItems);
         
         jassert(activeItems.size() > 0);
         
@@ -162,7 +165,7 @@ public:
         return nullptr;
     }
 
-    inline TreeItem *getRootTreeItem()
+    inline TreeNode *getRootTreeItem()
     {
         TreeViewItem *item = this;
         
@@ -171,7 +174,7 @@ public:
             item = item->getParentItem();
         }
         
-        return static_cast<TreeItem *>(item);
+        return static_cast<TreeNode *>(item);
     }
 
     String getUniqueName() const override;
@@ -199,10 +202,10 @@ public:
     // Adding nodes to the tree and removing them
     //===------------------------------------------------------------------===//
 
-    void addChildTreeItem(TreeItem *child, int insertIndex = -1, bool sendNotifications = true);
+    void addChildTreeItem(TreeNode *child, int insertIndex = -1, bool sendNotifications = true);
     virtual void onItemAddedToTree(bool sendNotifications) {}
 
-    static bool deleteItem(TreeItem *itemToDelete, bool sendNotifications);
+    static bool deleteItem(TreeNode *itemToDelete, bool sendNotifications);
     virtual void onItemDeletedFromTree(bool sendNotifications) {}
 
     //===------------------------------------------------------------------===//
@@ -219,11 +222,11 @@ protected:
     void itemSelectionChanged(bool isNowSelected) override;
 
     template<typename T, typename ArrayType>
-    static void collectChildrenOfType(const TreeItem *rootNode, ArrayType &resultArray, bool pickOnlySelectedOnes)
+    static void collectChildrenOfType(const TreeNode *rootNode, ArrayType &resultArray, bool pickOnlySelectedOnes)
     {
         for (int i = 0; i < rootNode->getNumSubItems(); ++i)
         {
-            TreeItem *child = static_cast<TreeItem *>(rootNode->getSubItem(i));
+            TreeNode *child = static_cast<TreeNode *>(rootNode->getSubItem(i));
 
             if (T *targetTreeItem = dynamic_cast<T *>(child))
             {
@@ -235,16 +238,16 @@ protected:
 
             if (child->getNumSubItems() > 0)
             {
-                TreeItem::collectChildrenOfType<T, ArrayType>(child, resultArray, pickOnlySelectedOnes);
+                TreeNode::collectChildrenOfType<T, ArrayType>(child, resultArray, pickOnlySelectedOnes);
             }
         }
     }
 
-    static void collectSelectedSubItems(const TreeItem *rootNode, Array<TreeItem *> &resultArray)
+    static void collectSelectedSubItems(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
     {
         for (int i = 0; i < rootNode->getNumSubItems(); ++i)
         {
-            TreeItem *child = static_cast<TreeItem *>(rootNode->getSubItem(i));
+            TreeNode *child = static_cast<TreeNode *>(rootNode->getSubItem(i));
         
             if (child->isSelected())
             {
@@ -253,16 +256,16 @@ protected:
         
             if (child->getNumSubItems() > 0)
             {
-                TreeItem::collectSelectedSubItems(child, resultArray);
+                TreeNode::collectSelectedSubItems(child, resultArray);
             }
         }
     }
 
-    static void collectActiveSubItems(const TreeItem *rootNode, Array<TreeItem *> &resultArray)
+    static void collectActiveSubItems(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
     {
         for (int i = 0; i < rootNode->getNumSubItems(); ++i)
         {
-            TreeItem *child = static_cast<TreeItem *>(rootNode->getSubItem(i));
+            TreeNode *child = static_cast<TreeNode *>(rootNode->getSubItem(i));
         
             if (child->isPrimarySelection())
             {
@@ -271,7 +274,7 @@ protected:
         
             if (child->getNumSubItems() > 0)
             {
-                TreeItem::collectActiveSubItems(child, resultArray);
+                TreeNode::collectActiveSubItems(child, resultArray);
             }
         }
     }
@@ -302,6 +305,6 @@ protected:
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeItem)
-    JUCE_DECLARE_WEAK_REFERENCEABLE(TreeItem)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeNode)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(TreeNode)
 };

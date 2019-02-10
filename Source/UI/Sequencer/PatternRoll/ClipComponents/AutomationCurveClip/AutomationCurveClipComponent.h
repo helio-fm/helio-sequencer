@@ -19,7 +19,7 @@
 
 class HybridRoll;
 class MidiSequence;
-class ProjectTreeItem;
+class ProjectNode;
 class AutomationCurveEventComponent;
 
 #include "ClipComponent.h"
@@ -30,7 +30,7 @@ class AutomationCurveClipComponent final : public ClipComponent, public ProjectL
 {
 public:
 
-    AutomationCurveClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
+    AutomationCurveClipComponent(ProjectNode &project, MidiSequence *sequence,
         HybridRoll &roll, const Clip &clip);
 
     ~AutomationCurveClipComponent() override;
@@ -91,7 +91,7 @@ private:
     void updateCurveComponent(AutomationCurveEventComponent *);
     void reloadTrack();
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
     WeakReference<MidiSequence> sequence;
 
     OwnedArray<AutomationCurveEventComponent> eventComponents;

@@ -18,9 +18,9 @@
 #pragma once
 
 class Transport;
-class ProjectTreeItem;
+class ProjectNode;
 class MidiSequence;
-class MidiTrackTreeItem;
+class MidiTrackNode;
 class MidiTrack;
 class Pattern;
 class Clipboard;
@@ -73,7 +73,7 @@ struct SequencerOperations final
     static void endTuning(Lasso &selection);
     
     static void copyToClipboard(Clipboard &clipboard, const Lasso &selection);
-    static void pasteFromClipboard(Clipboard &clipboard, ProjectTreeItem &project,
+    static void pasteFromClipboard(Clipboard &clipboard, ProjectNode &project,
         WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint = true);
 
     static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
@@ -97,7 +97,7 @@ struct SequencerOperations final
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);
 
     // Creates new tracks from events of existing tracks
-    static ScopedPointer<MidiTrackTreeItem> createPianoTrack(const Lasso &selection);
-    static ScopedPointer<MidiTrackTreeItem> createPianoTrack(const Array<Note> &events, const Pattern *pattern);
-    static ScopedPointer<MidiTrackTreeItem> createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern);
+    static ScopedPointer<MidiTrackNode> createPianoTrack(const Lasso &selection);
+    static ScopedPointer<MidiTrackNode> createPianoTrack(const Array<Note> &events, const Pattern *pattern);
+    static ScopedPointer<MidiTrackNode> createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern);
 };

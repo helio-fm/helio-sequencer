@@ -21,7 +21,7 @@
 #include "ProjectListener.h"
 
 class HybridRoll;
-class ProjectTreeItem;
+class ProjectNode;
 
 template< typename T >
 class KeySignaturesProjectMap :
@@ -30,7 +30,7 @@ class KeySignaturesProjectMap :
 {
 public:
 
-    KeySignaturesProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
+    KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
     ~KeySignaturesProjectMap() override;
 
     void alignKeySignatureComponent(T *nc);
@@ -90,7 +90,7 @@ private:
     float rollLastBeat;
     
     HybridRoll &roll;
-    ProjectTreeItem &project;
+    ProjectNode &project;
         
     ComponentAnimator animator;
 

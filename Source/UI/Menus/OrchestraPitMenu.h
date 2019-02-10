@@ -17,7 +17,7 @@
 
 #pragma once
 
-class OrchestraPitTreeItem;
+class OrchestraPitNode;
 
 #include "MenuPanel.h"
 
@@ -25,11 +25,11 @@ class OrchestraPitMenu final : public MenuPanel
 {
 public:
     
-    explicit OrchestraPitMenu(OrchestraPitTreeItem &parentOrchestra);
+    explicit OrchestraPitMenu(OrchestraPitNode &parentOrchestra);
     void handleCommandMessage(int commandId) override;
     
 private:
     
-    OrchestraPitTreeItem &instrumentsRoot;
+    OrchestraPitNode &instrumentsRoot;
     
 };

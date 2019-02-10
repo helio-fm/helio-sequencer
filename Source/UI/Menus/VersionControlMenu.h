@@ -19,7 +19,7 @@
 
 class StageComponent;
 class VersionControl;
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "MenuPanel.h"
 

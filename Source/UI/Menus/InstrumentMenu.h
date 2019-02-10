@@ -18,7 +18,7 @@
 #pragma once
 
 class PluginScanner;
-class InstrumentTreeItem;
+class InstrumentNode;
 
 #include "MenuPanel.h"
 
@@ -26,11 +26,11 @@ class InstrumentMenu final : public MenuPanel
 {
 public:
     
-    InstrumentMenu(InstrumentTreeItem &parentInstrument, PluginScanner &scanner);
+    InstrumentMenu(InstrumentNode &parentInstrument, PluginScanner &scanner);
     
 private:
     
-    InstrumentTreeItem &instrumentNode;
+    InstrumentNode &instrumentNode;
     PluginScanner &pluginScanner;
     
     MenuPanel::Menu createDefaultMenu();

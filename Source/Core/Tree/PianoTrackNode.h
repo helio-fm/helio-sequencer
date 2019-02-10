@@ -17,16 +17,18 @@
 
 #pragma once
 
-#include "AutomationTrackDiffLogic.h"
-#include "MidiTrackTreeItem.h"
+#include "PianoTrackDiffLogic.h"
+#include "MidiTrackNode.h"
 
-class AutomationTrackTreeItem final : public MidiTrackTreeItem
+class PianoTrackNode final : public MidiTrackNode
 {
 public:
 
-    explicit AutomationTrackTreeItem(const String &name);
+    explicit PianoTrackNode(const String &name);
 
     Image getIcon() const noexcept override;
+
+    static void selectAllPianoSiblings(PianoTrackNode *layerItem);
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
@@ -37,7 +39,7 @@ public:
     ValueTree getDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
-
+    
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -53,19 +55,17 @@ public:
     ValueTree serializeMuteDelta() const;
     ValueTree serializeColourDelta() const;
     ValueTree serializeInstrumentDelta() const;
-    ValueTree serializeControllerDelta() const;
     ValueTree serializeEventsDelta() const;
 
     void resetPathDelta(const ValueTree &state);
     void resetMuteDelta(const ValueTree &state);
     void resetColourDelta(const ValueTree &state);
     void resetInstrumentDelta(const ValueTree &state);
-    void resetControllerDelta(const ValueTree &state);
     void resetEventsDelta(const ValueTree &state);
 
 private:
 
-    ScopedPointer<VCS::AutomationTrackDiffLogic> vcsDiffLogic;
+    ScopedPointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;
 
 };

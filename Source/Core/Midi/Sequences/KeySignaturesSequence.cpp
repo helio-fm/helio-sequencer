@@ -19,7 +19,7 @@
 #include "KeySignaturesSequence.h"
 #include "KeySignatureEventActions.h"
 #include "SerializationKeys.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "UndoStack.h"
 
 KeySignaturesSequence::KeySignaturesSequence(MidiTrack &track,

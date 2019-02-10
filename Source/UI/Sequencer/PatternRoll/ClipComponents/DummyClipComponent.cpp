@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "DummyClipComponent.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"

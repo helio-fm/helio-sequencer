@@ -23,14 +23,14 @@
 #include "AudioCore.h"
 #include "Instrument.h"
 #include "AudioMonitor.h"
-#include "RootTreeItem.h"
+#include "RootNode.h"
 #include "PluginScanner.h"
-#include "SettingsTreeItem.h"
-#include "OrchestraPitTreeItem.h"
-#include "VersionControlTreeItem.h"
-#include "MidiTrackTreeItem.h"
-#include "ProjectTreeItem.h"
-#include "RootTreeItem.h"
+#include "SettingsNode.h"
+#include "OrchestraPitNode.h"
+#include "VersionControlNode.h"
+#include "MidiTrackNode.h"
+#include "ProjectNode.h"
+#include "RootNode.h"
 #include "Dashboard.h"
 
 Workspace::~Workspace()
@@ -44,7 +44,7 @@ void Workspace::init()
     {
         this->audioCore.reset(new AudioCore());
         this->pluginManager.reset(new PluginScanner());
-        this->treeRoot.reset(new RootTreeItem("Workspace"));
+        this->treeRoot.reset(new RootNode("Workspace"));
         
         if (! this->autoload())
         {
@@ -93,14 +93,14 @@ NavigationHistory &Workspace::getNavigationHistory()
     return this->navigationHistory;
 }
 
-WeakReference<TreeItem> Workspace::getActiveTreeItem() const
+WeakReference<TreeNode> Workspace::getActiveTreeItem() const
 {
     return this->navigationHistory.getCurrentItem();
 }
 
 void Workspace::navigateBackwardIfPossible()
 {
-    TreeItem *treeItem = this->navigationHistory.goBack();
+    TreeNode *treeItem = this->navigationHistory.goBack();
 
     if (treeItem != nullptr)
     {
@@ -111,7 +111,7 @@ void Workspace::navigateBackwardIfPossible()
 
 void Workspace::navigateForwardIfPossible()
 {
-    TreeItem *treeItem = this->navigationHistory.goForward();
+    TreeNode *treeItem = this->navigationHistory.goForward();
 
     if (treeItem != nullptr)
     {
@@ -137,7 +137,7 @@ PluginScanner &Workspace::getPluginManager() noexcept
     return *this->pluginManager;
 }
 
-RootTreeItem *Workspace::getTreeRoot() noexcept
+RootNode *Workspace::getTreeRoot() noexcept
 {
     return this->treeRoot.get();
 }
@@ -166,7 +166,7 @@ void Workspace::createEmptyProject()
         {
             this->userProfile.onProjectLocalInfoUpdated(p->getId(),
                 p->getName(), p->getDocument()->getFullPath());
-            p->selectChildOfType<MidiTrackTreeItem>();
+            p->selectChildOfType<MidiTrackNode>();
         }
     }
 #else
@@ -174,7 +174,7 @@ void Workspace::createEmptyProject()
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
-        p->selectChildOfType<MidiTrackTreeItem>();
+        p->selectChildOfType<MidiTrackNode>();
     }
 #endif
 }
@@ -212,10 +212,10 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
 
 void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool deleteRemotely)
 {
-    const auto projects = this->treeRoot->findChildrenOfType<ProjectTreeItem>();
-    TreeItem *currentShowingItem = this->getActiveTreeItem();
-    ProjectTreeItem *projectToDelete = nullptr;
-    ProjectTreeItem *projectToSwitchTo = nullptr;
+    const auto projects = this->treeRoot->findChildrenOfType<ProjectNode>();
+    TreeNode *currentShowingItem = this->getActiveTreeItem();
+    ProjectNode *projectToDelete = nullptr;
+    ProjectNode *projectToSwitchTo = nullptr;
     
     for (auto *project : projects)
     {
@@ -231,11 +231,11 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool 
     
     bool isShowingAnyOfDeletedChildren = false;
     bool isShowingAnyProjectToDelete = false;
-    Array<TreeItem *> childrenToDelete;
+    Array<TreeNode *> childrenToDelete;
     
     if (projectToDelete != nullptr)
     {
-        childrenToDelete = projectToDelete->findChildrenOfType<TreeItem>();
+        childrenToDelete = projectToDelete->findChildrenOfType<TreeNode>();
         isShowingAnyProjectToDelete = (currentShowingItem == projectToDelete);
     }
     
@@ -279,9 +279,9 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool 
     }
 }
 
-Array<ProjectTreeItem *> Workspace::getLoadedProjects() const
+Array<ProjectNode *> Workspace::getLoadedProjects() const
 {
-    return this->treeRoot->findChildrenOfType<ProjectTreeItem>();
+    return this->treeRoot->findChildrenOfType<ProjectNode>();
 }
 
 void Workspace::stopPlaybackForAllProjects()
@@ -333,17 +333,17 @@ void Workspace::failedDeserializationFallback()
     this->getAudioCore().autodetectDeviceSetup();
     this->getAudioCore().initDefaultInstrument();
 
-    TreeItem *settings = new SettingsTreeItem();
+    TreeNode *settings = new SettingsNode();
     this->treeRoot->addChildTreeItem(settings);
     
-    TreeItem *instruments = new OrchestraPitTreeItem();
+    TreeNode *instruments = new OrchestraPitNode();
     this->treeRoot->addChildTreeItem(instruments);
     
     if (auto *p = this->treeRoot->addDefaultProject(TRANS("defaults::newproject::name")))
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
-        p->selectChildOfType<MidiTrackTreeItem>();
+        p->selectChildOfType<MidiTrackNode>();
     }
     
     this->wasInitialized = true;
@@ -380,12 +380,12 @@ void Workspace::importProject(const String &filePattern)
 
 static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
 {
-    if (TreeItem *treeItem = dynamic_cast<TreeItem *>(item))
+    if (TreeNode *treeItem = dynamic_cast<TreeNode *>(item))
     {
         if (treeItem->isPrimarySelection())
         {
-            ValueTree child(Serialization::Core::selectedTreeItem);
-            child.setProperty(Serialization::Core::treeItemId, item->getItemIdentifierString(), nullptr);
+            ValueTree child(Serialization::Core::selectedTreeNode);
+            child.setProperty(Serialization::Core::treeNodeId, item->getItemIdentifierString(), nullptr);
             parent.appendChild(child, nullptr);
         }
         
@@ -396,9 +396,9 @@ static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
     }
 }
 
-static TreeItem *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
+static TreeNode *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
 {
-    if (auto *treeItem = dynamic_cast<TreeItem *>(item))
+    if (auto *treeItem = dynamic_cast<TreeNode *>(item))
     {
         if (treeItem->getItemIdentifierString() == id)
         {
@@ -467,7 +467,7 @@ void Workspace::deserialize(const ValueTree &tree)
     this->audioCore->deserialize(root);
     this->pluginManager->deserialize(root);
 
-    auto treeRootNodeLegacy = root.getChildWithName(Core::treeItem);
+    auto treeRootNodeLegacy = root.getChildWithName(Core::treeNode);
     auto treeRootNode = root.getChildWithName(Core::treeRoot);
     this->treeRoot->deserialize(treeRootNode.isValid() ? treeRootNode : treeRootNodeLegacy);
     
@@ -475,9 +475,9 @@ void Workspace::deserialize(const ValueTree &tree)
     const auto treeStateNode = root.getChildWithName(Core::treeState);
     if (treeStateNode.isValid())
     {
-        forEachValueTreeChildWithType(treeStateNode, e, Core::selectedTreeItem)
+        forEachValueTreeChildWithType(treeStateNode, e, Core::selectedTreeNode)
         {
-            const String id = e.getProperty(Core::treeItemId);
+            const String id = e.getProperty(Core::treeNodeId);
             foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot.get(), id));
         }
     }
@@ -486,12 +486,12 @@ void Workspace::deserialize(const ValueTree &tree)
 
     // If no instruments root item is found for whatever reason
     // (i.e. malformed tree), make sure to add one:
-    if (nullptr == this->treeRoot->findChildOfType<OrchestraPitTreeItem>())
-    { this->treeRoot->addChildTreeItem(new OrchestraPitTreeItem(), 0); }
+    if (nullptr == this->treeRoot->findChildOfType<OrchestraPitNode>())
+    { this->treeRoot->addChildTreeItem(new OrchestraPitNode(), 0); }
     
     // The same hack for settings root:
-    if (nullptr == this->treeRoot->findChildOfType<SettingsTreeItem>())
-    { this->treeRoot->addChildTreeItem(new SettingsTreeItem(), 0); }
+    if (nullptr == this->treeRoot->findChildOfType<SettingsNode>())
+    { this->treeRoot->addChildTreeItem(new SettingsNode(), 0); }
 
     if (! foundActiveNode)
     {

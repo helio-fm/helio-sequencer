@@ -20,7 +20,7 @@
 //[Headers]
 
 class PluginScanner;
-class OrchestraPitTreeItem;
+class OrchestraPitNode;
 class MenuItemComponent;
 
 #include "HeadlineItemDataSource.h"
@@ -37,7 +37,7 @@ class OrchestraPitPage final : public Component,
 {
 public:
 
-    OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot);
+    OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot);
     ~OrchestraPitPage();
 
     //[UserMethods]
@@ -56,7 +56,7 @@ private:
 
     //[UserVariables]
     PluginScanner &pluginScanner;
-    OrchestraPitTreeItem &instrumentsRoot;
+    OrchestraPitNode &instrumentsRoot;
     //[/UserVariables]
 
     UniquePointer<SeparatorVerticalSkew> skew;

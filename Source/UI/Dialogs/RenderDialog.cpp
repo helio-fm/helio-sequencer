@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 #include "DocumentOwner.h"
 #include "MainLayout.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "PlayerThread.h"
 #include "ProgressIndicator.h"
 #include "SuccessTooltip.h"
@@ -33,7 +33,7 @@
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
-RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo, const String &formatExtension)
+RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, const String &formatExtension)
     : project(parentProject),
       extension(formatExtension.toLowerCase()),
       shouldRenderAfterDialogCompletes(false)
@@ -366,7 +366,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RenderDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, private Timer"
-                 constructorParams="ProjectTreeItem &amp;parentProject, const File &amp;renderTo, const String &amp;formatExtension"
+                 constructorParams="ProjectNode &amp;parentProject, const File &amp;renderTo, const String &amp;formatExtension"
                  variableInitialisers="project(parentProject),&#10;extension(formatExtension.toLowerCase()),&#10;shouldRenderAfterDialogCompletes(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="520" initialHeight="224">

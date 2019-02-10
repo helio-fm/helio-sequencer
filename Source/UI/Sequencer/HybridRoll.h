@@ -19,7 +19,7 @@
 
 class MidiSequence;
 class SelectionComponent;
-class ProjectTreeItem;
+class ProjectNode;
 class LongTapController;
 class SmartDragController;
 class SmoothPanController;
@@ -79,7 +79,7 @@ class HybridRoll :
 {
 public:
     
-    HybridRoll(ProjectTreeItem &project, Viewport &viewport,
+    HybridRoll(ProjectNode &project, Viewport &viewport,
         WeakReference<AudioMonitor> audioMonitor,
         bool hasAnnotationsTrack = true,
         bool hasKeySignaturesTrack = true,
@@ -89,7 +89,7 @@ public:
 
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
-    ProjectTreeItem &getProject() const noexcept;
+    ProjectNode &getProject() const noexcept;
     HybridRollEditMode &getEditMode() noexcept;
 
     virtual void selectAll() = 0;
@@ -320,7 +320,7 @@ protected:
     void updateBounds();
     
     WeakReference<AudioMonitor> clippingDetector;
-    ProjectTreeItem &project;
+    ProjectNode &project;
     Viewport &viewport;
     
     OwnedArray<Component> trackMaps;

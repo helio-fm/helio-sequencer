@@ -16,12 +16,12 @@
 */
 
 #include "Common.h"
-#include "AudioPluginTreeItem.h"
-#include "TreeItemChildrenSerializer.h"
+#include "AudioPluginNode.h"
+#include "TreeNodeSerializer.h"
 #include "MainLayout.h"
 #include "Icons.h"
 
-#include "InstrumentTreeItem.h"
+#include "InstrumentNode.h"
 #include "Instrument.h"
 #include "AudioPluginEditorPage.h"
 #include "SerializationKeys.h"
@@ -50,35 +50,35 @@ public:
     { }
 };
 
-AudioPluginTreeItem::AudioPluginTreeItem(AudioProcessorGraph::NodeID pluginID, const String &name) :
-    TreeItem(name, Serialization::Audio::audioPlugin),
+AudioPluginNode::AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name) :
+    TreeNode(name, Serialization::Audio::audioPlugin),
     audioPluginEditor(nullptr),
     nodeId(pluginID) {}
 
-bool AudioPluginTreeItem::hasMenu() const noexcept
+bool AudioPluginNode::hasMenu() const noexcept
 {
     return false;
 }
 
-ScopedPointer<Component> AudioPluginTreeItem::createMenu()
+ScopedPointer<Component> AudioPluginNode::createMenu()
 {
     return nullptr;
 }
 
-Image AudioPluginTreeItem::getIcon() const noexcept
+Image AudioPluginNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::audioPlugin, HEADLINE_ICON_SIZE);
 }
 
-AudioProcessorGraph::NodeID AudioPluginTreeItem::getNodeId() const noexcept
+AudioProcessorGraph::NodeID AudioPluginNode::getNodeId() const noexcept
 {
     return this->nodeId;
 }
 
-void AudioPluginTreeItem::showPage()
+void AudioPluginNode::showPage()
 {
     const auto instrument =
-        this->findParentOfType<InstrumentTreeItem>()->getInstrument();
+        this->findParentOfType<InstrumentNode>()->getInstrument();
 
     if (instrument == nullptr)
     {

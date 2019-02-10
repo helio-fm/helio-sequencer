@@ -25,11 +25,11 @@
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
 #include "PianoTrackActions.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
-#include "VersionControlTreeItem.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
+#include "VersionControlNode.h"
 #include "ModalDialogInput.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
@@ -76,7 +76,7 @@
         for (const auto &child : (*_c.second.get()))
 
 
-PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
+PianoRoll::PianoRoll(ProjectNode &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector),
@@ -907,7 +907,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse(0.25f); // A bit of fancy animation
         break;
     case CommandIDs::RenameTrack:
-        if (auto trackNode = dynamic_cast<MidiTrackTreeItem *>(this->project.findPrimaryActiveItem()))
+        if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findPrimaryActiveItem()))
         {
             auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
             inputDialog->onOk = trackNode->getRenameCallback();

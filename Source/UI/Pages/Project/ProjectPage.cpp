@@ -22,9 +22,9 @@
 #include "ProjectPage.h"
 
 //[MiscUserDefs]
-#include "VersionControlTreeItem.h"
+#include "VersionControlNode.h"
 #include "PlayerThread.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "ProjectInfo.h"
 #include "HelioTheme.h"
 #include "HelioCallout.h"
@@ -32,7 +32,7 @@
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
-ProjectPage::ProjectPage(ProjectTreeItem &parentProject)
+ProjectPage::ProjectPage(ProjectNode &parentProject)
     : project(parentProject)
 {
     this->background.reset(new PanelBackgroundB());
@@ -381,7 +381,7 @@ void ProjectPage::updateContent()
     this->locationText->setText(this->project.getDocument()->getFullPath(), dontSendNotification);
     this->contentStatsText->setText(this->project.getStats(), dontSendNotification);
 
-    if (VersionControlTreeItem *vcti = this->project.findChildOfType<VersionControlTreeItem>())
+    if (VersionControlNode *vcti = this->project.findChildOfType<VersionControlNode>())
     {
         this->vcsStatsText->setText(vcti->getStatsString(), dontSendNotification);
     }

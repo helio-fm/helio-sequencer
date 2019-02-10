@@ -22,7 +22,7 @@ class Pattern;
 class MidiTrack;
 class MidiEvent;
 class MidiSequence;
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "ProjectListener.h"
 
@@ -49,7 +49,7 @@ public:
     // Needed for project to calculate and send the total beat range
     virtual void dispatchChangeProjectBeatRange() = 0;
 
-    virtual ProjectTreeItem *getProject() const noexcept { return nullptr; }
+    virtual ProjectNode *getProject() const noexcept { return nullptr; }
 };
 
 class EmptyEventDispatcher final : public ProjectEventDispatcher

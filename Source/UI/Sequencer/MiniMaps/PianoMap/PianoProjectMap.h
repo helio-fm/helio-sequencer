@@ -23,7 +23,7 @@
 #include "ProjectMapNoteComponent.h"
 
 class HybridRoll;
-class ProjectTreeItem;
+class ProjectNode;
 
 class PianoProjectMap :
     public Component,
@@ -31,7 +31,7 @@ class PianoProjectMap :
 {
 public:
 
-    PianoProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
+    PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
     ~PianoProjectMap() override;
 
     //===------------------------------------------------------------------===//
@@ -75,7 +75,7 @@ private:
     float componentHeight;
     
     HybridRoll &roll;
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
     using SequenceMap = FlatHashMap<Note, UniquePointer<ProjectMapNoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;

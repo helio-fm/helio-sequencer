@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "MidiTrackMenu.h"
-#include "MidiTrackTreeItem.h"
-#include "PianoTrackTreeItem.h"
+#include "MidiTrackNode.h"
+#include "PianoTrackNode.h"
 #include "Icons.h"
 #include "CommandIDs.h"
 
@@ -27,19 +27,19 @@
 #include "Instrument.h"
 #include "MidiSequence.h"
 #include "HybridRoll.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "ModalDialogInput.h"
 
 #include "MidiSequence.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
 #include "MidiTrackActions.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
 #include "UndoStack.h"
 #include "Workspace.h"
 
-MidiTrackMenu::MidiTrackMenu(MidiTrackTreeItem &parentLayer) :
+MidiTrackMenu::MidiTrackMenu(MidiTrackNode &parentLayer) :
     trackItem(parentLayer)
 {
     this->initDefaultMenu();
@@ -52,7 +52,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
         // TODO move to another command processor
         case CommandIDs::MuteTrack:
         {
-            ProjectTreeItem *project = this->trackItem.getProject();
+            ProjectNode *project = this->trackItem.getProject();
             const String &trackId = this->trackItem.getSequence()->getTrackId();
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, trackId, true));
@@ -62,7 +62,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
             
         case CommandIDs::UnmuteTrack:
         {
-            ProjectTreeItem *project = this->trackItem.getProject();
+            ProjectNode *project = this->trackItem.getProject();
             const String &trackId = this->trackItem.getSequence()->getTrackId();
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, trackId, false));
@@ -72,7 +72,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
 
         case CommandIDs::DeleteTrack:
         {
-            ProjectTreeItem *project = this->trackItem.getProject();
+            ProjectNode *project = this->trackItem.getProject();
             project->checkpoint();
             project->removeTrack(this->trackItem);
             this->dismiss();
@@ -103,7 +103,7 @@ void MidiTrackMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS("menu::track::rename"))->closesMenu());
     
-    const bool canBeMuted = (dynamic_cast<PianoTrackTreeItem *>(&this->trackItem) != nullptr);
+    const bool canBeMuted = (dynamic_cast<PianoTrackNode *>(&this->trackItem) != nullptr);
     if (canBeMuted)
     {
         const bool muted = this->trackItem.isTrackMuted();

@@ -21,7 +21,7 @@
 #include "ProjectListener.h"
 
 class HybridRoll;
-class ProjectTreeItem;
+class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
 
@@ -32,7 +32,7 @@ class TimeSignaturesProjectMap :
 {
 public:
 
-    TimeSignaturesProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
+    TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
     ~TimeSignaturesProjectMap() override;
 
     void alignTimeSignatureComponent(T *nc);
@@ -94,7 +94,7 @@ private:
     float rollLastBeat;
     
     HybridRoll &roll;
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
     ScopedPointer<TrackStartIndicator> trackStartIndicator;
     ScopedPointer<TrackEndIndicator> trackEndIndicator;

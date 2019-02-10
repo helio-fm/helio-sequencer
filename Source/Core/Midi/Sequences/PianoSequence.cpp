@@ -22,7 +22,7 @@
 #include "Note.h"
 #include "NoteActions.h"
 #include "SerializationKeys.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "UndoStack.h"
 
 PianoSequence::PianoSequence(MidiTrack &track,

@@ -21,14 +21,14 @@ class Instrument;
 class InstrumentEditor;
 class AudioCore;
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 
-class InstrumentTreeItem final : public TreeItem
+class InstrumentNode final : public TreeNode
 {
 public:
 
-    explicit InstrumentTreeItem(Instrument *targetInstrument = nullptr);
-    ~InstrumentTreeItem() override;
+    explicit InstrumentNode(Instrument *targetInstrument = nullptr);
+    ~InstrumentNode() override;
 
     void updateChildrenEditors();
 
@@ -44,7 +44,7 @@ public:
     WeakReference<Instrument> getInstrument() const noexcept;
     Array<uint32> getInstrumentNodeIds() const;
     bool hasInstrumentWithNodeId(uint32 nodeId) const;
-    TreeItem *findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const;
+    TreeNode *findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const;
     String getInstrumentIdAndHash() const;
 
     //===------------------------------------------------------------------===//
@@ -85,5 +85,5 @@ private:
     WeakReference<Instrument> instrument;
     WeakReference<AudioCore> audioCore;
 
-    JUCE_DECLARE_WEAK_REFERENCEABLE(InstrumentTreeItem)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(InstrumentNode)
 };

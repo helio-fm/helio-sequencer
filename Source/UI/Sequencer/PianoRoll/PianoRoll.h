@@ -46,7 +46,7 @@ class PianoRoll final : public HybridRoll
 {
 public:
 
-    PianoRoll(ProjectTreeItem &parentProject,
+    PianoRoll(ProjectNode &parentProject,
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
     

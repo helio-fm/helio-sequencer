@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "PianoProjectMap.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MidiTrack.h"
 #include "MidiSequence.h"
 #include "Pattern.h"
@@ -27,7 +27,7 @@
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 
-PianoProjectMap::PianoProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
+PianoProjectMap::PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),

@@ -24,13 +24,13 @@
 
 class HybridRoll;
 class MidiSequence;
-class ProjectTreeItem;
+class ProjectNode;
 
 class PianoClipComponent final : public ClipComponent, public ProjectListener
 {
 public:
 
-    PianoClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
+    PianoClipComponent(ProjectNode &project, MidiSequence *sequence,
         HybridRoll &roll, const Clip &clip);
 
     ~PianoClipComponent() override;
@@ -67,7 +67,7 @@ private:
     void reloadTrackMap();
     void repositionAllChildren();
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
     WeakReference<MidiSequence> sequence;
 
     FlatHashMap<Note, UniquePointer<PianoSequenceMapNoteComponent>, MidiEventHash> componentsMap;

@@ -16,8 +16,8 @@
 */
 
 #include "Common.h"
-#include "SettingsTreeItem.h"
-#include "TreeItemChildrenSerializer.h"
+#include "SettingsNode.h"
+#include "TreeNodeSerializer.h"
 #include "SerializationKeys.h"
 
 #include "SyncSettings.h"
@@ -35,25 +35,25 @@
 #include "Workspace.h"
 #include "Icons.h"
 
-SettingsTreeItem::SettingsTreeItem() :
-    TreeItem("Settings", Serialization::Core::settings)
+SettingsNode::SettingsNode() :
+    TreeNode("Settings", Serialization::Core::settings)
 {
     // Too much garbage in the main tree,
     // let's make it accessible from the button on the title page
     //this->setVisible(false);
 }
 
-Image SettingsTreeItem::getIcon() const noexcept
+Image SettingsNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::settings, TREE_LARGE_ICON_HEIGHT);
 }
 
-String SettingsTreeItem::getName() const noexcept
+String SettingsNode::getName() const noexcept
 {
     return TRANS("tree::settings");
 }
 
-void SettingsTreeItem::showPage()
+void SettingsNode::showPage()
 {
     if (this->settingsPage == nullptr)
     {
@@ -63,7 +63,7 @@ void SettingsTreeItem::showPage()
     App::Layout().showPage(this->settingsPage, this);
 }
 
-void SettingsTreeItem::recreatePage()
+void SettingsNode::recreatePage()
 {
     this->settingsPage = nullptr;
     this->syncSettingsWrapper = nullptr;
@@ -106,12 +106,12 @@ void SettingsTreeItem::recreatePage()
     this->settingsPage = new SettingsPage(this->settingsList);
 }
 
-bool SettingsTreeItem::hasMenu() const noexcept
+bool SettingsNode::hasMenu() const noexcept
 {
     return false;
 }
 
-ScopedPointer<Component> SettingsTreeItem::createMenu()
+ScopedPointer<Component> SettingsNode::createMenu()
 {
     return nullptr;
 }

@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AutomationStepsClipComponent.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "PlayerThread.h"
@@ -26,7 +26,7 @@
 #include "AutomationStepEventsConnector.h"
 #include "MidiTrack.h"
 
-AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &project,
+AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectNode &project,
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),

@@ -16,10 +16,10 @@
 */
 
 #include "Common.h"
-#include "OrchestraPitTreeItem.h"
+#include "OrchestraPitNode.h"
 
-#include "TreeItemChildrenSerializer.h"
-#include "InstrumentTreeItem.h"
+#include "TreeNodeSerializer.h"
+#include "InstrumentNode.h"
 #include "Instrument.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
@@ -29,28 +29,28 @@
 #include "SerializationKeys.h"
 #include "Workspace.h"
 
-OrchestraPitTreeItem::OrchestraPitTreeItem() :
-    TreeItem("Instruments", Serialization::Core::instrumentsList)
+OrchestraPitNode::OrchestraPitNode() :
+    TreeNode("Instruments", Serialization::Core::instrumentsList)
 {
     this->recreatePage();
 }
 
-Image OrchestraPitTreeItem::getIcon() const noexcept
+Image OrchestraPitNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::orchestraPit, TREE_LARGE_ICON_HEIGHT);
 }
 
-String OrchestraPitTreeItem::getName() const noexcept
+String OrchestraPitNode::getName() const noexcept
 {
     return TRANS("tree::instruments");
 }
 
-void OrchestraPitTreeItem::showPage()
+void OrchestraPitNode::showPage()
 {
     App::Layout().showPage(this->instrumentsPage, this);
 }
 
-void OrchestraPitTreeItem::recreatePage()
+void OrchestraPitNode::recreatePage()
 {
     this->instrumentsPage =
         new OrchestraPitPage(App::Workspace().getPluginManager(), *this);
@@ -60,12 +60,12 @@ void OrchestraPitTreeItem::recreatePage()
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool OrchestraPitTreeItem::hasMenu() const noexcept
+bool OrchestraPitNode::hasMenu() const noexcept
 {
     return true;
 }
 
-ScopedPointer<Component> OrchestraPitTreeItem::createMenu()
+ScopedPointer<Component> OrchestraPitNode::createMenu()
 {
     return new OrchestraPitMenu(*this);
 }
@@ -74,7 +74,7 @@ ScopedPointer<Component> OrchestraPitTreeItem::createMenu()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-bool OrchestraPitTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool OrchestraPitNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     bool isInterested = (dragSourceDetails.description == Serialization::Core::instrumentRoot.toString());
     isInterested |= (nullptr != dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()));
@@ -85,7 +85,7 @@ bool OrchestraPitTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sou
     return isInterested;
 }
 
-void OrchestraPitTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
+void OrchestraPitNode::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
     if (auto list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
     {
@@ -102,17 +102,17 @@ void OrchestraPitTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &d
         }
     }
 
-    TreeItem::itemDropped(dragSourceDetails, insertIndex);
+    TreeNode::itemDropped(dragSourceDetails, insertIndex);
 }
 
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
-InstrumentTreeItem *OrchestraPitTreeItem::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
+InstrumentNode *OrchestraPitNode::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
 {
     jassert(MessageManager::getInstance()->isThisTheMessageThread());
-    auto newInstrument = new InstrumentTreeItem(instrument);
+    auto newInstrument = new InstrumentNode(instrument);
     this->addChildTreeItem(newInstrument, insertIndex);
     this->sendChangeMessage();
     return newInstrument;

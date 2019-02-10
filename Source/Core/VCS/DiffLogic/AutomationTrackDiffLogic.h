@@ -19,7 +19,7 @@
 
 class MidiEvent;
 class MidiSequence;
-class AutomationTrackTreeItem;
+class AutomationTrackNode;
 
 #include "Diff.h"
 #include "DiffLogic.h"

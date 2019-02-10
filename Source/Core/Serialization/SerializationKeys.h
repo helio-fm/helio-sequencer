@@ -22,12 +22,12 @@ namespace Serialization
     namespace Core
     {
         static const Identifier treeRoot = "tree";
-        static const Identifier treeItem = "node";
-        static const Identifier treeItemType = "type";
-        static const Identifier treeItemName = "name";
+        static const Identifier treeNode = "node";
+        static const Identifier treeNodeType = "type";
+        static const Identifier treeNodeName = "name";
         static const Identifier treeState = "treeState";
-        static const Identifier selectedTreeItem = "selectedNode";
-        static const Identifier treeItemId = "nodeId";
+        static const Identifier selectedTreeNode = "selectedNode";
+        static const Identifier treeNodeId = "nodeId";
 
         static const Identifier workspace = "workspace";
         static const Identifier root = "root";

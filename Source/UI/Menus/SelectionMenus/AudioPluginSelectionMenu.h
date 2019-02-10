@@ -18,7 +18,7 @@
 #pragma once
 
 class PluginScanner;
-class OrchestraPitTreeItem;
+class OrchestraPitNode;
 
 #include "MenuPanel.h"
 
@@ -27,12 +27,12 @@ class AudioPluginSelectionMenu final : public MenuPanel
 public:
     
     AudioPluginSelectionMenu(const PluginDescription pluginDescription,
-        OrchestraPitTreeItem &orchestraNode, PluginScanner &scanner);
+        OrchestraPitNode &orchestraNode, PluginScanner &scanner);
 
 private:
 
     const PluginDescription pluginDescription;
-    OrchestraPitTreeItem &orchestraNode;
+    OrchestraPitNode &orchestraNode;
     PluginScanner &pluginScanner;
 
     MenuPanel::Menu createDefaultMenu();

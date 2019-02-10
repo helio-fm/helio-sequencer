@@ -17,11 +17,11 @@
 
 #include "Common.h"
 #include "WorkspaceMenu.h"
-#include "RootTreeItem.h"
-#include "ProjectTreeItem.h"
-#include "SettingsTreeItem.h"
-#include "OrchestraPitTreeItem.h"
-#include "PianoTrackTreeItem.h"
+#include "RootNode.h"
+#include "ProjectNode.h"
+#include "SettingsNode.h"
+#include "OrchestraPitNode.h"
+#include "PianoTrackNode.h"
 #include "Workspace.h"
 #include "CommandIDs.h"
 
@@ -54,7 +54,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
 
     auto *root = this->workspace.getTreeRoot();
 
-    if (auto *settings = root->findChildOfType<SettingsTreeItem>())
+    if (auto *settings = root->findChildOfType<SettingsNode>())
     {
         menu.add(MenuItem::item(Icons::settings, TRANS("tree::settings"))->
             disabledIf(settings->isSelected())->withAction([this, settings]()
@@ -64,7 +64,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
         }));
     }
 
-    if (auto *instruments = root->findChildOfType<OrchestraPitTreeItem>())
+    if (auto *instruments = root->findChildOfType<OrchestraPitNode>())
     {
         menu.add(MenuItem::item(Icons::orchestraPit, TRANS("tree::instruments"))->
             disabledIf(instruments->isSelected())->withAction([this, instruments]()
@@ -74,14 +74,14 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
         }));
     }
 
-    const auto &projects = root->findChildrenOfType<ProjectTreeItem>();
+    const auto &projects = root->findChildrenOfType<ProjectNode>();
     for (int i = 0; i < projects.size(); ++i)
     {
         const bool isShowingCurrent = projects[i]->isSelectedOrHasSelectedChild();
         menu.add(MenuItem::item(Icons::project, projects[i]->getName())->
             disabledIf(isShowingCurrent)->withAction([this, project = projects[i]]()
         {
-            project->selectChildOfType<PianoTrackTreeItem>();
+            project->selectChildOfType<PianoTrackNode>();
             this->dismiss();
         }));
     }

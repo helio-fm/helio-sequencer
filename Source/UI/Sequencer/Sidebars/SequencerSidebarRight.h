@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class ProjectTreeItem;
+class ProjectNode;
 
 #include "TransportListener.h"
 #include "MenuPanel.h"
@@ -39,7 +39,7 @@ class SequencerSidebarRight final : public Component,
 {
 public:
 
-    SequencerSidebarRight(ProjectTreeItem &parent);
+    SequencerSidebarRight(ProjectNode &parent);
     ~SequencerSidebarRight();
 
     //[UserMethods]
@@ -60,7 +60,7 @@ private:
     // SequencerSidebarRight
     //===------------------------------------------------------------------===//
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
 
     Atomic<double> lastSeekTime;
     Atomic<double> lastTotalTime;

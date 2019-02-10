@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "OrchestraPitMenu.h"
-#include "OrchestraPitTreeItem.h"
+#include "OrchestraPitNode.h"
 #include "Icons.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
@@ -26,7 +26,7 @@
 #include "PluginScanner.h"
 #include "Workspace.h"
 
-OrchestraPitMenu::OrchestraPitMenu(OrchestraPitTreeItem &parentOrchestra) :
+OrchestraPitMenu::OrchestraPitMenu(OrchestraPitNode &parentOrchestra) :
     instrumentsRoot(parentOrchestra)
 {
     MenuPanel::Menu cmds;

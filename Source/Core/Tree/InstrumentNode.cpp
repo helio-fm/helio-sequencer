@@ -16,8 +16,8 @@
 */
 
 #include "Common.h"
-#include "InstrumentTreeItem.h"
-#include "TreeItemChildrenSerializer.h"
+#include "InstrumentNode.h"
+#include "TreeNodeSerializer.h"
 #include "MainLayout.h"
 #include "Icons.h"
 #include "SerializationKeys.h"
@@ -26,14 +26,14 @@
 #include "InstrumentEditor.h"
 #include "InstrumentMenu.h"
 #include "OrchestraPit.h"
-#include "OrchestraPitTreeItem.h"
-#include "AudioPluginTreeItem.h"
+#include "OrchestraPitNode.h"
+#include "AudioPluginNode.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 
 
-InstrumentTreeItem::InstrumentTreeItem(Instrument *targetInstrument) :
-    TreeItem({}, Serialization::Core::instrumentRoot),
+InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
+    TreeNode({}, Serialization::Core::instrumentRoot),
     instrument(targetInstrument),
     instrumentEditor(nullptr)
 {
@@ -46,7 +46,7 @@ InstrumentTreeItem::InstrumentTreeItem(Instrument *targetInstrument) :
     }
 }
 
-InstrumentTreeItem::~InstrumentTreeItem()
+InstrumentNode::~InstrumentNode()
 {
     // cleanup UI before unplugging an instrument
     this->deleteAllSubItems();
@@ -58,12 +58,12 @@ InstrumentTreeItem::~InstrumentTreeItem()
     }
 }
 
-Image InstrumentTreeItem::getIcon() const noexcept
+Image InstrumentNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::instrument, HEADLINE_ICON_SIZE);
 }
 
-void InstrumentTreeItem::showPage()
+void InstrumentNode::showPage()
 {
     if (this->instrument.wasObjectDeleted())
     {
@@ -74,7 +74,7 @@ void InstrumentTreeItem::showPage()
     App::Layout().showPage(this->instrumentEditor, this);
 }
 
-void InstrumentTreeItem::safeRename(const String &newName, bool sendNotifications)
+void InstrumentNode::safeRename(const String &newName, bool sendNotifications)
 {
     if (this->instrument.wasObjectDeleted())
     { 
@@ -82,7 +82,7 @@ void InstrumentTreeItem::safeRename(const String &newName, bool sendNotification
         return;
     }
 
-    TreeItem::safeRename(newName, sendNotifications);
+    TreeNode::safeRename(newName, sendNotifications);
     this->instrument->setName(newName);
 
     if (sendNotifications)
@@ -96,17 +96,17 @@ void InstrumentTreeItem::safeRename(const String &newName, bool sendNotification
 // Instrument
 //===----------------------------------------------------------------------===//
 
-WeakReference<Instrument> InstrumentTreeItem::getInstrument() const noexcept
+WeakReference<Instrument> InstrumentNode::getInstrument() const noexcept
 {
     return this->instrument;
 }
 
-String InstrumentTreeItem::getInstrumentIdAndHash() const
+String InstrumentNode::getInstrumentIdAndHash() const
 {
     return this->instrument->getIdAndHash();
 }
 
-Array<uint32> InstrumentTreeItem::getInstrumentNodeIds() const
+Array<uint32> InstrumentNode::getInstrumentNodeIds() const
 {
     Array<uint32> result;
 
@@ -118,7 +118,7 @@ Array<uint32> InstrumentTreeItem::getInstrumentNodeIds() const
     return result;
 }
 
-bool InstrumentTreeItem::hasInstrumentWithNodeId(uint32 targetNodeId) const
+bool InstrumentNode::hasInstrumentWithNodeId(uint32 targetNodeId) const
 {
     for (const uint32 existingNodeId : this->getInstrumentNodeIds())
     {
@@ -131,9 +131,9 @@ bool InstrumentTreeItem::hasInstrumentWithNodeId(uint32 targetNodeId) const
     return false;
 }
 
-TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const
+TreeNode *InstrumentNode::findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const
 {
-    for (const auto audioPluginTreeItem : this->findChildrenOfType<AudioPluginTreeItem>())
+    for (const auto audioPluginTreeItem : this->findChildrenOfType<AudioPluginNode>())
     {
         if (audioPluginTreeItem->getNodeId() == nodeId)
         {
@@ -149,12 +149,12 @@ TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(AudioProcessorGraph
 // Dragging
 //===----------------------------------------------------------------------===//
 
-var InstrumentTreeItem::getDragSourceDescription()
+var InstrumentNode::getDragSourceDescription()
 {
     return Serialization::Core::instrumentRoot.toString();
 }
 
-bool InstrumentTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool InstrumentNode::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     const bool isInterested =
         (nullptr != dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()));
@@ -165,7 +165,7 @@ bool InstrumentTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sourc
     return isInterested;
 }
 
-void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
+void InstrumentNode::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
     if (ListBox *list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
     {
@@ -180,24 +180,24 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
         }
     }
 
-    TreeItem::itemDropped(dragSourceDetails, insertIndex);
+    TreeNode::itemDropped(dragSourceDetails, insertIndex);
 }
 
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool InstrumentTreeItem::hasMenu() const noexcept
+bool InstrumentNode::hasMenu() const noexcept
 {
     return true;
 }
 
-ScopedPointer<Component> InstrumentTreeItem::createMenu()
+ScopedPointer<Component> InstrumentNode::createMenu()
 {
     return new InstrumentMenu(*this, App::Workspace().getPluginManager());
 }
 
-void InstrumentTreeItem::updateChildrenEditors()
+void InstrumentNode::updateChildrenEditors()
 {
     this->deleteAllSubItems();
 
@@ -212,7 +212,7 @@ void InstrumentTreeItem::updateChildrenEditors()
         }
 
         // неюзабельно, используем только на мобилках
-        auto *ap = new AudioPluginTreeItem(node->nodeID, node->getProcessor()->getName());
+        auto *ap = new AudioPluginNode(node->nodeID, node->getProcessor()->getName());
         this->addChildTreeItem(ap);
     }
 }
@@ -221,7 +221,7 @@ void InstrumentTreeItem::updateChildrenEditors()
 // Callbacks
 //===----------------------------------------------------------------------===//
 
-Function<void(const String &text)> InstrumentTreeItem::getRenameCallback()
+Function<void(const String &text)> InstrumentNode::getRenameCallback()
 {
     return [this](const String &text)
     {
@@ -236,16 +236,16 @@ Function<void(const String &text)> InstrumentTreeItem::getRenameCallback()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree InstrumentTreeItem::serialize() const
+ValueTree InstrumentNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
-    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
+    ValueTree tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
     tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash(), nullptr);
     return tree;
 }
 
-void InstrumentTreeItem::deserialize(const ValueTree &tree)
+void InstrumentNode::deserialize(const ValueTree &tree)
 {
     this->reset();
 
@@ -262,12 +262,12 @@ void InstrumentTreeItem::deserialize(const ValueTree &tree)
     this->initInstrumentEditor();
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(tree);
+    TreeNode::deserialize(tree);
 
     this->updateChildrenEditors();
 }
 
-void InstrumentTreeItem::initInstrumentEditor()
+void InstrumentNode::initInstrumentEditor()
 {
     if (this->instrumentEditor == nullptr)
     {
@@ -276,7 +276,7 @@ void InstrumentTreeItem::initInstrumentEditor()
     }
 }
 
-void InstrumentTreeItem::removeInstrumentEditor()
+void InstrumentNode::removeInstrumentEditor()
 {
     if (this->instrumentEditor != nullptr)
     {
@@ -284,9 +284,9 @@ void InstrumentTreeItem::removeInstrumentEditor()
     }
 }
 
-void InstrumentTreeItem::notifyOrchestraChanged()
+void InstrumentNode::notifyOrchestraChanged()
 {
-    if (auto orchestra = dynamic_cast<OrchestraPitTreeItem *>(this->getParentItem()))
+    if (auto orchestra = dynamic_cast<OrchestraPitNode *>(this->getParentItem()))
     {
         orchestra->sendChangeMessage();
     }

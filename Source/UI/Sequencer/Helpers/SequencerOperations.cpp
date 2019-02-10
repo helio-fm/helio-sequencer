@@ -17,14 +17,14 @@
 
 #include "Common.h"
 #include "SequencerOperations.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationTrackTreeItem.h"
+#include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
 #include "AnnotationsSequence.h"
@@ -1402,7 +1402,7 @@ void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &sel
     clipboard.copy(tree, false);
 }
 
-void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectTreeItem &project,
+void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &project,
     WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint)
 {
     if (selectedTrack == nullptr) { return; }
@@ -1914,7 +1914,7 @@ Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,
     return newEventsToTheRight;
 }
 
-ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Lasso &selection)
+ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0) { return {}; }
 
@@ -1922,7 +1922,7 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Las
     const auto &instrumentId = track->getTrackInstrumentId();
     const auto &colour = track->getTrackColour();
 
-    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem({});
+    ScopedPointer<MidiTrackNode> newItem = new PianoTrackNode({});
 
     const Clip clip(track->getPattern());
     track->getPattern()->insert(clip, false);
@@ -1944,7 +1944,7 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Las
     return newItem;
 }
 
-ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *clips)
+ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *clips)
 {
     if (events.size() == 0) { return {}; }
 
@@ -1952,7 +1952,7 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Arr
     const auto &instrumentId = track->getTrackInstrumentId();
     const auto &colour = track->getTrackColour();
 
-    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem({});
+    ScopedPointer<MidiTrackNode> newItem = new PianoTrackNode({});
     newItem->setTrackColour(colour, false);
     newItem->setTrackInstrumentId(instrumentId, false);
 
@@ -1971,7 +1971,7 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Arr
     return newItem;
 }
 
-ScopedPointer<MidiTrackTreeItem> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *clips)
+ScopedPointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *clips)
 {
     if (events.size() == 0) { return{}; }
 
@@ -1980,7 +1980,7 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createAutomationTrack(cons
     const auto &cc = track->getTrackControllerNumber();
     const auto &colour = track->getTrackColour();
 
-    ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem({});
+    ScopedPointer<MidiTrackNode> newItem = new AutomationTrackNode({});
     newItem->setTrackColour(colour, false);
     newItem->setTrackControllerNumber(cc, false);
     newItem->setTrackInstrumentId(instrumentId, false);

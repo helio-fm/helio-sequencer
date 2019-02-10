@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 #include "ProjectEventDispatcher.h"
 #include "MidiTrack.h"
 #include "TrackedItem.h"
@@ -25,20 +25,20 @@
 
 class Pattern;
 class MidiSequence;
-class ProjectTreeItem;
+class ProjectNode;
 class InstrumentDescription;
 
-class MidiTrackTreeItem :
-    public TreeItem,
+class MidiTrackNode :
+    public TreeNode,
     public MidiTrack,
     public ProjectEventDispatcher,
     public VCS::TrackedItem
 {
 public:
 
-    explicit MidiTrackTreeItem(const String &name, const Identifier &type);
+    explicit MidiTrackNode(const String &name, const Identifier &type);
 
-    ~MidiTrackTreeItem() override;
+    ~MidiTrackNode() override;
 
     String getXPath() const noexcept;
     void setXPath(const String &path, bool sendNotifications);
@@ -98,7 +98,7 @@ public:
     void dispatchChangeTrackProperties(MidiTrack *const track) override;
     void dispatchChangeProjectBeatRange() override;
 
-    ProjectTreeItem *getProject() const noexcept override;
+    ProjectNode *getProject() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Dragging
@@ -124,7 +124,7 @@ public:
 
 protected:
 
-    ProjectTreeItem *lastFoundParent;
+    ProjectNode *lastFoundParent;
 
     ScopedPointer<MidiSequence> sequence;
     ScopedPointer<Pattern> pattern;

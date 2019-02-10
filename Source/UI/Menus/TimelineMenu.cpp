@@ -17,13 +17,13 @@
 
 #include "Common.h"
 #include "TimelineMenu.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "MainLayout.h"
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "TimeSignatureEvent.h"
-#include "PianoTrackTreeItem.h"
+#include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
 #include "ModalDialogInput.h"
@@ -51,7 +51,7 @@ const T *findSelectedEventOfType(MidiSequence *const sequence, HybridRoll *const
     return selectedEvent;
 }
 
-TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
+TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
     project(parentProject)
 {
     const AnnotationEvent *selectedAnnotation = nullptr;

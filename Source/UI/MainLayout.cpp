@@ -24,13 +24,13 @@
 #include "AudioCore.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "RootTreeItem.h"
+#include "RootNode.h"
 #include "GenericTooltip.h"
-#include "MidiTrackTreeItem.h"
-#include "ProjectTreeItem.h"
-#include "PianoTrackTreeItem.h"
-#include "PatternEditorTreeItem.h"
-#include "VersionControlTreeItem.h"
+#include "MidiTrackNode.h"
+#include "ProjectNode.h"
+#include "PianoTrackNode.h"
+#include "PatternEditorNode.h"
+#include "VersionControlNode.h"
 #include "InitScreen.h"
 #include "SequencerLayout.h"
 #include "JsonSerializer.h"
@@ -108,14 +108,14 @@ void MainLayout::restoreLastOpenedPage()
 // Pages
 //===----------------------------------------------------------------------===//
 
-void hideMarkersRecursive(WeakReference<TreeItem> startFrom)
+void hideMarkersRecursive(WeakReference<TreeNode> startFrom)
 {
     jassert(startFrom != nullptr);
     startFrom->setPrimarySelection(false);
 
     for (int i = 0; i < startFrom->getNumSubItems(); ++i)
     {
-        if (TreeItem *childOfType = dynamic_cast<TreeItem *>(startFrom->getSubItem(i)))
+        if (TreeNode *childOfType = dynamic_cast<TreeNode *>(startFrom->getSubItem(i)))
         {
             hideMarkersRecursive(childOfType);
         }
@@ -128,7 +128,7 @@ bool MainLayout::isShowingPage(Component *page) const noexcept
     return (this->currentContent == page);
 }
 
-void MainLayout::showPage(Component *page, TreeItem *source)
+void MainLayout::showPage(Component *page, TreeNode *source)
 {
     jassert(page != nullptr);
 
@@ -314,15 +314,15 @@ void MainLayout::modifierKeysChanged(const ModifierKeys &modifiers)
     // TODO do I need to handle this?
 }
 
-static ProjectTreeItem *findParentProjectOfSelectedNode()
+static ProjectNode *findParentProjectOfSelectedNode()
 {
-    if (auto *active = TreeItem::getActiveItem<TreeItem>(App::Workspace().getTreeRoot()))
+    if (auto *active = TreeNode::getActiveItem<TreeNode>(App::Workspace().getTreeRoot()))
     {
-        if (auto *projectItself = dynamic_cast<ProjectTreeItem *>(active))
+        if (auto *projectItself = dynamic_cast<ProjectNode *>(active))
         {
             return projectItself;
         }
-        else if (auto *projectParent = active->findParentOfType<ProjectTreeItem>())
+        else if (auto *projectParent = active->findParentOfType<ProjectNode>())
         {
             return projectParent;
         }
@@ -340,7 +340,7 @@ void MainLayout::handleCommandMessage(int commandId)
         {
             if (project->getLastShownTrack() == nullptr)
             {
-                project->selectChildOfType<PianoTrackTreeItem>();
+                project->selectChildOfType<PianoTrackNode>();
             }
             else
             {
@@ -351,13 +351,13 @@ void MainLayout::handleCommandMessage(int commandId)
     case CommandIDs::SwitchToArrangeMode:
         if (auto *project = findParentProjectOfSelectedNode())
         {
-            project->selectChildOfType<PatternEditorTreeItem>();
+            project->selectChildOfType<PatternEditorNode>();
         }
         break;
     case CommandIDs::SwitchToVersioningMode:
         if (auto *project = findParentProjectOfSelectedNode())
         {
-            project->selectChildOfType<VersionControlTreeItem>();
+            project->selectChildOfType<VersionControlNode>();
         }
         break;
     case CommandIDs::ShowPreviousPage:

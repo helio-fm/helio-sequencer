@@ -23,7 +23,7 @@
 
 class MidiSequence;
 class HybridRoll;
-class ProjectTreeItem;
+class ProjectNode;
 class AutomationStepEventComponent;
 class AutomationStepEventsConnector;
 
@@ -31,7 +31,7 @@ class AutomationStepsClipComponent final : public ClipComponent, public ProjectL
 {
 public:
 
-    AutomationStepsClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
+    AutomationStepsClipComponent(ProjectNode &project, MidiSequence *sequence,
         HybridRoll &roll, const Clip &clip);
 
     ~AutomationStepsClipComponent() override;
@@ -86,7 +86,7 @@ private:
     void updateEventComponent(AutomationStepEventComponent *component) const;
     void reloadTrack();
 
-    ProjectTreeItem &project;
+    ProjectNode &project;
     WeakReference<MidiSequence> sequence;
 
     OwnedArray<AutomationStepEventComponent> eventComponents;

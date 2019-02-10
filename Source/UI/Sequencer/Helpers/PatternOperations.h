@@ -19,16 +19,16 @@
 
 class Clip;
 class Lasso;
-class ProjectTreeItem;
+class ProjectNode;
 
 struct PatternOperations final
 {
-    static void deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint = true);
+    static void deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint = true);
 
     static void transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint = true);
     static void tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint = true);
     static void shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint = true);
 
-    static void cutClip(ProjectTreeItem &project, const Clip &clip,
+    static void cutClip(ProjectNode &project, const Clip &clip,
         float relativeCutBeat, bool shouldCheckpoint = true);
 };

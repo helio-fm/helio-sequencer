@@ -20,7 +20,7 @@
 //[Headers]
 #include "HighlightedComponent.h"
 #include "IconButton.h"
-#include "TreeItem.h"
+#include "TreeNode.h"
 
 class IconComponent;
 class HeadlineDropdown;
