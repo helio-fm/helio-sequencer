@@ -31,6 +31,7 @@ public:
 
     //[UserMethods]
     void showNonOwned(Component *targetComponent);
+    void visibilityChanged() override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -40,7 +41,6 @@ public:
 private:
 
     //[UserVariables]
-    ComponentAnimator animator;
     SafePointer<Component> target;
     bool hasPreviousTarget;
     //[/UserVariables]

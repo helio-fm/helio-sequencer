@@ -38,6 +38,7 @@ SimpleSettingsWrapper::SimpleSettingsWrapper(Component *targetComponent)
     this->setSize(600, 400);
 
     //[Constructor]
+    this->setEnabled(targetComponent->isEnabled() && targetComponent->getHeight() > 0);
     this->showNonOwned(targetComponent);
     //[/Constructor]
 }
@@ -82,12 +83,17 @@ void SimpleSettingsWrapper::showNonOwned(Component *targetComponent)
 {
     this->target = targetComponent;
     this->addAndMakeVisible(this->target);
-
-    const int staticSpaceDelta = this->getHeight() - this->panel->getHeight() + MARGIN_Y * 2;
-    this->setSize(this->getWidth(), this->target->getHeight() + staticSpaceDelta);
-
-    this->resized();
 }
+
+void SimpleSettingsWrapper::visibilityChanged()
+{
+    if (this->isVisible() && this->target != nullptr)
+    {
+        const int staticSpaceDelta = this->getHeight() - this->panel->getHeight() + MARGIN_Y * 2;
+        this->setSize(this->getWidth(), this->target->getHeight() + staticSpaceDelta);
+    }
+}
+
 //[/MiscUserCode]
 
 #if 0

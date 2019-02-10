@@ -47,6 +47,7 @@ LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const
     this->setSize(600, 400);
 
     //[Constructor]
+    this->setEnabled(targetComponent->isEnabled() && targetComponent->getHeight() > 0);
     this->showNonOwned(targetComponent, title);
     //[/Constructor]
 }
@@ -97,12 +98,18 @@ void LabeledSettingsWrapper::showNonOwned(Component *targetComponent, const Stri
 
     this->target = targetComponent;
     this->addAndMakeVisible(this->target);
-
-    const int staticSpaceDelta = this->getHeight() - this->panel->getHeight() + MARGIN_Y * 2;
-    this->setSize(this->getWidth(), this->target->getHeight() + staticSpaceDelta);
-
     this->titleLabel->setText(title, dontSendNotification);
 }
+
+void LabeledSettingsWrapper::visibilityChanged()
+{
+    if (this->isVisible() && this->target != nullptr)
+    {
+        const int staticSpaceDelta = this->getHeight() - this->panel->getHeight() + MARGIN_Y * 2;
+        this->setSize(this->getWidth(), this->target->getHeight() + staticSpaceDelta);
+    }
+}
+
 //[/MiscUserCode]
 
 #if 0

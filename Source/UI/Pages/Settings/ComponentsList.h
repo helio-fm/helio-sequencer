@@ -17,11 +17,14 @@
 
 #pragma once
 
-class ComponentsList : public Component
+class ComponentsList final : public Component
 {
 public:
 
     ComponentsList(int paddingLeft = 0, int paddingRight = 0);
+
+    void showChild(Component *child);
+    void hideChild(Component *child);
 
     void resized() override;
 
@@ -29,6 +32,8 @@ private:
 
     int paddingLeft;
     int paddingRight;
+
+    Component *findContainerOf(Component *content);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ComponentsList)
 };

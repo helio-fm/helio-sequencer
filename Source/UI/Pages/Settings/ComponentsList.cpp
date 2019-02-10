@@ -23,11 +23,12 @@ ComponentsList::ComponentsList(int paddingLeft, int paddingRight) :
     paddingRight(paddingRight)
 {
     this->setSize(800, 600);
+    this->setPaintingIsUnclipped(true);
 }
 
 void ComponentsList::resized()
 {
-    if (! this->getParentComponent())
+    if (nullptr == this->getParentComponent())
     {
         return;
     }
@@ -36,11 +37,58 @@ void ComponentsList::resized()
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
-        Component *item = this->getChildComponent(i);
-        item->setSize(this->getWidth() - this->paddingLeft - this->paddingRight, item->getHeight());
-        item->setTopLeftPosition(this->paddingLeft, h);
-        h += item->getHeight();
+        auto *item = this->getChildComponent(i);
+        item->setVisible(item->isEnabled());
+        if (item->isEnabled())
+        {
+            item->setSize(this->getWidth() - this->paddingLeft - this->paddingRight, item->getHeight());
+            item->setTopLeftPosition(this->paddingLeft, h);
+            h += item->getHeight();
+        }
     }
 
     this->setSize(this->getWidth(), h);
+}
+
+void ComponentsList::showChild(Component *child)
+{
+    auto *container = this->findContainerOf(child);
+    if (container != nullptr && !container->isEnabled())
+    {
+        container->setEnabled(true);
+        this->resized();
+    }
+}
+
+void ComponentsList::hideChild(Component *child)
+{
+    auto *container = this->findContainerOf(child);
+    if (container != nullptr && container->isEnabled())
+    {
+        container->setEnabled(false);
+        this->resized();
+    }
+}
+
+Component *ComponentsList::findContainerOf(Component *content)
+{
+    for (int i = 0; i < this->getNumChildComponents(); ++i)
+    {
+        auto *container = this->getChildComponent(i);
+        if (container == content)
+        {
+            return container;
+        }
+
+        for (int j = 0; j < container->getNumChildComponents(); ++j)
+        {
+            auto *child = container->getChildComponent(j);
+            if (child == content)
+            {
+                return container;
+            }
+        }
+    }
+
+    return nullptr;
 }

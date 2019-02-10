@@ -24,6 +24,7 @@
 //[MiscUserDefs]
 #include "Workspace.h"
 #include "SyncSettingsItem.h"
+#include "ComponentsList.h"
 #include "UserProfile.h"
 #include "Config.h"
 
@@ -61,7 +62,7 @@ SyncSettings::SyncSettings()
         configType.second->addChangeListener(this);
     }
 
-    this->setSize(600, this->resources.size() * SYNC_SETTINGS_ROW_HEIGHT);
+    this->setSize(100, this->resources.size() * SYNC_SETTINGS_ROW_HEIGHT);
 
     this->resourcesList->setModel(this);
     this->resourcesList->setRowHeight(SYNC_SETTINGS_ROW_HEIGHT);
@@ -116,6 +117,11 @@ void SyncSettings::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (auto *profile = dynamic_cast<UserProfile *>(source))
     {
+        // for logging-in case:
+        if (this->resources.isEmpty() && profile->isLoggedIn())
+        {
+            this->reloadConfigsList();
+        }
         // profile might have updated its user resource list,
         // so we need to find out which ones are present:
         this->reloadSyncFlags();
@@ -167,17 +173,48 @@ int SyncSettings::getNumRows()
     return this->resources.size();
 }
 
+static ComponentsList *findParentList(Component *target)
+{
+    if (target == nullptr)
+    {
+        return nullptr;
+    }
+
+    if (auto *list = dynamic_cast<ComponentsList *>(target->getParentComponent()))
+    {
+        return list;
+    }
+
+    return findParentList(target->getParentComponent());
+}
+
 void SyncSettings::reloadConfigsList()
 {
     this->resources.clearQuick();
     this->syncFlags.clearQuick();
-    for (auto configType : App::Config().getAllResources())
+
+    if (App::Workspace().getUserProfile().isLoggedIn())
     {
-        for (const auto config : configType.second->getUserResources())
+        for (auto configType : App::Config().getAllResources())
         {
-            this->resources.add(config);
-            this->syncFlags.add(false);
+            for (const auto config : configType.second->getUserResources())
+            {
+                this->resources.add(config);
+                this->syncFlags.add(false);
+            }
         }
+    }
+
+    auto *parentList = findParentList(this);
+    const bool shouldShow = !this->resources.isEmpty();
+    if (parentList != nullptr && !shouldShow && this->isEnabled())
+    {
+        parentList->hideChild(this);
+    }
+    else if (parentList != nullptr && shouldShow && !this->isEnabled())
+    {
+        this->setSize(100, this->resources.size() * SYNC_SETTINGS_ROW_HEIGHT);
+        parentList->showChild(this);
     }
 }
 

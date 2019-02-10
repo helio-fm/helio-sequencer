@@ -31,6 +31,7 @@ public:
 
     //[UserMethods]
     void showNonOwned(Component *targetComponent, const String &title);
+    void visibilityChanged() override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
