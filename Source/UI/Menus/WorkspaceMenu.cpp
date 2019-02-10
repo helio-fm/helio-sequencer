@@ -59,7 +59,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
         menu.add(MenuItem::item(Icons::settings, TRANS("tree::settings"))->
             disabledIf(settings->isSelected())->withAction([this, settings]()
         {
-            settings->setSelected(true, true);
+            settings->setSelected();
             this->dismiss();
         }));
     }
@@ -69,7 +69,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
         menu.add(MenuItem::item(Icons::orchestraPit, TRANS("tree::instruments"))->
             disabledIf(instruments->isSelected())->withAction([this, instruments]()
         {
-            instruments->setSelected(true, true);
+            instruments->setSelected();
             this->dismiss();
         }));
     }

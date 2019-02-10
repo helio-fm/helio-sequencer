@@ -257,7 +257,7 @@ void ProjectNode::setEditableScope(MidiTrack *track, const Clip &clip, bool zoom
     {
         // FIXME: as we have to switch to target tree item,
         // it will activate its 1st clip on showPage
-        item->setSelected(true, true);
+        item->setSelected();
         // and then we have to update the scope to correct clip,
         // so that roll's scope is updated twice :(
         this->sequencerLayout->setEditableScope(track, clip, zoomToArea);

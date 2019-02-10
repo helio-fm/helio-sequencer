@@ -28,8 +28,6 @@ public:
 
     Image getIcon() const noexcept override;
 
-    static void selectAllPianoSiblings(PianoTrackNode *layerItem);
-
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//

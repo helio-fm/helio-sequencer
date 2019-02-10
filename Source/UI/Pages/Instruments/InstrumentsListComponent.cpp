@@ -184,7 +184,7 @@ void InstrumentsListComponent::selectedRowsChanged(int lastRowSelected)
 #elif HELIO_MOBILE
     auto instrumentNode = this->instruments[lastRowSelected];
     if (instrumentNode == nullptr) { return; }
-    instrumentNode->setSelected(true, true);
+    instrumentNode->setSelected();
 #endif
 }
 
@@ -193,7 +193,7 @@ void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const Mou
 #if HELIO_DESKTOP
     auto instrumentNode = this->instruments[rowNumber];
     if (instrumentNode == nullptr) { return; }
-    instrumentNode->setSelected(true, true);
+    instrumentNode->setSelected();
 #endif
 }
 

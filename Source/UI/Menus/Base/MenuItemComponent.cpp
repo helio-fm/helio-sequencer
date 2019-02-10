@@ -329,9 +329,10 @@ void MenuItemComponent::paint (Graphics& g)
     g.setOpacity(1.f);
 
     const int iconX = this->hasText() ?
-                      (this->icon.getWidth() / 2) + ICON_MARGIN :
-                      (this->getWidth() / 2);
+        (this->icon.getWidth() / 2) + ICON_MARGIN : (this->getWidth() / 2);
 
+    jassert(this->icon.isValid());
+    
     Icons::drawImageRetinaAware(this->icon, g, iconX, this->getHeight() / 2);
     //[/UserPaint]
 }
@@ -346,7 +347,7 @@ void MenuItemComponent::resized()
     submenuMarker->setBounds (getWidth() - 4 - 24, (getHeight() / 2) - ((getHeight() - 16) / 2), 24, getHeight() - 16);
     //[UserResized] Add your own custom resize handling here..
 
-    if (this->description->image.isValid())
+    if (!this->icon.isValid() && this->description->image.isValid())
     {
         this->icon = this->description->image;
     }
@@ -358,9 +359,9 @@ void MenuItemComponent::resized()
 
     const float xMargin = ICON_MARGIN * 1.2f;
     this->textLabel->setBounds(int(this->icon.getWidth() + xMargin),
-                               int((this->getHeight() / 2) - (this->getHeight() / 2)),
-                               int(this->getWidth() - this->icon.getWidth() - xMargin),
-                               this->getHeight());
+        int((this->getHeight() / 2) - (this->getHeight() / 2)),
+        int(this->getWidth() - this->icon.getWidth() - xMargin),
+        this->getHeight());
 
     if (this->colourHighlighter != nullptr)
     {

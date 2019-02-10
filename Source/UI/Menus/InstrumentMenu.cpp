@@ -40,7 +40,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     {
         menu.add(MenuItem::item(Icons::routing, TRANS("menu::instrument::showeditor"))->withAction([this]()
         {
-            instrumentNode.setSelected(true, true);
+            instrumentNode.setSelected();
             this->dismiss();
         }));
     }
@@ -96,7 +96,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
                 this->instrumentNode.getInstrument()->addNodeToFreeSpace(*description, [this](Instrument *instrument)
                 {
                     this->instrumentNode.updateChildrenEditors();
-                    this->instrumentNode.setSelected(true, true);
+                    this->instrumentNode.setSelected();
                 });
                 this->dismiss();
             }));
@@ -125,7 +125,7 @@ MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
                 this->instrumentNode.getInstrument()->addNodeToFreeSpace(*description, [this](Instrument *instrument)
                 {
                     this->instrumentNode.updateChildrenEditors();
-                    this->instrumentNode.setSelected(true, true);
+                    this->instrumentNode.setSelected();
                 });
                 this->dismiss();
             }));

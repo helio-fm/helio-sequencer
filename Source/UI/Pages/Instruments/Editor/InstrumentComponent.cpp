@@ -118,7 +118,7 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
                     instrumentTreeItem->updateChildrenEditors();
                     if (auto *audioPluginTreeItem = instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
                     {
-                        audioPluginTreeItem->setSelected(true, true);
+                        audioPluginTreeItem->setSelected();
                         return;
                     }
                 }

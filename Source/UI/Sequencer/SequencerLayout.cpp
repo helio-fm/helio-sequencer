@@ -485,7 +485,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
             }
             else
             {
-                this->project.getLastShownTrack()->setSelected(true, true);
+                this->project.getLastShownTrack()->setSelected();
             }
         }
         else

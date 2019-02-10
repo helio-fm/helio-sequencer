@@ -105,7 +105,7 @@ void Workspace::navigateBackwardIfPossible()
     if (treeItem != nullptr)
     {
         const auto scopedHistoryLock(this->navigationHistory.lock());
-        treeItem->setSelected(true, true);
+        treeItem->setSelected();
     }
 }
 
@@ -116,7 +116,7 @@ void Workspace::navigateForwardIfPossible()
     if (treeItem != nullptr)
     {
         const auto scopedHistoryLock(this->navigationHistory.lock());
-        treeItem->setSelected(true, true);
+        treeItem->setSelected();
     }
 }
 
@@ -380,9 +380,9 @@ void Workspace::importProject(const String &filePattern)
 
 static void addAllActiveItemIds(TreeNodeBase *item, ValueTree &parent)
 {
-    if (TreeNode *treeItem = dynamic_cast<TreeNode *>(item))
+    if (auto *treeItem = dynamic_cast<TreeNode *>(item))
     {
-        if (treeItem->isPrimarySelection())
+        if (treeItem->isSelected())
         {
             ValueTree child(Serialization::Core::selectedTreeNode);
             child.setProperty(Serialization::Core::treeNodeId, item->getNodeIdentifier(), nullptr);
@@ -402,8 +402,7 @@ static TreeNode *selectActiveSubItemWithId(TreeNodeBase *item, const String &id)
     {
         if (treeItem->getNodeIdentifier() == id)
         {
-            treeItem->setPrimarySelection(true);
-            treeItem->setSelected(true, true);
+            treeItem->setSelected();
             treeItem->showPage();
             return treeItem;
         }

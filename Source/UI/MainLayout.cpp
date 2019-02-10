@@ -108,20 +108,6 @@ void MainLayout::restoreLastOpenedPage()
 // Pages
 //===----------------------------------------------------------------------===//
 
-void hideMarkersRecursive(WeakReference<TreeNode> startFrom)
-{
-    jassert(startFrom != nullptr);
-    startFrom->setPrimarySelection(false);
-
-    for (int i = 0; i < startFrom->getNumChildren(); ++i)
-    {
-        if (TreeNode *childOfType = dynamic_cast<TreeNode *>(startFrom->getChild(i)))
-        {
-            hideMarkersRecursive(childOfType);
-        }
-    }
-}
-
 bool MainLayout::isShowingPage(Component *page) const noexcept
 {
     jassert(page != nullptr);
@@ -136,8 +122,6 @@ void MainLayout::showPage(Component *page, TreeNode *source)
 
     if (source != nullptr)
     {
-        hideMarkersRecursive(App::Workspace().getTreeRoot());
-        source->setPrimarySelection(true);
         App::Workspace().getNavigationHistory().addItemIfNeeded(source);
         this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
         App::Config().setProperty(Serialization::Config::lastShownPageId, source->getNodeIdentifier(), false);
@@ -316,7 +300,7 @@ void MainLayout::modifierKeysChanged(const ModifierKeys &modifiers)
 
 static ProjectNode *findParentProjectOfSelectedNode()
 {
-    if (auto *active = TreeNode::getActiveItem<TreeNode>(App::Workspace().getTreeRoot()))
+    if (auto *active = App::Workspace().getTreeRoot()->findActiveItem())
     {
         if (auto *projectItself = dynamic_cast<ProjectNode *>(active))
         {
@@ -344,7 +328,7 @@ void MainLayout::handleCommandMessage(int commandId)
             }
             else
             {
-                project->getLastShownTrack()->setSelected(true, true);
+                project->getLastShownTrack()->setSelected();
             }
         }
         break;
@@ -365,9 +349,6 @@ void MainLayout::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ShowNextPage:
         App::Workspace().navigateForwardIfPossible();
-        break;
-    case CommandIDs::ToggleShowHideConsole:
-        //this->toggleShowHideConsole();
         break;
     default:
         break;

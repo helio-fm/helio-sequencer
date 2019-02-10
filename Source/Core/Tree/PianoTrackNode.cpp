@@ -60,24 +60,6 @@ int PianoTrackNode::getNumDeltas() const
     return this->deltas.size();
 }
 
-void PianoTrackNode::selectAllPianoSiblings(PianoTrackNode *layerItem)
-{
-    // select all layers in the project
-    const auto pianoTreeItems = layerItem->getProject()->findChildrenOfType<PianoTrackNode>();
-    
-    for (PianoTrackNode *siblingPianoItem : pianoTreeItems)
-    {
-        if (siblingPianoItem != layerItem) // already selected, so don't blink twice
-        {
-            siblingPianoItem->setSelected(false, false, sendNotification);
-            siblingPianoItem->setSelected(true, false, sendNotification);
-        }
-    }
-    
-    layerItem->setSelected(false, false, sendNotification);
-    layerItem->setSelected(true, false, sendNotification);
-}
-
 //===----------------------------------------------------------------------===//
 // VCS stuff
 //===----------------------------------------------------------------------===//

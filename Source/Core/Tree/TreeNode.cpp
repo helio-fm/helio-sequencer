@@ -19,18 +19,13 @@
 #include "TreeNode.h"
 #include "TreeNodeSerializer.h"
 #include "SerializationKeys.h"
+#include "MidiTrackNode.h"
+#include "ProjectNode.h"
 #include "MainLayout.h"
 
 //===----------------------------------------------------------------------===//
 // TreeNodeBase
 //===----------------------------------------------------------------------===//
-
-TreeNodeBase::TreeNodeBase() :
-    selected(false)
-{
-    static int nextUID = 0;
-    uid = nextUID++;
-}
 
 int TreeNodeBase::getNumChildren() const noexcept
 {
@@ -91,21 +86,17 @@ bool TreeNodeBase::isSelected() const noexcept
     return this->selected;
 }
 
-void TreeNodeBase::setSelected(bool shouldBeSelected, bool deselectOthersFirst,
-    NotificationType shouldNotify /*= sendNotification*/)
+void TreeNodeBase::setSelected(NotificationType shouldNotify /*= sendNotification*/)
 {
-    if (deselectOthersFirst)
-    {
-        this->getTopLevelNode()->deselectAllRecursively(this);
-    }
+    this->getTopLevelNode()->deselectAllRecursively(this);
 
-    if (shouldBeSelected != this->selected)
+    if (!this->selected)
     {
-        this->selected = shouldBeSelected;
+        this->selected = true;
 
         if (shouldNotify != dontSendNotification)
         {
-            this->itemSelectionChanged(shouldBeSelected);
+            this->itemSelectionChanged(true);
         }
     }
 }
@@ -118,9 +109,10 @@ TreeNodeBase *TreeNodeBase::getTopLevelNode() noexcept
 
 void TreeNodeBase::deselectAllRecursively(TreeNodeBase *toIgnore)
 {
-    if (this != toIgnore)
+    if (this != toIgnore && this->selected)
     {
-        this->setSelected(false, false);
+        this->selected = false;
+        this->itemSelectionChanged(false);
     }
 
     for (auto *i : this->children)
@@ -142,87 +134,13 @@ String TreeNode::createSafeName(const String &name)
 
 TreeNode::TreeNode(const String &name, const Identifier &type) :
     name(TreeNode::createSafeName(name)),
-    type(type.toString()),
-    isPrimarySelectedItem(false) {}
+    type(type.toString()) {}
 
 TreeNode::~TreeNode()
 {
     this->removeAllChangeListeners();
     this->deleteAllChildren();
     this->removeNodeFromParent();
-}
-
-void TreeNode::setPrimarySelection(bool isSelected) noexcept
-{
-    this->isPrimarySelectedItem = isSelected;
-}
-
-bool TreeNode::isPrimarySelection() const noexcept
-{
-    return this->isPrimarySelectedItem;
-}
-
-int TreeNode::getNumSelectedSiblings() const
-{
-    if (TreeNode *parent = dynamic_cast<TreeNode *>(this->getParent()))
-    {
-        return parent->getNumSelectedChildren();
-    }
-
-    return 0;
-}
-
-int TreeNode::getNumSelectedChildren() const
-{
-    int res = 0;
-
-    for (int i = 0; i < this->getNumChildren(); ++i)
-    {
-        res += (this->getChild(i)->isSelected() ? 1 : 0);
-    }
-
-    return res;
-}
-
-bool TreeNode::haveAllSiblingsSelected() const
-{
-    if (TreeNode *parent = dynamic_cast<TreeNode *>(this->getParent()))
-    {
-        if (parent->haveAllChildrenSelected())
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool TreeNode::haveAllChildrenSelected() const
-{
-    for (int i = 0; i < this->getNumChildren(); ++i)
-    {
-        if (! this->getChild(i)->isSelected())
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool TreeNode::haveAllChildrenSelectedWithDeepSearch() const
-{
-    Array<TreeNode *> allChildren(this->findChildrenOfType<TreeNode>());
-
-    for (int i = 0; i < allChildren.size(); ++i)
-    {
-        if (! allChildren.getUnchecked(i)->isSelected())
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 //===----------------------------------------------------------------------===//
@@ -262,16 +180,11 @@ void TreeNode::itemSelectionChanged(bool isNowSelected)
 bool TreeNode::deleteItem(TreeNode *itemToDelete, bool sendNotifications)
 {
     if (!itemToDelete) { return false; }
-    if (itemToDelete->getRootTreeItem() == itemToDelete) { return false; }
-
-    WeakReference<TreeNode> moveFocusTo = nullptr;
-    WeakReference<TreeNode> parent = dynamic_cast<TreeNode *>(itemToDelete->getParent());
-
-    const auto *activeItem = TreeNode::getActiveItem<TreeNode>(itemToDelete->getRootTreeItem());
-    if (itemToDelete->isPrimarySelection() || (activeItem == nullptr))
-    {
-        moveFocusTo = parent;
-    }
+    if (itemToDelete->getRootNode() == itemToDelete) { return false; }
+    const bool shouldRefocus = itemToDelete->isSelected();
+    
+    WeakReference<TreeNode> root = itemToDelete->getRootNode();
+    WeakReference<TreeNode> parent = itemToDelete->findParentOfType<ProjectNode>();
 
     itemToDelete->onItemDeletedFromTree(sendNotifications);
     delete itemToDelete;
@@ -281,21 +194,22 @@ bool TreeNode::deleteItem(TreeNode *itemToDelete, bool sendNotifications)
         parent->sendChangeMessage();
     }
 
-    if (moveFocusTo != nullptr)
+    if (shouldRefocus)
     {
-        moveFocusTo->setSelected(true, true);
-    }
-    else if (parent != nullptr)
-    {
-        while (parent)
+        if (parent != nullptr)
         {
-            if (parent->isPrimarySelection())
+            if (auto *sibling = parent->findChildOfType<MidiTrackNode>())
             {
-                parent->setSelected(true, true);
-                break;
+                sibling->setSelected();
             }
-
-            parent = dynamic_cast<TreeNode *>(parent->getParent());
+            else
+            {
+                parent->setSelected();
+            }
+        }
+        else if (root != nullptr)
+        {
+            root->setSelected();
         }
     }
 

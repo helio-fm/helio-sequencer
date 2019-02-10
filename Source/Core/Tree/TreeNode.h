@@ -23,7 +23,7 @@ class TreeNodeBase
 {
 public:
 
-    TreeNodeBase();
+    TreeNodeBase() = default;
     virtual ~TreeNodeBase() {}
 
     int getNumChildren() const noexcept;
@@ -37,24 +37,20 @@ public:
     String getNodeIdentifier() const;
 
     bool isSelected() const noexcept;
-    void setSelected(bool shouldBeSelected, bool deselectOthersFirst,
-        NotificationType shouldNotify = sendNotification);
+    void setSelected(NotificationType shouldNotify = sendNotification);
 
 protected:
 
     virtual void itemSelectionChanged(bool isNowSelected) {}
+    TreeNodeBase *getTopLevelNode() noexcept;
 
 private:
 
-    TreeNodeBase *getTopLevelNode() noexcept;
     void deselectAllRecursively(TreeNodeBase *toIgnore);
 
+    bool selected = false;
     TreeNodeBase *parent = nullptr;
     OwnedArray<TreeNodeBase> children;
-
-    bool selected : 1;
-    int uid = 0;
-
 };
 
 #if HELIO_DESKTOP
@@ -71,46 +67,13 @@ public:
 
     TreeNode(const String &name, const Identifier &type);
     ~TreeNode() override;
-
-    int getNumSelectedSiblings() const;
-    int getNumSelectedChildren() const;
-    bool haveAllSiblingsSelected() const;
-    bool haveAllChildrenSelected() const;
-    bool haveAllChildrenSelectedWithDeepSearch() const;
-
+    
     String getName() const noexcept override;
     virtual void safeRename(const String &newName, bool sendNotifications);
 
     static const String xPathSeparator;
     static String createSafeName(const String &nameStr);
-
-    // Deprecated
-    bool isPrimarySelection() const noexcept;
-    void setPrimarySelection(bool isSelected) noexcept;
-
-    template<typename T>
-    static T *getActiveItem(TreeNode *root)
-    {
-        if (root == nullptr)
-        {
-            return nullptr;
-        }
-        
-        Array<T *> childrenOfType = root->findChildrenOfType<T>();
-        
-        for (int i = 0; i < childrenOfType.size(); ++i)
-        {
-            T *p = static_cast<T *>(childrenOfType.getUnchecked(i));
-            
-            if (p->isPrimarySelection())
-            {
-                return p;
-            }
-        }
     
-        return nullptr;
-    }
-
     template<typename T>
     T *findParentOfType() const
     {
@@ -121,7 +84,9 @@ public:
             rootItem = item;
 
             if (T *parentOfType = dynamic_cast<T *>(item))
-            { return parentOfType; }
+            {
+                return parentOfType;
+            }
         }
 
         return nullptr;
@@ -135,7 +100,9 @@ public:
         for (int i = 0; i < rootItem->getNumChildren(); ++i)
         {
             if (T *childOfType = dynamic_cast<T *>(rootItem->getChild(i)))
-            { return childOfType; }
+            {
+                return childOfType;
+            }
         }
 
         return nullptr;
@@ -146,7 +113,7 @@ public:
     {
         if (T *child = this->findChildOfType<T>())
         {
-            child->setSelected(true, true);
+            child->setSelected();
             return true;
         }
 
@@ -169,21 +136,14 @@ public:
         return children;
     }
 
-    Array<TreeNode *> findSelectedSubItems() const
-    {
-        Array<TreeNode *> selection;
-        TreeNode::collectSelectedSubItems(this, selection);
-        return selection;
-    }
-
-    TreeNode *findPrimaryActiveItem() const
+    TreeNode *findActiveItem() const
     {
         Array<TreeNode *> activeItems;
         TreeNode::collectActiveSubItems(this, activeItems);
         
         jassert(activeItems.size() > 0);
-        
-        if (activeItems.size() > 0) {
+        if (activeItems.size() > 0)
+        {
             return activeItems.getFirst();
         }
         
@@ -191,16 +151,9 @@ public:
         return nullptr;
     }
 
-    inline TreeNode *getRootTreeItem()
+    inline TreeNode *getRootNode() noexcept
     {
-        TreeNodeBase *item = this;
-        
-        while (item->getParent())
-        {
-            item = item->getParent();
-        }
-        
-        return static_cast<TreeNode *>(item);
+        return static_cast<TreeNode *>(this->getTopLevelNode());
     }
 
     bool isSelectedOrHasSelectedChild() const;
@@ -258,31 +211,13 @@ protected:
         }
     }
 
-    static void collectSelectedSubItems(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
-    {
-        for (int i = 0; i < rootNode->getNumChildren(); ++i)
-        {
-            TreeNode *child = static_cast<TreeNode *>(rootNode->getChild(i));
-        
-            if (child->isSelected())
-            {
-                resultArray.add(child);
-            }
-        
-            if (child->getNumChildren() > 0)
-            {
-                TreeNode::collectSelectedSubItems(child, resultArray);
-            }
-        }
-    }
-
     static void collectActiveSubItems(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
     {
         for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
             TreeNode *child = static_cast<TreeNode *>(rootNode->getChild(i));
         
-            if (child->isPrimarySelection())
+            if (child->isSelected())
             {
                 resultArray.add(child);
             }
@@ -296,8 +231,6 @@ protected:
 
     String name;
     String type;
-
-    bool isPrimarySelectedItem;
 
     void removeNodeFromParent();
     void deleteAllChildren();
@@ -313,7 +246,7 @@ protected:
 
     void onSelectedAsMenuItem() override
     {
-        return this->setSelected(true, true);
+        return this->setSelected();
     }
 
 private:
