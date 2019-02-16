@@ -19,6 +19,7 @@
 #include "GenericAudioMonitorComponent.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
+#include "ColourIDs.h"
 
 #define GENERIC_METER_MAXDB (+4.0f)
 #define GENERIC_METER_MINDB (-70.0f)
@@ -39,8 +40,9 @@ static const float kSpectrumFrequencies[] =
 
 GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMonitor> monitor)
     : Thread("Spectrum Component"),
-      audioMonitor(monitor),
-      skewTime(0)
+    colour(findDefaultColour(ColourIDs::AudioMonitor::foreground)),
+    audioMonitor(monitor),
+    skewTime(0)
 {
     // (true, false) will enable switching rendering modes on click
     this->setInterceptsMouseClicks(false, false);
@@ -137,13 +139,13 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
 
     const float lAlpha = (0.375f - this->lPeakBand->peakDecayColour) / 12.f;
     const float yPeakL = (h - this->lPeakBand->peak - 1.f);
-    g.setColour(Colours::white.withAlpha(lAlpha));
+    g.setColour(this->colour.withAlpha(lAlpha));
     g.fillRect(0.f, yPeakL, w / 2.f - 1.f, this->lPeakBand->peak);
     g.drawHorizontalLine(int(yPeakL), 0.f, w / 2.f - 1.f);
 
     const float rAlpha = (0.375f - this->rPeakBand->peakDecayColour) / 12.f;
     const float yPeakR = (h - this->rPeakBand->peak - 1.f);
-    g.setColour(Colours::white.withAlpha(rAlpha));
+    g.setColour(this->colour.withAlpha(rAlpha));
     g.fillRect(w / 2.f, yPeakR, w / 2.f - 1.f, this->rPeakBand->peak);
     g.drawHorizontalLine(int(yPeakR), w / 2.f, w);
 
@@ -156,7 +158,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         this->bands[i]->processSignal(this->values[i].get(), h, timeNow);
     }
 
-    g.setColour(Colours::white.withAlpha(0.25f));
+    g.setColour(this->colour.withAlpha(0.35f));
 
     for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
     {
@@ -170,7 +172,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
     for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
     {
         const float x = i * bw + 1.f;
-        g.setColour(Colours::white.withAlpha(0.4f - this->bands[i]->peakDecayColour));
+        g.setColour(this->colour.withAlpha(0.4f - this->bands[i]->peakDecayColour));
         const float peakH = (h - this->bands[i]->peak - 2.f);
         g.drawHorizontalLine(int(peakH), x, x + bw - 1.f);
     }
@@ -182,7 +184,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
     //    const int valueForMinus12dB = AudioCore::iecLevel(-12.f) * this->getHeight();
     //    const int valueForMinus24dB = AudioCore::iecLevel(-24.f) * this->getHeight();
     //    
-    //    g.setColour(Colours::white.withAlpha(0.075f));
+    //    g.setColour(this->colour.withAlpha(0.075f));
     //    g.drawHorizontalLine(height - valueForMinus6dB, 0.f, this->getWidth());
     //    g.drawHorizontalLine(height - valueForMinus12dB, 0.f, this->getWidth());
     //    g.drawHorizontalLine(height - valueForMinus24dB, 0.f, this->getWidth());
@@ -196,9 +198,7 @@ GenericAudioMonitorComponent::SpectrumBand::SpectrumBand() :
     peak(0.f),
     peakDecay(1.f),
     peakDecayColour(1.f),
-    peakDecayStart(0)
-{
-}
+    peakDecayStart(0) {}
 
 void GenericAudioMonitorComponent::SpectrumBand::reset()
 {

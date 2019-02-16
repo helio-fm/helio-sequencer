@@ -24,13 +24,14 @@
 //[MiscUserDefs]
 #include "ComponentFader.h"
 
-class RadioButtonFrame : public Component
+class RadioButtonFrame final : public Component
 {
 public:
 
     RadioButtonFrame(float alpha) : alpha(alpha)
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
     }
 
     void paint(Graphics &g) override
@@ -40,10 +41,12 @@ public:
         const int x1 = 2;
         const int x2 = this->getWidth() - 2;
 
-        g.setColour(Colours::white.withAlpha(this->alpha * 0.75f));
+        const Colour baseColour(findDefaultColour(Label::textColourId));
+
+        g.setColour(baseColour.withAlpha(this->alpha * 0.75f));
         g.fillRect(x1, y1, x2 - x1 + 1, 5);
 
-        g.setColour(Colours::white.withAlpha(this->alpha * 0.25f));
+        g.setColour(baseColour.withAlpha(this->alpha * 0.25f));
         g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
         g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
         g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
@@ -102,12 +105,14 @@ void RadioButton::paint (Graphics& g)
     const int x1 = 2;
     const int x2 = this->getWidth() - 2;
 
+    const Colour baseColour(findDefaultColour(Label::textColourId));
+
     // To avoid smoothed rectangles:
-    g.setColour(this->colour.interpolatedWith(Colours::white, 0.25f).withAlpha(0.1f));
+    g.setColour(this->colour.interpolatedWith(baseColour, 0.25f).withAlpha(0.1f));
     //g.fillRect(x1, y2 - 4, x2 - x1 + 1, 5);
     g.fillRect(x1, y1, x2 - x1 + 1, 5);
 
-    g.setColour(this->colour.interpolatedWith(Colours::white, 0.5f).withAlpha(0.1f));
+    g.setColour(this->colour.interpolatedWith(baseColour, 0.5f).withAlpha(0.1f));
     g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
     g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
     g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));

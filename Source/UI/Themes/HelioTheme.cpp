@@ -808,8 +808,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::ColourButton::outline, s->getTextColour());
 
     // CallOutBox
-    this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(1.0f).withAlpha(0.925f));
-    this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().darker(2.0f).withAlpha(1.f));
+    this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(0.025f));
+    this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().darker(0.25f));
 
     // HybridRoll
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour().withMultipliedBrightness(0.95f));
@@ -845,6 +845,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::ScriptEditor::builtInClass, s->getTextColour().interpolatedWith(Colours::blue, 0.75f));
 
     this->setColour(ColourIDs::Logo::fill, s->getTextColour().withMultipliedAlpha(0.85f));
+    this->setColour(ColourIDs::AudioMonitor::foreground, s->getTextColour());
+
+    this->setColour(ColourIDs::VersionControl::connector, s->getTextColour().withAlpha(0.2f));
+    this->setColour(ColourIDs::VersionControl::outline, s->getTextColour().withAlpha(0.3f));
+    this->setColour(ColourIDs::VersionControl::highlight, s->getTextColour().withAlpha(0.02f));
 }
 
 void HelioTheme::updateBackgroundRenders(bool force)

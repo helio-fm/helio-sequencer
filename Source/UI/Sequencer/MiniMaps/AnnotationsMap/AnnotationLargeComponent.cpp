@@ -96,13 +96,15 @@ void AnnotationLargeComponent::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(this->event.getTrackColour().interpolatedWith(Colours::white, 0.5f).withAlpha(0.5f));
+    const Colour baseColour(findDefaultColour(Label::textColourId));
+
+    g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.5f).withAlpha(0.5f));
     g.fillRect(0.5f, 2.f, float(this->getWidth()) - 0.5f, 2.f);
 
     if (this->event.getDescription().isNotEmpty())
     {
         const Font labelFont(16.00f, Font::plain);
-        g.setColour(this->event.getTrackColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.9f));
+        g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.9f));
 
         GlyphArrangement arr;
         arr.addFittedText(labelFont,

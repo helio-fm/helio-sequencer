@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "RevisionConnectorComponent.h"
+#include "ColourIDs.h"
 
 RevisionConnectorComponent::RevisionConnectorComponent(Component *c1, Component *c2) :
     component1(c1),
@@ -40,20 +41,23 @@ void RevisionConnectorComponent::resizeToFit()
     this->getPoints(x1, y1, x2, y2);
 
     const Rectangle<int> newBounds(int(jmin(x1, x2) - 4),
-                                   int(jmin(y1, y2) - 4),
-                                   int(fabsf(x1 - x2) + 8),
-                                   int(fabsf(y1 - y2) + 8));
+        int(jmin(y1, y2) - 4),
+        int(fabsf(x1 - x2) + 8),
+        int(fabsf(y1 - y2) + 8));
 
     if (newBounds != this->getBounds())
-    { this->setBounds(newBounds); }
+    {
+        this->setBounds(newBounds);
+    }
     else
-    { this->resized(); }
+    {
+        this->resized();
+    }
 }
 
 void RevisionConnectorComponent::paint(Graphics &g)
 {
-    //g.setColour(findDefaultColour(HistoryComponent::connectorColourId));
-    g.setColour(Colours::white.withAlpha(0.2f));
+    g.setColour(findDefaultColour(ColourIDs::VersionControl::connector));
     g.fillPath(this->linePath);
 }
 
@@ -83,8 +87,8 @@ void RevisionConnectorComponent::resized()
     const float curviness = (curvinessX + curvinessY) / 2.f;
 
     this->linePath.cubicTo(x1, y1 + dy * (curviness),
-                           x2, y1 + dy * (1.f - curviness),
-                           x2, y2);
+        x2, y1 + dy * (1.f - curviness),
+        x2, y2);
 
     PathStrokeType stroke(1.0f, PathStrokeType::beveled, PathStrokeType::butt);
     stroke.createStrokedPath(linePath, linePath);

@@ -9871,7 +9871,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xe05deb51:  numBytes = 25962; return logov2_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 623; return chords_json;
-        case 0x41b35b05:  numBytes = 2664; return colourSchemes_json;
+        case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 13220; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3563; return scales_json;
         case 0xf8655f25:  numBytes = 95522; return translations_json;

@@ -44,6 +44,26 @@
         }
       },
       {
+        "name": "Ural Winter",
+        "colourMap": {
+          "blackKey": "ffd0d8e9",
+          "whiteKey": "ffd6ddf0",
+          "secondaryGradientA": "ffdee2f3",
+          "secondaryGradientB": "ff000000",
+          "bar": "ff97a2ba",
+          "text": "ff000000",
+          "primaryGradientA": "ffedeeff",
+          "primaryGradientB": "ffe1e8f7",
+          "panelBorder": "ca000000",
+          "panelFill": "0",
+          "iconShadow": "33ffffff",
+          "iconBase": "55000000",
+          "lassoFill": "17ffffff",
+          "lassoBorder": "ff260058",
+          "row": "ffcbd4e8"
+        }
+      },
+      {
         "name": "Grayscale",
         "colourMap": {
           "text": "ffffffff",

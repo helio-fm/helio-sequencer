@@ -81,6 +81,13 @@ namespace ColourIDs
         static const int shadowConnector        = 0x2000607;
     }
 
+    namespace VersionControl
+    {
+        static const int connector              = 0x2000610;
+        static const int outline                = 0x2000611;
+        static const int highlight              = 0x2000612;
+    }
+
     namespace Panel
     {
         static const int fill                   = 0x2000700;
@@ -139,5 +146,10 @@ namespace ColourIDs
     namespace ColourButton
     {
         static const int outline                = 0x2001600;
+    }
+
+    namespace AudioMonitor
+    {
+        static const int foreground             = 0x2001700;
     }
 } // namespace ColourIDs

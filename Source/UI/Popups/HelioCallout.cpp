@@ -30,7 +30,7 @@ static int kClickCounterOnPopupStart = 0;
 #define CALLOUT_HAS_BACKGROUND 0
 
 HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
-                           MainLayout *parentWorkspace, bool shouldAlignToMouse) :
+    MainLayout *parentWorkspace, bool shouldAlignToMouse) :
     arrowSize(10.0f),
     contentComponent(c),
     targetComponent(pointAtComponent),
@@ -85,7 +85,7 @@ HelioCallout::~HelioCallout()
 }
 
 
-class HelioCallOutCallback : public ModalComponentManager::Callback //, private Timer
+class HelioCallOutCallback final : public ModalComponentManager::Callback //, private Timer
 {
 public:
     HelioCallOutCallback(Component *c, Component *pointAtComponent,

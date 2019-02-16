@@ -25,6 +25,7 @@
 #include "VersionControl.h"
 #include "RevisionTreeComponent.h"
 #include "SerializationKeys.h"
+#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead)
@@ -89,7 +90,6 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
         this->localIndicatorImage->setAlpha(0.15f);
         break;
     case VCS::Revision::FullSync:
-        break;
     default:
         break;
     }
@@ -123,16 +123,16 @@ void RevisionComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(findDefaultColour(ColourIDs::VersionControl::outline));
+
     if (this->isHeadRevision)
     {
-        g.setColour(Colours::white.withAlpha(0.3f));
-        g.drawRoundedRectangle(0.0f, 0.0f, float(getWidth()), float(getHeight()), 9.000f, 1.0f);
+        g.drawRoundedRectangle(0.0f, 0.0f, float(this->getWidth()), float(this->getHeight()), 9.000f, 1.0f);
     }
 
     if (this->isSelected)
     {
-        g.setColour(Colours::white.withAlpha(0.03f));
-        g.fillRoundedRectangle(1.0f, 1.0f, float(getWidth() - 2), float(getHeight() - 2), 9.000f);
+        g.fillRoundedRectangle(1.0f, 1.0f, float(this->getWidth() - 2), float(this->getHeight() - 2), 7.000f);
     }
     //[/UserPaint]
 }

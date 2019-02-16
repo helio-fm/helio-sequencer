@@ -19,6 +19,7 @@
 #include "WaveformAudioMonitorComponent.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
+#include "ColourIDs.h"
 
 #define WAVEFORM_METER_MAXDB (+4.0f)
 // -69 instead of -70 to have that nearly invisible horizontal line
@@ -26,6 +27,7 @@
 
 WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("Volume Component"),
+    colour(findDefaultColour(ColourIDs::AudioMonitor::foreground)),
     audioMonitor(targetAnalyzer),
     skewTime(0)
 {
@@ -110,7 +112,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     
     const float midH = float(this->getHeight()) / 2.f;
 
-    g.setColour(Colours::white.withAlpha(0.1f));
+    g.setColour(this->colour.withAlpha(0.2f));
 
     for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
     {
@@ -119,7 +121,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
         g.drawVerticalLine(1 + i * 2, midH - peakL, midH + peakR);
     }
 
-    g.setColour(Colours::white.withAlpha(0.15f));
+    g.setColour(this->colour.withAlpha(0.25f));
 
     for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
     {

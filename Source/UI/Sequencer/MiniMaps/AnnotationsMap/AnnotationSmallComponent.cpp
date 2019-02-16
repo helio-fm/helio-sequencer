@@ -70,7 +70,8 @@ void AnnotationSmallComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->event.getTrackColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.2f));
+    const Colour baseColour(findDefaultColour(Label::textColourId));
+    g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.2f));
     g.drawHorizontalLine(this->getHeight() - 4, 0.f, float(this->getWidth() - 4));
     //[/UserPaint]
 }

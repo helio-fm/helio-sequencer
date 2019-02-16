@@ -33,7 +33,7 @@
 #include "CommandIDs.h"
 #include "MenuItemComponent.h"
 
-class NotesTuningDiagram : public Component, private ChangeListener
+class NotesTuningDiagram final : public Component, private ChangeListener
 {
 public:
 
@@ -43,6 +43,8 @@ public:
         endBeat(SequencerOperations::findEndBeat(selection))
     {
         bool foundColour = false;
+        const Colour baseColour(findDefaultColour(Label::textColourId));
+
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
             auto *mc = selection.getItemAs<MidiEventComponent>(i);
@@ -53,7 +55,7 @@ public:
                 foundColour = true;
                 this->colour = static_cast<NoteComponent *>(mc)->getNote()
                     .getSequence()->getTrack()->getTrackColour()
-                    .interpolatedWith(Colours::white, 0.55f).withAlpha(0.55f);
+                    .interpolatedWith(baseColour, 0.55f).withAlpha(0.55f);
             }
         }
 
@@ -72,7 +74,10 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->colour);
-        for (const auto &i : this->peaks) { g.fillRect(i); }
+        for (const auto &i : this->peaks)
+        {
+            g.fillRect(i);
+        }
         g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
         g.drawVerticalLine(this->getWidth() - 1, 1.f, float(this->getHeight() - 1));
         g.drawHorizontalLine(0, 1.f, float(this->getWidth() - 1));

@@ -60,6 +60,8 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
+    const Colour colour;
+
     WeakReference<AudioMonitor> audioMonitor;
     OwnedArray<SpectrumBand> bands;
 

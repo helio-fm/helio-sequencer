@@ -19,6 +19,7 @@
 #include "SpectrogramAudioMonitorComponent.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
+#include "ColourIDs.h"
 
 #define SPECTROGRAM_METER_MAXDB (+4.0f)
 #define SPECTROGRAM_METER_MINDB (-70.0f)
@@ -38,6 +39,7 @@ static const float kSpectrumFrequencies[] =
 
 SpectrogramAudioMonitorComponent::SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("Volume Component"),
+    colour(findDefaultColour(ColourIDs::AudioMonitor::foreground)),
     audioMonitor(targetAnalyzer),
     head(0),
     skewTime(0)
@@ -122,10 +124,9 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
         for (int j = SPECTROGRAM_NUM_BANDS; j-- > 0; )
         {
             const float x = float(i - start);
-            const float v = iecLevel(this->spectrum[i][j].get());
-            g.setColour(Colours::white.withAlpha(v));
+            const float v = jmin(1.f, iecLevel(this->spectrum[i][j].get()) * 2);
+            g.setColour(this->colour.withAlpha(v));
             g.drawHorizontalLine(h - j * 4, x * 2.f, x * 2.f + 1.f);
-            //g.drawHorizontalLine(h - j * 4 + 1, x * 2.f, x * 2.f + 1.f);
         }
     }
 
@@ -135,10 +136,9 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
         for (int j = SPECTROGRAM_NUM_BANDS; j-- > 0; )
         {
             const float x = float(i + (SPECTROGRAM_BUFFER_SIZE - start));
-            const float v = iecLevel(this->spectrum[i][j].get());
-            g.setColour(Colours::white.withAlpha(v));
+            const float v = jmin(1.f, iecLevel(this->spectrum[i][j].get()) * 2);
+            g.setColour(this->colour.withAlpha(v));
             g.drawHorizontalLine(h - j * 4, x * 2.f, x * 2.f + 1.f);
-            //g.drawHorizontalLine(h - j * 4 + 1, x * 2.f, x * 2.f + 1.f);
         }
     }
 }

@@ -25,6 +25,7 @@
 
 #include "Icons.h"
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 
 class RevisionItemHighlighter final : public Component
 {
@@ -37,10 +38,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        const float height = float(this->getHeight());
-        const auto colour1(Colours::white.withAlpha(0.02f));
-        const auto colour2(Colours::white.withAlpha(0.01f));
-        g.setGradientFill(ColourGradient(colour1, 0.f, 0.f, colour2, 0.f, float(this->getHeight()), false));
+        g.setColour(findDefaultColour(ColourIDs::VersionControl::highlight));
         g.fillRoundedRectangle (5.0f, 2.0f, float(this->getWidth() - 10), float(this->getHeight() - 8), 2.f);
     }
 };

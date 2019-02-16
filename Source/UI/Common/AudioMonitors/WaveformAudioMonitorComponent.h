@@ -45,6 +45,8 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
+    const Colour colour;
+
     WeakReference<AudioMonitor> audioMonitor;
     
     Atomic<float> lPeakBuffer[WAVEFORM_METER_BUFFER_SIZE];
