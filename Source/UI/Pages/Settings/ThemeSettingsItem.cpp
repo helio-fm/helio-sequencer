@@ -33,11 +33,11 @@
 #include "SettingsListItemSelection.h"
 #include "ColourIDs.h"
 
-class ThemeSettingsItemHighlighter : public Component
+class ThemeSettingsItemHighlighter final : public Component
 {
 public:
 
-    void paint(Graphics& g) override
+    void paint(Graphics &g) override
     {
         const float paintStartY = 4.f;
         const float paintEndY = float(this->getHeight()) - 10.f;
@@ -52,7 +52,7 @@ public:
     }
 };
 
-class ThemeSettingsItemSelection : public Component
+class ThemeSettingsItemSelection final : public Component
 {
 public:
 
@@ -68,6 +68,7 @@ public:
     }
 
 private:
+
     ScopedPointer<IconComponent> iconComponent;
 };
 

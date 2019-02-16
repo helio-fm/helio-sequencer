@@ -91,34 +91,10 @@ public:
     {
     public:
         
-        explicit HorizontalDragHelper(TrackScroller &scrollerRef) :
-            scroller(scrollerRef)
-        {
-            this->setPaintingIsUnclipped(true);
-            this->setInterceptsMouseClicks(true, false);
-            this->setMouseClickGrabsKeyboardFocus(false);
-            this->toBack();
-            
-            this->moveConstrainer = new MoveConstrainer(this->scroller);
-            this->moveConstrainer->setMinimumSize(4, 4);
-            this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
-        }
-        
-        void mouseDown(const MouseEvent &e) override
-        {
-            this->dragger.startDraggingComponent(this, e);
-        }
-        
-        void mouseDrag(const MouseEvent &e) override
-        {
-            this->dragger.dragComponent(this, e, this->moveConstrainer);
-        }
-        
-        void paint(Graphics &g) override
-        {
-            g.setColour(Colours::white.withAlpha(0.02f));
-            g.fillRect(this->getLocalBounds());
-        }
+        explicit HorizontalDragHelper(TrackScroller &scrollerRef);
+        void mouseDown(const MouseEvent &e) override;
+        void mouseDrag(const MouseEvent &e) override;
+        void paint(Graphics &g) override;
         
         class MoveConstrainer final : public ComponentBoundsConstrainer
         {
@@ -131,6 +107,7 @@ public:
         
     private:
         
+        Colour colour;
         TrackScroller &scroller;
         ComponentDragger dragger;
         ScopedPointer<ComponentBoundsConstrainer> moveConstrainer;

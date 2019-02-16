@@ -18,14 +18,17 @@
 #include "Common.h"
 #include "KeySelector.h"
 #include "MenuPanel.h"
+#include "ColourIDs.h"
 #include "Scale.h"
 
 KeySelector::KeySelector()
 {
+    const Colour base(findDefaultColour(ColourIDs::ColourButton::outline).withAlpha(0.5f));
+
     const StringArray keys(Scale::getKeyNames());
     for (int i = 0; i < keys.size(); ++i)
     {
-        ScopedPointer<RadioButton> button(new RadioButton(keys[i], Colours::lightgrey.withAlpha(0.5f), this));
+        ScopedPointer<RadioButton> button(new RadioButton(keys[i], base, this));
         button->setButtonIndex(i);
         this->addAndMakeVisible(button);
         this->buttons.add(button.release());

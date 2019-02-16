@@ -66,6 +66,7 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
+    Colour colour;
     OwnedArray<SpectralLogo::Band> bands;
     Path wave;
     

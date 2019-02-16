@@ -24,13 +24,13 @@ class ProjectMapNoteComponent final : public Component
 {
 public:
 
-    ProjectMapNoteComponent(const Note &note, const Clip &clip) :
+    ProjectMapNoteComponent(const Note &note, const Clip &clip, const Colour &baseColour) :
         note(note),
         clip(clip),
         dx(0.f),
         dw(0.f)
     {
-        this->updateColour();
+        this->updateColour(baseColour);
         this->setInterceptsMouseClicks(false, false);
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
@@ -42,11 +42,11 @@ public:
     inline float getVelocity() const noexcept    { return this->note.getVelocity() * this->clip.getVelocity(); }
     inline const Note &getNote() const noexcept  { return this->note; }
 
-    inline void updateColour()
+    inline void updateColour(const Colour &base)
     {
         this->colour = this->note.getTrackColour().
-            interpolatedWith(Colours::white, .35f).
-            withAlpha(.55f);
+            interpolatedWith(base, .4f).
+            withAlpha(.6f);
     }
 
     void setRealBounds(float x, int y, float w, int h)

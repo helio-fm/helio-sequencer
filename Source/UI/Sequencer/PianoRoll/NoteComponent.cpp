@@ -26,6 +26,7 @@
 #include "SelectionComponent.h"
 #include "SequencerOperations.h"
 #include "Transport.h"
+#include "ColourIDs.h"
 
 #define RESIZE_CORNER 10
 #define MAX_DRAG_POLYPHONY 8
@@ -65,11 +66,12 @@ PianoRoll &NoteComponent::getRoll() const noexcept
 void NoteComponent::updateColours()
 {
     const bool ghost = this->ghostMode || !this->activeState;
+    const auto base = findDefaultColour(ColourIDs::Roll::noteFill);
 
     this->colour = this->getNote().getTrackColour()
-        .interpolatedWith(Colours::white, ghost ? 0.35f : 0.5f)
+        .interpolatedWith(base, ghost ? 0.35f : 0.5f)
         .brighter(this->selectedState ? 0.95f : (ghost ? 0.55f : 0.f))
-        .withAlpha(this->selectedState ? 1.f : (ghost ? 0.25f : .95f));
+        .withAlpha(this->selectedState ? 1.f : (ghost ? 0.3f : .95f));
 
     this->colourLighter = this->colour.brighter(0.125f).withMultipliedAlpha(1.45f);
     this->colourDarker = this->colour.darker(0.175f).withMultipliedAlpha(1.45f);

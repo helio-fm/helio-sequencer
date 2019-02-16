@@ -18,12 +18,15 @@
 #include "Common.h"
 #include "ScaleEditor.h"
 #include "KeySelector.h"
+#include "ColourIDs.h"
 
 ScaleEditor::ScaleEditor() : scale(Scale::getNaturalMajorScale())
 {
+    const Colour base(findDefaultColour(ColourIDs::ColourButton::outline));
+
     for (int i = 0; i < 12; ++i)
     {
-        ScopedPointer<RadioButton> button(new RadioButton(String(i), Colours::white, this));
+        ScopedPointer<RadioButton> button(new RadioButton(String(i), base, this));
         button->setButtonIndex(i);
         this->addAndMakeVisible(button);
         this->buttons.add(button.release());
@@ -67,8 +70,7 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
     this->scale = this->scale->withKeys(keys);
     this->updateButtons();
 
-    if (ScaleEditor::Listener *parentListener =
-        dynamic_cast<ScaleEditor::Listener *>(this->getParentComponent()))
+    if (auto *parentListener = dynamic_cast<ScaleEditor::Listener *>(this->getParentComponent()))
     {
         parentListener->onScaleChanged(this->scale);
     }

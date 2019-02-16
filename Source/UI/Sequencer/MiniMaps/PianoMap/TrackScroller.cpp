@@ -440,6 +440,40 @@ Rectangle<int> TrackScroller::getMapBounds() const
     return { 0, 0, 0, 0 };
 }
 
+//===----------------------------------------------------------------------===//
+// Additional horizontal dragger
+//===----------------------------------------------------------------------===//
+
+TrackScroller::HorizontalDragHelper::HorizontalDragHelper(TrackScroller &scrollerRef) :
+    colour(findDefaultColour(ColourIDs::TrackScroller::scrollerFill)),
+    scroller(scrollerRef)
+{
+    this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+    this->toBack();
+
+    this->moveConstrainer = new MoveConstrainer(this->scroller);
+    this->moveConstrainer->setMinimumSize(4, 4);
+    this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
+}
+
+void TrackScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
+{
+    this->dragger.startDraggingComponent(this, e);
+}
+
+void TrackScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
+{
+    this->dragger.dragComponent(this, e, this->moveConstrainer);
+}
+
+void TrackScroller::HorizontalDragHelper::paint(Graphics &g)
+{
+    g.setColour(this->colour);
+    g.fillRect(this->getLocalBounds());
+}
+
 void TrackScroller::HorizontalDragHelper::MoveConstrainer::
     applyBoundsToComponent(Component &component, Rectangle<int> bounds)
 {

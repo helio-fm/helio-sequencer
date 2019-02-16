@@ -513,61 +513,60 @@ void HelioTheme::drawResizableFrame(Graphics &g, int w, int h, const BorderSize<
     }
 }
 
-class HelioWindowButton : public Button
+class HelioWindowButton final : public Button
 {
 public:
 
-    HelioWindowButton(const String& name, Colour col, const Path& normalShape_, const Path& toggledShape_) noexcept
-        : Button(name),
-        colour(col),
-        normalShape(normalShape_),
-        toggledShape(toggledShape_)
-    {
-    }
+    HelioWindowButton(const String &name, const Path &normalShape, const Path &toggledShape) noexcept :
+        Button(name),
+        normalShape(normalShape),
+        toggledShape(toggledShape) {}
 
-    void paintButton(Graphics& g, bool isMouseOverButton, bool isButtonDown) override
+    void paintButton(Graphics &g, bool isMouseOverButton, bool isButtonDown) override
     {
         float alpha = isMouseOverButton ? (isButtonDown ? 1.0f : 0.8f) : 0.6f;
-
         if (!isEnabled())
+        {
             alpha *= 0.5f;
+        }
 
         float x = 0, y = 0, diam;
 
-        if (getWidth() < getHeight())
+        if (this->getWidth() < this->getHeight())
         {
-            diam = (float)getWidth();
-            y = (getHeight() - getWidth()) * 0.5f;
+            diam = (float)this->getWidth();
+            y = (this->getHeight() - this->getWidth()) * 0.5f;
         }
         else
         {
-            diam = (float)getHeight();
-            y = (getWidth() - getHeight()) * 0.5f;
+            diam = (float)this->getHeight();
+            y = (this->getWidth() - this->getHeight()) * 0.5f;
         }
 
         x += diam * 0.05f;
         y += diam * 0.05f;
         diam *= 0.9f;
 
+        const Colour colour(findDefaultColour(TextButton::textColourOnId));
+
         if (isMouseOverButton)
         {
-            g.setColour(Colours::white.withAlpha(alpha * 0.05f));
+            g.setColour(colour.withAlpha(alpha * 0.05f));
             //g.fillEllipse(x + 0.5f, y + 0.5f, diam - 1.f, diam - 1.f);
             g.fillAll();
         }
 
-        Path& p = getToggleState() ? toggledShape : normalShape;
+        const auto &p = getToggleState() ? toggledShape : normalShape;
 
-        const AffineTransform t(p.getTransformToScaleToFit(x + diam * 0.3f, y + diam * 0.3f,
-            diam * 0.4f, diam * 0.4f, true));
+        const AffineTransform t(p.getTransformToScaleToFit(x + diam * 0.3f,
+            y + diam * 0.3f, diam * 0.4f, diam * 0.4f, true));
 
-        g.setColour(Colours::white.withAlpha(alpha * 0.75f));
+        g.setColour(colour);
         g.fillPath(p, t);
     }
 
 private:
 
-    Colour colour;
     Path normalShape, toggledShape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioWindowButton)
@@ -580,9 +579,7 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
         bool drawTitleTextOnLeft)
 {
 #if HELIO_DESKTOP
-    const Colour bgColour = this->findColour(ResizableWindow::backgroundColourId);
-
-    g.setColour(bgColour);
+    g.setColour(findDefaultColour(ResizableWindow::backgroundColourId));
     g.fillAll();
 
     HelioTheme::drawNoise(*this, g, 1.f);
@@ -595,7 +592,7 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
 
     Font font(16.f, Font::plain);
     g.setFont(font);
-    g.setColour(Colours::white.withAlpha(0.125f));
+    g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.33f));
 
     const String title = "Helio " + App::getAppReadableVersion();
     const int textW = font.getStringWidth(title);
@@ -611,13 +608,13 @@ Button *HelioTheme::createDocumentWindowButton(int buttonType)
     {
         shape.addLineSegment(Line<float>(0.0f, 0.0f, 1.0f, 1.0f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.0f, 0.0f, 1.0f), 0.05f);
-        return new HelioWindowButton("close", Colour(0xffdd1100), shape, shape);
+        return new HelioWindowButton("close", shape, shape);
     }
     if (buttonType == DocumentWindow::minimiseButton)
     {
         shape.addLineSegment(Line<float>(0.0f, 0.0f, 0.0001f, 0.0f), 0.0001f);
         shape.addLineSegment(Line<float>(0.0f, 0.5f, 1.0f, 0.5f), 0.05f);
-        return new HelioWindowButton("min", Colour(0xffdd1100), shape, shape);
+        return new HelioWindowButton("min", shape, shape);
     }
     else if (buttonType == DocumentWindow::maximiseButton)
     {
@@ -625,7 +622,7 @@ Button *HelioTheme::createDocumentWindowButton(int buttonType)
         shape.addLineSegment(Line<float>(0.0f, 0.8f, 1.0f, 0.8f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.8f, 1.0f, 0.0f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.0f, 0.0f, 0.0f), 0.05f);
-        return new HelioWindowButton("max", Colour(0xffdd1100), shape, shape);
+        return new HelioWindowButton("max", shape, shape);
     }
 
     jassertfalse;
@@ -633,10 +630,8 @@ Button *HelioTheme::createDocumentWindowButton(int buttonType)
 }
 
 void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
-        int titleBarX,
-        int titleBarY,
-        int titleBarW,
-        int titleBarH,
+        int titleBarX, int titleBarY,
+        int titleBarW, int titleBarH,
         Button *minimiseButton,
         Button *maximiseButton,
         Button *closeButton,
@@ -755,20 +750,25 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TextEditor::textColourId, s->getTextColour());
     this->setColour(TextEditor::highlightedTextColourId, s->getTextColour());
     this->setColour(TextEditor::outlineColourId, s->getPanelBorderColour().withAlpha(0.1f));
-    this->setColour(TextEditor::focusedOutlineColourId, Colours::black.withAlpha(0.2f));
+    this->setColour(TextEditor::focusedOutlineColourId, s->getTextColour().contrasting().withAlpha(0.2f));
     this->setColour(TextEditor::shadowColourId, s->getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TextEditor::backgroundColourId, s->getPrimaryGradientColourA().darker(0.05f));
-    this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.25f));
-    this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
+    this->setColour(TextEditor::highlightColourId, s->getTextColour().contrasting().withAlpha(0.25f));
+    this->setColour(CaretComponent::caretColourId, s->getTextColour().withAlpha(0.35f));
 
     // TableListBox
+    this->setColour(ListBox::textColourId, s->getTextColour());
     this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->setColour(TableHeaderComponent::backgroundColourId, Colours::transparentBlack);
-
     this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.05f));
     this->setColour(TableHeaderComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.04f));
     this->setColour(TableHeaderComponent::textColourId, s->getTextColour().withMultipliedAlpha(0.75f));
-   
+
+    // Check boxes, radio buttons
+    this->setColour(ToggleButton::textColourId, s->getTextColour());
+    this->setColour(ToggleButton::tickColourId, s->getTextColour());
+    this->setColour(ToggleButton::tickDisabledColourId, s->getTextColour().withMultipliedAlpha(0.65f));
+
     // Helio colours:
 
     // Lasso
@@ -789,6 +789,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPrimaryGradientColourA().darker(0.25f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.025f));
+    this->setColour(ColourIDs::TrackScroller::screenRangeFill, s->getIconBaseColour().withMultipliedAlpha(0.45f));
+    this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.2f));
 
     // InstrumentEditor
     this->setColour(ColourIDs::Instrument::midiIn, Colours::white.withAlpha(0.1f));
@@ -803,16 +805,17 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // Borders
     this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.06f));
     this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.2f));
+    this->setColour(ColourIDs::ColourButton::outline, s->getTextColour());
 
     // CallOutBox
     this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(1.0f).withAlpha(0.925f));
     this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().darker(2.0f).withAlpha(1.f));
 
     // HybridRoll
-    this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour());
-    this->setColour(ColourIDs::Roll::blackKeyAlt, s->getBlackKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour().withMultipliedBrightness(0.95f));
+    this->setColour(ColourIDs::Roll::blackKeyAlt, s->getBlackKeyColour());
     this->setColour(ColourIDs::Roll::whiteKey, s->getWhiteKeyColour());
-    this->setColour(ColourIDs::Roll::whiteKeyAlt, s->getWhiteKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(ColourIDs::Roll::whiteKeyAlt, s->getWhiteKeyColour().withMultipliedBrightness(1.05f));
     this->setColour(ColourIDs::Roll::rowLine, s->getRowColour());
     this->setColour(ColourIDs::Roll::barLine, s->getBarColour().withAlpha(0.8f));
     this->setColour(ColourIDs::Roll::barLineBevel, Colours::white.withAlpha(0.015f));
@@ -824,6 +827,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::trackHeaderBorder, Colours::white.withAlpha(0.075f));
+    this->setColour(ColourIDs::Roll::noteFill, s->getTextColour().interpolatedWith(Colours::white, 0.5f));
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
@@ -839,6 +843,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::ScriptEditor::bracket, s->getTextColour().interpolatedWith(Colours::darkslateblue, 0.5f));
     this->setColour(ColourIDs::ScriptEditor::punctuation, s->getTextColour().interpolatedWith(Colours::darkslateblue, 0.75f));
     this->setColour(ColourIDs::ScriptEditor::builtInClass, s->getTextColour().interpolatedWith(Colours::blue, 0.75f));
+
+    this->setColour(ColourIDs::Logo::fill, s->getTextColour().withMultipliedAlpha(0.85f));
 }
 
 void HelioTheme::updateBackgroundRenders(bool force)

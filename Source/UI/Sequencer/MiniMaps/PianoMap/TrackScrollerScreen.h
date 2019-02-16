@@ -19,8 +19,7 @@
 
 class TrackScroller;
 
-class TrackScrollerScreen :
-    public Component
+class TrackScrollerScreen final : public Component
 {
 public:
 
@@ -50,7 +49,7 @@ public:
     // Constrainers
     //===------------------------------------------------------------------===//
 
-    class ResizeConstrainer : public ComponentBoundsConstrainer
+    class ResizeConstrainer final : public ComponentBoundsConstrainer
     {
     public:
         explicit ResizeConstrainer(TrackScroller &scrollerRef) : scroller(scrollerRef) { }
@@ -66,9 +65,8 @@ private:
     void updatePan();
     void updateZoom();
 
-    TrackScroller &scroller;
-
     Colour colour;
+    TrackScroller &scroller;
     ComponentDragger dragger;
 
     ScopedPointer<ResizableBorderComponent> border;

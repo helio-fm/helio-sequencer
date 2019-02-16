@@ -24,8 +24,9 @@
 //[MiscUserDefs]
 #include "IconComponent.h"
 #include "ComponentFader.h"
+#include "ColourIDs.h"
 
-class ColourButtonFrame : public Component
+class ColourButtonFrame final : public Component
 {
 public:
 
@@ -36,7 +37,7 @@ public:
         const int x1 = 2;
         const int x2 = this->getWidth() - 2;
 
-        g.setColour(Colours::white.withAlpha(0.5f));
+        g.setColour(findDefaultColour(ColourIDs::ColourButton::outline).withAlpha(0.5f));
         g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
         g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
         g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
@@ -83,12 +84,14 @@ void ColourButton::paint (Graphics& g)
     const int x1 = 2;
     const int x2 = this->getWidth() - 2;
 
+    const Colour base(findDefaultColour(ColourIDs::ColourButton::outline));
+
     // To avoid smoothed rectangles:
-    g.setColour(this->colour.interpolatedWith(Colours::white, 0.25f).withAlpha(0.9f));
+    g.setColour(this->colour.interpolatedWith(base, 0.25f).withAlpha(0.9f));
     //g.fillRect(x1, y2 - 4, x2 - x1 + 1, 5);
     g.fillRect(x1, y1, x2 - x1 + 1, 5);
 
-    g.setColour(this->colour.interpolatedWith(Colours::white, 0.5f).withAlpha(0.1f));
+    g.setColour(this->colour.interpolatedWith(base, 0.5f).withAlpha(0.1f));
     g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
     g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
     g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));

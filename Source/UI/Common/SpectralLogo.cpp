@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "SpectralLogo.h"
+#include "ColourIDs.h"
 
 #define MAXDB (+4.0f)
 #define MINDB (-70.0f)
@@ -29,6 +30,7 @@
 
 SpectralLogo::SpectralLogo()
     : Thread("Spectral Logo"),
+      colour(findDefaultColour(ColourIDs::Logo::fill)),
       bandCount(NUM_BANDS),
       skewTime(0),
       pulse(0.f),
@@ -109,8 +111,7 @@ void SpectralLogo::paint(Graphics &g)
         const uint32 timeNow = Time::getMillisecondCounter();
 
         Random r;
-        Colour c(Colours::white.withAlpha(0.35f));
-        g.setColour(c);
+        g.setColour(this->colour);
 
         for (int i = 0; i < this->bandCount; ++i)
         {

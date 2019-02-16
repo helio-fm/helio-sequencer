@@ -22,10 +22,11 @@
 #define TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER 0
 
 TrackScrollerScreen::TrackScrollerScreen(TrackScroller &scrollerRef) :
-    scroller(scrollerRef),
-    colour(Colours::white.withAlpha(0.08f))
+    colour(findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)),
+    scroller(scrollerRef)
 {
     this->setPaintingIsUnclipped(true);
+    this->setMouseClickGrabsKeyboardFocus(false);
 
     this->moveConstrainer = new ComponentBoundsConstrainer();
     this->moveConstrainer->setMinimumSize(4, 4);

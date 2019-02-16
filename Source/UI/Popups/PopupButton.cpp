@@ -146,7 +146,7 @@ void PopupButton::paint (Graphics& g)
 
     case Hex:
         g.setColour(Colours::black.withAlpha(0.9f));
-        g.strokePath(this->shape, PathStrokeType(2.5f));
+        g.strokePath(this->shape, PathStrokeType(outline2));
 
         g.setColour(this->colour);
         g.fillPath(this->shape);

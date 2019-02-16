@@ -37,6 +37,8 @@
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "Workspace.h"
+#include "Config.h"
+#include "ColourSchemesManager.h"
 
 MainLayout::MainLayout() :
     currentContent(nullptr)
@@ -257,11 +259,11 @@ bool MainLayout::keyPressed(const KeyPress &key)
 
 #if JUCE_ENABLE_LIVE_CONSTANT_EDITOR
 
-    if (key == KeyPress::createFromDescription("command + r"))
+    if (key == KeyPress::createFromDescription("f1"))
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
-            auto scheme = App::Config()::getColourSchemes()->getCurrent();
+            auto scheme = App::Config().getColourSchemes()->getCurrent();
             ht->updateBackgroundRenders(true);
             ht->initColours(scheme);
             this->repaint();

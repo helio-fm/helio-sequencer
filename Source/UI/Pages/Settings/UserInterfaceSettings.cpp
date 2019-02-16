@@ -46,7 +46,6 @@ UserInterfaceSettings::UserInterfaceSettings()
     openGLRendererButton->setButtonText(TRANS("settings::renderer::opengl"));
     openGLRendererButton->setRadioGroupId(1);
     openGLRendererButton->addListener(this);
-    openGLRendererButton->setColour(ToggleButton::textColourId, Colour (0xbcffffff));
 
     this->defaultRendererButton.reset(new ToggleButton(String()));
     this->addAndMakeVisible(defaultRendererButton.get());
@@ -54,7 +53,6 @@ UserInterfaceSettings::UserInterfaceSettings()
     defaultRendererButton->setRadioGroupId(1);
     defaultRendererButton->addListener(this);
     defaultRendererButton->setToggleState (true, dontSendNotification);
-    defaultRendererButton->setColour(ToggleButton::textColourId, Colour (0xbcffffff));
 
     this->separator2.reset(new SeparatorHorizontalFading());
     this->addAndMakeVisible(separator2.get());
@@ -244,12 +242,12 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <TOGGLEBUTTON name="" id="42fbb3993c5b4950" memberName="openGLRendererButton"
                 virtualName="" explicitFocusOrder="0" pos="16 32 32M 32" posRelativeY="1f025eebf3951095"
-                txtcol="bcffffff" buttonText="settings::renderer::opengl" connectedEdges="0"
-                needsCallback="1" radioGroupId="1" state="0"/>
+                buttonText="settings::renderer::opengl" connectedEdges="0" needsCallback="1"
+                radioGroupId="1" state="0"/>
   <TOGGLEBUTTON name="" id="1f025eebf3951095" memberName="defaultRendererButton"
                 virtualName="" explicitFocusOrder="0" pos="16 6 32M 32" posRelativeY="68d81e5e36696154"
-                txtcol="bcffffff" buttonText="settings::renderer::default" connectedEdges="0"
-                needsCallback="1" radioGroupId="1" state="1"/>
+                buttonText="settings::renderer::default" connectedEdges="0" needsCallback="1"
+                radioGroupId="1" state="1"/>
   <JUCERCOMP name="" id="68d81e5e36696154" memberName="separator2" virtualName=""
              explicitFocusOrder="0" pos="16 -16R 32M 4" posRelativeY="4fd07309a20b15b6"
              sourceFile="../../Themes/SeparatorHorizontalFading.cpp" constructorParams=""/>

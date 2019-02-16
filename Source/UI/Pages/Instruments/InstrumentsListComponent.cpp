@@ -147,7 +147,7 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
     g.setFont(h * 0.4f);
     const int margin = h / 12;
 
-    g.setColour(Colours::white);
+    g.setColour(findDefaultColour(ListBox::textColourId));
     g.drawText(instrumentNode->getName(), (margin * 2) + this->instrumentIcon.getWidth(), margin,
         w, h - (margin * 2), Justification::centredLeft, false);
 

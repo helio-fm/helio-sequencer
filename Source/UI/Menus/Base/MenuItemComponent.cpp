@@ -82,6 +82,7 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text
     description->shouldCloseMenu = false;
     description->hasSubmenu = false;
     description->hasTimer = false;
+    description->colour = findDefaultColour(Label::textColourId);
     return description;
 }
 
@@ -97,6 +98,7 @@ MenuItem::Ptr MenuItem::item(Image image, int commandId, const String &text /*= 
     description->shouldCloseMenu = false;
     description->hasSubmenu = false;
     description->hasTimer = false;
+    description->colour = findDefaultColour(Label::textColourId);
     return description;
 }
 
@@ -137,7 +139,7 @@ MenuItem::Ptr MenuItem::toggled(bool shouldBeToggled)
 MenuItem::Ptr MenuItem::colouredWith(const Colour &colour)
 {
     MenuItem::Ptr description(this);
-    description->colour = colour;
+    description->colour = colour.interpolatedWith(findDefaultColour(Label::textColourId), 0.4f);
     return description;
 }
 
@@ -212,7 +214,7 @@ public:
     }
 };
 
-class CommandItemSelector final  : public Component
+class CommandItemSelector final : public Component
 {
 public:
 
@@ -256,10 +258,9 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
     //[UserPreSize]
     this->toggleMarker = nullptr;
     this->lastMouseScreenPosition = { 0, 0 };
+    this->subLabel->setInterceptsMouseClicks(false, false);
     this->textLabel->setInterceptsMouseClicks(false, false);
-
-    this->subLabel->setColour(Label::textColourId,
-        desc->colour.interpolatedWith(Colours::white, 0.4f).withMultipliedAlpha(0.5f));
+    this->subLabel->setColour(Label::textColourId, desc->colour.withMultipliedAlpha(0.5f));
 
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
@@ -525,18 +526,8 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
         this->toggleMarker = nullptr;
     }
 
-    // FIXME! get rid of hard-coded colours
-    if (desc->colour.getAlpha() > 0)
-    {
-        this->textLabel->setColour(Label::textColourId,
-            desc->colour.interpolatedWith(Colours::white, 0.4f)
-                .withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
-    }
-    else if (desc->colour.getAlpha() == 0)
-    {
-        this->textLabel->setColour(Label::textColourId,
-            Colours::white.withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
-    }
+    this->textLabel->setColour(Label::textColourId,
+        desc->colour.withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
 
     this->textLabel->setJustificationType(desc->alignment == MenuItem::Left ?
         Justification::centredLeft : Justification::centredRight);

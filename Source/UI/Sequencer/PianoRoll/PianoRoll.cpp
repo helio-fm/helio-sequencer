@@ -1464,11 +1464,11 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKey);
-    const Colour blackKeyBright = theme.findColour(ColourIDs::Roll::blackKeyAlt);
+    const Colour blackKeyOdd = theme.findColour(ColourIDs::Roll::blackKeyAlt);
     const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKey);
-    const Colour whiteKeyBright = theme.findColour(ColourIDs::Roll::whiteKeyAlt);
-    const Colour rootKey = whiteKeyBright.brighter(0.085f);
-    const Colour rootKeyBright = whiteKeyBright.brighter(0.090f);
+    const Colour whiteKeyOdd = theme.findColour(ColourIDs::Roll::whiteKeyAlt);
+    const Colour rootKey = whiteKey.brighter(0.1f);
+    const Colour rootKeyOdd = whiteKeyOdd.brighter(0.1f);
     const Colour rowLine = theme.findColour(ColourIDs::Roll::rowLine);
 
     float currentHeight = float(height);
@@ -1478,8 +1478,8 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     const int middleCOffset = scale->getBasePeriod() - (MIDDLE_C % scale->getBasePeriod());
     const int lastOctaveReminder = (128 % scale->getBasePeriod()) - root + middleCOffset;
 
-    g.setColour(whiteKeyBright);
-    g.fillRect(patternImage.getBounds());
+    //g.setColour(whiteKeyOdd);
+    //g.fillRect(patternImage.getBounds());
 
     // draw rows
     for (int i = lastOctaveReminder;
@@ -1494,7 +1494,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
 
         if (noteNumber == 0)
         {
-            const Colour c = octaveIsOdd ? rootKeyBright : rootKey;
+            const Colour c = octaveIsOdd ? rootKeyOdd : rootKey;
             g.setColour(c);
             g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
             g.setColour(c.brighter(0.025f));
@@ -1502,12 +1502,15 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
         }
         else if (scale->hasKey(noteNumber))
         {
-            g.setColour(whiteKeyBright.brighter(0.025f));
+            const Colour c = octaveIsOdd ? whiteKeyOdd : whiteKey;
+            g.setColour(c);
+            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
+            g.setColour(c.brighter(0.025f));
             g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
         else
         {
-            g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
+            g.setColour(octaveIsOdd ? blackKeyOdd : blackKey);
             g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
         }
 

@@ -48,6 +48,7 @@ namespace ColourIDs
         static const int playheadShade          = 0x2000112;
         static const int trackHeaderFill        = 0x2000113;
         static const int trackHeaderBorder      = 0x2000114;
+        static const int noteFill               = 0x2000115;
     }
 
     namespace Callout
@@ -105,6 +106,8 @@ namespace ColourIDs
     {
         static const int borderLineDark         = 0x2001200;
         static const int borderLineLight        = 0x2001201;
+        static const int screenRangeFill        = 0x2001202;
+        static const int scrollerFill           = 0x2001203;
     }
 
     namespace SelectionComponent
@@ -126,5 +129,15 @@ namespace ColourIDs
         static const int bracket                = 0x2001408;
         static const int punctuation            = 0x2001409;
         static const int builtInClass           = 0x200140a;
+    }
+
+    namespace Logo
+    {
+        static const int fill                   = 0x2001500;
+    }
+
+    namespace ColourButton
+    {
+        static const int outline                = 0x2001600;
     }
 } // namespace ColourIDs

@@ -59,7 +59,6 @@ bool operator==(const ColourScheme &lhs, const ColourScheme &rhs)
 void ColourScheme::randomize()
 {
     ColourMap newMap;
-
     ColourMap::Iterator i(this->colours);
 
     while (i.next())
@@ -81,10 +80,6 @@ String ColourScheme::getName() const noexcept
 {
     return this->name;
 }
-
-#ifndef JUCE_LIVE_CONSTANT
-#   define JUCE_LIVE_CONSTANT(x) (x)
-#endif
 
 Colour ColourScheme::getPrimaryGradientColourA() const
 {

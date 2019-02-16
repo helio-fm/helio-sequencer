@@ -218,6 +218,7 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     }
 
     const int margin = h / 12;
+    const Colour colour(findDefaultColour(Label::textColourId));
 
     switch (columnId)
     {
@@ -226,13 +227,13 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
         const String inputChannelsString = TRANS_PLURAL("{x} input channels", pd->numInputChannels);
         const String outputChannelsString = TRANS_PLURAL("{x} output channels", pd->numOutputChannels);
 
-        g.setColour(Colours::white);
+        g.setColour(colour);
         g.drawText(pd->descriptiveName, margin, margin, w, h, Justification::topLeft, false);
 
-        g.setColour(Colours::white.withAlpha(0.7f));
+        g.setColour(colour.withAlpha(0.7f));
         g.drawText(pd->manufacturerName, margin, 0, w, h, Justification::centredLeft, false);
 
-        g.setColour(Colours::white.withAlpha(0.5f));
+        g.setColour(colour.withAlpha(0.5f));
         g.drawText(pd->version + ", " + inputChannelsString + ", " + outputChannelsString,
             margin, -margin, w, h, Justification::bottomLeft, false);
 
@@ -240,13 +241,13 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     }
     case ColumnIds::category:
     {
-        g.setColour(Colours::white.withAlpha(0.5f));
+        g.setColour(colour.withAlpha(0.5f));
         g.drawText(pd->category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
         break;
     }
     case ColumnIds::format:
     {
-        g.setColour(Colours::white.withAlpha(0.7f));
+        g.setColour(colour.withAlpha(0.7f));
         g.drawText(pd->pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
         break;
     }
