@@ -1552,13 +1552,12 @@
                    androidNDKPath="~/Android/Ndk/" androidActivityClass="fm.helio.workstation"
                    androidInternetNeeded="1" androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
-                   smallIcon="WO0LHL" bigIcon="WO0LHL" androidScreenOrientation="landscape"
+                   smallIcon="DQTpOG" bigIcon="DQTpOG" androidScreenOrientation="landscape"
                    androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="21"
-                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0" cameraPermissionNeeded="0"
-                   microphonePermissionNeeded="0" androidBluetoothNeeded="0" androidInAppBilling="0"
-                   androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
-                   androidEnableRemoteNotifications="0" gradleVersion="4.4" buildToolsVersion="28.0.0"
-                   gradleWrapperVersion="3.1.3">
+                   cameraPermissionNeeded="0" microphonePermissionNeeded="0" androidBluetoothNeeded="0"
+                   androidInAppBilling="0" androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
+                   androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"
+                   androidTargetSDK="21" gradleVersion="5.2.1" gradleWrapperVersion="3.3.1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"/>
         <CONFIGURATION name="Release" androidArchitectures="" isDebug="0" optimisation="3"
