@@ -24,7 +24,7 @@
 #define RADUIS_STEP    (0.075f)
 
 #if HELIO_MOBILE
-#define CONFIRMATION_MODE
+#define CONFIRMATION_MODE 1
 #endif
 
 
@@ -193,7 +193,7 @@ void PopupButton::mouseEnter (const MouseEvent& e)
 
 #if ! CONFIRMATION_MODE
 
-    if (PopupButtonOwner *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
+    if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
         if (! this->firstClickDone)
         {
@@ -291,6 +291,7 @@ void PopupButton::setState(bool clicked)
     this->firstClickDone = clicked;
 
 #if CONFIRMATION_MODE
+
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
         if (! dynamic_cast<PopupButtonHighlighter *>(this->getChildComponent(i)) &&
@@ -309,13 +310,14 @@ void PopupButton::setState(bool clicked)
 
     if (this->showConfirmImage && !this->firstClickDone)
     {
-        this->fader.fadeOut(this->confirmationMark, 100);
+        this->fader.fadeOut(this->confirmationMark.get(), 100);
     }
 
     if (this->showConfirmImage && this->firstClickDone)
     {
-        this->fader.fadeIn(this->confirmationMark, 100);
+        this->fader.fadeIn(this->confirmationMark.get(), 100);
     }
+
 #endif
 
     this->updateChildren();

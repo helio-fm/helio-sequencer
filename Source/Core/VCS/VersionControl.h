@@ -22,8 +22,6 @@ class VersionControlEditor;
 
 #include "TreeNode.h"
 #include "TrackedItemsSource.h"
-#include "SafeTreeItemPointer.h"
-
 #include "ProjectListener.h"
 
 #include "Delta.h"
