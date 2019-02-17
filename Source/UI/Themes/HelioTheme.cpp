@@ -850,19 +850,15 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::VersionControl::connector, s->getTextColour().withAlpha(0.2f));
     this->setColour(ColourIDs::VersionControl::outline, s->getTextColour().withAlpha(0.3f));
     this->setColour(ColourIDs::VersionControl::highlight, s->getTextColour().withAlpha(0.02f));
-}
 
-void HelioTheme::updateBackgroundRenders(bool force)
-{
-    if (force)
-    {
-        Icons::clearPrerenderedCache();
-        this->bgCacheA = {};
-        this->bgCacheB = {};
-        this->bgCacheC = {};
-    }
-    
+    // Update pre-rendered caches:
+    this->bgCacheA = {};
+    this->bgCacheB = {};
+    this->bgCacheC = {};
+
     PanelBackgroundA::updateRender(*this);
     PanelBackgroundB::updateRender(*this);
     PanelBackgroundC::updateRender(*this);
+
+    Icons::clearPrerenderedCache();
 }

@@ -104,11 +104,8 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
         return;
     }
 
-    //const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    //const int scale = int(d.scale);
-    const int w = 128; // d.totalArea.getWidth() * scale;
-    const int h = 128; // d.totalArea.getHeight() * scale;
-
+    const int w = 64;
+    const int h = 64;
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
     g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));

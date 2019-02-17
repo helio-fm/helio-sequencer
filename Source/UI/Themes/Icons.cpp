@@ -52,14 +52,14 @@ struct BuiltInImageData final
     int numBytes;
 };
 
-static HashMap<Icons::Id, BuiltInImageData> builtInImages;
+static FlatHashMap<Icons::Id, BuiltInImageData> builtInImages;
 
 void Icons::clearBuiltInImages()
 {
     builtInImages.clear();
 }
 
-#define setIconForKey(x) builtInImages.set(Icons::x, BuiltInImageData(#x))
+#define setIconForKey(x) builtInImages[Icons::x] = BuiltInImageData(#x);
 
 void Icons::initBuiltInImages()
 {
@@ -171,24 +171,22 @@ static const Path extractPathFromDrawable(const Drawable *d)
 {
     for (int i = 0; i < d->getNumChildComponents(); ++i)
     {
-        Component *child = d->getChildComponent(i);
+        auto *child = d->getChildComponent(i);
         
-        if (DrawablePath *dp = dynamic_cast<DrawablePath *>(child))
+        if (auto *drawablePath = dynamic_cast<DrawablePath *>(child))
         {
-            Path p(dp->getPath());
-            return p;
+            return drawablePath->getPath();
         }
         
-        if (DrawableComposite *dc = dynamic_cast<DrawableComposite *>(child))
+        if (auto *drawableComposite = dynamic_cast<DrawableComposite *>(child))
         {
-            for (int j = 0; j < dc->getNumChildComponents(); ++j)
+            for (int j = 0; j < drawableComposite->getNumChildComponents(); ++j)
             {
-                Component *compChild = dc->getChildComponent(i);
+                auto *compositeChild = drawableComposite->getChildComponent(i);
                 
-                if (DrawablePath *dp = dynamic_cast<DrawablePath *>(compChild))
+                if (auto *drawablePath = dynamic_cast<DrawablePath *>(compositeChild))
                 {
-                    Path p(dp->getPath());
-                    return p;
+                    return drawablePath->getPath();
                 }
             }
         }
@@ -200,7 +198,8 @@ static const Path extractPathFromDrawable(const Drawable *d)
 static Image renderVector(Icons::Id id, int maxSize,
     const Colour &iconBaseColour, const Colour &iconShadeColour)
 {
-    if (! builtInImages.contains(id) || maxSize < 1)
+    const auto foundImage = builtInImages.find(id);
+    if (foundImage == builtInImages.end() || maxSize < 1)
     {
         return Image(Image::ARGB, 1, 1, true);
     }
@@ -208,7 +207,7 @@ static Image renderVector(Icons::Id id, int maxSize,
     Image resultImage(Image::ARGB, maxSize, maxSize, true);
     Graphics g(resultImage);
     
-    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(builtInImages[id].data, builtInImages[id].numBytes));
+    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
     drawableSVG->replaceColour(Colours::black, iconBaseColour);
 
     Rectangle<int> area(0, 0, maxSize, maxSize);
@@ -228,22 +227,24 @@ static Image renderVector(Icons::Id id, int maxSize,
 
 ScopedPointer<Drawable> Icons::getDrawableByName(Icons::Id id)
 {
-    if (!builtInImages.contains(id))
+    const auto foundImage = builtInImages.find(id);
+    if (foundImage == builtInImages.end())
     {
         return nullptr;
     }
     
-    return Drawable::createFromImageData(builtInImages[id].data, builtInImages[id].numBytes);
+    return Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes);
 }
 
 Path Icons::getPathByName(Icons::Id id)
 {
-    if (!builtInImages.contains(id))
+    const auto foundImage = builtInImages.find(id);
+    if (foundImage == builtInImages.end())
     {
         return {};
     }
 
-    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(builtInImages[id].data, builtInImages[id].numBytes));
+    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
     return Path(extractPathFromDrawable(drawableSVG));
 }
 

@@ -118,11 +118,6 @@ void InitScreen::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::InitWorkspace)
     {
-        if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
-        {
-            ht->updateBackgroundRenders();
-        }
-
         App::Workspace().init();
         App::Layout().show();
     }

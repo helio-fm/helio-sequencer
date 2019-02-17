@@ -293,7 +293,6 @@ void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
     {
         App::Config().getColourSchemes()->setCurrent(colours);
         ht->initColours(colours);
-        ht->updateBackgroundRenders(true);
         SafePointer<Component> window = this->getTopLevelComponent();
         if (window != nullptr)
         {

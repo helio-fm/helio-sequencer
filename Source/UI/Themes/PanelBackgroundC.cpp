@@ -143,10 +143,8 @@ void PanelBackgroundC::updateRender(HelioTheme &theme)
         return;
     }
 
-    //const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int w = 128; // d.totalArea.getWidth() * int(d.scale);
-    const int h = 128; // d.totalArea.getHeight() * int(d.scale);
-
+    const int w = 64;
+    const int h = 64;
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
     drawPanel(g, theme);

@@ -66,11 +66,6 @@ MainLayout::MainLayout() :
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
-        if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
-        {
-            ht->updateBackgroundRenders();
-        }
-
         this->show();
     }
     else
@@ -264,7 +259,6 @@ bool MainLayout::keyPressed(const KeyPress &key)
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
             auto scheme = App::Config().getColourSchemes()->getCurrent();
-            ht->updateBackgroundRenders(true);
             ht->initColours(scheme);
             this->repaint();
 

@@ -30,7 +30,6 @@ public:
 
     void initResources();
     void initColours(const ::ColourScheme::Ptr colours);
-    void updateBackgroundRenders(bool force = false);
     void updateFont(const Font &font);
     
     Typeface::Ptr getTypefaceForFont(const Font &) override;
