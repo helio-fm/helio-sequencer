@@ -32,17 +32,17 @@
 #include "MainLayout.h"
 #include "Config.h"
 
-#define ICON_MARGIN (8)
-#define MAX_MENU_FONT_SIZE (28.f)
+#if HELIO_DESKTOP
+#   define ICON_MARGIN (8)
+#   define ICON_SIZE (20)
+#elif HELIO_MOBILE
+#   define ICON_MARGIN (4)
+#   define ICON_SIZE (20)
+#endif
 
 #if JUCE_MAC
 #   define HAS_OPENGL_BUG 1
 #endif
-
-inline int iconHeightByComponentHeight(int h)
-{
-    return int(h * 0.6);
-}
 
 //===----------------------------------------------------------------------===//
 // MenuItem
@@ -345,7 +345,7 @@ void MenuItemComponent::resized()
 
     subLabel->setBounds (getWidth() - 4 - 128, (getHeight() / 2) - ((getHeight() - 0) / 2), 128, getHeight() - 0);
     textLabel->setBounds (48, (getHeight() / 2) - ((getHeight() - 0) / 2), getWidth() - 56, getHeight() - 0);
-    submenuMarker->setBounds (getWidth() - 4 - 24, (getHeight() / 2) - ((getHeight() - 16) / 2), 24, getHeight() - 16);
+    submenuMarker->setBounds (getWidth() - 4 - 20, (getHeight() / 2) - (20 / 2), 20, 20);
     //[UserResized] Add your own custom resize handling here..
 
     if (!this->icon.isValid() && this->description->image.isValid())
@@ -354,8 +354,7 @@ void MenuItemComponent::resized()
     }
     else
     {
-        this->icon = Icons::findByName(this->description->iconId,
-            iconHeightByComponentHeight(this->getHeight()));
+        this->icon = Icons::findByName(this->description->iconId, ICON_SIZE);
     }
 
     const float xMargin = ICON_MARGIN * 1.2f;
@@ -369,7 +368,7 @@ void MenuItemComponent::resized()
         this->colourHighlighter->setBounds(this->getLocalBounds());
     }
 
-    const float fontSize = jmin(MAX_MENU_FONT_SIZE, float(this->getHeight() / 2) + 1.f);
+    const float fontSize = 18.f ;//jmin(MAX_MENU_FONT_SIZE, float(this->getHeight() / 2) + 1.f);
     this->subLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
     this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
 
@@ -652,7 +651,7 @@ BEGIN_JUCER_METADATA
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="1e71bff8af38b714" memberName="submenuMarker" virtualName=""
-                    explicitFocusOrder="0" pos="4Rr 0Cc 24 16M" class="IconComponent"
+                    explicitFocusOrder="0" pos="4Rr 0Cc 20 20" class="IconComponent"
                     params="Icons::submenu, 0.25f"/>
 </JUCER_COMPONENT>
 

@@ -124,7 +124,7 @@ void HeadlineItemArrow::resized()
     //[/UserPreResize]
 
     internalPath1.clear();
-    internalPath1.startNewSubPath (static_cast<float> (getWidth()), 16.0f);
+    internalPath1.startNewSubPath (static_cast<float> (getWidth()), static_cast<float> ((getHeight() / 2)));
     internalPath1.lineTo (static_cast<float> (getWidth()), static_cast<float> (getHeight()));
     internalPath1.lineTo (static_cast<float> (getWidth() - 16), static_cast<float> (getHeight()));
     internalPath1.lineTo (static_cast<float> (getWidth() - 9), static_cast<float> ((getHeight() / 2)));
@@ -148,8 +148,8 @@ void HeadlineItemArrow::resized()
 
     internalPath4.clear();
     internalPath4.startNewSubPath (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath4.lineTo (32.0f, 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth()), static_cast<float> (getHeight() - 16));
+    internalPath4.lineTo (static_cast<float> (getWidth()), 0.0f);
+    internalPath4.lineTo (static_cast<float> (getWidth()), static_cast<float> ((getHeight() / 2)));
     internalPath4.lineTo (static_cast<float> (getWidth() - 9), static_cast<float> ((getHeight() / 2)));
     internalPath4.closeSubPath();
 
@@ -171,13 +171,13 @@ BEGIN_JUCER_METADATA
                  overlayOpacity="0.330" fixedSize="1" initialWidth="32" initialHeight="32">
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill="linear: 12R 0C, 6R 5C, 0=22000000, 1=0"
-          hasStroke="0" nonZeroWinding="1">s 0R 16 l 0R 0R l 16R 0R l 9R 0C x</PATH>
+          hasStroke="0" nonZeroWinding="1">s 0R 0C l 0R 0R l 16R 0R l 9R 0C x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
           strokeColour=" radial: 9R 0C, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 0C l 16R 0R l 32R 0R x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="0.5, mitered, butt"
           strokeColour=" radial: 10R 0C, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 0C l 17R 0R l 32R 0R x</PATH>
     <PATH pos="0 0 100 100" fill="linear: 12R 0C, 6R -5C, 0=22000000, 1=0"
-          hasStroke="0" nonZeroWinding="1">s 16R 0 l 32 0 l 0R 16R l 9R 0C x</PATH>
+          hasStroke="0" nonZeroWinding="1">s 16R 0 l 0R 0 l 0R 0C l 9R 0C x</PATH>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

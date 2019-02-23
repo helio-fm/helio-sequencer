@@ -72,7 +72,7 @@ void HelioTheme::drawNoiseWithin(Rectangle<float> bounds, Component *target, Gra
 }
 
 void HelioTheme::drawDashedRectangle(Graphics &g, const Rectangle<float> &r, const Colour &colour,
-                                float dashLength, float spaceLength, float dashThickness, float cornerRadius)
+    float dashLength, float spaceLength, float dashThickness, float cornerRadius)
 {
     g.setColour(colour);
     
@@ -93,11 +93,13 @@ void HelioTheme::drawDashedRectangle(Graphics &g, const Rectangle<float> &r, con
 
 Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
 {
+#if HELIO_DESKTOP
     if (font.getTypefaceName() == Font::getDefaultSansSerifFontName() ||
         font.getTypefaceName() == Font::getDefaultSerifFontName())
     {
         return this->textTypefaceCache;
     }
+#endif
 
     return Font::getDefaultTypefaceForFont(font);
 }
@@ -178,17 +180,17 @@ void HelioTheme::drawLabel(Graphics &g, Label &label)
     this->drawLabel(g, label, 0);
 }
 
-#define SMOOTH_RENDERED_FONT 1
+#if HELIO_DESKTOP
+#   define SMOOTH_RENDERED_FONT 1
+#endif
 
 // Label rendering is one of the most time-consuming bottlenecks in the app.
 // Calling this method too often should be avoided at any costs:
-// relatively small labels that are always on the screen (line headline titles,
+// relatively small labels that are always on the screen (like headline titles,
 // annotations, key/time signatures, track headers) should be set cached to images,
 // and they also should have fixed sizes (not dependent on a container component's size)
 // so that resizing a parent won't force resizing, re-rendering and re-caching a label.
 // Such labels should be re-rendered only when their content changes.
-
-// TODO test on retina screens
 
 void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharacter)
 {
@@ -210,7 +212,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         Path textPath;
         GlyphArrangement glyphs;
 
-        const Rectangle<float> textArea =
+        const auto textArea =
             label.getBorderSize().subtractedFrom(label.getLocalBounds()).toFloat();
 
         glyphs.addFittedText(font,
@@ -230,22 +232,20 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 #else
 
-        const Rectangle<int> textArea =
-            label.getBorderSize().subtractedFrom(label.getLocalBounds());
+        const auto textArea = label.getBorderSize().subtractedFrom(label.getLocalBounds());
 
         g.setFont(font);
         g.setColour(colour);
         g.drawFittedText(textToDraw,
-            textArea.getX(), textArea.getY(),
-            textArea.getWidth(), textArea.getHeight(),
+            textArea.getX(),
+            textArea.getY(),
+            textArea.getWidth(),
+            textArea.getHeight(),
             label.getJustificationType(),
-            maxLines, 1.0);
+            maxLines,
+            1.0);
 
 #endif
-    }
-    else if (label.isEnabled())
-    {
-        g.setColour(label.findColour(Label::outlineColourId));
     }
 }
 
@@ -255,7 +255,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 Font HelioTheme::getTextButtonFont(TextButton &button, int buttonHeight)
 {
-    return Font(Font::getDefaultSerifFontName(), jmin(float(TEXTBUTTON_FONT), float(buttonHeight * 0.75f)), Font::plain);
+    return Font(Font::getDefaultSansSerifFontName(), jmin(float(TEXTBUTTON_FONT), float(buttonHeight * 0.75f)), Font::plain);
 }
 
 void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
@@ -263,31 +263,25 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
 {
     Font font(getTextButtonFont(button, button.getHeight()));
     g.setFont(font);
-    g.setColour(button.findColour(TextButton::buttonColourId).contrasting().withMultipliedAlpha(button.isEnabled() ? 0.85f : 0.5f));
-
-    //Image img(Icons::findByName(button.getName(), int(button.getHeight() / 1.5f)));
-    //const int cX = button.getButtonText().isEmpty() ? (button.getWidth() / 2) : (button.getWidth() / 4);
-    //const int cY = (button.getHeight() / 2);
-    //Icons::drawImageRetinaAware(img, g, cX, cY);
-    //const bool hasImg = (img.getWidth() > 2);
+    g.setColour(button.findColour(TextButton::buttonColourId).contrasting()
+        .withMultipliedAlpha(button.isEnabled() ? 0.85f : 0.5f));
 
     const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
     const int yHeight = (button.getHeight() - (yIndent * 2));
     const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
 
     const int fontHeight = int(font.getHeight() * 0.5f);
-    //const int leftIndent  = hasImg ? button.getWidth() / 3 : fontHeight;
     const int leftIndent = fontHeight;
     const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
 
     g.setColour(button.findColour(TextButton::textColourOnId).withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
 
     g.drawFittedText(button.getButtonText(),
-                     leftIndent,
-                     yIndent,
-                     button.getWidth() - leftIndent - rightIndent,
-                     yHeight,
-                     Justification::centred, 4, 1.f);
+        leftIndent,
+        yIndent,
+        button.getWidth() - leftIndent - rightIndent,
+        yHeight,
+        Justification::centred, 4, 1.f);
 }
 
 void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
@@ -660,9 +654,7 @@ void HelioTheme::initResources()
 {
     Icons::initBuiltInImages();
 
-#if HELIO_MOBILE
-    this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
-#elif HELIO_DESKTOP
+#if HELIO_DESKTOP
 
     if (App::Config().containsProperty(Serialization::Config::lastUsedFont))
     {
@@ -711,15 +703,20 @@ void HelioTheme::initResources()
 
     DBG("Using font: " + this->textTypefaceCache->getName());
     App::Config().setProperty(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
+
 #endif
 }
 
 void HelioTheme::updateFont(const Font &font)
 {
+#if HELIO_DESKTOP
+
     Typeface::clearTypefaceCache();
     this->textTypefaceCache = Typeface::createSystemTypefaceFor(font);
     const String fontName = font.getTypeface()->getName();
     App::Config().setProperty(Serialization::Config::lastUsedFont, fontName);
+
+#endif
 }
 
 void HelioTheme::initColours(const ::ColourScheme::Ptr s)
