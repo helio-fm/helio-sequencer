@@ -211,21 +211,8 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
 #else
             const float newX = parentEvent.position.x;
 #endif
-
-            const MouseEvent e2(e.source,
-                                Point<float>(newX, 0.f),
-                                e.mods,
-                                1.f,
-                                0.0f, 0.0f, 0.0f, 0.0f,
-                                e.originalComponent,
-                                e.originalComponent,
-                                Time::getCurrentTime(),
-                                Point<float>(newX, 0.f),
-                                Time::getCurrentTime(),
-                                1,
-                                false);
             
-            this->roll.getSelectionComponent()->beginLasso(e2, &this->roll);
+            this->roll.getSelectionComponent()->beginLasso({ newX, 0.f }, &this->roll);
             
             this->selectionIndicator = new HeaderSelectionIndicator();
             this->addAndMakeVisible(this->selectionIndicator);

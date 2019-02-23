@@ -17,71 +17,71 @@
 
 #pragma once
 
-#define LONGTAP_MILLISECONDS 400
-#define LONGTAP_TOLERANCE 7
+#define LONGTAP_MILLISECONDS 350
+#define LONGTAP_SQR_TOLERANCE 16
 
 #include "LongTapListener.h"
 
-class LongTapController :
-    public Timer,
-    public MouseListener
+class LongTapController final : public Timer, public MouseListener
 {
 public:
 
     explicit LongTapController(LongTapListener &parent) :
-        listener(parent)
-    {}
-
-    ~LongTapController() override
-    {}
+        listener(parent) {}
 
     void timerCallback() override
     {
         this->reset();
-        this->listener.longTapEvent(*this->tapEvent);
+        this->listener.longTapEvent(this->position, this->component);
     }
 
-    void mouseDown(const MouseEvent &event) override
+    void mouseDown(const MouseEvent &e) override
     {
-        if (event.mods.isLeftButtonDown())
+        if (e.mods.isLeftButtonDown())
         {
-            this->tapEvent = new MouseEvent(event);
+            this->position = e.mouseDownPosition;
+            this->component = e.eventComponent;
             this->startTimer(LONGTAP_MILLISECONDS);
         }
     }
 
-    void mouseDrag(const MouseEvent &event) override
+    void mouseDrag(const MouseEvent &e) override
     {
         if (this->isTimerRunning())
         {
-            if (event.getDistanceFromDragStart() > LONGTAP_TOLERANCE)
+            const auto sqrDragDistance = e.mouseDownPosition.getDistanceSquaredFrom(e.position);
+            if (sqrDragDistance > LONGTAP_SQR_TOLERANCE)
             {
                 this->reset();
             }
         }
     }
 
-    void mouseUp(const MouseEvent &event) override
-    { this->reset(); }
+    void mouseUp(const MouseEvent &) override
+    {
+        this->reset();
+    }
 
-    void mouseExit(const MouseEvent &event) override
-    { this->reset(); }
+    void mouseExit(const MouseEvent &) override
+    {
+        this->reset();
+    }
 
-    void mouseDoubleClick(const MouseEvent &event) override
-    { this->reset(); }
+    void mouseDoubleClick(const MouseEvent &) override
+    {
+        this->reset();
+    }
 
 private:
 
     void reset()
     {
-        if (this->isTimerRunning())
-        {
-            this->stopTimer();
-        }
+        this->stopTimer();
     }
 
     LongTapListener &listener;
 
-    ScopedPointer<MouseEvent> tapEvent;
-    
+    Point<float> position;
+    WeakReference<Component> component;
+
 };

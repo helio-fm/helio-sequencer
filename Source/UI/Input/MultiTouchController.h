@@ -19,7 +19,7 @@
 
 #include "MultiTouchListener.h"
 
-class MultiTouchController : public MouseListener
+class MultiTouchController final : public MouseListener
 {
 public:
 

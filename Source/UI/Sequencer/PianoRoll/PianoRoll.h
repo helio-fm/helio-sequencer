@@ -79,8 +79,11 @@ public:
     void hideAllGhostNotes();
     
     //===------------------------------------------------------------------===//
-    // SmoothZoomListener
+    // Input Listeners
     //===------------------------------------------------------------------===//
+
+    void longTapEvent(const Point<float> &position,
+        const WeakReference<Component> &target) override;
 
     void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
     void zoomAbsolute(const Point<float> &zoom) override;

@@ -50,6 +50,10 @@ class TimelineWarningMarker;
 #include "HybridRollEditMode.h"
 #include "AudioMonitor.h"
 
+#if HELIO_MOBILE
+#define HYBRID_ROLL_LISTENS_LONG_TAP 1
+#endif
+
 #define HYBRID_ROLL_MAX_BAR_WIDTH (192)
 #define HYBRID_ROLL_HEADER_HEIGHT (40)
 
@@ -139,6 +143,9 @@ public:
     //===------------------------------------------------------------------===//
     // MultiTouchListener
     //===------------------------------------------------------------------===//
+
+    void longTapEvent(const Point<float> &position,
+        const WeakReference<Component> &target) override;
 
     void multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom) override;
     void multiTouchPanEvent(const Point<float> &offset) override;
@@ -243,7 +250,6 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
-    void longTapEvent(const MouseEvent &e) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;

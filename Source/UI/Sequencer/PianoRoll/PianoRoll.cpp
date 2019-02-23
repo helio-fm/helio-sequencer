@@ -168,6 +168,11 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
 void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack, 
     const Clip &activeClip, bool shouldZoomToArea)
 {
+    if (this->lassoComponent->isDragging())
+    {
+        this->lassoComponent->endLasso();
+    }
+
     this->selection.deselectAll();
 
     this->activeTrack = activeTrack;
@@ -295,8 +300,29 @@ void PianoRoll::hideAllGhostNotes()
 
 
 //===----------------------------------------------------------------------===//
-// SmoothZoomListener
+// Input Listeners
 //===----------------------------------------------------------------------===//
+
+
+void PianoRoll::longTapEvent(const Point<float> &position,
+    const WeakReference<Component> &target)
+{
+    // try to switch to selected note's track:
+    if (!this->multiTouchController->hasMultitouch() &&
+        !this->getEditMode().forbidsSelectionMode())
+    {
+        const auto *nc = dynamic_cast<NoteComponent *>(target.get());
+        if (nc != nullptr && !nc->isActive())
+        {
+            auto *track = nc->getNote().getSequence()->getTrack();
+            this->setEditableScope(track, nc->getClip(), false);
+            return;
+        }
+    }
+
+    // else - start dragging lasso, if needed:
+    HybridRoll::longTapEvent(position, target);
+}
 
 void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {

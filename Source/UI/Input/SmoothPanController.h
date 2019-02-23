@@ -30,8 +30,7 @@ public:
     explicit SmoothPanController(SmoothPanListener &parent) :
         listener(parent),
         origin(0, 0),
-        target(0, 0)
-    {}
+        target(0, 0) {}
 
     void cancelPan()
     {
@@ -71,8 +70,7 @@ private:
 
     inline void process()
     {
-        const Point<float> &diff = this->target - this->origin;
-
+        const auto diff = this->target - this->origin;
         this->origin += (diff * SMOOTH_PAN_SLOWDOWN_FACTOR);
 
         this->listener.panByOffset(int(this->origin.getX()),
@@ -87,7 +85,6 @@ private:
     SmoothPanListener &listener;
 
     Point<float> origin;
-
     Point<float> target;
 
 };

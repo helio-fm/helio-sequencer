@@ -25,7 +25,8 @@ public:
 
     SelectionComponent();
 
-    void beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource);
+    void beginLasso(const Point<float> &position,
+        LassoSource<SelectableComponent *> *const lassoSource);
     void dragLasso(const MouseEvent &e);
     void endLasso();
     bool isDragging() const;

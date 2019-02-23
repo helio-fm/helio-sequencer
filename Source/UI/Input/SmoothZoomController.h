@@ -24,7 +24,9 @@
 #define ZOOM_DECAY_FACTOR 0.77f
 #define ZOOM_INITIAL_SPEED 0.55f
 
-class SmoothZoomController : private Thread, private WaitableEvent, private AsyncUpdater
+class SmoothZoomController final : private Thread,
+                                   private WaitableEvent,
+                                   private AsyncUpdater
 {
 public:
 

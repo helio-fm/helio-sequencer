@@ -27,7 +27,7 @@ SelectionComponent::SelectionComponent() :
     this->setInterceptsMouseClicks(false, false);
 }
 
-void SelectionComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
+void SelectionComponent::beginLasso(const Point<float> &position, LassoSource<SelectableComponent *> *const lassoSource)
 {
     jassert(lassoSource != nullptr);
     jassert(getParentComponent() != nullptr);
@@ -38,7 +38,7 @@ void SelectionComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableC
         this->originalSelection = lassoSource->getLassoSelection().getItemArray();
         this->setSize(0, 0);
         this->toFront(false);
-        this->startPosition = e.position.toDouble() / this->getParentSize();
+        this->startPosition = position.toDouble() / this->getParentSize();
     }
 }
 

@@ -173,11 +173,13 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
 
     this->addAndMakeVisible(this->lassoComponent);
 
+#if HYBRID_ROLL_LISTENS_LONG_TAP
     this->longTapController = new LongTapController(*this);
-    this->addMouseListener(this->longTapController, true); // on this and * children
+    this->addMouseListener(this->longTapController, true); // true = listens child events as well
+#endif
 
     this->multiTouchController = new MultiTouchController(*this);
-    this->addMouseListener(this->multiTouchController, false); // on this only
+    this->addMouseListener(this->multiTouchController, false); // false = listens only this one
 
     this->smoothPanController = new SmoothPanController(*this);
     this->smoothZoomController = new SmoothZoomController(*this);
@@ -206,7 +208,10 @@ HybridRoll::~HybridRoll()
     this->project.removeListener(this);
 
     this->removeMouseListener(this->multiTouchController);
+
+#if HYBRID_ROLL_LISTENS_LONG_TAP
     this->removeMouseListener(this->longTapController);
+#endif
 }
 
 Viewport &HybridRoll::getViewport() const noexcept
@@ -357,8 +362,21 @@ void HybridRoll::broadcastRollResized()
 }
 
 //===----------------------------------------------------------------------===//
-// MultiTouchListener
+// Input Listeners
 //===----------------------------------------------------------------------===//
+
+void HybridRoll::longTapEvent(const Point<float> &position,
+    const WeakReference<Component> &target)
+{
+    if (this->multiTouchController->hasMultitouch() ||
+        this->project.getEditMode().forbidsSelectionMode() ||
+        target != this)
+    {
+        return;
+    }
+
+    this->lassoComponent->beginLasso(position, this);
+}
 
 void HybridRoll::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)
 {
@@ -976,18 +994,6 @@ void HybridRoll::onChangeViewBeatRange(float firstBeat, float lastBeat)
 // Component
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::longTapEvent(const MouseEvent &e)
-{
-    if (this->multiTouchController->hasMultitouch() ||
-        this->project.getEditMode().forbidsSelectionMode() ||
-        e.eventComponent != this)
-    {
-        return;
-    }
-
-    this->lassoComponent->beginLasso(e, this);
-}
-
 void HybridRoll::mouseDown(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
@@ -998,7 +1004,7 @@ void HybridRoll::mouseDown(const MouseEvent &e)
 
     if (this->isLassoEvent(e))
     {
-        this->lassoComponent->beginLasso(e, this);
+        this->lassoComponent->beginLasso(e.position, this);
     }
     else if (this->isViewportDragEvent(e))
     {
