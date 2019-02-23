@@ -116,7 +116,7 @@ void HeadlineItem::mouseEnter (const MouseEvent& e)
     //[UserCode_mouseEnter] -- Add your code here...
     // A hacky way to prevent re-opening the menu again after the new page is shown.
     // Showhow comparing current mouse screen position to e.getMouseDownScreenPosition()
-    // won't work (maybe a JUCE bug), so take this from getMainMouseSource:
+    // won't work (maybe a JUCE bug), so get it from getMainMouseSource:
     const auto lastMouseDown =
         Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
     if (lastMouseDown != e.getScreenPosition())
@@ -139,6 +139,10 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
     if (this->item != nullptr)
     {
         this->stopTimer();
+
+        // on desktop versions, as quick click on a headline item opens its node's page,
+        // on mobile versions, it always opens the menu first
+#if HELIO_DESKTOP
         if (this->item->canBeSelectedAsMenuItem())
         {
             this->item->onSelectedAsMenuItem();
@@ -147,6 +151,9 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
         {
             this->showMenuIfAny();
         }
+#elif HELIO_MOBILE
+        this->showMenuIfAny();
+#endif
     }
     //[/UserCode_mouseDown]
 }
@@ -172,8 +179,7 @@ void HeadlineItem::updateContent()
     {
         this->icon->setIconImage(this->item->getIcon());
         this->titleLabel->setText(this->item->getName(), dontSendNotification);
-        const int textWidth = this->titleLabel->getFont()
-            .getStringWidth(this->titleLabel->getText());
+        const int textWidth = this->titleLabel->getFont().getStringWidth(this->titleLabel->getText());
         const int maxTextWidth = this->titleLabel->getWidth();
         this->setSize(jmin(textWidth, maxTextWidth) + 64, HEADLINE_HEIGHT - 2);
     }
