@@ -55,7 +55,8 @@ void PopupButtonHighlighter::paint(Graphics &g)
 }
 
 
-PopupButtonConfirmation::PopupButtonConfirmation(const PopupButton &parent) : button(parent)
+PopupButtonConfirmation::PopupButtonConfirmation(const PopupButton &parent) :
+    button(parent)
 {
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, false);
@@ -65,16 +66,24 @@ PopupButtonConfirmation::PopupButtonConfirmation(const PopupButton &parent) : bu
 void PopupButtonConfirmation::paint(Graphics &g)
 {
     const float r = this->button.getRadiusDelta();
-    const float d = 1.5f;
+    const float d = 3.f;
 
-    g.setColour(Colours::white.withAlpha(0.2f));
-    g.fillEllipse(d + r,
-        d + r,
-        float(getWidth()) - (d * 2.f) - (r * 2.f),
-        float(getHeight()) - (d * 2.f) - (r * 2.f));
+    g.setColour(this->button.colour.brighter(0.3f));
+
+    switch (this->button.shapeType)
+    {
+    case PopupButton::Circle:
+        g.fillEllipse(d + r, d + r,
+            float(getWidth()) - (d * 2.f) - (r * 2.f),
+            float(getHeight()) - (d * 2.f) - (r * 2.f));
+    case PopupButton::Hex:
+        g.fillPath(this->button.shape);
+    default:
+        break;
+    }
 
     AffineTransform pathScaleTransform =
-        this->clickConfirmImage.getTransformToScaleToFit(this->getLocalBounds().toFloat().reduced(12), true);
+        this->clickConfirmImage.getTransformToScaleToFit(this->getLocalBounds().toFloat().reduced(20), true);
 
     g.setColour(Colours::white.withAlpha(0.3f));
     g.fillPath(this->clickConfirmImage, pathScaleTransform);
