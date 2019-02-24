@@ -131,9 +131,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> subLabel;
-    ScopedPointer<Label> textLabel;
-    ScopedPointer<IconComponent> submenuMarker;
+    UniquePointer<Label> subLabel;
+    UniquePointer<Label> textLabel;
+    UniquePointer<IconComponent> submenuMarker;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuItemComponent)
 };

@@ -27,7 +27,8 @@
 
 static Array<String> getDynamics()
 {
-    return {
+    return
+    {
         "Pianissimo",
         "Piano",
         "Mezzo-piano",
@@ -46,7 +47,8 @@ static Array<String> getDynamics()
 
 static Array<Colour> getColours()
 {
-    return {
+    return
+    {
         Colours::greenyellow,
         Colours::gold,
         Colours::tomato,

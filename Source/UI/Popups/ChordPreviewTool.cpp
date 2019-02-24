@@ -30,8 +30,15 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-#define CHORD_BUILDER_LABEL_SIZE           (28)
-#define CHORD_BUILDER_NOTE_LENGTH          (4)
+#if HELIO_DESKTOP
+#   define CHORD_BUILDER_LABEL_SIZE       (28)
+#   define CHORD_BUILDER_FONT_SIZE        (20)
+#elif HELIO_MOBILE
+#   define CHORD_BUILDER_LABEL_SIZE       (26)
+#   define CHORD_BUILDER_FONT_SIZE        (16)
+#endif
+
+#define CHORD_BUILDER_NOTE_LENGTH         (4)
 
 static Label *createLabel(const String &text)
 {
@@ -41,8 +48,8 @@ static Label *createLabel(const String &text)
     newLabel->setBounds(0, 0, size * 2, size);
     newLabel->setName(text + "_outline");
 
-    const float autoFontSize = float(size - 5.f);
-    newLabel->setFont(Font(autoFontSize, Font::plain));
+    const float autoFontSize = float(size - 8.f);
+    newLabel->setFont(CHORD_BUILDER_FONT_SIZE);
     return newLabel;
 }
 

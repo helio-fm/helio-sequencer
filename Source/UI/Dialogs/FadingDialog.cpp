@@ -77,6 +77,7 @@ void FadingDialog::updatePosition()
 #if HELIO_DESKTOP
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);
 #elif HELIO_MOBILE
-    this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2.5f);
+    // Place the dialog slightly above the center, so that screen keyboard doesn't mess with it:
+    this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 3.5f);
 #endif
 }

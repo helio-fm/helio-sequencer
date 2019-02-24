@@ -244,7 +244,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
         // I really have no idea why drawFittedText on both iOS and Android renders the font
         // slightly above the desired position, so I'm simply adding some offset:
-        const int yOffsetHack = 2;
+        const int yOffsetHack = 1;
 
         g.setFont(font);
         g.setColour(colour);

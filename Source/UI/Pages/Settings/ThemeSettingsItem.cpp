@@ -337,7 +337,8 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     this->schemeNameLabel->setText("\"" + colours->getName() + "\"", dontSendNotification);
     this->schemeNameLabel->setColour(Label::textColourId, this->theme->findColour(Label::textColourId));
 
-    this->rollImage = PianoRoll::renderRowsPattern(*this->theme, Scale::getNaturalMajorScale(), 0, 7);
+    this->rollImage = PianoRoll::renderRowsPattern(*this->theme,
+        Scale::getNaturalMajorScale(), 0, PIANOROLL_MIN_ROW_HEIGHT);
 
     this->repaint();
 }

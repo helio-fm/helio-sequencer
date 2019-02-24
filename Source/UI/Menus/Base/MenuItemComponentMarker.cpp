@@ -57,7 +57,7 @@ void MenuItemComponentMarker::paint (Graphics& g)
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
         Colour fillColour = Colour (0x0bffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = findDefaultColour(Label::textColourId).withAlpha(0.25f);
+        fillColour = findDefaultColour(Label::textColourId).withAlpha(0.1f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);

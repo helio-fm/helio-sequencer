@@ -242,19 +242,22 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
       description(MenuItem::empty()),
       mouseDownWasTriggered(false)
 {
-    addAndMakeVisible (subLabel = new Label (String(),
-                                             TRANS("...")));
-    subLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    subLabel->setJustificationType (Justification::centredRight);
-    subLabel->setEditable (false, false, false);
+    this->subLabel.reset(new Label(String(),
+                                    TRANS("...")));
+    this->addAndMakeVisible(subLabel.get());
+    this->subLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    subLabel->setJustificationType(Justification::centredRight);
+    subLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (textLabel = new Label (String(),
-                                              TRANS("...")));
-    textLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    textLabel->setJustificationType (Justification::centredLeft);
-    textLabel->setEditable (false, false, false);
+    this->textLabel.reset(new Label(String(),
+                                     TRANS("...")));
+    this->addAndMakeVisible(textLabel.get());
+    this->textLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    textLabel->setJustificationType(Justification::centredLeft);
+    textLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (submenuMarker = new IconComponent (Icons::submenu, 0.25f));
+    this->submenuMarker.reset(new IconComponent(Icons::submenu, 0.25f));
+    this->addAndMakeVisible(submenuMarker.get());
 
 
     //[UserPreSize]
@@ -269,7 +272,7 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (512, 40);
+    this->setSize(512, 40);
 
     //[Constructor]
     this->setSize(this->getWidth(), COMMAND_PANEL_BUTTON_HEIGHT);
@@ -335,7 +338,7 @@ void MenuItemComponent::paint (Graphics& g)
         (this->icon.getWidth() / 2) + ICON_MARGIN : (this->getWidth() / 2);
 
     jassert(this->icon.isValid());
-    
+
     Icons::drawImageRetinaAware(this->icon, g, iconX, this->getHeight() / 2);
     //[/UserPaint]
 }
@@ -345,9 +348,9 @@ void MenuItemComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    subLabel->setBounds (getWidth() - 4 - 128, (getHeight() / 2) - ((getHeight() - 0) / 2), 128, getHeight() - 0);
-    textLabel->setBounds (48, (getHeight() / 2) - ((getHeight() - 0) / 2), getWidth() - 56, getHeight() - 0);
-    submenuMarker->setBounds (getWidth() - 4 - 20, (getHeight() / 2) - (20 / 2), 20, 20);
+    subLabel->setBounds(getWidth() - 4 - 128, (getHeight() / 2) - ((getHeight() - 0) / 2), 128, getHeight() - 0);
+    textLabel->setBounds(48, (getHeight() / 2) - ((getHeight() - 0) / 2), getWidth() - 56, getHeight() - 0);
+    submenuMarker->setBounds(getWidth() - 4 - 20, (getHeight() / 2) - (20 / 2), 20, 20);
     //[UserResized] Add your own custom resize handling here..
 
     if (!this->icon.isValid() && this->description->image.isValid())
@@ -644,12 +647,12 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <LABEL name="" id="8de701891a585730" memberName="subLabel" virtualName=""
          explicitFocusOrder="0" pos="4Rr 0Cc 128 0M" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="34"/>
   <LABEL name="" id="14908053d7863001" memberName="textLabel" virtualName=""
          explicitFocusOrder="0" pos="48 0Cc 56M 0M" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="1e71bff8af38b714" memberName="submenuMarker" virtualName=""

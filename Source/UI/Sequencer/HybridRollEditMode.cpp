@@ -21,10 +21,18 @@
 
 bool HybridRollEditMode::forbidsViewportDragging() const
 {
+#if HELIO_DESKTOP
     return
         this->isMode(HybridRollEditMode::drawMode) ||
         this->isMode(HybridRollEditMode::selectionMode) ||
         this->isMode(HybridRollEditMode::zoomMode);
+#elif HELIO_MOBILE
+    return
+        this->isMode(HybridRollEditMode::drawMode) ||
+        this->isMode(HybridRollEditMode::selectionMode) ||
+        this->isMode(HybridRollEditMode::zoomMode) ||
+        this->isMode(HybridRollEditMode::knifeMode);
+#endif
 }
 
 bool HybridRollEditMode::forcesViewportDragging() const

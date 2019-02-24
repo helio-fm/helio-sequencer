@@ -46,8 +46,10 @@
 
 #if HELIO_DESKTOP
 #   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS (false)
+#   define TOOLS_SIDEBAR_SHOWS_TIME (false)
 #elif HELIO_MOBILE
 #   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS (false)
+#   define TOOLS_SIDEBAR_SHOWS_TIME (false)
 #endif
 
 //[/MiscUserDefs]
@@ -71,14 +73,14 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->totalTime.reset(new Label(String(),
                                      TRANS("...")));
     this->addAndMakeVisible(totalTime.get());
-    this->totalTime->setFont(Font (Font::getDefaultSansSerifFontName(), 14.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->totalTime->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
     totalTime->setJustificationType(Justification::centred);
     totalTime->setEditable(false, false, false);
 
     this->currentTime.reset(new Label(String(),
                                        TRANS("...")));
     this->addAndMakeVisible(currentTime.get());
-    this->currentTime->setFont(Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->currentTime->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     currentTime->setJustificationType(Justification::centred);
     currentTime->setEditable(false, false, false);
 
@@ -104,8 +106,10 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     //this->totalTime->setCachedComponentImage(new CachedLabelImage(*this->totalTime));
 
     // TODO: remove these and show timings somewhere else
+#if !TOOLS_SIDEBAR_SHOWS_TIME
     this->totalTime->setVisible(false);
     this->currentTime->setVisible(false);
+#endif
 
     //[/UserPreSize]
 
@@ -318,21 +322,18 @@ Component *SequencerSidebarRight::refreshComponentForRow(int rowNumber,
         return existingComponentToUpdate;
     }
 
-    const MenuItem::Ptr itemDescription = this->menu[rowNumber];
-
+    const auto description = this->menu.getUnchecked(rowNumber);
     if (existingComponentToUpdate != nullptr)
     {
-        if (MenuItemComponent *row =
-            dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
+        if (auto *row = dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
         {
             row->setSelected(isRowSelected);
-            row->update(itemDescription);
+            row->update(description);
         }
     }
     else
     {
-        MenuItemComponent *row =
-            new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
+        auto *row = new MenuItemComponent(this, this->listBox->getViewport(), description);
         row->setSelected(isRowSelected);
         return row;
     }
@@ -351,6 +352,7 @@ int SequencerSidebarRight::getNumRows()
 
 void SequencerSidebarRight::handleAsyncUpdate()
 {
+#if TOOLS_SIDEBAR_SHOWS_TIME
     if (this->isTimerRunning())
     {
         const double systemTimeOffset = (Time::getMillisecondCounter() - this->timerStartSystemTime.get());
@@ -363,39 +365,49 @@ void SequencerSidebarRight::handleAsyncUpdate()
     }
 
     this->totalTime->setText(Transport::getTimeString(this->lastTotalTime.get()), dontSendNotification);
+#endif
 }
 
 //===----------------------------------------------------------------------===//
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void SequencerSidebarRight::onSeek(double absolutePosition,
-    double currentTimeMs, double totalTimeMs)
+void SequencerSidebarRight::onSeek(double absolutePosition,double currentTimeMs, double totalTimeMs)
 {
+#if TOOLS_SIDEBAR_SHOWS_TIME
     this->lastSeekTime = currentTimeMs;
     this->lastTotalTime = totalTimeMs;
     this->triggerAsyncUpdate();
+#endif
 }
 
 void SequencerSidebarRight::onTempoChanged(double msPerQuarter) {}
 
 void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
 {
+#if TOOLS_SIDEBAR_SHOWS_TIME
     this->lastTotalTime = timeMs;
     this->totalTime->setText(Transport::getTimeString(this->lastTotalTime.get()), dontSendNotification);
+#endif
 }
 
 void SequencerSidebarRight::onPlay()
 {
+#if TOOLS_SIDEBAR_SHOWS_TIME
     this->timerStartSystemTime = Time::getMillisecondCounter();
     this->timerStartSeekTime = this->lastSeekTime;
     this->startTimer(100);
+#endif
+
     this->playButton->setPlaying(true);
 }
 
 void SequencerSidebarRight::onStop()
 {
+#if TOOLS_SIDEBAR_SHOWS_TIME
     this->stopTimer();
+#endif
+
     this->playButton->setPlaying(false);
 }
 
@@ -474,14 +486,14 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
          explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
   <LABEL name="" id="b9e867ece7f52ad8" memberName="currentTime" virtualName=""
          explicitFocusOrder="0" pos="80Cc 26Rr 72 22" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default sans-serif font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+         fontname="Default font" fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
              constructorParams="Light"/>
