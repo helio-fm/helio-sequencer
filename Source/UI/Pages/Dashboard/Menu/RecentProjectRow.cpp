@@ -53,14 +53,14 @@ RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox
     this->titleLabel.reset(new Label(String(),
                                       TRANS("...")));
     this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->titleLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType(Justification::centredRight);
     titleLabel->setEditable(false, false, false);
 
     this->dateLabel.reset(new Label(String(),
                                      TRANS("...")));
     this->addAndMakeVisible(dateLabel.get());
-    this->dateLabel->setFont(Font (Font::getDefaultSerifFontName(), 12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->dateLabel->setFont(Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
     dateLabel->setJustificationType(Justification::centredRight);
     dateLabel->setEditable(false, false, false);
 
@@ -180,12 +180,12 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0 5 46M 24" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="34"/>
   <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="dateLabel" virtualName=""
          explicitFocusOrder="0" pos="0 27 82M 16" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="34"/>
   <GENERICCOMPONENT name="" id="42f3ed34561654ef" memberName="activenessImage" virtualName=""

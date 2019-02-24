@@ -54,7 +54,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     this->messageLabel.reset(new Label(String(),
                                         TRANS("...")));
     this->addAndMakeVisible(messageLabel.get());
-    this->messageLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType(Justification::centred);
     messageLabel->setEditable(false, false, false);
 
@@ -509,7 +509,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
                  constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(App::Config().getScales()->getAll()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
+                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(App::Config().getScales()-&gt;getAll()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="460" initialHeight="260">
   <METHODS>
@@ -532,7 +532,7 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 36" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
               virtualName="" explicitFocusOrder="0" pos="4 4Rr 225 48" buttonText="..."

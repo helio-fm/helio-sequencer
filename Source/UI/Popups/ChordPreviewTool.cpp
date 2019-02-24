@@ -42,7 +42,7 @@ static Label *createLabel(const String &text)
     newLabel->setName(text + "_outline");
 
     const float autoFontSize = float(size - 5.f);
-    newLabel->setFont(Font(Font::getDefaultSerifFontName(), autoFontSize, Font::plain));
+    newLabel->setFont(Font(autoFontSize, Font::plain));
     return newLabel;
 }
 
@@ -433,7 +433,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="ChordPreviewTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
                  constructorParams="PianoRoll &amp;caller, WeakReference&lt;PianoSequence&gt; target, const Clip &amp;clip, WeakReference&lt;KeySignaturesSequence&gt; harmonicContext"
-                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;clip(clip),&#10;harmonicContext(harmonicContext),&#10;defaultChords(App::Config().getChords()->getAll()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
+                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;clip(clip),&#10;harmonicContext(harmonicContext),&#10;defaultChords(App::Config().getChords()-&gt;getAll()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>

@@ -33,7 +33,7 @@ LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const
     this->titleLabel.reset(new Label(String(),
                                       TRANS("...")));
     this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->titleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType(Justification::centredLeft);
     titleLabel->setEditable(false, false, false);
 
@@ -126,7 +126,7 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <LABEL name="" id="9f16871b637bd1bd" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="8 8 576 26" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

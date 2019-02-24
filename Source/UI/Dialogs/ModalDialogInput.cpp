@@ -34,24 +34,29 @@
 ModalDialogInput::ModalDialogInput(const String &text, const String &message, const String &okText, const String &cancelText)
     : input(text)
 {
-    addAndMakeVisible (background = new DialogPanel());
-    addAndMakeVisible (messageLabel = new Label (String(),
-                                                 TRANS("...")));
-    messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    messageLabel->setJustificationType (Justification::centred);
-    messageLabel->setEditable (false, false, false);
+    this->background.reset(new DialogPanel());
+    this->addAndMakeVisible(background.get());
+    this->messageLabel.reset(new Label(String(),
+                                        TRANS("...")));
+    this->addAndMakeVisible(messageLabel.get());
+    this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    messageLabel->setJustificationType(Justification::centred);
+    messageLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (cancelButton = new TextButton (String()));
-    cancelButton->setButtonText (TRANS("..."));
+    this->cancelButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(cancelButton.get());
+    cancelButton->setButtonText(TRANS("..."));
     cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    cancelButton->addListener (this);
+    cancelButton->addListener(this);
 
-    addAndMakeVisible (okButton = new TextButton (String()));
-    okButton->setButtonText (TRANS("..."));
+    this->okButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(okButton.get());
+    okButton->setButtonText(TRANS("..."));
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    okButton->addListener (this);
+    okButton->addListener(this);
 
-    addAndMakeVisible (textEditor = new TextEditor (String()));
+    this->textEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(textEditor.get());
     textEditor->setMultiLine (false);
     textEditor->setReturnKeyStartsNewLine (false);
     textEditor->setReadOnly (false);
@@ -60,8 +65,10 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message, co
     textEditor->setPopupMenuEnabled (true);
     textEditor->setText (String());
 
-    addAndMakeVisible (separatorH = new SeparatorHorizontal());
-    addAndMakeVisible (separatorV = new SeparatorVertical());
+    this->separatorH.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separatorH.get());
+    this->separatorV.reset(new SeparatorVertical());
+    this->addAndMakeVisible(separatorV.get());
 
     //[UserPreSize]
     this->messageLabel->setText(message, dontSendNotification);
@@ -75,7 +82,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message, co
     this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
-    setSize (450, 165);
+    this->setSize(450, 165);
 
     //[Constructor]
     this->updatePosition();
@@ -132,13 +139,13 @@ void ModalDialogInput::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 4 + 12, getWidth() - 60, 36);
-    cancelButton->setBounds (4, getHeight() - 4 - 48, 220, 48);
-    okButton->setBounds (getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
-    textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 58, getWidth() - 60, 36);
-    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
-    separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
+    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 60) / 2), 4 + 12, getWidth() - 60, 36);
+    cancelButton->setBounds(4, getHeight() - 4 - 48, 220, 48);
+    okButton->setBounds(getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
+    textEditor->setBounds((getWidth() / 2) - ((getWidth() - 60) / 2), 58, getWidth() - 60, 36);
+    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
     if (this->isShowing())
     {
@@ -147,18 +154,18 @@ void ModalDialogInput::resized()
     //[/UserResized]
 }
 
-void ModalDialogInput::buttonClicked (Button* buttonThatWasClicked)
+void ModalDialogInput::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == cancelButton)
+    if (buttonThatWasClicked == cancelButton.get())
     {
         //[UserButtonCode_cancelButton] -- add your button handler code here..
         this->cancel();
         //[/UserButtonCode_cancelButton]
     }
-    else if (buttonThatWasClicked == okButton)
+    else if (buttonThatWasClicked == okButton.get())
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
         this->okay();
@@ -235,8 +242,8 @@ void ModalDialogInput::textEditorFocusLost(TextEditor &ed)
 
     const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
     if (this->input.isNotEmpty() &&
-        focusedComponent != this->okButton &&
-        focusedComponent != this->cancelButton)
+        focusedComponent != this->okButton.get() &&
+        focusedComponent != this->cancelButton.get())
     {
         this->okay();
     }
@@ -396,7 +403,7 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 60M 36" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="..." connectedEdges="6"

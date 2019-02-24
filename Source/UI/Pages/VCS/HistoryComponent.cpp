@@ -46,7 +46,7 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     this->revisionTreeLabel.reset(new Label(String(),
                                              TRANS("vcs::history::caption")));
     this->addAndMakeVisible(revisionTreeLabel.get());
-    this->revisionTreeLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->revisionTreeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     revisionTreeLabel->setJustificationType(Justification::centred);
     revisionTreeLabel->setEditable(false, false, false);
 
@@ -230,10 +230,10 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="158da5e6e58ab3ae" memberName="revisionTreeLabel"
          virtualName="" explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::history::caption"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+         fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             explicitFocusOrder="0" pos="0.5Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

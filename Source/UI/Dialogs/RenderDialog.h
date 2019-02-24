@@ -47,8 +47,8 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
-    void labelTextChanged (Label* labelThatHasChanged) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
+    void labelTextChanged(Label* labelThatHasChanged) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -78,17 +78,17 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<DialogPanel> background;
-    ScopedPointer<TextButton> renderButton;
-    ScopedPointer<Label> filenameEditor;
-    ScopedPointer<Label> filenameLabel;
-    ScopedPointer<TextButton> cancelButton;
-    ScopedPointer<Slider> slider;
-    ScopedPointer<ProgressIndicator> indicator;
-    ScopedPointer<MenuItemComponent> browseButton;
-    ScopedPointer<Label> pathEditor;
-    ScopedPointer<SeparatorHorizontalFading> component3;
-    ScopedPointer<SeparatorHorizontal> separatorH;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<TextButton> renderButton;
+    UniquePointer<Label> filenameEditor;
+    UniquePointer<Label> filenameLabel;
+    UniquePointer<TextButton> cancelButton;
+    UniquePointer<Slider> slider;
+    UniquePointer<ProgressIndicator> indicator;
+    UniquePointer<MenuItemComponent> browseButton;
+    UniquePointer<Label> pathEditor;
+    UniquePointer<SeparatorHorizontalFading> component3;
+    UniquePointer<SeparatorHorizontal> separatorH;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
 };

@@ -78,11 +78,12 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox)
     : DraggingListBoxComponent(parentListBox.getViewport()),
       listBox(parentListBox)
 {
-    addAndMakeVisible (schemeNameLabel = new Label (String(),
-                                                    TRANS("...")));
-    schemeNameLabel->setFont (Font (Font::getDefaultSerifFontName(), 18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    schemeNameLabel->setJustificationType (Justification::centredLeft);
-    schemeNameLabel->setEditable (false, false, false);
+    this->schemeNameLabel.reset(new Label(String(),
+                                           TRANS("...")));
+    this->addAndMakeVisible(schemeNameLabel.get());
+    this->schemeNameLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    schemeNameLabel->setJustificationType(Justification::centredLeft);
+    schemeNameLabel->setEditable(false, false, false);
 
 
     //[UserPreSize]
@@ -90,7 +91,7 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox)
     this->addChildComponent(this->selectionComponent);
     //[/UserPreSize]
 
-    setSize (400, 40);
+    this->setSize(400, 40);
 
     //[Constructor]
     //[/Constructor]
@@ -279,7 +280,7 @@ void ThemeSettingsItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    schemeNameLabel->setBounds (67, 2, 174, getHeight() - 6);
+    schemeNameLabel->setBounds(67, 2, 174, getHeight() - 6);
     //[UserResized] Add your own custom resize handling here..
     this->selectionComponent->setBounds(this->getLocalBounds());
     //[/UserResized]
@@ -370,7 +371,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <LABEL name="" id="c261305e2de1ebf2" memberName="schemeNameLabel" virtualName=""
          explicitFocusOrder="0" pos="67 2 174 6M" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

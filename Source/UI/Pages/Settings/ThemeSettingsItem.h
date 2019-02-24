@@ -64,7 +64,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> schemeNameLabel;
+    UniquePointer<Label> schemeNameLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeSettingsItem)
 };

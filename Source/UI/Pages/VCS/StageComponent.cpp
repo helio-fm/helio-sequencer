@@ -55,7 +55,7 @@ StageComponent::StageComponent(VersionControl &versionControl)
     this->titleLabel.reset(new Label(String(),
                                       TRANS("vcs::stage::caption")));
     this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->titleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType(Justification::centred);
     titleLabel->setEditable(false, false, false);
 
@@ -215,7 +215,7 @@ Component *StageComponent::refreshComponentForRow(int rowNumber,
     const bool isLastRow = (rowNumber == (numRecords - 1));
 
     if (rowNumber >= numRecords) { return existingComponentToUpdate; }
-    
+
     if (auto *revRecord = this->stageDeltas[rowNumber].get())
     {
         if (existingComponentToUpdate != nullptr)
@@ -411,20 +411,20 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
   <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="horizontalCenter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.879% 8" class="Component"
+                    explicitFocusOrder="0" pos="0 0 50.847% 8" class="Component"
                     params=""/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::stage::caption"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+         fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
   <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 32 32" class="ProgressIndicator"
                     params=""/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
                     explicitFocusOrder="0" pos="1 42 2M 43M" class="ListBox" params="&quot;&quot;, this"/>
   <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             explicitFocusOrder="0" pos="0.5Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

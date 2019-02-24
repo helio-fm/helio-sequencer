@@ -31,16 +31,15 @@ class AnnotationsSequence;
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
-class AnnotationDialog  : public FadingDialog,
-                          public TextEditor::Listener,
-                          public ColourButtonListener,
-                          private Timer,
-                          public Button::Listener
+class AnnotationDialog final : public FadingDialog,
+                               public TextEditor::Listener,
+                               public ColourButtonListener,
+                               private Timer,
+                               public Button::Listener
 {
 public:
 
-    AnnotationDialog (Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
-
+    AnnotationDialog(Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
     ~AnnotationDialog();
 
     //[UserMethods]
@@ -52,7 +51,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -86,15 +85,15 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<DialogPanel> background;
-    ScopedPointer<MobileComboBox::Primer> comboPrimer;
-    ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> removeEventButton;
-    ScopedPointer<TextButton> okButton;
-    ScopedPointer<SeparatorHorizontal> separatorH;
-    ScopedPointer<SeparatorVertical> separatorV;
-    ScopedPointer<ColourSwatches> colourSwatches;
-    ScopedPointer<TextEditor> textEditor;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<MobileComboBox::Primer> comboPrimer;
+    UniquePointer<Label> messageLabel;
+    UniquePointer<TextButton> removeEventButton;
+    UniquePointer<TextButton> okButton;
+    UniquePointer<SeparatorHorizontal> separatorH;
+    UniquePointer<SeparatorVertical> separatorV;
+    UniquePointer<ColourSwatches> colourSwatches;
+    UniquePointer<TextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };

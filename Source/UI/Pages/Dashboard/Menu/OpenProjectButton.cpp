@@ -35,7 +35,7 @@ OpenProjectButton::OpenProjectButton()
     this->openProjectLabel.reset(new Label(String(),
                                             TRANS("menu::workspace::project::open")));
     this->addAndMakeVisible(openProjectLabel.get());
-    this->openProjectLabel->setFont(Font (Font::getDefaultSerifFontName(), 18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->openProjectLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     openProjectLabel->setJustificationType(Justification::centredLeft);
     openProjectLabel->setEditable(false, false, false);
 
@@ -113,8 +113,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="8ebb161d0a976635" memberName="openProjectLabel" virtualName=""
          explicitFocusOrder="0" pos="38 0 42M 0M" labelText="menu::workspace::project::open"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="18.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
+         fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="49a90a98eefa147f" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="34 4 4 8M" sourceFile="../../../Themes/SeparatorVertical.cpp"
              constructorParams=""/>

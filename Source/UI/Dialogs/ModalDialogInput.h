@@ -56,7 +56,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -81,13 +81,13 @@ private:
     void textEditorFocusLost(TextEditor&) override;
     //[/UserVariables]
 
-    ScopedPointer<DialogPanel> background;
-    ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> cancelButton;
-    ScopedPointer<TextButton> okButton;
-    ScopedPointer<TextEditor> textEditor;
-    ScopedPointer<SeparatorHorizontal> separatorH;
-    ScopedPointer<SeparatorVertical> separatorV;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<Label> messageLabel;
+    UniquePointer<TextButton> cancelButton;
+    UniquePointer<TextButton> okButton;
+    UniquePointer<TextEditor> textEditor;
+    UniquePointer<SeparatorHorizontal> separatorH;
+    UniquePointer<SeparatorVertical> separatorV;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogInput)
 };

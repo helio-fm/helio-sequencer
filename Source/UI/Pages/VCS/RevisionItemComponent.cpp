@@ -78,14 +78,14 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
     this->itemLabel.reset(new Label(String(),
                                      TRANS("...")));
     this->addAndMakeVisible(itemLabel.get());
-    this->itemLabel->setFont(Font (Font::getDefaultSerifFontName(), 18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->itemLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     itemLabel->setJustificationType(Justification::centredLeft);
     itemLabel->setEditable(false, false, false);
 
     this->deltasLabel.reset(new Label(String(),
                                        TRANS("...")));
     this->addAndMakeVisible(deltasLabel.get());
-    this->deltasLabel->setFont(Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->deltasLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     deltasLabel->setJustificationType(Justification::topLeft);
     deltasLabel->setEditable(false, false, false);
 
@@ -263,12 +263,12 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="itemLabel" virtualName=""
          explicitFocusOrder="0" pos="5 3 10M 24" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <LABEL name="" id="12427a53408d61ee" memberName="deltasLabel" virtualName=""
          explicitFocusOrder="0" pos="10 24 90M 38" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="9"/>
   <JUCERCOMP name="" id="2e5e217f3d476ef8" memberName="separator" virtualName=""

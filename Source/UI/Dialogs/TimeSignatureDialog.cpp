@@ -59,7 +59,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     this->messageLabel.reset(new Label(String(),
                                         TRANS("...")));
     this->addAndMakeVisible(messageLabel.get());
-    this->messageLabel->setFont(Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType(Justification::centred);
     messageLabel->setEditable(false, false, false);
 
@@ -450,7 +450,7 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 20 32M 36" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
               virtualName="" explicitFocusOrder="0" pos="4 4Rr 180 48" buttonText="..."

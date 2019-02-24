@@ -71,30 +71,39 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
 {
-    addAndMakeVisible (background = new DialogPanel());
-    addAndMakeVisible (comboPrimer = new MobileComboBox::Primer());
+    this->background.reset(new DialogPanel());
+    this->addAndMakeVisible(background.get());
+    this->comboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(comboPrimer.get());
 
-    addAndMakeVisible (messageLabel = new Label (String(),
-                                                 TRANS("...")));
-    messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    messageLabel->setJustificationType (Justification::centred);
-    messageLabel->setEditable (false, false, false);
+    this->messageLabel.reset(new Label(String(),
+                                        TRANS("...")));
+    this->addAndMakeVisible(messageLabel.get());
+    this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    messageLabel->setJustificationType(Justification::centred);
+    messageLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (removeEventButton = new TextButton (String()));
-    removeEventButton->setButtonText (TRANS("..."));
+    this->removeEventButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(removeEventButton.get());
+    removeEventButton->setButtonText(TRANS("..."));
     removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    removeEventButton->addListener (this);
+    removeEventButton->addListener(this);
 
-    addAndMakeVisible (okButton = new TextButton (String()));
-    okButton->setButtonText (TRANS("..."));
+    this->okButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(okButton.get());
+    okButton->setButtonText(TRANS("..."));
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    okButton->addListener (this);
+    okButton->addListener(this);
 
-    addAndMakeVisible (separatorH = new SeparatorHorizontal());
-    addAndMakeVisible (separatorV = new SeparatorVertical());
-    addAndMakeVisible (colourSwatches = new ColourSwatches());
+    this->separatorH.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separatorH.get());
+    this->separatorV.reset(new SeparatorVertical());
+    this->addAndMakeVisible(separatorV.get());
+    this->colourSwatches.reset(new ColourSwatches());
+    this->addAndMakeVisible(colourSwatches.get());
 
-    addAndMakeVisible (textEditor = new TextEditor (String()));
+    this->textEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(textEditor.get());
     textEditor->setMultiLine (false);
     textEditor->setReturnKeyStartsNewLine (false);
     textEditor->setReadOnly (false);
@@ -139,7 +148,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
-    setSize (450, 220);
+    this->setSize(450, 220);
 
     //[Constructor]
     this->updatePosition();
@@ -208,25 +217,25 @@ void AnnotationDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    comboPrimer->setBounds ((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
-    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 4 + 16, getWidth() - 48, 36);
-    removeEventButton->setBounds (4, getHeight() - 4 - 48, 220, 48);
-    okButton->setBounds (getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
-    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
-    separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
-    colourSwatches->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 106, getWidth() - 56, 34);
-    textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 66, getWidth() - 48, 32);
+    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    comboPrimer->setBounds((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 4 + 16, getWidth() - 48, 36);
+    removeEventButton->setBounds(4, getHeight() - 4 - 48, 220, 48);
+    okButton->setBounds(getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
+    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
+    colourSwatches->setBounds((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 106, getWidth() - 56, 34);
+    textEditor->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 66, getWidth() - 48, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
+void AnnotationDialog::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == removeEventButton)
+    if (buttonThatWasClicked == removeEventButton.get())
     {
         //[UserButtonCode_removeEventButton] -- add your button handler code here..
         if (this->addsNewEvent)
@@ -240,7 +249,7 @@ void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
         }
         //[/UserButtonCode_removeEventButton]
     }
-    else if (buttonThatWasClicked == okButton)
+    else if (buttonThatWasClicked == okButton.get())
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
         if (textEditor->getText().isNotEmpty())
@@ -407,8 +416,8 @@ void AnnotationDialog::textEditorFocusLost(TextEditor&)
 
     const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
     if (this->textEditor->getText().isNotEmpty() &&
-        focusedComponent != this->okButton &&
-        focusedComponent != this->removeEventButton)
+        focusedComponent != this->okButton.get() &&
+        focusedComponent != this->removeEventButton.get())
     {
         this->dismiss();
     }
@@ -447,7 +456,7 @@ void AnnotationDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ColourButtonListener, private Timer"
                  constructorParams="Component &amp;owner, AnnotationsSequence *sequence, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(sequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -460,7 +469,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
@@ -471,8 +481,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 16 48M 36" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
               virtualName="" explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="..."
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>

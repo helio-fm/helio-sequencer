@@ -244,15 +244,15 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
         // I really have no idea why drawFittedText on both iOS and Android renders the font
         // slightly above the desired position, so I'm simply adding some offset:
-        const int heightOffsetHack = 1;
+        const int yOffsetHack = 2;
 
         g.setFont(font);
         g.setColour(colour);
         g.drawFittedText(textToDraw,
             textArea.getX(),
-            textArea.getY() + heightOffsetHack,
+            textArea.getY() + yOffsetHack,
             textArea.getWidth(),
-            textArea.getHeight() + heightOffsetHack,
+            textArea.getHeight() + yOffsetHack,
             label.getJustificationType(),
             maxLines,
             1.0);
@@ -374,9 +374,13 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header
     auto highlightColour = header.findColour(TableHeaderComponent::highlightColourId);
 
     if (isMouseDown)
+    {
         g.fillAll(highlightColour);
+    }
     else if (isMouseOver)
+    {
         g.fillAll(highlightColour.withMultipliedAlpha(0.625f));
+    }
 
     Rectangle<int> area(width, height);
     area.reduce(4, 0);
