@@ -209,7 +209,8 @@ public:
 
     public: void paint(Graphics &g) override
     {
-        g.setColour(Colours::white.withAlpha(0.0175f));
+        const auto fgColour = findDefaultColour(Label::textColourId);
+        g.setColour(fgColour.withAlpha(0.0175f));
         g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 2.f);
     }
 };
@@ -227,7 +228,8 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::white.withAlpha(0.075f));
+        const auto fgColour = findDefaultColour(Label::textColourId);
+        g.setColour(fgColour.withAlpha(0.075f));
         g.fillRect(this->getLocalBounds());
     }
 };

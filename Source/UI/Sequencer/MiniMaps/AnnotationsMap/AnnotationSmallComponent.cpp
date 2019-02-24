@@ -124,7 +124,8 @@ void AnnotationSmallComponent::updateContent()
     {
         this->lastColour = this->event.getTrackColour();
         this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
-        this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(Colours::white, 0.55f));
+        const auto fgColour = findDefaultColour(Label::textColourId);
+        this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(fgColour, 0.55f));
         this->textWidth = float(this->annotationLabel->getFont().getStringWidth(this->event.getDescription()));
     }
 

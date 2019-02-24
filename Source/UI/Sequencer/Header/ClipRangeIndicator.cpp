@@ -82,7 +82,8 @@ bool ClipRangeIndicator::updateWith(const Colour &colour, float firstBeat, float
     if (this->trackColour != colour)
     {
         this->trackColour = colour;
-        this->paintColour = colour.interpolatedWith(Colours::white, 0.5f).withAlpha(0.45f);
+        const auto fgColour = findDefaultColour(Label::textColourId);
+        this->paintColour = colour.interpolatedWith(fgColour, 0.5f).withAlpha(0.45f);
         this->repaint();
     }
 

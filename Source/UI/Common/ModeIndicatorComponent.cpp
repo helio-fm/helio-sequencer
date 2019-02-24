@@ -19,7 +19,7 @@
 #include "ModeIndicatorComponent.h"
 #include "ComponentIDs.h"
 
-class ModeIndicatorBar : public Component, private Timer
+class ModeIndicatorBar final : public Component, private Timer
 {
 public:
 
@@ -35,7 +35,9 @@ public:
     void setHighlighted(bool state)
     {
         if (state == this->isHighlighted)
-        { return; }
+        {
+            return;
+        }
 
         this->animationDirection = state ? 1.f : -1.f;
         this->animationSpeed = MODE_BAR_ANIMATION_SPEED;
@@ -45,7 +47,8 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::white.withAlpha(0.1f + this->brightness / 2.f));
+        const auto fgColour = findDefaultColour(Label::textColourId);
+        g.setColour(fgColour.withAlpha(0.15f + this->brightness / 2.f));
         g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
 

@@ -28,6 +28,8 @@ MenuItemComponentMarker::MenuItemComponentMarker()
 {
 
     //[UserPreSize]
+    this->setPaintingIsUnclipped(true);
+    this->setWantsKeyboardFocus(false);
     //[/UserPreSize]
 
     this->setSize(64, 64);
@@ -55,6 +57,7 @@ void MenuItemComponentMarker::paint (Graphics& g)
         int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
         Colour fillColour = Colour (0x0bffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour = findDefaultColour(Label::textColourId).withAlpha(0.25f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
@@ -78,7 +81,7 @@ void MenuItemComponentMarker::parentHierarchyChanged()
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->setAlpha(0.0f);
     this->setBounds(this->getParentComponent()->getLocalBounds());
-    Desktop::getInstance().getAnimator().fadeIn(this, 300);
+    Desktop::getInstance().getAnimator().fadeIn(this, 200);
     //[/UserCode_parentHierarchyChanged]
 }
 

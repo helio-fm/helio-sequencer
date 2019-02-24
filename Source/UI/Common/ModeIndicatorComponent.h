@@ -21,7 +21,7 @@ class ModeIndicatorBar;
 
 #include "ComponentFader.h"
 
-class ModeIndicatorComponent : public Component
+class ModeIndicatorComponent final : public Component
 {
 public:
     

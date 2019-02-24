@@ -103,7 +103,7 @@ void ShadowLeftwards::paint (Graphics& g)
         w / 2.5f, 0.f, false));
     g.fillRect(this->getLocalBounds());
 
-    g.setColour(this->lineColour);
+    g.setColour(this->lineColour.withMultipliedAlpha(0.5f));
     g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
     //[/UserPaint]
 }
