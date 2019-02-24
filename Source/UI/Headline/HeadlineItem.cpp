@@ -114,6 +114,7 @@ void HeadlineItem::resized()
 void HeadlineItem::mouseEnter (const MouseEvent& e)
 {
     //[UserCode_mouseEnter] -- Add your code here...
+#if HELIO_DESKTOP
     // A hacky way to prevent re-opening the menu again after the new page is shown.
     // Showhow comparing current mouse screen position to e.getMouseDownScreenPosition()
     // won't work (maybe a JUCE bug), so get it from getMainMouseSource:
@@ -123,6 +124,7 @@ void HeadlineItem::mouseEnter (const MouseEvent& e)
     {
         this->startTimer(200);
     }
+#endif
     //[/UserCode_mouseEnter]
 }
 

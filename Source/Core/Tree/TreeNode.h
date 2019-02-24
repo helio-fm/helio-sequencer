@@ -19,6 +19,12 @@
 
 #include "HeadlineItemDataSource.h"
 
+#if HELIO_DESKTOP
+#   define TREE_NODE_ICON_HEIGHT (24)
+#elif HELIO_MOBILE
+#   define TREE_NODE_ICON_HEIGHT (24)
+#endif
+
 class TreeNodeBase
 {
 public:
@@ -52,12 +58,6 @@ private:
     TreeNodeBase *parent = nullptr;
     OwnedArray<TreeNodeBase> children;
 };
-
-#if HELIO_DESKTOP
-#   define TREE_NODE_ICON_HEIGHT (24)
-#elif HELIO_MOBILE
-#   define TREE_NODE_ICON_HEIGHT (32)
-#endif
 
 class TreeNode : public TreeNodeBase,
                  public Serializable,

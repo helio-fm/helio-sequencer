@@ -122,7 +122,8 @@ void HeadlineDropdown::resized()
 void HeadlineDropdown::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    if (this->item != nullptr) {
+    if (this->item != nullptr)
+    {
         this->item->onSelectedAsMenuItem();
     }
     //[/UserCode_mouseDown]

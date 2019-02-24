@@ -172,7 +172,15 @@ void HelioTheme::drawLasso(Graphics &g, Component &lassoComp)
 
 Font HelioTheme::getLabelFont(Label &label)
 {
+#if HELIO_DESKTOP
     return label.getFont();
+#elif HELIO_MOBILE
+    // For whatever reason,fonts on the mobiles look way larger
+    // than fonts of same height on the desktops:
+    auto font = label.getFont();
+    font.setHeight(font.getHeight() - 2);
+    return font;
+#endif
 }
 
 void HelioTheme::drawLabel(Graphics &g, Label &label)
@@ -234,13 +242,17 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
         const auto textArea = label.getBorderSize().subtractedFrom(label.getLocalBounds());
 
+        // I really have no idea why drawFittedText on both iOS and Android renders the font
+        // slightly above the desired position, so I'm simply adding some offset:
+        const int heightOffsetHack = 1;
+
         g.setFont(font);
         g.setColour(colour);
         g.drawFittedText(textToDraw,
             textArea.getX(),
-            textArea.getY(),
+            textArea.getY() + heightOffsetHack,
             textArea.getWidth(),
-            textArea.getHeight(),
+            textArea.getHeight() + heightOffsetHack,
             label.getJustificationType(),
             maxLines,
             1.0);

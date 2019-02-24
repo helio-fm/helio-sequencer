@@ -268,13 +268,19 @@ void SequencerSidebarRight::recreateMenu()
     const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::knifeMode);
     const bool eraserMode = this->project.getEditMode().isMode(HybridRollEditMode::eraserMode);
 
+    // Selection tool is useless on the desktop
 #if HELIO_MOBILE
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggled(selectionMode));
 #endif
 
     this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::EditModeDefault)->toggled(defaultMode));
     this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->toggled(drawMode));
+
+    // Drag tool is useless on the mobile
+#if HELIO_DESKTOP
     this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->toggled(dragMode));
+#endif
+
     this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggled(scissorsMode));
     //this->menu.add(MenuItem::item(Icons::eraserTool, CommandIDs::EditModeEraser)->toggled(eraserMode));
 
