@@ -348,7 +348,7 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
         
         if (e.mods.isRightButtonDown())
         {
-            HelioCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
+            this->showPopupMenu();
             //this->transport.startPlayback();
         }
     }
@@ -392,7 +392,7 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
 void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
     // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
-    // HelioCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
+    //this->showPopupMenu();
 
 #if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
     const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
@@ -451,4 +451,9 @@ void HybridRollHeader::resized()
     {
         this->updateClipRangeIndicator();
     }
+}
+
+void HybridRollHeader::showPopupMenu()
+{
+    HelioCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
 }

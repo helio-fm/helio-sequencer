@@ -368,14 +368,23 @@ void HybridRoll::broadcastRollResized()
 void HybridRoll::longTapEvent(const Point<float> &position,
     const WeakReference<Component> &target)
 {
-    if (this->multiTouchController->hasMultitouch() ||
-        this->project.getEditMode().forbidsSelectionMode() ||
-        target != this)
+    if (this->multiTouchController->hasMultitouch())
     {
         return;
     }
 
-    this->lassoComponent->beginLasso(position, this);
+    if (target == this->header)
+    {
+        this->header->showPopupMenu();
+        return;
+    }
+
+    if (target == this &&
+        !this->project.getEditMode().forbidsSelectionMode())
+    {
+        this->lassoComponent->beginLasso(position, this);
+        return;
+    }
 }
 
 void HybridRoll::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)

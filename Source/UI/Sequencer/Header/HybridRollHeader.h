@@ -24,7 +24,7 @@ class TimeDistanceIndicator;
 class HeaderSelectionIndicator;
 class ClipRangeIndicator;
 
-class HybridRollHeader : public Component
+class HybridRollHeader final : public Component
 {
 public:
 
@@ -32,6 +32,7 @@ public:
     
     void setSoundProbeMode(bool shouldProbeOnClick);
     void updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
+    void showPopupMenu();
 
     //===------------------------------------------------------------------===//
     // Component

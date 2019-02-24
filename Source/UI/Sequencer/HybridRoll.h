@@ -51,7 +51,7 @@ class TimelineWarningMarker;
 #include "AudioMonitor.h"
 
 #if HELIO_MOBILE
-#define HYBRID_ROLL_LISTENS_LONG_TAP 1
+#   define HYBRID_ROLL_LISTENS_LONG_TAP 1
 #endif
 
 #define HYBRID_ROLL_MAX_BAR_WIDTH (192)
