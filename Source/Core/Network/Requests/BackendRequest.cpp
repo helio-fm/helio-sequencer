@@ -27,7 +27,7 @@
 
 static bool progressCallbackInternal(void *const context, int bytesSent, int totalBytes)
 {
-    const auto connection = static_cast<const BackendRequest *const>(context);
+    const auto *connection = static_cast<const BackendRequest *const>(context);
     if (connection->progressCallback != nullptr)
     {
         connection->progressCallback(bytesSent, totalBytes);
@@ -202,7 +202,7 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
             5, verb);
-    } while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
+    } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
 
     processResponse(response, stream);
     return response;
@@ -233,7 +233,7 @@ BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, con
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
             5, verb);
-    } while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
+    } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
 
     processResponse(response, stream);
     return response;
