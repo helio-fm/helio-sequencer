@@ -1558,6 +1558,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.cpp">
       <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_SmoothedValue.cpp">
+      <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp">
       <Filter>JUCE Modules\juce_audio_basics</Filter>
     </ClCompile>
@@ -1573,10 +1576,10 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODeviceType.cpp">
       <Filter>JUCE Modules\juce_audio_devices\audio_io</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiDevices.cpp">
       <Filter>JUCE Modules\juce_audio_devices\midi_io</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiOutput.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.cpp">
       <Filter>JUCE Modules\juce_audio_devices\midi_io</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_android_Audio.cpp">
@@ -3606,9 +3609,6 @@
     <ClInclude Include="..\..\Source\Core\Tree\RootNode.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\SafeNodePointer.h">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\SettingsNode.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
@@ -4464,10 +4464,10 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.h">
       <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LinearSmoothedValue.h">
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_Reverb.h">
       <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_Reverb.h">
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_SmoothedValue.h">
       <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h">
@@ -4485,13 +4485,10 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_SystemAudioVolume.h">
       <Filter>JUCE Modules\juce_audio_devices\audio_io</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiInput.h">
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiDevices.h">
       <Filter>JUCE Modules\juce_audio_devices\midi_io</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.h">
-      <Filter>JUCE Modules\juce_audio_devices\midi_io</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiOutput.h">
       <Filter>JUCE Modules\juce_audio_devices\midi_io</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_ios_Audio.h">

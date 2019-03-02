@@ -23,8 +23,6 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}</ProjectGuid>
-    <PlatformToolset>v140_xp</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.26624</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug 32-bit|Win32'"
@@ -43,7 +41,6 @@
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <LinkIncremental>true</LinkIncremental>
     <PlatformToolset>v140_xp</PlatformToolset>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <WindowsTargetPlatformVersion>10.0.26624</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release 32-bit|Win32'"
@@ -60,7 +57,6 @@
     <UseOfMfc>false</UseOfMfc>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v140_xp</PlatformToolset>
-    <PlatformToolset>v140_xp</PlatformToolset>
     <WindowsTargetPlatformVersion>10.0.26624</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
@@ -70,10 +66,6 @@
             Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
             Label="LocalAppDataPlatform"/>
   </ImportGroup>
-  <PropertyGroup Label="UserMacros">
-    <PlatformToolset>v140_xp</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.26624</WindowsTargetPlatformVersion>
-  </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <TargetExt>.exe</TargetExt>
@@ -93,8 +85,6 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release 64-bit|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release 64-bit|x64'">Helio</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release 64-bit|x64'">true</GenerateManifest>
-    <PlatformToolset>v140_xp</PlatformToolset>
-    <WindowsTargetPlatformVersion>10.0.26624</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug 32-bit|Win32'">
     <Midl>
@@ -675,6 +665,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_SmoothedValue.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -687,10 +680,10 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODeviceType.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiDevices.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiOutput.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_android_Audio.cpp">
@@ -2404,7 +2397,6 @@
     <ClInclude Include="..\..\Source\Core\Tree\ProjectListener.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\RootNode.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\SafeNodePointer.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\SettingsNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\TrackGroupNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\TreeNode.h"/>
@@ -2690,16 +2682,15 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_Decibels.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_IIRFilter.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LagrangeInterpolator.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_LinearSmoothedValue.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_Reverb.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_SmoothedValue.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioDeviceManager.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODevice.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioIODeviceType.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_SystemAudioVolume.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiInput.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiDevices.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiMessageCollector.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\midi_io\juce_MidiOutput.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_ios_Audio.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\juce_MidiDataConcatenator.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\sources\juce_AudioSourcePlayer.h"/>
