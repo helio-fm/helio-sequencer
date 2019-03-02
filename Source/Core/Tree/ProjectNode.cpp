@@ -686,15 +686,12 @@ Point<float> ProjectNode::broadcastChangeProjectBeatRange()
     const float firstBeat = beatRange.getX();
     const float lastBeat = beatRange.getY();
     
-    // FIXME
-    // changeListeners.call iterates listeners list in it's order
+    // changeListeners.call iterates listeners list in REVERSE order
     // so that transport updates playhead position later then others,
     // so that resizing roll will make playhead glitch;
-    // for now - just force transport to update its playhead position before all others
-    // (doing the same work twice though)
+    // as a hack, just force transport to update its playhead position before all others
     this->transport->onChangeProjectBeatRange(firstBeat, lastBeat);
-    
-    this->changeListeners.call(&ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
+    this->changeListeners.callExcluding(this->transport, &ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
     this->sendChangeMessage();
 
     return beatRange;

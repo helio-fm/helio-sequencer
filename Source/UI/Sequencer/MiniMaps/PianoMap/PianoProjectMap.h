@@ -27,7 +27,8 @@ class ProjectNode;
 
 class PianoProjectMap :
     public Component,
-    public ProjectListener
+    public ProjectListener,
+    public AsyncUpdater
 {
 public:
 
@@ -80,6 +81,10 @@ private:
     using SequenceMap = FlatHashMap<Note, UniquePointer<ProjectMapNoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
+
+    void triggerBatchRepaintFor(ProjectMapNoteComponent *target);
+    void handleAsyncUpdate() override;
+    Array<WeakReference<ProjectMapNoteComponent>> batchRepaintList;
 
     JUCE_LEAK_DETECTOR(PianoProjectMap)
 };

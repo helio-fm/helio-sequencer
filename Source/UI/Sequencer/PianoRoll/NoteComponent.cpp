@@ -46,8 +46,9 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &c
     groupScalingAnchor(event),
     firstChangeDone(false)
 {
-    this->updateColours();
-    this->toFront(false);
+    //this->updateColours(); // assumed to be updated later in setActive()
+    //this->toFront(false); // assumed to be called later in setActive()
+
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);

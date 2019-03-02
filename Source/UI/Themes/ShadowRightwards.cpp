@@ -22,7 +22,6 @@
 #include "ShadowRightwards.h"
 
 //[MiscUserDefs]
-#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 ShadowRightwards::ShadowRightwards(ShadowType type)
@@ -30,7 +29,6 @@ ShadowRightwards::ShadowRightwards(ShadowType type)
 {
 
     //[UserPreSize]
-    this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark);
     //[/UserPreSize]
 
     this->setSize(40, 400);
@@ -90,20 +88,13 @@ void ShadowRightwards::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    const float w = float(this->getWidth());
-    g.setGradientFill(ColourGradient(this->shadowColour,
-        0.f, 0.f,
-        Colours::transparentBlack,
-        w, 0.f, false));
+    g.setGradientFill(this->gradient1);
     g.fillRect(this->getLocalBounds());
 
-    g.setGradientFill(ColourGradient(this->shadowColour,
-        0.f, 0.0f,
-        Colours::transparentBlack,
-        w / 2.5f, 0.f, false));
+    g.setGradientFill(this->gradient2);
     g.fillRect(this->getLocalBounds());
 
-    g.setColour(this->lineColour.withMultipliedAlpha(0.5f));
+    g.setColour(this->lineColour);
     g.drawVerticalLine(0, 0.f, float(this->getHeight()));
     //[/UserPaint]
 }
@@ -111,6 +102,10 @@ void ShadowRightwards::paint (Graphics& g)
 void ShadowRightwards::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    this->gradient1 = ColourGradient(this->shadowColour,
+        0.f, 0.f, Colours::transparentBlack, float(this->getWidth()), 0.f, false);
+    this->gradient2 = ColourGradient(this->shadowColour,
+        0.f, 0.0f, Colours::transparentBlack, float(this->getWidth()) / 2.5f, 0.f, false);
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..

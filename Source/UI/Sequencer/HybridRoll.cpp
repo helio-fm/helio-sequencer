@@ -1445,7 +1445,7 @@ void HybridRoll::handleAsyncUpdate()
 
         HYBRID_ROLL_BULK_REPAINT_END
 
-        this->batchRepaintList.clear();
+        this->batchRepaintList.clearQuick();
     }
 
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD

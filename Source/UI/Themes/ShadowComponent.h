@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 enum ShadowType
 {
     Normal,
@@ -34,6 +36,8 @@ public:
         this->setPaintingIsUnclipped(true);
         this->setMouseClickGrabsKeyboardFocus(false);
 
+        this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
+
         switch (type)
         {
         case Normal:
@@ -50,7 +54,10 @@ public:
 
 protected:
 
+    Colour lineColour;
     Colour shadowColour;
+    ColourGradient gradient1;
+    ColourGradient gradient2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShadowComponent)
 };

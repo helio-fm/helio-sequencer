@@ -284,8 +284,7 @@ void PianoRoll::showGhostNoteFor(NoteComponent *target)
     this->addAndMakeVisible(component);
     this->ghostNotes.add(component);
 
-    this->batchRepaintList.add(component);
-    this->triggerAsyncUpdate();
+    this->triggerBatchRepaintFor(component);
 }
 
 void PianoRoll::hideAllGhostNotes()
@@ -506,8 +505,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
                 // Always erase before updating, as it may happen both events have the same hash code:
                 sequenceMap[newNote] = UniquePointer<NoteComponent>(component);
                 // Schedule to be repainted later:
-                this->batchRepaintList.add(component);
-                this->triggerAsyncUpdate();
+                this->triggerBatchRepaintFor(component);
             }
         }
     }
@@ -551,8 +549,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
             component->setActive(isActive);
 
-            this->batchRepaintList.add(component);
-            this->triggerAsyncUpdate(); // instead of updateBounds
+            this->triggerBatchRepaintFor(component);
 
             // arpeggiators preview cannot work without that:
             if (isActive)

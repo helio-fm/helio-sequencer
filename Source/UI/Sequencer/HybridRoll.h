@@ -407,7 +407,7 @@ protected:
     ScopedPointer<SmoothPanController> smoothPanController;
     ScopedPointer<SmoothZoomController> smoothZoomController;
 
-    Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
+    Array<WeakReference<FloatBoundsComponent>> batchRepaintList;
 
 protected:
     

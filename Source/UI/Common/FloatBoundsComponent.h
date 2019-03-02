@@ -40,4 +40,5 @@ protected:
 
     Rectangle<float> floatLocalBounds;
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE(FloatBoundsComponent)
 };
