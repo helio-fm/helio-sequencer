@@ -21,12 +21,20 @@
 
 #define MAXDB (+4.0f)
 #define MINDB (-70.0f)
-#define NUM_WAVES 7
-#define PEAK_MAX_ALPHA 0.35f
-#define BAND_FADE_MS 1000.f
-#define PEAK_FADE_MS 2500.f
-#define NUM_BANDS 70
-#define NUM_SEGMENTS_TO_SKIP 8
+#define NUM_WAVES (7)
+#define NUM_BANDS (70)
+#define NUM_SEGMENTS_TO_SKIP (8)
+#define PEAK_MAX_ALPHA (0.35f)
+
+#if HELIO_DESKTOP
+#   define UPDATE_TIMER (35)
+#   define BAND_FADE_MS (1000.f)
+#   define PEAK_FADE_MS (2500.f)
+#elif HELIO_MOBILE
+#   define UPDATE_TIMER (100)
+#   define BAND_FADE_MS (3000.f)
+#   define PEAK_FADE_MS (7500.f)
+#endif
 
 SpectralLogo::SpectralLogo()
     : Thread("Spectral Logo"),
@@ -56,7 +64,7 @@ void SpectralLogo::run()
 {
     while (! this->threadShouldExit())
     {
-        Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
+        Thread::sleep(jlimit(10, 100, UPDATE_TIMER - this->skewTime));
         const double b = Time::getMillisecondCounterHiRes();
         this->triggerAsyncUpdate();
         const double a = Time::getMillisecondCounterHiRes();
@@ -153,9 +161,7 @@ SpectralLogo::Band::Band(SpectralLogo *parent) :
     peak(0.f),
     peakDecay(1.f),
     peakDecayColour(1.f),
-    peakDecayStart(0)
-{
-}
+    peakDecayStart(0) {}
 
 void SpectralLogo::Band::reset()
 {
