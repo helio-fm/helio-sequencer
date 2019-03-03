@@ -30,11 +30,12 @@
 #include "SelectionComponent.h"
 #include "ProjectNode.h"
 
+#include "UndoStack.h"
+#include "NoteActions.h"
+
 #include "ShadowDownwards.h"
 #include "ShadowUpwards.h"
-
 #include "TimelineWarningMarker.h"
-#include "SerializationKeys.h"
 
 #include "LongTapController.h"
 #include "SmoothPanController.h"
@@ -62,6 +63,7 @@
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 
+#include "SerializationKeys.h"
 #include "ColourIDs.h"
 
 #include <limits.h>
@@ -1119,12 +1121,39 @@ void HybridRoll::handleCommandMessage(int commandId)
         this->project.getEditMode().setMode(HybridRollEditMode::eraserMode);
         break;
     case CommandIDs::Undo:
-        this->deselectAll(); // FIXME: don't drop selection if there are only event changes
-        this->project.undo();
+        if (this->project.getUndoStack()->canUndo())
+        {
+            // when new notes are added, they will be automatically added to selection,
+            // so if we're about to undo note removal, or redo note addition (both result in added notes),
+            // we need to drop the selection first:
+            const bool shouldDropSelection =
+                this->project.getUndoStack()->undoHas<NoteRemoveAction>() ||
+                this->project.getUndoStack()->undoHas<NotesGroupRemoveAction>();
+
+            // when there are only note changes or note removals,
+            // it's more convenient to leave the selection as it is:
+            if (shouldDropSelection)
+            {
+                this->deselectAll();
+            }
+
+            this->project.undo();
+        }
         break;
     case CommandIDs::Redo:
-        this->deselectAll();
-        this->project.redo();
+        if (this->project.getUndoStack()->canRedo())
+        {
+            const bool shouldDropSelection =
+                this->project.getUndoStack()->redoHas<NoteInsertAction>() ||
+                this->project.getUndoStack()->redoHas<NotesGroupInsertAction>();
+
+            if (shouldDropSelection)
+            {
+                this->deselectAll();
+            }
+
+            this->project.redo();
+        }
         break;
     case CommandIDs::ZoomIn:
         this->zoomInImpulse();

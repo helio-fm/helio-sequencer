@@ -52,8 +52,20 @@ public:
     void deserialize(const ValueTree &tree) override;
     void reset() override;
     
-private:
+    template<typename T>
+    bool undoHas() const
+    {
+        return this->transactionHas<T>(this->getCurrentSet());
+    }
 
+    template<typename T>
+    bool redoHas() const
+    {
+        return this->transactionHas<T>(this->getNextSet());
+    }
+
+private:
+    
     void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;
     int getNumActionsInCurrentTransaction() const;
 
@@ -87,7 +99,24 @@ private:
     
     ActionSet *getCurrentSet() const noexcept;
     ActionSet *getNextSet() const noexcept;
-    
+
+    template<typename T>
+    bool transactionHas(ActionSet *s) const
+    {
+        if (s != nullptr)
+        {
+            for (int i = 0; i < s->actions.size(); ++i)
+            {
+                if (dynamic_cast<T *>(s->actions.getUnchecked(i)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     void clearFutureTransactions();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UndoStack)

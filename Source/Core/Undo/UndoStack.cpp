@@ -41,9 +41,9 @@ UndoStack::ActionSet::ActionSet(ProjectNode &project, const String &transactionN
     
 bool UndoStack::ActionSet::perform() const
 {
-    for (int i = 0; i < actions.size(); ++i)
+    for (int i = 0; i < this->actions.size(); ++i)
     {
-        if (! actions.getUnchecked(i)->perform())
+        if (!this->actions.getUnchecked(i)->perform())
         {
             return false;
         }
@@ -54,9 +54,9 @@ bool UndoStack::ActionSet::perform() const
     
 bool UndoStack::ActionSet::undo() const
 {
-    for (int i = actions.size(); --i >= 0;)
+    for (int i = this->actions.size(); --i >= 0;)
     {
-        if (! actions.getUnchecked(i)->undo())
+        if (!this->actions.getUnchecked(i)->undo())
         {
             return false;
         }
@@ -68,9 +68,9 @@ bool UndoStack::ActionSet::undo() const
 int UndoStack::ActionSet::getTotalSize() const
 {
     int total = 0;
-    for (int i = actions.size(); --i >= 0;)
+    for (int i = this->actions.size(); --i >= 0;)
     {
-        total += actions.getUnchecked(i)->getSizeInUnits();
+        total += this->actions.getUnchecked(i)->getSizeInUnits();
     }
         
     return total;
@@ -207,9 +207,9 @@ bool UndoStack::perform (UndoAction *const newAction)
 
         if (action->perform())
         {
-            ActionSet *actionSet = getCurrentSet();
+            ActionSet *actionSet = this->getCurrentSet();
             
-            if (actionSet != nullptr && ! newTransaction)
+            if (actionSet != nullptr && !this->newTransaction)
             {
                 for (signed int i = (actionSet->actions.size() - 1); i >= 0; --i)
                 {
@@ -284,21 +284,35 @@ void UndoStack::setCurrentTransactionName(const String &newName) noexcept
     {
         this->newTransactionName = newName;
     }
-    else if (ActionSet *action = this->getCurrentSet())
+    else if (auto *action = this->getCurrentSet())
     {
         action->name = newName;
     }
 }
 
-UndoStack::ActionSet *UndoStack::getCurrentSet() const noexcept     { return this->transactions [nextIndex - 1]; }
-UndoStack::ActionSet *UndoStack::getNextSet() const noexcept        { return this->transactions [nextIndex]; }
+UndoStack::ActionSet *UndoStack::getCurrentSet() const noexcept
+{
+    return this->transactions[nextIndex - 1];
+}
 
-bool UndoStack::canUndo() const noexcept   { return this->getCurrentSet() != nullptr; }
-bool UndoStack::canRedo() const noexcept   { return this->getNextSet()    != nullptr; }
+UndoStack::ActionSet *UndoStack::getNextSet() const noexcept
+{
+    return this->transactions[nextIndex];
+}
+
+bool UndoStack::canUndo() const noexcept
+{
+    return this->getCurrentSet() != nullptr;
+}
+
+bool UndoStack::canRedo() const noexcept
+{
+    return this->getNextSet() != nullptr;
+}
 
 bool UndoStack::undo()
 {
-    if (const auto s = getCurrentSet())
+    if (const auto *s = this->getCurrentSet())
     {
         const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
         
@@ -321,7 +335,7 @@ bool UndoStack::undo()
 
 bool UndoStack::redo()
 {
-    if (const ActionSet *const s = this->getNextSet())
+    if (const auto *s = this->getNextSet())
     {
         const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
         
@@ -344,7 +358,7 @@ bool UndoStack::redo()
 
 String UndoStack::getUndoDescription() const
 {
-    if (const auto s = this->getCurrentSet())
+    if (const auto *s = this->getCurrentSet())
     {
         return s->name;
     }
@@ -354,7 +368,7 @@ String UndoStack::getUndoDescription() const
 
 String UndoStack::getRedoDescription() const
 {
-    if (const auto s = this->getNextSet())
+    if (const auto *s = this->getNextSet())
     {
         return s->name;
     }
@@ -371,7 +385,7 @@ void UndoStack::getActionsInCurrentTransaction(Array<const UndoAction *> &action
 {
     if (!this->newTransaction)
     {
-        if (const auto s = this->getCurrentSet())
+        if (const auto *s = this->getCurrentSet())
         {
             for (int i = 0; i < s->actions.size(); ++i)
             {
@@ -383,8 +397,10 @@ void UndoStack::getActionsInCurrentTransaction(Array<const UndoAction *> &action
 
 int UndoStack::getNumActionsInCurrentTransaction() const
 {
-    if (!this->newTransaction) {
-        if (const auto s = this->getCurrentSet()) {
+    if (!this->newTransaction)
+    {
+        if (const auto *s = this->getCurrentSet())
+        {
             return s->actions.size();
         }
     }
