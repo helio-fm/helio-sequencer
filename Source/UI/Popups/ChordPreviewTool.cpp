@@ -414,7 +414,7 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
 
 void ChordPreviewTool::stopSound()
 {
-    this->roll.getTransport().allNotesControllersAndSoundOff();
+    this->roll.getTransport().stopSound(this->sequence->getTrackId());
 }
 
 void ChordPreviewTool::sendMidiMessage(const MidiMessage &message)

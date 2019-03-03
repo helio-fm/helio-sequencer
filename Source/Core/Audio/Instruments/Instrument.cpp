@@ -27,7 +27,7 @@ const int Instrument::midiChannelNumber = 0x1000;
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
     formatManager(formatManager),
     instrumentName(name),
-    instrumentID()
+    instrumentId()
 {
     this->processorGraph = new AudioProcessorGraph();
     this->audioCallback.setProcessor(this->processorGraph);
@@ -53,9 +53,9 @@ void Instrument::setName(const String &name)
     this->instrumentName = name;
 }
 
-String Instrument::getInstrumentID() const
+String Instrument::getInstrumentId() const
 {
-    return this->instrumentID.toString();
+    return this->instrumentId.toString();
 }
 
 String Instrument::getInstrumentHash() const
@@ -74,7 +74,7 @@ String Instrument::getInstrumentHash() const
 
 String Instrument::getIdAndHash() const
 {
-    return this->getInstrumentID() + this->getInstrumentHash();
+    return this->getInstrumentId() + this->getInstrumentHash();
 }
 
 bool Instrument::isValid() const noexcept
@@ -435,7 +435,7 @@ ValueTree Instrument::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Audio::instrument);
-    tree.setProperty(Audio::instrumentId, this->instrumentID.toString(), nullptr);
+    tree.setProperty(Audio::instrumentId, this->instrumentId.toString(), nullptr);
     tree.setProperty(Audio::instrumentName, this->instrumentName, nullptr);
 
     const int numNodes = this->processorGraph->getNumNodes();
@@ -467,7 +467,7 @@ void Instrument::deserialize(const ValueTree &tree)
 
     if (!root.isValid() || root.getNumChildren() == 0) { return; }
 
-    this->instrumentID = root.getProperty(Audio::instrumentId, this->instrumentID.toString());
+    this->instrumentId = root.getProperty(Audio::instrumentId, this->instrumentId.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);
 
     // Well this hack of an incredible ugliness

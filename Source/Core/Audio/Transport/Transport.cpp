@@ -298,7 +298,7 @@ void Transport::MidiMessageDelayedPreview::previewMessage(const MidiMessage &mes
     this->instruments.add(instrument);
     if (!this->isTimerRunning())
     {
-        this->startTimer(15);
+        this->startTimer(20);
     }
 }
 
@@ -332,34 +332,16 @@ void Transport::previewMidiMessage(const String &trackId, const MidiMessage &mes
     this->messagePreviewQueue.previewMessage(message, this->linksCache[trackId]);
 }
 
-void Transport::allNotesAndControllersOff() const
+void Transport::stopSound(const String &trackId) const
 {
     this->messagePreviewQueue.cancelPendingPreview();
 
-    static const int c = 1;
-    //for (int c = 1; c <= 16; ++c)
+    if (Instrument *instrument = this->linksCache[trackId])
     {
-        MidiMessage notesOff(MidiMessage::allNotesOff(c));
-        MidiMessage controllersOff(MidiMessage::allControllersOff(c));
-        
-        Array<const MidiMessageCollector *> duplicateCollectors;
-        
-        for (int l = 0; l < this->tracksCache.size(); ++l)
-        {
-            const String &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
-            auto *collector = &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
-            
-            if (! duplicateCollectors.contains(collector))
-            {
-                duplicateCollectors.add(collector);
-
-                notesOff.setTimeStamp(TIME_NOW);
-                collector->addMessageToQueue(notesOff);
-
-                controllersOff.setTimeStamp(TIME_NOW);
-                collector->addMessageToQueue(controllersOff);
-            }
-        }
+        auto &collector = instrument->getProcessorPlayer().getMidiMessageCollector();
+        collector.addMessageToQueue(MidiMessage::allControllersOff(1).withTimeStamp(TIME_NOW));
+        collector.addMessageToQueue(MidiMessage::allNotesOff(1).withTimeStamp(TIME_NOW));
+        collector.addMessageToQueue(MidiMessage::allSoundOff(1).withTimeStamp(TIME_NOW));
     }
 }
 
@@ -370,9 +352,9 @@ void Transport::allNotesControllersAndSoundOff() const
     static const int c = 1;
     //for (int c = 1; c <= 16; ++c)
     {
-        MidiMessage notesOff(MidiMessage::allNotesOff(c));
-        MidiMessage soundOff(MidiMessage::allSoundOff(c));
-        MidiMessage controllersOff(MidiMessage::allControllersOff(c));
+        const MidiMessage notesOff(MidiMessage::allNotesOff(c).withTimeStamp(TIME_NOW));
+        const MidiMessage soundOff(MidiMessage::allSoundOff(c).withTimeStamp(TIME_NOW));
+        const MidiMessage controllersOff(MidiMessage::allControllersOff(c).withTimeStamp(TIME_NOW));
         
         Array<const MidiMessageCollector *> duplicateCollectors;
         
@@ -383,15 +365,9 @@ void Transport::allNotesControllersAndSoundOff() const
             
             if (! duplicateCollectors.contains(collector))
             {
-                notesOff.setTimeStamp(TIME_NOW);
                 collector->addMessageToQueue(notesOff);
-
-                controllersOff.setTimeStamp(TIME_NOW);
                 collector->addMessageToQueue(controllersOff);
-
-                soundOff.setTimeStamp(TIME_NOW);
                 collector->addMessageToQueue(soundOff);
-
                 duplicateCollectors.add(collector);
             }
         }
@@ -497,7 +473,7 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     // Stop playback only when instrument changes:
     const auto &trackId = track->getTrackId();
     if (!linksCache.contains(trackId) ||
-        this->linksCache[trackId]->getInstrumentID() != track->getTrackInstrumentId())
+        this->linksCache[trackId]->getInstrumentId() != track->getTrackInstrumentId())
     {
         this->stopPlayback();
         this->sequencesAreOutdated = true;
@@ -696,7 +672,7 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
     {
         Instrument *instrument = instruments.getUnchecked(i);
         
-        if (track->getTrackInstrumentId().contains(instrument->getInstrumentID()))
+        if (track->getTrackInstrumentId().contains(instrument->getInstrumentId()))
         {
             // corresponding node already exists, lets add
             this->linksCache[track->getTrackId()] = instrument;

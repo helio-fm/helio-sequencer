@@ -262,7 +262,8 @@ float PianoSequence::getLastBeat() const noexcept
     // sometimes the last event is not the one that lasts longer
     // (as events *must* be sorted by start beat, not by end beat),
     // so here we have to iterate through a number of last events
-    // to guess where the sequence really ends: 
+    // to guess where the sequence really ends, with still no guarantee
+    // we'll end up with right event (not sure how to fix it at the moment):
     const int checkStart = jmax(0, this->midiEvents.size() - 5);
     for (int i = checkStart; i < this->midiEvents.size(); ++i)
     {

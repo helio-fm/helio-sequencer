@@ -1029,7 +1029,9 @@ void NoteComponent::checkpointIfNeeded()
 
 void NoteComponent::stopSound()
 {
-    this->getRoll().getTransport().allNotesControllersAndSoundOff();
+    const auto &trackId = this->getNote().getSequence()->getTrackId();
+    this->getRoll().getTransport().stopSound(trackId);
+    Thread::yield();
 }
 
 void NoteComponent::sendMidiMessage(const MidiMessage &message) const

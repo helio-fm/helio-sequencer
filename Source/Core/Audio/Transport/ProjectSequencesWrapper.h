@@ -41,7 +41,7 @@ struct MessageWrapper final : public ReferenceCountedObject
 
 // TODO: add modifiers like random delays and so forth
 
-class ProjectSequences
+class ProjectSequences final
 {
 private:
     

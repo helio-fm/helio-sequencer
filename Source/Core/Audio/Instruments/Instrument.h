@@ -141,12 +141,12 @@ protected:
     void addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f);
     void removeIllegalConnections();
 
-    Uuid instrumentID;
+    Uuid instrumentId;
     String instrumentName;
     
 private:
 
-    String getInstrumentID() const; // will differ between platforms
+    String getInstrumentId() const; // will differ between platforms
     String getInstrumentHash() const; // should be the same on all platforms
     
     AudioProcessorGraph::Node::Ptr addNode(const PluginDescription &, double x, double y);

@@ -505,7 +505,7 @@ bool ScalePreviewTool::detectKeyAndBeat()
 
 void ScalePreviewTool::stopSound()
 {
-    this->roll->getTransport().allNotesControllersAndSoundOff();
+    this->roll->getTransport().stopSound(this->sequence->getTrackId());
 }
 
 void ScalePreviewTool::sendMidiMessage(const MidiMessage &message)

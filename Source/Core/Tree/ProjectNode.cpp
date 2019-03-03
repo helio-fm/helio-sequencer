@@ -456,9 +456,6 @@ void ProjectNode::reset()
     this->vcsItems.add(this->timeline);
     this->undoStack->clearUndoHistory();
     TreeNode::reset();
-    // TODO test if we need that really (I suggest we don't):
-    //this->broadcastReloadProjectContent();
-    //this->broadcastChangeProjectBeatRange();
 }
 
 ValueTree ProjectNode::save() const
@@ -926,12 +923,7 @@ void ProjectNode::changeListenerCallback(ChangeBroadcaster *source)
     if (VersionControl *vcs = dynamic_cast<VersionControl *>(source))
     {
         DocumentOwner::sendChangeMessage();
-        //this->getDocument()->save();
-        
-        // FIXME! a bug reproduced in iOS when callin forceSave() here:
-        // VCS start rebuilding diff after a commit in a separate thread,
-        // at the same time main thread saves the project and flushes the VCS pack,
-        // and eventually the pack cannot get delta data.
+        // still not sure if it's really needed after commit:
         //this->getDocument()->forceSave();
     }
 }

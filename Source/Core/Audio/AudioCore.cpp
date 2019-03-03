@@ -138,7 +138,7 @@ Instrument *AudioCore::findInstrumentById(const String &id) const
     {
         Instrument *instrument = this->instruments.getUnchecked(i);
 
-        if (id.contains(instrument->getInstrumentID()))
+        if (id.contains(instrument->getInstrumentId()))
         {
             return instrument;
         }

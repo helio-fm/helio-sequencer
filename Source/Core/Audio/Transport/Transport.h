@@ -79,8 +79,8 @@ public:
     //===------------------------------------------------------------------===//
     
     void previewMidiMessage(const String &trackId, const MidiMessage &message) const;
+    void stopSound(const String &trackId) const;
 
-    void allNotesAndControllersOff() const;
     void allNotesControllersAndSoundOff() const;
     
     //===------------------------------------------------------------------===//
