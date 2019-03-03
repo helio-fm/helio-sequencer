@@ -26,7 +26,7 @@
 #include "ColourIDs.h"
 #include "Icons.h"
 
-static void drawPanel(Graphics& g, HelioTheme &theme);
+static void drawPanel(Graphics &g, HelioTheme &theme);
 //[/MiscUserDefs]
 
 PanelBackgroundC::PanelBackgroundC()

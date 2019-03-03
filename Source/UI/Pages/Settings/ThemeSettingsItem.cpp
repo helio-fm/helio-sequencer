@@ -195,10 +195,8 @@ void ThemeSettingsItem::paint (Graphics& g)
         g.drawVerticalLine(247, lineStartY, lineEndY);
 
         g.setColour(Colours::black);
-        Image image1(Icons::renderForTheme(*this->theme, Icons::pianoTrack, 20));
-        Image image2(Icons::renderForTheme(*this->theme, Icons::submenu, 20));
-        Icons::drawImageRetinaAware(image1, g, 48 + 10, (this->getHeight() / 2) - 1);
-        Icons::drawImageRetinaAware(image2, g, 220 + 10, (this->getHeight() / 2) - 1);
+        Icons::drawImageRetinaAware(this->icon1, g, 48 + 10, (this->getHeight() / 2) - 1);
+        Icons::drawImageRetinaAware(this->icon2, g, 220 + 10, (this->getHeight() / 2) - 1);
     }
 
 #if 0
@@ -339,6 +337,9 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
 
     this->rollImage = PianoRoll::renderRowsPattern(*this->theme,
         Scale::getNaturalMajorScale(), 0, PIANOROLL_MIN_ROW_HEIGHT);
+
+    this->icon1 = Icons::renderForTheme(*this->theme, Icons::pianoTrack, 20);
+    this->icon2 = Icons::renderForTheme(*this->theme, Icons::submenu, 20);
 
     this->repaint();
 }

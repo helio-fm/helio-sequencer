@@ -22,8 +22,6 @@
 
 class HybridRoll;
 class ProjectNode;
-class TrackStartIndicator;
-class TrackEndIndicator;
 
 template< typename T >
 class AnnotationsProjectMap :

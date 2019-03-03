@@ -36,18 +36,19 @@ public:
         this->setPaintingIsUnclipped(true);
         this->setMouseClickGrabsKeyboardFocus(false);
 
-        this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
-
         switch (type)
         {
         case Normal:
             this->shadowColour = Colour(0x16000000);
+            this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
             break;
         case Light:
             this->shadowColour = Colour(0x09000000);
+            this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.35f);
             break;
         default:
             this->shadowColour = Colours::transparentBlack;
+            this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark);
             break;
         }
     }

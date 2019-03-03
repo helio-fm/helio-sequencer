@@ -27,15 +27,16 @@
 TrackStartIndicator::TrackStartIndicator()
     : absPosition(0)
 {
-    addAndMakeVisible (shadow = new ShadowLeftwards(Normal));
+    this->shadow.reset(new ShadowLeftwards(Light));
+    this->addAndMakeVisible(shadow.get());
 
     //[UserPreSize]
-    this->shadow->setAlpha(0.7f);
+    this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
     this->setAlwaysOnTop(true);
     //[/UserPreSize]
 
-    setSize (40, 256);
+    this->setSize(40, 256);
 
     //[Constructor]
     //[/Constructor]
@@ -55,13 +56,16 @@ TrackStartIndicator::~TrackStartIndicator()
 void TrackStartIndicator::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-//#if ! HELIO_MOBILE
+#if 0
     //[/UserPrePaint]
 
     g.fillAll (Colour (0x16000000));
 
     //[UserPaint] Add your own custom painting code here..
-//#endif
+#endif
+
+    g.setColour(Colour(0x16000000));
+    g.fillRect(this->getLocalBounds());
     //[/UserPaint]
 }
 
@@ -70,7 +74,7 @@ void TrackStartIndicator::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    shadow->setBounds (getWidth() - -2 - 12, 0, 12, getHeight() - 0);
+    shadow->setBounds(getWidth() - 12, 0, 12, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -108,8 +112,8 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="16000000"/>
   <JUCERCOMP name="" id="960dc35b494ac9d2" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="-2Rr 0 12 0M" sourceFile="../../Themes/ShadowLeftwards.cpp"
-             constructorParams="Normal"/>
+             explicitFocusOrder="0" pos="0Rr 0 12 0M" sourceFile="../../Themes/ShadowLeftwards.cpp"
+             constructorParams="Light"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

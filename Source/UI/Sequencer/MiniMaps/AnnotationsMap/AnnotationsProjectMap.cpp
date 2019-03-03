@@ -272,9 +272,7 @@ void AnnotationsProjectMap<T>::onReloadProjectContent(const Array<MidiTrack *> &
 //===----------------------------------------------------------------------===//
 
 template<typename T>
-void AnnotationsProjectMap<T>::onAnnotationMoved(T *nc)
-{
-}
+void AnnotationsProjectMap<T>::onAnnotationMoved(T *nc) {}
 
 template<typename T>
 void AnnotationsProjectMap<T>::onAnnotationTapped(T *nc)

@@ -71,7 +71,7 @@ void PanelBackgroundA::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
     if (theme.getBgCacheA().isValid())
     {
         g.setTiledImageFill(theme.getBgCacheA(), 0, 0, 1.f);

@@ -70,17 +70,17 @@ void PanelBackgroundB::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    if (theme.getBgCacheB().isValid())
-    {
+    auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+    //if (theme.getBgCacheB().isValid())
+    //{
         g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());
-    }
-    else
-    {
-        g.setColour(findDefaultColour(ColourIDs::BackgroundB::fill));
-        g.fillRect(this->getLocalBounds());
-    }
+    //}
+    //else
+    //{
+    //    g.setColour(findDefaultColour(ColourIDs::BackgroundB::fill));
+    //    g.fillRect(this->getLocalBounds());
+    //}
 
     //[/UserPaint]
 }

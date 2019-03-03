@@ -23,17 +23,16 @@ class IconComponent;
 
 #include "../../Themes/ShadowRightwards.h"
 
-class TrackEndIndicator  : public Component
+class TrackEndIndicator final : public Component
 {
 public:
 
-    TrackEndIndicator ();
-
+    TrackEndIndicator();
     ~TrackEndIndicator();
 
     //[UserMethods]
 
-    double getAnchor() const
+    double getAnchor() const noexcept
     {
         return this->absPosition;
     }
@@ -67,7 +66,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<ShadowRightwards> shadow;
+    UniquePointer<ShadowRightwards> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackEndIndicator)
 };

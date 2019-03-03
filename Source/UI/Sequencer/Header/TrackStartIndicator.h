@@ -31,7 +31,7 @@ public:
 
     //[UserMethods]
 
-    double getAnchor() const
+    double getAnchor() const noexcept
     {
         return this->absPosition;
     }
@@ -65,7 +65,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<ShadowLeftwards> shadow;
+    UniquePointer<ShadowLeftwards> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackStartIndicator)
 };

@@ -59,6 +59,8 @@ private:
     ScopedPointer<Component> selectionComponent;
 
     Image rollImage;
+    Image icon1;
+    Image icon2;
 
     Component *createHighlighterComponent() override;
 
