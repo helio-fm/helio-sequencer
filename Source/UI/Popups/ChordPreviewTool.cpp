@@ -297,9 +297,6 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             this->sequence->checkpoint();
         }
 
-        // a hack for stop sound events not mute the forthcoming notes
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
-
         if (!App::isRunningOnPhone())
         {
             static const auto fnNames = localizedFunctionNames();
@@ -427,8 +424,7 @@ void ChordPreviewTool::stopSound()
 
 void ChordPreviewTool::sendMidiMessage(const MidiMessage &message)
 {
-    const String layerId = this->sequence->getTrackId();
-    this->roll.getTransport().sendMidiMessage(layerId, message);
+    this->roll.getTransport().previewMidiMessage(this->sequence->getTrackId(), message);
 }
 
 //[/MiscUserCode]

@@ -1602,7 +1602,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             
             if (transport != nullptr && numSelected < 8)
             {
-                transport->sendMidiMessage(pianoLayer->getTrackId(),
+                transport->previewMidiMessage(pianoLayer->getTrackId(),
                     MidiMessage::noteOn(newNote.getTrackChannel(), newNote.getKey(), newNote.getVelocity()));
             }
         }
@@ -1752,7 +1752,7 @@ void SequencerOperations::invertChord(Lasso &selection,
             for (int i = 0; i < numSelected; ++i)
             {
                 NoteComponent *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-                transport->sendMidiMessage(pianoSequence->getTrackId(),
+                transport->previewMidiMessage(pianoSequence->getTrackId(),
                     MidiMessage::noteOn(pianoSequence->getChannel(), nc->getKey(), nc->getVelocity()));
             }
         }

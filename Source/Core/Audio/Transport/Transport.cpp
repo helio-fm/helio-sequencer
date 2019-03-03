@@ -280,28 +280,62 @@ float Transport::getRenderingPercentsComplete() const
     return this->renderer->getPercentsComplete();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Sending messages at real-time
 //===----------------------------------------------------------------------===//
 
-void Transport::sendMidiMessage(const String &trackId, const MidiMessage &message) const
+void Transport::MidiMessageDelayedPreview::cancelPendingPreview()
 {
-    MidiMessage messageTimestampedAsNow(message);
-    
+    this->stopTimer();
+    this->messages.clearQuick();
+    this->instruments.clearQuick();
+}
+
+void Transport::MidiMessageDelayedPreview::previewMessage(const MidiMessage &message,
+    WeakReference<Instrument> instrument)
+{
+    this->messages.add(message);
+    this->instruments.add(instrument);
+    if (!this->isTimerRunning())
+    {
+        this->startTimer(10);
+    }
+}
+
+void Transport::MidiMessageDelayedPreview::timerCallback()
+{
+    this->stopTimer();
+
 #if HELIO_MOBILE
     // iSEM tends to hang >_< if too many messages are send simultaniously
-    messageTimestampedAsNow.setTimeStamp(TIME_NOW + float(rand() % 50) * 0.01);
+    const auto time = TIME_NOW + float(rand() % 50) * 0.01;
 #elif HELIO_DESKTOP
-    messageTimestampedAsNow.setTimeStamp(TIME_NOW);
+    const auto time = TIME_NOW;
 #endif
-    
-    auto &collector = this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
-    collector.addMessageToQueue(messageTimestampedAsNow);
+
+    for (int i = 0; i < this->messages.size(); ++i)
+    {
+        if (Instrument *instrument = this->instruments.getUnchecked(i))
+        {
+            auto &message = this->messages.getReference(i);
+            message.setTimeStamp(time);
+            instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(message);
+        }
+    }
+
+    this->messages.clearQuick();
+    this->instruments.clearQuick();
+}
+
+void Transport::previewMidiMessage(const String &trackId, const MidiMessage &message) const
+{
+    this->messagePreviewQueue.previewMessage(message, this->linksCache[trackId]);
 }
 
 void Transport::allNotesAndControllersOff() const
 {
+    this->messagePreviewQueue.cancelPendingPreview();
+
     static const int c = 1;
     //for (int c = 1; c <= 16; ++c)
     {
@@ -331,6 +365,8 @@ void Transport::allNotesAndControllersOff() const
 
 void Transport::allNotesControllersAndSoundOff() const
 {
+    this->messagePreviewQueue.cancelPendingPreview();
+
     static const int c = 1;
     //for (int c = 1; c <= 16; ++c)
     {

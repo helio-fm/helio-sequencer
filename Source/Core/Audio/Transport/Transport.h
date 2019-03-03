@@ -75,10 +75,11 @@ public:
     MidiMessage findFirstTempoEvent();
 
     //===------------------------------------------------------------------===//
-    // Sending messages at real-time
+    // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void sendMidiMessage(const String &layerId, const MidiMessage &message) const;
+    void previewMidiMessage(const String &trackId, const MidiMessage &message) const;
+
     void allNotesAndControllersOff() const;
     void allNotesControllersAndSoundOff() const;
     
@@ -166,6 +167,31 @@ private:
     void updateLinkForTrack(const MidiTrack *track);
     void removeLinkForTrack(const MidiTrack *track);
     
+private:
+
+    /*
+        The purpose of this class is to help with previewing messages on the fly in piano roll.
+        Will simply send messages to queue after a delay, and cancels all pending messages when
+        someone calls allNotesControllersAndSoundOff(); that delay is needed because some plugins
+        (e.g. Kontakt in my case) are often processing play/stop messages out of order, which is weird -
+        note the word `queue` in addMessageToQueue() method name - but it still happens in some cases,
+        for example, when a user drags some notes around quickly. Said that, for whatever reason,
+        JUCE's message collector cannot be relied upon, and this hack is used instead.
+    */
+    class MidiMessageDelayedPreview final : private Timer
+    {
+    public:
+        MidiMessageDelayedPreview() = default;
+        void cancelPendingPreview();
+        void previewMessage(const MidiMessage &message, WeakReference<Instrument> instrument);
+    private:
+        void timerCallback() override;
+        Array<WeakReference<Instrument>> instruments;
+        Array<MidiMessage> messages;
+    };
+
+    mutable MidiMessageDelayedPreview messagePreviewQueue;
+
 private:
 
     Atomic<double> seekPosition;

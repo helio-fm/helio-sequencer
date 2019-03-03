@@ -434,9 +434,6 @@ void ScalePreviewTool::buildChord(Array<int> keys)
         this->stopSound();
         pianoLayer->checkpoint();
 
-        // a hack for stop sound events not mute the forthcoming notes
-        //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
-
         for (int offset : keys)
         {
             const int key = jmin(128, jmax(0, this->targetKey + offset));
@@ -506,8 +503,7 @@ void ScalePreviewTool::stopSound()
 
 void ScalePreviewTool::sendMidiMessage(const MidiMessage &message)
 {
-    const String layerId = this->sequence->getTrackId();
-    this->roll->getTransport().sendMidiMessage(layerId, message);
+    this->roll->getTransport().previewMidiMessage(this->sequence->getTrackId(), message);
 }
 
 //[/MiscUserCode]

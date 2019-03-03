@@ -34,7 +34,7 @@
 static PianoSequence *getPianoSequence(const Lasso &selection)
 {
     const auto &firstEvent = selection.getFirstAs<NoteComponent>()->getNote();
-    return static_cast<PianoSequence *>(firstEvent.getSequence());;
+    return static_cast<PianoSequence *>(firstEvent.getSequence());
 }
 
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) :
@@ -46,9 +46,6 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &c
     groupScalingAnchor(event),
     firstChangeDone(false)
 {
-    //this->updateColours(); // assumed to be updated later in setActive()
-    //this->toFront(false); // assumed to be called later in setActive()
-
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -1033,11 +1030,10 @@ void NoteComponent::checkpointIfNeeded()
 void NoteComponent::stopSound()
 {
     this->getRoll().getTransport().allNotesControllersAndSoundOff();
-    Thread::sleep(9); // let some time pass so that next messages wont be messed with sound-off ones
 }
 
 void NoteComponent::sendMidiMessage(const MidiMessage &message) const
 {
     const auto &trackId = this->getNote().getSequence()->getTrackId();
-    this->getRoll().getTransport().sendMidiMessage(trackId, message);
+    this->getRoll().getTransport().previewMidiMessage(trackId, message);
 }
