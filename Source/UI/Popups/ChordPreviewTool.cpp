@@ -235,11 +235,10 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
     {
         const Point<int> dragDelta = this->newChord->getDragDelta();
         this->setTopLeftPosition(this->getPosition() + dragDelta);
-        const bool keyHasChanged = this->detectKeyBeatAndContext();
-        this->buildNewNote(keyHasChanged);
-
-        if (keyHasChanged)
+        const bool hasChanges = this->detectKeyBeatAndContext();
+        if (hasChanges)
         {
+            this->buildNewNote(true);
             const auto rootKey = MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3);
             App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
         }
@@ -338,10 +337,7 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     {
         this->sequence->checkpoint();
     }
-
-    // a hack for stop sound events not mute the forthcoming notes
-    Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 9);
-
+    
     const int key = jlimit(0, 128, this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
         CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
@@ -368,15 +364,17 @@ void ChordPreviewTool::undoChangesIfAny()
 bool ChordPreviewTool::detectKeyBeatAndContext()
 {
     int newKey = 0;
+    float newBeat = 0.f;
     const auto myCentreRelativeToRoll =
         this->roll.getLocalPoint(this->getParentComponent(),
             this->getBounds().getCentre());
 
     this->roll.getRowsColsByMousePosition(myCentreRelativeToRoll.x,
-        myCentreRelativeToRoll.y, newKey, this->targetBeat);
+        myCentreRelativeToRoll.y, newKey, newBeat);
 
-    bool hasChanges = (newKey != this->targetKey);
+    const bool hasChanges = (newKey != this->targetKey) || (newBeat != this->targetBeat);
     this->targetKey = newKey;
+    this->targetBeat = newBeat;
 
     const KeySignatureEvent *context = nullptr;
     for (int i = 0; i < this->harmonicContext->size(); ++i)
@@ -398,9 +396,6 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     // We've found the only context that doesn't change within a sequence:
     if (context != nullptr)
     {
-        hasChanges = hasChanges || this->root != context->getRootKey() ||
-            !this->scale->isEquivalentTo(context->getScale());
-
         this->scale = context->getScale();
         this->root = context->getRootKey();
     }

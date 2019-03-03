@@ -361,11 +361,10 @@ bool ScalePreviewTool::onPopupButtonDrag(PopupButton *button)
     {
         const Point<int> dragDelta = this->newNote->getDragDelta();
         this->setTopLeftPosition(this->getPosition() + dragDelta);
-        const bool keyHasChanged = this->detectKeyAndBeat();
-        this->buildNewNote(keyHasChanged);
-
-        if (keyHasChanged)
+        const bool hasChanges = this->detectKeyAndBeat();
+        if (hasChanges)
         {
+            this->buildNewNote(true);
             const String rootKey = keyName(this->targetKey);
             App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
         }
@@ -484,11 +483,19 @@ void ScalePreviewTool::cancelChangesIfAny()
 
 bool ScalePreviewTool::detectKeyAndBeat()
 {
-    Point<int> myCentreRelativeToRoll = this->roll->getLocalPoint(this->getParentComponent(), this->getBounds().getCentre());
     int newKey = 0;
-    this->roll->getRowsColsByMousePosition(myCentreRelativeToRoll.x, myCentreRelativeToRoll.y, newKey, this->targetBeat);
-    const bool hasChanges = (newKey != this->targetKey);
+    float newBeat = 0.f;
+    const auto myCentreRelativeToRoll =
+        this->roll->getLocalPoint(this->getParentComponent(),
+            this->getBounds().getCentre());
+
+    this->roll->getRowsColsByMousePosition(myCentreRelativeToRoll.x,
+        myCentreRelativeToRoll.y, newKey, newBeat);
+
+    const bool hasChanges = (newKey != this->targetKey) || (newBeat != this->targetBeat);
     this->targetKey = newKey;
+    this->targetBeat = newBeat;
+
     return hasChanges;
 }
 

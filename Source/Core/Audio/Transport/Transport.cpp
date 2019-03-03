@@ -298,7 +298,7 @@ void Transport::MidiMessageDelayedPreview::previewMessage(const MidiMessage &mes
     this->instruments.add(instrument);
     if (!this->isTimerRunning())
     {
-        this->startTimer(10);
+        this->startTimer(15);
     }
 }
 
