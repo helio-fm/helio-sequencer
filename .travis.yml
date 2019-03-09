@@ -75,7 +75,7 @@ before_script:
 
 script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make';
+    xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
     fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
