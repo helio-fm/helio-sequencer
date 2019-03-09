@@ -29,7 +29,7 @@ class NoteComponent final : public MidiEventComponent
 public:
 
     NoteComponent(PianoRoll &gridRef, const Note &note,
-        const Clip &clip, bool ghostMode = false);
+        const Clip &clip, bool ghostMode = false) noexcept;
 
     enum State
     {

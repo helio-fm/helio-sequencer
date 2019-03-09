@@ -22,7 +22,7 @@
 
 struct ApiModel : Serializable
 {
-    ApiModel(const ValueTree &tree) : data(tree) {}
+    ApiModel(const ValueTree &tree) noexcept : data(tree) {}
 
     template<typename T>
     Array<T> getChildren(const Identifier &id) const

@@ -30,7 +30,7 @@ class MidiEventComponent :
 {
 public:
 
-    MidiEventComponent(HybridRoll &editor, bool ghostMode = false);
+    MidiEventComponent(HybridRoll &editor, bool ghostMode = false) noexcept;
 
     bool isActive() const noexcept;
     void setActive(bool val, bool force = false);

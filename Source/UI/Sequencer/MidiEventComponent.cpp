@@ -21,7 +21,7 @@
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 
-MidiEventComponent::MidiEventComponent(HybridRoll &editor, bool isGhost) :
+MidiEventComponent::MidiEventComponent(HybridRoll &editor, bool isGhost) noexcept :
     roll(editor),
     dragger(),
     selectedState(false),

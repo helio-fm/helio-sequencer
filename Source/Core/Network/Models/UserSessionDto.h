@@ -21,7 +21,7 @@
 
 struct UserSessionDto final : ApiModel
 {
-    UserSessionDto(const ValueTree &tree) : ApiModel(tree) {}
+    UserSessionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getDeviceId() const noexcept { return DTO_PROPERTY(Sessions::deviceId); }
     String getPlatformId() const noexcept { return DTO_PROPERTY(Sessions::platformId); }

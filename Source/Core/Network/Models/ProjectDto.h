@@ -22,7 +22,7 @@
 
 struct ProjectDto final : ApiModel
 {
-    ProjectDto(const ValueTree &tree) : ApiModel(tree) {}
+    ProjectDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getId() const noexcept { return DTO_PROPERTY(Projects::id); }
     String getTitle() const noexcept { return DTO_PROPERTY(Projects::title); }

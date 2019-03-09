@@ -21,7 +21,7 @@
 
 struct UserResourceDto final : ApiModel
 {
-    UserResourceDto(const ValueTree &tree) : ApiModel(tree) {}
+    UserResourceDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getType() const noexcept { return DTO_PROPERTY(Resources::type); }
     String getName() const noexcept { return DTO_PROPERTY(Resources::name); }

@@ -21,8 +21,8 @@
 
 struct RevisionDto final : ApiModel
 {
-    RevisionDto() : ApiModel({}) {}
-    RevisionDto(const ValueTree &tree) : ApiModel(tree) {}
+    RevisionDto() noexcept : ApiModel({}) {}
+    RevisionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getId() const noexcept { return DTO_PROPERTY(Revisions::id); }
     String getMessage() const noexcept { return DTO_PROPERTY(Revisions::message); }

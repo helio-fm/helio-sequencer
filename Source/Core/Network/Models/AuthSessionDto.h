@@ -21,7 +21,7 @@
 
 struct AuthSessionDto final : ApiModel
 {
-    AuthSessionDto(const ValueTree &tree) : ApiModel(tree) {}
+    AuthSessionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getSessionId() const noexcept { return DTO_PROPERTY(AuthSession::id); }
     String getSecret() const noexcept { return DTO_PROPERTY(AuthSession::secret); }

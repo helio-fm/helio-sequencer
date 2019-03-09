@@ -24,7 +24,7 @@
 
 struct UserProfileDto final : ApiModel
 {
-    UserProfileDto(const ValueTree &tree, const MemoryBlock &image = {}) :
+    UserProfileDto(const ValueTree &tree, const MemoryBlock &image = {}) noexcept :
         ApiModel(tree), avatarData(image) {}
     
     String getName() const noexcept { return DTO_PROPERTY(Identity::name); }

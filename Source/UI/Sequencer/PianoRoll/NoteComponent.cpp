@@ -37,7 +37,7 @@ static PianoSequence *getPianoSequence(const Lasso &selection)
     return static_cast<PianoSequence *>(firstEvent.getSequence());
 }
 
-NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) :
+NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) noexcept :
     MidiEventComponent(editor, ghostMode),
     note(event),
     clip(clip),

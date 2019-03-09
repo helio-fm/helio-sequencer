@@ -21,7 +21,7 @@
 
 struct AppVersionDto final : ApiModel
 {
-    AppVersionDto(const ValueTree &tree) : ApiModel(tree) {}
+    AppVersionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getArchitecture() const noexcept { return DTO_PROPERTY(Versions::architecture); }
     String getBranch() const noexcept { return DTO_PROPERTY(Versions::branch); }

@@ -21,7 +21,7 @@
 
 struct AppResourceDto final : ApiModel
 {
-    AppResourceDto(const ValueTree &tree) : ApiModel(tree) {}
+    AppResourceDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getType() const noexcept { return DTO_PROPERTY(Resources::type); }
     String getHash() const noexcept { return DTO_PROPERTY(Resources::hash); }

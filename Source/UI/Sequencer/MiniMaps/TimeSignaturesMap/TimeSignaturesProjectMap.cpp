@@ -229,7 +229,7 @@ void TimeSignaturesProjectMap<T>::onChangeTrackProperties(MidiTrack *const track
 }
 
 
-template< typename T >
+template<typename T>
 void TimeSignaturesProjectMap<T>::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadTrackMap();
@@ -302,9 +302,7 @@ void TimeSignaturesProjectMap<T>::onChangeViewBeatRange(float firstBeat, float l
 //===----------------------------------------------------------------------===//
 
 template<typename T>
-void TimeSignaturesProjectMap<T>::onTimeSignatureMoved(T *nc)
-{
-}
+void TimeSignaturesProjectMap<T>::onTimeSignatureMoved(T *nc) {}
 
 template<typename T>
 void TimeSignaturesProjectMap<T>::onTimeSignatureTapped(T *nc)
