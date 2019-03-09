@@ -442,6 +442,7 @@
     <ClCompile Include="..\..\Source\UI\Menus\MidiTrackMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\OrchestraPitMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\PatternsMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\ProjectMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\TimelineMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureMenu.cpp"/>
@@ -2520,6 +2521,7 @@
     <ClInclude Include="..\..\Source\UI\Menus\MidiTrackMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\PatternsMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\ProjectMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\TimelineMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureMenu.h"/>

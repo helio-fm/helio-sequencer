@@ -218,7 +218,11 @@ namespace CommandIDs
         VersionControlCommitSelected    = 0x4069,
         VersionControlCheckout          = 0x406a,
 
-        YourNextCommandId               = 0x4100
+        PatternsGroupByName             = 0x4100,
+        PatternsGroupByColour           = 0x4101,
+        PatternsGroupByInstrument       = 0x4102,
+
+        YourNextCommandId               = 0x4200
     };
 
     int getIdForName(const String &command);

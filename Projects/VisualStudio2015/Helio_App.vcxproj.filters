@@ -1081,6 +1081,9 @@
     <ClCompile Include="..\..\Source\UI\Menus\OrchestraPitMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\PatternsMenu.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\ProjectMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
@@ -3946,6 +3949,9 @@
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\PatternsMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\ProjectMenu.h">

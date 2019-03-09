@@ -623,6 +623,15 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::BarShiftRight:
         PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
         break;
+    case CommandIDs::PatternsGroupByName:
+        // TODO
+        break;
+    case CommandIDs::PatternsGroupByColour:
+        // TODO
+        break;
+    case CommandIDs::PatternsGroupByInstrument:
+        // TODO
+        break;
     default:
         break;
     }
