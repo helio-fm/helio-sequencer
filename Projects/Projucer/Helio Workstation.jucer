@@ -1392,7 +1392,7 @@
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
                        enablePluginBinaryCopyStep="1" codeSigningIdentity="Developer ID Application"
                        customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
-        <CONFIGURATION name="Release" osxCompatibility="10.7 SDK" isDebug="0" optimisation="3"
+        <CONFIGURATION name="Release" osxCompatibility="10.7 SDK" isDebug="0" optimisation="5"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
                        stripLocalSymbols="1" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"
                        codeSigningIdentity="Developer ID Application" customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
@@ -1423,7 +1423,7 @@
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        customXcodeFlags="" enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="3"
+        <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="5"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        customXcodeFlags="" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"
                        stripLocalSymbols="1"/>
@@ -1457,11 +1457,11 @@
                        enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1"/>
         <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="Win32" isDebug="0" optimisation="3" targetName="Helio"
+                       winArchitecture="Win32" isDebug="0" optimisation="4" targetName="Helio"
                        useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
         <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="x64" isDebug="0" optimisation="3" targetName="Helio"
+                       winArchitecture="x64" isDebug="0" optimisation="4" targetName="Helio"
                        useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
@@ -1498,12 +1498,12 @@
         <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
+                       optimisation="4" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
                        warningsAreErrors="1"/>
         <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="x64" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="3" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
+                       optimisation="4" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
                        warningsAreErrors="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1527,9 +1527,9 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="Helio"/>
-        <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="6"
+        <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="5"
                        targetName="Helio" linuxArchitecture="-m32"/>
-        <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="6"
+        <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="5"
                        targetName="Helio" linuxArchitecture="-m64"/>
         <CONFIGURATION name="Travis" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="1"
                        targetName="Helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
@@ -1560,7 +1560,7 @@
                    androidTargetSDK="21" gradleVersion="5.2.1" gradleWrapperVersion="3.3.1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"/>
-        <CONFIGURATION name="Release" androidArchitectures="" isDebug="0" optimisation="3"
+        <CONFIGURATION name="Release" androidArchitectures="" isDebug="0" optimisation="5"
                        targetName="Helio" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
