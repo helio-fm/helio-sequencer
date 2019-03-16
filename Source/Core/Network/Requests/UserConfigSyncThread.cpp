@@ -66,7 +66,7 @@ void UserConfigSyncThread::run()
         {
             const String configurationRoute(ApiRoutes::customResource
                 .replace(":resourceType", resource->getType())
-                .replace(":resourceId", resource->getName()));
+                .replace(":resourceId", URL::addEscapeChars(resource->getName(), false)));
 
             const BackendRequest syncRequest(configurationRoute);
             this->response = syncRequest.get();
@@ -89,7 +89,7 @@ void UserConfigSyncThread::run()
         {
             const String configurationRoute(ApiRoutes::customResource
                 .replace(":resourceType", resource->getResourceType())
-                .replace(":resourceId", resource->getResourceId()));
+                .replace(":resourceId", URL::addEscapeChars(resource->getResourceId(), false)));
 
             ValueTree payload(ApiKeys::Resources::resource);
             ValueTree data(ApiKeys::Resources::data);
@@ -120,7 +120,7 @@ void UserConfigSyncThread::run()
 
             const String configurationRoute(ApiRoutes::customResource
                 .replace(":resourceType", this->deletedConfigType)
-                .replace(":resourceId", this->deletedConfigName));
+                .replace(":resourceId", URL::addEscapeChars(this->deletedConfigName, false)));
 
             const BackendRequest syncRequest(configurationRoute);
             this->response = syncRequest.del();

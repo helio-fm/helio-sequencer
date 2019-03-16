@@ -25,17 +25,6 @@
 #define CONNECTION_TIMEOUT_MS (0)
 #define NUM_CONNECT_ATTEMPTS (3)
 
-static bool progressCallbackInternal(void *const context, int bytesSent, int totalBytes)
-{
-    const auto *connection = static_cast<const BackendRequest *const>(context);
-    if (connection->progressCallback != nullptr)
-    {
-        connection->progressCallback(bytesSent, totalBytes);
-    }
-
-    return true; // always continue
-}
-
 BackendRequest::Response::Response() :
     statusCode(0),
     receipt(Result::fail({})) {}
@@ -91,9 +80,8 @@ const String BackendRequest::Response::getRedirect() const noexcept
     return this->headers.getValue("location", {});
 }
 
-BackendRequest::BackendRequest(const String &apiEndpoint, ProgressCallback progressCallback) :
+BackendRequest::BackendRequest(const String &apiEndpoint) :
     apiEndpoint(apiEndpoint),
-    progressCallback(progressCallback),
     serializer(true) {}
 
 static String getHeaders()
@@ -191,6 +179,7 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
 {
     Response response;
     ScopedPointer<InputStream> stream;
+    
     const auto url = URL(Routes::Api::baseURL + this->apiEndpoint);
 
     int i = 0;
@@ -198,7 +187,7 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
     {
         DBG(">> " << verb << " " << this->apiEndpoint);
         stream = url.createInputStream(false,
-            progressCallbackInternal, (void *)(this),
+            nullptr, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
             5, verb);
@@ -229,7 +218,7 @@ BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, con
             << jsonPayload.substring(0, 128) + (jsonPayload.length() > 128 ? ".." : ""));
 
         stream = url.createInputStream(true,
-            progressCallbackInternal, (void *)(this),
+            nullptr, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
             5, verb);

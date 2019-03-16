@@ -23,10 +23,7 @@ class BackendRequest final
 {
 public:
 
-    using ProgressCallback = Function<void(int, int)>;
-
-    BackendRequest(const String &apiEndpoint,
-        ProgressCallback progressCallback = nullptr);
+    BackendRequest(const String &apiEndpoint);
 
     struct Response final
     {
@@ -67,8 +64,6 @@ public:
     Response post(const ValueTree &payload) const;
     Response put(const ValueTree &payload) const;
     Response del() const;
-
-    ProgressCallback progressCallback;
 
 private:
 
