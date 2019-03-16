@@ -30,15 +30,9 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-#if HELIO_DESKTOP
-#   define CHORD_BUILDER_LABEL_SIZE       (28)
-#   define CHORD_BUILDER_FONT_SIZE        (20)
-#elif HELIO_MOBILE
-#   define CHORD_BUILDER_LABEL_SIZE       (26)
-#   define CHORD_BUILDER_FONT_SIZE        (16)
-#endif
-
-#define CHORD_BUILDER_NOTE_LENGTH         (4)
+#define CHORD_BUILDER_LABEL_SIZE       (32)
+#define CHORD_BUILDER_FONT_SIZE        (16)
+#define CHORD_BUILDER_NOTE_LENGTH      (4)
 
 static Label *createLabel(const String &text)
 {
