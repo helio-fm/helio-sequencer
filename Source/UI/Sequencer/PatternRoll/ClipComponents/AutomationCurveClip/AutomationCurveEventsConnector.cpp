@@ -163,7 +163,6 @@ void AutomationCurveEventsConnector::rebuildLinePath()
 
     this->linePath.clear();
 
-    const float r = 2.f;
     const auto &e1 = this->component1->getEvent();
     const auto &e2 = this->component2->getEvent();
     float lastAppliedValue = e1.getControllerValue();

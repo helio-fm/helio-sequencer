@@ -116,7 +116,7 @@ void RevisionsSyncThread::run()
     using RevisionDtosMap = FlatHashMap<String, RevisionDto, StringHash>;
 
     RevisionDtosMap remoteRevisions;
-    for (const auto child : remoteProject.getRevisions())
+    for (const auto &child : remoteProject.getRevisions())
     {
         remoteRevisions[child.getId()] = child;
     }
@@ -164,7 +164,7 @@ void RevisionsSyncThread::run()
     }
 
     // if anything is needed to pull, fetch all data for each, then update and callback
-    for (const auto dto : newRemoteRevisions)
+    for (const auto &dto : newRemoteRevisions)
     {
         if (this->idsToSync.isEmpty() || // if empty, sync all
             this->idsToSync.contains(dto.getId()))
@@ -228,7 +228,7 @@ void RevisionsSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
         payload.setProperty(ApiKeys::Revisions::message, root->getMessage(), nullptr);
         payload.setProperty(ApiKeys::Revisions::timestamp, String(root->getTimeStamp()), nullptr);
         payload.setProperty(ApiKeys::Revisions::parentId,
-            (root->getParent() ? var(root->getParent()->getUuid()) : var::null), nullptr);
+            (root->getParent() ? var(root->getParent()->getUuid()) : var()), nullptr);
 
         ValueTree data(ApiKeys::Revisions::data);
         data.addChild(root->serializeDeltas(), 0, nullptr);

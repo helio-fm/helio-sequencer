@@ -1083,10 +1083,8 @@ void HybridRoll::mouseUp(const MouseEvent &e)
 void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
-
     const float inititalSpeed = this->smoothZoomController->getInitialZoomSpeed();
     const float forwardWheel = wheel.deltaY * (wheel.isReversed ? -inititalSpeed : inititalSpeed);
-    const float beatWidth = (this->barWidth / BEATS_PER_BAR);
     const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
     if (event.mods.isAnyModifierKeyDown())
     {

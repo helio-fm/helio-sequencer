@@ -67,17 +67,6 @@ void MenuPanel::handleCommandMessage (int commandId)
     }
 }
 
-class ColourSorter
-{
-public:
-    static int compareElements(const String &a, const String &b)
-    {
-        const auto ca = Colour::fromString(a);
-        const auto cb = Colour::fromString(b);
-        return (a < b) ? -1 : (a > b ? 1 : 0);
-    }
-};
-
 // Hardcoded for now
 StringPairArray MenuPanel::getColoursList()
 {

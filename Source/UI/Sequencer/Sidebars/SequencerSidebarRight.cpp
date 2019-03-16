@@ -266,14 +266,12 @@ void SequencerSidebarRight::recreateMenu()
 
     const bool defaultMode = this->project.getEditMode().isMode(HybridRollEditMode::defaultMode);
     const bool drawMode = this->project.getEditMode().isMode(HybridRollEditMode::drawMode);
-    const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
-    const bool zoomMode = this->project.getEditMode().isMode(HybridRollEditMode::zoomMode);
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
     const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::knifeMode);
-    const bool eraserMode = this->project.getEditMode().isMode(HybridRollEditMode::eraserMode);
 
     // Selection tool is useless on the desktop
 #if HELIO_MOBILE
+    const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggled(selectionMode));
 #endif
 
@@ -286,7 +284,6 @@ void SequencerSidebarRight::recreateMenu()
 #endif
 
     this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggled(scissorsMode));
-    //this->menu.add(MenuItem::item(Icons::eraserTool, CommandIDs::EditModeEraser)->toggled(eraserMode));
 
     if (this->menuMode == PianoRollTools)
     {

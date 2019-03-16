@@ -101,6 +101,7 @@ bool HybridRollEditMode::shouldInteractWithChildren() const
         case zoomMode:
         case dragMode:
         case knifeMode:
+        case eraserMode:
             return false;
             break;
     }
@@ -133,6 +134,10 @@ MouseCursor HybridRollEditMode::getCursor() const
             break;
             
         case knifeMode:
+            return MouseCursor::CrosshairCursor;
+            break;
+
+        case eraserMode:
             return MouseCursor::CrosshairCursor;
             break;
     }

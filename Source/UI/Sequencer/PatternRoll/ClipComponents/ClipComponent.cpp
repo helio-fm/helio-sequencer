@@ -172,7 +172,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
 
         if (eventChanged)
         {
-            const bool firstChangeIsToCome = !this->firstChangeDone;
+            //const bool firstChangeIsToCome = !this->firstChangeDone;
 
             this->checkpointIfNeeded();
 

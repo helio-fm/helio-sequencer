@@ -86,8 +86,7 @@ void AudioPluginNode::showPage()
         return;
     }
 
-    const AudioProcessorGraph::NodeID nodeId(nodeId);
-    const AudioProcessorGraph::Node::Ptr f(instrument->getNodeForId(nodeId));
+    const AudioProcessorGraph::Node::Ptr f(instrument->getNodeForId(this->nodeId));
 
     if (f == nullptr)
     {

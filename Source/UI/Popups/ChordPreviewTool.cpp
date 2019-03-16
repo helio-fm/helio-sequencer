@@ -47,8 +47,6 @@ static Label *createLabel(const String &text)
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
     newLabel->setName(text + "_outline");
-
-    const float autoFontSize = float(size - 8.f);
     newLabel->setFont(CHORD_BUILDER_FONT_SIZE);
     return newLabel;
 }
@@ -266,7 +264,7 @@ static const float kDefaultChordVelocity = 0.35f;
 
 Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
 {
-    for (const auto chord : this->defaultChords)
+    for (const auto &chord : this->defaultChords)
     {
         if (chord->getResourceId() == button->getUserData())
         {

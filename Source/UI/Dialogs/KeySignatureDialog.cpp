@@ -27,13 +27,6 @@
 #include "Transport.h"
 #include "SerializationKeys.h"
 #include "Config.h"
-
-static inline void copyColourIfSpecified(Label& l, TextEditor& ed, int colourID, int targetColourID)
-{
-    if (l.isColourSpecified(colourID) || l.getLookAndFeel().isColourSpecified(colourID))
-        ed.setColour(targetColourID, l.findColour(colourID));
-}
-
 //[/MiscUserDefs]
 
 KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
