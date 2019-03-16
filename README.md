@@ -28,9 +28,9 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 
 ### Development builds
 
-* Windows: [ci.helio.fm/helio-dev-64-bit.zip](https://ci.helio.fm/helio-dev-64-bit.zip)
+* Windows: [ci.helio.fm/helio-dev-x64.zip](https://ci.helio.fm/helio-dev-x64.zip)
 * macOS: [ci.helio.fm/helio-dev.dmg](https://ci.helio.fm/helio-dev.dmg)
-* Linux: [ci.helio.fm/helio-dev-64-bit.tar.gz](https://ci.helio.fm/helio-dev-64-bit.tar.gz)
+* Linux: [ci.helio.fm/helio-dev-x64.tar.gz](https://ci.helio.fm/helio-dev-x64.tar.gz)
 
 
 ## Links

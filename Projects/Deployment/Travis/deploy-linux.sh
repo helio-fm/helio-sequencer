@@ -1,27 +1,51 @@
 #!/bin/bash
 
 set -e
-# TODO check for $TRAVIS_BRANCH and process develop and master branches differently
 
+# Bail out on PR builds immediately
+if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
+    echo "Skipping deployment for PR build"
+    exit 0
+fi
+
+# TODO add 32-bit builds someday
+ARCH="x64"
+
+# Build either a development branch or a tagged master branch
+if [[ ${TRAVIS_BRANCH} == "develop" ]]; then
+    RELEASE_FILENAME="helio-dev-${ARCH}"
+elif [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_TAG} != "" ]]; then
+    RELEASE_FILENAME="helio-${TRAVIS_TAG}-${ARCH}"
+else
+    echo "Skipping deployment: will only run either on a master commit with tag, or a develop commit"
+    exit 0
+fi
+
+#####################################
 # Create tarball
+
 cd ${TRAVIS_BUILD_DIR}/Projects/LinuxMakefile/build
-tar --transform 's/.*/\L&/' -czf /tmp/deploy.tar.gz ./Helio
-scp -C /tmp/deploy.tar.gz deploy@helio.fm:/opt/musehackers/files/ci/helio-dev-64-bit.tar.gz
+tar --transform 's/.*/\L&/' -czf ${RELEASE_FILENAME}.tar.gz ./Helio
+scp -C ${RELEASE_FILENAME}.tar.gz ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.tar.gz
 
+#####################################
 # Create deb package
+
 cd ${TRAVIS_BUILD_DIR}/Projects
-mkdir -p ./Deployment/Linux/Debian/x64/usr/bin
-cp ./LinuxMakefile/build/Helio ./Deployment/Linux/Debian/x64/usr/bin/helio
-chmod +x ./Deployment/Linux/Debian/x64/usr/bin/helio
+mkdir -p ./Deployment/Linux/Debian/${ARCH}/usr/bin
+cp ./LinuxMakefile/build/Helio ./Deployment/Linux/Debian/${ARCH}/usr/bin/helio
+chmod +x ./Deployment/Linux/Debian/${ARCH}/usr/bin/helio
 
-dpkg-deb --build ./Deployment/Linux/Debian/x64
-scp -C ./Deployment/Linux/Debian/x64.deb deploy@helio.fm:/opt/musehackers/files/ci/helio-dev-64-bit.deb
+dpkg-deb --build ./Deployment/Linux/Debian/${ARCH}
+scp -C ./Deployment/Linux/Debian/${ARCH}.deb ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.deb
 
+#####################################
 # Create AppImage
-cd ${TRAVIS_BUILD_DIR}
-mkdir -p ./Projects/Deployment/Linux/AppImage/x64/usr/bin
-cp ./Projects/LinuxMakefile/build/Helio ./Projects/Deployment/Linux/AppImage/x64/usr/bin/helio
-chmod +x ./Projects/Deployment/Linux/AppImage/x64/usr/bin/helio
+
+cd ${TRAVIS_BUILD_DIR}/Projects
+mkdir -p ./Deployment/Linux/AppImage/${ARCH}/usr/bin
+cp ./LinuxMakefile/build/Helio ./Deployment/Linux/AppImage/${ARCH}/usr/bin/helio
+chmod +x ./Deployment/Linux/AppImage/${ARCH}/usr/bin/helio
 
 unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
 
@@ -29,7 +53,7 @@ wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/contin
 chmod a+x linuxdeployqt-continuous-x86_64.AppImage
 
 ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
-./squashfs-root/AppRun ./Projects/Deployment/Linux/AppImage/x64/usr/share/applications/Helio.desktop -appimage
+./squashfs-root/AppRun ./Deployment/Linux/AppImage/${ARCH}/usr/share/applications/Helio.desktop -appimage
 
-mv Helio*.AppImage helio-dev-64-bit.AppImage
-scp -C helio-dev-64-bit.AppImage deploy@helio.fm:/opt/musehackers/files/ci/helio-dev-64-bit.AppImage
+mv Helio*.AppImage ${RELEASE_FILENAME}.AppImage
+scp -C ${RELEASE_FILENAME}.AppImage ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.AppImage

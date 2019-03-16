@@ -8,27 +8,18 @@ branches:
   only:
     - master
     - develop
+    - travis-test
 
 addons_shortcuts:
-  # Commented out Clang builds until Xenial images are available in Travis.
-  # Trusty-based builds are broken, as JUCE requires libc++ at least of 3.7
-  # addons_clang40: &clang40
-  #   apt:
-  #     sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0' ]
-  #     packages: [ 'clang-4.0', 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  # addons_clang50: &clang50
-  #   apt:
-  #     sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0' ]
-  #     packages: [ 'clang-5.0', 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  addons_gcc5: &gcc5
+  addons_clang7: &clang7
     apt:
-      sources: [ 'ubuntu-toolchain-r-test' ]
-      packages: [ 'g++-5', 'gcc-5', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+      packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
   addons_gcc6: &gcc6
     apt:
       sources: [ 'ubuntu-toolchain-r-test' ]
       packages: [ 'g++-6', 'gcc-6', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  # Use old enough compiler and no unsupported packages so that release build runs on older systems:
+  # Use old enough compiler and no unsupported packages so that release build runs on older systems
+  # TODO test building with -static-libstdc++ or -static-libgcc on older systems
   addons_gcc4: &gcc4
     ssh_known_hosts: helio.fm
     apt:
@@ -38,23 +29,17 @@ addons_shortcuts:
 
 matrix:
   include:
-    # - name: "clang 4.0"
-    #   addons: *clang40
-    #   env: CC=clang-4.0 CXX=clang++-4.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
-    # - name: "clang 5.0"
-    #   addons: *clang50
-    #   env: CC=clang-5.0 CXX=clang++-5.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
-    - name: "gcc 5, debug build, 64-bit"
+    - name: "clang 7, debug build x64"
       os: linux
-      dist: trusty
-      addons: *gcc5
-      env: CC=gcc-5 CXX=g++-5 CONFIG=Travis DISPLAY=localhost:1.0
-    - name: "gcc 6, debug build, 64-bit"
+      dist: xenial
+      addons: *clang7
+      env: CC=clang CXX=clang++ CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+    - name: "gcc 6, debug build x64"
       os: linux
       dist: trusty
       addons: *gcc6
       env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
-    - name: "gcc 4, release build, 64-bit, deploy"
+    - name: "gcc 4, release build x64, deploy"
       os: linux
       dist: trusty
       addons: *gcc4
@@ -92,5 +77,5 @@ deploy:
   skip_cleanup: true
   script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${TRAVIS_OS_NAME}.sh
   on:
-    branch: develop
-    condition: $DEPLOY = true
+    all_branches: true
+    condition: ${DEPLOY} = true
