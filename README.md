@@ -1,4 +1,4 @@
-## ![Vive la culture libre](Resources/screenshot-v1.png)
+## <p align="center"><img src="Resources/screen-v2.png"></p>
 [Helio Workstation](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
 
 
@@ -20,7 +20,7 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 
 ### Basic build instructions
 
- * Git clone with submodules: `git clone --recurse-submodules https://github.com/helio-fm/helio-workstation.git`.
+ * Clone with submodules: `git clone --recurse-submodules https://github.com/helio-fm/helio-workstation.git`.
  * Install dependencies:
    * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
    * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.
