@@ -8,8 +8,6 @@
       <key>NSAllowsArbitraryLoads</key>
       <true/>
     </dict>
-    <key>CFBundleIdentifier</key>
-    <string>fm.helio.mobile</string>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.music</string>
     <key>NSHumanReadableCopyright</key>
@@ -42,6 +40,8 @@
     <true/>
     <key>CFBundleExecutable</key>
     <string>${EXECUTABLE_NAME}</string>
+    <key>CFBundleIdentifier</key>
+    <string>fm.helio.mobile</string>
     <key>CFBundleName</key>
     <string>Helio</string>
     <key>CFBundleDisplayName</key>

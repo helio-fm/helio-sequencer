@@ -23,7 +23,7 @@ xcodebuild -archivePath \
 	/tmp/archive.xcarchive \
 	-exportArchive \
 	-exportPath /tmp/exported.app \
-	-exportOptionsPlist ./Travis/export-options.plist;
+	-exportOptionsPlist ./Travis/export-options-osx.plist;
 
 # Create disk image
 bash ./macOS/create-dmg.sh \
