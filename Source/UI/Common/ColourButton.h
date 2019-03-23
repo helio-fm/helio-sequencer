@@ -26,7 +26,8 @@ class ColourButton;
 
 struct ColourButtonListener
 {
-	virtual void onColourButtonClicked(ColourButton *button) = 0;
+    virtual ~ColourButtonListener() {}
+    virtual void onColourButtonClicked(ColourButton *button) = 0;
 };
 //[/Headers]
 
@@ -40,14 +41,17 @@ public:
     ~ColourButton();
 
     //[UserMethods]
-	void deselect();
-	void select();
+    void deselect();
+    void select();
 
-	bool isSelected() const noexcept
-	{ return this->checkMark != nullptr; }
+    bool isSelected() const noexcept
+    { return this->checkMark != nullptr; }
 
-	Colour getColour() const noexcept
-	{ return this->colour; }
+    Colour getColour() const noexcept
+    { return this->colour; }
+
+    int getButtonIndex() const noexcept;
+    void setButtonIndex(int val);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -58,12 +62,13 @@ public:
 private:
 
     //[UserVariables]
-	Component *createHighlighterComponent() override;
+    Component *createHighlighterComponent() override;
 
-	Colour colour;
-	ScopedPointer<IconComponent> checkMark;
-	ColourButtonListener *owner;
-	ComponentFader fader;
+    int index;
+    Colour colour;
+    ScopedPointer<IconComponent> checkMark;
+    ColourButtonListener *owner;
+    ComponentFader fader;
     //[/UserVariables]
 
 

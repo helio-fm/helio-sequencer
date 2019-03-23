@@ -21,175 +21,152 @@ class AudioCore;
 class FilterInGraph;
 class Instrument;
 
-#include "Serializable.h"
-
-class Instrument :
+class Instrument final :
     public Serializable,
-    public ChangeBroadcaster // уведомляет InstrumentEditorPanel
+    public ChangeBroadcaster // notifies InstrumentEditorPanel
 {
 public:
 
-    Instrument(AudioPluginFormatManager &formatManager, String name);
-
+    Instrument(AudioPluginFormatManager &formatManager, const String &name);
     ~Instrument() override;
-
 
     String getName() const;
     void setName(const String &name);
 
-    String getIdAndHash() const; // эта строчка назначается слоям
-    
-    
-    void initializeFrom(const PluginDescription &pluginDescription);
-    void addNodeToFreeSpace(const PluginDescription &pluginDescription);
+    // midi tracks use this to identify their instruments
+    String getIdAndHash() const;
+    bool isValid() const noexcept;
 
+    using InitializationCallback = Function<void(Instrument *)>;
+    using AddNodeCallback = Function<void(AudioProcessorGraph::Node::Ptr)>;
 
-    // gets connected to the audiocore's device
-    AudioProcessorPlayer &getProcessorPlayer() noexcept
-    { return this->processorPlayer; }
+    void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
+    void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);
+
+    class AudioCallback final : public AudioIODeviceCallback, public MidiInputCallback
+    {
+    public:
+
+        AudioCallback() = default;
+
+        void setProcessor(AudioProcessor *processor);
+        MidiMessageCollector &getMidiMessageCollector() noexcept { return messageCollector; }
+
+        void audioDeviceIOCallback(const float **, int, float **, int, int) override;
+        void audioDeviceAboutToStart(AudioIODevice *) override;
+        void audioDeviceStopped() override;
+        void handleIncomingMidiMessage(MidiInput *, const MidiMessage&) override;
+
+    private:
+
+        AudioProcessor *processor = nullptr;
+        CriticalSection lock;
+        double sampleRate = 0;
+        int blockSize = 0;
+        bool isPrepared = false;
+
+        int numInputChans = 0;
+        int numOutputChans = 0;
+        HeapBlock<float *> channels;
+        AudioBuffer<float> tempBuffer;
+
+        MidiBuffer incomingMidi;
+        MidiMessageCollector messageCollector;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCallback)
+    };
+
+    // gets connected to the audio-core device
+    AudioCallback &getProcessorPlayer() noexcept
+    { return this->audioCallback; }
 
     AudioProcessorGraph *getProcessorGraph() noexcept
     { return this->processorGraph; }
-
-
-
 
     //===------------------------------------------------------------------===//
     // Nodes
     //===------------------------------------------------------------------===//
 
     int getNumNodes() const noexcept;
+    const AudioProcessorGraph::Node::Ptr getNode(int index) const noexcept;
+    const AudioProcessorGraph::Node::Ptr getNodeForId(AudioProcessorGraph::NodeID uid) const noexcept;
+    
+    void removeNode(AudioProcessorGraph::NodeID id);
+    void disconnectNode(AudioProcessorGraph::NodeID id);
 
-    const AudioProcessorGraph::Node::Ptr getNode(const int index) const noexcept;
+    void removeAllConnectionsForNode(AudioProcessorGraph::Node::Ptr node);
 
-    const AudioProcessorGraph::Node::Ptr getNodeForId(const uint32 uid) const noexcept;
+    void setNodePosition(AudioProcessorGraph::NodeID id, double x, double y);
+    void getNodePosition(AudioProcessorGraph::NodeID id, double &x, double &y) const;
 
-    // для него есть свой формат, который создаст его по дескрипшну
-    AudioProcessorGraph::Node *addNode(Instrument *instrument, double x, double y);
+    bool isNodeStandardIOProcessor(AudioProcessorGraph::NodeID nodeId) const;
+    bool isNodeStandardIOProcessor(AudioProcessorGraph::Node::Ptr node) const;
 
-    void addNodeAsync(const PluginDescription &desc,
-                      double x, double y,
-                      std::function<void (AudioProcessorGraph::Node *)> f);
-
-    void removeNode(const uint32 filterUID);
-
-    void disconnectNode(const uint32 filterUID);
-
-    void removeIllegalConnections();
-
-    void setNodePosition(const int nodeId, double x, double y);
-
-    void getNodePosition(const int nodeId, double &x, double &y) const;
-
-
-    //===------------------------------------------------------------------===//
-    // Default nodes' id's
-    //===------------------------------------------------------------------===//
-
-    uint32 getMidiInId() const;
-
-    uint32 getMidiOutId() const;
-
-    uint32 getAudioInId() const;
-
-    uint32 getAudioOutId() const;
-
-    bool isNodeStandardInputOrOutput(uint32 nodeId) const;
-
+    // Standard IO nodes included:
+    Array<AudioProcessorGraph::Node::Ptr> findMidiAcceptors() const;
+    Array<AudioProcessorGraph::Node::Ptr> findMidiProducers() const;
+    Array<AudioProcessorGraph::Node::Ptr> findAudioAcceptors() const;
+    Array<AudioProcessorGraph::Node::Ptr> findAudioProducers() const;
 
     //===------------------------------------------------------------------===//
     // Connections
     //===------------------------------------------------------------------===//
 
-    int getNumConnections() const noexcept;
+    bool hasMidiConnection(AudioProcessorGraph::Node::Ptr src, AudioProcessorGraph::Node::Ptr dest) const noexcept;
+    bool hasAudioConnection(AudioProcessorGraph::Node::Ptr src, AudioProcessorGraph::Node::Ptr dest) const noexcept;
+    bool hasConnectionsFor(AudioProcessorGraph::Node::Ptr node) const noexcept;
 
-    const AudioProcessorGraph::Connection *getConnection(const int index) const noexcept;
+    std::vector<AudioProcessorGraph::Connection> getConnections() const noexcept;
+    bool isConnected(AudioProcessorGraph::Connection connection) const noexcept;
+    bool canConnect(AudioProcessorGraph::Connection connection) const noexcept;
 
-    const AudioProcessorGraph::Connection *getConnectionBetween(uint32 sourceFilterUID,
-            int sourceFilterChannel, uint32 destFilterUID, int destFilterChannel) const noexcept;
-
-    bool canConnect(uint32 sourceFilterUID, int sourceFilterChannel,
-                    uint32 destFilterUID, int destFilterChannel) const noexcept;
-
-    bool addConnection(uint32 sourceFilterUID, int sourceFilterChannel,
-                       uint32 destFilterUID, int destFilterChannel);
-
-    void removeConnection(const int index);
-
-    void removeConnection(uint32 sourceFilterUID, int sourceFilterChannel,
-                          uint32 destFilterUID, int destFilterChannel);
-
+    void removeConnection(AudioProcessorGraph::Connection connection);
+    bool addConnection(AudioProcessorGraph::NodeID sourceID, int sourceChannel,
+        AudioProcessorGraph::NodeID destinationID, int destinationChannel);
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-
-    void deserialize(const XmlElement &xml) override;
-
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
-
 
     /* The special channel index used to refer to a filter's midi channel.*/
     static const int midiChannelNumber;
-
-    void initializeDefaultNodes();
-
+    
 protected:
 
-    AudioProcessorGraph::Node *midiIn;
+    AudioProcessorGraph::Node::Ptr addNode(Instrument *instrument, double x, double y);
+    void addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f);
+    void removeIllegalConnections();
 
-    AudioProcessorGraph::Node *midiOut;
-
-    AudioProcessorGraph::Node *audioIn;
-
-    AudioProcessorGraph::Node *audioOut;
-
-    Uuid instrumentID;
-
+    Uuid instrumentId;
     String instrumentName;
     
 private:
 
-    String getInstrumentID() const; // будет разным для всех на разных платформах
+    String getInstrumentId() const; // will differ between platforms
+    String getInstrumentHash() const; // should be the same on all platforms
     
-    String getInstrumentHash() const; // будет один для одинаковых инструментов на разных платформах
-    
-    AudioProcessorGraph::Node *addDefaultNode(const PluginDescription &, double x, double y);
-
-    void configureNode(AudioProcessorGraph::Node *, const PluginDescription &, double x, double y);
+    AudioProcessorGraph::Node::Ptr addNode(const PluginDescription &, double x, double y);
+    void configureNode(AudioProcessorGraph::Node::Ptr, const PluginDescription &, double x, double y);
 
     friend class Transport;
-
     friend class AudioCore;
     
 private:
 
     AudioPluginFormatManager &formatManager;
-
-    AudioProcessorPlayer processorPlayer;
-
+    Instrument::AudioCallback audioCallback;
     ScopedPointer<AudioProcessorGraph> processorGraph;
 
-
-    uint32 lastUID;
-
-    uint32 getNextUID() noexcept;
-
-    XmlElement *createNodeXml(AudioProcessorGraph::Node *const node) const;
-    
-    void createNodeFromXml(const XmlElement &xml);
-
-    void createNodeFromXmlAsync(const XmlElement &xml,
-                                std::function<void (AudioProcessorGraph::Node *)> f);
+    ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;
+    void deserializeNode(const ValueTree &tree);
+    void deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f);
 
 private:
 
-    WeakReference<Instrument>::Master masterReference;
-
-    friend class WeakReference<Instrument>;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Instrument);
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Instrument)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Instrument)
 };

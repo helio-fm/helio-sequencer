@@ -17,213 +17,194 @@
 
 #pragma once
 
-class TimeSignaturesLayer;
-class ProjectTreeItem;
+class TimeSignaturesSequence;
+class MidiTrackSource;
 
 #include "TimeSignatureEvent.h"
 #include "UndoAction.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventInsertAction : public UndoAction
+class TimeSignatureEventInsertAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    TimeSignatureEventInsertAction(ProjectTreeItem &project,
-                                   String layerId,
-                                   const TimeSignatureEvent &target);
+    TimeSignatureEventInsertAction(MidiTrackSource &source,
+        const String &trackId, const TimeSignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     TimeSignatureEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventRemoveAction : public UndoAction
+class TimeSignatureEventRemoveAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    TimeSignatureEventRemoveAction(ProjectTreeItem &project,
-                                   String layerId,
-                                   const TimeSignatureEvent &target);
+    TimeSignatureEventRemoveAction(MidiTrackSource &source,
+        const String &trackId, const TimeSignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     TimeSignatureEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventChangeAction : public UndoAction
+class TimeSignatureEventChangeAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    TimeSignatureEventChangeAction(ProjectTreeItem &project,
-                                   String layerId,
-                                   const TimeSignatureEvent &target,
-                                   const TimeSignatureEvent &newParameters);
+    TimeSignatureEventChangeAction(MidiTrackSource &source, const String &trackId,
+        const TimeSignatureEvent &target, const TimeSignatureEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     
     TimeSignatureEvent eventBefore;
     TimeSignatureEvent eventAfter;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventChangeAction)
-
 };
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventsGroupInsertAction : public UndoAction
+class TimeSignatureEventsGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventsGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
-    TimeSignatureEventsGroupInsertAction(ProjectTreeItem &project,
-                                         String layerId,
-                                         Array<TimeSignatureEvent> &target);
+    TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
+        const String &trackId, Array<TimeSignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<TimeSignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupInsertAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventsGroupRemoveAction : public UndoAction
+class TimeSignatureEventsGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
-    TimeSignatureEventsGroupRemoveAction(ProjectTreeItem &project,
-                                         String layerId,
-                                         Array<TimeSignatureEvent> &target);
+    TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
+        const String &trackId, Array<TimeSignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<TimeSignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupRemoveAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventsGroupChangeAction : public UndoAction
+class TimeSignatureEventsGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventsGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    TimeSignatureEventsGroupChangeAction(ProjectTreeItem &project,
-                                         String layerId,
-                                         const Array<TimeSignatureEvent> state1,
-                                         const Array<TimeSignatureEvent> state2);
+    TimeSignatureEventsGroupChangeAction(MidiTrackSource &source, const String &trackId,
+        const Array<TimeSignatureEvent> state1, const Array<TimeSignatureEvent> state2)  noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     
     Array<TimeSignatureEvent> eventsBefore;
     Array<TimeSignatureEvent> eventsAfter;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupChangeAction)
-
 };
-

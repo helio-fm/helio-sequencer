@@ -19,32 +19,25 @@
 
 #include "SpectrumAnalyzer.h"
 
-#define AUDIO_MONITOR_MAX_CHANNELS		2
-#define AUDIO_MONITOR_MAX_SPECTRUMSIZE	512
+#define AUDIO_MONITOR_MAX_CHANNELS      2
+#define AUDIO_MONITOR_MAX_SPECTRUMSIZE  512
 
-#if HELIO_DESKTOP
-#   define AUDIO_MONITOR_COMPUTES_RMS 1
-#elif HELIO_MOBILE
-#   define AUDIO_MONITOR_COMPUTES_RMS 0
-#endif
-
-class AudioMonitor : public AudioIODeviceCallback
+class AudioMonitor final : public AudioIODeviceCallback
 {
 public:
     
     AudioMonitor();
-    ~AudioMonitor() override;
-    
+
     //===------------------------------------------------------------------===//
     // AudioIODeviceCallback
     //===------------------------------------------------------------------===//
 
     void audioDeviceAboutToStart(AudioIODevice *device) override;
     void audioDeviceIOCallback(const float **inputChannelData,
-                                       int numInputChannels,
-                                       float **outputChannelData,
-                                       int numOutputChannels,
-                                       int numSamples) override;
+                               int numInputChannels,
+                               float **outputChannelData,
+                               int numOutputChannels,
+                               int numSamples) override;
     void audioDeviceStopped() override;
     
     //===------------------------------------------------------------------===//
@@ -68,10 +61,7 @@ public:
     //===------------------------------------------------------------------===//
     
     float getPeak(int channel) const;
-    
-#if AUDIO_MONITOR_COMPUTES_RMS
     float getRootMeanSquare(int channel) const;
-#endif
     
     //===------------------------------------------------------------------===//
     // Spectrum data
@@ -81,25 +71,20 @@ public:
     
 private:
 
-    SpectrumFFT	fft;
-    float spectrum[AUDIO_MONITOR_MAX_CHANNELS][AUDIO_MONITOR_MAX_SPECTRUMSIZE];
+    SpectrumFFT fft;
 
-    float peak[AUDIO_MONITOR_MAX_CHANNELS];
+    Atomic<float> spectrum[AUDIO_MONITOR_MAX_CHANNELS][AUDIO_MONITOR_MAX_SPECTRUMSIZE];
+    Atomic<float> peak[AUDIO_MONITOR_MAX_CHANNELS];
+    Atomic<float> rms[AUDIO_MONITOR_MAX_CHANNELS];
 
-#if AUDIO_MONITOR_COMPUTES_RMS
-    float rms[AUDIO_MONITOR_MAX_CHANNELS];
-#endif
-
-    int spectrumSize;
-    double sampleRate;
+    Atomic<int> spectrumSize;
+    Atomic<double> sampleRate;
 
     ListenerList<ClippingListener> clippingListeners;
 
     ScopedPointer<AsyncUpdater> asyncClippingWarning;
     ScopedPointer<AsyncUpdater> asyncOversaturationWarning;
 
-    WeakReference<AudioMonitor>::Master masterReference;
-    friend class WeakReference<AudioMonitor>;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMonitor);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMonitor)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(AudioMonitor)
 };

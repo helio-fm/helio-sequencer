@@ -19,34 +19,18 @@
 
 //[Headers]
 class HelioTheme;
-
-//#if HELIO_MOBILE
-#   define PANEL_C_HAS_PRERENDERED_BACKGROUND 1
-//#endif
 //[/Headers]
 
 
-class PanelBackgroundC  : public Component
+class PanelBackgroundC final : public Component
 {
 public:
 
-    PanelBackgroundC ();
-
+    PanelBackgroundC();
     ~PanelBackgroundC();
 
     //[UserMethods]
-
-    enum ColourIds
-    {
-        panelFillStartId       = 0x99103000,
-        panelFillEndId         = 0x99103010,
-
-        panelShadeStartId      = 0x99103020,
-        panelShadeEndId        = 0x99103030,
-    };
-
     static void updateRender(HelioTheme &theme);
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -56,6 +40,8 @@ public:
 private:
 
     //[UserVariables]
+    FillType fillType;
+    Image bgCache;
     //[/UserVariables]
 
 

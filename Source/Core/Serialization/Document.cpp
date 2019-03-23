@@ -18,36 +18,30 @@
 #include "Common.h"
 #include "Document.h"
 #include "DocumentOwner.h"
-#include "FileUtils.h"
-#include "App.h"
+#include "DocumentHelpers.h"
+#include "MainLayout.h"
 
-Document::Document(DocumentOwner &parentWorkspace,
-                   DocumentOwner &documentOwner,
-                   const String &defaultName,
-                   const String &defaultExtension) :
-    workspace(parentWorkspace),
+Document::Document(DocumentOwner &documentOwner,
+    const String &defaultName,
+    const String &defaultExtension) :
     owner(documentOwner),
     extension(defaultExtension),
     hasChanges(true)
 {
-    const String safeName = File::createLegalFileName(defaultName + "." + defaultExtension);
-
-    this->workingFile =
-        FileUtils::getDocumentSlot(safeName);
-
-    if (this->workingFile.existsAsFile())
+    if (defaultName.isNotEmpty())
     {
-        this->workingFile = this->workingFile.getNonexistentSibling(true);
-        //Logger::writeToLog("WorkingFile " + this->workingFile.getFullPathName());
+        const auto safeName = File::createLegalFileName(defaultName + "." + defaultExtension);
+        this->workingFile = DocumentHelpers::getDocumentSlot(safeName);
+        if (this->workingFile.existsAsFile())
+        {
+            this->workingFile = this->workingFile.getNonexistentSibling(true);
+        }
     }
 
     this->owner.addChangeListener(this);
 }
 
-Document::Document(DocumentOwner &parentWorkspace,
-                   DocumentOwner &documentOwner,
-                   const File &existingFile) :
-    workspace(parentWorkspace),
+Document::Document(DocumentOwner &documentOwner, const File &existingFile) :
     owner(documentOwner),
     extension(existingFile.getFileExtension().replace(",", ""))
 {
@@ -75,12 +69,6 @@ String Document::getFullPath() const
     return this->workingFile.getFullPathName();
 }
 
-String Document::getRelativePath() const
-{
-    return this->workingFile.getRelativePathFrom(this->workspace.getDocument()->getFile().getParentDirectory());
-}
-
-
 void Document::renameFile(const String &newName)
 {
     if (newName == this->workingFile.getFileNameWithoutExtension())
@@ -97,7 +85,7 @@ void Document::renameFile(const String &newName)
 
     if (this->workingFile.moveFileTo(newFile))
     {
-        Logger::writeToLog("Renaming to " + newFile.getFileName());
+        DBG("Renaming to " + newFile.getFileName());
         this->workingFile = newFile;
     }
 }
@@ -109,7 +97,7 @@ void Document::renameFile(const String &newName)
 
 void Document::save()
 {
-    if (this->hasChanges)
+    if (this->hasChanges && this->workingFile.getFullPathName().isNotEmpty())
     {
         this->internalSave(this->workingFile);
     }
@@ -117,7 +105,10 @@ void Document::save()
 
 void Document::forceSave()
 {
-    this->internalSave(this->workingFile);
+    if (this->workingFile.getFullPathName().isNotEmpty())
+    {
+        this->internalSave(this->workingFile);
+    }
 }
 
 void Document::saveAs()
@@ -135,14 +126,14 @@ void Document::saveAs()
 #endif
 }
 
-void Document::exportAs(const String &exportExtension, const String &defaultFilename)
+void Document::exportAs(const String &exportExtension,
+    const String &defaultFilenameWithExtension)
 {
 #if HELIO_DESKTOP
 
     FileChooser fc(TRANS("dialog::document::export"),
-                   FileUtils::getDocumentSlot(defaultFilename),
-                   (exportExtension),
-                   true);
+        DocumentHelpers::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
+        exportExtension, true);
 
     if (fc.browseForFileToSave(true))
     {
@@ -151,7 +142,7 @@ void Document::exportAs(const String &exportExtension, const String &defaultFile
         
         if (savedOk)
         {
-            App::Helio()->showTooltip("dialog::document::export::done", 3000);
+            App::Layout().showTooltip("dialog::document::export::done", 3000);
         }
     }
 
@@ -163,30 +154,23 @@ void Document::exportAs(const String &exportExtension, const String &defaultFile
 // Load
 //===----------------------------------------------------------------------===//
 
-bool Document::load(const String &filename, const String &alternateRelativeFile)
+bool Document::load(const File &file, const File &relativeFile)
 {
-    File relativeFile =
-        File(this->workspace.getDocument()->getFile().
-             getParentDirectory().getChildFile(alternateRelativeFile));
-
-    if (!File(filename).existsAsFile())
+    if (!file.existsAsFile())
     {
+
         if (!relativeFile.existsAsFile())
         {
-
 #if HELIO_DESKTOP
-
             FileChooser fc(TRANS("dialog::document::load"),
-                           File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
+                File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
 
             if (fc.browseForFileToOpen())
             {
                 File result(fc.getResult());
                 return this->internalLoad(result);
             }
-
 #endif
-
         }
         else
         {
@@ -195,7 +179,7 @@ bool Document::load(const String &filename, const String &alternateRelativeFile)
     }
     else
     {
-        return this->internalLoad(File(filename));
+        return this->internalLoad(file);
     }
     
     return false;
@@ -217,7 +201,6 @@ void Document::import(const String &filePattern)
 #endif
 }
 
-
 bool Document::fileHasBeenModified() const
 {
     return this->fileModificationTime != this->workingFile.getLastModificationTime()
@@ -232,6 +215,10 @@ void Document::updateHash()
     this->fileHashCode = this->calculateFileHashCode(this->workingFile);
 }
 
+bool Document::hasUnsavedChanges() const noexcept
+{
+    return this->hasChanges;
+}
 
 //===----------------------------------------------------------------------===//
 // Protected
@@ -267,21 +254,27 @@ int64 Document::calculateFileHashCode(const File &file) const
 
 bool Document::internalSave(File result)
 {
+    const String fullPath = result.getFullPathName();
+    const auto firstCharAfterLastSlash = fullPath.lastIndexOfChar(File::getSeparatorChar()) + 1;
+    const auto lastDot = fullPath.lastIndexOfChar('.');
+    const bool hasEmptyName = (lastDot == firstCharAfterLastSlash);
+    if (hasEmptyName)
+    {
+        return false;
+    }
+
     const bool savedOk = this->owner.onDocumentSave(result);
 
     if (savedOk)
     {
-        Logger::writeToLog("Document::internalSave ok :: " + result.getFullPathName());
         this->workingFile = result;
         this->hasChanges = false;
         this->owner.onDocumentDidSave(result);
+        DBG("Document saved: " + result.getFullPathName());
         return true;
     }
-    
-    
-        Logger::writeToLog("Document::internalSave failed :: " + result.getFullPathName());
-    
-    
+
+    DBG("Document save failed: " + result.getFullPathName());
     return false;
 }
 
@@ -291,16 +284,12 @@ bool Document::internalLoad(File result)
 
     if (loadedOk)
     {
-        Logger::writeToLog("Document::internalLoad ok :: " + result.getFullPathName());
         this->workingFile = result;
         this->hasChanges = false;
         this->owner.onDocumentDidLoad(result);
         return true;
     }
     
-    
-        Logger::writeToLog("Document::internalLoad failed :: " + result.getFullPathName());
-    
-    
+    DBG("Document load failed: " + result.getFullPathName());
     return false;
 }

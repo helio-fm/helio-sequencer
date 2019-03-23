@@ -21,7 +21,7 @@
 #include "ComponentFader.h"
 #include "DialogBackground.h"
 #include "CommandIDs.h"
-#include "App.h"
+#include "ColourIDs.h"
 
 static int kClickCounterOnPopupClose = 0;
 static int kClickCounterOnPopupStart = 0;
@@ -30,7 +30,7 @@ static int kClickCounterOnPopupStart = 0;
 #define CALLOUT_HAS_BACKGROUND 0
 
 HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
-                           MainLayout *parentWorkspace, bool shouldAlignToMouse) :
+    MainLayout *parentWorkspace, bool shouldAlignToMouse) :
     arrowSize(10.0f),
     contentComponent(c),
     targetComponent(pointAtComponent),
@@ -44,9 +44,9 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     const Rectangle<int> b = parentWorkspace->getScreenBounds();
 
 #if HELIO_DESKTOP
-    const Point<float> p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
+    const auto p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
 #elif HELIO_MOBILE
-    const Point<float> p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
+    const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
 #endif
 
     this->clickPointAbs = Point<float>(p.getX() / float(b.getWidth()), p.getY() / float(b.getHeight()));
@@ -67,7 +67,7 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     else
     {
         this->setAlwaysOnTop(true);
-        this->pointToAndFit(area, Desktop::getInstance().getDisplays().getDisplayContaining(area.getCentre()).userArea);
+        this->pointToAndFit(area, Desktop::getInstance().getDisplays().findDisplayForPoint(area.getCentre()).userArea);
         this->addToDesktop(ComponentPeer::windowIsTemporary);
     }
 }
@@ -81,12 +81,11 @@ HelioCallout::~HelioCallout()
     }
 #endif
     
-    //Logger::writeToLog("HelioCallout::~HelioCallout");
     kClickCounterOnPopupClose = Desktop::getInstance().getMouseButtonClickCounter();
 }
 
 
-class HelioCallOutCallback : public ModalComponentManager::Callback //, private Timer
+class HelioCallOutCallback final : public ModalComponentManager::Callback //, private Timer
 {
 public:
     HelioCallOutCallback(Component *c, Component *pointAtComponent,
@@ -133,29 +132,10 @@ int HelioCallout::getBorderSize() const noexcept
 
 void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedImage)
 {
-#if HELIO_DESKTOP
-    
-    if (cachedImage.isNull())
-    {
-        cachedImage = Image(Image::ARGB, this->getWidth(), this->getHeight(), true);
-        Graphics g2(cachedImage);
-        DropShadow(this->findColour(HelioCallout::blurColourId), 7, Point<int> (0, 1)).drawForPath(g2, path);
-    }
-    
-    g.setColour(Colours::black);
-    g.drawImageAt(cachedImage, 0, 0);
-    
-    g.setColour(this->findColour(HelioCallout::fillColourId));
+    g.setColour(findDefaultColour(ColourIDs::Callout::fill));
     g.fillPath(path);
-    
-#elif HELIO_MOBILE
-    
-    g.setColour(this->findColour(HelioCallout::blurColourId).withMultipliedAlpha(1.2f));
-    g.fillPath(path);
-    
-#endif
-    
-    g.setColour(this->findColour(HelioCallout::frameColourId));
+
+    g.setColour(findDefaultColour(ColourIDs::Callout::frame));
     g.strokePath(path, PathStrokeType(1.0f));
 }
 
@@ -250,7 +230,7 @@ bool HelioCallout::hitTest(int x, int y)
 
 void HelioCallout::inputAttemptWhenModal()
 {
-    const Point<int> mousePos(getMouseXYRelative() + getBounds().getPosition());
+    //const Point<int> mousePos(getMouseXYRelative() + getBounds().getPosition());
     //const bool shouldBeDismissedAsyncronously = this->targetArea.contains(mousePos) || this->alignsToMouse;
     const bool shouldBeDismissedAsyncronously = true;
     if (shouldBeDismissedAsyncronously)
@@ -266,8 +246,6 @@ void HelioCallout::inputAttemptWhenModal()
 
 void HelioCallout::handleCommandMessage(int commandId)
 {
-    Component::handleCommandMessage(commandId);
-    
     if (commandId == CommandIDs::HideCallout)
     {
         this->exitModalState(0);
@@ -285,6 +263,8 @@ bool HelioCallout::keyPressed(const KeyPress &key)
 {
     if (key.isKeyCode(KeyPress::escapeKey))
     {
+        // give a chance to hosted component to react to escape key:
+        this->contentComponent.postCommandMessage(CommandIDs::Cancel);
         this->inputAttemptWhenModal();
         return true;
     }
@@ -303,9 +283,6 @@ void HelioCallout::findTargetPointAndUpdateBounds()
         
         const Rectangle<int> pageBounds = App::Layout().getPageBounds();
         const Rectangle<int> pointBounds = clickBounds.expanded(CALLOUT_FRAME_MARGIN).constrainedWithin(pageBounds);
-        
-        //Logger::writeToLog(String(this->clickPointAbs.getX()) + ":" + String(this->clickPointAbs.getY()));
-        //Logger::writeToLog(String(pointBounds.getX()) + ":" + String(pointBounds.getY()));
         
         this->pointToAndFit(pointBounds, pageBounds);
     }
@@ -391,7 +368,7 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
 void HelioCallout::updateShape()
 {
     this->repaint();
-    this->background = Image::null;
+    this->background = {};
     this->outline.clear();
     
     const float innerBorderPadding = 3.f;

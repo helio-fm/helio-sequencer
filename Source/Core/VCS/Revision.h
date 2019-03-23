@@ -19,69 +19,74 @@
 
 #include "Serializable.h"
 #include "RevisionItem.h"
-#include "Pack.h"
+#include "RevisionDto.h"
 
 namespace VCS
 {
-    class Revision :
-        public ValueTree,
-        public Serializable
+    class Revision final : public Serializable, public ReferenceCountedObject
     {
     public:
 
-        Revision();
+        enum SyncState
+        {
+            NoSync,         // revision is present locally, but it is unknown if remote copy exists
+            ShallowCopy,    // remote revision info has been added to the tree, but data is yet to be fetched
+            FullSync,       // either local revision that was pushed, or a remote that was fully pulled
+        };
 
-        explicit Revision(Pack::Ptr pack, const String &name = String::empty);
+        using Ptr = ReferenceCountedObjectPtr<Revision>;
 
-        explicit Revision(ValueTree other);
-        
-        // стирает свои свойства, копирует новые, игнорируя пак (оставляет свой).
-        void copyPropertiesFrom(const Revision &other);
+        Revision(const String &name = {});
+        Revision(const RevisionDto &remoteDescription); // creates shallow copy
 
-        // стирает свои дельты, копирует новые.
-        void copyDeltasFrom(const Revision &other);
+        const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
+        const ReferenceCountedArray<Revision> &getChildren() const noexcept;
 
-        // setProperty, либо копирование дельт, если разные паки
-        void copyProperty(Identifier id, const RevisionItem::Ptr itemToCopy);
+        void addItem(RevisionItem *item);
+        void addItem(RevisionItem::Ptr item);
 
+        void addChild(Revision *revision);
+        void addChild(Revision::Ptr revision);
 
-        RevisionItem::Ptr getItemWithUuid(const Uuid &uuid);
+        void removeChild(Revision *revision);
+        void removeChild(Revision::Ptr revision);
 
-        // moves items' data from memory to pack
-        void flushData();
+        void copyDeltasFrom(Revision::Ptr other);
 
-        Pack::Ptr getPackPtr() const;
+        bool isShallowCopy() const noexcept;
 
-        String getMessage() const;
+        WeakReference<Revision> getParent() const noexcept;
+        String getMessage() const noexcept;
+        String getUuid() const noexcept;
+        int64 getTimeStamp() const noexcept;
+        bool isEmpty() const noexcept;
 
-        String getUuid() const;
-
-        int64 getVersion() const;
-
-        int64 getTimeStamp() const;
-
-        void incrementVersion();
-
-        MD5 calculateHash() const;
-
-        bool isEmpty() const;
-
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override;
+        // with no properties and no children, but with full deltas data
+        // (to be used in synchronization threads):
+        ValueTree serializeDeltas() const;
+        void deserializeDeltas(ValueTree data);
 
-        void deserialize(const XmlElement &xml) override;
-
-        void reset() override;
+        ValueTree serialize() const;
+        void deserialize(const ValueTree &tree);
+        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
+        void reset();
 
     private:
 
-        void resetAllDeltas();
+        WeakReference<Revision> parent;
 
-        JUCE_LEAK_DETECTOR(Revision);
+        String id;
+        String message;
+        int64 timestamp;
 
+        ReferenceCountedArray<Revision> children;
+        ReferenceCountedArray<RevisionItem> deltas;
+
+        JUCE_DECLARE_WEAK_REFERENCEABLE(Revision)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Revision)
     };
 }  // namespace VCS

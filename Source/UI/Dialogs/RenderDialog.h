@@ -21,25 +21,24 @@
 #include "FadingDialog.h"
 
 class DocumentOwner;
-class ProjectTreeItem;
+class ProjectNode;
 class ProgressIndicator;
-class CommandItemComponent;
+class MenuItemComponent;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontalFading.h"
 #include "../Themes/SeparatorHorizontal.h"
 
-class RenderDialog  : public FadingDialog,
-                      private Timer,
-                      public ButtonListener,
-                      public LabelListener,
-                      public SliderListener
+class RenderDialog final : public FadingDialog,
+                           private Timer,
+                           public Button::Listener,
+                           public Label::Listener,
+                           public Slider::Listener
 {
 public:
 
-    RenderDialog (ProjectTreeItem &parentProject, const File &renderTo, const String &formatExtension);
-
+    RenderDialog(ProjectNode &parentProject, const File &renderTo, const String &formatExtension);
     ~RenderDialog();
 
     //[UserMethods]
@@ -48,8 +47,8 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
-    void labelTextChanged (Label* labelThatHasChanged) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
+    void labelTextChanged(Label* labelThatHasChanged) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -69,7 +68,7 @@ private:
     void stopTrackingProgress();
 
     ComponentAnimator animator;
-    ProjectTreeItem &project;
+    ProjectNode &project;
 
     String extension;
     bool shouldRenderAfterDialogCompletes;
@@ -79,17 +78,17 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
-    ScopedPointer<TextButton> renderButton;
-    ScopedPointer<Label> filenameEditor;
-    ScopedPointer<Label> filenameLabel;
-    ScopedPointer<TextButton> cancelButton;
-    ScopedPointer<Slider> slider;
-    ScopedPointer<ProgressIndicator> indicator;
-    ScopedPointer<CommandItemComponent> browseButton;
-    ScopedPointer<Label> pathEditor;
-    ScopedPointer<SeparatorHorizontalFading> component3;
-    ScopedPointer<SeparatorHorizontal> separatorH;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<TextButton> renderButton;
+    UniquePointer<Label> filenameEditor;
+    UniquePointer<Label> filenameLabel;
+    UniquePointer<TextButton> cancelButton;
+    UniquePointer<Slider> slider;
+    UniquePointer<ProgressIndicator> indicator;
+    UniquePointer<MenuItemComponent> browseButton;
+    UniquePointer<Label> pathEditor;
+    UniquePointer<SeparatorHorizontalFading> component3;
+    UniquePointer<SeparatorHorizontal> separatorH;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
 };

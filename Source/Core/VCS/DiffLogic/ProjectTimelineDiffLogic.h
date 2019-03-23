@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiEvent;
-class MidiLayer;
+class MidiSequence;
 class ProjectTimeline;
 
 #include "Diff.h"
@@ -32,59 +32,13 @@ namespace VCS
 
         explicit ProjectTimelineDiffLogic(TrackedItem &targetItem);
 
-        ~ProjectTimelineDiffLogic() override;
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // DiffLogic
-        //
+        //===--------------------------------------------------------------===//
 
-        const String getType() const override;
-
-        void resetStateTo(const TrackedItem &newState) override;
-
+        const Identifier getType() const override;
         Diff *createDiff(const TrackedItem &initialState) const override;
-
         Diff *createMergedItem(const TrackedItem &initialState) const override;
-
-    private:
-
-        XmlElement *mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes) const;
-        
-        XmlElement *mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes) const;
-        
-        XmlElement *mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes) const;
-
-    private:
-
-        Array<NewSerializedDelta> createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const;
-
-        Array<NewSerializedDelta> createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes) const;
-
-    private:
-
-        void deserializeChanges(MidiLayer &layer,
-                                const XmlElement *state,
-                                const XmlElement *changes,
-                                OwnedArray<MidiEvent> &stateNotes,
-                                OwnedArray<MidiEvent> &changesNotes) const;
-
-        NewSerializedDelta serializeChanges(Array<const MidiEvent *> changes,
-                                            const String &description,
-                                            int64 numChanges,
-                                            const String &deltaType) const;
-
-        XmlElement *serializeLayer(Array<const MidiEvent *> changes,
-                                   const String &tag) const;
-
-        bool checkIfDeltaIsAnnotationType(const Delta *delta) const;
-
-        bool checkIfDeltaIsTimeSignatureType(const Delta *delta) const;
 
     };
 }  // namespace VCS

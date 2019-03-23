@@ -19,27 +19,38 @@
 
 //[Headers]
 #include "FadingDialog.h"
+
+using SimpleDialogCallback = Function<void()>;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
-class ModalDialogConfirmation  : public FadingDialog,
-                                 public ButtonListener
+class ModalDialogConfirmation final : public FadingDialog,
+                                      public Button::Listener
 {
 public:
 
-    ModalDialogConfirmation (Component &owner, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode);
-
+    ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText);
     ~ModalDialogConfirmation();
 
     //[UserMethods]
+    SimpleDialogCallback onOk;
+    SimpleDialogCallback onCancel;
+
+    struct Presets final
+    {
+        static ScopedPointer<ModalDialogConfirmation> deleteProject();
+        static ScopedPointer<ModalDialogConfirmation> forceCheckout();
+        static ScopedPointer<ModalDialogConfirmation> resetChanges();
+        static ScopedPointer<ModalDialogConfirmation> confirmOpenGL();
+    };
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
@@ -50,35 +61,16 @@ public:
 private:
 
     //[UserVariables]
-
-    Component &ownerComponent;
-
-    int okCommand;
-    int cancelCommand;
-
-    void cancel()
-    {
-        this->ownerComponent.postCommandMessage(this->cancelCommand);
-        this->disappear();
-    }
-
-    void okay()
-    {
-        this->ownerComponent.postCommandMessage(this->okCommand);
-        this->disappear();
-    }
-
-    void disappear()
-    { delete this; }
-
+    void cancel();
+    void okay();
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
-    ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> cancelButton;
-    ScopedPointer<TextButton> okButton;
-    ScopedPointer<SeparatorHorizontal> separatorH;
-    ScopedPointer<SeparatorVertical> separatorV;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<Label> messageLabel;
+    UniquePointer<TextButton> cancelButton;
+    UniquePointer<TextButton> okButton;
+    UniquePointer<SeparatorHorizontal> separatorH;
+    UniquePointer<SeparatorVertical> separatorV;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogConfirmation)
 };

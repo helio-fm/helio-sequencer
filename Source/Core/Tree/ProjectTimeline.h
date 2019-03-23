@@ -17,93 +17,84 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class MidiEvent;
+class ProjectNode;
 
+#include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
-#include "MidiLayerOwner.h"
-#include "Serializable.h"
+#include "ProjectEventDispatcher.h"
 
-class ProjectTimeline :
-    public MidiLayerOwner,
+class ProjectTimeline final :
+    public ProjectEventDispatcher,
     public VCS::TrackedItem,
     public Serializable
 {
 public:
 
-    ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
-
+    ProjectTimeline(ProjectNode &parentProject, String trackName);
     ~ProjectTimeline() override;
-    
-    inline MidiLayer *getAnnotations() const noexcept
-    { return this->annotations; }
 
-    inline MidiLayer *getTimeSignatures() const noexcept
-    { return this->timeSignatures; }
+    MidiTrack *getAnnotations() const noexcept;
+    MidiTrack *getTimeSignatures() const noexcept;
+    MidiTrack *getKeySignatures() const noexcept;
 
+    //===------------------------------------------------------------------===//
+    // Navigation helpers
+    //===------------------------------------------------------------------===//
+
+    float findNextAnchorBeat(float beat) const;
+    float findPreviousAnchorBeat(float beat) const;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
-
     int getNumDeltas() const override;
-
     VCS::Delta *getDelta(int index) const override;
-
-    XmlElement *createDeltaDataFor(int index) const override;
-
+    ValueTree getDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
-
     void resetStateTo(const VCS::TrackedItem &newState) override;
-    
-    
+        
     //===------------------------------------------------------------------===//
-    // MidiLayerOwner
+    // ProjectEventDispatcher
     //===------------------------------------------------------------------===//
     
-    Transport *getTransport() const override;
-    
-    String getXPath() const override;
-    
-    void setXPath(const String &path) override;
-    
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-    
-    void onEventAdded(const MidiEvent &event) override;
-    
-    void onEventRemoved(const MidiEvent &event) override;
-    
-    void onLayerChanged(const MidiLayer *layer) override;
-    
-    void onBeatRangeChanged() override;
+    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void dispatchAddEvent(const MidiEvent &event) override;
+    void dispatchRemoveEvent(const MidiEvent &event) override;
+    void dispatchPostRemoveEvent(MidiSequence *const layer) override;
 
-    ProjectTreeItem *getProject() const override;
-    
-    
+    void dispatchAddClip(const Clip &clip) override;
+    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void dispatchRemoveClip(const Clip &clip) override;
+    void dispatchPostRemoveClip(Pattern *const pattern) override;
+
+    void dispatchChangeTrackProperties(MidiTrack *const track) override;
+    void dispatchChangeProjectBeatRange() override;
+
+    ProjectNode *getProject() const noexcept override;
+        
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     void reset() override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     
-    XmlElement *serialize() const override;
-
-    void deserialize(const XmlElement &xml) override;
-
-
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
-    XmlElement *serializeAnnotationsDelta() const;
+    ValueTree serializeAnnotationsDelta() const;
+    void resetAnnotationsDelta(const ValueTree &state);
 
-    void resetAnnotationsDelta(const XmlElement *state);
-
-    XmlElement *serializeTimeSignaturesDelta() const;
-
-    void resetTimeSignaturesDelta(const XmlElement *state);
+    ValueTree serializeTimeSignaturesDelta() const;
+    void resetTimeSignaturesDelta(const ValueTree &state);
     
+    ValueTree serializeKeySignaturesDelta() const;
+    void resetKeySignaturesDelta(const ValueTree &state);
 
 private:
 
@@ -111,12 +102,23 @@ private:
 
     OwnedArray<VCS::Delta> deltas;
     
-    ProjectTreeItem &project;
+    ProjectNode &project;
     
-    String name;
-    
-    ScopedPointer<MidiLayer> annotations;
+    String annotationsTrackId;
+    String timeSignaturesTrackId;
+    String keySignaturesTrackId;
 
-    ScopedPointer<MidiLayer> timeSignatures;
+    ScopedPointer<MidiTrack> annotationsTrack;
+    ScopedPointer<MidiTrack> timeSignaturesTrack;
+    ScopedPointer<MidiTrack> keySignaturesTrack;
 
+    ScopedPointer<MidiSequence> annotationsSequence;
+    ScopedPointer<MidiSequence> timeSignaturesSequence;
+    ScopedPointer<MidiSequence> keySignaturesSequence;
+
+    friend class AnnotationsTrack;
+    friend class TimeSignaturesTrack;
+    friend class KeySignaturesTrack;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectTimeline)
 };

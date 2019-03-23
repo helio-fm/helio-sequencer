@@ -23,20 +23,18 @@ class OrigamiVertical : public Origami
 {
 public:
 
-    void addPage(Component *nonOwnedComponent,
-                         bool addShadowAtStart = false,
-                         bool addShadowAtEnd = true,
-                         bool fixedWidth = false,
-                         int minSize = ORIGAMI_DEFAULT_MIN_SIZE,
-                         int maxSize = ORIGAMI_DEFAULT_MAX_SIZE,
-                         int insertIndex = -1) override;
-    
-    void onPageResized(Component *component) override;
+    void addFlexiblePage(Component *component) override;
+    void addFixedPage(Component *component) override;
+    void addShadowAtTheStart() override;
+    void addShadowAtTheEnd() override;
+    void addResizer(int minSize, int maxSize) override;
 
+    void onPageResized(Component *component) override;
     void resized() override;
 
 private:
 
     int getCommonFixedWidth() const;
+    void updateLayout(const Origami::Page *page, Rectangle<int> bounds);
 
 };

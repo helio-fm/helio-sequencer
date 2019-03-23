@@ -17,8 +17,8 @@
 
 #pragma once
 
-class AnnotationsLayer;
-class ProjectTreeItem;
+class AnnotationsSequence;
+class MidiTrackSource;
 
 #include "AnnotationEvent.h"
 #include "UndoAction.h"
@@ -28,94 +28,88 @@ class ProjectTreeItem;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventInsertAction : public UndoAction
+class AnnotationEventInsertAction final : public UndoAction
 {
 public:
     
-    explicit AnnotationEventInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventInsertAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    AnnotationEventInsertAction(ProjectTreeItem &project,
-                                String layerId,
-                                const AnnotationEvent &target);
+    AnnotationEventInsertAction(MidiTrackSource &source,
+        const String &trackId, const AnnotationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     AnnotationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventRemoveAction : public UndoAction
+class AnnotationEventRemoveAction final : public UndoAction
 {
 public:
     
-    explicit AnnotationEventRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventRemoveAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    AnnotationEventRemoveAction(ProjectTreeItem &project,
-                                String layerId,
-                                const AnnotationEvent &target);
+    AnnotationEventRemoveAction(MidiTrackSource &source,
+        const String &trackId, const AnnotationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     AnnotationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventChangeAction : public UndoAction
+class AnnotationEventChangeAction final : public UndoAction
 {
 public:
     
-    explicit AnnotationEventChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventChangeAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    AnnotationEventChangeAction(ProjectTreeItem &project,
-                                String layerId,
-                                const AnnotationEvent &target,
-                                const AnnotationEvent &newParameters);
+    AnnotationEventChangeAction(MidiTrackSource &source, const String &trackId,
+        const AnnotationEvent &target, const AnnotationEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     
     AnnotationEvent eventBefore;
     AnnotationEvent eventAfter;
@@ -124,101 +118,94 @@ private:
 
 };
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventsGroupInsertAction : public UndoAction
+class AnnotationEventsGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit AnnotationEventsGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventsGroupInsertAction(MidiTrackSource &source) :
+        UndoAction(source) {}
     
-    AnnotationEventsGroupInsertAction(ProjectTreeItem &project,
-                                      String layerId,
-                                      Array<AnnotationEvent> &target);
+    AnnotationEventsGroupInsertAction(MidiTrackSource &source,
+        const String &trackId, Array<AnnotationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AnnotationEvent> annotations;
     
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventsGroupInsertAction)
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventsGroupRemoveAction : public UndoAction
+class AnnotationEventsGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit AnnotationEventsGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventsGroupRemoveAction(MidiTrackSource &source) :
+        UndoAction(source) {}
     
-    AnnotationEventsGroupRemoveAction(ProjectTreeItem &project,
-                                      String layerId,
-                                      Array<AnnotationEvent> &target);
+    AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
+        const String &trackId, Array<AnnotationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AnnotationEvent> annotations;
     
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventsGroupRemoveAction)
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventsGroupChangeAction : public UndoAction
+class AnnotationEventsGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit AnnotationEventsGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventsGroupChangeAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    AnnotationEventsGroupChangeAction(ProjectTreeItem &project,
-                                      String layerId,
-                                      const Array<AnnotationEvent> state1,
-                                      const Array<AnnotationEvent> state2);
+    AnnotationEventsGroupChangeAction(MidiTrackSource &source, const String &trackId,
+        const Array<AnnotationEvent> state1, const Array<AnnotationEvent> state2) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     
     Array<AnnotationEvent> eventsBefore;
     Array<AnnotationEvent> eventsAfter;

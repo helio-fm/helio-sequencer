@@ -23,14 +23,10 @@ public:
     
     virtual ~TransportListener() {}
 
-    virtual void onSeek(const double absolutePosition, const double currentTimeMs, const double totalTimeMs) = 0;
-
-    virtual void onTempoChanged(const double newTempo) = 0;
-
-    virtual void onTotalTimeChanged(const double timeMs) = 0;
-
+    virtual void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) = 0;
+    virtual void onTempoChanged(double msPerQuarter) = 0;
+    virtual void onTotalTimeChanged(double timeMs) = 0;
     virtual void onPlay() = 0;
-
     virtual void onStop() = 0;
 
 };

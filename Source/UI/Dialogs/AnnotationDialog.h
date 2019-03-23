@@ -20,43 +20,42 @@
 //[Headers]
 #include "FadingDialog.h"
 #include "AnnotationEvent.h"
+#include "ColourButton.h"
+#include "ColourSwatches.h"
+#include "MobileComboBox.h"
 
-class AnnotationsLayer;
+class AnnotationsSequence;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
-#include "../Common/ColourSwatches.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
-class AnnotationDialog  : public FadingDialog,
-                          public TextEditorListener,
-                          public ColourButtonListener,
-                          public ButtonListener,
-                          public ComboBoxListener
+class AnnotationDialog final : public FadingDialog,
+                               public TextEditor::Listener,
+                               public ColourButtonListener,
+                               private Timer,
+                               public Button::Listener
 {
 public:
 
-    AnnotationDialog (Component &owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
-
+    AnnotationDialog(Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
     ~AnnotationDialog();
 
     //[UserMethods]
-	static AnnotationDialog *createEditingDialog(Component &owner, const AnnotationEvent &event);
-	static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsLayer *annotationsLayer, float targetBeat);
+    static AnnotationDialog *createEditingDialog(Component &owner, const AnnotationEvent &event);
+    static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat);
 
-	void onColourButtonClicked(ColourButton *button) override;
+    void onColourButtonClicked(ColourButton *button) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
 
@@ -64,30 +63,37 @@ private:
 
     //[UserVariables]
 
-	AnnotationEvent targetEvent;
-	AnnotationsLayer *targetLayer;
-	Component &ownerComponent;
+    AnnotationEvent originalEvent;
+    AnnotationsSequence *originalSequence;
+    Component &ownerComponent;
 
-	inline void cancelAndDisappear();
-	inline void disappear();
-	inline void updateOkButtonState();
+    void textEditorTextChanged(TextEditor&) override;
+    void textEditorReturnKeyPressed(TextEditor&) override;
+    void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
 
-	bool addsNewEvent;
-	bool hasMadeChanges;
-	void sendEventChange(AnnotationEvent newEvent);
-	void removeEvent();
-	void cancelChangesIfAny();
+    void timerCallback() override;
+
+    inline void cancelAndDisappear();
+    inline void updateOkButtonState();
+
+    bool addsNewEvent;
+    bool hasMadeChanges;
+    void sendEventChange(const AnnotationEvent &newEvent);
+    void removeEvent();
+    void cancelChangesIfAny();
 
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
-    ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> removeEventButton;
-    ScopedPointer<TextButton> okButton;
-    ScopedPointer<ComboBox> textEditor;
-    ScopedPointer<ColourSwatches> colourSwatches;
-    ScopedPointer<SeparatorHorizontal> separatorH;
-    ScopedPointer<SeparatorVertical> separatorV;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<MobileComboBox::Primer> comboPrimer;
+    UniquePointer<Label> messageLabel;
+    UniquePointer<TextButton> removeEventButton;
+    UniquePointer<TextButton> okButton;
+    UniquePointer<SeparatorHorizontal> separatorH;
+    UniquePointer<SeparatorVertical> separatorV;
+    UniquePointer<ColourSwatches> colourSwatches;
+    UniquePointer<TextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };

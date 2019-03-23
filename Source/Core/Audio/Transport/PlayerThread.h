@@ -19,32 +19,27 @@
 
 #include "Transport.h"
 
-#if JUCE_WINDOWS
-#   define PLAYER_THREAD_SENDS_SEEK_EVENTS 0
-#else
-#   define PLAYER_THREAD_SENDS_SEEK_EVENTS 1
-#endif
-
-// Owned by Transport
-
-class PlayerThread : protected Thread
+class PlayerThread final : public Thread
 {
 public:
 
-    explicit PlayerThread(Transport &parentTransport);
-
+    explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-protected:
+    void startPlayback(double start, double end, bool shouldLoop,
+        bool shouldBroadcastTransportEvents = true);
+
+private:
+
+    void run() override;
 
     Transport &transport;
 
-    //===------------------------------------------------------------------===//
-    // Thread
-    //===------------------------------------------------------------------===//
+    bool broadcastMode = false;
+    bool loopedMode = false;
 
-    void run() override;
-    
-    friend class Transport;
-    
+    double absStartPosition = 0.0;
+    double absEndPosition = 1.0;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };

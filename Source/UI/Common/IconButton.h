@@ -25,24 +25,65 @@ class IconButton : public IconComponent, public HighlightedComponent
 {
 public:
     
-    explicit IconButton(const String &iconName) : IconComponent(iconName)
+    explicit IconButton(Icons::Id iconId,
+        int commandId = CommandIDs::IconButtonPressed,
+        WeakReference<Component> listener = nullptr) :
+        IconComponent(iconId),
+        commandId(commandId),
+        listener(listener)
     {
         this->setInterceptsMouseClicks(true, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
     }
     
+    explicit IconButton(Image targetImage,
+        int commandId = CommandIDs::IconButtonPressed,
+        WeakReference<Component> listener = nullptr) :
+        IconComponent(targetImage),
+        commandId(commandId),
+        listener(listener)
+    {
+        this->setInterceptsMouseClicks(true, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
+    }
+
     void mouseDown(const MouseEvent &e) override
     {
-        if (this->getParentComponent() != nullptr)
+        if (this->listener != nullptr)
         {
-            this->getParentComponent()->postCommandMessage(CommandIDs::IconButtonPressed);
+            this->listener->postCommandMessage(this->commandId);
+        }
+        else if (this->getParentComponent() != nullptr)
+        {
+            this->getParentComponent()->postCommandMessage(this->commandId);
         }
     }
     
+    // Silence useless VC C4250 warnings:
+
+    void resized() override
+    { IconComponent::resized(); }
+
+    void paint(Graphics &g) override
+    { IconComponent::paint(g); }
+
+    void mouseEnter(const MouseEvent &event) override
+    { HighlightedComponent::mouseEnter(event); }
+
+    void mouseExit(const MouseEvent &event) override
+    { HighlightedComponent::mouseExit(event); }
+
 private:
+
+    int commandId;
     
+    WeakReference<Component> listener;
+
     Component *createHighlighterComponent() override
     {
-        return new IconButton(this->iconName);
+        return this->image.isNull() ?
+            new IconButton(this->iconId) :
+            new IconButton(this->image);
     }
     
 };

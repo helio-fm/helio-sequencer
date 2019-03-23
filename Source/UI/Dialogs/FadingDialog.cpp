@@ -20,7 +20,6 @@
 #include "DialogBackground.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
-#include "App.h"
 
 #define DIALOG_HAS_BACKGROUND 1
 //#define DIALOG_HAS_BACKGROUND 0
@@ -35,10 +34,9 @@ FadingDialog::FadingDialog()
 FadingDialog::~FadingDialog()
 {
 #if DIALOG_HAS_BACKGROUND
-    if (this->backgroundWhite != nullptr)
+    if (this->background != nullptr)
     {
-        //Logger::writeToLog("DialogBacking::signalToDisappear");
-        this->backgroundWhite->postCommandMessage(CommandIDs::HideDialog);
+        this->background->postCommandMessage(CommandIDs::HideDialog);
     }
 #endif
 }
@@ -46,30 +44,40 @@ FadingDialog::~FadingDialog()
 void FadingDialog::parentHierarchyChanged()
 {
 #if DIALOG_HAS_BACKGROUND
-    if (this->backgroundWhite == nullptr)
+    if (this->background == nullptr)
     {
-        //Logger::writeToLog("new DialogBacking");
-        this->backgroundWhite = new DialogBackground();
-        App::Layout().addAndMakeVisible(this->backgroundWhite);
+        this->background = new DialogBackground();
+        App::Layout().addAndMakeVisible(this->background);
     }
 #endif
-    
-    //Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 1.f, 150, false, 0.0, 0.0);
+}
+
+void FadingDialog::dismiss()
+{
+    this->fadeOut();
+    delete this;
 }
 
 void FadingDialog::fadeOut()
 {
-    //Logger::writeToLog("FadingDialog::fadeOut");
-    const int reduceBy = 20;
     const int fadeoutTime = 200;
-    Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds().reduced(reduceBy), 0.f, fadeoutTime, true, 0.0, 0.0);
+    auto &animator = Desktop::getInstance().getAnimator();
+    if (App::isOpenGLRendererEnabled())
+    {
+        animator.animateComponent(this, this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 0.0);
+    }
+    else
+    {
+        animator.animateComponent(this, this->getBounds(), 0.f, fadeoutTime, true, 0.0, 0.0);
+    }
 }
 
-void FadingDialog::rebound()
+void FadingDialog::updatePosition()
 {
 #if HELIO_DESKTOP
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);
 #elif HELIO_MOBILE
-    this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2.5f);
+    // Place the dialog slightly above the center, so that screen keyboard doesn't mess with it:
+    this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 3.5f);
 #endif
 }

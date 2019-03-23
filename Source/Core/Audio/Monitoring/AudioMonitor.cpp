@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
-#include "AudiobusOutput.h"
 
 #define AUDIO_MONITOR_SPECTRUM_SIZE                 512
 #define AUDIO_MONITOR_DEFAULT_SAMPLERATE            44100
@@ -26,42 +25,42 @@
 #define AUDIO_MONITOR_OVERSATURATION_THRESHOLD      0.5f
 #define AUDIO_MONITOR_OVERSATURATION_RATE           4.f
 
-class ClippingWarningAsyncCallback : public AsyncUpdater
+class ClippingWarningAsyncCallback final  : public AsyncUpdater
 {
 public:
     
     explicit ClippingWarningAsyncCallback(AudioMonitor &parentSpectrumCallback) :
-    AudioMonitor(parentSpectrumCallback) {}
+        audioMonitor(parentSpectrumCallback) {}
     
     void handleAsyncUpdate() override
     {
-        this->AudioMonitor.getListeners().
-        call(&AudioMonitor::ClippingListener::onClippingWarning);
+        this->audioMonitor.getListeners().
+            call(&AudioMonitor::ClippingListener::onClippingWarning);
     }
 
 private:
     
-    AudioMonitor &AudioMonitor;
+    AudioMonitor &audioMonitor;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClippingWarningAsyncCallback)
 };
 
-class OversaturationWarningAsyncCallback : public AsyncUpdater
+class OversaturationWarningAsyncCallback final : public AsyncUpdater
 {
 public:
     
     explicit OversaturationWarningAsyncCallback(AudioMonitor &parentSpectrumCallback) :
-    AudioMonitor(parentSpectrumCallback) {}
+        audioMonitor(parentSpectrumCallback) {}
     
     void handleAsyncUpdate() override
     {
-        this->AudioMonitor.getListeners().
-        call(&AudioMonitor::ClippingListener::onOversaturationWarning);
+        this->audioMonitor.getListeners().
+            call(&AudioMonitor::ClippingListener::onOversaturationWarning);
     }
     
 private:
     
-    AudioMonitor &AudioMonitor;
+    AudioMonitor &audioMonitor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OversaturationWarningAsyncCallback)
 };
@@ -76,11 +75,6 @@ AudioMonitor::AudioMonitor() :
     this->asyncOversaturationWarning = new OversaturationWarningAsyncCallback(*this);
 }
 
-AudioMonitor::~AudioMonitor()
-{
-    this->masterReference.clear();
-}
-
 //===----------------------------------------------------------------------===//
 // AudioIODeviceCallback
 //===----------------------------------------------------------------------===//
@@ -91,47 +85,33 @@ void AudioMonitor::audioDeviceAboutToStart(AudioIODevice *device)
 }
 
 void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
-                                             int numInputChannels,
-                                             float **outputChannelData,
-                                             int numOutputChannels,
-                                             int numSamples)
+                                         int numInputChannels,
+                                         float **outputChannelData,
+                                         int numOutputChannels,
+                                         int numSamples)
 {
-    
-    
-    
-    const int numChannels =
-    jmin(AUDIO_MONITOR_MAX_CHANNELS, numOutputChannels);
+    const int numChannels = jmin(AUDIO_MONITOR_MAX_CHANNELS, numOutputChannels);
     
     for (int channel = 0; channel < numChannels; ++channel)
     {
         this->fft.computeSpectrum(outputChannelData[channel], 0, numSamples,
-                                  this->spectrum[channel], this->spectrumSize,
+                                  this->spectrum[channel], this->spectrumSize.get(),
                                   channel, numOutputChannels);
     }
     
     for (int channel = 0; channel < numChannels; ++channel)
     {
-#if AUDIO_MONITOR_COMPUTES_RMS
         float pcmSquaresSum = 0.f;
-#endif
-        
         float pcmPeak = 0.f;
         for (int samplePosition = 0; samplePosition < numSamples; ++samplePosition)
         {
             const float &pcmData = outputChannelData[channel][samplePosition];
-            
-#if AUDIO_MONITOR_COMPUTES_RMS
             pcmSquaresSum += (pcmData * pcmData);
-#endif
-            
             pcmPeak = jmax(pcmPeak, pcmData);
         }
         
-#if AUDIO_MONITOR_COMPUTES_RMS
         const float rootMeanSquare = sqrtf(pcmSquaresSum / numSamples);
         this->rms[channel] = rootMeanSquare;
-#endif
-        
         this->peak[channel] = pcmPeak;
         
         if (pcmPeak > AUDIO_MONITOR_CLIP_THRESHOLD)
@@ -139,28 +119,20 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
             this->asyncClippingWarning->triggerAsyncUpdate();
         }
         
-#if AUDIO_MONITOR_COMPUTES_RMS
         if (pcmPeak > AUDIO_MONITOR_OVERSATURATION_THRESHOLD &&
             (pcmPeak / rootMeanSquare) > AUDIO_MONITOR_OVERSATURATION_RATE)
         {
             this->asyncOversaturationWarning->triggerAsyncUpdate();
         }
-#endif
     }
-    
-#if JUCE_IOS && HELIO_AUDIOBUS_SUPPORT
-    AudiobusOutput::process();
-#endif
-    
+
     for (int i = 0; i < numOutputChannels; ++i)
     {
         FloatVectorOperations::clear(outputChannelData[i], numSamples);
     }
 }
 
-void AudioMonitor::audioDeviceStopped()
-{
-}
+void AudioMonitor::audioDeviceStopped() {}
 
 //===----------------------------------------------------------------------===//
 // Spectrum data
@@ -168,19 +140,20 @@ void AudioMonitor::audioDeviceStopped()
 
 float AudioMonitor::getInterpolatedSpectrumAtFrequency(float frequency) const
 {
-    const double resolution = (this->sampleRate / 2) / double(this->spectrumSize);
+    const float resolution = 
+        float(this->sampleRate.get() / 2.f) / float(this->spectrumSize.get());
     
-    const int index1 = roundFloatToInt(frequency / resolution);
-    const double f1 = index1 * resolution;
-    const float y1 = (this->spectrum[0][jlimit(0, this->spectrumSize, index1)] +
-                      this->spectrum[1][jlimit(0, this->spectrumSize, index1)]) / 2.f;
+    const int index1 = roundToInt(frequency / resolution);
+    const int safeIndex1 = jlimit(0, this->spectrumSize.get(), index1);
+    const float f1 = index1 * resolution;
+    const float y1 = (this->spectrum[0][safeIndex1].get() +
+                      this->spectrum[1][safeIndex1].get()) / 2.f;
     
     const int index2 = index1 + 1;
-    const double f2 = index2 * resolution;
-    const float y2 = (this->spectrum[0][jlimit(0, this->spectrumSize, index2)] +
-                      this->spectrum[1][jlimit(0, this->spectrumSize, index2)]) / 2.f;
-    
-    //Logger::writeToLog(">> " + String(y1) + ", " + String(y2) + ", " + String(f1) + ", " + String(f2));
+    const int safeIndex2 = jlimit(0, this->spectrumSize.get(), index2);
+    const float f2 = index2 * resolution;
+    const float y2 = (this->spectrum[0][safeIndex2].get() +
+                      this->spectrum[1][safeIndex2].get()) / 2.f;
     
     return y1 + ((AudioCore::fastLog10(frequency) - AudioCore::fastLog10(f1)) /
                  (AudioCore::fastLog10(f2) - AudioCore::fastLog10(f1))) * (y2 - y1);
@@ -211,13 +184,10 @@ ListenerList<AudioMonitor::ClippingListener> &AudioMonitor::getListeners() noexc
 
 float AudioMonitor::getPeak(int channel) const
 {
-    //jmin(VOLUME_CALLBACK_MAX_CHANNELS, channel)
-    return this->peak[channel];
+    return this->peak[channel].get();
 }
 
-#if AUDIO_MONITOR_COMPUTES_RMS
 float AudioMonitor::getRootMeanSquare(int channel) const
 {
-    return this->rms[channel];
+    return this->rms[channel].get();
 }
-#endif

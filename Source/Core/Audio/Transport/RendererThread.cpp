@@ -17,11 +17,8 @@
 
 #include "Common.h"
 #include "RendererThread.h"
-#include "ProjectSequencesWrapper.h"
 #include "Instrument.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 
@@ -29,9 +26,7 @@ RendererThread::RendererThread(Transport &parentTrasport) :
     Thread("RendererThread"),
     transport(parentTrasport),
     writer(nullptr),
-    percentsDone(0.f)
-{
-}
+    percentsDone(0.f) {}
 
 RendererThread::~RendererThread()
 {
@@ -43,7 +38,6 @@ float RendererThread::getPercentsComplete() const
     const ScopedReadLock lock(this->percentsLock);
     return this->percentsDone;
 }
-
 
 void RendererThread::startRecording(const File &file)
 {
@@ -71,32 +65,26 @@ void RendererThread::startRecording(const File &file)
             this->percentsDone = 0.f;
         }
         
-        if (file.getFileExtension().toLowerCase() == ".wav")
+        // 16 bits per sample should be enough for anybody :)
+        // ..wanna fight about it? https://people.xiph.org/~xiphmont/demo/neil-young.html
+        const int bitDepth = 16;
+
+        if (file.getFileExtension().endsWithIgnoreCase("wav"))
         {
-            Supervisor::track(Serialization::Activities::transportRenderWav);
             WavAudioFormat wavFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
+            this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
         }
-        else if (file.getFileExtension().toLowerCase() == ".ogg")
+        else if (file.getFileExtension().endsWithIgnoreCase("flac"))
         {
-            Supervisor::track(Serialization::Activities::transportRenderOgg);
-            OggVorbisAudioFormat oggVorbisFormat;
-            const ScopedLock sl(this->writerLock);
-            this->writer = oggVorbisFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
-        }
-        else if (file.getFileExtension().toLowerCase() == ".flac")
-        {
-            Supervisor::track(Serialization::Activities::transportRenderFlac);
             FlacAudioFormat flacFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
+            this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
         }
 
         if (writer != nullptr)
         {
-            Logger::writeToLog(file.getFullPathName());
-            Supervisor::track(Serialization::Activities::transportStartRender);
+            DBG(file.getFullPathName());
             fileStream.release(); // (passes responsibility for deleting the stream to the writer object that is now using it)
             this->startThread(9);
         }
@@ -107,7 +95,6 @@ void RendererThread::stop()
 {
     if (this->isThreadRunning())
     {
-        Supervisor::track(Serialization::Activities::transportAbortRender);
         this->stopThread(500);
     }
 
@@ -123,12 +110,11 @@ bool RendererThread::isRecording() const
     return this->isThreadRunning();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Thread
 //===----------------------------------------------------------------------===//
 
-struct RenderBuffer
+struct RenderBuffer final
 {
     Instrument *instrument;
     AudioSampleBuffer sampleBuffer;
@@ -141,23 +127,23 @@ void RendererThread::run()
     this->transport.rebuildSequencesIfNeeded();
     ProjectSequences sequences = this->transport.getSequences();
     const int bufferSize = 512;
-    const double TPQN = Transport::millisecondsPerBeat; // ticks-per-quarter-note
 
     // assuming that number of channels and sample rate is equal for all instruments
     const int numOutChannels = sequences.getNumOutputChannels();
     const int numInChannels = sequences.getNumInputChannels();
     const double sampleRate = sequences.getSampleRate();
     
-    double tempoAtTheEndOfTrack = 0.0;
     double totalTimeMs = 0.0;
+    double tempoAtTheEndOfTrack = 0.0;
     this->transport.calcTimeAndTempoAt(1.0, totalTimeMs, tempoAtTheEndOfTrack);
     
-    // грязный хак. calcTimeAndTempoAt считает темп для PlayerThread'а немного по-другому,
-    // чем нужно здесь. поэтому TPQN заменяю на 1000.
-    // рефакторить лень.
-    // когда-нибудь у меня будет куча времени и я все сделаю по-человечески.
-    const double lastFrame = totalTimeMs / 1000 * sampleRate;
+    double startTimeMs = 0.0;
+    double msPerQuarter = 0.0;
+    this->transport.calcTimeAndTempoAt(0.0, startTimeMs, msPerQuarter);
+    double secPerQuarter = msPerQuarter / 1000.0;
 
+    double currentFrame = 0.0;
+    const double lastFrame = totalTimeMs / 1000.0 * sampleRate;
 
     // step 1. create a list of unique instruments with audio buffers for them.
     OwnedArray<RenderBuffer> subBuffers;
@@ -170,41 +156,43 @@ void RendererThread::run()
         subBuffer->instrument = instrument;
         subBuffer->sampleBuffer = AudioSampleBuffer(numOutChannels, bufferSize);
         subBuffers.add(subBuffer);
+        //DBG("Adding instrument: " + String(instrument->getName()));
     }
 
     // step 2. release resources, prepare to play, etc.
-    for (auto subBuffer : subBuffers)
+    for (auto *subBuffer : subBuffers)
     {
         AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
         graph->setPlayConfigDetails(numInChannels, numOutChannels, sampleRate, bufferSize);
         graph->releaseResources();
+        // TODO:
+        //graph->setProcessingPrecision(AudioProcessor::singlePrecision);
         graph->prepareToPlay(graph->getSampleRate(), bufferSize);
         graph->setNonRealtime(true);
     }
 
+    // let processor graphs call handle their async updates
+    Thread::sleep(200);
+
     // step 3. render loop itself.
-    double msPerTick = this->transport.findFirstTempoEvent().getTempoSecondsPerQuarterNote();
-    double currentFrame = 0.0;
-    
-    //double currentFrame = currentTimeMs / TPQN * sampleRate;
-    
     sequences.seekToTime(0.0);
     
     MessageWrapper nextMessage;
     bool hasNextMessage = sequences.getNextMessage(nextMessage);
     jassert(hasNextMessage);
     
+    // TODO: add double precision rendering someday (for processor graphs who support it)
     AudioSampleBuffer mixingBuffer(numOutChannels, bufferSize);
     
+    double lastEventTick = 0.0;
     double prevEventTimeStamp = 0.0;
-    double lastTick = 0.0;
-    double nextTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * msPerTick / TPQN;
-    double nextEventTick = lastTick + nextTickDelta;
+    double nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
+    double nextEventTick = lastEventTick + nextEventTickDelta;
 
     int messageFrame = int((nextEventTick * sampleRate) - currentFrame);
 
     // And here we go: send MidiStart
-    for (auto subBuffer : subBuffers)
+    for (auto *subBuffer : subBuffers)
     {
         subBuffer->midiBuffer.addEvent(MidiMessage::midiStart(), messageFrame);
     }
@@ -225,7 +213,7 @@ void RendererThread::run()
 
             if (nextMessage.message.isTempoMetaEvent())
             {
-                msPerTick = nextMessage.message.getTempoSecondsPerQuarterNote();
+                secPerQuarter = nextMessage.message.getTempoSecondsPerQuarterNote();
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 for (auto subBuffer : subBuffers)
@@ -235,22 +223,22 @@ void RendererThread::run()
             }
             else
             {
-                for (auto subBuffer : subBuffers)
+                for (auto *subBuffer : subBuffers)
                 {
                     if (nextMessage.instrument == subBuffer->instrument)
                     {
-                        //Logger::writeToLog("Adding message with frame " + String(messageFrame));
+                        //DBG("Adding message with frame " + String(messageFrame));
                         subBuffer->midiBuffer.addEvent(nextMessage.message, messageFrame);
                     }
                 }
             }
 
-            lastTick += nextTickDelta;
+            lastEventTick += nextEventTickDelta;
             prevEventTimeStamp = nextMessage.message.getTimeStamp();
             
             hasNextMessage = sequences.getNextMessage(nextMessage);
-            nextTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * msPerTick / TPQN;
-            nextEventTick = lastTick + nextTickDelta;
+            nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
+            nextEventTick = lastEventTick + nextEventTickDelta;
         }
 
         // step 3b. call processBlock for every instrument.
@@ -260,11 +248,11 @@ void RendererThread::run()
             {
                 const ScopedLock lock(graph->getCallbackLock());
                 
-                //Logger::writeToLog("processBlock num midi events: " + String(subBuffers[i]->midiBuffer.getNumEvents()));
+                //DBG("processBlock num midi events: " + String(subBuffer->midiBuffer.getNumEvents()));
                 graph->processBlock(subBuffer->sampleBuffer, subBuffer->midiBuffer);
-                
-                // TODO test if I ever need this hack
-                //Thread::sleep(15);
+                subBuffer->midiBuffer.clear();
+
+                //Thread::yield();
             }
         }
 
@@ -278,7 +266,7 @@ void RendererThread::run()
                 mixingBuffer.addFrom(j, 0,
                     subBuffer->sampleBuffer, j, 0,
                     bufferSize,
-                    1.0f); // need to calc gain?
+                    1.0f);
             }
         }
 
@@ -300,7 +288,7 @@ void RendererThread::run()
         {
             const ScopedWriteLock pl(this->percentsLock);
             this->percentsDone = float(currentFrame / lastFrame);
-            //Logger::writeToLog("this->percentsDone : " + String(this->percentsDone));
+            //DBG("this->percentsDone : " + String(this->percentsDone));
         }
     }
 
@@ -315,8 +303,6 @@ void RendererThread::run()
         const ScopedLock sl(this->writerLock);
         this->writer = nullptr;
     }
-    
-    Supervisor::track(Serialization::Activities::transportFinishRender);
     
     if (! this->threadShouldExit())
     {

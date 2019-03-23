@@ -30,9 +30,10 @@ SeparatorHorizontal::SeparatorHorizontal()
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (32, 32);
+    this->setSize(32, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -97,8 +98,8 @@ void SeparatorHorizontal::resized()
 //[MiscUserCode]
 void SeparatorHorizontal::setAlphaMultiplier(float a)
 {
-	this->alphaFactor = a;
-	this->repaint();
+    this->alphaFactor = a;
+    this->repaint();
 }
 //[/MiscUserCode]
 

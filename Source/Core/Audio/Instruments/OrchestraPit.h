@@ -19,32 +19,32 @@
 
 #include "OrchestraListener.h"
 
+struct PluginDescriptionDragnDropWrapper final : ReferenceCountedObject
+{
+    PluginDescription pluginDescription;
+    using Ptr = ReferenceCountedObjectPtr<PluginDescriptionDragnDropWrapper>;
+};
+
 class OrchestraPit
 {
 public:
 
-    OrchestraPit();
-
+    OrchestraPit() = default;
     virtual ~OrchestraPit();
 
     virtual Array<Instrument *> getInstruments() const = 0;
-
     virtual Instrument *findInstrumentById(const String &id) const = 0;
 
 public:
 
     void addOrchestraListener(OrchestraListener *listener);
-
     void removeOrchestraListener(OrchestraListener *listener);
-
     void removeAllOrchestraListeners();
 
 protected:
 
     void broadcastInstrumentRemoved(Instrument *instrument);
-
     void broadcastInstrumentRemovedPostAction();
-
     void broadcastInstrumentAdded(Instrument *instrument);
 
 private:

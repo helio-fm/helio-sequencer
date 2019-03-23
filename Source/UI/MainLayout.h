@@ -17,109 +17,80 @@
 
 #pragma once
 
-class TreePanel;
-class Console;
+class HeadlineItemDataSource;
+class TransientTreeItem;
 class TooltipContainer;
+class TreeNode;
+class Headline;
 
-#include "LastShownTreeItems.h"
 #include "ComponentFader.h"
+#include "HotkeyScheme.h"
 
-#if HELIO_DESKTOP
-#   define HAS_FADING_PAGECHANGE 1
-#elif HELIO_MOBILE
-#   define HAS_FADING_PAGECHANGE 0
-#endif
-
-#define TRACK_SCROLLER_HEIGHT_DEFAULT (128)
-#define TRACK_SCROLLER_HEIGHT_PHONE (64)
-
-class MainLayout : public Component
+class MainLayout final : public Component
 {
 public:
 
     MainLayout();
-
     ~MainLayout() override;
 
-    void init();
-    void forceRestoreLastOpenedPage();
-    
-    void hideConsole();
-    void showConsole(bool alsoShowLog);
+    void show();
+    void restoreLastOpenedPage();
 
-    static int getScrollerHeight();
-    
-    
-    //===------------------------------------------------------------------===//
-    // Pages stack
-    //===------------------------------------------------------------------===//
-
-    LastShownTreeItems &getLastShownItems();
-
-    WeakReference<TreeItem> getActiveTreeItem() const;
-    
-    void showPrevPageIfAny();
-    
-    void showNextPageIfAny();
-    
-    void showPage(Component *page,
-                  TreeItem *source = nullptr);
-
-    
-    //===------------------------------------------------------------------===//
-    // UI
-    //===------------------------------------------------------------------===//
-
-    void toggleShowTree();
-
-    void setStatus(const String &text);
-
-    void showTooltip(const String &message, int timeOutMs = 15000);
-
-    void showTooltip(Component *newTooltip, int timeOutMs = 15000);
-
-    void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
-
-    void showModalNonOwnedDialog(Component *targetComponent);
-
-    void showBlockingNonModalDialog(Component *targetComponent);
-    
     Rectangle<int> getPageBounds() const;
+    static constexpr int getScrollerHeight() { return (40 + 32); }
     
-    
+    //===------------------------------------------------------------------===//
+    // Pages and headline
+    //===------------------------------------------------------------------===//
+
+    void showPage(Component *page, TreeNode *source);
+    bool isShowingPage(Component *page) const noexcept;
+
+    void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
+    void hideSelectionMenu();
+
+    // Posts command id recursively to all components that have non-empty command id
+    void broadcastCommandMessage(int commandId);
+
+    //===------------------------------------------------------------------===//
+    // Tooltip: non-modal and can only be one at the time
+    //===------------------------------------------------------------------===//
+
+    void showTooltip(const String &message, int timeoutMs = 15000);
+    void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeoutMs = 15000);
+    void hideTooltipIfAny();
+
+    //===------------------------------------------------------------------===//
+    // Modal components (like dialogs)
+    //===------------------------------------------------------------------===//
+
+    // modal components are unowned (which sucks, but we still need
+    // to let modal dialogs delete themselves when they want to):
+    void showModalComponentUnowned(Component *targetComponent);
+    void hideModalComponentIfAny();
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void resized() override;
-
-    void childBoundsChanged(Component *child) override;
-
     void lookAndFeelChanged() override;
-
     bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
+    void modifierKeysChanged(const ModifierKeys &modifiers) override;
+    void handleCommandMessage(int commandId) override;
 
 private:
 
     ComponentFader fader;
     
-#if HAS_FADING_PAGECHANGE
-    ComponentAnimator pageFader;
-#endif
-    
+    ScopedPointer<Headline> headline;
     ScopedPointer<Component> initScreen;
-    SafePointer<Component> currentContent;
-
-    ScopedPointer<ResizableEdgeComponent> treeResizer;
-    ScopedPointer<TreePanel> treePanel;
-    ComponentBoundsConstrainer treePanelConstrainer;
-
     ScopedPointer<TooltipContainer> tooltipContainer;
     
-    LastShownTreeItems lastShownItems;
+    SafePointer<Component> currentContent;
+
+    HotkeyScheme::Ptr hotkeyScheme;
     
-private:
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainLayout)
-
 };

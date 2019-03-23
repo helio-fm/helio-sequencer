@@ -1,0 +1,51 @@
+{
+  /*
+    This is the list of most common scales (and their modes),
+    borrowed from a book called 'The Scale Omnibus', which is highly recommended.
+    For simplicity I've only taken heptatonic scales from there.
+  */
+  "scales": {
+    "scale": [
+      { "period": "12", "name": "Ionian", "intervals": "2 2 1 2 2 2 1" },
+      { "period": "12", "name": "Aeolian", "intervals": "2 1 2 2 1 2 2" },
+      { "period": "12", "name": "Lydian", "intervals": "2 2 2 1 2 2 1" },
+      { "period": "12", "name": "Mixolydian", "intervals": "2 2 1 2 2 1 2" },
+      { "period": "12", "name": "Dorian", "intervals": "2 1 2 2 2 1 2" },
+      { "period": "12", "name": "Phrygian", "intervals": "1 2 2 2 1 2 2" },
+      { "period": "12", "name": "Locrian", "intervals": "1 2 2 1 2 2 2" },
+      { "period": "12", "name": "Melodic Major", "intervals": "2 2 1 2 1 2 2" },
+      { "period": "12", "name": "Melodic Minor", "intervals": "2 1 2 2 2 2 1" },
+      { "period": "12", "name": "Harmonic Major", "intervals": "2 2 1 2 1 3 1" },
+      { "period": "12", "name": "Harmonic Minor", "intervals": "2 1 2 2 1 3 1" },
+      { "period": "12", "name": "Hungarian Major", "intervals": "3 1 2 1 2 1 2" },
+      { "period": "12", "name": "Hungarian Minor", "intervals": "2 1 1 3 1 3 1" },
+      { "period": "12", "name": "Neapolitan Major", "intervals": "1 2 2 2 2 2 1" },
+      { "period": "12", "name": "Neapolitan Minor", "intervals": "1 2 2 2 1 3 1" },
+      { "period": "12", "name": "Romanian Major", "intervals": "1 3 2 1 2 1 2" },
+      { "period": "12", "name": "Romanian Minor", "intervals": "2 1 3 1 2 1 2" },
+      { "period": "12", "name": "Enigmatic", "intervals": "1 3 2 2 2 1 1" },
+      { "period": "12", "name": "Enigmatic Minor", "intervals": "1 2 3 2 2 1 1" },
+      { "period": "12", "name": "Ionian Augmented", "intervals": "2 2 1 3 1 2 1" },
+      { "period": "12", "name": "Lydian Augmented", "intervals": "2 2 2 2 1 2 1" },
+      { "period": "12", "name": "Lydian Diminished", "intervals": "2 1 3 1 2 2 1" },
+      { "period": "12", "name": "Lydian Dominant", "intervals": "2 2 2 1 2 1 2" },
+      { "period": "12", "name": "Mixolydian Augmented", "intervals": "2 2 1 3 1 1 2" },
+      { "period": "12", "name": "Phrygian Dominant", "intervals": "1 3 1 2 1 2 2" },
+      { "period": "12", "name": "Ultraphrygian", "intervals": "1 2 1 3 1 1 3" },
+      { "period": "12", "name": "Locrian Dominant", "intervals": "1 3 1 1 2 2 2" },
+      { "period": "12", "name": "Superlocrian", "intervals": "1 1 2 2 2 2 2" },
+      { "period": "12", "name": "Ultralocrian", "intervals": "1 2 1 2 2 1 3" },
+      { "period": "12", "name": "Major Locrian", "intervals": "2 2 1 1 2 2 2" },
+      { "period": "12", "name": "Leading Whole-Tone", "intervals": "2 2 2 2 2 1 1" },
+      { "period": "12", "name": "Double Harmonic", "intervals": "1 3 1 2 1 3 1" },
+      { "period": "12", "name": "Half Diminished", "intervals": "2 1 2 1 2 2 2" },
+      { "period": "12", "name": "Altered Dominant", "intervals": "1 2 1 2 2 2 2" },
+      { "period": "12", "name": "Blues Heptatonic", "intervals": "2 1 2 1 3 1 2" },
+      { "period": "12", "name": "Blues Phrygian", "intervals": "1 2 2 1 1 3 2" },
+      { "period": "12", "name": "Blues Modified", "intervals": "2 1 2 1 1 3 2" },
+      { "period": "12", "name": "Blues Mixed", "intervals": "3 1 1 1 1 3 2" },
+      { "period": "12", "name": "Blues Leading Tone", "intervals": "3 2 1 1 3 1 1" },
+      { "period": "12", "name": "Rock'n'Roll", "intervals": "3 1 1 2 2 1 2" }
+    ]
+  }
+}

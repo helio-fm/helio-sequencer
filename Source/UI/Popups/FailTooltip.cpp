@@ -46,7 +46,6 @@ FailTooltip::FailTooltip()
 FailTooltip::~FailTooltip()
 {
     //[Destructor_pre]
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     imageRange = nullptr;
@@ -91,8 +90,7 @@ void FailTooltip::parentHierarchyChanged()
 void FailTooltip::timerCallback()
 {
     this->stopTimer();
-    Desktop::getInstance().getAnimator().fadeOut(this, FADEOUT_TIMS_MS);
-    delete this;
+    this->dismiss();
 }
 //[/MiscUserCode]
 

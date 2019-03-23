@@ -29,7 +29,6 @@
 #define FFT_LOG2   0.693147180559945309417f
 
 #if JUCE_WIN32
-#include <math.h>
 
 #define FFT_SIN   (float)sin
 #define FFT_SINH  (float)sinh
@@ -46,7 +45,6 @@
 #define FFT_FMOD  (float)fmod
 
 #else
-#include <math.h>
 
 #define FFT_SIN   sinf
 #define FFT_SINH  sinhf
@@ -166,7 +164,7 @@ inline void SpectrumFFT::process(int bits)
 void SpectrumFFT::computeSpectrum(float *pcmbuffer,
                                   unsigned int pcmposition,
                                   unsigned int pcmlength,
-                                  float *spectrum,
+                                  Atomic<float> *spectrum,
                                   int length,
                                   int channel,
                                   int numchannels)
@@ -210,10 +208,9 @@ void SpectrumFFT::computeSpectrum(float *pcmbuffer,
         
         n = this->reverse(n, bits);
         
-        magnitude = FFT_SQRT((this->buffer[n].re *
-                              this->buffer[n].re)
-                             + (this->buffer[n].im *
-                                this->buffer[n].im));
+        magnitude = 
+            FFT_SQRT((this->buffer[n].re * this->buffer[n].re)
+                + (this->buffer[n].im * this->buffer[n].im));
         
         magnitude *= 2.5f; 
         

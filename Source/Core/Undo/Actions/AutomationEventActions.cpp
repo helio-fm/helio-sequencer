@@ -17,30 +17,26 @@
 
 #include "Common.h"
 #include "AutomationEventActions.h"
-#include "AutomationLayer.h"
-#include "ProjectTreeItem.h"
+#include "AutomationSequence.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-AutomationEventInsertAction::AutomationEventInsertAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const AutomationEvent &event) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
-    event(event)
-{
-
-}
+AutomationEventInsertAction::AutomationEventInsertAction(MidiTrackSource &source,
+    const String &trackId, const AutomationEvent &event) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    event(event) {}
 
 bool AutomationEventInsertAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return (layer->insert(this->event, false) != nullptr);
+        return (sequence->insert(this->event, false) != nullptr);
     }
     
     return false;
@@ -48,9 +44,10 @@ bool AutomationEventInsertAction::perform()
 
 bool AutomationEventInsertAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->remove(this->event, false);
+        return sequence->remove(this->event, false);
     }
     
     return false;
@@ -61,46 +58,42 @@ int AutomationEventInsertAction::getSizeInUnits()
     return sizeof(AutomationEvent);
 }
 
-XmlElement *AutomationEventInsertAction::serialize() const
+ValueTree AutomationEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationEventInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::automationEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void AutomationEventInsertAction::deserialize(const XmlElement &xml)
+void AutomationEventInsertAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void AutomationEventInsertAction::reset()
 {
     this->event.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-AutomationEventRemoveAction::AutomationEventRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const AutomationEvent &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
-    event(target)
-{
-
-}
+AutomationEventRemoveAction::AutomationEventRemoveAction(MidiTrackSource &source,
+    const String &trackId, const AutomationEvent &target) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    event(target) {}
 
 bool AutomationEventRemoveAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->remove(this->event, false);
+        return sequence->remove(this->event, false);
     }
     
     return false;
@@ -108,9 +101,10 @@ bool AutomationEventRemoveAction::perform()
 
 bool AutomationEventRemoveAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return (layer->insert(this->event, false) != nullptr);
+        return (sequence->insert(this->event, false) != nullptr);
     }
     
     return false;
@@ -121,48 +115,44 @@ int AutomationEventRemoveAction::getSizeInUnits()
     return sizeof(AutomationEvent);
 }
 
-XmlElement *AutomationEventRemoveAction::serialize() const
+ValueTree AutomationEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::automationEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void AutomationEventRemoveAction::deserialize(const XmlElement &xml)
+void AutomationEventRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void AutomationEventRemoveAction::reset()
 {
     this->event.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-AutomationEventChangeAction::AutomationEventChangeAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const AutomationEvent &target,
-                                                         const AutomationEvent &newParameters) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+AutomationEventChangeAction::AutomationEventChangeAction(MidiTrackSource &source,
+    const String &trackId, const AutomationEvent &target,
+    const AutomationEvent &newParameters) noexcept :
+    UndoAction(source),
+    trackId(trackId),
     eventBefore(target),
-    eventAfter(newParameters)
-{
-
-}
+    eventAfter(newParameters) {}
 
 bool AutomationEventChangeAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->change(this->eventBefore, this->eventAfter, false);
+        return sequence->change(this->eventBefore, this->eventAfter, false);
     }
     
     return false;
@@ -170,9 +160,10 @@ bool AutomationEventChangeAction::perform()
 
 bool AutomationEventChangeAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->change(this->eventAfter, this->eventBefore, false);
+        return sequence->change(this->eventAfter, this->eventBefore, false);
     }
     
     return false;
@@ -185,19 +176,20 @@ int AutomationEventChangeAction::getSizeInUnits()
 
 UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        if (AutomationEventChangeAction *nextChanger = dynamic_cast<AutomationEventChangeAction *>(nextAction))
+        if (AutomationEventChangeAction *nextChanger =
+            dynamic_cast<AutomationEventChangeAction *>(nextAction))
         {
-            const bool idsAreEqual = (this->eventBefore.getID() == nextChanger->eventAfter.getID() &&
-                                      this->layerId == nextChanger->layerId);
+            const bool idsAreEqual = 
+                (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
+                    this->trackId == nextChanger->trackId);
             
             if (idsAreEqual)
             {
-                auto newChanger =
-                new AutomationEventChangeAction(this->project, this->layerId, this->eventBefore, nextChanger->eventAfter);
-                
-                return newChanger;
+                return new AutomationEventChangeAction(this->source,
+                    this->trackId, this->eventBefore, nextChanger->eventAfter);
             }
         }
     }
@@ -206,59 +198,58 @@ UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextA
     return nullptr;
 }
 
-XmlElement *AutomationEventChangeAction::serialize() const
+ValueTree AutomationEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationEventChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::automationEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto eventBeforeChild = new XmlElement(Serialization::Undo::eventBefore);
-    eventBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(eventBeforeChild);
+    ValueTree eventBeforeChild(Serialization::Undo::eventBefore);
+    eventBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
+    tree.appendChild(eventBeforeChild, nullptr);
     
-    auto eventAfterChild = new XmlElement(Serialization::Undo::eventAfter);
-    eventAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(eventAfterChild);
+    ValueTree eventAfterChild(Serialization::Undo::eventAfter);
+    eventAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
+    tree.appendChild(eventAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void AutomationEventChangeAction::deserialize(const XmlElement &xml)
+void AutomationEventChangeAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *eventBeforeChild = xml.getChildByName(Serialization::Undo::eventBefore);
-    XmlElement *eventAfterChild = xml.getChildByName(Serialization::Undo::eventAfter);
+    const auto eventBeforeChild = tree.getChildWithName(Serialization::Undo::eventBefore);
+    const auto eventAfterChild = tree.getChildWithName(Serialization::Undo::eventAfter);
     
-    this->eventBefore.deserialize(*eventBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*eventAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(eventBeforeChild.getChild(0));
+    this->eventAfter.deserialize(eventAfterChild.getChild(0));
 }
 
 void AutomationEventChangeAction::reset()
 {
     this->eventBefore.reset();
     this->eventAfter.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-AutomationEventsGroupInsertAction::AutomationEventsGroupInsertAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     Array<AutomationEvent> &target) :
-UndoAction(parentProject),
-layerId(std::move(targetLayerId))
+AutomationEventsGroupInsertAction::AutomationEventsGroupInsertAction(MidiTrackSource &source,
+    const String &trackId, Array<AutomationEvent> &target) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->events.swapWith(target);
 }
 
 bool AutomationEventsGroupInsertAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->insertGroup(this->events, false);
+        return sequence->insertGroup(this->events, false);
     }
     
     return false;
@@ -266,9 +257,10 @@ bool AutomationEventsGroupInsertAction::perform()
 
 bool AutomationEventsGroupInsertAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->removeGroup(this->events, false);
+        return sequence->removeGroup(this->events, false);
     }
     
     return false;
@@ -279,29 +271,28 @@ int AutomationEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(AutomationEvent) * this->events.size());
 }
 
-XmlElement *AutomationEventsGroupInsertAction::serialize() const
+ValueTree AutomationEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::automationEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->events.size(); ++i)
     {
-        xml->prependChildElement(this->events.getUnchecked(i).serialize());
+        tree.appendChild(this->events.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void AutomationEventsGroupInsertAction::deserialize(const XmlElement &xml)
+void AutomationEventsGroupInsertAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         AutomationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->events.add(ae);
     }
 }
@@ -309,28 +300,27 @@ void AutomationEventsGroupInsertAction::deserialize(const XmlElement &xml)
 void AutomationEventsGroupInsertAction::reset()
 {
     this->events.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     Array<AutomationEvent> &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(MidiTrackSource &source,
+    const String &trackId, Array<AutomationEvent> &target) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->events.swapWith(target);
 }
 
 bool AutomationEventsGroupRemoveAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->removeGroup(this->events, false);
+        return sequence->removeGroup(this->events, false);
     }
     
     return false;
@@ -338,9 +328,10 @@ bool AutomationEventsGroupRemoveAction::perform()
 
 bool AutomationEventsGroupRemoveAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->insertGroup(this->events, false);
+        return sequence->insertGroup(this->events, false);
     }
     
     return false;
@@ -351,29 +342,28 @@ int AutomationEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(AutomationEvent) * this->events.size());
 }
 
-XmlElement *AutomationEventsGroupRemoveAction::serialize() const
+ValueTree AutomationEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::automationEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->events.size(); ++i)
     {
-        xml->prependChildElement(this->events.getUnchecked(i).serialize());
+        tree.appendChild(this->events.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void AutomationEventsGroupRemoveAction::deserialize(const XmlElement &xml)
+void AutomationEventsGroupRemoveAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         AutomationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->events.add(ae);
     }
 }
@@ -381,20 +371,18 @@ void AutomationEventsGroupRemoveAction::deserialize(const XmlElement &xml)
 void AutomationEventsGroupRemoveAction::reset()
 {
     this->events.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     const Array<AutomationEvent> state1,
-                                                                     const Array<AutomationEvent> state2) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(MidiTrackSource &source,
+    const String &trackId, const Array<AutomationEvent> state1,
+    const Array<AutomationEvent> state2) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->eventsBefore.addArray(state1);
     this->eventsAfter.addArray(state2);
@@ -402,9 +390,10 @@ AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(ProjectTree
 
 bool AutomationEventsGroupChangeAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->changeGroup(this->eventsBefore, this->eventsAfter, false);
+        return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
     
     return false;
@@ -412,9 +401,10 @@ bool AutomationEventsGroupChangeAction::perform()
 
 bool AutomationEventsGroupChangeAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        return layer->changeGroup(this->eventsAfter, this->eventsBefore, false);
+        return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
     
     return false;
@@ -428,25 +418,26 @@ int AutomationEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *sequence =
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
-        if (AutomationEventsGroupChangeAction *nextChanger = dynamic_cast<AutomationEventsGroupChangeAction *>(nextAction))
+        if (AutomationEventsGroupChangeAction *nextChanger =
+            dynamic_cast<AutomationEventsGroupChangeAction *>(nextAction))
         {
-            if (nextChanger->layerId != this->layerId)
+            if (nextChanger->trackId != this->trackId)
             {
                 return nullptr;
             }
             
             // это явно неполная проверка, но ее будет достаточно
-            bool arraysContainSameNotes = (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-                                          (this->eventsBefore[0].getID() == nextChanger->eventsAfter[0].getID());
+            bool arraysContainSameNotes =
+                (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
+                (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
             
             if (arraysContainSameNotes)
             {
-                AutomationEventsGroupChangeAction *newChanger =
-                new AutomationEventsGroupChangeAction(this->project, this->layerId, this->eventsBefore, nextChanger->eventsAfter);
-                
-                return newChanger;
+                return new AutomationEventsGroupChangeAction(this->source,
+                    this->trackId, this->eventsBefore, nextChanger->eventsAfter);
             }
         }
     }
@@ -455,55 +446,54 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
     return nullptr;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationEventsGroupChangeAction::serialize() const
+ValueTree AutomationEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::automationEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
-    auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild->prependChildElement(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void AutomationEventsGroupChangeAction::deserialize(const XmlElement &xml)
+void AutomationEventsGroupChangeAction::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *groupBeforeChild = xml.getChildByName(Serialization::Undo::groupBefore);
-    XmlElement *groupAfterChild = xml.getChildByName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         AutomationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         AutomationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }
@@ -512,5 +502,5 @@ void AutomationEventsGroupChangeAction::reset()
 {
     this->eventsBefore.clear();
     this->eventsAfter.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }

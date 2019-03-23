@@ -24,17 +24,16 @@
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-ShadowDownwards::ShadowDownwards()
+ShadowDownwards::ShadowDownwards(ShadowType type)
+    : ShadowComponent(type)
 {
-    addAndMakeVisible (component = new SeparatorHorizontalReversed());
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 40);
+    this->setSize(600, 40);
 
     //[Constructor]
-    this->setInterceptsMouseClicks(false, false);
     //[/Constructor]
 }
 
@@ -43,7 +42,6 @@ ShadowDownwards::~ShadowDownwards()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    component = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -52,32 +50,63 @@ ShadowDownwards::~ShadowDownwards()
 void ShadowDownwards::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x25000000),
-                                       0.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, static_cast<float> (getHeight()),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour1 = this->shadowColour;
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (getHeight()) - 0.0f + y,
                                        false));
-    g.fillRect (0, 3, getWidth() - 0, getHeight() - 3);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x25000000),
-                                       0.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, static_cast<float> (proportionOfHeight (0.5000f)),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = proportionOfHeight (0.5000f);
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour1 = this->shadowColour;
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.5000f)) - 0.0f + y,
                                        false));
-    g.fillRect (0, 3, getWidth() - 0, proportionOfHeight (0.5000f));
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
+#endif
+
+    g.setGradientFill(this->gradient1);
+    g.fillRect(this->getLocalBounds());
+
+    g.setGradientFill(this->gradient2);
+    g.fillRect(this->getLocalBounds());
+
     //[/UserPaint]
 }
 
 void ShadowDownwards::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    const float h = float(this->getHeight());
+    this->gradient1 = ColourGradient(this->shadowColour,
+        0.f, 0.f, Colours::transparentBlack, 0.f, h, false);
+    this->gradient2 = ColourGradient(this->shadowColour,
+        0.f, 0.0f, Colours::transparentBlack, 0.f, h / 2.5f, false);
     //[/UserPreResize]
 
-    component->setBounds (0, 2, getWidth() - 0, 3);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -91,16 +120,14 @@ void ShadowDownwards::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ShadowDownwards" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="40">
+                 componentName="" parentClasses="public ShadowComponent" constructorParams="ShadowType type"
+                 variableInitialisers="ShadowComponent(type)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
+                 initialHeight="40">
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 3 0M 3M" fill="linear: 0 0, 0 0R, 0=25000000, 1=0" hasStroke="0"/>
-    <RECT pos="0 3 0M 50%" fill="linear: 0 0, 0 50%, 0=25000000, 1=0" hasStroke="0"/>
+    <RECT pos="0 0 0M 0M" fill="linear: 0 0, 0 0R, 0=15000000, 1=0" hasStroke="0"/>
+    <RECT pos="0 0 0M 50%" fill="linear: 0 0, 0 50%, 0=15000000, 1=0" hasStroke="0"/>
   </BACKGROUND>
-  <JUCERCOMP name="" id="629c455b58f83ee7" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0 2 0M 3" sourceFile="SeparatorHorizontalReversed.cpp"
-             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

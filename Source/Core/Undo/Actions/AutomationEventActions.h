@@ -17,105 +17,98 @@
 
 #pragma once
 
-class AutomationLayer;
-class ProjectTreeItem;
+class AutomationSequence;
+class MidiTrackSource;
 
 #include "AutomationEvent.h"
 #include "UndoAction.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-class AutomationEventInsertAction : public UndoAction
+class AutomationEventInsertAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    AutomationEventInsertAction(ProjectTreeItem &project,
-                                String layerId,
-                                const AutomationEvent &target);
+    AutomationEventInsertAction(MidiTrackSource &source,
+        const String &trackId, const AutomationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     AutomationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AutomationEventInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-class AutomationEventRemoveAction : public UndoAction
+class AutomationEventRemoveAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    AutomationEventRemoveAction(ProjectTreeItem &project,
-                                String layerId,
-                                const AutomationEvent &target);
+    AutomationEventRemoveAction(MidiTrackSource &source,
+        const String &trackId, const AutomationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     AutomationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AutomationEventRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-class AutomationEventChangeAction : public UndoAction
+class AutomationEventChangeAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    AutomationEventChangeAction(ProjectTreeItem &project,
-                                String layerId,
-                                const AutomationEvent &target,
-                                const AutomationEvent &newParameters);
+    AutomationEventChangeAction(MidiTrackSource &source, const String &trackId,
+        const AutomationEvent &target, const AutomationEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
 
     AutomationEvent eventBefore;
     AutomationEvent eventAfter;
@@ -124,101 +117,94 @@ private:
 
 };
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class AutomationEventsGroupInsertAction : public UndoAction
+class AutomationEventsGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventsGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
-    AutomationEventsGroupInsertAction(ProjectTreeItem &project,
-                                      String layerId,
-                                      Array<AutomationEvent> &target);
+    AutomationEventsGroupInsertAction(MidiTrackSource &source,
+        const String &trackId, Array<AutomationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AutomationEvent> events;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationEventsGroupInsertAction)
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class AutomationEventsGroupRemoveAction : public UndoAction
+class AutomationEventsGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventsGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
-    AutomationEventsGroupRemoveAction(ProjectTreeItem &project,
-                                      String layerId,
-                                      Array<AutomationEvent> &target);
+    AutomationEventsGroupRemoveAction(MidiTrackSource &source,
+        const String &trackId, Array<AutomationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AutomationEvent> events;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationEventsGroupRemoveAction)
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class AutomationEventsGroupChangeAction : public UndoAction
+class AutomationEventsGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventsGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    AutomationEventsGroupChangeAction(ProjectTreeItem &project,
-                                      String layerId,
-                                      const Array<AutomationEvent> state1,
-                                      const Array<AutomationEvent> state2);
+    AutomationEventsGroupChangeAction(MidiTrackSource &source, const String &trackId,
+        const Array<AutomationEvent> state1, const Array<AutomationEvent> state2) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
 
     Array<AutomationEvent> eventsBefore;
     Array<AutomationEvent> eventsAfter;

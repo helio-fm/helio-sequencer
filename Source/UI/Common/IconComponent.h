@@ -23,12 +23,32 @@ class IconComponent : virtual public Component
 {
 public:
     
-    explicit IconComponent(String name, float alpha = 1.f) : iconName(std::move(name))
+    explicit IconComponent(Icons::Id iconId, float alpha = 1.f) :
+        iconId(iconId)
     {
+        this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
         
         if (alpha < 1.f)
         { this->setAlpha(alpha); }
+    }
+
+    explicit IconComponent(Image targetImage) :
+        image(targetImage)
+    {
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void setIconName(Icons::Id id)
+    {
+        this->iconId = id;
+        this->repaint();
+    }
+
+    void setIconImage(Image targetImage)
+    {
+        this->image = targetImage;
+        this->repaint();
     }
 
     void resized() override
@@ -38,13 +58,21 @@ public:
     
     void paint(Graphics &g) override
     {
-        //Logger::writeToLog(iconName + " >>>> " + String(this->getHeight()));
-        Image image(Icons::findByName(this->iconName, this->getHeight()));
-        Icons::drawImageRetinaAware(image, g, this->getWidth() / 2, this->getHeight() / 2);
+        g.setColour(Colours::black);
+        if (this->image.isNull())
+        {
+            Image i(Icons::findByName(this->iconId, this->getHeight()));
+            Icons::drawImageRetinaAware(i, g, this->getWidth() / 2, this->getHeight() / 2);
+        }
+        else
+        {
+            Icons::drawImageRetinaAware(this->image, g, this->getWidth() / 2, this->getHeight() / 2);
+        }
     }
     
 protected:
     
-    const String iconName;
+    Icons::Id iconId;
+    Image image;
     
 };

@@ -23,12 +23,11 @@ class IconComponent;
 //[/Headers]
 
 
-class MenuButton  : public HighlightedComponent
+class MenuButton final : public HighlightedComponent
 {
 public:
 
-    MenuButton ();
-
+    MenuButton();
     ~MenuButton();
 
     //[UserMethods]

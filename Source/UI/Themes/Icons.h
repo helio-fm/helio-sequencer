@@ -17,118 +17,126 @@
 
 #pragma once
 
-class Icons
+struct Icons final
 {
-public:
+    using Id = uint32;
 
-    static const String empty;
-
-    static const String menu;
-    static const String project;
-    static const String play;
-    static const String pause;
-    static const String instrumentSettings;
-    static const String instrumentGraph;
-    static const String vcs;
-    static const String automation;
-    static const String workspace;
-    static const String layer;
-    static const String group;
-    static const String backward;
-    static const String forward;
-    static const String left;
-    static const String right;
-    static const String settings;
-    static const String saxophone;
-    static const String trash;
-    static const String ellipsis;
-    
-    static const String undo;
-    static const String redo;
-    
-    static const String close;
-    static const String apply;
-    static const String create;
-    static const String open;
-    static const String minus;
-    static const String plus;
-    static const String colour;
-
-    static const String login;
-    static const String fail;
-    static const String success;
-    static const String progressIndicator;
-
-    static const String remote;
-    static const String local;
-    static const String commit;
-    static const String reset;
-    static const String push;
-    static const String pull;
-
-    static const String copy;
-    static const String paste;
-    static const String cut;
-
-    static const String zoomIn;
-    static const String zoomOut;
-
-    static const String update;
-
-    static const String up;
-    static const String down;
-
-    static const String previous;
-    static const String next;
-
-    static const String volumeUp;
-    static const String volumeOff;
-
-    static const String render;
-
-    static const String cursorTool;
-    static const String drawTool;
-    static const String selectionTool;
-    static const String zoomTool;
-    static const String dragTool;
-    
-    static const String insertSpaceTool;
-    static const String wipeScapeTool;
-    static const String cropTool;
-    
-    static const String annotation;
-    static const String arpeggiator;
-    static const String switcher;
-
-    static const String stretchLeft;
-    static const String stretchRight;
-
-    static const String toggleOn;
-    static const String toggleOff;
-
-    enum ColourIds
-    {
-        iconColourId        = 0x99010000,
-        iconShadowColourId  = 0x99011000
-    };
-
+    static void initBuiltInImages();
     static void clearBuiltInImages();
-    static void setupBuiltInImages();
-    
     static void clearPrerenderedCache();
-    
-    static Image findByName(const String &name, int maxSize);
-    static Image findByName(const String &name, int maxSize, LookAndFeel &lf);
 
-    static Path getPathByName(const String &name);
-    static ScopedPointer<Drawable> getDrawableByName(const String &name);
-
+    static Image findByName(Icons::Id id, int maxSize);
+    static Image renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize);
     static void drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy);
-    
-    
-    
-private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Icons);
+    static Path getPathByName(Icons::Id id);
+    static ScopedPointer<Drawable> getDrawableByName(Icons::Id id);
 
+    enum Ids
+    {
+        empty,
+
+        helio,
+        project,
+        trackGroup,
+        pianoTrack,
+        automationTrack,
+        versionControl,
+        settings,
+        patterns,
+        orchestraPit,
+        instrument,
+        instrumentNode,
+        audioPlugin,
+        annotation,
+        colour,
+        revision,
+        routing,
+
+        piano,
+        microphone,
+        volume,
+        script,
+
+        list,
+        ellipsis,
+        progressIndicator,
+
+        browse,
+        apply,
+        toggleOn,
+        toggleOff,
+
+        play,
+        pause,
+
+        undo,
+        redo,
+
+        copy,
+        cut,
+        paste,
+
+        create,
+        remove,
+        close,
+
+        fail,
+        success,
+
+        zoomIn,
+        zoomOut,
+
+        cursorTool,
+        drawTool,
+        selectionTool,
+        zoomTool,
+        dragTool,
+        cropTool,
+        cutterTool,
+        eraserTool,
+        chordTool,
+        chordBuilder,
+        stretchLeft,
+        stretchRight,
+        inverseDown,
+        inverseUp,
+        expand,
+
+        up,
+        down,
+        back,
+        forward,
+        mediaForward,
+        mediaRewind,
+
+        pageUp,
+        pageDown,
+        timelineNext,
+        timelinePrevious,
+
+        menu,
+        submenu,
+
+        login,
+        remote,
+        local,
+        github,
+
+        commit,
+        reset,
+        push,
+        pull,
+
+        mute,
+        unmute,
+
+        arpeggiate,
+        refactor,
+        render,
+
+        selection,
+        selectAll,
+        selectNone
+    };
 };

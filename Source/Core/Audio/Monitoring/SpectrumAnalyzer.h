@@ -22,19 +22,19 @@ const int FFT_COSTABSIZE = (1 << FFT_COSTABBITS);
 const int FFT_TABLERANGE = (FFT_COSTABSIZE * 4);
 const int FFT_TABLEMASK  = (FFT_TABLERANGE - 1);
 
-class SpectrumFFT
+class SpectrumFFT final
 {
 public:
     
     SpectrumFFT();
     
     void computeSpectrum(float *pcmbuffer,
-                         unsigned int pcmposition,
-                         unsigned int pcmlength,
-                         float *spectrum,
-                         int length,
-                         int channel,
-                         int numchannels);
+        unsigned int pcmposition,
+        unsigned int pcmlength,
+        Atomic<float> *spectrum,
+        int length,
+        int channel,
+        int numchannels);
     
 private:
     
@@ -45,13 +45,13 @@ private:
     }
     FFT_COMPLEX;
     
-    FFT_COMPLEX		buffer[16 * 1024];
-    float			costab[FFT_COSTABSIZE];
+    FFT_COMPLEX     buffer[16 * 1024];
+    float           costab[FFT_COSTABSIZE];
     
-    inline const float			cosine(float x);
-    inline const float			sine(float x);
-    inline const unsigned int	reverse(unsigned int val, int bits);
-    inline void					process(int bits);
+    inline const float          cosine(float x);
+    inline const float          sine(float x);
+    inline const unsigned int   reverse(unsigned int val, int bits);
+    inline void                 process(int bits);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumFFT);
 };

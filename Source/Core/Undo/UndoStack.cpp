@@ -19,188 +19,171 @@
 #include "UndoStack.h"
 #include "UndoAction.h"
 #include "SerializationKeys.h"
+#include "ProjectNode.h"
 
-#include "ProjectTreeItem.h"
-
-#include "PianoLayerTreeItemActions.h"
-#include "AutoLayerTreeItemActions.h"
-#include "LayerTreeItemActions.h"
-#include "MidiLayerActions.h"
+#include "MidiTrackActions.h"
+#include "PianoTrackActions.h"
+#include "AutomationTrackActions.h"
 #include "NoteActions.h"
 #include "AnnotationEventActions.h"
 #include "AutomationEventActions.h"
 #include "TimeSignatureEventActions.h"
+#include "KeySignatureEventActions.h"
+#include "PatternActions.h"
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
+using namespace Serialization;
 
-struct UndoStack::ActionSet
+UndoStack::ActionSet::ActionSet(ProjectNode &project, const String &transactionName) :
+    project(project),
+    name(transactionName) {}
+    
+bool UndoStack::ActionSet::perform() const
 {
-    ActionSet (ProjectTreeItem &parentProject, String  transactionName) :
-    project(parentProject),
-    name(std::move(transactionName))
-    {}
-    
-    bool perform() const
+    for (int i = 0; i < this->actions.size(); ++i)
     {
-        for (int i = 0; i < actions.size(); ++i) {
-            if (! actions.getUnchecked(i)->perform()) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    bool undo() const
-    {
-        //Logger::writeToLog(String(actions.size()) + " actions");
-        
-        for (int i = actions.size(); --i >= 0;) {
-            if (! actions.getUnchecked(i)->undo()) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    int getTotalSize() const
-    {
-        int total = 0;
-        
-        for (int i = actions.size(); --i >= 0;) {
-            total += actions.getUnchecked(i)->getSizeInUnits();
-        }
-        
-        return total;
-    }
-    
-    XmlElement *serialize() const
-    {
-        auto xml = new XmlElement(Serialization::Undo::transaction);
-        
-        xml->setAttribute(Serialization::Undo::name, this->name);
-        
-        for (int i = 0; i < this->actions.size(); ++i)
+        if (!this->actions.getUnchecked(i)->perform())
         {
-            // prependChildElement здесь не даст особого выигрыша (в большинстве транзакций только одно событие), а только запутает
-            xml->addChildElement(this->actions.getUnchecked(i)->serialize());
+            return false;
         }
-        
-        return xml;
     }
+        
+    return true;
+}
     
-    void deserialize(const XmlElement &xml)
+bool UndoStack::ActionSet::undo() const
+{
+    for (int i = this->actions.size(); --i >= 0;)
     {
-        this->reset();
-        
-        this->name = xml.getStringAttribute(Serialization::Undo::name);
-        
-        forEachXmlChildElement(xml, childActionXml)
+        if (!this->actions.getUnchecked(i)->undo())
         {
-            UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName());
-            action->deserialize(*childActionXml);
+            return false;
+        }
+    }
+        
+    return true;
+}
+    
+int UndoStack::ActionSet::getTotalSize() const
+{
+    int total = 0;
+    for (int i = this->actions.size(); --i >= 0;)
+    {
+        total += this->actions.getUnchecked(i)->getSizeInUnits();
+    }
+        
+    return total;
+}
+    
+ValueTree UndoStack::ActionSet::serialize() const
+{
+    ValueTree tree(Serialization::Undo::transaction);
+
+    for (int i = 0; i < this->actions.size(); ++i)
+    {
+        tree.appendChild(this->actions.getUnchecked(i)->serialize(), nullptr);
+    }
+        
+    return tree;
+}
+    
+void UndoStack::ActionSet::deserialize(const ValueTree &tree)
+{
+    this->reset();
+
+    for (const auto &childAction : tree)
+    {
+        if (UndoAction *action = createUndoActionsByTagName(childAction.getType()))
+        {
+            action->deserialize(childAction);
             this->actions.add(action);
         }
     }
+}
     
-    void reset()
-    {
-        this->actions.clear();
-    }
-    
-    UndoAction *createUndoActionsByTagName(const String &tagName)
-    {
-        if      (tagName == Serialization::Undo::pianoLayerTreeItemInsertAction)        { return new PianoLayerTreeItemInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::pianoLayerTreeItemRemoveAction)        { return new PianoLayerTreeItemRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemInsertAction)         { return new AutoLayerTreeItemInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemRemoveAction)         { return new AutoLayerTreeItemRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::layerTreeItemRenameAction)             { return new LayerTreeItemRenameAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeColourAction)           { return new MidiLayerChangeColourAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeInstrumentAction)       { return new MidiLayerChangeInstrumentAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerMuteAction)                   { return new MidiLayerMuteAction(this->project); }
-        else if (tagName == Serialization::Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::notesGroupInsertAction)                { return new NotesGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::notesGroupRemoveAction)                { return new NotesGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::notesGroupChangeAction)                { return new NotesGroupChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventInsertAction)           { return new AnnotationEventInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventRemoveAction)           { return new AnnotationEventRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventChangeAction)           { return new AnnotationEventChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventsGroupInsertAction)     { return new AnnotationEventsGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventsGroupRemoveAction)     { return new AnnotationEventsGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventsGroupChangeAction)     { return new AnnotationEventsGroupChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventInsertAction)        { return new TimeSignatureEventInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventRemoveAction)        { return new TimeSignatureEventRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventChangeAction)        { return new TimeSignatureEventChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventsGroupInsertAction)  { return new TimeSignatureEventsGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventsGroupRemoveAction)  { return new TimeSignatureEventsGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventsGroupChangeAction)  { return new TimeSignatureEventsGroupChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventsGroupInsertAction)     { return new AutomationEventsGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
-        
-        jassertfalse;
-        return nullptr;
-    }
-    
-    OwnedArray<UndoAction> actions;
-    String name;
-    
-    ProjectTreeItem &project;
-};
-
-//==============================================================================
-UndoStack::UndoStack (ProjectTreeItem &parentProject,
-                      const int maxNumberOfUnitsToKeep,
-                      const int minimumTransactions) :
-project(parentProject),
-totalUnitsStored(0),
-nextIndex(0),
-newTransaction(true),
-reentrancyCheck(false)
+void UndoStack::ActionSet::reset()
 {
-    setMaxNumberOfStoredUnits (maxNumberOfUnitsToKeep,
-                               minimumTransactions);
+    this->actions.clear();
 }
 
-UndoStack::~UndoStack()
+UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &tagName)
 {
+    if      (tagName == Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project, &this->project); }
+    else if (tagName == Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project, &this->project); }
+    else if (tagName == Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project, &this->project); }
+    else if (tagName == Undo::automationTrackRemoveAction)           { return new AutomationTrackRemoveAction(this->project, &this->project); }
+    else if (tagName == Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
+    else if (tagName == Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
+    else if (tagName == Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
+    else if (tagName == Undo::midiTrackMuteAction)                   { return new MidiTrackMuteAction(this->project); }
+    else if (tagName == Undo::clipInsertAction)                      { return new ClipInsertAction(this->project); }
+    else if (tagName == Undo::clipRemoveAction)                      { return new ClipRemoveAction(this->project); }
+    else if (tagName == Undo::clipChangeAction)                      { return new ClipChangeAction(this->project); }
+    else if (tagName == Undo::clipsGroupInsertAction)                { return new ClipsGroupInsertAction(this->project); }
+    else if (tagName == Undo::clipsGroupRemoveAction)                { return new ClipsGroupRemoveAction(this->project); }
+    else if (tagName == Undo::clipsGroupChangeAction)                { return new ClipsGroupChangeAction(this->project); }
+    else if (tagName == Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
+    else if (tagName == Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
+    else if (tagName == Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }
+    else if (tagName == Undo::notesGroupInsertAction)                { return new NotesGroupInsertAction(this->project); }
+    else if (tagName == Undo::notesGroupRemoveAction)                { return new NotesGroupRemoveAction(this->project); }
+    else if (tagName == Undo::notesGroupChangeAction)                { return new NotesGroupChangeAction(this->project); }
+    else if (tagName == Undo::annotationEventInsertAction)           { return new AnnotationEventInsertAction(this->project); }
+    else if (tagName == Undo::annotationEventRemoveAction)           { return new AnnotationEventRemoveAction(this->project); }
+    else if (tagName == Undo::annotationEventChangeAction)           { return new AnnotationEventChangeAction(this->project); }
+    else if (tagName == Undo::annotationEventsGroupInsertAction)     { return new AnnotationEventsGroupInsertAction(this->project); }
+    else if (tagName == Undo::annotationEventsGroupRemoveAction)     { return new AnnotationEventsGroupRemoveAction(this->project); }
+    else if (tagName == Undo::annotationEventsGroupChangeAction)     { return new AnnotationEventsGroupChangeAction(this->project); }
+    else if (tagName == Undo::timeSignatureEventInsertAction)        { return new TimeSignatureEventInsertAction(this->project); }
+    else if (tagName == Undo::timeSignatureEventRemoveAction)        { return new TimeSignatureEventRemoveAction(this->project); }
+    else if (tagName == Undo::timeSignatureEventChangeAction)        { return new TimeSignatureEventChangeAction(this->project); }
+    else if (tagName == Undo::timeSignatureEventsGroupInsertAction)  { return new TimeSignatureEventsGroupInsertAction(this->project); }
+    else if (tagName == Undo::timeSignatureEventsGroupRemoveAction)  { return new TimeSignatureEventsGroupRemoveAction(this->project); }
+    else if (tagName == Undo::timeSignatureEventsGroupChangeAction)  { return new TimeSignatureEventsGroupChangeAction(this->project); }
+    else if (tagName == Undo::keySignatureEventInsertAction)         { return new KeySignatureEventInsertAction(this->project); }
+    else if (tagName == Undo::keySignatureEventRemoveAction)         { return new KeySignatureEventRemoveAction(this->project); }
+    else if (tagName == Undo::keySignatureEventChangeAction)         { return new KeySignatureEventChangeAction(this->project); }
+    else if (tagName == Undo::keySignatureEventsGroupInsertAction)   { return new KeySignatureEventsGroupInsertAction(this->project); }
+    else if (tagName == Undo::keySignatureEventsGroupRemoveAction)   { return new KeySignatureEventsGroupRemoveAction(this->project); }
+    else if (tagName == Undo::keySignatureEventsGroupChangeAction)   { return new KeySignatureEventsGroupChangeAction(this->project); }
+    else if (tagName == Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
+    else if (tagName == Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
+    else if (tagName == Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }
+    else if (tagName == Undo::automationEventsGroupInsertAction)     { return new AutomationEventsGroupInsertAction(this->project); }
+    else if (tagName == Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
+    else if (tagName == Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
+
+    // Here we could meet deprecated legacy actions
+    return nullptr;
 }
 
-//==============================================================================
+UndoStack::UndoStack(ProjectNode &parentProject,
+    int maxNumberOfUnitsToKeep,
+    int minimumTransactions) :
+    project(parentProject),
+    totalUnitsStored(0),
+    nextIndex(0),
+    newTransaction(true),
+    reentrancyCheck(false),
+    maxNumUnitsToKeep(maxNumberOfUnitsToKeep),
+    minimumTransactionsToKeep(minimumTransactions) {}
+
 void UndoStack::clearUndoHistory()
 {
-    transactions.clear();
-    totalUnitsStored = 0;
-    nextIndex = 0;
-    sendChangeMessage();
+    this->transactions.clear();
+    this->totalUnitsStored = 0;
+    this->nextIndex = 0;
+    this->sendChangeMessage();
 }
 
-int UndoStack::getNumberOfUnitsTakenUpByStoredCommands() const
+bool UndoStack::perform (UndoAction *const newAction, const String &actionName)
 {
-    return totalUnitsStored;
-}
-
-void UndoStack::setMaxNumberOfStoredUnits (const int maxNumberOfUnitsToKeep,
-                                           const int minimumTransactions)
-{
-    maxNumUnitsToKeep          = jmax (1, maxNumberOfUnitsToKeep);
-    minimumTransactionsToKeep  = jmax (1, minimumTransactions);
-}
-
-//==============================================================================
-bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
-{
-    if (perform (newAction))
+    if (this->perform(newAction))
     {
-        if (actionName.isNotEmpty()) {
-            setCurrentTransactionName (actionName);
+        if (actionName.isNotEmpty())
+        {
+            this->setCurrentTransactionName(actionName);
         }
         
         return true;
@@ -209,70 +192,52 @@ bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
     return false;
 }
 
-bool UndoStack::perform (UndoAction* const newAction)
+bool UndoStack::perform (UndoAction *const newAction)
 {
     if (newAction != nullptr)
     {
         ScopedPointer<UndoAction> action (newAction);
         
-        if (reentrancyCheck)
+        if (this->reentrancyCheck)
         {
             jassertfalse;  // don't call perform() recursively from the UndoAction::perform()
             // or undo() methods, or else these actions will be discarded!
             return false;
         }
-        
+
         if (action->perform())
         {
-            ActionSet* actionSet = getCurrentSet();
+            ActionSet *actionSet = this->getCurrentSet();
             
-            //Logger::writeToLog("size before " + String(actionSet->actions.size()));
-            
-            if (actionSet != nullptr && ! newTransaction)
+            if (actionSet != nullptr && !this->newTransaction)
             {
-                // здесь имеет смысл пробежаться по всему стеку, вызывая createCoalescedAction,
-                // так как если в транзакции повторяются несколько разнородных событий,
-                // то стек будет распухать
                 for (signed int i = (actionSet->actions.size() - 1); i >= 0; --i)
                 {
                     if (UndoAction *const lastAction = actionSet->actions[i])
                     {
                         if (UndoAction *const coalescedAction = lastAction->createCoalescedAction(action))
                         {
-                            //Logger::writeToLog("createCoalescedAction");
                             action = coalescedAction;
-                            totalUnitsStored -= lastAction->getSizeInUnits();
+                            this->totalUnitsStored -= lastAction->getSizeInUnits();
                             actionSet->actions.remove(i);
                             break;
                         }
                     }
                 }
-                
-                //if (UndoAction* const lastAction = actionSet->actions.getLast())
-                //{
-                //    if (UndoAction* const coalescedAction = lastAction->createCoalescedAction (action))
-                //    {
-                //        Logger::writeToLog("remove last");
-                //        action = coalescedAction;
-                //        totalUnitsStored -= lastAction->getSizeInUnits();
-                //        actionSet->actions.removeLast();
-                //    }
-                //}
             }
             else
             {
-                actionSet = new ActionSet (this->project, newTransactionName);
+                actionSet = new ActionSet(this->project, newTransactionName);
                 transactions.insert (nextIndex, actionSet);
                 ++nextIndex;
             }
             
-            totalUnitsStored += action->getSizeInUnits();
-            actionSet->actions.add (action.release());
-            newTransaction = false;
-            //Logger::writeToLog("size " + String(actionSet->actions.size()));
+            this->totalUnitsStored += action->getSizeInUnits();
+            actionSet->actions.add(action.release());
+            this->newTransaction = false;
             
-            clearFutureTransactions();
-            sendChangeMessage();
+            this->clearFutureTransactions();
+            this->sendChangeMessage();
             return true;
         }
     }
@@ -282,67 +247,86 @@ bool UndoStack::perform (UndoAction* const newAction)
 
 void UndoStack::clearFutureTransactions()
 {
-    while (nextIndex < transactions.size())
+    while (this->nextIndex < this->transactions.size())
     {
-        totalUnitsStored -= transactions.getLast()->getTotalSize();
-        transactions.removeLast();
+        this->totalUnitsStored -= transactions.getLast()->getTotalSize();
+        this->transactions.removeLast();
     }
     
-    while (nextIndex > 0
-           && totalUnitsStored > maxNumUnitsToKeep
-           && transactions.size() > minimumTransactionsToKeep)
+    while (this->nextIndex > 0
+           && this->totalUnitsStored > this->maxNumUnitsToKeep
+           && this->transactions.size() > this->minimumTransactionsToKeep)
     {
-        totalUnitsStored -= transactions.getFirst()->getTotalSize();
-        transactions.remove (0);
-        --nextIndex;
+        this->totalUnitsStored -= this->transactions.getFirst()->getTotalSize();
+        this->transactions.remove (0);
+        --this->nextIndex;
         
         // if this fails, then some actions may not be returning
         // consistent results from their getSizeInUnits() method
-        jassert (totalUnitsStored >= 0);
+        jassert (this->totalUnitsStored >= 0);
     }
 }
 
 void UndoStack::beginNewTransaction() noexcept
 {
-    beginNewTransaction (String());
+    this->beginNewTransaction({});
 }
 
-void UndoStack::beginNewTransaction (const String& actionName) noexcept
+void UndoStack::beginNewTransaction(const String &actionName) noexcept
 {
-    newTransaction = true;
-    newTransactionName = actionName;
+    this->newTransaction = true;
+    this->newTransactionName = actionName;
 }
 
-void UndoStack::setCurrentTransactionName (const String& newName) noexcept
+void UndoStack::setCurrentTransactionName(const String &newName) noexcept
 {
-    if (newTransaction) {
-        newTransactionName = newName;
-    } else if (ActionSet* action = getCurrentSet()) {
+    if (this->newTransaction)
+    {
+        this->newTransactionName = newName;
+    }
+    else if (auto *action = this->getCurrentSet())
+    {
         action->name = newName;
     }
 }
 
-//==============================================================================
-UndoStack::ActionSet* UndoStack::getCurrentSet() const noexcept     { return transactions [nextIndex - 1]; }
-UndoStack::ActionSet* UndoStack::getNextSet() const noexcept        { return transactions [nextIndex]; }
+UndoStack::ActionSet *UndoStack::getCurrentSet() const noexcept
+{
+    return this->transactions[nextIndex - 1];
+}
 
-bool UndoStack::canUndo() const noexcept   { return getCurrentSet() != nullptr; }
-bool UndoStack::canRedo() const noexcept   { return getNextSet()    != nullptr; }
+UndoStack::ActionSet *UndoStack::getNextSet() const noexcept
+{
+    return this->transactions[nextIndex];
+}
+
+bool UndoStack::canUndo() const noexcept
+{
+    return this->getCurrentSet() != nullptr;
+}
+
+bool UndoStack::canRedo() const noexcept
+{
+    return this->getNextSet() != nullptr;
+}
 
 bool UndoStack::undo()
 {
-    if (const ActionSet* const s = getCurrentSet())
+    if (const auto *s = this->getCurrentSet())
     {
-        const ScopedValueSetter<bool> setter (reentrancyCheck, true);
+        const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
         
-        if (s->undo()) {
+        if (s->undo())
+        {
             --nextIndex;
-        } else {
-            clearUndoHistory();
+        }
+        else
+        {
+            this->clearUndoHistory();
         }
         
-        beginNewTransaction();
-        sendChangeMessage();
+        this->beginNewTransaction();
+        this->sendChangeMessage();
         return true;
     }
     
@@ -351,18 +335,21 @@ bool UndoStack::undo()
 
 bool UndoStack::redo()
 {
-    if (const ActionSet* const s = getNextSet())
+    if (const auto *s = this->getNextSet())
     {
-        const ScopedValueSetter<bool> setter (reentrancyCheck, true);
+        const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
         
-        if (s->perform()) {
+        if (s->perform())
+        {
             ++nextIndex;
-        } else {
-            clearUndoHistory();
+        }
+        else
+        {
+            this->clearUndoHistory();
         }
         
-        beginNewTransaction();
-        sendChangeMessage();
+        this->beginNewTransaction();
+        this->sendChangeMessage();
         return true;
     }
     
@@ -371,33 +358,38 @@ bool UndoStack::redo()
 
 String UndoStack::getUndoDescription() const
 {
-    if (const ActionSet* const s = getCurrentSet()) {
+    if (const auto *s = this->getCurrentSet())
+    {
         return s->name;
     }
     
-    return String();
+    return {};
 }
 
 String UndoStack::getRedoDescription() const
 {
-    if (const ActionSet* const s = getNextSet()) {
+    if (const auto *s = this->getNextSet())
+    {
         return s->name;
     }
     
-    return String();
+    return {};
 }
 
 bool UndoStack::undoCurrentTransactionOnly()
 {
-    return newTransaction ? false : undo();
+    return this->newTransaction ? false : this->undo();
 }
 
-void UndoStack::getActionsInCurrentTransaction (Array<const UndoAction*>& actionsFound) const
+void UndoStack::getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const
 {
-    if (! newTransaction) {
-        if (const ActionSet* const s = getCurrentSet()) {
-            for (int i = 0; i < s->actions.size(); ++i) {
-                actionsFound.add (s->actions.getUnchecked(i));
+    if (!this->newTransaction)
+    {
+        if (const auto *s = this->getCurrentSet())
+        {
+            for (int i = 0; i < s->actions.size(); ++i)
+            {
+                actionsFound.add(s->actions.getUnchecked(i));
             }
         }
     }
@@ -405,8 +397,10 @@ void UndoStack::getActionsInCurrentTransaction (Array<const UndoAction*>& action
 
 int UndoStack::getNumActionsInCurrentTransaction() const
 {
-    if (! newTransaction) {
-        if (const ActionSet* const s = getCurrentSet()) {
+    if (!this->newTransaction)
+    {
+        if (const auto *s = this->getCurrentSet())
+        {
             return s->actions.size();
         }
     }
@@ -414,14 +408,13 @@ int UndoStack::getNumActionsInCurrentTransaction() const
     return 0;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *UndoStack::serialize() const
+ValueTree UndoStack::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::undoStack);
+    ValueTree tree(Serialization::Undo::undoStack);
     
     int currentIndex = (this->nextIndex - 1);
     int numStoredTransactions = 0;
@@ -431,30 +424,30 @@ XmlElement *UndoStack::serialize() const
     {
         if (ActionSet *action = this->transactions[currentIndex])
         {
-            xml->prependChildElement(action->serialize());
+            tree.addChild(action->serialize(), 0, nullptr);
         }
         
         --currentIndex;
         ++numStoredTransactions;
     }
     
-    return xml;
+    return tree;
 }
 
-void UndoStack::deserialize(const XmlElement &xml)
+void UndoStack::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = (xml.getTagName() == Serialization::Undo::undoStack) ?
-    &xml : xml.getChildByName(Serialization::Undo::undoStack);
+    const auto root = tree.hasType(Serialization::Undo::undoStack) ?
+        tree : tree.getChildWithName(Serialization::Undo::undoStack);
     
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
     
     this->reset();
     
-    forEachXmlChildElement(*root, childTransactionXml)
+    for (const auto &childTransaction : root)
     {
-        auto actionSet = new ActionSet(this->project, String::empty);
-        actionSet->deserialize(*childTransactionXml);
+        auto actionSet = new ActionSet(this->project, {});
+        actionSet->deserialize(childTransaction);
         this->transactions.insert(this->nextIndex, actionSet);
         ++this->nextIndex;
     }

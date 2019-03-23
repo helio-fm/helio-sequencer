@@ -19,20 +19,17 @@
 
 #include "Transport.h"
 
-class RendererThread : private Thread
+class RendererThread final : private Thread
 {
 public:
 
     explicit RendererThread(Transport &parentTrasport);
-
     ~RendererThread() override;
     
     float getPercentsComplete() const;
 
     void startRecording(const File &file);
-
     void stop();
-
     bool isRecording() const;
 
 private:

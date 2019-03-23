@@ -19,7 +19,7 @@
 
 #include "Instrument.h"
 
-class InternalPluginFormat : public AudioPluginFormat
+class InternalPluginFormat final : public AudioPluginFormat
 {
 public:
 
@@ -36,61 +36,30 @@ public:
     };
 
     void getAllTypes(OwnedArray <PluginDescription> &results);
-
     const PluginDescription *getDescriptionFor(const InternalFilterType type);
 
-    bool pluginNeedsRescanning(const PluginDescription &) override
-    { return false; }
-
+    bool pluginNeedsRescanning(const PluginDescription &) override { return false; }
     String getName() const override;
-
     bool fileMightContainThisPluginType(const String &fileOrIdentifier) override;
-
-    FileSearchPath getDefaultLocationsToSearch() override
-    {
-        return FileSearchPath();
-    }
-
-    bool canScanForPlugins() const override
-    {
-        return false;
-    }
-
-    void findAllTypesForFile(OwnedArray<PluginDescription> &, const String &) override
-    {}
-
-    bool doesPluginStillExist(const PluginDescription &) override
-    {
-        return true;
-    }
-
-    String getNameOfPluginFromIdentifier(const String &fileOrIdentifier) override
-    {
-        return fileOrIdentifier;
-    }
-
-    StringArray searchPathsForPlugins(const FileSearchPath &, bool, bool) override
-    {
-        return StringArray();
-    }
+    FileSearchPath getDefaultLocationsToSearch() override { return {}; }
+    bool canScanForPlugins() const override { return false; }
+    void findAllTypesForFile(OwnedArray<PluginDescription> &, const String &) override {}
+    bool doesPluginStillExist(const PluginDescription &) override { return true; }
+    String getNameOfPluginFromIdentifier(const String &fileOrIdentifier) override { return fileOrIdentifier; }
+    StringArray searchPathsForPlugins(const FileSearchPath &, bool, bool) override { return {}; }
+    bool requiresUnblockedMessageThreadDuringCreation(const PluginDescription&) const noexcept override { return false; }
 
     void createPluginInstance(const PluginDescription&, double initialSampleRate,
-                                      int initialBufferSize, void *userData,
-                                      void (*callback) (void*, AudioPluginInstance*, const String&)) override;
+        int initialBufferSize, void *userData,
+        void (*callback) (void*, AudioPluginInstance*, const String&)) override;
 
-    bool requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const noexcept override
-    {
-        return false;
-    }
 
 private:
 
     PluginDescription audioInDesc;
-
     PluginDescription audioOutDesc;
-
     PluginDescription midiInDesc;
-
     PluginDescription midiOutDesc;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InternalPluginFormat)
 };

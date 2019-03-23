@@ -19,158 +19,208 @@
 
 namespace CommandIDs
 {
-    enum
+    enum UI
     {
-        Back                            = 0x000001,
-        Cancel                          = 0x000002,
-        Browse                          = 0x000003,
-        IconButtonPressed               = 0x000004,
-        MenuButtonPressed               = 0x000005,
-        RootTreeItemPressed             = 0x000006,
-        HideRollover                    = 0x000007,
-        HideDialog                      = 0x000008,
-        HideCallout                     = 0x000009,
-        
+        Back                            = 0x0001,
+        Cancel                          = 0x0002,
+        Browse                          = 0x0003,
+        IconButtonPressed               = 0x0004,
+        MenuButtonPressed               = 0x0005,
+        RootTreeItemPressed             = 0x0006,
+        HideDialog                      = 0x0007,
+        HideCallout                     = 0x0008,
+        DismissModalDialogAsync         = 0x0009,
+
         // TimeSignatureCommandPanel
-        ChangeTimeSignature             = 0x000100,
-        ChangeTimeSignatureConfirmed    = 0x000101,
-        DeleteTimeSignature             = 0x000102,
+        ChangeTimeSignature             = 0x0010,
+        ChangeTimeSignatureConfirmed    = 0x0011,
+        DeleteTimeSignature             = 0x0012,
 
         // AnnotationCommandPanel
-        RenameAnnotation                = 0x000110,
-        RenameAnnotationConfirmed       = 0x000111,
-        SetAnnotationColour             = 0x000112, // more ids reserved for colours
-        DeleteAnnotation                = 0x001000,
-        
+        RenameAnnotation                = 0x0020,
+        RenameAnnotationConfirmed       = 0x0021,
+        SetAnnotationColour             = 0x0022, // more ids reserved for colours
+        DeleteAnnotation                = 0x0100,
+
         // AnnotationsCommandPanel
-        AddAnnotation                   = 0x001001,
-        AddAnnotationConfirmed          = 0x001002,
-        AddTimeSignature                = 0x001003,
-        AddTimeSignatureConfirmed       = 0x001004,
-        JumpToAnnotation                = 0x001005, // more ids reserved for annotations
+        AddAnnotation                   = 0x0101,
+        AddAnnotationConfirmed          = 0x0102,
+        AddTimeSignature                = 0x0103,
+        AddTimeSignatureConfirmed       = 0x0104,
+        AddKeySignature                 = 0x0105,
+        AddKeySignatureConfirmed        = 0x0106,
+        JumpToAnnotation                = 0x0107, // more ids reserved for annotations
 
-        // ArpeggiatorEditorPanel
-        ResetArpeggiatorChanges         = 0x002000,
-        ApplyArpeggiator                = 0x002001, // more ids reserved for arps
-        
-        InitWorkspace                   = 0x003001,
-        
-        RenameInstrument                = 0x003002,
-        UpdateInstrument                = 0x003003,
-        DeleteInstrument                = 0x003004,
+        CreateArpeggiatorFromSelection  = 0x0200,
 
-        ScanAllPlugins                  = 0x003005,
-        ScanPluginsFolder               = 0x003006,
-        CreateInstrument                = 0x003007, // more ids reserved for instruments
-        
-        // LayerCommandPanel
-        DeleteLayer                     = 0x004000,
-        MuteLayer                       = 0x004001,
-        UnmuteLayer                     = 0x004002,
-        RenameLayer                     = 0x004003,
-        RenameLayerConfirmed            = 0x004004,
-        SelectLayerColour               = 0x004005,
-        SelectLayerInstrument           = 0x004006,
-        SelectAllEvents                 = 0x004007,
-        DuplicateLayerTo                = 0x004008,
-        
-        SetLayerColour                  = 0x004009, // more ids reserved for layers
-        SetLayerInstrument              = 0x005000, // more ids reserved for instruments
-        MoveLayerToProject              = 0x006000, // more ids reserved for projects
-        
+        InitWorkspace                   = 0x0500,
+
+        RenameInstrument                = 0x0501,
+        UpdateInstrument                = 0x0502,
+        DeleteInstrument                = 0x0503,
+
+        ScanAllPlugins                  = 0x0504,
+        ScanPluginsFolder               = 0x0505,
+
+        DeleteTrack                     = 0x1000,
+        MuteTrack                       = 0x1001,
+        UnmuteTrack                     = 0x1002,
+        RenameTrack                     = 0x1003,
+        SelectAllEvents                 = 0x1004,
+        SelectAllClips                  = 0x1005,
+        NewTrackFromSelection           = 0x1006,
+
         // MidiRollCommandPanel
-        EditEvents                      = 0x007000,
-        DeleteEvents                    = 0x007001,
-        
-        CopyEvents                      = 0x007002,
-        CutEvents                       = 0x007003,
-        PasteEvents                     = 0x007004,
-        MoveEventsToLayer               = 0x007005, // more ids reserved for layers
-        
-        CursorTool                      = 0x008000,
-        DrawTool                        = 0x008001,
-        SelectionTool                   = 0x008002,
-        ZoomTool                        = 0x008003,
-        DragTool                        = 0x008004,
-        InsertSpaceTool                 = 0x008005,
-        WipeSpaceTool                   = 0x008006,
-        ScissorsTool                    = 0x008007,
-        
-        ZoomIn                          = 0x008008,
-        ZoomOut                         = 0x008009,
-        
-        Undo                            = 0x008010,
-        Redo                            = 0x008011,
-        
-        DeleteNotes                     = 0x008012,
-        DuplicateNotes                  = 0x008013,
-        ArpNotes                        = 0x008014,
-        TweakNotesVolume                = 0x008015,
-        
-        ShowAnnotations                 = 0x008016,
+        DeleteEvents                    = 0x1601,
+        CopyEvents                      = 0x1602,
+        CutEvents                       = 0x1603,
+        PasteEvents                     = 0x1604,
 
-        ResetVolumeChanges              = 0x009000,
-        
-        ApplyOpenGLRenderer             = 0x010000,
-        
-        TransportStartPlayback          = 0x011000,
-        TransportPausePlayback          = 0x011001,
+        DeleteClips                     = 0x1611,
+        CopyClips                       = 0x1612,
+        CutClips                        = 0x1613,
+        PasteClips                      = 0x1614,
+        EditClip                        = 0x1615,
 
-        PopupMenuDismiss                = 0x012000,
-        PopupMenuDismissedAsDone        = 0x012001,
-        PopupMenuDismissedAsCancel      = 0x012002,
+        ClipTransposeUp                 = 0x1620,
+        ClipTransposeDown               = 0x1621,
+        ClipVolumeUp                    = 0x1622,
+        ClipVolumeDown                  = 0x1623,
+
+        ZoomIn                          = 0x1800,
+        ZoomOut                         = 0x1801,
+        ZoomEntireClip                  = 0x1802,
+
+        Undo                            = 0x1900,
+        Redo                            = 0x1901,
+
+        TimelineJumpNext                = 0x2000,
+        TimelineJumpPrevious            = 0x2001,
+
+        ShowAnnotations                 = 0x2010,
+        ResetVolumeChanges              = 0x2011,
+        ApplyOpenGLRenderer             = 0x2012,
+
+        TransportStartPlayback          = 0x2013,
+        TransportPausePlayback          = 0x2014,
+
+        PopupMenuDismiss                = 0x2015,
+        PopupMenuDismissedAsDone        = 0x2016,
+        PopupMenuDismissedAsCancel      = 0x2017,
 
         // TreePanel
-        SelectRootItemPanel             = 0x013000,
-        DeselectRootItemPanel           = 0x013001,
-        UpdateRootItemPanel             = 0x013002,
-        
-        // Version control
-        VersionControlForcePull         = 0x014000,
-        VersionControlReset             = 0x014001,
-        VersionControlAmend             = 0x014002,
-        VersionControlCommit            = 0x014003,
-        
+        SelectRootItemPanel             = 0x2018,
+        DeselectRootItemPanel           = 0x2019,
+        UpdateRootItemPanel             = 0x201a,
+
         // WorkspaceMenu
-        LoginLogout                     = 0x015000,
-        OpenProject                     = 0x015001,
-        CreateNewProject                = 0x015002,
-        
-        // ProjectCommandPanel
-        RenderToFLAC                    = 0x016000,
-        RenderToOGG                     = 0x016001,
-        RenderToWAV                     = 0x016002,
-        
-        AddLayer                        = 0x016003,
-        AddLayerConfirmed               = 0x016004,
-        AddAutomation                   = 0x016005,
-        
-        ImportMidi                      = 0x016006,
-        ExportMidi                      = 0x016007,
-        
-        UnloadProject                   = 0x016008,
-        DeleteProject                   = 0x016009,
-        DeleteProjectConfirmed1         = 0x016010,
-        DeleteProjectConfirmed2         = 0x016011,
-        
-        RefactorTransposeUp             = 0x016012,
-        RefactorTransposeDown           = 0x016013,
-        RefactorRemoveOverlaps          = 0x016014,
-        
-        ProjectMainMenu                 = 0x016015,
-        ProjectRenderMenu               = 0x016016,
-        ProjectBatchMenu                = 0x016017,
-        ProjectAutomationsMenu          = 0x016018,
-        ProjectInstrumentsMenu          = 0x016019, // more ids reserved for instruments
-        
-        AddTempoController              = 0x017000,
-        AddCustomController             = 0x017001, // more ids reserved for controllers
-        
-        BatchChangeInstrument           = 0x018000,
-        BatchSetInstrument              = 0x018001, // more ids reserved for instruments
+        LoginLogout                     = 0x2020,
+        OpenProject                     = 0x2021,
+        CreateNewProject                = 0x2022,
 
-        DismissModalDialogAsync         = 0x020000
+        // ProjectMenu
+        RenderToFLAC                    = 0x2030,
+        RenderToWAV                     = 0x2031,
 
-        // Add your command ids here
+        AddItemsMenu                    = 0x2040,
+        AddItemsMenuBack                = 0x2041,
+
+        AddMidiTrack                    = 0x2042,
+        AddMidiTrackConfirmed           = 0x2043,
+        AddAutomationTrack              = 0x2044,
+
+        ImportMidi                      = 0x2050,
+        ExportMidi                      = 0x2051,
+
+        UnloadProject                   = 0x2060,
+        DeleteProject                   = 0x2061,
+        DeleteProjectConfirmed1         = 0x2062,
+        DeleteProjectConfirmed2         = 0x2063,
+
+        ProjectTransposeUp              = 0x2070,
+        ProjectTransposeDown            = 0x2071,
+        ProjectRemoveOverlaps           = 0x2072,
+
+        ProjectPatternEditor            = 0x2080,
+        ProjectLinearEditor             = 0x2081,
+        ProjectVersionsEditor           = 0x2082,
+
+        ProjectMainMenu                 = 0x2090,
+        ProjectRenderMenu               = 0x2091,
+        ProjectBatchMenu                = 0x2092,
+        ProjectBatchMenuBack            = 0x2093,
+
+        AddTempoController              = 0x2100,
+        BatchChangeInstrument           = 0x2110,
+
+        SelectFunction                  = 0x2120, // more ids reserved for sub-items
+        SelectScale                     = 0x2200, // more ids reserved for sub-items
+        SelectTimeSignature             = 0x2300, // more ids reserved for sub-items
+        SelectVersion                   = 0x2400, // more ids reserved for sub-items
+
+        SwitchBetweenRolls              = 0x3300,
+        SwitchToEditMode                = 0x3301,
+        SwitchToArrangeMode             = 0x3302,
+        SwitchToVersioningMode          = 0x3303,
+        ShowPreviousPage                = 0x3304,
+        ShowNextPage                    = 0x3305,
+        ToggleShowHideConsole           = 0x3306,
+        ToggleShowHideCombo             = 0x3307,
+
+        StartDragViewport               = 0x3308,
+        EndDragViewport                 = 0x3309,
+
+        SelectAudioDeviceType           = 0x3400,
+        SelectAudioDevice               = 0x3500,
+        SelectSampleRate                = 0x3600,
+        SelectBufferSize                = 0x3700, // more ids reserved for sub-items
+        SelectFont                      = 0x3800, // more ids reserved for sub-items
+
+        EditModeDefault                 = 0x4000,
+        EditModeDraw                    = 0x4001,
+        EditModePan                     = 0x4002,
+        EditModeSelect                  = 0x4003,
+        EditModeKnife                   = 0x4004,
+        EditModeEraser                  = 0x4005,
+        EditModeChordBuilder            = 0x4006,
+
+        BeatShiftLeft                   = 0x4020,
+        BeatShiftRight                  = 0x4021,
+        BarShiftLeft                    = 0x4022,
+        BarShiftRight                   = 0x4023,
+        KeyShiftUp                      = 0x4024,
+        KeyShiftDown                    = 0x4025,
+        OctaveShiftUp                   = 0x4026,
+        OctaveShiftDown                 = 0x4027,
+        CleanupOverlaps                 = 0x4028,
+        InvertChordUp                   = 0x4029,
+        InvertChordDown                 = 0x402a,
+
+        ShowArpeggiatorsPanel           = 0x4040,
+        ShowVolumePanel                 = 0x4041,
+        ShowRescalePanel                = 0x4042,
+        ShowScalePanel                  = 0x4043,
+        ShowChordPanel                  = 0x4044,
+
+        TweakVolumeRandom               = 0x4050,
+        TweakVolumeFadeOut              = 0x4051,
+
+        // Version control
+        VersionControlToggleQuickStash  = 0x4060,
+        VersionControlPushSelected      = 0x4061,
+        VersionControlPullSelected      = 0x4062,
+        VersionControlSyncAll           = 0x4063,
+        VersionControlResetAll          = 0x4064,
+        VersionControlCommitAll         = 0x4065,
+        VersionControlSelectAll         = 0x4066,
+        VersionControlSelectNone        = 0x4067,
+        VersionControlResetSelected     = 0x4068,
+        VersionControlCommitSelected    = 0x4069,
+        VersionControlCheckout          = 0x406a,
+
+        YourNextCommandId               = 0x4100
     };
+
+    int getIdForName(const String &command);
+
 } // namespace CommandIDs

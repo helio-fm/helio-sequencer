@@ -20,153 +20,103 @@
 class ProjectInfo;
 class VersionControlEditor;
 
-#include "TreeItem.h"
+#include "TreeNode.h"
 #include "TrackedItemsSource.h"
-#include "SafeTreeItemPointer.h"
-
-#include "Serializable.h"
 #include "ProjectListener.h"
 
 #include "Delta.h"
 #include "Revision.h"
 #include "Head.h"
-#include "Pack.h"
-#include "Client.h"
+#include "RemoteCache.h"
 #include "StashesRepository.h"
 
-#include "Key.h"
-
-class VersionControl :
+class VersionControl final :
     public Serializable,
     public ChangeListener,
     public ChangeBroadcaster
 {
 public:
 
-    explicit VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
-                   const String &existingId = "",
-                   const String &existingKeyBase64 = "");
-
+    explicit VersionControl(VCS::TrackedItemsSource &parent);
     ~VersionControl() override;
-
-
-    //===------------------------------------------------------------------===//
-    // Push-pull stuff
-    //===------------------------------------------------------------------===//
-
-    VCS::Client *getRemote()
-    { return this->remote; }
-
-    inline String getParentName() const
-    { return this->parentItem->getVCSName(); }
-
-    inline String getPublicId() const
-    { return this->publicId; }
-
-    inline MemoryBlock getKey()
-    { return this->key.getKeyData(); }
-
-    inline int64 getVersion() const
-    { return this->historyMergeVersion; }
-
-    inline void incrementVersion()
-    { this->historyMergeVersion += 1; }
-
-    MD5 calculateHash() const;
-
-    void mergeWith(VersionControl &remoteHistory);
-
-
-    //===------------------------------------------------------------------===//
-    // VCS
-    //===------------------------------------------------------------------===//
 
     VersionControlEditor *createEditor();
 
-    VCS::Head &getHead() { return this->head; }
+    //===------------------------------------------------------------------===//
+    // Accessors
+    //===------------------------------------------------------------------===//
 
-    VCS::Revision getRoot() { return this->root; }
+    VCS::Head &getHead() noexcept { return this->head; }
+    VCS::Revision::Ptr getRoot() noexcept { return this->rootRevision; }
 
+    //===------------------------------------------------------------------===//
+    // Version control: revisions
+    //===------------------------------------------------------------------===//
 
-    void moveHead(const VCS::Revision revision);
+    void moveHead(const VCS::Revision::Ptr revision);
+    void checkout(const VCS::Revision::Ptr revision);
+    void cherryPick(const VCS::Revision::Ptr revision, const Array<Uuid> uuids);
 
-    void checkout(const VCS::Revision revision);
-
-    void cherryPick(const VCS::Revision revision, const Array<Uuid> uuids);
-
+    void replaceHistory(const VCS::Revision::Ptr root);
+    void appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId);
+    VCS::Revision::Ptr updateShallowRevisionData(const String &id, const ValueTree &data);
 
     bool resetChanges(SparseSet<int> selectedItems);
-
     bool resetAllChanges();
-
     bool commit(SparseSet<int> selectedItems, const String &message);
+    void quickAmendItem(VCS::TrackedItem *targetItem); // for first commit
 
-    void quickAmendItem(VCS::TrackedItem *targetItem); // for projectinfo
-
+    //===------------------------------------------------------------------===//
+    // Version control: stashes
+    //===------------------------------------------------------------------===//
 
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
-
-    bool applyStash(const VCS::Revision stash, bool shouldKeepStash = false);
-
+    bool applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash = false);
     bool applyStash(const String &stashId, bool shouldKeepStash = false);
-
     
     bool hasQuickStash() const;
-    
     bool quickStashAll();
-
     bool applyQuickStash();
 
+    //===------------------------------------------------------------------===//
+    // Network
+    //===------------------------------------------------------------------===//
 
-    
+    void syncAllRevisions();
+    void syncRevision(const VCS::Revision::Ptr revision);
+    void fetchRevisionsIfNeeded();
+
+    void updateLocalSyncCache(const VCS::Revision::Ptr revision);
+    void updateRemoteSyncCache(const Array<RevisionDto> &revisions);
+    VCS::Revision::SyncState getRevisionSyncState(const VCS::Revision::Ptr revision) const;
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-
-    void deserialize(const XmlElement &xml) override;
-
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
-
 
     //===------------------------------------------------------------------===//
     // ChangeListener
     //===------------------------------------------------------------------===//
 
-    void changeListenerCallback(ChangeBroadcaster* source) override;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
     
 protected:
 
-    StringArray recursiveGetHashes(const VCS::Revision revision) const;
-
-    void recursiveTreeMerge(VCS::Revision localRevision, VCS::Revision remoteRevision);
-
-    VCS::Revision getRevisionById(const VCS::Revision startFrom, const String &id) const;
-
-    VCS::Pack::Ptr pack;
-
-    VCS::StashesRepository::Ptr stashes;
+    VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
 
     VCS::Head head;
-
-    // само дерево vcs
-    VCS::Revision root;
-
-    ScopedPointer<VCS::Client> remote;
-
-    WeakReference<VCS::TrackedItemsSource> parentItem;
-
-protected:
-
-    String publicId;
-
-    VCS::Key key;
-
-    int64 historyMergeVersion;
+    VCS::RemoteCache remoteCache;
+    VCS::StashesRepository::Ptr stashes;
+    VCS::Revision::Ptr rootRevision; // the history tree itself
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
+    VCS::TrackedItemsSource &parent;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControl)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(VersionControl)
 };

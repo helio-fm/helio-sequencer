@@ -18,15 +18,15 @@
 #pragma once
 
 //[Headers]
+#include "ShadowComponent.h"
 //[/Headers]
 
 
-class ShadowLeftwards  : public Component
+class ShadowLeftwards final : public ShadowComponent
 {
 public:
 
-    ShadowLeftwards ();
-
+    ShadowLeftwards(ShadowType type);
     ~ShadowLeftwards();
 
     //[UserMethods]

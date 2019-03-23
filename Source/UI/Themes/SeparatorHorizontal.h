@@ -21,16 +21,15 @@
 //[/Headers]
 
 
-class SeparatorHorizontal  : public Component
+class SeparatorHorizontal final : public Component
 {
 public:
 
-    SeparatorHorizontal ();
-
+    SeparatorHorizontal();
     ~SeparatorHorizontal();
 
     //[UserMethods]
-	void setAlphaMultiplier(float a);
+    void setAlphaMultiplier(float a);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -40,7 +39,7 @@ public:
 private:
 
     //[UserVariables]
-	float alphaFactor;
+    float alphaFactor;
     //[/UserVariables]
 
 

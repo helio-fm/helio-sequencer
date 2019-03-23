@@ -17,64 +17,47 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "Revision.h"
-#include "Pack.h"
 
 namespace VCS
 {
-    class StashesRepository : public ReferenceCountedObject, public Serializable
+    class StashesRepository final : public ReferenceCountedObject, public Serializable
     {
     public:
 
-        explicit StashesRepository(Pack::Ptr pack);
-
+        StashesRepository();
 
         int getNumUserStashes() const;
-
         String getUserStashDescription(int index) const;
-
-        Revision getUserStash(int index) const;
-
-        Revision getUserStashWithName(const String &stashName) const;
-
+        Revision::Ptr getUserStash(int index) const;
+        Revision::Ptr getUserStashWithName(const String &stashName) const;
         
-        Revision getQuickStash() const;
-        
-        bool hasQuickStash() const;
-        
-        void storeQuickStash(Revision newStash);
-
+        Revision::Ptr getQuickStash() const noexcept;
+        bool hasQuickStash() const noexcept;
+        void storeQuickStash(Revision::Ptr newStash);
         void resetQuickStash();
-
         
-        void addStash(Revision newStash);
-        
-        void removeStash(Revision stashToRemove);
+        void addStash(Revision::Ptr newStash);
+        void removeStash(Revision::Ptr stashToRemove);
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override;
-
-        void deserialize(const XmlElement &xml) override;
-
+        ValueTree serialize() const override;
+        void deserialize(const ValueTree &tree) override;
+        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
         void reset() override;
 
-
-        typedef ReferenceCountedObjectPtr<StashesRepository> Ptr;
+        using Ptr = ReferenceCountedObjectPtr<StashesRepository>;
 
     private:
 
-        Pack::Ptr pack;
+        // root node for the stashes
+        Revision::Ptr userStashes;
 
-        // корневая нода для стэшей
-        Revision userStashes;
-
-        // ревизия для quick toggle changes on/off
-        Revision quickStash;
+        // root node for quick-toggled changes
+        Revision::Ptr quickStash;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StashesRepository);
     };

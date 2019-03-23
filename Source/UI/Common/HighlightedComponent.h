@@ -24,27 +24,27 @@ public:
     HighlightedComponent() :
         highlighted(false),
         highlighter(nullptr),
-        fadingHighlights(true)
+        fadingHighlights(false)
     {
         this->setInterceptsMouseClicks(true, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
     }
     
     void setUsesFadingHighlights(bool shouldFade)
     {
         this->fadingHighlights = shouldFade;
     }
-
     
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
     
-    void mouseEnter(const MouseEvent &event) override
+    void mouseEnter(const MouseEvent &) override
     {
         this->setHighlighted(true);
     }
     
-    void mouseExit(const MouseEvent &event) override
+    void mouseExit(const MouseEvent &) override
     {
         this->setHighlighted(false);
         this->clearHighlighterComponentCache();
@@ -52,20 +52,9 @@ public:
     
 protected:
     
-    class EmptyHighlighter : public Component
-    {
-    public:
-        
-        void paint(Graphics &g) override
-        {
-            //g.setColour(Colours::black.withAlpha(0.15f));
-            //g.drawRoundedRectangle(this->getLocalBounds().reduced(5).toFloat(), 10.f, 2.f);
-        }
-    };
-    
     virtual Component *createHighlighterComponent()
     {
-        return new EmptyHighlighter();
+        return new Component();
     }
     
     void clearHighlighterComponentCache()
@@ -81,39 +70,44 @@ protected:
     
     virtual void setHighlighted(bool shouldBeHighlighted)
     {
+        if (this->highlighted == shouldBeHighlighted)
+        {
+            return;
+        }
+
         this->highlighted = shouldBeHighlighted;
         
         if (this->highlighted)
         {
             if (this->highlighter == nullptr)
             {
-                this->highlighter = this->createHighlighterComponent();
+                this->highlighter.reset(this->createHighlighterComponent());
+                if (this->highlighter == nullptr)
+                {
+                    return;
+                }
+
                 this->highlighter->setInterceptsMouseClicks(false, false);
             }
-            
-            this->highlighter->setAlpha(0.f);
+
             this->highlighter->setBounds(this->getLocalBounds());
-            this->addChildComponent(this->highlighter);
-            
+            this->addAndMakeVisible(this->highlighter.get());
+
             if (this->fadingHighlights)
             {
-                this->highlightAnimator.animateComponent(this->highlighter, this->highlighter->getBounds(), 1.f, 100, false, 0.0, 0.0);
-            }
-            else
-            {
-                this->highlighter->setVisible(true);
+                this->highlighter->setAlpha(0.f);
+                this->highlightAnimator.animateComponent(this->highlighter.get(),
+                    this->highlighter->getBounds(), 1.f, 100, false, 1.0, 0.0);
             }
         }
         else
         {
             if (this->highlighter != nullptr)
             {
-                if (this->fadingHighlights)
-                {
-                    this->highlightAnimator.animateComponent(this->highlighter, this->highlighter->getBounds(), 0.f, 200, true, 0.0, 0.0);
-                }
-                
-                this->removeChildComponent(this->highlighter);
+                this->highlightAnimator.animateComponent(this->highlighter.get(),
+                    this->highlighter->getBounds(), 0.f, 200, true, 1.0, 0.0);
+
+                this->removeChildComponent(this->highlighter.get());
             }
         }
     }
@@ -123,9 +117,8 @@ private:
     bool fadingHighlights;
     bool highlighted;
     
-    ScopedPointer<Component> highlighter;
+    UniquePointer<Component> highlighter;
     ComponentAnimator highlightAnimator;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightedComponent)
-    
 };

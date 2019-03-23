@@ -22,28 +22,6 @@
 #define INTERNAL_PLUGIN_MANUFACTURER_HACK "Helio Workstation"
 #define INTERNAL_PLUGIN_IDENTIFIER_HACK "Internal"
 
-//class InternalAudioGraphIOProcessor : public AudioProcessorGraph::AudioGraphIOProcessor
-//{
-//public:
-//    
-//    InternalAudioGraphIOProcessor(const AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType deviceType) :
-//    AudioProcessorGraph::AudioGraphIOProcessor(deviceType) {}
-//    
-//    const String getName() const
-//    {
-//        switch (this->getType())
-//        {
-//            case audioOutputNode:   return TRANS("audiocore::audio::output");
-//            case audioInputNode:    return TRANS("audiocore::audio::input");
-//            case midiOutputNode:    return TRANS("audiocore::midi::output");
-//            case midiInputNode:     return TRANS("audiocore::midi::input");
-//            default:                break;
-//        }
-//        
-//        return String();
-//    }
-//};
-
 String InternalPluginFormat::getName() const
 {
     return "Internal";
@@ -82,7 +60,7 @@ InternalPluginFormat::InternalPluginFormat()
 
 bool InternalPluginFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
-    return (fileOrIdentifier == String::empty ||
+    return (fileOrIdentifier.isEmpty() ||
             fileOrIdentifier == INTERNAL_PLUGIN_IDENTIFIER_HACK);
 }
 
@@ -90,42 +68,36 @@ void InternalPluginFormat::createPluginInstance(const PluginDescription &desc, d
                                                 int initialBufferSize, void *userData,
                                                 void (*callback) (void*, AudioPluginInstance*, const String&))
 {
-    //Logger::writeToLog("InternalPluginFormat::createInstanceFromDescription " + desc.createIdentifierString());
-
     if (desc.uid == this->audioOutDesc.uid ||
         desc.name == this->audioOutDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), {});
         return;
     }
     if (desc.uid == this->audioInDesc.uid ||
              desc.name == this->audioInDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode), {});
         return;
     }
     if (desc.uid == this->midiInDesc.uid ||
              desc.name == this->midiInDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode), {});
         return;
     }
     else if (desc.uid == this->midiOutDesc.uid ||
              desc.name == this->midiOutDesc.name)
     {
         callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode),
-                 String::empty);
+                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
         return;
     }
     
-    callback(userData, nullptr, String::empty);
+    callback(userData, nullptr, {});
 }
 
 const PluginDescription *InternalPluginFormat::getDescriptionFor(const InternalFilterType type)
@@ -153,7 +125,7 @@ const PluginDescription *InternalPluginFormat::getDescriptionFor(const InternalF
 
 void InternalPluginFormat::getAllTypes(OwnedArray <PluginDescription> &results)
 {
-    for (int i = 0; i < static_cast<int>( endOfFilterTypes); ++i)
+    for (int i = 0; i < static_cast<int>(endOfFilterTypes); ++i)
     {
         results.add(new PluginDescription(*getDescriptionFor(static_cast<InternalFilterType>( i))));
     }

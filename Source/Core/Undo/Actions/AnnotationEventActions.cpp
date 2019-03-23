@@ -17,30 +17,26 @@
 
 #include "Common.h"
 #include "AnnotationEventActions.h"
-#include "AnnotationsLayer.h"
-#include "ProjectTreeItem.h"
+#include "AnnotationsSequence.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-AnnotationEventInsertAction::AnnotationEventInsertAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const AnnotationEvent &event) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
-    event(event)
-{
-
-}
+AnnotationEventInsertAction::AnnotationEventInsertAction(MidiTrackSource &source,
+    const String &trackId, const AnnotationEvent &event) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    event(event) {}
 
 bool AnnotationEventInsertAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return (layer->insert(this->event, false) != nullptr);
+        return (sequence->insert(this->event, false) != nullptr);
     }
     
     return false;
@@ -48,9 +44,10 @@ bool AnnotationEventInsertAction::perform()
 
 bool AnnotationEventInsertAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->remove(this->event, false);
+        return sequence->remove(this->event, false);
     }
     
     return false;
@@ -61,46 +58,42 @@ int AnnotationEventInsertAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-XmlElement *AnnotationEventInsertAction::serialize() const
+ValueTree AnnotationEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::annotationEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void AnnotationEventInsertAction::deserialize(const XmlElement &xml)
+void AnnotationEventInsertAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void AnnotationEventInsertAction::reset()
 {
     this->event.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-AnnotationEventRemoveAction::AnnotationEventRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const AnnotationEvent &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
-    event(target)
-{
-
-}
+AnnotationEventRemoveAction::AnnotationEventRemoveAction(MidiTrackSource &source,
+    const String &trackId, const AnnotationEvent &target) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    event(target) {}
 
 bool AnnotationEventRemoveAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->remove(this->event, false);
+        return sequence->remove(this->event, false);
     }
     
     return false;
@@ -108,9 +101,10 @@ bool AnnotationEventRemoveAction::perform()
 
 bool AnnotationEventRemoveAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return (layer->insert(this->event, false) != nullptr);
+        return (sequence->insert(this->event, false) != nullptr);
     }
     
     return false;
@@ -121,48 +115,44 @@ int AnnotationEventRemoveAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-XmlElement *AnnotationEventRemoveAction::serialize() const
+ValueTree AnnotationEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::annotationEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void AnnotationEventRemoveAction::deserialize(const XmlElement &xml)
+void AnnotationEventRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void AnnotationEventRemoveAction::reset()
 {
     this->event.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-AnnotationEventChangeAction::AnnotationEventChangeAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const AnnotationEvent &target,
-                                                         const AnnotationEvent &newParameters) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+AnnotationEventChangeAction::AnnotationEventChangeAction(MidiTrackSource &source,
+    const String &trackId, const AnnotationEvent &target,
+    const AnnotationEvent &newParameters) noexcept :
+    UndoAction(source),
+    trackId(trackId),
     eventBefore(target),
-    eventAfter(newParameters)
-{
-
-}
+    eventAfter(newParameters) {}
 
 bool AnnotationEventChangeAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->change(this->eventBefore, this->eventAfter, false);
+        return sequence->change(this->eventBefore, this->eventAfter, false);
     }
     
     return false;
@@ -170,9 +160,10 @@ bool AnnotationEventChangeAction::perform()
 
 bool AnnotationEventChangeAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->change(this->eventAfter, this->eventBefore, false);
+        return sequence->change(this->eventAfter, this->eventBefore, false);
     }
     
     return false;
@@ -185,19 +176,20 @@ int AnnotationEventChangeAction::getSizeInUnits()
 
 UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        if (AnnotationEventChangeAction *nextChanger = dynamic_cast<AnnotationEventChangeAction *>(nextAction))
+        if (AnnotationEventChangeAction *nextChanger =
+            dynamic_cast<AnnotationEventChangeAction *>(nextAction))
         {
-            const bool idsAreEqual = (this->eventBefore.getID() == nextChanger->eventAfter.getID() &&
-                                      this->layerId == nextChanger->layerId);
+            const bool idsAreEqual =
+                (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
+                    this->trackId == nextChanger->trackId);
             
             if (idsAreEqual)
             {
-                auto newChanger =
-                new AnnotationEventChangeAction(this->project, this->layerId, this->eventBefore, nextChanger->eventAfter);
-                
-                return newChanger;
+                return new AnnotationEventChangeAction(this->source,
+                    this->trackId, this->eventBefore, nextChanger->eventAfter);
             }
         }
     }
@@ -206,59 +198,58 @@ UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextA
     return nullptr;
 }
 
-XmlElement *AnnotationEventChangeAction::serialize() const
+ValueTree AnnotationEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::annotationEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto annotationBeforeChild = new XmlElement(Serialization::Undo::annotationBefore);
-    annotationBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(annotationBeforeChild);
+    ValueTree annotationBeforeChild(Serialization::Undo::annotationBefore);
+    annotationBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
+    tree.appendChild(annotationBeforeChild, nullptr);
     
-    auto annotationAfterChild = new XmlElement(Serialization::Undo::annotationAfter);
-    annotationAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(annotationAfterChild);
+    ValueTree annotationAfterChild(Serialization::Undo::annotationAfter);
+    annotationAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
+    tree.appendChild(annotationAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventChangeAction::deserialize(const XmlElement &xml)
+void AnnotationEventChangeAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *annotationBeforeChild = xml.getChildByName(Serialization::Undo::annotationBefore);
-    XmlElement *annotationAfterChild = xml.getChildByName(Serialization::Undo::annotationAfter);
+    const auto annotationBeforeChild = tree.getChildWithName(Serialization::Undo::annotationBefore);
+    const auto annotationAfterChild = tree.getChildWithName(Serialization::Undo::annotationAfter);
     
-    this->eventBefore.deserialize(*annotationBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*annotationAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(annotationBeforeChild.getChild(0));
+    this->eventAfter.deserialize(annotationAfterChild.getChild(0));
 }
 
 void AnnotationEventChangeAction::reset()
 {
     this->eventBefore.reset();
     this->eventAfter.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     Array<AnnotationEvent> &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(MidiTrackSource &source,
+    const String &trackId, Array<AnnotationEvent> &target) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->annotations.swapWith(target);
 }
 
 bool AnnotationEventsGroupInsertAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->insertGroup(this->annotations, false);
+        return sequence->insertGroup(this->annotations, false);
     }
     
     return false;
@@ -266,9 +257,10 @@ bool AnnotationEventsGroupInsertAction::perform()
 
 bool AnnotationEventsGroupInsertAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->removeGroup(this->annotations, false);
+        return sequence->removeGroup(this->annotations, false);
     }
     
     return false;
@@ -279,29 +271,28 @@ int AnnotationEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(AnnotationEvent) * this->annotations.size());
 }
 
-XmlElement *AnnotationEventsGroupInsertAction::serialize() const
+ValueTree AnnotationEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        xml->prependChildElement(this->annotations.getUnchecked(i).serialize());
+        tree.appendChild(this->annotations.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventsGroupInsertAction::deserialize(const XmlElement &xml)
+void AnnotationEventsGroupInsertAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         AnnotationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->annotations.add(ae);
     }
 }
@@ -309,28 +300,27 @@ void AnnotationEventsGroupInsertAction::deserialize(const XmlElement &xml)
 void AnnotationEventsGroupInsertAction::reset()
 {
     this->annotations.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     Array<AnnotationEvent> &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
+    const String &trackId, Array<AnnotationEvent> &target) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->annotations.swapWith(target);
 }
 
 bool AnnotationEventsGroupRemoveAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->removeGroup(this->annotations, false);
+        return sequence->removeGroup(this->annotations, false);
     }
     
     return false;
@@ -338,9 +328,10 @@ bool AnnotationEventsGroupRemoveAction::perform()
 
 bool AnnotationEventsGroupRemoveAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->insertGroup(this->annotations, false);
+        return sequence->insertGroup(this->annotations, false);
     }
     
     return false;
@@ -351,29 +342,28 @@ int AnnotationEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(AnnotationEvent) * this->annotations.size());
 }
 
-XmlElement *AnnotationEventsGroupRemoveAction::serialize() const
+ValueTree AnnotationEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        xml->prependChildElement(this->annotations.getUnchecked(i).serialize());
+        tree.appendChild(this->annotations.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventsGroupRemoveAction::deserialize(const XmlElement &xml)
+void AnnotationEventsGroupRemoveAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         AnnotationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->annotations.add(ae);
     }
 }
@@ -381,20 +371,18 @@ void AnnotationEventsGroupRemoveAction::deserialize(const XmlElement &xml)
 void AnnotationEventsGroupRemoveAction::reset()
 {
     this->annotations.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     const Array<AnnotationEvent> state1,
-                                                                     const Array<AnnotationEvent> state2) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(MidiTrackSource &source,
+    const String &trackId, const Array<AnnotationEvent> state1,
+    const Array<AnnotationEvent> state2) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->eventsBefore.addArray(state1);
     this->eventsAfter.addArray(state2);
@@ -402,9 +390,10 @@ AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(ProjectTree
 
 bool AnnotationEventsGroupChangeAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->changeGroup(this->eventsBefore, this->eventsAfter, false);
+        return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
     
     return false;
@@ -412,9 +401,10 @@ bool AnnotationEventsGroupChangeAction::perform()
 
 bool AnnotationEventsGroupChangeAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        return layer->changeGroup(this->eventsAfter, this->eventsBefore, false);
+        return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
     
     return false;
@@ -423,30 +413,31 @@ bool AnnotationEventsGroupChangeAction::undo()
 int AnnotationEventsGroupChangeAction::getSizeInUnits()
 {
     return (sizeof(AnnotationEvent) * this->eventsBefore.size()) +
-           (sizeof(AnnotationEvent) * this->eventsAfter.size());
+        (sizeof(AnnotationEvent) * this->eventsAfter.size());
 }
 
 UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *sequence =
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
-        if (AnnotationEventsGroupChangeAction *nextChanger = dynamic_cast<AnnotationEventsGroupChangeAction *>(nextAction))
+        if (AnnotationEventsGroupChangeAction *nextChanger =
+            dynamic_cast<AnnotationEventsGroupChangeAction *>(nextAction))
         {
-            if (nextChanger->layerId != this->layerId)
+            if (nextChanger->trackId != this->trackId)
             {
                 return nullptr;
             }
             
-            // это явно неполная проверка, но ее будет достаточно
-            bool arraysContainSameNotes = (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-                                          (this->eventsBefore[0].getID() == nextChanger->eventsAfter[0].getID());
+            // simple checking the first and the last ones should be enough here
+            bool arraysContainSameEvents =
+                (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
+                (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
             
-            if (arraysContainSameNotes)
+            if (arraysContainSameEvents)
             {
-                AnnotationEventsGroupChangeAction *newChanger =
-                new AnnotationEventsGroupChangeAction(this->project, this->layerId, this->eventsBefore, nextChanger->eventsAfter);
-                
-                return newChanger;
+                return new AnnotationEventsGroupChangeAction(this->source,
+                    this->trackId, this->eventsBefore, nextChanger->eventsAfter);
             }
         }
     }
@@ -455,55 +446,53 @@ UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction 
     return nullptr;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AnnotationEventsGroupChangeAction::serialize() const
+ValueTree AnnotationEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
-    auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild->prependChildElement(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventsGroupChangeAction::deserialize(const XmlElement &xml)
+void AnnotationEventsGroupChangeAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    XmlElement *groupBeforeChild = xml.getChildByName(Serialization::Undo::groupBefore);
-    XmlElement *groupAfterChild = xml.getChildByName(Serialization::Undo::groupAfter);
-    
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         AnnotationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         AnnotationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }
@@ -512,5 +501,5 @@ void AnnotationEventsGroupChangeAction::reset()
 {
     this->eventsBefore.clear();
     this->eventsAfter.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }

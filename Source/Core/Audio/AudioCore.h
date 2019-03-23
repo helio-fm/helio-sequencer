@@ -17,10 +17,9 @@
 
 #pragma once
 
-class Instrument;
 class AudioMonitor;
 
-#include "Serializable.h"
+#include "Instrument.h"
 #include "OrchestraPit.h"
 
 class AudioCore :
@@ -42,8 +41,9 @@ public:
     // Instruments
     //===------------------------------------------------------------------===//
 
-    Instrument *addInstrument(const PluginDescription &pluginDescription, const String &name);
     void removeInstrument(Instrument *instrument);
+    void addInstrument(const PluginDescription &pluginDescription,
+        const String &name, Instrument::InitializationCallback callback);
 
     //===------------------------------------------------------------------===//
     // OrchestraPit
@@ -57,7 +57,8 @@ public:
     // Setup
     //===------------------------------------------------------------------===//
 
-    void autodetect();
+    void autodetectDeviceSetup();
+
     AudioDeviceManager &getDevice() noexcept;
     AudioPluginFormatManager &getFormatManager() noexcept;
     AudioMonitor *getMonitor() const noexcept;
@@ -66,8 +67,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//
@@ -89,21 +90,46 @@ public:
     {
         return fastLog2(val) / fastLog2(10.f);
     }
+
+    inline static float iecLevel(float dB)
+    {
+        float fDef = 1.f;
+
+        if (dB < -70.f) {
+            fDef = 0.f;
+        } else if (dB < -60.f) {
+            fDef = (dB + 70.f) * 0.0025f;
+        } else if (dB < -50.f) {
+            fDef = (dB + 60.f) * 0.005f + 0.025f;
+        } else if (dB < -40.f) {
+            fDef = (dB + 50.f) * 0.0075f + 0.075f;
+        } else if (dB < -30.f) {
+            fDef = (dB + 40.f) * 0.015f + 0.15f;
+        } else if (dB < -20.f) {
+            fDef = (dB + 30.f) * 0.02f + 0.3f;
+        } else { // if (dB < 0.f)
+            fDef = (dB + 20.f) * 0.025f + 0.5f;
+        }
+
+        return fDef;
+    }
     
 private:
 
     void addInstrumentToDevice(Instrument *instrument);
     void removeInstrumentFromDevice(Instrument *instrument);
 
+    ValueTree serializeDeviceManager() const;
+    void deserializeDeviceManager(const ValueTree &tree);
+
     OwnedArray<Instrument> instruments;
     ScopedPointer<AudioMonitor> audioMonitor;
 
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;
-    
-    WeakReference<AudioCore>::Master masterReference;
-    friend class WeakReference<AudioCore>;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCore);
+    StringArray customMidiInputs;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCore)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(AudioCore)
 };

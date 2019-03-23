@@ -22,20 +22,19 @@ class FadingDialog : public Component
 public:
     
     FadingDialog();
-    
     ~FadingDialog() override;
 
     void parentHierarchyChanged() override;
 
 protected:
     
-    void fadeOut();
-
-    virtual void rebound();
-
-    SafePointer<Component> backgroundWhite;
+    void dismiss();
+    virtual void updatePosition();
     
 private:
-    
+
+    void fadeOut();
+    SafePointer<Component> background;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FadingDialog)
 };

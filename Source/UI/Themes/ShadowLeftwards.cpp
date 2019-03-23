@@ -24,16 +24,16 @@
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-ShadowLeftwards::ShadowLeftwards()
+ShadowLeftwards::ShadowLeftwards(ShadowType type)
+    : ShadowComponent(type)
 {
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (40, 400);
+    this->setSize(40, 400);
 
     //[Constructor]
-    this->setInterceptsMouseClicks(false, false);
     //[/Constructor]
 }
 
@@ -50,36 +50,63 @@ ShadowLeftwards::~ShadowLeftwards()
 void ShadowLeftwards::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x25000000),
-                                       static_cast<float> (getWidth()), 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, 0.0f,
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour1 = this->shadowColour;
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (getWidth()) - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
                                        false));
-    g.fillRect (0, 0, getWidth() - 3, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x25000000),
-                                       static_cast<float> (getWidth()), 0.0f,
-                                       Colour (0x00000000),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
+    {
+        int x = getWidth() - proportionOfWidth (0.5000f), y = 0, width = proportionOfWidth (0.5000f), height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour1 = this->shadowColour;
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (getWidth()) - static_cast<float> (getWidth() - proportionOfWidth (0.5000f)) + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> ((getWidth() / 2)) - static_cast<float> (getWidth() - proportionOfWidth (0.5000f)) + x,
+                                       0.0f - 0.0f + y,
                                        false));
-    g.fillRect (getWidth() - 3 - proportionOfWidth (0.5000f), 0, proportionOfWidth (0.5000f), getHeight() - 0);
-
-    g.setGradientFill (ColourGradient (Colour (0x01ffffff),
-                                       static_cast<float> (getWidth()), 0.0f,
-                                       Colour (0x11ffffff),
-                                       static_cast<float> (getWidth() - 3), 0.0f,
-                                       false));
-    g.fillRect (getWidth() - 3, 0, 3, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
+#endif
+
+    g.setGradientFill(this->gradient1);
+    g.fillRect(this->getLocalBounds());
+
+    g.setGradientFill(this->gradient2);
+    g.fillRect(this->getLocalBounds());
+
+    g.setColour(this->lineColour);
+    g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
     //[/UserPaint]
 }
 
 void ShadowLeftwards::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    const float w = float(this->getWidth());
+    this->gradient1 = ColourGradient(this->shadowColour,
+        w, 0.f, Colours::transparentBlack, 0.f, 0.f, false);
+    this->gradient2 = ColourGradient(this->shadowColour,
+        w, 0.0f, Colours::transparentBlack, w / 2.5f, 0.f, false);
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
@@ -95,14 +122,13 @@ void ShadowLeftwards::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ShadowLeftwards" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="40" initialHeight="400">
+                 componentName="" parentClasses="public ShadowComponent" constructorParams="ShadowType type"
+                 variableInitialisers="ShadowComponent(type)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="40"
+                 initialHeight="400">
   <BACKGROUND backgroundColour="ffffff">
-    <RECT pos="0 0 3M 0M" fill="linear: 0R 0, 0 0, 0=25000000, 1=0" hasStroke="0"/>
-    <RECT pos="3Rr 0 50% 0M" fill="linear: 0R 0, 0C 0, 0=25000000, 1=0"
-          hasStroke="0"/>
-    <RECT pos="3R 0 3 0M" fill="linear: 0R 0, 3R 0, 0=1ffffff, 1=11ffffff"
+    <RECT pos="0 0 0M 0M" fill="linear: 0R 0, 0 0, 0=15000000, 1=0" hasStroke="0"/>
+    <RECT pos="0Rr 0 50% 0M" fill="linear: 0R 0, 0C 0, 0=15000000, 1=0"
           hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>

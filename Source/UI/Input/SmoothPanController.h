@@ -19,34 +19,18 @@
 
 #include "SmoothPanListener.h"
 
-#if HELIO_DESKTOP
-#    define SMOOTH_PAN_TIMER_DELAY_MS 7
-#    define SMOOTH_PAN_STOP_FACTOR 15
-#    define SMOOTH_PAN_REDUX_FACTOR 0.55f
-#    define SMOOTH_PAN_SPEED_MULTIPLIER 1
-#elif defined JUCE_IOS
-#    define SMOOTH_PAN_TIMER_DELAY_MS 7
-#    define SMOOTH_PAN_STOP_FACTOR 15
-#    define SMOOTH_PAN_REDUX_FACTOR 0.55f
-#    define SMOOTH_PAN_SPEED_MULTIPLIER 2
-#elif defined JUCE_ANDROID
-#    define SMOOTH_PAN_TIMER_DELAY_MS 7
-#    define SMOOTH_PAN_STOP_FACTOR 15
-#    define SMOOTH_PAN_REDUX_FACTOR 0.55f
-#    define SMOOTH_PAN_SPEED_MULTIPLIER 1
-#endif
-
+#define SMOOTH_PAN_STOP_FACTOR 5
+#define SMOOTH_PAN_SLOWDOWN_FACTOR 0.95f
 #define SMOOTH_PAN_DISABLED 1
 
-class SmoothPanController : private Timer
+class SmoothPanController final : private Timer
 {
 public:
 
     explicit SmoothPanController(SmoothPanListener &parent) :
         listener(parent),
         origin(0, 0),
-        target(0, 0)
-    {}
+        target(0, 0) {}
 
     void cancelPan()
     {
@@ -55,8 +39,6 @@ public:
 
     void panByOffset(Point<int> offset)
     {
-        //Logger::writeToLog("SmoothPan: " + String(offset.getX()) + ", " + String(offset.getY()));
-
         #if SMOOTH_PAN_DISABLED
 
         this->listener.panByOffset(offset.getX(), offset.getY());
@@ -68,7 +50,7 @@ public:
 
         if (!this->isTimerRunning())
         {
-            this->startTimer(SMOOTH_PAN_TIMER_DELAY_MS);
+            this->startTimerHz(60);
             this->process();
         }
         else
@@ -88,12 +70,11 @@ private:
 
     inline void process()
     {
-        const Point<float> &diff = this->target - this->origin;
+        const auto diff = this->target - this->origin;
+        this->origin += (diff * SMOOTH_PAN_SLOWDOWN_FACTOR);
 
-        this->origin += (diff * SMOOTH_PAN_REDUX_FACTOR);
-
-        this->listener.panByOffset(roundFloatToInt(this->origin.getX()),
-                                   roundFloatToInt(this->origin.getY()));
+        this->listener.panByOffset(int(this->origin.getX()),
+            int(this->origin.getY()));
 
         if (diff.getDistanceFromOrigin() < SMOOTH_PAN_STOP_FACTOR)
         {
@@ -104,7 +85,6 @@ private:
     SmoothPanListener &listener;
 
     Point<float> origin;
-
     Point<float> target;
 
 };

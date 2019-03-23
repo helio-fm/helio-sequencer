@@ -26,23 +26,18 @@ namespace VCS
     public:
 
         TrackedItemsSource() {}
+        virtual ~TrackedItemsSource() {};
 
-        virtual ~TrackedItemsSource()
-        {
-            this->masterReference.clear();
-        }
-
+        virtual String getVCSId() const = 0;
         virtual String getVCSName() const = 0;
 
         virtual int getNumTrackedItems() = 0;
-
         virtual TrackedItem *getTrackedItem(int index) = 0;
 
-        // это - для проекта:
-        virtual TrackedItem *initTrackedItem(const String &type, const Uuid &id) { return nullptr; }
+        virtual TrackedItem *initTrackedItem(const Identifier &type,
+            const Uuid &id, const VCS::TrackedItem &newState) { return nullptr; }
 
         virtual bool deleteTrackedItem(TrackedItem *item) { return false; }
-
         virtual void clearAllTrackedItems()
         {
             Array<TrackedItem *> itemsToClear;
@@ -58,13 +53,11 @@ namespace VCS
             }
         }
 
+        // Called after checkout / reset to / etc
+        virtual void onResetState() = 0;
+
     private:
 
-        WeakReference<TrackedItemsSource>::Master masterReference;
-
-        friend class WeakReference<TrackedItemsSource>;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackedItemsSource);
-
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackedItemsSource)
     };
 } // namespace VCS

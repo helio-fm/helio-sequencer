@@ -18,290 +18,203 @@
 #include "Common.h"
 #include "Revision.h"
 #include "SerializationKeys.h"
-#include "App.h"
 
 using namespace VCS;
 
-Revision::Revision() :
-    ValueTree(Identifier(Serialization::VCS::revision))
-{
-}
+Revision::Revision(const String &name /*= String::empty*/) :
+    message(name),
+    id(Uuid().toString()),
+    timestamp(Time::getCurrentTime().toMilliseconds()) {}
 
-Revision::Revision(Pack::Ptr pack, const String &name) :
-    ValueTree(Identifier(Serialization::VCS::revision))
-{
-    Uuid id;
-    this->setProperty(Serialization::VCS::commitId, var(id.toString()), nullptr);
-    this->setProperty(Serialization::VCS::commitMessage, var(name), nullptr);
-    this->setProperty(Serialization::VCS::commitTimeStamp, var(Time::getCurrentTime().toMilliseconds()), nullptr);
-    this->setProperty(Serialization::VCS::commitVersion, var(int64(1)), nullptr);
-    this->setProperty(Serialization::VCS::pack, var(pack), nullptr);
-}
+Revision::Revision(const RevisionDto &dto) :
+    message(dto.getMessage()),
+    id(dto.getId()),
+    timestamp(dto.getTimestamp()) {}
 
-Revision::Revision(ValueTree other) :
-    ValueTree(std::move(other))
+void Revision::copyDeltasFrom(Revision::Ptr other)
 {
-}
-
-void Revision::copyPropertiesFrom(const Revision &other)
-{
-    // убрать все свойства, кроме пака
-    Pack::Ptr pack(this->getPackPtr());
-    this->removeAllProperties(nullptr);
-    this->setProperty(Serialization::VCS::pack, var(pack), nullptr);
-
-    for (int i = 0; i < other.getNumProperties(); ++i)
+    this->deltas.clearQuick();
+    for (auto *revItem : other->deltas)
     {
-        const Identifier id(other.getPropertyName(i));
-
-        // пак пропускаем
-        if (id.toString() == Serialization::VCS::pack)
-        { continue; }
-
-        const var& property(other.getProperty(id));
-
-        if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-        {
-            this->copyProperty(id, revItem);
-        }
-        else
-        {
-            // остальное копируем через setProperty
-            this->setProperty(id, property, nullptr);
-        }
+        this->deltas.add(revItem);
     }
 }
 
-void Revision::copyDeltasFrom(const Revision &other)
+bool Revision::isEmpty() const noexcept
 {
-    this->resetAllDeltas();
-    
-    for (int i = 0; i < other.getNumProperties(); ++i)
+    return this->deltas.isEmpty() && this->children.isEmpty();
+}
+
+bool Revision::isShallowCopy() const noexcept
+{
+    // children might me not empty though:
+    return this->deltas.isEmpty();
+}
+
+int64 Revision::getTimeStamp() const noexcept
+{
+    return this->timestamp;
+}
+
+String Revision::getUuid() const noexcept
+{
+    return this->id;
+}
+
+String Revision::getMessage() const noexcept
+{
+    return this->message;
+}
+
+const ReferenceCountedArray<RevisionItem> &Revision::getItems() const noexcept
+{
+    return this->deltas;
+}
+
+const ReferenceCountedArray<Revision> &Revision::getChildren() const  noexcept
+{
+    return this->children;
+}
+
+void Revision::addChild(Revision *child)
+{
+    child->parent = this;
+    this->children.add(child);
+}
+
+void Revision::addChild(Revision::Ptr revision)
+{
+    this->addChild(revision.get());
+}
+
+void Revision::removeChild(Revision *revision)
+{
+    if (this->children.contains(revision))
     {
-        const Identifier id(other.getPropertyName(i));
-        const var& property(other.getProperty(id));
-        
-        if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-        {
-            this->copyProperty(id, revItem);
-        }
+        revision->parent = nullptr;
+        this->children.removeObject(revision);
     }
 }
 
-void Revision::resetAllDeltas()
+void Revision::removeChild(Revision::Ptr revision)
 {
-    for (int i = 0; i < this->getNumProperties(); )
-    {
-        const Identifier id(this->getPropertyName(i));
-        const var property(this->getProperty(id));
-        
-        if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-        {
-            this->removeProperty(id, nullptr);
-        }
-        else
-        {
-            ++i;
-        }
-    }
+    this->removeChild(revision.get());
 }
 
-void Revision::copyProperty(Identifier id, const RevisionItem::Ptr itemToCopy)
+void Revision::addItem(RevisionItem *item)
 {
-    if (this->getPackPtr() == itemToCopy->getPackPtr())
-    {
-        this->setProperty(id, var(itemToCopy), nullptr);
-    }
-    else
-    {
-        // для ситуации, когда мы мержим два дерева с разными паками -
-        // айтемы копируем через конструктор айтема, чтоб забрать данные из старого пака
-        RevisionItem::Ptr newItem(new RevisionItem(this->getPackPtr(), itemToCopy->getType(), itemToCopy));
-        this->setProperty(id, var(newItem), nullptr);
-    }
+    this->deltas.add(item);
 }
 
-
-RevisionItem::Ptr Revision::getItemWithUuid(const Uuid &uuid)
+void Revision::addItem(RevisionItem::Ptr item)
 {
-    for (int i = 0; i < this->getNumProperties(); ++i)
-    {
-        const Identifier id(this->getPropertyName(i));
-        const var property(this->getProperty(id));
-
-        if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-        {
-            if (revItem->getUuid() == uuid) { return revItem; }
-        }
-    }
-
-    return nullptr;
+    this->deltas.add(item);
 }
 
-void Revision::flushData()
+WeakReference<Revision> Revision::getParent() const noexcept
 {
-    for (int i = 0; i < this->getNumProperties(); ++i)
-    {
-        const Identifier id(this->getPropertyName(i));
-        const var property(this->getProperty(id));
-
-        if (property.isObject())
-        {
-            if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-            {
-                revItem->flushData();
-            }
-        }
-    }
+    return this->parent;
 }
-
-Pack::Ptr Revision::getPackPtr() const
-{
-    ReferenceCountedObject *rc =
-        this->getProperty(Serialization::VCS::pack).getObject();
-
-    if (Pack *pack = dynamic_cast<Pack *>(rc))
-    {
-        return Pack::Ptr(pack);
-    }
-
-    return nullptr;
-}
-
-String Revision::getMessage() const
-{
-    return this->getProperty(Serialization::VCS::commitMessage).toString();
-}
-
-String Revision::getUuid() const
-{
-    return this->getProperty(Serialization::VCS::commitId).toString();
-}
-
-int64 Revision::getVersion() const
-{
-    return this->getProperty(Serialization::VCS::commitVersion);
-}
-
-int64 Revision::getTimeStamp() const
-{
-    return this->getProperty(Serialization::VCS::commitTimeStamp);
-}
-
-void Revision::incrementVersion()
-{
-    this->setProperty(Serialization::VCS::commitVersion, int64(this->getVersion() + 1), nullptr);
-}
-
-MD5 Revision::calculateHash() const
-{
-    StringArray sum;
-
-    // идем по всем свойствам, кроме ссылки на пак
-    for (int i = 0; i < this->getNumProperties(); ++i)
-    {
-        const Identifier id(this->getPropertyName(i));
-
-        // пак пропускаем
-        if (id.toString() == Serialization::VCS::pack)
-        { continue; }
-
-        const var property(this->getProperty(id));
-
-        if (RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-        {
-            sum.add(revItem->getUuid().toString());
-        }
-    }
-
-    sum.sort(true);
-    return MD5(sum.joinIntoString("").toUTF8());
-}
-
-bool Revision::isEmpty() const
-{
-    return (this->getMessage().isEmpty());
-}
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Revision::serialize() const
+ValueTree Revision::serializeDeltas() const
 {
-    XmlElement *const xml = new XmlElement(this->getType().toString());
+    ValueTree tree(Serialization::VCS::revision);
 
-    for (int i = 0; i < this->getNumProperties(); ++i)
+    for (const auto *revItem : this->deltas)
     {
-        const Identifier id(this->getPropertyName(i));
-        const var property(this->getProperty(id));
-
-        // сохраняем только RevisionItem'ы, строки и int64
-        if (property.isObject())
-        {
-            if (const RevisionItem *revItem = dynamic_cast<RevisionItem *>(property.getObject()))
-            {
-                xml->prependChildElement(revItem->serialize());
-            }
-        }
-        else if (property.isString() || property.isInt64())
-        {
-            xml->setAttribute(id.toString(), property.toString());
-        }
+        tree.appendChild(revItem->serialize(), nullptr);
     }
 
-    for (int i = 0; i < this->getNumChildren(); ++i)
-    {
-        const Revision child(this->getChild(i));
-        xml->prependChildElement(child.serialize());
-    }
-
-    return xml;
+    return tree;
 }
 
-void Revision::deserialize(const XmlElement &xml)
+void Revision::deserializeDeltas(ValueTree data)
+{
+    jassert(this->isShallowCopy());
+
+    const auto root =
+        data.hasType(Serialization::VCS::revision) ?
+        data : data.getChildWithName(Serialization::VCS::revision);
+
+    if (!root.isValid()) { return; }
+
+    this->deltas.clearQuick();
+
+    forEachValueTreeChildWithType(root, e, Serialization::VCS::revisionItem)
+    {
+        RevisionItem::Ptr item(new RevisionItem(RevisionItem::Undefined, nullptr));
+        item->deserialize(e, {});
+        this->addItem(item);
+    }
+}
+
+ValueTree Revision::serialize() const
+{
+    ValueTree tree(Serialization::VCS::revision);
+
+    tree.setProperty(Serialization::VCS::commitId, this->id, nullptr);
+    tree.setProperty(Serialization::VCS::commitMessage, this->message, nullptr);
+    tree.setProperty(Serialization::VCS::commitTimeStamp, this->timestamp, nullptr);
+
+    for (const auto *revItem : this->deltas)
+    {
+        tree.appendChild(revItem->serialize(), nullptr);
+    }
+
+    for (const auto *child : this->children)
+    {
+        tree.appendChild(child->serialize(), nullptr);
+    }
+
+    return tree;
+}
+
+void Revision::deserialize(const ValueTree &tree)
+{
+    // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
+    jassertfalse;
+}
+
+void Revision::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup)
 {
     this->reset();
 
-    const XmlElement *mainSlot = xml.hasTagName(this->getType().toString()) ?
-                                 &xml : xml.getChildByName(this->getType().toString());
+    const auto root =
+        tree.hasType(Serialization::VCS::revision) ?
+        tree : tree.getChildWithName(Serialization::VCS::revision);
 
-    if (mainSlot == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    for (int i = 0; i < mainSlot->getNumAttributes(); ++i)
+    this->id = root.getProperty(Serialization::VCS::commitId);
+    this->message = root.getProperty(Serialization::VCS::commitMessage);
+    this->timestamp = root.getProperty(Serialization::VCS::commitTimeStamp);
+
+    for (const auto &e : root)
     {
-        const String &name = mainSlot->getAttributeName(i);
-        const String &value = mainSlot->getAttributeValue(i);
-        this->setProperty(Identifier(name), var(value), nullptr);
-    }
-
-    forEachXmlChildElement(*mainSlot, e)
-    {
-        if (e->getTagName() == this->getType().toString())
+        if (e.hasType(Serialization::VCS::revision))
         {
-            Revision child(this->createCopy());
-            child.deserialize(*e);
-            this->addChild(child, 0, nullptr);
+            Revision::Ptr child(new Revision());
+            child->deserialize(e, dataLookup);
+            this->addChild(child);
         }
-        else
+        else if (e.hasType(Serialization::VCS::revisionItem))
         {
-            RevisionItem::Ptr item(new RevisionItem(this->getPackPtr(), RevisionItem::Undefined, nullptr));
-            item->deserialize(*e);
-            this->setProperty(item->getUuid().toString(), var(item), nullptr);
+            RevisionItem::Ptr item(new RevisionItem(RevisionItem::Undefined, nullptr));
+            item->deserialize(e, dataLookup);
+            this->addItem(item);
         }
     }
 }
 
 void Revision::reset()
 {
-    //this->removeAllProperties(nullptr); // свойства удалять нельзя?
-
-    // убрать все свойства, кроме пака:
-    //Pack::Ptr pack(this->getPackPtr());
-    //this->removeAllProperties(nullptr);
-    //this->setProperty(Serialization::VCS::pack, var(pack), nullptr);
-
-    this->resetAllDeltas();
-    this->removeAllChildren(nullptr);
+    this->id = {};
+    this->message = {};
+    this->timestamp = 0;
+    this->deltas.clearQuick();
+    this->children.clearQuick();
 }

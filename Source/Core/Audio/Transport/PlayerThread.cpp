@@ -16,68 +16,70 @@
 */
 
 #include "Common.h"
-#include <float.h>
 
 #include "PlayerThread.h"
 #include "Instrument.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 
-#include "DataEncoder.h"
+#define MINIMUM_STOP_CHECK_TIME_MS 1000
 
-
-// Should be less than PLAYER_THREAD_STOP_TIME_MS
-#define UPDATE_TIME_MS 35
-
-
-PlayerThread::PlayerThread(Transport &parentTransport) :
+PlayerThread::PlayerThread(Transport &transport) :
     Thread("PlayerThread"),
-    transport(parentTransport)
-{
-}
+    transport(transport) {}
 
 PlayerThread::~PlayerThread()
 {
-    this->stopThread(100);
+    this->stopThread(MINIMUM_STOP_CHECK_TIME_MS * 2);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Thread
 //===----------------------------------------------------------------------===//
 
+void PlayerThread::startPlayback(double start, double end,
+    bool shouldLoop, bool shouldBroadcastTransportEvents)
+{
+    this->broadcastMode = shouldBroadcastTransportEvents;
+    this->loopedMode = shouldLoop;
+    this->absStartPosition = jlimit(0.0, 1.0, start);
+    this->absEndPosition = jlimit(0.0, 1.0, end);
+    this->startThread(10);
+}
+
 void PlayerThread::run()
 {
-    this->transport.rebuildSequencesIfNeeded();
     ProjectSequences sequences = this->transport.getSequences();
     Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
     
-    double TPQN = Transport::millisecondsPerBeat; // ticks-per-quarter-note
     double nextEventTimeDelta = 0.0;
     
-    double tempoAtTheEndOfTrack = 0.0;
     double totalTimeMs = 0.0;
+    double tempoAtTheEndOfTrack = 0.0;
     this->transport.calcTimeAndTempoAt(1.0, totalTimeMs, tempoAtTheEndOfTrack);
     
-    const double absStartPosition = this->transport.isLooped() ? this->transport.getLoopStart() : this->transport.getSeekPosition();
-    const double absEndPosition = this->transport.isLooped() ? this->transport.getLoopEnd() : 1.0;
-    
-    double msPerTick = 500.0 / TPQN; // default 120 BPM
     double currentTimeMs = 0.0;
-    this->transport.calcTimeAndTempoAt(absStartPosition,
-                                       currentTimeMs,
-                                       msPerTick);
+    double msPerQuarter = 0.0;
+    this->transport.calcTimeAndTempoAt(this->absStartPosition, currentTimeMs, msPerQuarter);
     
-    this->transport.broadcastTempoChanged(msPerTick);
+    if (this->broadcastMode)
+    {
+        this->transport.broadcastTempoChanged(msPerQuarter);
+    }
     
-    const double startPositionInTime = round(absStartPosition * this->transport.getTotalTime());
-    const double endPositionInTime = round(absEndPosition * this->transport.getTotalTime());
+    const double totalTime = this->transport.getTotalTime();
+    const double startPositionInTime = this->absStartPosition * totalTime;
+    const double endPositionInTime = this->absEndPosition * totalTime;
     
     sequences.seekToTime(startPositionInTime);
     double prevTimeStamp = startPositionInTime;
-    
+    if (this->broadcastMode)
+    {
+        this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+    }
+
     // This hack is here to keep track of still playing events
     // to be able to send noteOff's when playback interrupts.
-    struct HoldingNote
+    struct HoldingNote final
     {
         int key;
         int channel;
@@ -86,7 +88,7 @@ void PlayerThread::run()
     // (some plugins just don't understand allNotesOff message)
     Array<HoldingNote> holdingNotes;
     
-    // Some shorthand labmdas:
+    // Some shorthands:
     auto sendMidiStart = [&uniqueInstruments]()
     {
         for (auto &instrument : uniqueInstruments)
@@ -115,7 +117,7 @@ void PlayerThread::run()
         }
         
         // Wait until all plugins process the messages in their queues
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + UPDATE_TIME_MS / 2);
+        Thread::sleep(50);
     };
     
     auto sendTempoChangeToEverybody = [&uniqueInstruments](const MidiMessage &tempoEvent)
@@ -133,118 +135,98 @@ void PlayerThread::run()
     {
         MessageWrapper wrapper;
 
-        if (! sequences.getNextMessage(wrapper))
+        // Handle playback from the last event to the end of track:
+        if (!sequences.getNextMessage(wrapper))
         {
-            nextEventTimeDelta = msPerTick * (endPositionInTime - prevTimeStamp);
-            
-#if PLAYER_THREAD_SENDS_SEEK_EVENTS
-            
-            const double targetTimeStamp = endPositionInTime;
-            const double targetTime = Time::getMillisecondCounterHiRes() + nextEventTimeDelta;
-            double deltaTime = targetTime - Time::getMillisecondCounterHiRes();
-            
-            while (deltaTime > UPDATE_TIME_MS)
+            nextEventTimeDelta = msPerQuarter * (endPositionInTime - prevTimeStamp);
+            const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
+
+            // Give thread a chance to exit by checking at least once a, say, second
+            while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
             {
-                // fixme! extremely unsafe, no message manager lock gained
-                this->transport.broadcastSeek((targetTimeStamp - deltaTime / msPerTick) / this->transport.getTotalTime(),
-                                              currentTimeMs,
-                                              totalTimeMs);
-                
-                Time::waitForMillisecondCounter(Time::getMillisecondCounter() + UPDATE_TIME_MS);
-                
+                nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
+                Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
                 if (this->threadShouldExit())
                 {
                     sendHoldingNotesOffAndMidiStop();
                     return;
                 }
-                
-                deltaTime = targetTime - Time::getMillisecondCounterHiRes();
             }
-            
-            Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(deltaTime));
-            
-#else
-            
-            Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(nextEventTimeDelta));
 
-#endif
-            
-            if (this->transport.isLooped())
+            Time::waitForMillisecondCounter(targetTime);
+
+            if (this->loopedMode)
             {
-                //Logger::writeToLog("Sekk to time " + String(startPositionInTime));
                 sequences.seekToTime(startPositionInTime);
                 prevTimeStamp = startPositionInTime;
+                if (this->broadcastMode)
+                {
+                    this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+                }
                 continue;
             }
             else
             {
-                //Logger::writeToLog("Track finished");
                 sendHoldingNotesOffAndMidiStop();
                 this->transport.allNotesControllersAndSoundOff();
-                this->transport.seekToPosition(this->transport.getSeekPosition());
-                this->transport.broadcastStop();
+
+                if (this->broadcastMode)
+                {
+                    this->transport.seekToPosition(this->transport.getSeekPosition());
+                    this->transport.broadcastStop();
+                }
                 return;
             }
         }
-        
-        const bool shouldRewind = (this->transport.isLooped() &&
-                                   (wrapper.message.getTimeStamp() > endPositionInTime));
-        
-        const double nextEventTimeStamp = shouldRewind ? endPositionInTime : wrapper.message.getTimeStamp();
-        
-        //Logger::writeToLog(String(prevTimeStamp) + " > " + String(nextEventTimeStamp));
-        
-        nextEventTimeDelta = msPerTick * (nextEventTimeStamp - prevTimeStamp);
-        
-        currentTimeMs += nextEventTimeDelta;
-        
-#if PLAYER_THREAD_SENDS_SEEK_EVENTS
 
-        const double targetTimeStamp = nextEventTimeStamp;
-        const double targetTime = Time::getMillisecondCounterHiRes() + nextEventTimeDelta;
-        double deltaTime = targetTime - Time::getMillisecondCounterHiRes();
-        
-        while (deltaTime > UPDATE_TIME_MS)
+        const bool shouldRewind =
+            (this->loopedMode &&
+            (wrapper.message.getTimeStamp() > endPositionInTime));
+
+        const double nextEventTimeStamp =
+            shouldRewind ? endPositionInTime : wrapper.message.getTimeStamp();
+
+        nextEventTimeDelta = msPerQuarter * (nextEventTimeStamp - prevTimeStamp);
+        currentTimeMs += nextEventTimeDelta;
+        prevTimeStamp = nextEventTimeStamp;
+
+        // Zero-delay check (we're playing a chord or so)
+        if (uint32(nextEventTimeDelta) != 0)
         {
-            this->transport.broadcastSeek((targetTimeStamp - deltaTime / msPerTick) / this->transport.getTotalTime(),
-                                          currentTimeMs,
-                                          totalTimeMs);
-            
-            Time::waitForMillisecondCounter(Time::getMillisecondCounter() + UPDATE_TIME_MS);
-            
+            const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
+            while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
+            {
+                nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
+                Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                if (this->threadShouldExit())
+                {
+                    sendHoldingNotesOffAndMidiStop();
+                    return;
+                }
+            }
+
+            Time::waitForMillisecondCounter(targetTime);
+
             if (this->threadShouldExit())
             {
                 sendHoldingNotesOffAndMidiStop();
                 return;
             }
-        
-            deltaTime = targetTime - Time::getMillisecondCounterHiRes();
-        }
-        
-        
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(deltaTime));
-        
-#else
-      
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(nextEventTimeDelta));
-        
-        if (this->threadShouldExit())
-        {
-            sendHoldingNotesOffAndMidiStop();
-            return;
-        }
-        
-#endif
-        
-        prevTimeStamp = nextEventTimeStamp;
 
-        this->transport.broadcastSeek(prevTimeStamp / this->transport.getTotalTime(),
-                                      currentTimeMs, totalTimeMs);
+            if (this->broadcastMode)
+            {
+                this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+            }
+        }
         
         if (shouldRewind)
         {
             sequences.seekToTime(startPositionInTime);
             prevTimeStamp = startPositionInTime;
+            if (this->broadcastMode)
+            {
+                this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+            }
         }
         else
         {
@@ -255,9 +237,13 @@ void PlayerThread::run()
             // Master tempo event is sent to everybody
             if (wrapper.message.isTempoMetaEvent())
             {
-                msPerTick = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f / TPQN;
-                this->transport.broadcastTempoChanged(msPerTick);
-                
+                msPerQuarter = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
+
+                if (this->broadcastMode)
+                {
+                    this->transport.broadcastTempoChanged(msPerQuarter);
+                }
+
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 sendTempoChangeToEverybody(wrapper.message);
             }
@@ -268,7 +254,7 @@ void PlayerThread::run()
             
             if (wrapper.message.isNoteOn())
             {
-                holdingNotes.add(HoldingNote({key, channel, wrapper.listener}));
+                holdingNotes.add({ key, channel, wrapper.listener });
             }
             
             if (wrapper.message.isNoteOff())
@@ -287,5 +273,5 @@ void PlayerThread::run()
         }
     }
     
-    Logger::writeToLog("Never happens.");
+    jassertfalse;
 }

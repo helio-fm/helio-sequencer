@@ -17,212 +17,194 @@
 
 #pragma once
 
-class PianoLayer;
-class ProjectTreeItem;
+class PianoSequence;
+class MidiTrackSource;
 
 #include "Note.h"
 #include "UndoAction.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-class NoteInsertAction : public UndoAction
+class NoteInsertAction final : public UndoAction
 {
 public:
 
-    explicit NoteInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NoteInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
-    NoteInsertAction(ProjectTreeItem &project,
-                     String layerId,
-                     const Note &target);
+    NoteInsertAction(MidiTrackSource &source,
+        const String &trackId, const Note &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
 
-    String layerId;
+    String trackId;
     Note note;
 
     JUCE_DECLARE_NON_COPYABLE(NoteInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-class NoteRemoveAction : public UndoAction
+class NoteRemoveAction final : public UndoAction
 {
 public:
     
-    explicit NoteRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NoteRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    NoteRemoveAction(ProjectTreeItem &project,
-                     String layerId,
-                     const Note &target);
+    NoteRemoveAction(MidiTrackSource &source,
+        const String &trackId, const Note &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
     Note note;
 
     JUCE_DECLARE_NON_COPYABLE(NoteRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-class NoteChangeAction : public UndoAction
+class NoteChangeAction final : public UndoAction
 {
 public:
     
-    explicit NoteChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NoteChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    NoteChangeAction(ProjectTreeItem &project,
-                     String layerId,
-                     const Note &note,
-                     const Note &newParameters);
+    NoteChangeAction(MidiTrackSource &source, const String &trackId,
+        const Note &note, const Note &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
 
     Note noteBefore;
     Note noteAfter;
 
     JUCE_DECLARE_NON_COPYABLE(NoteChangeAction)
-
 };
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class NotesGroupInsertAction : public UndoAction
+class NotesGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit NotesGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NotesGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
-    NotesGroupInsertAction(ProjectTreeItem &project,
-                           String layerId,
-                           Array<Note> &target);
+    NotesGroupInsertAction(MidiTrackSource &source,
+        const String &trackId, Array<Note> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<Note> notes;
     
     JUCE_DECLARE_NON_COPYABLE(NotesGroupInsertAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class NotesGroupRemoveAction : public UndoAction
+class NotesGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit NotesGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NotesGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
-    NotesGroupRemoveAction(ProjectTreeItem &project,
-                           String layerId,
-                           Array<Note> &target);
+    NotesGroupRemoveAction(MidiTrackSource &source,
+        const String &trackId, Array<Note> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    String layerId;
+    String trackId;
     Array<Note> notes;
     
     JUCE_DECLARE_NON_COPYABLE(NotesGroupRemoveAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class NotesGroupChangeAction : public UndoAction
+class NotesGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit NotesGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NotesGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    NotesGroupChangeAction(ProjectTreeItem &project,
-                           String layerId,
-                           Array<Note> &state1,
-                           Array<Note> &state2);
+    NotesGroupChangeAction(MidiTrackSource &source, const String &trackId,
+        Array<Note> &state1, Array<Note> &state2) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
 
-    String layerId;
+    String trackId;
 
     Array<Note> notesBefore;
     Array<Note> notesAfter;
 
     JUCE_DECLARE_NON_COPYABLE(NotesGroupChangeAction)
-
 };

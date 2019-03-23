@@ -19,11 +19,6 @@
 #include "BuiltInSynthAudioPlugin.h"
 #include "BuiltInSynthFormat.h"
 
-BuiltInSynthAudioPlugin::BuiltInSynthAudioPlugin()
-{
-}
-
-
 //===----------------------------------------------------------------------===//
 // AudioPluginInstance
 //===----------------------------------------------------------------------===//
@@ -42,7 +37,6 @@ void BuiltInSynthAudioPlugin::fillInPluginDescription(PluginDescription &descrip
     description.numInputChannels = this->getTotalNumInputChannels();
     description.numOutputChannels = this->getTotalNumOutputChannels();
 }
-
 
 //===----------------------------------------------------------------------===//
 // AudioProcessor
@@ -80,32 +74,6 @@ void BuiltInSynthAudioPlugin::releaseResources()
     // when playback stops
 }
 
-
-const String BuiltInSynthAudioPlugin::getInputChannelName(int channelIndex) const
-{
-    return "Input " + String(channelIndex + 1);
-}
-
-const String BuiltInSynthAudioPlugin::getOutputChannelName(int channelIndex) const
-{
-    return "Output " + String(channelIndex + 1);
-}
-
-bool BuiltInSynthAudioPlugin::isInputChannelStereoPair(int index) const
-{
-    return false;
-}
-
-bool BuiltInSynthAudioPlugin::isOutputChannelStereoPair(int index) const
-{
-    return true;
-}
-
-bool BuiltInSynthAudioPlugin::silenceInProducesSilenceOut() const
-{
-    return false;
-}
-
 double BuiltInSynthAudioPlugin::getTailLengthSeconds() const
 {
     return 1.0;
@@ -129,41 +97,11 @@ bool BuiltInSynthAudioPlugin::producesMidi() const
 AudioProcessorEditor *BuiltInSynthAudioPlugin::createEditor()
 {
     return nullptr;
-    //return new BuiltInSynthAudioPluginEditor(this);
 }
 
 bool BuiltInSynthAudioPlugin::hasEditor() const
 {
-    return true;
-}
-
-
-//===----------------------------------------------------------------------===//
-// Parameters
-//===----------------------------------------------------------------------===//
-
-int BuiltInSynthAudioPlugin::getNumParameters()
-{
-    return 0;
-}
-
-const String BuiltInSynthAudioPlugin::getParameterName(int parameterIndex)
-{
-    return "";
-}
-
-float BuiltInSynthAudioPlugin::getParameter(int parameterIndex)
-{
-    return 0.f;
-}
-
-const String BuiltInSynthAudioPlugin::getParameterText(int parameterIndex)
-{
-    return "";
-}
-
-void BuiltInSynthAudioPlugin::setParameter(int parameterIndex, float newValue)
-{
+    return false;
 }
 
 
@@ -181,28 +119,20 @@ int BuiltInSynthAudioPlugin::getCurrentProgram()
     return 0;
 }
 
-void BuiltInSynthAudioPlugin::setCurrentProgram(int index)
-{
-}
+void BuiltInSynthAudioPlugin::setCurrentProgram(int index) {}
 
 const String BuiltInSynthAudioPlugin::getProgramName(int index)
 {
     return "";
 }
 
-void BuiltInSynthAudioPlugin::changeProgramName(int index, const String &newName)
-{
-}
+void BuiltInSynthAudioPlugin::changeProgramName(int index, const String &newName) {}
 
 
 //===----------------------------------------------------------------------===//
 // State
 //===----------------------------------------------------------------------===//
 
-void BuiltInSynthAudioPlugin::getStateInformation(juce::MemoryBlock &destData)
-{
-}
+void BuiltInSynthAudioPlugin::getStateInformation(MemoryBlock &destData) {}
 
-void BuiltInSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes)
-{
-}
+void BuiltInSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes) {}

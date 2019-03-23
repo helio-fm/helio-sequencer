@@ -17,184 +17,98 @@
 
 #pragma once
 
-class HelioCallout;
-class ColourScheme;
+#include "ColourScheme.h"
 
-#define SHORT_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getShortAnimationLength());
-#define LONG_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getLongAnimationLength());
+#define SHORT_FADE_TIME (150)
+#define LONG_FADE_TIME (250)
 
-struct CachedImage: public Image, public ReferenceCountedObject
-{
-public:
-    CachedImage(const PixelFormat format, int width, int height, bool clearImage) :
-        Image(format, width, height, clearImage) {}
-    
-    typedef ReferenceCountedObjectPtr<CachedImage> Ptr;
-};
-
-class HelioTheme : public LookAndFeel_V4
+class HelioTheme final : public LookAndFeel_V4
 {
 public:
 
     HelioTheme();
 
-    ~HelioTheme() override;
-
-
     void initResources();
-
-    void initColours(const ::ColourScheme &colours);
-
-    void updateBackgroundRenders(bool force = false);
-
-
-    Typeface::Ptr getTextTypeface() const
-    {
-        return this->textTypefaceCache;
-    }
-    
-    Typeface::Ptr getHeaderTypeface() const
-    {
-        return this->headerTypefaceCache;
-    }
-    
-    
-    virtual int getShortAnimationLength()
-    {
-        return 150;
-    }
-
-    virtual int getLongAnimationLength()
-    {
-        return 250;
-    }
-    
+    void initColours(const ::ColourScheme::Ptr colours);
+    void updateFont(const Font &font);
     
     Typeface::Ptr getTypefaceForFont(const Font &) override;
-
     virtual Image getBackgroundNoise() const { return this->backgroundNoise; }
 
-
     static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
-
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
-
     static void drawNoiseWithin(Rectangle<float> bounds, Component *target, Graphics &g, float alphaMultiply = 1.f);
-
-
-    static void drawDashedRectangle(Graphics &g, const Rectangle<float> &rectangle, const Colour &colour,
-                                    float dashLength = 5.f, float spaceLength = 7.5,
-                                    float dashThickness = 1.f, float cornerRadius = 5.f);
-
-
+    static void drawDashedRectangle(Graphics &g,
+        const Rectangle<float> &rectangle, const Colour &colour,
+        float dashLength = 5.f, float spaceLength = 7.5,
+        float dashThickness = 1.f, float cornerRadius = 5.f);
     void drawStretchableLayoutResizerBar(Graphics &g,
             int /*w*/, int /*h*/, bool /*isVerticalBar*/,
             bool isMouseOver, bool isMouseDragging) override;
 
     //===------------------------------------------------------------------===//
-    // Combo box
+    // Text Editor
     //===------------------------------------------------------------------===//
 
-    void drawComboBox(Graphics &g, int width, int height,
-                              bool isButtonDown,
-                              int buttonX, int buttonY,
-                              int buttonW, int buttonH,
-                              ComboBox &box) override;
+    void fillTextEditorBackground(Graphics&, int w, int h, TextEditor&) override;
+    void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override;
 
-    Font getComboBoxFont(ComboBox&) override;
-    
-    Label *createComboBoxTextBox(ComboBox&) override;
-    
-    
     //===------------------------------------------------------------------===//
     // Selection
     //===------------------------------------------------------------------===//
     
     void drawLasso(Graphics &g, Component &lassoComp) override;
     
-    
     //===------------------------------------------------------------------===//
     // Labels
     //===------------------------------------------------------------------===//
 
     void drawLabel(Graphics &, Label &) override;
-
     void drawLabel(Graphics &, Label &, juce_wchar passwordCharacter);
-
     Font getLabelFont(Label&) override;
-
 
     //===------------------------------------------------------------------===//
     // Button
     //===------------------------------------------------------------------===//
 
     Font getTextButtonFont(TextButton&, int buttonHeight) override;
-
     void drawButtonText(Graphics &, TextButton &button,
-                                bool isMouseOverButton, bool isButtonDown) override;
-
+        bool isMouseOverButton, bool isButtonDown) override;
     void drawButtonBackground(Graphics &g, Button &button,
-                                      const Colour &backgroundColour,
-                                      bool isMouseOverButton, bool isButtonDown) override;
-
+        const Colour &backgroundColour,
+        bool isMouseOverButton, bool isButtonDown) override;
 
     //===------------------------------------------------------------------===//
-    // Filebrowser
+    // Tables
     //===------------------------------------------------------------------===//
 
-    void drawFileBrowserRow(Graphics &, int width, int height,
-                            const String &filename, Image *icon,
-                            const String &fileSizeDescription, const String &fileTimeDescription,
-                            bool isDirectory, bool isItemSelected, int itemIndex,
-                            DirectoryContentsDisplayComponent &) override;
-
+    void drawTableHeaderBackground(Graphics&, TableHeaderComponent&) override;
+    void drawTableHeaderColumn(Graphics&, TableHeaderComponent&,
+        const String &columnName, int columnId, int width, int height,
+        bool isMouseOver, bool isMouseDown, int columnFlags) override;
 
     //===------------------------------------------------------------------===//
     // Scrollbars
     //===------------------------------------------------------------------===//
 
     int getDefaultScrollbarWidth() override;
-
-    bool areScrollbarButtonsVisible() override
-    { return false; }
-
-    void drawScrollbarButton(Graphics &g,
-                                     ScrollBar &bar,
-                                     int width, int height,
-                                     int buttonDirection,
-                                     bool isScrollbarVertical,
-                                     bool isMouseOverButton,
-                                     bool isButtonDown) override
-    { }
-
-    void drawScrollbar(Graphics &g,
-                               ScrollBar &bar,
-                               int x, int y,
-                               int width, int height,
-                               bool isScrollbarVertical,
-                               int thumbStartPosition,
-                               int thumbSize,
-                               bool isMouseOver,
-                               bool isMouseDown) override;
-
+    bool areScrollbarButtonsVisible() override { return false; }
+    void drawScrollbarButton(Graphics &g, ScrollBar &bar,
+        int width, int height, int buttonDirection,
+        bool isScrollbarVertical, bool isMouseOverButton, bool isButtonDown) override {}
+    void drawScrollbar(Graphics &g, ScrollBar &bar,
+        int x, int y, int width, int height,
+        bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
+        bool isMouseOver, bool isMouseDown) override;
 
     //===------------------------------------------------------------------===//
-    // Menus
+    // Sliders
     //===------------------------------------------------------------------===//
 
-    Font getPopupMenuFont() override;
-
-    void drawPopupMenuBackground(Graphics &g, int width, int height) override;
-
-    void drawPopupMenuItem(Graphics&, const Rectangle<int>& area,
-                           bool isSeparator, bool isActive, bool isHighlighted,
-                           bool isTicked, bool hasSubMenu,
-                           const String& text,
-                           const String& shortcutKeyText,
-                           const Drawable* icon,
-                           const Colour* textColour) override;
-    
-    
+    void drawRotarySlider(Graphics&, int x, int y, int width, int height,
+        float sliderPosProportional, float rotaryStartAngle,
+        float rotaryEndAngle, Slider&) override;
+        
     //===------------------------------------------------------------------===//
     // Window
     //===------------------------------------------------------------------===//
@@ -203,7 +117,6 @@ public:
         bool /*isMouseOver*/, bool /*isMouseDragging*/) override;
 
     void drawResizableFrame(Graphics &g, int w, int h, const BorderSize<int> &border) override;
-
     void drawDocumentWindowTitleBar(DocumentWindow &window,
                                             Graphics &g, int w, int h,
                                             int titleSpaceX, int titleSpaceW,
@@ -211,7 +124,6 @@ public:
                                             bool drawTitleTextOnLeft) override;
 
     Button *createDocumentWindowButton(int buttonType) override;
-
     void positionDocumentWindowButtons(DocumentWindow &window,
             int titleBarX, int titleBarY,
             int titleBarW, int titleBarH,
@@ -219,19 +131,11 @@ public:
             Button *maximiseButton,
             Button *closeButton,
             bool positionTitleBarButtonsOnLeft) override;
+    
+    inline Image &getBgCacheA() noexcept { return this->bgCacheA; }
+    inline Image &getBgCacheB() noexcept { return this->bgCacheB; }
+    inline Image &getBgCacheC() noexcept { return this->bgCacheC; }
 
-    
-    
-    HashMap<String, CachedImage::Ptr> &getPanelsBgCache() noexcept
-    {
-        return this->panelsBgCache;
-    }
-    
-    HashMap<int, CachedImage::Ptr> &getRollBgCache() noexcept
-    {
-        return this->rollBgCache;
-    }
-    
 protected:
     
     const Image backgroundNoise;
@@ -239,12 +143,11 @@ protected:
     Image cachedBackground;
     
     Typeface::Ptr textTypefaceCache;
-    Typeface::Ptr headerTypefaceCache;
     
-    HashMap<String, CachedImage::Ptr> panelsBgCache;
-    HashMap<int, CachedImage::Ptr> rollBgCache;
-    //HashMap<int, CachedImage::Ptr> iconsCache; // todo?
-    
+    Image bgCacheA;
+    Image bgCacheB;
+    Image bgCacheC;
+
     JUCE_LEAK_DETECTOR(HelioTheme);
 
 };

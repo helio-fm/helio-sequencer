@@ -19,40 +19,49 @@
 #include "BuiltInSynthPiano.h"
 #include "BinaryData.h"
 
-#define ATTACK_TIME 0.0
-#define RELEASE_TIME 1.0
-#define MAX_PLAY_TIME 5.0
+#define ATTACK_TIME (0.0)
+#define RELEASE_TIME (0.5)
+#define MAX_PLAY_TIME (4.5)
 
-#if HELIO_DESKTOP
-#   define BUILTIN_PIANO_DEFERRED_INIT 1
-#elif HELIO_MOBILE
-#   define BUILTIN_PIANO_DEFERRED_INIT 0
-#endif
-
-
-BuiltInSynthPiano::BuiltInSynthPiano(bool empty /*= false*/)
+struct PianoSample final
 {
-    if (! empty)
+    PianoSample() = default;
+    PianoSample(const PianoSample &other) :
+        sourceData(other.sourceData),
+        sourceDataSize(other.sourceDataSize),
+        midiNoteForNormalPitch(other.midiNoteForNormalPitch),
+        midiNotes(other.midiNotes) {}
+
+    PianoSample(int lowKey, int highKey, int rootKey,
+        const char *sourceData, int sourceDataSize) :
+        sourceData(sourceData),
+        sourceDataSize(sourceDataSize),
+        midiNoteForNormalPitch(rootKey)
     {
-        this->initSamples();
-        this->initVoices();
-        
-#if ! BUILTIN_PIANO_DEFERRED_INIT
-        // This takes about 400ms on app load.
-        // If defined, avioding this and doing a deferred init on first processBlock
-        this->initSampler();
-#endif
+        for (int i = lowKey; i <= highKey; ++i)
+        {
+            this->midiNotes.setBit(i);
+        }
     }
 
-    this->setPlayConfigDetails(0,
-                               2,
-                               this->getSampleRate(),
-                               this->getBlockSize());
-}
+    ScopedPointer<AudioFormatReader> createReader()
+    {
+        static FlacAudioFormat flac;
+        return flac.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
+    }
 
-BuiltInSynthPiano::~BuiltInSynthPiano()
+    const char *sourceData;
+    int sourceDataSize;
+    String name;
+    BigInteger midiNotes;
+    int midiNoteForNormalPitch;
+
+    JUCE_LEAK_DETECTOR(PianoSample)
+};
+
+BuiltInSynthPiano::BuiltInSynthPiano()
 {
-    this->samples.clear();
+    this->setPlayConfigDetails(0, 2, this->getSampleRate(), this->getBlockSize());
 }
 
 const String BuiltInSynthPiano::getName() const
@@ -70,14 +79,14 @@ void BuiltInSynthPiano::initVoices()
 
 void BuiltInSynthPiano::processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages)
 {
-#if BUILTIN_PIANO_DEFERRED_INIT
-    if (this->synth.getNumSounds() == 0 &&
-        midiMessages.getNumEvents() > 0)
+    if (this->synth.getNumSounds() == 0 && midiMessages.getNumEvents() > 0)
     {
-        Logger::writeToLog("BuiltInSynthPiano deferred init.");
+        // Initialization takes about 400ms (i.e. slows app loading way down),
+        // and consumes a lot of RAM (though user might never use the built-in piano).
+        // So let's do a lazy initialization on first use - i.e. here in processBlock
+        this->initVoices();
         this->initSampler();
     }
-#endif
     
     BuiltInSynthAudioPlugin::processBlock(buffer, midiMessages);
 }
@@ -91,88 +100,28 @@ void BuiltInSynthPiano::initSampler()
 {
     this->synth.clearSounds();
 
-    for (auto s : this->samples)
+    Array<PianoSample> samples;
+
+    samples.add({ 26, 39, 36, BinaryData::C2v9_flac, BinaryData::C2v9_flacSize });
+    samples.add({ 40, 45, 42, BinaryData::F2v9_flac, BinaryData::F2v9_flacSize });
+
+    samples.add({ 46, 51, 48, BinaryData::C3v9_flac, BinaryData::C3v9_flacSize });
+    samples.add({ 52, 57, 54, BinaryData::F3v9_flac, BinaryData::F3v9_flacSize });
+
+    samples.add({ 58, 63, 60, BinaryData::C4v9_flac, BinaryData::C4v9_flacSize });
+    samples.add({ 64, 69, 66, BinaryData::F4v9_flac, BinaryData::F4v9_flacSize });
+
+    samples.add({ 70, 75, 72, BinaryData::C5v9_flac, BinaryData::C5v9_flacSize });
+    samples.add({ 76, 81, 78, BinaryData::F5v9_flac, BinaryData::F5v9_flacSize });
+
+    samples.add({ 82, 87, 84, BinaryData::C6v9_flac, BinaryData::C6v9_flacSize });
+    samples.add({ 88, 100, 90, BinaryData::F6v9_flac, BinaryData::F6v9_flacSize });
+
+    for (auto &s : samples)
     {
-        this->synth.addSound(new SamplerSound(s->name,
-                                              *s->reader,
-                                              s->midiNotes,
-                                              s->midiNoteForNormalPitch,
-                                              ATTACK_TIME,
-                                              RELEASE_TIME,
-                                              MAX_PLAY_TIME));
+        auto reader = s.createReader();
+        this->synth.addSound(new SamplerSound({}, *reader,
+            s.midiNotes, s.midiNoteForNormalPitch,
+            ATTACK_TIME, RELEASE_TIME, MAX_PLAY_TIME));
     }
 }
-
-void BuiltInSynthPiano::initSamples()
-{
-    this->samples.clear();
-    this->samples.add(new GrandSample("A0v9", 21, 22, 22, BinaryData::A0v9_ogg, BinaryData::A0v9_oggSize));
-    this->samples.add(new GrandSample("C1v9", 23, 25, 24, BinaryData::C1v9_ogg, BinaryData::C1v9_oggSize));
-    this->samples.add(new GrandSample("D#1v9", 26, 28, 27, BinaryData::D1v9_ogg, BinaryData::D1v9_oggSize));
-    this->samples.add(new GrandSample("F#1v9", 29, 31, 30, BinaryData::F1v9_ogg, BinaryData::F1v9_oggSize));
-    
-    this->samples.add(new GrandSample("A1v9", 32, 34, 33, BinaryData::A1v9_ogg, BinaryData::A1v9_oggSize));
-    this->samples.add(new GrandSample("C2v9", 35, 37, 36, BinaryData::C2v9_ogg, BinaryData::C2v9_oggSize));
-    this->samples.add(new GrandSample("D#2v9", 38, 40, 39, BinaryData::D2v9_ogg, BinaryData::D2v9_oggSize));
-    this->samples.add(new GrandSample("F#2v9", 41, 43, 42, BinaryData::F2v9_ogg, BinaryData::F2v9_oggSize));
-    
-    this->samples.add(new GrandSample("A2v9", 44, 46, 45, BinaryData::A2v9_ogg, BinaryData::A2v9_oggSize));
-    this->samples.add(new GrandSample("C3v9", 47, 49, 48, BinaryData::C3v9_ogg, BinaryData::C3v9_oggSize));
-    this->samples.add(new GrandSample("D#3v9", 50, 52, 51, BinaryData::D3v9_ogg, BinaryData::D3v9_oggSize));
-    this->samples.add(new GrandSample("F#3v9", 53, 55, 54, BinaryData::F3v9_ogg, BinaryData::F3v9_oggSize));
-    
-    this->samples.add(new GrandSample("A3v9", 56, 58, 57, BinaryData::A3v9_ogg, BinaryData::A3v9_oggSize));
-    this->samples.add(new GrandSample("C4v9", 59, 61, 60, BinaryData::C4v9_ogg, BinaryData::C4v9_oggSize));
-    this->samples.add(new GrandSample("D#4v9", 62, 64, 63, BinaryData::D4v9_ogg, BinaryData::D4v9_oggSize));
-    this->samples.add(new GrandSample("F#4v9", 65, 67, 66, BinaryData::F4v9_ogg, BinaryData::F4v9_oggSize));
-    
-    this->samples.add(new GrandSample("A4v9", 68, 70, 69, BinaryData::A4v9_ogg, BinaryData::A4v9_oggSize));
-    this->samples.add(new GrandSample("C5v9", 71, 73, 72, BinaryData::C5v9_ogg, BinaryData::C5v9_oggSize));
-    this->samples.add(new GrandSample("D#5v9", 74, 76, 75, BinaryData::D5v9_ogg, BinaryData::D5v9_oggSize));
-    this->samples.add(new GrandSample("F#5v9", 77, 79, 78, BinaryData::F5v9_ogg, BinaryData::F5v9_oggSize));
-    
-    this->samples.add(new GrandSample("A5v9", 80, 82, 81, BinaryData::A5v9_ogg, BinaryData::A5v9_oggSize));
-    this->samples.add(new GrandSample("C6v9", 83, 85, 84, BinaryData::C6v9_ogg, BinaryData::C6v9_oggSize));
-    this->samples.add(new GrandSample("D#6v9", 86, 88, 87, BinaryData::D6v9_ogg, BinaryData::D6v9_oggSize));
-    this->samples.add(new GrandSample("F#6v9", 89, 91, 90, BinaryData::F6v9_ogg, BinaryData::F6v9_oggSize));
-    
-    this->samples.add(new GrandSample("A6v9", 92, 94, 93, BinaryData::A6v9_ogg, BinaryData::A6v9_oggSize));
-    this->samples.add(new GrandSample("C7v9", 95, 97, 96, BinaryData::C7v9_ogg, BinaryData::C7v9_oggSize));
-    this->samples.add(new GrandSample("D#7v9", 98, 100, 99, BinaryData::D7v9_ogg, BinaryData::D7v9_oggSize));
-    this->samples.add(new GrandSample("F#7v9", 101, 103, 102, BinaryData::F7v9_ogg, BinaryData::F7v9_oggSize));
-    
-    this->samples.add(new GrandSample("A7v9", 104, 106, 105, BinaryData::A7v9_ogg, BinaryData::A7v9_oggSize));
-    this->samples.add(new GrandSample("C8v9", 107, 108, 108, BinaryData::C8v9_ogg, BinaryData::C8v9_oggSize));
-}
-
-
-//sample=A0v9.ogg   lokey=21    hikey=22    pitch_keycenter=21
-//sample=C1v9.ogg   lokey=23    hikey=25    pitch_keycenter=24
-//sample=D#1v9.ogg  lokey=26    hikey=28    pitch_keycenter=27
-//sample=F#1v9.ogg  lokey=29    hikey=31    pitch_keycenter=30
-//sample=A1v9.ogg   lokey=32    hikey=34    pitch_keycenter=33
-//sample=C2v9.ogg   lokey=35    hikey=37    pitch_keycenter=36
-//sample=D#2v9.ogg  lokey=38    hikey=40    pitch_keycenter=39
-//sample=F#2v9.ogg  lokey=41    hikey=43    pitch_keycenter=42
-//sample=A2v9.ogg   lokey=44    hikey=46    pitch_keycenter=45
-//sample=C3v9.ogg   lokey=47    hikey=49    pitch_keycenter=48
-//sample=D#3v9.ogg  lokey=50    hikey=52    pitch_keycenter=51
-//sample=F#3v9.ogg  lokey=53    hikey=55    pitch_keycenter=54
-//sample=A3v9.ogg   lokey=56    hikey=58    pitch_keycenter=57
-//sample=C4v9.ogg   lokey=59    hikey=61    pitch_keycenter=60
-//sample=D#4v9.ogg  lokey=62    hikey=64    pitch_keycenter=63
-//sample=F#4v9.ogg  lokey=65    hikey=67    pitch_keycenter=66
-//sample=A4v9.ogg   lokey=68    hikey=70    pitch_keycenter=69
-//sample=C5v9.ogg   lokey=71    hikey=73    pitch_keycenter=72
-//sample=D#5v9.ogg  lokey=74    hikey=76    pitch_keycenter=75
-//sample=F#5v9.ogg  lokey=77    hikey=79    pitch_keycenter=78
-//sample=A5v9.ogg   lokey=80    hikey=82    pitch_keycenter=81
-//sample=C6v9.ogg   lokey=83    hikey=85    pitch_keycenter=84
-//sample=D#6v9.ogg  lokey=86    hikey=88    pitch_keycenter=87
-//sample=F#6v9.ogg  lokey=89    hikey=91    pitch_keycenter=90
-//sample=A6v9.ogg   lokey=92    hikey=94    pitch_keycenter=93
-//sample=C7v9.ogg   lokey=95    hikey=97    pitch_keycenter=96
-//sample=D#7v9.ogg  lokey=98    hikey=100   pitch_keycenter=99
-//sample=F#7v9.ogg  lokey=101   hikey=103   pitch_keycenter=102
-//sample=A7v9.ogg   lokey=104   hikey=106   pitch_keycenter=105
-//sample=C8v9.ogg   lokey=107   hikey=108   pitch_keycenter=108

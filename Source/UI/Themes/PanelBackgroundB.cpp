@@ -23,9 +23,8 @@
 
 //[MiscUserDefs]
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 #include "Icons.h"
-
-static const String panelBgKey = "PanelBackgroundB";
 //[/MiscUserDefs]
 
 PanelBackgroundB::PanelBackgroundB()
@@ -34,11 +33,12 @@ PanelBackgroundB::PanelBackgroundB()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 400);
+    this->setSize(600, 400);
 
     //[Constructor]
     this->setOpaque(true);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/Constructor]
 }
 
@@ -58,55 +58,30 @@ void PanelBackgroundB::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0xff48358c),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       Colour (0xff2d3e61),
-                                       0.0f, static_cast<float> (proportionOfHeight (0.6500f)),
-                                       true));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
-
-    g.setGradientFill (ColourGradient (Colour (0x1e48358c),
-                                       static_cast<float> (proportionOfWidth (0.8924f)), static_cast<float> (proportionOfHeight (0.9827f)),
-                                       Colour (0x00000000),
-                                       80.0f, static_cast<float> (proportionOfHeight (0.0000f)),
-                                       false));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour = Colour (0xff474c90);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-#if PANEL_B_HAS_PRERENDERED_BACKGROUND
+    auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+    //if (theme.getBgCacheB().isValid())
+    //{
+        g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
+    //}
+    //else
+    //{
+    //    g.setColour(findDefaultColour(ColourIDs::BackgroundB::fill));
+    //    g.fillRect(this->getLocalBounds());
+    //}
 
-    const CachedImage::Ptr prerendered = static_cast<HelioTheme &>(this->getLookAndFeel()).getPanelsBgCache()[panelBgKey];
-
-    if (prerendered != nullptr)
-    {
-        Icons::drawImageRetinaAware(*prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
-    }
-
-#else
-
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundB::panelFillStartId),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       findColour(PanelBackgroundB::panelFillEndId),
-                                       0.0f, static_cast<float> (proportionOfHeight (0.6500f)),
-                                       true));
-
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
-
-#if HELIO_DESKTOP
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundB::panelShadeStartId),
-                                       static_cast<float> (proportionOfWidth (0.8924f)), static_cast<float> (proportionOfHeight (0.9827f)),
-                                       findColour(PanelBackgroundB::panelShadeEndId),
-                                       80.0f, static_cast<float> (proportionOfHeight (0.0000f)),
-                                       false));
-
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
-
-    HelioTheme::drawNoise(this, g, 0.5f);
-#endif
-
-#endif
     //[/UserPaint]
 }
 
@@ -124,52 +99,19 @@ void PanelBackgroundB::resized()
 
 void PanelBackgroundB::updateRender(HelioTheme &theme)
 {
-#if PANEL_B_HAS_PRERENDERED_BACKGROUND
-
-    if (theme.getPanelsBgCache()[panelBgKey] != nullptr)
+    if (theme.getBgCacheB().isValid())
     {
         return;
     }
 
-    const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int scale = int(d.scale);
-    const int w = d.totalArea.getWidth() * scale;
-    const int h = d.totalArea.getHeight() * scale;
-
-    Logger::writeToLog("Prerendering background with w:" + String(w) + ", h:" + String(h));
-
-    CachedImage::Ptr render(new CachedImage(Image::ARGB, w, h, true));
-    Graphics g(*render);
-
-    g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundB::panelFillStartId),
-                                       static_cast<float> ((w / 2)), 0.0f,
-                                       theme.findColour(PanelBackgroundB::panelFillEndId),
-                                       0.0f, static_cast<float> (h * (0.6500f)),
-                                       true));
-
+    const int w = 64;
+    const int h = 64;
+    Image render(Image::ARGB, w, h, true);
+    Graphics g(render);
+    g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));
     g.fillAll();
-
-    g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundB::panelShadeStartId),
-                                       static_cast<float> (w * (0.8924f)), static_cast<float> (h * (0.9827f)),
-                                       theme.findColour(PanelBackgroundB::panelShadeEndId),
-                                       80.0f, static_cast<float> (h * (0.0000f)),
-                                       false));
-
-    g.fillAll();
-
-    g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundB::panelShadeStartId),
-                                       static_cast<float> (w * (0.8924f)), static_cast<float> (h * (0.9827f)),
-                                       theme.findColour(PanelBackgroundB::panelShadeEndId),
-                                       80.0f, static_cast<float> (h * (0.0000f)),
-                                       false));
-
-    g.fillAll();
-
     HelioTheme::drawNoise(theme, g, 0.5f);
-
-    theme.getPanelsBgCache().set(panelBgKey, render);
-
-#endif
+    theme.getBgCacheB() = render;
 }
 
 //[/MiscUserCode]
@@ -183,10 +125,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="0"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 0M 0M" fill=" radial: 0C 0, 0 65%, 0=ff48358c, 1=ff2d3e61"
-          hasStroke="0"/>
-    <RECT pos="0 0 0M 0M" fill="linear: 89.24% 98.268%, 80 0%, 0=1e48358c, 1=0"
-          hasStroke="0"/>
+    <RECT pos="0 0 0M 0M" fill="solid: ff474c90" hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

@@ -19,14 +19,16 @@
 
 #include "CommandIDs.h"
 
-class DialogBackground : public Component, private Timer
+class DialogBackground final : public Component, private Timer
 {
 public:
     
-    DialogBackground() : appearMode(true)
+    DialogBackground() : appearMode(true), alpha(0.f)
     {
-        this->setAlpha(0.f);
-        this->startTimer(17);
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+        this->setWantsKeyboardFocus(false);
+        this->startTimerHz(60);
     }
     
     void handleCommandMessage(int commandId) override
@@ -34,7 +36,7 @@ public:
         if (commandId == CommandIDs::HideDialog)
         {
             this->appearMode = false;
-            this->startTimer(17);
+            this->startTimerHz(60);
         }
     }
 
@@ -45,7 +47,10 @@ public:
     { this->setSize(this->getParentWidth(), this->getParentHeight()); }
 
     void paint(Graphics &g) override
-    { g.fillAll(Colours::black.withAlpha(0.1f)); }
+    {
+        g.setColour(Colours::black.withAlpha(this->alpha));
+        g.fillRect(this->getLocalBounds()); 
+    }
 
 private:
 
@@ -53,23 +58,26 @@ private:
     {
         if (this->appearMode)
         {
-            this->setAlpha(this->getAlpha() + 0.2);
-    
-            if (this->getAlpha() == 1.f)
+            this->alpha += 0.025f;
+            this->repaint();
+
+            if (this->alpha >= 0.15f)
             {
                 this->stopTimer();
             }
         }
-    else
-    {
-        this->setAlpha(this->getAlpha() - 0.2);
-    
-        if (this->getAlpha() == 0.f)
+        else
         {
-            delete this;
+            this->alpha -= 0.025f;
+            this->repaint();
+
+            if (this->alpha <= 0.025f)
+            {
+                delete this;
+            }
         }
-    }
     }
 
     bool appearMode;
+    float alpha;
 };

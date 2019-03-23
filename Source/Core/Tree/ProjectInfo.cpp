@@ -17,45 +17,39 @@
 
 #include "Common.h"
 #include "ProjectInfo.h"
-#include "ProjectInfoDeltas.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "Delta.h"
 
-ProjectInfo::ProjectInfo(ProjectTreeItem &parent) : project(parent)
+using namespace Serialization::VCS;
+
+ProjectInfo::ProjectInfo(ProjectNode &parent) : project(parent)
 {
     this->vcsDiffLogic = new VCS::ProjectInfoDiffLogic(*this);
 
     this->initTimestamp = Time::getCurrentTime().toMilliseconds();
     this->license = "Copyright";
-    //this->fullName = this->project.getName();
     this->author = SystemStats::getFullUserName();
     this->description = "";
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectInfoDeltas::projectLicense));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectInfoDeltas::projectFullName));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectInfoDeltas::projectAuthor));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectLicense));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTitle));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectAuthor));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription("initialized"), ProjectInfoDeltas::projectDescription));
 }
 
-
-ProjectInfo::~ProjectInfo()
-{
-
-}
-
-int64 ProjectInfo::getStartTime() const         { return this->initTimestamp; }
+int64 ProjectInfo::getStartTimestamp() const         { return this->initTimestamp; }
 
 String ProjectInfo::getLicense() const          { return this->license; }
-void ProjectInfo::setLicense(String val)        { this->license = val; this->project.broadcastInfoChanged(this); }
+void ProjectInfo::setLicense(String val)        { this->license = val; this->project.broadcastChangeProjectInfo(this); }
 
-String ProjectInfo::getFullName() const         { return this->project.getCaption(); }
-void ProjectInfo::setFullName(String val)       { this->project.onRename(val); this->project.broadcastInfoChanged(this); } // this->fullName = val;
+String ProjectInfo::getFullName() const         { return this->project.getName(); }
+void ProjectInfo::setFullName(String val)       { this->project.safeRename(val, true); } // will broadcastChangeProjectInfo itself
 
 String ProjectInfo::getAuthor() const           { return this->author; }
-void ProjectInfo::setAuthor(String val)         { this->author = val; this->project.broadcastInfoChanged(this); }
+void ProjectInfo::setAuthor(String val)         { this->author = val; this->project.broadcastChangeProjectInfo(this); }
 
 String ProjectInfo::getDescription() const      { return this->description; }
-void ProjectInfo::setDescription(String val)    { this->description = val; this->project.broadcastInfoChanged(this); }
+void ProjectInfo::setDescription(String val)    { this->description = val; this->project.broadcastChangeProjectInfo(this); }
 
 
 //===----------------------------------------------------------------------===//
@@ -77,27 +71,27 @@ VCS::Delta *ProjectInfo::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *ProjectInfo::createDeltaDataFor(int index) const
+ValueTree ProjectInfo::getDeltaData(int deltaIndex) const
 {
-    if (this->deltas[index]->getType() == ProjectInfoDeltas::projectLicense)
+    if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectLicense))
     {
         return this->serializeLicenseDelta();
     }
-    if (this->deltas[index]->getType() == ProjectInfoDeltas::projectFullName)
+    if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectTitle))
     {
         return this->serializeFullNameDelta();
     }
-    else if (this->deltas[index]->getType() == ProjectInfoDeltas::projectAuthor)
+    else if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectAuthor))
     {
         return this->serializeAuthorDelta();
     }
-    else if (this->deltas[index]->getType() == ProjectInfoDeltas::projectDescription)
+    else if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectDescription))
     {
         return this->serializeDescriptionDelta();
     }
 
     jassertfalse;
-    return nullptr;
+    return {};
 }
 
 VCS::DiffLogic *ProjectInfo::getDiffLogic() const
@@ -110,72 +104,70 @@ void ProjectInfo::resetStateTo(const TrackedItem &newState)
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
-        ScopedPointer<XmlElement> newDeltaData(newState.createDeltaDataFor(i));
+        const auto newDeltaData(newState.getDeltaData(i));
         
-        if (newDelta->getType() == ProjectInfoDeltas::projectLicense)
+        if (newDelta->hasType(ProjectInfoDeltas::projectLicense))
         {
             this->resetLicenseDelta(newDeltaData);
         }
-        else if (newDelta->getType() == ProjectInfoDeltas::projectFullName)
+        else if (newDelta->hasType(ProjectInfoDeltas::projectTitle))
         {
             this->resetFullNameDelta(newDeltaData);
         }
-        else if (newDelta->getType() == ProjectInfoDeltas::projectAuthor)
+        else if (newDelta->hasType(ProjectInfoDeltas::projectAuthor))
         {
             this->resetAuthorDelta(newDeltaData);
         }
-        else if (newDelta->getType() == ProjectInfoDeltas::projectDescription)
+        else if (newDelta->hasType(ProjectInfoDeltas::projectDescription))
         {
             this->resetDescriptionDelta(newDeltaData);
         }
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectInfo::serialize() const
+ValueTree ProjectInfo::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::projectInfo);
+    ValueTree tree(Serialization::Core::projectInfo);
 
-    this->serializeVCSUuid(*xml);
+    this->serializeVCSUuid(tree);
 
-    xml->setAttribute(Serialization::Core::projectTimeStamp, String(this->initTimestamp));
-    xml->setAttribute(ProjectInfoDeltas::projectLicense, this->getLicense());
-//    xml->setAttribute(ProjectInfoDeltas::projectFullName, this->getFullName());
-    xml->setAttribute(ProjectInfoDeltas::projectAuthor, this->getAuthor());
-    xml->setAttribute(ProjectInfoDeltas::projectDescription, this->getDescription());
+    tree.setProperty(Serialization::Core::projectTimeStamp, String(this->initTimestamp), nullptr);
+    tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense(), nullptr);
+    tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor(), nullptr);
+    tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription(), nullptr);
 
-    return xml;
+    return tree;
 }
 
-void ProjectInfo::deserialize(const XmlElement &xml)
+void ProjectInfo::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::Core::projectInfo) ?
-                             &xml : xml.getChildByName(Serialization::Core::projectInfo);
+    const auto root = tree.hasType(Serialization::Core::projectInfo) ?
+        tree : tree.getChildWithName(Serialization::Core::projectInfo);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    this->deserializeVCSUuid(*root);
+    this->deserializeVCSUuid(root);
 
-    this->initTimestamp = root->getStringAttribute(Serialization::Core::projectTimeStamp).getLargeIntValue();
-    this->license = root->getStringAttribute(ProjectInfoDeltas::projectLicense);
-//    this->fullName = root->getStringAttribute(ProjectInfoDeltas::projectFullName);
-    this->author = root->getStringAttribute(ProjectInfoDeltas::projectAuthor);
-    this->description = root->getStringAttribute(ProjectInfoDeltas::projectDescription);
+    this->initTimestamp = root.getProperty(Serialization::Core::projectTimeStamp);
+    this->license = root.getProperty(ProjectInfoDeltas::projectLicense);
+    this->author = root.getProperty(ProjectInfoDeltas::projectAuthor);
+    this->description = root.getProperty(ProjectInfoDeltas::projectDescription);
 
-    this->project.broadcastInfoChanged(this);
+    this->project.broadcastChangeProjectInfo(this);
 }
 
 void ProjectInfo::reset()
 {
-//    this->fullName = "";
-    this->author = "";
-    this->description = "";
+    this->author.clear();
+    this->description.clear();
+    this->license.clear();
+    this->initTimestamp = 0;
 }
 
 
@@ -183,74 +175,70 @@ void ProjectInfo::reset()
 // Deltas
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectInfo::serializeLicenseDelta() const
+ValueTree ProjectInfo::serializeLicenseDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectLicense);
-    xml->setAttribute(Serialization::VCS::delta, this->getLicense());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectLicense);
+    tree.setProperty(Serialization::VCS::delta, this->getLicense(), nullptr);
+    return tree;
 }
 
-XmlElement *ProjectInfo::serializeFullNameDelta() const
+ValueTree ProjectInfo::serializeFullNameDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectFullName);
-    xml->setAttribute(Serialization::VCS::delta, this->getFullName());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectTitle);
+    tree.setProperty(Serialization::VCS::delta, this->getFullName(), nullptr);
+    return tree;
 }
 
-XmlElement *ProjectInfo::serializeAuthorDelta() const
+ValueTree ProjectInfo::serializeAuthorDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectAuthor);
-    xml->setAttribute(Serialization::VCS::delta, this->getAuthor());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectAuthor);
+    tree.setProperty(Serialization::VCS::delta, this->getAuthor(), nullptr);
+    return tree;
 }
 
-XmlElement *ProjectInfo::serializeDescriptionDelta() const
+ValueTree ProjectInfo::serializeDescriptionDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectDescription);
-    xml->setAttribute(Serialization::VCS::delta, this->getDescription());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectDescription);
+    tree.setProperty(Serialization::VCS::delta, this->getDescription(), nullptr);
+    return tree;
 }
 
-void ProjectInfo::resetLicenseDelta(const XmlElement *state)
+void ProjectInfo::resetLicenseDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == ProjectInfoDeltas::projectLicense);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
-
-    if (delta != this->license)
+    jassert(state.hasType(ProjectInfoDeltas::projectLicense));
+    const String &licenseDelta = state.getProperty(Serialization::VCS::delta);
+    if (licenseDelta != this->license)
     {
-        this->setLicense(delta);
+        this->setLicense(licenseDelta);
     }
 }
 
-void ProjectInfo::resetFullNameDelta(const XmlElement *state)
+void ProjectInfo::resetFullNameDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == ProjectInfoDeltas::projectFullName);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
-
-    if (delta != this->getFullName())
+    jassert(state.hasType(ProjectInfoDeltas::projectTitle));
+    const String &nameDelta = state.getProperty(Serialization::VCS::delta);
+    if (nameDelta != this->getFullName())
     {
-        this->setFullName(delta);
+        this->setFullName(nameDelta);
     }
 }
 
-void ProjectInfo::resetAuthorDelta(const XmlElement *state)
+void ProjectInfo::resetAuthorDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == ProjectInfoDeltas::projectAuthor);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
-
-    if (delta != this->author)
+    jassert(state.hasType(ProjectInfoDeltas::projectAuthor));
+    const String &authorDelta = state.getProperty(Serialization::VCS::delta);
+    if (authorDelta != this->author)
     {
-        this->setAuthor(delta);
+        this->setAuthor(authorDelta);
     }
 }
 
-void ProjectInfo::resetDescriptionDelta(const XmlElement *state)
+void ProjectInfo::resetDescriptionDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == ProjectInfoDeltas::projectDescription);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
-
-    if (delta != this->description)
+    jassert(state.hasType(ProjectInfoDeltas::projectDescription));
+    const String &descriptionDelta = state.getProperty(Serialization::VCS::delta);
+    if (descriptionDelta != this->description)
     {
-        this->setDescription(delta);
+        this->setDescription(descriptionDelta);
     }
 }

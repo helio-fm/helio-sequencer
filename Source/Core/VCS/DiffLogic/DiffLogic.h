@@ -27,22 +27,14 @@ namespace VCS
     public:
         
         static DiffLogic *createLogicCopy(TrackedItem &copyFrom, TrackedItem &targetItem);
-
-        static DiffLogic *createLogicFor(TrackedItem &targetItem, const String &type);
-
+        static DiffLogic *createLogicFor(TrackedItem &targetItem, const Identifier &type);
 
         explicit DiffLogic(TrackedItem &targetItem) : target(targetItem) {}
-
         virtual ~DiffLogic() {}
 
-
-        virtual const String getType() const = 0;
-
-
-        virtual void resetStateTo(const TrackedItem &newState) = 0;
+        virtual const Identifier getType() const = 0;
 
         virtual Diff *createDiff(const TrackedItem &initialState) const = 0;
-
         virtual Diff *createMergedItem(const TrackedItem &initialState) const = 0;
 
     protected:

@@ -40,24 +40,24 @@ private:
     public:
         
         explicit Band(SpectralLogo *parent);
-        
-        void setValue(float value);
         void reset();
 
-        inline Path buildPath(float cx, float cy, float h, float radians, int numSkippedSegments);
-        inline void drawBand(Graphics &g, float cx, float cy, float h, float radians, int numSkippedSegments);
+        inline Path buildPath(float v, float cx, float cy, float h,
+            float radians, int numSkippedSegments, uint32 timeNow);
 
     private:
         
-        SpectralLogo *meter;
-        
+        SpectralLogo *parent;
+
         float value;
-        float valueHold;
         float valueDecay;
+        uint32 valueDecayStart;
+
         float peak;
-        float peakHold;
         float peakDecay;
-        
+        float peakDecayColour;
+        uint32 peakDecayStart;
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band);
     };
     
@@ -66,6 +66,7 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
+    Colour colour;
     OwnedArray<SpectralLogo::Band> bands;
     Path wave;
     

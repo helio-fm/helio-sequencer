@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ViewportFitProxyComponent.h"
+#include "CommandIDs.h"
 
 #define DRAG_SPEED 1
 #define PADDING 30
@@ -29,6 +30,7 @@ ViewportFitProxyComponent::ViewportFitProxyComponent(Viewport &parentViewport,
     viewportDragStart(0, 0)
 {
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->addAndMakeVisible(this->target);
     this->setSize(this->target->getWidth(), this->target->getHeight());
     this->centerTargetToViewport();
@@ -84,7 +86,6 @@ void ViewportFitProxyComponent::centerTargetToViewport()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -93,17 +94,18 @@ void ViewportFitProxyComponent::mouseMove(const MouseEvent &e)
 {
     if (meFitsViewport())
     {
-        this->setMouseCursor(MouseCursor(MouseCursor::NormalCursor));
+        this->setMouseCursor(MouseCursor::NormalCursor);
     }
     else
     {
-        this->setMouseCursor(MouseCursor(MouseCursor::DraggingHandCursor));
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
     }
 }
 
 void ViewportFitProxyComponent::mouseDown(const MouseEvent &event)
 {
     this->viewportDragStart = this->viewport.getViewPosition();
+    this->target->postCommandMessage(CommandIDs::StartDragViewport);
 }
 
 void ViewportFitProxyComponent::mouseDrag(const MouseEvent &event)
@@ -114,14 +116,17 @@ void ViewportFitProxyComponent::mouseDrag(const MouseEvent &event)
                                event.getDistanceFromDragStartY() * DRAG_SPEED);
 
     this->viewport.setViewPosition(this->viewportDragStart - dragDelta);
+}
 
+void ViewportFitProxyComponent::mouseUp(const MouseEvent &event)
+{
+    target->postCommandMessage(CommandIDs::EndDragViewport);
 }
 
 void ViewportFitProxyComponent::parentSizeChanged()
 {
     this->centerTargetToViewport();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Private

@@ -18,89 +18,28 @@
 #include "Common.h"
 #include "Icons.h"
 #include "BinaryData.h"
-#include "App.h"
-#include "HelioTheme.h"
+#include "ColourIDs.h"
 
-const String Icons::empty = "empty";
-const String Icons::menu = "menu";
-const String Icons::project = "project";
-const String Icons::play = "play";
-const String Icons::pause = "pause";
-const String Icons::instrumentSettings = "instrumentSettings";
-const String Icons::instrumentGraph = "instrumentGraph";
-const String Icons::vcs = "vcs";
-const String Icons::automation = "automation";
-const String Icons::workspace = "workspace";
-const String Icons::layer = "layer";
-const String Icons::group = "group";
-const String Icons::backward = "backward";
-const String Icons::forward = "forward";
-const String Icons::left = "left";
-const String Icons::right = "right";
-const String Icons::settings = "settings";
-const String Icons::saxophone = "saxophone";
-const String Icons::trash = "trash";
-const String Icons::ellipsis = "ellipsis";
-const String Icons::undo = "undo";
-const String Icons::redo = "redo";
-const String Icons::close = "close";
-const String Icons::apply = "apply";
-const String Icons::create = "create";
-const String Icons::open = "open";
-const String Icons::minus = "minus";
-const String Icons::plus = "plus";
-const String Icons::colour = "colour";
-const String Icons::login = "login";
-const String Icons::fail = "fail";
-const String Icons::success = "success";
-const String Icons::progressIndicator= "progressIndicator";
-const String Icons::remote = "remote";
-const String Icons::local = "local";
-const String Icons::commit = "commit";
-const String Icons::reset = "reset";
-const String Icons::push = "push";
-const String Icons::pull = "pull";
-const String Icons::copy = "copy";
-const String Icons::paste = "paste";
-const String Icons::cut = "cut";
-const String Icons::zoomIn = "zoomIn";
-const String Icons::zoomOut = "zoomOut";
-const String Icons::update = "update";
-const String Icons::up = "up";
-const String Icons::down = "down";
-const String Icons::previous = "previous";
-const String Icons::next = "next";
-const String Icons::volumeUp = "volumeUp";
-const String Icons::volumeOff = "volumeOff";
-const String Icons::render = "render";
-const String Icons::cursorTool = "cursorTool";
-const String Icons::drawTool = "drawTool";
-const String Icons::selectionTool = "selectionTool";
-const String Icons::zoomTool = "zoomTool";
-const String Icons::dragTool = "dragTool";
-const String Icons::insertSpaceTool = "insertSpaceTool";
-const String Icons::wipeScapeTool = "wipeScapeTool";
-const String Icons::cropTool = "cropTool";
-const String Icons::annotation = "annotation";
-const String Icons::arpeggiator = "arpeggiator";
-const String Icons::switcher = "switcher";
-const String Icons::stretchLeft = "stretchLeft";
-const String Icons::stretchRight = "stretchRight";
-const String Icons::toggleOn = "toggleOn";
-const String Icons::toggleOff = "toggleOff";
-
-
-struct BuiltInImageData
+static String toLowerCamelCase(const String &string)
 {
-    BuiltInImageData()
+    if (string.length() > 1)
     {
-        // empty constructor, needed for hashmap, should never be called.
-        jassertfalse;
+        return string.substring(0, 1).toLowerCase() +
+            string.substring(1);
     }
-    
-    BuiltInImageData(const void *_data, const size_t _numBytes) :
-    data(_data), numBytes(_numBytes)
-    { }
+
+    return string;
+}
+
+struct BuiltInImageData final
+{
+    BuiltInImageData() = default;
+
+    BuiltInImageData(const String &name)
+    {
+        const String assumedFileName = toLowerCamelCase(name) + "_svg";
+        this->data = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), this->numBytes);
+    }
     
     BuiltInImageData &operator= (const BuiltInImageData &other)
     {
@@ -110,150 +49,144 @@ struct BuiltInImageData
     }
     
     const void *data;
-    size_t numBytes;
+    int numBytes;
 };
 
-
-static HashMap<String, BuiltInImageData> builtInImages;
+static FlatHashMap<Icons::Id, BuiltInImageData> builtInImages;
 
 void Icons::clearBuiltInImages()
 {
     builtInImages.clear();
 }
 
-void Icons::setupBuiltInImages()
+#define setIconForKey(x) builtInImages[Icons::x] = BuiltInImageData(#x);
+
+void Icons::initBuiltInImages()
 {
-    builtInImages.set(Icons::workspace, BuiltInImageData(BinaryData::logo2_svg, BinaryData::logo2_svgSize));
-    builtInImages.set(Icons::layer, BuiltInImageData(BinaryData::eight_note_svg, BinaryData::eight_note_svgSize));
-    builtInImages.set(Icons::group, BuiltInImageData(BinaryData::beamed_note_svg, BinaryData::beamed_note_svgSize));
-    builtInImages.set(Icons::automation, BuiltInImageData(BinaryData::bezier_svg, BinaryData::bezier_svgSize));
-    builtInImages.set(Icons::project, BuiltInImageData(BinaryData::clef_svg, BinaryData::clef_svgSize));
-    builtInImages.set(Icons::vcs, BuiltInImageData(BinaryData::hourglass_svg, BinaryData::hourglass_svgSize));
-    builtInImages.set(Icons::saxophone, BuiltInImageData(BinaryData::saxophone_svg, BinaryData::saxophone_svgSize));
-    builtInImages.set(Icons::settings, BuiltInImageData(BinaryData::settings2_svg, BinaryData::settings2_svgSize));
-    
-    builtInImages.set(Icons::apply, BuiltInImageData(BinaryData::check_svg, BinaryData::check_svgSize));
-    
-    builtInImages.set(Icons::menu, BuiltInImageData(BinaryData::menu_svg, BinaryData::menu_svgSize));
-    builtInImages.set(Icons::login, BuiltInImageData(BinaryData::key_svg, BinaryData::key_svgSize));
-    builtInImages.set(Icons::create, BuiltInImageData(BinaryData::plus2_svg, BinaryData::plus2_svgSize));
-    builtInImages.set(Icons::open, BuiltInImageData(BinaryData::folder2_svg, BinaryData::folder2_svgSize));
-    builtInImages.set(Icons::minus, BuiltInImageData(BinaryData::minus2_svg, BinaryData::minus2_svgSize));
-    builtInImages.set(Icons::plus, BuiltInImageData(BinaryData::plus2_svg, BinaryData::plus2_svgSize));
-    builtInImages.set(Icons::colour, BuiltInImageData(BinaryData::brush_svg, BinaryData::brush_svgSize));
-    
-    builtInImages.set(Icons::remote, BuiltInImageData(BinaryData::cloud2_svg, BinaryData::cloud2_svgSize));
-    builtInImages.set(Icons::local, BuiltInImageData(BinaryData::drive_svg, BinaryData::drive_svgSize));
-    
-    builtInImages.set(Icons::play, BuiltInImageData(BinaryData::play2_svg, BinaryData::play2_svgSize));
-    builtInImages.set(Icons::pause, BuiltInImageData(BinaryData::pause2_svg, BinaryData::pause2_svgSize));
-    
-    builtInImages.set(Icons::undo, BuiltInImageData(BinaryData::arrowback_svg, BinaryData::arrowback_svgSize));
-    builtInImages.set(Icons::redo, BuiltInImageData(BinaryData::arrowforward_svg, BinaryData::arrowforward_svgSize));
-    
-    builtInImages.set(Icons::close, BuiltInImageData(BinaryData::times_svg, BinaryData::times_svgSize));
-    builtInImages.set(Icons::fail, BuiltInImageData(BinaryData::times_svg, BinaryData::times_svgSize));
-    builtInImages.set(Icons::success, BuiltInImageData(BinaryData::check_svg, BinaryData::check_svgSize));
-    
-    builtInImages.set(Icons::progressIndicator, BuiltInImageData(BinaryData::heptagram2_svg, BinaryData::heptagram2_svgSize));
-    
-    builtInImages.set(Icons::commit, BuiltInImageData(BinaryData::diskette_svg, BinaryData::diskette_svgSize));
-    builtInImages.set(Icons::reset, BuiltInImageData(BinaryData::history_svg, BinaryData::history_svgSize));
-    builtInImages.set(Icons::push, BuiltInImageData(BinaryData::cloudupload_svg, BinaryData::cloudupload_svgSize));
-    builtInImages.set(Icons::pull, BuiltInImageData(BinaryData::clouddownload_svg, BinaryData::clouddownload_svgSize));
-    
-    builtInImages.set(Icons::copy, BuiltInImageData(BinaryData::copy_svg, BinaryData::copy_svgSize));
-    builtInImages.set(Icons::paste, BuiltInImageData(BinaryData::paste_svg, BinaryData::paste_svgSize));
-    builtInImages.set(Icons::cut, BuiltInImageData(BinaryData::scissors_svg, BinaryData::scissors_svgSize));
-    builtInImages.set(Icons::trash, BuiltInImageData(BinaryData::cup_svg, BinaryData::cup_svgSize));
-    builtInImages.set(Icons::ellipsis, BuiltInImageData(BinaryData::ellipsish_svg, BinaryData::ellipsish_svgSize));
-    
-    builtInImages.set(Icons::zoomIn, BuiltInImageData(BinaryData::zoomin_svg, BinaryData::zoomin_svgSize));
-    builtInImages.set(Icons::zoomOut, BuiltInImageData(BinaryData::zoomout_svg, BinaryData::zoomout_svgSize));
-    
-    builtInImages.set(Icons::up, BuiltInImageData(BinaryData::angleup_svg, BinaryData::angleup_svgSize));
-    builtInImages.set(Icons::down, BuiltInImageData(BinaryData::angledown_svg, BinaryData::angledown_svgSize));
-    
-    // todo remove that?
-    builtInImages.set("inverseUp", BuiltInImageData(BinaryData::angledoubleup_svg, BinaryData::angledoubleup_svgSize));
-    builtInImages.set("inverseDown", BuiltInImageData(BinaryData::angledoubledown_svg, BinaryData::angledoubledown_svgSize));
-    
-    builtInImages.set("shiftUp", BuiltInImageData(BinaryData::angleup_svg, BinaryData::angleup_svgSize));
-    builtInImages.set("shiftDown", BuiltInImageData(BinaryData::angledown_svg, BinaryData::angledown_svgSize));
-    
-    builtInImages.set("shiftLeft", BuiltInImageData(BinaryData::angleleft_svg, BinaryData::angleleft_svgSize));
-    builtInImages.set("shiftRight", BuiltInImageData(BinaryData::angleright_svg, BinaryData::angleright_svgSize));
-    
-    builtInImages.set("scalePlus", BuiltInImageData(BinaryData::angledoubleright_svg, BinaryData::angledoubleright_svgSize));
-    builtInImages.set("scaleMinus", BuiltInImageData(BinaryData::angledoubleleft_svg, BinaryData::angledoubleleft_svgSize));
-    
-    builtInImages.set("shrinkLeft", BuiltInImageData(BinaryData::chevronright2_svg, BinaryData::chevronright2_svgSize));
-    builtInImages.set("shrinkRight", BuiltInImageData(BinaryData::chevronleft2_svg, BinaryData::chevronleft2_svgSize));
-    //===------------------------------------------------------------------===//
-    
-    builtInImages.set(Icons::stretchLeft, BuiltInImageData(BinaryData::chevronleft2_svg, BinaryData::chevronleft2_svgSize));
-    builtInImages.set(Icons::stretchRight, BuiltInImageData(BinaryData::chevronright2_svg, BinaryData::chevronright2_svgSize));
-    
-    builtInImages.set(Icons::forward, BuiltInImageData(BinaryData::angledoubleright_svg, BinaryData::angledoubleright_svgSize));
-    builtInImages.set(Icons::backward, BuiltInImageData(BinaryData::angledoubleleft_svg, BinaryData::angledoubleleft_svgSize));
-    builtInImages.set(Icons::left, BuiltInImageData(BinaryData::chevronleft2_svg, BinaryData::chevronleft2_svgSize));
-    builtInImages.set(Icons::right, BuiltInImageData(BinaryData::chevronright2_svg, BinaryData::chevronright2_svgSize));
-    
-    builtInImages.set(Icons::previous, BuiltInImageData(BinaryData::arrowleft2_svg, BinaryData::arrowleft2_svgSize));
-    builtInImages.set(Icons::next, BuiltInImageData(BinaryData::arrowright2_svg, BinaryData::arrowright2_svgSize));
-    
-    builtInImages.set(Icons::volumeUp, BuiltInImageData(BinaryData::volumeup_svg, BinaryData::volumeup_svgSize));
-    builtInImages.set(Icons::volumeOff, BuiltInImageData(BinaryData::volumeoff_svg, BinaryData::volumeoff_svgSize));
-    
-    builtInImages.set(Icons::update, BuiltInImageData(BinaryData::download2_svg, BinaryData::download2_svgSize));
-    
-    builtInImages.set(Icons::render, BuiltInImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize));
-    
-    builtInImages.set(Icons::cursorTool, BuiltInImageData(BinaryData::cursor2_svg, BinaryData::cursor2_svgSize));
-    //builtInImages.set(Icons::drawTool, BuiltInImageData(BinaryData::pencil4_svg, BinaryData::pencil4_svgSize));
-    builtInImages.set(Icons::drawTool, BuiltInImageData(BinaryData::poetry_svg, BinaryData::poetry_svgSize));
-    builtInImages.set(Icons::selectionTool, BuiltInImageData(BinaryData::marquee_svg, BinaryData::marquee_svgSize));
-    builtInImages.set(Icons::zoomTool, BuiltInImageData(BinaryData::zoomin_svg, BinaryData::zoomin_svgSize));
-    builtInImages.set(Icons::dragTool, BuiltInImageData(BinaryData::arrows_svg, BinaryData::arrows_svgSize));
-    
-    builtInImages.set(Icons::insertSpaceTool, BuiltInImageData(BinaryData::insertspace_svg, BinaryData::insertspace_svgSize));
-    builtInImages.set(Icons::wipeScapeTool, BuiltInImageData(BinaryData::wipespace_svg, BinaryData::wipespace_svgSize));
-    builtInImages.set(Icons::cropTool, BuiltInImageData(BinaryData::crop_svg, BinaryData::crop_svgSize));
-    
-    //builtInImages.set(Icons::annotation, BuiltInImageData(BinaryData::poetry_svg, BinaryData::poetry_svgSize));
-    builtInImages.set(Icons::annotation, BuiltInImageData(BinaryData::quote_svg, BinaryData::quote_svgSize));
-    builtInImages.set(Icons::arpeggiator, BuiltInImageData(BinaryData::arpeggiator_svg, BinaryData::arpeggiator_svgSize));
-    builtInImages.set(Icons::switcher, BuiltInImageData(BinaryData::switch_svg, BinaryData::switch_svgSize));
-    
-    builtInImages.set(Icons::instrumentGraph, BuiltInImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize));
-    builtInImages.set(Icons::instrumentSettings, BuiltInImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize));
-    
-    builtInImages.set(Icons::toggleOn, BuiltInImageData(BinaryData::toggleon_svg, BinaryData::toggleon_svgSize));
-    builtInImages.set(Icons::toggleOff, BuiltInImageData(BinaryData::toggleoff_svg, BinaryData::toggleoff_svgSize));
+    setIconForKey(helio);
+    setIconForKey(project);
+    setIconForKey(trackGroup);
+    setIconForKey(pianoTrack);
+    setIconForKey(automationTrack);
+    setIconForKey(versionControl);
+    setIconForKey(settings);
+    setIconForKey(patterns);
+    setIconForKey(orchestraPit);
+    setIconForKey(instrument);
+    setIconForKey(instrumentNode);
+    setIconForKey(audioPlugin);
+    setIconForKey(annotation);
+    setIconForKey(colour);
+    setIconForKey(revision);
+    setIconForKey(routing);
+
+    setIconForKey(piano);
+    setIconForKey(microphone);
+    setIconForKey(volume);
+    setIconForKey(script);
+
+    setIconForKey(list);
+    setIconForKey(ellipsis);
+    setIconForKey(progressIndicator);
+
+    setIconForKey(browse);
+    setIconForKey(apply);
+    setIconForKey(toggleOn);
+    setIconForKey(toggleOff);
+
+    setIconForKey(play);
+    setIconForKey(pause);
+
+    setIconForKey(undo);
+    setIconForKey(redo);
+
+    setIconForKey(copy);
+    setIconForKey(cut);
+    setIconForKey(paste);
+
+    setIconForKey(create);
+    setIconForKey(remove);
+    setIconForKey(close);
+
+    setIconForKey(fail);
+    setIconForKey(success);
+
+    setIconForKey(zoomIn);
+    setIconForKey(zoomOut);
+
+    setIconForKey(cursorTool);
+    setIconForKey(drawTool);
+    setIconForKey(selectionTool);
+    setIconForKey(zoomTool);
+    setIconForKey(dragTool);
+    setIconForKey(cropTool);
+    setIconForKey(cutterTool);
+    setIconForKey(eraserTool);
+    setIconForKey(chordTool);
+    setIconForKey(chordBuilder);
+    setIconForKey(stretchLeft);
+    setIconForKey(stretchRight);
+    setIconForKey(inverseDown);
+    setIconForKey(inverseUp);
+    setIconForKey(expand);
+
+    setIconForKey(up);
+    setIconForKey(down);
+    setIconForKey(back);
+    setIconForKey(forward);
+    setIconForKey(mediaForward);
+    setIconForKey(mediaRewind);
+
+    setIconForKey(pageUp);
+    setIconForKey(pageDown);
+    setIconForKey(timelineNext);
+    setIconForKey(timelinePrevious);
+
+    setIconForKey(menu);
+    setIconForKey(submenu);
+
+    setIconForKey(login);
+    setIconForKey(remote);
+    setIconForKey(local);
+    setIconForKey(github);
+
+    setIconForKey(commit);
+    setIconForKey(reset);
+    setIconForKey(push);
+    setIconForKey(pull);
+
+    setIconForKey(mute);
+    setIconForKey(unmute);
+
+    setIconForKey(arpeggiate);
+    setIconForKey(refactor);
+    setIconForKey(render);
+
+    setIconForKey(selection);
+    setIconForKey(selectAll);
+    setIconForKey(selectNone);
 }
 
 static const Path extractPathFromDrawable(const Drawable *d)
 {
     for (int i = 0; i < d->getNumChildComponents(); ++i)
     {
-        Component *child = d->getChildComponent(i);
+        auto *child = d->getChildComponent(i);
         
-        if (DrawablePath *dp = dynamic_cast<DrawablePath *>(child))
+        if (auto *drawablePath = dynamic_cast<DrawablePath *>(child))
         {
-            Path p(dp->getPath());
-            return p;
+            return drawablePath->getPath();
         }
         
-        if (DrawableComposite *dc = dynamic_cast<DrawableComposite *>(child))
+        if (auto *drawableComposite = dynamic_cast<DrawableComposite *>(child))
         {
-            for (int j = 0; j < dc->getNumChildComponents(); ++j)
+            for (int j = 0; j < drawableComposite->getNumChildComponents(); ++j)
             {
-                Component *compChild = dc->getChildComponent(i);
+                auto *compositeChild = drawableComposite->getChildComponent(i);
                 
-                if (DrawablePath *dp = dynamic_cast<DrawablePath *>(compChild))
+                if (auto *drawablePath = dynamic_cast<DrawablePath *>(compositeChild))
                 {
-                    Path p(dp->getPath());
-                    return p;
+                    return drawablePath->getPath();
                 }
             }
         }
@@ -262,10 +195,11 @@ static const Path extractPathFromDrawable(const Drawable *d)
     return Path();
 }
 
-static Image renderVector(const String &name, int maxSize,
+static Image renderVector(Icons::Id id, int maxSize,
     const Colour &iconBaseColour, const Colour &iconShadeColour)
 {
-    if (! builtInImages.contains(name) || maxSize < 1)
+    const auto foundImage = builtInImages.find(id);
+    if (foundImage == builtInImages.end() || maxSize < 1)
     {
         return Image(Image::ARGB, 1, 1, true);
     }
@@ -273,52 +207,44 @@ static Image renderVector(const String &name, int maxSize,
     Image resultImage(Image::ARGB, maxSize, maxSize, true);
     Graphics g(resultImage);
     
-    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(builtInImages[name].data, builtInImages[name].numBytes));
+    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
     drawableSVG->replaceColour(Colours::black, iconBaseColour);
 
     Rectangle<int> area(0, 0, maxSize, maxSize);
     drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
     
-    if (name != Icons::workspace) // a hack -_-
-    {
-
 #if HELIO_DESKTOP
-        GlowEffect glow;
-        glow.setGlowProperties(1.25, iconShadeColour);
-        glow.applyEffect(resultImage, g, 1.f, 1.f);
+    GlowEffect glow;
+    glow.setGlowProperties(1.25, iconShadeColour);
+    glow.applyEffect(resultImage, g, 1.f, 1.f);
 #endif
         
-        drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
-    }
-    
-    //g.fillAll(Colours::red.withAlpha(0.1f));
-    
-    //Path iconPath(extractPathFromDrawable(drawableSVG));
-    //g.setColour(Colours::black.withAlpha(0.3f));
-    //g.strokePath(iconPath, PathStrokeType(0.5f), iconPath.getTransformToScaleToFit(area.toFloat(), true));
-    
+    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
+
     return resultImage;
 }
 
 
-ScopedPointer<Drawable> Icons::getDrawableByName(const String &name)
+ScopedPointer<Drawable> Icons::getDrawableByName(Icons::Id id)
 {
-    if (!builtInImages.contains(name))
+    const auto foundImage = builtInImages.find(id);
+    if (foundImage == builtInImages.end())
     {
         return nullptr;
     }
     
-    return Drawable::createFromImageData(builtInImages[name].data, builtInImages[name].numBytes);
+    return Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes);
 }
 
-Path Icons::getPathByName(const String &name)
+Path Icons::getPathByName(Icons::Id id)
 {
-    if (!builtInImages.contains(name))
+    const auto foundImage = builtInImages.find(id);
+    if (foundImage == builtInImages.end())
     {
-        return Path();
+        return {};
     }
 
-    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(builtInImages[name].data, builtInImages[name].numBytes));
+    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
     return Path(extractPathFromDrawable(drawableSVG));
 }
 
@@ -331,9 +257,9 @@ void Icons::clearPrerenderedCache()
 
 const int kRoundFactor = 8;
 
-Image Icons::findByName(const String &name, int maxSize)
+Image Icons::findByName(Icons::Id id, int maxSize)
 {
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
@@ -342,24 +268,24 @@ Image Icons::findByName(const String &name, int maxSize)
 #endif
 
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
-    const String nameKey = name + "@" + String(fixedSize);
+    const String nameKey = String(id) + "@" + String(fixedSize);
     
     if (prerenderedVectors.contains(nameKey))
     {
         return prerenderedVectors[nameKey];
     }
     
-    const Colour iconBaseColour(App::Helio()->getTheme()->findColour(Icons::iconColourId));
-    const Colour iconShadeColour(App::Helio()->getTheme()->findColour(Icons::iconShadowColourId));
-    Image prerenderedImage = renderVector(name, fixedSize, iconBaseColour, iconShadeColour);
+    const Colour iconBaseColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::fill));
+    const Colour iconShadeColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::shadow));
+    const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
     prerenderedVectors.set(nameKey, prerenderedImage);
 
     return prerenderedImage;
 }
 
-Image Icons::findByName(const String &name, int maxSize, LookAndFeel &lf)
+Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 {
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
@@ -368,17 +294,15 @@ Image Icons::findByName(const String &name, int maxSize, LookAndFeel &lf)
 #endif
 
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
-
-    const Colour iconBaseColour(lf.findColour(Icons::iconColourId));
-    const Colour iconShadeColour(lf.findColour(Icons::iconShadowColourId));
-    Image prerenderedImage = renderVector(name, fixedSize, iconBaseColour, iconShadeColour);
+    const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
+    const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
+    const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
     return prerenderedImage;
 }
 
 void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy)
 {
-//#if JUCE_IOS || JUCE_MAC
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int scale = 2;
@@ -391,8 +315,6 @@ void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy
 
     if (scale > 1)
     {
-        //Logger::writeToLog(String(x) + ":" + String(y));
-
         const int w2 = w / scale;
         const int h2 = h / scale;
         
@@ -408,7 +330,4 @@ void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy
     {
         g.drawImageAt(image, cx - int(w / 2), cy - int(h / 2));
     }
-//#else
-//        g.drawImageAt(image, cx - int(w / 2), cy - int(h / 2));
-//#endif
 }

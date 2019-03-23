@@ -20,39 +20,37 @@
 //[Headers]
 #include "FadingDialog.h"
 #include "TimeSignatureEvent.h"
+#include "MobileComboBox.h"
 
-class TimeSignaturesLayer;
+class TimeSignaturesSequence;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
-class TimeSignatureDialog  : public FadingDialog,
-                             public TextEditorListener,
-                             public ButtonListener,
-                             public ComboBoxListener
+class TimeSignatureDialog final : public FadingDialog,
+                                  public TextEditor::Listener,
+                                  private Timer,
+                                  public Button::Listener
 {
 public:
 
-    TimeSignatureDialog (Component &owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
-
+    TimeSignatureDialog(Component &owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
     ~TimeSignatureDialog();
 
     //[UserMethods]
-	static TimeSignatureDialog *createEditingDialog(Component &owner, const TimeSignatureEvent &event);
-	static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesLayer *annotationsLayer, float targetBeat);
+    static TimeSignatureDialog *createEditingDialog(Component &owner, const TimeSignatureEvent &event);
+    static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+    void buttonClicked(Button* buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
 
@@ -60,29 +58,38 @@ private:
 
     //[UserVariables]
 
-	TimeSignatureEvent targetEvent;
-	TimeSignaturesLayer *targetLayer;
-	Component &ownerComponent;
+    TimeSignatureEvent originalEvent;
+    TimeSignaturesSequence *originalSequence;
+    Component &ownerComponent;
 
-	inline void cancelAndDisappear();
-	inline void disappear();
-	inline void updateOkButtonState();
+    const StringPairArray defailtMeters;
 
-	bool addsNewEvent;
-	bool hasMadeChanges;
-	void sendEventChange(TimeSignatureEvent newEvent);
-	void removeEvent();
-	void cancelChangesIfAny();
+    void textEditorTextChanged(TextEditor&) override;
+    void textEditorReturnKeyPressed(TextEditor&) override;
+    void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
+
+    void timerCallback() override;
+
+    inline void cancelAndDisappear();
+    inline void updateOkButtonState();
+
+    bool addsNewEvent;
+    bool hasMadeChanges;
+    void sendEventChange(const TimeSignatureEvent &newEvent);
+    void removeEvent();
+    void cancelChangesIfAny();
 
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
-    ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> removeEventButton;
-    ScopedPointer<TextButton> okButton;
-    ScopedPointer<ComboBox> textEditor;
-    ScopedPointer<SeparatorHorizontal> separatorH;
-    ScopedPointer<SeparatorVertical> separatorV;
+    UniquePointer<DialogPanel> background;
+    UniquePointer<MobileComboBox::Primer> comboPrimer;
+    UniquePointer<Label> messageLabel;
+    UniquePointer<TextButton> removeEventButton;
+    UniquePointer<TextButton> okButton;
+    UniquePointer<SeparatorHorizontal> separatorH;
+    UniquePointer<SeparatorVertical> separatorV;
+    UniquePointer<TextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };

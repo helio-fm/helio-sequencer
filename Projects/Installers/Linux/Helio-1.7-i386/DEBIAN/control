@@ -1,8 +1,0 @@
-Package: helio-workstation
-Version: 1.7
-Architecture: i386
-Maintainer: Peter Rudenko <peter.rudenko@gmail.com>
-Section: editors
-Priority: optional
-Description: Helio is a free and cross-platform lightweight music creation playground.
-Installed-Size: 21600

@@ -23,74 +23,76 @@
 
 //[MiscUserDefs]
 #include "DocumentOwner.h"
-#include "App.h"
 #include "MainLayout.h"
-#include "AuthorizationManager.h"
-#include "ProjectTreeItem.h"
+#include "ProjectNode.h"
 #include "PlayerThread.h"
 #include "ProgressIndicator.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
-#include "CommandItemComponent.h"
+#include "MenuItemComponent.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
-RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo, const String &formatExtension)
+RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, const String &formatExtension)
     : project(parentProject),
       extension(formatExtension.toLowerCase()),
       shouldRenderAfterDialogCompletes(false)
 {
-    addAndMakeVisible (background = new PanelC());
-    addAndMakeVisible (renderButton = new TextButton (String()));
-    renderButton->setButtonText (TRANS("dialog::render::proceed"));
+    this->background.reset(new DialogPanel());
+    this->addAndMakeVisible(background.get());
+    this->renderButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(renderButton.get());
+    renderButton->setButtonText(TRANS("dialog::render::proceed"));
     renderButton->setConnectedEdges (Button::ConnectedOnTop);
-    renderButton->addListener (this);
+    renderButton->addListener(this);
 
-    addAndMakeVisible (filenameEditor = new Label (String(),
-                                                   TRANS("...")));
-    filenameEditor->setFont (Font (Font::getDefaultSerifFontName(), 28.00f, Font::plain).withTypefaceStyle ("Regular"));
-    filenameEditor->setJustificationType (Justification::topLeft);
-    filenameEditor->setEditable (true, true, false);
-    filenameEditor->setColour (Label::textColourId, Colours::white);
-    filenameEditor->setColour (TextEditor::textColourId, Colours::white);
-    filenameEditor->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-    filenameEditor->addListener (this);
+    this->filenameEditor.reset(new Label(String(),
+                                          TRANS("...")));
+    this->addAndMakeVisible(filenameEditor.get());
+    this->filenameEditor->setFont(Font (28.00f, Font::plain).withTypefaceStyle ("Regular"));
+    filenameEditor->setJustificationType(Justification::topLeft);
+    filenameEditor->setEditable(true, true, false);
+    this->filenameEditor->addListener(this);
 
-    addAndMakeVisible (filenameLabel = new Label (String(),
-                                                  TRANS("dialog::render::caption")));
-    filenameLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    filenameLabel->setJustificationType (Justification::centredLeft);
-    filenameLabel->setEditable (false, false, false);
-    filenameLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    filenameLabel->setColour (TextEditor::textColourId, Colours::black);
-    filenameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    this->filenameLabel.reset(new Label(String(),
+                                         TRANS("dialog::render::caption")));
+    this->addAndMakeVisible(filenameLabel.get());
+    this->filenameLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    filenameLabel->setJustificationType(Justification::centredLeft);
+    filenameLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (cancelButton = new TextButton (String()));
-    cancelButton->setButtonText (TRANS("dialog::render::close"));
+    this->cancelButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(cancelButton.get());
+    cancelButton->setButtonText(TRANS("dialog::render::close"));
     cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    cancelButton->addListener (this);
+    cancelButton->addListener(this);
 
-    addAndMakeVisible (slider = new Slider (String()));
+    this->slider.reset(new Slider(String()));
+    this->addAndMakeVisible(slider.get());
     slider->setRange (0, 1000, 0);
     slider->setSliderStyle (Slider::LinearBar);
     slider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     slider->addListener (this);
 
-    addAndMakeVisible (indicator = new ProgressIndicator());
+    this->indicator.reset(new ProgressIndicator());
+    this->addAndMakeVisible(indicator.get());
 
-    addAndMakeVisible (browseButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::open, CommandIDs::Browse)));
+    this->browseButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse)));
+    this->addAndMakeVisible(browseButton.get());
 
-    addAndMakeVisible (pathEditor = new Label (String(),
-                                               TRANS("...")));
-    pathEditor->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    pathEditor->setJustificationType (Justification::centredLeft);
-    pathEditor->setEditable (false, false, false);
-    pathEditor->setColour (Label::textColourId, Colour (0xbcffffff));
-    pathEditor->setColour (TextEditor::textColourId, Colours::black);
-    pathEditor->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    this->pathEditor.reset(new Label(String(),
+                                      TRANS("...")));
+    this->addAndMakeVisible(pathEditor.get());
+    this->pathEditor->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    pathEditor->setJustificationType(Justification::centredLeft);
+    pathEditor->setEditable(false, false, false);
 
-    addAndMakeVisible (component3 = new SeparatorHorizontalFading());
-    addAndMakeVisible (separatorH = new SeparatorHorizontal());
+    this->component3.reset(new SeparatorHorizontalFading());
+    this->addAndMakeVisible(component3.get());
+    component3->setBounds(32, 121, 456, 8);
+
+    this->separatorH.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separatorH.get());
 
     //[UserPreSize]
     // just in case..
@@ -101,9 +103,9 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     this->slider->setEnabled(false);
     this->slider->setRange(0.0, 1.0, 0.01);
 
-	this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
 
-	this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
+    this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
     this->filenameEditor->setText(renderTo.getFileName(), dontSendNotification);
 
 #if JUCE_MAC
@@ -111,17 +113,16 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
 #endif
     //[/UserPreSize]
 
-    setSize (520, 224);
+    this->setSize(520, 224);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     //[/Constructor]
 }
 
 RenderDialog::~RenderDialog()
 {
     //[Destructor_pre]
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -163,38 +164,36 @@ void RenderDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    renderButton->setBounds (getWidth() - 4 - (getWidth() - 8), getHeight() - 4 - 48, getWidth() - 8, 48);
-    filenameEditor->setBounds ((getWidth() / 2) + 25 - (406 / 2), 4 + 71, 406, 32);
-    filenameLabel->setBounds ((getWidth() / 2) + 29 - (414 / 2), 4 + 16, 414, 22);
-    cancelButton->setBounds (0, getHeight() - -74 - 48, 255, 48);
-    slider->setBounds ((getWidth() / 2) + 24 - (392 / 2), 139, 392, 12);
-    indicator->setBounds ((getWidth() / 2) + -212 - (32 / 2), 139 + 12 / 2 + -2 - (32 / 2), 32, 32);
-    browseButton->setBounds (getWidth() - 448 - 48, 59, 48, 48);
-    pathEditor->setBounds ((getWidth() / 2) + 25 - (406 / 2), 4 + 48, 406, 24);
-    component3->setBounds (32, 121, 456, 8);
-    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    renderButton->setBounds(getWidth() - 4 - (getWidth() - 8), getHeight() - 4 - 48, getWidth() - 8, 48);
+    filenameEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 4 + 71, 406, 32);
+    filenameLabel->setBounds((getWidth() / 2) + 29 - (414 / 2), 4 + 16, 414, 22);
+    cancelButton->setBounds(0, getHeight() - -74 - 48, 255, 48);
+    slider->setBounds((getWidth() / 2) + 24 - (392 / 2), 139, 392, 12);
+    indicator->setBounds((getWidth() / 2) + -212 - (32 / 2), 139 + 12 / 2 + -2 - (32 / 2), 32, 32);
+    browseButton->setBounds(getWidth() - 448 - 48, 59, 48, 48);
+    pathEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 4 + 48, 406, 24);
+    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void RenderDialog::buttonClicked (Button* buttonThatWasClicked)
+void RenderDialog::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == renderButton)
+    if (buttonThatWasClicked == renderButton.get())
     {
         //[UserButtonCode_renderButton] -- add your button handler code here..
         this->startOrAbortRender();
         //[/UserButtonCode_renderButton]
     }
-    else if (buttonThatWasClicked == cancelButton)
+    else if (buttonThatWasClicked == cancelButton.get())
     {
         //[UserButtonCode_cancelButton] -- add your button handler code here..
         this->stopRender();
-
-        delete this;
+        this->dismiss();
         //[/UserButtonCode_cancelButton]
     }
 
@@ -202,12 +201,12 @@ void RenderDialog::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-void RenderDialog::labelTextChanged (Label* labelThatHasChanged)
+void RenderDialog::labelTextChanged(Label* labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
     //[/UserlabelTextChanged_Pre]
 
-    if (labelThatHasChanged == filenameEditor)
+    if (labelThatHasChanged == filenameEditor.get())
     {
         //[UserLabelCode_filenameEditor] -- add your label text handling code here..
         //[/UserLabelCode_filenameEditor]
@@ -222,7 +221,7 @@ void RenderDialog::sliderValueChanged (Slider* sliderThatWasMoved)
     //[UsersliderValueChanged_Pre]
     //[/UsersliderValueChanged_Pre]
 
-    if (sliderThatWasMoved == slider)
+    if (sliderThatWasMoved == slider.get())
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
         //[/UserSliderCode_slider]
@@ -235,14 +234,14 @@ void RenderDialog::sliderValueChanged (Slider* sliderThatWasMoved)
 void RenderDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void RenderDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 
@@ -254,7 +253,7 @@ void RenderDialog::handleCommandMessage (int commandId)
         Transport &transport = this->project.getTransport();
         if (! transport.isRendering())
         {
-            delete this;
+            this->dismiss();
         }
     }
     else if (commandId == CommandIDs::Browse)
@@ -310,7 +309,7 @@ void RenderDialog::startOrAbortRender()
     {
         transport.stopRender();
         this->stopTrackingProgress();
-        App::Helio()->showModalComponent(new FailTooltip());
+        App::Layout().showModalComponentUnowned(new FailTooltip());
     }
 }
 
@@ -344,16 +343,16 @@ void RenderDialog::timerCallback()
     else
     {
         this->stopTrackingProgress();
-        App::Helio()->showModalComponent(new SuccessTooltip());
+        App::Layout().showModalComponentUnowned(new SuccessTooltip());
         transport.stopRender();
     }
 }
 
 void RenderDialog::startTrackingProgress()
 {
-    this->startTimer(17);
+    this->startTimerHz(60);
     this->indicator->startAnimating();
-    this->animator.fadeIn(this->indicator, 250);
+    this->animator.fadeIn(this->indicator.get(), 250);
     this->renderButton->setButtonText(TRANS("dialog::render::abort"));
 }
 
@@ -365,7 +364,7 @@ void RenderDialog::stopTrackingProgress()
     const float percentsDone = transport.getRenderingPercentsComplete();
     this->slider->setValue(percentsDone, dontSendNotification);
 
-    this->animator.fadeOut(this->indicator, 250);
+    this->animator.fadeOut(this->indicator.get(), 250);
     this->indicator->stopAnimating();
     this->renderButton->setButtonText(TRANS("dialog::render::proceed"));
 }
@@ -378,7 +377,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RenderDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, private Timer"
-                 constructorParams="ProjectTreeItem &amp;parentProject, const File &amp;renderTo, const String &amp;formatExtension"
+                 constructorParams="ProjectNode &amp;parentProject, const File &amp;renderTo, const String &amp;formatExtension"
                  variableInitialisers="project(parentProject),&#10;extension(formatExtension.toLowerCase()),&#10;shouldRenderAfterDialogCompletes(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="520" initialHeight="224">
@@ -390,45 +389,45 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="renderButton" virtualName=""
               explicitFocusOrder="0" pos="4Rr 4Rr 8M 48" buttonText="dialog::render::proceed"
               connectedEdges="4" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="filenameEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 71 406 32" posRelativeY="e96b77baef792d3a"
-         textCol="ffffffff" edTextCol="ffffffff" edBkgCol="0" labelText="..."
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="28" kerning="0" bold="0"
-         italic="0" justification="9"/>
+         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="28.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="filenameLabel" virtualName=""
          explicitFocusOrder="0" pos="29Cc 16 414 22" posRelativeY="e96b77baef792d3a"
-         textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::render::caption"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         labelText="dialog::render::caption" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="0 -74Rr 255 48" buttonText="dialog::render::close"
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="" id="53d73eae72d7741b" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0" max="1000"
-          int="0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0.00000000000000000000"
+          max="1000.00000000000000000000" int="0.00000000000000000000"
+          style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          needsCallback="1"/>
   <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
                     explicitFocusOrder="0" pos="-212Cc -2Cc 32 32" posRelativeY="53d73eae72d7741b"
                     class="ProgressIndicator" params=""/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="browseButton" virtualName=""
-                    explicitFocusOrder="0" pos="448Rr 59 48 48" class="CommandItemComponent"
-                    params="this, nullptr, CommandItem::withParams(Icons::open, CommandIDs::Browse)"/>
+                    explicitFocusOrder="0" pos="448Rr 59 48 48" class="MenuItemComponent"
+                    params="this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse)"/>
   <LABEL name="" id="2310f57af9b4eefb" memberName="pathEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 48 406 24" posRelativeY="e96b77baef792d3a"
-         textCol="bcffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="ab3833b58a212645" memberName="component3" virtualName=""
              explicitFocusOrder="0" pos="32 121 456 8" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>

@@ -27,7 +27,7 @@ namespace BuiltInSynth
     static const String pianoId = "<piano>";
 } // namespace BuiltInSynth
 
-class BuiltInSynthFormat : public AudioPluginFormat
+class BuiltInSynthFormat final : public AudioPluginFormat
 {
 public:
 
@@ -83,6 +83,6 @@ private:
 
     PluginDescription pianoDescription;
     
-    // TODO more
+    // TODO more built-in instruments
 
 };

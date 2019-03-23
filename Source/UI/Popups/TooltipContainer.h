@@ -21,21 +21,20 @@
 //[/Headers]
 
 
-class TooltipContainer  : public Component,
-                          private Timer
+class TooltipContainer final : public Component,
+                               private Timer
 {
 public:
 
-    TooltipContainer ();
-
+    TooltipContainer();
     ~TooltipContainer();
 
     //[UserMethods]
 
     // set -1 timeout if it should not hide
-    void showWithComponent(Component *newTargetComponent, int timeOutMs = -1);
+    void showWithComponent(ScopedPointer<Component> newTargetComponent, int timeOutMs = -1);
 
-    void showWithComponent(Component *newTargetComponent,
+    void showWithComponent(ScopedPointer<Component> newTargetComponent,
                            Rectangle<int> callerScreenBounds, int timeOutMs = -1);
 
     void hide();
@@ -53,22 +52,18 @@ private:
     //[UserVariables]
 
     int hideTimeout;
-
     int timeCounter;
-
     bool alignedToBottom;
-
     int clicksCountOnStart;
 
     ComponentAnimator animator;
 
     void timerCallback() override;
-
     void updatePosition();
 
     //[/UserVariables]
 
-    ScopedPointer<Component> tooltipComponent;
+    UniquePointer<Component> tooltipComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TooltipContainer)
 };

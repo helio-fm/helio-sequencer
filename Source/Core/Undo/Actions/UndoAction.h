@@ -17,20 +17,17 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class MidiTrackSource;
 
-#include "Serializable.h"
 
 class UndoAction : public Serializable
 {
 public:
 
-    explicit UndoAction(ProjectTreeItem &parentProject) noexcept : project(parentProject) {}
-
+    explicit UndoAction(MidiTrackSource &trackSource) noexcept : source(trackSource) {}
     ~UndoAction() override {}
 
     virtual bool perform() = 0;
-
     virtual bool undo() = 0;
 
     virtual int getSizeInUnits()
@@ -46,6 +43,6 @@ public:
     
 protected:
     
-    ProjectTreeItem &project;
+    MidiTrackSource &source;
 
 };

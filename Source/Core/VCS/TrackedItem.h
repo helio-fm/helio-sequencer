@@ -19,45 +19,35 @@
 
 #include "Delta.h"
 #include "SerializationKeys.h"
+#include "DiffLogic.h"
 
 namespace VCS
 {
-    class DiffLogic;
-
     class TrackedItem
     {
     public:
 
         TrackedItem() {}
-
         virtual ~TrackedItem() {}
 
         const Uuid &getUuid() const { return this->vcsUuid; }
-
         void setVCSUuid(Uuid value) { this->vcsUuid = value; }
-
         
         virtual int getNumDeltas() const = 0;
-
         virtual Delta *getDelta(int index) const = 0;
-
-        virtual XmlElement *createDeltaDataFor(int index) const = 0;
-
+        virtual ValueTree getDeltaData(int deltaIndex) const = 0;
         virtual String getVCSName() const = 0;
-
         virtual DiffLogic *getDiffLogic() const = 0;
-
         virtual void resetStateTo(const TrackedItem &newState) = 0;
 
-
-        void serializeVCSUuid(XmlElement &xml) const
+        void serializeVCSUuid(ValueTree &tree) const
         {
-            xml.setAttribute(Serialization::VCS::vcsItemId, this->getUuid().toString());
+            tree.setProperty(Serialization::VCS::vcsItemId, this->getUuid().toString(), nullptr);
         }
 
-        void deserializeVCSUuid(const XmlElement &xml)
+        void deserializeVCSUuid(const ValueTree &tree)
         {
-            this->vcsUuid = xml.getStringAttribute(Serialization::VCS::vcsItemId, this->vcsUuid.toString());
+            this->vcsUuid = tree.getProperty(Serialization::VCS::vcsItemId, this->vcsUuid.toString());
         }
 
     protected:

@@ -17,30 +17,26 @@
 
 #include "Common.h"
 #include "TimeSignatureEventActions.h"
-#include "TimeSignaturesLayer.h"
-#include "ProjectTreeItem.h"
+#include "TimeSignaturesSequence.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventInsertAction::TimeSignatureEventInsertAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const TimeSignatureEvent &event) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
-    event(event)
-{
-
-}
+TimeSignatureEventInsertAction::TimeSignatureEventInsertAction(MidiTrackSource &source,
+    const String &trackId, const TimeSignatureEvent &event) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    event(event) {}
 
 bool TimeSignatureEventInsertAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return (layer->insert(this->event, false) != nullptr);
+        return (sequence->insert(this->event, false) != nullptr);
     }
     
     return false;
@@ -48,9 +44,10 @@ bool TimeSignatureEventInsertAction::perform()
 
 bool TimeSignatureEventInsertAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->remove(this->event, false);
+        return sequence->remove(this->event, false);
     }
     
     return false;
@@ -61,46 +58,42 @@ int TimeSignatureEventInsertAction::getSizeInUnits()
     return sizeof(TimeSignatureEvent);
 }
 
-XmlElement *TimeSignatureEventInsertAction::serialize() const
+ValueTree TimeSignatureEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::timeSignatureEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void TimeSignatureEventInsertAction::deserialize(const XmlElement &xml)
+void TimeSignatureEventInsertAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void TimeSignatureEventInsertAction::reset()
 {
     this->event.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventRemoveAction::TimeSignatureEventRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const TimeSignatureEvent &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
-    event(target)
-{
-
-}
+TimeSignatureEventRemoveAction::TimeSignatureEventRemoveAction(MidiTrackSource &source,
+    const String &trackId, const TimeSignatureEvent &target) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    event(target) {}
 
 bool TimeSignatureEventRemoveAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->remove(this->event, false);
+        return sequence->remove(this->event, false);
     }
     
     return false;
@@ -108,9 +101,10 @@ bool TimeSignatureEventRemoveAction::perform()
 
 bool TimeSignatureEventRemoveAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return (layer->insert(this->event, false) != nullptr);
+        return (sequence->insert(this->event, false) != nullptr);
     }
     
     return false;
@@ -121,48 +115,44 @@ int TimeSignatureEventRemoveAction::getSizeInUnits()
     return sizeof(TimeSignatureEvent);
 }
 
-XmlElement *TimeSignatureEventRemoveAction::serialize() const
+ValueTree TimeSignatureEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::timeSignatureEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void TimeSignatureEventRemoveAction::deserialize(const XmlElement &xml)
+void TimeSignatureEventRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void TimeSignatureEventRemoveAction::reset()
 {
     this->event.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventChangeAction::TimeSignatureEventChangeAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId,
-                                                         const TimeSignatureEvent &target,
-                                                         const TimeSignatureEvent &newParameters) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+TimeSignatureEventChangeAction::TimeSignatureEventChangeAction(MidiTrackSource &source,
+    const String &trackId, const TimeSignatureEvent &target,
+    const TimeSignatureEvent &newParameters) noexcept :
+    UndoAction(source),
+    trackId(trackId),
     eventBefore(target),
-    eventAfter(newParameters)
-{
-
-}
+    eventAfter(newParameters) {}
 
 bool TimeSignatureEventChangeAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->change(this->eventBefore, this->eventAfter, false);
+        return sequence->change(this->eventBefore, this->eventAfter, false);
     }
     
     return false;
@@ -170,9 +160,10 @@ bool TimeSignatureEventChangeAction::perform()
 
 bool TimeSignatureEventChangeAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->change(this->eventAfter, this->eventBefore, false);
+        return sequence->change(this->eventAfter, this->eventBefore, false);
     }
     
     return false;
@@ -185,19 +176,20 @@ int TimeSignatureEventChangeAction::getSizeInUnits()
 
 UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        if (TimeSignatureEventChangeAction *nextChanger = dynamic_cast<TimeSignatureEventChangeAction *>(nextAction))
+        if (TimeSignatureEventChangeAction *nextChanger =
+            dynamic_cast<TimeSignatureEventChangeAction *>(nextAction))
         {
-            const bool idsAreEqual = (this->eventBefore.getID() == nextChanger->eventAfter.getID() &&
-                                      this->layerId == nextChanger->layerId);
+            const bool idsAreEqual = 
+                (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
+                    this->trackId == nextChanger->trackId);
             
             if (idsAreEqual)
             {
-                auto newChanger =
-                new TimeSignatureEventChangeAction(this->project, this->layerId, this->eventBefore, nextChanger->eventAfter);
-                
-                return newChanger;
+                return new TimeSignatureEventChangeAction(this->source,
+                    this->trackId, this->eventBefore, nextChanger->eventAfter);
             }
         }
     }
@@ -206,59 +198,58 @@ UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *ne
     return nullptr;
 }
 
-XmlElement *TimeSignatureEventChangeAction::serialize() const
+ValueTree TimeSignatureEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto timeSignatureBeforeChild = new XmlElement(Serialization::Undo::timeSignatureBefore);
-    timeSignatureBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(timeSignatureBeforeChild);
+    ValueTree timeSignatureBeforeChild(Serialization::Undo::timeSignatureBefore);
+    timeSignatureBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
+    tree.appendChild(timeSignatureBeforeChild, nullptr);
     
-    auto timeSignatureAfterChild = new XmlElement(Serialization::Undo::timeSignatureAfter);
-    timeSignatureAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(timeSignatureAfterChild);
+    ValueTree timeSignatureAfterChild(Serialization::Undo::timeSignatureAfter);
+    timeSignatureAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
+    tree.appendChild(timeSignatureAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void TimeSignatureEventChangeAction::deserialize(const XmlElement &xml)
+void TimeSignatureEventChangeAction::deserialize(const ValueTree &tree)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *timeSignatureBeforeChild = xml.getChildByName(Serialization::Undo::timeSignatureBefore);
-    XmlElement *timeSignatureAfterChild = xml.getChildByName(Serialization::Undo::timeSignatureAfter);
+    const auto timeSignatureBeforeChild = tree.getChildWithName(Serialization::Undo::timeSignatureBefore);
+    const auto timeSignatureAfterChild = tree.getChildWithName(Serialization::Undo::timeSignatureAfter);
     
-    this->eventBefore.deserialize(*timeSignatureBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*timeSignatureAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(timeSignatureBeforeChild.getChild(0));
+    this->eventAfter.deserialize(timeSignatureAfterChild.getChild(0));
 }
 
 void TimeSignatureEventChangeAction::reset()
 {
     this->eventBefore.reset();
     this->eventAfter.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     Array<TimeSignatureEvent> &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
+    const String &trackId, Array<TimeSignatureEvent> &target) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->signatures.swapWith(target);
 }
 
 bool TimeSignatureEventsGroupInsertAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->insertGroup(this->signatures, false);
+        return sequence->insertGroup(this->signatures, false);
     }
     
     return false;
@@ -266,9 +257,10 @@ bool TimeSignatureEventsGroupInsertAction::perform()
 
 bool TimeSignatureEventsGroupInsertAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->removeGroup(this->signatures, false);
+        return sequence->removeGroup(this->signatures, false);
     }
     
     return false;
@@ -279,29 +271,28 @@ int TimeSignatureEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(TimeSignatureEvent) * this->signatures.size());
 }
 
-XmlElement *TimeSignatureEventsGroupInsertAction::serialize() const
+ValueTree TimeSignatureEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void TimeSignatureEventsGroupInsertAction::deserialize(const XmlElement &xml)
+void TimeSignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -309,28 +300,27 @@ void TimeSignatureEventsGroupInsertAction::deserialize(const XmlElement &xml)
 void TimeSignatureEventsGroupInsertAction::reset()
 {
     this->signatures.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     Array<TimeSignatureEvent> &target) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
+    const String &trackId, Array<TimeSignatureEvent> &target) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->signatures.swapWith(target);
 }
 
 bool TimeSignatureEventsGroupRemoveAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->removeGroup(this->signatures, false);
+        return sequence->removeGroup(this->signatures, false);
     }
     
     return false;
@@ -338,9 +328,10 @@ bool TimeSignatureEventsGroupRemoveAction::perform()
 
 bool TimeSignatureEventsGroupRemoveAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->insertGroup(this->signatures, false);
+        return sequence->insertGroup(this->signatures, false);
     }
     
     return false;
@@ -351,29 +342,28 @@ int TimeSignatureEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(TimeSignatureEvent) * this->signatures.size());
 }
 
-XmlElement *TimeSignatureEventsGroupRemoveAction::serialize() const
+ValueTree TimeSignatureEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void TimeSignatureEventsGroupRemoveAction::deserialize(const XmlElement &xml)
+void TimeSignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
-    
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -381,20 +371,18 @@ void TimeSignatureEventsGroupRemoveAction::deserialize(const XmlElement &xml)
 void TimeSignatureEventsGroupRemoveAction::reset()
 {
     this->signatures.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     const Array<TimeSignatureEvent> state1,
-                                                                     const Array<TimeSignatureEvent> state2) :
-    UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(MidiTrackSource &source,
+    const String &trackId, const Array<TimeSignatureEvent> state1,
+    const Array<TimeSignatureEvent> state2) noexcept :
+    UndoAction(source),
+    trackId(trackId)
 {
     this->eventsBefore.addArray(state1);
     this->eventsAfter.addArray(state2);
@@ -402,9 +390,10 @@ TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(Proje
 
 bool TimeSignatureEventsGroupChangeAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->changeGroup(this->eventsBefore, this->eventsAfter, false);
+        return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
     
     return false;
@@ -412,9 +401,10 @@ bool TimeSignatureEventsGroupChangeAction::perform()
 
 bool TimeSignatureEventsGroupChangeAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        return layer->changeGroup(this->eventsAfter, this->eventsBefore, false);
+        return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
     
     return false;
@@ -428,25 +418,25 @@ int TimeSignatureEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *sequence =
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
-        if (TimeSignatureEventsGroupChangeAction *nextChanger = dynamic_cast<TimeSignatureEventsGroupChangeAction *>(nextAction))
+        if (TimeSignatureEventsGroupChangeAction *nextChanger =
+            dynamic_cast<TimeSignatureEventsGroupChangeAction *>(nextAction))
         {
-            if (nextChanger->layerId != this->layerId)
+            if (nextChanger->trackId != this->trackId)
             {
                 return nullptr;
             }
             
-            // это явно неполная проверка, но ее будет достаточно
-            bool arraysContainSameNotes = (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-                                          (this->eventsBefore[0].getID() == nextChanger->eventsAfter[0].getID());
+            bool arraysContainSameEvents =
+                (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
+                (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
             
-            if (arraysContainSameNotes)
+            if (arraysContainSameEvents)
             {
-                TimeSignatureEventsGroupChangeAction *newChanger =
-                new TimeSignatureEventsGroupChangeAction(this->project, this->layerId, this->eventsBefore, nextChanger->eventsAfter);
-                
-                return newChanger;
+                return new TimeSignatureEventsGroupChangeAction(this->source,
+                    this->trackId, this->eventsBefore, nextChanger->eventsAfter);
             }
         }
     }
@@ -455,55 +445,53 @@ UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoActi
     return nullptr;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *TimeSignatureEventsGroupChangeAction::serialize() const
+ValueTree TimeSignatureEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
-    auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild->prependChildElement(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void TimeSignatureEventsGroupChangeAction::deserialize(const XmlElement &xml)
+void TimeSignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)
 {
     this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    XmlElement *groupBeforeChild = xml.getChildByName(Serialization::Undo::groupBefore);
-    XmlElement *groupAfterChild = xml.getChildByName(Serialization::Undo::groupAfter);
-    
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }
@@ -512,5 +500,5 @@ void TimeSignatureEventsGroupChangeAction::reset()
 {
     this->eventsBefore.clear();
     this->eventsAfter.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }

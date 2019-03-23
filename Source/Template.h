@@ -20,25 +20,24 @@
 //[Headers]
 //[/Headers]
 
-%%includeFilesH%%
-%%classDeclaration%%
+%%include_files_h%%
+%%class_declaration%%
 {
 public:
 
-    %%className%% (%%constructorParams%%);
-
-    ~%%className%%();
+    %%class_name%%(%%constructor_params%%);
+    ~%%class_name%%();
 
     //[UserMethods]
     //[/UserMethods]
 
-    %%publicMemberDeclarations%%
+    %%public_member_declarations%%
 private:
 
     //[UserVariables]
     //[/UserVariables]
 
-    %%privateMemberDeclarations%%
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (%%className%%)
+    %%private_member_declarations%%
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (%%class_name%%)
 };
 

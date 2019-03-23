@@ -19,44 +19,41 @@
 #include "DiffLogic.h"
 #include "SerializationKeys.h"
 
-#include "PianoLayerDiffLogic.h"
-#include "AutomationLayerDiffLogic.h"
+#include "PianoTrackDiffLogic.h"
+#include "AutomationTrackDiffLogic.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectInfoDiffLogic.h"
 
 using namespace VCS;
 
-
-class DummyDiffLogic : public AutomationLayerDiffLogic
+class DummyDiffLogic final : public AutomationTrackDiffLogic
 {
 public:
     
-    explicit DummyDiffLogic(TrackedItem &targetItem) : AutomationLayerDiffLogic(targetItem)
-    {
-    }
+    explicit DummyDiffLogic(TrackedItem &targetItem) :
+        AutomationTrackDiffLogic(targetItem) {}
     
-    const String getType() const override
+    const Identifier getType() const override
     {
-        return "DummyDiffLogic";
+        return "none";
     }
 };
 
-
 DiffLogic *DiffLogic::createLogicCopy(TrackedItem &copyFrom, TrackedItem &targetItem)
 {
-    const String &type = copyFrom.getDiffLogic()->getType();
+    const Identifier &type = copyFrom.getDiffLogic()->getType();
     return DiffLogic::createLogicFor(targetItem, type);
 }
 
-DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const String &type)
+DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &type)
 {
-    if (type == Serialization::Core::pianoLayer)
+    if (type == Serialization::Core::pianoTrack)
     {
-        return new PianoLayerDiffLogic(targetItem);
+        return new PianoTrackDiffLogic(targetItem);
     }
-    if (type == Serialization::Core::autoLayer)
+    else if (type == Serialization::Core::automationTrack)
     {
-        return new AutomationLayerDiffLogic(targetItem);
+        return new AutomationTrackDiffLogic(targetItem);
     }
     else if (type == Serialization::Core::projectTimeline)
     {
@@ -67,8 +64,6 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const String &type
         return new ProjectInfoDiffLogic(targetItem);
     }
 
+    //jassertfalse;
     return new DummyDiffLogic(targetItem);
-    
-//    jassertfalse;
-//    return nullptr;
 }

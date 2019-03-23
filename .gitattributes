@@ -3,4 +3,5 @@
 *.mm text=auto eol=lf
 *.txt text=auto eol=lf
 *.xml -text
+*.json -text
 *.svg -text

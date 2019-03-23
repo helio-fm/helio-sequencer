@@ -25,57 +25,55 @@
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
-ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode)
-    : ownerComponent(owner),
-      okCommand(okCode),
-      cancelCommand(cancelCode)
+ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText)
 {
-    addAndMakeVisible (background = new PanelC());
-    addAndMakeVisible (messageLabel = new Label (String(),
-                                                 TRANS("...")));
-    messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    messageLabel->setJustificationType (Justification::centred);
-    messageLabel->setEditable (false, false, false);
-    messageLabel->setColour (Label::textColourId, Colours::white);
-    messageLabel->setColour (TextEditor::textColourId, Colours::black);
-    messageLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    this->background.reset(new DialogPanel());
+    this->addAndMakeVisible(background.get());
+    this->messageLabel.reset(new Label(String(),
+                                        TRANS("...")));
+    this->addAndMakeVisible(messageLabel.get());
+    this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    messageLabel->setJustificationType(Justification::centred);
+    messageLabel->setEditable(false, false, false);
 
-    addAndMakeVisible (cancelButton = new TextButton (String()));
-    cancelButton->setButtonText (TRANS("..."));
+    this->cancelButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(cancelButton.get());
+    cancelButton->setButtonText(TRANS("..."));
     cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    cancelButton->addListener (this);
+    cancelButton->addListener(this);
 
-    addAndMakeVisible (okButton = new TextButton (String()));
-    okButton->setButtonText (TRANS("..."));
+    this->okButton.reset(new TextButton(String()));
+    this->addAndMakeVisible(okButton.get());
+    okButton->setButtonText(TRANS("..."));
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    okButton->addListener (this);
+    okButton->addListener(this);
 
-    addAndMakeVisible (separatorH = new SeparatorHorizontal());
-    addAndMakeVisible (separatorV = new SeparatorVertical());
+    this->separatorH.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separatorH.get());
+    this->separatorV.reset(new SeparatorVertical());
+    this->addAndMakeVisible(separatorV.get());
 
     //[UserPreSize]
     this->messageLabel->setText(message, dontSendNotification);
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
-	this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
-    setSize (410, 180);
+    this->setSize(410, 180);
 
     //[Constructor]
-    this->rebound();
+    this->updatePosition();
     this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
-    this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->grabKeyboardFocus();
+    this->toFront(true);
     //[/Constructor]
 }
 
 ModalDialogConfirmation::~ModalDialogConfirmation()
 {
     //[Destructor_pre]
-    FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
@@ -112,29 +110,32 @@ void ModalDialogConfirmation::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 96);
-    cancelButton->setBounds (4, getHeight() - 4 - 48, 200, 48);
-    okButton->setBounds (getWidth() - 4 - 201, getHeight() - 4 - 48, 201, 48);
-    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
-    separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
+    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 96);
+    cancelButton->setBounds(4, getHeight() - 4 - 48, 200, 48);
+    okButton->setBounds(getWidth() - 4 - 201, getHeight() - 4 - 48, 201, 48);
+    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
-    this->grabKeyboardFocus();
+    if (this->isShowing())
+    {
+        this->grabKeyboardFocus();
+    }
     //[/UserResized]
 }
 
-void ModalDialogConfirmation::buttonClicked (Button* buttonThatWasClicked)
+void ModalDialogConfirmation::buttonClicked(Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == cancelButton)
+    if (buttonThatWasClicked == cancelButton.get())
     {
         //[UserButtonCode_cancelButton] -- add your button handler code here..
         this->cancel();
         //[/UserButtonCode_cancelButton]
     }
-    else if (buttonThatWasClicked == okButton)
+    else if (buttonThatWasClicked == okButton.get())
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
         this->okay();
@@ -148,14 +149,14 @@ void ModalDialogConfirmation::buttonClicked (Button* buttonThatWasClicked)
 void ModalDialogConfirmation::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
 void ModalDialogConfirmation::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
-    this->rebound();
+    this->updatePosition();
     //[/UserCode_parentSizeChanged]
 }
 
@@ -196,6 +197,75 @@ void ModalDialogConfirmation::inputAttemptWhenModal()
 
 
 //[MiscUserCode]
+void ModalDialogConfirmation::cancel()
+{
+    const BailOutChecker checker(this);
+
+    if (this->onCancel != nullptr)
+    {
+        this->onCancel();
+    }
+
+    if (!checker.shouldBailOut())
+    {
+        this->dismiss();
+    }
+}
+
+void ModalDialogConfirmation::okay()
+{
+    const BailOutChecker checker(this);
+
+    if (this->onOk != nullptr)
+    {
+        this->onOk();
+    }
+
+    // a user might have created another dialog in onOk
+    // and showed it as a modal component, which destroyed this,
+    // because there can only be one model component:
+    if (!checker.shouldBailOut())
+    {
+        this->dismiss();
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Presets
+//===----------------------------------------------------------------------===//
+
+ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteProject()
+{
+    return { new ModalDialogConfirmation(
+        TRANS("dialog::deleteproject::caption"),
+        TRANS("dialog::deleteproject::proceed"),
+        TRANS("dialog::common::cancel")) };
+}
+
+ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
+{
+    return { new ModalDialogConfirmation(
+        TRANS("dialog::vcs::checkout::warning"),
+        TRANS("dialog::vcs::checkout::proceed"),
+        TRANS("dialog::common::cancel")) };
+}
+
+ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
+{
+    return { new ModalDialogConfirmation(
+        TRANS("dialog::vcs::reset::caption"),
+        TRANS("dialog::vcs::reset::proceed"),
+        TRANS("dialog::common::cancel")) };
+}
+
+ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
+{
+    return { new ModalDialogConfirmation(
+        TRANS("dialog::opengl::caption"),
+        TRANS("dialog::opengl::proceed"),
+        TRANS("dialog::common::cancel")) };
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -204,10 +274,9 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ModalDialogConfirmation"
                  template="../../Template" componentName="" parentClasses="public FadingDialog"
-                 constructorParams="Component &amp;owner, const String &amp;message, const String &amp;okText, const String &amp;cancelText, int okCode, int cancelCode"
-                 variableInitialisers="ownerComponent(owner),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="410" initialHeight="180">
+                 constructorParams="const String &amp;message, const String &amp;okText, const String &amp;cancelText"
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="410" initialHeight="180">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
@@ -216,17 +285,17 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 96" posRelativeY="e96b77baef792d3a"
-         textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="36"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="4 4Rr 200 48" buttonText="..." connectedEdges="6"
               needsCallback="1" radioGroupId="0"/>

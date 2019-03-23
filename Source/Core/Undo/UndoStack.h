@@ -17,27 +17,20 @@
 
 #pragma once
 
-class UndoAction;
-class ProjectTreeItem;
+class ProjectNode;
 
-#include "Serializable.h"
+#include "UndoAction.h"
 
-class UndoStack : public ChangeBroadcaster, public Serializable
+class UndoStack final : public ChangeBroadcaster, public Serializable
 {
 public:
 
-    explicit UndoStack(ProjectTreeItem &parentProject,
-              int maxNumberOfUnitsToKeep = 30000,
-              int minimumTransactionsToKeep = 30);
-
-    ~UndoStack() override;
+    explicit UndoStack(ProjectNode &parentProject,
+        int maxNumberOfUnitsToKeep = 30000,
+        int minimumTransactionsToKeep = 30);
     
     void clearUndoHistory();
-    
-    int getNumberOfUnitsTakenUpByStoredCommands() const;
-    void setMaxNumberOfStoredUnits(int maxNumberOfUnitsToKeep,
-                                   int minimumTransactionsToKeep);
-    
+
     bool perform(UndoAction *action);
     bool perform(UndoAction *action, const String &actionName);
     
@@ -51,23 +44,52 @@ public:
     bool undo();
     bool undoCurrentTransactionOnly();
     
-    void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;
-    int getNumActionsInCurrentTransaction() const;
-    
     bool canRedo() const noexcept;
     String getRedoDescription() const;
     bool redo();
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
-private:
+    template<typename T>
+    bool undoHas() const
+    {
+        return this->transactionHas<T>(this->getCurrentSet());
+    }
 
-    ProjectTreeItem &project;
+    template<typename T>
+    bool redoHas() const
+    {
+        return this->transactionHas<T>(this->getNextSet());
+    }
+
+private:
     
-    struct ActionSet;
-    friend struct ContainerDeletePolicy<ActionSet>;
+    void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;
+    int getNumActionsInCurrentTransaction() const;
+
+    ProjectNode &project;
+    
+    struct ActionSet final : public Serializable
+    {
+        ActionSet(ProjectNode &project, const String &transactionName);
+
+        bool perform() const;
+        bool undo() const;
+        int getTotalSize() const;
+
+        ValueTree serialize() const;
+        void deserialize(const ValueTree &tree);
+        void reset();
+
+        UndoAction *createUndoActionsByTagName(const Identifier &tagName);
+
+        OwnedArray<UndoAction> actions;
+        String name;
+
+        ProjectNode &project;
+    };
     
     OwnedArray<ActionSet> transactions;
     String newTransactionName;
@@ -77,7 +99,24 @@ private:
     
     ActionSet *getCurrentSet() const noexcept;
     ActionSet *getNextSet() const noexcept;
-    
+
+    template<typename T>
+    bool transactionHas(ActionSet *s) const
+    {
+        if (s != nullptr)
+        {
+            for (int i = 0; i < s->actions.size(); ++i)
+            {
+                if (dynamic_cast<T *>(s->actions.getUnchecked(i)))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     void clearFutureTransactions();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UndoStack)

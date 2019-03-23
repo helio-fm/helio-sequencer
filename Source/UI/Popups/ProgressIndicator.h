@@ -22,14 +22,10 @@
 #include "Icons.h"
 #define PROGRESS_INDICATOR_UPDATE_TIMS_MS 17
 
-#if !defined M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-class ProgressIndicator : public Component,
-                          private Timer
+class ProgressIndicator final : public Component, private Timer
 {
 public:
+
     ProgressIndicator() : indicatorDegree(0)
     {
         this->setInterceptsMouseClicks(false, false);
@@ -57,12 +53,12 @@ public:
         if (DrawableComposite *group =
                 dynamic_cast<DrawableComposite *>(this->indicatorShape->getChildComponent(0)->getChildComponent(0)))
         {
-            Rectangle<float> allArea(group->getContentArea().resolve(nullptr));
+            Rectangle<float> allArea(group->getContentArea());
             AffineTransform fitTransform = RectanglePlacement(RectanglePlacement::onlyReduceInSize)
                     .getTransformToFit(allArea, this->getLocalBounds().toFloat());
 
             const float radius = 10;
-            const float indicatorRadian = float(360.f - this->indicatorDegree) * float(M_PI / 180.f);
+            const float indicatorRadian = float(360.f - this->indicatorDegree) * (MathConstants<float>::pi / 180.f);
             const Point<float> indicatorPosition(radius * cosf(indicatorRadian), radius * sinf(indicatorRadian));
 
             const float numSegments = float(group->getNumChildComponents());
@@ -74,14 +70,14 @@ public:
                 if (DrawableComposite *dc = dynamic_cast<DrawableComposite *>(child))
                 {
                     const float oneSegment = (360.f / numSegments);
-                    const float currentPartRadian = (i * oneSegment) * float(M_PI / 180.f);
+                    const float currentPartRadian = (i * oneSegment) * (MathConstants<float>::pi / 180.f);
                     const Point<float> currentPartPosition(radius * cosf(currentPartRadian), radius * sinf(currentPartRadian));
 
                     const float distance = currentPartPosition.getDistanceFrom(indicatorPosition);
                     const float partAlpha = jmax(0.1f, 1.f - (distance / (radius * 2)));
 
                     const Rectangle<float> drawableBounds(dc->getDrawableBounds());
-                    const Rectangle<float> subArea(dc->getContentArea().resolve(nullptr));
+                    const Rectangle<float> subArea(dc->getContentArea());
 
                     if (DrawablePath *dp = dynamic_cast<DrawablePath *>(dc->getChildComponent(0)))
                     {

@@ -18,16 +18,15 @@
 #pragma once
 
 //[Headers]
+#include "ShadowComponent.h"
 //[/Headers]
 
-#include "SeparatorHorizontalReversed.h"
 
-class ShadowUpwards  : public Component
+class ShadowUpwards final : public ShadowComponent
 {
 public:
 
-    ShadowUpwards ();
-
+    ShadowUpwards(ShadowType type);
     ~ShadowUpwards();
 
     //[UserMethods]
@@ -42,7 +41,6 @@ private:
     //[UserVariables]
     //[/UserVariables]
 
-    ScopedPointer<SeparatorHorizontalReversed> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShadowUpwards)
 };

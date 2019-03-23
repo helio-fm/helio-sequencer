@@ -17,22 +17,27 @@
 
 #pragma once
 
-class GenericTooltip : public Component
+class GenericTooltip final : public Component
 {
 public:
 
-    explicit GenericTooltip(String tooltip) : message(std::move(tooltip))
+    explicit GenericTooltip(const String &tooltip) : message(tooltip)
     {
         this->setFocusContainer(false);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
     }
 
     void paint(Graphics &g) override
     {
         const Rectangle<int> messageBounds(this->getLocalBounds().reduced(10, 10));
-        g.setColour(Colours::white.withAlpha(0.8f));
-        g.setFont(Font(Font::getDefaultSansSerifFontName(), 30.f, Font::plain));
+        g.setColour(Colours::white.withAlpha(0.85f));
+#if HELIO_DESKTOP
+        g.setFont(21.f);
+#elif HELIO_MOBILE
+        g.setFont(28.f);
+#endif
         g.drawFittedText(this->message,
                          messageBounds.getX(),
                          messageBounds.getY(),
@@ -47,4 +52,5 @@ private:
 
     String message;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericTooltip)
 };

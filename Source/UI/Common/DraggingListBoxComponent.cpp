@@ -34,6 +34,7 @@ DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disabl
     }
     
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
 }
 
 
@@ -96,6 +97,7 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
         if (this->maxDragDistance < LISTBOX_DRAG_THRESHOLD)
         {
             this->setSelected(true);
+            return;
         }
         else
         {
@@ -126,11 +128,11 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
                                               const MouseWheelDetails &wheel)
 {
     const int forwardWheel =
-        roundFloatToInt(wheel.deltaY * (wheel.isReversed ? -LISTBOX_DRAG_SPEED : LISTBOX_DRAG_SPEED));
+        int(wheel.deltaY * (wheel.isReversed ? -LISTBOX_DRAG_SPEED : LISTBOX_DRAG_SPEED));
     
     if (this->parentViewport != nullptr)
     {
-        BailOutChecker checker(this);
+        const BailOutChecker checker(this);
         this->parentViewport->setViewPosition(0, this->parentViewport->getViewPosition().getY() - forwardWheel);
         
         // If viewport is owned by Listbox,
@@ -141,8 +143,8 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
             ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, float(forwardWheel) / 50.f));
             
             const bool eventWasUsed =
-                (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar()->isVisible()) ||
-                (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar()->isVisible());
+                (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar().isVisible()) ||
+                (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar().isVisible());
             
             if (!eventWasUsed)
                 Component::mouseWheelMove(event, wheel);

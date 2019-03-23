@@ -23,7 +23,7 @@
 
 BuiltInSynthFormat::BuiltInSynthFormat()
 {
-    BuiltInSynthPiano piano(true);
+    BuiltInSynthPiano piano;
     piano.fillInPluginDescription(this->pianoDescription);
 }
 
@@ -42,7 +42,7 @@ void BuiltInSynthFormat::findAllTypesForFile(OwnedArray <PluginDescription> &des
 
 bool BuiltInSynthFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
-    const bool match = (fileOrIdentifier == String::empty ||
+    const bool match = (fileOrIdentifier.isEmpty() ||
                         fileOrIdentifier == HELIO_BUILT_IN_PLUGIN_IDENTIFIER);
     
     return match;
@@ -54,9 +54,9 @@ void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc, dou
 {
     if (desc.name == this->pianoDescription.name)
     {
-        callback(userData, new BuiltInSynthPiano(), String::empty);
+        callback(userData, new BuiltInSynthPiano(), {});
         return;
     }
     
-    callback(userData, nullptr, String::empty);
+    callback(userData, nullptr, {});
 }

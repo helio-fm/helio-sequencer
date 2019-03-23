@@ -17,52 +17,52 @@
 
 #pragma once
 
-class Instrument;
 class OrchestraPit;
 class PlayerThread;
+class PlayerThreadPool;
 class RendererThread;
 
 #include "TransportListener.h"
 #include "ProjectSequencesWrapper.h"
 #include "ProjectListener.h"
 #include "OrchestraListener.h"
+#include "Instrument.h"
 
-class Transport : public ProjectListener, private OrchestraListener
+class Transport final : public Serializable,
+                        public ProjectListener,
+                        private OrchestraListener
 {
 public:
 
     explicit Transport(OrchestraPit &orchestraPit);
-
     ~Transport() override;
-
-    static const int millisecondsPerBeat = 500;
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
-
     static String getTimeString(const RelativeTime &relTime, bool includeMilliseconds = false);
-    
+
+    // Returns microseconds per quarter note
+    static int getTempoByCV(float controllerValue) noexcept;
     
     //===------------------------------------------------------------------===//
     // Transport
     //===------------------------------------------------------------------===//
     
-    double getSeekPosition() const;
-    double getTotalTime() const;
+    double getSeekPosition() const noexcept;
+    double getTotalTime() const noexcept;
     void seekToPosition(double absPosition);
     
-    void probeSoundAt(double absTrackPosition,
-                      const MidiLayer *limitToLayer = nullptr);
+    void probeSoundAt(double absTrackPosition, 
+        const MidiSequence *limitToLayer = nullptr);
+    
+    void probeSequence(const MidiMessageSequence &sequence);
 
-    
-    void startPlaybackLooped(double absLoopStart, double absLoopEnd);
-    bool isLooped() const;
-    double getLoopStart() const;
-    double getLoopEnd() const;
-    
     void startPlayback();
+    void startPlaybackFragment(double absStart, double absEnd, bool looped = false);
+
     bool isPlaying() const;
     void stopPlayback();
-    
+    void toggleStatStopPlayback();
+
     void startRender(const String &filename);
     bool isRendering() const;
     void stopRender();
@@ -70,64 +70,64 @@ public:
     float getRenderingPercentsComplete() const;
     
     void calcTimeAndTempoAt(const double absPosition,
-                            double &outTimeMs,
-                            double &outTempo);
+        double &outTimeMs, double &outTempo);
 
     MidiMessage findFirstTempoEvent();
 
-    void rebuildSequencesInRealtime();
-
-    
     //===------------------------------------------------------------------===//
-    // Sending messages at realtime
+    // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void sendMidiMessage(const String &layerId, const MidiMessage &message) const;
-    
-    void allNotesAndControllersOff() const;
+    void previewMidiMessage(const String &trackId, const MidiMessage &message) const;
+    void stopSound(const String &trackId) const;
 
     void allNotesControllersAndSoundOff() const;
-
     
     //===------------------------------------------------------------------===//
     // OrchestraListener
     //===------------------------------------------------------------------===//
 
     void instrumentAdded(Instrument *instrument) override;
-    
     void instrumentRemoved(Instrument *instrument) override;
-
     void instrumentRemovedPostAction() override;
-    
-    
+
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
     
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-    
-    void onEventAdded(const MidiEvent &event) override;
-    
-    void onEventRemoved(const MidiEvent &event) override;
-    
-    void onEventRemovedPostAction(const MidiLayer *layer) override;
+    void onChangeMidiEvent(const MidiEvent &oldEvent,
+        const MidiEvent &newEvent) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+    void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
-    void onLayerChanged(const MidiLayer *layer) override;
-    
-    void onLayerAdded(const MidiLayer *layer) override;
-    
-    void onLayerRemoved(const MidiLayer *layer) override; // ���������� ����� ����� ��������� ����
-    
-    void onProjectBeatRangeChanged(float firstBeat, float lastBeat) override;
-    
+    void onAddClip(const Clip &clip) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void onRemoveClip(const Clip &clip) override;
+    void onPostRemoveClip(Pattern *const pattern) override;
+
+    void onAddTrack(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
 
     //===------------------------------------------------------------------===//
     // Listeners management
     //===------------------------------------------------------------------===//
 
     void addTransportListener(TransportListener *listener);
-
     void removeTransportListener(TransportListener *listener);
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
+
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
+    void reset() override;
 
 protected:
 
@@ -139,52 +139,69 @@ protected:
     void broadcastPlay();
     void broadcastStop();
     void broadcastSeek(const double newPosition,
-                       const double currentTimeMs,
-                       const double totalTimeMs);
+        const double currentTimeMs, const double totalTimeMs);
 
 private:
     
     OrchestraPit &orchestra;
 
-    ScopedPointer<PlayerThread> player;
+    ScopedPointer<PlayerThreadPool> player;
     ScopedPointer<RendererThread> renderer;
-    
-    friend class PlayerThread;
+
     friend class RendererThread;
+    friend class PlayerThread;
 
 private:
 
     ProjectSequences getSequences();
     void rebuildSequencesIfNeeded();
     
+    SpinLock sequencesLock;
     ProjectSequences sequences;
     bool sequencesAreOutdated;
     
-    Array<const MidiLayer *> layersCache;
-    HashMap<String, Instrument *> linksCache; // layer id : instrument
-    
-    void updateLinkForLayer(const MidiLayer *layer);
-    void removeLinkForLayer(const MidiLayer *layer);
-    
-private:
-    
-    bool loopedMode;
-    double loopStart;
-    double loopEnd;
+    // linksCache is <track id : instrument>
+    mutable Array<const MidiTrack *> tracksCache;
+    mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> linksCache;
+
+    void updateLinkForTrack(const MidiTrack *track);
+    void removeLinkForTrack(const MidiTrack *track);
     
 private:
 
-    ReadWriteLock seekPositionLock;
-    double seekPosition;
+    /*
+        The purpose of this class is to help with previewing messages on the fly in piano roll.
+        Will simply send messages to queue after a delay, and cancels all pending messages when
+        someone calls allNotesControllersAndSoundOff(); that delay is needed because some plugins
+        (e.g. Kontakt in my case) are often processing play/stop messages out of order, which is weird -
+        note the word `queue` in addMessageToQueue() method name - but it still happens in some cases,
+        for example, when a user drags some notes around quickly. Said that, for whatever reason,
+        JUCE's message collector cannot be relied upon, and this hack is used instead.
+    */
+    class MidiMessageDelayedPreview final : private Timer
+    {
+    public:
+        MidiMessageDelayedPreview() = default;
+        void cancelPendingPreview();
+        void previewMessage(const MidiMessage &message, WeakReference<Instrument> instrument);
+    private:
+        void timerCallback() override;
+        Array<WeakReference<Instrument>> instruments;
+        Array<MidiMessage> messages;
+    };
 
-    ReadWriteLock totalTimeLock;
-    double totalTime;
+    mutable MidiMessageDelayedPreview messagePreviewQueue;
+
+private:
+
+    Atomic<double> seekPosition;
+    Atomic<double> totalTime;
     
-    double trackStartMs;
-    double trackEndMs;
+    Atomic<double> trackStartMs;
+    Atomic<double> trackEndMs;
     
-    float projectFirstBeat;
-    float projectLastBeat;
+    Atomic<float> projectFirstBeat;
+    Atomic<float> projectLastBeat;
 
     ListenerList<TransportListener> transportListeners;
 

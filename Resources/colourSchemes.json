@@ -1,0 +1,110 @@
+{
+  "colourSchemes": {
+    "colourScheme": [
+      {
+        "name": "Black Book",
+        "colourMap": {
+          "text": "ffffffff",
+          "primaryGradientA": "ff25252e",
+          "primaryGradientB": "ff25252e",
+          "secondaryGradientA": "ff27262f",
+          "secondaryGradientB": "ff27262f",
+          "lassoFill": "17000000",
+          "lassoBorder": "ffad7fff",
+          "whiteKey": "ff33323c",
+          "blackKey": "ff1b1a1f",
+          "beat": "bf1b1923",
+          "bar": "271b1923",
+          "row": "ff1b1923",
+          "panelFill": "18ffffff",
+          "panelBorder": "afffffff",
+          "iconBase": "29ffffff",
+          "iconShadow": "ff000000"
+        }
+      },
+      {
+        "name": "Helio Theme",
+        "colourMap": {
+          "text": "ffffffff",
+          "primaryGradientA": "ff373c6e",
+          "primaryGradientB": "ff373c6e",
+          "secondaryGradientA": "ff3d4277",
+          "secondaryGradientB": "ff3d4277",
+          "lassoFill": "70000000",
+          "lassoBorder": "9ff0087",
+          "whiteKey": "ff333875",
+          "blackKey": "ff1e1d51",
+          "beat": "bf151240",
+          "bar": "27151240",
+          "row": "ff151240",
+          "panelFill": "20ffffff",
+          "panelBorder": "18ffffff",
+          "iconBase": "3f000000",
+          "iconShadow": "1dffffff"
+        }
+      },
+      {
+        "name": "Ural Winter",
+        "colourMap": {
+          "blackKey": "ffd0d8e9",
+          "whiteKey": "ffd6ddf0",
+          "secondaryGradientA": "ffdee2f3",
+          "secondaryGradientB": "ff000000",
+          "bar": "ff97a2ba",
+          "text": "ff000000",
+          "primaryGradientA": "ffedeeff",
+          "primaryGradientB": "ffe1e8f7",
+          "panelBorder": "ca000000",
+          "panelFill": "0",
+          "iconShadow": "33ffffff",
+          "iconBase": "55000000",
+          "lassoFill": "17ffffff",
+          "lassoBorder": "ff260058",
+          "row": "ffcbd4e8"
+        }
+      },
+      {
+        "name": "Grayscale",
+        "colourMap": {
+          "text": "ffffffff",
+          "primaryGradientA": "ff464555",
+          "primaryGradientB": "ff464555",
+          "secondaryGradientA": "ff494858",
+          "secondaryGradientB": "ff494858",
+          "lassoFill": "17000000",
+          "lassoBorder": "ff5867ff",
+          "whiteKey": "ff43424e",
+          "blackKey": "ff2b2a32",
+          "beat": "bf282635",
+          "bar": "27282635",
+          "row": "ff282635",
+          "panelFill": "18ffffff",
+          "panelBorder": "afffffff",
+          "iconBase": "3f000000",
+          "iconShadow": "1dffffff"
+        }
+      },
+      {
+        "name": "Midnight Tracking",
+        "colourMap": {
+          "text": "ffffffff",
+          "primaryGradientA": "ff473a7e",
+          "primaryGradientB": "ff473a7e",
+          "secondaryGradientA": "ff473a7e",
+          "secondaryGradientB": "ff473a7e",
+          "lassoFill": "70000000",
+          "lassoBorder": "9815fff",
+          "whiteKey": "ff372e67",
+          "blackKey": "ff1e1b45",
+          "beat": "bf1e1b45",
+          "bar": "271e1b45",
+          "row": "ff1e1b45",
+          "panelFill": "18ffffff",
+          "panelBorder": "afffffff",
+          "iconBase": "3f000000",
+          "iconShadow": "1dffffff"
+        }
+      }
+    ]
+  }
+}
