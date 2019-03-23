@@ -1,8 +1,9 @@
 version: 1.0.{build}
 branches:
   only:
-  - develop
   - master
+  - develop
+  - /^\d+\.?\d+\.?\d*$/  
 skip_tags: false
 image: Visual Studio 2017
 platform:

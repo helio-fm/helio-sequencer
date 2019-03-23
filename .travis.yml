@@ -8,7 +8,7 @@ branches:
   only:
     - master
     - develop
-    - travis-test
+    - /^\d+\.?\d+\.?\d*$/  
 
 addons_shortcuts:
   addons_clang7: &clang7
@@ -78,4 +78,5 @@ deploy:
   script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${TRAVIS_OS_NAME}.sh
   on:
     all_branches: true
+    repo: helio-fm/helio-workstation
     condition: ${DEPLOY} = true

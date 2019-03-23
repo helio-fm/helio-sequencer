@@ -11,13 +11,13 @@ fi
 # TODO add 32-bit builds someday
 ARCH="x64"
 
-# Build either a development branch or a tagged master branch
+# Assumed to be run either on a development branch or a tagged master branch
 if [[ ${TRAVIS_BRANCH} == "develop" ]]; then
     RELEASE_FILENAME="helio-dev-${ARCH}"
-elif [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_TAG} != "" ]]; then
+elif [[ ${TRAVIS_TAG} != "" ]]; then
     RELEASE_FILENAME="helio-${TRAVIS_TAG}-${ARCH}"
 else
-    echo "Skipping deployment: will only run either on a master commit with tag, or a develop commit"
+    echo "Skipping deployment: will only run either on a tagged commit, or a develop branch commit"
     exit 0
 fi
 
