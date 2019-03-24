@@ -45,11 +45,11 @@
 #include "ColourIDs.h"
 
 #if HELIO_DESKTOP
-#   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS (false)
-#   define TOOLS_SIDEBAR_SHOWS_TIME (false)
+//#   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS 1
+//#   define TOOLS_SIDEBAR_SHOWS_TIME 1
 #elif HELIO_MOBILE
-#   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS (false)
-#   define TOOLS_SIDEBAR_SHOWS_TIME (false)
+//#   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS 1
+//#   define TOOLS_SIDEBAR_SHOWS_TIME 1
 #endif
 
 //[/MiscUserDefs]
@@ -238,11 +238,12 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
 
         this->project.getTransport().stopPlayback();
 
-        if (selectedAnnotation != nullptr && TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS)
+#if TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS
+        if (selectedAnnotation != nullptr)
         {
             this->emitAnnotationsCallout(new AnnotationMenu(this->project, *selectedAnnotation));
         }
-        else if (selectedTimeSignature != nullptr && TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS)
+        else if (selectedTimeSignature != nullptr)
         {
             this->emitAnnotationsCallout(new TimeSignatureMenu(this->project, *selectedTimeSignature));
         }
@@ -250,6 +251,9 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         {
             this->emitAnnotationsCallout(new TimelineMenu(this->project));
         }
+#else
+        this->emitAnnotationsCallout(new TimelineMenu(this->project));
+#endif
     }
     break;
     default:
@@ -266,7 +270,6 @@ void SequencerSidebarRight::recreateMenu()
 
     const bool defaultMode = this->project.getEditMode().isMode(HybridRollEditMode::defaultMode);
     const bool drawMode = this->project.getEditMode().isMode(HybridRollEditMode::drawMode);
-    const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
     const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::knifeMode);
 
     // Selection tool is useless on the desktop
@@ -280,6 +283,7 @@ void SequencerSidebarRight::recreateMenu()
 
     // Drag tool is useless on the mobile
 #if HELIO_DESKTOP
+    const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
     this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->toggled(dragMode));
 #endif
 

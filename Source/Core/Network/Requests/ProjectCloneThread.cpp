@@ -65,7 +65,7 @@ void ProjectCloneThread::run()
 
     // the info about what revisions are available remotely will be needed by revision tree:
     this->vcs->updateRemoteSyncCache(remoteProject.getRevisions());
-        
+
     // build tree(s) of shallow VCS::Revision from newRemoteRevisions list and append them to VCS
     const auto remoteHistory = RevisionsSyncHelpers::constructRemoteTree(remoteProject.getRevisions());
     if (remoteHistory == nullptr)
@@ -79,7 +79,7 @@ void ProjectCloneThread::run()
     this->newHead = nullptr;
 
     // if anything is needed to pull, fetch all data for each, then update and callback
-    for (const auto dto : remoteProject.getRevisions())
+    for (const auto &dto : remoteProject.getRevisions())
     {
         const String revisionRoute(Routes::Api::projectRevision
             .replace(":projectId", this->projectId)
