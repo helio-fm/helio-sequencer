@@ -16,6 +16,8 @@ else
     exit 0
 fi
 
+cd ${TRAVIS_BUILD_DIR}/Projects/Deployment
+
 echo "Exporting"
 xcrun xcodebuild -exportArchive \
   -archivePath /tmp/archive.xcarchive \

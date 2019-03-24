@@ -46,13 +46,13 @@ matrix:
       env: DEPLOY=true PLATFORM=linux CONFIG=Release64 DISPLAY=localhost:1.0
     - name: "xcode 10 mac, release and deploy"
       os: osx
-      osx_image: xcode10
+      osx_image: xcode10.1
       xcode_sdk: macosx10.14
       addons: *deploy
       env: DEPLOY=true PLATFORM=osx
     - name: "xcode 10 ios, release and deploy"
       os: osx
-      osx_image: xcode10
+      osx_image: xcode10.1
       xcode_sdk: iphoneos
       addons: *deploy
       env: DEPLOY=true PLATFORM=ios
