@@ -26,15 +26,15 @@ PatternsMenu::PatternsMenu(PatternEditorNode &parentNode) :
 
     menu.add(MenuItem::item(Icons::annotation,
         CommandIDs::PatternsGroupByName,
-        TRANS("menu::track::selectall"))->closesMenu());
+        TRANS("menu::groupby::name"))->closesMenu());
     
     menu.add(MenuItem::item(Icons::colour,
         CommandIDs::PatternsGroupByColour,
-        TRANS("menu::track::selectall"))->closesMenu());
+        TRANS("menu::groupby::colour"))->closesMenu());
 
     menu.add(MenuItem::item(Icons::instrument,
         CommandIDs::PatternsGroupByInstrument,
-        TRANS("menu::track::selectall"))->closesMenu());
+        TRANS("menu::groupby::instrument"))->closesMenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }

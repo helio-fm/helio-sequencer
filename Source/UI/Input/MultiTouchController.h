@@ -37,11 +37,7 @@ public:
 private:
 
     MultiTouchListener &listener;
-
-    // absolute coordinates on the canvas:
-    //Point<double> f1Projection;
-    //Point<double> f2Projection;
-
+    
     Point<float> finger1Position;
     Point<float> finger2Position;
 

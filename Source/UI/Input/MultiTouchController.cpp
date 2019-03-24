@@ -46,16 +46,6 @@ MultiTouchController::MultiTouchController(MultiTouchListener &parent) :
     finger1On(false),
     finger2On(false) {}
 
-static Point<double> getAbsolutePosition(const MouseEvent &event)
-{
-    return event.position.toDouble() / event.eventComponent->getLocalBounds().toDouble();
-}
-
-static Point<int> getPxPosition(const Point<double> &pos, Component *component)
-{
-    return (pos * component->getLocalBounds()).toInt();
-}
-
 void MultiTouchController::mouseDown(const MouseEvent &event)
 {
     if (event.source.getIndex() > 1)
@@ -67,14 +57,12 @@ void MultiTouchController::mouseDown(const MouseEvent &event)
     {
         this->finger1On = true;
         this->finger1Position = event.source.getScreenPosition();
-        //this->f1Projection = getAbsolutePosition(event);
         this->center1 = this->listener.getMultiTouchOrigin(event.position);
     }
     else if (event.source.getIndex() == 1)
     {
         this->finger2On = true;
         this->finger2Position = event.source.getScreenPosition();
-        //this->f2Projection = getAbsolutePosition(event);
         this->center2 = this->listener.getMultiTouchOrigin(event.position);
     }
 

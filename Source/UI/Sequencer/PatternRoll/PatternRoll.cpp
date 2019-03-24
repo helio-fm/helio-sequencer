@@ -68,12 +68,51 @@ inline static constexpr int rowHeight()
 //    }
 //}
 
+struct StringComparator final
+{
+    static int compareElements(const String &first, const String &second)
+    {
+        return first.compareNatural(second);
+    }
+};
+
+static StringComparator kStringSort;
+
+static String getTrackGroupKey(PatternRoll::GroupMode grouping, const MidiTrack *const track)
+{
+    switch (grouping)
+    {
+    case PatternRoll::GroupByName:
+        return track->getTrackName();
+    case PatternRoll::GroupByNameId:
+        return track->getTrackName() + track->getTrackId();
+    case PatternRoll::GroupByColour:
+        return track->getTrackColour().toString();
+    case PatternRoll::GroupByInstrument:
+    default:
+        return track->getTrackInstrumentId();
+        break;
+    }
+}
+
+static void updateTrackRowPosition(Array<String> &rows,
+    PatternRoll::GroupMode grouping, const MidiTrack *const track)
+{
+    const auto trackGroupKey = getTrackGroupKey(grouping, track);
+    const auto indexOfSorted = rows.indexOfSorted(kStringSort, trackGroupKey);
+    if (indexOfSorted < 0)
+    {
+        rows.addSorted(kStringSort, trackGroupKey);
+    }
+}
+
 PatternRoll::PatternRoll(ProjectNode &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true),
     newClipDragging(nullptr),
-    addNewClipMode(false)
+    addNewClipMode(false),
+    grouping(GroupByName)
 {
     // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
     this->selectedClipsMenuManager = new PatternRollSelectionMenuManager(&this->selection);
@@ -121,17 +160,17 @@ static ClipComponent *createClipComponentFor(MidiTrack *track,
 void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
-
     this->clipComponents.clear();
-
     this->tracks.clearQuick();
+    this->rows.clearQuick();
 
     for (auto *track : this->project.getTracks())
     {
         // Only show tracks with patterns (i.e. ignore timeline tracks)
         if (const auto *pattern = track->getPattern())
         {
-            this->tracks.addSorted(*track, track);
+            this->tracks.add(track);
+            updateTrackRowPosition(this->rows, this->grouping, track);
 
             for (int j = 0; j < pattern->size(); ++j)
             {
@@ -150,8 +189,18 @@ void PatternRoll::reloadRollContent()
 
 int PatternRoll::getNumRows() const noexcept
 {
-    return this->tracks.size();
+    return this->rows.size();
 }
+
+void PatternRoll::reloadRowsGrouping()
+{
+    this->rows.clearQuick();
+    for (const auto *track : this->tracks)
+    {
+        updateTrackRowPosition(this->rows, this->grouping, track);
+    }
+}
+
 
 //===----------------------------------------------------------------------===//
 // HybridRoll
@@ -226,7 +275,9 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const MidiSequence *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
-    const int trackIndex = this->tracks.indexOfSorted(*track, track);
+    const auto trackGroupKey = getTrackGroupKey(this->grouping, track);
+    const int trackIndex = this->rows.indexOfSorted(kStringSort, trackGroupKey);
+
     const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
 
@@ -260,15 +311,6 @@ float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
     return this->getFloorBeatByXPosition(x) - sequenceOffset;
 }
 
-Pattern *PatternRoll::getPatternByMousePosition(int y) const
-{
-    const int patternIndex = jlimit(0,
-        this->getNumRows() - 1,
-        (y - HYBRID_ROLL_HEADER_HEIGHT) / rowHeight());
-
-    return this->tracks.getUnchecked(patternIndex)->getPattern();
-}
-
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
@@ -277,7 +319,8 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 {
     if (Pattern *pattern = track->getPattern())
     {
-        this->tracks.addSorted(*track, track);
+        this->tracks.add(track);
+        updateTrackRowPosition(this->rows, this->grouping, track);
 
         for (int j = 0; j < pattern->size(); ++j)
         {
@@ -314,7 +357,7 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
     {
         // track name could change here so we have to keep track array sorted by name:
         //debugTracksOrder(this->tracks);
-        this->tracks.sort(*track);
+        this->reloadRowsGrouping();
         //debugTracksOrder(this->tracks);
 
         // TODO only repaint clips of a changed track?
@@ -335,6 +378,7 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
     this->hideAllGhostClips();
 
     this->tracks.removeAllInstancesOf(track);
+    this->reloadRowsGrouping();
 
     if (Pattern *pattern = track->getPattern())
     {
@@ -624,13 +668,19 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
         break;
     case CommandIDs::PatternsGroupByName:
-        // TODO
+        this->deselectAll();
+        this->grouping = GroupByName;
+        this->reloadRowsGrouping();
         break;
     case CommandIDs::PatternsGroupByColour:
-        // TODO
+        this->deselectAll();
+        this->grouping = GroupByColour;
+        this->reloadRowsGrouping();
         break;
     case CommandIDs::PatternsGroupByInstrument:
-        // TODO
+        this->deselectAll();
+        this->grouping = GroupByInstrument;
+        this->reloadRowsGrouping();
         break;
     default:
         break;
@@ -678,10 +728,16 @@ void PatternRoll::parentSizeChanged()
 
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
-    auto *pattern = this->getPatternByMousePosition(e.y);
-    const float draggingBeat = this->getBeatByMousePosition(pattern, e.x);
-    this->addNewClipMode = true;
-    this->addClip(pattern, draggingBeat);
+    const int rowNumber = jlimit(0, this->getNumRows() - 1,
+        (e.y - HYBRID_ROLL_HEADER_HEIGHT) / rowHeight());
+
+    Pattern *pattern = nullptr; // TODO just pick nearest
+    if (pattern != nullptr)
+    {
+        const float draggingBeat = this->getBeatByMousePosition(pattern, e.x);
+        this->addNewClipMode = true;
+        this->addClip(pattern, draggingBeat);
+    }
 }
 
 void PatternRoll::startCuttingClips(const MouseEvent &e)
