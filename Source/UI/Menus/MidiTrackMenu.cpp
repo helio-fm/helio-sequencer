@@ -156,17 +156,16 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
         this->initDefaultMenu();
     }));
     
-    const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
+    const auto &info = App::Workspace().getAudioCore().getInstruments();
     const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->trackItem.getTrackInstrumentId());
-    const bool hasSubmenu = (info.size() > 5);
     
     for (int i = 0; i < info.size(); ++i)
     {
         const bool isTicked = (info[i] == selectedInstrument);
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, info[i]->getName())->withAction([this, instrument = info[i]]()
+        const String instrumentId = info[i]->getIdAndHash();
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, info[i]->getName())->withAction([this, instrumentId]()
         {
-            DBG(instrument->getIdAndHash());
-            const String instrumentId = instrument->getIdAndHash();
+            DBG(instrumentId);
             this->trackItem.getChangeInstrumentCallback()(instrumentId);
             this->initDefaultMenu();
             return;

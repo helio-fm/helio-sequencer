@@ -27,7 +27,6 @@ class WorkspaceMenu final : public MenuPanel
 public:
     
     WorkspaceMenu(Workspace &workspace);
-    void handleCommandMessage(int commandId) override;
     
 private:
 

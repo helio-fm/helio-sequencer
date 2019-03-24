@@ -230,7 +230,7 @@ bool HelioCallout::hitTest(int x, int y)
 
 void HelioCallout::inputAttemptWhenModal()
 {
-    const Point<int> mousePos(getMouseXYRelative() + getBounds().getPosition());
+    //const Point<int> mousePos(getMouseXYRelative() + getBounds().getPosition());
     //const bool shouldBeDismissedAsyncronously = this->targetArea.contains(mousePos) || this->alignsToMouse;
     const bool shouldBeDismissedAsyncronously = true;
     if (shouldBeDismissedAsyncronously)

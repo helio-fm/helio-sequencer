@@ -454,7 +454,11 @@ void App::initialise(const String &commandLine)
         this->workspace.reset(new class Workspace());
 
 #if JUCE_ANDROID
+        // OpenGL seems to be the only sensible option on Android:
         const bool enableOpenGL = true;
+#elif JUCE_IOS
+        // CoreGraphics renderer is faster anyway:
+        const bool enableOpenGL = false;
 #else
         const auto opeGlState =
             this->config->getProperty(Serialization::Config::openGLState);

@@ -1,6 +1,20 @@
 #!/bin/bash
 
-# TODO check for $TRAVIS_BRANCH and process develop and master branches differently
+# Bail out on PR builds immediately
+if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
+    echo "Skipping deployment for PR build"
+    exit 0
+fi
+
+# Assumed to be run either on a development branch or a tagged master branch
+if [[ ${TRAVIS_BRANCH} == "develop" ]]; then
+    RELEASE_FILENAME="helio-dev"
+elif [[ ${TRAVIS_TAG} != "" ]]; then
+    RELEASE_FILENAME="helio-${TRAVIS_TAG}"
+else
+    echo "Skipping deployment: will only run either on a tagged commit, or a develop branch commit"
+    exit 0
+fi
 
 cd ${TRAVIS_BUILD_DIR}/Projects/Deployment
 
@@ -9,7 +23,7 @@ xcodebuild -archivePath \
 	/tmp/archive.xcarchive \
 	-exportArchive \
 	-exportPath /tmp/exported.app \
-	-exportOptionsPlist ./Travis/export-options.plist;
+	-exportOptionsPlist ./Travis/export-options-osx.plist;
 
 # Create disk image
 bash ./macOS/create-dmg.sh \
@@ -19,12 +33,12 @@ bash ./macOS/create-dmg.sh \
 	--icon Helio.app 230 150 \
 	--app-drop-link 470 150 \
 	--no-internet-enable \
-	/tmp/helio.dmg \
+	/tmp/${RELEASE_FILENAME}.dmg \
 	/tmp/exported.app/Helio.app
 
 # Sign (and check) it as well
-codesign --force --sign "Developer ID Application: Peter Rudenko (EQL633LLC8)" /tmp/helio.dmg
-spctl -a -t open --context context:primary-signature -v /tmp/helio.dmg
+codesign --force --sign "Developer ID Application: Peter Rudenko (EQL633LLC8)" /tmp/${RELEASE_FILENAME}.dmg
+spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}.dmg
 
 # Finally, upload
-scp -C /tmp/helio.dmg deploy@helio.fm:/opt/musehackers/files/ci/helio-dev.dmg
+scp -C /tmp/${RELEASE_FILENAME}.dmg ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.dmg

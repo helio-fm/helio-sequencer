@@ -273,8 +273,9 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (int i = 0; i < instruments.size(); ++i)
     {
+        const String instrumentId = instruments[i]->getIdAndHash();
         menu.add(MenuItem::item(Icons::instrument,
-            instruments[i]->getName())->withAction([this, instrumentId = instruments[i]->getIdAndHash()]()
+            instruments[i]->getName())->withAction([this, instrumentId]()
             {
                 auto &project = this->project;
                 const ValueTree trackTemplate = this->createPianoTrackTempate("", instrumentId);
@@ -309,8 +310,9 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (int i = 0; i < instruments.size(); ++i)
     {
+        const WeakReference<Instrument> instrument = instruments[i];
         menu.add(MenuItem::item(Icons::instrument,
-            instruments[i]->getName())->withSubmenu()->withAction([this, instrument = instruments[i]]()
+            instruments[i]->getName())->withSubmenu()->withAction([this, instrument]()
             {
                 this->showControllersMenuForInstrument(instrument);
             }));
@@ -319,7 +321,7 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
     this->updateContent(menu, animationType);
 }
 
-void ProjectMenu::showControllersMenuForInstrument(WeakReference<Instrument> instrument)
+void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrument> instrument)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
@@ -328,13 +330,13 @@ void ProjectMenu::showControllersMenuForInstrument(WeakReference<Instrument> ins
             this->showNewAutomationMenu(MenuPanel::SlideRight);
         }));
 
-    for (int i = 0; i < NUM_CONTROLLERS_TO_SHOW; ++i)
+    for (int controllerNumber = 0; controllerNumber < NUM_CONTROLLERS_TO_SHOW; ++controllerNumber)
     {
-        const String controllerName = MidiMessage::getControllerName(i);
+        const String controllerName = MidiMessage::getControllerName(controllerNumber);
         if (controllerName.isNotEmpty())
         {
             menu.add(MenuItem::item(Icons::automationTrack,
-                String(i) + ": " + TRANS(controllerName))->withAction([this, controllerNumber = i, instrument]()
+                String(controllerNumber) + ": " + TRANS(controllerName))->withAction([this, controllerNumber, instrument]()
                 {
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
                     const String trackName = TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));

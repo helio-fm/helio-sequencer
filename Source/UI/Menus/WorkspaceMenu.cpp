@@ -31,15 +31,6 @@ WorkspaceMenu::WorkspaceMenu(Workspace &workspace) :
     this->showMainMenu(MenuPanel::SlideRight);
 }
 
-void WorkspaceMenu::handleCommandMessage(int commandId)
-{
-    //switch (commandId)
-    //{
-    //default:
-    //    break;
-    //}
-}
-
 void WorkspaceMenu::showMainMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
@@ -77,9 +68,10 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
     const auto &projects = root->findChildrenOfType<ProjectNode>();
     for (int i = 0; i < projects.size(); ++i)
     {
-        const bool isShowingCurrent = projects[i]->isSelectedOrHasSelectedChild();
-        menu.add(MenuItem::item(Icons::project, projects[i]->getName())->
-            disabledIf(isShowingCurrent)->withAction([this, project = projects[i]]()
+        const auto *project = projects.getUnchecked(i);
+        const bool isShowingCurrent = project->isSelectedOrHasSelectedChild();
+        menu.add(MenuItem::item(Icons::project, project->getName())->
+            disabledIf(isShowingCurrent)->withAction([this, project]()
         {
             project->selectChildOfType<PianoTrackNode>();
             this->dismiss();
@@ -88,15 +80,3 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
 
     this->updateContent(menu, animationType);
 }
-
-//void WorkspaceMenu::showNewProjectMenu(AnimationType animationType)
-//{
-//    MenuPanel::Menu menu;
-//    menu.add(MenuItem::item(Icons::back,
-//        TRANS("menu::back"))->withTimer()->withAction([this]()
-//        {
-//            this->showCreateItemsMenu(MenuPanel::SlideRight);
-//        }));
-//    
-//    this->updateContent(menu, animationType);
-//}

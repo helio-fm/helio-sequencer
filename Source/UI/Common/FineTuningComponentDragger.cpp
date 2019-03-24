@@ -67,7 +67,6 @@ void FineTuningComponentDragger::dragComponent(Component *const component, const
         // Adjust X position (simple linear drag)
         if ((this->dragMode == DragOnlyX) && speedX != 0.0)
         {
-            Rectangle<int> bounds(component->getBounds());
             const auto shift = e.getEventRelativeTo(component).getPosition() - this->mouseDownWithinTarget;
             component->setTopLeftPosition(component->getPosition().translated(shift.getX(), 0));
         }

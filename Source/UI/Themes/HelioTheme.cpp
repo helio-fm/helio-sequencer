@@ -322,7 +322,6 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                                     !(flatOnLeft  || flatOnBottom),
                                     !(flatOnRight || flatOnBottom));
 
-        const float mainBrightness = baseColour.getBrightness();
         const float mainAlpha = baseColour.getFloatAlpha();
 
         g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
@@ -680,9 +679,13 @@ void HelioTheme::initResources()
         return;
     }
 
+#if DEBUG
     const auto startTime = Time::getMillisecondCounter();
+#endif
+
     Array<Font> systemFonts;
     Font::findFonts(systemFonts);
+
     DBG("Fonts search done in " + String(Time::getMillisecondCounter() - startTime) + " ms");
 
     const Font *noto = nullptr;

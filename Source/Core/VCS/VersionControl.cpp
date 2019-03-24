@@ -420,10 +420,11 @@ void VersionControl::deserialize(const ValueTree &tree)
     this->remoteCache.deserialize(root);
 
     {
-        const double h1 = Time::getMillisecondCounterHiRes();
+#if DEBUG
+        const double headLoadStart = Time::getMillisecondCounterHiRes();
+#endif
         this->head.deserialize(root);
-        const double h2 = Time::getMillisecondCounterHiRes();
-        DBG("Loading VCS snapshot done in " + String(h2 - h1) + "ms");
+        DBG("Loading VCS snapshot done in " + String(Time::getMillisecondCounterHiRes() - headLoadStart) + "ms");
     }
     
     if (auto headRevision = this->getRevisionById(this->rootRevision, headId))

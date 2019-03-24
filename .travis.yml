@@ -8,27 +8,18 @@ branches:
   only:
     - master
     - develop
+    - /^\d+\.?\d+\.?\d*$/  
 
 addons_shortcuts:
-  # Commented out Clang builds until Xenial images are available in Travis.
-  # Trusty-based builds are broken, as JUCE requires libc++ at least of 3.7
-  # addons_clang40: &clang40
-  #   apt:
-  #     sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0' ]
-  #     packages: [ 'clang-4.0', 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  # addons_clang50: &clang50
-  #   apt:
-  #     sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0' ]
-  #     packages: [ 'clang-5.0', 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  addons_gcc5: &gcc5
+  addons_clang7: &clang7
     apt:
-      sources: [ 'ubuntu-toolchain-r-test' ]
-      packages: [ 'g++-5', 'gcc-5', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+      packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
   addons_gcc6: &gcc6
     apt:
       sources: [ 'ubuntu-toolchain-r-test' ]
       packages: [ 'g++-6', 'gcc-6', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  # Use old enough compiler and no unsupported packages so that release build runs on older systems:
+  # Use old enough compiler and no unsupported packages so that release build runs on older systems
+  # TODO test building with -static-libstdc++ or -static-libgcc on older systems
   addons_gcc4: &gcc4
     ssh_known_hosts: helio.fm
     apt:
@@ -38,47 +29,55 @@ addons_shortcuts:
 
 matrix:
   include:
-    # - name: "clang 4.0"
-    #   addons: *clang40
-    #   env: CC=clang-4.0 CXX=clang++-4.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
-    # - name: "clang 5.0"
-    #   addons: *clang50
-    #   env: CC=clang-5.0 CXX=clang++-5.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
-    - name: "gcc 5, debug build, 64-bit"
+    - name: "clang 7, debug build x64"
       os: linux
-      dist: trusty
-      addons: *gcc5
-      env: CC=gcc-5 CXX=g++-5 CONFIG=Travis DISPLAY=localhost:1.0
-    - name: "gcc 6, debug build, 64-bit"
+      dist: xenial
+      addons: *clang7
+      env: CC=clang CXX=clang++ CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+    - name: "gcc 6, debug build x64"
       os: linux
       dist: trusty
       addons: *gcc6
       env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
-    - name: "gcc 4, release build, 64-bit, deploy"
+    - name: "gcc 4, release build x64, deploy"
       os: linux
       dist: trusty
       addons: *gcc4
-      env: DEPLOY=true CONFIG=Release64 DISPLAY=localhost:1.0
-    - name: "xcode 10, release and deploy"
+      env: DEPLOY=true PLATFORM=linux CONFIG=Release64 DISPLAY=localhost:1.0
+    - name: "xcode 10 mac, release and deploy"
       os: osx
-      osx_image: xcode10
+      osx_image: xcode10.1
       xcode_sdk: macosx10.14
       addons: *deploy
-      env: DEPLOY=true
+      env: DEPLOY=true PLATFORM=osx
+    - name: "xcode 10 ios, release and deploy"
+      os: osx
+      osx_image: xcode10.1
+      xcode_sdk: iphoneos
+      addons: *deploy
+      env: DEPLOY=true PLATFORM=ios
 
 before_script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-    openssl aes-256-cbc -K $encrypted_2dee6ac16b0a_key -iv $encrypted_2dee6ac16b0a_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/osx-certificates.tar.enc -out /tmp/certificates.tar -d;
+  - if [[ "${PLATFORM}" == "osx" ]]; then
+    openssl aes-256-cbc -K $encrypted_7e0c200de200_key -iv $encrypted_7e0c200de200_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/certificates-osx.tar.enc -out /tmp/certificates.tar -d;
     tar xvf /tmp/certificates.tar -C /tmp;
     bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-osx.sh;
     fi
+  - if [[ "${PLATFORM}" == "ios" ]]; then
+    openssl aes-256-cbc -K $encrypted_4bdaf07bd33c_key -iv $encrypted_4bdaf07bd33c_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/certificates-ios.tar.enc -out /tmp/certificates.tar -d;
+    tar xvf /tmp/certificates.tar -C /tmp;
+    bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-ios.sh;
+    fi
 
 script:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  - if [[ "${PLATFORM}" == "linux" ]]; then
     xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
     fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  - if [[ "${PLATFORM}" == "osx" ]]; then
     xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
+    fi
+  - if [[ "${PLATFORM}" == "ios" ]]; then
+    xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
 
 before_deploy:
@@ -90,7 +89,8 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${TRAVIS_OS_NAME}.sh
+  script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${PLATFORM}.sh
   on:
-    branch: develop
-    condition: $DEPLOY = true
+    all_branches: true
+    repo: helio-fm/helio-workstation
+    condition: ${DEPLOY} = true

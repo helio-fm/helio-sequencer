@@ -1,12 +1,13 @@
 version: 1.0.{build}
 branches:
   only:
-  - develop
   - master
-skip_tags: true
+  - develop
+  - /^\d+\.?\d+\.?\d*$/  
+skip_tags: false
 image: Visual Studio 2017
-configuration: Release 64-bit
-platform: x64
+platform:
+  - x64
 clone_depth: 1
 environment:
   encrypted_deploy_key:
@@ -17,9 +18,12 @@ environment:
     secure: IIXk6ss1lD+C6AFr8w4nZsuiEr3JrUJvGiDFCwnQbRiFP/9B59ivjV6PKY9xzmSU
   artifact_32_bit: Projects\VisualStudio2017\Win32\Release 32-bit\App\Helio.exe
   artifact_64_bit: Projects\VisualStudio2017\x64\Release 64-bit\App\Helio.exe
+  artifact_installer: Projects\Deployment\Windows\installer.exe
+  deploy_host: deploy@helio.fm
+  deploy_path: /opt/musehackers/files/ci
 install:
 - SET PATH=%PATH%;C:\Program Files (x86)\Windows Kits\10\bin\x64\
-- cmd: git submodule update --init --recursive 2> $null
+- cmd: git submodule update --init --depth 1 --recursive 2> $null
 - ps: >-
     Push-Location ($PSScriptRoot + "\projects\helio-workstation\ThirdParty\ASIO\")
 
@@ -30,11 +34,27 @@ install:
 - secure-file\tools\secure-file -decrypt Projects\Deployment\AppVeyor\deploy-rsa.enc -secret %encrypted_deploy_key% -out deploy-rsa
 - secure-file\tools\secure-file -decrypt Projects\Deployment\AppVeyor\code-sign.enc -secret %encrypted_codesign_key% -out sign.p12
 cache: ThirdParty\ASIO
-build:
-  project: Projects\VisualStudio2017\Helio.sln
-  verbosity: minimal
+# A hack
+build: off
+test_script:
+- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat" && ECHO "x64 building..." && msbuild Projects\VisualStudio2017\Helio.sln /t:Build /p:Configuration="Release 64-bit";Platform=x64
+- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat" && ECHO "x32 building..." && msbuild Projects\VisualStudio2017\Helio.sln /t:Build /p:Configuration="Release 32-bit";Platform=Win32
+- if /I "%APPVEYOR_REPO_TAG%" == "false" set APPVEYOR_REPO_TAG_NAME=dev
 deploy_script:
+# Sign and deploy 64-bit portable version
 - ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_64_bit"
 - ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_64_bit"
-- 7z a helio-dev.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_64_bit%"
-- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/helio-dev.zip deploy@helio.fm:/opt/musehackers/files/ci/helio-dev-64-bit.zip"
+- 7z a portable-x64.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_64_bit%"
+- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/portable-x64.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x64.zip"
+# Sign and deploy 32-bit portable version
+- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_32_bit"
+- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_32_bit"
+- 7z a portable-x32.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_32_bit%"
+- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/portable-x32.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x32.zip"
+# Create installer containing both signed versions, sign installer and deploy
+- set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
+- iscc "%APPVEYOR_BUILD_FOLDER%\Projects\Deployment\Windows\setup.iss"
+- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_installer"
+- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_installer"
+- copy %artifact_installer% .\installer.exe
+- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/installer.exe %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%.exe"

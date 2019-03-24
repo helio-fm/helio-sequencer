@@ -197,7 +197,7 @@ void SyncSettings::reloadConfigsList()
     {
         for (auto configType : App::Config().getAllResources())
         {
-            for (const auto config : configType.second->getUserResources())
+            for (const auto &config : configType.second->getUserResources())
             {
                 this->resources.add(config);
                 this->syncFlags.add(false);
