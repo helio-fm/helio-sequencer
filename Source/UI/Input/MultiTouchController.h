@@ -25,32 +25,23 @@ public:
 
     explicit MultiTouchController(MultiTouchListener &parent);
 
-    inline bool hasMultitouch()
-    { return (this->gesture != NoMultitouch); }
+    inline bool hasMultitouch() const noexcept
+    {
+        return this->finger1On && this->finger2On;
+    }
 
     void mouseDown(const MouseEvent &event) override;
-
     void mouseDrag(const MouseEvent &event) override;
-
     void mouseUp(const MouseEvent &event) override;
 
 private:
 
-    void initAnchors(const MouseEvent &event);
-
     MultiTouchListener &listener;
 
-    enum Mode
-    {
-        NoMultitouch = 1,
-        HasMultitouch = 2
-    };
+    // absolute coordinates on the canvas:
+    //Point<double> f1Projection;
+    //Point<double> f2Projection;
 
-    Mode gesture;
-
-    Point<float> finger1Anchor;
-    Point<float> finger2Anchor;
-    
     Point<float> finger1Position;
     Point<float> finger2Position;
 
