@@ -43,12 +43,11 @@ AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectNode &project,
     draggingEvent(nullptr),
     addNewEventMode(false)
 {
-    this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
-       
+
     this->reloadTrack();
-    
+
     this->project.addListener(this);
 }
 
