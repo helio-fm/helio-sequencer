@@ -227,11 +227,15 @@ static String generateNextNameForNewTrack(const String &name, const StringArray 
     return newName;
 }
 
-void PatternOperations::cutClip(ProjectNode &project, const Clip &clip, float relativeCutBeat, bool shouldCheckpoint)
+void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
+    float relativeCutBeat, bool shouldRenameNewTrack, bool shouldCheckpoint)
 {
     MidiTrack *track = clip.getPattern()->getTrack();
-    const auto allTrackNames(project.getAllTrackNames());
-    const String newName = generateNextNameForNewTrack(track->getTrackName(), allTrackNames);
+
+    const String newName = shouldRenameNewTrack ?
+        generateNextNameForNewTrack(track->getTrackName(), project.getAllTrackNames()) :
+        track->getTrackName();
+
     const float cutBeat = relativeCutBeat - clip.getBeat();
 
     // If this is a piano roll, need to cut events, if any intersect the given beat.

@@ -153,7 +153,7 @@ private:
     ScopedPointer<CutPointMark> knifeToolHelper;
     void startCuttingClips(const MouseEvent &e);
     void continueCuttingClips(const MouseEvent &e);
-    void endCuttingClipsIfNeeded();
+    void endCuttingClipsIfNeeded(const MouseEvent &e);
 
 private:
     

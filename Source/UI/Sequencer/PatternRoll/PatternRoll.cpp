@@ -592,7 +592,7 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         this->newClipDragging = nullptr;
     }
 
-    this->endCuttingClipsIfNeeded();
+    this->endCuttingClipsIfNeeded(e);
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -775,16 +775,17 @@ void PatternRoll::continueCuttingClips(const MouseEvent &e)
     }
 }
 
-void PatternRoll::endCuttingClipsIfNeeded()
+void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
 {
     if (this->knifeToolHelper != nullptr)
     {
+        const bool shouldRenameNewTracks = e.mods.isAnyModifierKeyDown();
         const float cutPos = this->knifeToolHelper->getCutPosition();
         const auto *cc = dynamic_cast<ClipComponent *>(this->knifeToolHelper->getComponent());
         if (cc != nullptr && cutPos > 0.f && cutPos < 1.f)
         {
             const float cutBeat = this->getRoundBeatByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
-            PatternOperations::cutClip(this->project, cc->getClip(), cutBeat);
+            PatternOperations::cutClip(this->project, cc->getClip(), cutBeat, shouldRenameNewTracks);
         }
         this->applyEditModeUpdates(); // update behaviour of newly created clip components
         this->knifeToolHelper->updatePosition(-1.f);

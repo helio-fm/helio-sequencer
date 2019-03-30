@@ -29,6 +29,6 @@ struct PatternOperations final
     static void tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint = true);
     static void shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint = true);
 
-    static void cutClip(ProjectNode &project, const Clip &clip,
-        float relativeCutBeat, bool shouldCheckpoint = true);
+    static void cutClip(ProjectNode &project, const Clip &clip, float relativeCutBeat,
+        bool shouldRenameNewTrack, bool shouldCheckpoint = true);
 };
