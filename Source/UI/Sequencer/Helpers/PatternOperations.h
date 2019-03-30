@@ -24,6 +24,7 @@ class ProjectNode;
 struct PatternOperations final
 {
     static void deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint = true);
+    static void duplicateSelection(const Lasso &selection, bool shouldCheckpoint = true);
 
     static void transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint = true);
     static void tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint = true);

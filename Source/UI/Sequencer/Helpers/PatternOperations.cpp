@@ -306,3 +306,53 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
         project.getUndoStack()->perform(new AutomationTrackInsertAction(project, &project, trackTemplate, newName));
     }
 }
+
+void PatternOperations::duplicateSelection(const Lasso &selection, bool shouldCheckpoint)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    OwnedArray<Array<Clip>> changesByPattern;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const Clip &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        const Pattern *ownerPattern = clip.getPattern();
+        Array<Clip> *arrayToAddTo = nullptr;
+
+        for (int j = 0; j < changesByPattern.size(); ++j)
+        {
+            if (changesByPattern.getUnchecked(j)->size() > 0)
+            {
+                if (changesByPattern.getUnchecked(j)->getUnchecked(0).getPattern() == ownerPattern)
+                {
+                    arrayToAddTo = changesByPattern.getUnchecked(j);
+                }
+            }
+        }
+
+        if (arrayToAddTo == nullptr)
+        {
+            arrayToAddTo = new Array<Clip>();
+            changesByPattern.add(arrayToAddTo);
+        }
+
+        arrayToAddTo->add(clip.copyWithNewId());
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    for (int i = 0; i < changesByPattern.size(); ++i)
+    {
+        auto *pattern = static_cast<Pattern *>(changesByPattern.getUnchecked(i)->getUnchecked(0).getPattern());
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            pattern->checkpoint();
+        }
+
+        pattern->insertGroup(*changesByPattern.getUnchecked(i), true);
+    }
+}
