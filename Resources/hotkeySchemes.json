@@ -200,6 +200,12 @@
         { "receiver": "PatternRoll", "command": "EditModeKnife", "key": "4" },
         { "receiver": "PatternRoll", "command": "EditModeEraser", "key": "5" },
 
+        // Grouping
+        { "receiver": "PatternRoll", "command": "PatternsGroupByName", "key": "Q" },
+        { "receiver": "PatternRoll", "command": "PatternsGroupByColour", "key": "W" },
+        { "receiver": "PatternRoll", "command": "PatternsGroupByInstrument", "key": "E" },
+        { "receiver": "PatternRoll", "command": "PatternsGroupById", "key": "R" },
+
         // Version control
         { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
