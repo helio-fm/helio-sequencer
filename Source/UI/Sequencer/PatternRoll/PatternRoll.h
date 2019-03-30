@@ -161,7 +161,7 @@ private:
     Array<String> rows;
     Array<const MidiTrack *> tracks;
     void reloadRowsGrouping();
-    GroupMode grouping;
+    GroupMode groupMode;
 
 private:
 
