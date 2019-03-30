@@ -221,6 +221,7 @@ namespace CommandIDs
         PatternsGroupByName             = 0x4100,
         PatternsGroupByColour           = 0x4101,
         PatternsGroupByInstrument       = 0x4102,
+        PatternsGroupById               = 0x4103,
 
         YourNextCommandId               = 0x4200
     };

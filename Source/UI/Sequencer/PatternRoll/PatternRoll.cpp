@@ -194,6 +194,7 @@ int PatternRoll::getNumRows() const noexcept
 void PatternRoll::reloadRowsGrouping()
 {
     this->rows.clearQuick();
+
     for (const auto *track : this->tracks)
     {
         updateTrackRowPosition(this->rows, this->groupMode, track);
@@ -670,16 +671,30 @@ void PatternRoll::handleCommandMessage(int commandId)
         this->deselectAll();
         this->groupMode = GroupByName;
         this->reloadRowsGrouping();
+        // Clip component positions should be updated:
+        this->updateRollSize();
+        this->resized();
         break;
     case CommandIDs::PatternsGroupByColour:
         this->deselectAll();
         this->groupMode = GroupByColour;
         this->reloadRowsGrouping();
+        this->updateRollSize();
+        this->resized();
         break;
     case CommandIDs::PatternsGroupByInstrument:
         this->deselectAll();
         this->groupMode = GroupByInstrument;
         this->reloadRowsGrouping();
+        this->updateRollSize();
+        this->resized();
+        break;
+    case CommandIDs::PatternsGroupById:
+        this->deselectAll();
+        this->groupMode = GroupByNameId;
+        this->reloadRowsGrouping();
+        this->updateRollSize();
+        this->resized();
         break;
     default:
         break;

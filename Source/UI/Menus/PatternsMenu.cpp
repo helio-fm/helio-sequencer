@@ -36,5 +36,9 @@ PatternsMenu::PatternsMenu(PatternEditorNode &parentNode) :
         CommandIDs::PatternsGroupByInstrument,
         TRANS("menu::groupby::instrument"))->closesMenu());
 
+    menu.add(MenuItem::item(Icons::list,
+        CommandIDs::PatternsGroupById,
+        TRANS("menu::groupby::none"))->closesMenu());
+
     this->updateContent(menu, MenuPanel::SlideRight);
 }
