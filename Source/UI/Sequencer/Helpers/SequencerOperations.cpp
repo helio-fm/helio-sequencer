@@ -1844,7 +1844,10 @@ bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip
 
 void SequencerOperations::duplicateSelection(const Lasso &selection, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0) { return; }
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
 
     OwnedArray<PianoChangeGroup> selectionsByTrack;
     for (int i = 0; i < selection.getNumSelected(); ++i)
@@ -1946,7 +1949,10 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &
 
 ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *clips)
 {
-    if (events.size() == 0) { return {}; }
+    if (events.size() == 0)
+    {
+        return {};
+    }
 
     const auto *track = events.getReference(0).getSequence()->getTrack();
     const auto &instrumentId = track->getTrackInstrumentId();
@@ -1958,13 +1964,19 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
 
     PianoChangeGroup copiedContent;
     auto *sequence = static_cast<PianoSequence *>(newItem->getSequence());
-    for (const auto &note : events) { copiedContent.add(note.copyWithNewId(sequence)); }
+    for (const auto &note : events)
+    {
+        copiedContent.add(note.copyWithNewId(sequence));
+    }
     sequence->reset();
     sequence->insertGroup(copiedContent, false);
 
     Array<Clip> copiedClips;
     auto *pattern = newItem->getPattern();
-    for (const auto *clip : clips->getClips()) { copiedClips.add(clip->copyWithNewId(pattern)); }
+    for (const auto *clip : clips->getClips())
+    {
+        copiedClips.add(clip->copyWithNewId(pattern));
+    }
     pattern->reset();
     pattern->insertGroup(copiedClips, false);
 
@@ -1987,13 +1999,19 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
 
     AutoChangeGroup copiedContent;
     auto *sequence = static_cast<AutomationSequence *>(newItem->getSequence());
-    for (const auto &event : events) { copiedContent.add(event.copyWithNewId(sequence)); }
+    for (const auto &event : events)
+    {
+        copiedContent.add(event.copyWithNewId(sequence));
+    }
     sequence->reset();
     sequence->insertGroup(copiedContent, false);
 
     Array<Clip> copiedClips;
     auto *pattern = newItem->getPattern();
-    for (const auto *clip : clips->getClips()) { copiedClips.add(clip->copyWithNewId(pattern)); }
+    for (const auto *clip : clips->getClips())
+    {
+        copiedClips.add(clip->copyWithNewId(pattern));
+    }
     pattern->reset();
     pattern->insertGroup(copiedClips, false);
 

@@ -277,6 +277,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/MidiTrackMenu_ae6d14fc.o \
   $(JUCE_OBJDIR)/NotesTuningPanel_5fadfa25.o \
   $(JUCE_OBJDIR)/OrchestraPitMenu_2065d304.o \
+  $(JUCE_OBJDIR)/PatternsMenu_1f8f0d39.o \
   $(JUCE_OBJDIR)/ProjectMenu_5ab725eb.o \
   $(JUCE_OBJDIR)/TimelineMenu_2c071c97.o \
   $(JUCE_OBJDIR)/TimeSignatureMenu_9a8856bd.o \
@@ -1273,6 +1274,11 @@ $(JUCE_OBJDIR)/NotesTuningPanel_5fadfa25.o: ../../Source/UI/Menus/NotesTuningPan
 $(JUCE_OBJDIR)/OrchestraPitMenu_2065d304.o: ../../Source/UI/Menus/OrchestraPitMenu.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling OrchestraPitMenu.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PatternsMenu_1f8f0d39.o: ../../Source/UI/Menus/PatternsMenu.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PatternsMenu.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ProjectMenu_5ab725eb.o: ../../Source/UI/Menus/ProjectMenu.cpp

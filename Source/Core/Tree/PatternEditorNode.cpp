@@ -22,6 +22,7 @@
 #include "MainLayout.h"
 #include "ProjectNode.h"
 #include "SerializationKeys.h"
+#include "PatternsMenu.h"
 
 PatternEditorNode::PatternEditorNode() :
     TreeNode("Patterns", Serialization::Core::patternSet) {}
@@ -59,19 +60,10 @@ String PatternEditorNode::getStatsString() const
 
 bool PatternEditorNode::hasMenu() const noexcept
 {
-    return false;
+    return true;
 }
 
 ScopedPointer<Component> PatternEditorNode::createMenu()
 {
-    //TODO
-
-    //if (ProjectNode *parentProject =
-    //    this->findParentOfType<ProjectNode>())
-    //{
-    //    return new PatternEditorCommandPanel(*parentProject);
-    //}
-
-    return nullptr;
+    return new PatternsMenu(*this);
 }
-

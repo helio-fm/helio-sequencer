@@ -844,6 +844,9 @@
                 file="../../Source/UI/Menus/OrchestraPitMenu.cpp"/>
           <FILE id="ya6dc4" name="OrchestraPitMenu.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/OrchestraPitMenu.h"/>
+          <FILE id="Z9uDtc" name="PatternsMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/PatternsMenu.cpp"/>
+          <FILE id="iEaSsQ" name="PatternsMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/PatternsMenu.h"/>
           <FILE id="eFoCKQ" name="ProjectMenu.cpp" compile="1" resource="0" file="../../Source/UI/Menus/ProjectMenu.cpp"/>
           <FILE id="qz1Ccf" name="ProjectMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/ProjectMenu.h"/>
           <FILE id="IWRyID" name="TimelineMenu.cpp" compile="1" resource="0"

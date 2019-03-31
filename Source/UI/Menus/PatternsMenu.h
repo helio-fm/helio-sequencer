@@ -17,37 +17,17 @@
 
 #pragma once
 
-#include "MultiTouchListener.h"
+#include "MenuPanel.h"
+#include "PatternEditorNode.h"
 
-class MultiTouchController final : public MouseListener
+class PatternsMenu final : public MenuPanel
 {
 public:
-
-    explicit MultiTouchController(MultiTouchListener &parent);
-
-    inline bool hasMultitouch() const noexcept
-    {
-        return this->finger1On && this->finger2On;
-    }
-
-    void mouseDown(const MouseEvent &event) override;
-    void mouseDrag(const MouseEvent &event) override;
-    void mouseUp(const MouseEvent &event) override;
-
+    
+    explicit PatternsMenu(PatternEditorNode &parentNode);
+    
 private:
 
-    MultiTouchListener &listener;
+    PatternEditorNode &node;
     
-    Point<float> finger1Position;
-    Point<float> finger2Position;
-
-    Point<float> center1;
-    Point<float> center2;
-    
-    Point<float> zoomDiff;
-    Point<float> dragDiff;
-
-    bool finger1On;
-    bool finger2On;
-
 };

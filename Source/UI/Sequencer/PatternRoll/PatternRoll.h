@@ -57,7 +57,6 @@ public:
     Rectangle<float> getEventBounds(const Clip &clip, float beat) const;
     float getBeatForClipByXPosition(const Clip &clip, float x) const;
     float getBeatByMousePosition(const Pattern *pattern, int x) const;
-    Pattern *getPatternByMousePosition(int y) const;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -116,6 +115,14 @@ public:
     void deserialize(const ValueTree &tree) override;
     void reset() override;
     
+    enum GroupMode
+    {
+        GroupByName,
+        GroupByNameId,
+        GroupByColour,
+        GroupByInstrument
+    };
+
 protected:
 
     //===------------------------------------------------------------------===//
@@ -146,11 +153,17 @@ private:
     ScopedPointer<CutPointMark> knifeToolHelper;
     void startCuttingClips(const MouseEvent &e);
     void continueCuttingClips(const MouseEvent &e);
-    void endCuttingClipsIfNeeded();
+    void endCuttingClipsIfNeeded(const MouseEvent &e);
 
 private:
     
-    Array<MidiTrack *> tracks;
+    // Only needed for grouping:
+    Array<String> rows;
+    Array<const MidiTrack *> tracks;
+    void reloadRowsGrouping();
+    GroupMode groupMode;
+
+private:
 
     OwnedArray<ClipComponent> ghostClips;
 

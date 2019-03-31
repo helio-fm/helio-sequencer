@@ -733,6 +733,10 @@
 			isa = PBXBuildFile;
 			fileRef = E3E7AEE0AE3A65EE281E1BE6;
 		};
+		EEBDB45654055C6A5154FE76 = {
+			isa = PBXBuildFile;
+			fileRef = 6B780D0DDAAC84F796DA49C9;
+		};
 		89541158BD2DB3ADFE783DD6 = {
 			isa = PBXBuildFile;
 			fileRef = 0BF9BF67158674EE3A450914;
@@ -1460,6 +1464,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = RevisionItemComponent.cpp;
 			path = ../../Source/UI/Pages/VCS/RevisionItemComponent.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		0665009AEE3D9382F3280EB1 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = PatternsMenu.h;
+			path = ../../Source/UI/Menus/PatternsMenu.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		067671BCAB70331596E2CC88 = {
@@ -3714,6 +3725,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = RevisionsSyncThread.h;
 			path = ../../Source/Core/Network/Requests/RevisionsSyncThread.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		6B780D0DDAAC84F796DA49C9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = PatternsMenu.cpp;
+			path = ../../Source/UI/Menus/PatternsMenu.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		6BF6426361E32D40FFE0DB24 = {
@@ -7659,6 +7677,8 @@
 				01D8E262AE66FBD327959D6D,
 				E3E7AEE0AE3A65EE281E1BE6,
 				FCDFC5D7963E81559CBE4FD7,
+				6B780D0DDAAC84F796DA49C9,
+				0665009AEE3D9382F3280EB1,
 				0BF9BF67158674EE3A450914,
 				B34DA88FE252A729890F37AB,
 				7AF3E836714A6E3DAA2BB480,
@@ -8773,6 +8793,7 @@
 				A5E3E3483C9719742677564A,
 				E906A18AF1C71E9A02F8D06A,
 				54884733A16403DFD4E496C9,
+				EEBDB45654055C6A5154FE76,
 				89541158BD2DB3ADFE783DD6,
 				FECCA9C59EA359ACE46601A3,
 				E325BC0DEE8BB68435530339,

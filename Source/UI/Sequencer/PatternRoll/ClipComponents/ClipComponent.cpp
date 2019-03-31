@@ -22,6 +22,7 @@
 #include "PatternRoll.h"
 #include "Pattern.h"
 #include "CommandIDs.h"
+#include "PatternOperations.h"
 
 static Pattern *getPattern(SelectionProxyArray::Ptr selection)
 {
@@ -172,16 +173,22 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
 
         if (eventChanged)
         {
-            //const bool firstChangeIsToCome = !this->firstChangeDone;
+            const bool firstChangeIsToCome = !this->firstChangeDone;
 
             this->checkpointIfNeeded();
 
-            // TODO Drag-and-copy logic:
-            //if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
-            //{
-            //    SequencerOperations::duplicateSelection(this->getRoll().getLassoSelection(), false);
-            //    this->getRoll().hideAllGhostClips();
-            //}
+            // Drag-and-copy logic, same as for notes (see the comment in NoteComponent):
+            if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
+            {
+                PatternOperations::duplicateSelection(this->getRoll().getLassoSelection(), false);
+
+                this->getRoll().hideAllGhostClips();
+
+                forEachSelectedClip(selection, clipComponent)
+                {
+                    clipComponent->toFront(false);
+                }
+            }
 
             for (const auto &s : selection.getGroupedSelections())
             {

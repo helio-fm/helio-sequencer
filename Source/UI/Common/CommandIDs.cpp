@@ -177,6 +177,10 @@ int CommandIDs::getIdForName(const String &command)
         CASE_FOR(VersionControlResetSelected)
         CASE_FOR(VersionControlCommitSelected)
         CASE_FOR(VersionControlCheckout)
+        CASE_FOR(PatternsGroupByName)
+        CASE_FOR(PatternsGroupByColour)
+        CASE_FOR(PatternsGroupByInstrument)
+        CASE_FOR(PatternsGroupById)
         default:
             return 0;
     };

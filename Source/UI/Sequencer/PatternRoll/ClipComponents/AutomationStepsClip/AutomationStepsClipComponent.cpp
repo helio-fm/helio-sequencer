@@ -32,13 +32,12 @@ AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectNode &project,
     project(project),
     sequence(sequence)
 {
-    this->setAlwaysOnTop(true);
     this->setPaintingIsUnclipped(false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
-    
+
     this->reloadTrack();
-    
+
     this->project.addListener(this);
 }
 
