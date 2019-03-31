@@ -1,14 +1,18 @@
-language: generic
 sudo: false
 
 notifications:
   email: false
 
+git:
+  depth: 10
+  submodules_depth: 10
+
 branches:
   only:
     - master
     - develop
-    - /^\d+\.?\d+\.?\d*$/  
+    - /^\d+\.?\d+\.?\d*$/
+    - feature/android-ci
 
 addons_shortcuts:
   addons_clang7: &clang7
@@ -30,32 +34,57 @@ addons_shortcuts:
 matrix:
   include:
     - name: "clang 7, debug build x64"
+      language: generic
       os: linux
       dist: xenial
       addons: *clang7
       env: CC=clang CXX=clang++ CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
     - name: "gcc 6, debug build x64"
+      language: generic
       os: linux
       dist: trusty
       addons: *gcc6
       env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
     - name: "gcc 4, release build x64, deploy"
+      language: generic
       os: linux
       dist: trusty
       addons: *gcc4
       env: DEPLOY=true PLATFORM=linux CONFIG=Release64 DISPLAY=localhost:1.0
-    - name: "xcode 10 mac, release and deploy"
+    - name: "xcode 10.1 mac, release and deploy"
+      language: generic
       os: osx
       osx_image: xcode10.1
       xcode_sdk: macosx10.14
       addons: *deploy
       env: DEPLOY=true PLATFORM=osx
-    - name: "xcode 10 ios, release and deploy"
+    - name: "xcode 10.1 ios, release and deploy"
+      language: generic
       os: osx
       osx_image: xcode10.1
       xcode_sdk: iphoneos
       addons: *deploy
       env: DEPLOY=true PLATFORM=ios
+    - name: "android 21, release and deploy"
+      language: android
+      jdk: oraclejdk8
+      os: linux
+      addons: *deploy
+      env: DEPLOY=true PLATFORM=android
+      android:
+        components:
+          - tools
+          - platform-tools
+          - build-tools-28.0.3
+          - android-21
+          - sys-img-armeabi-v7a-android-21
+      before_cache:
+        - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+        - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+      cache:
+        directories:
+         - $HOME/.gradle/caches/
+         - $HOME/.gradle/wrapper/
 
 before_script:
   - if [[ "${PLATFORM}" == "osx" ]]; then
@@ -68,6 +97,10 @@ before_script:
     tar xvf /tmp/certificates.tar -C /tmp;
     bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-ios.sh;
     fi
+  - if [[ "${PLATFORM}" == "android" ]]; then
+    echo y | sdkmanager 'ndk-bundle';
+    echo y | sdkmanager 'cmake;3.6.4111459';
+    fi
 
 script:
   - if [[ "${PLATFORM}" == "linux" ]]; then
@@ -78,6 +111,9 @@ script:
     fi
   - if [[ "${PLATFORM}" == "ios" ]]; then
     xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
+    fi
+  - if [[ "${PLATFORM}" == "android" ]]; then
+    cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
     fi
 
 before_deploy:
