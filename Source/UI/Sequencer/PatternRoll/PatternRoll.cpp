@@ -264,15 +264,14 @@ void PatternRoll::addClip(Pattern *pattern, float beat)
 Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
     jassert(dynamic_cast<ClipComponent *>(mc));
-    ClipComponent *cc = static_cast<ClipComponent *>(mc);
+    const auto *cc = static_cast<ClipComponent *>(mc);
     return this->getEventBounds(cc->getClip(), cc->getBeat());
 }
 
 Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) const
 {
-    const Pattern *pattern = clip.getPattern();
-    const MidiTrack *track = pattern->getTrack();
-    const MidiSequence *sequence = track->getSequence();
+    const auto *track = clip.getPattern()->getTrack();
+    const auto *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
     const auto trackGroupKey = getTrackGroupKey(this->groupMode, track);
@@ -296,17 +295,14 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
 float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
 {
     // One trick here is that displayed clip position depends on a sequence's first beat as well:
-    const Pattern *pattern = clip.getPattern();
-    const MidiTrack *track = pattern->getTrack();
-    const MidiSequence *sequence = track->getSequence();
+    const auto *sequence = clip.getPattern()->getTrack()->getSequence();
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
     return this->getRoundBeatByXPosition(int(x)) - sequenceOffset; /* - 0.5f ? */
 }
 
 float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
 {
-    const MidiTrack *track = pattern->getTrack();
-    const MidiSequence *sequence = track->getSequence();
+    const auto *sequence = pattern->getTrack()->getSequence();
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
     return this->getFloorBeatByXPosition(x) - sequenceOffset;
 }
@@ -744,13 +740,33 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
     const int rowNumber = jlimit(0, this->getNumRows() - 1,
         (e.y - HYBRID_ROLL_HEADER_HEIGHT) / rowHeight());
+    const auto &rowKey = this->rows.getReference(rowNumber);
 
-    Pattern *pattern = nullptr; // TODO just pick nearest
-    if (pattern != nullptr)
+    float nearestClipdistance = FLT_MAX;
+    Pattern *targetPattern = nullptr;
+    for (const auto *track : this->tracks)
     {
-        const float draggingBeat = this->getBeatByMousePosition(pattern, e.x);
+        const auto &trackKey = getTrackGroupKey(this->groupMode, track);
+        if (trackKey == rowKey)
+        {
+            const float clickBeat = this->getBeatByMousePosition(track->getPattern(), e.x);
+            for (const auto *clip : track->getPattern()->getClips())
+            {
+                const auto clipStartDistance = fabs(clickBeat - clip->getBeat());
+                if (nearestClipdistance > clipStartDistance)
+                {
+                    nearestClipdistance = clipStartDistance;
+                    targetPattern = track->getPattern();
+                }
+            }
+        }
+    }
+
+    if (targetPattern != nullptr)
+    {
+        const float draggingBeat = this->getBeatByMousePosition(targetPattern, e.x);
         this->addNewClipMode = true;
-        this->addClip(pattern, draggingBeat);
+        this->addClip(targetPattern, draggingBeat);
     }
 }
 
