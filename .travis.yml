@@ -1,3 +1,4 @@
+language: generic
 sudo: false
 
 notifications:
@@ -34,32 +35,27 @@ addons_shortcuts:
 matrix:
   include:
     - name: "clang 7, debug build x64"
-      language: generic
       os: linux
       dist: xenial
       addons: *clang7
       env: CC=clang CXX=clang++ CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
     - name: "gcc 6, debug build x64"
-      language: generic
       os: linux
       dist: trusty
       addons: *gcc6
       env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
     - name: "gcc 4, release build x64, deploy"
-      language: generic
       os: linux
       dist: trusty
       addons: *gcc4
       env: DEPLOY=true PLATFORM=linux CONFIG=Release64 DISPLAY=localhost:1.0
     - name: "xcode 10.1 mac, release and deploy"
-      language: generic
       os: osx
       osx_image: xcode10.1
       xcode_sdk: macosx10.14
       addons: *deploy
       env: DEPLOY=true PLATFORM=osx
     - name: "xcode 10.1 ios, release and deploy"
-      language: generic
       os: osx
       osx_image: xcode10.1
       xcode_sdk: iphoneos
@@ -70,13 +66,14 @@ matrix:
       jdk: oraclejdk8
       os: linux
       addons: *deploy
-      env: DEPLOY=true PLATFORM=android
+      env: DEPLOY=true PLATFORM=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
       android:
         components:
           - tools
           - platform-tools
           - build-tools-28.0.3
           - android-21
+          - extra-android-m2repository
           - sys-img-armeabi-v7a-android-21
       before_cache:
         - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
