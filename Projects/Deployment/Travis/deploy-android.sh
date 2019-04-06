@@ -14,7 +14,7 @@ if [[ ${TRAVIS_BRANCH} == "develop" ]]; then
 elif [[ ${TRAVIS_TAG} != "" ]]; then
     RELEASE_FILENAME="helio-${TRAVIS_TAG}"
 else
-    # echo "Skipping deployment: will only run either on a tagged commit, or a develop branch commit"
+    echo "Skipping deployment: will only run either on a tagged commit, or a develop branch commit"
     # exit 0
 fi
 
