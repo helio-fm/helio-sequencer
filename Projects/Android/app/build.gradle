@@ -9,9 +9,9 @@ android {
     }
     signingConfigs {
         juceSigning {
-            storeFile     file("${System.properties['user.home']}${File.separator}.android${File.separator}debug.keystore")
+            storeFile     file("${System.properties['user.home']}${File.separator}helio.keystore")
             storePassword "android"
-            keyAlias      "androiddebugkey"
+            keyAlias      "release"
             keyPassword   "android"
             storeType     "jks"
         }

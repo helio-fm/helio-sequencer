@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Decrypt the secrets
+openssl aes-256-cbc -K $encrypted_7e0c200de200_key -iv $encrypted_7e0c200de200_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/certificates-osx.tar.enc -out /tmp/certificates.tar -d
+tar xvf /tmp/certificates.tar -C /tmp
+
 # Create the keychain with a password
 security create-keychain -p travis osx-build.keychain
 

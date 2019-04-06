@@ -38,12 +38,12 @@ matrix:
       os: linux
       dist: xenial
       addons: *clang7
-      env: CC=clang CXX=clang++ CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+      env: PLATFORM=linux CC=clang CXX=clang++ CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
     - name: "gcc 6, debug build x64"
       os: linux
       dist: trusty
       addons: *gcc6
-      env: CC=gcc-6 CXX=g++-6 CONFIG=Debug DISPLAY=localhost:1.0
+      env: PLATFORM=linux CC=gcc-6 CXX=g++-6 CONFIG=Debug DISPLAY=localhost:1.0
     - name: "gcc 4, release build x64, deploy"
       os: linux
       dist: trusty
@@ -82,20 +82,7 @@ matrix:
          - $HOME/.gradle/wrapper/
 
 before_script:
-  - if [[ "${PLATFORM}" == "osx" ]]; then
-    openssl aes-256-cbc -K $encrypted_7e0c200de200_key -iv $encrypted_7e0c200de200_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/certificates-osx.tar.enc -out /tmp/certificates.tar -d;
-    tar xvf /tmp/certificates.tar -C /tmp;
-    bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-osx.sh;
-    fi
-  - if [[ "${PLATFORM}" == "ios" ]]; then
-    openssl aes-256-cbc -K $encrypted_4bdaf07bd33c_key -iv $encrypted_4bdaf07bd33c_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/certificates-ios.tar.enc -out /tmp/certificates.tar -d;
-    tar xvf /tmp/certificates.tar -C /tmp;
-    bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-ios.sh;
-    fi
-  - if [[ "${PLATFORM}" == "android" ]]; then
-    echo y | sdkmanager 'ndk-bundle';
-    echo y | sdkmanager 'cmake;3.6.4111459';
-    fi
+  - bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-${PLATFORM}.sh
 
 script:
   - if [[ "${PLATFORM}" == "linux" ]]; then

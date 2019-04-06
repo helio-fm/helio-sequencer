@@ -14,20 +14,15 @@ if [[ ${TRAVIS_BRANCH} == "develop" ]]; then
 elif [[ ${TRAVIS_TAG} != "" ]]; then
     RELEASE_FILENAME="helio-${TRAVIS_TAG}"
 else
-    echo "Skipping deployment: will only run either on a tagged commit, or a develop branch commit"
-    exit 0
+    # echo "Skipping deployment: will only run either on a tagged commit, or a develop branch commit"
+    # exit 0
 fi
 
 #####################################
-# Sign and upload apk
+# Upload apk
 
 cd ${TRAVIS_BUILD_DIR}/Projects/Android/app/build/outputs/apk/
 
-cp ${TRAVIS_BUILD_DIR}/Deployment/Travis/.keystore $HOME
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/keystore.jks -storepass $storepass -keypass $keypass ${RELEASE_FILENAME}-unsigned.apk helio_keystore
+ls -R
 
-jarsigner -verify ${RELEASE_FILENAME}-unsigned.apk
-
-"${ANDROID_HOME}/build-tools/28.0.3/zipalign -v 4 ${RELEASE_FILENAME}-unsigned.apk ${RELEASE_FILENAME}-signed.apk"
-
-scp -C ${RELEASE_FILENAME}-signed.apk ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.apk
+# scp -C ${RELEASE_FILENAME}-signed.apk ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.apk

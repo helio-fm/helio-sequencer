@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Decrypt the secrets
+openssl aes-256-cbc -K $encrypted_4bdaf07bd33c_key -iv $encrypted_4bdaf07bd33c_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/certificates-ios.tar.enc -out /tmp/certificates.tar -d
+tar xvf /tmp/certificates.tar -C /tmp
+
 # Create the keychain with a password
 security create-keychain -p travis ios-build.keychain
 

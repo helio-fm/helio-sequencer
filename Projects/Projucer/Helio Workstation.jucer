@@ -1561,7 +1561,8 @@
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"
                    gradleVersion="5.2.1" gradleWrapperVersion="3.3.1" extraCompilerFlags="-Wno-unused-command-line-argument"
-                   androidTargetSDK="28" androidMinimumSDK="21">
+                   androidTargetSDK="28" androidMinimumSDK="21" androidKeyStore="${user.home}/helio.keystore"
+                   androidKeyStorePass="android" androidKeyAliasPass="android" androidKeyAlias="release">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
                        androidArchitectures="armeabi-v7a x86"/>
