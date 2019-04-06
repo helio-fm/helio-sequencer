@@ -38,15 +38,21 @@ Result BinarySerializer::saveToFile(File file, const ValueTree &tree) const
 
 Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
 {
-    FileInputStream fileStream(file);
-    if (fileStream.openedOk())
+    // here's the thing: reading from FileInputStream is slow asfuck (at least, on Windows);
+    // adding BufferedInputStream bufferedStream(fileStream) - kinda helps, but:
+    // ValueTree::readFromStream still calls getTotalLength() quite often, which
+    // ends up calling File::getSize(), which, in turn, consumes a lot time.
+
+    // so instead we'll just read the whole file into memory and deserialize from it;
+    // somewhat ugly, but works, and saved files should never be really large anyway.
+    MemoryBlock mb;
+    if (file.loadFileAsData(mb))
     {
-        const auto magicNumber = static_cast<uint64>(fileStream.readInt64());
+        MemoryInputStream inputStream(mb, false);
+        const auto magicNumber = static_cast<uint64>(inputStream.readInt64());
         if (magicNumber == kHelioHeaderV2)
         {
-            // without a buffered stream, loading speed sucks soo hard on Windows:
-            BufferedInputStream bufferedStream(fileStream, 4096);
-            tree = ValueTree::readFromStream(bufferedStream);
+            tree = ValueTree::readFromStream(inputStream);
             return Result::ok();
         }
     }
