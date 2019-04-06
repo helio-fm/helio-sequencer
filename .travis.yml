@@ -13,6 +13,7 @@ branches:
     - master
     - develop
     - /^\d+\.?\d+\.?\d*$/
+    - test/test-cmake
 
 addons_shortcuts:
   addons_clang7: &clang7
