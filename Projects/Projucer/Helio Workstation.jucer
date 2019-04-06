@@ -1562,11 +1562,13 @@
                    cameraPermissionNeeded="0" microphonePermissionNeeded="0" androidBluetoothNeeded="0"
                    androidInAppBilling="0" androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"
-                   androidTargetSDK="21" gradleVersion="5.2.1" gradleWrapperVersion="3.3.1">
+                   androidTargetSDK="21" gradleVersion="5.2.1" gradleWrapperVersion="3.3.1"
+                   extraCompilerFlags="-Wno-unused-command-line-argument">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"/>
-        <CONFIGURATION name="Release" androidArchitectures="" isDebug="0" optimisation="5"
-                       targetName="Helio" linkTimeOptimisation="1"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
+                       androidArchitectures="armeabi-v7a x86"/>
+        <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a x86" isDebug="0"
+                       optimisation="5" targetName="Helio" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>

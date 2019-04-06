@@ -24,8 +24,8 @@ android {
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_PLATFORM=android-21", "-DANDROID_STL=c++_static", "-DANDROID_CPP_FEATURES=exceptions rtti", "-DANDROID_ARM_MODE=arm", "-DANDROID_ARM_NEON=TRUE"
-                cFlags "-fsigned-char"
-                cppFlags "-fsigned-char", "-std=c++11"
+                cFlags "-fsigned-char", "-Wno-unused-command-line-argument"
+                cppFlags "-fsigned-char", "-std=c++11", "-Wno-unused-command-line-argument"
             }
         }
     }
@@ -49,7 +49,7 @@ android {
     productFlavors {
         debug_ {
             ndk {
-                abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+                abiFilters "armeabi-v7a", "x86"
             }
             externalNativeBuild {
                 cmake {
@@ -60,6 +60,9 @@ android {
             dimension "default"
        }
         release_ {
+            ndk {
+                abiFilters "armeabi-v7a", "x86"
+            }
             externalNativeBuild {
                 cmake {
                     arguments "-DJUCE_BUILD_CONFIGURATION=RELEASE", "-DCMAKE_CXX_FLAGS_RELEASE=-O2", "-DCMAKE_C_FLAGS_RELEASE=-O2"
