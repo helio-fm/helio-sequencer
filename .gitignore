@@ -45,7 +45,7 @@ UserInterfaceState.xcuserstate
 resources.res
 Thumbs.db
 cloc.pl
-CMakeLists.txt
+local.properties
 .externalNativeBuild
 .gradle
 .idea
