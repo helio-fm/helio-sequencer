@@ -38,12 +38,12 @@ matrix:
       os: linux
       dist: xenial
       addons: *clang7
-      env: CC=clang CXX=clang++ CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+      env: CC=clang CXX=clang++ CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
     - name: "gcc 6, debug build x64"
       os: linux
       dist: trusty
       addons: *gcc6
-      env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
+      env: CC=gcc-6 CXX=g++-6 CONFIG=Debug DISPLAY=localhost:1.0
     - name: "gcc 4, release build x64, deploy"
       os: linux
       dist: trusty
@@ -62,9 +62,9 @@ matrix:
       addons: *deploy
       env: DEPLOY=true PLATFORM=ios
     - name: "android 21, release and deploy"
+      os: linux
       language: android
       jdk: oraclejdk8
-      os: linux
       addons: *deploy
       env: DEPLOY=true PLATFORM=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
       android:
@@ -72,9 +72,7 @@ matrix:
           - tools
           - platform-tools
           - build-tools-28.0.3
-          - android-21
-          - extra-android-m2repository
-          - sys-img-armeabi-v7a-android-21
+          - android-28
       before_cache:
         - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
         - rm -fr $HOME/.gradle/caches/*/plugin-resolution/

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 28
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId "fm.helio"
         minSdkVersion    21
-        targetSdkVersion 21
+        targetSdkVersion 28
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_PLATFORM=android-21", "-DANDROID_STL=c++_static", "-DANDROID_CPP_FEATURES=exceptions rtti", "-DANDROID_ARM_MODE=arm", "-DANDROID_ARM_NEON=TRUE"

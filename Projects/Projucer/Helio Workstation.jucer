@@ -1536,8 +1536,6 @@
                        targetName="Helio" linuxArchitecture="-m32"/>
         <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="5"
                        targetName="Helio" linuxArchitecture="-m64"/>
-        <CONFIGURATION name="Travis" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="1"
-                       targetName="Helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1558,12 +1556,12 @@
                    androidInternetNeeded="1" androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
                    smallIcon="DQTpOG" bigIcon="DQTpOG" androidScreenOrientation="landscape"
-                   androidVersionCode="3" gradleToolchain="clang" androidMinimumSDK="21"
-                   cameraPermissionNeeded="0" microphonePermissionNeeded="0" androidBluetoothNeeded="0"
-                   androidInAppBilling="0" androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
+                   androidVersionCode="3" gradleToolchain="clang" cameraPermissionNeeded="0"
+                   microphonePermissionNeeded="0" androidBluetoothNeeded="0" androidInAppBilling="0"
+                   androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"
-                   androidTargetSDK="21" gradleVersion="5.2.1" gradleWrapperVersion="3.3.1"
-                   extraCompilerFlags="-Wno-unused-command-line-argument">
+                   gradleVersion="5.2.1" gradleWrapperVersion="3.3.1" extraCompilerFlags="-Wno-unused-command-line-argument"
+                   androidTargetSDK="28" androidMinimumSDK="21">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
                        androidArchitectures="armeabi-v7a x86"/>
