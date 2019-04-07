@@ -22,12 +22,7 @@
 #include "HybridRoll.h"
 #include "ColourIDs.h"
 
-#define PADDING 2
-
-static inline ComponentAnimator &rootAnimator()
-{
-    return Desktop::getInstance().getAnimator();
-}
+#define KNIFE_TOOL_PADDING 2
 
 KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) :
     roll(roll)
@@ -39,7 +34,8 @@ KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) :
 
 KnifeToolHelper::~KnifeToolHelper()
 {
-    rootAnimator().animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 0.f);
+    Desktop::getInstance().getAnimator()
+        .animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 0.f);
 }
 
 Line<float> KnifeToolHelper::getLine() const noexcept
@@ -65,7 +61,7 @@ void KnifeToolHelper::updateBounds()
     const auto x2 = jmax(start.getX(), end.getX());
     const auto y1 = jmin(start.getY(), end.getY());
     const auto y2 = jmax(start.getY(), end.getY());
-    const Point<float> startOffset(x1 - PADDING, y1 - PADDING);
+    const Point<float> startOffset(x1 - KNIFE_TOOL_PADDING, y1 - KNIFE_TOOL_PADDING);
     this->line = { start, end };
 
     this->path.clear();
@@ -77,8 +73,8 @@ void KnifeToolHelper::updateBounds()
     PathStrokeType(3.f).createDashedStroke(this->path, this->path,
         dashes.getRawDataPointer(), dashes.size());
 
-    this->setBounds(int(x1) - PADDING, int(y1) - PADDING,
-        int(x2 - x1) + PADDING * 2, int(y2 - y1) + PADDING * 2);
+    this->setBounds(int(x1) - KNIFE_TOOL_PADDING, int(y1) - KNIFE_TOOL_PADDING,
+        int(x2 - x1) + KNIFE_TOOL_PADDING * 2, int(y2 - y1) + KNIFE_TOOL_PADDING * 2);
 }
 
 void KnifeToolHelper::updateCutMarks()
@@ -91,7 +87,8 @@ void KnifeToolHelper::updateCutMarks()
 
 void KnifeToolHelper::fadeIn()
 {
-    rootAnimator().animateComponent(this, this->getBounds(), 1.f, 150, false, 0.f, 0.f);
+    Desktop::getInstance().getAnimator()
+        .animateComponent(this, this->getBounds(), 1.f, 150, false, 0.f, 0.f);
 }
 
 void KnifeToolHelper::setStartPosition(const Point<float> &mousePos)

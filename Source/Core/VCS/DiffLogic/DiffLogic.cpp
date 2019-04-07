@@ -24,7 +24,8 @@
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectInfoDiffLogic.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 class DummyDiffLogic final : public AutomationTrackDiffLogic
 {
@@ -66,4 +67,6 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &
 
     //jassertfalse;
     return new DummyDiffLogic(targetItem);
+}
+
 }

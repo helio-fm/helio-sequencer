@@ -19,11 +19,11 @@
 #include "ScaleClass.h"
 #include "SerializationKeys.h"
 
-using namespace Scripting;
-using namespace Serialization::Scripts;
-
 ScaleClass::ScaleClass(const Scale::Ptr scale) : scale(scale)
 {
+    using namespace Scripting;
+    using namespace Serialization::Scripts;
+
     this->setProperty(Api::Scale::name, scale->getLocalizedName());
     this->setProperty(Api::Scale::basePeriod, scale->getBasePeriod());
 

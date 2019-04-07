@@ -18,7 +18,8 @@
 #include "Common.h"
 #include "Delta.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 static const String undefinedDelta = "undefined";
 
@@ -107,3 +108,5 @@ void Delta::deserialize(const ValueTree &tree)
 }
 
 void Delta::reset() {}
+
+}

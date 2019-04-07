@@ -24,7 +24,7 @@
 #include "CommandIDs.h"
 #include "PatternOperations.h"
 
-static Pattern *getPattern(SelectionProxyArray::Ptr selection)
+static Pattern *getSelectionPattern(SelectionProxyArray::Ptr selection)
 {
     const auto &firstEvent = selection->getFirstAs<ClipComponent>()->getClip();
     return firstEvent.getPattern();
@@ -202,7 +202,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(cc->continueDragging(deltaBeat));
                 }
 
-                getPattern(patternSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getSelectionPattern(patternSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
     }
@@ -222,7 +222,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
                 groupAfter.add(nc->continueTuning(e));
             }
 
-            getPattern(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+            getSelectionPattern(trackSelection)->changeGroup(groupBefore, groupAfter, true);
         }
     }
 }

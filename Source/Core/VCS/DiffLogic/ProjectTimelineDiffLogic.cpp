@@ -23,10 +23,9 @@
 #include "KeySignaturesSequence.h"
 #include "SerializationKeys.h"
 
-using namespace VCS;
-using namespace Serialization::VCS;
-
 // TODO refactor, lots of duplicated code
+namespace VCS
+{
 
 static ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree &changes);
@@ -44,13 +43,13 @@ static Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const Val
 static Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTree &changes);
 static Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTree &changes);
 
-static void deserializeChanges(const ValueTree &state, const ValueTree &changes,
+static void deserializeTimelineChanges(const ValueTree &state, const ValueTree &changes,
     OwnedArray<MidiEvent> &stateEvents, OwnedArray<MidiEvent> &changesEvents);
 
-static DeltaDiff serializeChanges(Array<const MidiEvent *> changes,
+static DeltaDiff serializeTimelineChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges, const Identifier &deltaType);
 
-static ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag);
+static ValueTree serializeTimelineSequence(Array<const MidiEvent *> changes, const Identifier &tag);
 
 static bool checkIfDeltaIsAnnotationType(const Delta *delta);
 static bool checkIfDeltaIsTimeSignatureType(const Delta *delta);
@@ -66,7 +65,9 @@ const Identifier ProjectTimelineDiffLogic::getType() const
 
 Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) const
 {
-    auto diff = new Diff(this->target);
+    using namespace Serialization::VCS;
+    
+    auto *diff = new Diff(this->target);
 
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
     {
@@ -113,7 +114,8 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
 
 Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState) const
 {
-    auto diff = new Diff(this->target);
+    using namespace Serialization::VCS;
+    auto *diff = new Diff(this->target);
 
     // step 1:
     // the default policy is merging all changes
@@ -291,7 +293,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             if (foundMissingKeySignature)
             {
                 const bool incrementalMerge = keySignaturesDeltaData.isValid();
-                ValueTree emptyKeySignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::keySignaturesAdded));
+                ValueTree emptyKeySignaturesDeltaData(serializeTimelineSequence({}, ProjectTimelineDeltas::keySignaturesAdded));
 
                 if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
                 {
@@ -312,7 +314,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (foundMissingTimeSignature)
             {
                 const bool incrementalMerge = timeSignaturesDeltaData.isValid();
-                ValueTree emptyTimeSignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::timeSignaturesAdded));
+                ValueTree emptyTimeSignaturesDeltaData(serializeTimelineSequence({}, ProjectTimelineDeltas::timeSignaturesAdded));
 
                 if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
                 {
@@ -333,7 +335,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (foundMissingAnnotation)
             {
                 const bool incrementalMerge = annotationsDeltaData.isValid();
-                ValueTree emptyAnnotationDeltaData(serializeLayer({}, ProjectTimelineDeltas::annotationsAdded));
+                ValueTree emptyAnnotationDeltaData(serializeTimelineSequence({}, ProjectTimelineDeltas::annotationsAdded));
 
                 if (targetDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
                 {
@@ -378,9 +380,11 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
 ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<const MidiEvent *> result;
 
@@ -411,14 +415,16 @@ ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &changes
         }
     }
 
-    return serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
 ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<const MidiEvent *> result;
 
@@ -446,14 +452,16 @@ ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree &chang
         }
     }
 
-    return serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
 ValueTree mergeAnnotationsChanged(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<const MidiEvent *> result;
 
@@ -483,7 +491,7 @@ ValueTree mergeAnnotationsChanged(const ValueTree &state, const ValueTree &chang
         //jassert(foundEventInChanges);
     }
 
-    return serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
 //===----------------------------------------------------------------------===//
@@ -492,9 +500,11 @@ ValueTree mergeAnnotationsChanged(const ValueTree &state, const ValueTree &chang
 
 ValueTree mergeTimeSignaturesAdded(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
     
     Array<const MidiEvent *> result;
     
@@ -525,14 +535,16 @@ ValueTree mergeTimeSignaturesAdded(const ValueTree &state, const ValueTree &chan
         }
     }
     
-    return serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::timeSignaturesAdded);
 }
 
 ValueTree mergeTimeSignaturesRemoved(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
     
     Array<const MidiEvent *> result;
     
@@ -561,14 +573,16 @@ ValueTree mergeTimeSignaturesRemoved(const ValueTree &state, const ValueTree &ch
         }
     }
     
-    return serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::timeSignaturesAdded);
 }
 
 ValueTree mergeTimeSignaturesChanged(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
     
     Array<const MidiEvent *> result;
     result.addArray(stateEvents);
@@ -597,7 +611,7 @@ ValueTree mergeTimeSignaturesChanged(const ValueTree &state, const ValueTree &ch
         //jassert(foundEventInChanges);
     }
     
-    return serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::timeSignaturesAdded);
 }
 
 //===----------------------------------------------------------------------===//
@@ -606,9 +620,11 @@ ValueTree mergeTimeSignaturesChanged(const ValueTree &state, const ValueTree &ch
 
 ValueTree mergeKeySignaturesAdded(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<const MidiEvent *> result;
 
@@ -639,14 +655,16 @@ ValueTree mergeKeySignaturesAdded(const ValueTree &state, const ValueTree &chang
         }
     }
 
-    return serializeLayer(result, ProjectTimelineDeltas::keySignaturesAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::keySignaturesAdded);
 }
 
 ValueTree mergeKeySignaturesRemoved(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<const MidiEvent *> result;
 
@@ -675,14 +693,16 @@ ValueTree mergeKeySignaturesRemoved(const ValueTree &state, const ValueTree &cha
         }
     }
 
-    return serializeLayer(result, ProjectTimelineDeltas::keySignaturesAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::keySignaturesAdded);
 }
 
 ValueTree mergeKeySignaturesChanged(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<const MidiEvent *> result;
     result.addArray(stateEvents);
@@ -711,7 +731,7 @@ ValueTree mergeKeySignaturesChanged(const ValueTree &state, const ValueTree &cha
         //jassert(foundEventInChanges);
     }
 
-    return serializeLayer(result, ProjectTimelineDeltas::keySignaturesAdded);
+    return serializeTimelineSequence(result, ProjectTimelineDeltas::keySignaturesAdded);
 }
 
 
@@ -721,9 +741,11 @@ ValueTree mergeKeySignaturesChanged(const ValueTree &state, const ValueTree &cha
 
 Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
@@ -795,7 +817,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree 
     // serialize deltas, if any
     if (addedEvents.size() > 0)
     {
-        res.add(serializeChanges(addedEvents,
+        res.add(serializeTimelineChanges(addedEvents,
             "added {x} annotations",
             addedEvents.size(),
             ProjectTimelineDeltas::annotationsAdded));
@@ -803,7 +825,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree 
 
     if (removedEvents.size() > 0)
     {
-        res.add(serializeChanges(removedEvents,
+        res.add(serializeTimelineChanges(removedEvents,
             "removed {x} annotations",
             removedEvents.size(),
             ProjectTimelineDeltas::annotationsRemoved));
@@ -811,7 +833,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree 
 
     if (changedEvents.size() > 0)
     {
-        res.add(serializeChanges(changedEvents,
+        res.add(serializeTimelineChanges(changedEvents,
             "changed {x} annotations",
             changedEvents.size(),
             ProjectTimelineDeltas::annotationsChanged));
@@ -822,10 +844,12 @@ Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree 
 
 Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
     
     Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
@@ -897,7 +921,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTr
     // serialize deltas, if any
     if (addedEvents.size() > 0)
     {
-        res.add(serializeChanges(addedEvents,
+        res.add(serializeTimelineChanges(addedEvents,
             "added {x} time signatures",
             addedEvents.size(),
             ProjectTimelineDeltas::timeSignaturesAdded));
@@ -905,7 +929,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTr
     
     if (removedEvents.size() > 0)
     {
-        res.add(serializeChanges(removedEvents,
+        res.add(serializeTimelineChanges(removedEvents,
             "removed {x} time signatures",
             removedEvents.size(),
             ProjectTimelineDeltas::timeSignaturesRemoved));
@@ -913,7 +937,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTr
     
     if (changedEvents.size() > 0)
     {
-        res.add(serializeChanges(changedEvents,
+        res.add(serializeTimelineChanges(changedEvents,
             "changed {x} time signatures",
             changedEvents.size(),
             ProjectTimelineDeltas::timeSignaturesChanged));
@@ -924,9 +948,11 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTr
 
 Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    deserializeChanges(state, changes, stateEvents, changesEvents);
+    deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
 
     Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
@@ -998,7 +1024,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTre
     // serialize deltas, if any
     if (addedEvents.size() > 0)
     {
-        res.add(serializeChanges(addedEvents,
+        res.add(serializeTimelineChanges(addedEvents,
             "added {x} key signatures",
             addedEvents.size(),
             ProjectTimelineDeltas::keySignaturesAdded));
@@ -1006,7 +1032,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTre
 
     if (removedEvents.size() > 0)
     {
-        res.add(serializeChanges(removedEvents,
+        res.add(serializeTimelineChanges(removedEvents,
             "removed {x} key signatures",
             removedEvents.size(),
             ProjectTimelineDeltas::keySignaturesRemoved));
@@ -1014,7 +1040,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTre
 
     if (changedEvents.size() > 0)
     {
-        res.add(serializeChanges(changedEvents,
+        res.add(serializeTimelineChanges(changedEvents,
             "changed {x} key signatures",
             changedEvents.size(),
             ProjectTimelineDeltas::keySignaturesChanged));
@@ -1028,7 +1054,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTre
 // Serialization
 //===----------------------------------------------------------------------===//
 
-void deserializeChanges(const ValueTree &state, const ValueTree &changes,
+void deserializeTimelineChanges(const ValueTree &state, const ValueTree &changes,
     OwnedArray<MidiEvent> &stateEvents, OwnedArray<MidiEvent> &changesEvents)
 {
     using namespace Serialization;
@@ -1082,16 +1108,16 @@ void deserializeChanges(const ValueTree &state, const ValueTree &changes,
     }
 }
 
-DeltaDiff serializeChanges(Array<const MidiEvent *> changes,
+DeltaDiff serializeTimelineChanges(Array<const MidiEvent *> changes,
         const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
     changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
-    changesFullDelta.deltaData = serializeLayer(changes, deltaType);
+    changesFullDelta.deltaData = serializeTimelineSequence(changes, deltaType);
     return changesFullDelta;
 }
 
-ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag)
+ValueTree serializeTimelineSequence(Array<const MidiEvent *> changes, const Identifier &tag)
 {
     ValueTree tree(tag);
 
@@ -1106,6 +1132,7 @@ ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag
 
 bool checkIfDeltaIsAnnotationType(const Delta *d)
 {
+    using namespace Serialization::VCS;
     return (d->hasType(ProjectTimelineDeltas::annotationsAdded) ||
         d->hasType(ProjectTimelineDeltas::annotationsChanged) ||
         d->hasType(ProjectTimelineDeltas::annotationsRemoved));
@@ -1113,6 +1140,7 @@ bool checkIfDeltaIsAnnotationType(const Delta *d)
 
 bool checkIfDeltaIsTimeSignatureType(const Delta *d)
 {
+    using namespace Serialization::VCS;
     return (d->hasType(ProjectTimelineDeltas::timeSignaturesAdded) ||
         d->hasType(ProjectTimelineDeltas::timeSignaturesChanged) ||
         d->hasType(ProjectTimelineDeltas::timeSignaturesRemoved));
@@ -1120,7 +1148,10 @@ bool checkIfDeltaIsTimeSignatureType(const Delta *d)
 
 bool checkIfDeltaIsKeySignatureType(const Delta *d)
 {
+    using namespace Serialization::VCS;
     return (d->hasType(ProjectTimelineDeltas::keySignaturesAdded) ||
         d->hasType(ProjectTimelineDeltas::keySignaturesRemoved) ||
         d->hasType(ProjectTimelineDeltas::keySignaturesChanged));
+}
+
 }

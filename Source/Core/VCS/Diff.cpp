@@ -19,7 +19,8 @@
 #include "Diff.h"
 #include "DiffLogic.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 Diff::Diff(TrackedItem &diffTarget)
 {
@@ -87,4 +88,6 @@ String Diff::getVCSName() const
 DiffLogic *Diff::getDiffLogic() const
 {
     return this->logic;
+}
+
 }

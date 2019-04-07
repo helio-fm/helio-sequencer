@@ -19,7 +19,8 @@
 #include "Revision.h"
 #include "SerializationKeys.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 Revision::Revision(const String &name /*= String::empty*/) :
     message(name),
@@ -217,4 +218,6 @@ void Revision::reset()
     this->timestamp = 0;
     this->deltas.clearQuick();
     this->children.clearQuick();
+}
+
 }

@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "SpectralLogo.h"
+#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 #define MAXDB (+4.0f)
@@ -172,13 +173,6 @@ void SpectralLogo::Band::reset()
     this->peakDecayColour = PEAK_MAX_ALPHA;
 }
 
-static float timeToDistance(float time, float startSpeed = 0.f, float midSpeed = 2.f, float endSpeed = 0.f) noexcept
-{
-    return (time < 0.5f) ? time * (startSpeed + time * (midSpeed - startSpeed))
-        : 0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed))
-        + (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
-}
-
 inline Path SpectralLogo::Band::buildPath(float valueInY,
     float cx, float cy, float h, float radians,
     int numSkippedSegments, uint32 timeNow)
@@ -195,7 +189,7 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
         float newProgress = msElapsed / BAND_FADE_MS;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
-            newProgress = timeToDistance(newProgress);
+            newProgress = ComponentFader::timeToDistance(newProgress);
             jassert(newProgress >= this->valueDecay);
             const float delta = (newProgress - this->valueDecay) / (1.f - this->valueDecay);
             this->valueDecay = newProgress;
@@ -219,7 +213,7 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
         float newProgress = msElapsed / PEAK_FADE_MS;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
-            newProgress = timeToDistance(newProgress);
+            newProgress = ComponentFader::timeToDistance(newProgress);
             jassert(newProgress >= this->peakDecay);
             const float delta = (newProgress - this->peakDecay) / (1.f - this->peakDecay);
             this->peakDecayColour = (newProgress * newProgress * newProgress) * PEAK_MAX_ALPHA;

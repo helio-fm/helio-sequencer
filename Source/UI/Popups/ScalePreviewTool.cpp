@@ -30,6 +30,7 @@
 #include "Transport.h"
 #include "SerializationKeys.h"
 #include "MenuPanel.h"
+#include "Chord.h"
 #include "BinaryData.h"
 #include "Icons.h"
 #include "ColourIDs.h"
@@ -49,19 +50,6 @@ static Label *createLabel(const String &text)
     const float autoFontSize = float(size - 5.f);
     newLabel->setFont(Font(autoFontSize, Font::plain));
     return newLabel;
-}
-
-static Array<String> localizedFunctionNames()
-{
-    return {
-        TRANS("popup::chord::function::1"),
-        TRANS("popup::chord::function::2"),
-        TRANS("popup::chord::function::3"),
-        TRANS("popup::chord::function::4"),
-        TRANS("popup::chord::function::5"),
-        TRANS("popup::chord::function::6"),
-        TRANS("popup::chord::function::7")
-    };
 }
 
 class ScalesCommandPanel final : public MenuPanel
@@ -105,7 +93,7 @@ public:
 
     FunctionsCommandPanel()
     {
-        const auto funName = localizedFunctionNames();
+        const auto &funName = Chord::getLocalizedFunctionNames();
         MenuPanel::Menu cmds;
         cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 6, "VII - " + funName[6]));
@@ -386,7 +374,7 @@ void ScalePreviewTool::onPopupButtonEndDragging(PopupButton *button)
 
 void ScalePreviewTool::applyScale(const Scale::Ptr scale)
 {
-    const auto funName = localizedFunctionNames();
+    const auto &funName = Chord::getLocalizedFunctionNames();
     const String rootKey = keyName(this->targetKey);
     if (this->scale != scale)
     {
@@ -405,7 +393,7 @@ void ScalePreviewTool::applyScale(const Scale::Ptr scale)
 
 void ScalePreviewTool::applyFunction(Scale::Function function)
 {
-    const auto funName = localizedFunctionNames();
+    const auto &funName = Chord::getLocalizedFunctionNames();
     const String rootKey = keyName(this->targetKey);
     if (this->function != function)
     {
@@ -421,7 +409,7 @@ void ScalePreviewTool::applyFunction(Scale::Function function)
     }
 }
 
-static const float kDefaultChordVelocity = 0.35f;
+static const float kScalePreviewDefaultNoteVelocity = 0.35f;
 
 void ScalePreviewTool::buildChord(Array<int> keys)
 {
@@ -436,9 +424,9 @@ void ScalePreviewTool::buildChord(Array<int> keys)
         for (int offset : keys)
         {
             const int key = jmin(128, jmax(0, this->targetKey + offset));
-            Note note(pianoLayer, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kDefaultChordVelocity);
+            Note note(pianoLayer, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kScalePreviewDefaultNoteVelocity);
             pianoLayer->insert(note, true);
-            this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kDefaultChordVelocity));
+            this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -460,12 +448,12 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
 
         const int key = jmin(128, jmax(0, this->targetKey));
 
-        Note note1(pianoSequence, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kDefaultChordVelocity);
+        Note note1(pianoSequence, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kScalePreviewDefaultNoteVelocity);
         pianoSequence->insert(note1, true);
 
         if (shouldSendMidiMessage)
         {
-            this->sendMidiMessage(MidiMessage::noteOn(note1.getTrackChannel(), key, kDefaultChordVelocity));
+            this->sendMidiMessage(MidiMessage::noteOn(note1.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity));
         }
 
         this->hasMadeChanges = true;

@@ -21,7 +21,8 @@
 #include "Diff.h"
 #include "DiffLogic.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 Snapshot::Snapshot(const Snapshot &other) :
     items(other.items) {}
@@ -112,4 +113,6 @@ RevisionItem::Ptr Snapshot::getItemWithUuid(const Uuid &uuid) const
     }
 
     return nullptr;
+}
+
 }

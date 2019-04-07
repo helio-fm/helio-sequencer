@@ -385,28 +385,6 @@
           <FILE id="ZNZV5h" name="Network.cpp" compile="1" resource="0" file="../../Source/Core/Network/Network.cpp"/>
           <FILE id="bgfCFA" name="Network.h" compile="0" resource="0" file="../../Source/Core/Network/Network.h"/>
         </GROUP>
-        <GROUP id="{C7A47464-29EB-7B1A-915F-52EB77152651}" name="Scripting">
-          <FILE id="Sj4cRm" name="KeySignatureClass.cpp" compile="1" resource="0"
-                file="../../Source/Core/Scripting/KeySignatureClass.cpp"/>
-          <FILE id="lZb2nj" name="KeySignatureClass.h" compile="0" resource="0"
-                file="../../Source/Core/Scripting/KeySignatureClass.h"/>
-          <FILE id="xcn0BQ" name="NoteClass.cpp" compile="1" resource="0" file="../../Source/Core/Scripting/NoteClass.cpp"/>
-          <FILE id="xNRpUZ" name="NoteClass.h" compile="0" resource="0" file="../../Source/Core/Scripting/NoteClass.h"/>
-          <FILE id="jp8msY" name="ScaleClass.cpp" compile="1" resource="0" file="../../Source/Core/Scripting/ScaleClass.cpp"/>
-          <FILE id="VCRuvt" name="ScaleClass.h" compile="0" resource="0" file="../../Source/Core/Scripting/ScaleClass.h"/>
-          <FILE id="sL4fbp" name="ScriptingHelpers.cpp" compile="1" resource="0"
-                file="../../Source/Core/Scripting/ScriptingHelpers.cpp"/>
-          <FILE id="o20lBF" name="ScriptingHelpers.h" compile="0" resource="0"
-                file="../../Source/Core/Scripting/ScriptingHelpers.h"/>
-          <FILE id="wFL4Su" name="SelectionTransformExecutor.cpp" compile="1"
-                resource="0" file="../../Source/Core/Scripting/SelectionTransformExecutor.cpp"/>
-          <FILE id="yvfvIm" name="SelectionTransformExecutor.h" compile="0" resource="0"
-                file="../../Source/Core/Scripting/SelectionTransformExecutor.h"/>
-          <FILE id="X0srjS" name="TimeSignatureClass.cpp" compile="1" resource="0"
-                file="../../Source/Core/Scripting/TimeSignatureClass.cpp"/>
-          <FILE id="F2XpWu" name="TimeSignatureClass.h" compile="0" resource="0"
-                file="../../Source/Core/Scripting/TimeSignatureClass.h"/>
-        </GROUP>
         <GROUP id="{B690F2B3-8242-3091-4182-FD3492158B1A}" name="Serialization">
           <FILE id="E2KE99" name="Autosaver.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/Autosaver.cpp"/>
           <FILE id="AqX33p" name="Autosaver.h" compile="0" resource="0" file="../../Source/Core/Serialization/Autosaver.h"/>

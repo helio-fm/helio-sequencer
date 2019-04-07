@@ -53,6 +53,8 @@ public:
     const String &getName() const noexcept;
     const Array<Key> &getScaleKeys() const noexcept;
 
+    static Array<String> getLocalizedFunctionNames();
+
     //===------------------------------------------------------------------===//
     // Hard-coded defaults
     //===------------------------------------------------------------------===//

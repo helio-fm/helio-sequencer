@@ -224,8 +224,8 @@ static String transformXmlTag(const String &tagOrAttribute)
         oldKeys.set("LayerColour", MidiTrackDeltas::trackColour);
         oldKeys.set("LayerInstrument", MidiTrackDeltas::trackInstrument);
         oldKeys.set("LayerController", MidiTrackDeltas::trackController);
-        oldKeys.set("HeadIndex", VCS::snapshot);
-        oldKeys.set("HeadIndexData", VCS::snapshotData);
+        oldKeys.set("HeadIndex", snapshot);
+        oldKeys.set("HeadIndexData", snapshotData);
         oldKeys.set("annotationsId", Core::annotationsTrackId);
         oldKeys.set("keySignaturesId", Core::keySignaturesTrackId);
         oldKeys.set("timeSignaturesId", Core::timeSignaturesTrackId);
@@ -234,8 +234,8 @@ static String transformXmlTag(const String &tagOrAttribute)
         oldKeys.set("Uuid", Audio::instrumentId);
         oldKeys.set("Uid", Audio::pluginId);
         oldKeys.set("PluginManager", Audio::pluginsList);
-        oldKeys.set("Pack", VCS::pack);
-        oldKeys.set("VCSUuid", VCS::vcsItemId);
+        oldKeys.set("Pack", pack);
+        oldKeys.set("VCSUuid", vcsItemId);
         oldKeys.set("GlobalConfig", Core::globalConfig);
         oldKeys.set("Layer", Core::track);
         oldKeys.set("PianoLayer", Core::pianoTrack);

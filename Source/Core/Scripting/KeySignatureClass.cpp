@@ -20,11 +20,11 @@
 #include "ScaleClass.h"
 #include "SerializationKeys.h"
 
-using namespace Scripting;
-using namespace Serialization::Scripts;
-
 KeySignatureClass::KeySignatureClass(const KeySignatureEvent &event)
 {
+    using namespace Scripting;
+    using namespace Serialization::Scripts;
+
     ScaleClass::Ptr scale(new ScaleClass(event.getScale()));
     this->setProperty(Api::KeySignature::scale, var(scale.get()));
     this->setProperty(Api::KeySignature::position, event.getBeat());
