@@ -24,7 +24,6 @@
 #include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
-#include "AnnotationMenu.h"
 #include "TimeSignatureMenu.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"

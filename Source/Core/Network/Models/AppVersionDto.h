@@ -19,8 +19,10 @@
 
 #include "ApiModel.h"
 
-struct AppVersionDto final : ApiModel
+class AppVersionDto final : public ApiModel
 {
+public:
+
     AppVersionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getArchitecture() const noexcept { return DTO_PROPERTY(Versions::architecture); }

@@ -20,8 +20,10 @@
 #include "ApiModel.h"
 #include "ProjectDto.h"
 
-struct ProjectsListDto final : ApiModel
+class ProjectsListDto final : public ApiModel
 {
+public:
+
     ProjectsListDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     Array<ProjectDto> getProjects() const { return DTO_CHILDREN(ProjectDto, Projects::projects); }

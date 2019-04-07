@@ -20,8 +20,10 @@
 #include "Serializable.h"
 #include "SerializationKeys.h"
 
-struct ApiModel : Serializable
+class ApiModel : public Serializable
 {
+public:
+
     ApiModel(const ValueTree &tree) noexcept : data(tree) {}
 
     template<typename T>

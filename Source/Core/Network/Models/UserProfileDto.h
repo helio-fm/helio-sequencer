@@ -22,8 +22,10 @@
 #include "UserResourceDto.h"
 #include "UserSessionDto.h"
 
-struct UserProfileDto final : ApiModel
+class UserProfileDto final : public ApiModel
 {
+public:
+
     UserProfileDto(const ValueTree &tree, const MemoryBlock &image = {}) noexcept :
         ApiModel(tree), avatarData(image) {}
     

@@ -21,8 +21,10 @@
 #include "AppResourceDto.h"
 #include "AppVersionDto.h"
 
-struct AppInfoDto final : ApiModel
+class AppInfoDto final : public ApiModel
 {
+public:
+
     AppInfoDto() noexcept : ApiModel({}) {}
     AppInfoDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 

@@ -24,7 +24,6 @@
 #include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
-#include "AnnotationMenu.h"
 #include "AnnotationDialog.h"
 #include "MainLayout.h"
 

@@ -19,8 +19,10 @@
 
 #include "ApiModel.h"
 
-struct AuthSessionDto final : ApiModel
+class AuthSessionDto final : public ApiModel
 {
+public:
+
     AuthSessionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getSessionId() const noexcept { return DTO_PROPERTY(AuthSession::id); }
