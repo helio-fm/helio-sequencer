@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "AnnotationsSequence.h"
+#include "AnnotationsProjectMap.h"
 //[/Headers]
 
 #include "AnnotationLargeComponent.h"
@@ -25,19 +26,19 @@
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap<AnnotationLargeComponent> &parent, const AnnotationEvent &targetEvent)
-    : event(targetEvent),
+AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent)
+    : AnnotationComponent(parent, targetEvent),
       anchor(targetEvent),
-      editor(parent),
       mouseDownWasTriggered(false),
       textWidth(0.f)
 {
-    addAndMakeVisible (annotationLabel = new Label ("annotationLabel",
-                                                    String()));
-    annotationLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    annotationLabel->setJustificationType (Justification::centredLeft);
-    annotationLabel->setEditable (true, true, false);
-    annotationLabel->addListener (this);
+    this->annotationLabel.reset(new Label("annotationLabel",
+                                           String()));
+    this->addAndMakeVisible(annotationLabel.get());
+    this->annotationLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    annotationLabel->setJustificationType(Justification::centredLeft);
+    annotationLabel->setEditable(true, true, false);
+    this->annotationLabel->addListener(this);
 
 
     //[UserPreSize]
@@ -49,7 +50,7 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap<Annotat
     this->annotationLabel->setVisible(false);
     //[/UserPreSize]
 
-    setSize (128, 32);
+    this->setSize(128, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -126,17 +127,17 @@ void AnnotationLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    annotationLabel->setBounds (4, -40, getWidth() - 6, getHeight() - 8);
+    annotationLabel->setBounds(4, -40, getWidth() - 6, getHeight() - 8);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void AnnotationLargeComponent::labelTextChanged (Label* labelThatHasChanged)
+void AnnotationLargeComponent::labelTextChanged(Label* labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
     //[/UserlabelTextChanged_Pre]
 
-    if (labelThatHasChanged == annotationLabel)
+    if (labelThatHasChanged == annotationLabel.get())
     {
         //[UserLabelCode_annotationLabel] -- add your label text handling code here..
         //[/UserLabelCode_annotationLabel]
@@ -243,11 +244,6 @@ void AnnotationLargeComponent::mouseDoubleClick (const MouseEvent& e)
 
 //[MiscUserCode]
 
-const AnnotationEvent &AnnotationLargeComponent::getEvent() const
-{
-    return this->event;
-}
-
 void AnnotationLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
@@ -257,11 +253,6 @@ void AnnotationLargeComponent::setRealBounds(const Rectangle<float> bounds)
                                           bounds.getHeight());
 
     this->setBounds(intBounds);
-}
-
-float AnnotationLargeComponent::getBeat() const
-{
-    return this->event.getBeat();
 }
 
 void AnnotationLargeComponent::updateContent()
@@ -287,9 +278,9 @@ float AnnotationLargeComponent::getTextWidth() const
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationLargeComponent"
-                 template="../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="AnnotationsProjectMap&lt;AnnotationLargeComponent&gt; &amp;parent, const AnnotationEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;anchor(targetEvent),&#10;editor(parent),&#10;mouseDownWasTriggered(false),&#10;textWidth(0.f)"
+                 template="../../../../Template" componentName="" parentClasses="public AnnotationComponent"
+                 constructorParams="AnnotationsProjectMap &amp;parent, const AnnotationEvent &amp;targetEvent"
+                 variableInitialisers="AnnotationComponent(parent, targetEvent),&#10;anchor(targetEvent),&#10;mouseDownWasTriggered(false),&#10;textWidth(0.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>
@@ -301,17 +292,20 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <TEXT pos="2 1 6M 8M" fill="solid: 88ffffff" hasStroke="0" text="..."
-          fontname="Default font" fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-          bold="0" italic="0" justification="33"/>
+          fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
+          justification="33"/>
     <RECT pos="0 0 0M 3" fill="solid: 20ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="annotationLabel" id="3dbd8cef4b61c2fe" memberName="annotationLabel"
          virtualName="" explicitFocusOrder="0" pos="4 -40 6M 8M" labelText=""
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
+         justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

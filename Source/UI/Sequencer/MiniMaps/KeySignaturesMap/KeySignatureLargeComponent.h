@@ -18,40 +18,21 @@
 #pragma once
 
 //[Headers]
-class KeySignatureEvent;
-
-#include "KeySignaturesProjectMap.h"
-
-// TODO inherit from MidiRollComponent
+#include "KeySignatureComponent.h"
 //[/Headers]
 
 
-class KeySignatureLargeComponent final : public Component
+class KeySignatureLargeComponent final : public KeySignatureComponent
 {
 public:
 
-    KeySignatureLargeComponent(KeySignaturesProjectMap<KeySignatureLargeComponent> &parent, const KeySignatureEvent &targetEvent);
+    KeySignatureLargeComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent);
     ~KeySignatureLargeComponent();
 
     //[UserMethods]
-    const KeySignatureEvent &getEvent() const;
-    float getBeat() const;
-    float getTextWidth() const;
-
-    void updateContent();
-    void setRealBounds(const Rectangle<float> bounds);
-
-    static int compareElements(const KeySignatureLargeComponent *first,
-                               const KeySignatureLargeComponent *second)
-    {
-        if (first == second) { return 0; }
-
-        const float diff = first->event.getBeat() - second->event.getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
-
-        return first->event.getId().compare(second->event.getId());
-    }
+    float getTextWidth() const override;
+    void updateContent() override;
+    void setRealBounds(const Rectangle<float> bounds) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -66,9 +47,6 @@ public:
 private:
 
     //[UserVariables]
-
-    const KeySignatureEvent &event;
-    KeySignaturesProjectMap<KeySignatureLargeComponent> &editor;
 
     ComponentDragger dragger;
     KeySignatureEvent anchor;
@@ -87,7 +65,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> signatureLabel;
+    UniquePointer<Label> signatureLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureLargeComponent)
 };
+
+

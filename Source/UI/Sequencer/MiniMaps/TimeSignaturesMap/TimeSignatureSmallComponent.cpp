@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
+#include "TimeSignaturesProjectMap.h"
 #include "CachedLabelImage.h"
 //[/Headers]
 
@@ -26,19 +27,20 @@
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap<TimeSignatureSmallComponent> &parent, const TimeSignatureEvent &targetEvent)
-    : event(targetEvent),
-      editor(parent)
+TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent)
+    : TimeSignatureComponent(parent, targetEvent)
 {
-    addAndMakeVisible (signatureLabel = new Label (String(),
-                                                   TRANS("...")));
-    signatureLabel->setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
-    signatureLabel->setJustificationType (Justification::centredLeft);
-    signatureLabel->setEditable (false, false, false);
+    this->signatureLabel.reset(new Label(String(),
+                                          TRANS("...")));
+    this->addAndMakeVisible(signatureLabel.get());
+    this->signatureLabel->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
+    signatureLabel->setJustificationType(Justification::centredLeft);
+    signatureLabel->setEditable(false, false, false);
 
-    signatureLabel->setBounds (0, 4, 48, 16);
+    signatureLabel->setBounds(0, 4, 48, 16);
 
-    addAndMakeVisible (component = new SeparatorVertical());
+    this->component.reset(new SeparatorVertical());
+    this->addAndMakeVisible(component.get());
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
@@ -48,7 +50,7 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
     //[/UserPreSize]
 
-    setSize (128, 32);
+    this->setSize(128, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -80,7 +82,7 @@ void TimeSignatureSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    component->setBounds (0, 0, 2, getHeight() - 0);
+    component->setBounds(0, 0, 2, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -95,11 +97,6 @@ void TimeSignatureSmallComponent::parentHierarchyChanged()
 
 //[MiscUserCode]
 
-const TimeSignatureEvent &TimeSignatureSmallComponent::getEvent() const
-{
-    return this->event;
-}
-
 void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
@@ -109,11 +106,6 @@ void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
                                           bounds.getHeight());
 
     this->setBounds(intBounds);
-}
-
-float TimeSignatureSmallComponent::getBeat() const
-{
-    return this->event.getBeat();
 }
 
 void TimeSignatureSmallComponent::updateContent()
@@ -128,9 +120,9 @@ void TimeSignatureSmallComponent::updateContent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureSmallComponent"
-                 template="../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="TimeSignaturesProjectMap&lt;TimeSignatureSmallComponent&gt; &amp;parent, const TimeSignatureEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;editor(parent)"
+                 template="../../../../Template" componentName="" parentClasses="public TimeSignatureComponent"
+                 constructorParams="TimeSignaturesProjectMap &amp;parent, const TimeSignatureEvent &amp;targetEvent"
+                 variableInitialisers="TimeSignatureComponent(parent, targetEvent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>
@@ -140,8 +132,7 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
          explicitFocusOrder="0" pos="0 4 48 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="1e5a57ee127ef53d" memberName="component" virtualName=""
              explicitFocusOrder="0" pos="0 0 2 0M" sourceFile="../../../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
@@ -150,3 +141,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

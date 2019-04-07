@@ -24,18 +24,24 @@ class HybridRoll;
 class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
+class TimeSignatureComponent;
 
-template< typename T >
 class TimeSignaturesProjectMap :
     public Component,
     public ProjectListener
 {
 public:
 
-    TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
+    enum Type
+    {
+        Large,
+        Small
+    };
+
+    TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
     ~TimeSignaturesProjectMap() override;
 
-    void alignTimeSignatureComponent(T *nc);
+    void alignTimeSignatureComponent(TimeSignatureComponent *nc);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -69,19 +75,19 @@ public:
     // Stuff for children
     //===------------------------------------------------------------------===//
 
-    void onTimeSignatureMoved(T *nc);
-    void onTimeSignatureTapped(T *nc);
-    void showContextMenuFor(T *nc);
-    void alternateActionFor(T *nc);
+    void onTimeSignatureMoved(TimeSignatureComponent *nc);
+    void onTimeSignatureTapped(TimeSignatureComponent *nc);
+    void showContextMenuFor(TimeSignatureComponent *nc);
+    void alternateActionFor(TimeSignatureComponent *nc);
     float getBeatByXPosition(int x) const;
     
 private:
     
     void reloadTrackMap();
-    void applyTimeSignatureBounds(T *nc, T *nextOne = nullptr);
+    void applyTimeSignatureBounds(TimeSignatureComponent *nc, TimeSignatureComponent *nextOne = nullptr);
     
-    T *getPreviousEventComponent(int indexOfSorted) const;
-    T *getNextEventComponent(int indexOfSorted) const;
+    TimeSignatureComponent *getPreviousEventComponent(int indexOfSorted) const;
+    TimeSignatureComponent *getNextEventComponent(int indexOfSorted) const;
     
     void updateTrackRangeIndicatorsAnchors();
     
@@ -101,8 +107,11 @@ private:
     
     ComponentAnimator animator;
 
-    OwnedArray<T> timeSignatureComponents;
-    FlatHashMap<TimeSignatureEvent, T *, MidiEventHash> timeSignaturesHash;
+    Type type;
+    TimeSignatureComponent *createComponent(const TimeSignatureEvent &event);
+
+    OwnedArray<TimeSignatureComponent> timeSignatureComponents;
+    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *, MidiEventHash> timeSignaturesHash;
     
 };
 

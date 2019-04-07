@@ -1218,6 +1218,8 @@
           </GROUP>
           <GROUP id="{A2451DAC-6440-BA26-A161-886D9547F2E5}" name="MiniMaps">
             <GROUP id="{79B138C4-1701-E7DD-90D0-40AB5FFDE3DC}" name="AnnotationsMap">
+              <FILE id="cjmRqm" name="AnnotationComponent.h" compile="0" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationComponent.h"/>
               <FILE id="GyzleQ" name="AnnotationLargeComponent.cpp" compile="1" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationLargeComponent.cpp"/>
               <FILE id="wnAxMx" name="AnnotationLargeComponent.h" compile="0" resource="0"
@@ -1232,6 +1234,8 @@
                     file="../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.h"/>
             </GROUP>
             <GROUP id="{5DEC793A-36F2-CC22-7BE4-5F089E71D3F1}" name="KeySignaturesMap">
+              <FILE id="XIl7z0" name="KeySignatureComponent.h" compile="0" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureComponent.h"/>
               <FILE id="z9D3ft" name="KeySignatureLargeComponent.cpp" compile="1"
                     resource="0" file="../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureLargeComponent.cpp"/>
               <FILE id="d5ihZR" name="KeySignatureLargeComponent.h" compile="0" resource="0"
@@ -1261,6 +1265,8 @@
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.h"/>
             </GROUP>
             <GROUP id="{919723B0-0366-9404-B47C-49C93660ABFE}" name="TimeSignaturesMap">
+              <FILE id="KAMX2D" name="TimeSignatureComponent.h" compile="0" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureComponent.h"/>
               <FILE id="n8Bobd" name="TimeSignatureLargeComponent.cpp" compile="1"
                     resource="0" file="../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureLargeComponent.cpp"/>
               <FILE id="FgdgaT" name="TimeSignatureLargeComponent.h" compile="0"

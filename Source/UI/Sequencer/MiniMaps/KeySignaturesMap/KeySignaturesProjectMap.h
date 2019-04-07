@@ -17,23 +17,29 @@
 
 #pragma once
 
+#include "KeySignatureComponent.h"
 #include "KeySignatureEvent.h"
 #include "ProjectListener.h"
 
 class HybridRoll;
 class ProjectNode;
 
-template< typename T >
 class KeySignaturesProjectMap :
     public Component,
     public ProjectListener
 {
 public:
+    
+    enum Type
+    {
+        Large,
+        Small
+    };
 
-    KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
+    KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
     ~KeySignaturesProjectMap() override;
 
-    void alignKeySignatureComponent(T *nc);
+    void alignKeySignatureComponent(KeySignatureComponent *nc);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -67,19 +73,19 @@ public:
     // Stuff for children
     //===------------------------------------------------------------------===//
 
-    void onKeySignatureMoved(T *nc);
-    void onKeySignatureTapped(T *nc);
-    void showContextMenuFor(T *nc);
-    void alternateActionFor(T *nc);
+    void onKeySignatureMoved(KeySignatureComponent *nc);
+    void onKeySignatureTapped(KeySignatureComponent *nc);
+    void showContextMenuFor(KeySignatureComponent *nc);
+    void alternateActionFor(KeySignatureComponent *nc);
     float getBeatByXPosition(int x) const;
     
 private:
     
     void reloadTrackMap();
-    void applyKeySignatureBounds(T *nc, T *nextOne = nullptr);
+    void applyKeySignatureBounds(KeySignatureComponent *nc, KeySignatureComponent *nextOne = nullptr);
     
-    T *getPreviousEventComponent(int indexOfSorted) const;
-    T *getNextEventComponent(int indexOfSorted) const;
+    KeySignatureComponent *getPreviousEventComponent(int indexOfSorted) const;
+    KeySignatureComponent *getNextEventComponent(int indexOfSorted) const;
     
 private:
 
@@ -94,8 +100,11 @@ private:
         
     ComponentAnimator animator;
 
-    OwnedArray<T> keySignatureComponents;
-    FlatHashMap<KeySignatureEvent, T *, MidiEventHash> keySignaturesHash;
+    Type type;
+    KeySignatureComponent *createComponent(const KeySignatureEvent &keySignature);
+
+    OwnedArray<KeySignatureComponent> keySignatureComponents;
+    FlatHashMap<KeySignatureEvent, KeySignatureComponent *, MidiEventHash> keySignaturesHash;
     
 };
 

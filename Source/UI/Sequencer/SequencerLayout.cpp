@@ -27,9 +27,6 @@
 #include "TrackScroller.h"
 #include "PianoProjectMap.h"
 #include "SerializationKeys.h"
-#include "AnnotationSmallComponent.h"
-#include "TimeSignatureSmallComponent.h"
-#include "KeySignatureSmallComponent.h"
 #include "SequencerSidebarRight.h"
 #include "SequencerSidebarLeft.h"
 #include "OrigamiHorizontal.h"
@@ -45,19 +42,8 @@
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 #include "ComponentIDs.h"
+#include "CommandIDs.h"
 #include "ColourIDs.h"
-
-// force compile template
-#include "AnnotationsProjectMap.cpp"
-template class AnnotationsProjectMap<AnnotationSmallComponent>;
-
-// force compile template
-#include "TimeSignaturesProjectMap.cpp"
-template class TimeSignaturesProjectMap<TimeSignatureSmallComponent>;
-
-// force compile template
-#include "KeySignaturesProjectMap.cpp"
-template class KeySignaturesProjectMap<KeySignatureSmallComponent>;
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
 #define MINIMUM_ROLLS_HEIGHT 250
@@ -68,7 +54,7 @@ template class KeySignaturesProjectMap<KeySignatureSmallComponent>;
 // Rolls container responsible for switching between piano and pattern roll
 //===----------------------------------------------------------------------===//
 
-class RollsSwitchingProxy : public Component, private Timer
+class RollsSwitchingProxy final : public Component, private Timer
 {
 public:
     
@@ -282,14 +268,13 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternViewport->setFocusContainer(false);
     this->patternViewport->setPaintingIsUnclipped(true);
 
-    this->patternRoll = new PatternRoll(this->project,
-        *this->patternViewport, clippingDetector);
+    this->patternRoll = new PatternRoll(this->project, *this->patternViewport, clippingDetector);
 
     this->scroller = new TrackScroller(this->project.getTransport(), this->pianoRoll);
     this->scroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
-    this->scroller->addOwnedMap(new AnnotationsProjectMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
-    this->scroller->addOwnedMap(new TimeSignaturesProjectMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
-    //this->scroller->addOwnedMap(new KeySignaturesProjectMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
+    this->scroller->addOwnedMap(new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
+    //this->scroller->addOwnedMap(new KeySignaturesProjectMap(this->project, *this->pianoRoll, KeySignaturesProjectMap::Small), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);

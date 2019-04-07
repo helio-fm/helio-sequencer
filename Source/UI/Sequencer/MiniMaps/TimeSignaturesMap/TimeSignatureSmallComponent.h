@@ -18,38 +18,21 @@
 #pragma once
 
 //[Headers]
-class TimeSignatureEvent;
-
-#include "TimeSignaturesProjectMap.h"
+#include "TimeSignatureComponent.h"
 //[/Headers]
 
 #include "../../../Themes/SeparatorVertical.h"
 
-class TimeSignatureSmallComponent final : public Component
+class TimeSignatureSmallComponent final : public TimeSignatureComponent
 {
 public:
 
-    TimeSignatureSmallComponent(TimeSignaturesProjectMap<TimeSignatureSmallComponent> &parent, const TimeSignatureEvent &targetEvent);
+    TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent);
     ~TimeSignatureSmallComponent();
 
     //[UserMethods]
-    const TimeSignatureEvent &getEvent() const;
-    float getBeat() const;
-
-    void updateContent();
-    void setRealBounds(const Rectangle<float> bounds);
-
-    static int compareElements(const TimeSignatureSmallComponent *first,
-                               const TimeSignatureSmallComponent *second)
-    {
-        if (first == second) { return 0; }
-
-        const float diff = first->event.getBeat() - second->event.getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
-
-        return first->event.getId().compare(second->event.getId());
-    }
+    void updateContent() override;
+    void setRealBounds(const Rectangle<float> bounds) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -61,15 +44,14 @@ private:
 
     //[UserVariables]
 
-    const TimeSignatureEvent &event;
-    TimeSignaturesProjectMap<TimeSignatureSmallComponent> &editor;
-
     Rectangle<float> boundsOffset;
 
     //[/UserVariables]
 
-    ScopedPointer<Label> signatureLabel;
-    ScopedPointer<SeparatorVertical> component;
+    UniquePointer<Label> signatureLabel;
+    UniquePointer<SeparatorVertical> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureSmallComponent)
 };
+
+

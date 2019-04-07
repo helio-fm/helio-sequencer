@@ -26,15 +26,17 @@
 #include "HybridRoll.h"
 #include "AnnotationDialog.h"
 #include "MainLayout.h"
+#include "AnnotationLargeComponent.h"
+#include "AnnotationSmallComponent.h"
 
-template<typename T>
-AnnotationsProjectMap<T>::AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
+AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),
     projectLastBeat(16.f), // non zero!
     rollFirstBeat(0.f),
-    rollLastBeat(16.f)
+    rollLastBeat(16.f),
+    type(type)
 {
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
@@ -45,8 +47,7 @@ AnnotationsProjectMap<T>::AnnotationsProjectMap(ProjectNode &parentProject, Hybr
     this->project.addListener(this);
 }
 
-template<typename T>
-AnnotationsProjectMap<T>::~AnnotationsProjectMap()
+AnnotationsProjectMap::~AnnotationsProjectMap()
 {
     this->project.removeListener(this);
 }
@@ -56,16 +57,15 @@ AnnotationsProjectMap<T>::~AnnotationsProjectMap()
 // Component
 //===----------------------------------------------------------------------===//
 
-template<typename T>
-void AnnotationsProjectMap<T>::resized()
+void AnnotationsProjectMap::resized()
 {
     this->setVisible(false);
 
-    T *previous = nullptr;
+    AnnotationComponent *previous = nullptr;
 
     for (int i = 0; i < this->annotationComponents.size(); ++i)
     {
-        T *current = this->annotationComponents.getUnchecked(i);
+        AnnotationComponent *current = this->annotationComponents.getUnchecked(i);
 
         if (previous != nullptr)
         {
@@ -88,15 +88,14 @@ void AnnotationsProjectMap<T>::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-template<typename T>
-void AnnotationsProjectMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void AnnotationsProjectMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (oldEvent.isTypeOf(MidiEvent::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(oldEvent);
         const AnnotationEvent &newAnnotation = static_cast<const AnnotationEvent &>(newEvent);
 
-        if (T *component = this->annotationsHash[annotation])
+        if (AnnotationComponent *component = this->annotationsHash[annotation])
         {
             this->alignAnnotationComponent(component);
 
@@ -106,19 +105,18 @@ void AnnotationsProjectMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, cons
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::alignAnnotationComponent(T *component)
+void AnnotationsProjectMap::alignAnnotationComponent(AnnotationComponent *component)
 {
     this->annotationComponents.sort(*component);
     const int indexOfSorted = this->annotationComponents.indexOfSorted(*component, component);
-    T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-    T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+    AnnotationComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
+    AnnotationComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
     
     if (previousEventComponent)
     {
         this->applyAnnotationBounds(previousEventComponent, component);
         
-        T *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
+        AnnotationComponent *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
         
         if (oneMorePrevious)
         { this->applyAnnotationBounds(oneMorePrevious, previousEventComponent); }
@@ -126,7 +124,7 @@ void AnnotationsProjectMap<T>::alignAnnotationComponent(T *component)
     
     if (nextEventComponent)
     {
-        T *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
+        AnnotationComponent *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
         this->applyAnnotationBounds(nextEventComponent, oneMoreNext);
     }
     
@@ -134,19 +132,18 @@ void AnnotationsProjectMap<T>::alignAnnotationComponent(T *component)
     this->applyAnnotationBounds(component, nextEventComponent);
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onAddMidiEvent(const MidiEvent &event)
+void AnnotationsProjectMap::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 
-        auto component = new T(*this, annotation);
+        auto *component = this->createComponent(annotation);
         this->addChildComponent(component);
 
         const int indexOfSorted = this->annotationComponents.addSorted(*component, component);
-        T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-        T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+        AnnotationComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
+        AnnotationComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
 
         component->updateContent();
         this->applyAnnotationBounds(component, nextEventComponent);
@@ -164,14 +161,13 @@ void AnnotationsProjectMap<T>::onAddMidiEvent(const MidiEvent &event)
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onRemoveMidiEvent(const MidiEvent &event)
+void AnnotationsProjectMap::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 
-        if (T *component = this->annotationsHash[annotation])
+        if (AnnotationComponent *component = this->annotationsHash[annotation])
         {
             this->animator.animateComponent(component,
                                             component->getBounds().translated(0, -component->getHeight()),
@@ -181,8 +177,8 @@ void AnnotationsProjectMap<T>::onRemoveMidiEvent(const MidiEvent &event)
             this->annotationsHash.erase(annotation);
 
             const int indexOfSorted = this->annotationComponents.indexOfSorted(*component, component);
-            T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-            T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+            AnnotationComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
+            AnnotationComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
 
             if (previousEventComponent)
             { this->applyAnnotationBounds(previousEventComponent, nextEventComponent); }
@@ -192,8 +188,7 @@ void AnnotationsProjectMap<T>::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onChangeTrackProperties(MidiTrack *const track)
+void AnnotationsProjectMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
         track == this->project.getTimeline()->getAnnotations())
@@ -202,8 +197,7 @@ void AnnotationsProjectMap<T>::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onAddTrack(MidiTrack *const track)
+void AnnotationsProjectMap::onAddTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
         track == this->project.getTimeline()->getAnnotations())
@@ -215,8 +209,7 @@ void AnnotationsProjectMap<T>::onAddTrack(MidiTrack *const track)
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onRemoveTrack(MidiTrack *const track)
+void AnnotationsProjectMap::onRemoveTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
         track == this->project.getTimeline()->getAnnotations())
@@ -226,7 +219,7 @@ void AnnotationsProjectMap<T>::onRemoveTrack(MidiTrack *const track)
             const AnnotationEvent &annotation = 
                 static_cast<const AnnotationEvent &>(*track->getSequence()->getUnchecked(i));
 
-            if (T *component = this->annotationsHash[annotation])
+            if (AnnotationComponent *component = this->annotationsHash[annotation])
             {
                 this->removeChildComponent(component);
                 this->annotationsHash.erase(annotation);
@@ -236,8 +229,7 @@ void AnnotationsProjectMap<T>::onRemoveTrack(MidiTrack *const track)
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+void AnnotationsProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
@@ -251,16 +243,14 @@ void AnnotationsProjectMap<T>::onChangeProjectBeatRange(float firstBeat, float l
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
+void AnnotationsProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
     this->resized();
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void AnnotationsProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadTrackMap();
 }
@@ -270,11 +260,9 @@ void AnnotationsProjectMap<T>::onReloadProjectContent(const Array<MidiTrack *> &
 // Private
 //===----------------------------------------------------------------------===//
 
-template<typename T>
-void AnnotationsProjectMap<T>::onAnnotationMoved(T *nc) {}
+void AnnotationsProjectMap::onAnnotationMoved(AnnotationComponent *nc) {}
 
-template<typename T>
-void AnnotationsProjectMap<T>::onAnnotationTapped(T *nc)
+void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *nc)
 {
     const AnnotationEvent *annotationUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
@@ -317,8 +305,7 @@ void AnnotationsProjectMap<T>::onAnnotationTapped(T *nc)
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::showContextMenuFor(T *nc)
+void AnnotationsProjectMap::showContextMenuFor(AnnotationComponent *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
@@ -328,13 +315,12 @@ void AnnotationsProjectMap<T>::showContextMenuFor(T *nc)
     }
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::alternateActionFor(T *nc)
+void AnnotationsProjectMap::alternateActionFor(AnnotationComponent *nc)
 {
     // Selects everything within the range of this annotation
     this->annotationComponents.sort(*nc);
     const int indexOfSorted = this->annotationComponents.indexOfSorted(*nc, nc);
-    T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+    AnnotationComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
     
     const float startBeat = nc->getBeat();
     const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
@@ -344,16 +330,14 @@ void AnnotationsProjectMap<T>::alternateActionFor(T *nc)
     this->roll.selectEventsInRange(startBeat, endBeat, shouldClearSelection);
 }
 
-template<typename T>
-float AnnotationsProjectMap<T>::getBeatByXPosition(int x) const
+float AnnotationsProjectMap::getBeatByXPosition(int x) const
 {
     const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
     const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
     return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::reloadTrackMap()
+void AnnotationsProjectMap::reloadTrackMap()
 {
     if (this->project.getTimeline() == nullptr)
     {
@@ -379,7 +363,7 @@ void AnnotationsProjectMap<T>::reloadTrackMap()
 
         if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(event))
         {
-            auto component = new T(*this, *annotation);
+            auto *component = this->createComponent(*annotation);
             this->addAndMakeVisible(component);
             component->updateContent();
 
@@ -392,8 +376,7 @@ void AnnotationsProjectMap<T>::reloadTrackMap()
     this->setVisible(true);
 }
 
-template<typename T>
-void AnnotationsProjectMap<T>::applyAnnotationBounds(T *nc, T *nextOne)
+void AnnotationsProjectMap::applyAnnotationBounds(AnnotationComponent *nc, AnnotationComponent *nextOne)
 {
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
@@ -415,8 +398,7 @@ void AnnotationsProjectMap<T>::applyAnnotationBounds(T *nc, T *nextOne)
     nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
 }
 
-template<typename T>
-T *AnnotationsProjectMap<T>::getPreviousEventComponent(int indexOfSorted) const
+AnnotationComponent *AnnotationsProjectMap::getPreviousEventComponent(int indexOfSorted) const
 {
     const int indexOfPrevious = indexOfSorted - 1;
 
@@ -426,8 +408,7 @@ T *AnnotationsProjectMap<T>::getPreviousEventComponent(int indexOfSorted) const
         nullptr;
 }
 
-template<typename T>
-T *AnnotationsProjectMap<T>::getNextEventComponent(int indexOfSorted) const
+AnnotationComponent *AnnotationsProjectMap::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
 
@@ -435,4 +416,17 @@ T *AnnotationsProjectMap<T>::getNextEventComponent(int indexOfSorted) const
         isPositiveAndBelow(indexOfNext, this->annotationComponents.size()) ?
         this->annotationComponents.getUnchecked(indexOfNext) :
         nullptr;
+}
+
+AnnotationComponent *AnnotationsProjectMap::createComponent(const AnnotationEvent &event)
+{
+    switch (this->type)
+    {
+    case Large:
+        return new AnnotationLargeComponent(*this, event);
+    case Small:
+        return new AnnotationSmallComponent(*this, event);
+    default:
+        return nullptr;
+    }
 }
