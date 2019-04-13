@@ -9,9 +9,9 @@ android {
     }
     signingConfigs {
         juceSigning {
-            storeFile     file("${System.properties['user.home']}${File.separator}.android${File.separator}debug.keystore")
+            storeFile     file("${System.properties['user.home']}${File.separator}helio.keystore")
             storePassword "android"
-            keyAlias      "androiddebugkey"
+            keyAlias      "release"
             keyPassword   "android"
             storeType     "jks"
         }
@@ -61,7 +61,7 @@ android {
        }
         release_ {
             ndk {
-                abiFilters "armeabi-v7a", "x86"
+                abiFilters "armeabi-v7a", "arm64-v8a", "x86"
             }
             externalNativeBuild {
                 cmake {

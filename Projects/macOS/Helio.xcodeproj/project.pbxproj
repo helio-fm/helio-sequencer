@@ -8391,6 +8391,7 @@
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.helio;

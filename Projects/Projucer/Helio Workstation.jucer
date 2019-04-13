@@ -1406,7 +1406,7 @@
                   customXcassetsFolder="../../Resources/iOS/Images.xcassets" iosDevelopmentTeamID="EQL633LLC8"
                   userNotes="" extraLinkerFlags="" externalLibraries="" extraFrameworks=""
                   iosDeviceFamily="1,2" iPadScreenOrientation="landscape" useHeaderMap="0"
-                  bundleIdentifier="fm.helio.mobile">
+                  bundleIdentifier="fm.helio.mobile" unityBuild="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
@@ -1414,7 +1414,7 @@
         <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="5"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        customXcodeFlags="PROVISIONING_PROFILE=&quot;Helio AppStore&quot;, CODE_SIGN_STYLE = &quot;Manual&quot;"
-                       enablePluginBinaryCopyStep="1" linkTimeOptimisation="1" stripLocalSymbols="1"
+                       enablePluginBinaryCopyStep="1" linkTimeOptimisation="0" stripLocalSymbols="1"
                        codeSigningIdentity="iPhone Distribution"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1434,24 +1434,19 @@
     <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="DQTpOG"
             bigIcon="DQTpOG" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj /Zm123"
-            extraLinkerFlags="/OPT:REF /OPT:ICF=5">
+            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj /Zm123">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="Win32" isDebug="1" optimisation="1" targetName="Helio"
-                       enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" warningsAreErrors="1"/>
-        <CONFIGURATION name="Debug 64-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="x64" isDebug="1" optimisation="1" targetName="Helio"
-                       enableIncrementalLinking="1" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" warningsAreErrors="1"/>
-        <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="Win32" isDebug="0" optimisation="4" targetName="Helio"
-                       useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" isDebug="1"
+                       optimisation="1" targetName="Helio" enableIncrementalLinking="1"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       warningsAreErrors="1"/>
+        <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
+                       isDebug="0" optimisation="4" targetName="Helio" useRuntimeLibDLL="0"
+                       enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
-        <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="x64" isDebug="0" optimisation="4" targetName="Helio"
-                       useRuntimeLibDLL="0" enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
+        <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="4" targetName="Helio" useRuntimeLibDLL="0"
+                       enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1474,26 +1469,18 @@
             smallIcon="DQTpOG" bigIcon="DQTpOG" toolset="v140_xp" extraLinkerFlags="/OPT:REF /OPT:ICF=5"
             windowsTargetPlatformVersion="10.0.26624">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="0" isDebug="1"
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        warningsAreErrors="1"/>
-        <CONFIGURATION name="Debug 64-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="x64" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="0" isDebug="1"
-                       optimisation="1" targetName="Helio" enableIncrementalLinking="1"
-                       warningsAreErrors="1"/>
-        <CONFIGURATION name="Release 32-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="Win32" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="4" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
-                       warningsAreErrors="1"/>
-        <CONFIGURATION name="Release 64-bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="x64" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" isDebug="0"
-                       optimisation="4" targetName="Helio" useRuntimeLibDLL="0" enableIncrementalLinking="0"
-                       warningsAreErrors="1"/>
+        <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="1" isDebug="0" optimisation="4" targetName="Helio"
+                       useRuntimeLibDLL="0" enableIncrementalLinking="0" warningsAreErrors="1"/>
+        <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="1" isDebug="0" optimisation="4" targetName="Helio"
+                       useRuntimeLibDLL="0" enableIncrementalLinking="0" warningsAreErrors="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
@@ -1509,17 +1496,45 @@
         <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
+    <VS2019 targetFolder="../../Projects/VisualStudio2019" extraCompilerFlags="/FC /Gy /bigobj"
+            extraLinkerFlags="/OPT:REF /OPT:ICF=5" unityBuild="1" windowsTargetPlatformVersion="10.0.26624"
+            toolset="v141_xp" bigIcon="DQTpOG" smallIcon="DQTpOG">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="0" name="Release32" targetName="Helio" linkTimeOptimisation="0"
+                       winArchitecture="Win32" enablePluginBinaryCopyStep="0" optimisation="4"
+                       warningsAreErrors="1" useRuntimeLibDLL="0" winWarningLevel="4"
+                       enableIncrementalLinking="0"/>
+        <CONFIGURATION isDebug="0" name="Release64" targetName="Helio" linkTimeOptimisation="0"
+                       winArchitecture="x64" enablePluginBinaryCopyStep="0" optimisation="4"
+                       warningsAreErrors="1" useRuntimeLibDLL="0" winWarningLevel="4"
+                       enableIncrementalLinking="0"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_opengl"/>
+        <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_gui_basics"/>
+        <MODULEPATH id="juce_graphics"/>
+        <MODULEPATH id="juce_events"/>
+        <MODULEPATH id="juce_data_structures"/>
+        <MODULEPATH id="juce_core"/>
+        <MODULEPATH id="juce_audio_processors"/>
+        <MODULEPATH id="juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_basics"/>
+      </MODULEPATHS>
+    </VS2019>
     <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" bigIcon="DQTpOG"
-                smallIcon="DQTpOG" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess"
-                cppLanguageStandard="-std=c++14" extraLinkerFlags="" usePrecompiledHeaders="1"
-                precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*">
+                smallIcon="DQTpOG" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess -fno-pie"
+                cppLanguageStandard="-std=c++14" extraLinkerFlags="" usePrecompiledHeaders="0"
+                precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
+                unityBuild="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="Helio"/>
         <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="5"
-                       targetName="Helio" linuxArchitecture="-m32"/>
+                       targetName="Helio" linuxArchitecture="-m32" linkTimeOptimisation="0"/>
         <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="5"
-                       targetName="Helio" linuxArchitecture="-m64"/>
+                       targetName="Helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1546,12 +1561,13 @@
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"
                    gradleVersion="5.2.1" gradleWrapperVersion="3.3.1" extraCompilerFlags="-Wno-unused-command-line-argument"
                    androidTargetSDK="28" androidMinimumSDK="21" androidKeyStore="${user.home}/helio.keystore"
-                   androidKeyStorePass="android" androidKeyAliasPass="android" androidKeyAlias="release">
+                   androidKeyStorePass="android" androidKeyAliasPass="android" androidKeyAlias="release"
+                   unityBuild="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
                        androidArchitectures="armeabi-v7a x86"/>
-        <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a x86" isDebug="0"
-                       optimisation="5" targetName="Helio" linkTimeOptimisation="1"/>
+        <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a arm64-v8a x86"
+                       isDebug="0" optimisation="5" targetName="Helio" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
