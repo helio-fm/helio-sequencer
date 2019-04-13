@@ -18,38 +18,21 @@
 #pragma once
 
 //[Headers]
-class KeySignatureEvent;
-
-#include "KeySignaturesProjectMap.h"
+#include "KeySignatureComponent.h"
 //[/Headers]
 
 
-class KeySignatureSmallComponent final : public Component
+class KeySignatureSmallComponent final : public KeySignatureComponent
 {
 public:
 
-    KeySignatureSmallComponent(KeySignaturesProjectMap<KeySignatureSmallComponent> &parent, const KeySignatureEvent &targetEvent);
+    KeySignatureSmallComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent);
     ~KeySignatureSmallComponent();
 
     //[UserMethods]
-    const KeySignatureEvent &getEvent() const;
-    float getBeat() const;
-    float getTextWidth() const;
-
-    void updateContent();
-    void setRealBounds(const Rectangle<float> bounds);
-
-    static int compareElements(const KeySignatureSmallComponent *first,
-                               const KeySignatureSmallComponent *second)
-    {
-        if (first == second) { return 0; }
-
-        const float diff = first->event.getBeat() - second->event.getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
-
-        return first->event.getId().compare(second->event.getId());
-    }
+    float getTextWidth() const override;
+    void updateContent() override;
+    void setRealBounds(const Rectangle<float> bounds) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -61,9 +44,6 @@ private:
 
     //[UserVariables]
 
-    const KeySignatureEvent &event;
-    KeySignaturesProjectMap<KeySignatureSmallComponent> &editor;
-
     float textWidth;
     String eventName;
 
@@ -71,7 +51,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> signatureLabel;
+    UniquePointer<Label> signatureLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureSmallComponent)
 };
+
+

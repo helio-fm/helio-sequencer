@@ -18,7 +18,8 @@
 #include "Common.h"
 #include "StashesRepository.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 StashesRepository::StashesRepository() :
     userStashes(new Revision("Stashes Root")),
@@ -137,4 +138,6 @@ void StashesRepository::reset()
 {
     this->userStashes->reset();
     this->quickStash->reset();
+}
+
 }

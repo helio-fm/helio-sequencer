@@ -19,8 +19,10 @@
 
 #include "ApiModel.h"
 
-struct RevisionDto final : ApiModel
+class RevisionDto final : public ApiModel
 {
+public:
+
     RevisionDto() noexcept : ApiModel({}) {}
     RevisionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 

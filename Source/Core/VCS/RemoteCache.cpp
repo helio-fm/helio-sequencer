@@ -18,7 +18,8 @@
 #include "Common.h"
 #include "RemoteCache.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 bool RemoteCache::hasRevisionTracked(const Revision::Ptr revision) const
 {
@@ -98,4 +99,6 @@ void RemoteCache::deserialize(const ValueTree &tree)
 void RemoteCache::reset()
 {
     this->fetchCache.clear();
+}
+
 }

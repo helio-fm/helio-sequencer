@@ -20,8 +20,10 @@
 #include "ApiModel.h"
 #include "RevisionDto.h"
 
-struct ProjectDto final : ApiModel
+class ProjectDto final : public ApiModel
 {
+public:
+
     ProjectDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getId() const noexcept { return DTO_PROPERTY(Projects::id); }

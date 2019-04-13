@@ -18,37 +18,20 @@
 #pragma once
 
 //[Headers]
-class TimeSignatureEvent;
-
-#include "TimeSignaturesProjectMap.h"
+#include "TimeSignatureComponent.h"
 //[/Headers]
 
 
-class TimeSignatureLargeComponent final : public Component
+class TimeSignatureLargeComponent final : public TimeSignatureComponent
 {
 public:
 
-    TimeSignatureLargeComponent(TimeSignaturesProjectMap<TimeSignatureLargeComponent> &parent, const TimeSignatureEvent &targetEvent);
+    TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent);
     ~TimeSignatureLargeComponent();
 
     //[UserMethods]
-    const TimeSignatureEvent &getEvent() const;
-    float getBeat() const;
-
-    void updateContent();
-    void setRealBounds(const Rectangle<float> bounds);
-
-    static int compareElements(const TimeSignatureLargeComponent *first,
-                               const TimeSignatureLargeComponent *second)
-    {
-        if (first == second) { return 0; }
-
-        const float diff = first->event.getBeat() - second->event.getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
-
-        return first->event.getId().compare(second->event.getId());
-    }
+    void updateContent() override;
+    void setRealBounds(const Rectangle<float> bounds) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -63,9 +46,6 @@ public:
 private:
 
     //[UserVariables]
-
-    const TimeSignatureEvent &event;
-    TimeSignaturesProjectMap<TimeSignatureLargeComponent> &editor;
 
     ComponentDragger dragger;
     TimeSignatureEvent anchor;
@@ -84,8 +64,10 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> numeratorLabel;
-    ScopedPointer<Label> denominatorLabel;
+    UniquePointer<Label> numeratorLabel;
+    UniquePointer<Label> denominatorLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureLargeComponent)
 };
+
+

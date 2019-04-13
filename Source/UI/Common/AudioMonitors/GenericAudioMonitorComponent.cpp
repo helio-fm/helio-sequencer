@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "GenericAudioMonitorComponent.h"
+#include "ComponentFader.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 #include "ColourIDs.h"
@@ -28,7 +29,7 @@
 #define GENERIC_METER_PEAK_MAX_ALPHA 0.35f
 #define GENERIC_METER_SHOWS_VOLUME_PEAKS 1
 
-static const float kSpectrumFrequencies[] =
+static const float kPeakSpectrumFrequencies[] =
 {
     63.f,
     125.f, 200.f,
@@ -87,7 +88,7 @@ void GenericAudioMonitorComponent::run()
         {
             this->lPeak = this->audioMonitor->getPeak(0);
             this->rPeak = this->audioMonitor->getPeak(1);
-            this->values[i] = this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrumFrequencies[i]);
+            this->values[i] = this->audioMonitor->getInterpolatedSpectrumAtFrequency(kPeakSpectrumFrequencies[i]);
         }
 
         this->triggerAsyncUpdate();
@@ -209,13 +210,6 @@ void GenericAudioMonitorComponent::SpectrumBand::reset()
     this->peakDecayColour = GENERIC_METER_PEAK_MAX_ALPHA;
 }
 
-float timeToDistance(float time, float startSpeed = 0.f, float midSpeed = 2.f, float endSpeed = 0.f) noexcept
-{
-    return (time < 0.5f) ? time * (startSpeed + time * (midSpeed - startSpeed))
-        : 0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed))
-        + (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
-}
-
 inline void GenericAudioMonitorComponent::SpectrumBand::processSignal(float signal, float h, uint32 timeNow)
 {
     const float valueInDb = jlimit(GENERIC_METER_MINDB,
@@ -234,7 +228,7 @@ inline void GenericAudioMonitorComponent::SpectrumBand::processSignal(float sign
         float newProgress = msElapsed / GENERIC_METER_BAND_FADE_MS;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
-            newProgress = timeToDistance(newProgress);
+            newProgress = ComponentFader::timeToDistance(newProgress);
             jassert(newProgress >= this->valueDecay);
             const float delta = (newProgress - this->valueDecay) / (1.f - this->valueDecay);
             this->valueDecay = newProgress;
@@ -258,7 +252,7 @@ inline void GenericAudioMonitorComponent::SpectrumBand::processSignal(float sign
         float newProgress = msElapsed / GENERIC_METER_PEAK_FADE_MS;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
-            newProgress = timeToDistance(newProgress);
+            newProgress = ComponentFader::timeToDistance(newProgress);
             jassert(newProgress >= this->peakDecay);
             const float delta = (newProgress - this->peakDecay) / (1.f - this->peakDecay);
             this->peakDecayColour = (newProgress * newProgress * newProgress) * GENERIC_METER_PEAK_MAX_ALPHA;

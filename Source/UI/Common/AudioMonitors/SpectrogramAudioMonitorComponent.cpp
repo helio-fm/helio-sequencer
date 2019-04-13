@@ -24,7 +24,7 @@
 #define SPECTROGRAM_METER_MAXDB (+4.0f)
 #define SPECTROGRAM_METER_MINDB (-70.0f)
 
-static const float kSpectrumFrequencies[] =
+static const float kSpectrogramFrequencies[] =
 {
     50.f,    56.f,     63.f,    71.f,    80.f,    90.f,
     100.f,   112.f,    125.f,   140.f,   160.f,   180.f,
@@ -81,7 +81,7 @@ void SpectrogramAudioMonitorComponent::run()
         for (int i = 0; i < SPECTROGRAM_NUM_BANDS; ++i)
         {
             this->spectrum[this->head.get()][i] =
-                this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrumFrequencies[i]);
+                this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrogramFrequencies[i]);
         }
 
         this->triggerAsyncUpdate();

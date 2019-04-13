@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "AnnotationsSequence.h"
+#include "AnnotationsProjectMap.h"
 #include "CachedLabelImage.h"
 //[/Headers]
 
@@ -26,16 +27,16 @@
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap<AnnotationSmallComponent> &parent, const AnnotationEvent &targetEvent)
-    : event(targetEvent),
-      editor(parent),
+AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent)
+    : AnnotationComponent(parent, targetEvent),
       textWidth(0.f)
 {
-    addAndMakeVisible (annotationLabel = new Label (String(),
-                                                    TRANS("...")));
-    annotationLabel->setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
-    annotationLabel->setJustificationType (Justification::centredLeft);
-    annotationLabel->setEditable (false, false, false);
+    this->annotationLabel.reset(new Label(String(),
+                                           TRANS("...")));
+    this->addAndMakeVisible(annotationLabel.get());
+    this->annotationLabel->setFont(Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    annotationLabel->setJustificationType(Justification::centredLeft);
+    annotationLabel->setEditable(false, false, false);
 
 
     //[UserPreSize]
@@ -47,7 +48,7 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap<Annotat
     this->annotationLabel->setCachedComponentImage(new CachedLabelImage(*this->annotationLabel));
     //[/UserPreSize]
 
-    setSize (128, 32);
+    this->setSize(128, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -81,7 +82,7 @@ void AnnotationSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    annotationLabel->setBounds (-2, getHeight() - 4 - 16, 160, 16);
+    annotationLabel->setBounds(-2, getHeight() - 4 - 16, 160, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -96,11 +97,6 @@ void AnnotationSmallComponent::parentHierarchyChanged()
 
 //[MiscUserCode]
 
-const AnnotationEvent &AnnotationSmallComponent::getEvent() const
-{
-    return this->event;
-}
-
 void AnnotationSmallComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
@@ -110,11 +106,6 @@ void AnnotationSmallComponent::setRealBounds(const Rectangle<float> bounds)
                                           bounds.getHeight());
 
     this->setBounds(intBounds);
-}
-
-float AnnotationSmallComponent::getBeat() const
-{
-    return this->event.getBeat();
 }
 
 void AnnotationSmallComponent::updateContent()
@@ -144,9 +135,9 @@ float AnnotationSmallComponent::getTextWidth() const
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationSmallComponent"
-                 template="../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="AnnotationsProjectMap&lt;AnnotationSmallComponent&gt; &amp;parent, const AnnotationEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;textWidth(0.f)"
+                 template="../../../../Template" componentName="" parentClasses="public AnnotationComponent"
+                 constructorParams="AnnotationsProjectMap &amp;parent, const AnnotationEvent &amp;targetEvent"
+                 variableInitialisers="AnnotationComponent(parent, targetEvent),&#10;textWidth(0.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>
@@ -156,10 +147,12 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="annotationLabel" virtualName=""
          explicitFocusOrder="0" pos="-2 4Rr 160 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

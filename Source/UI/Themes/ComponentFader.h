@@ -47,6 +47,22 @@ public:
     bool isAnimating(Component *component) const noexcept;
     bool isAnimating() const noexcept;
     
+    static float timeToDistance(float time, float startSpeed = 0.f,
+        float midSpeed = 2.f, float endSpeed = 0.f) noexcept
+    {
+        return (time < 0.5f) ? time * (startSpeed + time * (midSpeed - startSpeed))
+            : 0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed))
+            + (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
+    }
+
+    static double timeToDistance(double time, double startSpeed = 0.0,
+        double midSpeed = 2.0, double endSpeed = 0.0) noexcept
+    {
+        return (time < 0.5) ? time * (startSpeed + time * (midSpeed - startSpeed))
+            : 0.5 * (startSpeed + 0.5 * (midSpeed - startSpeed))
+            + (time - 0.5) * (midSpeed + (time - 0.5) * (endSpeed - midSpeed));
+    }
+
 private:
 
     class AnimationTask;

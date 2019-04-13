@@ -22,18 +22,24 @@
 
 class HybridRoll;
 class ProjectNode;
+class AnnotationComponent;
 
-template< typename T >
 class AnnotationsProjectMap :
     public Component,
     public ProjectListener
 {
 public:
 
-    AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
+    enum Type
+    {
+        Large,
+        Small
+    };
+
+    AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
     ~AnnotationsProjectMap() override;
 
-    void alignAnnotationComponent(T *nc);
+    void alignAnnotationComponent(AnnotationComponent *nc);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -67,20 +73,20 @@ public:
     // Stuff for children
     //===------------------------------------------------------------------===//
 
-    void onAnnotationMoved(T *nc);
-    void onAnnotationTapped(T *nc);
-    void showContextMenuFor(T *nc);
-    void alternateActionFor(T *nc);
+    void onAnnotationMoved(AnnotationComponent *nc);
+    void onAnnotationTapped(AnnotationComponent *nc);
+    void showContextMenuFor(AnnotationComponent *nc);
+    void alternateActionFor(AnnotationComponent *nc);
 
     float getBeatByXPosition(int x) const;
     
 private:
     
     void reloadTrackMap();
-    void applyAnnotationBounds(T *nc, T *nextOne = nullptr);
+    void applyAnnotationBounds(AnnotationComponent *nc, AnnotationComponent *nextOne = nullptr);
     
-    T *getPreviousEventComponent(int indexOfSorted) const;
-    T *getNextEventComponent(int indexOfSorted) const;
+    AnnotationComponent *getPreviousEventComponent(int indexOfSorted) const;
+    AnnotationComponent *getNextEventComponent(int indexOfSorted) const;
     
 private:
     
@@ -95,7 +101,10 @@ private:
     
     ComponentAnimator animator;
 
-    OwnedArray<T> annotationComponents;
-    FlatHashMap<AnnotationEvent, T *, MidiEventHash> annotationsHash;
+    Type type;
+    AnnotationComponent *createComponent(const AnnotationEvent &event);
+
+    OwnedArray<AnnotationComponent> annotationComponents;
+    FlatHashMap<AnnotationEvent, AnnotationComponent *, MidiEventHash> annotationsHash;
     
 };

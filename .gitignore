@@ -6,11 +6,14 @@
 *.db
 *.dmg
 *.exe
+*.filters
 *.gch
 *.idb
 *.ilk
 *.iml
+*.iobj
 *.ipch
+*.ipdb
 *.lib
 *.log
 *.mid

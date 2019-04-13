@@ -21,8 +21,8 @@
 #include "Pattern.h"
 #include "SerializationKeys.h"
 
-using namespace VCS;
-using namespace Serialization::VCS;
+namespace VCS
+{
 
 void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
     Array<Clip> &stateClips, Array<Clip> &changesClips)
@@ -71,6 +71,7 @@ DeltaDiff PatternDiffHelpers::serializePatternChanges(Array<Clip> changes,
 
 bool PatternDiffHelpers::checkIfDeltaIsPatternType(const Delta *d)
 {
+    using namespace Serialization::VCS;
     return (d->hasType(PatternDeltas::clipsAdded) ||
         d->hasType(PatternDeltas::clipsRemoved) ||
         d->hasType(PatternDeltas::clipsChanged));
@@ -78,6 +79,8 @@ bool PatternDiffHelpers::checkIfDeltaIsPatternType(const Delta *d)
 
 ValueTree PatternDiffHelpers::mergeClipsAdded(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     Array<Clip> stateClips;
     Array<Clip> changesClips;
     deserializePatternChanges(state, changes, stateClips, changesClips);
@@ -108,6 +111,8 @@ ValueTree PatternDiffHelpers::mergeClipsAdded(const ValueTree &state, const Valu
 
 ValueTree PatternDiffHelpers::mergeClipsRemoved(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     Array<Clip> stateClips;
     Array<Clip> changesClips;
     deserializePatternChanges(state, changes, stateClips, changesClips);
@@ -136,6 +141,8 @@ ValueTree PatternDiffHelpers::mergeClipsRemoved(const ValueTree &state, const Va
 
 ValueTree PatternDiffHelpers::mergeClipsChanged(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     Array<Clip> stateClips;
     Array<Clip> changesClips;
     deserializePatternChanges(state, changes, stateClips, changesClips);
@@ -168,6 +175,8 @@ ValueTree PatternDiffHelpers::mergeClipsChanged(const ValueTree &state, const Va
 
 Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     Array<Clip> stateClips;
     Array<Clip> changesClips;
 
@@ -254,4 +263,6 @@ Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const ValueTree &stat
     }
 
     return res;
+}
+
 }

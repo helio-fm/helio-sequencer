@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "HelioApiRoutes.h"
 #include "BackendRequest.h"
 #include "SerializationKeys.h"
 
@@ -31,17 +30,9 @@ public:
         this->stopThread(1000);
     }
     
-    class Listener
-    {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void tokenCheckOk() = 0;
-        virtual void tokenCheckFailed(const Array<String> &errors) = 0;
-        virtual void tokenCheckNoResponse() = 0;
-        friend class TokenCheckThread;
-    };
-    
+    Function<void()> onTokenCheckOk;
+    Function<void(const Array<String> &errors)> onTokenCheckFailed;
+
     void login(TokenCheckThread::Listener *listener)
     {
         if (this->isThreadRunning())
@@ -57,22 +48,20 @@ private:
     
     void run() override
     {
-        const BackendRequest request(HelioFM::Api::V1::tokenCheck);
+        namespace ApiKeys = Serialization::Api::V1;
+        namespace ApiRoutes = Routes::Api;
+
+        const BackendRequest request(ApiRoutes::tokenCheck);
         this->response = request.get();
 
-        if (this->response.receipt.failed() || this->response.statusCode == 500)
+        if (!this->response.isValid() ||
+            !this->response.is2xx())
         {
-            callMessageThreadListenerFrom(TokenCheckThread, tokenCheckNoResponse);
+            callbackOnMessageThread(TokenCheckThread, onTokenCheckFailed, self->response.getErrors());
             return;
         }
 
-        if (this->response.receipt.failed() || this->response.statusCode != 200)
-        {
-            callMessageThreadListenerFrom(TokenCheckThread, tokenCheckFailed, self->response.errors);
-            return;
-        }
-
-        callMessageThreadListenerFrom(TokenCheckThread, tokenCheckOk);
+        callbackOnMessageThread(TokenCheckThread, onTokenCheckOk);
     }
 
     BackendRequest::Response response;

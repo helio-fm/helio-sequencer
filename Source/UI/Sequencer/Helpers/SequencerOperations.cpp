@@ -367,22 +367,6 @@ static float snappedBeat(float beat, float snapsPerBeat)
     return roundf(beat / snapsPerBeat) * snapsPerBeat;
 }
 
-// Transaction identifier, and why is it needed:
-// Some actions, like dragging notes around, are performed in a single undo transaction,
-// but, unlike mouse dragging (where it's clear when to start and when to end a transaction),
-// hotkey-handled actions will always do a checkpoint at every keypress, so that
-// pressing `cursor down` 5 times and `cursor up` 3 times will result in 8 undo actions,
-// (there only should be 2, for transposing events down and up accordingly).
-// So, Lasso class re-generates its random id every time it changes,
-// and some transform operations here will use that id, combined with operation id
-// to identify the transaction and see if the last one was exactly of the same type and target,
-// and checkpoint could be skipped.
-
-static String generateTransactionId(int commandId, const Lasso &selection)
-{
-    return String(commandId) + String(selection.getId());
-}
-
 void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
                                 float startBeat, float endBeat,
                                 bool shouldKeepCroppedNotes /*= true*/, bool shouldCheckpoint /*= true*/)
@@ -1578,7 +1562,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
 
     auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
     const auto operationId = deltaKey > 0 ? CommandIDs::KeyShiftUp : CommandIDs::KeyShiftDown;
-    const auto &transactionId = generateTransactionId(operationId, selection);
+    const auto &transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
@@ -1626,7 +1610,7 @@ void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, b
 
     auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
     const auto operationId = deltaBeat > 0 ? CommandIDs::BeatShiftRight : CommandIDs::BeatShiftLeft;
-    const auto &transactionId = generateTransactionId(operationId, selection);
+    const auto &transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;

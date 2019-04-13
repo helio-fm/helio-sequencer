@@ -18,44 +18,27 @@
 #pragma once
 
 //[Headers]
-class AnnotationEvent;
-
-#include "AnnotationsProjectMap.h"
+#include "AnnotationComponent.h"
 //[/Headers]
 
 
-class AnnotationLargeComponent final : public Component,
+class AnnotationLargeComponent final : public AnnotationComponent,
                                        public Label::Listener
 {
 public:
 
-    AnnotationLargeComponent(AnnotationsProjectMap<AnnotationLargeComponent> &parent, const AnnotationEvent &targetEvent);
+    AnnotationLargeComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent);
     ~AnnotationLargeComponent();
 
     //[UserMethods]
-    const AnnotationEvent &getEvent() const;
-    float getBeat() const;
-    float getTextWidth() const;
-
-    void updateContent();
-    void setRealBounds(const Rectangle<float> bounds);
-
-    static int compareElements(const AnnotationLargeComponent *first,
-                               const AnnotationLargeComponent *second)
-    {
-        if (first == second) { return 0; }
-
-        const float diff = first->event.getBeat() - second->event.getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
-
-        return first->event.getId().compare(second->event.getId());
-    }
+    float getTextWidth() const override;
+    void updateContent() override;
+    void setRealBounds(const Rectangle<float> bounds) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void labelTextChanged (Label* labelThatHasChanged) override;
+    void labelTextChanged(Label* labelThatHasChanged) override;
     void mouseMove (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
@@ -66,9 +49,6 @@ public:
 private:
 
     //[UserVariables]
-
-    const AnnotationEvent &event;
-    AnnotationsProjectMap<AnnotationLargeComponent> &editor;
 
     ComponentDragger dragger;
     AnnotationEvent anchor;
@@ -85,7 +65,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> annotationLabel;
+    UniquePointer<Label> annotationLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationLargeComponent)
 };
+
+

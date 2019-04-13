@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
+#include "TimeSignaturesProjectMap.h"
 #include "HybridRoll.h"
 #include "ColourIDs.h"
 #include "CachedLabelImage.h"
@@ -28,29 +29,30 @@
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMap<TimeSignatureLargeComponent> &parent, const TimeSignatureEvent &targetEvent)
-    : event(targetEvent),
-      editor(parent),
+TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent)
+    : TimeSignatureComponent(parent, targetEvent),
       anchor(targetEvent),
       numerator(0),
       denominator(0),
       mouseDownWasTriggered(false)
 {
-    addAndMakeVisible (numeratorLabel = new Label (String(),
-                                                   String()));
-    numeratorLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    numeratorLabel->setJustificationType (Justification::centredLeft);
-    numeratorLabel->setEditable (false, false, false);
+    this->numeratorLabel.reset(new Label(String(),
+                                          String()));
+    this->addAndMakeVisible(numeratorLabel.get());
+    this->numeratorLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    numeratorLabel->setJustificationType(Justification::centredLeft);
+    numeratorLabel->setEditable(false, false, false);
 
-    numeratorLabel->setBounds (-2, 4, 32, 14);
+    numeratorLabel->setBounds(-2, 4, 32, 14);
 
-    addAndMakeVisible (denominatorLabel = new Label (String(),
-                                                     String()));
-    denominatorLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    denominatorLabel->setJustificationType (Justification::centredLeft);
-    denominatorLabel->setEditable (false, false, false);
+    this->denominatorLabel.reset(new Label(String(),
+                                            String()));
+    this->addAndMakeVisible(denominatorLabel.get());
+    this->denominatorLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    denominatorLabel->setJustificationType(Justification::centredLeft);
+    denominatorLabel->setEditable(false, false, false);
 
-    denominatorLabel->setBounds (-2, 17, 32, 14);
+    denominatorLabel->setBounds(-2, 17, 32, 14);
 
 
     //[UserPreSize]
@@ -67,7 +69,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->denominatorLabel->setCachedComponentImage(new CachedLabelImage(*this->denominatorLabel));
     //[/UserPreSize]
 
-    setSize (128, 32);
+    this->setSize(128, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -203,11 +205,6 @@ void TimeSignatureLargeComponent::mouseDoubleClick (const MouseEvent& e)
 
 //[MiscUserCode]
 
-const TimeSignatureEvent &TimeSignatureLargeComponent::getEvent() const
-{
-    return this->event;
-}
-
 void TimeSignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
@@ -217,11 +214,6 @@ void TimeSignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
                                           bounds.getHeight());
 
     this->setBounds(intBounds);
-}
-
-float TimeSignatureLargeComponent::getBeat() const
-{
-    return this->event.getBeat();
 }
 
 void TimeSignatureLargeComponent::updateContent()
@@ -243,9 +235,9 @@ void TimeSignatureLargeComponent::updateContent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureLargeComponent"
-                 template="../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="TimeSignaturesProjectMap&lt;TimeSignatureLargeComponent&gt; &amp;parent, const TimeSignatureEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;anchor(targetEvent),&#10;numerator(0),&#10;denominator(0),&#10;mouseDownWasTriggered(false)"
+                 template="../../../../Template" componentName="" parentClasses="public TimeSignatureComponent"
+                 constructorParams="TimeSignaturesProjectMap &amp;parent, const TimeSignatureEvent &amp;targetEvent"
+                 variableInitialisers="TimeSignatureComponent(parent, targetEvent),&#10;anchor(targetEvent),&#10;numerator(0),&#10;denominator(0),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>
@@ -259,15 +251,16 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
          explicitFocusOrder="0" pos="-2 4 32 14" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="48b6c750cc766a42" memberName="denominatorLabel" virtualName=""
          explicitFocusOrder="0" pos="-2 17 32 14" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

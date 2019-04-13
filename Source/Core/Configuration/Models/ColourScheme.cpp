@@ -20,8 +20,6 @@
 #include "SerializationKeys.h"
 #include <utility>
 
-using namespace Serialization;
-
 ColourScheme::ColourScheme(const ColourScheme &other)
 {
     // Not the best solution but good enough for the simple class like this;
@@ -83,90 +81,105 @@ String ColourScheme::getName() const noexcept
 
 Colour ColourScheme::getPrimaryGradientColourA() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::primaryGradientA]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPrimaryGradientColourB() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::primaryGradientB]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getSecondaryGradientColourA() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::secondaryGradientA]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getSecondaryGradientColourB() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::secondaryGradientB]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPanelFillColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::panelFill]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPanelBorderColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::panelBorder]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getLassoFillColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::lassoFill]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getLassoBorderColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::lassoBorder]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getBlackKeyColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::blackKey]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getWhiteKeyColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::whiteKey]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getRowColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::row]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getBarColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::bar]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getTextColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::text]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getIconBaseColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::iconBase]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getIconShadowColour() const
 {
+    using namespace Serialization;
     const Colour c(this->colours[UI::Colours::iconShadow]);
     return JUCE_LIVE_CONSTANT(c);
 }
@@ -178,7 +191,10 @@ Colour ColourScheme::getIconShadowColour() const
 
 void ColourScheme::syncWithLiveConstantEditor()
 {
+    using namespace Serialization;
+
     this->reset();
+
     this->colours.set(UI::Colours::primaryGradientA, this->getPrimaryGradientColourA());
     this->colours.set(UI::Colours::primaryGradientB, this->getPrimaryGradientColourB());
     this->colours.set(UI::Colours::secondaryGradientA, this->getSecondaryGradientColourA());
@@ -198,6 +214,8 @@ void ColourScheme::syncWithLiveConstantEditor()
 
 ValueTree ColourScheme::serialize() const
 {
+    using namespace Serialization;
+
     ValueTree tree(UI::Colours::scheme);
     tree.setProperty(UI::Colours::name, this->name, nullptr);
 
@@ -215,6 +233,8 @@ ValueTree ColourScheme::serialize() const
 
 void ColourScheme::deserialize(const ValueTree &tree)
 {
+    using namespace Serialization;
+
     const auto root =
         tree.hasType(UI::Colours::scheme) ?
         tree : tree.getChildWithName(UI::Colours::scheme);
@@ -236,8 +256,11 @@ void ColourScheme::deserialize(const ValueTree &tree)
 
 void ColourScheme::reset()
 {
+    using namespace Serialization;
+
     this->name.clear();
     this->colours.clear();
+
     // todo set reasonable defaults?
     this->colours.set(UI::Colours::primaryGradientA, Colours::black);
     this->colours.set(UI::Colours::primaryGradientB, Colours::black);

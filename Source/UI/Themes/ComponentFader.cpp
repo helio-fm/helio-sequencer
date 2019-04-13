@@ -79,7 +79,7 @@ public:
             
             if (newProgress >= 0 && newProgress < 1.0)
             {
-                newProgress = timeToDistance (newProgress);
+                newProgress = ComponentFader::timeToDistance (newProgress, startSpeed, midSpeed, endSpeed);
                 const double delta = (newProgress - lastProgress) / (1.0 - lastProgress);
                 jassert (newProgress >= lastProgress);
                 lastProgress = newProgress;
@@ -172,14 +172,6 @@ public:
     bool isChangingAlpha;
     bool allowedToModifyOrigin;
     
-private:
-    
-    double timeToDistance (const double time) const noexcept
-    {
-        return (time < 0.5) ? time * (startSpeed + time * (midSpeed - startSpeed))
-        : 0.5 * (startSpeed + 0.5 * (midSpeed - startSpeed))
-        + (time - 0.5) * (midSpeed + (time - 0.5) * (endSpeed - midSpeed));
-    }
 };
 
 

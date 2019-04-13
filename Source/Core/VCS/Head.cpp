@@ -23,7 +23,8 @@
 #include "Diff.h"
 #include "DiffLogic.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 #define DIFF_BUILD_THREAD_STOP_TIMEOUT 5000
 
@@ -698,4 +699,6 @@ void Head::rebuildDiffSynchronously()
     this->setDiffOutdated(false);
     this->setRebuildingDiffMode(false);
     this->sendChangeMessage();
+}
+
 }

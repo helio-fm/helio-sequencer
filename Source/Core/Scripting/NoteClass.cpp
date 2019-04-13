@@ -20,11 +20,11 @@
 #include "SerializationKeys.h"
 #include "ScriptingHelpers.h"
 
-using namespace Scripting;
-using namespace Serialization::Scripts;
-
 NoteClass::NoteClass(const Note &note) : note(note)
 {
+    using namespace Scripting;
+    using namespace Serialization::Scripts;
+
     // TODO transform position
     this->setProperty(Api::Note::key, note.getKey());
     this->setProperty(Api::Note::position, note.getBeat());

@@ -39,11 +39,6 @@ static Pattern *getPattern(SelectionProxyArray::Ptr selection)
     return firstClip.getPattern();
 }
 
-static String generateTransactionId(int commandId, const Lasso &selection)
-{
-    return String(commandId) + String(selection.getId());
-}
-
 void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0) { return; }
@@ -113,7 +108,7 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaKey > 0 ? CommandIDs::ClipTransposeUp : CommandIDs::ClipTransposeDown;
-    const auto &transactionId = generateTransactionId(operationId, selection);
+    const auto &transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = pattern->getLastUndoDescription() == transactionId;
 
     if (shouldCheckpoint && !repeatsLastAction)
@@ -134,7 +129,7 @@ void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, b
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaVelocity > 0 ? CommandIDs::ClipVolumeUp : CommandIDs::ClipVolumeDown;
-    const auto &transactionId = generateTransactionId(operationId, selection);
+    const auto &transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = pattern->getLastUndoDescription() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
@@ -162,7 +157,7 @@ void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, boo
 
     auto *firstPattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaBeat > 0 ? CommandIDs::BeatShiftRight : CommandIDs::BeatShiftLeft;
-    const auto &transactionId = generateTransactionId(operationId, selection);
+    const auto &transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = firstPattern->getLastUndoDescription() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;

@@ -19,8 +19,10 @@
 
 #include "ApiModel.h"
 
-struct UserResourceDto final : ApiModel
+class UserResourceDto final : public ApiModel
 {
+public:
+
     UserResourceDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
 
     String getType() const noexcept { return DTO_PROPERTY(Resources::type); }

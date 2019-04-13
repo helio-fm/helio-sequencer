@@ -58,6 +58,7 @@
 
 #include "AnnotationDialog.h"
 #include "TimeSignatureDialog.h"
+#include "KeySignatureDialog.h"
 
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -73,19 +74,6 @@
 #else
 #   define ROLL_VIEW_FOLLOWS_PLAYHEAD 0
 #endif
-
-// force compile template
-#include "AnnotationsProjectMap.cpp"
-template class AnnotationsProjectMap<AnnotationLargeComponent>;
-
-// force compile template
-#include "TimeSignaturesProjectMap.cpp"
-template class TimeSignaturesProjectMap<TimeSignatureLargeComponent>;
-
-// force compile template
-#include "KeySignaturesProjectMap.cpp"
-template class KeySignaturesProjectMap<KeySignatureLargeComponent>;
-
 
 HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     WeakReference<AudioMonitor> audioMonitor,
@@ -126,65 +114,65 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
 
-    this->topShadow = new ShadowDownwards(Normal);
-    this->bottomShadow = new ShadowUpwards(Normal);
+    this->topShadow.reset(new ShadowDownwards(Normal));
+    this->bottomShadow.reset(new ShadowUpwards(Normal));
 
-    this->header = new HybridRollHeader(this->project.getTransport(), *this, this->viewport);
+    this->header.reset(new HybridRollHeader(this->project.getTransport(), *this, this->viewport));
 
     if (hasAnnotationsTrack)
     {
-        this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
+        this->annotationsTrack.reset(new AnnotationsProjectMap(this->project, *this, AnnotationsProjectMap::Large));
     }
 
     if (hasTimeSignaturesTrack)
     {
-        this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
+        this->timeSignaturesTrack.reset(new TimeSignaturesProjectMap(this->project, *this, TimeSignaturesProjectMap::Large));
     }
 
     if (hasKeySignaturesTrack)
     {
-        this->keySignaturesTrack = new KeySignaturesLargeMap(this->project, *this);
+        this->keySignaturesTrack.reset(new KeySignaturesProjectMap(this->project, *this, KeySignaturesProjectMap::Large));
     }
 
-    this->playhead = new Playhead(*this, this->project.getTransport(), this);
+    this->playhead.reset(new Playhead(*this, this->project.getTransport(), this));
 
-    this->lassoComponent = new SelectionComponent();
+    this->lassoComponent.reset(new SelectionComponent());
     this->lassoComponent->setWantsKeyboardFocus(false);
     this->lassoComponent->setFocusContainer(false);
 
-    this->addAndMakeVisible(this->topShadow);
-    this->addAndMakeVisible(this->bottomShadow);
-    this->addAndMakeVisible(this->header);
+    this->addAndMakeVisible(this->topShadow.get());
+    this->addAndMakeVisible(this->bottomShadow.get());
+    this->addAndMakeVisible(this->header.get());
 
     if (this->annotationsTrack)
     {
-        this->addAndMakeVisible(this->annotationsTrack);
+        this->addAndMakeVisible(this->annotationsTrack.get());
     }
 
     if (this->timeSignaturesTrack)
     {
-        this->addAndMakeVisible(this->timeSignaturesTrack);
+        this->addAndMakeVisible(this->timeSignaturesTrack.get());
     }
 
     if (this->keySignaturesTrack)
     {
-        this->addAndMakeVisible(this->keySignaturesTrack);
+        this->addAndMakeVisible(this->keySignaturesTrack.get());
     }
 
-    this->addAndMakeVisible(this->playhead);
+    this->addAndMakeVisible(this->playhead.get());
 
-    this->addAndMakeVisible(this->lassoComponent);
+    this->addAndMakeVisible(this->lassoComponent.get());
 
 #if HYBRID_ROLL_LISTENS_LONG_TAP
-    this->longTapController = new LongTapController(*this);
-    this->addMouseListener(this->longTapController, true); // true = listens child events as well
+    this->longTapController.reset(new LongTapController(*this));
+    this->addMouseListener(this->longTapController.get(), true); // true = listens child events as well
 #endif
 
-    this->multiTouchController = new MultiTouchController(*this);
-    this->addMouseListener(this->multiTouchController, false); // false = listens only this one
+    this->multiTouchController.reset(new MultiTouchController(*this));
+    this->addMouseListener(this->multiTouchController.get(), false); // false = listens only this one
 
-    this->smoothPanController = new SmoothPanController(*this);
-    this->smoothZoomController = new SmoothZoomController(*this);
+    this->smoothPanController.reset(new SmoothPanController(*this));
+    this->smoothZoomController.reset(new SmoothZoomController(*this));
     
     this->project.addListener(this);
     this->project.getEditMode().addChangeListener(this);
@@ -209,10 +197,10 @@ HybridRoll::~HybridRoll()
     this->project.getEditMode().removeChangeListener(this);
     this->project.removeListener(this);
 
-    this->removeMouseListener(this->multiTouchController);
+    this->removeMouseListener(this->multiTouchController.get());
 
 #if HYBRID_ROLL_LISTENS_LONG_TAP
-    this->removeMouseListener(this->longTapController);
+    this->removeMouseListener(this->longTapController.get());
 #endif
 }
 
@@ -375,7 +363,7 @@ void HybridRoll::longTapEvent(const Point<float> &position,
         return;
     }
 
-    if (target == this->header)
+    if (target == this->header.get())
     {
         this->header->showPopupMenu();
         return;
@@ -940,7 +928,7 @@ void HybridRoll::deselectAll()
 
 SelectionComponent *HybridRoll::getSelectionComponent() const noexcept
 {
-    return this->lassoComponent;
+    return this->lassoComponent.get();
 }
 
 //===----------------------------------------------------------------------===//

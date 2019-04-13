@@ -19,14 +19,14 @@
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
 
-using namespace Serialization;
-
 SerializablePluginDescription::SerializablePluginDescription() {}
 SerializablePluginDescription::SerializablePluginDescription(const PluginDescription *other) :
     PluginDescription(*other) {}
 
 ValueTree SerializablePluginDescription::serialize() const
 {
+    using namespace Serialization;
+
     ValueTree tree(Audio::plugin);
     tree.setProperty(Audio::pluginName, this->name, nullptr);
 
@@ -51,6 +51,8 @@ ValueTree SerializablePluginDescription::serialize() const
 
 void SerializablePluginDescription::deserialize(const ValueTree &tree)
 {
+    using namespace Serialization;
+
     this->reset();
 
     const auto root = tree.hasType(Audio::plugin) ?

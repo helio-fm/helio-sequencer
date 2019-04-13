@@ -129,3 +129,18 @@ void Chord::reset()
     this->scaleKeys.clearQuick();
     this->name = {};
 }
+
+Array<String> Chord::getLocalizedFunctionNames()
+{
+    static Array<String> names = {
+        TRANS("popup::chord::function::1"),
+        TRANS("popup::chord::function::2"),
+        TRANS("popup::chord::function::3"),
+        TRANS("popup::chord::function::4"),
+        TRANS("popup::chord::function::5"),
+        TRANS("popup::chord::function::6"),
+        TRANS("popup::chord::function::7")
+    };
+
+    return names;
+}

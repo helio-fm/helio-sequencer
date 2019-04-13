@@ -94,7 +94,7 @@ void WaveformAudioMonitorComponent::handleAsyncUpdate()
 // Component
 //===----------------------------------------------------------------------===//
 
-inline static float iecLevel(float peak)
+inline static float waveformIecLevel(float peak)
 {
     const float vauleInDb =
         jlimit(WAVEFORM_METER_MINDB, WAVEFORM_METER_MAXDB,
@@ -116,8 +116,8 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
 
     for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
     {
-        const float peakL = iecLevel(this->lPeakBuffer[i].get()) * midH;
-        const float peakR = iecLevel(this->rPeakBuffer[i].get()) * midH;
+        const float peakL = waveformIecLevel(this->lPeakBuffer[i].get()) * midH;
+        const float peakR = waveformIecLevel(this->rPeakBuffer[i].get()) * midH;
         g.drawVerticalLine(1 + i * 2, midH - peakL, midH + peakR);
     }
 
@@ -125,8 +125,8 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
 
     for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
     {
-        const float rmsL = iecLevel(this->lRmsBuffer[i].get()) * midH;
-        const float rmsR = iecLevel(this->rRmsBuffer[i].get()) * midH;
+        const float rmsL = waveformIecLevel(this->lRmsBuffer[i].get()) * midH;
+        const float rmsR = waveformIecLevel(this->rRmsBuffer[i].get()) * midH;
         g.drawVerticalLine(i * 2, midH - rmsL, midH + rmsR);
     }
 }

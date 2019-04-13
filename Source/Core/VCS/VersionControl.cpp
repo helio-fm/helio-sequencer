@@ -25,13 +25,11 @@
 #include "Network.h"
 #include "ProjectSyncService.h"
 
-using namespace VCS;
-
-VersionControl::VersionControl(TrackedItemsSource &parent) :
+VersionControl::VersionControl(VCS::TrackedItemsSource &parent) :
     parent(parent),
     head(parent),
-    stashes(new StashesRepository()),
-    rootRevision(new Revision(TRANS("defaults::newproject::firstcommit")))
+    stashes(new VCS::StashesRepository()),
+    rootRevision(new VCS::Revision(TRANS("defaults::newproject::firstcommit")))
 {
     MessageManagerLock lock;
     this->addChangeListener(&this->head);
@@ -53,7 +51,7 @@ VersionControlEditor *VersionControl::createEditor()
 // VCS
 //===----------------------------------------------------------------------===//
 
-void VersionControl::moveHead(const Revision::Ptr revision)
+void VersionControl::moveHead(const VCS::Revision::Ptr revision)
 {
     if (! revision->isEmpty())
     {
@@ -62,7 +60,7 @@ void VersionControl::moveHead(const Revision::Ptr revision)
     }
 }
 
-void VersionControl::checkout(const Revision::Ptr revision)
+void VersionControl::checkout(const VCS::Revision::Ptr revision)
 {
     if (! revision->isEmpty())
     {
@@ -72,7 +70,7 @@ void VersionControl::checkout(const Revision::Ptr revision)
     }
 }
 
-void VersionControl::cherryPick(const Revision::Ptr revision, const Array<Uuid> uuids)
+void VersionControl::cherryPick(const VCS::Revision::Ptr revision, const Array<Uuid> uuids)
 {
     if (! revision->isEmpty())
     {
@@ -84,7 +82,7 @@ void VersionControl::cherryPick(const Revision::Ptr revision, const Array<Uuid> 
     }
 }
 
-void VersionControl::replaceHistory(const Revision::Ptr root)
+void VersionControl::replaceHistory(const VCS::Revision::Ptr root)
 {
     // if parent revision id is empty, this is the root revision
     // which means we're cloning project and replacing stub root with valid one:
@@ -95,7 +93,7 @@ void VersionControl::replaceHistory(const Revision::Ptr root)
     this->sendChangeMessage();
 }
 
-void VersionControl::appendSubtree(const Revision::Ptr subtree, const String &appendRevisionId)
+void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId)
 {
     jassert(appendRevisionId.isNotEmpty());
     if (auto targetRevision = this->getRevisionById(this->rootRevision, appendRevisionId))
@@ -105,7 +103,7 @@ void VersionControl::appendSubtree(const Revision::Ptr subtree, const String &ap
     }
 }
 
-Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const ValueTree &data)
+VCS::Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const ValueTree &data)
 {
     if (auto revision = this->getRevisionById(this->rootRevision, id))
     {
@@ -117,12 +115,12 @@ Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const 
     return nullptr;
 }
 
-void VersionControl::quickAmendItem(TrackedItem *targetItem)
+void VersionControl::quickAmendItem(VCS::TrackedItem *targetItem)
 {
     // warning: this is not a fully-functional amend,
     // it is only used when a new tracked item is added to revision;
     // changes and deletions to committed items will not work:
-    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
+    VCS::RevisionItem::Ptr revisionRecord(new VCS::RevisionItem(VCS::RevisionItem::Added, targetItem));
     this->head.getHeadingRevision()->addItem(revisionRecord);
     this->head.moveTo(this->head.getHeadingRevision());
     this->sendChangeMessage();
@@ -132,8 +130,8 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 {
     if (selectedItems.size() == 0) { return false; }
 
-    Revision::Ptr allChanges(this->head.getDiff());
-    Array<RevisionItem::Ptr> changesToReset;
+    VCS::Revision::Ptr allChanges(this->head.getDiff());
+    Array<VCS::RevisionItem::Ptr> changesToReset;
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -151,8 +149,8 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 
 bool VersionControl::resetAllChanges()
 {
-    Revision::Ptr allChanges(this->head.getDiff());
-    Array<RevisionItem::Ptr> changesToReset;
+    VCS::Revision::Ptr allChanges(this->head.getDiff());
+    Array<VCS::RevisionItem::Ptr> changesToReset;
 
     for (auto *item : allChanges->getItems())
     {
@@ -167,8 +165,8 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 {
     if (selectedItems.size() == 0) { return false; }
 
-    Revision::Ptr newRevision(new Revision(message));
-    Revision::Ptr allChanges(this->head.getDiff());
+    VCS::Revision::Ptr newRevision(new VCS::Revision(message));
+    VCS::Revision::Ptr allChanges(this->head.getDiff());
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -180,7 +178,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
         }
     }
 
-    Revision::Ptr headingRevision(this->head.getHeadingRevision());
+    VCS::Revision::Ptr headingRevision(this->head.getHeadingRevision());
     if (headingRevision == nullptr) { return false; }
 
     headingRevision->addChild(newRevision);
@@ -200,8 +198,8 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
 {
     if (selectedItems.size() == 0) { return false; }
     
-    Revision::Ptr newRevision(new Revision(message));
-    Revision::Ptr allChanges(this->head.getDiff());
+    VCS::Revision::Ptr newRevision(new VCS::Revision(message));
+    VCS::Revision::Ptr allChanges(this->head.getDiff());
     
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -221,11 +219,11 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
     return true;
 }
 
-bool VersionControl::applyStash(const Revision::Ptr stash, bool shouldKeepStash)
+bool VersionControl::applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash)
 {
     if (! stash->isEmpty())
     {
-        Revision::Ptr headRevision(this->head.getHeadingRevision());
+        VCS::Revision::Ptr headRevision(this->head.getHeadingRevision());
         this->head.moveTo(stash);
         this->head.cherryPickAll();
         this->head.moveTo(headRevision);
@@ -257,7 +255,7 @@ bool VersionControl::quickStashAll()
     if (this->hasQuickStash())
     { return false; }
 
-    Revision::Ptr allChanges(this->head.getDiff());
+    VCS::Revision::Ptr allChanges(this->head.getDiff());
     this->stashes->storeQuickStash(allChanges);
     this->resetAllChanges();
 
@@ -270,7 +268,7 @@ bool VersionControl::applyQuickStash()
     if (! this->hasQuickStash())
     { return false; }
     
-    Head tempHead(this->head);
+    VCS::Head tempHead(this->head);
     tempHead.mergeStateWith(this->stashes->getQuickStash());
     tempHead.cherryPickAll();
     this->stashes->resetQuickStash();
@@ -309,12 +307,12 @@ void VersionControl::fetchRevisionsIfNeeded()
     }
 }
 
-void VersionControl::syncRevision(const Revision::Ptr revision)
+void VersionControl::syncRevision(const VCS::Revision::Ptr revision)
 {
     // we need to sync the whole branch, i.e. all parents of that revision:
     Array<String> subtreeToSync = { revision->getUuid() };
 
-    WeakReference<Revision> it = revision.get();
+    WeakReference<VCS::Revision> it = revision.get();
     while (it->getParent() != nullptr)
     {
         it = it->getParent();
@@ -326,7 +324,7 @@ void VersionControl::syncRevision(const Revision::Ptr revision)
         subtreeToSync);
 }
 
-void VersionControl::updateLocalSyncCache(const Revision::Ptr revision)
+void VersionControl::updateLocalSyncCache(const VCS::Revision::Ptr revision)
 {
     this->remoteCache.updateForLocalRevision(revision);
     this->sendChangeMessage();
@@ -338,18 +336,18 @@ void VersionControl::updateRemoteSyncCache(const Array<RevisionDto> &revisions)
     this->sendChangeMessage();
 }
 
-Revision::SyncState VersionControl::getRevisionSyncState(const Revision::Ptr revision) const
+VCS::Revision::SyncState VersionControl::getRevisionSyncState(const VCS::Revision::Ptr revision) const
 {
     if (!revision->isShallowCopy() && this->remoteCache.hasRevisionTracked(revision))
     {
-        return Revision::FullSync;
+        return VCS::Revision::FullSync;
     }
     else if (revision->isShallowCopy())
     {
-        return Revision::ShallowCopy;
+        return VCS::Revision::ShallowCopy;
     }
 
-    return Revision::NoSync;
+    return VCS::Revision::NoSync;
 }
 
 //===----------------------------------------------------------------------===//
@@ -382,7 +380,7 @@ void VersionControl::deserialize(const ValueTree &tree)
     const String headId = root.getProperty(Serialization::VCS::headRevisionId);
     DBG("Head ID is " + headId);
 
-    DeltaDataLookup deltaDataLookup;
+    VCS::DeltaDataLookup deltaDataLookup;
     const auto packNode = root.hasType(Serialization::VCS::pack) ?
         root : root.getChildWithName(Serialization::VCS::pack);
 
@@ -445,7 +443,7 @@ void VersionControl::reset()
 // Private
 //===----------------------------------------------------------------------===//
 
-Revision::Ptr VersionControl::getRevisionById(const Revision::Ptr startFrom, const String &id) const
+VCS::Revision::Ptr VersionControl::getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const
 {
     if (startFrom->getUuid() == id)
     {

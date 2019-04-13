@@ -23,8 +23,8 @@
 #include "PianoSequence.h"
 #include "SerializationKeys.h"
 
-using namespace VCS;
-using namespace Serialization::VCS;
+namespace VCS
+{
 
 static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeMute(const ValueTree &state, const ValueTree &changes);
@@ -45,10 +45,10 @@ static Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTre
 static void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
     OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes);
 
-static DeltaDiff serializeLayerChanges(Array<const MidiEvent *> changes,
+static DeltaDiff serializePianoTrackChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges,  const Identifier &deltaType);
 
-static ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag);
+static ValueTree serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
 static bool checkIfDeltaIsNotesType(const Delta *delta);
 
 
@@ -62,7 +62,9 @@ const Identifier PianoTrackDiffLogic::getType() const
 
 Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
 {
-    auto diff = new Diff(this->target);
+    using namespace Serialization::VCS;
+
+    auto *diff = new Diff(this->target);
 
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
     {
@@ -124,7 +126,9 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
 
 Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) const
 {
-    auto diff = new Diff(this->target);
+    using namespace Serialization::VCS;
+
+    auto *diff = new Diff(this->target);
 
     // step 1:
     // the default policy is merging all changes
@@ -279,7 +283,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
             if (foundMissingClip)
             {
-                ValueTree emptyClipDeltaData(serializeLayer({}, PatternDeltas::clipsAdded));
+                ValueTree emptyClipDeltaData(serializePianoSequence({}, PatternDeltas::clipsAdded));
                 const bool incrementalMerge = clipsDeltaData.isValid();
 
                 if (targetDelta->hasType(PatternDeltas::clipsAdded))
@@ -333,6 +337,8 @@ ValueTree mergeInstrument(const ValueTree &state, const ValueTree &changes)
 
 ValueTree mergeNotesAdded(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     deserializeLayerChanges(state, changes, stateNotes, changesNotes);
@@ -361,11 +367,13 @@ ValueTree mergeNotesAdded(const ValueTree &state, const ValueTree &changes)
         }
     }
 
-    return serializeLayer(result, PianoSequenceDeltas::notesAdded);
+    return serializePianoSequence(result, PianoSequenceDeltas::notesAdded);
 }
 
 ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     deserializeLayerChanges(state, changes, stateNotes, changesNotes);
@@ -391,11 +399,13 @@ ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &changes)
         }
     }
 
-    return serializeLayer(result, PianoSequenceDeltas::notesAdded);
+    return serializePianoSequence(result, PianoSequenceDeltas::notesAdded);
 }
 
 ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     deserializeLayerChanges(state, changes, stateNotes, changesNotes);
@@ -424,7 +434,7 @@ ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes)
         }
     }
 
-    return serializeLayer(result, PianoSequenceDeltas::notesAdded);
+    return serializePianoSequence(result, PianoSequenceDeltas::notesAdded);
 }
 
 
@@ -435,6 +445,7 @@ ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
+    using namespace Serialization::VCS;
     res.deltaData = changes.createCopy();
     res.delta = new Delta(DeltaDescription("moved from {x}",
         state.getProperty(Serialization::VCS::delta).toString()),
@@ -446,6 +457,7 @@ DeltaDiff createMuteDiff(const ValueTree &state, const ValueTree &changes)
 {
     const bool muted = MidiTrack::isTrackMuted(changes.getProperty(Serialization::VCS::delta));
     DeltaDiff res;
+    using namespace Serialization::VCS;
     res.deltaData = changes.createCopy();
     res.delta = new Delta(muted ? 
         DeltaDescription("muted") : DeltaDescription("unmuted"),
@@ -456,7 +468,8 @@ DeltaDiff createMuteDiff(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
-    res.delta = new Delta(DeltaDescription("color changed"), 
+    using namespace Serialization::VCS;
+    res.delta = new Delta(DeltaDescription("color changed"),
         MidiTrackDeltas::trackColour);
     res.deltaData = changes.createCopy();
     return res;
@@ -465,7 +478,8 @@ DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
-    res.delta = new Delta(DeltaDescription("instrument changed"), 
+    using namespace Serialization::VCS;
+    res.delta = new Delta(DeltaDescription("instrument changed"),
         MidiTrackDeltas::trackInstrument);
     res.deltaData = changes.createCopy();
     return res;
@@ -473,6 +487,8 @@ DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes)
 
 Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &changes)
 {
+    using namespace Serialization::VCS;
+
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
 
@@ -553,7 +569,7 @@ Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &chan
 
     if (addedNotes.size() > 0)
     {
-        res.add(serializeLayerChanges(addedNotes,
+        res.add(serializePianoTrackChanges(addedNotes,
             "added {x} notes",
             addedNotes.size(),
             PianoSequenceDeltas::notesAdded));
@@ -561,7 +577,7 @@ Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &chan
 
     if (removedNotes.size() > 0)
     {
-        res.add(serializeLayerChanges(removedNotes,
+        res.add(serializePianoTrackChanges(removedNotes,
             "removed {x} notes",
             removedNotes.size(),
             PianoSequenceDeltas::notesRemoved));
@@ -569,7 +585,7 @@ Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &chan
 
     if (changedNotes.size() > 0)
     {
-        res.add(serializeLayerChanges(changedNotes,
+        res.add(serializePianoTrackChanges(changedNotes,
             "changed {x} notes",
             changedNotes.size(),
             PianoSequenceDeltas::notesChanged));
@@ -603,16 +619,16 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
     }
 }
 
-DeltaDiff serializeLayerChanges(Array<const MidiEvent *> changes,
+DeltaDiff serializePianoTrackChanges(Array<const MidiEvent *> changes,
         const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
     changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
-    changesFullDelta.deltaData = serializeLayer(changes, deltaType);
+    changesFullDelta.deltaData = serializePianoSequence(changes, deltaType);
     return changesFullDelta;
 }
 
-ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag)
+ValueTree serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag)
 {
     ValueTree tree(tag);
 
@@ -627,7 +643,10 @@ ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag
 
 bool checkIfDeltaIsNotesType(const Delta *d)
 {
+    using namespace Serialization::VCS;
     return (d->hasType(PianoSequenceDeltas::notesAdded) ||
             d->hasType(PianoSequenceDeltas::notesRemoved) ||
             d->hasType(PianoSequenceDeltas::notesChanged));
+}
+
 }

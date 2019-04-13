@@ -34,10 +34,8 @@ class TimelineWarningMarker;
 
 #include "ComponentFader.h"
 #include "AnnotationsProjectMap.h"
-#include "AnnotationLargeComponent.h"
 #include "TimeSignaturesProjectMap.h"
-#include "TimeSignatureLargeComponent.h"
-#include "KeySignatureLargeComponent.h"
+#include "KeySignaturesProjectMap.h"
 #include "Playhead.h"
 #include "TransportListener.h"
 #include "MidiEventComponent.h"
@@ -370,22 +368,17 @@ protected:
 
     ComponentFader fader;
 
-    ScopedPointer<HybridRollHeader> header;
-    ScopedPointer<Playhead> playhead;
+    UniquePointer<HybridRollHeader> header;
+    UniquePointer<Playhead> playhead;
     
-    using AnnotationsLargeMap = AnnotationsProjectMap<AnnotationLargeComponent>;
-    ScopedPointer<AnnotationsLargeMap> annotationsTrack;
+    UniquePointer<AnnotationsProjectMap> annotationsTrack;
+    UniquePointer<TimeSignaturesProjectMap> timeSignaturesTrack;
+    UniquePointer<KeySignaturesProjectMap> keySignaturesTrack;
 
-    using TimeSignaturesLargeMap = TimeSignaturesProjectMap<TimeSignatureLargeComponent>;
-    ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
+    UniquePointer<Component> topShadow;
+    UniquePointer<Component> bottomShadow;
 
-    using KeySignaturesLargeMap = KeySignaturesProjectMap<KeySignatureLargeComponent>;
-    ScopedPointer<KeySignaturesLargeMap> keySignaturesTrack;
-
-    ScopedPointer<Component> topShadow;
-    ScopedPointer<Component> bottomShadow;
-
-    ScopedPointer<SelectionComponent> lassoComponent;
+    UniquePointer<SelectionComponent> lassoComponent;
     
 protected:
     
@@ -402,10 +395,10 @@ protected:
 
 protected:
 
-    ScopedPointer<LongTapController> longTapController;
-    ScopedPointer<MultiTouchController> multiTouchController;
-    ScopedPointer<SmoothPanController> smoothPanController;
-    ScopedPointer<SmoothZoomController> smoothZoomController;
+    UniquePointer<LongTapController> longTapController;
+    UniquePointer<MultiTouchController> multiTouchController;
+    UniquePointer<SmoothPanController> smoothPanController;
+    UniquePointer<SmoothZoomController> smoothZoomController;
 
     Array<WeakReference<FloatBoundsComponent>> batchRepaintList;
 

@@ -21,8 +21,8 @@
 #include "Diff.h"
 #include "ProjectInfo.h"
 
-using namespace VCS;
-using namespace Serialization::VCS;
+namespace VCS
+{
 
 static ValueTree mergeLicense(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes);
@@ -48,7 +48,9 @@ const Identifier ProjectInfoDiffLogic::getType() const
 
 Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
 {
-    auto diff = new Diff(this->target);
+    using namespace Serialization::VCS;
+
+    auto *diff = new Diff(this->target);
 
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
     {
@@ -99,7 +101,9 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
 
 Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) const
 {
-    auto diff = new Diff(this->target);
+    using namespace Serialization::VCS;
+
+    auto *diff = new Diff(this->target);
 
     // merge-политика по умолчанию:
     // на каждую дельту таргета пытаемся наложить все дельты изменений.
@@ -186,6 +190,7 @@ ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
+    using namespace Serialization::VCS;
     res.delta = new Delta(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense);
     res.deltaData = changes.createCopy();
     return res;
@@ -194,6 +199,7 @@ DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
+    using namespace Serialization::VCS;
     res.delta = new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle);
     res.deltaData = changes.createCopy();
     return res;
@@ -202,6 +208,7 @@ DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
+    using namespace Serialization::VCS;
     res.delta = new Delta(DeltaDescription("author changed"), ProjectInfoDeltas::projectAuthor);
     res.deltaData = changes.createCopy();
     return res;
@@ -210,7 +217,10 @@ DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
+    using namespace Serialization::VCS;
     res.delta = new Delta(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription);
     res.deltaData = changes.createCopy();
     return res;
+}
+
 }

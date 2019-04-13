@@ -19,11 +19,11 @@
 #include "TimeSignatureClass.h"
 #include "SerializationKeys.h"
 
-using namespace Scripting;
-using namespace Serialization::Scripts;
-
 TimeSignatureClass::TimeSignatureClass(const TimeSignatureEvent &event)
 {
+    using namespace Scripting;
+    using namespace Serialization::Scripts;
+
     this->setProperty(Api::TimeSignature::position, event.getBeat());
     this->setProperty(Api::TimeSignature::numerator, event.getNumerator());
     this->setProperty(Api::TimeSignature::denominator, event.getDenominator());

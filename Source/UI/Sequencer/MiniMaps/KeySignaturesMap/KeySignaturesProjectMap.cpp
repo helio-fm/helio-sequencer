@@ -24,18 +24,19 @@
 #include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
-#include "AnnotationMenu.h"
 #include "KeySignatureDialog.h"
 #include "MainLayout.h"
+#include "KeySignatureLargeComponent.h"
+#include "KeySignatureSmallComponent.h"
 
-template<typename T>
-KeySignaturesProjectMap<T>::KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
+KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),
     projectLastBeat(16.f), // non zero!
     rollFirstBeat(0.f),
-    rollLastBeat(16.f)
+    rollLastBeat(16.f),
+    type(type)
 {
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
@@ -46,8 +47,7 @@ KeySignaturesProjectMap<T>::KeySignaturesProjectMap(ProjectNode &parentProject, 
     this->project.addListener(this);
 }
 
-template<typename T>
-KeySignaturesProjectMap<T>::~KeySignaturesProjectMap()
+KeySignaturesProjectMap::~KeySignaturesProjectMap()
 {
     this->project.removeListener(this);
 }
@@ -56,16 +56,15 @@ KeySignaturesProjectMap<T>::~KeySignaturesProjectMap()
 // Component
 //===----------------------------------------------------------------------===//
 
-template<typename T>
-void KeySignaturesProjectMap<T>::resized()
+void KeySignaturesProjectMap::resized()
 {
     this->setVisible(false);
 
-    T *previous = nullptr;
+    KeySignatureComponent *previous = nullptr;
 
     for (int i = 0; i < this->keySignatureComponents.size(); ++i)
     {
-        T *current = this->keySignatureComponents.getUnchecked(i);
+        KeySignatureComponent *current = this->keySignatureComponents.getUnchecked(i);
 
         if (previous != nullptr)
         {
@@ -88,15 +87,14 @@ void KeySignaturesProjectMap<T>::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void KeySignaturesProjectMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (oldEvent.isTypeOf(MidiEvent::KeySignature))
     {
         const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(oldEvent);
         const KeySignatureEvent &newKeySignature = static_cast<const KeySignatureEvent &>(newEvent);
 
-        if (T *component = this->keySignaturesHash[keySignature])
+        if (KeySignatureComponent *component = this->keySignaturesHash[keySignature])
         {
             this->alignKeySignatureComponent(component);
             this->keySignaturesHash.erase(keySignature);
@@ -105,19 +103,18 @@ void KeySignaturesProjectMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, co
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::alignKeySignatureComponent(T *component)
+void KeySignaturesProjectMap::alignKeySignatureComponent(KeySignatureComponent *component)
 {
     this->keySignatureComponents.sort(*component);
     const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*component, component);
-    T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-    T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+    KeySignatureComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
+    KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
     
     if (previousEventComponent)
     {
         this->applyKeySignatureBounds(previousEventComponent, component);
         
-        T *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
+        KeySignatureComponent *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
         
         if (oneMorePrevious)
         { this->applyKeySignatureBounds(oneMorePrevious, previousEventComponent); }
@@ -125,7 +122,7 @@ void KeySignaturesProjectMap<T>::alignKeySignatureComponent(T *component)
     
     if (nextEventComponent)
     {
-        T *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
+        KeySignatureComponent *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
         this->applyKeySignatureBounds(nextEventComponent, oneMoreNext);
     }
     
@@ -133,19 +130,18 @@ void KeySignaturesProjectMap<T>::alignKeySignatureComponent(T *component)
     this->applyKeySignatureBounds(component, nextEventComponent);
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onAddMidiEvent(const MidiEvent &event)
+void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::KeySignature))
     {
         const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(event);
 
-        auto component = new T(*this, keySignature);
+        auto *component = this->createComponent(keySignature);
         this->addChildComponent(component);
 
         const int indexOfSorted = this->keySignatureComponents.addSorted(*component, component);
-        T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-        T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+        KeySignatureComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
+        KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
 
         component->updateContent();
         this->applyKeySignatureBounds(component, nextEventComponent);
@@ -163,14 +159,13 @@ void KeySignaturesProjectMap<T>::onAddMidiEvent(const MidiEvent &event)
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onRemoveMidiEvent(const MidiEvent &event)
+void KeySignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::KeySignature))
     {
         const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(event);
 
-        if (T *component = this->keySignaturesHash[keySignature])
+        if (KeySignatureComponent *component = this->keySignaturesHash[keySignature])
         {
             this->animator.animateComponent(component,
                                             component->getBounds().translated(0, -component->getHeight()),
@@ -180,8 +175,8 @@ void KeySignaturesProjectMap<T>::onRemoveMidiEvent(const MidiEvent &event)
             this->keySignaturesHash.erase(keySignature);
 
             const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*component, component);
-            T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-            T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+            KeySignatureComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
+            KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
 
             if (previousEventComponent)
             { this->applyKeySignatureBounds(previousEventComponent, nextEventComponent); }
@@ -191,8 +186,7 @@ void KeySignaturesProjectMap<T>::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onChangeTrackProperties(MidiTrack *const track)
+void KeySignaturesProjectMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
         track == this->project.getTimeline()->getKeySignatures())
@@ -201,15 +195,12 @@ void KeySignaturesProjectMap<T>::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-
-template< typename T >
-void KeySignaturesProjectMap<T>::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void KeySignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadTrackMap();
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onAddTrack(MidiTrack *const track)
+void KeySignaturesProjectMap::onAddTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
         track == this->project.getTimeline()->getKeySignatures())
@@ -221,8 +212,7 @@ void KeySignaturesProjectMap<T>::onAddTrack(MidiTrack *const track)
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onRemoveTrack(MidiTrack *const track)
+void KeySignaturesProjectMap::onRemoveTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
         track == this->project.getTimeline()->getKeySignatures())
@@ -232,7 +222,7 @@ void KeySignaturesProjectMap<T>::onRemoveTrack(MidiTrack *const track)
             const KeySignatureEvent &keySignature =
                 static_cast<const KeySignatureEvent &>(*track->getSequence()->getUnchecked(i));
 
-            if (T *component = this->keySignaturesHash[keySignature])
+            if (KeySignatureComponent *component = this->keySignaturesHash[keySignature])
             {
                 this->removeChildComponent(component);
                 this->keySignaturesHash.erase(keySignature);
@@ -242,8 +232,7 @@ void KeySignaturesProjectMap<T>::onRemoveTrack(MidiTrack *const track)
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+void KeySignaturesProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
@@ -257,8 +246,7 @@ void KeySignaturesProjectMap<T>::onChangeProjectBeatRange(float firstBeat, float
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
+void KeySignaturesProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
@@ -270,13 +258,11 @@ void KeySignaturesProjectMap<T>::onChangeViewBeatRange(float firstBeat, float la
 // Private
 //===----------------------------------------------------------------------===//
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onKeySignatureMoved(T *nc)
+void KeySignaturesProjectMap::onKeySignatureMoved(KeySignatureComponent *nc)
 {
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::onKeySignatureTapped(T *nc)
+void KeySignaturesProjectMap::onKeySignatureTapped(KeySignatureComponent *nc)
 {
     const KeySignatureEvent *keySignatureUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
@@ -317,8 +303,7 @@ void KeySignaturesProjectMap<T>::onKeySignatureTapped(T *nc)
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::showContextMenuFor(T *nc)
+void KeySignaturesProjectMap::showContextMenuFor(KeySignatureComponent *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
@@ -328,13 +313,12 @@ void KeySignaturesProjectMap<T>::showContextMenuFor(T *nc)
     }
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::alternateActionFor(T *nc)
+void KeySignaturesProjectMap::alternateActionFor(KeySignatureComponent *nc)
 {
     // Selects everything within the range of this keySignature
     this->keySignatureComponents.sort(*nc);
     const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*nc, nc);
-    T *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+    KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
     
     const float startBeat = nc->getBeat();
     const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
@@ -344,16 +328,14 @@ void KeySignaturesProjectMap<T>::alternateActionFor(T *nc)
     this->roll.selectEventsInRange(startBeat, endBeat, shouldClearSelection);
 }
 
-template<typename T>
-float KeySignaturesProjectMap<T>::getBeatByXPosition(int x) const
+float KeySignaturesProjectMap::getBeatByXPosition(int x) const
 {
     const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
     const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
     return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::reloadTrackMap()
+void KeySignaturesProjectMap::reloadTrackMap()
 {
     if (this->project.getTimeline() == nullptr)
     {
@@ -377,7 +359,7 @@ void KeySignaturesProjectMap<T>::reloadTrackMap()
         MidiEvent *event = sequence->getUnchecked(j);
 
         KeySignatureEvent *keySignature = static_cast<KeySignatureEvent *>(event);
-        auto component = new T(*this, *keySignature);
+        auto *component = this->createComponent(*keySignature);
         this->addAndMakeVisible(component);
         component->updateContent();
 
@@ -389,8 +371,7 @@ void KeySignaturesProjectMap<T>::reloadTrackMap()
     this->setVisible(true);
 }
 
-template<typename T>
-void KeySignaturesProjectMap<T>::applyKeySignatureBounds(T *nc, T *nextOne)
+void KeySignaturesProjectMap::applyKeySignatureBounds(KeySignatureComponent *nc, KeySignatureComponent *nextOne)
 {
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
@@ -412,8 +393,7 @@ void KeySignaturesProjectMap<T>::applyKeySignatureBounds(T *nc, T *nextOne)
     nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
 }
 
-template<typename T>
-T *KeySignaturesProjectMap<T>::getPreviousEventComponent(int indexOfSorted) const
+KeySignatureComponent *KeySignaturesProjectMap::getPreviousEventComponent(int indexOfSorted) const
 {
     const int indexOfPrevious = indexOfSorted - 1;
 
@@ -423,8 +403,7 @@ T *KeySignaturesProjectMap<T>::getPreviousEventComponent(int indexOfSorted) cons
         nullptr;
 }
 
-template<typename T>
-T *KeySignaturesProjectMap<T>::getNextEventComponent(int indexOfSorted) const
+KeySignatureComponent *KeySignaturesProjectMap::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
 
@@ -432,4 +411,17 @@ T *KeySignaturesProjectMap<T>::getNextEventComponent(int indexOfSorted) const
         isPositiveAndBelow(indexOfNext, this->keySignatureComponents.size()) ?
         this->keySignatureComponents.getUnchecked(indexOfNext) :
         nullptr;
+}
+
+KeySignatureComponent *KeySignaturesProjectMap::createComponent(const KeySignatureEvent &keySignature)
+{
+    switch (this->type)
+    {
+    case Large:
+        return new KeySignatureLargeComponent(*this, keySignature);
+    case Small:
+        return new KeySignatureSmallComponent(*this, keySignature);
+    default:
+        return nullptr;
+    }
 }

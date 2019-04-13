@@ -58,6 +58,21 @@ public:
     bool shouldDisplayGhostNotes() const noexcept;
     void needsToCalculateSelectionBounds() noexcept;
     Rectangle<int> getSelectionBounds() const noexcept;
+
+    // Transaction identifier, and why is it needed:
+    // Some actions, like dragging notes around, are performed in a single undo transaction,
+    // but, unlike mouse dragging (where it's clear when to start and when to end a transaction),
+    // hotkey-handled actions will always do a checkpoint at every keypress, so that
+    // pressing `cursor down` 5 times and `cursor up` 3 times will result in 8 undo actions,
+    // (there only should be 2, for transposing events down and up accordingly).
+    // So, Lasso class re-generates its random id every time it changes,
+    // and some transform operations here will use that id, combined with operation id
+    // to identify the transaction and see if the last one was exactly of the same type and target,
+    // and checkpoint could be skipped.
+    String generateTransactionId(int commandId) const
+    {
+        return String(commandId) + String(this->getId());
+    }
     
     // Grouped selections are selected events, split by track,
     // so that is easier to perform undo/redo actions:

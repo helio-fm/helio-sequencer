@@ -20,8 +20,9 @@
 #include "BinaryData.h"
 #include "ColourIDs.h"
 
-static String toLowerCamelCase(const String &string)
+static String getIconFileName(const String &string)
 {
+    // to lower camel case:
     if (string.length() > 1)
     {
         return string.substring(0, 1).toLowerCase() +
@@ -37,7 +38,7 @@ struct BuiltInImageData final
 
     BuiltInImageData(const String &name)
     {
-        const String assumedFileName = toLowerCamelCase(name) + "_svg";
+        const String assumedFileName = getIconFileName(name) + "_svg";
         this->data = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), this->numBytes);
     }
     

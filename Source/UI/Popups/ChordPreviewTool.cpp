@@ -27,6 +27,7 @@
 #include "Transport.h"
 #include "KeySignaturesSequence.h"
 #include "KeySignatureEvent.h"
+#include "Chord.h"
 #include "CommandIDs.h"
 #include "Config.h"
 
@@ -34,7 +35,7 @@
 #define CHORD_BUILDER_FONT_SIZE        (16)
 #define CHORD_BUILDER_NOTE_LENGTH      (4)
 
-static Label *createLabel(const String &text)
+static Label *createPopupButtonLabel(const String &text)
 {
     const int size = CHORD_BUILDER_LABEL_SIZE;
     auto newLabel = new Label(text, text);
@@ -43,19 +44,6 @@ static Label *createLabel(const String &text)
     newLabel->setName(text + "_outline");
     newLabel->setFont(CHORD_BUILDER_FONT_SIZE);
     return newLabel;
-}
-
-static Array<String> localizedFunctionNames()
-{
-    return {
-        TRANS("popup::chord::function::1"),
-        TRANS("popup::chord::function::2"),
-        TRANS("popup::chord::function::3"),
-        TRANS("popup::chord::function::4"),
-        TRANS("popup::chord::function::5"),
-        TRANS("popup::chord::function::6"),
-        TRANS("popup::chord::function::7")
-    };
 }
 //[/MiscUserDefs]
 
@@ -70,7 +58,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
       draggingStartPosition(0, 0),
       draggingEndPosition(0, 0)
 {
-    this->newChord.reset(new PopupCustomButton(createLabel("+")));
+    this->newChord.reset(new PopupCustomButton(createPopupButtonLabel("+")));
     this->addAndMakeVisible(newChord.get());
 
 
@@ -92,7 +80,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
         const int radius = 150 + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
         const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.45f);
-        auto *button = this->chordButtons.add(new PopupCustomButton(createLabel(chord->getName()), PopupButton::Hex, colour));
+        auto *button = this->chordButtons.add(new PopupCustomButton(createPopupButtonLabel(chord->getName()), PopupButton::Hex, colour));
         button->setSize(this->proportionOfWidth(0.135f), this->proportionOfHeight(0.135f));
         button->setUserData(chord->getResourceId());
         const auto buttonSizeOffset = button->getLocalBounds().getCentre();
@@ -254,7 +242,7 @@ void ChordPreviewTool::onPopupButtonEndDragging(PopupButton *button)
     }
 }
 
-static const float kDefaultChordVelocity = 0.35f;
+static const float kChordPreviewDefaultNoteVelocity = 0.35f;
 
 Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
 {
@@ -290,7 +278,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         if (!App::isRunningOnPhone())
         {
-            static const auto fnNames = localizedFunctionNames();
+            static const auto fnNames = Chord::getLocalizedFunctionNames();
             const String tooltip =
                 MidiMessage::getMidiNoteName(this->root, true, false, 3) + " "
                 + this->scale->getLocalizedName() + ", "
@@ -306,10 +294,10 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             const auto inScaleKey = scaleFnOffset + inScaleChordKey;
             const auto finalOffset = periodOffset + this->root - this->clip.getKey();
             const int key = jlimit(0, 128, finalOffset + this->scale->getChromaticKey(inScaleKey));
-            const Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
+            const Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kChordPreviewDefaultNoteVelocity);
             this->sequence->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
-                key + this->clip.getKey(), kDefaultChordVelocity));
+                key + this->clip.getKey(), kChordPreviewDefaultNoteVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -332,13 +320,13 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     
     const int key = jlimit(0, 128, this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
-        CHORD_BUILDER_NOTE_LENGTH, kDefaultChordVelocity);
+        CHORD_BUILDER_NOTE_LENGTH, kChordPreviewDefaultNoteVelocity);
 
     this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
     {
         this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
-            key + this->clip.getKey(), kDefaultChordVelocity));
+            key + this->clip.getKey(), kChordPreviewDefaultNoteVelocity));
     }
 
     this->hasMadeChanges = true;
@@ -435,7 +423,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="e7f368456de9aae7" memberName="newChord" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 14% 14%" class="PopupCustomButton"
-                    params="createLabel(&quot;+&quot;)"/>
+                    params="createPopupButtonLabel(&quot;+&quot;)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

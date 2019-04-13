@@ -33,8 +33,6 @@
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
-using namespace Serialization;
-
 UndoStack::ActionSet::ActionSet(ProjectNode &project, const String &transactionName) :
     project(project),
     name(transactionName) {}
@@ -109,6 +107,8 @@ void UndoStack::ActionSet::reset()
 
 UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &tagName)
 {
+    using namespace Serialization;
+
     if      (tagName == Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project, &this->project); }
     else if (tagName == Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project, &this->project); }
     else if (tagName == Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project, &this->project); }

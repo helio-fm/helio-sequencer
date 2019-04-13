@@ -19,7 +19,8 @@
 #include "RevisionItem.h"
 #include "DiffLogic.h"
 
-using namespace VCS;
+namespace VCS
+{
 
 RevisionItem::RevisionItem(Type type, TrackedItem *targetToCopy) :
     vcsItemType(type)
@@ -183,4 +184,6 @@ void RevisionItem::reset()
     this->deltas.clear();
     this->description.clear();
     this->vcsItemType = Undefined;
+}
+
 }

@@ -37,8 +37,6 @@
 #include "CommandIDs.h"
 #include "FailTooltip.h"
 
-using namespace VCS;
-
 #if HELIO_DESKTOP
 #    define VCS_STAGE_ROW_HEIGHT (65)
 #elif HELIO_MOBILE
@@ -186,7 +184,7 @@ void StageComponent::clearSelection()
 
 void StageComponent::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (auto *head = dynamic_cast<Head *>(source))
+    if (auto *head = dynamic_cast<VCS::Head *>(source))
     {
         if (head->isRebuildingDiff())
         {
