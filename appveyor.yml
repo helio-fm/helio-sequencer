@@ -6,9 +6,8 @@ branches:
   - /^\d+\.?\d+\.?\d*$/
   - feature/unity-builds
 skip_tags: false
-image: Visual Studio 2017
-platform:
-  - x64
+image: Visual Studio 2019 Preview
+platform: x64
 clone_depth: 1
 environment:
   encrypted_deploy_key:
@@ -17,8 +16,8 @@ environment:
     secure: NDyE8YO3Btbxfw7IPI5B9CHCT+NxWKCeI1CoQNBp+BZ64wXV7JAJ7abRAvXhcj0zIQwfVoqCs4/BDhOrcHV/PC6cyi+rMtOo98LyHOpaud8CopzCdeYT+C43zpY6bGK2AyCdbTC44x5ustp3dMWHFA==
   encrypted_codesign_pwd:
     secure: IIXk6ss1lD+C6AFr8w4nZsuiEr3JrUJvGiDFCwnQbRiFP/9B59ivjV6PKY9xzmSU
-  artifact_32_bit: Projects\VisualStudio2017\Win32\Release 32-bit\App\Helio.exe
-  artifact_64_bit: Projects\VisualStudio2017\x64\Release 64-bit\App\Helio.exe
+  artifact_32_bit: Projects\VisualStudio2019\Win32\Release32\App\Helio.exe
+  artifact_64_bit: Projects\VisualStudio2019\x64\Release64\App\Helio.exe
   artifact_installer: Projects\Deployment\Windows\installer.exe
   deploy_host: deploy@helio.fm
   deploy_path: /opt/musehackers/files/ci
@@ -38,8 +37,8 @@ cache: ThirdParty\ASIO
 # A hack
 build: off
 test_script:
-- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat" && ECHO "x64 building..." && msbuild Projects\VisualStudio2017\Helio.sln /t:Build /p:Configuration="Release 64-bit";Platform=x64
-- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat" && ECHO "x32 building..." && msbuild Projects\VisualStudio2017\Helio.sln /t:Build /p:Configuration="Release 32-bit";Platform=Win32
+- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat" && ECHO "x64 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release64;Platform=x64
+- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat" && ECHO "x32 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release32;Platform=Win32
 - if /I "%APPVEYOR_REPO_TAG%" == "false" set APPVEYOR_REPO_TAG_NAME=dev
 deploy_script:
 # Sign and deploy 64-bit portable version
