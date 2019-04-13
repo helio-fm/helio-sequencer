@@ -1373,7 +1373,7 @@
                customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;  &#9;&lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;  &#9;&lt;string&gt;public.app-category.music&lt;/string&gt;&#10;  &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
                documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8"
-               useHeaderMap="0">
+               useHeaderMap="0" unityBuild="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxCompatibility="10.7 SDK" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
