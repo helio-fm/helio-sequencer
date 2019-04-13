@@ -3,7 +3,8 @@ branches:
   only:
   - master
   - develop
-  - /^\d+\.?\d+\.?\d*$/  
+  - /^\d+\.?\d+\.?\d*$/
+  - feature/unity-builds
 skip_tags: false
 image: Visual Studio 2017
 platform:

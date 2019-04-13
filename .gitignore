@@ -6,6 +6,7 @@
 *.db
 *.dmg
 *.exe
+*.filters
 *.gch
 *.idb
 *.ilk

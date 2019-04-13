@@ -32,8 +32,6 @@
 #include "HelioTheme.h"
 #include "Workspace.h"
 #include "MainLayout.h"
-
-#define THEME_SETTINGS_ROW_HEIGHT (46)
 //[/MiscUserDefs]
 
 UserInterfaceSettings::UserInterfaceSettings()

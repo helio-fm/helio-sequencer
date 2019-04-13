@@ -153,11 +153,6 @@ ELSEIF(JUCE_BUILD_CONFIGURATION MATCHES "RELEASE")
         "../../../Source/UI/Themes"
     )
 
-    if(NOT (ANDROID_ABI STREQUAL "mips" OR ANDROID_ABI STREQUAL "mips64"))
-        SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -flto")
-        SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto")
-        SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto")
-    ENDIF(NOT (ANDROID_ABI STREQUAL "mips" OR ANDROID_ABI STREQUAL "mips64"))
 ELSE(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
     MESSAGE( FATAL_ERROR "No matching build-configuration found." )
 ENDIF(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
@@ -299,18 +294,6 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/Network/Services/SessionService.h"
     "../../../Source/Core/Network/Network.cpp"
     "../../../Source/Core/Network/Network.h"
-    "../../../Source/Core/Scripting/KeySignatureClass.cpp"
-    "../../../Source/Core/Scripting/KeySignatureClass.h"
-    "../../../Source/Core/Scripting/NoteClass.cpp"
-    "../../../Source/Core/Scripting/NoteClass.h"
-    "../../../Source/Core/Scripting/ScaleClass.cpp"
-    "../../../Source/Core/Scripting/ScaleClass.h"
-    "../../../Source/Core/Scripting/ScriptingHelpers.cpp"
-    "../../../Source/Core/Scripting/ScriptingHelpers.h"
-    "../../../Source/Core/Scripting/SelectionTransformExecutor.cpp"
-    "../../../Source/Core/Scripting/SelectionTransformExecutor.h"
-    "../../../Source/Core/Scripting/TimeSignatureClass.cpp"
-    "../../../Source/Core/Scripting/TimeSignatureClass.h"
     "../../../Source/Core/Serialization/Autosaver.cpp"
     "../../../Source/Core/Serialization/Autosaver.h"
     "../../../Source/Core/Serialization/Document.cpp"
@@ -735,12 +718,14 @@ add_library( ${BINARY_NAME}
     "../../../Source/UI/Sequencer/Sidebars/SequencerSidebarLeft.h"
     "../../../Source/UI/Sequencer/Sidebars/SequencerSidebarRight.cpp"
     "../../../Source/UI/Sequencer/Sidebars/SequencerSidebarRight.h"
+    "../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationComponent.h"
     "../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationLargeComponent.cpp"
     "../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationLargeComponent.h"
     "../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationSmallComponent.cpp"
     "../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationSmallComponent.h"
     "../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.cpp"
     "../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.h"
+    "../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureComponent.h"
     "../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureLargeComponent.cpp"
     "../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureLargeComponent.h"
     "../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureSmallComponent.cpp"
@@ -754,6 +739,7 @@ add_library( ${BINARY_NAME}
     "../../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScroller.h"
     "../../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.cpp"
     "../../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.h"
+    "../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureComponent.h"
     "../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureLargeComponent.cpp"
     "../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureLargeComponent.h"
     "../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureSmallComponent.cpp"
@@ -837,6 +823,7 @@ add_library( ${BINARY_NAME}
     "../../Projucer/JuceLibraryCode/include_juce_gui_extra.cpp"
     "../../Projucer/JuceLibraryCode/include_juce_opengl.cpp"
     "../../Projucer/JuceLibraryCode/JuceHeader.h"
+    "../../Projucer/JuceLibraryCode/UnityBuild.cpp"
 )
 
 set_source_files_properties("../../../Source/Core/Audio/BuiltIn/BuiltInSynthAudioPlugin.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -917,12 +904,6 @@ set_source_files_properties("../../../Source/Core/Network/Services/ProjectSyncSe
 set_source_files_properties("../../../Source/Core/Network/Services/ResourceSyncService.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/Services/SessionService.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/Network.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/Scripting/KeySignatureClass.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/Scripting/NoteClass.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/Scripting/ScaleClass.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/Scripting/ScriptingHelpers.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/Scripting/SelectionTransformExecutor.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/Scripting/TimeSignatureClass.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Serialization/Autosaver.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Serialization/Document.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Serialization/DocumentHelpers.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -1152,9 +1133,11 @@ set_source_files_properties("../../../Source/UI/Sequencer/PianoRoll/NoteResizerR
 set_source_files_properties("../../../Source/UI/Sequencer/PianoRoll/PianoRoll.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/Sidebars/SequencerSidebarLeft.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/Sidebars/SequencerSidebarRight.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationLargeComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationSmallComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureLargeComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureSmallComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignaturesProjectMap.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -1162,6 +1145,7 @@ set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/PianoMap/Pian
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapNoteComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScroller.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureLargeComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureSmallComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignaturesProjectMap.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -1200,6 +1184,7 @@ set_source_files_properties("../../../Source/Common.h" PROPERTIES HEADER_FILE_ON
 set_source_files_properties("../../Projucer/JuceLibraryCode/AppConfig.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../Projucer/JuceLibraryCode/BinaryData.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../Projucer/JuceLibraryCode/JuceHeader.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../Projucer/JuceLibraryCode/UnityBuild.cpp" PROPERTIES HEADER_FILE_ONLY TRUE)
 
 find_library(log "log")
 find_library(android "android")

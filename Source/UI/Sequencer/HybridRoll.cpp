@@ -164,8 +164,8 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->addAndMakeVisible(this->lassoComponent.get());
 
 #if HYBRID_ROLL_LISTENS_LONG_TAP
-    this->longTapController = new LongTapController(*this);
-    this->addMouseListener(this->longTapController, true); // true = listens child events as well
+    this->longTapController.reset(new LongTapController(*this));
+    this->addMouseListener(this->longTapController.get(), true); // true = listens child events as well
 #endif
 
     this->multiTouchController.reset(new MultiTouchController(*this));
@@ -200,7 +200,7 @@ HybridRoll::~HybridRoll()
     this->removeMouseListener(this->multiTouchController.get());
 
 #if HYBRID_ROLL_LISTENS_LONG_TAP
-    this->removeMouseListener(this->longTapController);
+    this->removeMouseListener(this->longTapController.get());
 #endif
 }
 

@@ -285,30 +285,6 @@
 			isa = PBXBuildFile;
 			fileRef = 4670394CFE390403650D5283;
 		};
-		3996DF73E92D602F55F2A207 = {
-			isa = PBXBuildFile;
-			fileRef = 742F803A2AD8C71EAC9E3181;
-		};
-		2A0528B1510A7C36FA6C9F96 = {
-			isa = PBXBuildFile;
-			fileRef = 9BDDEDD7B4763049E6870176;
-		};
-		39DFCED60CBF424724DAF249 = {
-			isa = PBXBuildFile;
-			fileRef = 6A18FA0DC0646487F66D42E5;
-		};
-		BAEF2D8E2FCE5444762DC020 = {
-			isa = PBXBuildFile;
-			fileRef = 73DD782A5A4829E76C05C980;
-		};
-		65007D27279F042AD3C53847 = {
-			isa = PBXBuildFile;
-			fileRef = ADC8F0FC200BEAE0F5787542;
-		};
-		35FABF6A248FD2E587DBBAA8 = {
-			isa = PBXBuildFile;
-			fileRef = F993F0A069E02267A9C1766F;
-		};
 		14CDA51A2C4105F281DCB3ED = {
 			isa = PBXBuildFile;
 			fileRef = C82D4D9E856FA31D46D35BE9;
@@ -3006,6 +2982,13 @@
 			path = ../../Source/Core/Undo/Actions/NoteActions.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		496A9B0ECD248530B795F781 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TimeSignatureComponent.h;
+			path = ../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureComponent.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		49987B78C41C676C03668DA5 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.flac;
@@ -3342,6 +3325,13 @@
 			path = "../Projucer/JuceLibraryCode/include_juce_audio_basics.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		5935215BFC47DB5094F50454 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = UnityBuild.cpp;
+			path = ../Projucer/JuceLibraryCode/UnityBuild.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		599C4137F2C6F278E1FDECCC = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3573,13 +3563,6 @@
 			path = ../../Source/UI/Popups/SuccessTooltip.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		6622768C26D6DE29655AD151 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = KeySignatureClass.h;
-			path = ../../Source/Core/Scripting/KeySignatureClass.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		66AA9EB580A65E3211273BFC = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -3690,13 +3673,6 @@
 			lastKnownFileType = file.svg;
 			name = cursorTool.svg;
 			path = ../../Resources/Icons/cursorTool.svg;
-			sourceTree = "SOURCE_ROOT";
-		};
-		6A18FA0DC0646487F66D42E5 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ScaleClass.cpp;
-			path = ../../Source/Core/Scripting/ScaleClass.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		6B2627203925C88760E0EE40 = {
@@ -3902,25 +3878,18 @@
 			path = ../../Resources/Icons/orchestraPit.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		7329E7316F309C48D4E6E8C0 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = KeySignatureComponent.h;
+			path = ../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureComponent.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		73BDC50FF6F7B6A7A692D3BB = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = CutPointMark.cpp;
 			path = ../../Source/UI/Sequencer/Helpers/CutPointMark.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		73DD782A5A4829E76C05C980 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ScriptingHelpers.cpp;
-			path = ../../Source/Core/Scripting/ScriptingHelpers.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		742F803A2AD8C71EAC9E3181 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = KeySignatureClass.cpp;
-			path = ../../Source/Core/Scripting/KeySignatureClass.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		74BB7217B62957723AB0F2CE = {
@@ -4131,13 +4100,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = MenuItemComponentMarker.h;
 			path = ../../Source/UI/Menus/Base/MenuItemComponentMarker.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		7F37F4DC7E7062A5642994BB = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SelectionTransformExecutor.h;
-			path = ../../Source/Core/Scripting/SelectionTransformExecutor.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7F7718F047E4AE1173864E5F = {
@@ -4413,13 +4375,6 @@
 			path = ../../Source/UI/Common/AudioMonitors/SpectrogramAudioMonitorComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		8C2CBADF850B16E4986E5E2C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ScaleClass.h;
-			path = ../../Source/Core/Scripting/ScaleClass.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		8C7D1515483F4788ADB6D0F0 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -4539,13 +4494,6 @@
 			path = ../../Source/UI/Sequencer/Helpers/PatternOperations.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		90EF19DC3A3DA1E9E82D2FA3 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ScriptingHelpers.h;
-			path = ../../Source/Core/Scripting/ScriptingHelpers.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		90F6ECDD266286772569A50C = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -4600,13 +4548,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = ShadowUpwards.h;
 			path = ../../Source/UI/Themes/ShadowUpwards.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		92E0E5BB3DAD95EB9CA722B0 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = NoteClass.h;
-			path = ../../Source/Core/Scripting/NoteClass.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		931C9A10356EBEF33EC9B8B2 = {
@@ -4819,13 +4760,6 @@
 			path = ../../Source/UI/Dialogs/RenderDialog.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		9BDDEDD7B4763049E6870176 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = NoteClass.cpp;
-			path = ../../Source/Core/Scripting/NoteClass.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		9C1B795932802974FD982B39 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4978,13 +4912,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = TimeSignatureDialog.h;
 			path = ../../Source/UI/Dialogs/TimeSignatureDialog.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		A4D83766029C762A879E64FA = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = TimeSignatureClass.h;
-			path = ../../Source/Core/Scripting/TimeSignatureClass.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		A533B6E5A65824292786111C = {
@@ -5181,13 +5108,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ScriptsManager.cpp;
 			path = ../../Source/Core/Configuration/ResourceManagers/ScriptsManager.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		ADC8F0FC200BEAE0F5787542 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = SelectionTransformExecutor.cpp;
-			path = ../../Source/Core/Scripting/SelectionTransformExecutor.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		AE27C22BE77524C3D0E07821 = {
@@ -6520,6 +6440,13 @@
 			path = ../../Resources/Samples/C2v9.flac;
 			sourceTree = "SOURCE_ROOT";
 		};
+		EE8C8FBD4E25BF0F9FE05609 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = AnnotationComponent.h;
+			path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationComponent.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		EFDF614AC911F9FF7FCF6CC6 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -6749,13 +6676,6 @@
 			lastKnownFileType = file.svg;
 			name = local.svg;
 			path = ../../Resources/Icons/local.svg;
-			sourceTree = "SOURCE_ROOT";
-		};
-		F993F0A069E02267A9C1766F = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TimeSignatureClass.cpp;
-			path = ../../Source/Core/Scripting/TimeSignatureClass.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		F9CE211DEEE1E9F878A2D024 = {
@@ -7287,25 +7207,6 @@
 			name = Network;
 			sourceTree = "<group>";
 		};
-		60E1C575916DCC17F061FA84 = {
-			isa = PBXGroup;
-			children = (
-				742F803A2AD8C71EAC9E3181,
-				6622768C26D6DE29655AD151,
-				9BDDEDD7B4763049E6870176,
-				92E0E5BB3DAD95EB9CA722B0,
-				6A18FA0DC0646487F66D42E5,
-				8C2CBADF850B16E4986E5E2C,
-				73DD782A5A4829E76C05C980,
-				90EF19DC3A3DA1E9E82D2FA3,
-				ADC8F0FC200BEAE0F5787542,
-				7F37F4DC7E7062A5642994BB,
-				F993F0A069E02267A9C1766F,
-				A4D83766029C762A879E64FA,
-			);
-			name = Scripting;
-			sourceTree = "<group>";
-		};
 		2B9976C1EA8C1E239FD743D9 = {
 			isa = PBXGroup;
 			children = (
@@ -7483,7 +7384,6 @@
 				A19D84E3B701411F9C0A109B,
 				565343188A28FFC332B24DB8,
 				0CE852AB148814B7C53B663F,
-				60E1C575916DCC17F061FA84,
 				2B9976C1EA8C1E239FD743D9,
 				4534D2D57E1CA784690E4F98,
 				E8A5BF056EAD41B2EBBA62C9,
@@ -8005,6 +7905,7 @@
 		046878B21EC1906A07B37EC0 = {
 			isa = PBXGroup;
 			children = (
+				EE8C8FBD4E25BF0F9FE05609,
 				CF13F5D5D9FCFC2C72DEA400,
 				202CB4EFBC0D73D4761C5473,
 				1ABF737F5E152538C6BE6699,
@@ -8018,6 +7919,7 @@
 		9E2F138F7CBFA813B62F500A = {
 			isa = PBXGroup;
 			children = (
+				7329E7316F309C48D4E6E8C0,
 				DE118884DE291459F2828CB0,
 				9341F7A7129BAAD48BB57835,
 				2E6FF240C84C8A6BD97C4578,
@@ -8045,6 +7947,7 @@
 		D4D20CDD3ED97D12E6D04980 = {
 			isa = PBXGroup;
 			children = (
+				496A9B0ECD248530B795F781,
 				709311AF49BA88E766F5A925,
 				ACDB12592131B47B52B4708D,
 				3801A0A74563FA342C7CC07F,
@@ -8218,8 +8121,9 @@
 				4DC24E231ED4FF0DD1223930,
 				3590821780CD003952E75600,
 				87F0954F4480A8A9C45B00F6,
+				5935215BFC47DB5094F50454,
 			);
-			name = "JUCE Library Code";
+			name = "Generated Code";
 			sourceTree = "<group>";
 		};
 		7B2D429A428AE3B32770A452 = {
@@ -8487,7 +8391,6 @@
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.helio;
@@ -8681,12 +8584,6 @@
 				9DC96E8658645657A026B2BC,
 				DABA22D2A891D4D2676D9813,
 				06765B775BCEEAB2B23B278F,
-				3996DF73E92D602F55F2A207,
-				2A0528B1510A7C36FA6C9F96,
-				39DFCED60CBF424724DAF249,
-				BAEF2D8E2FCE5444762DC020,
-				65007D27279F042AD3C53847,
-				35FABF6A248FD2E587DBBAA8,
 				14CDA51A2C4105F281DCB3ED,
 				CA9439D3EC219A2961F1C81A,
 				DD4735017CE80317D171F225,
@@ -8976,7 +8873,7 @@
 		08DB4A16C7B3991E0F547761 = {
 			isa = PBXProject;
 			buildConfigurationList = CBBEDDA3CEDC22AE3C172D11;
-			attributes = { LastUpgradeCheck = 0930; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1010; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = C26CB8AD40490BB25FE36466;
