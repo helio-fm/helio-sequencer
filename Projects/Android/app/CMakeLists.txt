@@ -23,6 +23,7 @@ IF(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
     add_definitions("-DDEBUG=1" "-D_DEBUG=1")
     include_directories( AFTER
         "../../Projucer/JuceLibraryCode"
+        "../../../ThirdParty/JUCE/modules"
         "../../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"
         "../../../ThirdParty/ASIO/common"
         "../../../Source"
@@ -90,6 +91,7 @@ ELSEIF(JUCE_BUILD_CONFIGURATION MATCHES "RELEASE")
     add_definitions("-DNDEBUG=1")
     include_directories( AFTER
         "../../Projucer/JuceLibraryCode"
+        "../../../ThirdParty/JUCE/modules"
         "../../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"
         "../../../ThirdParty/ASIO/common"
         "../../../Source"

@@ -11,7 +11,9 @@
 *.idb
 *.ilk
 *.iml
+*.iobj
 *.ipch
+*.ipdb
 *.lib
 *.log
 *.mid
