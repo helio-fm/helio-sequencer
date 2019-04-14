@@ -22,9 +22,9 @@ class AudioMonitor;
 #include "SequencerLayout.h"
 
 #define SPECTROGRAM_BUFFER_SIZE (SEQUENCER_SIDEBAR_WIDTH / 2)
-#define SPECTROGRAM_NUM_BANDS (SEQUENCER_SIDEBAR_WIDTH / 2)
+#define SPECTROGRAM_NUM_BANDS (50)
 
-class SpectrogramAudioMonitorComponent :
+class SpectrogramAudioMonitorComponent final :
     public Component, private Thread, private AsyncUpdater
 {
 public:

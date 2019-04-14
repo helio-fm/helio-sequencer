@@ -21,7 +21,8 @@
 
 #define GENERIC_METER_NUM_BANDS 11
 
-class GenericAudioMonitorComponent : public Component, private Thread, private AsyncUpdater
+class GenericAudioMonitorComponent final :
+    public Component, private Thread, private AsyncUpdater
 {
 public:
 
