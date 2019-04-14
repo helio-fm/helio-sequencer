@@ -303,11 +303,6 @@ void RendererThread::run()
         const ScopedLock sl(this->writerLock);
         this->writer = nullptr;
     }
-    
-    if (! this->threadShouldExit())
-    {
-        // dirty hack
-        App::Workspace().getAudioCore().unmute();
-        App::Workspace().getAudioCore().unmute();
-    }
+
+    App::Workspace().getAudioCore().setAwake();
 }

@@ -17,6 +17,7 @@
 
 #pragma once
 
+class SleepTimer;
 class OrchestraPit;
 class PlayerThread;
 class PlayerThreadPool;
@@ -34,7 +35,7 @@ class Transport final : public Serializable,
 {
 public:
 
-    explicit Transport(OrchestraPit &orchestraPit);
+    Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer);
     ~Transport() override;
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
@@ -79,7 +80,7 @@ public:
     //===------------------------------------------------------------------===//
     
     void previewMidiMessage(const String &trackId, const MidiMessage &message) const;
-    void stopSound(const String &trackId) const;
+    void stopSound(const String &trackId = "") const;
 
     void allNotesControllersAndSoundOff() const;
     
@@ -144,6 +145,7 @@ protected:
 private:
     
     OrchestraPit &orchestra;
+    SleepTimer &sleepTimer;
 
     ScopedPointer<PlayerThreadPool> player;
     ScopedPointer<RendererThread> renderer;

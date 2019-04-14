@@ -22,10 +22,57 @@ class AudioMonitor;
 #include "Instrument.h"
 #include "OrchestraPit.h"
 
+class SleepTimer : private Timer
+{
+public:
+
+    void setCanSleepAfter(int timeoutMs = 0)
+    {
+        if (timeoutMs < 0)
+        {
+            this->stopTimer();
+            this->awakeNow();
+        }
+        else if (timeoutMs == 0)
+        {
+            this->stopTimer();
+            this->sleepNow();
+        }
+        else
+        {
+            this->startTimer(timeoutMs);
+        }
+    }
+
+    void setAwake()
+    {
+        this->stopTimer();
+        this->awakeNow();
+    }
+
+protected:
+
+    virtual bool canSleepNow() = 0;
+    virtual void sleepNow() = 0;
+    virtual void awakeNow() = 0;
+
+private:
+
+    void timerCallback() override
+    {
+        if (this->canSleepNow())
+        {
+            this->stopTimer();
+            this->sleepNow();
+        }
+    }
+};
+
 class AudioCore :
     public Serializable,
     public ChangeBroadcaster,
-    public OrchestraPit
+    public OrchestraPit,
+    public SleepTimer
 {
 public:
 
@@ -34,9 +81,6 @@ public:
     AudioCore();
     ~AudioCore() override;
     
-    void mute();
-    void unmute();
-
     //===------------------------------------------------------------------===//
     // Instruments
     //===------------------------------------------------------------------===//
@@ -116,6 +160,12 @@ public:
     
 private:
 
+    bool canSleepNow() noexcept override;
+    void sleepNow() override;
+    void awakeNow() override;
+    void disconnectAllAudioCallbacks();
+    void reconnectAllAudioCallbacks();
+
     void addInstrumentToDevice(Instrument *instrument);
     void removeInstrumentFromDevice(Instrument *instrument);
 
@@ -129,6 +179,8 @@ private:
     AudioDeviceManager deviceManager;
 
     StringArray customMidiInputs;
+
+    Atomic<bool> isMuted = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCore)
     JUCE_DECLARE_WEAK_REFERENCEABLE(AudioCore)

@@ -32,9 +32,11 @@
 #include "PlayerThreadPool.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
+#define SOUND_SLEEP_DELAY_MS (10000)
 
-Transport::Transport(OrchestraPit &orchestraPit) :
+Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     orchestra(orchestraPit),
+    sleepTimer(sleepTimer),
     seekPosition(0.0),
     trackStartMs(0.0),
     trackEndMs(0.0),
@@ -138,6 +140,7 @@ void Transport::seekToPosition(double absPosition)
 
 void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitToLayer)
 {
+    this->sleepTimer.setAwake();
     this->rebuildSequencesIfNeeded();
     
     const double targetFlatTime = this->getTotalTime() * absTrackPosition;
@@ -147,9 +150,9 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
     {
         for (int j = 0; j < seq->midiMessages.getNumEvents(); ++j)
         {
-            MidiMessageSequence::MidiEventHolder *noteOnHolder = seq->midiMessages.getEventPointer(j);
+            auto *noteOnHolder = seq->midiMessages.getEventPointer(j);
             
-            if (MidiMessageSequence::MidiEventHolder *noteOffHolder = noteOnHolder->noteOffObject)
+            if (auto *noteOffHolder = noteOnHolder->noteOffObject)
             {
                 const double noteOn(noteOnHolder->message.getTimeStamp());
                 const double noteOff(noteOffHolder->message.getTimeStamp());
@@ -163,6 +166,8 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
             }
         }
     }
+
+    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 
 // Only used in a key signature dialog to test how scales sound
@@ -196,7 +201,9 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
 
 void Transport::startPlayback()
 {
+    this->sleepTimer.setAwake();
     this->rebuildSequencesIfNeeded();
+
     if (this->player->isPlaying())
     {
         this->player->stopPlayback();
@@ -209,6 +216,7 @@ void Transport::startPlayback()
 
 void Transport::startPlaybackFragment(double absLoopStart, double absLoopEnd, bool looped)
 {
+    this->sleepTimer.setAwake();
     this->rebuildSequencesIfNeeded();
     
     if (this->player->isPlaying())
@@ -229,6 +237,7 @@ void Transport::stopPlayback()
         this->allNotesControllersAndSoundOff();
         this->seekToPosition(this->getSeekPosition());
         this->broadcastStop();
+        this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
     }
 }
 
@@ -249,8 +258,8 @@ void Transport::startRender(const String &fileName)
         return;
     }
     
-    App::Workspace().getAudioCore().mute();
-    
+    this->sleepTimer.setCanSleepAfter(0);
+
     File file(File::getCurrentWorkingDirectory().getChildFile(fileName));
     this->renderer->startRecording(file);
 }
@@ -264,10 +273,7 @@ void Transport::stopRender()
     
     this->renderer->stop();
     
-    // a dirty hack
-    App::Workspace().getAudioCore().unmute();
-    //this->allNotesControllersAndSoundOff();
-    App::Workspace().getAudioCore().unmute();
+    this->sleepTimer.setAwake();
 }
 
 bool Transport::isRendering() const
@@ -329,24 +335,42 @@ void Transport::MidiMessageDelayedPreview::timerCallback()
 
 void Transport::previewMidiMessage(const String &trackId, const MidiMessage &message) const
 {
+    this->sleepTimer.setAwake();
     this->messagePreviewQueue.previewMessage(message, this->linksCache[trackId]);
+    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+}
+
+static void stopSoundForInstrument(Instrument *instrument)
+{
+    auto &collector = instrument->getProcessorPlayer().getMidiMessageCollector();
+    collector.addMessageToQueue(MidiMessage::allControllersOff(1).withTimeStamp(TIME_NOW));
+    collector.addMessageToQueue(MidiMessage::allNotesOff(1).withTimeStamp(TIME_NOW));
+    collector.addMessageToQueue(MidiMessage::allSoundOff(1).withTimeStamp(TIME_NOW));
 }
 
 void Transport::stopSound(const String &trackId) const
 {
+    this->sleepTimer.setAwake();
     this->messagePreviewQueue.cancelPendingPreview();
 
     if (Instrument *instrument = this->linksCache[trackId])
     {
-        auto &collector = instrument->getProcessorPlayer().getMidiMessageCollector();
-        collector.addMessageToQueue(MidiMessage::allControllersOff(1).withTimeStamp(TIME_NOW));
-        collector.addMessageToQueue(MidiMessage::allNotesOff(1).withTimeStamp(TIME_NOW));
-        collector.addMessageToQueue(MidiMessage::allSoundOff(1).withTimeStamp(TIME_NOW));
+        stopSoundForInstrument(instrument);
     }
+    else
+    {
+        for (const auto &link : this->linksCache)
+        {
+            stopSoundForInstrument(link.second);
+        }
+    }
+
+    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 
 void Transport::allNotesControllersAndSoundOff() const
 {
+    this->sleepTimer.setAwake();
     this->messagePreviewQueue.cancelPendingPreview();
 
     static const int c = 1;
@@ -372,6 +396,8 @@ void Transport::allNotesControllersAndSoundOff() const
             }
         }
     }
+
+    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 
 

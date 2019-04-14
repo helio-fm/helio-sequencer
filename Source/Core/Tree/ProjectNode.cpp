@@ -85,17 +85,19 @@ ProjectNode::ProjectNode(const File &existingFile) :
 void ProjectNode::initialize()
 {
     this->isTracksCacheOutdated = true;
-    
+
     this->undoStack = new UndoStack(*this);
-    
+
     this->autosaver = new Autosaver(*this);
 
-    this->transport = new Transport(App::Workspace().getAudioCore());
+    auto &orchestra = App::Workspace().getAudioCore();
+    auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
+    this->transport = new Transport(orchestra, audioCoreSleepTimer);
     this->addListener(this->transport);
-        
+
     this->info = new ProjectInfo(*this);
     this->vcsItems.add(this->info);
-    
+
     this->timeline = new ProjectTimeline(*this, "Project Timeline");
     this->vcsItems.add(this->timeline);
 
@@ -107,7 +109,7 @@ void ProjectNode::initialize()
 ProjectNode::~ProjectNode()
 {
     this->getDocument()->save();
-    
+
     this->transport->stopPlayback();
     this->transport->stopRender();
 

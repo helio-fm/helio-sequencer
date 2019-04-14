@@ -46,21 +46,52 @@ AudioCore::~AudioCore()
     this->deviceManager.closeAudioDevice();
 }
 
-void AudioCore::mute()
+bool AudioCore::canSleepNow() noexcept
 {
-    for (auto instrument : this->instruments)
+    // SleepTimer is used to disconnect all callbacks after some delay (i.e. sleep mode),
+    // but first we make sure the device is not making any sound, otherwise we'll wait more:
+    return this->deviceManager.getOutputLevelGetter()->getCurrentLevel() == 0.0;
+}
+
+void AudioCore::sleepNow()
+{
+    Logger::writeToLog("Audio core sleeps");
+    this->disconnectAllAudioCallbacks();
+}
+
+void AudioCore::awakeNow()
+{
+    this->reconnectAllAudioCallbacks();
+}
+
+void AudioCore::disconnectAllAudioCallbacks()
+{
+    if (!this->isMuted.get())
     {
-        this->removeInstrumentFromDevice(instrument);
+        this->isMuted = true;
+
+        // Audio monitor is especially CPU-hungry, as it does FFT all the time:
+        this->deviceManager.removeAudioCallback(this->audioMonitor);
+
+        for (auto instrument : this->instruments)
+        {
+            this->removeInstrumentFromDevice(instrument);
+        }
     }
 }
 
-void AudioCore::unmute()
+void AudioCore::reconnectAllAudioCallbacks()
 {
-    this->mute(); // на всякий случай, чтоб 2 раза инструменты не добавлялись
-
-    for (auto instrument : this->instruments)
+    if (this->isMuted.get())
     {
-        this->addInstrumentToDevice(instrument);
+        for (auto instrument : this->instruments)
+        {
+            this->addInstrumentToDevice(instrument);
+        }
+
+        this->deviceManager.addAudioCallback(this->audioMonitor);
+
+        this->isMuted = false;
     }
 }
 

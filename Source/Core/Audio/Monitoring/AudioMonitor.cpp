@@ -19,13 +19,7 @@
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 
-#define AUDIO_MONITOR_SPECTRUM_SIZE                 512
-#define AUDIO_MONITOR_DEFAULT_SAMPLERATE            44100
-#define AUDIO_MONITOR_CLIP_THRESHOLD                0.995f
-#define AUDIO_MONITOR_OVERSATURATION_THRESHOLD      0.5f
-#define AUDIO_MONITOR_OVERSATURATION_RATE           4.f
-
-class ClippingWarningAsyncCallback final  : public AsyncUpdater
+class ClippingWarningAsyncCallback final : public AsyncUpdater
 {
 public:
     
@@ -68,11 +62,10 @@ private:
 AudioMonitor::AudioMonitor() :
     fft(),
     spectrumSize(AUDIO_MONITOR_SPECTRUM_SIZE),
-    sampleRate(AUDIO_MONITOR_DEFAULT_SAMPLERATE)
+    sampleRate(AUDIO_MONITOR_NUM_CHANNELS)
 {
-    zeromem(this->spectrum, sizeof(float) * AUDIO_MONITOR_MAX_CHANNELS * AUDIO_MONITOR_MAX_SPECTRUMSIZE);
-    this->asyncClippingWarning = new ClippingWarningAsyncCallback(*this);
-    this->asyncOversaturationWarning = new OversaturationWarningAsyncCallback(*this);
+    this->asyncClippingWarning.reset(new ClippingWarningAsyncCallback(*this));
+    this->asyncOversaturationWarning.reset(new OversaturationWarningAsyncCallback(*this));
 }
 
 //===----------------------------------------------------------------------===//
@@ -90,13 +83,13 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
                                          int numOutputChannels,
                                          int numSamples)
 {
-    const int numChannels = jmin(AUDIO_MONITOR_MAX_CHANNELS, numOutputChannels);
+    const int numChannels = jmin(AUDIO_MONITOR_NUM_CHANNELS, numOutputChannels);
     
     for (int channel = 0; channel < numChannels; ++channel)
     {
         this->fft.computeSpectrum(outputChannelData[channel], 0, numSamples,
-                                  this->spectrum[channel], this->spectrumSize.get(),
-                                  channel, numOutputChannels);
+            this->spectrum[channel], this->spectrumSize.get(),
+            channel, numOutputChannels);
     }
     
     for (int channel = 0; channel < numChannels; ++channel)

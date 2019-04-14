@@ -22,6 +22,9 @@ const int FFT_COSTABSIZE = (1 << FFT_COSTABBITS);
 const int FFT_TABLERANGE = (FFT_COSTABSIZE * 4);
 const int FFT_TABLEMASK  = (FFT_TABLERANGE - 1);
 
+// Make sure no consumer ever asks for a spectrum larger than that:
+#define FFT_MAX_SPECTRUM_SIZE (512)
+
 class SpectrumFFT final
 {
 public:
@@ -42,16 +45,15 @@ private:
     {
         float re;
         float im;
-    }
-    FFT_COMPLEX;
+    } FftComplex;
     
-    FFT_COMPLEX     buffer[16 * 1024];
-    float           costab[FFT_COSTABSIZE];
+    FftComplex buffer[FFT_MAX_SPECTRUM_SIZE];
+    float costab[FFT_COSTABSIZE];
     
-    inline const float          cosine(float x);
-    inline const float          sine(float x);
-    inline const unsigned int   reverse(unsigned int val, int bits);
-    inline void                 process(int bits);
+    inline const float cosine(float x);
+    inline const float sine(float x);
+    inline const unsigned int reverse(unsigned int val, int bits);
+    inline void process(int bits);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumFFT);
 };

@@ -19,8 +19,13 @@
 
 #include "SpectrumAnalyzer.h"
 
-#define AUDIO_MONITOR_MAX_CHANNELS      2
-#define AUDIO_MONITOR_MAX_SPECTRUMSIZE  512
+// 256 == we don't need that high resolution on a spectrum
+#define AUDIO_MONITOR_SPECTRUM_SIZE                 256
+#define AUDIO_MONITOR_NUM_CHANNELS                  2
+#define AUDIO_MONITOR_SAMPLE_RATE                   44100
+#define AUDIO_MONITOR_CLIP_THRESHOLD                0.995f
+#define AUDIO_MONITOR_OVERSATURATION_THRESHOLD      0.5f
+#define AUDIO_MONITOR_OVERSATURATION_RATE           4.f
 
 class AudioMonitor final : public AudioIODeviceCallback
 {
@@ -33,11 +38,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void audioDeviceAboutToStart(AudioIODevice *device) override;
-    void audioDeviceIOCallback(const float **inputChannelData,
-                               int numInputChannels,
-                               float **outputChannelData,
-                               int numOutputChannels,
-                               int numSamples) override;
+    void audioDeviceIOCallback(const float **inputChannelData, int numInputChannels,
+        float **outputChannelData, int numOutputChannels, int numSamples) override;
     void audioDeviceStopped() override;
     
     //===------------------------------------------------------------------===//
@@ -73,17 +75,17 @@ private:
 
     SpectrumFFT fft;
 
-    Atomic<float> spectrum[AUDIO_MONITOR_MAX_CHANNELS][AUDIO_MONITOR_MAX_SPECTRUMSIZE];
-    Atomic<float> peak[AUDIO_MONITOR_MAX_CHANNELS];
-    Atomic<float> rms[AUDIO_MONITOR_MAX_CHANNELS];
+    Atomic<float> spectrum[AUDIO_MONITOR_NUM_CHANNELS][AUDIO_MONITOR_SPECTRUM_SIZE];
+    Atomic<float> peak[AUDIO_MONITOR_NUM_CHANNELS];
+    Atomic<float> rms[AUDIO_MONITOR_NUM_CHANNELS];
 
     Atomic<int> spectrumSize;
     Atomic<double> sampleRate;
 
     ListenerList<ClippingListener> clippingListeners;
 
-    ScopedPointer<AsyncUpdater> asyncClippingWarning;
-    ScopedPointer<AsyncUpdater> asyncOversaturationWarning;
+    UniquePointer<AsyncUpdater> asyncClippingWarning;
+    UniquePointer<AsyncUpdater> asyncOversaturationWarning;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMonitor)
     JUCE_DECLARE_WEAK_REFERENCEABLE(AudioMonitor)

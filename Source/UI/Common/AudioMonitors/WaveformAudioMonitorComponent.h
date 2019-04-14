@@ -24,7 +24,7 @@ class AudioMonitor;
 // Set this depending on component width (or sidebar width):
 #define WAVEFORM_METER_BUFFER_SIZE (SEQUENCER_SIDEBAR_WIDTH / 2)
 
-class WaveformAudioMonitorComponent :
+class WaveformAudioMonitorComponent final :
     public Component, private Thread, private AsyncUpdater
 {
 public:

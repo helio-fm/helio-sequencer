@@ -65,8 +65,8 @@ String Instrument::getInstrumentHash() const
     
     for (int i = 0; i < numNodes; ++i)
     {
-        const auto &nodeHash = this->processorGraph->getNode(i)->properties["hash"].toString();
-        instrumentId += nodeHash;
+        instrumentId += this->processorGraph->getNode(i)->
+            properties[Serialization::Audio::nodeHash].toString();
     }
     
     return String(CompileTimeHash(instrumentId.toUTF8()));

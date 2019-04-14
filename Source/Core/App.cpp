@@ -571,7 +571,7 @@ void App::suspended()
     if (this->workspace != nullptr)
     {
         this->workspace->stopPlaybackForAllProjects();
-        this->workspace->getAudioCore().mute();
+        this->workspace->getAudioCore().setCanSleepAfter(0);
         this->workspace->autosave();
     }
     
@@ -584,7 +584,7 @@ void App::resumed()
 {
     if (this->workspace != nullptr)
     {
-        this->workspace->getAudioCore().unmute();
+        this->workspace->getAudioCore().setAwake();
     }
 
 #if JUCE_ANDROID

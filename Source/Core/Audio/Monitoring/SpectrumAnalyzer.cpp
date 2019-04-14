@@ -115,15 +115,12 @@ inline const unsigned int SpectrumFFT::reverse(unsigned int val, int bits)
 
 inline void SpectrumFFT::process(int bits)
 {
-    int    count, count2, count3;
-    unsigned        i1;
-    int             i2, i3, i4, y;
+    int             count, count2, count3;
     int             fftlen = 1 << bits;
+    unsigned        i1 = fftlen / 2;
+    int             i2 = 1, i3, i4, y;
     float           a1, a2, b1, b2, z1, z2;
-    float           oneoverN = 1.0f / fftlen;
-    
-    i1 = fftlen / 2;
-    i2 = 1;
+    float           oneOverN = 1.0f / fftlen;
     
     for (count = 0; count < bits; count++)
     {
@@ -133,23 +130,22 @@ inline void SpectrumFFT::process(int bits)
         for (count2 = 0; count2 < i2; count2++)
         {
             y  = this->reverse(i3 / static_cast<int>(i1), bits);
-            
-            z1 =  this->cosine(static_cast<float>(y) * oneoverN);
-            z2 =   -this->sine(static_cast<float>(y) * oneoverN);
-            
+            z1 = this->cosine(static_cast<float>(y) * oneOverN);
+            z2 = -this->sine(static_cast<float>(y) * oneOverN);
+
             for (count3 = i3; count3 < i4; count3++)
             {
                 a1 = this->buffer[count3].re;
                 a2 = this->buffer[count3].im;
                 
-                b1 = (z1 * this->buffer[count3+i1].re) - (z2 * this->buffer[count3+i1].im);
-                b2 = (z2 * this->buffer[count3+i1].re) + (z1 * this->buffer[count3+i1].im);
+                b1 = (z1 * this->buffer[count3 + i1].re) - (z2 * this->buffer[count3 + i1].im);
+                b2 = (z2 * this->buffer[count3 + i1].re) + (z1 * this->buffer[count3 + i1].im);
                 
                 this->buffer[count3].re = a1 + b1;
                 this->buffer[count3].im = a2 + b2;
                 
-                this->buffer[count3+i1].re = a1 - b1;
-                this->buffer[count3+i1].im = a2 - b2;
+                this->buffer[count3 + i1].re = a1 - b1;
+                this->buffer[count3 + i1].im = a2 - b2;
             }
             
             i3 += (i1 << 1);
@@ -182,10 +178,8 @@ void SpectrumFFT::computeSpectrum(float *pcmbuffer,
     // Apply Hanning window
     for (count = 0; count < length; count++)
     {
-        float window;
-        float percent = static_cast<float>(count) / static_cast<float>(length);
-        
-        window = 0.5f * (1.0f  - this->cosine(percent));
+        const float percent = static_cast<float>(count) / static_cast<float>(length);
+        const float window = 0.5f * (1.0f  - this->cosine(percent));
         
         this->buffer[count].re = pcmbuffer[pcmposition] * window;
         this->buffer[count].re /= static_cast<float>(length);
@@ -203,22 +197,9 @@ void SpectrumFFT::computeSpectrum(float *pcmbuffer,
     nyquist = (length / 2);
     for (count = 0; count < (nyquist - 1); ++count)
     {
-        float magnitude;
-        int n = count;
-        
-        n = this->reverse(n, bits);
-        
-        magnitude = 
-            FFT_SQRT((this->buffer[n].re * this->buffer[n].re)
-                + (this->buffer[n].im * this->buffer[n].im));
-        
-        magnitude *= 2.5f; 
-        
-        if (magnitude > 1.0f)
-        {
-            magnitude = 1.0f;
-        }
-        
-        spectrum[count] = magnitude;
+        const auto n = this->reverse(count, bits);
+        spectrum[count] = jmin(1.0f, 2.5f *
+            (FFT_SQRT((this->buffer[n].re * this->buffer[n].re)
+                + (this->buffer[n].im * this->buffer[n].im))));
     }
 }

@@ -17,8 +17,10 @@
 
 #pragma once
 
-struct Icons final
+class Icons final
 {
+public:
+
     using Id = uint32;
 
     static void initBuiltInImages();
