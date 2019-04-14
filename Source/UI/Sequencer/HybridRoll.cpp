@@ -1203,8 +1203,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             this->resetAllOversaturationIndicators();
         }
 
-        App::Workspace().getAudioCore().mute();
-        App::Workspace().getAudioCore().unmute();
+        this->getTransport().stopSound();
         break;
     case CommandIDs::VersionControlToggleQuickStash:
         if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
