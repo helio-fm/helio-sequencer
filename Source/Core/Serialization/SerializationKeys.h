@@ -105,6 +105,9 @@ namespace Serialization
         static const Identifier length = "len";
         static const Identifier volume = "vol";
 
+        static const Identifier mute = "mute";
+        static const Identifier solo = "solo";
+
         static const Identifier text = "text";
         static const Identifier colour = "colour";
 

@@ -19,9 +19,10 @@
 
 class Pattern;
 
-// Just an instance of a midi sequence on a certain position.
-// In future we it should have adjustable length too
-// (and a stack of parametric modifiers like user-defined arps, etc.)
+// Just an instance of a midi sequence on a certain position,
+// Optionally, with key delta, velocity multiplier, muted or soloed.
+// In future it should have adjustable length too
+// (and a stack of parametric modifiers like user-defined arps, scripts, etc.)
 
 class Clip final : public Serializable
 {
@@ -45,7 +46,9 @@ public:
     float getVelocity() const noexcept;
     const String &getId() const noexcept;
     const String &getKeyString() const noexcept;
-
+    
+    bool isMuted() const noexcept;
+    bool isSoloed() const noexcept;
     bool isValid() const noexcept;
 
     const String &getTrackId() const noexcept;
@@ -60,6 +63,8 @@ public:
     Clip withDeltaKey(int deltaKey) const;
     Clip withVelocity(float absVelocity) const;
     Clip withDeltaVelocity(float deltaVelocity) const;
+    Clip withMute(bool mute) const;
+    Clip withSolo(bool solo) const;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -84,15 +89,17 @@ public:
     static int compareElements(const Clip *const first, const Clip *const second);
 
     void applyChanges(const Clip &parameters);
-    HashCode hashCode() const noexcept;
 
 private:
 
     WeakReference<Pattern> pattern;
 
-    int key;
-    float beat;
-    float velocity;
+    int key = 0;
+    float beat = 0.f;
+    float velocity = 1.f;
+
+    bool mute = false;
+    bool solo = false;
 
     String id;
     Id createId() const noexcept;
@@ -109,9 +116,9 @@ struct ClipHash
 {
     inline HashCode operator()(const Clip &key) const noexcept
     {
-        //const HashCode code = static_cast<HashCode>(key.beat)
-        //    + static_cast<HashCode>(key.getId().hashCode());
+        // Note: see the comment for MidiEventHash in MidiEvent.h
         const auto *ptr = key.id.getCharPointer().getAddress();
         return 64 * static_cast<HashCode>(ptr[0]) + static_cast<HashCode>(ptr[1]);
+        //return static_cast<HashCode>(key.beat) + static_cast<HashCode>(key.getId().hashCode());
     }
 };

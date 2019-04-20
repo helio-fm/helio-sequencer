@@ -21,17 +21,11 @@
 #include "MidiTrack.h"
 #include "SerializationKeys.h"
 
-Clip::Clip() :
-    pattern(nullptr),
-    key(0),
-    beat(0.f),
-    velocity(1.f) {}
+Clip::Clip() : pattern(nullptr) {}
 
 Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
     pattern(owner),
-    key(0),
-    beat(roundBeat(beatVal)),
-    velocity(1.f)
+    beat(roundBeat(beatVal))
 {
     id = this->createId();
     this->updateCaches();
@@ -42,10 +36,16 @@ Clip::Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy) :
     key(parametersToCopy.key),
     beat(parametersToCopy.beat),
     velocity(parametersToCopy.velocity),
-    id(parametersToCopy.id) 
+    mute(parametersToCopy.mute),
+    solo(parametersToCopy.solo),
+    id(parametersToCopy.id)
 {
     this->updateCaches();
 }
+
+//===----------------------------------------------------------------------===//
+// Accessors
+//===----------------------------------------------------------------------===//
 
 Pattern *Clip::getPattern() const noexcept
 {
@@ -83,6 +83,16 @@ bool Clip::isValid() const noexcept
     return this->pattern != nullptr && this->id.isNotEmpty();
 }
 
+bool Clip::isMuted() const noexcept
+{
+    return this->mute;
+}
+
+bool Clip::isSoloed() const noexcept
+{
+    return this->solo;
+}
+
 const String &Clip::getTrackId() const noexcept
 {
     jassert(this->pattern);
@@ -100,6 +110,10 @@ int Clip::getTrackControllerNumber() const noexcept
     jassert(this->pattern);
     return this->pattern->getTrack()->getTrackControllerNumber();
 }
+
+//===----------------------------------------------------------------------===//
+// Builder
+//===----------------------------------------------------------------------===//
 
 Clip Clip::copyWithNewId(Pattern *newOwner) const
 {
@@ -165,14 +179,48 @@ Clip Clip::withDeltaVelocity(float deltaVelocity) const
     return other;
 }
 
+Clip Clip::withMute(bool mute) const
+{
+    Clip other(*this);
+    other.mute = mute;
+    // cannot be muted and soloed at the same time:
+    other.solo = other.solo && !mute;
+    return other;
+}
+
+Clip Clip::withSolo(bool solo) const
+{
+    Clip other(*this);
+    other.solo = solo;
+    // cannot be muted and soloed at the same time:
+    other.mute = other.mute && !solo;
+    return other;
+}
+
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
+
 ValueTree Clip::serialize() const
 {
     using namespace Serialization;
+
     ValueTree tree(Midi::clip);
     tree.setProperty(Midi::key, this->key, nullptr);
     tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
     tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
     tree.setProperty(Midi::id, this->id, nullptr);
+
+    if (this->mute)
+    {
+        tree.setProperty(Midi::mute, 1, nullptr);
+    }
+
+    if (this->solo)
+    {
+        tree.setProperty(Midi::solo, 1, nullptr);
+    }
+
     return tree;
 }
 
@@ -184,6 +232,8 @@ void Clip::deserialize(const ValueTree &tree)
     this->id = tree.getProperty(Midi::id, this->id);
     const auto vol = float(tree.getProperty(Midi::volume, VELOCITY_SAVE_ACCURACY)) / VELOCITY_SAVE_ACCURACY;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
+    this->mute = bool(tree.getProperty(Midi::mute, 0));
+    this->solo = bool(tree.getProperty(Midi::solo, 0));
     this->updateCaches();
 }
 
@@ -194,6 +244,10 @@ void Clip::reset()
     this->velocity = 1.f;
     this->updateCaches();
 }
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
 
 int Clip::compareElements(const Clip &first, const Clip &second)
 {
@@ -217,6 +271,8 @@ void Clip::applyChanges(const Clip &other)
     this->key = other.key;
     this->beat = other.beat;
     this->velocity = other.velocity;
+    this->mute = other.mute;
+    this->solo = other.solo;
     this->updateCaches();
 }
 
