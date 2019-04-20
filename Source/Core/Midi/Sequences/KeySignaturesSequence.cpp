@@ -84,7 +84,7 @@ MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &eventParams, b
     }
     else
     {
-        const auto ownedSignature = new KeySignatureEvent(this, eventParams);
+        auto *ownedSignature = new KeySignatureEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedSignature, ownedSignature);
         this->eventDispatcher.dispatchAddEvent(*ownedSignature);
         this->updateBeatRange(true);
@@ -107,7 +107,7 @@ bool KeySignaturesSequence::remove(const KeySignatureEvent &signature, bool undo
         const int index = this->midiEvents.indexOfSorted(signature, &signature);
         if (index >= 0)
         {
-            MidiEvent *const removedEvent = this->midiEvents[index];
+            auto *removedEvent = this->midiEvents.getUnchecked(index);
             this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
@@ -135,7 +135,7 @@ bool KeySignaturesSequence::change(const KeySignatureEvent &oldParams,
         const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
         if (index >= 0)
         {
-            const auto changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents[index]);
+            auto *changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents.getUnchecked(index));
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
@@ -162,8 +162,8 @@ bool KeySignaturesSequence::insertGroup(Array<KeySignatureEvent> &group, bool un
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const KeySignatureEvent &eventParams = group.getUnchecked(i);
-            const auto ownedEvent = new KeySignatureEvent(this, eventParams);
+            const KeySignatureEvent &eventParams = group.getReference(i);
+            auto *ownedEvent = new KeySignatureEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
             this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
@@ -186,11 +186,11 @@ bool KeySignaturesSequence::removeGroup(Array<KeySignatureEvent> &group, bool un
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const KeySignatureEvent &signature = group.getUnchecked(i);
+            const KeySignatureEvent &signature = group.getReference(i);
             const int index = this->midiEvents.indexOfSorted(signature, &signature);
             if (index >= 0)
             {
-                const auto removedEvent = this->midiEvents[index];
+                auto *removedEvent = this->midiEvents.getUnchecked(index);
                 this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
                 this->midiEvents.remove(index, true);
             }
@@ -218,12 +218,12 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
     {
         for (int i = 0; i < groupBefore.size(); ++i)
         {
-            const KeySignatureEvent &oldParams = groupBefore.getUnchecked(i);
-            const KeySignatureEvent &newParams = groupAfter.getUnchecked(i);
+            const KeySignatureEvent &oldParams = groupBefore.getReference(i);
+            const KeySignatureEvent &newParams = groupAfter.getReference(i);
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const auto changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents[index]);
+                auto *changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents.getUnchecked(index));
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);

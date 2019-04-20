@@ -66,7 +66,7 @@ MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &eventParams, bool 
     }
     else
     {
-        const auto ownedEvent = new AnnotationEvent(this, eventParams);
+        auto* ownedEvent = new AnnotationEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
         this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         this->updateBeatRange(true);
@@ -118,7 +118,7 @@ bool AnnotationsSequence::change(const AnnotationEvent &oldParams,
         const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
         if (index >= 0)
         {
-            const auto changedEvent = static_cast<AnnotationEvent *>(this->midiEvents[index]);
+            auto *changedEvent = static_cast<AnnotationEvent *>(this->midiEvents.getUnchecked(index));
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
@@ -145,7 +145,7 @@ bool AnnotationsSequence::insertGroup(Array<AnnotationEvent> &group, bool undoab
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const AnnotationEvent &eventParams = group.getUnchecked(i);
+            const AnnotationEvent &eventParams = group.getReference(i);
             const auto ownedEvent = new AnnotationEvent(this, eventParams);
             jassert(ownedEvent->isValid());
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
@@ -170,11 +170,11 @@ bool AnnotationsSequence::removeGroup(Array<AnnotationEvent> &group, bool undoab
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const AnnotationEvent &annotation = group.getUnchecked(i);
+            const AnnotationEvent &annotation = group.getReference(i);
             const int index = this->midiEvents.indexOfSorted(annotation, &annotation);
             if (index >= 0)
             {
-                const auto removedEvent = this->midiEvents[index];
+                auto *removedEvent = this->midiEvents.getUnchecked(index);
                 this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
                 this->midiEvents.remove(index, true);
             }
@@ -202,12 +202,12 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
     {
         for (int i = 0; i < groupBefore.size(); ++i)
         {
-            const AnnotationEvent &oldParams = groupBefore.getUnchecked(i);
-            const AnnotationEvent &newParams = groupAfter.getUnchecked(i);
+            const AnnotationEvent &oldParams = groupBefore.getReference(i);
+            const AnnotationEvent &newParams = groupAfter.getReference(i);
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const auto changedEvent = static_cast<AnnotationEvent *>(this->midiEvents[index]);
+                auto *changedEvent = static_cast<AnnotationEvent *>(this->midiEvents.getUnchecked(index));
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
@@ -264,8 +264,8 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
         return;
     }
 
-    float lastBeat = 0;
-    float firstBeat = 0;
+    float lastBeat = 0.f;
+    float firstBeat = 0.f;
 
     forEachValueTreeChildWithType(root, e, Serialization::Midi::annotation)
     {

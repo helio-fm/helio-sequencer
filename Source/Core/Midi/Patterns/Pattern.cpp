@@ -150,7 +150,7 @@ void Pattern::silentImport(const Clip &clip)
     this->updateBeatRange(false);
 }
 
-bool Pattern::insert(Clip clipParams, bool undoable)
+bool Pattern::insert(const Clip &clipParams, bool undoable)
 {
     if (undoable)
     {
@@ -169,7 +169,7 @@ bool Pattern::insert(Clip clipParams, bool undoable)
     return true;
 }
 
-bool Pattern::remove(Clip clipParams, bool undoable)
+bool Pattern::remove(const Clip &clipParams, bool undoable)
 {
     if (undoable)
     {
@@ -183,7 +183,7 @@ bool Pattern::remove(Clip clipParams, bool undoable)
         jassert(index >= 0);
         if (index >= 0)
         {
-            const auto *removedClip = this->clips[index];
+            const auto *removedClip = this->clips.getUnchecked(index);
             jassert(removedClip->isValid());
             this->notifyClipRemoved(*removedClip);
             this->clips.remove(index, true);
@@ -197,7 +197,7 @@ bool Pattern::remove(Clip clipParams, bool undoable)
     return true;
 }
 
-bool Pattern::change(Clip oldParams, Clip newParams, bool undoable)
+bool Pattern::change(const Clip &oldParams, const Clip &newParams, bool undoable)
 {
     if (undoable)
     {
@@ -211,7 +211,7 @@ bool Pattern::change(Clip oldParams, Clip newParams, bool undoable)
         jassert(index >= 0);
         if (index >= 0)
         {
-            const auto changedClip = this->clips[index];
+            auto *changedClip = this->clips.getUnchecked(index);
             changedClip->applyChanges(newParams);
             this->clips.remove(index, false);
             this->clips.addSorted(*changedClip, changedClip);
@@ -237,7 +237,7 @@ bool Pattern::insertGroup(Array<Clip> &group, bool undoable)
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const Clip &eventParams = group.getUnchecked(i);
+            const Clip &eventParams = group.getReference(i);
             const auto ownedClip = new Clip(this, eventParams);
             this->clips.addSorted(*ownedClip, ownedClip);
             this->notifyClipAdded(*ownedClip);
@@ -261,12 +261,12 @@ bool Pattern::removeGroup(Array<Clip> &group, bool undoable)
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const Clip &clip = group.getUnchecked(i);
+            const Clip &clip = group.getReference(i);
             const int index = this->clips.indexOfSorted(clip, &clip);
             jassert(index >= 0);
             if (index >= 0)
             {
-                const auto removedClip = this->clips[index];
+                auto *removedClip = this->clips.getUnchecked(index);
                 this->notifyClipRemoved(*removedClip);
                 this->clips.remove(index, true);
             }
@@ -293,13 +293,13 @@ bool Pattern::changeGroup(Array<Clip> &groupBefore, Array<Clip> &groupAfter, boo
     {
         for (int i = 0; i < groupBefore.size(); ++i)
         {
-            const Clip &oldParams = groupBefore.getUnchecked(i);
-            const Clip &newParams = groupAfter.getUnchecked(i);
+            const Clip &oldParams = groupBefore.getReference(i);
+            const Clip &newParams = groupAfter.getReference(i);
             const int index = this->clips.indexOfSorted(oldParams, &oldParams);
             jassert(index >= 0);
             if (index >= 0)
             {
-                auto *changedClip = static_cast<Clip *>(this->clips[index]);
+                auto *changedClip = this->clips.getUnchecked(index);
                 changedClip->applyChanges(newParams);
                 this->clips.remove(index, false);
                 this->clips.addSorted(*changedClip, changedClip);
