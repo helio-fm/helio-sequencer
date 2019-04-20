@@ -36,9 +36,7 @@ class MidiTrackNode :
 {
 public:
 
-    explicit MidiTrackNode(const String &name, const Identifier &type);
-
-    ~MidiTrackNode() override;
+    MidiTrackNode(const String &name, const Identifier &type);
 
     String getXPath() const noexcept;
     void setXPath(const String &path, bool sendNotifications);
@@ -74,9 +72,6 @@ public:
 
     int getTrackControllerNumber() const noexcept override;
     void setTrackControllerNumber(int val, bool sendNotifications) override;
-
-    bool isTrackMuted() const noexcept override;
-    void setTrackMuted(bool shouldBeMuted, bool sendNotifications) override;
 
     MidiSequence *getSequence() const noexcept override;
     Pattern *getPattern() const noexcept override;
@@ -139,8 +134,5 @@ protected:
 
     String instrumentId;
     int controllerNumber;
-
-    bool mute;
-    bool solo; // Not implemented
-
+    
 };

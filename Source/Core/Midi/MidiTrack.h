@@ -57,9 +57,6 @@ public:
     virtual int getTrackControllerNumber() const noexcept = 0;
     virtual void setTrackControllerNumber(int val, bool sendNotifications) = 0;
 
-    virtual bool isTrackMuted() const noexcept = 0;
-    virtual void setTrackMuted(bool shouldBeMuted, bool sendNotifications) = 0;
-
     virtual MidiSequence *getSequence() const noexcept = 0;
     virtual Pattern *getPattern() const noexcept = 0;
 
@@ -86,9 +83,6 @@ public:
 
     bool isTempoTrack() const noexcept;
     bool isOnOffAutomationTrack() const noexcept;
-
-    String getTrackMuteStateAsString() const;
-    static bool isTrackMuted(const String &muteState);
 
 protected:
 
@@ -129,9 +123,6 @@ public:
 
     int getTrackControllerNumber() const noexcept override { return 0; }
     void setTrackControllerNumber(int val, bool sendNotifications) override {};
-
-    bool isTrackMuted() const noexcept override { return false; }
-    void setTrackMuted(bool shouldBeMuted, bool sendNotifications) override {};
 
     MidiSequence *getSequence() const noexcept override { return nullptr; }
     Pattern *getPattern() const noexcept override { return nullptr; }

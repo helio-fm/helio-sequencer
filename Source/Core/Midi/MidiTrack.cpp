@@ -36,7 +36,6 @@ void MidiTrack::serializeTrackProperties(ValueTree &tree) const
     using namespace Serialization;
     tree.setProperty(Core::trackId, this->getTrackId(), nullptr);
     tree.setProperty(Core::trackColour, this->getTrackColour().toString(), nullptr);
-    tree.setProperty(Core::trackMuteState, this->getTrackMuteStateAsString(), nullptr);
     tree.setProperty(Core::trackChannel, this->getTrackChannel(), nullptr);
     tree.setProperty(Core::trackInstrumentId, this->getTrackInstrumentId(), nullptr);
     tree.setProperty(Core::trackControllerNumber, this->getTrackControllerNumber(), nullptr);
@@ -48,7 +47,6 @@ void MidiTrack::deserializeTrackProperties(const ValueTree &tree)
 
     const auto trackId = tree.getProperty(Core::trackId, this->getTrackId());
     const auto colour = tree.getProperty(Core::trackColour, this->getTrackColour().toString()).toString();
-    const auto muted = MidiTrack::isTrackMuted(tree.getProperty(Core::trackMuteState));
     const auto channel = tree.getProperty(Core::trackChannel, this->getTrackChannel());
     const auto instrumentId = tree.getProperty(Core::trackInstrumentId, this->getTrackInstrumentId());
     const auto controllerNumber = tree.getProperty(Core::trackControllerNumber, this->getTrackControllerNumber());
@@ -62,7 +60,6 @@ void MidiTrack::deserializeTrackProperties(const ValueTree &tree)
     this->setTrackInstrumentId(instrumentId, false);
     this->setTrackControllerNumber(controllerNumber, false);
     this->setTrackInstrumentId(instrumentId, false);
-    this->setTrackMuted(muted, false);
 }
 
 bool MidiTrack::isTempoTrack() const noexcept
@@ -75,14 +72,4 @@ bool MidiTrack::isOnOffAutomationTrack() const noexcept
     // hardcoded for now
     return (this->getTrackControllerNumber() >= 64 &&
         this->getTrackControllerNumber() <= 69);
-}
-
-String MidiTrack::getTrackMuteStateAsString() const
-{
-    return (this->isTrackMuted() ? "yes" : "no");
-}
-
-bool MidiTrack::isTrackMuted(const String &muteState)
-{
-    return (muteState == "yes");
 }

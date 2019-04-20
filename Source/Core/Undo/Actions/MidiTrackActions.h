@@ -116,35 +116,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeInstrumentAction)
 };
-
-//===----------------------------------------------------------------------===//
-// Mute/Unmute
-//===----------------------------------------------------------------------===//
-
-class MidiTrackMuteAction final : public UndoAction
-{
-public:
-
-    explicit MidiTrackMuteAction(MidiTrackSource &source) noexcept :
-        UndoAction(source) {}
-
-    MidiTrackMuteAction(MidiTrackSource &source,
-        const String &trackId, bool shouldBeMuted) noexcept;
-
-    bool perform() override;
-    bool undo() override;
-    int getSizeInUnits() override;
-
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    void reset() override;
-
-private:
-
-    String trackId;
-
-    bool muteStateBefore;
-    bool muteStateAfter;
-
-    JUCE_DECLARE_NON_COPYABLE(MidiTrackMuteAction)
-};

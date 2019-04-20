@@ -27,7 +27,6 @@ namespace VCS
 {
 
 static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeMute(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeColour(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeInstrument(const ValueTree &state, const ValueTree &changes);
 
@@ -36,7 +35,6 @@ static ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &chan
 static ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes);
 
 static DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createMuteDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes);
 
@@ -94,10 +92,6 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
                 diff->applyDelta(createPathDiff(stateDeltaData, myDeltaData));
-            }
-            else if (myDelta->hasType(MidiTrackDeltas::trackMute))
-            {
-                diff->applyDelta(createMuteDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackColour))
             {
@@ -168,12 +162,6 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
                 {
                     ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta.release(), diffDeltaData);
-                }
-                else if (targetDelta->hasType(MidiTrackDeltas::trackMute))
-                {
-                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeMute(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
@@ -320,11 +308,6 @@ ValueTree mergePath(const ValueTree &state, const ValueTree &changes)
     return changes.createCopy();
 }
 
-ValueTree mergeMute(const ValueTree &state, const ValueTree &changes)
-{
-    return changes.createCopy();
-}
-
 ValueTree mergeColour(const ValueTree &state, const ValueTree &changes)
 {
     return changes.createCopy();
@@ -450,18 +433,6 @@ DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
     res.delta = new Delta(DeltaDescription("moved from {x}",
         state.getProperty(Serialization::VCS::delta).toString()),
         MidiTrackDeltas::trackPath);
-    return res;
-}
-
-DeltaDiff createMuteDiff(const ValueTree &state, const ValueTree &changes)
-{
-    const bool muted = MidiTrack::isTrackMuted(changes.getProperty(Serialization::VCS::delta));
-    DeltaDiff res;
-    using namespace Serialization::VCS;
-    res.deltaData = changes.createCopy();
-    res.delta = new Delta(muted ? 
-        DeltaDescription("muted") : DeltaDescription("unmuted"),
-        MidiTrackDeltas::trackMute);
     return res;
 }
 

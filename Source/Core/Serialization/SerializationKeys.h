@@ -54,8 +54,6 @@ namespace Serialization
         static const Identifier trackChannel = "channel";
         static const Identifier trackInstrumentId = "instrumentId";
         static const Identifier trackControllerNumber = "controller";
-        static const Identifier trackMuteState = "mute";
-        static const Identifier trackSoloState = "solo";
 
         // Timeline
         static const Identifier annotationsTrackId = "annotationsTrackId";
@@ -464,8 +462,6 @@ namespace Serialization
         namespace MidiTrackDeltas
         {
             static const Identifier trackPath = "path";
-            static const Identifier trackMute = "mute";
-            static const Identifier trackSolo = "solo";
             static const Identifier trackColour = "colour";
             static const Identifier trackInstrument = "instrument";
             static const Identifier trackController = "controller";
@@ -655,7 +651,6 @@ namespace Serialization
         
         static const Identifier midiTrackChangeColourAction = "midiTrackChangeColour";
         static const Identifier midiTrackChangeInstrumentAction = "midiTrackChangeInstrument";
-        static const Identifier midiTrackMuteAction = "midiTrackMute";
         
         static const Identifier clipInsertAction = "patternClipInsert";
         static const Identifier clipRemoveAction = "patternClipRemove";

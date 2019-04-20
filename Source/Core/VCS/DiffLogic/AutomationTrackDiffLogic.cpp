@@ -27,7 +27,6 @@ namespace VCS
 {
 
 static ValueTree mergeAuthTrackPath(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAutoTrackMute(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeAutoTrackColour(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeAutoTrackInstrument(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeAutoTrackController(const ValueTree &state, const ValueTree &changes);
@@ -36,7 +35,6 @@ static ValueTree mergeAutoEventsRemoved(const ValueTree &state, const ValueTree 
 static ValueTree mergeAutoEventsChanged(const ValueTree &state, const ValueTree &changes);
 
 static DeltaDiff createAutoTrackPathDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createAutoTrackMuteDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createAutoTrackColourDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createAutoTrackInstrumentDiff(const ValueTree &state, const ValueTree &changes);
 static DeltaDiff createAutoTrackControllerDiff(const ValueTree &state, const ValueTree &changes);
@@ -103,10 +101,6 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
                 diff->applyDelta(createAutoTrackPathDiff(stateDeltaData, myDeltaData));
-            }
-            else if (myDelta->hasType(MidiTrackDeltas::trackMute))
-            {
-                diff->applyDelta(createAutoTrackMuteDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackColour))
             {
@@ -181,12 +175,6 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
                 {
                     ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeAuthTrackPath(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta.release(), diffDeltaData);
-                }
-                else if (targetDelta->hasType(MidiTrackDeltas::trackMute))
-                {
-                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeAutoTrackMute(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
@@ -336,11 +324,6 @@ ValueTree mergeAuthTrackPath(const ValueTree &state, const ValueTree &changes)
     return changes.createCopy();
 }
 
-ValueTree mergeAutoTrackMute(const ValueTree &state, const ValueTree &changes)
-{
-    return changes.createCopy();
-}
-
 ValueTree mergeAutoTrackColour(const ValueTree &state, const ValueTree &changes)
 {
     return changes.createCopy();
@@ -479,18 +462,6 @@ DeltaDiff createAutoTrackPathDiff(const ValueTree &state, const ValueTree &chang
     res.delta = new Delta(DeltaDescription("moved from {x}",
         state.getProperty(Serialization::VCS::delta).toString()),
         MidiTrackDeltas::trackPath);
-    return res;
-}
-
-DeltaDiff createAutoTrackMuteDiff(const ValueTree &state, const ValueTree &changes)
-{
-    const bool muted = MidiTrack::isTrackMuted(changes.getProperty(Serialization::VCS::delta));
-    DeltaDiff res;
-    using namespace Serialization::VCS;
-    res.deltaData = changes.createCopy();
-    res.delta = new Delta(muted ? DeltaDescription("muted") :
-        DeltaDescription("unmuted"),
-        MidiTrackDeltas::trackMute);
     return res;
 }
 

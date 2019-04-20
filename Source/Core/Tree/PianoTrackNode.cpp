@@ -43,7 +43,6 @@ PianoTrackNode::PianoTrackNode(const String &name) :
 
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
-    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackMute));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackColour));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
     this->deltas.add(new VCS::Delta({}, PianoSequenceDeltas::notesAdded));
@@ -104,10 +103,6 @@ ValueTree PianoTrackNode::getDeltaData(int deltaIndex) const
     {
         return this->serializePathDelta();
     }
-    if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackMute))
-    {
-        return this->serializeMuteDelta();
-    }
     else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackColour))
     {
         return this->serializeColourDelta();
@@ -145,10 +140,6 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {
             this->resetPathDelta(newDeltaData);
-        }
-        else if (newDelta->hasType(MidiTrackDeltas::trackMute))
-        {
-            this->resetMuteDelta(newDeltaData);
         }
         else if (newDelta->hasType(MidiTrackDeltas::trackColour))
         {
@@ -230,14 +221,6 @@ ValueTree PianoTrackNode::serializePathDelta() const
     return tree;
 }
 
-ValueTree PianoTrackNode::serializeMuteDelta() const
-{
-    using namespace Serialization::VCS;
-    ValueTree tree(MidiTrackDeltas::trackMute);
-    tree.setProperty(delta, this->getTrackMuteStateAsString(), nullptr);
-    return tree;
-}
-
 ValueTree PianoTrackNode::serializeColourDelta() const
 {
     using namespace Serialization::VCS;
@@ -271,18 +254,6 @@ void PianoTrackNode::resetPathDelta(const ValueTree &state)
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path, false);
-}
-
-void PianoTrackNode::resetMuteDelta(const ValueTree &state)
-{
-    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackMute));
-    const String &muteState(state.getProperty(Serialization::VCS::delta));
-    const bool willMute = MidiTrack::isTrackMuted(muteState);
-    
-    if (willMute != this->isTrackMuted())
-    {
-        this->setTrackMuted(willMute, false);
-    }
 }
 
 void PianoTrackNode::resetColourDelta(const ValueTree &state)
