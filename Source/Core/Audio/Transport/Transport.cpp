@@ -141,10 +141,10 @@ void Transport::seekToPosition(double absPosition)
 void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitToLayer)
 {
     this->sleepTimer.setAwake();
-    this->rebuildSequencesIfNeeded();
+    this->recacheIfNeeded();
     
     const double targetFlatTime = this->getTotalTime() * absTrackPosition;
-    const auto sequencesToProbe(this->sequences.getAllFor(limitToLayer));
+    const auto sequencesToProbe(this->playbackCache.getAllFor(limitToLayer));
     
     for (const auto &seq : sequencesToProbe)
     {
@@ -173,22 +173,18 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
 // Only used in a key signature dialog to test how scales sound
 void Transport::probeSequence(const MidiMessageSequence &sequence)
 {
-    this->sequences.clear();
+    this->playbackCache.clear();
     this->sequencesAreOutdated = true; // will update on the next playback
 
-    MidiMessageSequence fixedSequence(sequence);
     const double startPositionInTime = this->getSeekPosition() * this->getTotalTime();
-    fixedSequence.addTimeToMessages(startPositionInTime);
 
     // using the last instrument (TODO something more clever in the future)
-    Instrument *targetInstrument = this->orchestra.getInstruments().getLast();
-    auto wrapper = new SequenceWrapper();
-    wrapper->track = nullptr;
-    wrapper->midiMessages = fixedSequence;
-    wrapper->currentIndex = 0;
-    wrapper->instrument = targetInstrument;
-    wrapper->listener = &targetInstrument->getProcessorPlayer().getMidiMessageCollector();
-    this->sequences.addWrapper(wrapper);
+    auto *instrument = this->orchestra.getInstruments().getLast();
+    auto cached = CachedMidiSequence::createFrom(instrument);
+    cached->midiMessages = MidiMessageSequence(sequence);
+    cached->midiMessages.addTimeToMessages(startPositionInTime);
+
+    this->playbackCache.addWrapper(cached);
 
     if (this->player->isPlaying())
     {
@@ -202,7 +198,7 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
 void Transport::startPlayback()
 {
     this->sleepTimer.setAwake();
-    this->rebuildSequencesIfNeeded();
+    this->recacheIfNeeded();
 
     if (this->player->isPlaying())
     {
@@ -217,7 +213,7 @@ void Transport::startPlayback()
 void Transport::startPlaybackFragment(double absLoopStart, double absLoopEnd, bool looped)
 {
     this->sleepTimer.setAwake();
-    this->rebuildSequencesIfNeeded();
+    this->recacheIfNeeded();
     
     if (this->player->isPlaying())
     {
@@ -289,6 +285,11 @@ float Transport::getRenderingPercentsComplete() const
 //===----------------------------------------------------------------------===//
 // Sending messages at real-time
 //===----------------------------------------------------------------------===//
+
+Transport::MidiMessageDelayedPreview::~MidiMessageDelayedPreview()
+{
+    this->cancelPendingPreview();
+}
 
 void Transport::MidiMessageDelayedPreview::cancelPendingPreview()
 {
@@ -583,8 +584,8 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
                                    double &outTimeMs, double &outTempo)
 {
-    this->rebuildSequencesIfNeeded();
-    this->sequences.seekToZeroIndexes();
+    this->recacheIfNeeded();
+    this->playbackCache.seekToZeroIndexes();
     
     const double targetTime = targetAbsPosition * this->getTotalTime();
     
@@ -595,22 +596,22 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     double nextEventTimeDelta = 0.0;
     bool foundFirstTempoEvent = false;
     
-    MessageWrapper wrapper;
+    CachedMidiMessage cached;
     
-    while (this->sequences.getNextMessage(wrapper))
+    while (this->playbackCache.getNextMessage(cached))
     {
-        const double nextAbsPosition = wrapper.message.getTimeStamp() / this->getTotalTime();
+        const double nextAbsPosition = cached.message.getTimeStamp() / this->getTotalTime();
         
         // first tempo event sets the tempo all the way before it
         if (nextAbsPosition > targetAbsPosition && foundFirstTempoEvent) { break; }
         
-        nextEventTimeDelta = outTempo * (wrapper.message.getTimeStamp() - prevTimestamp);
+        nextEventTimeDelta = outTempo * (cached.message.getTimeStamp() - prevTimestamp);
         outTimeMs += nextEventTimeDelta;
-        prevTimestamp = wrapper.message.getTimeStamp();
+        prevTimestamp = cached.message.getTimeStamp();
         
-        if (wrapper.message.isTempoMetaEvent())
+        if (cached.message.isTempoMetaEvent())
         {
-            outTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
+            outTempo = cached.message.getTempoSecondsPerQuarterNote() * 1000.f;
             foundFirstTempoEvent = true;
         }
     }
@@ -621,12 +622,12 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
 
 MidiMessage Transport::findFirstTempoEvent()
 {
-    this->rebuildSequencesIfNeeded();
-    this->sequences.seekToZeroIndexes();
+    this->recacheIfNeeded();
+    this->playbackCache.seekToZeroIndexes();
     
-    MessageWrapper wrapper;
+    CachedMidiMessage wrapper;
     
-    while (this->sequences.getNextMessage(wrapper))
+    while (this->playbackCache.getNextMessage(wrapper))
     {
         if (wrapper.message.isTempoMetaEvent())
         {
@@ -639,14 +640,14 @@ MidiMessage Transport::findFirstTempoEvent()
 }
 
 //===----------------------------------------------------------------------===//
-// Sequences management
+// Playback cache management
 //===----------------------------------------------------------------------===//
 
-void Transport::rebuildSequencesIfNeeded()
+void Transport::recacheIfNeeded()
 {
     if (this->sequencesAreOutdated)
     {
-        this->sequences.clear();
+        this->playbackCache.clear();
         static Clip noTransform;
         const double offset = -this->trackStartMs.get();
 
@@ -665,28 +666,25 @@ void Transport::rebuildSequencesIfNeeded()
             {
                 for (const auto *clip : track->getPattern()->getClips())
                 {
-                    wrapper->track->exportMidi(wrapper->midiMessages, *clip, offset, 1.0);
+                    cached->track->exportMidi(cached->midiMessages, *clip, offset, 1.0);
                 }
             }
             else
             {
-                wrapper->track->exportMidi(wrapper->midiMessages, noTransform, offset, 1.0);
+                cached->track->exportMidi(cached->midiMessages, noTransform, offset, 1.0);
             }
 
-            if (wrapper->midiMessages.getNumEvents() > 0)
-            {
-                this->sequences.addWrapper(wrapper.release());
-            }
+            this->playbackCache.addWrapper(cached);
         }
         
         this->sequencesAreOutdated = false;
     }
 }
 
-ProjectSequences Transport::getSequences()
+ProjectSequences Transport::getPlaybackCache()
 {
     const SpinLock::ScopedLockType l(this->sequencesLock);
-    return this->sequences;
+    return this->playbackCache;
 }
 
 void Transport::updateLinkForTrack(const MidiTrack *track)

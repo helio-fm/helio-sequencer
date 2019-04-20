@@ -48,7 +48,7 @@ void PlayerThread::startPlayback(double start, double end,
 
 void PlayerThread::run()
 {
-    ProjectSequences sequences = this->transport.getSequences();
+    ProjectSequences sequences = this->transport.getPlaybackCache();
     Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
     
     double nextEventTimeDelta = 0.0;
@@ -133,7 +133,7 @@ void PlayerThread::run()
     
     while (1)
     {
-        MessageWrapper wrapper;
+        CachedMidiMessage wrapper;
 
         // Handle playback from the last event to the end of track:
         if (!sequences.getNextMessage(wrapper))

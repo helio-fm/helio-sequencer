@@ -41,18 +41,18 @@ float RendererThread::getPercentsComplete() const
 
 void RendererThread::startRecording(const File &file)
 {
-    this->transport.rebuildSequencesIfNeeded();
-    const ProjectSequences sequences = this->transport.getSequences();
+    this->transport.recacheIfNeeded();
+    const ProjectSequences sequencesCache = this->transport.getPlaybackCache();
     
-    if (sequences.empty())
+    if (sequencesCache.isEmpty())
     {
         return;
     }
 
     this->stop();
 
-    double sampleRate = sequences.getSampleRate();
-    int numChannels = sequences.getNumOutputChannels();
+    double sampleRate = sequencesCache.getSampleRate();
+    int numChannels = sequencesCache.getNumOutputChannels();
 
     // Create an OutputStream to write to our destination file...
     file.deleteFile();
@@ -124,8 +124,8 @@ struct RenderBuffer final
 void RendererThread::run()
 {
     // step 0. init.
-    this->transport.rebuildSequencesIfNeeded();
-    ProjectSequences sequences = this->transport.getSequences();
+    this->transport.recacheIfNeeded();
+    ProjectSequences sequences = this->transport.getPlaybackCache();
     const int bufferSize = 512;
 
     // assuming that number of channels and sample rate is equal for all instruments
@@ -177,7 +177,7 @@ void RendererThread::run()
     // step 3. render loop itself.
     sequences.seekToTime(0.0);
     
-    MessageWrapper nextMessage;
+    CachedMidiMessage nextMessage;
     bool hasNextMessage = sequences.getNextMessage(nextMessage);
     jassert(hasNextMessage);
     

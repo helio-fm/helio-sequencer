@@ -155,11 +155,11 @@ private:
 
 private:
 
-    ProjectSequences getSequences();
-    void rebuildSequencesIfNeeded();
+    ProjectSequences getPlaybackCache();
+    void recacheIfNeeded();
     
     SpinLock sequencesLock;
-    ProjectSequences sequences;
+    ProjectSequences playbackCache;
     bool sequencesAreOutdated;
     
     // linksCache is <track id : instrument>
@@ -184,6 +184,7 @@ private:
     {
     public:
         MidiMessageDelayedPreview() = default;
+        ~MidiMessageDelayedPreview();
         void cancelPendingPreview();
         void previewMessage(const MidiMessage &message, WeakReference<Instrument> instrument);
     private:
