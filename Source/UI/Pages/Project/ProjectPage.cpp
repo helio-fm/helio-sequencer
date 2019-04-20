@@ -30,6 +30,23 @@
 #include "HelioCallout.h"
 #include "ProjectMenu.h"
 #include "CommandIDs.h"
+
+static String getTimeString(const RelativeTime &time)
+{
+    String res;
+
+    int n = std::abs(int(time.inMinutes()));
+
+    if (n > 0)
+    {
+        res = res + TRANS_PLURAL("{x} minutes", n) + " ";
+    }
+
+    n = std::abs(int(time.inSeconds())) % 60;
+    res = res + TRANS_PLURAL("{x} seconds", n) + " ";
+
+    return res;
+}
 //[/MiscUserDefs]
 
 ProjectPage::ProjectPage(ProjectNode &parentProject)
@@ -160,8 +177,6 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->addAndMakeVisible(level2.get());
     level2->setName ("level2");
 
-    level2->setBounds(32, proportionOfHeight (0.0758f) + 310, 150, 24);
-
     this->licenseLabel.reset(new Label(String(),
                                         TRANS("page::project::license")));
     this->addAndMakeVisible(licenseLabel.get());
@@ -279,6 +294,7 @@ void ProjectPage::resized()
     lengthLabel->setBounds((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0758f) + 310) + 16, 300, 32);
     lengthText->setBounds((getWidth() / 2) + -100, (proportionOfHeight (0.0758f) + 310) + 16, 400, 32);
     level1->setBounds(32, proportionOfHeight (0.0758f), 150, 24);
+    level2->setBounds(32, proportionOfHeight (0.0758f) + 310, 150, 24);
     licenseLabel->setBounds((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0758f) + 210, 202, 48);
     licenseEditor->setBounds((getWidth() / 2) + -100, proportionOfHeight (0.0758f) + 230, 440, 48);
     menuButton->setBounds((getWidth() / 2) - (128 / 2), getHeight() - -16 - (128 / 2), 128, 128);
@@ -345,6 +361,14 @@ void ProjectPage::buttonClicked(Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
+void ProjectPage::visibilityChanged()
+{
+    //[UserCode_visibilityChanged] -- Add your code here...
+    const RelativeTime totalTime(this->totalTimeMs.get() / 1000.0);
+    this->lengthText->setText(getTimeString(totalTime), dontSendNotification);
+    //[/UserCode_visibilityChanged]
+}
+
 void ProjectPage::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
@@ -381,40 +405,20 @@ void ProjectPage::updateContent()
     this->locationText->setText(this->project.getDocument()->getFullPath(), dontSendNotification);
     this->contentStatsText->setText(this->project.getStats(), dontSendNotification);
 
-    if (VersionControlNode *vcti = this->project.findChildOfType<VersionControlNode>())
+    if (auto *vcti = this->project.findChildOfType<VersionControlNode>())
     {
         this->vcsStatsText->setText(vcti->getStatsString(), dontSendNotification);
     }
 }
 
-static String getTimeString(const RelativeTime &time)
+void ProjectPage::onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) noexcept
 {
-    String res;
-
-    int n = std::abs(int(time.inMinutes()));
-
-    if (n > 0)
-    {
-        res = res + TRANS_PLURAL("{x} minutes", n) + " ";
-    }
-
-    n = std::abs(int(time.inSeconds())) % 60;
-    res = res + TRANS_PLURAL("{x} seconds", n) + " ";
-
-    return res;
+    this->totalTimeMs = totalTimeMs;
 }
 
-void ProjectPage::onSeek(double absolutePosition,
-    double currentTimeMs, double totalTimeMs)
+void ProjectPage::onTotalTimeChanged(double totalTimeMs) noexcept
 {
-    const RelativeTime totalTime(totalTimeMs / 1000.0);
-    this->lengthText->setText(getTimeString(totalTime), dontSendNotification);
-}
-
-void ProjectPage::onTotalTimeChanged(double timeMs)
-{
-    const RelativeTime totalTime(timeMs / 1000.0);
-    this->lengthText->setText(getTimeString(totalTime), dontSendNotification);
+    this->totalTimeMs = totalTimeMs;
 }
 
 void ProjectPage::changeListenerCallback(ChangeBroadcaster* source)
@@ -434,6 +438,7 @@ BEGIN_JUCER_METADATA
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
+    <METHOD name="visibilityChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="e130bb0b9ed67f09" memberName="background" virtualName=""
@@ -442,89 +447,84 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="a162c9dbc90775e7" memberName="projectTitleEditor"
          virtualName="" explicitFocusOrder="0" pos="-100C 20 440 48" posRelativeY="b6ea6ccc6b9be1f8"
          labelText="..." editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="37.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="37.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="b93b5ef0dc95ee24" memberName="projectTitleLabel"
          virtualName="" explicitFocusOrder="0" pos="-104Cr 0 202 48" posRelativeY="b6ea6ccc6b9be1f8"
          labelText="page::project::title" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="10"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="authorEditor" virtualName=""
          explicitFocusOrder="0" pos="-100C 90 440 48" posRelativeY="b6ea6ccc6b9be1f8"
          labelText="..." editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="37.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="37.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="authorLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 70 202 48" posRelativeY="b6ea6ccc6b9be1f8"
          labelText="page::project::author" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="10"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="5b9fd0ca53fe4337" memberName="descriptionEditor"
          virtualName="" explicitFocusOrder="0" pos="-100C 160 440 48"
          posRelativeY="b6ea6ccc6b9be1f8" labelText="..." editableSingleClick="1"
          editableDoubleClick="1" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="37.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="9"/>
+         fontsize="37.0" kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="1a7ebced267e73e8" memberName="descriptionLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 140 202 48" posRelativeY="b6ea6ccc6b9be1f8"
          labelText="page::project::description" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="10"/>
+         fontsize="21.0" kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="cf836ffeded76ad1" memberName="locationLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 138 300 32" posRelativeY="91994c13c1a34ef8"
          labelText="page::project::filelocation" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="1" fontname="Default font"
-         fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="10"/>
+         fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="e68c5a019e000a0b" memberName="locationText" virtualName=""
          explicitFocusOrder="0" pos="-100C 138 400 96" posRelativeY="91994c13c1a34ef8"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="1" fontname="Default font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="e824154c21ea01f1" memberName="contentStatsLabel"
          virtualName="" explicitFocusOrder="0" pos="-104Cr 106 300 32"
          posRelativeY="91994c13c1a34ef8" labelText="page::project::stats::content"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default font" fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="10"/>
+         fontname="Default font" fontsize="16.0" kerning="0.0" bold="0"
+         italic="0" justification="10"/>
   <LABEL name="" id="4c13747d72949ab9" memberName="contentStatsText" virtualName=""
          explicitFocusOrder="0" pos="-100C 106 400 32" posRelativeY="91994c13c1a34ef8"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="1" fontname="Default font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="fa70bc89acdb3acf" memberName="vcsStatsLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 76 300 32" posRelativeY="91994c13c1a34ef8"
          labelText="page::project::stats::vcs" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="1" fontname="Default font"
-         fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="10"/>
+         fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="6e9d6e323ae75809" memberName="vcsStatsText" virtualName=""
          explicitFocusOrder="0" pos="-100C 76 400 32" posRelativeY="91994c13c1a34ef8"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="1" fontname="Default font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="1ca8b26361947f73" memberName="startTimeLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 46 300 32" posRelativeY="91994c13c1a34ef8"
          labelText="page::project::startdate" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="1" fontname="Default font"
-         fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="10"/>
+         fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="5c9cf4e334ddde90" memberName="startTimeText" virtualName=""
          explicitFocusOrder="0" pos="-100C 46 400 32" posRelativeY="91994c13c1a34ef8"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="1" fontname="Default font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="54f9aec3fdb83582" memberName="lengthLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 16 300 32" posRelativeY="91994c13c1a34ef8"
          labelText="page::project::duration" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="1" fontname="Default font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="10"/>
+         focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
+         kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="3849b372a1b522da" memberName="lengthText" virtualName=""
          explicitFocusOrder="0" pos="-100C 16 400 32" posRelativeY="91994c13c1a34ef8"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="1" fontname="Default font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <GENERICCOMPONENT name="level1" id="b6ea6ccc6b9be1f8" memberName="level1" virtualName=""
                     explicitFocusOrder="0" pos="32 7.583% 150 24" class="Component"
                     params=""/>
@@ -534,13 +534,13 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="ed8bce664dddb1d1" memberName="licenseLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 210 202 48" posRelativeY="b6ea6ccc6b9be1f8"
          labelText="page::project::license" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="1" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="10"/>
+         focusDiscardsChanges="1" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="63b4a599dbfa30da" memberName="licenseEditor" virtualName=""
          explicitFocusOrder="0" pos="-100C 230 440 48" posRelativeY="b6ea6ccc6b9be1f8"
          labelText="..." editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="37.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="37.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <JUCERCOMP name="" id="2ce00deefdf277e6" memberName="menuButton" virtualName=""
              explicitFocusOrder="0" pos="0Cc -16Rc 128 128" sourceFile="../../Common/MenuButton.cpp"
              constructorParams=""/>
@@ -548,10 +548,9 @@ BEGIN_JUCER_METADATA
                virtualName="" explicitFocusOrder="0" pos="-150 0 -150M 24" posRelativeX="e68c5a019e000a0b"
                posRelativeY="cf836ffeded76ad1" posRelativeW="e68c5a019e000a0b"
                buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
-               keepProportions="0" resourceNormal="" opacityNormal="1.00000000000000000000"
-               colourNormal="0" resourceOver="" opacityOver="1.00000000000000000000"
-               colourOver="0" resourceDown="" opacityDown="1.00000000000000000000"
-               colourDown="0"/>
+               keepProportions="0" resourceNormal="" opacityNormal="1.0" colourNormal="0"
+               resourceOver="" opacityOver="1.0" colourOver="0" resourceDown=""
+               opacityDown="1.0" colourDown="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
