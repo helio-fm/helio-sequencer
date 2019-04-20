@@ -32,4 +32,13 @@ struct PatternOperations final
 
     static void cutClip(ProjectNode &project, const Clip &clip, float relativeCutBeat,
         bool shouldRenameNewTrack, bool shouldCheckpoint = true);
+
+    static bool lassoContainsMutedClip(const Lasso &selection);
+    static bool lassoContainsSoloedClip(const Lasso &selection);
+
+    static void toggleSoloClip(const Clip &clip, bool shouldCheckpoint = true);
+    static void toggleMuteClip(const Clip &clip, bool shouldCheckpoint = true);
+
+    static void toggleSoloClips(const Lasso &selection, bool shouldCheckpoint = true);
+    static void toggleMuteClips(const Lasso &selection, bool shouldCheckpoint = true);
 };

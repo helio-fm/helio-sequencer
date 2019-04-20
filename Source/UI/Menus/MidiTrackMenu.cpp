@@ -39,46 +39,10 @@
 #include "UndoStack.h"
 #include "Workspace.h"
 
-MidiTrackMenu::MidiTrackMenu(MidiTrackNode &parentLayer) :
-    trackItem(parentLayer)
+MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
+    trackNode(node)
 {
     this->initDefaultMenu();
-}
-
-void MidiTrackMenu::handleCommandMessage(int commandId)
-{
-    switch (commandId)
-    {
-        // TODO move to another command processor
-        case CommandIDs::MuteTrack:
-        {
-            ProjectNode *project = this->trackItem.getProject();
-            const String &trackId = this->trackItem.getSequence()->getTrackId();
-            project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, trackId, true));
-            this->dismiss();
-        }
-            break;
-            
-        case CommandIDs::UnmuteTrack:
-        {
-            ProjectNode *project = this->trackItem.getProject();
-            const String &trackId = this->trackItem.getSequence()->getTrackId();
-            project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, trackId, false));
-            this->dismiss();
-        }
-            break;
-
-        case CommandIDs::DeleteTrack:
-        {
-            ProjectNode *project = this->trackItem.getProject();
-            project->checkpoint();
-            project->removeTrack(this->trackItem);
-            this->dismiss();
-            return;
-        }
-    }
 }
 
 void MidiTrackMenu::initDefaultMenu()
@@ -103,20 +67,8 @@ void MidiTrackMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS("menu::track::rename"))->closesMenu());
     
-    const bool canBeMuted = (dynamic_cast<PianoTrackNode *>(&this->trackItem) != nullptr);
-    if (canBeMuted)
-    {
-        const bool muted = this->trackItem.isTrackMuted();
-        
-        if (muted)
-        {
-            menu.add(MenuItem::item(Icons::unmute, CommandIDs::UnmuteTrack, TRANS("menu::track::unmute")));
-        }
-        else
-        {
-            menu.add(MenuItem::item(Icons::mute, CommandIDs::MuteTrack, TRANS("menu::track::mute")));
-        }
-    }
+    // TODO: do we need mute/solo here? I guess not at least for now
+    //menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleMuteClips, TRANS("menu::track::unmute")));
     
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS("menu::track::delete")));
     this->updateContent(menu, MenuPanel::SlideRight);
@@ -136,11 +88,11 @@ void MidiTrackMenu::initColorSelectionMenu()
         const String name(colours.getAllKeys()[i]);
         const String colourString(colours[name]);
         const Colour colour(Colour::fromString(colourString));
-        const bool isSelected = (colour == this->trackItem.getTrackColour());
+        const bool isSelected = (colour == this->trackNode.getTrackColour());
         menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, name)->
             colouredWith(colour)->withAction([this, colourString]()
         {
-            this->trackItem.getChangeColourCallback()(colourString);
+            this->trackNode.getChangeColourCallback()(colourString);
             this->initDefaultMenu();
         }));
     }
@@ -157,7 +109,7 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
     }));
     
     const auto &info = App::Workspace().getAudioCore().getInstruments();
-    const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->trackItem.getTrackInstrumentId());
+    const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->trackNode.getTrackInstrumentId());
     
     for (int i = 0; i < info.size(); ++i)
     {
@@ -166,7 +118,7 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, info[i]->getName())->withAction([this, instrumentId]()
         {
             DBG(instrumentId);
-            this->trackItem.getChangeInstrumentCallback()(instrumentId);
+            this->trackNode.getChangeInstrumentCallback()(instrumentId);
             this->initDefaultMenu();
             return;
         }));

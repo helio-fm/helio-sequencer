@@ -351,3 +351,115 @@ void PatternOperations::duplicateSelection(const Lasso &selection, bool shouldCh
         pattern->insertGroup(*changesByPattern.getUnchecked(i), true);
     }
 }
+
+bool PatternOperations::lassoContainsMutedClip(const Lasso &selection)
+{
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        if (selection.getItemAs<ClipComponent>(i)->getClip().isMuted())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool PatternOperations::lassoContainsSoloedClip(const Lasso &selection)
+{
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        if (selection.getItemAs<ClipComponent>(i)->getClip().isSoloed())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void PatternOperations::toggleMuteClips(const Lasso &selection, bool shouldCheckpoint)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    // If have at least one muted clip, unmute all, otherwise mute all
+    const bool newMuteState = !lassoContainsMutedClip(selection);
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+
+        if (clip.isMuted() == newMuteState)
+        {
+            continue;
+        }
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            clip.getPattern()->checkpoint();
+        }
+
+        clip.getPattern()->change(clip, clip.withMute(newMuteState), true);
+    }
+}
+
+void PatternOperations::toggleSoloClips(const Lasso &selection, bool shouldCheckpoint)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    // If have at least one soloed clip, unsolo all, otherwise solo all
+    const bool newSoloState = !lassoContainsSoloedClip(selection);
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+
+        if (clip.isSoloed() == newSoloState)
+        {
+            continue;
+        }
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            clip.getPattern()->checkpoint();
+        }
+
+        clip.getPattern()->change(clip, clip.withSolo(newSoloState), true);
+    }
+}
+
+void PatternOperations::toggleMuteClip(const Clip &clip, bool shouldCheckpoint /*= true*/)
+{
+    auto *pattern = clip.getPattern();
+
+    if (shouldCheckpoint)
+    {
+        pattern->checkpoint();
+    }
+
+    pattern->change(clip, clip.withMute(!clip.isMuted()), true);
+}
+
+void PatternOperations::toggleSoloClip(const Clip &clip, bool shouldCheckpoint /*= true*/)
+{
+    auto *pattern = clip.getPattern();
+
+    if (shouldCheckpoint)
+    {
+        pattern->checkpoint();
+    }
+
+    pattern->change(clip, clip.withSolo(!clip.isSoloed()), true);
+}

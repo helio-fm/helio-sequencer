@@ -85,6 +85,9 @@ namespace CommandIDs
         ClipVolumeUp                    = 0x1622,
         ClipVolumeDown                  = 0x1623,
 
+        ToggleMuteClips                 = 0x1630,
+        ToggleSoloClips                 = 0x1631,
+
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,
         ZoomEntireClip                  = 0x1802,
