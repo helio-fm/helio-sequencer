@@ -1443,11 +1443,11 @@
         <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
                        isDebug="0" optimisation="4" targetName="Helio" useRuntimeLibDLL="0"
                        enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
+                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="0"/>
         <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="4" targetName="Helio" useRuntimeLibDLL="0"
                        enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="1"/>
+                       enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
@@ -1566,8 +1566,8 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
                        androidArchitectures="armeabi-v7a x86"/>
-        <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a arm64-v8a x86"
-                       isDebug="0" optimisation="5" targetName="Helio" linkTimeOptimisation="0"/>
+        <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a x86" isDebug="0"
+                       optimisation="5" targetName="Helio" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>

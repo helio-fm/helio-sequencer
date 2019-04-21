@@ -61,7 +61,7 @@ android {
        }
         release_ {
             ndk {
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86"
+                abiFilters "armeabi-v7a", "x86"
             }
             externalNativeBuild {
                 cmake {
