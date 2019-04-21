@@ -8,7 +8,7 @@ SET(BINARY_NAME "juce_jni")
 add_library("cpufeatures" STATIC "${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c")
 set_source_files_properties("${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c" PROPERTIES COMPILE_FLAGS "-Wno-sign-conversion -Wno-gnu-statement-expression")
 
-add_definitions("-DJUCE_ANDROID=1" "-DJUCE_ANDROID_API_VERSION=21" "-DJUCE_PUSH_NOTIFICATIONS=1" "-DJUCE_ANDROID_GL_ES_VERSION_3_0=1" "-DJUCE_DONT_DECLARE_PROJECTINFO=1" "-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=2.0" "-DJUCE_APP_VERSION_HEX=0x20000")
+add_definitions("-DJUCE_ANDROID=1" "-DJUCE_ANDROID_API_VERSION=21" "-DJUCE_PUSH_NOTIFICATIONS=0" "-DJUCE_PUSH_NOTIFICATIONS_ACTIVITY=com.roli.juce.JuceActivity" "-DJUCE_ANDROID_GL_ES_VERSION_3_0=1" "-DJUCE_DONT_DECLARE_PROJECTINFO=1" "-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=2.0" "-DJUCE_APP_VERSION_HEX=0x20000")
 
 include_directories( AFTER
     "../../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"
