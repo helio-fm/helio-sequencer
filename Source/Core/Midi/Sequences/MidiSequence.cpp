@@ -94,13 +94,20 @@ void MidiSequence::clearUndoHistory()
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
-    const Clip &clip, double timeAdjustment, double timeFactor) const
+void MidiSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
+    bool soloPlaybackMode, double timeAdjustment, double timeFactor) const
 {
-    if (this->track.isTrackMuted())
+    if (clip.isMuted())
     {
         return;
     }
+
+    // Common logic is to ignore soloPlaybackMode flag
+    // (which means there's at least one solo clip somewhere),
+    // since not all sequence types are supposed to be soloed,
+    // for example, automations should be exported all the time unless muted.
+    // Moreover, for now, only PianoSequence will override this method
+    // and make sure it skips a no-solo clip, when soloPlaybackMode is true.
 
     for (const auto *event : this->midiEvents)
     {

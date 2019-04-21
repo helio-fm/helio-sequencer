@@ -48,8 +48,8 @@ public:
 
     static float midiTicksToBeats(double ticks, int timeFormat) noexcept;
     virtual void importMidi(const MidiMessageSequence &sequence, short timeFormat) = 0;
-    void exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
-        double timeAdjustment, double timeFactor) const;
+    virtual void exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
+        bool soloPlaybackMode, double timeAdjustment, double timeFactor) const;
 
     //===------------------------------------------------------------------===//
     // Track editing

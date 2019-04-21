@@ -101,6 +101,19 @@ void Pattern::sort()
     }
 }
 
+bool Pattern::hasSoloClips() const noexcept
+{
+    for (const auto *clip : this->clips)
+    {
+        if (clip->isSoloed())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 //===----------------------------------------------------------------------===//
 // Undoing // TODO move this to project interface
 //===----------------------------------------------------------------------===//

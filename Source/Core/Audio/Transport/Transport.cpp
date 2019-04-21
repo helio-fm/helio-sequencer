@@ -362,7 +362,10 @@ void Transport::stopSound(const String &trackId) const
     {
         for (const auto &link : this->linksCache)
         {
-            stopSoundForInstrument(link.second);
+            if (nullptr != link.second)
+            {
+                stopSoundForInstrument(link.second);
+            }
         }
     }
 
@@ -651,27 +654,33 @@ void Transport::recacheIfNeeded()
         static Clip noTransform;
         const double offset = -this->trackStartMs.get();
 
+        // Find solo clips, if any
+        bool hasSoloClips = false;
         for (const auto *track : this->tracksCache)
         {
-            auto instrument = this->linksCache[track->getTrackId()];
-            jassert(instrument != nullptr);
+            if (track->getPattern() != nullptr &&
+                track->getPattern()->hasSoloClips())
+            {
+                hasSoloClips = true;
+                break;
+            }
+        }
 
-            ScopedPointer<SequenceWrapper> wrapper(new SequenceWrapper());
-            wrapper->track = track->getSequence();
-            wrapper->currentIndex = 0;
-            wrapper->instrument = instrument;
-            wrapper->listener = &instrument->getProcessorPlayer().getMidiMessageCollector();
+        for (const auto *track : this->tracksCache)
+        {
+            const auto instrument = this->linksCache[track->getTrackId()];
+            auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
 
             if (track->getPattern() != nullptr)
             {
                 for (const auto *clip : track->getPattern()->getClips())
                 {
-                    cached->track->exportMidi(cached->midiMessages, *clip, offset, 1.0);
+                    cached->track->exportMidi(cached->midiMessages, *clip, hasSoloClips, offset, 1.0);
                 }
             }
             else
             {
-                cached->track->exportMidi(cached->midiMessages, noTransform, offset, 1.0);
+                cached->track->exportMidi(cached->midiMessages, noTransform, hasSoloClips, offset, 1.0);
             }
 
             this->playbackCache.addWrapper(cached);

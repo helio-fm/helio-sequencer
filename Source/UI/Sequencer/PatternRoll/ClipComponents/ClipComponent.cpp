@@ -291,11 +291,23 @@ void ClipComponent::paint(Graphics &g)
 
     g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);
 
+    if (this->clip.isMuted())
+    {
+        //g.fillRect(...);
+        g.drawText("M", textBounds, Justification::topRight, false);
+    }
+
+    if (this->clip.isSoloed())
+    {
+        g.drawText("S", textBounds, Justification::topRight, false);
+    }
+
     g.setColour(this->headDarkColour);
     g.drawVerticalLine(0, 2.f, h - 1.f);
     g.drawVerticalLine(this->getWidth() - 1, 2.f, h - 1.f);
 
-    // Set colour to be used by all child events
+    // speedup of some sort: set colour to be used
+    // by all child components, so that they don't have to 
     g.setColour(this->eventColour);
 }
 

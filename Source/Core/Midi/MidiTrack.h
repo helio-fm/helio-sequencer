@@ -57,7 +57,10 @@ public:
     virtual int getTrackControllerNumber() const noexcept = 0;
     virtual void setTrackControllerNumber(int val, bool sendNotifications) = 0;
 
+    // This one always returns valid object (a track without midi events is nonsense):
     virtual MidiSequence *getSequence() const noexcept = 0;
+
+    // This one can return nullptr. E.g. timeline-based tracks still don't have patterns:
     virtual Pattern *getPattern() const noexcept = 0;
 
     //===------------------------------------------------------------------===//

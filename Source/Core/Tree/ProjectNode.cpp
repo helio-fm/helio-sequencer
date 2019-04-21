@@ -770,6 +770,10 @@ void ProjectNode::exportMidi(File &file) const
     tempFile.setTicksPerQuarterNote(int(midiClock));
     static Clip noTransform;
 
+    // Solo flags won't be taken into account
+    // in midi export, as I believe they shouldn't:
+    const bool soloFlag = false;
+
     const auto &tracks = this->getTracks();
     for (const auto *track : tracks)
     {
@@ -779,12 +783,12 @@ void ProjectNode::exportMidi(File &file) const
         {
             for (const auto *clip : track->getPattern()->getClips())
             {
-                track->getSequence()->exportMidi(sequence, *clip, 0.0, midiClock);
+                track->getSequence()->exportMidi(sequence, *clip, soloFlag, 0.0, midiClock);
             }
         }
         else
         {
-            track->getSequence()->exportMidi(sequence, noTransform, 0.0, midiClock);
+            track->getSequence()->exportMidi(sequence, noTransform, soloFlag, 0.0, midiClock);
         }
 
         tempFile.addTrack(sequence);

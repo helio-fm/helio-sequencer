@@ -24,13 +24,11 @@ class ProjectNode;
 class UndoStack;
 class MidiTrack;
 
-// A sorted array of clips
 class Pattern final : public Serializable
 {
 public:
 
-    explicit Pattern(MidiTrack &track,
-        ProjectEventDispatcher &eventDispatcher);
+    Pattern(MidiTrack &track, ProjectEventDispatcher &eventDispatcher);
     
     //===------------------------------------------------------------------===//
     // Accessors
@@ -79,11 +77,13 @@ public:
     inline int size() const noexcept
     { return this->clips.size(); }
     
-    inline Clip *getUnchecked(const int index) const noexcept
+    inline Clip *getUnchecked(int index) const noexcept
     { return this->clips.getUnchecked(index); }
     
     inline const OwnedArray<Clip> &getClips() const noexcept
     { return this->clips; }
+
+    bool hasSoloClips() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Events change listener
