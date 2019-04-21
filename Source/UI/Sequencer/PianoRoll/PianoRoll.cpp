@@ -47,6 +47,7 @@
 #include "ScalePreviewTool.h"
 #include "ArpPreviewTool.h"
 #include "SequencerOperations.h"
+#include "PatternOperations.h"
 #include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
@@ -955,6 +956,12 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::DeleteEvents:
         SequencerOperations::deleteSelection(this->getLassoSelection());
         break;
+    case CommandIDs::DeleteTrack:
+    {
+        this->project.checkpoint();
+        this->project.removeTrack(*this->activeTrack);
+        return;
+    }
     case CommandIDs::NewTrackFromSelection:
         if (this->getLassoSelection().getNumSelected() > 0)
         {
@@ -1005,6 +1012,12 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::InvertChordDown:
         SequencerOperations::invertChord(this->getLassoSelection(), -12, true, &this->getTransport());
+        break;
+    case CommandIDs::ToggleMuteClips:
+        PatternOperations::toggleMuteClip(this->activeClip);
+        break;
+    case CommandIDs::ToggleSoloClips:
+        PatternOperations::toggleSoloClip(this->activeClip);
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         if (this->selection.getNumSelected() >= 2)

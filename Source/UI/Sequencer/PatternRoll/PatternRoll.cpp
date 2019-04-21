@@ -663,6 +663,12 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::BarShiftRight:
         PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
         break;
+    case CommandIDs::ToggleMuteClips:
+        PatternOperations::toggleMuteClips(this->getLassoSelection());
+        break;
+    case CommandIDs::ToggleSoloClips:
+        PatternOperations::toggleSoloClips(this->getLassoSelection());
+        break;
     case CommandIDs::PatternsGroupByName:
         this->deselectAll();
         this->groupMode = GroupByName;

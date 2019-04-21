@@ -33,6 +33,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void importMidi(const MidiMessageSequence &sequence, short timeFormat) override;
+    void exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
+        bool soloPlaybackMode, double timeAdjustment, double timeFactor) const override;
 
     //===------------------------------------------------------------------===//
     // Undoable track editing

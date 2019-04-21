@@ -32,7 +32,6 @@ AutomationTrackNode::AutomationTrackNode(const String &name) :
 
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
-    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackMute));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackColour));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackController));
@@ -94,10 +93,6 @@ ValueTree AutomationTrackNode::getDeltaData(int deltaIndex) const
     {
         return this->serializePathDelta();
     }
-    if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackMute))
-    {
-        return this->serializeMuteDelta();
-    }
     else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackColour))
     {
         return this->serializeColourDelta();
@@ -139,10 +134,6 @@ void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {
             this->resetPathDelta(newDeltaData);
-        }
-        else if (newDelta->hasType(MidiTrackDeltas::trackMute))
-        {
-            this->resetMuteDelta(newDeltaData);
         }
         else if (newDelta->hasType(MidiTrackDeltas::trackColour))
         {
@@ -227,14 +218,6 @@ ValueTree AutomationTrackNode::serializePathDelta() const
     return tree;
 }
 
-ValueTree AutomationTrackNode::serializeMuteDelta() const
-{
-    using namespace Serialization::VCS;
-    ValueTree tree(MidiTrackDeltas::trackMute);
-    tree.setProperty(delta, this->getTrackMuteStateAsString(), nullptr);
-    return tree;
-}
-
 ValueTree AutomationTrackNode::serializeColourDelta() const
 {
     using namespace Serialization::VCS;
@@ -278,18 +261,6 @@ void AutomationTrackNode::resetPathDelta(const ValueTree &state)
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path, false);
-}
-
-void AutomationTrackNode::resetMuteDelta(const ValueTree &state)
-{
-    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackMute));
-    const String &muteState(state.getProperty(Serialization::VCS::delta));
-    const bool willMute = MidiTrack::isTrackMuted(muteState);
-    
-    if (willMute != this->isTrackMuted())
-    {
-        this->setTrackMuted(willMute, false);
-    }
 }
 
 void AutomationTrackNode::resetColourDelta(const ValueTree &state)

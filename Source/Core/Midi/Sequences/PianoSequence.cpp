@@ -65,6 +65,23 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFo
     this->updateBeatRange(false);
 }
 
+void PianoSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
+    bool soloPlaybackMode, double timeAdjustment, double timeFactor) const
+{
+    // This method pretty much duplicates base method, except for this check:
+    if (clip.isMuted() || (soloPlaybackMode && !clip.isSoloed()))
+    {
+        return;
+    }
+
+    for (const auto *event : this->midiEvents)
+    {
+        event->exportMessages(outSequence, clip, timeAdjustment, timeFactor);
+    }
+
+    outSequence.updateMatchedPairs();
+}
+
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
@@ -103,7 +120,7 @@ bool PianoSequence::remove(const Note &eventParams, const bool undoable)
         jassert(index >= 0);
         if (index >= 0)
         {
-            MidiEvent *const removedNote = this->midiEvents[index];
+            auto *removedNote = this->midiEvents.getUnchecked(index);
             jassert(removedNote->isValid());
             this->eventDispatcher.dispatchRemoveEvent(*removedNote);
             this->midiEvents.remove(index, true);
@@ -133,7 +150,7 @@ bool PianoSequence::change(const Note &oldParams,
         jassert(index >= 0);
         if (index >= 0)
         {
-            const auto changedNote = static_cast<Note *>(this->midiEvents[index]);
+            auto *changedNote = static_cast<Note *>(this->midiEvents.getUnchecked(index));
             changedNote->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedNote, changedNote);
@@ -193,7 +210,7 @@ bool PianoSequence::removeGroup(Array<Note> &group, bool undoable)
             jassert(index >= 0);
             if (index >= 0)
             {
-                const auto removedNote = this->midiEvents[index];
+                auto *removedNote = this->midiEvents.getUnchecked(index);
                 this->eventDispatcher.dispatchRemoveEvent(*removedNote);
                 this->midiEvents.remove(index, true);
             }
@@ -221,8 +238,8 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
     {
         for (int i = 0; i < groupBefore.size(); ++i)
         {
-            const Note &oldParams = groupBefore.getUnchecked(i);
-            const Note &newParams = groupAfter.getUnchecked(i);
+            const Note &oldParams = groupBefore.getReference(i);
+            const Note &newParams = groupAfter.getReference(i);
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             // if you're hitting this assertion, one of the reasons might be
             // allowing user to somehow select notes of different clips simultaneously,
@@ -232,7 +249,7 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
             jassert(index >= 0);
             if (index >= 0)
             {
-                const auto changedNote = static_cast<Note *>(this->midiEvents[index]);
+                auto *changedNote = static_cast<Note *>(this->midiEvents.getUnchecked(index));
                 changedNote->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedNote, changedNote);

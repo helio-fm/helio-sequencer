@@ -111,9 +111,8 @@ private:
 
     SafePointer<Component> parent;
 
-    ScopedPointer<Component> clickMarker;
-    ScopedPointer<Component> toggleMarker;
-    ScopedPointer<Component> colourHighlighter;
+    UniquePointer<Component> clickMarker;
+    UniquePointer<Component> toggleMarker;
 
     Point<int> lastMouseScreenPosition;
 

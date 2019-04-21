@@ -63,12 +63,10 @@ namespace CommandIDs
         ScanPluginsFolder               = 0x0505,
 
         DeleteTrack                     = 0x1000,
-        MuteTrack                       = 0x1001,
-        UnmuteTrack                     = 0x1002,
-        RenameTrack                     = 0x1003,
-        SelectAllEvents                 = 0x1004,
-        SelectAllClips                  = 0x1005,
-        NewTrackFromSelection           = 0x1006,
+        RenameTrack                     = 0x1001,
+        SelectAllEvents                 = 0x1002,
+        SelectAllClips                  = 0x1003,
+        NewTrackFromSelection           = 0x1004,
 
         // MidiRollCommandPanel
         DeleteEvents                    = 0x1601,
@@ -86,6 +84,9 @@ namespace CommandIDs
         ClipTransposeDown               = 0x1621,
         ClipVolumeUp                    = 0x1622,
         ClipVolumeDown                  = 0x1623,
+
+        ToggleMuteClips                 = 0x1630,
+        ToggleSoloClips                 = 0x1631,
 
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,

@@ -106,6 +106,8 @@
         { "receiver": "PianoRoll", "command": "SelectAllEvents", "key": "Control + A" },
 
         // Edit selection
+        { "receiver": "PianoRoll", "command": "ToggleMuteClips", "key": "M" },
+        { "receiver": "PianoRoll", "command": "ToggleSoloClips", "key": "S" },
         { "receiver": "PianoRoll", "command": "RenameTrack", "key": "F2" },
         { "receiver": "PianoRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
         { "receiver": "PianoRoll", "command": "BeatShiftRight", "key": "Cursor Right" },
@@ -210,6 +212,8 @@
         { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Edit selection
+        { "receiver": "PatternRoll", "command": "ToggleMuteClips", "key": "M" },
+        { "receiver": "PatternRoll", "command": "ToggleSoloClips", "key": "S" },
         { "receiver": "PatternRoll", "command": "RenameTrack", "key": "F2" },
         { "receiver": "PatternRoll", "command": "ClipVolumeUp", "key": "+" },
         { "receiver": "PatternRoll", "command": "ClipVolumeDown", "key": "-" },

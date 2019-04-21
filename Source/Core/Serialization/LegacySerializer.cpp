@@ -220,7 +220,6 @@ static String transformXmlTag(const String &tagOrAttribute)
         oldKeys.set("ProjectAuthor", ProjectInfoDeltas::projectAuthor);
         oldKeys.set("ProjectDescription", ProjectInfoDeltas::projectDescription);
         oldKeys.set("LayerPath", MidiTrackDeltas::trackPath);
-        oldKeys.set("LayerMute", MidiTrackDeltas::trackMute);
         oldKeys.set("LayerColour", MidiTrackDeltas::trackColour);
         oldKeys.set("LayerInstrument", MidiTrackDeltas::trackInstrument);
         oldKeys.set("LayerController", MidiTrackDeltas::trackController);

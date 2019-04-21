@@ -68,7 +68,7 @@ MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &eventParams,
     }
     else
     {
-        const auto ownedEvent = new TimeSignatureEvent(this, eventParams);
+        auto *ownedEvent = new TimeSignatureEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
         this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         this->updateBeatRange(true);
@@ -91,7 +91,7 @@ bool TimeSignaturesSequence::remove(const TimeSignatureEvent &signature, bool un
         const int index = this->midiEvents.indexOfSorted(signature, &signature);
         if (index >= 0)
         {
-            MidiEvent *const removedEvent = this->midiEvents[index];
+            auto *removedEvent = this->midiEvents.getUnchecked(index);
             this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
@@ -119,7 +119,7 @@ bool TimeSignaturesSequence::change(const TimeSignatureEvent &oldParams,
         const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
         if (index >= 0)
         {
-            auto changedEvent = static_cast<TimeSignatureEvent *>(this->midiEvents[index]);
+            auto *changedEvent = static_cast<TimeSignatureEvent *>(this->midiEvents.getUnchecked(index));
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
@@ -146,8 +146,8 @@ bool TimeSignaturesSequence::insertGroup(Array<TimeSignatureEvent> &signatures, 
     {
         for (int i = 0; i < signatures.size(); ++i)
         {
-            const TimeSignatureEvent &eventParams = signatures.getUnchecked(i);
-            const auto ownedEvent = new TimeSignatureEvent(this, eventParams);
+            const TimeSignatureEvent &eventParams = signatures.getReference(i);
+            auto *ownedEvent = new TimeSignatureEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
             this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
@@ -170,11 +170,11 @@ bool TimeSignaturesSequence::removeGroup(Array<TimeSignatureEvent> &signatures, 
     {
         for (int i = 0; i < signatures.size(); ++i)
         {
-            const TimeSignatureEvent &signature = signatures.getUnchecked(i);
+            const TimeSignatureEvent &signature = signatures.getReference(i);
             const int index = this->midiEvents.indexOfSorted(signature, &signature);
             if (index >= 0)
             {
-                MidiEvent *const removedSignature = this->midiEvents[index];
+                auto *removedSignature = this->midiEvents.getUnchecked(index);
                 this->eventDispatcher.dispatchRemoveEvent(*removedSignature);
                 this->midiEvents.remove(index, true);
             }
@@ -202,12 +202,12 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
     {
         for (int i = 0; i < groupBefore.size(); ++i)
         {
-            const TimeSignatureEvent &oldParams = groupBefore.getUnchecked(i);
-            const TimeSignatureEvent &newParams = groupAfter.getUnchecked(i);
+            const TimeSignatureEvent &oldParams = groupBefore.getReference(i);
+            const TimeSignatureEvent &newParams = groupAfter.getReference(i);
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const auto changedEvent = static_cast<TimeSignatureEvent *>(this->midiEvents[index]);
+                auto *changedEvent = static_cast<TimeSignatureEvent *>(this->midiEvents.getUnchecked(index));
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);

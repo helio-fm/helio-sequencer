@@ -24,13 +24,11 @@ class ProjectNode;
 class UndoStack;
 class MidiTrack;
 
-// A sorted array of clips
 class Pattern final : public Serializable
 {
 public:
 
-    explicit Pattern(MidiTrack &track,
-        ProjectEventDispatcher &eventDispatcher);
+    Pattern(MidiTrack &track, ProjectEventDispatcher &eventDispatcher);
     
     //===------------------------------------------------------------------===//
     // Accessors
@@ -59,9 +57,9 @@ public:
     // Always call notifyLayerChanged() when you're done using it.
     void silentImport(const Clip &clipToImport);
 
-    bool insert(Clip clip, bool undoable);
-    bool remove(Clip clip, bool undoable);
-    bool change(Clip clip, Clip newClip, bool undoable);
+    bool insert(const Clip &clip, bool undoable);
+    bool remove(const Clip &clip, bool undoable);
+    bool change(const Clip &clip, const Clip &newClip, bool undoable);
 
     bool insertGroup(Array<Clip> &clips, bool undoable);
     bool removeGroup(Array<Clip> &clips, bool undoable);
@@ -79,11 +77,13 @@ public:
     inline int size() const noexcept
     { return this->clips.size(); }
     
-    inline Clip *getUnchecked(const int index) const noexcept
+    inline Clip *getUnchecked(int index) const noexcept
     { return this->clips.getUnchecked(index); }
     
     inline const OwnedArray<Clip> &getClips() const noexcept
     { return this->clips; }
+
+    bool hasSoloClips() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Events change listener

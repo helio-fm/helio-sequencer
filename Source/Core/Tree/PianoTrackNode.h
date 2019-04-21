@@ -50,13 +50,11 @@ public:
     //===------------------------------------------------------------------===//
 
     ValueTree serializePathDelta() const;
-    ValueTree serializeMuteDelta() const;
     ValueTree serializeColourDelta() const;
     ValueTree serializeInstrumentDelta() const;
     ValueTree serializeEventsDelta() const;
 
     void resetPathDelta(const ValueTree &state);
-    void resetMuteDelta(const ValueTree &state);
     void resetColourDelta(const ValueTree &state);
     void resetInstrumentDelta(const ValueTree &state);
     void resetEventsDelta(const ValueTree &state);

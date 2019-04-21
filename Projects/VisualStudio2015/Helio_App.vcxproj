@@ -34,7 +34,7 @@
                  Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <PlatformToolset>v140_xp</PlatformToolset>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -42,7 +42,7 @@
                  Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <PlatformToolset>v140_xp</PlatformToolset>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -1820,9 +1820,6 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GridItem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GridUnitTests.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GroupComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2951,6 +2948,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\time\juce_RelativeTime.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\time\juce_Time.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\unit_tests\juce_UnitTest.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\unit_tests\juce_UnitTestCategories.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\xml\juce_XmlDocument.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\xml\juce_XmlElement.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\zip\zlib\crc32.h"/>

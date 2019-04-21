@@ -28,55 +28,63 @@
 AudioSettings::AudioSettings(AudioCore &core)
     : audioCore(core)
 {
-    addAndMakeVisible(sampleRateComboPrimer = new MobileComboBox::Primer());
+    this->sampleRateComboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(sampleRateComboPrimer.get());
 
-    addAndMakeVisible(bufferSizeComboPrimer = new MobileComboBox::Primer());
+    this->bufferSizeComboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(bufferSizeComboPrimer.get());
 
-    addAndMakeVisible(deviceTypeComboPrimer = new MobileComboBox::Primer());
+    this->deviceTypeComboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(deviceTypeComboPrimer.get());
 
-    addAndMakeVisible(deviceComboPrimer = new MobileComboBox::Primer());
+    this->deviceComboPrimer.reset(new MobileComboBox::Primer());
+    this->addAndMakeVisible(deviceComboPrimer.get());
 
-    addAndMakeVisible(deviceTypeEditor = new TextEditor(String()));
-    deviceTypeEditor->setMultiLine(false);
-    deviceTypeEditor->setReturnKeyStartsNewLine(false);
-    deviceTypeEditor->setReadOnly(true);
-    deviceTypeEditor->setScrollbarsShown(false);
-    deviceTypeEditor->setCaretVisible(false);
-    deviceTypeEditor->setPopupMenuEnabled(false);
-    deviceTypeEditor->setText(String());
+    this->deviceTypeEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(deviceTypeEditor.get());
+    deviceTypeEditor->setMultiLine (false);
+    deviceTypeEditor->setReturnKeyStartsNewLine (false);
+    deviceTypeEditor->setReadOnly (true);
+    deviceTypeEditor->setScrollbarsShown (false);
+    deviceTypeEditor->setCaretVisible (false);
+    deviceTypeEditor->setPopupMenuEnabled (false);
+    deviceTypeEditor->setText (String());
 
-    addAndMakeVisible(deviceEditor = new TextEditor(String()));
-    deviceEditor->setMultiLine(false);
-    deviceEditor->setReturnKeyStartsNewLine(false);
-    deviceEditor->setReadOnly(true);
-    deviceEditor->setScrollbarsShown(false);
-    deviceEditor->setCaretVisible(false);
-    deviceEditor->setPopupMenuEnabled(false);
-    deviceEditor->setText(String());
+    this->deviceEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(deviceEditor.get());
+    deviceEditor->setMultiLine (false);
+    deviceEditor->setReturnKeyStartsNewLine (false);
+    deviceEditor->setReadOnly (true);
+    deviceEditor->setScrollbarsShown (false);
+    deviceEditor->setCaretVisible (false);
+    deviceEditor->setPopupMenuEnabled (false);
+    deviceEditor->setText (String());
 
-    addAndMakeVisible(sampleRateEditor = new TextEditor(String()));
-    sampleRateEditor->setMultiLine(false);
-    sampleRateEditor->setReturnKeyStartsNewLine(false);
-    sampleRateEditor->setReadOnly(true);
-    sampleRateEditor->setScrollbarsShown(false);
-    sampleRateEditor->setCaretVisible(false);
-    sampleRateEditor->setPopupMenuEnabled(false);
-    sampleRateEditor->setText(String());
+    this->sampleRateEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(sampleRateEditor.get());
+    sampleRateEditor->setMultiLine (false);
+    sampleRateEditor->setReturnKeyStartsNewLine (false);
+    sampleRateEditor->setReadOnly (true);
+    sampleRateEditor->setScrollbarsShown (false);
+    sampleRateEditor->setCaretVisible (false);
+    sampleRateEditor->setPopupMenuEnabled (false);
+    sampleRateEditor->setText (String());
 
-    addAndMakeVisible(bufferSizeEditor = new TextEditor(String()));
-    bufferSizeEditor->setMultiLine(false);
-    bufferSizeEditor->setReturnKeyStartsNewLine(false);
-    bufferSizeEditor->setReadOnly(true);
-    bufferSizeEditor->setScrollbarsShown(false);
-    bufferSizeEditor->setCaretVisible(false);
-    bufferSizeEditor->setPopupMenuEnabled(false);
-    bufferSizeEditor->setText(String());
+    this->bufferSizeEditor.reset(new TextEditor(String()));
+    this->addAndMakeVisible(bufferSizeEditor.get());
+    bufferSizeEditor->setMultiLine (false);
+    bufferSizeEditor->setReturnKeyStartsNewLine (false);
+    bufferSizeEditor->setReadOnly (true);
+    bufferSizeEditor->setScrollbarsShown (false);
+    bufferSizeEditor->setCaretVisible (false);
+    bufferSizeEditor->setPopupMenuEnabled (false);
+    bufferSizeEditor->setText (String());
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize(550, 200);
+    this->setSize(550, 200);
 
     //[Constructor]
     this->deviceTypeEditor->setFont(18.f);
@@ -133,14 +141,14 @@ void AudioSettings::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    sampleRateComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
-    bufferSizeComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
-    deviceTypeComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
-    deviceComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
-    deviceTypeEditor->setBounds (16, 12, getWidth() - 32, 32);
-    deviceEditor->setBounds (16, 60, getWidth() - 32, 32);
-    sampleRateEditor->setBounds (16, 108, getWidth() - 32, 32);
-    bufferSizeEditor->setBounds (16, 156, getWidth() - 32, 32);
+    sampleRateComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
+    bufferSizeComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
+    deviceTypeComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
+    deviceComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
+    deviceTypeEditor->setBounds(16, 12, getWidth() - 32, 32);
+    deviceEditor->setBounds(16, 60, getWidth() - 32, 32);
+    sampleRateEditor->setBounds(16, 108, getWidth() - 32, 32);
+    bufferSizeEditor->setBounds(16, 156, getWidth() - 32, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }

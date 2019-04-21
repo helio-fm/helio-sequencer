@@ -92,7 +92,7 @@ void UndoStack::ActionSet::deserialize(const ValueTree &tree)
 
     for (const auto &childAction : tree)
     {
-        if (UndoAction *action = createUndoActionsByTagName(childAction.getType()))
+        if (auto *action = createUndoActionsByTagName(childAction.getType()))
         {
             action->deserialize(childAction);
             this->actions.add(action);
@@ -116,7 +116,6 @@ UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &t
     else if (tagName == Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
     else if (tagName == Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
     else if (tagName == Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
-    else if (tagName == Undo::midiTrackMuteAction)                   { return new MidiTrackMuteAction(this->project); }
     else if (tagName == Undo::clipInsertAction)                      { return new ClipInsertAction(this->project); }
     else if (tagName == Undo::clipRemoveAction)                      { return new ClipRemoveAction(this->project); }
     else if (tagName == Undo::clipChangeAction)                      { return new ClipChangeAction(this->project); }
@@ -177,7 +176,7 @@ void UndoStack::clearUndoHistory()
     this->sendChangeMessage();
 }
 
-bool UndoStack::perform (UndoAction *const newAction, const String &actionName)
+bool UndoStack::perform(UndoAction *const newAction, const String &actionName)
 {
     if (this->perform(newAction))
     {
@@ -192,11 +191,11 @@ bool UndoStack::perform (UndoAction *const newAction, const String &actionName)
     return false;
 }
 
-bool UndoStack::perform (UndoAction *const newAction)
+bool UndoStack::perform(UndoAction *const newAction)
 {
     if (newAction != nullptr)
     {
-        ScopedPointer<UndoAction> action (newAction);
+        ScopedPointer<UndoAction> action(newAction);
         
         if (this->reentrancyCheck)
         {
@@ -228,7 +227,7 @@ bool UndoStack::perform (UndoAction *const newAction)
             else
             {
                 actionSet = new ActionSet(this->project, newTransactionName);
-                transactions.insert (nextIndex, actionSet);
+                transactions.insert(nextIndex, actionSet);
                 ++nextIndex;
             }
             
@@ -258,12 +257,12 @@ void UndoStack::clearFutureTransactions()
            && this->transactions.size() > this->minimumTransactionsToKeep)
     {
         this->totalUnitsStored -= this->transactions.getFirst()->getTotalSize();
-        this->transactions.remove (0);
+        this->transactions.remove(0);
         --this->nextIndex;
         
         // if this fails, then some actions may not be returning
         // consistent results from their getSizeInUnits() method
-        jassert (this->totalUnitsStored >= 0);
+        jassert(this->totalUnitsStored >= 0);
     }
 }
 

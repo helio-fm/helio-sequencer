@@ -44,18 +44,11 @@ MidiTrackNode::MidiTrackNode(const String &name, const Identifier &type) :
     id(Uuid().toString()),
     colour(Colours::white),
     channel(1),
-    controllerNumber(0),
-    mute(false),
-    solo(false)
+    controllerNumber(0)
 {
     this->lastFoundParent = this->findParentOfType<ProjectNode>();
     // do not dispatch new track events here,
     // as newly created track is not attached to any parent
-}
-
-MidiTrackNode::~MidiTrackNode()
-{
-
 }
 
 void MidiTrackNode::showPage()
@@ -207,24 +200,6 @@ void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
             this->dispatchChangeTrackProperties(this);
             // controller value is not displayed anywhere, fix this is it does someday
             //this->dispatchChangeTreeNodeViews();
-        }
-    }
-}
-
-bool MidiTrackNode::isTrackMuted() const noexcept
-{
-    return this->mute;
-}
-
-void MidiTrackNode::setTrackMuted(bool shouldBeMuted, bool sendNotifications)
-{
-    if (this->mute != shouldBeMuted)
-    {
-        this->mute = shouldBeMuted;
-        if (sendNotifications)
-        {
-            this->dispatchChangeTrackProperties(this);
-            this->dispatchChangeTreeNodeViews();
         }
     }
 }

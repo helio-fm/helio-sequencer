@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "PatternRollSelectionMenu.h"
+#include "PatternOperations.h"
 #include "ClipComponent.h"
 #include "Lasso.h"
 #include "CommandIDs.h"
@@ -31,7 +32,7 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     }
 }
 
-static bool canRename(WeakReference<Lasso> lasso)
+static bool canRenamePatternSelection(WeakReference<Lasso> lasso)
 {
     const String trackId = lasso->getFirstAs<ClipComponent>()->getClip().getTrackId();
     for (int i = 0; i < lasso->getNumSelected(); ++i)
@@ -59,7 +60,18 @@ void PatternRollSelectionMenu::initDefaultMenu()
         TRANS("menu::selection::clips::transpose::down")));
 
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
-        TRANS("menu::track::rename"))->disabledIf(!canRename(this->lasso))->closesMenu());
+        TRANS("menu::track::rename"))->disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
+
+    const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso) ?
+        TRANS("menu::unmute") : TRANS("menu::mute");
+
+    const auto soloAction = PatternOperations::lassoContainsSoloedClip(*this->lasso) ?
+        TRANS("menu::unsolo") : TRANS("menu::solo");
+
+    // TODO icons
+    menu.add(MenuItem::item(Icons::mute, CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleSoloClips, soloAction)->closesMenu());
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips,
         TRANS("menu::selection::clips::copy"))->closesMenu());
