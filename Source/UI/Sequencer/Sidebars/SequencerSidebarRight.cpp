@@ -41,6 +41,7 @@
 #include "SequencerLayout.h"
 #include "Workspace.h"
 #include "CachedLabelImage.h"
+#include "Config.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
@@ -293,7 +294,11 @@ void SequencerSidebarRight::recreateMenu()
     {
         this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel));
         this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
-        this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel));
+
+        if (!App::Config().getArpeggiators()->isEmpty())
+        {
+            this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel));
+        }
         //this->menu.add(MenuItem::item(Icons::script, CommandIDs::RunScriptTransform));
 
         this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
@@ -447,16 +452,22 @@ void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu
 
 void SequencerSidebarRight::setLinearMode()
 {
-    this->menuMode = PianoRollTools;
-    this->recreateMenu();
-    this->listBox->updateContent();
+    if (this->menuMode != PianoRollTools)
+    {
+        this->menuMode = PianoRollTools;
+        this->recreateMenu();
+        this->listBox->updateContent();
+    }
 }
 
 void SequencerSidebarRight::setPatternMode()
 {
-    this->menuMode = PatternRollTools;
-    this->recreateMenu();
-    this->listBox->updateContent();
+    if (this->menuMode != PatternRollTools)
+    {
+        this->menuMode = PatternRollTools;
+        this->recreateMenu();
+        this->listBox->updateContent();
+    }
 }
 
 //[/MiscUserCode]

@@ -28,6 +28,11 @@ public:
 
     void reloadResources();
 
+    inline bool isEmpty() const noexcept
+    {
+        return this->baseResources.size() == 0 && this->userResources.size() == 0;
+    }
+
     template<typename T = BaseResource>
     const Array<typename T::Ptr> getAllResources() const
     {

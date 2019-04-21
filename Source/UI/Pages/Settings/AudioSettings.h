@@ -55,14 +55,14 @@ private:
     AudioCore &audioCore;
     //[/UserVariables]
 
-    ScopedPointer<MobileComboBox::Primer> sampleRateComboPrimer;
-    ScopedPointer<MobileComboBox::Primer> bufferSizeComboPrimer;
-    ScopedPointer<MobileComboBox::Primer> deviceTypeComboPrimer;
-    ScopedPointer<MobileComboBox::Primer> deviceComboPrimer;
-    ScopedPointer<TextEditor> deviceTypeEditor;
-    ScopedPointer<TextEditor> deviceEditor;
-    ScopedPointer<TextEditor> sampleRateEditor;
-    ScopedPointer<TextEditor> bufferSizeEditor;
+    UniquePointer<MobileComboBox::Primer> sampleRateComboPrimer;
+    UniquePointer<MobileComboBox::Primer> bufferSizeComboPrimer;
+    UniquePointer<MobileComboBox::Primer> deviceTypeComboPrimer;
+    UniquePointer<MobileComboBox::Primer> deviceComboPrimer;
+    UniquePointer<TextEditor> deviceTypeEditor;
+    UniquePointer<TextEditor> deviceEditor;
+    UniquePointer<TextEditor> sampleRateEditor;
+    UniquePointer<TextEditor> bufferSizeEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSettings)
 };

@@ -273,10 +273,10 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::TransportStartPlayback)
     {
-        // Play scale forward (and backward?)
+        // Play scale forward and backward
         auto scaleKeys = this->scale->getUpScale();
         scaleKeys.addArray(this->scale->getDownScale());
-        const float timeFactor = 1.0; // MS_PER_BEAT;
+        const double timeFactor = 0.75; // playback speed
 
         MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)

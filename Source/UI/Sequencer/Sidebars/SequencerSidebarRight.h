@@ -69,11 +69,12 @@ private:
 
     enum MenuMode
     {
+        None,
         PianoRollTools,
         PatternRollTools
     };
 
-    MenuMode menuMode;
+    MenuMode menuMode = None;
     MenuPanel::Menu menu;
 
     void updateModeButtons();

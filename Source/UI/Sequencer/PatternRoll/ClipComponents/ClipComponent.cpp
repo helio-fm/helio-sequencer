@@ -60,7 +60,7 @@ PatternRoll &ClipComponent::getRoll() const noexcept
 void ClipComponent::updateColours()
 {
     jassert(this->clip.isValid());
-    this->fillColour = Colours::black.withAlpha(0.2f);
+    this->fillColour = Colours::black.withAlpha(0.25f);
     this->headBrightColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
         .withAlpha(this->ghostMode ? 0.2f : 0.7f)
@@ -289,11 +289,13 @@ void ClipComponent::paint(Graphics &g)
             textBounds, Justification::bottomLeft, false);
     }
 
-    g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);
+    if (this->clip.getKey() != 0)
+    {
+        g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);
+    }
 
     if (this->clip.isMuted())
     {
-        //g.fillRect(...);
         g.drawText("M", textBounds, Justification::topRight, false);
     }
 
@@ -306,9 +308,8 @@ void ClipComponent::paint(Graphics &g)
     g.drawVerticalLine(0, 2.f, h - 1.f);
     g.drawVerticalLine(this->getWidth() - 1, 2.f, h - 1.f);
 
-    // speedup of some sort: set colour to be used
-    // by all child components, so that they don't have to 
-    g.setColour(this->eventColour);
+    // speedup: set colour to be used by all child components, so they don't have to 
+    g.setColour(this->clip.isMuted() ? this->headDarkColour : this->eventColour);
 }
 
 //===----------------------------------------------------------------------===//

@@ -169,33 +169,6 @@ MenuItem::Ptr MenuItem::closesMenu()
 // Highlighters
 //===----------------------------------------------------------------------===//
 
-class ColourHighlighter final : public Component
-{
-public:
-
-    explicit ColourHighlighter(const Colour &targetColour) :
-        colour(targetColour/*.interpolatedWith(Colours::white, 0.5f)*/)
-    {
-        this->setInterceptsMouseClicks(false, false);
-        this->setMouseClickGrabsKeyboardFocus(false);
-        this->setPaintingIsUnclipped(true);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(Colours::black.withAlpha(0.1f));
-        g.drawRoundedRectangle(this->getLocalBounds().reduced(4).toFloat(), 5.f, 1.f);
-
-        g.setColour(this->colour.withAlpha(0.1f));
-        g.fillRoundedRectangle(this->getLocalBounds().reduced(4).toFloat(), 5);
-    }
-
-private:
-
-    const Colour colour;
-
-};
-
 class CommandDragHighlighter final : public Component
 {
 public:
@@ -368,11 +341,6 @@ void MenuItemComponent::resized()
         int(this->getWidth() - this->icon.getWidth() - xMargin),
         this->getHeight());
 
-    if (this->colourHighlighter != nullptr)
-    {
-        this->colourHighlighter->setBounds(this->getLocalBounds());
-    }
-
     const float fontSize = 18.f ;//jmin(MAX_MENU_FONT_SIZE, float(this->getHeight() / 2) + 1.f);
     this->subLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
     this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
@@ -426,15 +394,15 @@ void MenuItemComponent::mouseDown (const MouseEvent& e)
     {
         if (!this->description->isDisabled)
         {
-            this->clickMarker = new CommandDragHighlighter();
-            this->addChildComponent(this->clickMarker);
+            this->clickMarker.reset(new CommandDragHighlighter());
+            this->addChildComponent(this->clickMarker.get());
             this->clickMarker->setBounds(this->getLocalBounds());
             this->clickMarker->toBack();
 
 #if HAS_OPENGL_BUG
             this->clickMarker->setVisible(true);
 #else
-            this->animator.animateComponent(this->clickMarker, this->getLocalBounds(), 1.f, 150, true, 0.0, 0.0);
+            this->animator.animateComponent(this->clickMarker.get(), this->getLocalBounds(), 1.f, 150, true, 0.0, 0.0);
 #endif
         }
 
@@ -465,10 +433,10 @@ void MenuItemComponent::mouseUp (const MouseEvent& e)
         if (this->clickMarker)
         {
 #if ! HAS_OPENGL_BUG
-            this->animator.animateComponent(this->clickMarker, this->getLocalBounds(), 0.f, 100, true, 0.0, 0.0);
+            this->animator.animateComponent(this->clickMarker.get(), this->getLocalBounds(), 0.f, 100, true, 0.0, 0.0);
 #endif
 
-            this->removeChildComponent(this->clickMarker);
+            this->removeChildComponent(this->clickMarker.get());
             this->clickMarker = nullptr;
         }
 
@@ -522,8 +490,12 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
 
     if (desc->isToggled && !this->description->isToggled)
     {
-        this->toggleMarker = new MenuItemComponentMarker();
-        this->addAndMakeVisible(this->toggleMarker);
+        this->toggleMarker.reset(new MenuItemComponentMarker());
+#if ! HAS_OPENGL_BUG
+        this->toggleMarker->setAlpha(0.f);
+        this->animator.animateComponent(this->toggleMarker.get(), this->getLocalBounds(), 1.f, 200, false, 0.0, 0.0);
+#endif
+        this->addAndMakeVisible(this->toggleMarker.get());
     }
     else if (!desc->isToggled && (this->toggleMarker != nullptr))
     {

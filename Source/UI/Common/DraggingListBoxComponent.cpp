@@ -147,7 +147,9 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
                 (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar().isVisible());
             
             if (!eventWasUsed)
+            {
                 Component::mouseWheelMove(event, wheel);
+            }
         }
     }
 }
