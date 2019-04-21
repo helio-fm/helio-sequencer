@@ -149,7 +149,7 @@ protected:
     void setQuickSelectLayerMode(bool value);
 
     void stopSound();
-    void sendMidiMessage(const MidiMessage &message) const;
+    void sendNoteOn(int noteKey, float velocity) const;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteComponent)
     

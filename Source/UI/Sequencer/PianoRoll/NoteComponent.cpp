@@ -668,7 +668,7 @@ void NoteComponent::startDragging(const bool sendMidiMessage)
     
     if (sendMidiMessage)
     {
-        this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+        this->sendNoteOn(this->getKey(), this->getVelocity());
     }
 }
 
@@ -701,7 +701,7 @@ Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMid
 
     if (sendMidiMessage)
     {
-        this->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
+        this->sendNoteOn(newKey, this->getVelocity());
     }
 
     return this->getNote().withKeyBeat(newKey, newBeat);
@@ -739,7 +739,7 @@ void NoteComponent::startInitializing()
     this->anchor = this->getNote();
 
     // always send midi in this mode:
-    this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+    this->sendNoteOn(this->getKey(), this->getVelocity());
 }
 
 bool NoteComponent::getInitializingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const
@@ -768,7 +768,7 @@ Note NoteComponent::continueInitializing(float deltaLength, int deltaKey, bool s
 
     if (sendMidi)
     {
-        this->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
+        this->sendNoteOn(newKey, this->getVelocity());
     }
 
     return this->getNote().withKeyLength(newKey, newLength);
@@ -792,7 +792,7 @@ void NoteComponent::startResizingRight(bool sendMidiMessage)
     
     if (sendMidiMessage)
     {
-        this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+        this->sendNoteOn(this->getKey(), this->getVelocity());
     }
 }
 
@@ -837,7 +837,7 @@ void NoteComponent::startResizingLeft(bool sendMidiMessage)
     
     if (sendMidiMessage)
     {
-        this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+        this->sendNoteOn(this->getKey(), this->getVelocity());
     }
 }
 
@@ -1031,11 +1031,11 @@ void NoteComponent::stopSound()
 {
     const auto &trackId = this->getNote().getSequence()->getTrackId();
     this->getRoll().getTransport().stopSound(trackId);
-    Thread::yield();
 }
 
-void NoteComponent::sendMidiMessage(const MidiMessage &message) const
+void NoteComponent::sendNoteOn(int noteKey, float velocity) const
 {
     const auto &trackId = this->getNote().getSequence()->getTrackId();
-    this->getRoll().getTransport().previewMidiMessage(trackId, message);
+    this->getRoll().getTransport().previewMidiMessage(trackId,
+        MidiMessage::noteOn(1, noteKey + this->clip.getKey(), velocity * this->clip.getVelocity()));
 }
