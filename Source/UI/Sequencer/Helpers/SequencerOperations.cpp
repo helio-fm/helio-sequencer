@@ -388,12 +388,11 @@ void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
     {
         const auto sequence = tracks.getUnchecked(i)->getSequence();
 
-        if (nullptr != dynamic_cast<PianoSequence *>(sequence))
+        if (auto *pianoSequence = dynamic_cast<PianoSequence *>(sequence))
         {
-            PianoSequence *layer = dynamic_cast<PianoSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < pianoSequence->size(); ++j)
             {
-                Note *note = static_cast<Note *>(layer->getUnchecked(j));
+                Note *note = static_cast<Note *>(pianoSequence->getUnchecked(j));
                 const float noteStartBeat = note->getBeat();
                 const float noteEndBeat = note->getBeat() + note->getLength();
                 
@@ -424,12 +423,11 @@ void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AnnotationsSequence *>(sequence))
+        else if (auto *textSequence = dynamic_cast<AnnotationsSequence *>(sequence))
         {
-            AnnotationsSequence *layer = dynamic_cast<AnnotationsSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < textSequence->size(); ++j)
             {
-                AnnotationEvent *annotation = static_cast<AnnotationEvent *>(layer->getUnchecked(j));
+                AnnotationEvent *annotation = static_cast<AnnotationEvent *>(textSequence->getUnchecked(j));
                 const bool shouldBeDeleted = (annotation->getBeat() < endBeat && annotation->getBeat() >= startBeat);
                 
                 if (shouldBeDeleted)
@@ -438,12 +436,11 @@ void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AutomationSequence *>(sequence))
+        else if (auto *autoSequence = dynamic_cast<AutomationSequence *>(sequence))
         {
-            AutomationSequence *layer = dynamic_cast<AutomationSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < autoSequence->size(); ++j)
             {
-                AutomationEvent *event = static_cast<AutomationEvent *>(layer->getUnchecked(j));
+                AutomationEvent *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(j));
                 const bool shouldBeDeleted = (event->getBeat() < endBeat && event->getBeat() >= startBeat);
                 
                 if (shouldBeDeleted)
@@ -479,14 +476,13 @@ void SequencerOperations::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float 
     
     for (int i = 0; i < tracks.size(); ++i)
     {
-        const auto sequence = tracks.getUnchecked(i)->getSequence();
+        auto *sequence = tracks.getUnchecked(i)->getSequence();
 
-        if (nullptr != dynamic_cast<PianoSequence *>(sequence))
+        if (auto *pianoSequence = dynamic_cast<PianoSequence *>(sequence))
         {
-            PianoSequence *layer = dynamic_cast<PianoSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < pianoSequence->size(); ++j)
             {
-                Note *note = static_cast<Note *>(layer->getUnchecked(j));
+                auto *note = static_cast<Note *>(pianoSequence->getUnchecked(j));
 
                 if (note->getBeat() < targetBeat)
                 {
@@ -495,12 +491,11 @@ void SequencerOperations::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float 
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AnnotationsSequence *>(sequence))
+        else if (auto *textSequence = dynamic_cast<AnnotationsSequence *>(sequence))
         {
-            AnnotationsSequence *layer = dynamic_cast<AnnotationsSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < textSequence->size(); ++j)
             {
-                AnnotationEvent *annotation = static_cast<AnnotationEvent *>(layer->getUnchecked(j));
+                auto *annotation = static_cast<AnnotationEvent *>(textSequence->getUnchecked(j));
 
                 if (annotation->getBeat() < targetBeat)
                 {
@@ -509,12 +504,11 @@ void SequencerOperations::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float 
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AutomationSequence *>(sequence))
+        else if (auto *autoSequence = dynamic_cast<AutomationSequence *>(sequence))
         {
-            AutomationSequence *layer = dynamic_cast<AutomationSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < autoSequence->size(); ++j)
             {
-                AutomationEvent *event = static_cast<AutomationEvent *>(layer->getUnchecked(j));
+                auto *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(j));
                 
                 if (event->getBeat() < targetBeat)
                 {
@@ -545,14 +539,13 @@ void SequencerOperations::shiftEventsToTheRight(Array<MidiTrack *> tracks, float
     
     for (int i = 0; i < tracks.size(); ++i)
     {
-        const auto sequence = tracks.getUnchecked(i)->getSequence();
+        auto *sequence = tracks.getUnchecked(i)->getSequence();
 
-        if (nullptr != dynamic_cast<PianoSequence *>(sequence))
+        if (auto *pianoSequence = dynamic_cast<PianoSequence *>(sequence))
         {
-            PianoSequence *layer = dynamic_cast<PianoSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < pianoSequence->size(); ++j)
             {
-                Note *note = static_cast<Note *>(layer->getUnchecked(j));
+                auto *note = static_cast<Note *>(pianoSequence->getUnchecked(j));
                 
                 if (note->getBeat() >= targetBeat)
                 {
@@ -561,12 +554,11 @@ void SequencerOperations::shiftEventsToTheRight(Array<MidiTrack *> tracks, float
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AnnotationsSequence *>(sequence))
+        else if (auto *textSequence = dynamic_cast<AnnotationsSequence *>(sequence))
         {
-            AnnotationsSequence *layer = dynamic_cast<AnnotationsSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < textSequence->size(); ++j)
             {
-                AnnotationEvent *annotation = static_cast<AnnotationEvent *>(layer->getUnchecked(j));
+                auto *annotation = static_cast<AnnotationEvent *>(textSequence->getUnchecked(j));
                 
                 if (annotation->getBeat() >= targetBeat)
                 {
@@ -575,12 +567,11 @@ void SequencerOperations::shiftEventsToTheRight(Array<MidiTrack *> tracks, float
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AutomationSequence *>(sequence))
+        else if (auto *autoSequence = dynamic_cast<AutomationSequence *>(sequence))
         {
-            AutomationSequence *layer = dynamic_cast<AutomationSequence *>(sequence);
-            for (int j = 0; j < layer->size(); ++j)
+            for (int j = 0; j < autoSequence->size(); ++j)
             {
-                AutomationEvent *event = static_cast<AutomationEvent *>(layer->getUnchecked(j));
+                auto *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(j));
                 
                 if (event->getBeat() >= targetBeat)
                 {
@@ -610,7 +601,7 @@ void SequencerOperations::snapSelection(Lasso &selection, float snapsPerBeat, bo
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
         
         const float startBeat = nc->getBeat();
         const float startBeatSnap = snappedBeat(startBeat, snapsPerBeat);
