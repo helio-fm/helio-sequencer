@@ -87,7 +87,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
 
     this->headShadow.reset(new ShadowDownwards(Light));
     this->addAndMakeVisible(headShadow.get());
-    this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)));
+    this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)));
     this->addAndMakeVisible(annotationsButton.get());
 
     this->playButton.reset(new PlayButton(nullptr));
@@ -511,7 +511,7 @@ BEGIN_JUCER_METADATA
              constructorParams="Light"/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)"/>
+                    params="this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
              constructorParams="nullptr"/>
