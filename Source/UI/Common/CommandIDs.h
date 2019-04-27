@@ -68,6 +68,16 @@ namespace CommandIDs
         SelectAllClips                  = 0x1003,
         NewTrackFromSelection           = 0x1004,
 
+        Tuplet1                         = 0x1500,
+        Tuplet2                         = 0x1501,
+        Tuplet3                         = 0x1502,
+        Tuplet4                         = 0x1503,
+        Tuplet5                         = 0x1504,
+        Tuplet6                         = 0x1505,
+        Tuplet7                         = 0x1506,
+        Tuplet8                         = 0x1507,
+        Tuplet9                         = 0x1508,
+
         // MidiRollCommandPanel
         DeleteEvents                    = 0x1601,
         CopyEvents                      = 0x1602,

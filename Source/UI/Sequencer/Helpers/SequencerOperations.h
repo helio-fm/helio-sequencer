@@ -88,6 +88,8 @@ struct SequencerOperations final
     static void invertChord(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);
 
+    static void applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint = true);
+
     static void rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
 
     static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
