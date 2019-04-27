@@ -22,7 +22,7 @@
 #include "UndoStack.h"
 #include "MidiTrack.h"
 
-struct EventIdGenerator
+struct EventIdGenerator final
 {
     static String generateId(uint8 length = 2)
     {
@@ -44,7 +44,6 @@ MidiSequence::MidiSequence(MidiTrack &parentTrack,
     eventDispatcher(dispatcher),
     lastStartBeat(0.f),
     lastEndBeat(0.f) {}
-
 
 void MidiSequence::sort()
 {

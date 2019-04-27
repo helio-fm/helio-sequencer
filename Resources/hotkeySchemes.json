@@ -27,14 +27,21 @@
         // ------------------------------------
         // Main layout hotkeys
 
-        // Back/forward:
+        { "receiver": "MainLayout", "command": "ShowRootPage", "key": "Home" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
+        { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Alt + Cursor Left" },
         { "receiver": "MainLayout", "command": "ShowNextPage", "key": "Command + Cursor Right" },
+        { "receiver": "MainLayout", "command": "ShowNextPage", "key": "Control + Cursor Right" },
         { "receiver": "MainLayout", "command": "ShowNextPage", "key": "Alt + Cursor Right" },
-        { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Alt + 1" },
-        { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Alt + 2" },
-        { "receiver": "MainLayout", "command": "SwitchToVersioningMode", "key": "Alt + 3" },
+        { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Command + 1" },
+        { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Control + 1" },
+        { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Command + 2" },
+        { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Control + 2" },
+        { "receiver": "MainLayout", "command": "SwitchToVersioningMode", "key": "Command + 3" },
+        { "receiver": "MainLayout", "command": "SwitchToVersioningMode", "key": "Control + 3" },
+        { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Page Up" },
+        { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Page Down" },
 
         { "receiver": "SequencerLayout", "command": "SwitchBetweenRolls", "key": "Tab" },
         { "receiver": "SequencerLayout", "command": "ExportMidi", "key": "Control + E" },
@@ -130,15 +137,15 @@
         { "receiver": "PianoRoll", "command": "TweakVolumeFadeOut", "key": "Shift + F" },
 
         // Multiplets
-        { "receiver": "PianoRoll", "command": "Tuplet1", "key": "Shift + 1" },
-        { "receiver": "PianoRoll", "command": "Tuplet2", "key": "Shift + 2" },
-        { "receiver": "PianoRoll", "command": "Tuplet3", "key": "Shift + 3" },
-        { "receiver": "PianoRoll", "command": "Tuplet4", "key": "Shift + 4" },
-        { "receiver": "PianoRoll", "command": "Tuplet5", "key": "Shift + 5" },
-        { "receiver": "PianoRoll", "command": "Tuplet6", "key": "Shift + 6" },
-        { "receiver": "PianoRoll", "command": "Tuplet7", "key": "Shift + 7" },
-        { "receiver": "PianoRoll", "command": "Tuplet8", "key": "Shift + 8" },
-        { "receiver": "PianoRoll", "command": "Tuplet9", "key": "Shift + 9" },
+        { "receiver": "PianoRoll", "command": "Tuplet1", "key": "Alt + 1" },
+        { "receiver": "PianoRoll", "command": "Tuplet2", "key": "Alt + 2" },
+        { "receiver": "PianoRoll", "command": "Tuplet3", "key": "Alt + 3" },
+        { "receiver": "PianoRoll", "command": "Tuplet4", "key": "Alt + 4" },
+        { "receiver": "PianoRoll", "command": "Tuplet5", "key": "Alt + 5" },
+        { "receiver": "PianoRoll", "command": "Tuplet6", "key": "Alt + 6" },
+        { "receiver": "PianoRoll", "command": "Tuplet7", "key": "Alt + 7" },
+        { "receiver": "PianoRoll", "command": "Tuplet8", "key": "Alt + 8" },
+        { "receiver": "PianoRoll", "command": "Tuplet9", "key": "Alt + 9" },
 
         // Edit modes
         { "receiver": "PianoRoll", "command": "EditModeDefault", "key": "1" },

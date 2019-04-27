@@ -340,6 +340,9 @@ void MainLayout::handleCommandMessage(int commandId)
             project->selectChildOfType<VersionControlNode>();
         }
         break;
+    case CommandIDs::ShowRootPage:
+        App::Workspace().getTreeRoot()->setSelected();
+        break;
     case CommandIDs::ShowPreviousPage:
         App::Workspace().navigateBackwardIfPossible();
         break;
