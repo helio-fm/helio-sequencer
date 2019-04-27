@@ -126,8 +126,19 @@
         { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Alt + Cursor Down" },
         { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Command + Cursor Down" },
         { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Control + Cursor Down" },
-        { "receiver": "PianoRoll", "command": "TweakVolumeRandom", "key": "Shift + 1" },
-        { "receiver": "PianoRoll", "command": "TweakVolumeFadeOut", "key": "Shift + 2" },
+        { "receiver": "PianoRoll", "command": "TweakVolumeRandom", "key": "Shift + R" },
+        { "receiver": "PianoRoll", "command": "TweakVolumeFadeOut", "key": "Shift + F" },
+
+        // Multiplets
+        { "receiver": "PianoRoll", "command": "Tuplet1", "key": "Shift + 1" },
+        { "receiver": "PianoRoll", "command": "Tuplet2", "key": "Shift + 2" },
+        { "receiver": "PianoRoll", "command": "Tuplet3", "key": "Shift + 3" },
+        { "receiver": "PianoRoll", "command": "Tuplet4", "key": "Shift + 4" },
+        { "receiver": "PianoRoll", "command": "Tuplet5", "key": "Shift + 5" },
+        { "receiver": "PianoRoll", "command": "Tuplet6", "key": "Shift + 6" },
+        { "receiver": "PianoRoll", "command": "Tuplet7", "key": "Shift + 7" },
+        { "receiver": "PianoRoll", "command": "Tuplet8", "key": "Shift + 8" },
+        { "receiver": "PianoRoll", "command": "Tuplet9", "key": "Shift + 9" },
 
         // Edit modes
         { "receiver": "PianoRoll", "command": "EditModeDefault", "key": "1" },
