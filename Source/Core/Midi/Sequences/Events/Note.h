@@ -26,6 +26,7 @@ class Note final : public MidiEvent
 public:
 
     using Key = int;
+    using Tuplet = int8;
 
     Note() noexcept;
 
@@ -37,11 +38,11 @@ public:
 
     Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept;
     explicit Note(WeakReference<MidiSequence> owner,
-         int keyVal = 0, float beatVal = 0.f,
+         int keyVal = MIDDLE_C, float beatVal = 0.f,
          float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
-    void exportMessages(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeOffset, double timeFactor) const override;
+    void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
+        double timeOffset, double timeFactor) const noexcept override;
     
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     Note withKey(Key newKey) const noexcept;
@@ -53,15 +54,17 @@ public:
     Note withLength(float newLength) const noexcept;
     Note withDeltaLength(float deltaLength) const noexcept;
     Note withVelocity(float newVelocity) const noexcept;
+    Note withTuplet(Tuplet tuplet) const noexcept;
     Note withParameters(const ValueTree &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
 
-    int getKey() const noexcept;
+    Key getKey() const noexcept;
     float getLength() const noexcept;
     float getVelocity() const noexcept;
+    Tuplet getTuplet() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -91,9 +94,10 @@ public:
 
 protected:
 
-    Key key;
-    float length;
-    float velocity;
+    Key key = MIDDLE_C;
+    float length = 1.f;
+    float velocity = 1.f;
+    Tuplet tuplet = 1;
 
 private:
 

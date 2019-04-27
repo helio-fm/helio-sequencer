@@ -40,7 +40,7 @@ private:
 
     MenuPanel::Menu createDefaultPanel();
     MenuPanel::Menu createRefactoringPanel();
-    MenuPanel::Menu createTimeDivisionsPanel();
+    MenuPanel::Menu createTupletsPanel();
     MenuPanel::Menu createScalesPanel();
     MenuPanel::Menu createArpsPanel();
 

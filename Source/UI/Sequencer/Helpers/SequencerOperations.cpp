@@ -1734,6 +1734,40 @@ void SequencerOperations::invertChord(Lasso &selection,
     }
 }
 
+void SequencerOperations::applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence);
+
+    PianoChangeGroup groupBefore, groupAfter;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        if (nc->getNote().getTuplet() != tuplet)
+        {
+            groupBefore.add(nc->getNote());
+            groupAfter.add(nc->getNote().withTuplet(tuplet));
+        }
+    }
+
+    if (groupBefore.size() == 0)
+    {
+        return;
+    }
+
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    sequence->changeGroup(groupBefore, groupAfter, true);
+}
+
 void SequencerOperations::rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
 {
     if (selection.getNumSelected() == 0)
@@ -1757,6 +1791,11 @@ void SequencerOperations::rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Pt
             groupBefore.add(nc->getNote());
             groupAfter.add(nc->getNote().withKey(newChromaticKey));
         }
+    }
+
+    if (groupBefore.size() == 0)
+    {
+        return;
     }
 
     if (shouldCheckpoint)

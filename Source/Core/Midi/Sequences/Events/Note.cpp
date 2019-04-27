@@ -34,22 +34,48 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noex
     MidiEvent(owner, parametersToCopy),
     key(parametersToCopy.key),
     length(parametersToCopy.length),
-    velocity(parametersToCopy.velocity) {}
+    velocity(parametersToCopy.velocity),
+    tuplet(parametersToCopy.tuplet) {}
 
-void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
+void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
+    double timeOffset, double timeFactor) const noexcept
 {
     const auto finalKey = this->key + clip.getKey();
     const auto finalVolume = this->velocity * clip.getVelocity();
+    const auto tupletLength = this->length / float(this->tuplet);
 
-    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), finalKey, finalVolume));
-    const double startTime = (this->beat + clip.getBeat()) * timeFactor;
-    eventNoteOn.setTimeStamp(startTime);
-    outSequence.addEvent(eventNoteOn, timeOffset);
+    for (int i = 0; i < this->tuplet; ++i)
+    {
+        const float tupletStart = this->beat + tupletLength * float(i);
 
-    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), finalKey));
-    const double endTime = (this->beat + this->length + clip.getBeat()) * timeFactor;
-    eventNoteOff.setTimeStamp(endTime);
-    outSequence.addEvent(eventNoteOff, timeOffset);
+        // slightly adjust volume for tuplet sequence: factor fading from 1 to 0.9;
+        // this should sound anyway better than the same volume for all tuplets,
+        // but, in future user should have some kind of control over it
+        // (like implement auto curves for individual notes?)
+        const float tupletVolume = finalVolume * (1.f - float(i) / 100.f);
+
+        MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), finalKey, tupletVolume));
+        const double startTime = (tupletStart + clip.getBeat()) * timeFactor;
+        eventNoteOn.setTimeStamp(startTime);
+        outSequence.addEvent(eventNoteOn, timeOffset);
+
+        // here, when having odd tuplet, note-off event time might end up
+        // being slightly after next event's start time, due to rounding errors,
+        // e.g. 17.333333969116211 -> 18.666667938232422
+        //                            18.666666030883789 -> 20.000000000000000;
+        // just having some offset for every note-off will mess up midi export
+        // for events with accurately aligned timestamps, which sucks,
+        // (i.e. having 19.999990000000 instead of 20.000000000000000)
+        // but, since even tuplets will always have accurate timestamps,
+        // we can subtract some little time offset only for odd tuplets
+        // to make sure end/start times of neighbor notes never overlap:
+        const double oddTupletFix = double(i % 2) / 1000;
+
+        MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), finalKey));
+        const double endTime = (tupletStart + tupletLength + clip.getBeat()) * timeFactor - oddTupletFix;
+        eventNoteOff.setTimeStamp(endTime);
+        outSequence.addEvent(eventNoteOff, timeOffset);
+    }
 }
 
 Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
@@ -131,6 +157,14 @@ Note Note::withVelocity(float newVelocity) const noexcept
     return other;
 }
 
+Note Note::withTuplet(Tuplet tuplet) const noexcept
+{
+    Note other(*this);
+    // what would be the sane upper limit? like 9
+    other.tuplet = jlimit(Tuplet(1), Tuplet(9), tuplet);
+    return other;
+}
+
 Note Note::withParameters(const ValueTree &parameters) const noexcept
 {
     Note n(*this);
@@ -142,7 +176,7 @@ Note Note::withParameters(const ValueTree &parameters) const noexcept
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int Note::getKey() const noexcept
+Note::Key Note::getKey() const noexcept
 {
     return this->key;
 }
@@ -155,6 +189,11 @@ float Note::getLength() const noexcept
 float Note::getVelocity() const noexcept
 {
     return this->velocity;
+}
+
+Note::Tuplet Note::getTuplet() const noexcept
+{
+    return this->tuplet;
 }
 
 //===----------------------------------------------------------------------===//
@@ -170,6 +209,10 @@ ValueTree Note::serialize() const noexcept
     tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
     tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT), nullptr);
     tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    if (this->tuplet > 1)
+    {
+        tree.setProperty(Midi::tuplet, this->tuplet, nullptr);
+    }
     return tree;
 }
 
@@ -183,6 +226,7 @@ void Note::deserialize(const ValueTree &tree) noexcept
     this->length = float(tree.getProperty(Midi::length)) / TICKS_PER_BEAT;
     const auto vol = float(tree.getProperty(Midi::volume)) / VELOCITY_SAVE_ACCURACY;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
+    this->tuplet = Tuplet(int(tree.getProperty(Midi::tuplet, 1)));
 }
 
 void Note::reset() noexcept {}
@@ -194,6 +238,7 @@ void Note::applyChanges(const Note &other) noexcept
     this->key = other.key;
     this->length = other.length;
     this->velocity = other.velocity;
+    this->tuplet = other.tuplet;
 }
 
 int Note::compareElements(const Note *const first, const Note *const second) noexcept

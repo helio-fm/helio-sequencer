@@ -104,6 +104,7 @@ namespace Serialization
         static const Identifier timestamp = "ts";
         static const Identifier length = "len";
         static const Identifier volume = "vol";
+        static const Identifier tuplet = "div";
 
         static const Identifier mute = "mute";
         static const Identifier solo = "solo";

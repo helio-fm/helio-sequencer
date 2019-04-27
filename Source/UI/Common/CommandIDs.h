@@ -68,6 +68,16 @@ namespace CommandIDs
         SelectAllClips                  = 0x1003,
         NewTrackFromSelection           = 0x1004,
 
+        Tuplet1                         = 0x1500,
+        Tuplet2                         = 0x1501,
+        Tuplet3                         = 0x1502,
+        Tuplet4                         = 0x1503,
+        Tuplet5                         = 0x1504,
+        Tuplet6                         = 0x1505,
+        Tuplet7                         = 0x1506,
+        Tuplet8                         = 0x1507,
+        Tuplet9                         = 0x1508,
+
         // MidiRollCommandPanel
         DeleteEvents                    = 0x1601,
         CopyEvents                      = 0x1602,
@@ -165,11 +175,11 @@ namespace CommandIDs
         SwitchToVersioningMode          = 0x3303,
         ShowPreviousPage                = 0x3304,
         ShowNextPage                    = 0x3305,
-        ToggleShowHideConsole           = 0x3306,
+        ShowRootPage                    = 0x3306,
         ToggleShowHideCombo             = 0x3307,
 
-        StartDragViewport               = 0x3308,
-        EndDragViewport                 = 0x3309,
+        StartDragViewport               = 0x3310,
+        EndDragViewport                 = 0x3311,
 
         SelectAudioDeviceType           = 0x3400,
         SelectAudioDevice               = 0x3500,

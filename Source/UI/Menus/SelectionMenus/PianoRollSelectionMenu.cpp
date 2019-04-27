@@ -64,13 +64,12 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
         this->updateContent(this->createArpsPanel(), MenuPanel::SlideLeft);
     }));
 
-    // TODO
-    //menu.add(MenuItem::item(Icons::arpeggiate,
-    //    TRANS("menu::selection::notes::divisions"))->
-    //    withSubmenu()->withAction([this]()
-    //{
-    //    this->updateContent(this->createTimeDivisionsPanel(), MenuPanel::SlideLeft);
-    //}));
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS("menu::selection::notes::divisions"))->
+        withSubmenu()->withAction([this]()
+    {
+        this->updateContent(this->createTupletsPanel(), MenuPanel::SlideLeft);
+    }));
 
     return menu;
 }
@@ -143,7 +142,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::createTimeDivisionsPanel()
+MenuPanel::Menu PianoRollSelectionMenu::createTupletsPanel()
 {
     MenuPanel::Menu menu;
 
@@ -152,16 +151,15 @@ MenuPanel::Menu PianoRollSelectionMenu::createTimeDivisionsPanel()
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::divisions::merge"))->closesMenu());
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::divisions::tuplet"))->closesMenu());
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::divisions::triplet"))->closesMenu());
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::divisions::quadruplet"))->closesMenu());
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::divisions::quintuplet"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet1, TRANS("menu::tuplet::1"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet2, TRANS("menu::tuplet::2"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet3, TRANS("menu::tuplet::3"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet4, TRANS("menu::tuplet::4"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet5, TRANS("menu::tuplet::5"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet6, TRANS("menu::tuplet::6"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet7, TRANS("menu::tuplet::7"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet8, TRANS("menu::tuplet::8"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet9, TRANS("menu::tuplet::9"))->closesMenu());
 
     return menu;
 }

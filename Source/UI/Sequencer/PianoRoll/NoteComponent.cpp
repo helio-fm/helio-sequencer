@@ -73,7 +73,7 @@ void NoteComponent::updateColours()
 
     this->colourLighter = this->colour.brighter(0.125f).withMultipliedAlpha(1.45f);
     this->colourDarker = this->colour.darker(0.175f).withMultipliedAlpha(1.45f);
-    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost ? 0.f : 0.45f);
+    this->colourVolume = this->colour.darker(0.8f).withAlpha(ghost ? 0.f : 0.5f);
 }
 
 bool NoteComponent::canResize() const noexcept
@@ -601,7 +601,7 @@ void NoteComponent::mouseDoubleClick(const MouseEvent &e) {}
 
 // Always use only either drawHorizontalLine/drawVerticalLine,
 // or fillRect - these are the ones with minimal overhead:
-void NoteComponent::paint(Graphics &g)
+void NoteComponent::paint(Graphics &g) noexcept
 {
     const float w = this->floatLocalBounds.getWidth() - .5f; // a small gap between notes
     const float h = this->floatLocalBounds.getHeight();
@@ -621,12 +621,6 @@ void NoteComponent::paint(Graphics &g)
     g.fillRect(jmax(x1 + 0.5f, x2 - 0.75f), y1 + h / 6.f, 0.5f, h / 1.5f);
     g.fillRect(x1 + 0.75f, y1 + 1.f, jmax(0.f, w - 1.25f), h - 2.f);
 
-//#ifdef DEBUG
-//    g.setColour(Colours::black);
-//    g.drawText(this->note.getId() + " " + this->clip.getId(),
-//        this->getLocalBounds().translated(5, 0),
-//        Justification::centredLeft, false);
-//#else
     const float sx = x1 + 2.f;
     const float sy = float(this->getHeight() - 4);
     const float sw1 = jmax(0.f, (w - 4.f)) * this->note.getVelocity();
@@ -634,7 +628,18 @@ void NoteComponent::paint(Graphics &g)
     g.setColour(this->colourVolume);
     g.fillRect(sx, sy, sw1, 3.f);
     g.fillRect(sx, sy, sw2, 3.f);
-//#endif
+
+    const auto tuplet = this->note.getTuplet();
+    if (tuplet > 1 && this->getWidth() > 25)
+    {
+        for (int i = 1; i < tuplet; ++i)
+        {
+            g.setColour(this->colourLighter);
+            g.fillRect(x1 + i * (w / tuplet) - 1.f, y1, 1.f, h);
+            g.setColour(this->colourVolume);
+            g.fillRect(x1 + i * (w / tuplet), y1, 1.5f, h);
+        }
+    }
 }
 
 //===----------------------------------------------------------------------===//

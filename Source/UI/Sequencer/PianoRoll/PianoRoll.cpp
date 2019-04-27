@@ -1081,6 +1081,33 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::fadeOutVolume(this->getLassoSelection(), 0.35f);
         HYBRID_ROLL_BULK_REPAINT_END
         break;
+    case CommandIDs::Tuplet1:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 1);
+        break;
+    case CommandIDs::Tuplet2:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 2);
+        break;
+    case CommandIDs::Tuplet3:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 3);
+        break;
+    case CommandIDs::Tuplet4:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 4);
+        break;
+    case CommandIDs::Tuplet5:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 5);
+        break;
+    case CommandIDs::Tuplet6:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 6);
+        break;
+    case CommandIDs::Tuplet7:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 7);
+        break;
+    case CommandIDs::Tuplet8:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 8);
+        break;
+    case CommandIDs::Tuplet9:
+        SequencerOperations::applyTuplets(this->getLassoSelection(), 9);
+        break;
     default:
         break;
     }
