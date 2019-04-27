@@ -54,7 +54,8 @@ String KeySignatureEvent::toString() const
     return keyName + ", " + this->scale->getLocalizedName();
 }
 
-void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
+void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence,
+    const Clip &clip, double timeOffset, double timeFactor) const noexcept
 {
     // Basically, we can have any non-standard scale here:
     // from "symmetrical nonatonic" or "chromatic permutated diatonic dorian"

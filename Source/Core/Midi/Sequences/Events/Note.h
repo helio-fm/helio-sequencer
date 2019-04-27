@@ -41,8 +41,8 @@ public:
          int keyVal = MIDDLE_C, float beatVal = 0.f,
          float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
-    void exportMessages(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeOffset, double timeFactor) const override;
+    void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
+        double timeOffset, double timeFactor) const noexcept override;
     
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     Note withKey(Key newKey) const noexcept;

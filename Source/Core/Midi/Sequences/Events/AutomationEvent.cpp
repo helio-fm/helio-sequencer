@@ -85,7 +85,8 @@ float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, flo
     return cv1 + (easeIn + easeOut);
 }
 
-void AutomationEvent::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
+void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
+    const Clip &clip, double timeOffset, double timeFactor) const noexcept
 {
     MidiMessage cc;
     const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();

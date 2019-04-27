@@ -37,20 +37,45 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noex
     velocity(parametersToCopy.velocity),
     tuplet(parametersToCopy.tuplet) {}
 
-void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip, double timeOffset, double timeFactor) const
+void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
+    double timeOffset, double timeFactor) const noexcept
 {
     const auto finalKey = this->key + clip.getKey();
     const auto finalVolume = this->velocity * clip.getVelocity();
+    const auto tupletLength = this->length / float(this->tuplet);
 
-    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), finalKey, finalVolume));
-    const double startTime = (this->beat + clip.getBeat()) * timeFactor;
-    eventNoteOn.setTimeStamp(startTime);
-    outSequence.addEvent(eventNoteOn, timeOffset);
+    for (int i = 0; i < this->tuplet; ++i)
+    {
+        const float tupletStart = this->beat + tupletLength * float(i);
 
-    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), finalKey));
-    const double endTime = (this->beat + this->length + clip.getBeat()) * timeFactor;
-    eventNoteOff.setTimeStamp(endTime);
-    outSequence.addEvent(eventNoteOff, timeOffset);
+        // slightly adjust volume for tuplet sequence: factor fading from 1 to 0.9;
+        // this should sound anyway better than the same volume for all tuplets,
+        // but, in future user should have some kind of control over it
+        // (like implement auto curves for individual notes?)
+        const float tupletVolume = finalVolume * (1.f - float(i) / 100.f);
+
+        MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), finalKey, tupletVolume));
+        const double startTime = (tupletStart + clip.getBeat()) * timeFactor;
+        eventNoteOn.setTimeStamp(startTime);
+        outSequence.addEvent(eventNoteOn, timeOffset);
+
+        // here, when having odd tuplet, note-off event time might end up
+        // being slightly after next event's start time, due to rounding errors,
+        // e.g. 17.333333969116211 -> 18.666667938232422
+        //                            18.666666030883789 -> 20.000000000000000;
+        // just having some offset for every note-off will mess up midi export
+        // for events with accurately aligned timestamps, which sucks,
+        // (i.e. having 19.999990000000 instead of 20.000000000000000)
+        // but, since even tuplets will always have accurate timestamps,
+        // we can subtract some little time offset only for odd tuplets
+        // to make sure end/start times of neighbor notes never overlap:
+        const double oddTupletFix = double(i % 2) / 1000;
+
+        MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), finalKey));
+        const double endTime = (tupletStart + tupletLength + clip.getBeat()) * timeFactor - oddTupletFix;
+        eventNoteOff.setTimeStamp(endTime);
+        outSequence.addEvent(eventNoteOff, timeOffset);
+    }
 }
 
 Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
