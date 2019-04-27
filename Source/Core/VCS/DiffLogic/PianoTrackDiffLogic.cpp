@@ -117,7 +117,6 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
     return diff;
 }
 
-
 Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) const
 {
     using namespace Serialization::VCS;
@@ -335,13 +334,13 @@ ValueTree mergeNotesAdded(const ValueTree &state, const ValueTree &changes)
     
     for (int j = 0; j < stateNotes.size(); ++j)
     {
-        const Note *stateNote(stateNotes.getUnchecked(j));
+        const Note *stateNote = stateNotes.getUnchecked(j);
         stateIDs.set(stateNote->getId(), j);
     }
 
     for (int i = 0; i < changesNotes.size(); ++i)
     {
-        const Note *changesNote(changesNotes.getUnchecked(i));
+        const Note *changesNote = changesNotes.getUnchecked(i);
         bool foundNoteInState = stateIDs.contains(changesNote->getId());
 
         if (! foundNoteInState)
@@ -368,13 +367,13 @@ ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &changes)
 
     for (int j = 0; j < changesNotes.size(); ++j)
     {
-        const Note *changesNote(changesNotes.getUnchecked(j));
+        const Note *changesNote = changesNotes.getUnchecked(j);
         changesIDs.set(changesNote->getId(), j);
     }
     
     for (int i = 0; i < stateNotes.size(); ++i)
     {
-        const Note *stateNote(stateNotes.getUnchecked(i));
+        const Note *stateNote =stateNotes.getUnchecked(i);
         const bool foundNoteInChanges = changesIDs.contains(stateNote->getId());
         if (! foundNoteInChanges)
         {
@@ -402,13 +401,13 @@ ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes)
     
     for (int j = 0; j < changesNotes.size(); ++j)
     {
-        const Note *changesNote(changesNotes.getUnchecked(j));
+        const Note *changesNote = changesNotes.getUnchecked(j);
         changesIDs.set(changesNote->getId(), changesNote);
     }
 
     for (int i = 0; i < stateNotes.size(); ++i)
     {
-        const Note *stateNote(stateNotes.getUnchecked(i));
+        const Note *stateNote = stateNotes.getUnchecked(i);
         if (changesIDs.contains(stateNote->getId()))
         {
             const Note *changesNote = changesIDs[stateNote->getId()];
@@ -483,7 +482,7 @@ Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &chan
 
         for (int j = 0; j < changesNotes.size(); ++j)
         {
-            const Note *changesNote(changesNotes.getUnchecked(j));
+            const Note *changesNote = changesNotes.getUnchecked(j);
 
             // нота из состояния - существует в изменениях. добавляем запись changed, если нужно.
             if (stateNote->getId() == changesNote->getId())
@@ -491,10 +490,11 @@ Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &chan
                 foundNoteInChanges = true;
 
                 const bool noteHasChanged =
-                    (stateNote->getKey() != changesNote->getKey() ||
+                    stateNote->getKey() != changesNote->getKey() ||
                     stateNote->getBeat() != changesNote->getBeat() ||
                     stateNote->getLength() != changesNote->getLength() ||
-                    stateNote->getVelocity() != changesNote->getVelocity());
+                    stateNote->getVelocity() != changesNote->getVelocity() ||
+                    stateNote->getTuplet() != changesNote->getTuplet();
 
                 if (noteHasChanged)
                 {
@@ -516,7 +516,7 @@ Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &chan
     for (int i = 0; i < changesNotes.size(); ++i)
     {
         bool foundNoteInState = false;
-        const Note *changesNote(changesNotes.getUnchecked(i));
+        const Note *changesNote = changesNotes.getUnchecked(i);
 
         for (int j = 0; j < stateNotes.size(); ++j)
         {
