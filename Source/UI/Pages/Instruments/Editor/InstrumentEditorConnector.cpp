@@ -24,11 +24,7 @@
 
 InstrumentEditorConnector::InstrumentEditorConnector(WeakReference<Instrument> instrument) :
     connection({}, {}),
-    instrument(instrument),
-    lastInputX(0),
-    lastInputY(0),
-    lastOutputX(0),
-    lastOutputY(0)
+    instrument(instrument)
 {
     this->setPaintingIsUnclipped(true);
     this->setAlwaysOnTop(true);

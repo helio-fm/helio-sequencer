@@ -26,8 +26,7 @@
 //[/MiscUserDefs]
 
 TooltipContainer::TooltipContainer()
-    : hideTimeout(-1),
-      tooltipComponent(nullptr)
+    : tooltipComponent(nullptr)
 {
     this->tooltipComponent.reset(new Component());
     this->addAndMakeVisible(tooltipComponent.get());
@@ -201,7 +200,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TooltipContainer" template="../../Template"
                  componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="" variableInitialisers="hideTimeout(-1),&#10;tooltipComponent(nullptr)"
+                 constructorParams="" variableInitialisers="tooltipComponent(nullptr)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="80">
   <METHODS>

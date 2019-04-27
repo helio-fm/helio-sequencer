@@ -72,7 +72,7 @@ public:
     
 protected:
     
-    Icons::Id iconId;
+    Icons::Id iconId = Icons::empty;
     Image image;
     
 };

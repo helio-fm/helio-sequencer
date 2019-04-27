@@ -430,28 +430,25 @@ void ProjectMenu::showSetInstrumentMenu()
     {
         menu.add(MenuItem::item(Icons::instrument, instruments[i]->getName())->withAction([this, i, instruments]()
         {
-            if (i >= 0 && i < instruments.size())
+            DBG(instruments[i]->getIdAndHash());
+
+            const Array<MidiTrackNode *> tracks =
+                this->project.findChildrenOfType<MidiTrackNode>();
+
+            if (tracks.size() > 0)
             {
-                DBG(instruments[i]->getIdAndHash());
+                this->project.getUndoStack()->beginNewTransaction();
 
-                const Array<MidiTrackNode *> tracks =
-                    this->project.findChildrenOfType<MidiTrackNode>();
-
-                if (tracks.size() > 0)
+                for (auto *track : tracks)
                 {
-                    this->project.getUndoStack()->beginNewTransaction();
-
-                    for (auto *track : tracks)
-                    {
-                        const String instrumentId = instruments[i]->getIdAndHash();
-                        this->project.getUndoStack()->
-                            perform(new MidiTrackChangeInstrumentAction(this->project,
-                                track->getTrackId(), instrumentId));
-                    }
+                    const auto instrumentId = instruments[i]->getIdAndHash();
+                    this->project.getUndoStack()->
+                        perform(new MidiTrackChangeInstrumentAction(this->project,
+                            track->getTrackId(), instrumentId));
                 }
-
-                this->dismiss();
             }
+
+            this->dismiss();
         }));
     }
     

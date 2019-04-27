@@ -88,7 +88,7 @@ private:
     WeakReference<TreeNode> parentTreeItem;
 
     String trackId;
-    int numEvents;
+    int numEvents = 0;
     
     ValueTree serializedTreeItem;
     String trackName;

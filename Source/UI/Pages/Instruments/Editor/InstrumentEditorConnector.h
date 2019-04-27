@@ -52,9 +52,13 @@ private:
 
     WeakReference<Instrument> instrument;
 
-    float lastInputX, lastInputY, lastOutputX, lastOutputY;
+    float lastInputX = 0.f;
+    float lastInputY = 0.f;
+    float lastOutputX = 0.f;
+    float lastOutputY = 0.f;
+
     Path linePath, hitPath;
-    bool dragging;
+    bool dragging = false;
 
     InstrumentEditor *getGraphPanel() const noexcept;
 

@@ -51,10 +51,10 @@ private:
 
     //[UserVariables]
 
-    int hideTimeout;
-    int timeCounter;
-    bool alignedToBottom;
-    int clicksCountOnStart;
+    int hideTimeout = -1;
+    int timeCounter = -1;
+    bool alignedToBottom = false;
+    int clicksCountOnStart = 0;
 
     ComponentAnimator animator;
 

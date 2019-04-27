@@ -25,8 +25,7 @@ AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &event,
     event(event),
     editor(editor),
     component1(target1),
-    component2(target2),
-    draggingState(false)
+    component2(target2)
 {
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);

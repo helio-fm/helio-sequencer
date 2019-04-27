@@ -115,7 +115,7 @@ public:
     void handleCommandMessage(int commandId) override
     {
         if (commandId >= CommandIDs::SelectFunction &&
-            commandId <= (CommandIDs::SelectFunction + 7))
+            commandId <= (CommandIDs::SelectFunction + 6))
         {
             const int functionIndex = commandId - CommandIDs::SelectFunction;
             if (auto *builder = dynamic_cast<ScalePreviewTool *>(this->getParentComponent()))

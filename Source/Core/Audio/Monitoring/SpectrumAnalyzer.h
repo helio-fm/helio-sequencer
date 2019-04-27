@@ -41,11 +41,11 @@ public:
     
 private:
     
-    typedef struct
+    struct FftComplex final
     {
         float re;
         float im;
-    } FftComplex;
+    };
     
     FftComplex buffer[FFT_MAX_SPECTRUM_SIZE];
     float costab[FFT_COSTABSIZE];

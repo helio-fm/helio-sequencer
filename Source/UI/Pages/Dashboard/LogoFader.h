@@ -33,8 +33,6 @@ private:
     
     ComponentAnimator fader;
     Component fadingDummy;
-    
-    int logoSize;
 
     ScopedPointer<Component> gfx;
 

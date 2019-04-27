@@ -66,7 +66,7 @@ private:
             self->resourceType, self->response.getChild(self->resourceType));
     }
     
-    uint32 delay;
+    uint32 delay = 0;
     Identifier resourceType;
     BackendRequest::Response response;
     

@@ -374,8 +374,12 @@ struct JsonFormatter final
 
             for (const auto &comment : headerComments)
             {
-                if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
-                if (!oneLine) { out << " *"; }
+                if (!oneLine)
+                {
+                    writeSpaces(out, indentLevel + indentSize);
+                    out << " *";
+                }
+
                 out << ' ' << comment;
                 if (!oneLine) { out << newLine; }
             }

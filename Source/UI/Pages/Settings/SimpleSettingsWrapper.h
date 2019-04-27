@@ -42,7 +42,7 @@ private:
 
     //[UserVariables]
     SafePointer<Component> target;
-    bool hasPreviousTarget;
+    bool hasPreviousTarget = false;
     //[/UserVariables]
 
     UniquePointer<FramePanel> panel;

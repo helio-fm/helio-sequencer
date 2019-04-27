@@ -33,18 +33,18 @@ public:
         Origami &origami;
     };
 
-    typedef struct
+    struct Page final
     {
         SafePointer<Component> component;
         ScopedPointer<Component> shadowAtStart;
         ScopedPointer<Component> shadowAtEnd;
         ScopedPointer<Component> resizer;
         ScopedPointer<Origami::ChildConstrainer> constrainer;
-        int size;
+        int size = 0;
         int min = ORIGAMI_DEFAULT_MIN_SIZE;
         int max = ORIGAMI_DEFAULT_MAX_SIZE;
-        bool fixedSize;
-    } Page;
+        bool fixedSize = 0;
+    };
 
     Origami();
     ~Origami() override;

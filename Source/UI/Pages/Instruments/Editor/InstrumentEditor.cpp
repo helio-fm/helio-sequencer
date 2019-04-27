@@ -234,7 +234,7 @@ void InstrumentEditor::beginConnectorDrag(
 
 void InstrumentEditor::dragConnector(const MouseEvent &e)
 {
-    const MouseEvent e2(e.getEventRelativeTo(this));
+    const auto e2 = e.getEventRelativeTo(this);
     if (this->draggingConnector != nullptr)
     {
         this->draggingConnector->setTooltip({});
@@ -284,7 +284,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
     
     this->draggingConnector->setTooltip({});
     
-    const MouseEvent e2(e.getEventRelativeTo(this));
+    const auto e2 = e.getEventRelativeTo(this);
     
     const auto c = this->draggingConnector->connection;
     auto srcNode = c.source.nodeID;

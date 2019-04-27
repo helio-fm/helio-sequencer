@@ -108,7 +108,7 @@ private:
             }
 
             this->response = checkWebAuthRequest.post(finaliseSession);
-        } while (this->response.is(noContent) && numAttempts < maxAttempts);
+        } while (this->response.is(noContent) && numAttempts++ < maxAttempts);
 
         if (!this->response.isValid() ||
             !this->response.is200() ||

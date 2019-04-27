@@ -197,7 +197,7 @@ private:
 
     void insertNewNoteAt(const MouseEvent &e);
 
-    ScopedPointer<KnifeToolHelper> knifeToolHelper;
+    UniquePointer<KnifeToolHelper> knifeToolHelper;
     void startCuttingEvents(const MouseEvent &e);
     void continueCuttingEvents(const MouseEvent &e);
     void endCuttingEventsIfNeeded();
@@ -256,7 +256,7 @@ private:
     Array<Image> renderBackgroundCacheFor(const HighlightingScheme *const scheme) const;
     static Image renderRowsPattern(const HelioTheme &, const Scale::Ptr, int root, int height);
     OwnedArray<HighlightingScheme> backgroundsCache;
-    ScopedPointer<HighlightingScheme> defaultHighlighting;
+    UniquePointer<HighlightingScheme> defaultHighlighting;
     int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
     friend class ThemeSettingsItem; // to be able to call renderRowsPattern
 
@@ -264,18 +264,17 @@ private:
 
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
     class FocusToRegionAnimator;
-    ScopedPointer<Timer> focusToRegionAnimator;
+    UniquePointer<Timer> focusToRegionAnimator;
     
 private:
     
     OwnedArray<NoteComponent> ghostNotes;
     
-    ScopedPointer<HelperRectangle> helperHorizontal;
+    UniquePointer<HelperRectangle> helperHorizontal;
+    UniquePointer<NoteResizerLeft> noteResizerLeft;
+    UniquePointer<NoteResizerRight> noteResizerRight;
 
-    ScopedPointer<NoteResizerLeft> noteResizerLeft;
-    ScopedPointer<NoteResizerRight> noteResizerRight;
-
-    ScopedPointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
+    UniquePointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
     using SequenceMap = FlatHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;

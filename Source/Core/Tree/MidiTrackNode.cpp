@@ -143,7 +143,7 @@ void MidiTrackNode::setTrackName(const String &val, bool sendNotifications)
     this->safeRename(val, sendNotifications);
     if (sendNotifications)
     {
-        this->dispatchChangeTrackProperties(this);
+        this->dispatchChangeTrackProperties();
         this->dispatchChangeTreeNodeViews();
     }
 }
@@ -160,7 +160,7 @@ void MidiTrackNode::setTrackColour(const Colour &val, bool sendNotifications)
         this->colour = val;
         if (sendNotifications)
         {
-            this->dispatchChangeTrackProperties(this);
+            this->dispatchChangeTrackProperties();
             this->dispatchChangeTreeNodeViews();
         }
     }
@@ -178,7 +178,7 @@ void MidiTrackNode::setTrackInstrumentId(const String &val, bool sendNotificatio
         this->instrumentId = val;
         if (sendNotifications)
         {
-            this->dispatchChangeTrackProperties(this);
+            this->dispatchChangeTrackProperties();
             // instrument id is not displayed anywhere, fix this is it does someday
             //this->dispatchChangeTreeNodeViews();
         }
@@ -197,7 +197,7 @@ void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
         this->controllerNumber = val;
         if (sendNotifications)
         {
-            this->dispatchChangeTrackProperties(this);
+            this->dispatchChangeTrackProperties();
             // controller value is not displayed anywhere, fix this is it does someday
             //this->dispatchChangeTreeNodeViews();
         }
@@ -367,7 +367,7 @@ void MidiTrackNode::dispatchPostRemoveEvent(MidiSequence *const layer)
     }
 }
 
-void MidiTrackNode::dispatchChangeTrackProperties(MidiTrack *const track)
+void MidiTrackNode::dispatchChangeTrackProperties()
 {
     if (this->lastFoundParent != nullptr)
     {

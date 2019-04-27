@@ -206,7 +206,7 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
     // ищем в собранном состоянии айтем с соответствующим уидом
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
-        TrackedItem *item = this->state->getTrackedItem(i);
+        auto *item = this->state->getTrackedItem(i);
 
         if (item->getUuid() == diffItem->getUuid())
         {
@@ -223,7 +223,7 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
         // ищем в проекте айтем с соответствующим уидом
         for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
+            auto *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {
@@ -232,7 +232,7 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
             }
         }
 
-        if (targetItem)
+        if (targetItem != nullptr && sourceItem != nullptr)
         {
             targetItem->resetStateTo(*sourceItem);
             return true;
@@ -245,7 +245,7 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
         // снова ищем исходный с тем же уидом и вызываем deleteTrackedItem
         for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
         {
-            TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(i);
+            auto *item = this->targetVcsItemsSource.getTrackedItem(i);
 
             if (item->getUuid() == diffItem->getUuid())
             {

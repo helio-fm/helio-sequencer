@@ -73,7 +73,7 @@ private:
             self->response.getProperty(ApiKeys::token));
     }
     
-    uint32 delay;
+    uint32 delay = 0;
     BackendRequest::Response response;
     
     friend class BackendService;

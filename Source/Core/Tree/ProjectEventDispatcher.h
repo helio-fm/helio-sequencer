@@ -45,7 +45,7 @@ public:
     virtual void dispatchPostRemoveClip(Pattern *const pattern) = 0;
 
     // Sent on lightweight changes like mute/unmute, instrument change
-    virtual void dispatchChangeTrackProperties(MidiTrack *const track) = 0;
+    virtual void dispatchChangeTrackProperties() = 0;
     // Needed for project to calculate and send the total beat range
     virtual void dispatchChangeProjectBeatRange() = 0;
 
@@ -66,6 +66,6 @@ public:
     void dispatchRemoveClip(const Clip &clip) noexcept override {}
     void dispatchPostRemoveClip(Pattern *const pattern) noexcept override {}
 
-    void dispatchChangeTrackProperties(MidiTrack *const track) noexcept override {}
+    void dispatchChangeTrackProperties() noexcept override {}
     void dispatchChangeProjectBeatRange() noexcept override {}
 };

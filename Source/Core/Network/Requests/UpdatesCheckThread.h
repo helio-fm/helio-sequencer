@@ -68,7 +68,7 @@ private:
         callbackOnMessageThread(UpdatesCheckThread, onUpdatesCheckOk, { self->response.getBody() });
     }
     
-    uint32 delay;
+    uint32 delay = 0;
     BackendRequest::Response response;
     
     friend class BackendService;

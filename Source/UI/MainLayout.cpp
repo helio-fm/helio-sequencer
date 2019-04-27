@@ -356,7 +356,8 @@ void MainLayout::handleCommandMessage(int commandId)
 
 static void broadcastMessage(Component *root, int commandId)
 {
-    if (root->isEnabled() && root->isShowing() &&
+    if (root != nullptr &&
+        root->isEnabled() && root->isShowing() &&
         root->getComponentID().isNotEmpty())
     {
         root->postCommandMessage(commandId);

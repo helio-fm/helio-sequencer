@@ -287,9 +287,9 @@ void ProjectTimeline::dispatchPostRemoveEvent(MidiSequence *const layer)
     this->project.broadcastPostRemoveEvent(layer);
 }
 
-void ProjectTimeline::dispatchChangeTrackProperties(MidiTrack *const track)
+void ProjectTimeline::dispatchChangeTrackProperties()
 {
-    this->project.broadcastChangeTrackProperties(track);
+    jassertfalse; // should never be called
 }
 
 void ProjectTimeline::dispatchChangeProjectBeatRange()

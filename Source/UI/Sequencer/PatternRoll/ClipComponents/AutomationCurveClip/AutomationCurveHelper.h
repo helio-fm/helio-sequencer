@@ -44,8 +44,9 @@ private:
     const AutomationCurveClipComponent &editor;
 
     Point<int> anchor;
-    float curveAnchor;
-    bool draggingState;
+    float curveAnchor = 0.f;
+
+    bool draggingState = false;
     FineTuningComponentDragger dragger;
 
     ScopedPointer<FineTuningValueIndicator> tuningIndicator;

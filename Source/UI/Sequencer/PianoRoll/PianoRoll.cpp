@@ -90,16 +90,16 @@ PianoRoll::PianoRoll(ProjectNode &parentProject,
     newNoteVolume(0.25f),
     defaultHighlighting() // default pattern (black and white keys)
 {
-    this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
-    this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting));
+    this->defaultHighlighting.reset(new HighlightingScheme(0, Scale::getNaturalMajorScale()));
+    this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
 
-    this->selectedNotesMenuManager = new PianoRollSelectionMenuManager(&this->selection, this->project);
+    this->selectedNotesMenuManager.reset(new PianoRollSelectionMenuManager(&this->selection, this->project));
 
     this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
 
-    this->helperHorizontal = new HelperRectangleHorizontal();
-    this->addChildComponent(this->helperHorizontal);
+    this->helperHorizontal.reset(new HelperRectangleHorizontal());
+    this->addChildComponent(this->helperHorizontal.get());
 
     this->reloadRollContent();
     this->setBarRange(0, 8);
@@ -462,7 +462,7 @@ void PianoRoll::hideHelpers()
 {
     if (this->helperHorizontal->isVisible())
     {
-        this->fader.fadeOut(this->helperHorizontal, SHORT_FADE_TIME);
+        this->fader.fadeOut(this->helperHorizontal.get(), SHORT_FADE_TIME);
     }
 }
 
@@ -1194,7 +1194,7 @@ void PianoRoll::paint(Graphics &g)
 
     if (prevBarX < paintEndX)
     {
-        const auto *s = (prevScheme == nullptr) ? this->defaultHighlighting : prevScheme;
+        const auto *s = (prevScheme == nullptr) ? this->defaultHighlighting.get() : prevScheme;
         const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
         g.setFillType(fillType);
         g.fillRect(prevBarX, y, paintEndX - prevBarX, h);
@@ -1216,8 +1216,8 @@ void PianoRoll::startCuttingEvents(const MouseEvent &e)
     if (this->knifeToolHelper == nullptr)
     {
         this->deselectAll();
-        this->knifeToolHelper = new KnifeToolHelper(*this);
-        this->addAndMakeVisible(this->knifeToolHelper);
+        this->knifeToolHelper.reset(new KnifeToolHelper(*this));
+        this->addAndMakeVisible(this->knifeToolHelper.get());
         this->knifeToolHelper->toBack();
         this->knifeToolHelper->fadeIn();
     }
@@ -1303,15 +1303,15 @@ void PianoRoll::handleAsyncUpdate()
     if (this->selection.getNumSelected() > 0 &&
         this->noteResizerLeft == nullptr)
     {
-        this->noteResizerLeft = new NoteResizerLeft(*this);
-        this->addAndMakeVisible(this->noteResizerLeft);
+        this->noteResizerLeft.reset(new NoteResizerLeft(*this));
+        this->addAndMakeVisible(this->noteResizerLeft.get());
     }
 
     if (this->selection.getNumSelected() > 0 &&
         this->noteResizerRight == nullptr)
     {
-        this->noteResizerRight = new NoteResizerRight(*this);
-        this->addAndMakeVisible(this->noteResizerRight);
+        this->noteResizerRight.reset(new NoteResizerRight(*this));
+        this->addAndMakeVisible(this->noteResizerRight.get());
     }
 
     if (this->selection.getNumSelected() == 0)
