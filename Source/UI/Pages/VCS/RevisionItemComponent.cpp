@@ -186,8 +186,8 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
         }
     }
 
-    if (itemType == VCS::RevisionItem::Added ||
-        itemType == VCS::RevisionItem::Removed)
+    if (itemType == VCS::RevisionItem::Type::Added ||
+        itemType == VCS::RevisionItem::Type::Removed)
     {
         this->itemLabel->setText(itemTypeStr + " " + itemDescription, dontSendNotification);
     }

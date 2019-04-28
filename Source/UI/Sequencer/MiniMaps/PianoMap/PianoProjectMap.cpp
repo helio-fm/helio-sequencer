@@ -88,7 +88,7 @@ void PianoProjectMap::resized()
 
 void PianoProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2)
 {
-    if (e1.isTypeOf(MidiEvent::Note))
+    if (e1.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(e1);
         const Note &newNote = static_cast<const Note &>(e2);
@@ -109,7 +109,7 @@ void PianoProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2
 
 void PianoProjectMap::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Note))
+    if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
@@ -136,7 +136,7 @@ void PianoProjectMap::onAddMidiEvent(const MidiEvent &event)
 
 void PianoProjectMap::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Note))
+    if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
@@ -335,7 +335,7 @@ void PianoProjectMap::loadTrack(const MidiTrack *const track)
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
             const MidiEvent *event = track->getSequence()->getUnchecked(j);
-            if (event->isTypeOf(MidiEvent::Note))
+            if (event->isTypeOf(MidiEvent::Type::Note))
             {
                 const Note *note = static_cast<const Note *>(event);
                 const auto noteComponent = new ProjectMapNoteComponent(*note, *clip, baseColour);

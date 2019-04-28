@@ -28,7 +28,7 @@ namespace VCS
     {
     public:
 
-        enum Type
+        enum class Type : int
         {
             Undefined = 0,
             Added = 1,

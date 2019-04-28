@@ -20,12 +20,12 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-Note::Note() noexcept : MidiEvent(nullptr, MidiEvent::Note, 0.f) {}
+Note::Note() noexcept : MidiEvent(nullptr, Type::Note, 0.f) {}
 
 Note::Note(WeakReference<MidiSequence> owner,
     int keyVal, float beatVal,
     float lengthVal, float velocityVal) noexcept :
-    MidiEvent(owner, MidiEvent::Note, beatVal),
+    MidiEvent(owner, Type::Note, beatVal),
     key(keyVal),
     length(lengthVal),
     velocity(velocityVal) {}

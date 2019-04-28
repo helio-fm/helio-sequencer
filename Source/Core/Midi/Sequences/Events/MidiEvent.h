@@ -27,7 +27,15 @@ public:
     using Id = String;
 
     // Non-serialized field to be used instead of expensive dynamic casts:
-    enum Type { Note = 1, Auto = 2, Annotation = 3, TimeSignature = 4, KeySignature = 5 };
+    enum class Type : uint8 
+    {
+        Note = 1,
+        Auto = 2,
+        Annotation = 3,
+        TimeSignature = 4,
+        KeySignature = 5
+    };
+
     inline Type getType() const noexcept { return this->type; }
     inline bool isTypeOf(Type val) const noexcept { return this->type == val; }
 

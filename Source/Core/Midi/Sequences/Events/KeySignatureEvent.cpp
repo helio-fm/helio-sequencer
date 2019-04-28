@@ -21,7 +21,7 @@
 #include "SerializationKeys.h"
 
 KeySignatureEvent::KeySignatureEvent() noexcept :
-    MidiEvent(nullptr, MidiEvent::KeySignature, 0.f),
+    MidiEvent(nullptr, Type::KeySignature, 0.f),
     rootKey(0),
     scale()
 {
@@ -37,7 +37,7 @@ KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     Scale::Ptr scale,
     float newBeat /*= 0.f*/,
     Note::Key key /*= 60*/) noexcept :
-    MidiEvent(owner, MidiEvent::KeySignature, newBeat),
+    MidiEvent(owner, Type::KeySignature, newBeat),
     rootKey(key),
     scale(scale) {}
 

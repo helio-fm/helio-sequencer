@@ -90,7 +90,7 @@ void AnnotationsProjectMap::resized()
 
 void AnnotationsProjectMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (oldEvent.isTypeOf(MidiEvent::Annotation))
+    if (oldEvent.isTypeOf(MidiEvent::Type::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(oldEvent);
         const AnnotationEvent &newAnnotation = static_cast<const AnnotationEvent &>(newEvent);
@@ -134,7 +134,7 @@ void AnnotationsProjectMap::alignAnnotationComponent(AnnotationComponent *compon
 
 void AnnotationsProjectMap::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Annotation))
+    if (event.isTypeOf(MidiEvent::Type::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 
@@ -163,7 +163,7 @@ void AnnotationsProjectMap::onAddMidiEvent(const MidiEvent &event)
 
 void AnnotationsProjectMap::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Annotation))
+    if (event.isTypeOf(MidiEvent::Type::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 

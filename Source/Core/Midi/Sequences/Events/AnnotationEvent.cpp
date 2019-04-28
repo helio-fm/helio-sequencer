@@ -20,7 +20,7 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-AnnotationEvent::AnnotationEvent() noexcept : MidiEvent(nullptr, MidiEvent::Annotation, 0.f)
+AnnotationEvent::AnnotationEvent() noexcept : MidiEvent(nullptr, Type::Annotation, 0.f)
 {
     //jassertfalse;
 }
@@ -32,7 +32,7 @@ AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) noexcept :
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
     float newBeat, const String &description, const Colour &newColour) noexcept :
-    MidiEvent(owner, MidiEvent::Annotation, newBeat),
+    MidiEvent(owner, Type::Annotation, newBeat),
     description(description),
     colour(newColour) {}
 

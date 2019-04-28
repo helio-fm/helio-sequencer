@@ -31,7 +31,7 @@ public:
     NoteComponent(PianoRoll &gridRef, const Note &note,
         const Clip &clip, bool ghostMode = false) noexcept;
 
-    enum State
+    enum class State : uint8
     {
         None,
         Initializing,       // changes length & key
@@ -79,13 +79,51 @@ public:
     void mouseDoubleClick(const MouseEvent &e) override;
     void paint(Graphics &g) noexcept override;
 
-protected:
+private:
 
     const Note &note;
     const Clip &clip;
 
-    Note anchor;
-    Note groupScalingAnchor;
+private:
+
+    struct NoteEditAnchor final
+    {
+        NoteEditAnchor &operator= (const Note &note)
+        {
+            this->key = note.getKey();
+            this->beat = note.getBeat();
+            this->length = note.getLength();
+            this->velocity = note.getVelocity();
+            return *this;
+        }
+
+        inline int getKey() const noexcept { return this->key; }
+        inline float getBeat() const noexcept { return this->beat; }
+        inline float getLength() const noexcept { return this->length; }
+        inline float getVelocity() const noexcept { return this->velocity; }
+
+    private:
+        int key = 0;
+        float beat = 0.f;
+        float length = 0.f;
+        float velocity = 0.f;
+    };
+
+    struct GroupScaleAnchor final
+    {
+        GroupScaleAnchor() = default;
+        GroupScaleAnchor(float beat, float length) : beat(beat), length(length) {}
+        inline float getBeat() const noexcept { return this->beat; }
+        inline float getLength() const noexcept { return this->length; }
+    private:
+        float beat = 0.f;
+        float length = 0.f;
+    };
+
+    NoteEditAnchor anchor;
+    GroupScaleAnchor groupScalingAnchor;
+
+private:
 
     bool belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept;
     void switchActiveSegmentToSelected(bool zoomToScope) const;
@@ -129,6 +167,8 @@ protected:
     void endDragging(bool sendMidiMessage = true);
     
     bool canResize() const noexcept;
+
+private:
 
     State state;
 

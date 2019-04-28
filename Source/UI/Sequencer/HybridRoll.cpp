@@ -938,7 +938,7 @@ SelectionComponent *HybridRoll::getSelectionComponent() const noexcept
 void HybridRoll::onChangeMidiEvent(const MidiEvent &event, const MidiEvent &newEvent)
 {
     // Time signatures have changed, need to repaint
-    if (event.isTypeOf(MidiEvent::TimeSignature))
+    if (event.isTypeOf(MidiEvent::Type::TimeSignature))
     {
         this->updateChildrenBounds();
         this->repaint();
@@ -947,7 +947,7 @@ void HybridRoll::onChangeMidiEvent(const MidiEvent &event, const MidiEvent &newE
 
 void HybridRoll::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::TimeSignature))
+    if (event.isTypeOf(MidiEvent::Type::TimeSignature))
     {
         this->updateChildrenBounds();
         this->repaint();
@@ -956,7 +956,7 @@ void HybridRoll::onAddMidiEvent(const MidiEvent &event)
 
 void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::TimeSignature))
+    if (event.isTypeOf(MidiEvent::Type::TimeSignature))
     {
         this->updateChildrenBounds();
         this->repaint();

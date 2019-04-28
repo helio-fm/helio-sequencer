@@ -51,15 +51,15 @@ RevisionItem::Type RevisionItem::getType() const noexcept
 
 String RevisionItem::getTypeAsString() const
 {
-    if (this->vcsItemType == Added)
+    if (this->vcsItemType == Type::Added)
     {
         return TRANS("vcs::delta::type::added");
     }
-    if (this->vcsItemType == Removed)
+    if (this->vcsItemType == Type::Removed)
     {
         return TRANS("vcs::delta::type::removed");
     }
-    else if (this->vcsItemType == Changed)
+    else if (this->vcsItemType == Type::Changed)
     {
         return TRANS("vcs::delta::type::changed");
     }
@@ -106,7 +106,7 @@ ValueTree RevisionItem::serialize() const
 
     this->serializeVCSUuid(tree);
 
-    tree.setProperty(Serialization::VCS::revisionItemType, this->getType(), nullptr);
+    tree.setProperty(Serialization::VCS::revisionItemType, int(this->getType()), nullptr);
     tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName(), nullptr);
     tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString(), nullptr);
 
@@ -144,7 +144,7 @@ void RevisionItem::deserialize(const ValueTree &tree, const DeltaDataLookup &dat
 
     this->description = root.getProperty(Serialization::VCS::revisionItemName);
 
-    const int type = root.getProperty(Serialization::VCS::revisionItemType, Undefined);
+    const int type = root.getProperty(Serialization::VCS::revisionItemType, int(Type::Undefined));
     this->vcsItemType = static_cast<Type>(type);
 
     const String logicType = root.getProperty(Serialization::VCS::revisionItemDiffLogic);
@@ -183,7 +183,7 @@ void RevisionItem::reset()
 {
     this->deltas.clear();
     this->description.clear();
-    this->vcsItemType = Undefined;
+    this->vcsItemType = Type::Undefined;
 }
 
 }

@@ -24,7 +24,7 @@
 
 #define AUTOEVENT_DEFAULT_CURVATURE (0.5f)
 
-AutomationEvent::AutomationEvent() noexcept : MidiEvent(nullptr, MidiEvent::Auto, 0.f)
+AutomationEvent::AutomationEvent() noexcept : MidiEvent(nullptr, Type::Auto, 0.f)
 {
     //jassertfalse;
 }
@@ -35,7 +35,7 @@ AutomationEvent::AutomationEvent(const AutomationEvent &other) noexcept :
     curvature(other.curvature) {}
 
 AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) noexcept :
-    MidiEvent(owner, MidiEvent::Auto, beatVal),
+    MidiEvent(owner, Type::Auto, beatVal),
     controllerValue(cValue),
     curvature(AUTOEVENT_DEFAULT_CURVATURE) {}
 

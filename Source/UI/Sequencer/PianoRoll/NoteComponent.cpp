@@ -41,9 +41,7 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &c
     MidiEventComponent(editor, ghostMode),
     note(event),
     clip(clip),
-    state(None),
-    anchor(event),
-    groupScalingAnchor(event),
+    state(State::None),
     firstChangeDone(false)
 {
     this->setPaintingIsUnclipped(true);
@@ -286,7 +284,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     
     const auto &selection = this->roll.getLassoSelection();
 
-    if (this->state == Initializing)
+    if (this->state == State::Initializing)
     {
         int deltaKey = 0;
         float deltaLength = 0.f;
@@ -323,7 +321,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == ResizingRight)
+    else if (this->state == State::ResizingRight)
     {
         float deltaLength = 0.f;
         const bool lengthChanged = this->getResizingRightDelta(e, deltaLength);
@@ -347,7 +345,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == ResizingLeft)
+    else if (this->state == State::ResizingLeft)
     {
         float deltaLength = 0.f;
         const bool lengthChanged = this->getResizingLeftDelta(e, deltaLength);
@@ -371,7 +369,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == GroupScalingRight)
+    else if (this->state == State::GroupScalingRight)
     {
         float groupScaleFactor = 1.f;
         const bool scaleFactorChanged = this->getGroupScaleRightFactor(e, groupScaleFactor);
@@ -395,7 +393,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == GroupScalingLeft)
+    else if (this->state == State::GroupScalingLeft)
     {
         float groupScaleFactor = 1.f;
         const bool scaleFactorChanged = this->getGroupScaleLeftFactor(e, groupScaleFactor);
@@ -419,7 +417,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == Dragging)
+    else if (this->state == State::Dragging)
     {
         this->getRoll().showHelpers();
 
@@ -482,7 +480,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
     }
-    else if (this->state == Tuning)
+    else if (this->state == State::Tuning)
     {
         this->checkpointIfNeeded();
         
@@ -529,7 +527,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     
     const Lasso &selection = this->roll.getLassoSelection();
 
-    if (this->state == Initializing)
+    if (this->state == State::Initializing)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -537,7 +535,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             nc->endInitializing();
         }
     }
-    else if (this->state == ResizingRight)
+    else if (this->state == State::ResizingRight)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -545,7 +543,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             nc->endResizingRight();
         }
     }
-    else if (this->state == ResizingLeft)
+    else if (this->state == State::ResizingLeft)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -553,7 +551,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             nc->endResizingLeft();
         }
     }
-    else if (this->state == GroupScalingRight)
+    else if (this->state == State::GroupScalingRight)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -561,7 +559,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             nc->endGroupScalingRight();
         }
     }
-    else if (this->state == GroupScalingLeft)
+    else if (this->state == State::GroupScalingLeft)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -569,7 +567,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             nc->endGroupScalingLeft();
         }
     }
-    else if (this->state == Dragging)
+    else if (this->state == State::Dragging)
     {
         this->getRoll().hideHelpers();
         this->setFloatBounds(this->getRoll().getEventBounds(this));
@@ -580,7 +578,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             nc->endDragging(shouldSendMidi);
         }
     }
-    else if (this->state == Tuning)
+    else if (this->state == State::Tuning)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -668,7 +666,7 @@ void NoteComponent::switchActiveSegmentToSelected(bool zoomToScope) const
 void NoteComponent::startDragging(const bool sendMidiMessage)
 {
     this->firstChangeDone = false;
-    this->state = Dragging;
+    this->state = State::Dragging;
     this->anchor = this->getNote();
     
     if (sendMidiMessage)
@@ -719,7 +717,7 @@ void NoteComponent::endDragging(bool sendMidiMessage)
         this->stopSound();
     }
     
-    this->state = None;
+    this->state = State::None;
 }
 
 //===----------------------------------------------------------------------===//
@@ -728,7 +726,7 @@ void NoteComponent::endDragging(bool sendMidiMessage)
 
 bool NoteComponent::isInitializing() const
 {
-    return this->state == Initializing;
+    return this->state == State::Initializing;
 }
 
 void NoteComponent::startInitializing()
@@ -740,7 +738,7 @@ void NoteComponent::startInitializing()
     this->firstChangeDone = true;
     // ^ thus, set no checkpoint is needed
 
-    this->state = Initializing;
+    this->state = State::Initializing;
     this->anchor = this->getNote();
 
     // always send midi in this mode:
@@ -782,7 +780,7 @@ Note NoteComponent::continueInitializing(float deltaLength, int deltaKey, bool s
 void NoteComponent::endInitializing()
 {
     this->stopSound();
-    this->state = None;
+    this->state = State::None;
 }
 
 //===----------------------------------------------------------------------===//
@@ -792,7 +790,7 @@ void NoteComponent::endInitializing()
 void NoteComponent::startResizingRight(bool sendMidiMessage)
 {
     this->firstChangeDone = false;
-    this->state = ResizingRight;
+    this->state = State::ResizingRight;
     this->anchor = this->getNote();
     
     if (sendMidiMessage)
@@ -827,7 +825,7 @@ Note NoteComponent::continueResizingRight(float deltaLength) const noexcept
 void NoteComponent::endResizingRight()
 {
     this->stopSound();
-    this->state = None;
+    this->state = State::None;
 }
 
 //===----------------------------------------------------------------------===//
@@ -837,7 +835,7 @@ void NoteComponent::endResizingRight()
 void NoteComponent::startResizingLeft(bool sendMidiMessage)
 {
     this->firstChangeDone = false;
-    this->state = ResizingLeft;
+    this->state = State::ResizingLeft;
     this->anchor = this->getNote();
     
     if (sendMidiMessage)
@@ -871,7 +869,7 @@ Note NoteComponent::continueResizingLeft(float deltaLength) const noexcept
 void NoteComponent::endResizingLeft()
 {
     this->stopSound();
-    this->state = None;
+    this->state = State::None;
 }
 
 //===----------------------------------------------------------------------===//
@@ -881,10 +879,10 @@ void NoteComponent::endResizingLeft()
 void NoteComponent::startGroupScalingRight(float groupStartBeat)
 {
     this->firstChangeDone = false;
-    this->state = GroupScalingRight;
+    this->state = State::GroupScalingRight;
     const float newLength = this->getLength() + (this->getBeat() - groupStartBeat);
     this->anchor = this->getNote();
-    this->groupScalingAnchor = this->getNote().withBeat(groupStartBeat).withLength(newLength);
+    this->groupScalingAnchor = { groupStartBeat, newLength };
 }
 
 bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScaleFactor) const
@@ -917,7 +915,7 @@ Note NoteComponent::continueGroupScalingRight(float absScaleFactor) const noexce
 
 void NoteComponent::endGroupScalingRight()
 {
-    this->state = None;
+    this->state = State::None;
 }
 
 //===----------------------------------------------------------------------===//
@@ -927,10 +925,10 @@ void NoteComponent::endGroupScalingRight()
 void NoteComponent::startGroupScalingLeft(float groupEndBeat)
 {
     this->firstChangeDone = false;
-    this->state = GroupScalingLeft;
+    this->state = State::GroupScalingLeft;
     this->anchor = this->getNote();
     const float newLength = groupEndBeat - this->getBeat();
-    this->groupScalingAnchor = this->getNote().withLength(newLength);
+    this->groupScalingAnchor = { this->getNote().getBeat(), newLength };
 }
 
 bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScaleFactor) const
@@ -964,7 +962,7 @@ Note NoteComponent::continueGroupScalingLeft(float absScaleFactor) const noexcep
 
 void NoteComponent::endGroupScalingLeft()
 {
-    this->state = None;
+    this->state = State::None;
 }
 
 //===----------------------------------------------------------------------===//
@@ -974,7 +972,7 @@ void NoteComponent::endGroupScalingLeft()
 void NoteComponent::startTuning()
 {
     this->firstChangeDone = false;
-    this->state = Tuning;
+    this->state = State::Tuning;
     this->anchor = this->getNote();
 }
 
@@ -1015,7 +1013,7 @@ Note NoteComponent::continueTuning(const MouseEvent &e) const noexcept
 
 void NoteComponent::endTuning()
 {
-    this->state = None;
+    this->state = State::None;
     this->roll.triggerBatchRepaintFor(this);
 }
 

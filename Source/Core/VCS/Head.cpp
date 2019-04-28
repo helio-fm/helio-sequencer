@@ -66,7 +66,7 @@ bool Head::hasTrackedItemsOnTheStage() const
 {
     for (const auto *revRecord : this->getDiff()->getItems())
     {
-        if (revRecord->getType() != RevisionItem::Added)
+        if (revRecord->getType() != RevisionItem::Type::Added)
         {
             return true;
         }
@@ -106,21 +106,21 @@ void Head::mergeStateWith(Revision::Ptr changes)
     Revision::Ptr headRevision(this->getHeadingRevision());
     for (auto *changesItem : changes->getItems())
     {
-        if (changesItem->getType() == RevisionItem::Added)
+        if (changesItem->getType() == RevisionItem::Type::Added)
         {
             if (this->state != nullptr)
             {
                 this->state->addItem(changesItem);
             }
         }
-        else if (changesItem->getType() == RevisionItem::Removed)
+        else if (changesItem->getType() == RevisionItem::Type::Removed)
         {
             if (this->state != nullptr)
             {
                 this->state->removeItem(changesItem);
             }
         }
-        else if (changesItem->getType() == RevisionItem::Changed)
+        else if (changesItem->getType() == RevisionItem::Type::Changed)
         {
             if (this->state != nullptr)
             {
@@ -164,15 +164,15 @@ bool Head::moveTo(const Revision::Ptr revision)
         // picking all deltas and applying them to current state
         for (auto *item : rev->getItems())
         {
-            if (item->getType() == RevisionItem::Added)
+            if (item->getType() == RevisionItem::Type::Added)
             {
                 this->state->addItem(item);
             }
-            else if (item->getType() == RevisionItem::Removed)
+            else if (item->getType() == RevisionItem::Type::Removed)
             {
                 this->state->removeItem(item);
             }
-            else if (item->getType() == RevisionItem::Changed)
+            else if (item->getType() == RevisionItem::Type::Changed)
             {
                 this->state->mergeItem(item);
             }
@@ -216,7 +216,7 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
     }
 
     // обработать тип - добавлено, удалено, изменено
-    if (diffItem->getType() == RevisionItem::Changed)
+    if (diffItem->getType() == RevisionItem::Type::Changed)
     {
         TrackedItem *targetItem = nullptr;
 
@@ -238,7 +238,7 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
             return true;
         }
     }
-    else if (diffItem->getType() == RevisionItem::Added)
+    else if (diffItem->getType() == RevisionItem::Type::Added)
     {
         TrackedItem *targetItem = nullptr;
 
@@ -259,7 +259,7 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
             return this->targetVcsItemsSource.deleteTrackedItem(targetItem);
         }
     }
-    else if (diffItem->getType() == RevisionItem::Removed)
+    else if (diffItem->getType() == RevisionItem::Type::Removed)
     {
         const Identifier logicType(sourceItem->getDiffLogic()->getType());
         const Uuid id(sourceItem->getUuid());
@@ -372,14 +372,14 @@ void Head::checkoutItem(RevisionItem::Ptr stateItem)
         }
     }
 
-    if (stateItem->getType() == RevisionItem::Changed)
+    if (stateItem->getType() == RevisionItem::Type::Changed)
     {
         if (targetItem)
         {
             targetItem->resetStateTo(*stateItem);
         }
     }
-    else if (stateItem->getType() == RevisionItem::Added)
+    else if (stateItem->getType() == RevisionItem::Type::Added)
     {
         // айтем не в проекте - добавляем
         if (!targetItem)
@@ -394,7 +394,7 @@ void Head::checkoutItem(RevisionItem::Ptr stateItem)
             targetItem->resetStateTo(*stateItem);
         }
     }
-    else if (stateItem->getType() == RevisionItem::Removed)
+    else if (stateItem->getType() == RevisionItem::Type::Removed)
     {
         if (targetItem)
         {
@@ -474,7 +474,7 @@ void Head::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(snapshotNode, stateElement, Serialization::VCS::revisionItem)
     {
-        RevisionItem::Ptr snapshotItem(new RevisionItem(RevisionItem::Added, nullptr));
+        RevisionItem::Ptr snapshotItem(new RevisionItem(RevisionItem::Type::Added, nullptr));
         snapshotItem->deserialize(stateElement, deltaDataLookup);
         this->state->addItem(snapshotItem);
     }
@@ -529,7 +529,7 @@ void Head::run()
         const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
 
         // will check `removed` records later
-        if (stateItem->getType() == RevisionItem::Removed) { continue; }
+        if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
 
         for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
@@ -551,7 +551,7 @@ void Head::run()
 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Changed, itemDiff));
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff));
                     const ScopedWriteLock itemDiffLock(this->diffLock);
                     this->diff->addItem(revisionRecord);
                 }
@@ -564,7 +564,7 @@ void Head::run()
         if (! foundItemInTarget)
         {
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Removed, emptyDiff));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff));
             const ScopedWriteLock emptyDiffLock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
@@ -587,7 +587,7 @@ void Head::run()
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(j));
 
-            if (stateItem->getType() == RevisionItem::Removed) { continue; }
+            if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
 
             if (stateItem->getUuid() == targetItem->getUuid())
             {
@@ -599,7 +599,7 @@ void Head::run()
         // copy deltas from targetItem and add `added` record
         if (! foundItemInState)
         {
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Added, targetItem));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
@@ -634,7 +634,7 @@ void Head::rebuildDiffSynchronously()
         const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
         
         // will check `removed` records later
-        if (stateItem->getType() == RevisionItem::Removed) { continue; }
+        if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
         
         for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
@@ -649,7 +649,7 @@ void Head::rebuildDiffSynchronously()
                 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Changed, itemDiff));
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff));
                     const ScopedWriteLock lock(this->diffLock);
                     this->diff->addItem(revisionRecord);
                 }
@@ -662,7 +662,7 @@ void Head::rebuildDiffSynchronously()
         if (! foundItemInTarget)
         {
             ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Removed, emptyDiff));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
@@ -678,7 +678,7 @@ void Head::rebuildDiffSynchronously()
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(j));
             
-            if (stateItem->getType() == RevisionItem::Removed) { continue; }
+            if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
             
             if (stateItem->getUuid() == targetItem->getUuid())
             {
@@ -690,7 +690,7 @@ void Head::rebuildDiffSynchronously()
         // copy deltas from targetItem and add `added` record
         if (! foundItemInState)
         {
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Added, targetItem));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Added, targetItem));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }

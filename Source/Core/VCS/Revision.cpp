@@ -147,7 +147,7 @@ void Revision::deserializeDeltas(ValueTree data)
 
     forEachValueTreeChildWithType(root, e, Serialization::VCS::revisionItem)
     {
-        RevisionItem::Ptr item(new RevisionItem(RevisionItem::Undefined, nullptr));
+        RevisionItem::Ptr item(new RevisionItem(RevisionItem::Type::Undefined, nullptr));
         item->deserialize(e, {});
         this->addItem(item);
     }
@@ -204,7 +204,7 @@ void Revision::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLoo
         }
         else if (e.hasType(Serialization::VCS::revisionItem))
         {
-            RevisionItem::Ptr item(new RevisionItem(RevisionItem::Undefined, nullptr));
+            RevisionItem::Ptr item(new RevisionItem(RevisionItem::Type::Undefined, nullptr));
             item->deserialize(e, dataLookup);
             this->addItem(item);
         }

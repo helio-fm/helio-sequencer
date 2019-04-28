@@ -56,7 +56,7 @@ void PianoClipComponent::resized()
 
 void PianoClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (oldEvent.isTypeOf(MidiEvent::Note))
+    if (oldEvent.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(oldEvent);
         const Note &newNote = static_cast<const Note &>(newEvent);
@@ -75,7 +75,7 @@ void PianoClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const Midi
 
 void PianoClipComponent::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Note))
+    if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
         if (note.getSequence() != this->sequence) { return; }
@@ -93,7 +93,7 @@ void PianoClipComponent::onAddMidiEvent(const MidiEvent &event)
 
 void PianoClipComponent::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Note))
+    if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
         if (note.getSequence() != this->sequence) { return; }

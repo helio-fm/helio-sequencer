@@ -20,7 +20,7 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-TimeSignatureEvent::TimeSignatureEvent() noexcept : MidiEvent(nullptr, MidiEvent::TimeSignature, 0.f)
+TimeSignatureEvent::TimeSignatureEvent() noexcept : MidiEvent(nullptr, Type::TimeSignature, 0.f)
 {
     //jassertfalse;
 }
@@ -32,7 +32,7 @@ TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) noexcept
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat, int newNumerator, int newDenominator) noexcept :
-    MidiEvent(owner, MidiEvent::TimeSignature, newBeat),
+    MidiEvent(owner, Type::TimeSignature, newBeat),
     numerator(newNumerator),
     denominator(newDenominator) {}
 

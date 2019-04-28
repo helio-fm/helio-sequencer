@@ -122,7 +122,7 @@ void PianoRoll::reloadRollContent()
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
             const MidiEvent *event = track->getSequence()->getUnchecked(j);
-            if (event->isTypeOf(MidiEvent::KeySignature))
+            if (event->isTypeOf(MidiEvent::Type::KeySignature))
             {
                 const auto &key = static_cast<const KeySignatureEvent &>(*event);
                 this->updateBackgroundCacheFor(key);
@@ -152,7 +152,7 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
             const MidiEvent *event = track->getSequence()->getUnchecked(j);
-            if (event->isTypeOf(MidiEvent::Note))
+            if (event->isTypeOf(MidiEvent::Type::Note))
             {
                 const Note *note = static_cast<const Note *>(event);
                 auto nc = new NoteComponent(*this, *note, *clip);
@@ -487,7 +487,7 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 
 void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (oldEvent.isTypeOf(MidiEvent::Note))
+    if (oldEvent.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(oldEvent);
         const Note &newNote = static_cast<const Note &>(newEvent);
@@ -510,7 +510,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
             }
         }
     }
-    else if (oldEvent.isTypeOf(MidiEvent::KeySignature))
+    else if (oldEvent.isTypeOf(MidiEvent::Type::KeySignature))
     {
         const KeySignatureEvent &oldKey = static_cast<const KeySignatureEvent &>(oldEvent);
         const KeySignatureEvent &newKey = static_cast<const KeySignatureEvent &>(newEvent);
@@ -528,7 +528,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 
 void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Note))
+    if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
         const auto track = note.getSequence()->getTrack();
@@ -566,7 +566,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             }
         }
     }
-    else if (event.isTypeOf(MidiEvent::KeySignature))
+    else if (event.isTypeOf(MidiEvent::Type::KeySignature))
     {
         // Repainting background caches on the fly may be costly
         const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(event);
@@ -579,7 +579,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 
 void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Note))
+    if (event.isTypeOf(MidiEvent::Type::Note))
     {
         this->hideHelpers();
         this->hideAllGhostNotes(); // Avoids crash
@@ -599,7 +599,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
             }
         }
     }
-    else if (event.isTypeOf(MidiEvent::KeySignature))
+    else if (event.isTypeOf(MidiEvent::Type::KeySignature))
     {
         const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(event);
         this->removeBackgroundCacheFor(key);
@@ -712,7 +712,7 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
     for (int j = 0; j < track->getSequence()->size(); ++j)
     {
         const MidiEvent *const event = track->getSequence()->getUnchecked(j);
-        if (event->isTypeOf(MidiEvent::KeySignature))
+        if (event->isTypeOf(MidiEvent::Type::KeySignature))
         {
             const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
             this->updateBackgroundCacheFor(key);
@@ -735,7 +735,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const auto *event = track->getSequence()->getUnchecked(i);
-        if (event->isTypeOf(MidiEvent::KeySignature))
+        if (event->isTypeOf(MidiEvent::Type::KeySignature))
         {
             const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
             this->removeBackgroundCacheFor(key);
