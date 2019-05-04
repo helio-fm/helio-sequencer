@@ -98,8 +98,8 @@ PianoRoll::PianoRoll(ProjectNode &parentProject,
     this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
 
-    this->helperHorizontal.reset(new HelperRectangleHorizontal());
-    this->addChildComponent(this->helperHorizontal.get());
+    this->draggingHelper.reset(new HelperRectangleHorizontal());
+    this->addChildComponent(this->draggingHelper.get());
 
     this->reloadRollContent();
     this->setBarRange(0, 8);
@@ -449,20 +449,20 @@ int PianoRoll::getYPositionByKey(int targetKey) const
 
 void PianoRoll::showHelpers()
 {
-    if (!this->helperHorizontal->isVisible())
+    if (!this->draggingHelper->isVisible())
     {
         this->selection.needsToCalculateSelectionBounds();
         this->moveHelpers(0.f, 0);
-        this->helperHorizontal->setAlpha(1.f);
-        this->helperHorizontal->setVisible(true);
+        this->draggingHelper->setAlpha(1.f);
+        this->draggingHelper->setVisible(true);
     }
 }
 
 void PianoRoll::hideHelpers()
 {
-    if (this->helperHorizontal->isVisible())
+    if (this->draggingHelper->isVisible())
     {
-        this->fader.fadeOut(this->helperHorizontal.get(), SHORT_FADE_TIME);
+        this->fader.fadeOut(this->draggingHelper.get(), SHORT_FADE_TIME);
     }
 }
 
@@ -478,7 +478,7 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 
     const int vX = this->viewport.getViewPositionX();
     const int vW = this->viewport.getViewWidth();
-    this->helperHorizontal->setBounds(selectionTranslated.withLeft(vX).withWidth(vW));
+    this->draggingHelper->setBounds(selectionTranslated.withLeft(vX).withWidth(vW));
 }
 
 //===----------------------------------------------------------------------===//
@@ -547,13 +547,17 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 
             this->fader.fadeIn(component, 150);
 
+            // TODO check this in a more elegant way
+            // (needed not to break shift+drag note copying)
+            const bool isCurrentlyDraggingNote = this->draggingHelper->isVisible();
+
             const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
-            component->setActive(isActive);
+            component->setActive(isActive, true);
 
             this->triggerBatchRepaintFor(component);
 
             // arpeggiators preview cannot work without that:
-            if (isActive)
+            if (isActive && !isCurrentlyDraggingNote)
             {
                 this->selection.addToSelection(component);
             }

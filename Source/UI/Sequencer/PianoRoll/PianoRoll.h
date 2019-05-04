@@ -269,8 +269,8 @@ private:
 private:
     
     OwnedArray<NoteComponent> ghostNotes;
-    
-    UniquePointer<HelperRectangle> helperHorizontal;
+    UniquePointer<HelperRectangle> draggingHelper;
+
     UniquePointer<NoteResizerLeft> noteResizerLeft;
     UniquePointer<NoteResizerRight> noteResizerRight;
 
