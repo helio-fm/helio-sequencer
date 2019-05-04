@@ -107,8 +107,8 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
 
     // add interpolated events, if needed
     const int indexOfThis = this->getSequence()->indexOfSorted(this);
-    const bool isOnOff = this->getSequence()->getTrack()->isOnOffAutomationTrack();
-    if (!isOnOff && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
+    const bool isPedalOrSwitchEvent = this->getSequence()->getTrack()->isOnOffAutomationTrack();
+    if (!isPedalOrSwitchEvent && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
     {
         const auto *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
         float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
@@ -135,7 +135,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                 else
                 {
                     MidiMessage ci(MidiMessage::controllerEvent(this->getTrackChannel(),
-                        this->getTrackControllerNumber(), int(this->controllerValue * 127)));
+                        this->getTrackControllerNumber(), int(interpolatedValue * 127)));
                     ci.setTimeStamp(interpolatedTs);
                     outSequence.addEvent(ci, timeOffset);
                 }
