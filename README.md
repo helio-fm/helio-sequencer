@@ -13,10 +13,10 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 
 ## Building
 
-||Linux|Windows|macOS|
-|---|---|---|---|
-|master|[![Linux Build Status](https://travis-ci.org/helio-fm/helio-workstation.svg?branch=master)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-ci.org/helio-fm/helio-workstation.svg?branch=master)](https://travis-ci.org/helio-fm/helio-workstation)|
-|develop|[![Linux Build Status](https://travis-ci.org/helio-fm/helio-workstation.svg?branch=develop)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-ci.org/helio-fm/helio-workstation.svg?branch=develop)](https://travis-ci.org/helio-fm/helio-workstation)|
+||Linux|Windows|macOS|iOS|Android|
+|---|---|---|---|---|---|
+|master|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/5)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/6)](https://travis-ci.org/helio-fm/helio-workstation)|
+|develop|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/5)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/6)](https://travis-ci.org/helio-fm/helio-workstation)|
 
 ### Basic build instructions
 
