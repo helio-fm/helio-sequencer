@@ -109,7 +109,7 @@ namespace CommandIDs
         TimelineJumpPrevious            = 0x2001,
 
         ShowAnnotations                 = 0x2010,
-        ResetVolumeChanges              = 0x2011,
+        ResetPreviewChanges              = 0x2011,
         ApplyOpenGLRenderer             = 0x2012,
 
         TransportStartPlayback          = 0x2013,
