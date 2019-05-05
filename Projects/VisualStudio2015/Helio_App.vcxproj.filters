@@ -1054,9 +1054,6 @@
     <ClCompile Include="..\..\Source\UI\Menus\MidiTrackMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\OrchestraPitMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
@@ -1201,16 +1198,22 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Popups\ArpTuningPanel.cpp">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Popups\NotesTuningPanel.cpp">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ArpPreviewTool.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ChordPreviewTool.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp">
+    <ClCompile Include="..\..\Source\UI\Popups\RescalePreviewTool.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\RescalePreviewTool.cpp">
+    <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\FailTooltip.cpp">
@@ -3906,9 +3909,6 @@
     <ClInclude Include="..\..\Source\UI\Menus\MidiTrackMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
@@ -4053,16 +4053,22 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\ArpTuningPanel.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\NotesTuningPanel.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\ArpPreviewTool.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\ChordPreviewTool.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h">
+    <ClInclude Include="..\..\Source\UI\Popups\RescalePreviewTool.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\RescalePreviewTool.h">
+    <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
