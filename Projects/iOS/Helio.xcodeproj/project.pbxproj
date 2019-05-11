@@ -175,13 +175,6 @@
 			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/PianoProjectMap.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		01D8E262AE66FBD327959D6D = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = NotesTuningPanel.h;
-			path = ../../Source/UI/Menus/NotesTuningPanel.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		02131469942CA352FE5DDAF4 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -4018,6 +4011,13 @@
 			path = ../../Source/UI/Headline/HeadlineDropdown.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		AF4EC575A8540902A970BCE4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = NotesTuningPanel.cpp;
+			path = ../../Source/UI/Popups/NotesTuningPanel.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		AF5B9D3AA339A5C55251E164 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -4065,13 +4065,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PatternRoll.h;
 			path = ../../Source/UI/Sequencer/PatternRoll/PatternRoll.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		B14EC107984F80349368D11F = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = NotesTuningPanel.cpp;
-			path = ../../Source/UI/Menus/NotesTuningPanel.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		B1C46B964C63F1F2E4E311F7 = {
@@ -4401,6 +4394,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = AnnotationEventActions.h;
 			path = ../../Source/Core/Undo/Actions/AnnotationEventActions.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		C36B4468750C498E2B98FFC4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = NotesTuningPanel.h;
+			path = ../../Source/UI/Popups/NotesTuningPanel.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		C3C0BFF587D29F4BADBB6375 = {
@@ -6439,8 +6439,6 @@
 				BCB766C95158A5460C8B0F5F,
 				7E8F02BA7A0D8759B7741681,
 				7B41F279AFD0C72720A67811,
-				B14EC107984F80349368D11F,
-				01D8E262AE66FBD327959D6D,
 				E3E7AEE0AE3A65EE281E1BE6,
 				FCDFC5D7963E81559CBE4FD7,
 				6B780D0DDAAC84F796DA49C9,
@@ -6607,14 +6605,16 @@
 		1A1008B7C7EE6F8181F5FE64 = {
 			isa = PBXGroup;
 			children = (
+				AF4EC575A8540902A970BCE4,
+				C36B4468750C498E2B98FFC4,
 				DCCDA89550EE7B83B7560DD1,
 				63D63EC19DCE58AF124619A2,
 				81519B242B7CEB7E58A78C18,
 				772394AB29A0423B2AF0F3CC,
-				A324AF987EB035B7BA45D86C,
-				C5BD0C9ADB78E3ACC04193AE,
 				CD8B9DD32A46072508301668,
 				CE621422F15AE3C7615CED59,
+				A324AF987EB035B7BA45D86C,
+				C5BD0C9ADB78E3ACC04193AE,
 				20B6428E18D4A70CD01112C7,
 				03A702701ACEE35B37DD85B7,
 				169FDFCB1D90AD42F80B7463,

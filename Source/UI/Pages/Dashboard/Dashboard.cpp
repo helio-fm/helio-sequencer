@@ -74,7 +74,7 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
 
     this->updatesInfo.reset(new UpdatesInfoComponent());
     this->addAndMakeVisible(updatesInfo.get());
-    updatesInfo->setBounds(88, 352, 184, 128);
+    updatesInfo->setBounds(78, 352, 204, 172);
 
 
     //[UserPreSize]
@@ -182,8 +182,8 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <TEXT pos="0Cc 5.5% 552 60" fill="solid: ffffff" hasStroke="0" text="Helio Workstation"
-          fontname="Georgia" fontsize="55.00000000000000000000" kerning="0.00000000000000000000"
-          bold="1" italic="0" justification="36" typefaceStyle="Bold"/>
+          fontname="Georgia" fontsize="55.0" kerning="0.0" bold="1" italic="0"
+          justification="36" typefaceStyle="Bold"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="9bde1b4dd587d5fb" memberName="skew" virtualName=""
              explicitFocusOrder="0" pos="0R 0 64 0M" posRelativeX="981ceff5817d7b34"
@@ -216,7 +216,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="400 120 272 32" sourceFile="UserProfileComponent.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2558009f569f191b" memberName="updatesInfo" virtualName=""
-             explicitFocusOrder="0" pos="88 352 184 128" sourceFile="UpdatesInfoComponent.cpp"
+             explicitFocusOrder="0" pos="78 352 204 172" sourceFile="UpdatesInfoComponent.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

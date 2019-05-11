@@ -122,6 +122,16 @@ MenuItem::Ptr MenuItem::withSubmenu()
     return description;
 }
 
+MenuItem::Ptr MenuItem::withSubmenuIf(bool condition)
+{
+    if (condition)
+    {
+        return this->withSubmenu();
+    }
+
+    return this;
+}
+
 MenuItem::Ptr MenuItem::withTimer()
 {
     MenuItem::Ptr description(this);

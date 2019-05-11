@@ -367,7 +367,6 @@
     <ClCompile Include="..\..\Source\UI\Menus\AnnotationMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\InstrumentMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\MidiTrackMenu.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\OrchestraPitMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\PatternsMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\ProjectMenu.cpp"/>
@@ -416,10 +415,11 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\StageComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Popups\NotesTuningPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\ArpPreviewTool.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\ChordPreviewTool.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\RescalePreviewTool.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\FailTooltip.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\HelioCallout.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\PopupButton.cpp"/>
@@ -2440,7 +2440,6 @@
     <ClInclude Include="..\..\Source\UI\Menus\AnnotationMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\InstrumentMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\MidiTrackMenu.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\PatternsMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\ProjectMenu.h"/>
@@ -2489,10 +2488,11 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h"/>
+    <ClInclude Include="..\..\Source\UI\Popups\NotesTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ArpPreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ChordPreviewTool.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\RescalePreviewTool.h"/>
+    <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\FailTooltip.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\GenericTooltip.h"/>

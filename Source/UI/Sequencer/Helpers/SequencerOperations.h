@@ -61,7 +61,9 @@ struct SequencerOperations final
     
     static bool arpeggiate(Lasso &selection,
         const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
-        bool reversed = false, bool limitToChord = false, bool shouldCheckpoint = true);
+        float durationMultiplier = 1.f, float randomness = 0.f,
+        bool reversed = false, bool limitToChord = false,
+        bool shouldCheckpoint = true);
 
     static void randomizeVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
     static void fadeOutVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);

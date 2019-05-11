@@ -40,6 +40,12 @@ Note::Key Arpeggiator::Mapper::getChordKey(const Array<Note> &chord, int chordKe
         chordKey; // a non-scale key is found in the chord, so just fallback to that key
 }
 
+float Arpeggiator::Mapper::getChordVelocity(const Array<Note> &chord, int chordKeyIndex) const
+{
+    const int safeIndex = chordKeyIndex % chord.size();
+    return chord.getUnchecked(safeIndex).getVelocity();
+}
+
 //===----------------------------------------------------------------------===//
 // Diatonic mapper
 //===----------------------------------------------------------------------===//
@@ -60,22 +66,39 @@ Note::Key Arpeggiator::Mapper::getChordKey(const Array<Note> &chord, int chordKe
 
 class DiatonicArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
+    Note::Key mapArpKeyIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord,
+        const Scale::Ptr chordScale, Note::Key absChordRoot, int scaleOffset) const override
     {
         const auto periodOffset = arpKey.period * chordScale->getBasePeriod();
         switch (arpKey.key)
         {
-        case 0: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 0);
-        case 1: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 1);
-        case 2: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, 0);
-        case 3: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, 1);
-        case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 0);
-        case 5: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 1);
+        case 0: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, scaleOffset);
+        case 1: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, scaleOffset + 1);
+        case 2: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, scaleOffset);
+        case 3: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, scaleOffset + 1);
+        case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, scaleOffset);
+        case 5: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, scaleOffset + 1);
         case 6: return (chord.size() <= 3) ?
             periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 2) :
             periodOffset + this->getChordKey(chord, 3, chordScale, absChordRoot, 0);
         default: return periodOffset + absChordRoot;
+        }
+    }
+
+    float mapArpVelocityIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord) const override
+    {
+        switch (arpKey.key)
+        {
+        case 0: return (arpKey.velocity + this->getChordVelocity(chord, 0)) / 2.f;
+        case 1: return (arpKey.velocity + this->getChordVelocity(chord, 0)) / 2.f;
+        case 2: return (arpKey.velocity + this->getChordVelocity(chord, 1)) / 2.f;
+        case 3: return (arpKey.velocity + this->getChordVelocity(chord, 1)) / 2.f;
+        case 4: return (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f;
+        case 5: return (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f;
+        case 6: return (chord.size() <= 3) ? 
+            (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f :
+            (arpKey.velocity + this->getChordVelocity(chord, 3)) / 2.f;
+        default: return arpKey.velocity;
         }
     }
 };
@@ -86,18 +109,31 @@ class DiatonicArpMapper final : public Arpeggiator::Mapper
 
 class PentatonicArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
+    Note::Key mapArpKeyIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord,
+        const Scale::Ptr chordScale, Note::Key absChordRoot, int scaleOffset) const override
     {
         const auto periodOffset = arpKey.period * chordScale->getBasePeriod();
         switch (arpKey.key)
         {
-        case 0: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 0);
-        case 1: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 1);
-        case 2: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, 0);
-        case 3: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 0);
-        case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 1);
+        case 0: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, scaleOffset);
+        case 1: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, scaleOffset + 1);
+        case 2: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, scaleOffset);
+        case 3: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, scaleOffset);
+        case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, scaleOffset + 1);
         default: return periodOffset + absChordRoot;
+        }
+    }
+
+    float mapArpVelocityIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord) const override
+    {
+        switch (arpKey.key)
+        {
+        case 0: return (arpKey.velocity + this->getChordVelocity(chord, 0)) / 2.f;
+        case 1: return (arpKey.velocity + this->getChordVelocity(chord, 0)) / 2.f;
+        case 2: return (arpKey.velocity + this->getChordVelocity(chord, 1)) / 2.f;
+        case 3: return (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f;
+        case 4: return (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f;
+        default: return arpKey.velocity;
         }
     }
 };
@@ -108,21 +144,31 @@ class PentatonicArpMapper final : public Arpeggiator::Mapper
 
 class SimpleTriadicArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
+    Note::Key mapArpKeyIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord,
+        const Scale::Ptr chordScale, Note::Key absChordRoot, int scaleOffset) const override
     {
         const int periodOffset = arpKey.period * chordScale->getBasePeriod();
-        return periodOffset + this->getChordKey(chord, arpKey.key, chordScale, absChordRoot, 0);
+        return periodOffset + this->getChordKey(chord, arpKey.key, chordScale, absChordRoot, scaleOffset);
+    }
+
+    float mapArpVelocityIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord) const override
+    {
+        return (arpKey.velocity + this->getChordVelocity(chord, arpKey.key)) / 2.f;
     }
 };
 
 class FallbackArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
+    Note::Key mapArpKeyIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord,
+        const Scale::Ptr chordScale, Note::Key absChordRoot, int scaleOffset) const override
     {
         jassertfalse; // Should never hit this point
         return absChordRoot;
+    }
+
+    float mapArpVelocityIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord) const override
+    {
+        return arpKey.velocity;
     }
 };
 
@@ -249,6 +295,11 @@ int Arpeggiator::getNumKeys() const noexcept
     return this->keys.size();
 }
 
+bool Arpeggiator::isKeyIndexValid(int index) const noexcept
+{
+    return index >= 0 && index < this->getNumKeys();
+}
+
 float Arpeggiator::getBeatFor(int arpKeyIndex) const noexcept
 {
     jassert(this->keys.size() > 0);
@@ -257,23 +308,37 @@ float Arpeggiator::getBeatFor(int arpKeyIndex) const noexcept
 }
 
 Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
-    const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot) const
+    const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot,
+    bool reversed, float durationMultiplier, float randomness) const
 {
     jassert(chord.size() > 0);
     jassert(this->keys.size() > 0);
 
-    const int safeKeyIndex = arpKeyIndex % this->getNumKeys();
+    const auto safeKeyIndex = arpKeyIndex % this->getNumKeys();
+
+    const auto arpKeyIndexOrReversed = reversed ? this->getNumKeys() - arpKeyIndex - 1 : arpKeyIndex;
+    const auto safeKeyIndexOrReversed = arpKeyIndexOrReversed % this->getNumKeys();
+
     const auto arpKey = this->keys.getUnchecked(safeKeyIndex);
+    const auto arpKeyOrReversed = this->keys.getUnchecked(safeKeyIndexOrReversed);
+
     const auto absChordRoot = findAbsRootKey(chordScale, chordRoot, chord.getUnchecked(0).getKey());
 
+    static Random rng; // add -1, 0 or 1 scale offset randomly:
+    const int randomScaleOffset = lround((rng.nextFloat() * randomness * 2.f) - 1.f);
+
     const auto newNoteKey =
-        this->mapper->mapArpKeyIntoChordSpace(arpKey,
-            chord, chordScale, absChordRoot);
+        this->mapper->mapArpKeyIntoChord(arpKeyOrReversed,
+            chord, chordScale, absChordRoot, randomScaleOffset);
+
+    const auto newNoteVelocity =
+        jlimit(0.f, 1.f, this->mapper->mapArpVelocityIntoChord(arpKeyOrReversed, chord)
+            + (rng.nextFloat() * randomness * 0.2f));
 
     return chord.getFirst()
-        .withKeyBeat(newNoteKey, startBeat + arpKey.beat)
-        .withLength(arpKey.length)
-        .withVelocity(arpKey.velocity) // TODO some randomness?
+        .withKeyBeat(newNoteKey, startBeat + (arpKey.beat * durationMultiplier))
+        .withLength(arpKey.length * durationMultiplier)
+        .withVelocity(newNoteVelocity)
         .copyWithNewId();
 }
 

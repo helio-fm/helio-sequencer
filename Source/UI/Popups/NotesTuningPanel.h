@@ -24,13 +24,11 @@ class PianoRoll;
 class ProjectNode;
 class NotesTuningDiagram;
 class MenuItemComponent;
+class PopupButton;
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
-#include "../Popups/PopupButton.h"
-#include "../Popups/PopupButton.h"
 #include "../Common/PlayButton.h"
-#include "../Popups/PopupButton.h"
 
 class NotesTuningPanel final : public Component,
                                public ChangeBroadcaster,
@@ -107,3 +105,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NotesTuningPanel)
 };
+
+

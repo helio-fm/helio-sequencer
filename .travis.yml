@@ -13,7 +13,6 @@ branches:
     - master
     - develop
     - /^\d+\.?\d+\.?\d*$/
-    - feature/unity-builds
 
 addons_shortcuts:
   addons_clang7: &clang7

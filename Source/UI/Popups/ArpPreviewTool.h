@@ -30,8 +30,8 @@ class ArpPreviewTool final : public MenuPanel
 {
 public:
 
-    ArpPreviewTool(PianoRoll &roll,
-        Note::Key keyContext, Scale::Ptr scaleContext);
+    ArpPreviewTool(PianoRoll &roll, Note::Key keyContext,
+        Scale::Ptr scaleContext, bool advancedMode);
 
     static ArpPreviewTool *createWithinContext(PianoRoll &roll,
         WeakReference<MidiTrack> keySignatures);
@@ -43,13 +43,29 @@ private:
     void dismissAsync();
     void undoIfNeeded();
 
+    MenuPanel::Menu mainMenu;
+    MenuPanel::Menu createOptionsMenu(Arpeggiator::Ptr arp);
+
+    struct Options final
+    {
+        bool reversed = false;
+        bool limitToChord = false;
+        float randomness = 0.f;
+        float durationMultiplier = 1.f;
+    };
+
+    void previewArp(Arpeggiator::Ptr arp, const Options options, bool forceRecreate);
+
     PianoRoll &roll;
 
     Note::Key keyContext;
     Scale::Ptr scaleContext;
 
-    bool hasMadeChanges;
-    Arpeggiator::Ptr lastChosenArp;
+    bool advancedMode = false;
+
+    bool hasMadeChanges = false;
+    Arpeggiator::Ptr lastChosenArp = nullptr;
+    Options lastOptions;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpPreviewTool)
 };
