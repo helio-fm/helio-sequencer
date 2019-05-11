@@ -1047,7 +1047,6 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ShowArpeggiatorsPanel:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        // TODO +shift - opens advanced panel:
         if (auto *panel = ArpPreviewTool::createWithinContext(*this,
             this->project.getTimeline()->getKeySignatures()))
         {

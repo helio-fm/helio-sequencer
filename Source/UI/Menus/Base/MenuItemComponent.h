@@ -51,6 +51,7 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem();
     MenuItem::Ptr withAlignment(Alignment alignment);
     MenuItem::Ptr withSubmenu();
+    MenuItem::Ptr withSubmenuIf(bool condition);
     MenuItem::Ptr withTimer();
     MenuItem::Ptr toggled(bool shouldBeToggled);
     MenuItem::Ptr colouredWith(const Colour &colour);
