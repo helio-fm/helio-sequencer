@@ -52,13 +52,12 @@ public:
     float getSequenceLength() const;
 
     int getNumKeys() const noexcept;
-    int getStartKeyIndex(bool reverseOrder) const noexcept;
     bool isKeyIndexValid(int index) const noexcept;
 
     float getBeatFor(int arpKeyIndex) const noexcept;
     Note mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
         const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot,
-        float durationMultiplier = 1.f, float randomness = 0.f) const;
+        bool reversed, float durationMultiplier = 1.f, float randomness = 0.f) const;
 
     Arpeggiator &operator=(const Arpeggiator &other);
     friend bool operator==(const Arpeggiator &l, const Arpeggiator &r);

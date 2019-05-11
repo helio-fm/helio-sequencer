@@ -178,9 +178,9 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x1")->toggled(this->lastOptions.randomness == 1.f)->withAction([this, arp]()
+        "Randomness x0.75")->toggled(this->lastOptions.randomness == 0.75f)->withAction([this, arp]()
     {
-        this->lastOptions.randomness = 1.f;
+        this->lastOptions.randomness = 0.75f;
         this->previewArp(arp, this->lastOptions, true);
         this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
     }));

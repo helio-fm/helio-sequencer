@@ -1083,7 +1083,7 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
     const float selectionStartBeat = SequencerOperations::findStartBeat(sortedRemovals);
 
     // 3. arpeggiate every chord
-    int arpKeyIndex = arp->getStartKeyIndex(isReversed);
+    int arpKeyIndex = 0;
     float arpBeatOffset = 0.f;
     const float arpSequenceLength = arp->getSequenceLength();
 
@@ -1099,15 +1099,15 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
 
         while (1)
         {
-            const float beatOffset = selectionStartBeat + arpBeatOffset;
+            const float beatOffset = selectionStartBeat + (arpBeatOffset * durationMultiplier);
             const float nextNoteBeat = beatOffset + (arp->getBeatFor(arpKeyIndex) * durationMultiplier);
             if (nextNoteBeat >= chordEnd)
             {
                 if (isLimitedToChord)
                 {
                     // every next chord is arpeggiated from the start of arp sequence
-                    arpKeyIndex = arp->getStartKeyIndex(isReversed);
-                    arpBeatOffset = chordEnd - selectionStartBeat;
+                    arpKeyIndex = 0;
+                    arpBeatOffset = (chordEnd - selectionStartBeat) / durationMultiplier;
                 }
 
                 break;
@@ -1115,12 +1115,12 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
 
             insertions.add(arp->mapArpKeyIntoChordSpace(arpKeyIndex,
                 beatOffset, chord, chordScale, chordRoot,
-                durationMultiplier, randomness));
+                isReversed, durationMultiplier, randomness));
 
-            arpKeyIndex += isReversed ? -1 : 1;
+            arpKeyIndex++;
             if (!arp->isKeyIndexValid(arpKeyIndex))
             {
-                arpKeyIndex = arp->getStartKeyIndex(isReversed);
+                arpKeyIndex = 0;
                 arpBeatOffset += arpSequenceLength;
             }
         }

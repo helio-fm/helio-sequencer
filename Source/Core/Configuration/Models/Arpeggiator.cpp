@@ -295,11 +295,6 @@ int Arpeggiator::getNumKeys() const noexcept
     return this->keys.size();
 }
 
-int Arpeggiator::getStartKeyIndex(bool reverseOrder) const noexcept
-{
-    return reverseOrder ? (this->getNumKeys() - 1) : 0;
-}
-
 bool Arpeggiator::isKeyIndexValid(int index) const noexcept
 {
     return index >= 0 && index < this->getNumKeys();
@@ -314,24 +309,30 @@ float Arpeggiator::getBeatFor(int arpKeyIndex) const noexcept
 
 Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
     const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot,
-    float durationMultiplier, float randomness) const
+    bool reversed, float durationMultiplier, float randomness) const
 {
     jassert(chord.size() > 0);
     jassert(this->keys.size() > 0);
 
-    const int safeKeyIndex = arpKeyIndex % this->getNumKeys();
+    const auto safeKeyIndex = arpKeyIndex % this->getNumKeys();
+
+    const auto arpKeyIndexOrReversed = reversed ? this->getNumKeys() - arpKeyIndex - 1 : arpKeyIndex;
+    const auto safeKeyIndexOrReversed = arpKeyIndexOrReversed % this->getNumKeys();
+
     const auto arpKey = this->keys.getUnchecked(safeKeyIndex);
+    const auto arpKeyOrReversed = this->keys.getUnchecked(safeKeyIndexOrReversed);
+
     const auto absChordRoot = findAbsRootKey(chordScale, chordRoot, chord.getUnchecked(0).getKey());
 
     static Random rng; // add -1, 0 or 1 scale offset randomly:
     const int randomScaleOffset = lround((rng.nextFloat() * randomness * 2.f) - 1.f);
 
     const auto newNoteKey =
-        this->mapper->mapArpKeyIntoChord(arpKey,
+        this->mapper->mapArpKeyIntoChord(arpKeyOrReversed,
             chord, chordScale, absChordRoot, randomScaleOffset);
 
     const auto newNoteVelocity =
-        jlimit(0.f, 1.f, this->mapper->mapArpVelocityIntoChord(arpKey, chord)
+        jlimit(0.f, 1.f, this->mapper->mapArpVelocityIntoChord(arpKeyOrReversed, chord)
             + (rng.nextFloat() * randomness * 0.2f));
 
     return chord.getFirst()
