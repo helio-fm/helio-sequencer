@@ -1005,7 +1005,9 @@ void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, boo
 
 bool SequencerOperations::arpeggiate(Lasso &selection,
     const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
-    bool reversed, bool limitToChord, bool shouldCheckpoint)
+    float durationMultiplier, float randomness,
+    bool isReversed, bool isLimitedToChord,
+    bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1079,51 +1081,46 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
     }
 
     const float selectionStartBeat = SequencerOperations::findStartBeat(sortedRemovals);
-        
+
     // 3. arpeggiate every chord
-    int arpKeyIndex = 0;
+    int arpKeyIndex = arp->getStartKeyIndex(isReversed);
     float arpBeatOffset = 0.f;
     const float arpSequenceLength = arp->getSequenceLength();
-        
+
     if (chords.size() == 0)
     {
         return false;
     }
-        
+
     for (int i = 0; i < chords.size(); ++i)
     {
         const auto &chord = chords.getUnchecked(i);
         const float chordEnd = SequencerOperations::findEndBeat(chord);
 
-        if (reversed)
-        {
-            // TODO sort chord keys in reverse order
-        }
-
-        // Arp sequence as is
         while (1)
         {
             const float beatOffset = selectionStartBeat + arpBeatOffset;
-            const float nextNoteBeat = beatOffset + arp->getBeatFor(arpKeyIndex);
+            const float nextNoteBeat = beatOffset + (arp->getBeatFor(arpKeyIndex) * durationMultiplier);
             if (nextNoteBeat >= chordEnd)
             {
-                if (limitToChord)
+                if (isLimitedToChord)
                 {
-                    // Every next chord is arpeggiated from the start of arp sequence
-                    arpKeyIndex = 0;
+                    // every next chord is arpeggiated from the start of arp sequence
+                    arpKeyIndex = arp->getStartKeyIndex(isReversed);
                     arpBeatOffset = chordEnd - selectionStartBeat;
                 }
-                        
+
                 break;
             }
 
             insertions.add(arp->mapArpKeyIntoChordSpace(arpKeyIndex,
-                beatOffset, chord, chordScale, chordRoot));
+                beatOffset, chord, chordScale, chordRoot,
+                durationMultiplier, randomness));
 
-            arpKeyIndex++;
-            if (arpKeyIndex >= arp->getNumKeys())
+            arpKeyIndex += isReversed ? -1 : 1;
+            if (!arp->isKeyIndexValid(arpKeyIndex))
             {
-                arpKeyIndex = 0;
+                arpKeyIndex = arp->getStartKeyIndex(isReversed);
                 arpBeatOffset += arpSequenceLength;
             }
         }
@@ -1138,7 +1135,7 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
         pianoSequence->checkpoint();
         didCheckpoint = true;
     }
-    
+
     pianoSequence->removeGroup(sortedRemovals, true);
     pianoSequence->insertGroup(insertions, true);
  
