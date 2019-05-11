@@ -1198,9 +1198,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ArpTuningPanel.cpp">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\NotesTuningPanel.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
@@ -4052,9 +4049,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\ArpTuningPanel.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\NotesTuningPanel.h">
       <Filter>Helio\Source\UI\Popups</Filter>

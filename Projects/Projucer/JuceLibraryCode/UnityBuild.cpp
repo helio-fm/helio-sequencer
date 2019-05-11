@@ -215,7 +215,6 @@
 #include "../../Source/UI/Pages/VCS/RevisionTreeComponent.cpp"
 #include "../../Source/UI/Pages/VCS/StageComponent.cpp"
 #include "../../Source/UI/Pages/VCS/VersionControlEditor.cpp"
-#include "../../Source/UI/Popups/ArpTuningPanel.cpp"
 #include "../../Source/UI/Popups/NotesTuningPanel.cpp"
 #include "../../Source/UI/Popups/ArpPreviewTool.cpp"
 #include "../../Source/UI/Popups/ChordPreviewTool.cpp"

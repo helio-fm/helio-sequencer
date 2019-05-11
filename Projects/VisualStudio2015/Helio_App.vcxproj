@@ -415,7 +415,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\StageComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Popups\ArpTuningPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\NotesTuningPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\ArpPreviewTool.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\ChordPreviewTool.cpp"/>
@@ -2489,7 +2488,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\ArpTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\NotesTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ArpPreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ChordPreviewTool.h"/>

@@ -4718,13 +4718,6 @@
 			path = ../../Resources/chords.json;
 			sourceTree = "SOURCE_ROOT";
 		};
-		D45EDEB39401BAA92754618C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ArpTuningPanel.cpp;
-			path = ../../Source/UI/Popups/ArpTuningPanel.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		D4D63EBB3FF993792EA93DE1 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -5038,13 +5031,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = SessionService.cpp;
 			path = ../../Source/Core/Network/Services/SessionService.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		E098AE02E7E86B42E95FA6B7 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ArpTuningPanel.h;
-			path = ../../Source/UI/Popups/ArpTuningPanel.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		E09C11D4F4D9254228CCCA95 = {
@@ -6619,8 +6605,6 @@
 		1A1008B7C7EE6F8181F5FE64 = {
 			isa = PBXGroup;
 			children = (
-				D45EDEB39401BAA92754618C,
-				E098AE02E7E86B42E95FA6B7,
 				AF4EC575A8540902A970BCE4,
 				C36B4468750C498E2B98FFC4,
 				DCCDA89550EE7B83B7560DD1,

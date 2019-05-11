@@ -767,9 +767,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ArpTuningPanel.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\NotesTuningPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2977,7 +2974,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\ArpTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\NotesTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ArpPreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ChordPreviewTool.h"/>

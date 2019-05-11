@@ -1005,10 +1005,6 @@
           </GROUP>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
-          <FILE id="OdvrTw" name="ArpTuningPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Popups/ArpTuningPanel.cpp"/>
-          <FILE id="csacXI" name="ArpTuningPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/ArpTuningPanel.h"/>
           <FILE id="lFusFF" name="NotesTuningPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/NotesTuningPanel.cpp"/>
           <FILE id="JUhuYZ" name="NotesTuningPanel.h" compile="0" resource="0"
