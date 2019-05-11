@@ -1242,6 +1242,10 @@
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.cpp"/>
               <FILE id="qUN44J" name="TrackScrollerScreen.h" compile="0" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.h"/>
+              <FILE id="HXQrfj" name="VelocityProjectMap.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/VelocityProjectMap.cpp"/>
+              <FILE id="MtUyla" name="VelocityProjectMap.h" compile="0" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/VelocityProjectMap.h"/>
             </GROUP>
             <GROUP id="{919723B0-0366-9404-B47C-49C93660ABFE}" name="TimeSignaturesMap">
               <FILE id="KAMX2D" name="TimeSignatureComponent.h" compile="0" resource="0"
