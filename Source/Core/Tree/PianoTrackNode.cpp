@@ -126,7 +126,7 @@ ValueTree PianoTrackNode::getDeltaData(int deltaIndex) const
 
 VCS::DiffLogic *PianoTrackNode::getDiffLogic() const
 {
-    return this->vcsDiffLogic;
+    return this->vcsDiffLogic.get();
 }
 
 void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)

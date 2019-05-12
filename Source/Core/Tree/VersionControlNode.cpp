@@ -193,7 +193,7 @@ bool VersionControlNode::hasMenu() const noexcept
     return this->vcs != nullptr;
 }
 
-UniquePointer<Component> VersionControlNode::createMenu()
+Component *VersionControlNode::createMenu()
 {
     if (this->vcs != nullptr)
     {

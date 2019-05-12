@@ -78,10 +78,10 @@ public:
 
     bool hasMenu() const noexcept override { return true; }
 
-    UniquePointer<Component> createMenu() override
+    Component *createMenu() override
     {
-        return { new PianoRollSelectionMenu(this->lasso,
-            this->project.getTimeline()->getKeySignatures()) };
+        return new PianoRollSelectionMenu(this->lasso,
+            this->project.getTimeline()->getKeySignatures());
     }
 
     Image getIcon() const override
@@ -125,7 +125,7 @@ public:
 
     bool hasMenu() const noexcept override { return true; }
 
-    UniquePointer<Component> createMenu() override
+    Component *createMenu() override
     {
         return { new PatternRollSelectionMenu(this->lasso) };
     }

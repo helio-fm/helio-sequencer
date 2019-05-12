@@ -1590,7 +1590,7 @@ void HybridRoll::startZooming()
     const Point<int> vMouseDownPosition(sMouseDownPosition - vScreenPosition);
     this->zoomMarker->setSize(24, 24);
     this->zoomMarker->setCentrePosition(vMouseDownPosition.getX(), vMouseDownPosition.getY());
-    this->viewport.addAndMakeVisible(this->zoomMarker);
+    this->viewport.addAndMakeVisible(this->zoomMarker.get());
 
     Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(true, false);
 }

@@ -63,7 +63,7 @@ bool OrchestraPitNode::hasMenu() const noexcept
     return true;
 }
 
-UniquePointer<Component> OrchestraPitNode::createMenu()
+Component *OrchestraPitNode::createMenu()
 {
     return new OrchestraPitMenu(*this);
 }

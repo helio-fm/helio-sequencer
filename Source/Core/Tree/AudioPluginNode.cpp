@@ -31,7 +31,7 @@ class HelioAudioProcessorEditor final : public GenericAudioProcessorEditor
 {
 public:
 
-    explicit HelioAudioProcessorEditor(AudioProcessor *const p) :
+    explicit HelioAudioProcessorEditor(AudioProcessor &p) :
         GenericAudioProcessorEditor(p)
     {
         this->setFocusContainer(true);
@@ -39,7 +39,7 @@ public:
         // установим ему масимальную высоту
         for (int i = 0; i < this->getNumChildComponents(); ++i)
         {
-            if (PropertyPanel *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))
+            if (auto *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))
             {
                 this->setSize(this->getWidth(), panel->getTotalContentHeight());
             }
@@ -57,7 +57,7 @@ bool AudioPluginNode::hasMenu() const noexcept
     return false;
 }
 
-UniquePointer<Component> AudioPluginNode::createMenu()
+Component *AudioPluginNode::createMenu()
 {
     return nullptr;
 }
@@ -110,11 +110,8 @@ void AudioPluginNode::showPage()
         }
         else
         {
-            AudioProcessorEditor *const ui =
-                new HelioAudioProcessorEditor(f->getProcessor());
-
-            AudioPluginInstance *const plugin =
-                dynamic_cast<AudioPluginInstance *>(f->getProcessor());
+            auto *const ui = new HelioAudioProcessorEditor(*f->getProcessor());
+            auto *plugin = dynamic_cast<AudioPluginInstance *>(f->getProcessor());
 
             if (plugin != nullptr)
             {

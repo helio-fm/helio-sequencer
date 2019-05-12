@@ -327,7 +327,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
 bool InstrumentEditor::hasMenu() const noexcept { return true; }
 bool InstrumentEditor::canBeSelectedAsMenuItem() const { return false; }
 
-UniquePointer<Component> InstrumentEditor::createMenu()
+Component *InstrumentEditor::createMenu()
 {
     return new InstrumentNodeSelectionMenu(*this->instrument,
         this->instrument->getNodeForId(this->selectedNode));

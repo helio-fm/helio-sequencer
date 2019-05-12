@@ -34,7 +34,7 @@ public:
     void recreatePage() override;
 
     bool hasMenu() const noexcept override;
-    UniquePointer<Component> createMenu() override;
+    Component *createMenu() override;
 
 private:
 

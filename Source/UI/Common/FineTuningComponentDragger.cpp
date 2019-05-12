@@ -89,7 +89,7 @@ void FineTuningComponentDragger::dragComponent(Component *const component, const
 
 void FineTuningComponentDragger::endDraggingComponent(Component *const component, const MouseEvent &e)
 {
-    auto &ms = Desktop::getInstance().getMainMouseSource();
+    auto ms = Desktop::getInstance().getMainMouseSource();
     if (ms.isUnboundedMouseMovementEnabled())
     {
         ms.enableUnboundedMouseMovement(false);

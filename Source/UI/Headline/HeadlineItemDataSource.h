@@ -30,7 +30,7 @@ public:
     HeadlineItemDataSource() = default;
 
     virtual bool hasMenu() const = 0;
-    virtual UniquePointer<Component> createMenu() = 0;
+    virtual Component *createMenu() = 0;
 
     virtual Image getIcon() const = 0;
     virtual String getName() const = 0;

@@ -143,7 +143,7 @@ void HistoryComponent::clearSelection()
 
 void HistoryComponent::rebuildRevisionTree()
 {
-    this->revisionTree.reset(new RevisionTreeComponent(this->vcs));
+    this->revisionTree = new RevisionTreeComponent(this->vcs);
     auto *alignerProxy = new ViewportFitProxyComponent(*this->revisionViewport, this->revisionTree, true); // owns revisionTree
     this->revisionViewport->setViewedComponent(alignerProxy, true); // owns alignerProxy
     alignerProxy->centerTargetToViewport();
@@ -178,11 +178,11 @@ bool HistoryComponent::hasMenu() const noexcept
     return true;
 }
 
-UniquePointer<Component> HistoryComponent::createMenu()
+Component *HistoryComponent::createMenu()
 {
     if (this->revisionTree != nullptr)
     {
-        return { new VersionControlHistorySelectionMenu(this->revisionTree->getSelectedRevision(), this->vcs) };
+        return new VersionControlHistorySelectionMenu(this->revisionTree->getSelectedRevision(), this->vcs);
     }
 
     jassertfalse;

@@ -93,7 +93,7 @@ PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node,
     if (useGenericView &&
         !node->getProcessor()->getParameters().isEmpty())
     {
-        ui = new GenericAudioProcessorEditor(node->getProcessor());
+        ui = new GenericAudioProcessorEditor(*node->getProcessor());
     }
     
     if (ui != nullptr)

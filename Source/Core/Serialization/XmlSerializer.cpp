@@ -20,12 +20,21 @@
 
 static const String xmlEncoding = "UTF-8";
 
+static XmlElement::TextFormat getXmlFormat()
+{
+    static XmlElement::TextFormat format;
+    format.dtd = {};
+    format.lineWrapLength = 120;
+    format.customEncoding = xmlEncoding;
+    return format;
+}
+
 Result XmlSerializer::saveToFile(File file, const ValueTree &tree) const
 {
     UniquePointer<XmlElement> xml(tree.createXml());
     if (xml != nullptr)
     {
-        const auto saved = file.replaceWithText(xml->createDocument({}, false, true, xmlEncoding, 120));
+        const auto saved = xml->writeTo(file, getXmlFormat());
         return saved ? Result::ok() : Result::fail({});
     }
 
@@ -35,7 +44,7 @@ Result XmlSerializer::saveToFile(File file, const ValueTree &tree) const
 Result XmlSerializer::loadFromFile(const File &file, ValueTree &tree) const
 {
     XmlDocument document(file);
-    ScopedPointer<XmlElement> xml(document.getDocumentElement());
+    UniquePointer<XmlElement> xml(document.getDocumentElement());
     if (xml != nullptr)
     {
         tree = ValueTree::fromXml(*xml);
@@ -50,7 +59,7 @@ Result XmlSerializer::saveToString(String &string, const ValueTree &tree) const
     UniquePointer<XmlElement> xml(tree.createXml());
     if (xml != nullptr)
     {
-        string = xml->createDocument({}, false, true, xmlEncoding, 120);
+        string = xml->toString(getXmlFormat());
         return Result::ok();
     }
 
@@ -60,7 +69,7 @@ Result XmlSerializer::saveToString(String &string, const ValueTree &tree) const
 Result XmlSerializer::loadFromString(const String &string, ValueTree &tree) const
 {
     XmlDocument document(string);
-    ScopedPointer<XmlElement> xml(document.getDocumentElement());
+    UniquePointer<XmlElement> xml(document.getDocumentElement());
     tree = ValueTree::fromXml(*xml);
     return Result::ok();
 }

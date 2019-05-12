@@ -71,7 +71,7 @@ void InstrumentNode::showPage()
         return;
     }
 
-    App::Layout().showPage(this->instrumentEditor, this);
+    App::Layout().showPage(this->instrumentEditor.get(), this);
 }
 
 void InstrumentNode::safeRename(const String &newName, bool sendNotifications)
@@ -153,7 +153,7 @@ bool InstrumentNode::hasMenu() const noexcept
     return true;
 }
 
-UniquePointer<Component> InstrumentNode::createMenu()
+Component *InstrumentNode::createMenu()
 {
     return new InstrumentMenu(*this, App::Workspace().getPluginManager());
 }

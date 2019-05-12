@@ -208,7 +208,7 @@ static Image renderVector(Icons::Id id, int maxSize,
     Image resultImage(Image::ARGB, maxSize, maxSize, true);
     Graphics g(resultImage);
     
-    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
+    UniquePointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
     drawableSVG->replaceColour(Colours::black, iconBaseColour);
 
     Rectangle<int> area(0, 0, maxSize, maxSize);
@@ -226,7 +226,7 @@ static Image renderVector(Icons::Id id, int maxSize,
 }
 
 
-ScopedPointer<Drawable> Icons::getDrawableByName(Icons::Id id)
+UniquePointer<Drawable> Icons::getDrawableByName(Icons::Id id)
 {
     const auto foundImage = builtInImages.find(id);
     if (foundImage == builtInImages.end())
@@ -245,8 +245,8 @@ Path Icons::getPathByName(Icons::Id id)
         return {};
     }
 
-    ScopedPointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
-    return Path(extractPathFromDrawable(drawableSVG));
+    UniquePointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
+    return Path(extractPathFromDrawable(drawableSVG.get()));
 }
 
 static HashMap<String, Image> prerenderedVectors;

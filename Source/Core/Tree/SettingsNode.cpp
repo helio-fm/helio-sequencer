@@ -111,7 +111,7 @@ bool SettingsNode::hasMenu() const noexcept
     return false;
 }
 
-UniquePointer<Component> SettingsNode::createMenu()
+Component *SettingsNode::createMenu()
 {
     return nullptr;
 }
