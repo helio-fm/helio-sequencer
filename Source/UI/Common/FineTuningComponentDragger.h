@@ -28,8 +28,7 @@ public:
         AutoSelect,
     };
 
-    FineTuningComponentDragger();
-    ~FineTuningComponentDragger();
+    FineTuningComponentDragger() = default;
 
     void startDraggingComponent(Component *const component, const MouseEvent &e,
         float currentValue, float lowerBound = 0.f, float upperBound = 1.f,

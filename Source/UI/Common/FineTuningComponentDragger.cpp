@@ -18,9 +18,6 @@
 #include "Common.h"
 #include "FineTuningComponentDragger.h"
 
-FineTuningComponentDragger::FineTuningComponentDragger() {}
-FineTuningComponentDragger::~FineTuningComponentDragger() {}
-
 void FineTuningComponentDragger::startDraggingComponent(Component *const component,    
     const MouseEvent &e, float currentValue, float lowerBound, float upperBound,
     float interval, Mode mode)
@@ -92,13 +89,11 @@ void FineTuningComponentDragger::dragComponent(Component *const component, const
 
 void FineTuningComponentDragger::endDraggingComponent(Component *const component, const MouseEvent &e)
 {
-    for (auto &ms : Desktop::getInstance().getMouseSources())
+    auto &ms = Desktop::getInstance().getMainMouseSource();
+    if (ms.isUnboundedMouseMovementEnabled())
     {
-        if (ms.isUnboundedMouseMovementEnabled())
-        {
-            ms.enableUnboundedMouseMovement(false);
-            const auto mousePos = component->localPointToGlobal(this->mouseDownWithinTarget);
-            ms.setScreenPosition(mousePos.toFloat());
-        }
+        ms.enableUnboundedMouseMovement(false);
+        const auto mousePos = component->localPointToGlobal(this->mouseDownWithinTarget);
+        ms.setScreenPosition(mousePos.toFloat());
     }
 }

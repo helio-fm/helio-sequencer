@@ -25,7 +25,7 @@
 class HybridRoll;
 class ProjectNode;
 
-class PianoProjectMap :
+class PianoProjectMap final :
     public Component,
     public ProjectListener,
     public AsyncUpdater

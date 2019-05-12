@@ -179,7 +179,9 @@ void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
 void InstrumentEditorConnector::mouseUp(const MouseEvent &e)
 {
     if (this->dragging)
-    { this->getGraphPanel()->endDraggingConnector(e); }
+    {
+        this->getGraphPanel()->endDraggingConnector(e);
+    }
 }
 
 void InstrumentEditorConnector::resized()

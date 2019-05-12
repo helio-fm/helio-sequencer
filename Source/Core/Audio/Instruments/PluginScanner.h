@@ -29,8 +29,6 @@ public:
     ~PluginScanner() override;
     
     bool isWorking() const;
-    void removeListItem(int index);
-
     bool hasEffects() const;
     bool hasInstruments() const;
 

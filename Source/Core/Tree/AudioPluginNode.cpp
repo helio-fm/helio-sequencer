@@ -27,7 +27,7 @@
 #include "SerializationKeys.h"
 #include "PluginWindow.h"
 
-class HelioAudioProcessorEditor : public GenericAudioProcessorEditor
+class HelioAudioProcessorEditor final : public GenericAudioProcessorEditor
 {
 public:
 
@@ -45,9 +45,6 @@ public:
             }
         }
     }
-
-    void paint(Graphics &g) override
-    { }
 };
 
 AudioPluginNode::AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name) :

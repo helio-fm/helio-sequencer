@@ -45,13 +45,6 @@ PluginScanner::~PluginScanner()
     this->waitForThreadToExit(500);
 }
 
-void PluginScanner::removeListItem(int index)
-{
-    const ScopedWriteLock lock(this->pluginsListLock);
-    return this->pluginsList.removeType(index);
-}
-
-
 bool PluginScanner::hasEffects() const
 {
     for (const auto description : this->getList())
@@ -78,19 +71,11 @@ bool PluginScanner::hasInstruments() const
     return false;
 }
 
-
 void PluginScanner::removeItem(const PluginDescription &description)
 {
     const ScopedWriteLock lock(this->pluginsListLock);
-    for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
-    {
-        if (this->pluginsList.getType(i)->isDuplicateOf(description))
-        {
-            this->pluginsList.removeType(i);
-            this->sendChangeMessage();
-            return;
-        }
-    }
+    this->pluginsList.removeType(description);
+    this->sendChangeMessage();
 }
 
 void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool forwards)
