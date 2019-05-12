@@ -36,7 +36,7 @@ public:
 
 protected:
 
-    ScopedPointer<HeadlineItemDataSource> menu;
+    UniquePointer<HeadlineItemDataSource> menu;
 
 private:
 

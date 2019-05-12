@@ -66,7 +66,7 @@ private:
 
     int index;
     Colour colour;
-    ScopedPointer<IconComponent> checkMark;
+    UniquePointer<IconComponent> checkMark;
     ColourButtonListener *owner;
     ComponentFader fader;
     //[/UserVariables]

@@ -1582,7 +1582,7 @@ void HybridRoll::startZooming()
 
     this->zoomAnchor.setXY(0, 0);
 
-    this->zoomMarker = new IconComponent(Icons::zoomIn);
+    this->zoomMarker.reset(new IconComponent(Icons::zoomIn));
     this->zoomMarker->setAlwaysOnTop(true);
 
     const Point<int> vScreenPosition(this->viewport.getScreenPosition());

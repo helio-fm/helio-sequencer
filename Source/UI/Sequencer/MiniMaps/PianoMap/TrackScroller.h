@@ -110,7 +110,7 @@ public:
         Colour colour;
         TrackScroller &scroller;
         ComponentDragger dragger;
-        ScopedPointer<ComponentBoundsConstrainer> moveConstrainer;
+        UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
     };
     
 protected:
@@ -130,8 +130,8 @@ private:
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
-    ScopedPointer<TrackScrollerScreen> screenRange;
-    ScopedPointer<Playhead> playhead;
+    UniquePointer<TrackScrollerScreen> screenRange;
+    UniquePointer<Playhead> playhead;
     
     OwnedArray<Component> trackMaps;
 
@@ -141,7 +141,7 @@ private:
     
     ComponentFader fader;
     ComponentDragger helperDragger;
-    ScopedPointer<HelperRectangle> helperRectangle;
+    UniquePointer<HelperRectangle> helperRectangle;
     
     bool mapShouldGetStretched;
     

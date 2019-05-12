@@ -309,69 +309,77 @@ void ModalDialogInput::timerCallback()
 // Presets
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::renameAnnotation(const String &name)
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameAnnotation(const String &name)
 {
-    return { new ModalDialogInput(name,
-        TRANS("dialog::annotation::rename::caption"),
-        TRANS("dialog::annotation::rename::proceed"),
-        TRANS("dialog::annotation::rename::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput(name,
+            TRANS("dialog::annotation::rename::caption"),
+            TRANS("dialog::annotation::rename::proceed"),
+            TRANS("dialog::annotation::rename::cancel")));
 }
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::renameInstrument(const String &name)
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameInstrument(const String &name)
 {
-    return { new ModalDialogInput(name,
-        TRANS("dialog::instrument::rename::caption"),
-        TRANS("dialog::instrument::rename::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput(name,
+            TRANS("dialog::instrument::rename::caption"),
+            TRANS("dialog::instrument::rename::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::changeTimeSignature(const String &name)
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::changeTimeSignature(const String &name)
 {
-    return { new ModalDialogInput(name,
-        TRANS("dialog::timesignature::edit::caption"),
-        TRANS("dialog::timesignature::edit::apply"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput(name,
+            TRANS("dialog::timesignature::edit::caption"),
+            TRANS("dialog::timesignature::edit::apply"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::renameTrack(const String &name)
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameTrack(const String &name)
 {
-    return { new ModalDialogInput(name,
-        TRANS("dialog::renametrack::caption"),
-        TRANS("dialog::renametrack::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput(name,
+            TRANS("dialog::renametrack::caption"),
+            TRANS("dialog::renametrack::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
 {
-    return { new ModalDialogInput(
-        TRANS("defaults::newtrack::name"),
-        TRANS("dialog::addtrack::caption"),
-        TRANS("dialog::addtrack::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput(
+            TRANS("defaults::newtrack::name"),
+            TRANS("dialog::addtrack::caption"),
+            TRANS("dialog::addtrack::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirmation()
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirmation()
 {
-    return { new ModalDialogInput({},
-        TRANS("dialog::deleteproject::confirm::caption"),
-        TRANS("dialog::deleteproject::confirm::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput({},
+            TRANS("dialog::deleteproject::confirm::caption"),
+            TRANS("dialog::deleteproject::confirm::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &name)
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &name)
 {
-    return { new ModalDialogInput(name,
-        TRANS("dialog::vcs::commit::caption"),
-        TRANS("dialog::vcs::commit::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput(name,
+            TRANS("dialog::vcs::commit::caption"),
+            TRANS("dialog::vcs::commit::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
 {
-    return { new ModalDialogInput({},
-        TRANS("dialog::addarp::caption"),
-        TRANS("dialog::addarp::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogInput>(
+        new ModalDialogInput({},
+            TRANS("dialog::addarp::caption"),
+            TRANS("dialog::addarp::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
 //[/MiscUserCode]

@@ -22,10 +22,10 @@ NavigationHistory::NavigationHistory() :
     historyLock(nullptr),
     currentPageIndex(0) {}
 
-ScopedPointer<NavigationHistoryLock> NavigationHistory::lock()
+UniquePointer<NavigationHistoryLock> NavigationHistory::lock()
 {
-    ScopedPointer<NavigationHistoryLock> l(new NavigationHistoryLock());
-    this->historyLock = l;
+    UniquePointer<NavigationHistoryLock> l(new NavigationHistoryLock());
+    this->historyLock = l.get();
     return l;
 }
 

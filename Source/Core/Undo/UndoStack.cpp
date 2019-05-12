@@ -195,7 +195,7 @@ bool UndoStack::perform(UndoAction *const newAction)
 {
     if (newAction != nullptr)
     {
-        ScopedPointer<UndoAction> action(newAction);
+        UniquePointer<UndoAction> action(newAction);
         
         if (this->reentrancyCheck)
         {
@@ -212,11 +212,11 @@ bool UndoStack::perform(UndoAction *const newAction)
             {
                 for (signed int i = (actionSet->actions.size() - 1); i >= 0; --i)
                 {
-                    if (UndoAction *const lastAction = actionSet->actions[i])
+                    if (auto *lastAction = actionSet->actions[i])
                     {
-                        if (UndoAction *const coalescedAction = lastAction->createCoalescedAction(action))
+                        if (auto *coalescedAction = lastAction->createCoalescedAction(action.get()))
                         {
-                            action = coalescedAction;
+                            action.reset(coalescedAction);
                             this->totalUnitsStored -= lastAction->getSizeInUnits();
                             actionSet->actions.remove(i);
                             break;

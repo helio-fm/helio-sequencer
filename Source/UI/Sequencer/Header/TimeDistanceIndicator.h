@@ -22,20 +22,19 @@ class IconComponent;
 //[/Headers]
 
 
-class TimeDistanceIndicator  : public Component,
-                               private Timer
+class TimeDistanceIndicator final : public Component,
+                                    private Timer
 {
 public:
 
-    TimeDistanceIndicator ();
-
+    TimeDistanceIndicator();
     ~TimeDistanceIndicator();
 
     //[UserMethods]
 
     Label *getTimeLabel() const
     {
-        return this->timeLabel;
+        return this->timeLabel.get();
     }
 
     inline void setAnchoredBetween(double absX1, double absX2)
@@ -67,8 +66,8 @@ private:
         }
     }
 
-    double startAbsPosition;
-    double endAbsPosition;
+    double startAbsPosition = 0.0;
+    double endAbsPosition = 0.0;
 
     void updateBounds()
     {
@@ -79,7 +78,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> timeLabel;
+    UniquePointer<Label> timeLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDistanceIndicator)
 };
+
+

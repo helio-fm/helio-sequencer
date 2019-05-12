@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Origami.h"
 
-
 Origami::Origami()
 {
     this->setFocusContainer(false);
@@ -28,11 +27,6 @@ Origami::Origami()
     this->setPaintingIsUnclipped(true);
     this->setSize(256, 256); // not 0
 }
-
-Origami::~Origami()
-{
-}
-
 //===----------------------------------------------------------------------===//
 // Origami
 //===----------------------------------------------------------------------===//
@@ -75,7 +69,7 @@ int Origami::getMinimumCommonSize() const
 {
     int minSize = 0;
     
-    for (auto page : this->pages)
+    for (auto *page : this->pages)
     {
         minSize += page->min;
     }
@@ -87,7 +81,7 @@ int Origami::getMaximumCommonSize() const
 {
     int maxSize = 0;
     
-    for (auto page : this->pages)
+    for (auto *page : this->pages)
     {
         maxSize += page->max;
     }

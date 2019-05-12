@@ -23,7 +23,8 @@
 
 LogoFader::LogoFader()
 {
-    this->addAndMakeVisible(this->gfx = new SpectralLogo());
+    this->gfx.reset(new SpectralLogo());
+    this->addAndMakeVisible(this->gfx.get());
     this->setSize(DEFAULT_LOGO_SIZE, DEFAULT_LOGO_SIZE);
 }
 

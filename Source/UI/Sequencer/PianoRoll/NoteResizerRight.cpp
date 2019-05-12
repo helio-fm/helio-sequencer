@@ -32,7 +32,10 @@
 NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)
     : roll(parentRoll)
 {
-    addAndMakeVisible (resizeIcon = new IconComponent (Icons::stretchRight));
+    this->resizeIcon.reset(new IconComponent(Icons::stretchRight));
+    this->addAndMakeVisible(resizeIcon.get());
+
+    resizeIcon->setBounds(8, 8, 24, 24);
 
 
     //[UserPreSize]
@@ -42,7 +45,7 @@ NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)
     this->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (64, 256);
+    this->setSize(64, 256);
 
     //[Constructor]
     //[/Constructor]
@@ -65,14 +68,26 @@ void NoteResizerRight::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x1affffff));
-    g.fillRect (0, 0, 2, getHeight() - 0);
+    {
+        int x = 0, y = 0, width = 2, height = getHeight() - 0;
+        Colour fillColour = Colour (0x1affffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0x20ffffff));
-    g.fillEllipse (static_cast<float> (0 - (96 / 2)), static_cast<float> (0 - (96 / 2)), 96.0f, 96.0f);
-
-    g.setColour (Colour (0x30ffffff));
-    g.drawEllipse (static_cast<float> (0 - (96 / 2)), static_cast<float> (0 - (96 / 2)), 96.0f, 96.0f, 1.000f);
+    {
+        float x = static_cast<float> (0 - (96 / 2)), y = static_cast<float> (0 - (96 / 2)), width = 96.0f, height = 96.0f;
+        Colour fillColour = Colour (0x20ffffff);
+        Colour strokeColour = Colour (0x30ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillEllipse (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawEllipse (x, y, width, height, 1.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -83,7 +98,6 @@ void NoteResizerRight::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    resizeIcon->setBounds (8, 8, 24, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -167,7 +181,7 @@ void NoteResizerRight::mouseDrag (const MouseEvent& e)
     //[/UserCode_mouseDrag]
 }
 
-void NoteResizerRight::mouseUp (const MouseEvent &e)
+void NoteResizerRight::mouseUp (const MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     const Lasso &selection = this->roll.getLassoSelection();

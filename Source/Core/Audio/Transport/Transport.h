@@ -147,8 +147,8 @@ private:
     OrchestraPit &orchestra;
     SleepTimer &sleepTimer;
 
-    ScopedPointer<PlayerThreadPool> player;
-    ScopedPointer<RendererThread> renderer;
+    UniquePointer<PlayerThreadPool> player;
+    UniquePointer<RendererThread> renderer;
 
     friend class RendererThread;
     friend class PlayerThread;

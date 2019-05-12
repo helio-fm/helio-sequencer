@@ -27,12 +27,11 @@ class Lasso;
 //[/Headers]
 
 
-class NoteResizerLeft  : public Component
+class NoteResizerLeft final : public Component
 {
 public:
 
-    NoteResizerLeft (HybridRoll &parentRoll);
-
+    NoteResizerLeft(HybridRoll &parentRoll);
     ~NoteResizerLeft();
 
     //[UserMethods]
@@ -63,7 +62,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<IconComponent> resizeIcon;
+    UniquePointer<IconComponent> resizeIcon;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoteResizerLeft)
 };

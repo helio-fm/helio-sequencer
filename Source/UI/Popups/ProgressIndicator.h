@@ -104,7 +104,7 @@ private:
 
     int indicatorDegree;
 
-    ScopedPointer<Drawable> indicatorShape;
+    UniquePointer<Drawable> indicatorShape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProgressIndicator)
 };

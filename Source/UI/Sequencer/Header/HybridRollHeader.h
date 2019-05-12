@@ -64,11 +64,11 @@ protected:
     Colour bevelLightColour;
     Colour bevelDarkColour;
 
-    ScopedPointer<ClipRangeIndicator> clipRangeIndicator;
-    ScopedPointer<SoundProbeIndicator> playingIndicator;
-    ScopedPointer<SoundProbeIndicator> pointingIndicator;
-    ScopedPointer<TimeDistanceIndicator> timeDistanceIndicator;
-    ScopedPointer<HeaderSelectionIndicator> selectionIndicator;
+    UniquePointer<ClipRangeIndicator> clipRangeIndicator;
+    UniquePointer<SoundProbeIndicator> playingIndicator;
+    UniquePointer<SoundProbeIndicator> pointingIndicator;
+    UniquePointer<TimeDistanceIndicator> timeDistanceIndicator;
+    UniquePointer<HeaderSelectionIndicator> selectionIndicator;
 
     void updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
     double getUnalignedAnchorForEvent(const MouseEvent &e) const;

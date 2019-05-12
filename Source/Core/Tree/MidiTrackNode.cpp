@@ -206,12 +206,12 @@ void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
 
 MidiSequence *MidiTrackNode::getSequence() const noexcept
 {
-    return this->sequence;
+    return this->sequence.get();
 }
 
 Pattern *MidiTrackNode::getPattern() const noexcept
 {
-    return this->pattern;
+    return this->pattern.get();
 }
 
 //===----------------------------------------------------------------------===//
@@ -360,7 +360,7 @@ void MidiTrackNode::dispatchRemoveEvent(const MidiEvent &event)
 
 void MidiTrackNode::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
-    jassert(layer == this->sequence);
+    jassert(layer == this->sequence.get());
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastPostRemoveEvent(layer);
@@ -409,7 +409,7 @@ void MidiTrackNode::dispatchRemoveClip(const Clip &clip)
 
 void MidiTrackNode::dispatchPostRemoveClip(Pattern *const pattern)
 {
-    jassert(pattern == this->pattern);
+    jassert(pattern == this->pattern.get());
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastPostRemoveClip(pattern);
@@ -468,7 +468,7 @@ bool MidiTrackNode::hasMenu() const noexcept
     return true;
 }
 
-ScopedPointer<Component> MidiTrackNode::createMenu()
+UniquePointer<Component> MidiTrackNode::createMenu()
 {
     return new MidiTrackMenu(*this);
 }

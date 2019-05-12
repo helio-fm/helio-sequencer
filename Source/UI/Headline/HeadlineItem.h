@@ -59,7 +59,7 @@ private:
     void showMenuIfAny();
 
     WeakReference<HeadlineItemDataSource> item;
-    ScopedPointer<HeadlineDropdown> dropdown;
+    UniquePointer<HeadlineDropdown> dropdown;
     AsyncUpdater &parentHeadline;
 
     Colour bgColour;

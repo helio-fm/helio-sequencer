@@ -66,9 +66,9 @@ private:
     ComponentAnimator animator;
     void switchMonitorsAnimated(Component *oldOne, Component *newOne);
 
-    ScopedPointer<GenericAudioMonitorComponent> genericMonitor;
-    ScopedPointer<WaveformAudioMonitorComponent> waveformMonitor;
-    ScopedPointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
+    UniquePointer<GenericAudioMonitorComponent> genericMonitor;
+    UniquePointer<WaveformAudioMonitorComponent> waveformMonitor;
+    UniquePointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
 
     //===------------------------------------------------------------------===//
     // ListBoxModel

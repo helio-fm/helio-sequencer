@@ -98,7 +98,7 @@ public:
 
 private:
 
-    ScopedPointer<VCS::DiffLogic> vcsDiffLogic;
+    UniquePointer<VCS::DiffLogic> vcsDiffLogic;
 
     OwnedArray<VCS::Delta> deltas;
     
@@ -108,13 +108,13 @@ private:
     String timeSignaturesTrackId;
     String keySignaturesTrackId;
 
-    ScopedPointer<MidiTrack> annotationsTrack;
-    ScopedPointer<MidiTrack> timeSignaturesTrack;
-    ScopedPointer<MidiTrack> keySignaturesTrack;
+    UniquePointer<MidiTrack> annotationsTrack;
+    UniquePointer<MidiTrack> timeSignaturesTrack;
+    UniquePointer<MidiTrack> keySignaturesTrack;
 
-    ScopedPointer<MidiSequence> annotationsSequence;
-    ScopedPointer<MidiSequence> timeSignaturesSequence;
-    ScopedPointer<MidiSequence> keySignaturesSequence;
+    UniquePointer<MidiSequence> annotationsSequence;
+    UniquePointer<MidiSequence> timeSignaturesSequence;
+    UniquePointer<MidiSequence> keySignaturesSequence;
 
     friend class AnnotationsTrack;
     friend class TimeSignaturesTrack;

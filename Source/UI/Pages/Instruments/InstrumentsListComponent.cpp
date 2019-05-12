@@ -204,7 +204,7 @@ void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const Mou
 bool InstrumentsListComponent::hasMenu() const noexcept { return true; }
 bool InstrumentsListComponent::canBeSelectedAsMenuItem() const { return false; }
 
-ScopedPointer<Component> InstrumentsListComponent::createMenu()
+UniquePointer<Component> InstrumentsListComponent::createMenu()
 {
     const auto selectedRow = this->instrumentsList->getSelectedRow();
     const auto instrument = this->instruments[selectedRow];

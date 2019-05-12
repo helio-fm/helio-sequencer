@@ -45,8 +45,8 @@ Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     projectFirstBeat(0.f),
     projectLastBeat(DEFAULT_NUM_BARS * BEATS_PER_BAR)
 {
-    this->player = new PlayerThreadPool(*this);
-    this->renderer = new RendererThread(*this);
+    this->player.reset(new PlayerThreadPool(*this));
+    this->renderer.reset(new RendererThread(*this));
     this->orchestra.addOrchestraListener(this);
 }
 

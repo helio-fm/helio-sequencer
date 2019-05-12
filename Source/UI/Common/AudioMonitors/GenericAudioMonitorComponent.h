@@ -66,8 +66,8 @@ private:
     WeakReference<AudioMonitor> audioMonitor;
     OwnedArray<SpectrumBand> bands;
 
-    ScopedPointer<SpectrumBand> lPeakBand;
-    ScopedPointer<SpectrumBand> rPeakBand;
+    UniquePointer<SpectrumBand> lPeakBand;
+    UniquePointer<SpectrumBand> rPeakBand;
 
     Atomic<float> values[GENERIC_METER_NUM_BANDS];
     Atomic<float> lPeak;

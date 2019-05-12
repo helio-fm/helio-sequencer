@@ -107,7 +107,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    UniquePointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Callbacks
@@ -121,8 +121,8 @@ protected:
 
     ProjectNode *lastFoundParent;
 
-    ScopedPointer<MidiSequence> sequence;
-    ScopedPointer<Pattern> pattern;
+    UniquePointer<MidiSequence> sequence;
+    UniquePointer<Pattern> pattern;
     
 protected:
 

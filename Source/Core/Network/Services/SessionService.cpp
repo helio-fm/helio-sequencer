@@ -133,7 +133,7 @@ void SessionService::signIn(const String &provider)
         return;
     }
 
-    ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
+    UniquePointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
     tooltip->onCancel = [this]() {
         this->cancelSignInProcess();
     };

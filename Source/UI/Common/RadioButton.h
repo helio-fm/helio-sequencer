@@ -31,12 +31,11 @@ struct RadioButtonListener
 //[/Headers]
 
 
-class RadioButton  : public HighlightedComponent
+class RadioButton final : public HighlightedComponent
 {
 public:
 
-    RadioButton (const String &text, Colour c, RadioButtonListener *listener);
-
+    RadioButton(const String &text, Colour c, RadioButtonListener *listener);
     ~RadioButton();
 
     //[UserMethods]
@@ -65,12 +64,14 @@ private:
 
     int index;
     Colour colour;
-    ScopedPointer<Component> checkMark;
+    UniquePointer<Component> checkMark;
     RadioButtonListener *owner;
     ComponentFader fader;
     //[/UserVariables]
 
-    ScopedPointer<Label> label;
+    UniquePointer<Label> label;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RadioButton)
 };
+
+

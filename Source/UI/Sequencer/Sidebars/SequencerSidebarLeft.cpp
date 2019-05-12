@@ -86,13 +86,13 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
 
-    this->genericMonitor = new GenericAudioMonitorComponent(nullptr);
-    this->waveformMonitor = new WaveformAudioMonitorComponent(nullptr);
-    this->spectrogramMonitor = new SpectrogramAudioMonitorComponent(nullptr);
+    this->genericMonitor.reset(new GenericAudioMonitorComponent(nullptr));
+    this->waveformMonitor.reset(new WaveformAudioMonitorComponent(nullptr));
+    this->spectrogramMonitor.reset(new SpectrogramAudioMonitorComponent(nullptr));
 
-    this->addChildComponent(this->genericMonitor);
-    this->addChildComponent(this->waveformMonitor);
-    this->addChildComponent(this->spectrogramMonitor);
+    this->addChildComponent(this->genericMonitor.get());
+    this->addChildComponent(this->waveformMonitor.get());
+    this->addChildComponent(this->spectrogramMonitor.get());
 
     this->genericMonitor->setVisible(true);
     //[/UserPreSize]
@@ -186,13 +186,13 @@ void SequencerSidebarLeft::handleChangeMode()
     switch (this->modeIndicator->scrollToNextMode())
     {
     case 0:
-        this->switchMonitorsAnimated(this->spectrogramMonitor, this->genericMonitor);
+        this->switchMonitorsAnimated(this->spectrogramMonitor.get(), this->genericMonitor.get());
         break;
     case 1:
-        this->switchMonitorsAnimated(this->genericMonitor, this->waveformMonitor);
+        this->switchMonitorsAnimated(this->genericMonitor.get(), this->waveformMonitor.get());
         break;
     case 2:
-        this->switchMonitorsAnimated(this->waveformMonitor, this->spectrogramMonitor);
+        this->switchMonitorsAnimated(this->waveformMonitor.get(), this->spectrogramMonitor.get());
         break;
     default:
         break;

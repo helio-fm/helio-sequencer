@@ -61,7 +61,7 @@ private:
     ListBox &list;
     int row;
 
-    ScopedPointer<Component> selectionComponent;
+    UniquePointer<Component> selectionComponent;
     VCS::RevisionItem::Ptr revisionItem;
 
     //[/UserVariables]

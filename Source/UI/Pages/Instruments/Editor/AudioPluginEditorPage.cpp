@@ -25,24 +25,24 @@ AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
 
-    this->background = new PanelBackgroundB();
-    this->addAndMakeVisible(this->background);
+    this->background.reset(new PanelBackgroundB());
+    this->addAndMakeVisible(this->background.get());
 
-    this->panel = new FramePanel();
-    this->addAndMakeVisible(this->panel);
+    this->panel.reset(new FramePanel());
+    this->addAndMakeVisible(this->panel.get());
 
-    if (DocumentWindow *w = dynamic_cast<DocumentWindow *>(contentOwned))
+    if (auto *w = dynamic_cast<DocumentWindow *>(contentOwned))
     {
         // posess the target window
-        this->ownedWindow = w;
+        this->ownedWindow.reset(w);
         this->ownedWindow->setVisible(true);
     }
     else
     {
-        this->viewport = new Viewport("AudioPluginEditor Viewport");
+        this->viewport.reset(new Viewport("AudioPluginEditor Viewport"));
         this->viewport->setAlwaysOnTop(true);
         this->viewport->setViewedComponent(contentOwned, true);
-        this->addAndMakeVisible(this->viewport);
+        this->addAndMakeVisible(this->viewport.get());
     }
 
     this->setSize(600, 400);

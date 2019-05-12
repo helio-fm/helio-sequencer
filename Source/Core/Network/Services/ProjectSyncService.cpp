@@ -66,7 +66,7 @@ void ProjectSyncService::cloneProject(WeakReference<VersionControl> vcs, const S
         return;
     }
 
-    ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
+    UniquePointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
     App::Layout().showModalComponentUnowned(tooltip.release());
 
     this->prepareProjectCloneThread()->doClone(vcs, projectId);
@@ -88,7 +88,7 @@ void ProjectSyncService::deleteProject(const String &projectId)
         return;
     }
 
-    ScopedPointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
+    UniquePointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
     App::Layout().showModalComponentUnowned(tooltip.release());
 
     this->prepareProjectDeleteThread()->doDelete(projectId);

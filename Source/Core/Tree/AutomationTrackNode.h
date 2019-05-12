@@ -63,7 +63,7 @@ public:
 
 private:
 
-    ScopedPointer<VCS::AutomationTrackDiffLogic> vcsDiffLogic;
+    UniquePointer<VCS::AutomationTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;
 
 };

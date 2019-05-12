@@ -303,7 +303,7 @@ void StageComponent::stopProgressAnimation()
 bool StageComponent::hasMenu() const noexcept { return true; }
 bool StageComponent::canBeSelectedAsMenuItem() const { return false; }
 
-ScopedPointer<Component> StageComponent::createMenu()
+UniquePointer<Component> StageComponent::createMenu()
 {
     return { new VersionControlStageSelectionMenu() };
 }

@@ -547,11 +547,11 @@ void Head::run()
             {
                 foundItemInTarget = true;
 
-                ScopedPointer<Diff> itemDiff(targetItem->getDiffLogic()->createDiff(*stateItem));
+                UniquePointer<Diff> itemDiff(targetItem->getDiffLogic()->createDiff(*stateItem));
 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff));
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff.get()));
                     const ScopedWriteLock itemDiffLock(this->diffLock);
                     this->diff->addItem(revisionRecord);
                 }
@@ -563,8 +563,8 @@ void Head::run()
         // state item was not found in project, adding `removed` record
         if (! foundItemInTarget)
         {
-            ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff));
+            UniquePointer<Diff> emptyDiff(new Diff(*stateItem));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff.get()));
             const ScopedWriteLock emptyDiffLock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
@@ -645,11 +645,11 @@ void Head::rebuildDiffSynchronously()
             {
                 foundItemInTarget = true;
                 
-                ScopedPointer<Diff> itemDiff(targetItem->getDiffLogic()->createDiff(*stateItem));
+                UniquePointer<Diff> itemDiff(targetItem->getDiffLogic()->createDiff(*stateItem));
                 
                 if (itemDiff->hasAnyChanges())
                 {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff));
+                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff.get()));
                     const ScopedWriteLock lock(this->diffLock);
                     this->diff->addItem(revisionRecord);
                 }
@@ -661,8 +661,8 @@ void Head::rebuildDiffSynchronously()
         // state item was not found in project, adding `removed` record
         if (! foundItemInTarget)
         {
-            ScopedPointer<Diff> emptyDiff(new Diff(*stateItem));
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff));
+            UniquePointer<Diff> emptyDiff(new Diff(*stateItem));
+            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff.get()));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }

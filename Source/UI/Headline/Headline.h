@@ -68,7 +68,7 @@ private:
 
     // A special item for `current selection` menu
     // (if present, is always shown at the tail of chain)
-    ScopedPointer<HeadlineItem> selectionItem;
+    UniquePointer<HeadlineItem> selectionItem;
 
     float getAlphaForAnimation() const noexcept;
 

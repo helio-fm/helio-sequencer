@@ -242,8 +242,8 @@ void AutomationStepEventComponent::dragByDelta(float deltaBeat)
 
 void AutomationStepEventComponent::recreateConnector()
 {
-    this->connector = new AutomationStepEventsConnector(this, this->nextEventHolder, this->isPedalDownEvent());
-    this->editor.addAndMakeVisible(this->connector);
+    this->connector.reset(new AutomationStepEventsConnector(this, this->nextEventHolder, this->isPedalDownEvent()));
+    this->editor.addAndMakeVisible(this->connector.get());
     this->updateConnector();
 }
 

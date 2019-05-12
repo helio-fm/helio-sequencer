@@ -45,7 +45,7 @@ private:
     Transport &transport;
 
     CriticalSection writerLock;
-    ScopedPointer<AudioFormatWriter> writer;
+    UniquePointer<AudioFormatWriter> writer;
 
     ReadWriteLock percentsLock;
     float percentsDone;

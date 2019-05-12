@@ -98,9 +98,9 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
             if (valueChanged && this->tuningIndicator == nullptr)
             {
                 const float cv = this->event.getControllerValue();
-                this->tuningIndicator = new FineTuningValueIndicator(cv, this->isTempoCurve() ? " bpm" : "");
-                this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator);
-                this->fader.fadeIn(this->tuningIndicator, 200);
+                this->tuningIndicator.reset(new FineTuningValueIndicator(cv, this->isTempoCurve() ? " bpm" : ""));
+                this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator.get());
+                this->fader.fadeIn(this->tuningIndicator.get(), 200);
             }
 
             if (beatChanged || valueChanged)
@@ -142,7 +142,7 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
             if (this->tuningIndicator != nullptr)
             {
-                this->fader.fadeOut(this->tuningIndicator, 200);
+                this->fader.fadeOut(this->tuningIndicator.get(), 200);
                 this->tuningIndicator = nullptr;
             }
 
@@ -160,15 +160,15 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
 void AutomationCurveEventComponent::recreateConnector()
 {
-    this->connector = new AutomationCurveEventsConnector(this, this->nextEventHolder);
-    this->editor.addAndMakeVisible(this->connector);
+    this->connector.reset(new AutomationCurveEventsConnector(this, this->nextEventHolder));
+    this->editor.addAndMakeVisible(this->connector.get());
     this->updateConnector();
 }
 
 void AutomationCurveEventComponent::recreateHelper()
 {
-    this->helper = new AutomationCurveHelper(this->event, this->editor, this, this->nextEventHolder);
-    this->editor.addAndMakeVisible(this->helper);
+    this->helper.reset(new AutomationCurveHelper(this->event, this->editor, this, this->nextEventHolder));
+    this->editor.addAndMakeVisible(this->helper.get());
     this->updateHelper();
 }
 

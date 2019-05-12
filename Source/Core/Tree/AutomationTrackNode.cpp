@@ -25,10 +25,10 @@
 AutomationTrackNode::AutomationTrackNode(const String &name) :
     MidiTrackNode(name, Serialization::Core::automationTrack)
 {
-    this->sequence = new AutomationSequence(*this, *this);
-    this->pattern = new Pattern(*this, *this);
+    this->sequence.reset(new AutomationSequence(*this, *this));
+    this->pattern.reset(new Pattern(*this, *this));
 
-    this->vcsDiffLogic = new VCS::AutomationTrackDiffLogic(*this);
+    this->vcsDiffLogic.reset(new VCS::AutomationTrackDiffLogic(*this));
 
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
@@ -120,7 +120,7 @@ ValueTree AutomationTrackNode::getDeltaData(int deltaIndex) const
 
 VCS::DiffLogic *AutomationTrackNode::getDiffLogic() const
 {
-    return this->vcsDiffLogic;
+    return this->vcsDiffLogic.get();
 }
 
 void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)

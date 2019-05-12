@@ -114,7 +114,7 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
     addNewClipMode(false),
     groupMode(GroupByName)
 {
-    this->selectedClipsMenuManager = new PatternRollSelectionMenuManager(&this->selection);
+    this->selectedClipsMenuManager.reset(new PatternRollSelectionMenuManager(&this->selection));
 
     this->setComponentID(ComponentIDs::patternRollId);
 
@@ -790,8 +790,8 @@ void PatternRoll::startCuttingClips(const MouseEvent &e)
 
     if (this->knifeToolHelper == nullptr && targetClip != nullptr)
     {
-        this->knifeToolHelper = new CutPointMark(targetClip, 0.5f);
-        this->addAndMakeVisible(this->knifeToolHelper);
+        this->knifeToolHelper.reset(new CutPointMark(targetClip, 0.5f));
+        this->addAndMakeVisible(this->knifeToolHelper.get());
 
         const float cutBeat = this->getRoundBeatByXPosition(e.getPosition().x);
         const int beatX = this->getXPositionByBeat(cutBeat);

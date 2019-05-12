@@ -80,7 +80,7 @@ public:
     void checkoutEvent(const ValueTree &parameters)
     {
         static T empty;
-        ScopedPointer<T> event(new T(this, empty));
+        UniquePointer<T> event(new T(this, empty));
         event->deserialize(parameters);
 
         if (this->usedEventIds.contains(event->getId()))

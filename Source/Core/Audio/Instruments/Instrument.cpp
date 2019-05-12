@@ -29,8 +29,8 @@ Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &na
     instrumentName(name),
     instrumentId()
 {
-    this->processorGraph = new AudioProcessorGraph();
-    this->audioCallback.setProcessor(this->processorGraph);
+    this->processorGraph.reset(new AudioProcessorGraph());
+    this->audioCallback.setProcessor(this->processorGraph.get());
 }
 
 Instrument::~Instrument()

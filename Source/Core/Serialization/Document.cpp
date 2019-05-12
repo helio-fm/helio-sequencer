@@ -248,7 +248,7 @@ int64 Document::calculateStreamHashCode(InputStream &in) const
 
 int64 Document::calculateFileHashCode(const File &file) const
 {
-    ScopedPointer<FileInputStream> stream(file.createInputStream());
+    UniquePointer<FileInputStream> stream(file.createInputStream());
     return stream != nullptr ? calculateStreamHashCode(*stream) : 0;
 }
 

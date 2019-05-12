@@ -55,7 +55,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     //[Constructor]
     if (this->item != nullptr)
     {
-        if (ScopedPointer<Component> menu = this->item->createMenu())
+        if (UniquePointer<Component> menu = this->item->createMenu())
         {
             this->content.reset(menu.release());
             this->addAndMakeVisible(this->content.get());

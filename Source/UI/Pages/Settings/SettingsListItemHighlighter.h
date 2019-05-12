@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class SettingsListItemHighlighter  : public Component
+class SettingsListItemHighlighter final : public Component
 {
 public:
 
-    SettingsListItemHighlighter ();
-
+    SettingsListItemHighlighter();
     ~SettingsListItemHighlighter();
 
     //[UserMethods]

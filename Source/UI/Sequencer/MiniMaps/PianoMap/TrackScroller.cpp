@@ -35,13 +35,13 @@ TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :
     this->setPaintingIsUnclipped(true);
     this->setOpaque(true);
 
-    this->playhead = new Playhead(*this->roll, this->transport);
+    this->playhead.reset(new Playhead(*this->roll, this->transport));
     
-    this->helperRectangle = new HorizontalDragHelper(*this);
-    this->addAndMakeVisible(this->helperRectangle);
+    this->helperRectangle.reset(new HorizontalDragHelper(*this));
+    this->addAndMakeVisible(this->helperRectangle.get());
     
-    this->screenRange = new TrackScrollerScreen(*this);
-    this->addAndMakeVisible(this->screenRange);
+    this->screenRange.reset(new TrackScrollerScreen(*this));
+    this->addAndMakeVisible(this->screenRange.get());
     
     this->resized();
 }
@@ -60,7 +60,7 @@ void TrackScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
     if (this->trackMaps.size() == 1)
     {
         this->disconnectPlayhead();
-        newTrackMap->addAndMakeVisible(this->playhead);
+        newTrackMap->addAndMakeVisible(this->playhead.get());
     }
     
     // fade-in if not the first child
@@ -103,7 +103,7 @@ void TrackScroller::disconnectPlayhead()
 {
     if (this->playhead->getParentComponent())
     {
-        this->playhead->getParentComponent()->removeChildComponent(this->playhead);
+        this->playhead->getParentComponent()->removeChildComponent(this->playhead.get());
     }
 }
 
@@ -453,7 +453,7 @@ TrackScroller::HorizontalDragHelper::HorizontalDragHelper(TrackScroller &scrolle
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toBack();
 
-    this->moveConstrainer = new MoveConstrainer(this->scroller);
+    this->moveConstrainer.reset(new MoveConstrainer(this->scroller));
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 }
@@ -465,7 +465,7 @@ void TrackScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
 
 void TrackScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
 {
-    this->dragger.dragComponent(this, e, this->moveConstrainer);
+    this->dragger.dragComponent(this, e, this->moveConstrainer.get());
 }
 
 void TrackScroller::HorizontalDragHelper::paint(Graphics &g)

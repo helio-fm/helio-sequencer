@@ -44,7 +44,7 @@ struct PianoSample final
         }
     }
 
-    ScopedPointer<AudioFormatReader> createReader()
+    AudioFormatReader *createReader()
     {
         static FlacAudioFormat flac;
         return flac.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
@@ -119,7 +119,7 @@ void BuiltInSynthPiano::initSampler()
 
     for (auto &s : samples)
     {
-        auto reader = s.createReader();
+        UniquePointer<AudioFormatReader> reader(s.createReader());
         this->synth.addSound(new SamplerSound({}, *reader,
             s.midiNotes, s.midiNoteForNormalPitch,
             ATTACK_TIME, RELEASE_TIME, MAX_PLAY_TIME));

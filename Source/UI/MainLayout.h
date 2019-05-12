@@ -84,9 +84,9 @@ private:
 
     ComponentFader fader;
     
-    ScopedPointer<Headline> headline;
-    ScopedPointer<Component> initScreen;
-    ScopedPointer<TooltipContainer> tooltipContainer;
+    UniquePointer<Headline> headline;
+    UniquePointer<Component> initScreen;
+    UniquePointer<TooltipContainer> tooltipContainer;
     
     SafePointer<Component> currentContent;
 

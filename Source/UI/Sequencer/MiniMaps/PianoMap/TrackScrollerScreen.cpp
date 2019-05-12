@@ -28,16 +28,16 @@ TrackScrollerScreen::TrackScrollerScreen(TrackScroller &scrollerRef) :
     this->setPaintingIsUnclipped(true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    this->moveConstrainer = new ComponentBoundsConstrainer();
+    this->moveConstrainer.reset(new ComponentBoundsConstrainer());
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 
 #if TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER
-    this->resizeConstrainer = new ResizeConstrainer(this->scroller);
+    this->resizeConstrainer.reset(new ResizeConstrainer(this->scroller));
     this->resizeConstrainer->setMinimumSize(4, 4);
     this->resizeConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 
-    this->border = new ResizableBorderComponent(this, this->resizeConstrainer);
+    this->border.reset(new ResizableBorderComponent(this, this->resizeConstrainer));
     this->addAndMakeVisible(this->border);
     this->border->setBorderThickness(BorderSize<int>(3));
     this->border->setRepaintsOnMouseActivity(false);
@@ -56,7 +56,7 @@ void TrackScrollerScreen::mouseDown(const MouseEvent &e)
 void TrackScrollerScreen::mouseDrag(const MouseEvent &e)
 {
     Point<float> lastPosition = this->getPosition().toFloat();
-    this->dragger.dragComponent(this, e, this->moveConstrainer);
+    this->dragger.dragComponent(this, e, this->moveConstrainer.get());
     const Point<float> moveDelta = this->getPosition().toFloat() - lastPosition;
     this->realBounds.translate(moveDelta.getX(), moveDelta.getY());
     this->scroller.xyMoveByUser();

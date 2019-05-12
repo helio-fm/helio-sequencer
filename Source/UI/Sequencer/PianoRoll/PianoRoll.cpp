@@ -1449,8 +1449,8 @@ void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)
     int duplicateSchemeIndex = this->binarySearchForHighlightingScheme(&key);
     if (duplicateSchemeIndex < 0)
     {
-        ScopedPointer<HighlightingScheme> scheme(new HighlightingScheme(key.getRootKey(), key.getScale()));
-        scheme->setRows(this->renderBackgroundCacheFor(scheme));
+        UniquePointer<HighlightingScheme> scheme(new HighlightingScheme(key.getRootKey(), key.getScale()));
+        scheme->setRows(this->renderBackgroundCacheFor(scheme.get()));
         this->backgroundsCache.addSorted(*this->defaultHighlighting, scheme.release());
     }
 

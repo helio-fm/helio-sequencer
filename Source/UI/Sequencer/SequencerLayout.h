@@ -81,18 +81,18 @@ private:
 
     ProjectNode &project;
     
-    ScopedPointer<Viewport> pianoViewport;
-    ScopedPointer<Viewport> patternViewport;
-    ScopedPointer<TrackScroller> scroller;
+    UniquePointer<Viewport> pianoViewport;
+    UniquePointer<Viewport> patternViewport;
+    UniquePointer<TrackScroller> scroller;
 
-    ScopedPointer<PianoRoll> pianoRoll;
-    ScopedPointer<PatternRoll> patternRoll;
-    ScopedPointer<RollsSwitchingProxy> rollContainer;
+    UniquePointer<PianoRoll> pianoRoll;
+    UniquePointer<PatternRoll> patternRoll;
+    UniquePointer<RollsSwitchingProxy> rollContainer;
 
-    ScopedPointer<SequencerSidebarLeft> rollNavSidebar;
-    ScopedPointer<SequencerSidebarRight> rollToolsSidebar;
+    UniquePointer<SequencerSidebarLeft> rollNavSidebar;
+    UniquePointer<SequencerSidebarRight> rollToolsSidebar;
 
-    ScopedPointer<Origami> sequencerLayout; // all editors combined with sidebars
+    UniquePointer<Origami> sequencerLayout; // all editors combined with sidebars
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerLayout);
 };

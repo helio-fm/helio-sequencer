@@ -139,7 +139,7 @@ static String deobfuscateString(const String &buffer)
     return uncompressed;
 }
 
-static XmlElement *loadObfuscated(const File &file)
+static UniquePointer<XmlElement> loadObfuscated(const File &file)
 {
     FileInputStream fileStream(file);
 
@@ -153,8 +153,7 @@ static XmlElement *loadObfuscated(const File &file)
             subStream.readIntoMemoryBlock(subBlock);
             const MemoryBlock &xorBlock = doXor(subBlock);
             const String &uncompressed = decompress(xorBlock);
-            XmlElement *xml = XmlDocument::parse(uncompressed);
-            return xml;
+            return XmlDocument::parse(uncompressed);
         }
     }
 
@@ -300,7 +299,7 @@ static ValueTree valueTreeFromXml(const XmlElement &xml)
 
 Result LegacySerializer::loadFromFile(const File &file, ValueTree &tree) const
 {
-    ScopedPointer<XmlElement> xml(loadObfuscated(file));
+    UniquePointer<XmlElement> xml(loadObfuscated(file));
     if (xml != nullptr && !xml->isTextElement())
     {
         tree = valueTreeFromXml(*xml);
@@ -318,7 +317,7 @@ Result LegacySerializer::saveToString(String &string, const ValueTree &tree) con
 Result LegacySerializer::loadFromString(const String &string, ValueTree &tree) const
 {
     XmlDocument document(deobfuscateString(string));
-    ScopedPointer<XmlElement> xml(document.getDocumentElement());
+    UniquePointer<XmlElement> xml(document.getDocumentElement());
     tree = ValueTree::fromXml(*xml);
     return Result::ok();
 }

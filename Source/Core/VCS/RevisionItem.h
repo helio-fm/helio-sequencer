@@ -68,7 +68,7 @@ namespace VCS
 
         OwnedArray<Delta> deltas;
         Array<ValueTree> deltasData;
-        ScopedPointer<DiffLogic> logic;
+        UniquePointer<DiffLogic> logic;
 
         Type vcsItemType;
         String description;

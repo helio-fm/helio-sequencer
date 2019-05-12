@@ -23,7 +23,7 @@ class DialogBackground final : public Component, private Timer
 {
 public:
     
-    DialogBackground() : appearMode(true), alpha(0.f)
+    DialogBackground()
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
@@ -41,10 +41,14 @@ public:
     }
 
     void parentHierarchyChanged() override
-    { this->setSize(this->getParentWidth(), this->getParentHeight()); }
+    {
+        this->setSize(this->getParentWidth(), this->getParentHeight());
+    }
 
     void parentSizeChanged() override
-    { this->setSize(this->getParentWidth(), this->getParentHeight()); }
+    {
+        this->setSize(this->getParentWidth(), this->getParentHeight());
+    }
 
     void paint(Graphics &g) override
     {
@@ -78,6 +82,6 @@ private:
         }
     }
 
-    bool appearMode;
-    float alpha;
+    bool appearMode = true;
+    float alpha = 0.f;
 };

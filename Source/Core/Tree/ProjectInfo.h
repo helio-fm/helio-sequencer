@@ -80,7 +80,7 @@ public:
 
 private:
 
-    ScopedPointer<VCS::ProjectInfoDiffLogic> vcsDiffLogic;
+    UniquePointer<VCS::ProjectInfoDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;
 
 private:

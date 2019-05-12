@@ -40,7 +40,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    UniquePointer<Component> createMenu() override;
 
 private:
     
@@ -49,6 +49,6 @@ private:
     friend class AudioPluginSelectionMenu;
     
     InstrumentNode *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
-    ScopedPointer<OrchestraPitPage> instrumentsPage;
+    UniquePointer<OrchestraPitPage> instrumentsPage;
 
 };

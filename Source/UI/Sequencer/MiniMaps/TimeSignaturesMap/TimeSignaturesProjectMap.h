@@ -93,17 +93,17 @@ private:
     
 private:
     
-    float projectFirstBeat;
-    float projectLastBeat;
+    float projectFirstBeat = 0.f;
+    float projectLastBeat = 16.f; // not zero!
 
-    float rollFirstBeat;
-    float rollLastBeat;
+    float rollFirstBeat = 0.f;
+    float rollLastBeat = 16.f;
     
     HybridRoll &roll;
     ProjectNode &project;
     
-    ScopedPointer<TrackStartIndicator> trackStartIndicator;
-    ScopedPointer<TrackEndIndicator> trackEndIndicator;
+    UniquePointer<TrackStartIndicator> trackStartIndicator;
+    UniquePointer<TrackEndIndicator> trackEndIndicator;
     
     ComponentAnimator animator;
 

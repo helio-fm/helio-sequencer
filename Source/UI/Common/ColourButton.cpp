@@ -138,10 +138,10 @@ void ColourButton::select()
 {
     if (this->checkMark == nullptr)
     {
-        this->checkMark = new IconComponent(Icons::apply);
-        this->addChildComponent(this->checkMark);
+        this->checkMark.reset(new IconComponent(Icons::apply));
+        this->addChildComponent(this->checkMark.get());
         this->resized();
-        this->fader.fadeIn(this->checkMark, 100);
+        this->fader.fadeIn(this->checkMark.get(), 100);
     }
 }
 
@@ -149,7 +149,7 @@ void ColourButton::deselect()
 {
     if (this->checkMark != nullptr)
     {
-        this->fader.fadeOutSnapshot(this->checkMark, 200);
+        this->fader.fadeOutSnapshot(this->checkMark.get(), 200);
         this->checkMark = nullptr;
     }
 }

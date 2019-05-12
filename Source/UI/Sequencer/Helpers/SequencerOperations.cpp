@@ -1928,7 +1928,7 @@ Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,
     return newEventsToTheRight;
 }
 
-ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &selection)
+UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0) { return {}; }
 
@@ -1936,7 +1936,7 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &
     const auto &instrumentId = track->getTrackInstrumentId();
     const auto &colour = track->getTrackColour();
 
-    ScopedPointer<MidiTrackNode> newItem = new PianoTrackNode({});
+    UniquePointer<MidiTrackNode> newItem(new PianoTrackNode({}));
 
     const Clip clip(track->getPattern());
     track->getPattern()->insert(clip, false);
@@ -1958,7 +1958,7 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &
     return newItem;
 }
 
-ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *clips)
+UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *clips)
 {
     if (events.size() == 0)
     {
@@ -1969,7 +1969,7 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     const auto &instrumentId = track->getTrackInstrumentId();
     const auto &colour = track->getTrackColour();
 
-    ScopedPointer<MidiTrackNode> newItem = new PianoTrackNode({});
+    UniquePointer<MidiTrackNode> newItem(new PianoTrackNode({}));
     newItem->setTrackColour(colour, false);
     newItem->setTrackInstrumentId(instrumentId, false);
 
@@ -1994,7 +1994,7 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     return newItem;
 }
 
-ScopedPointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *clips)
+UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *clips)
 {
     if (events.size() == 0) { return{}; }
 
@@ -2003,7 +2003,7 @@ ScopedPointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     const auto &cc = track->getTrackControllerNumber();
     const auto &colour = track->getTrackColour();
 
-    ScopedPointer<MidiTrackNode> newItem = new AutomationTrackNode({});
+    UniquePointer<MidiTrackNode> newItem(new AutomationTrackNode({}));
     newItem->setTrackColour(colour, false);
     newItem->setTrackControllerNumber(cc, false);
     newItem->setTrackInstrumentId(instrumentId, false);

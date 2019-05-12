@@ -88,7 +88,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    UniquePointer<Component> createMenu() override;
     
     //===------------------------------------------------------------------===//
     // Undos
@@ -192,16 +192,16 @@ private:
 
     void collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected = false) const;
 
-    ScopedPointer<Autosaver> autosaver;
-    ScopedPointer<Transport> transport;
+    UniquePointer<Autosaver> autosaver;
+    UniquePointer<Transport> transport;
 
-    ScopedPointer<SequencerLayout> sequencerLayout;
+    UniquePointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
     ListenerList<ProjectListener> changeListeners;
-    ScopedPointer<ProjectPage> projectPage;
+    UniquePointer<ProjectPage> projectPage;
     ReadWriteLock tracksListLock;
-    ScopedPointer<ProjectInfo> info;
-    ScopedPointer<ProjectTimeline> timeline;
+    UniquePointer<ProjectInfo> info;
+    UniquePointer<ProjectTimeline> timeline;
 
     WeakReference<TreeNode> lastShownTrack;
 
@@ -218,7 +218,7 @@ private:
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
 
-    ScopedPointer<UndoStack> undoStack;
+    UniquePointer<UndoStack> undoStack;
 
     mutable bool isTracksCacheOutdated;
     mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;

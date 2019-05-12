@@ -60,7 +60,7 @@ bool AudioPluginNode::hasMenu() const noexcept
     return false;
 }
 
-ScopedPointer<Component> AudioPluginNode::createMenu()
+UniquePointer<Component> AudioPluginNode::createMenu()
 {
     return nullptr;
 }
@@ -106,9 +106,9 @@ void AudioPluginNode::showPage()
             // ui = f->getProcessor()->createEditorIfNeeded();
             // so we try to mimic that by creating a plugin window
             // while its size and position that is managed by audioPluginEditor
-            if (PluginWindow *const window = PluginWindow::getWindowFor(f, false, true))
+            if (auto *window = PluginWindow::getWindowFor(f, false, true))
             {
-                this->audioPluginEditor = new AudioPluginEditorPage(window);
+                this->audioPluginEditor.reset(new AudioPluginEditorPage(window));
             }
         }
         else
@@ -124,7 +124,7 @@ void AudioPluginNode::showPage()
                 ui->setName(plugin->getName());
             }
 
-            this->audioPluginEditor = new AudioPluginEditorPage(ui);
+            this->audioPluginEditor.reset(new AudioPluginEditorPage(ui));
         }
     }
 
@@ -135,5 +135,5 @@ void AudioPluginNode::showPage()
         return;
     }
 
-    App::Layout().showPage(this->audioPluginEditor, this);
+    App::Layout().showPage(this->audioPluginEditor.get(), this);
 }

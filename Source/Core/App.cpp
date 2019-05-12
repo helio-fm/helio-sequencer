@@ -444,7 +444,7 @@ void App::initialise(const String &commandLine)
         this->config.reset(new class Config());
         this->config->initResources();
 
-        ScopedPointer<HelioTheme> helioTheme(new HelioTheme());
+        UniquePointer<HelioTheme> helioTheme(new HelioTheme());
         helioTheme->initResources();
         helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
 

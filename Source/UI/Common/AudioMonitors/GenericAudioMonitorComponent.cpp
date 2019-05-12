@@ -54,8 +54,8 @@ GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMo
         this->bands.add(new SpectrumBand());
     }
     
-    this->lPeakBand = new SpectrumBand();
-    this->rPeakBand = new SpectrumBand();
+    this->lPeakBand.reset(new SpectrumBand());
+    this->rPeakBand.reset(new SpectrumBand());
 
     if (this->audioMonitor != nullptr)
     {

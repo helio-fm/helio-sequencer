@@ -75,7 +75,7 @@ RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox
 
 
     //[UserPreSize]
-    //this->selectionComponent = new RecentFileSelectionComponent();
+    //this->selectionComponent.reset(new RecentFileSelectionComponent());
     //this->addChildComponent(this->selectionComponent);
     //[/UserPreSize]
 

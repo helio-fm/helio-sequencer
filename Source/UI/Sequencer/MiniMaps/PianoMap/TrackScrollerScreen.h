@@ -69,8 +69,8 @@ private:
     TrackScroller &scroller;
     ComponentDragger dragger;
 
-    ScopedPointer<ResizableBorderComponent> border;
-    ScopedPointer<ComponentBoundsConstrainer> moveConstrainer;
-    ScopedPointer<ComponentBoundsConstrainer> resizeConstrainer;
+    UniquePointer<ResizableBorderComponent> border;
+    UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
+    UniquePointer<ComponentBoundsConstrainer> resizeConstrainer;
 
 };

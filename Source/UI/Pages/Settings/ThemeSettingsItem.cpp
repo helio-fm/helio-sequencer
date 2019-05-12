@@ -58,7 +58,8 @@ public:
 
     ThemeSettingsItemSelection()
     {
-        addAndMakeVisible(this->iconComponent = new IconComponent(Icons::apply));
+        this->iconComponent.reset(new IconComponent(Icons::apply));
+        addAndMakeVisible(this->iconComponent.get());
         this->iconComponent->setAlpha(0.6f);
     }
 
@@ -69,7 +70,7 @@ public:
 
 private:
 
-    ScopedPointer<IconComponent> iconComponent;
+    UniquePointer<IconComponent> iconComponent;
 };
 
 //[/MiscUserDefs]
@@ -87,8 +88,8 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox)
 
 
     //[UserPreSize]
-    this->selectionComponent = new ThemeSettingsItemSelection();
-    this->addChildComponent(this->selectionComponent);
+    this->selectionComponent.reset(new ThemeSettingsItemSelection());
+    this->addChildComponent(this->selectionComponent.get());
     //[/UserPreSize]
 
     this->setSize(400, 40);
@@ -315,11 +316,11 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
 {
     if (isCurrentTheme)
     {
-        this->selectionAnimator.fadeIn(this->selectionComponent, 150);
+        this->selectionAnimator.fadeIn(this->selectionComponent.get(), 150);
     }
     else
     {
-        this->selectionAnimator.fadeOut(this->selectionComponent, 50);
+        this->selectionAnimator.fadeOut(this->selectionComponent.get(), 50);
     }
 
     if (this->colours != nullptr &&
@@ -329,7 +330,7 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     }
 
     this->colours = colours;
-    this->theme = new HelioTheme();
+    this->theme.reset(new HelioTheme());
     this->theme->initColours(colours);
 
     this->schemeNameLabel->setText("\"" + colours->getName() + "\"", dontSendNotification);

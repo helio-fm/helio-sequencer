@@ -67,7 +67,7 @@ void RootNode::showPage()
 
 void RootNode::recreatePage()
 {
-    this->dashboard = new Dashboard(App::Layout());
+    this->dashboard.reset(new Dashboard(App::Layout()));
 }
 
 //===----------------------------------------------------------------------===//
@@ -255,7 +255,7 @@ bool RootNode::hasMenu() const noexcept
     return true;
 }
 
-ScopedPointer<Component> RootNode::createMenu()
+UniquePointer<Component> RootNode::createMenu()
 {
     return new WorkspaceMenu(App::Workspace());
 }

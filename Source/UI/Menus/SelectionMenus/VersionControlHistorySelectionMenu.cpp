@@ -46,7 +46,7 @@ VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(VCS::Revi
     revision(revision),
     vcs(vcs)
 {
-    ScopedPointer<Component> content;
+    UniquePointer<Component> content;
     if (!revision->isShallowCopy())
     {
         content.reset(new RevisionTooltipComponent(revision));

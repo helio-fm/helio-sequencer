@@ -217,7 +217,7 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
 
     if (this->shouldResizeToFitContent && receivedNewCommands)
     {
-        ScopedPointer<MenuItemComponent> tempItem(new MenuItemComponent(nullptr, nullptr, MenuItem::empty()));
+        UniquePointer<MenuItemComponent> tempItem(new MenuItemComponent(nullptr, nullptr, MenuItem::empty()));
         Font stringFont(tempItem->getFont());
 
         const int menuHeight = jmax(this->getHeight(), commands.size() * COMMAND_PANEL_BUTTON_HEIGHT);

@@ -58,7 +58,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    UniquePointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Serializable

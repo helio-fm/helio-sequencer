@@ -249,7 +249,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     const WeakReference<AudioMonitor> clippingDetector =
         App::Workspace().getAudioCore().getMonitor();
     
-    this->pianoViewport = new Viewport("Viewport One");
+    this->pianoViewport.reset(new Viewport("Viewport One"));
     this->pianoViewport->setScrollOnDragEnabled(false);
     this->pianoViewport->setInterceptsMouseClicks(false, true);
     this->pianoViewport->setScrollBarsShown(false, false);
@@ -257,10 +257,10 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoViewport->setFocusContainer(false);
     this->pianoViewport->setPaintingIsUnclipped(true);
     
-    this->pianoRoll = new PianoRoll(this->project,
-        *this->pianoViewport, clippingDetector);
+    this->pianoRoll.reset(new PianoRoll(this->project,
+        *this->pianoViewport, clippingDetector));
 
-    this->patternViewport = new Viewport("Viewport Two");
+    this->patternViewport.reset(new Viewport("Viewport Two"));
     this->patternViewport->setScrollOnDragEnabled(false);
     this->patternViewport->setInterceptsMouseClicks(false, true);
     this->patternViewport->setScrollBarsShown(false, false);
@@ -268,9 +268,9 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternViewport->setFocusContainer(false);
     this->patternViewport->setPaintingIsUnclipped(true);
 
-    this->patternRoll = new PatternRoll(this->project, *this->patternViewport, clippingDetector);
+    this->patternRoll.reset(new PatternRoll(this->project, *this->patternViewport, clippingDetector));
 
-    this->scroller = new TrackScroller(this->project.getTransport(), this->pianoRoll);
+    this->scroller.reset(new TrackScroller(this->project.getTransport(), this->pianoRoll.get()));
     this->scroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
     this->scroller->addOwnedMap(new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
@@ -278,38 +278,38 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
-    this->pianoViewport->setViewedComponent(this->pianoRoll, false);
-    this->pianoRoll->addRollListener(this->scroller);
+    this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
+    this->pianoRoll->addRollListener(this->scroller.get());
 
     this->patternRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
-    this->patternViewport->setViewedComponent(this->patternRoll, false);
-    this->patternRoll->addRollListener(this->scroller);
+    this->patternViewport->setViewedComponent(this->patternRoll.get(), false);
+    this->patternRoll->addRollListener(this->scroller.get());
 
     // hard-code default y view position
     const int defaultY = (this->pianoRoll->getHeight() / 3);
     this->pianoViewport->setViewPosition(this->pianoViewport->getViewPositionX(), defaultY);
     
     // create a container with 2 editors
-    this->rollContainer = new RollsSwitchingProxy(this->pianoRoll, this->patternRoll,
-        this->pianoViewport, this->patternViewport,
-        this->scroller);
+    this->rollContainer.reset(new RollsSwitchingProxy(this->pianoRoll.get(), this->patternRoll.get(),
+        this->pianoViewport.get(), this->patternViewport.get(),
+        this->scroller.get()));
     
     // add sidebars
-    this->rollToolsSidebar = new SequencerSidebarRight(this->project);
-    this->rollNavSidebar = new SequencerSidebarLeft(this->project);
+    this->rollToolsSidebar.reset(new SequencerSidebarRight(this->project));
+    this->rollNavSidebar.reset(new SequencerSidebarLeft(this->project));
     this->rollNavSidebar->setSize(SEQUENCER_SIDEBAR_WIDTH, this->getParentHeight());
     // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
 
     // combine sidebars with editors
-    this->sequencerLayout = new OrigamiVertical();
-    this->sequencerLayout->addFixedPage(this->rollNavSidebar);
-    this->sequencerLayout->addFlexiblePage(this->rollContainer);
+    this->sequencerLayout.reset(new OrigamiVertical());
+    this->sequencerLayout->addFixedPage(this->rollNavSidebar.get());
+    this->sequencerLayout->addFlexiblePage(this->rollContainer.get());
     this->sequencerLayout->addShadowAtTheStart();
     this->sequencerLayout->addShadowAtTheEnd();
-    this->sequencerLayout->addFixedPage(this->rollToolsSidebar);
+    this->sequencerLayout->addFixedPage(this->rollToolsSidebar.get());
 
-    this->addAndMakeVisible(this->sequencerLayout);
+    this->addAndMakeVisible(this->sequencerLayout.get());
 }
 
 SequencerLayout::~SequencerLayout()
@@ -320,8 +320,8 @@ SequencerLayout::~SequencerLayout()
     this->rollNavSidebar = nullptr;
     this->rollContainer = nullptr;
 
-    this->patternRoll->removeRollListener(this->scroller);
-    this->pianoRoll->removeRollListener(this->scroller);
+    this->patternRoll->removeRollListener(this->scroller.get());
+    this->pianoRoll->removeRollListener(this->scroller.get());
     
     this->scroller = nullptr;
 
@@ -376,9 +376,9 @@ void SequencerLayout::setEditableScope(WeakReference<MidiTrack> track, const Cli
 HybridRoll *SequencerLayout::getRoll() const
 {
     if (this->rollContainer->isPatternMode())
-    { return this->patternRoll; }
+    { return this->patternRoll.get(); }
     else
-    { return this->pianoRoll; }
+    { return this->pianoRoll.get(); }
 }
 
 //===----------------------------------------------------------------------===//

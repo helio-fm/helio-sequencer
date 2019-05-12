@@ -120,7 +120,7 @@ namespace VCS
 
     struct DeltaDiff final
     {
-        ScopedPointer<Delta> delta;
+        UniquePointer<Delta> delta;
         ValueTree deltaData;
     };
 

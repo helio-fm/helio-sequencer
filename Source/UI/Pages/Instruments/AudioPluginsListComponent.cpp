@@ -183,7 +183,7 @@ void AudioPluginsListComponent::updateListContent()
 
 var AudioPluginsListComponent::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
 {
-    auto pd = this->pluginScanner.getList().getType(currentlySelectedRows[0]);
+    auto *pd = this->pluginScanner.getList().getType(currentlySelectedRows[0]);
     if (pd == nullptr) { return {}; }
 
     PluginDescriptionDragnDropWrapper::Ptr pluginWrapper = new PluginDescriptionDragnDropWrapper();
@@ -326,7 +326,7 @@ void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
 bool AudioPluginsListComponent::hasMenu() const noexcept { return true; }
 bool AudioPluginsListComponent::canBeSelectedAsMenuItem() const { return false; }
 
-ScopedPointer<Component> AudioPluginsListComponent::createMenu()
+UniquePointer<Component> AudioPluginsListComponent::createMenu()
 {
     const auto selectedRow = this->pluginsList->getSelectedRow();
     const auto description = pluginScanner.getList().getType(selectedRow);

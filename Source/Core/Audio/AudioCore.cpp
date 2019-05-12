@@ -34,14 +34,14 @@ void AudioCore::initAudioFormats(AudioPluginFormatManager &formatManager)
 
 AudioCore::AudioCore()
 {
-    this->audioMonitor = new AudioMonitor();
-    this->deviceManager.addAudioCallback(this->audioMonitor);
+    this->audioMonitor.reset(new AudioMonitor());
+    this->deviceManager.addAudioCallback(this->audioMonitor.get());
     AudioCore::initAudioFormats(this->formatManager);
 }
 
 AudioCore::~AudioCore()
 {
-    this->deviceManager.removeAudioCallback(this->audioMonitor);
+    this->deviceManager.removeAudioCallback(this->audioMonitor.get());
     this->audioMonitor = nullptr;
     this->deviceManager.closeAudioDevice();
 }
@@ -71,7 +71,7 @@ void AudioCore::disconnectAllAudioCallbacks()
         this->isMuted = true;
 
         // Audio monitor is especially CPU-hungry, as it does FFT all the time:
-        this->deviceManager.removeAudioCallback(this->audioMonitor);
+        this->deviceManager.removeAudioCallback(this->audioMonitor.get());
 
         for (auto instrument : this->instruments)
         {
@@ -89,7 +89,7 @@ void AudioCore::reconnectAllAudioCallbacks()
             this->addInstrumentToDevice(instrument);
         }
 
-        this->deviceManager.addAudioCallback(this->audioMonitor);
+        this->deviceManager.addAudioCallback(this->audioMonitor.get());
 
         this->isMuted = false;
     }
@@ -107,7 +107,7 @@ AudioPluginFormatManager &AudioCore::getFormatManager() noexcept
 
 AudioMonitor *AudioCore::getMonitor() const noexcept
 {
-    return this->audioMonitor;
+    return this->audioMonitor.get();
 }
 
 //===----------------------------------------------------------------------===//
@@ -433,11 +433,11 @@ void AudioCore::deserialize(const ValueTree &tree)
     {
         for (const auto &instrumentNode : orchestra)
         {
-            ScopedPointer<Instrument> instrument(new Instrument(this->formatManager, {}));
+            UniquePointer<Instrument> instrument(new Instrument(this->formatManager, {}));
             instrument->deserialize(instrumentNode);
             if (instrument->isValid())
             {
-                this->addInstrumentToDevice(instrument);
+                this->addInstrumentToDevice(instrument.get());
                 this->instruments.add(instrument.release());
             }
         }

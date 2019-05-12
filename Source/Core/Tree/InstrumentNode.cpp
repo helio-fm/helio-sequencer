@@ -153,7 +153,7 @@ bool InstrumentNode::hasMenu() const noexcept
     return true;
 }
 
-ScopedPointer<Component> InstrumentNode::createMenu()
+UniquePointer<Component> InstrumentNode::createMenu()
 {
     return new InstrumentMenu(*this, App::Workspace().getPluginManager());
 }
@@ -232,7 +232,7 @@ void InstrumentNode::initInstrumentEditor()
 {
     if (this->instrumentEditor == nullptr)
     {
-        this->instrumentEditor = new InstrumentEditor(this->instrument, this->audioCore);
+        this->instrumentEditor.reset(new InstrumentEditor(this->instrument, this->audioCore));
         this->instrumentEditor->updateComponents();
     }
 }

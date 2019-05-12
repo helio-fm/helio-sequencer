@@ -34,21 +34,21 @@ public:
     void recreatePage() override;
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    UniquePointer<Component> createMenu() override;
 
 private:
 
-    ScopedPointer<ComponentsList> settingsList;
-    ScopedPointer<Component> audioSettings;
-    ScopedPointer<Component> audioSettingsWrapper;
-    ScopedPointer<Component> uiSettings;
-    ScopedPointer<Component> uiSettingsWrapper;
-    ScopedPointer<Component> themeSettings;
-    ScopedPointer<Component> themeSettingsWrapper;
-    ScopedPointer<Component> translationSettings;
-    ScopedPointer<Component> translationSettingsWrapper;
-    ScopedPointer<Component> syncSettings;
-    ScopedPointer<Component> syncSettingsWrapper;
-    ScopedPointer<Component> settingsPage;
+    UniquePointer<ComponentsList> settingsList;
+    UniquePointer<Component> audioSettings;
+    UniquePointer<Component> audioSettingsWrapper;
+    UniquePointer<Component> uiSettings;
+    UniquePointer<Component> uiSettingsWrapper;
+    UniquePointer<Component> themeSettings;
+    UniquePointer<Component> themeSettingsWrapper;
+    UniquePointer<Component> translationSettings;
+    UniquePointer<Component> translationSettingsWrapper;
+    UniquePointer<Component> syncSettings;
+    UniquePointer<Component> syncSettingsWrapper;
+    UniquePointer<Component> settingsPage;
 
 };

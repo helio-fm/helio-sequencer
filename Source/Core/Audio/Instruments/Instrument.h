@@ -80,8 +80,8 @@ public:
     AudioCallback &getProcessorPlayer() noexcept
     { return this->audioCallback; }
 
-    AudioProcessorGraph *getProcessorGraph() noexcept
-    { return this->processorGraph; }
+    AudioProcessorGraph *getProcessorGraph() const noexcept
+    { return this->processorGraph.get(); }
 
     //===------------------------------------------------------------------===//
     // Nodes
@@ -159,7 +159,7 @@ private:
 
     AudioPluginFormatManager &formatManager;
     Instrument::AudioCallback audioCallback;
-    ScopedPointer<AudioProcessorGraph> processorGraph;
+    UniquePointer<AudioProcessorGraph> processorGraph;
 
     ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;
     void deserializeNode(const ValueTree &tree);

@@ -332,7 +332,7 @@ protected:
     Point<int> viewportAnchor;
     Point<float> clickAnchor;
     Point<float> zoomAnchor;
-    ScopedPointer<Component> zoomMarker;
+    UniquePointer<Component> zoomMarker;
     
     void resetDraggingAnchors();
     void continueDragging(const MouseEvent &e);

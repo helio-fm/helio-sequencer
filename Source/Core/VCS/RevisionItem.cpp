@@ -30,7 +30,7 @@ RevisionItem::RevisionItem(Type type, TrackedItem *targetToCopy) :
         this->description = targetToCopy->getVCSName();
         this->vcsUuid = targetToCopy->getUuid();
 
-        this->logic = DiffLogic::createLogicCopy(*targetToCopy, *this);
+        this->logic.reset(DiffLogic::createLogicCopy(*targetToCopy, *this));
 
         // just deep-copy all deltas:
         for (int i = 0; i < targetToCopy->getNumDeltas(); ++i)
@@ -93,7 +93,7 @@ String RevisionItem::getVCSName() const noexcept
 
 DiffLogic *RevisionItem::getDiffLogic() const noexcept
 {
-    return this->logic;
+    return this->logic.get();
 }
 
 //===----------------------------------------------------------------------===//
@@ -150,11 +150,11 @@ void RevisionItem::deserialize(const ValueTree &tree, const DeltaDataLookup &dat
     const String logicType = root.getProperty(Serialization::VCS::revisionItemDiffLogic);
     jassert(logicType.isNotEmpty());
 
-    this->logic = DiffLogic::createLogicFor(*this, logicType);
+    this->logic.reset(DiffLogic::createLogicFor(*this, logicType));
 
     for (const auto &e : root)
     {
-        ScopedPointer<Delta> delta(new Delta({}, {}));
+        UniquePointer<Delta> delta(new Delta({}, {}));
         delta->deserialize(e);
 
         // either we already have saved data, or the lookup table is provided:

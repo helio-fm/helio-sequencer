@@ -54,7 +54,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    UniquePointer<Component> createMenu() override;
     Image getIcon() const override;
     String getName() const override;
     bool canBeSelectedAsMenuItem() const override;
@@ -76,8 +76,8 @@ private:
 
     ComponentFader fader;
     WeakReference<Instrument> instrument;
-    ScopedPointer<Component> background;
-    ScopedPointer<InstrumentEditorConnector> draggingConnector;
+    UniquePointer<Component> background;
+    UniquePointer<InstrumentEditorConnector> draggingConnector;
     WeakReference<AudioCore> audioCore;
 
     AudioProcessorGraph::NodeID selectedNode;

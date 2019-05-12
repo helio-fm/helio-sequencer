@@ -46,13 +46,12 @@ String OrchestraPitNode::getName() const noexcept
 
 void OrchestraPitNode::showPage()
 {
-    App::Layout().showPage(this->instrumentsPage, this);
+    App::Layout().showPage(this->instrumentsPage.get(), this);
 }
 
 void OrchestraPitNode::recreatePage()
 {
-    this->instrumentsPage =
-        new OrchestraPitPage(App::Workspace().getPluginManager(), *this);
+    this->instrumentsPage.reset(new OrchestraPitPage(App::Workspace().getPluginManager(), *this));
 }
 
 //===----------------------------------------------------------------------===//
@@ -64,7 +63,7 @@ bool OrchestraPitNode::hasMenu() const noexcept
     return true;
 }
 
-ScopedPointer<Component> OrchestraPitNode::createMenu()
+UniquePointer<Component> OrchestraPitNode::createMenu()
 {
     return new OrchestraPitMenu(*this);
 }
@@ -76,7 +75,7 @@ ScopedPointer<Component> OrchestraPitNode::createMenu()
 InstrumentNode *OrchestraPitNode::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
 {
     jassert(MessageManager::getInstance()->isThisTheMessageThread());
-    auto newInstrument = new InstrumentNode(instrument);
+    auto *newInstrument = new InstrumentNode(instrument);
     this->addChildTreeItem(newInstrument, insertIndex);
     this->sendChangeMessage();
     return newInstrument;

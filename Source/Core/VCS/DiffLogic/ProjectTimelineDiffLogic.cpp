@@ -127,15 +127,15 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
         // for every supported type we need to spit out 
         // a delta of type eventsAdded with all events merged in there
-        ScopedPointer<Delta> annotationsDelta(
+        UniquePointer<Delta> annotationsDelta(
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                       ProjectTimelineDeltas::annotationsAdded));
 
-        ScopedPointer<Delta> timeSignaturesDelta(
+        UniquePointer<Delta> timeSignaturesDelta(
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                       ProjectTimelineDeltas::timeSignaturesAdded));
 
-        ScopedPointer<Delta> keySignaturesDelta(
+        UniquePointer<Delta> keySignaturesDelta(
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                 ProjectTimelineDeltas::keySignaturesAdded));
 
@@ -265,15 +265,15 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
-        ScopedPointer<Delta> annotationsDelta(
+        UniquePointer<Delta> annotationsDelta(
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                 ProjectTimelineDeltas::annotationsAdded));
 
-        ScopedPointer<Delta> keySignaturesDelta(
+        UniquePointer<Delta> keySignaturesDelta(
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                 ProjectTimelineDeltas::keySignaturesAdded));
 
-        ScopedPointer<Delta> timeSignaturesDelta(
+        UniquePointer<Delta> timeSignaturesDelta(
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                 ProjectTimelineDeltas::timeSignaturesAdded));
 
@@ -1112,7 +1112,7 @@ DeltaDiff serializeTimelineChanges(Array<const MidiEvent *> changes,
         const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
-    changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
+    changesFullDelta.delta.reset(new Delta(DeltaDescription(description, numChanges), deltaType));
     changesFullDelta.deltaData = serializeTimelineSequence(changes, deltaType);
     return changesFullDelta;
 }

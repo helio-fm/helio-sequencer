@@ -43,14 +43,14 @@ public:
 
     struct Presets final
     {
-        static ScopedPointer<ModalDialogInput> renameAnnotation(const String &name);
-        static ScopedPointer<ModalDialogInput> renameInstrument(const String &name);
-        static ScopedPointer<ModalDialogInput> changeTimeSignature(const String &name);
-        static ScopedPointer<ModalDialogInput> renameTrack(const String &name);
-        static ScopedPointer<ModalDialogInput> newTrack();
-        static ScopedPointer<ModalDialogInput> newArpeggiator();
-        static ScopedPointer<ModalDialogInput> deleteProjectConfirmation();
-        static ScopedPointer<ModalDialogInput> commit(const String &name);
+        static UniquePointer<ModalDialogInput> renameAnnotation(const String &name);
+        static UniquePointer<ModalDialogInput> renameInstrument(const String &name);
+        static UniquePointer<ModalDialogInput> changeTimeSignature(const String &name);
+        static UniquePointer<ModalDialogInput> renameTrack(const String &name);
+        static UniquePointer<ModalDialogInput> newTrack();
+        static UniquePointer<ModalDialogInput> newArpeggiator();
+        static UniquePointer<ModalDialogInput> deleteProjectConfirmation();
+        static UniquePointer<ModalDialogInput> commit(const String &name);
     };
     //[/UserMethods]
 

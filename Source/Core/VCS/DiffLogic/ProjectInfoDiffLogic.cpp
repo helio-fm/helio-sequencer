@@ -127,25 +127,25 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 
                 if (targetDelta->hasType(ProjectInfoDeltas::projectLicense))
                 {
-                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeLicense(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectTitle))
                 {
-                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeFullName(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectAuthor))
                 {
-                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeAuthor(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectDescription))
                 {
-                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeDescription(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
@@ -161,7 +161,6 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 
     return diff;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Diffs
@@ -191,7 +190,7 @@ DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta = new Delta(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense);
+    res.delta.reset(new Delta(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense));
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -200,7 +199,7 @@ DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta = new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle);
+    res.delta.reset(new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle));
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -209,7 +208,7 @@ DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta = new Delta(DeltaDescription("author changed"), ProjectInfoDeltas::projectAuthor);
+    res.delta.reset(new Delta(DeltaDescription("author changed"), ProjectInfoDeltas::projectAuthor));
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -218,7 +217,7 @@ DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta = new Delta(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription);
+    res.delta.reset(new Delta(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription));
     res.deltaData = changes.createCopy();
     return res;
 }
