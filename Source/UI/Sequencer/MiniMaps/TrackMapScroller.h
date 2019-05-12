@@ -19,7 +19,7 @@
 
 class HybridRoll;
 class TrackMap;
-class TrackScrollerScreen;
+class TrackMapScrollerScreen;
 class Playhead;
 class Transport;
 
@@ -27,7 +27,7 @@ class Transport;
 #include "HybridRollListener.h"
 #include "ComponentFader.h"
 
-class TrackScroller final :
+class TrackMapScroller final :
     public Component,
     public HybridRollListener,
     private AsyncUpdater,
@@ -35,8 +35,8 @@ class TrackScroller final :
 {
 public:
 
-    TrackScroller(Transport &transport, HybridRoll *roll);
-    ~TrackScroller() override;
+    TrackMapScroller(Transport &transport, HybridRoll *roll);
+    ~TrackMapScroller() override;
 
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
     void removeOwnedMap(Component *existingTrackMap);
@@ -91,7 +91,7 @@ public:
     {
     public:
         
-        explicit HorizontalDragHelper(TrackScroller &scrollerRef);
+        explicit HorizontalDragHelper(TrackMapScroller &scrollerRef);
         void mouseDown(const MouseEvent &e) override;
         void mouseDrag(const MouseEvent &e) override;
         void paint(Graphics &g) override;
@@ -99,16 +99,16 @@ public:
         class MoveConstrainer final : public ComponentBoundsConstrainer
         {
         public:
-            explicit MoveConstrainer(TrackScroller &scrollerRef) : scroller(scrollerRef) {}
+            explicit MoveConstrainer(TrackMapScroller &scrollerRef) : scroller(scrollerRef) {}
             void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
         private:
-            TrackScroller &scroller;
+            TrackMapScroller &scroller;
         };
         
     private:
         
         Colour colour;
-        TrackScroller &scroller;
+        TrackMapScroller &scroller;
         ComponentDragger dragger;
         UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
     };
@@ -130,7 +130,7 @@ private:
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
-    UniquePointer<TrackScrollerScreen> screenRange;
+    UniquePointer<TrackMapScrollerScreen> screenRange;
     UniquePointer<Playhead> playhead;
     
     OwnedArray<Component> trackMaps;

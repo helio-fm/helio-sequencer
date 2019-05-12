@@ -7,7 +7,7 @@
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
               cppLanguageStandard="11" usePrecompiledHeaders="0" precompiledHeaderFileName=""
               precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko"
-              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
+              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
               projectLineFeed="&#10;">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
@@ -1176,10 +1176,10 @@
             <FILE id="o50CGJ" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.h"/>
             <FILE id="yO3CxI" name="NoteResizerLeft.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.cpp"/>
-            <FILE id="PLz3l6" name="NoteResizerRight.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.cpp"/>
             <FILE id="ZWUEkO" name="NoteResizerLeft.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.h"/>
+            <FILE id="PLz3l6" name="NoteResizerRight.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.cpp"/>
             <FILE id="ZMJ4fn" name="NoteResizerRight.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.h"/>
             <FILE id="XGD7Q7" name="PianoRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PianoRoll/PianoRoll.cpp"/>
@@ -1235,13 +1235,6 @@
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/PianoProjectMap.h"/>
               <FILE id="rTx9em" name="ProjectMapNoteComponent.h" compile="0" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapNoteComponent.h"/>
-              <FILE id="yg85C4" name="TrackScroller.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScroller.cpp"/>
-              <FILE id="ymrrgb" name="TrackScroller.h" compile="0" resource="0" file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScroller.h"/>
-              <FILE id="ZOAzJZ" name="TrackScrollerScreen.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.cpp"/>
-              <FILE id="qUN44J" name="TrackScrollerScreen.h" compile="0" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.h"/>
               <FILE id="HXQrfj" name="VelocityProjectMap.cpp" compile="1" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/VelocityProjectMap.cpp"/>
               <FILE id="MtUyla" name="VelocityProjectMap.h" compile="0" resource="0"
@@ -1263,6 +1256,14 @@
               <FILE id="rlgvu8" name="TimeSignaturesProjectMap.h" compile="0" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignaturesProjectMap.h"/>
             </GROUP>
+            <FILE id="BG789c" name="TrackMapScroller.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/MiniMaps/TrackMapScroller.cpp"/>
+            <FILE id="S4jnfe" name="TrackMapScroller.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/MiniMaps/TrackMapScroller.h"/>
+            <FILE id="QCQl6D" name="TrackMapScrollerScreen.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/MiniMaps/TrackMapScrollerScreen.cpp"/>
+            <FILE id="PeRSNT" name="TrackMapScrollerScreen.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/MiniMaps/TrackMapScrollerScreen.h"/>
           </GROUP>
           <FILE id="TipeMn" name="HybridRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/HybridRoll.cpp"/>
           <FILE id="XYOlrH" name="HybridRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/HybridRoll.h"/>

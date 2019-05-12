@@ -16,12 +16,12 @@
 */
 
 #include "Common.h"
-#include "TrackScrollerScreen.h"
-#include "TrackScroller.h"
+#include "TrackMapScrollerScreen.h"
+#include "TrackMapScroller.h"
 
 #define TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER 0
 
-TrackScrollerScreen::TrackScrollerScreen(TrackScroller &scrollerRef) :
+TrackMapScrollerScreen::TrackMapScrollerScreen(TrackMapScroller &scrollerRef) :
     colour(findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)),
     scroller(scrollerRef)
 {
@@ -48,12 +48,12 @@ TrackScrollerScreen::TrackScrollerScreen(TrackScroller &scrollerRef) :
 // Component
 //===----------------------------------------------------------------------===//
 
-void TrackScrollerScreen::mouseDown(const MouseEvent &e)
+void TrackMapScrollerScreen::mouseDown(const MouseEvent &e)
 {
     this->dragger.startDraggingComponent(this, e);
 }
 
-void TrackScrollerScreen::mouseDrag(const MouseEvent &e)
+void TrackMapScrollerScreen::mouseDrag(const MouseEvent &e)
 {
     Point<float> lastPosition = this->getPosition().toFloat();
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
@@ -62,13 +62,13 @@ void TrackScrollerScreen::mouseDrag(const MouseEvent &e)
     this->scroller.xyMoveByUser();
 }
 
-void TrackScrollerScreen::paint(Graphics &g)
+void TrackMapScrollerScreen::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());
 }
 
-void TrackScrollerScreen::resized()
+void TrackMapScrollerScreen::resized()
 {
 #if TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER
     this->border->setBounds(this->getLocalBounds());
@@ -79,7 +79,7 @@ void TrackScrollerScreen::resized()
 // Constrainers
 //===----------------------------------------------------------------------===//
 
-void TrackScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Component &component,
+void TrackMapScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Component &component,
         Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);

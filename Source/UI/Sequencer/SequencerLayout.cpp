@@ -62,16 +62,12 @@ public:
         HybridRoll *targetRoll2,
         Viewport *targetViewport1,
         Viewport *targetViewport2,
-        TrackScroller *targetScroller) :
+        TrackMapScroller *targetScroller) :
         pianoRoll(targetRoll1),
         pianoViewport(targetViewport1),
         patternRoll(targetRoll2),
         patternViewport(targetViewport2),
-        scroller(targetScroller),
-        animationPosition(0.f),
-        animationDirection(-1.f),
-        animationSpeed(0.f),
-        animationDeceleration(1.f)
+        scroller(targetScroller)
     {
         this->setInterceptsMouseClicks(false, true);
         this->setPaintingIsUnclipped(false);
@@ -221,13 +217,13 @@ private:
     SafePointer<HybridRoll> patternRoll;
     SafePointer<Viewport> patternViewport;
 
-    SafePointer<TrackScroller> scroller;
+    SafePointer<TrackMapScroller> scroller;
 
     // 0.f to 1.f, animates the switching between piano and pattern roll
-    float animationPosition;
-    float animationDirection;
-    float animationSpeed;
-    float animationDeceleration;
+    float animationPosition = 0.f;
+    float animationDirection = -1.f;
+    float animationSpeed = 0.f;
+    float animationDeceleration = 1.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollsSwitchingProxy)
 };
@@ -270,7 +266,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
 
     this->patternRoll.reset(new PatternRoll(this->project, *this->patternViewport, clippingDetector));
 
-    this->scroller.reset(new TrackScroller(this->project.getTransport(), this->pianoRoll.get()));
+    this->scroller.reset(new TrackMapScroller(this->project.getTransport(), this->pianoRoll.get()));
     this->scroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
     this->scroller->addOwnedMap(new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);

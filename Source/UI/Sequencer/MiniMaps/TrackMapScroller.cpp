@@ -16,8 +16,8 @@
 */
 
 #include "Common.h"
-#include "TrackScroller.h"
-#include "TrackScrollerScreen.h"
+#include "TrackMapScroller.h"
+#include "TrackMapScrollerScreen.h"
 #include "Playhead.h"
 #include "Transport.h"
 #include "HybridRoll.h"
@@ -27,7 +27,7 @@
 #include "HelioTheme.h"
 #include "PianoProjectMap.h"
 
-TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :
+TrackMapScroller::TrackMapScroller(Transport &transportRef, HybridRoll *targetRoll) :
     transport(transportRef),
     roll(targetRoll),
     mapShouldGetStretched(true)
@@ -40,18 +40,18 @@ TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :
     this->helperRectangle.reset(new HorizontalDragHelper(*this));
     this->addAndMakeVisible(this->helperRectangle.get());
     
-    this->screenRange.reset(new TrackScrollerScreen(*this));
+    this->screenRange.reset(new TrackMapScrollerScreen(*this));
     this->addAndMakeVisible(this->screenRange.get());
     
     this->resized();
 }
 
-TrackScroller::~TrackScroller()
+TrackMapScroller::~TrackMapScroller()
 {
     this->disconnectPlayhead();
 }
 
-void TrackScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
+void TrackMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
 {
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
@@ -86,7 +86,7 @@ void TrackScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
     this->resized();
 }
 
-void TrackScroller::removeOwnedMap(Component *existingTrackMap)
+void TrackMapScroller::removeOwnedMap(Component *existingTrackMap)
 {
     if (this->trackMaps.contains(existingTrackMap))
     {
@@ -99,7 +99,7 @@ void TrackScroller::removeOwnedMap(Component *existingTrackMap)
     }
 }
 
-void TrackScroller::disconnectPlayhead()
+void TrackMapScroller::disconnectPlayhead()
 {
     if (this->playhead->getParentComponent())
     {
@@ -111,14 +111,14 @@ void TrackScroller::disconnectPlayhead()
 // TrackScroller
 //===----------------------------------------------------------------------===//
 
-void TrackScroller::horizontalDragByUser(Component *component, const Rectangle<int> &bounds)
+void TrackMapScroller::horizontalDragByUser(Component *component, const Rectangle<int> &bounds)
 {
     const Rectangle<float> &screenRangeBounds = this->screenRange->getRealBounds();
     this->screenRange->setRealBounds(screenRangeBounds.withX(float(component->getX())));
     this->xMoveByUser();
 }
 
-void TrackScroller::xyMoveByUser()
+void TrackMapScroller::xyMoveByUser()
 {
     if (this->roll != nullptr)
     {
@@ -147,7 +147,7 @@ void TrackScroller::xyMoveByUser()
     }
 }
 
-void TrackScroller::xMoveByUser()
+void TrackMapScroller::xMoveByUser()
 {
     if (this->roll != nullptr)
     {
@@ -172,7 +172,7 @@ void TrackScroller::xMoveByUser()
     }
 }
 
-void TrackScroller::resizeByUser()
+void TrackMapScroller::resizeByUser()
 {
     if (this->roll != nullptr)
     {
@@ -200,7 +200,7 @@ void TrackScroller::resizeByUser()
     }
 }
 
-void TrackScroller::toggleStretchingMapAlaSublime()
+void TrackMapScroller::toggleStretchingMapAlaSublime()
 {
     this->mapShouldGetStretched = !this->mapShouldGetStretched;
     this->resized();
@@ -210,7 +210,7 @@ void TrackScroller::toggleStretchingMapAlaSublime()
 // Component
 //===----------------------------------------------------------------------===//
 
-void TrackScroller::resized()
+void TrackMapScroller::resized()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
@@ -223,7 +223,7 @@ void TrackScroller::resized()
     }
 }
 
-void TrackScroller::paint(Graphics &g)
+void TrackMapScroller::paint(Graphics &g)
 {
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
     g.setFillType({ theme.getBgCacheC(), {} });
@@ -236,7 +236,7 @@ void TrackScroller::paint(Graphics &g)
     g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
 }
 
-void TrackScroller::mouseDrag(const MouseEvent &event)
+void TrackMapScroller::mouseDrag(const MouseEvent &event)
 {
     if (! this->mapShouldGetStretched)
     {
@@ -245,7 +245,7 @@ void TrackScroller::mouseDrag(const MouseEvent &event)
     }
 }
 
-void TrackScroller::mouseUp(const MouseEvent &event)
+void TrackMapScroller::mouseUp(const MouseEvent &event)
 {
     if (event.getDistanceFromDragStart() < 5)
     {
@@ -253,7 +253,7 @@ void TrackScroller::mouseUp(const MouseEvent &event)
     }
 }
 
-void TrackScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void TrackMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     if (this->roll != nullptr)
     {
@@ -266,7 +266,7 @@ void TrackScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDeta
 // MidiRollListener
 //===----------------------------------------------------------------------===//
 
-void TrackScroller::onMidiRollMoved(HybridRoll *targetRoll)
+void TrackMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
 {
     if (this->roll == targetRoll && !this->isTimerRunning())
     {
@@ -274,7 +274,7 @@ void TrackScroller::onMidiRollMoved(HybridRoll *targetRoll)
     }
 }
 
-void TrackScroller::onMidiRollResized(HybridRoll *targetRoll)
+void TrackMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 {
     if (this->roll == targetRoll && !this->isTimerRunning())
     {
@@ -283,7 +283,7 @@ void TrackScroller::onMidiRollResized(HybridRoll *targetRoll)
 }
 
 // Starts quick and dirty animation from one bounds to another
-void TrackScroller::switchToRoll(HybridRoll *targetRoll)
+void TrackMapScroller::switchToRoll(HybridRoll *targetRoll)
 {
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();
@@ -325,7 +325,7 @@ static float getRectangleDistance(const Rectangle<float> &r1,
         fabs(r1.getHeight() - r2.getHeight());
 }
 
-void TrackScroller::timerCallback()
+void TrackMapScroller::timerCallback()
 {
     const auto mb = this->getMapBounds().toFloat();
     const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.2f);
@@ -357,7 +357,7 @@ void TrackScroller::timerCallback()
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
 
-void TrackScroller::handleAsyncUpdate()
+void TrackMapScroller::handleAsyncUpdate()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
@@ -378,7 +378,7 @@ void TrackScroller::handleAsyncUpdate()
 
 #define INDICATOR_FIXED_WIDTH (150)
 
-Rectangle<float> TrackScroller::getIndicatorBounds() const
+Rectangle<float> TrackMapScroller::getIndicatorBounds() const
 {
     if (this->roll != nullptr)
     {
@@ -415,7 +415,7 @@ Rectangle<float> TrackScroller::getIndicatorBounds() const
     return { 0.f, 0.f, 0.f, 0.f };
 }
 
-Rectangle<int> TrackScroller::getMapBounds() const
+Rectangle<int> TrackMapScroller::getMapBounds() const
 {
     if (this->roll != nullptr)
     {
@@ -444,7 +444,7 @@ Rectangle<int> TrackScroller::getMapBounds() const
 // Additional horizontal dragger
 //===----------------------------------------------------------------------===//
 
-TrackScroller::HorizontalDragHelper::HorizontalDragHelper(TrackScroller &scrollerRef) :
+TrackMapScroller::HorizontalDragHelper::HorizontalDragHelper(TrackMapScroller &scrollerRef) :
     colour(findDefaultColour(ColourIDs::TrackScroller::scrollerFill)),
     scroller(scrollerRef)
 {
@@ -458,23 +458,23 @@ TrackScroller::HorizontalDragHelper::HorizontalDragHelper(TrackScroller &scrolle
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 }
 
-void TrackScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
+void TrackMapScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
 {
     this->dragger.startDraggingComponent(this, e);
 }
 
-void TrackScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
+void TrackMapScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
 {
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
 }
 
-void TrackScroller::HorizontalDragHelper::paint(Graphics &g)
+void TrackMapScroller::HorizontalDragHelper::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());
 }
 
-void TrackScroller::HorizontalDragHelper::MoveConstrainer::
+void TrackMapScroller::HorizontalDragHelper::MoveConstrainer::
     applyBoundsToComponent(Component &component, Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
