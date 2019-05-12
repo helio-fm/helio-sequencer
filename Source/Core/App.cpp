@@ -630,9 +630,9 @@ void App::checkPlugin(const String &markerFile)
             {
                 ValueTree typesNode(Serialization::Core::instrumentsList);
 
-                for (const auto description : typesFound)
+                for (const auto *description : typesFound)
                 {
-                    SerializablePluginDescription sd(description);
+                    const SerializablePluginDescription sd(*description);
                     typesNode.appendChild(sd.serialize(), nullptr);
                 }
 

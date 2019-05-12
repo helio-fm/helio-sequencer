@@ -86,7 +86,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
 
-    for (const auto description : this->pluginScanner.getList().getTypes())
+    for (const auto &description : this->pluginScanner.getPlugins())
     {
         if (!description.isInstrument)
         {
@@ -114,14 +114,13 @@ MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
 
-    for (const auto description : this->pluginScanner.getList())
+    for (const auto &description : this->pluginScanner.getPlugins())
     {
-        if (description->isInstrument)
+        if (description.isInstrument)
         {
-            menu.add(MenuItem::item(Icons::audioPlugin,
-                description->descriptiveName)->withAction([this, description]()
+            menu.add(MenuItem::item(Icons::audioPlugin, description.descriptiveName)->withAction([this, description]()
             {
-                this->instrumentNode.getInstrument()->addNodeToFreeSpace(*description, [this](Instrument *instrument)
+                this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
                 {
                     this->instrumentNode.updateChildrenEditors();
                     this->instrumentNode.setSelected();

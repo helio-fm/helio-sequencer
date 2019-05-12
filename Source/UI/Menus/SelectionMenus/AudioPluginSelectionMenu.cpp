@@ -59,7 +59,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
 
     menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::plugin::remove"))->withAction([this]()
     {
-        this->pluginScanner.removeItem(this->pluginDescription);
+        this->pluginScanner.removePlugin(this->pluginDescription);
         this->dismiss();
     }));
 

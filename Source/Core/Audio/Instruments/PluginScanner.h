@@ -32,10 +32,18 @@ public:
     bool hasEffects() const;
     bool hasInstruments() const;
 
-    void removeItem(const PluginDescription &description);
-
+    void removePlugin(const PluginDescription &description);
     void sortList(KnownPluginList::SortMethod method, bool forwards);
-    const KnownPluginList &getList() const noexcept;
+
+    inline const Array<PluginDescription> getPlugins() const noexcept
+    {
+        return this->pluginsList.getTypes();
+    }
+
+    inline const int getNumPlugins() const noexcept
+    {
+        return this->pluginsList.getNumTypes();
+    }
 
     void runInitialScan();
     void scanFolderAndAddResults(const File &dir);
@@ -56,7 +64,6 @@ public:
 
 private:
 
-    ReadWriteLock pluginsListLock;
     KnownPluginList pluginsList;
 
     ReadWriteLock filesListLock;

@@ -47,9 +47,9 @@ PluginScanner::~PluginScanner()
 
 bool PluginScanner::hasEffects() const
 {
-    for (const auto description : this->getList())
+    for (const auto &description : this->getPlugins())
     {
-        if (! description->isInstrument)
+        if (! description.isInstrument)
         {
             return true;
         }
@@ -60,9 +60,9 @@ bool PluginScanner::hasEffects() const
 
 bool PluginScanner::hasInstruments() const
 {
-    for (const auto description : this->getList())
+    for (const auto &description : this->getPlugins())
     {
-        if (description->isInstrument)
+        if (description.isInstrument)
         {
             return true;
         }
@@ -71,23 +71,15 @@ bool PluginScanner::hasInstruments() const
     return false;
 }
 
-void PluginScanner::removeItem(const PluginDescription &description)
+void PluginScanner::removePlugin(const PluginDescription &description)
 {
-    const ScopedWriteLock lock(this->pluginsListLock);
     this->pluginsList.removeType(description);
     this->sendChangeMessage();
 }
 
 void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool forwards)
 {
-    const ScopedWriteLock lock(this->pluginsListLock);
     this->pluginsList.sort(fieldToSortBy, forwards);
-}
-
-const KnownPluginList &PluginScanner::getList() const noexcept
-{
-    const ScopedReadLock lock(this->pluginsListLock);
-    return this->pluginsList;
 }
 
 StringArray PluginScanner::getFilesToScan() const
@@ -116,15 +108,12 @@ void PluginScanner::runInitialScan()
         const ScopedWriteLock filesLock(this->filesListLock);
         this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::pianoId); // add built-in synths
 
-        for (const auto &it : this->getList())
+        for (const auto &it : this->getPlugins())
         {
-            this->filesToScan.addIfNotAlreadyThere(it->fileOrIdentifier);
+            this->filesToScan.addIfNotAlreadyThere(it.fileOrIdentifier);
         }
 
-        {
-            const ScopedWriteLock pluginsLock(this->pluginsListLock);
-            this->pluginsList.clear();
-        }
+        this->pluginsList.clear();
 
         AudioPluginFormatManager formatManager;
         AudioCore::initAudioFormats(formatManager);
@@ -239,7 +228,6 @@ void PluginScanner::run()
                             {
                                 forEachValueTreeChildWithType(tree, e, Serialization::Audio::plugin)
                                 {
-                                    const ScopedWriteLock lock(this->pluginsListLock);
                                     SerializablePluginDescription pluginDescription;
                                     pluginDescription.deserialize(e);
                                     this->pluginsList.addType(pluginDescription);
@@ -368,12 +356,11 @@ void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders
 
 ValueTree PluginScanner::serialize() const
 {
-    const ScopedReadLock lock(this->pluginsListLock);
     ValueTree tree(Serialization::Audio::pluginsList);
 
-    for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
+    for (const auto &type : this->getPlugins())
     {
-        SerializablePluginDescription pd(this->pluginsList.getType(i));
+        const SerializablePluginDescription pd(type);
         tree.appendChild(pd.serialize(), nullptr);
     }
 
@@ -383,8 +370,6 @@ ValueTree PluginScanner::serialize() const
 void PluginScanner::deserialize(const ValueTree &tree)
 {
     this->reset();
-
-    const ScopedWriteLock lock(this->pluginsListLock);
 
     const auto root = tree.hasType(Serialization::Audio::pluginsList) ?
         tree : tree.getChildWithName(Serialization::Audio::pluginsList);
@@ -406,7 +391,6 @@ void PluginScanner::deserialize(const ValueTree &tree)
 
 void PluginScanner::reset()
 {
-    const ScopedWriteLock lock(this->pluginsListLock);
     this->pluginsList.clear();
     this->sendChangeMessage();
 }

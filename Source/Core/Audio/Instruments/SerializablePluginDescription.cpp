@@ -20,8 +20,8 @@
 #include "SerializationKeys.h"
 
 SerializablePluginDescription::SerializablePluginDescription() {}
-SerializablePluginDescription::SerializablePluginDescription(const PluginDescription *other) :
-    PluginDescription(*other) {}
+SerializablePluginDescription::SerializablePluginDescription(const PluginDescription &other) :
+    PluginDescription(other) {}
 
 ValueTree SerializablePluginDescription::serialize() const
 {
