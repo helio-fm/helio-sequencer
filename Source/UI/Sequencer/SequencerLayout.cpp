@@ -24,8 +24,9 @@
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
 #include "PatternEditorNode.h"
-#include "TrackScroller.h"
+#include "TrackMapScroller.h"
 #include "PianoProjectMap.h"
+#include "VelocityProjectMap.h"
 #include "SerializationKeys.h"
 #include "SequencerSidebarRight.h"
 #include "SequencerSidebarLeft.h"
@@ -267,11 +268,16 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternRoll.reset(new PatternRoll(this->project, *this->patternViewport, clippingDetector));
 
     this->scroller.reset(new TrackMapScroller(this->project.getTransport(), this->pianoRoll.get()));
-    this->scroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
-    this->scroller->addOwnedMap(new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
-    this->scroller->addOwnedMap(new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
+    const auto page1 = this->scroller->addPage();
+    const auto page2 = this->scroller->addPage();
+
+    this->scroller->addOwnedMap(page1, new PianoProjectMap(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(page1, new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
+    this->scroller->addOwnedMap(page1, new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
     //this->scroller->addOwnedMap(new KeySignaturesProjectMap(this->project, *this->pianoRoll, KeySignaturesProjectMap::Small), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
+
+    //this->scroller->addOwnedMap(page2, new VelocityProjectMap(this->project, *this->pianoRoll);)
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
@@ -372,9 +378,13 @@ void SequencerLayout::setEditableScope(WeakReference<MidiTrack> track, const Cli
 HybridRoll *SequencerLayout::getRoll() const
 {
     if (this->rollContainer->isPatternMode())
-    { return this->patternRoll.get(); }
+    {
+        return this->patternRoll.get();
+    }
     else
-    { return this->pianoRoll.get(); }
+    {
+        return this->pianoRoll.get();
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -409,7 +419,6 @@ void SequencerLayout::resized()
     // a hack for themes changing
     this->rollToolsSidebar->resized();
 }
-
 
 void SequencerLayout::proceedToRenderDialog(const String &extension)
 {
@@ -505,7 +514,4 @@ void SequencerLayout::deserialize(const ValueTree &tree)
     this->patternRoll->deserialize(root);
 }
 
-void SequencerLayout::reset()
-{
-    // no need for this yet
-}
+void SequencerLayout::reset() {} // no need for this yet

@@ -29,11 +29,10 @@
 
 TrackMapScroller::TrackMapScroller(Transport &transportRef, HybridRoll *targetRoll) :
     transport(transportRef),
-    roll(targetRoll),
-    mapShouldGetStretched(true)
+    roll(targetRoll)
 {
-    this->setPaintingIsUnclipped(true);
     this->setOpaque(true);
+    this->setPaintingIsUnclipped(false);
 
     this->playhead.reset(new Playhead(*this->roll, this->transport));
     
@@ -51,9 +50,15 @@ TrackMapScroller::~TrackMapScroller()
     this->disconnectPlayhead();
 }
 
-void TrackMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
+TrackMapScroller::PageNumber TrackMapScroller::addPage()
 {
-    this->trackMaps.add(newTrackMap);
+    this->trackMaps.add(TrackMapPage());
+    return this->trackMaps.size() - 1;
+}
+
+void TrackMapScroller::addOwnedMap(PageNumber page, Component *newTrackMap, bool shouldBringToFront)
+{
+    this->trackMaps.getReference(page).add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
     
     // playhead is always tied to the first map:
@@ -61,13 +66,6 @@ void TrackMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFro
     {
         this->disconnectPlayhead();
         newTrackMap->addAndMakeVisible(this->playhead.get());
-    }
-    
-    // fade-in if not the first child
-    if (this->trackMaps.size() > 1)
-    {
-        newTrackMap->setVisible(false);
-        this->fader.fadeIn(newTrackMap, 200);
     }
     
     if (shouldBringToFront)
@@ -84,19 +82,6 @@ void TrackMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFro
     }
     
     this->resized();
-}
-
-void TrackMapScroller::removeOwnedMap(Component *existingTrackMap)
-{
-    if (this->trackMaps.contains(existingTrackMap))
-    {
-        // fadeout causes weird OpenGL errors for the large maps:
-        //this->fader.fadeOut(existingTrackMap, 150);
-        this->removeChildComponent(existingTrackMap);
-        this->trackMaps.removeObject(existingTrackMap);
-
-        this->resized();
-    }
 }
 
 void TrackMapScroller::disconnectPlayhead()
@@ -135,14 +120,18 @@ void TrackMapScroller::xyMoveByUser()
         const float propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
         this->roll->panProportionally(propX, propY2);
 
-        const auto p = this->getIndicatorBounds();
+        const auto p = this->getScrollerBounds();
         const auto hp = p.toType<int>();
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
-            this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+            const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
+            for (const auto &map : this->trackMaps.getReference(i))
+            {
+                map->setBounds(mapBounds);
+            }
         }
     }
 }
@@ -160,14 +149,18 @@ void TrackMapScroller::xMoveByUser()
 
         this->roll->panProportionally(propX, propY);
 
-        const auto p = this->getIndicatorBounds();
+        const auto p = this->getScrollerBounds();
         const auto hp = p.toType<int>();
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
-            this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+            const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
+            for (const auto &map : this->trackMaps.getReference(i))
+            {
+                map->setBounds(mapBounds);
+            }
         }
     }
 }
@@ -188,14 +181,18 @@ void TrackMapScroller::resizeByUser()
         const Point<float> proportional(propX, propY);
         this->roll->zoomAbsolute(proportional);
 
-        const auto p = this->getIndicatorBounds();
+        const auto p = this->getScrollerBounds();
         const auto hp = p.toType<int>();
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
-            this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+            const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
+            for (const auto &map : this->trackMaps.getReference(i))
+            {
+                map->setBounds(mapBounds);
+            }
         }
     }
 }
@@ -212,14 +209,18 @@ void TrackMapScroller::toggleStretchingMapAlaSublime()
 
 void TrackMapScroller::resized()
 {
-    const auto p = this->getIndicatorBounds();
+    const auto p = this->getScrollerBounds();
     const auto hp = p.toType<int>();
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
+        for (const auto &map : this->trackMaps.getReference(i))
+        {
+            map->setBounds(mapBounds);
+        }
     }
 }
 
@@ -285,10 +286,15 @@ void TrackMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 // Starts quick and dirty animation from one bounds to another
 void TrackMapScroller::switchToRoll(HybridRoll *targetRoll)
 {
-    this->oldAreaBounds = this->getIndicatorBounds();
-    this->oldMapBounds = this->getMapBounds().toFloat();
+    this->oldAreaBounds = this->getScrollerBounds();
+    this->oldMapBounds = this->getMapBounds(0).toFloat();
     this->roll = targetRoll;
     this->startTimerHz(60);
+}
+
+void TrackMapScroller::switchToPage(PageNumber page)
+{
+    // TODO
 }
 
 //===----------------------------------------------------------------------===//
@@ -327,9 +333,9 @@ static float getRectangleDistance(const Rectangle<float> &r1,
 
 void TrackMapScroller::timerCallback()
 {
-    const auto mb = this->getMapBounds().toFloat();
+    const auto mb = this->getMapBounds(0).toFloat();
     const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.2f);
-    const auto ib = this->getIndicatorBounds();
+    const auto ib = this->getScrollerBounds();
     const auto ibLerp = lerpRectangle(this->oldAreaBounds, ib, 0.2f);
     const bool shouldStop = getRectangleDistance(this->oldAreaBounds, ib) < 0.5f;
     const auto targetAreaBounds = shouldStop ? ib : ibLerp;
@@ -344,7 +350,11 @@ void TrackMapScroller::timerCallback()
 
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(targetMapBounds.toType<int>());
+        const auto mapBounds = targetMapBounds.toType<int>().withY(this->getPageOffsetY(i));
+        for (const auto &map : this->trackMaps.getReference(i))
+        {
+            map->setBounds(mapBounds);
+        }
     }
 
     if (shouldStop)
@@ -359,16 +369,20 @@ void TrackMapScroller::timerCallback()
 
 void TrackMapScroller::handleAsyncUpdate()
 {
-    const auto p = this->getIndicatorBounds();
+    const auto p = this->getScrollerBounds();
     const auto hp = p.toType<int>();
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
+        for (const auto &map : this->trackMaps.getReference(i))
+        {
+            map->setBounds(mapBounds);
+        }
     }
-    
+
     this->playhead->parentSizeChanged(); // a hack: also update playhead position
 }
 
@@ -378,7 +392,7 @@ void TrackMapScroller::handleAsyncUpdate()
 
 #define INDICATOR_FIXED_WIDTH (150)
 
-Rectangle<float> TrackMapScroller::getIndicatorBounds() const
+Rectangle<float> TrackMapScroller::getScrollerBounds() const noexcept
 {
     if (this->roll != nullptr)
     {
@@ -415,7 +429,7 @@ Rectangle<float> TrackMapScroller::getIndicatorBounds() const
     return { 0.f, 0.f, 0.f, 0.f };
 }
 
-Rectangle<int> TrackMapScroller::getMapBounds() const
+Rectangle<int> TrackMapScroller::getMapBounds(int pageOffsetY) const noexcept
 {
     if (this->roll != nullptr)
     {
@@ -429,15 +443,21 @@ Rectangle<int> TrackMapScroller::getMapBounds() const
 
         if (mapWidth <= trackWidth || !this->mapShouldGetStretched)
         {
-            return { 0, 0, int(trackWidth), this->getHeight() };
+            return { 0, pageOffsetY, int(trackWidth), this->getHeight() };
         }
 
         const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
         const float dX = (viewX * mapWidth) / rollWidth;
-        return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
+        return { int(rX - dX), pageOffsetY, int(mapWidth), this->getHeight() };
     }
 
     return { 0, 0, 0, 0 };
+}
+
+int TrackMapScroller::getPageOffsetY(PageNumber page) const noexcept
+{
+    // FIXME!
+    return 0;
 }
 
 //===----------------------------------------------------------------------===//
