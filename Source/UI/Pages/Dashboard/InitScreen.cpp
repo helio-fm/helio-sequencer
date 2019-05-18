@@ -85,7 +85,7 @@ void InitScreen::paint (Graphics& g)
     }
 
     //[UserPaint] Add your own custom painting code here..
-    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.5f);
+    HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), g, 1.5f);
     //[/UserPaint]
 }
 

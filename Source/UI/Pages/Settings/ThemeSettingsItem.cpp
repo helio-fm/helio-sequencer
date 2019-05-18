@@ -289,18 +289,16 @@ void ThemeSettingsItem::resized()
 //[MiscUserCode]
 void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
 {
-    if (auto *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
+    auto &ht = dynamic_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+    App::Config().getColourSchemes()->setCurrent(colours);
+    ht.initColours(colours);
+    SafePointer<Component> window = this->getTopLevelComponent();
+    if (window != nullptr)
     {
-        App::Config().getColourSchemes()->setCurrent(colours);
-        ht->initColours(colours);
-        SafePointer<Component> window = this->getTopLevelComponent();
-        if (window != nullptr)
-        {
-            window->resized();
-            window->repaint();
-        }
-        App::recreateLayout();
+        window->resized();
+        window->repaint();
     }
+    App::recreateLayout();
 }
 
 void ThemeSettingsItem::setSelected(bool shouldBeSelected)

@@ -117,7 +117,7 @@ void PanelBackgroundC::paint (Graphics& g)
 void PanelBackgroundC::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
     this->bgCache = theme.getBgCacheC();
     this->fillType = FillType(this->bgCache, {});
     //[/UserPreResize]

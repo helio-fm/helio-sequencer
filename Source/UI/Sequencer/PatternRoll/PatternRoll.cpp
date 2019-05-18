@@ -945,6 +945,6 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
 
 void PatternRoll::repaintBackgroundsCache()
 {
-    const HelioTheme &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
     this->rowPattern = PatternRoll::renderRowsPattern(theme, rowHeight() * 8);
 }

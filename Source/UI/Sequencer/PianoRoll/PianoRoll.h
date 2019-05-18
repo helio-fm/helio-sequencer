@@ -47,8 +47,8 @@ class PianoRoll final : public HybridRoll
 public:
 
     PianoRoll(ProjectNode &parentProject,
-              Viewport &viewportRef,
-              WeakReference<AudioMonitor> clippingDetector);
+        Viewport &viewportRef,
+        WeakReference<AudioMonitor> clippingDetector);
     
     void setEditableScope(WeakReference<MidiTrack> activeTrack,
         const Clip &activeClip, bool zoomToArea);

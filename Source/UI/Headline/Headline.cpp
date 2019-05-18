@@ -64,7 +64,7 @@ Headline::~Headline()
 void Headline::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
     g.setFillType({ theme.getBgCacheA(), {} });
     g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]

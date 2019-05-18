@@ -61,7 +61,7 @@ void FineTuningValueIndicator::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     const float startAngleRadians = MathConstants<float>::pi * 1.5f;
     const float endAngleRadians = MathConstants<float>::pi * 2.5f;
-    this->getLookAndFeel().drawRotarySlider(g, 0, 0,
+    LookAndFeel::getDefaultLookAndFeel().drawRotarySlider(g, 0, 0,
         this->getWidth(), this->getHeight(), this->value,
         startAngleRadians, endAngleRadians, this->dummySlider);
     //[/UserPrePaint]

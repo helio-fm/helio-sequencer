@@ -55,7 +55,7 @@ static const float kNoiseAlpha = 0.0175f;
 
 void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    g.setTiledImageFill(static_cast<HelioTheme &>(target->getLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
+    g.setTiledImageFill(static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
     g.fillRect(0, 0, target->getWidth(), target->getHeight());
 }
 
@@ -65,9 +65,9 @@ void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMult
     g.fillRect(0, 0, g.getClipBounds().getWidth(), g.getClipBounds().getHeight());
 }
 
-void HelioTheme::drawNoiseWithin(Rectangle<float> bounds, Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
+void HelioTheme::drawNoiseWithin(Rectangle<float> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    g.setTiledImageFill(static_cast<HelioTheme &>(target->getLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
+    g.setTiledImageFill(static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
     g.fillRect(bounds);
 }
 

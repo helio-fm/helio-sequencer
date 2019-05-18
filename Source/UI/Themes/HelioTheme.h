@@ -37,7 +37,7 @@ public:
 
     static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
-    static void drawNoiseWithin(Rectangle<float> bounds, Component *target, Graphics &g, float alphaMultiply = 1.f);
+    static void drawNoiseWithin(Rectangle<float> bounds, Graphics &g, float alphaMultiply = 1.f);
     static void drawDashedRectangle(Graphics &g,
         const Rectangle<float> &rectangle, const Colour &colour,
         float dashLength = 5.f, float spaceLength = 7.5,

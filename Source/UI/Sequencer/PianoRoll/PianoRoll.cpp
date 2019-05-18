@@ -1501,7 +1501,7 @@ void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
 Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const scheme) const
 {
     Array<Image> result;
-    const auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
     for (int j = 0; j < PIANOROLL_MIN_ROW_HEIGHT; ++j)
     {
         result.add({});
