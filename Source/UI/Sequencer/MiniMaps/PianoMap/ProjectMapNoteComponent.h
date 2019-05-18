@@ -72,6 +72,4 @@ private:
 
     float dx = 0.f;
     float dw = 0.f;
-
-    JUCE_DECLARE_WEAK_REFERENCEABLE(ProjectMapNoteComponent)
 };

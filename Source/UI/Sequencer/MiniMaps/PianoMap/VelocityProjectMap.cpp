@@ -81,8 +81,6 @@ private:
 
     Colour colour;
     float dx = 0.f;
-
-    JUCE_DECLARE_WEAK_REFERENCEABLE(VelocityMapNoteComponent)
 };
 
 
@@ -417,9 +415,9 @@ void VelocityProjectMap::handleAsyncUpdate()
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
             // There are still many cases when a scheduled component is deleted at this time:
-            if (VelocityMapNoteComponent *component = this->batchRepaintList.getUnchecked(i))
+            if (Component *component = this->batchRepaintList.getUnchecked(i))
             {
-                this->applyNoteBounds(component);
+                this->applyNoteBounds(static_cast<VelocityMapNoteComponent *>(component));
             }
         }
 

@@ -365,9 +365,9 @@ void PianoProjectMap::handleAsyncUpdate()
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
             // There are still many cases when a scheduled component is deleted at this time:
-            if (ProjectMapNoteComponent *component = this->batchRepaintList.getUnchecked(i))
+            if (Component *component = this->batchRepaintList.getUnchecked(i))
             {
-                this->applyNoteBounds(component);
+                this->applyNoteBounds(static_cast<ProjectMapNoteComponent *>(component));
             }
         }
 

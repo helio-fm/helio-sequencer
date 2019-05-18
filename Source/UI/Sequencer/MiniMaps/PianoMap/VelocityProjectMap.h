@@ -84,7 +84,7 @@ private:
 
     void triggerBatchRepaintFor(VelocityMapNoteComponent *target);
     void handleAsyncUpdate() override;
-    Array<WeakReference<VelocityMapNoteComponent>> batchRepaintList;
+    Array<WeakReference<Component>> batchRepaintList;
 
     JUCE_LEAK_DETECTOR(VelocityProjectMap)
 };

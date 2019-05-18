@@ -84,7 +84,7 @@ private:
 
     void triggerBatchRepaintFor(ProjectMapNoteComponent *target);
     void handleAsyncUpdate() override;
-    Array<WeakReference<ProjectMapNoteComponent>> batchRepaintList;
+    Array<WeakReference<Component>> batchRepaintList;
 
     JUCE_LEAK_DETECTOR(PianoProjectMap)
 };
