@@ -19,21 +19,18 @@
 
 #include "Clip.h"
 #include "Note.h"
+#include "ColourIDs.h"
 
 class ProjectMapNoteComponent final : public Component
 {
 public:
 
-    ProjectMapNoteComponent(const Note &note, const Clip &clip, const Colour &baseColour) :
-        note(note),
-        clip(clip),
-        dx(0.f),
-        dw(0.f)
+    ProjectMapNoteComponent(const Note &note, const Clip &clip) : note(note), clip(clip)
     {
-        this->updateColour(baseColour);
         this->setInterceptsMouseClicks(false, false);
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
+        this->updateColour();
     }
 
     inline int getKey() const noexcept           { return jlimit(0, 128, this->note.getKey() + this->clip.getKey()); }
@@ -42,24 +39,28 @@ public:
     inline float getVelocity() const noexcept    { return this->note.getVelocity() * this->clip.getVelocity(); }
     inline const Note &getNote() const noexcept  { return this->note; }
 
-    inline void updateColour(const Colour &base)
+    inline void updateColour()
     {
+        const Colour base(findDefaultColour(ColourIDs::Roll::noteFill));
         this->colour = this->note.getTrackColour().
             interpolatedWith(base, .4f).
             withAlpha(.6f);
     }
 
-    void setRealBounds(float x, int y, float w, int h)
+    void setRealBounds(float x, int y, float w, int h) noexcept
     {
         this->dx = x - floorf(x);
         this->dw = ceilf(w) - w;
         this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
     }
     
-    void paint(Graphics &g) override
+    void paint(Graphics &g) noexcept override
     {
         g.setColour(this->colour);
         g.drawHorizontalLine(0, this->dx, float(this->getWidth()) - this->dw);
+        // for a more crisp appearance:
+        //g.drawHorizontalLine(0, this->dx, float(this->getWidth()));
+        //context.fillRect(Rectangle<float>(left, (float)y, right - left, 1.0f));
     }
 
 private:
@@ -69,8 +70,8 @@ private:
     
     Colour colour;
 
-    float dx;
-    float dw;
+    float dx = 0.f;
+    float dw = 0.f;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(ProjectMapNoteComponent)
 };

@@ -38,13 +38,11 @@ class VelocityMapNoteComponent final : public Component
 {
 public:
 
-    VelocityMapNoteComponent(const Note &note, const Clip &clip, const Colour &baseColour) :
+    VelocityMapNoteComponent(const Note &note, const Clip &clip) :
         note(note),
-        clip(clip),
-        dx(0.f),
-        dw(0.f)
+        clip(clip)
     {
-        this->updateColour(baseColour);
+        this->updateColour();
         this->setInterceptsMouseClicks(false, false);
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
@@ -56,24 +54,24 @@ public:
     inline float getVelocity() const noexcept { return this->note.getVelocity() * this->clip.getVelocity(); }
     inline const Note &getNote() const noexcept { return this->note; }
 
-    inline void updateColour(const Colour &base)
+    inline void updateColour()
     {
+        const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
         this->colour = this->note.getTrackColour().
-            interpolatedWith(base, .4f).
-            withAlpha(.6f);
+            interpolatedWith(baseColour, .5f).
+            withAlpha(.25f);
     }
 
-    void setRealBounds(float x, int y, float w, int h)
+    void setRealBounds(float x, int y, float w, int h) noexcept
     {
         this->dx = x - floorf(x);
-        this->dw = ceilf(w) - w;
         this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
     }
 
-    void paint(Graphics &g) override
+    void paint(Graphics &g) noexcept override
     {
         g.setColour(this->colour);
-        g.drawHorizontalLine(0, this->dx, float(this->getWidth()) - this->dw);
+        g.fillRect(this->dx, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
 
 private:
@@ -82,9 +80,7 @@ private:
     const Clip &clip;
 
     Colour colour;
-
-    float dx;
-    float dw;
+    float dx = 0.f;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(VelocityMapNoteComponent)
 };
@@ -92,12 +88,7 @@ private:
 
 VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
-    roll(parentRoll),
-    projectFirstBeat(0.f),
-    projectLastBeat(0.f),
-    rollFirstBeat(0.f),
-    rollLastBeat(0.f),
-    componentHeight(1.f)
+    roll(parentRoll)
 {
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
@@ -168,7 +159,6 @@ void VelocityProjectMap::onAddMidiEvent(const MidiEvent &event)
     {
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
-        const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
 
         VELOCITY_MAP_BULK_REPAINT_START
 
@@ -179,7 +169,7 @@ void VelocityProjectMap::onAddMidiEvent(const MidiEvent &event)
             jassert(i >= 0);
 
             const Clip *clip = track->getPattern()->getUnchecked(i);
-            auto component = new VelocityMapNoteComponent(note, *clip, baseColour);
+            auto component = new VelocityMapNoteComponent(note, *clip);
             componentsMap[note] = UniquePointer<VelocityMapNoteComponent>(component);
             this->addAndMakeVisible(component);
             this->triggerBatchRepaintFor(component);
@@ -232,14 +222,13 @@ void VelocityProjectMap::onAddClip(const Clip &clip)
 
     auto sequenceMap = new SequenceMap();
     this->patternMap[clip] = UniquePointer<SequenceMap>(sequenceMap);
-    const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
 
     VELOCITY_MAP_BULK_REPAINT_START
-        
+
     for (const auto &e : *referenceMap)
     {
         const auto &note = e.second.get()->getNote();
-        const auto noteComponent = new VelocityMapNoteComponent(note, clip, baseColour);
+        const auto noteComponent = new VelocityMapNoteComponent(note, clip);
         (*sequenceMap)[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
         this->addAndMakeVisible(noteComponent);
         this->applyNoteBounds(noteComponent);
@@ -285,14 +274,12 @@ void VelocityProjectMap::onChangeTrackProperties(MidiTrack *const track)
 
     VELOCITY_MAP_BULK_REPAINT_START
 
-    const Colour base(findDefaultColour(ColourIDs::Roll::noteFill));
-
     for (const auto &c : this->patternMap)
     {
         const auto &componentsMap = *c.second.get();
         for (const auto &e : componentsMap)
         {
-            e.second->updateColour(base);
+            e.second->updateColour();
         }
     }
 
@@ -378,8 +365,6 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
         return;
     }
 
-    const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
-
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
         const Clip *clip = track->getPattern()->getUnchecked(i);
@@ -393,7 +378,7 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
             if (event->isTypeOf(MidiEvent::Type::Note))
             {
                 const Note *note = static_cast<const Note *>(event);
-                const auto noteComponent = new VelocityMapNoteComponent(*note, *clip, baseColour);
+                const auto noteComponent = new VelocityMapNoteComponent(*note, *clip);
                 (*sequenceMap)[*note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
                 this->applyNoteBounds(noteComponent);
@@ -412,8 +397,8 @@ void VelocityProjectMap::applyNoteBounds(VelocityMapNoteComponent *nc)
 
     const float x = (mapWidth * (beat / projectLengthInBeats));
     const float w = (mapWidth * (nc->getLength() / projectLengthInBeats));
-    const int y = this->getHeight() - int(nc->getKey() * this->componentHeight);
-    nc->setRealBounds(x, y, jmax(1.f, w), 1);
+    const int h = int(this->getHeight() * nc->getVelocity());
+    nc->setRealBounds(x, this->getHeight() - h, jmax(1.f, w), h);
 }
 
 void VelocityProjectMap::triggerBatchRepaintFor(VelocityMapNoteComponent *target)

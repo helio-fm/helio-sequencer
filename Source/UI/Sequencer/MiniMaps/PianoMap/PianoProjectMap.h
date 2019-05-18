@@ -67,17 +67,17 @@ private:
     void reloadTrackMap();
     void loadTrack(const MidiTrack *const track);
 
-    float projectFirstBeat;
-    float projectLastBeat;
+    float projectFirstBeat = 0.f;
+    float projectLastBeat = 0.f;
 
-    float rollFirstBeat;
-    float rollLastBeat;
-    
-    float componentHeight;
-    
+    float rollFirstBeat = 0.f;
+    float rollLastBeat = 0.f;
+
+    float componentHeight = 1.f;
+
     HybridRoll &roll;
     ProjectNode &project;
-    
+
     using SequenceMap = FlatHashMap<Note, UniquePointer<ProjectMapNoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
