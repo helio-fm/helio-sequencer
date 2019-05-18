@@ -38,6 +38,13 @@ public:
     TrackMapScroller(Transport &transport, HybridRoll *roll);
     ~TrackMapScroller() override;
 
+    enum class StretchingMode
+    {
+        None,
+        FitScreen,
+        Sublime
+    };
+
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
     void removeOwnedMap(Component *existingTrackMap);
 
