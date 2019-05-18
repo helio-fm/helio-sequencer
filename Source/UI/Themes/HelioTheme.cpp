@@ -35,7 +35,7 @@
 #include "PanelBackgroundB.h"
 #include "PanelBackgroundC.h"
 #include "FramePanel.h"
-#include "TrackMapScroller.h"
+#include "TrackScroller.h"
 
 #include "BinaryData.h"
 #include "ColourScheme.h"

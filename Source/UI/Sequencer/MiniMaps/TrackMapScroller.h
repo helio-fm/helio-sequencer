@@ -25,6 +25,7 @@ class Transport;
 
 #include "HelperRectangle.h"
 #include "HybridRollListener.h"
+#include "ComponentFader.h"
 
 class TrackMapScroller final :
     public Component,
@@ -37,12 +38,10 @@ public:
     TrackMapScroller(Transport &transport, HybridRoll *roll);
     ~TrackMapScroller() override;
 
-    using PageNumber = int;
-    PageNumber addPage(bool makeActive = false);
+    void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
+    void removeOwnedMap(Component *existingTrackMap);
 
-    void addOwnedMap(PageNumber page, Component *newTrackMap, bool shouldBringToFront);
     void switchToRoll(HybridRoll *targetRoll);
-    void switchToPage(PageNumber page);
 
     template<typename T>
     T *findOwnedMapOfType()
@@ -116,17 +115,14 @@ public:
     
 protected:
 
-    friend class HorizontalDragHelper;
     void horizontalDragByUser(Component *component, const Rectangle<int> &bounds);
-
+    
+    friend class HorizontalDragHelper;
+    
+private:
+    
     void handleAsyncUpdate() override;
     void timerCallback() override;
-
-    void disconnectPlayhead();
-    Rectangle<float> getScrollerBounds() const noexcept;
-    Rectangle<int> getMapBounds() const noexcept;
-
-private:
     
     Transport &transport;
     HybridRoll *roll;
@@ -137,9 +133,11 @@ private:
     UniquePointer<TrackMapScrollerScreen> screenRange;
     UniquePointer<Playhead> playhead;
     
-    PageNumber currentPage = 0;
-    using TrackMapPage = OwnedArray<Component>;
-    Array<TrackMapPage> trackMaps;
+    OwnedArray<Component> trackMaps;
+
+    void disconnectPlayhead();
+    Rectangle<float> getIndicatorBounds() const noexcept;
+    Rectangle<int> getMapBounds() const noexcept;
     
     ComponentDragger helperDragger;
     UniquePointer<HelperRectangle> helperRectangle;
