@@ -83,7 +83,10 @@ private:
     
     UniquePointer<Viewport> pianoViewport;
     UniquePointer<Viewport> patternViewport;
+
     UniquePointer<TrackMapScroller> scroller;
+    int scrollerPage1 = 0;
+    int scrollerPage2 = 0;
 
     UniquePointer<PianoRoll> pianoRoll;
     UniquePointer<PatternRoll> patternRoll;

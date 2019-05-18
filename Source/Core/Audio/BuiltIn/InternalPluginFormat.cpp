@@ -64,40 +64,31 @@ bool InternalPluginFormat::fileMightContainThisPluginType(const String &fileOrId
             fileOrIdentifier == INTERNAL_PLUGIN_IDENTIFIER_HACK);
 }
 
-void InternalPluginFormat::createPluginInstance(const PluginDescription &desc, double initialSampleRate,
-                                                int initialBufferSize, void *userData,
-                                                void (*callback) (void*, AudioPluginInstance*, const String&))
+void InternalPluginFormat::createPluginInstance(const PluginDescription &desc,
+    double initialSampleRate, int initialBufferSize, PluginCreationCallback callback)
 {
-    if (desc.uid == this->audioOutDesc.uid ||
-        desc.name == this->audioOutDesc.name)
+    if (desc.uid == this->audioOutDesc.uid || desc.name == this->audioOutDesc.name)
     {
-        callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), {});
+        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode)), {});
         return;
     }
-    if (desc.uid == this->audioInDesc.uid ||
-             desc.name == this->audioInDesc.name)
+    if (desc.uid == this->audioInDesc.uid || desc.name == this->audioInDesc.name)
     {
-        callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode), {});
+        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode)), {});
         return;
     }
-    if (desc.uid == this->midiInDesc.uid ||
-             desc.name == this->midiInDesc.name)
+    if (desc.uid == this->midiInDesc.uid || desc.name == this->midiInDesc.name)
     {
-        callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode), {});
+        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode)), {});
         return;
     }
-    else if (desc.uid == this->midiOutDesc.uid ||
-             desc.name == this->midiOutDesc.name)
+    else if (desc.uid == this->midiOutDesc.uid || desc.name == this->midiOutDesc.name)
     {
-        callback(userData,
-                 new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
+        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode)), {});
         return;
     }
     
-    callback(userData, nullptr, {});
+    callback(nullptr, {});
 }
 
 const PluginDescription *InternalPluginFormat::getDescriptionFor(const InternalFilterType type)

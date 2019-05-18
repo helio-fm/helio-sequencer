@@ -434,10 +434,16 @@ void AudioCore::deserialize(const ValueTree &tree)
         for (const auto &instrumentNode : orchestra)
         {
             UniquePointer<Instrument> instrument(new Instrument(this->formatManager, {}));
+            // it's important to add audio processor to device
+            // before actually creating nodes and connections:
+            this->addInstrumentToDevice(instrument.get());
             instrument->deserialize(instrumentNode);
-            if (instrument->isValid())
+            if (!instrument->isValid())
             {
-                this->addInstrumentToDevice(instrument.get());
+                this->removeInstrumentFromDevice(instrument.get());
+            }
+            else
+            {
                 this->instruments.add(instrument.release());
             }
         }

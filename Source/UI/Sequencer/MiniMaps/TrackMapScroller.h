@@ -38,7 +38,7 @@ public:
     ~TrackMapScroller() override;
 
     using PageNumber = int;
-    PageNumber addPage();
+    PageNumber addPage(bool makeActive = false);
 
     void addOwnedMap(PageNumber page, Component *newTrackMap, bool shouldBringToFront);
     void switchToRoll(HybridRoll *targetRoll);
@@ -124,8 +124,7 @@ protected:
 
     void disconnectPlayhead();
     Rectangle<float> getScrollerBounds() const noexcept;
-    Rectangle<int> getMapBounds(int pageOffsetY) const noexcept;
-    int getPageOffsetY(PageNumber page) const noexcept;
+    Rectangle<int> getMapBounds() const noexcept;
 
 private:
     

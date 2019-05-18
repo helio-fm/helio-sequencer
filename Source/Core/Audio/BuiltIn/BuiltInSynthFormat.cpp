@@ -48,15 +48,14 @@ bool BuiltInSynthFormat::fileMightContainThisPluginType(const String &fileOrIden
     return match;
 }
 
-void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc, double initialSampleRate,
-                                              int initialBufferSize, void *userData,
-                                              void (*callback) (void*, AudioPluginInstance*, const String&))
+void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc,
+    double initialSampleRate, int initialBufferSize, PluginCreationCallback callback)
 {
     if (desc.name == this->pianoDescription.name)
     {
-        callback(userData, new BuiltInSynthPiano(), {});
+        callback(UniquePointer<AudioPluginInstance>(new BuiltInSynthPiano()), {});
         return;
     }
     
-    callback(userData, nullptr, {});
+    callback(nullptr, {});
 }

@@ -268,16 +268,16 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternRoll.reset(new PatternRoll(this->project, *this->patternViewport, clippingDetector));
 
     this->scroller.reset(new TrackMapScroller(this->project.getTransport(), this->pianoRoll.get()));
-    const auto page1 = this->scroller->addPage();
-    const auto page2 = this->scroller->addPage();
+    this->scrollerPage1 = this->scroller->addPage(true);
+    this->scrollerPage2 = this->scroller->addPage();
 
-    this->scroller->addOwnedMap(page1, new PianoProjectMap(this->project, *this->pianoRoll), false);
-    this->scroller->addOwnedMap(page1, new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
-    this->scroller->addOwnedMap(page1, new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
-    //this->scroller->addOwnedMap(new KeySignaturesProjectMap(this->project, *this->pianoRoll, KeySignaturesProjectMap::Small), false);
-    //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
+    this->scroller->addOwnedMap(this->scrollerPage1, new PianoProjectMap(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(this->scrollerPage1, new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
+    this->scroller->addOwnedMap(this->scrollerPage1, new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
+    //this->scroller->addOwnedMap(this->scrollerPage1, new KeySignaturesProjectMap(this->project, *this->pianoRoll, KeySignaturesProjectMap::Small), false);
+    //this->scroller->addOwnedMap(this->scrollerPage1, new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
-    //this->scroller->addOwnedMap(page2, new VelocityProjectMap(this->project, *this->pianoRoll);)
+    this->scroller->addOwnedMap(this->scrollerPage2, new VelocityProjectMap(this->project, *this->pianoRoll), false);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);

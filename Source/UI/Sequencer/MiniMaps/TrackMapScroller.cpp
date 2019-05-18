@@ -50,16 +50,30 @@ TrackMapScroller::~TrackMapScroller()
     this->disconnectPlayhead();
 }
 
-TrackMapScroller::PageNumber TrackMapScroller::addPage()
+TrackMapScroller::PageNumber TrackMapScroller::addPage(bool makeActive)
 {
     this->trackMaps.add(TrackMapPage());
-    return this->trackMaps.size() - 1;
+    const auto pageNum = this->trackMaps.size() - 1;
+    if (makeActive)
+    {
+        this->currentPage = pageNum;
+    }
+
+    return pageNum;
 }
 
 void TrackMapScroller::addOwnedMap(PageNumber page, Component *newTrackMap, bool shouldBringToFront)
 {
     this->trackMaps.getReference(page).add(newTrackMap);
-    this->addAndMakeVisible(newTrackMap);
+
+    if (page == this->currentPage)
+    {
+        this->addAndMakeVisible(newTrackMap);
+    }
+    else
+    {
+        this->addChildComponent(newTrackMap);
+    }
     
     // playhead is always tied to the first map:
     if (this->trackMaps.size() == 1)
@@ -125,9 +139,9 @@ void TrackMapScroller::xyMoveByUser()
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
+        const auto mapBounds = this->getMapBounds();
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
-            const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
             for (const auto &map : this->trackMaps.getReference(i))
             {
                 map->setBounds(mapBounds);
@@ -154,9 +168,9 @@ void TrackMapScroller::xMoveByUser()
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
+        const auto mapBounds = this->getMapBounds();
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
-            const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
             for (const auto &map : this->trackMaps.getReference(i))
             {
                 map->setBounds(mapBounds);
@@ -186,9 +200,9 @@ void TrackMapScroller::resizeByUser()
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
+        const auto mapBounds = this->getMapBounds();
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
-            const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
             for (const auto &map : this->trackMaps.getReference(i))
             {
                 map->setBounds(mapBounds);
@@ -214,9 +228,9 @@ void TrackMapScroller::resized()
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
+    const auto mapBounds = this->getMapBounds();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
         for (const auto &map : this->trackMaps.getReference(i))
         {
             map->setBounds(mapBounds);
@@ -287,14 +301,22 @@ void TrackMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 void TrackMapScroller::switchToRoll(HybridRoll *targetRoll)
 {
     this->oldAreaBounds = this->getScrollerBounds();
-    this->oldMapBounds = this->getMapBounds(0).toFloat();
+    this->oldMapBounds = this->getMapBounds().toFloat();
     this->roll = targetRoll;
     this->startTimerHz(60);
 }
 
 void TrackMapScroller::switchToPage(PageNumber page)
 {
-    // TODO
+    if (this->currentPage == page)
+    {
+        return;
+    }
+
+    // TODO fades
+
+
+    this->currentPage = page;
 }
 
 //===----------------------------------------------------------------------===//
@@ -333,7 +355,7 @@ static float getRectangleDistance(const Rectangle<float> &r1,
 
 void TrackMapScroller::timerCallback()
 {
-    const auto mb = this->getMapBounds(0).toFloat();
+    const auto mb = this->getMapBounds().toFloat();
     const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.2f);
     const auto ib = this->getScrollerBounds();
     const auto ibLerp = lerpRectangle(this->oldAreaBounds, ib, 0.2f);
@@ -348,9 +370,9 @@ void TrackMapScroller::timerCallback()
     this->helperRectangle->setBounds(helperBounds.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(targetAreaBounds);
 
+    const auto mapBounds = targetMapBounds.toType<int>();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        const auto mapBounds = targetMapBounds.toType<int>().withY(this->getPageOffsetY(i));
         for (const auto &map : this->trackMaps.getReference(i))
         {
             map->setBounds(mapBounds);
@@ -374,9 +396,9 @@ void TrackMapScroller::handleAsyncUpdate()
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
+    const auto mapBounds = this->getMapBounds();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        const auto mapBounds = this->getMapBounds(this->getPageOffsetY(i));
         for (const auto &map : this->trackMaps.getReference(i))
         {
             map->setBounds(mapBounds);
@@ -429,7 +451,7 @@ Rectangle<float> TrackMapScroller::getScrollerBounds() const noexcept
     return { 0.f, 0.f, 0.f, 0.f };
 }
 
-Rectangle<int> TrackMapScroller::getMapBounds(int pageOffsetY) const noexcept
+Rectangle<int> TrackMapScroller::getMapBounds() const noexcept
 {
     if (this->roll != nullptr)
     {
@@ -443,21 +465,15 @@ Rectangle<int> TrackMapScroller::getMapBounds(int pageOffsetY) const noexcept
 
         if (mapWidth <= trackWidth || !this->mapShouldGetStretched)
         {
-            return { 0, pageOffsetY, int(trackWidth), this->getHeight() };
+            return { 0, 0, int(trackWidth), this->getHeight() };
         }
 
         const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
         const float dX = (viewX * mapWidth) / rollWidth;
-        return { int(rX - dX), pageOffsetY, int(mapWidth), this->getHeight() };
+        return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
     }
 
     return { 0, 0, 0, 0 };
-}
-
-int TrackMapScroller::getPageOffsetY(PageNumber page) const noexcept
-{
-    // FIXME!
-    return 0;
 }
 
 //===----------------------------------------------------------------------===//

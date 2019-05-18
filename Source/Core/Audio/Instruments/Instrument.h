@@ -38,7 +38,6 @@ public:
     bool isValid() const noexcept;
 
     using InitializationCallback = Function<void(Instrument *)>;
-    using AddNodeCallback = Function<void(AudioProcessorGraph::Node::Ptr)>;
 
     void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
     void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);
@@ -137,7 +136,7 @@ public:
     
 protected:
 
-    AudioProcessorGraph::Node::Ptr addNode(Instrument *instrument, double x, double y);
+    using AddNodeCallback = Function<void(AudioProcessorGraph::Node::Ptr)>;
     void addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f);
     void removeIllegalConnections();
 
@@ -162,8 +161,9 @@ private:
     UniquePointer<AudioProcessorGraph> processorGraph;
 
     ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;
-    void deserializeNode(const ValueTree &tree);
-    void deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f);
+
+    using DeserializeNodesCallback = Function<void()>;
+    void deserializeNodesAsync(Array<ValueTree> nodesToDeserialize, DeserializeNodesCallback f);
 
 private:
 
