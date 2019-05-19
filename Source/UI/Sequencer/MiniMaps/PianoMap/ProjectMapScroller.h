@@ -19,7 +19,7 @@
 
 class HybridRoll;
 class TrackMap;
-class TrackMapScrollerScreen;
+class ProjectMapScrollerScreen;
 class Playhead;
 class Transport;
 
@@ -27,7 +27,7 @@ class Transport;
 #include "HybridRollListener.h"
 #include "ComponentFader.h"
 
-class TrackMapScroller final :
+class ProjectMapScroller final :
     public Component,
     public HybridRollListener,
     private AsyncUpdater,
@@ -35,8 +35,8 @@ class TrackMapScroller final :
 {
 public:
 
-    TrackMapScroller(Transport &transport, HybridRoll *roll);
-    ~TrackMapScroller() override;
+    ProjectMapScroller(Transport &transport, HybridRoll *roll);
+    ~ProjectMapScroller() override;
 
     enum class StretchingMode
     {
@@ -98,7 +98,7 @@ public:
     {
     public:
         
-        explicit HorizontalDragHelper(TrackMapScroller &scrollerRef);
+        explicit HorizontalDragHelper(ProjectMapScroller &scrollerRef);
         void mouseDown(const MouseEvent &e) override;
         void mouseDrag(const MouseEvent &e) override;
         void paint(Graphics &g) override;
@@ -106,16 +106,16 @@ public:
         class MoveConstrainer final : public ComponentBoundsConstrainer
         {
         public:
-            explicit MoveConstrainer(TrackMapScroller &scrollerRef) : scroller(scrollerRef) {}
+            explicit MoveConstrainer(ProjectMapScroller &scrollerRef) : scroller(scrollerRef) {}
             void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
         private:
-            TrackMapScroller &scroller;
+            ProjectMapScroller &scroller;
         };
         
     private:
         
         Colour colour;
-        TrackMapScroller &scroller;
+        ProjectMapScroller &scroller;
         ComponentDragger dragger;
         UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
     };
@@ -137,7 +137,7 @@ private:
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
-    UniquePointer<TrackMapScrollerScreen> screenRange;
+    UniquePointer<ProjectMapScrollerScreen> screenRange;
     UniquePointer<Playhead> playhead;
     
     OwnedArray<Component> trackMaps;

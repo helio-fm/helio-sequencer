@@ -63,8 +63,8 @@ public:
         HybridRoll *targetRoll2,
         Viewport *targetViewport1,
         Viewport *targetViewport2,
-        TrackMapScroller *targetMapScroller,
-        TrackMapScroller *targetLevelsScroller) :
+        ProjectMapScroller *targetMapScroller,
+        ProjectMapScroller *targetLevelsScroller) :
         pianoRoll(targetRoll1),
         pianoViewport(targetViewport1),
         patternRoll(targetRoll2),
@@ -220,8 +220,8 @@ private:
     SafePointer<HybridRoll> patternRoll;
     SafePointer<Viewport> patternViewport;
 
-    SafePointer<TrackMapScroller> mapScroller;
-    SafePointer<TrackMapScroller> levelsScroller;
+    SafePointer<ProjectMapScroller> mapScroller;
+    SafePointer<ProjectMapScroller> levelsScroller;
 
     // 0.f to 1.f, animates the switching between piano and pattern roll
     float animationPosition = 0.f;
@@ -270,14 +270,14 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
 
     this->patternRoll.reset(new PatternRoll(this->project, *this->patternViewport, clippingDetector));
 
-    this->mapScroller.reset(new TrackMapScroller(this->project.getTransport(), this->pianoRoll.get()));
+    this->mapScroller.reset(new ProjectMapScroller(this->project.getTransport(), this->pianoRoll.get()));
     this->mapScroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
     this->mapScroller->addOwnedMap(new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
     this->mapScroller->addOwnedMap(new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
     //this->mapScroller->addOwnedMap(new KeySignaturesProjectMap(this->project, *this->pianoRoll, KeySignaturesProjectMap::Small), false);
     //this->mapScroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
-    this->levelsScroller.reset(new TrackMapScroller(this->project.getTransport(), this->pianoRoll.get()));
+    this->levelsScroller.reset(new ProjectMapScroller(this->project.getTransport(), this->pianoRoll.get()));
     this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll), false);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);

@@ -16,12 +16,12 @@
 */
 
 #include "Common.h"
-#include "TrackMapScrollerScreen.h"
-#include "TrackMapScroller.h"
+#include "ProjectMapScrollerScreen.h"
+#include "ProjectMapScroller.h"
 
 #define TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER 0
 
-TrackMapScrollerScreen::TrackMapScrollerScreen(TrackMapScroller &scrollerRef) :
+ProjectMapScrollerScreen::ProjectMapScrollerScreen(ProjectMapScroller &scrollerRef) :
     colour(findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)),
     scroller(scrollerRef)
 {
@@ -48,12 +48,12 @@ TrackMapScrollerScreen::TrackMapScrollerScreen(TrackMapScroller &scrollerRef) :
 // Component
 //===----------------------------------------------------------------------===//
 
-void TrackMapScrollerScreen::mouseDown(const MouseEvent &e)
+void ProjectMapScrollerScreen::mouseDown(const MouseEvent &e)
 {
     this->dragger.startDraggingComponent(this, e);
 }
 
-void TrackMapScrollerScreen::mouseDrag(const MouseEvent &e)
+void ProjectMapScrollerScreen::mouseDrag(const MouseEvent &e)
 {
     Point<float> lastPosition = this->getPosition().toFloat();
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
@@ -62,13 +62,13 @@ void TrackMapScrollerScreen::mouseDrag(const MouseEvent &e)
     this->scroller.xyMoveByUser();
 }
 
-void TrackMapScrollerScreen::paint(Graphics &g)
+void ProjectMapScrollerScreen::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());
 }
 
-void TrackMapScrollerScreen::resized()
+void ProjectMapScrollerScreen::resized()
 {
 #if TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER
     this->border->setBounds(this->getLocalBounds());
@@ -79,7 +79,7 @@ void TrackMapScrollerScreen::resized()
 // Constrainers
 //===----------------------------------------------------------------------===//
 
-void TrackMapScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Component &component,
+void ProjectMapScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Component &component,
         Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);

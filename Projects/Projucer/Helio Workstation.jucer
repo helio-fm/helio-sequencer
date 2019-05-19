@@ -1241,14 +1241,14 @@
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/PianoProjectMap.h"/>
               <FILE id="rTx9em" name="ProjectMapNoteComponent.h" compile="0" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapNoteComponent.h"/>
-              <FILE id="n3VJ58" name="TrackMapScroller.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackMapScroller.cpp"/>
-              <FILE id="mSCIQl" name="TrackMapScroller.h" compile="0" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackMapScroller.h"/>
-              <FILE id="CbHpBe" name="TrackMapScrollerScreen.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackMapScrollerScreen.cpp"/>
-              <FILE id="vTeOBO" name="TrackMapScrollerScreen.h" compile="0" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackMapScrollerScreen.h"/>
+              <FILE id="n3VJ58" name="ProjectMapScroller.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScroller.cpp"/>
+              <FILE id="mSCIQl" name="ProjectMapScroller.h" compile="0" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScroller.h"/>
+              <FILE id="CbHpBe" name="ProjectMapScrollerScreen.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScrollerScreen.cpp"/>
+              <FILE id="vTeOBO" name="ProjectMapScrollerScreen.h" compile="0" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScrollerScreen.h"/>
             </GROUP>
             <GROUP id="{919723B0-0366-9404-B47C-49C93660ABFE}" name="TimeSignaturesMap">
               <FILE id="KAMX2D" name="TimeSignatureComponent.h" compile="0" resource="0"

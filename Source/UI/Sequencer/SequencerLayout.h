@@ -22,7 +22,7 @@ class PatternRoll;
 class HybridRoll;
 class RollsSwitchingProxy;
 class MidiTrack;
-class TrackMapScroller;
+class ProjectMapScroller;
 class ProjectNode;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
@@ -84,8 +84,8 @@ private:
     UniquePointer<Viewport> pianoViewport;
     UniquePointer<Viewport> patternViewport;
 
-    UniquePointer<TrackMapScroller> mapScroller;
-    UniquePointer<TrackMapScroller> levelsScroller;
+    UniquePointer<ProjectMapScroller> mapScroller;
+    UniquePointer<ProjectMapScroller> levelsScroller;
 
     UniquePointer<PianoRoll> pianoRoll;
     UniquePointer<PatternRoll> patternRoll;

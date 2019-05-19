@@ -17,13 +17,13 @@
 
 #pragma once
 
-class TrackMapScroller;
+class ProjectMapScroller;
 
-class TrackMapScrollerScreen final : public Component
+class ProjectMapScrollerScreen final : public Component
 {
 public:
 
-    explicit TrackMapScrollerScreen(TrackMapScroller &scrollerRef);
+    explicit ProjectMapScrollerScreen(ProjectMapScroller &scrollerRef);
 
     Rectangle<float> getRealBounds() const noexcept
     {
@@ -52,10 +52,10 @@ public:
     class ResizeConstrainer final : public ComponentBoundsConstrainer
     {
     public:
-        explicit ResizeConstrainer(TrackMapScroller &scrollerRef) : scroller(scrollerRef) { }
+        explicit ResizeConstrainer(ProjectMapScroller &scrollerRef) : scroller(scrollerRef) { }
         void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
     private:
-        TrackMapScroller &scroller;
+        ProjectMapScroller &scroller;
     };
 
 private:
@@ -66,7 +66,7 @@ private:
     void updateZoom();
 
     Colour colour;
-    TrackMapScroller &scroller;
+    ProjectMapScroller &scroller;
     ComponentDragger dragger;
 
     UniquePointer<ResizableBorderComponent> border;
