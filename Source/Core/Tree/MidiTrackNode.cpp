@@ -53,7 +53,7 @@ MidiTrackNode::MidiTrackNode(const String &name, const Identifier &type) :
 
 void MidiTrackNode::showPage()
 {
-    if (ProjectNode *parentProject = this->findParentOfType<ProjectNode>())
+    if (auto *parentProject = this->findParentOfType<ProjectNode>())
     {
         parentProject->showLinearEditor(this, this);
     }

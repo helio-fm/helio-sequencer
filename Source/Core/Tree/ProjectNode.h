@@ -81,7 +81,8 @@ public:
     void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
     WeakReference<TreeNode> getLastShownTrack() const noexcept;
 
-    void setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea = false);
+    void setEditableScope(MidiTrack *const activeTrack,
+        const Clip &activeClip, bool shouldFocusToArea = false);
 
     //===------------------------------------------------------------------===//
     // Menu

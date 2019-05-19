@@ -24,7 +24,7 @@
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
 #include "PatternEditorNode.h"
-#include "TrackMapScroller.h"
+#include "ProjectMapScroller.h"
 #include "PianoProjectMap.h"
 #include "VelocityProjectMap.h"
 #include "SerializationKeys.h"
@@ -367,21 +367,20 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
     const bool useActiveClip = (activeClip.getPattern() &&
         activeClip.getPattern()->getTrack() == track);
 
-    this->pianoRoll->setEditableScope(track,
+    this->project.setEditableScope(track,
         useActiveClip ? activeClip : *trackFirstClip, false);
-}
-
-void SequencerLayout::setEditableScope(WeakReference<MidiTrack> track, const Clip &clip, bool zoomToArea)
-{
-    this->pianoRoll->setEditableScope(track, clip, zoomToArea);
 }
 
 HybridRoll *SequencerLayout::getRoll() const
 {
     if (this->rollContainer->isPatternMode())
-    { return this->patternRoll.get(); }
+    {
+        return this->patternRoll.get();
+    }
     else
-    { return this->pianoRoll.get(); }
+    {
+        return this->pianoRoll.get();
+    }
 }
 
 //===----------------------------------------------------------------------===//

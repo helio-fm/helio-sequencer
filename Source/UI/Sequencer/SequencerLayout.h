@@ -45,8 +45,6 @@ public:
 
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
-    void setEditableScope(WeakReference<MidiTrack> activeTrack,
-        const Clip &clip, bool zoomToArea);
     
     HybridRoll *getRoll() const;
 

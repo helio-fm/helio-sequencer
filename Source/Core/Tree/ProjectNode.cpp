@@ -234,12 +234,30 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
     App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
-void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source)
+void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
+    const Clip &activeClip, bool shouldFocusToArea)
+{
+    if (auto *item = dynamic_cast<PianoTrackNode *>(activeTrack))
+    {
+        // make sure the item is selected, if it's not yet;
+        // this implies calling showPage() -> showLinearEditor(),
+        // which may update the scope to its first clip,
+        item->setSelected();
+
+        // and then we have to update the scope to correct clip,
+        // so that roll's scope is updated twice :(
+        this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
+            activeTrack, activeClip, shouldFocusToArea);
+    }
+}
+
+void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack,
+    WeakReference<TreeNode> source)
 {
     jassert(source != nullptr);
     jassert(activeTrack != nullptr);
 
-    if (const auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get()))
+    if (auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get()))
     {
         this->sequencerLayout->showLinearEditor(activeTrack);
         this->lastShownTrack = source;
@@ -250,19 +268,6 @@ void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakRef
 WeakReference<TreeNode> ProjectNode::getLastShownTrack() const noexcept
 {
     return this->lastShownTrack;
-}
-
-void ProjectNode::setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea)
-{
-    if (auto *item = dynamic_cast<PianoTrackNode *>(track))
-    {
-        // FIXME: as we have to switch to target tree item,
-        // it will activate its 1st clip on showPage
-        item->setSelected();
-        // and then we have to update the scope to correct clip,
-        // so that roll's scope is updated twice :(
-        this->sequencerLayout->setEditableScope(track, clip, zoomToArea);
-    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -707,7 +712,6 @@ void ProjectNode::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
     this->changeListeners.call(&ProjectListener::onChangeViewBeatRange, firstBeat, lastBeat);
     // this->sendChangeMessage(); the project itself didn't change, so dont call this
 }
-
 
 //===----------------------------------------------------------------------===//
 // DocumentOwner

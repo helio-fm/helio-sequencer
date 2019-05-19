@@ -1142,10 +1142,10 @@ void HybridRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ZoomIn:
-        this->zoomInImpulse();
+        this->zoomInImpulse(0.75f);
         break;
     case CommandIDs::ZoomOut:
-        this->zoomOutImpulse();
+        this->zoomOutImpulse(0.75f);
         break;
     case CommandIDs::TimelineJumpNext:
         if (!this->project.getTransport().isPlaying())
