@@ -20,10 +20,10 @@
 #include "Clip.h"
 #include "Note.h"
 #include "ProjectListener.h"
-#include "ProjectMapNoteComponent.h"
 
 class HybridRoll;
 class ProjectNode;
+class ProjectMapNoteComponent;
 
 class PianoProjectMap final :
     public Component,
@@ -40,6 +40,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void resized() override;
+    void paint(Graphics &g) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -63,7 +64,6 @@ public:
 
 private:
 
-    void applyNoteBounds(ProjectMapNoteComponent *nc);
     void reloadTrackMap();
     void loadTrack(const MidiTrack *const track);
 
@@ -78,13 +78,11 @@ private:
     HybridRoll &roll;
     ProjectNode &project;
 
-    using SequenceMap = FlatHashMap<Note, UniquePointer<ProjectMapNoteComponent>, MidiEventHash>;
-    using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
+    using SequenceSet = FlatHashSet<Note, MidiEventHash>;
+    using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceSet>, ClipHash>;
     PatternMap patternMap;
 
-    void triggerBatchRepaintFor(ProjectMapNoteComponent *target);
     void handleAsyncUpdate() override;
-    Array<WeakReference<Component>> batchRepaintList;
 
     JUCE_LEAK_DETECTOR(PianoProjectMap)
 };
