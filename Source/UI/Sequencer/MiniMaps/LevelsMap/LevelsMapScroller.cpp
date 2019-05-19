@@ -68,7 +68,7 @@ void LevelsMapScroller::resized()
 
 void LevelsMapScroller::paint(Graphics &g)
 {
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
 
@@ -128,17 +128,8 @@ Rectangle<int> LevelsMapScroller::getMapBounds() const noexcept
 {
     if (this->roll != nullptr)
     {
-        const float viewX = float(this->roll->getViewport().getViewPositionX());
-        const float viewWidth = float(this->roll->getViewport().getViewWidth());
-        const float rollWidth = float(this->roll->getWidth());
-        const float rollInvisibleArea = rollWidth - viewWidth;
-        const float trackWidth = float(this->getWidth());
-        const float trackInvisibleArea = float(this->getWidth() - 200);
-        const float mapWidth = ((200 * rollWidth) / viewWidth);
-
-        const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
-        const float dX = (viewX * mapWidth) / rollWidth;
-        return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
+        const auto viewX = this->roll->getViewport().getViewPositionX();
+        return { -viewX, 0, this->roll->getWidth(), this->getHeight() };
     }
 
     return { 0, 0, 0, 0 };

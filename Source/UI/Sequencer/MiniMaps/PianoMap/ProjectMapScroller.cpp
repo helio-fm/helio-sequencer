@@ -219,7 +219,7 @@ void ProjectMapScroller::resized()
 
 void ProjectMapScroller::paint(Graphics &g)
 {
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
 

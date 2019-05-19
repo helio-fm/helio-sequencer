@@ -28,6 +28,8 @@ public:
 
     HelioTheme();
 
+    static HelioTheme &getCurrentTheme() noexcept;
+
     void initResources();
     void initColours(const ::ColourScheme::Ptr colours);
     void updateFont(const Font &font);
@@ -133,8 +135,13 @@ public:
             bool positionTitleBarButtonsOnLeft) override;
     
     inline Image &getBgCacheA() noexcept { return this->bgCacheA; }
+    inline const Image &getBgCacheA() const noexcept { return this->bgCacheA; }
+
     inline Image &getBgCacheB() noexcept { return this->bgCacheB; }
+    inline const Image &getBgCacheB() const noexcept { return this->bgCacheB; }
+
     inline Image &getBgCacheC() noexcept { return this->bgCacheC; }
+    inline const Image &getBgCacheC() const noexcept { return this->bgCacheC; }
 
 protected:
     

@@ -39,20 +39,6 @@ public:
     void addOwnedMap(Component *newTrackMap);
     void removeOwnedMap(Component *existingTrackMap);
 
-    template<typename T>
-    T *findOwnedMapOfType()
-    {
-        for (int i = 0; i < this->trackMaps.size(); ++i)
-        {
-            if (T *target = dynamic_cast<T *>(this->trackMaps.getUnchecked(i)))
-            {
-                return target;
-            }
-        }
-        
-        return nullptr;
-    }
-
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -71,14 +57,9 @@ public:
 private:
     
     void handleAsyncUpdate() override;
-    
-    SafePointer<HybridRoll> roll;
-    
-    Rectangle<float> oldAreaBounds;
-    Rectangle<float> oldMapBounds;
-    
-    OwnedArray<Component> trackMaps;
-
     Rectangle<int> getMapBounds() const noexcept;
+
+    SafePointer<HybridRoll> roll;
+    OwnedArray<Component> trackMaps;
     
 };

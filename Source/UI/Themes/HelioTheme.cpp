@@ -51,11 +51,17 @@
 HelioTheme::HelioTheme() :
     backgroundNoise(ImageCache::getFromMemory(BinaryData::noise_png, BinaryData::noise_pngSize)) {}
 
+HelioTheme &HelioTheme::getCurrentTheme() noexcept
+{
+    // This assumes the app have set an instance of HelioTheme as default look-and-feel
+    return static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+}
+
 static const float kNoiseAlpha = 0.0175f;
 
 void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    g.setTiledImageFill(static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
+    g.setTiledImageFill(getCurrentTheme().getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
     g.fillRect(0, 0, target->getWidth(), target->getHeight());
 }
 
@@ -67,7 +73,7 @@ void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMult
 
 void HelioTheme::drawNoiseWithin(Rectangle<float> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    g.setTiledImageFill(static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel()).getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
+    g.setTiledImageFill(getCurrentTheme().getBackgroundNoise(), 0, 0, kNoiseAlpha * alphaMultiply);
     g.fillRect(bounds);
 }
 

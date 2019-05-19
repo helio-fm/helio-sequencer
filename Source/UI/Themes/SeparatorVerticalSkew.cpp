@@ -74,7 +74,7 @@ void SeparatorVerticalSkew::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+    const auto &theme = HelioTheme::getCurrentTheme();
 
     if (theme.getBgCacheA().isValid())
     {
