@@ -1229,6 +1229,10 @@
                     file="../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignaturesProjectMap.h"/>
             </GROUP>
             <GROUP id="{CC92F1C1-90E2-8122-EB37-CBB49FCC9D36}" name="LevelsMap">
+              <FILE id="f3yECK" name="LevelsMapScroller.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/LevelsMap/LevelsMapScroller.cpp"/>
+              <FILE id="kYJKUW" name="LevelsMapScroller.h" compile="0" resource="0"
+                    file="../../Source/UI/Sequencer/MiniMaps/LevelsMap/LevelsMapScroller.h"/>
               <FILE id="Sh7yW6" name="VelocityProjectMap.cpp" compile="1" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/LevelsMap/VelocityProjectMap.cpp"/>
               <FILE id="FVsHMm" name="VelocityProjectMap.h" compile="0" resource="0"

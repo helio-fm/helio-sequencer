@@ -400,7 +400,7 @@ protected:
     UniquePointer<SmoothPanController> smoothPanController;
     UniquePointer<SmoothZoomController> smoothZoomController;
 
-    Array<WeakReference<FloatBoundsComponent>> batchRepaintList;
+    Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
 
 protected:
     

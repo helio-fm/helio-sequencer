@@ -27,21 +27,21 @@
 #include "HelioTheme.h"
 #include "PianoProjectMap.h"
 
-ProjectMapScroller::ProjectMapScroller(Transport &transportRef, HybridRoll *targetRoll) :
+ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<HybridRoll> roll) :
     transport(transportRef),
-    roll(targetRoll)
+    roll(roll)
 {
     this->setPaintingIsUnclipped(true);
     this->setOpaque(true);
 
     this->playhead.reset(new Playhead(*this->roll, this->transport));
-    
+
     this->helperRectangle.reset(new HorizontalDragHelper(*this));
     this->addAndMakeVisible(this->helperRectangle.get());
-    
+
     this->screenRange.reset(new ProjectMapScrollerScreen(*this));
     this->addAndMakeVisible(this->screenRange.get());
-    
+
     this->resized();
 }
 
@@ -54,14 +54,14 @@ void ProjectMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToF
 {
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
-    
+
     // playhead is always tied to the first map:
     if (this->trackMaps.size() == 1)
     {
         this->disconnectPlayhead();
         newTrackMap->addAndMakeVisible(this->playhead.get());
     }
-    
+
     if (shouldBringToFront)
     {
         this->helperRectangle->toFront(false);
@@ -74,7 +74,7 @@ void ProjectMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToF
         this->helperRectangle->toFront(false);
         this->screenRange->toFront(false);
     }
-    
+
     this->resized();
 }
 
@@ -277,11 +277,11 @@ void ProjectMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 }
 
 // Starts quick and dirty animation from one bounds to another
-void ProjectMapScroller::switchToRoll(HybridRoll *targetRoll)
+void ProjectMapScroller::switchToRoll(SafePointer<HybridRoll> roll)
 {
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();
-    this->roll = targetRoll;
+    this->roll = roll;
     this->startTimerHz(60);
 }
 

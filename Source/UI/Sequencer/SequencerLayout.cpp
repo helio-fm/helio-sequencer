@@ -25,6 +25,7 @@
 #include "PianoTrackNode.h"
 #include "PatternEditorNode.h"
 #include "ProjectMapScroller.h"
+#include "LevelsMapScroller.h"
 #include "PianoProjectMap.h"
 #include "VelocityProjectMap.h"
 #include "SerializationKeys.h"
@@ -64,7 +65,7 @@ public:
         Viewport *targetViewport1,
         Viewport *targetViewport2,
         ProjectMapScroller *targetMapScroller,
-        ProjectMapScroller *targetLevelsScroller) :
+        LevelsMapScroller *targetLevelsScroller) :
         pianoRoll(targetRoll1),
         pianoViewport(targetViewport1),
         patternRoll(targetRoll2),
@@ -221,7 +222,7 @@ private:
     SafePointer<Viewport> patternViewport;
 
     SafePointer<ProjectMapScroller> mapScroller;
-    SafePointer<ProjectMapScroller> levelsScroller;
+    SafePointer<LevelsMapScroller> levelsScroller;
 
     // 0.f to 1.f, animates the switching between piano and pattern roll
     float animationPosition = 0.f;
@@ -277,8 +278,8 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     //this->mapScroller->addOwnedMap(new KeySignaturesProjectMap(this->project, *this->pianoRoll, KeySignaturesProjectMap::Small), false);
     //this->mapScroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
-    this->levelsScroller.reset(new ProjectMapScroller(this->project.getTransport(), this->pianoRoll.get()));
-    this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll), false);
+    this->levelsScroller.reset(new LevelsMapScroller(this->pianoRoll.get()));
+    this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll));
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);

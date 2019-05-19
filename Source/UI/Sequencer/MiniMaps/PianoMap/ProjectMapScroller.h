@@ -35,20 +35,13 @@ class ProjectMapScroller final :
 {
 public:
 
-    ProjectMapScroller(Transport &transport, HybridRoll *roll);
+    ProjectMapScroller(Transport &transport, SafePointer<HybridRoll> roll);
     ~ProjectMapScroller() override;
-
-    enum class StretchingMode
-    {
-        None,
-        FitScreen,
-        Sublime
-    };
 
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
     void removeOwnedMap(Component *existingTrackMap);
 
-    void switchToRoll(HybridRoll *targetRoll);
+    void switchToRoll(SafePointer<HybridRoll> roll);
 
     template<typename T>
     T *findOwnedMapOfType()
@@ -132,7 +125,7 @@ private:
     void timerCallback() override;
     
     Transport &transport;
-    HybridRoll *roll;
+    SafePointer<HybridRoll> roll;
     
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
