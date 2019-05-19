@@ -1156,8 +1156,6 @@
                       file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoClipComponent.cpp"/>
                 <FILE id="WtsJ2m" name="PianoClipComponent.h" compile="0" resource="0"
                       file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoClipComponent.h"/>
-                <FILE id="XlUe9t" name="PianoSequenceMapNoteComponent.h" compile="0"
-                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoSequenceMapNoteComponent.h"/>
               </GROUP>
               <FILE id="M5FJQn" name="ClipComponent.cpp" compile="1" resource="0"
                     file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/ClipComponent.cpp"/>
@@ -1243,8 +1241,6 @@
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/PianoProjectMap.cpp"/>
               <FILE id="kwpKkm" name="PianoProjectMap.h" compile="0" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/PianoProjectMap.h"/>
-              <FILE id="rTx9em" name="ProjectMapNoteComponent.h" compile="0" resource="0"
-                    file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapNoteComponent.h"/>
               <FILE id="n3VJ58" name="ProjectMapScroller.cpp" compile="1" resource="0"
                     file="../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScroller.cpp"/>
               <FILE id="mSCIQl" name="ProjectMapScroller.h" compile="0" resource="0"
