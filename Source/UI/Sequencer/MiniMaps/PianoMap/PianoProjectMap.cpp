@@ -32,9 +32,12 @@ PianoProjectMap::PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentR
     project(parentProject),
     roll(parentRoll)
 {
+    this->baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
+
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->reloadTrackMap();
+
     this->project.addListener(this);
 }
 
@@ -54,21 +57,18 @@ void PianoProjectMap::resized()
 
 void PianoProjectMap::paint(Graphics &g)
 {
-    // TODO highlight active track/clip
-
-    const Colour base(findDefaultColour(ColourIDs::Roll::noteFill));
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
+    const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
+    const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
     const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
 
     for (const auto &c : this->patternMap)
     {
         const auto sequenceMap = c.second.get();
+        const bool isActiveClip = this->activeClip == c.first;
 
-        // FIXME: use hash map?
         g.setColour(c.first.getTrackColour().
-            interpolatedWith(base, .4f).
-            withAlpha(.6f));
+            interpolatedWith(this->baseColour, .4f).
+            withAlpha(isActiveClip ? .9f : .6f));
 
         for (const auto &n : *sequenceMap)
         {
@@ -80,7 +80,7 @@ void PianoProjectMap::paint(Graphics &g)
             const float w = (mapWidth * (length / projectLengthInBeats));
             const float y = roundf(this->getHeight() - (key * this->componentHeight));
 
-            g.fillRect(x, y, jmax(0.5f, w), 1.0f);
+            g.fillRect(x, y, jmax(0.25f, w), 1.0f);
         }
     }
 }
@@ -249,7 +249,7 @@ void PianoProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     {
         this->rollFirstBeat = firstBeat;
         this->rollLastBeat = lastBeat;
-        this->resized();
+        //this->resized(); // seems to cause glitches sometimes?
     }
 }
 
@@ -257,7 +257,13 @@ void PianoProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
-    this->resized();
+    //this->resized(); // seems to cause glitches sometimes?
+}
+
+void PianoProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
+{
+    this->activeClip = clip;
+    this->triggerAsyncUpdate();
 }
 
 //===----------------------------------------------------------------------===//

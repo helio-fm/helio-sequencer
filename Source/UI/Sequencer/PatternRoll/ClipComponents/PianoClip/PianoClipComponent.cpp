@@ -50,7 +50,7 @@ void PianoClipComponent::paint(Graphics &g)
     // Draw the frame, set the colour, etc:
     ClipComponent::paint(g);
 
-    for (const auto &note : this->componentsMap)
+    for (const auto &note : this->displayedNotes)
     {
         const auto *ns = note.getSequence();
         const float sequenceLength = ns->getLengthInBeats();
@@ -60,7 +60,7 @@ void PianoClipComponent::paint(Graphics &g)
         const float w = float(this->getWidth()) * (note.getLength() / sequenceLength);
         const float h = float(this->getHeight());
         const float y = roundf(h - key * h / 128.f);
-        g.fillRect(x, y, jmax(0.5f, w), 1.0f);
+        g.fillRect(x, y, jmax(0.25f, w), 1.0f);
     }
 }
 
@@ -76,10 +76,10 @@ void PianoClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const Midi
         const Note &newNote = static_cast<const Note &>(newEvent);
         if (newNote.getSequence() != this->sequence) { return; }
 
-        if (this->componentsMap.contains(note))
+        if (this->displayedNotes.contains(note))
         {
-            this->componentsMap.erase(note);
-            this->componentsMap.insert(newNote);
+            this->displayedNotes.erase(note);
+            this->displayedNotes.insert(newNote);
         }
 
         this->roll.triggerBatchRepaintFor(this);
@@ -93,7 +93,7 @@ void PianoClipComponent::onAddMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
         if (note.getSequence() != this->sequence) { return; }
 
-        this->componentsMap.insert(note);
+        this->displayedNotes.insert(note);
         this->roll.triggerBatchRepaintFor(this);
     }
 }
@@ -105,9 +105,9 @@ void PianoClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
         if (note.getSequence() != this->sequence) { return; }
 
-        if (this->componentsMap.contains(note))
+        if (this->displayedNotes.contains(note))
         {
-            this->componentsMap.erase(note);
+            this->displayedNotes.erase(note);
         }
 
         this->roll.triggerBatchRepaintFor(this);
@@ -155,9 +155,9 @@ void PianoClipComponent::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const Note &note = static_cast<const Note &>(*track->getSequence()->getUnchecked(i));
-        if (this->componentsMap.contains(note))
+        if (this->displayedNotes.contains(note))
         {
-            this->componentsMap.erase(note);
+            this->displayedNotes.erase(note);
         }
     }
 }
@@ -168,7 +168,7 @@ void PianoClipComponent::onRemoveTrack(MidiTrack *const track)
 
 void PianoClipComponent::reloadTrackMap()
 {
-    this->componentsMap.clear();
+    this->displayedNotes.clear();
 
     for (auto *track : this->project.getTracks())
     {
@@ -180,7 +180,7 @@ void PianoClipComponent::reloadTrackMap()
             if (event != nullptr && event->isTypeOf(MidiEvent::Type::Note))
             {
                 auto *note = static_cast<Note *>(event);
-                this->componentsMap.insert(*note);
+                this->displayedNotes.insert(*note);
             }
         }
     }

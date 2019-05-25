@@ -26,12 +26,11 @@
 #include "HelioTheme.h"
 #include "PianoProjectMap.h"
 
-LevelsMapScroller::LevelsMapScroller(SafePointer<HybridRoll> roll) :
-    roll(roll)
+LevelsMapScroller::LevelsMapScroller(SafePointer<HybridRoll> roll) : roll(roll)
 {
     this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(true, true);
     this->setOpaque(true);
-    this->resized();
 }
 
 void LevelsMapScroller::addOwnedMap(Component *newTrackMap)
@@ -39,7 +38,6 @@ void LevelsMapScroller::addOwnedMap(Component *newTrackMap)
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
     newTrackMap->toFront(false);
-    this->resized();
 }
 
 void LevelsMapScroller::removeOwnedMap(Component *existingTrackMap)
@@ -48,7 +46,6 @@ void LevelsMapScroller::removeOwnedMap(Component *existingTrackMap)
     {
         this->removeChildComponent(existingTrackMap);
         this->trackMaps.removeObject(existingTrackMap);
-
         this->resized();
     }
 }

@@ -323,7 +323,7 @@ void VelocityProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBea
     {
         this->rollFirstBeat = firstBeat;
         this->rollLastBeat = lastBeat;
-        this->resized();
+        //this->resized(); // seems to cause glitches sometimes?
     }
 }
 
@@ -331,7 +331,13 @@ void VelocityProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
-    this->resized();
+    //this->resized(); // seems to cause glitches sometimes?
+}
+
+void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
+{
+    this->activeClip = clip;
+    this->triggerAsyncUpdate();
 }
 
 //===----------------------------------------------------------------------===//

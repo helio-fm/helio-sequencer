@@ -59,8 +59,9 @@ public:
     void onChangeTrackProperties(MidiTrack *const track) override;
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewEditableScope(MidiTrack *const track, const Clip &clip, bool) override;
 
 private:
 
@@ -77,6 +78,9 @@ private:
 
     HybridRoll &roll;
     ProjectNode &project;
+
+    Clip activeClip;
+    Colour baseColour;
 
     using SequenceSet = FlatHashSet<Note, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceSet>, ClipHash>;

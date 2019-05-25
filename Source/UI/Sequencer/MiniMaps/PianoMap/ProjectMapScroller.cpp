@@ -41,8 +41,6 @@ ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<Hybr
 
     this->screenRange.reset(new ProjectMapScrollerScreen(*this));
     this->addAndMakeVisible(this->screenRange.get());
-
-    this->resized();
 }
 
 ProjectMapScroller::~ProjectMapScroller()
@@ -74,8 +72,6 @@ void ProjectMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToF
         this->helperRectangle->toFront(false);
         this->screenRange->toFront(false);
     }
-
-    this->resized();
 }
 
 void ProjectMapScroller::removeOwnedMap(Component *existingTrackMap)

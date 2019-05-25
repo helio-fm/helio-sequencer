@@ -77,12 +77,11 @@ public:
         this->setPaintingIsUnclipped(false);
 
         this->addAndMakeVisible(this->pianoViewport);
-        this->addAndMakeVisible(this->patternViewport);
+        this->addChildComponent(this->patternViewport); // invisible by default
         this->addAndMakeVisible(this->mapScroller);
+        this->addChildComponent(this->levelsScroller); // invisible by default
 
-        // Default state
         this->patternRoll->setEnabled(false);
-        this->patternViewport->setVisible(false);
     }
 
     inline bool isPatternMode() const noexcept
@@ -108,19 +107,31 @@ public:
         this->startTimerHz(60);
     }
 
+    void showProjectMap()
+    {
+        this->mapScroller->setVisible(true);
+        this->mapScroller->setEnabled(true);
+        this->levelsScroller->setVisible(false);
+        this->levelsScroller->setEnabled(false);
+    }
+
+    void showLevelsMap()
+    {
+        this->levelsScroller->setVisible(true);
+        this->levelsScroller->setEnabled(true);
+        this->mapScroller->setVisible(false);
+        this->mapScroller->setEnabled(false);
+    }
+
     void resized() override
     {
-        jassert(this->pianoRoll);
-        jassert(this->pianoViewport);
-        jassert(this->patternRoll);
-        jassert(this->patternViewport);
-        jassert(this->mapScroller);
-
         this->updateAnimatedBounds();
 
         Rectangle<int> r(this->getLocalBounds());
-        const int scrollerHeight = MainLayout::getScrollerHeight();
-        this->mapScroller->setBounds(r.removeFromBottom(scrollerHeight));
+        const auto scrollerRect = r.removeFromBottom(MainLayout::getScrollerHeight());
+
+        this->mapScroller->setBounds(scrollerRect);
+        this->levelsScroller->setBounds(scrollerRect);
 
         if ((this->pianoRoll->getBarWidth() * this->pianoRoll->getNumBars()) < this->getWidth())
         {
@@ -136,6 +147,8 @@ public:
         this->pianoRoll->resized();
         this->patternRoll->resized();
     }
+
+private:
 
     void updateAnimatedBounds()
     {
@@ -179,8 +192,6 @@ public:
 #endif
     }
 
-private:
-
     void timerCallback() override
     {
         this->animationPosition += this->animationDirection * this->animationSpeed;
@@ -196,11 +207,13 @@ private:
             { 
                 this->pianoRoll->setVisible(false);
                 this->pianoViewport->setVisible(false);
+                this->showProjectMap();
             }
             else
             {
                 this->patternRoll->setVisible(false);
                 this->patternViewport->setVisible(false);
+                this->showLevelsMap();
             }
 
             // Push to either 0 or 1:
@@ -273,10 +286,14 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
 
     this->mapScroller.reset(new ProjectMapScroller(this->project.getTransport(), this->pianoRoll.get()));
     this->mapScroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
-    this->mapScroller->addOwnedMap(new AnnotationsProjectMap(this->project, *this->pianoRoll, AnnotationsProjectMap::Small), false);
-    this->mapScroller->addOwnedMap(new TimeSignaturesProjectMap(this->project, *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
-    //this->mapScroller->addOwnedMap(new KeySignaturesProjectMap(this->project, *this->pianoRoll, KeySignaturesProjectMap::Small), false);
-    //this->mapScroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
+    this->mapScroller->addOwnedMap(new AnnotationsProjectMap(this->project,
+        *this->pianoRoll, AnnotationsProjectMap::Small), false);
+    this->mapScroller->addOwnedMap(new TimeSignaturesProjectMap(this->project,
+        *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
+    //this->mapScroller->addOwnedMap(new KeySignaturesProjectMap(this->project,
+    //    *this->pianoRoll, KeySignaturesProjectMap::Small), false);
+    //this->mapScroller->addOwnedMap(new AutomationTrackMap(this->project,
+    //    *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->levelsScroller.reset(new LevelsMapScroller(this->pianoRoll.get()));
     this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll));
@@ -284,6 +301,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
     this->pianoRoll->addRollListener(this->mapScroller.get());
+    this->pianoRoll->addRollListener(this->levelsScroller.get());
 
     this->patternRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
     this->patternViewport->setViewedComponent(this->patternRoll.get(), false);
@@ -293,7 +311,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     const int defaultY = (this->pianoRoll->getHeight() / 3);
     this->pianoViewport->setViewPosition(this->pianoViewport->getViewPositionX(), defaultY);
     
-    // create a container with 2 editors
+    // create a container with 2 editors and 2 types of project map scroller
     this->rollContainer.reset(new RollsSwitchingProxy(this->pianoRoll.get(), this->patternRoll.get(),
         this->pianoViewport.get(), this->patternViewport.get(),
         this->mapScroller.get(), this->levelsScroller.get()));

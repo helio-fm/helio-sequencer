@@ -66,7 +66,7 @@ private:
 
     ProjectNode &project;
     WeakReference<MidiSequence> sequence;
-    FlatHashSet<Note, MidiEventHash> componentsMap;
+    FlatHashSet<Note, MidiEventHash> displayedNotes;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoClipComponent)
 };
