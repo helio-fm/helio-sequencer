@@ -262,6 +262,11 @@ void PianoProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 
 void PianoProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
 {
+    if (this->activeClip == clip)
+    {
+        return;
+    }
+
     this->activeClip = clip;
     this->triggerAsyncUpdate();
 }

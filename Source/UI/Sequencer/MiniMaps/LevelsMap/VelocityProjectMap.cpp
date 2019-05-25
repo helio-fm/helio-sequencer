@@ -29,10 +29,10 @@
 #include "ColourIDs.h"
 
 #define VELOCITY_MAP_BULK_REPAINT_START \
-    this->setVisible(false);
+    if (this->isEnabled()) { this->setVisible(false); }
 
 #define VELOCITY_MAP_BULK_REPAINT_END \
-    this->setVisible(true);
+    if (this->isEnabled()) { this->setVisible(true); }
 
 class VelocityMapNoteComponent final : public Component
 {
@@ -43,23 +43,32 @@ public:
         clip(clip)
     {
         this->updateColour();
-        this->setInterceptsMouseClicks(false, false);
+        this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
     }
 
-    inline int getKey() const noexcept { return jlimit(0, 128, this->note.getKey() + this->clip.getKey()); }
-    inline float getBeat() const noexcept { return this->note.getBeat() + this->clip.getBeat(); }
-    inline float getLength() const noexcept { return this->note.getLength(); }
-    inline float getVelocity() const noexcept { return this->note.getVelocity() * this->clip.getVelocity(); }
-    inline const Note &getNote() const noexcept { return this->note; }
+    inline float getBeat() const noexcept
+    {
+        return this->note.getBeat() + this->clip.getBeat();
+    }
+
+    inline float getLength() const noexcept
+    {
+        return this->note.getLength();
+    }
+
+    inline float getVelocity() const noexcept
+    {
+        return this->note.getVelocity() * this->clip.getVelocity();
+    }
 
     inline void updateColour()
     {
         const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
         this->colour = this->note.getTrackColour().
-            interpolatedWith(baseColour, .5f).
-            withAlpha(.25f);
+            interpolatedWith(baseColour, this->isEditable ? .4f : .5f).
+            withAlpha(this->isEditable ? 0.7f : .1f);
     }
 
     void setRealBounds(float x, int y, float w, int h) noexcept
@@ -68,10 +77,48 @@ public:
         this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
     }
 
+    void setEditable(bool editable)
+    {
+        if (this->isEditable == editable)
+        {
+            return;
+        }
+
+        this->isEditable = editable;
+
+        this->setEnabled(editable);
+        this->updateColour();
+
+        if (editable)
+        {
+            // toBack() and toFront() use indexOf(this) so calling them sucks
+            this->toFront(false);
+        }
+    }
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
     void paint(Graphics &g) noexcept override
     {
         g.setColour(this->colour);
         g.fillRect(this->dx, 0.f, float(this->getWidth()), float(this->getHeight()));
+    }
+
+    void mouseDown(const MouseEvent &e) override
+    {
+
+    }
+
+    void mouseDrag(const MouseEvent &e) override
+    {
+
+    }
+
+    void mouseUp(const MouseEvent &e) override
+    {
+
     }
 
 private:
@@ -81,6 +128,8 @@ private:
 
     Colour colour;
     float dx = 0.f;
+    bool isEditable = true;
+
 };
 
 
@@ -225,7 +274,7 @@ void VelocityProjectMap::onAddClip(const Clip &clip)
 
     for (const auto &e : *referenceMap)
     {
-        const auto &note = e.second.get()->getNote();
+        const auto &note = e.first;
         const auto noteComponent = new VelocityMapNoteComponent(note, clip);
         (*sequenceMap)[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
         this->addAndMakeVisible(noteComponent);
@@ -282,6 +331,7 @@ void VelocityProjectMap::onChangeTrackProperties(MidiTrack *const track)
     }
 
     VELOCITY_MAP_BULK_REPAINT_END
+
     this->repaint();
 }
 
@@ -336,8 +386,26 @@ void VelocityProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 
 void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
 {
+    if (this->activeClip == clip)
+    {
+        return;
+    }
+
     this->activeClip = clip;
-    this->triggerAsyncUpdate();
+
+    VELOCITY_MAP_BULK_REPAINT_START
+
+    for (const auto &c : this->patternMap)
+    {
+        const bool editable = this->activeClip == c.first;
+        const auto &componentsMap = *c.second.get();
+        for (const auto &e : componentsMap)
+        {
+            e.second->setEditable(editable);
+        }
+    }
+
+    VELOCITY_MAP_BULK_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//
