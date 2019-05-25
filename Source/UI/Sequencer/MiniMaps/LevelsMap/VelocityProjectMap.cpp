@@ -67,13 +67,14 @@ public:
     {
         const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
         this->colour = this->note.getTrackColour().
-            interpolatedWith(baseColour, this->isEditable ? .4f : .5f).
-            withAlpha(this->isEditable ? 0.7f : .1f);
+            interpolatedWith(baseColour, this->isEditable ? .45f : .55f).
+            withAlpha(this->isEditable ? 0.6f : .15f);
     }
 
     void setRealBounds(float x, int y, float w, int h) noexcept
     {
         this->dx = x - floorf(x);
+        this->dw = ceilf(w) - w;
         this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
     }
 
@@ -103,7 +104,8 @@ public:
     void paint(Graphics &g) noexcept override
     {
         g.setColour(this->colour);
-        g.fillRect(this->dx, 0.f, float(this->getWidth()), float(this->getHeight()));
+        g.fillRect(this->dx, 0.f, float(this->getWidth()) - this->dw, float(this->getHeight()));
+        g.fillRect(this->dx, 0.f, float(this->getWidth()) - this->dw, 2.f);
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -128,6 +130,7 @@ private:
 
     Colour colour;
     float dx = 0.f;
+    float dw = 0.f;
     bool isEditable = true;
 
 };

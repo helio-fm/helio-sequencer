@@ -71,9 +71,9 @@ void Headline::paint (Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-    g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
     //[/UserPaint]
 }
 

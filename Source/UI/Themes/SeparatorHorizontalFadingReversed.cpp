@@ -92,14 +92,14 @@ void SeparatorHorizontalFadingReversed::paint (Graphics& g)
                                        Colour (0x00ffffff),
                                        0.0f, 0.0f,
                                        true));
-    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+    g.fillRect(0, 0, this->getWidth(), 1);
 
     g.setGradientFill (ColourGradient (Colour (0x35000000),
                                        static_cast<float> ((getWidth() / 2)), 0.0f,
                                        Colour (0x00000000),
                                        0.0f, 0.0f,
                                        true));
-    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    g.fillRect(0, 1, this->getWidth(), 1);
 
     //[/UserPaint]
 }

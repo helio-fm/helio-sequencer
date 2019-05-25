@@ -70,10 +70,10 @@ void LevelsMapScroller::paint(Graphics &g)
     g.fillRect(this->getLocalBounds());
 
     g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineDark));
-    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+    g.fillRect(0, 0, this->getWidth(), 1);
 
     g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineLight));
-    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    g.fillRect(0, 1, this->getWidth(), 1);
 }
 
 void LevelsMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)

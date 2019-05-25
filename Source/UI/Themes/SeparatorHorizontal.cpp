@@ -77,10 +77,10 @@ void SeparatorHorizontal::paint (Graphics& g)
 #endif
 
     g.setColour(Colours::black.withAlpha(11.f / 255.f * this->alphaFactor));
-    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+    g.fillRect(0, 0, this->getWidth(), 1);
 
     g.setColour(Colours::white.withAlpha(9.f / 255.f * this->alphaFactor));
-    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    g.fillRect(0, 1, this->getWidth(), 1);
 
     //[/UserPaint]
 }

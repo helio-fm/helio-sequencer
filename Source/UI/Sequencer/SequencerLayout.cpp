@@ -47,11 +47,10 @@
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
-#define MAX_NUM_SPLITSCREEN_EDITORS 2
 #define MINIMUM_ROLLS_HEIGHT 250
 #define VERTICAL_ROLLS_LAYOUT 1
 #define ROLLS_ANIMATION_START_SPEED 0.35f
-#define MAPS_ANIMATION_START_SPEED 0.2f
+#define MAPS_ANIMATION_START_SPEED 0.25f
 
 //===----------------------------------------------------------------------===//
 // Rolls container responsible for switching between piano and pattern roll
@@ -140,18 +139,6 @@ public:
         this->mapScroller->setVisible(true);
         this->resized();
         this->startTimer(Timers::maps, 1000 / 60);
-    }
-
-    void showProjectMap()
-    {
-        this->mapScroller->setVisible(true);
-        this->levelsScroller->setVisible(false);
-    }
-
-    void showLevelsMap()
-    {
-        this->levelsScroller->setVisible(true);
-        this->mapScroller->setVisible(false);
     }
 
     void resized() override

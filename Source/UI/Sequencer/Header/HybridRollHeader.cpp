@@ -417,32 +417,32 @@ void HybridRollHeader::paint(Graphics &g)
     g.setColour(this->barColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 14), float(this->getHeight() - 1));
+        g.fillRect(floorf(f), float(this->getHeight() - 13), 1.f, 12.f);
     }
 
     g.setColour(this->barShadeColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawVerticalLine(int(floorf(f)) + 1, float(this->getHeight() - 13), float(this->getHeight() - 1));
+        g.fillRect(floorf(f + 1), float(this->getHeight() - 12), 1.f, 11.f);
     }
 
     g.setColour(this->beatColour);
     for (const auto f : this->roll.getVisibleBeats())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 8), float(this->getHeight() - 1));
+        g.fillRect(floorf(f), float(this->getHeight() - 8), 1.f, 7.f);
     }
 
     g.setColour(this->snapColour);
     for (const auto f : this->roll.getVisibleSnaps())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 4), float(this->getHeight() - 1));
+        g.fillRect(floorf(f), float(this->getHeight() - 4), 1.f, 3.f);
     }
 
     g.setColour(this->bevelLightColour);
-    g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
 
     g.setColour(this->bevelDarkColour);
-    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
 }
 
 void HybridRollHeader::resized()

@@ -1255,31 +1255,31 @@ void HybridRoll::paint(Graphics &g)
 {
     this->computeVisibleBeatLines();
 
-    const float paintStartY = float(this->viewport.getViewPositionY());
-    const float paintEndY = paintStartY + this->viewport.getViewHeight();
+    const float y = float(this->viewport.getViewPositionY());
+    const float h = float(this->viewport.getViewHeight());
 
     g.setColour(this->barLineColour);
     for (const auto &f : this->visibleBars)
     {
-        g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
+        g.fillRect(floorf(f), y, 1.f, h);
     }
 
     g.setColour(this->barLineBevelColour);
     for (const auto &f : this->visibleBars)
     {
-        g.drawVerticalLine(int(floorf(f)) + 1, paintStartY, paintEndY);
+        g.fillRect(floorf(f + 1.f), y, 1.f, h);
     }
 
     g.setColour(this->beatLineColour);
     for (const auto &f : this->visibleBeats)
     {
-        g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
+        g.fillRect(floorf(f), y, 1.f, h);
     }
     
     g.setColour(this->snapLineColour);
     for (const auto &f : this->visibleSnaps)
     {
-        g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
+        g.fillRect(floorf(f), y, 1.f, h);
     }
 }
 
