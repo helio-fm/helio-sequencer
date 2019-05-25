@@ -52,10 +52,6 @@ void MidiEventComponent::setActive(bool val, bool force)
     {
         this->toFront(false);
     }
-    else
-    {
-        this->toBack();
-    }
 }
 
 void MidiEventComponent::setGhostMode()
