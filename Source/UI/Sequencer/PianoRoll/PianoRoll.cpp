@@ -1078,8 +1078,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->showChordTool(ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
-        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
+        this->project.switchMiniMaps();
+        // TODO if shift is pressed:
+        //if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        //HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
         break;
     case CommandIDs::TweakVolumeRandom:
         HYBRID_ROLL_BULK_REPAINT_START

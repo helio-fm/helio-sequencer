@@ -77,6 +77,7 @@ public:
 
     void safeRename(const String &newName, bool sendNotifications) override;
 
+    void switchMiniMaps();
     void showPatternEditor(WeakReference<TreeNode> source);
     void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
     WeakReference<TreeNode> getLastShownTrack() const noexcept;

@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 
-#include "MainLayout.h"
+#include "SequencerLayout.h"
 #include "TreeNode.h"
 #include "SerializationKeys.h"
 #include "GenericAudioMonitorComponent.h"
@@ -41,7 +41,7 @@
 
 static inline constexpr int getAudioMonitorHeight()
 {
-    return MainLayout::getScrollerHeight() - 2;
+    return SequencerLayout::getPianoMapHeight() - 2;
 }
 
 //[/MiscUserDefs]

@@ -44,9 +44,13 @@ public:
     explicit SequencerLayout(ProjectNode &parentProject);
     ~SequencerLayout() override;
 
+    static constexpr int getPianoMapHeight() { return 72; }
+    static constexpr int getLevelsMapHeight() { return 128; }
+
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
-    
+    void switchMiniMaps();
+
     HybridRoll *getRoll() const;
 
     //===------------------------------------------------------------------===//

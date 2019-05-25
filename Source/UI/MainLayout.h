@@ -37,7 +37,6 @@ public:
     void restoreLastOpenedPage();
 
     Rectangle<int> getPageBounds() const;
-    static constexpr int getScrollerHeight() { return (40 + 32); }
     
     //===------------------------------------------------------------------===//
     // Pages and headline

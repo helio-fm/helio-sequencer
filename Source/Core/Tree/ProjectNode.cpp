@@ -265,6 +265,11 @@ void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack,
     }
 }
 
+void ProjectNode::switchMiniMaps()
+{
+    this->sequencerLayout->switchMiniMaps();
+}
+
 WeakReference<TreeNode> ProjectNode::getLastShownTrack() const noexcept
 {
     return this->lastShownTrack;
