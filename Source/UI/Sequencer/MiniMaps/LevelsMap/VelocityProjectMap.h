@@ -74,8 +74,6 @@ private:
     float rollFirstBeat = 0.f;
     float rollLastBeat = 0.f;
 
-    float componentHeight = 1.f;
-
     HybridRoll &roll;
     ProjectNode &project;
 

@@ -67,8 +67,8 @@ public:
     {
         const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
         this->colour = this->note.getTrackColour().
-            interpolatedWith(baseColour, this->isEditable ? .45f : .55f).
-            withAlpha(this->isEditable ? 0.6f : .15f);
+            interpolatedWith(baseColour, this->isEditable ? .4f : .55f).
+            withAlpha(this->isEditable ? 0.7f : .1f);
     }
 
     void setRealBounds(float x, int y, float w, int h) noexcept
@@ -94,6 +94,7 @@ public:
         {
             // toBack() and toFront() use indexOf(this) so calling them sucks
             this->toFront(false);
+            this->setMouseCursor(MouseCursor::UpDownResizeCursor);
         }
     }
 
@@ -108,31 +109,51 @@ public:
         g.fillRect(this->dx, 0.f, float(this->getWidth()) - this->dw, 2.f);
     }
 
+    bool hitTest(int, int y) noexcept override
+    {
+        // can be dragged individually by header line
+        return this->isEditable && y < 4;
+    }
+
     void mouseDown(const MouseEvent &e) override
     {
-
+        if (e.mods.isLeftButtonDown())
+        {
+            this->note.getSequence()->checkpoint();
+            this->velocityAnchor = this->getVelocity();
+        }
     }
 
     void mouseDrag(const MouseEvent &e) override
     {
+        // FIXME: remove magic number (which is a scroller height)
+        const auto newVelocity = jlimit(0.f, 1.f,
+            this->velocityAnchor - float(e.getDistanceFromDragStartY()) / 128.f);
 
-    }
-
-    void mouseUp(const MouseEvent &e) override
-    {
-
+        static_cast<PianoSequence *>(this->note.getSequence())->
+            change(this->note, this->note.withVelocity(newVelocity), true);
     }
 
 private:
+
+    VelocityProjectMap *getParentMap() const
+    {
+        jassert(this->getParentComponent());
+        return static_cast<VelocityProjectMap *>(this->getParentComponent());
+    }
 
     const Note &note;
     const Clip &clip;
 
     Colour colour;
+
     float dx = 0.f;
     float dw = 0.f;
+
+    float velocityAnchor = 0.f;
     bool isEditable = true;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityMapNoteComponent)
 };
 
 
@@ -140,14 +161,16 @@ VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, HybridRoll &p
     project(parentProject),
     roll(parentRoll)
 {
-    this->setInterceptsMouseClicks(false, false);
+    this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
     this->reloadTrackMap();
     this->project.addListener(this);
+    this->roll.getLassoSelection().addChangeListener(this);
 }
 
 VelocityProjectMap::~VelocityProjectMap()
 {
+    this->roll.getLassoSelection().removeChangeListener(this);
     this->project.removeListener(this);
 }
 
@@ -157,8 +180,6 @@ VelocityProjectMap::~VelocityProjectMap()
 
 void VelocityProjectMap::resized()
 {
-    this->componentHeight = float(this->getHeight()) / 128.f; // TODO remove hard-coded value
-    
     VELOCITY_MAP_BULK_REPAINT_START
 
     for (const auto &c : this->patternMap)
@@ -472,7 +493,9 @@ void VelocityProjectMap::applyNoteBounds(VelocityMapNoteComponent *nc)
 
     const float x = (mapWidth * (beat / projectLengthInBeats));
     const float w = (mapWidth * (nc->getLength() / projectLengthInBeats));
-    const int h = int(this->getHeight() * nc->getVelocity());
+
+    // at least 4 pixels are visible for 0 volume events:
+    const int h = jmax(4, int(this->getHeight() * nc->getVelocity()));
     nc->setRealBounds(x, this->getHeight() - h, jmax(1.f, w), h);
 }
 
