@@ -114,11 +114,9 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
 
-    this->topShadow.reset(new ShadowDownwards(Normal));
-    this->bottomShadow.reset(new ShadowUpwards(Normal));
-
     this->header.reset(new HybridRollHeader(this->project.getTransport(), *this, this->viewport));
 
+    this->headerShadow.reset(new ShadowDownwards(Normal));
     if (hasAnnotationsTrack)
     {
         this->annotationsTrack.reset(new AnnotationsProjectMap(this->project, *this, AnnotationsProjectMap::Large));
@@ -140,9 +138,8 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->lassoComponent->setWantsKeyboardFocus(false);
     this->lassoComponent->setFocusContainer(false);
 
-    this->addAndMakeVisible(this->topShadow.get());
-    this->addAndMakeVisible(this->bottomShadow.get());
     this->addAndMakeVisible(this->header.get());
+    this->addAndMakeVisible(this->headerShadow.get());
 
     if (this->annotationsTrack)
     {
@@ -1667,8 +1664,6 @@ void HybridRoll::updateBounds()
     }
 }
 
-static const int shadowSize = 15;
-
 void HybridRoll::updateChildrenBounds()
 {
     HYBRID_ROLL_BULK_REPAINT_START
@@ -1678,10 +1673,9 @@ void HybridRoll::updateChildrenBounds()
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();
 
-    this->topShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, shadowSize);
-    this->bottomShadow->setBounds(viewX, viewY + viewHeight - shadowSize, viewWidth, shadowSize);
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    
+    this->headerShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, HYBRID_ROLL_HEADER_SHADOW_SIZE);
+
     if (this->annotationsTrack)
     {
         this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
@@ -1722,9 +1716,8 @@ void HybridRoll::updateChildrenPositions()
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();
 
-    this->topShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
-    this->bottomShadow->setTopLeftPosition(viewX, viewY + viewHeight - shadowSize);
     this->header->setTopLeftPosition(0, viewY);
+    this->headerShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
 
     if (this->annotationsTrack)
     {

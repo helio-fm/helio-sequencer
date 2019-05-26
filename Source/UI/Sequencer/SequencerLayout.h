@@ -89,6 +89,7 @@ private:
 
     UniquePointer<ProjectMapScroller> mapScroller;
     UniquePointer<LevelsMapScroller> levelsScroller;
+    UniquePointer<Component> scrollerShadow;
 
     UniquePointer<PianoRoll> pianoRoll;
     UniquePointer<PatternRoll> patternRoll;

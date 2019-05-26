@@ -33,6 +33,7 @@
 #include "SequencerSidebarLeft.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
+#include "ShadowUpwards.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
 #include "KnifeToolHelper.h"
@@ -51,6 +52,7 @@
 #define VERTICAL_ROLLS_LAYOUT 1
 #define ROLLS_ANIMATION_START_SPEED 0.35f
 #define MAPS_ANIMATION_START_SPEED 0.25f
+#define SCROLLER_SHADOW_SIZE 15
 
 //===----------------------------------------------------------------------===//
 // Rolls container responsible for switching between piano and pattern roll
@@ -71,13 +73,15 @@ public:
         Viewport *targetViewport1,
         Viewport *targetViewport2,
         ProjectMapScroller *targetMapScroller,
-        LevelsMapScroller *targetLevelsScroller) :
+        LevelsMapScroller *targetLevelsScroller,
+        Component *scrollerShadow) :
         pianoRoll(targetRoll1),
         pianoViewport(targetViewport1),
         patternRoll(targetRoll2),
         patternViewport(targetViewport2),
-        mapScroller(targetMapScroller),
-        levelsScroller(targetLevelsScroller)
+        pianoScroller(targetMapScroller),
+        levelsScroller(targetLevelsScroller),
+        scrollerShadow(scrollerShadow)
     {
         this->setInterceptsMouseClicks(false, true);
         this->setPaintingIsUnclipped(false);
@@ -85,7 +89,8 @@ public:
         this->addAndMakeVisible(this->pianoViewport);
         this->addChildComponent(this->patternViewport); // invisible by default
         this->addChildComponent(this->levelsScroller); // invisible by default, behind piano map
-        this->addAndMakeVisible(this->mapScroller);
+        this->addAndMakeVisible(this->pianoScroller);
+        this->addAndMakeVisible(this->scrollerShadow);
 
         this->patternRoll->setEnabled(false);
     }
@@ -116,7 +121,7 @@ public:
     {
         this->rollsAnimation.start(ROLLS_ANIMATION_START_SPEED);
         const bool patternMode = this->isPatternMode();
-        this->mapScroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
+        this->pianoScroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
         // Disabling inactive prevents it from receiving keyboard events:
         this->patternRoll->setEnabled(patternMode);
         this->pianoRoll->setEnabled(!patternMode);
@@ -134,9 +139,9 @@ public:
         const bool levelsMode = this->isLevelsMapMode();
         // Disabling inactive prevents it from receiving keyboard events:
         this->levelsScroller->setEnabled(levelsMode);
-        this->mapScroller->setEnabled(!levelsMode);
+        this->pianoScroller->setEnabled(!levelsMode);
         this->levelsScroller->setVisible(true);
-        this->mapScroller->setVisible(true);
+        this->pianoScroller->setVisible(true);
         this->resized();
         this->startTimer(Timers::maps, 1000 / 60);
     }
@@ -214,8 +219,11 @@ private:
         const int pianoMapPos = int(this->mapsAnimation.getPosition() * SequencerLayout::getPianoMapHeight());
         const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
 
-        this->mapScroller->setBounds(pianoRect.translated(0, pianoMapPos));
+        this->pianoScroller->setBounds(pianoRect.translated(0, pianoMapPos));
         this->levelsScroller->setBounds(levelsRect.translated(0, levelsFullOffset - levelsMapPos));
+
+        this->scrollerShadow->setBounds(0, this->levelsScroller->getY() - SCROLLER_SHADOW_SIZE,
+            this->getWidth(), SCROLLER_SHADOW_SIZE);
     }
 
     void updateAnimatedMapsPositions()
@@ -226,8 +234,10 @@ private:
         const int pianoMapPos = int(this->mapsAnimation.getPosition() * SequencerLayout::getPianoMapHeight());
         const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
 
-        this->mapScroller->setTopLeftPosition(0, pianoMapY + pianoMapPos);
+        this->pianoScroller->setTopLeftPosition(0, pianoMapY + pianoMapPos);
         this->levelsScroller->setTopLeftPosition(0, pianoMapY - levelsMapPos);
+
+        this->scrollerShadow->setTopLeftPosition(0, pianoMapY - levelsMapPos - SCROLLER_SHADOW_SIZE);
     }
 
     void timerCallback(int timerId) override
@@ -265,7 +275,7 @@ private:
 
                 if (this->isLevelsMapMode())
                 {
-                    this->mapScroller->setVisible(false);
+                    this->pianoScroller->setVisible(false);
                 }
                 else
                 {
@@ -290,8 +300,9 @@ private:
     SafePointer<HybridRoll> patternRoll;
     SafePointer<Viewport> patternViewport;
 
-    SafePointer<ProjectMapScroller> mapScroller;
+    SafePointer<ProjectMapScroller> pianoScroller;
     SafePointer<LevelsMapScroller> levelsScroller;
+    SafePointer<Component> scrollerShadow;
 
     class ToggleAnimation final
     {
@@ -397,6 +408,8 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->levelsScroller.reset(new LevelsMapScroller(this->pianoRoll.get()));
     this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll));
 
+    this->scrollerShadow.reset(new ShadowUpwards(Normal));
+
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
     this->pianoRoll->addRollListener(this->mapScroller.get());
@@ -413,7 +426,8 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     // create a container with 2 editors and 2 types of project map scroller
     this->rollContainer.reset(new RollsSwitchingProxy(this->pianoRoll.get(), this->patternRoll.get(),
         this->pianoViewport.get(), this->patternViewport.get(),
-        this->mapScroller.get(), this->levelsScroller.get()));
+        this->mapScroller.get(), this->levelsScroller.get(),
+        this->scrollerShadow.get()));
     
     // add sidebars
     this->rollToolsSidebar.reset(new SequencerSidebarRight(this->project));
@@ -442,8 +456,11 @@ SequencerLayout::~SequencerLayout()
     this->rollContainer = nullptr;
 
     this->patternRoll->removeRollListener(this->mapScroller.get());
+    this->pianoRoll->removeRollListener(this->levelsScroller.get());
     this->pianoRoll->removeRollListener(this->mapScroller.get());
     
+    this->scrollerShadow = nullptr;
+    this->levelsScroller = nullptr;
     this->mapScroller = nullptr;
 
     this->patternRoll = nullptr;

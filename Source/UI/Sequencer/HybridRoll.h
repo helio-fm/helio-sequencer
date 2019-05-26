@@ -54,6 +54,7 @@ class TimelineWarningMarker;
 
 #define HYBRID_ROLL_MAX_BAR_WIDTH (192)
 #define HYBRID_ROLL_HEADER_HEIGHT (40)
+#define HYBRID_ROLL_HEADER_SHADOW_SIZE (15)
 
 #define DEFAULT_NUM_BARS 8
 
@@ -369,14 +370,12 @@ protected:
     ComponentFader fader;
 
     UniquePointer<HybridRollHeader> header;
+    UniquePointer<Component> headerShadow;
     UniquePointer<Playhead> playhead;
     
     UniquePointer<AnnotationsProjectMap> annotationsTrack;
     UniquePointer<TimeSignaturesProjectMap> timeSignaturesTrack;
     UniquePointer<KeySignaturesProjectMap> keySignaturesTrack;
-
-    UniquePointer<Component> topShadow;
-    UniquePointer<Component> bottomShadow;
 
     UniquePointer<SelectionComponent> lassoComponent;
     
