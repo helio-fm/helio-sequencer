@@ -107,8 +107,12 @@ VCS::Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, c
 {
     if (auto revision = this->getRevisionById(this->rootRevision, id))
     {
-        revision->deserializeDeltas(data);
-        this->sendChangeMessage();
+        if (revision->isShallowCopy())
+        {
+            revision->deserializeDeltas(data);
+            this->sendChangeMessage();
+        }
+
         return revision;
     }
 
@@ -307,16 +311,29 @@ void VersionControl::fetchRevisionsIfNeeded()
     }
 }
 
-void VersionControl::syncRevision(const VCS::Revision::Ptr revision)
+void VersionControl::pushBranch(const VCS::Revision::Ptr leaf)
+{
+    this->syncBranch(leaf, false);
+}
+
+void VersionControl::pullBranch(const VCS::Revision::Ptr leaf)
+{
+    this->syncBranch(leaf, true);
+}
+
+void VersionControl::syncBranch(const VCS::Revision::Ptr leaf, bool onlyShallowRevisions)
 {
     // we need to sync the whole branch, i.e. all parents of that revision:
-    Array<String> subtreeToSync = { revision->getUuid() };
+    Array<String> subtreeToSync = { leaf->getUuid() };
 
-    WeakReference<VCS::Revision> it = revision.get();
+    WeakReference<VCS::Revision> it = leaf.get();
     while (it->getParent() != nullptr)
     {
         it = it->getParent();
-        subtreeToSync.add(it->getUuid());
+        if (!onlyShallowRevisions || it->isShallowCopy())
+        {
+            subtreeToSync.add(it->getUuid());
+        }
     }
 
     App::Network().getProjectSyncService()->syncRevisions(this,

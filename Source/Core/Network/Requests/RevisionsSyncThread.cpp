@@ -163,28 +163,41 @@ void RevisionsSyncThread::run()
         return;
     }
 
-    // if anything is needed to pull, fetch all data for each, then update and callback
-    for (const auto &dto : newRemoteRevisions)
+    Array<String> remoteRevisionsToPull;
+    if (!this->idsToSync.isEmpty())
     {
-        if (this->idsToSync.isEmpty() || // if empty, sync all
-            this->idsToSync.contains(dto.getId()))
+        // if told explicitly to sync some known revisions, only add them
+        // (assuming they are all shallow copies, if you're getting exception
+        // from updateShallowRevisionData() below, make sure to pass the correct ids):
+        remoteRevisionsToPull.addArray(this->idsToSync);
+    }
+    else
+    {
+        // otherwise pull all new revisions, if any:
+        for (const auto &dto : newRemoteRevisions)
         {
-            const String revisionRoute(ApiRoutes::projectRevision
-                .replace(":projectId", this->projectId)
-                .replace(":revisionId", dto.getId()));
-
-            const BackendRequest revisionRequest(revisionRoute);
-            this->response = revisionRequest.get();
-            if (!this->response.is2xx())
-            {
-                DBG("Failed to fetch revision data: " + this->response.getErrors().getFirst());
-                callbackOnMessageThread(RevisionsSyncThread, onSyncFailed, self->response.getErrors());
-                return;
-            }
-
-            const RevisionDto fullRevision(this->response.getBody());
-            const auto revision = this->vcs->updateShallowRevisionData(fullRevision.getId(), fullRevision.getData());
+            remoteRevisionsToPull.addIfNotAlreadyThere(dto.getId());
         }
+    }
+
+    // if anything is needed to pull, fetch all data for each, then update and callback
+    for (const auto &revisionId : remoteRevisionsToPull)
+    {
+        const String revisionRoute(ApiRoutes::projectRevision
+            .replace(":projectId", this->projectId)
+            .replace(":revisionId", revisionId));
+
+        const BackendRequest revisionRequest(revisionRoute);
+        this->response = revisionRequest.get();
+        if (!this->response.is2xx())
+        {
+            DBG("Failed to fetch revision data: " + this->response.getErrors().getFirst());
+            callbackOnMessageThread(RevisionsSyncThread, onSyncFailed, self->response.getErrors());
+            return;
+        }
+
+        const RevisionDto fullRevision(this->response.getBody());
+        const auto revision = this->vcs->updateShallowRevisionData(fullRevision.getId(), fullRevision.getData());
     }
 
     // if anything is needed to push,
