@@ -28,7 +28,8 @@ class VelocityMapNoteComponent;
 class VelocityProjectMap :
     public Component,
     public ProjectListener,
-    public AsyncUpdater
+    public AsyncUpdater, // triggers batch repaints for children
+    public ChangeListener // subscribes on parent roll's lasso changes
 {
 public:
 
@@ -63,6 +64,8 @@ public:
     void onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool) override;
 
 private:
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
     void applyNoteBounds(VelocityMapNoteComponent *nc);
     void reloadTrackMap();

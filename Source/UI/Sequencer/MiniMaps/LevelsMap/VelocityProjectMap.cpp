@@ -24,6 +24,8 @@
 #include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
+#include "Lasso.h"
+#include "NoteComponent.h"
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 #include "ColourIDs.h"
@@ -426,6 +428,43 @@ void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip 
         for (const auto &e : componentsMap)
         {
             e.second->setEditable(editable);
+        }
+    }
+
+    VELOCITY_MAP_BULK_REPAINT_END
+}
+
+void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
+{
+    // for convenience, let's set selected items as editable
+
+    jassert(dynamic_cast<Lasso *>(source));
+    const auto *selection = static_cast<Lasso *>(source);
+
+    const auto *activeMap = this->patternMap.at(this->activeClip).get();
+    jassert(activeMap);
+
+    VELOCITY_MAP_BULK_REPAINT_START
+
+    if (selection->getNumSelected() == 0)
+    {
+        for (const auto &e : *activeMap)
+        {
+            e.second->setEditable(true);
+        }
+    }
+    else
+    {
+        for (const auto &e : *activeMap)
+        {
+            e.second->setEditable(false);
+        }
+
+        for (const auto *e : *selection)
+        {
+            // assuming we've subscribed only on a piano roll's lasso changes
+            const auto *nc = static_cast<const NoteComponent *>(e);
+            activeMap->at(nc->getNote())->setEditable(true);
         }
     }
 
