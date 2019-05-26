@@ -361,8 +361,7 @@ private:
 //===----------------------------------------------------------------------===//
 
 SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
-    project(parentProject),
-    pianoRoll(nullptr)
+    project(parentProject)
 {
     this->setComponentID(ComponentIDs::sequencerLayoutId);
     this->setInterceptsMouseClicks(false, true);

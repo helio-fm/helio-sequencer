@@ -24,6 +24,7 @@
 class HybridRoll;
 class ProjectNode;
 class VelocityMapNoteComponent;
+class VelocityLevelDraggingHelper;
 
 class VelocityProjectMap :
     public Component,
@@ -41,6 +42,9 @@ public:
     //===------------------------------------------------------------------===//
 
     void resized() override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -85,6 +89,8 @@ private:
     using SequenceMap = FlatHashMap<Note, UniquePointer<VelocityMapNoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
+
+    UniquePointer<VelocityLevelDraggingHelper> dragHelper;
 
     void triggerBatchRepaintFor(VelocityMapNoteComponent *target);
     void handleAsyncUpdate() override;

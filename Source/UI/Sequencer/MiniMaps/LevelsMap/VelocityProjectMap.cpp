@@ -36,6 +36,10 @@
 #define VELOCITY_MAP_BULK_REPAINT_END \
     if (this->isEnabled()) { this->setVisible(true); }
 
+//===----------------------------------------------------------------------===//
+// Child level component
+//===----------------------------------------------------------------------===//
+
 class VelocityMapNoteComponent final : public Component
 {
 public:
@@ -158,6 +162,88 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityMapNoteComponent)
 };
 
+//===----------------------------------------------------------------------===//
+// Dragging helper
+//===----------------------------------------------------------------------===//
+
+class VelocityLevelDraggingHelper final : public Component
+{
+public:
+
+    VelocityLevelDraggingHelper(VelocityProjectMap &map) : map(map)
+    {
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colours::black);
+        g.strokePath(this->path, PathStrokeType(.5f));
+
+        g.setColour(Colours::white.withAlpha(0.55f));
+        g.fillPath(this->path);
+    }
+
+    void setStartPosition(const Point<float> &mousePos)
+    {
+        this->startPosition = mousePos.toDouble() / this->getParentSize();
+    }
+
+    void setEndPosition(const Point<float> &mousePos)
+    {
+        this->endPosition = mousePos.toDouble() / this->getParentSize();
+    }
+
+    void updateBounds()
+    {
+        const Point<double> parentSize(this->getParentSize());
+        const auto start = (this->startPosition * parentSize).toFloat();
+        const auto end = (this->endPosition * parentSize).toFloat();
+        const auto x1 = jmin(start.getX(), end.getX());
+        const auto x2 = jmax(start.getX(), end.getX());
+        const auto y1 = jmin(start.getY(), end.getY());
+        const auto y2 = jmax(start.getY(), end.getY());
+        const Point<float> startOffset(x1 - 2, y1 - 2);
+        this->line = { start, end };
+
+        this->path.clear();
+        path.startNewSubPath(end - startOffset);
+        path.lineTo(start - startOffset);
+        static Array<float> dashes(8.f, 4.f);
+        PathStrokeType(3.f).createDashedStroke(this->path, this->path,
+            dashes.getRawDataPointer(), dashes.size());
+
+        this->setBounds(int(x1) - 2, int(y1) - 2,
+            int(x2 - x1) + 2 * 2, int(y2 - y1) + 2 * 2);
+    }
+
+private:
+
+    VelocityProjectMap &map;
+
+    Point<double> startPosition;
+    Point<double> endPosition;
+
+    Line<float> line;
+    Path path;
+
+    const Point<double> getParentSize() const
+    {
+        if (const auto *p = this->getParentComponent())
+        {
+            return{ double(p->getWidth()), double(p->getHeight()) };
+        }
+
+        return{ 1.0, 1.0 };
+    }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityLevelDraggingHelper);
+};
+
+//===----------------------------------------------------------------------===//
+// The map itself
+//===----------------------------------------------------------------------===//
 
 VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
@@ -194,7 +280,41 @@ void VelocityProjectMap::resized()
         }
     }
 
+    if (this->dragHelper != nullptr)
+    {
+        this->dragHelper->updateBounds();
+    }
+
     VELOCITY_MAP_BULK_REPAINT_END
+}
+
+void VelocityProjectMap::mouseDown(const MouseEvent &e)
+{
+    if (e.mods.isLeftButtonDown())
+    {
+        this->dragHelper.reset(new VelocityLevelDraggingHelper(*this));
+        this->addAndMakeVisible(this->dragHelper.get());
+        this->dragHelper->setStartPosition(e.position);
+        this->dragHelper->setEndPosition(e.position);
+    }
+}
+
+void VelocityProjectMap::mouseDrag(const MouseEvent &e)
+{
+    if (this->dragHelper != nullptr)
+    {
+        this->dragHelper->setEndPosition(e.position);
+        this->dragHelper->updateBounds();
+    }
+}
+
+void VelocityProjectMap::mouseUp(const MouseEvent &e)
+{
+    if (this->dragHelper != nullptr)
+    {
+        Array<Note> notes;
+        this->dragHelper = nullptr;
+    }
 }
 
 //===----------------------------------------------------------------------===//
