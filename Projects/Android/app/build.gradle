@@ -65,7 +65,7 @@ android {
             }
             externalNativeBuild {
                 cmake {
-                    arguments "-DJUCE_BUILD_CONFIGURATION=RELEASE", "-DCMAKE_CXX_FLAGS_RELEASE=-O2", "-DCMAKE_C_FLAGS_RELEASE=-O2"
+                    arguments "-DJUCE_BUILD_CONFIGURATION=RELEASE", "-DCMAKE_CXX_FLAGS_RELEASE=-Os", "-DCMAKE_C_FLAGS_RELEASE=-Os"
                 }
             }
 
@@ -89,8 +89,7 @@ android {
         main.java.srcDirs +=
             ["../../../ThirdParty/JUCE/modules/juce_core/native/javacore/init",
              "../../../ThirdParty/JUCE/modules/juce_core/native/javacore/app",
-             "../../../ThirdParty/JUCE/modules/juce_gui_basics/native/javacore/app",
-             "../../../ThirdParty/JUCE/modules/juce_gui_basics/native/javaopt/app"]
+             "../../../ThirdParty/JUCE/modules/juce_gui_basics/native/javacore/app"]
 
         main.res.srcDirs +=
             []

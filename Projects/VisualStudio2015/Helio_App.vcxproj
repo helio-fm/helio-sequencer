@@ -3041,6 +3041,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\jpglib\transupp.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\png.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pngconf.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pngdebug.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pnginfo.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pngpriv.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pngstruct.h"/>
