@@ -27,11 +27,11 @@
 #include "SerializationKeys.h"
 #include "PluginWindow.h"
 
-class HelioAudioProcessorEditor : public GenericAudioProcessorEditor
+class HelioAudioProcessorEditor final : public GenericAudioProcessorEditor
 {
 public:
 
-    explicit HelioAudioProcessorEditor(AudioProcessor *const p) :
+    explicit HelioAudioProcessorEditor(AudioProcessor &p) :
         GenericAudioProcessorEditor(p)
     {
         this->setFocusContainer(true);
@@ -39,15 +39,12 @@ public:
         // установим ему масимальную высоту
         for (int i = 0; i < this->getNumChildComponents(); ++i)
         {
-            if (PropertyPanel *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))
+            if (auto *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))
             {
                 this->setSize(this->getWidth(), panel->getTotalContentHeight());
             }
         }
     }
-
-    void paint(Graphics &g) override
-    { }
 };
 
 AudioPluginNode::AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name) :
@@ -60,7 +57,7 @@ bool AudioPluginNode::hasMenu() const noexcept
     return false;
 }
 
-ScopedPointer<Component> AudioPluginNode::createMenu()
+Component *AudioPluginNode::createMenu()
 {
     return nullptr;
 }
@@ -106,25 +103,22 @@ void AudioPluginNode::showPage()
             // ui = f->getProcessor()->createEditorIfNeeded();
             // so we try to mimic that by creating a plugin window
             // while its size and position that is managed by audioPluginEditor
-            if (PluginWindow *const window = PluginWindow::getWindowFor(f, false, true))
+            if (auto *window = PluginWindow::getWindowFor(f, false, true))
             {
-                this->audioPluginEditor = new AudioPluginEditorPage(window);
+                this->audioPluginEditor.reset(new AudioPluginEditorPage(window));
             }
         }
         else
         {
-            AudioProcessorEditor *const ui =
-                new HelioAudioProcessorEditor(f->getProcessor());
-
-            AudioPluginInstance *const plugin =
-                dynamic_cast<AudioPluginInstance *>(f->getProcessor());
+            auto *const ui = new HelioAudioProcessorEditor(*f->getProcessor());
+            auto *plugin = dynamic_cast<AudioPluginInstance *>(f->getProcessor());
 
             if (plugin != nullptr)
             {
                 ui->setName(plugin->getName());
             }
 
-            this->audioPluginEditor = new AudioPluginEditorPage(ui);
+            this->audioPluginEditor.reset(new AudioPluginEditorPage(ui));
         }
     }
 
@@ -135,5 +129,5 @@ void AudioPluginNode::showPage()
         return;
     }
 
-    App::Layout().showPage(this->audioPluginEditor, this);
+    App::Layout().showPage(this->audioPluginEditor.get(), this);
 }

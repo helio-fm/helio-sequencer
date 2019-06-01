@@ -97,7 +97,7 @@ bool SelectionComponent::isDragging() const
 
 void SelectionComponent::paint(Graphics &g)
 {
-    this->getLookAndFeel().drawLasso(g, *this);
+    LookAndFeel::getDefaultLookAndFeel().drawLasso(g, *this);
     jassert(isMouseButtonDownAnywhere());
 }
 

@@ -19,7 +19,7 @@
 
 class HybridRoll;
 class TrackMap;
-class TrackScrollerScreen;
+class ProjectMapScrollerScreen;
 class Playhead;
 class Transport;
 
@@ -27,7 +27,7 @@ class Transport;
 #include "HybridRollListener.h"
 #include "ComponentFader.h"
 
-class TrackScroller final :
+class ProjectMapScroller final :
     public Component,
     public HybridRollListener,
     private AsyncUpdater,
@@ -35,13 +35,13 @@ class TrackScroller final :
 {
 public:
 
-    TrackScroller(Transport &transport, HybridRoll *roll);
-    ~TrackScroller() override;
+    ProjectMapScroller(Transport &transport, SafePointer<HybridRoll> roll);
+    ~ProjectMapScroller() override;
 
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
     void removeOwnedMap(Component *existingTrackMap);
 
-    void switchToRoll(HybridRoll *targetRoll);
+    void switchToRoll(SafePointer<HybridRoll> roll);
 
     template<typename T>
     T *findOwnedMapOfType()
@@ -91,7 +91,7 @@ public:
     {
     public:
         
-        explicit HorizontalDragHelper(TrackScroller &scrollerRef);
+        explicit HorizontalDragHelper(ProjectMapScroller &scrollerRef);
         void mouseDown(const MouseEvent &e) override;
         void mouseDrag(const MouseEvent &e) override;
         void paint(Graphics &g) override;
@@ -99,18 +99,18 @@ public:
         class MoveConstrainer final : public ComponentBoundsConstrainer
         {
         public:
-            explicit MoveConstrainer(TrackScroller &scrollerRef) : scroller(scrollerRef) {}
+            explicit MoveConstrainer(ProjectMapScroller &scrollerRef) : scroller(scrollerRef) {}
             void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
         private:
-            TrackScroller &scroller;
+            ProjectMapScroller &scroller;
         };
         
     private:
         
         Colour colour;
-        TrackScroller &scroller;
+        ProjectMapScroller &scroller;
         ComponentDragger dragger;
-        ScopedPointer<ComponentBoundsConstrainer> moveConstrainer;
+        UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
     };
     
 protected:
@@ -125,24 +125,23 @@ private:
     void timerCallback() override;
     
     Transport &transport;
-    HybridRoll *roll;
+    SafePointer<HybridRoll> roll;
     
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
-    ScopedPointer<TrackScrollerScreen> screenRange;
-    ScopedPointer<Playhead> playhead;
+    UniquePointer<ProjectMapScrollerScreen> screenRange;
+    UniquePointer<Playhead> playhead;
     
     OwnedArray<Component> trackMaps;
 
     void disconnectPlayhead();
-    Rectangle<float> getIndicatorBounds() const;
-    Rectangle<int> getMapBounds() const;
+    Rectangle<float> getIndicatorBounds() const noexcept;
+    Rectangle<int> getMapBounds() const noexcept;
     
-    ComponentFader fader;
     ComponentDragger helperDragger;
-    ScopedPointer<HelperRectangle> helperRectangle;
+    UniquePointer<HelperRectangle> helperRectangle;
     
-    bool mapShouldGetStretched;
+    bool mapShouldGetStretched = true;
     
 };

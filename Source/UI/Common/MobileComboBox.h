@@ -52,7 +52,7 @@ public:
         ~Primer() override;
         void handleCommandMessage(int commandId) override;
         void initWith(WeakReference<Component> textEditor, MenuPanel::Menu menu,
-            ScopedPointer<Component> customBackground = nullptr);
+            Component *newCustomBackground = nullptr);
 
         void updateMenu(MenuPanel::Menu menu);
         void cleanup();
@@ -76,7 +76,7 @@ private:
     //[UserVariables]
     void initText(TextEditor *editor);
     void initText(Label *label);
-    void initBackground(ScopedPointer<Component> bg);
+    void initBackground(Component *newCustomBackground);
 
     WeakReference<Component> primer;
     WeakReference<Component> editor;

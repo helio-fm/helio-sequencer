@@ -176,24 +176,24 @@ class FallbackArpMapper final : public Arpeggiator::Mapper
 // Arpeggiator
 //===----------------------------------------------------------------------===//
 
-static ScopedPointer<Arpeggiator::Mapper> createMapperOfType(const Identifier &id)
+static UniquePointer<Arpeggiator::Mapper> createMapperOfType(const Identifier &id)
 {
     using namespace Serialization::Arps;
 
     if (id == Types::simpleTriadic)      
     {
-        return { new SimpleTriadicArpMapper() };
+        return UniquePointer<Arpeggiator::Mapper>(new SimpleTriadicArpMapper());
     }
     else if (id == Types::pentatonic)
     {
-        return { new PentatonicArpMapper() };
+        return UniquePointer<Arpeggiator::Mapper>(new PentatonicArpMapper());
     }
     else if (id == Types::diatonic)
     {
-        return { new DiatonicArpMapper() };
+        return UniquePointer<Arpeggiator::Mapper>(new DiatonicArpMapper());
     }
     
-    return { new FallbackArpMapper() };
+    return UniquePointer<Arpeggiator::Mapper>(new FallbackArpMapper());
 }
 
 Arpeggiator &Arpeggiator::operator=(const Arpeggiator &other)

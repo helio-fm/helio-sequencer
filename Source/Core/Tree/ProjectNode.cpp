@@ -86,20 +86,20 @@ void ProjectNode::initialize()
 {
     this->isTracksCacheOutdated = true;
 
-    this->undoStack = new UndoStack(*this);
+    this->undoStack.reset(new UndoStack(*this));
 
-    this->autosaver = new Autosaver(*this);
+    this->autosaver.reset(new Autosaver(*this));
 
     auto &orchestra = App::Workspace().getAudioCore();
     auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
-    this->transport = new Transport(orchestra, audioCoreSleepTimer);
-    this->addListener(this->transport);
+    this->transport.reset(new Transport(orchestra, audioCoreSleepTimer));
+    this->addListener(this->transport.get());
 
-    this->info = new ProjectInfo(*this);
-    this->vcsItems.add(this->info);
+    this->info.reset(new ProjectInfo(*this));
+    this->vcsItems.add(this->info.get());
 
-    this->timeline = new ProjectTimeline(*this, "Project Timeline");
-    this->vcsItems.add(this->timeline);
+    this->timeline.reset(new ProjectTimeline(*this, "Project Timeline"));
+    this->vcsItems.add(this->timeline.get());
 
     this->transport->seekToPosition(0.0);
 
@@ -124,7 +124,7 @@ ProjectNode::~ProjectNode()
     this->timeline = nullptr;
     this->info = nullptr;
 
-    this->removeListener(this->transport);
+    this->removeListener(this->transport.get());
     this->transport = nullptr;
 
     this->autosaver = nullptr;
@@ -159,13 +159,13 @@ Transport &ProjectNode::getTransport() const noexcept
 ProjectInfo *ProjectNode::getProjectInfo() const noexcept
 {
     jassert(this->info);
-    return this->info;
+    return this->info.get();
 }
 
 ProjectTimeline *ProjectNode::getTimeline() const noexcept
 {
     jassert(this->timeline);
-    return this->timeline;
+    return this->timeline.get();
 }
 
 HybridRollEditMode &ProjectNode::getEditMode() noexcept
@@ -186,7 +186,7 @@ Image ProjectNode::getIcon() const noexcept
 void ProjectNode::showPage()
 {
     this->projectPage->updateContent();
-    App::Layout().showPage(this->projectPage, this);
+    App::Layout().showPage(this->projectPage.get(), this);
 }
 
 void ProjectNode::safeRename(const String &newName, bool sendNotifications)
@@ -202,7 +202,7 @@ void ProjectNode::safeRename(const String &newName, bool sendNotifications)
 
     if (sendNotifications)
     {
-        this->broadcastChangeProjectInfo(this->info);
+        this->broadcastChangeProjectInfo(this->info.get());
 
         App::Workspace().getUserProfile()
             .onProjectLocalInfoUpdated(this->getId(), this->getName(),
@@ -220,8 +220,8 @@ void ProjectNode::recreatePage()
         layoutState = this->sequencerLayout->serialize();
     }
     
-    this->sequencerLayout = new SequencerLayout(*this);
-    this->projectPage = new ProjectPage(*this);
+    this->sequencerLayout.reset(new SequencerLayout(*this));
+    this->projectPage.reset(new ProjectPage(*this));
 
     this->broadcastChangeProjectBeatRange(); // let rolls update view ranges
     this->sequencerLayout->deserialize(layoutState);
@@ -231,39 +231,48 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
 {
     jassert(source != nullptr);
     this->sequencerLayout->showPatternEditor();
-    App::Layout().showPage(this->sequencerLayout, source);
+    App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
-void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source)
+void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
+    const Clip &activeClip, bool shouldFocusToArea)
+{
+    if (auto *item = dynamic_cast<PianoTrackNode *>(activeTrack))
+    {
+        // make sure the item is selected, if it's not yet;
+        // this implies calling showPage() -> showLinearEditor(),
+        // which may update the scope to its first clip,
+        item->setSelected();
+
+        // and then we have to update the scope to correct clip,
+        // so that roll's scope is updated twice :(
+        this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
+            activeTrack, activeClip, shouldFocusToArea);
+    }
+}
+
+void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack,
+    WeakReference<TreeNode> source)
 {
     jassert(source != nullptr);
     jassert(activeTrack != nullptr);
 
-    if (const auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get()))
+    if (auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get()))
     {
         this->sequencerLayout->showLinearEditor(activeTrack);
         this->lastShownTrack = source;
-        App::Layout().showPage(this->sequencerLayout, source);
+        App::Layout().showPage(this->sequencerLayout.get(), source);
     }
+}
+
+void ProjectNode::switchMiniMaps()
+{
+    this->sequencerLayout->switchMiniMaps();
 }
 
 WeakReference<TreeNode> ProjectNode::getLastShownTrack() const noexcept
 {
     return this->lastShownTrack;
-}
-
-
-void ProjectNode::setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea)
-{
-    if (auto *item = dynamic_cast<PianoTrackNode *>(track))
-    {
-        // FIXME: as we have to switch to target tree item,
-        // it will activate its 1st clip on showPage
-        item->setSelected();
-        // and then we have to update the scope to correct clip,
-        // so that roll's scope is updated twice :(
-        this->sequencerLayout->setEditableScope(track, clip, zoomToArea);
-    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -275,7 +284,7 @@ bool ProjectNode::hasMenu() const noexcept
     return true;
 }
 
-ScopedPointer<Component> ProjectNode::createMenu()
+Component *ProjectNode::createMenu()
 {
     return new ProjectMenu(*this, MenuPanel::SlideRight);
 }
@@ -454,8 +463,8 @@ void ProjectNode::reset()
 {
     this->transport->seekToPosition(0.f);
     this->vcsItems.clear();
-    this->vcsItems.add(this->info);
-    this->vcsItems.add(this->timeline);
+    this->vcsItems.add(this->info.get());
+    this->vcsItems.add(this->timeline.get());
     this->undoStack->clearUndoHistory();
     TreeNode::reset();
 }
@@ -690,9 +699,10 @@ Point<float> ProjectNode::broadcastChangeProjectBeatRange()
     // so that resizing roll will make playhead glitch;
     // as a hack, just force transport to update its playhead position before all others
     this->transport->onChangeProjectBeatRange(firstBeat, lastBeat);
-    this->changeListeners.callExcluding(this->transport, &ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
-    this->sendChangeMessage();
+    this->changeListeners.callExcluding(this->transport.get(),
+        &ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
 
+    this->sendChangeMessage();
     return beatRange;
 }
 
@@ -707,7 +717,6 @@ void ProjectNode::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
     this->changeListeners.call(&ProjectListener::onChangeViewBeatRange, firstBeat, lastBeat);
     // this->sendChangeMessage(); the project itself didn't change, so dont call this
 }
-
 
 //===----------------------------------------------------------------------===//
 // DocumentOwner
@@ -799,7 +808,7 @@ void ProjectNode::exportMidi(File &file) const
         file.deleteFile();
     }
 
-    ScopedPointer<OutputStream> out(new FileOutputStream(file));
+    UniquePointer<OutputStream> out(new FileOutputStream(file));
     tempFile.writeTo(*out);
 }
 
@@ -889,13 +898,13 @@ VCS::TrackedItem *ProjectNode::initTrackedItem(const Identifier &type,
     {
         this->info->setVCSUuid(id);
         this->info->resetStateTo(newState);
-        return this->info;
+        return this->info.get();
     }
     else if (type == Serialization::Core::projectTimeline)
     {
         this->timeline->setVCSUuid(id);
         this->timeline->resetStateTo(newState);
-        return this->timeline;
+        return this->timeline.get();
     }
     
     return nullptr;

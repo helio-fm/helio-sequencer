@@ -21,9 +21,10 @@ class PianoRoll;
 class PatternRoll;
 class HybridRoll;
 class RollsSwitchingProxy;
-class MidiTrack;
-class TrackScroller;
 class ProjectNode;
+class MidiTrack;
+class ProjectMapScroller;
+class LevelsMapScroller;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
 class Origami;
@@ -43,11 +44,13 @@ public:
     explicit SequencerLayout(ProjectNode &parentProject);
     ~SequencerLayout() override;
 
+    static constexpr int getPianoMapHeight() { return 72; }
+    static constexpr int getLevelsMapHeight() { return 128; }
+
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
-    void setEditableScope(WeakReference<MidiTrack> activeTrack,
-        const Clip &clip, bool zoomToArea);
-    
+    void switchMiniMaps();
+
     HybridRoll *getRoll() const;
 
     //===------------------------------------------------------------------===//
@@ -81,18 +84,21 @@ private:
 
     ProjectNode &project;
     
-    ScopedPointer<Viewport> pianoViewport;
-    ScopedPointer<Viewport> patternViewport;
-    ScopedPointer<TrackScroller> scroller;
+    UniquePointer<Viewport> pianoViewport;
+    UniquePointer<Viewport> patternViewport;
 
-    ScopedPointer<PianoRoll> pianoRoll;
-    ScopedPointer<PatternRoll> patternRoll;
-    ScopedPointer<RollsSwitchingProxy> rollContainer;
+    UniquePointer<ProjectMapScroller> mapScroller;
+    UniquePointer<LevelsMapScroller> levelsScroller;
+    UniquePointer<Component> scrollerShadow;
 
-    ScopedPointer<SequencerSidebarLeft> rollNavSidebar;
-    ScopedPointer<SequencerSidebarRight> rollToolsSidebar;
+    UniquePointer<PianoRoll> pianoRoll;
+    UniquePointer<PatternRoll> patternRoll;
+    UniquePointer<RollsSwitchingProxy> rollContainer;
 
-    ScopedPointer<Origami> sequencerLayout; // all editors combined with sidebars
+    UniquePointer<SequencerSidebarLeft> rollNavSidebar;
+    UniquePointer<SequencerSidebarRight> rollToolsSidebar;
+
+    UniquePointer<Origami> sequencerLayout; // all editors combined with sidebars
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerLayout);
 };

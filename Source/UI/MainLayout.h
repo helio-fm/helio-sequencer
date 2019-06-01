@@ -37,7 +37,6 @@ public:
     void restoreLastOpenedPage();
 
     Rectangle<int> getPageBounds() const;
-    static constexpr int getScrollerHeight() { return (40 + 32); }
     
     //===------------------------------------------------------------------===//
     // Pages and headline
@@ -84,9 +83,9 @@ private:
 
     ComponentFader fader;
     
-    ScopedPointer<Headline> headline;
-    ScopedPointer<Component> initScreen;
-    ScopedPointer<TooltipContainer> tooltipContainer;
+    UniquePointer<Headline> headline;
+    UniquePointer<Component> initScreen;
+    UniquePointer<TooltipContainer> tooltipContainer;
     
     SafePointer<Component> currentContent;
 

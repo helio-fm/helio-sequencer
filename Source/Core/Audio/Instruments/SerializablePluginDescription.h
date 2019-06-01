@@ -22,6 +22,7 @@ class SerializablePluginDescription final : public PluginDescription, public Ser
 public:
 
     SerializablePluginDescription();
+    explicit SerializablePluginDescription(const PluginDescription &other);
     explicit SerializablePluginDescription(const PluginDescription *other);
 
     ValueTree serialize() const override;

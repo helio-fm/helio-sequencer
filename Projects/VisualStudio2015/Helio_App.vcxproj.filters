@@ -170,6 +170,9 @@
     <Filter Include="Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap">
       <UniqueIdentifier>{F3729582-8027-D052-46A1-45E5C74DE0D3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\MiniMaps\LevelsMap">
+      <UniqueIdentifier>{31DE4968-2192-1148-EC51-0CD1794FAEE6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\UI\Sequencer\MiniMaps\PianoMap">
       <UniqueIdentifier>{81834BC9-6192-DFA7-6767-431F0B43651B}</UniqueIdentifier>
     </Filter>
@@ -1345,13 +1348,19 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignaturesProjectMap.cpp">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\LevelsMap\LevelsMapScroller.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\LevelsMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\LevelsMap\VelocityProjectMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\LevelsMap</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\PianoProjectMap.cpp">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScroller.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\ProjectMapScroller.cpp">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScrollerScreen.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\ProjectMapScrollerScreen.cpp">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureLargeComponent.cpp">
@@ -3232,12 +3241,6 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData2.cpp">
-      <Filter>Generated Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData3.cpp">
-      <Filter>Generated Code</Filter>
-    </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_basics.cpp">
       <Filter>Generated Code</Filter>
     </ClCompile>
@@ -4167,9 +4170,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip\PianoClipComponent.h">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip\PianoSequenceMapNoteComponent.h">
-      <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\PianoClip</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\ClipComponent.h">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents</Filter>
     </ClInclude>
@@ -4221,16 +4221,19 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\KeySignaturesMap\KeySignaturesProjectMap.h">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\KeySignaturesMap</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\LevelsMap\LevelsMapScroller.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\LevelsMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\LevelsMap\VelocityProjectMap.h">
+      <Filter>Helio\Source\UI\Sequencer\MiniMaps\LevelsMap</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\PianoProjectMap.h">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\ProjectMapNoteComponent.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\ProjectMapScroller.h">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScroller.h">
-      <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\TrackScrollerScreen.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\PianoMap\ProjectMapScrollerScreen.h">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\PianoMap</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureComponent.h">
@@ -5719,6 +5722,9 @@
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pngconf.h">
+      <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pngdebug.h">
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\image_formats\pnglib\pnginfo.h">

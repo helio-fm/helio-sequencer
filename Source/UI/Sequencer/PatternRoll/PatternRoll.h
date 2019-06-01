@@ -143,14 +143,14 @@ public:
 
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
     class FocusToRegionAnimator;
-    ScopedPointer<Timer> focusToRegionAnimator;
+    UniquePointer<Timer> focusToRegionAnimator;
     
 private:
 
     ClipComponent *newClipDragging;
     bool addNewClipMode;
 
-    ScopedPointer<CutPointMark> knifeToolHelper;
+    UniquePointer<CutPointMark> knifeToolHelper;
     void startCuttingClips(const MouseEvent &e);
     void continueCuttingClips(const MouseEvent &e);
     void endCuttingClipsIfNeeded(const MouseEvent &e);
@@ -167,7 +167,7 @@ private:
 
     OwnedArray<ClipComponent> ghostClips;
 
-    ScopedPointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
+    UniquePointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
 
     using ClipComponentsMap = FlatHashMap<Clip, UniquePointer<ClipComponent>, ClipHash>;
     ClipComponentsMap clipComponents;

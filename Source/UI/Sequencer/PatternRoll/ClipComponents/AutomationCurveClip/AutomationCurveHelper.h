@@ -49,7 +49,7 @@ private:
     bool draggingState = false;
     FineTuningComponentDragger dragger;
 
-    ScopedPointer<FineTuningValueIndicator> tuningIndicator;
+    UniquePointer<FineTuningValueIndicator> tuningIndicator;
     ComponentFader fader;
 
     SafePointer<Component> component1;

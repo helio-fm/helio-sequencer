@@ -67,7 +67,7 @@ private:
     AutomationEvent anchor;
     FineTuningComponentDragger dragger;
 
-    ScopedPointer<FineTuningValueIndicator> tuningIndicator;
+    UniquePointer<FineTuningValueIndicator> tuningIndicator;
     ComponentFader fader;
 
     Point<int> clickOffset;
@@ -79,8 +79,8 @@ private:
     void recreateConnector();
     void recreateHelper();
 
-    ScopedPointer<AutomationCurveEventsConnector> connector;
-    ScopedPointer<AutomationCurveHelper> helper;
+    UniquePointer<AutomationCurveEventsConnector> connector;
+    UniquePointer<AutomationCurveHelper> helper;
     SafePointer<AutomationCurveEventComponent> nextEventHolder;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveEventComponent)

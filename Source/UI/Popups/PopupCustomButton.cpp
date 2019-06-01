@@ -23,7 +23,7 @@ PopupCustomButton::PopupCustomButton(Component *newOwnedComponent, ShapeType sha
     ownedComponent(newOwnedComponent)
 {
     this->ownedComponent->setInterceptsMouseClicks(false, false);
-    this->addAndMakeVisible(this->ownedComponent);
+    this->addAndMakeVisible(this->ownedComponent.get());
     this->setSize(48, 48);
 }
 

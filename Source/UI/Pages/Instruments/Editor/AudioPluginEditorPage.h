@@ -33,12 +33,12 @@ public:
 
 private:
 
-    ScopedPointer<Component> background;
+    UniquePointer<Component> background;
 
-    ScopedPointer<Component> panel;
+    UniquePointer<Component> panel;
 
-    ScopedPointer<Viewport> viewport;
+    UniquePointer<Viewport> viewport;
 
-    ScopedPointer<DocumentWindow> ownedWindow;
+    UniquePointer<DocumentWindow> ownedWindow;
 
 };

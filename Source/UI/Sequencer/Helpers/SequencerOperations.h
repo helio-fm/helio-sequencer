@@ -101,7 +101,7 @@ struct SequencerOperations final
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);
 
     // Creates new tracks from events of existing tracks
-    static ScopedPointer<MidiTrackNode> createPianoTrack(const Lasso &selection);
-    static ScopedPointer<MidiTrackNode> createPianoTrack(const Array<Note> &events, const Pattern *pattern);
-    static ScopedPointer<MidiTrackNode> createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern);
+    static UniquePointer<MidiTrackNode> createPianoTrack(const Lasso &selection);
+    static UniquePointer<MidiTrackNode> createPianoTrack(const Array<Note> &events, const Pattern *pattern);
+    static UniquePointer<MidiTrackNode> createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern);
 };

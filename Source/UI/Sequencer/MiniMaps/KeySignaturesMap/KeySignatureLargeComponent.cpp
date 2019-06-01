@@ -75,7 +75,7 @@ KeySignatureLargeComponent::~KeySignatureLargeComponent()
 void KeySignatureLargeComponent::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    const Colour lineCol(this->findColour(ColourIDs::Roll::headerSnaps));
+    const Colour lineCol(findDefaultColour(ColourIDs::Roll::headerSnaps));
     g.setColour(lineCol);
     g.fillRect(0.f, 2.f, float(this->getWidth()), 2.f);
     //[/UserPrePaint]

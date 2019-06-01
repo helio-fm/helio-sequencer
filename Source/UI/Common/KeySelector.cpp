@@ -28,9 +28,9 @@ KeySelector::KeySelector()
     const StringArray keys(Scale::getKeyNames());
     for (int i = 0; i < keys.size(); ++i)
     {
-        ScopedPointer<RadioButton> button(new RadioButton(keys[i], base, this));
+        UniquePointer<RadioButton> button(new RadioButton(keys[i], base, this));
         button->setButtonIndex(i);
-        this->addAndMakeVisible(button);
+        this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
     }
 

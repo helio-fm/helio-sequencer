@@ -28,25 +28,16 @@
 #include "MidiTrack.h"
 #include "ColourIDs.h"
 
-#define PROJECT_MAP_BULK_REPAINT_START \
-    this->setVisible(false);
-
-#define PROJECT_MAP_BULK_REPAINT_END \
-    this->setVisible(true);
-
-
 PianoProjectMap::PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
-    roll(parentRoll),
-    projectFirstBeat(0.f),
-    projectLastBeat(0.f),
-    rollFirstBeat(0.f),
-    rollLastBeat(0.f),
-    componentHeight(1.f)
+    roll(parentRoll)
 {
+    this->baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
+
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->reloadTrackMap();
+
     this->project.addListener(this);
 }
 
@@ -62,20 +53,36 @@ PianoProjectMap::~PianoProjectMap()
 void PianoProjectMap::resized()
 {
     this->componentHeight = float(this->getHeight()) / 128.f; // TODO remove hard-coded value
-    
-    PROJECT_MAP_BULK_REPAINT_START
+}
+
+void PianoProjectMap::paint(Graphics &g)
+{
+    const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
+    const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
+    const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
 
     for (const auto &c : this->patternMap)
     {
         const auto sequenceMap = c.second.get();
-        for (const auto &e : *sequenceMap)
+        const bool isActiveClip = this->activeClip == c.first;
+
+        g.setColour(c.first.getTrackColour().
+            interpolatedWith(this->baseColour, .4f).
+            withAlpha(isActiveClip ? .9f : .6f));
+
+        for (const auto &n : *sequenceMap)
         {
-            jassert(e.second.get());
-            this->applyNoteBounds(e.second.get());
+            const auto key = jlimit(0, 128, n.getKey() + c.first.getKey());
+            const auto beat = n.getBeat() + c.first.getBeat() - this->rollFirstBeat;
+            const auto length = n.getLength();
+
+            const float x = (mapWidth * (beat / projectLengthInBeats));
+            const float w = (mapWidth * (length / projectLengthInBeats));
+            const float y = roundf(this->getHeight() - (key * this->componentHeight));
+
+            g.fillRect(x, y, jmax(0.25f, w), 1.0f);
         }
     }
-
-    PROJECT_MAP_BULK_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//
@@ -97,13 +104,14 @@ void PianoProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
-            if (const auto component = sequenceMap[note].release())
+            if (sequenceMap.contains(note))
             {
                 sequenceMap.erase(note);
-                sequenceMap[newNote] = UniquePointer<ProjectMapNoteComponent>(component);
-                this->triggerBatchRepaintFor(component);
+                sequenceMap.insert(newNote);
             }
         }
+
+        this->triggerAsyncUpdate();
     }
 }
 
@@ -113,24 +121,16 @@ void PianoProjectMap::onAddMidiEvent(const MidiEvent &event)
     {
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
-        const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
-
-        PROJECT_MAP_BULK_REPAINT_START
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            auto &componentsMap = *c.second.get();
+            auto &sequenceMap = *c.second.get();
             const int i = track->getPattern()->indexOfSorted(&c.first);
             jassert(i >= 0);
-
-            const Clip *clip = track->getPattern()->getUnchecked(i);
-            auto component = new ProjectMapNoteComponent(note, *clip, baseColour);
-            componentsMap[note] = UniquePointer<ProjectMapNoteComponent>(component);
-            this->addAndMakeVisible(component);
-            this->triggerBatchRepaintFor(component);
+            sequenceMap.insert(note);
         }
 
-        PROJECT_MAP_BULK_REPAINT_END
+        this->triggerAsyncUpdate();
     }
 }
 
@@ -141,8 +141,6 @@ void PianoProjectMap::onRemoveMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
 
-        PROJECT_MAP_BULK_REPAINT_START
-
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
@@ -152,13 +150,13 @@ void PianoProjectMap::onRemoveMidiEvent(const MidiEvent &event)
             }
         }
 
-        PROJECT_MAP_BULK_REPAINT_END
+        this->triggerAsyncUpdate();
     }
 }
 
 void PianoProjectMap::onAddClip(const Clip &clip)
 {
-    const SequenceMap *referenceMap = nullptr;
+    const SequenceSet *referenceMap = nullptr;
     const auto *track = clip.getPattern()->getTrack();
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
@@ -175,22 +173,15 @@ void PianoProjectMap::onAddClip(const Clip &clip)
         return;
     }
 
-    auto sequenceMap = new SequenceMap();
-    this->patternMap[clip] = UniquePointer<SequenceMap>(sequenceMap);
-    const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
-
-    PROJECT_MAP_BULK_REPAINT_START
+    auto sequenceMap = new SequenceSet();
+    this->patternMap[clip] = UniquePointer<SequenceSet>(sequenceMap);
         
-    for (const auto &e : *referenceMap)
+    for (const auto &note : *referenceMap)
     {
-        const auto &note = e.second.get()->getNote();
-        const auto noteComponent = new ProjectMapNoteComponent(note, clip, baseColour);
-        (*sequenceMap)[note] = UniquePointer<ProjectMapNoteComponent>(noteComponent);
-        this->addAndMakeVisible(noteComponent);
-        this->applyNoteBounds(noteComponent);
+        sequenceMap->insert(note);
     }
 
-    PROJECT_MAP_BULK_REPAINT_END
+    this->triggerAsyncUpdate();
 }
 
 void PianoProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
@@ -200,49 +191,24 @@ void PianoProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
         // Set new key for existing sequence map
         auto *sequenceMap = this->patternMap[clip].release();
         this->patternMap.erase(clip);
-        this->patternMap[newClip] = UniquePointer<SequenceMap>(sequenceMap);
-
-        // And update all components within it, as their beats should change
-        for (const auto &e : *sequenceMap)
-        {
-            this->batchRepaintList.add(e.second.get());
-        }
-
+        this->patternMap[newClip] = UniquePointer<SequenceSet>(sequenceMap);
         this->triggerAsyncUpdate();
     }
 }
 
 void PianoProjectMap::onRemoveClip(const Clip &clip)
 {
-    PROJECT_MAP_BULK_REPAINT_START
-
     if (this->patternMap.contains(clip))
     {
         this->patternMap.erase(clip);
+        this->triggerAsyncUpdate();
     }
-
-    PROJECT_MAP_BULK_REPAINT_END
 }
 
 void PianoProjectMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
-
-    PROJECT_MAP_BULK_REPAINT_START
-
-    const Colour base(findDefaultColour(ColourIDs::Roll::noteFill));
-
-    for (const auto &c : this->patternMap)
-    {
-        const auto &componentsMap = *c.second.get();
-        for (const auto &e : componentsMap)
-        {
-            e.second->updateColour(base);
-        }
-    }
-
-    PROJECT_MAP_BULK_REPAINT_END
-    this->repaint();
+    this->triggerAsyncUpdate();
 }
 
 void PianoProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
@@ -253,10 +219,8 @@ void PianoProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 void PianoProjectMap::onAddTrack(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
-
-    PROJECT_MAP_BULK_REPAINT_START
     this->loadTrack(track);
-    PROJECT_MAP_BULK_REPAINT_END
+    this->triggerAsyncUpdate();
 }
 
 void PianoProjectMap::onRemoveTrack(MidiTrack *const track)
@@ -271,6 +235,8 @@ void PianoProjectMap::onRemoveTrack(MidiTrack *const track)
             this->patternMap.erase(clip);
         }
     }
+
+    this->triggerAsyncUpdate();
 }
 
 void PianoProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -283,7 +249,7 @@ void PianoProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     {
         this->rollFirstBeat = firstBeat;
         this->rollLastBeat = lastBeat;
-        this->resized();
+        //this->resized(); // seems to cause glitches sometimes?
     }
 }
 
@@ -291,7 +257,18 @@ void PianoProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
-    this->resized();
+    //this->resized(); // seems to cause glitches sometimes?
+}
+
+void PianoProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
+{
+    if (this->activeClip == clip)
+    {
+        return;
+    }
+
+    this->activeClip = clip;
+    this->triggerAsyncUpdate();
 }
 
 //===----------------------------------------------------------------------===//
@@ -302,8 +279,6 @@ void PianoProjectMap::reloadTrackMap()
 {
     this->patternMap.clear();
 
-    PROJECT_MAP_BULK_REPAINT_START
-
     const auto &tracks = this->project.getTracks();
     for (const auto *track : tracks)
     {
@@ -313,7 +288,7 @@ void PianoProjectMap::reloadTrackMap()
         }
     }
 
-    PROJECT_MAP_BULK_REPAINT_END
+    this->triggerAsyncUpdate();
 }
 
 void PianoProjectMap::loadTrack(const MidiTrack *const track)
@@ -323,14 +298,12 @@ void PianoProjectMap::loadTrack(const MidiTrack *const track)
         return;
     }
 
-    const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
-
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
         const Clip *clip = track->getPattern()->getUnchecked(i);
 
-        auto sequenceMap = new SequenceMap();
-        this->patternMap[*clip] = UniquePointer<SequenceMap>(sequenceMap);
+        auto *sequenceMap = new SequenceSet();
+        this->patternMap[*clip] = UniquePointer<SequenceSet>(sequenceMap);
 
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
@@ -338,53 +311,13 @@ void PianoProjectMap::loadTrack(const MidiTrack *const track)
             if (event->isTypeOf(MidiEvent::Type::Note))
             {
                 const Note *note = static_cast<const Note *>(event);
-                const auto noteComponent = new ProjectMapNoteComponent(*note, *clip, baseColour);
-                (*sequenceMap)[*note] = UniquePointer<ProjectMapNoteComponent>(noteComponent);
-                this->addAndMakeVisible(noteComponent);
-                this->applyNoteBounds(noteComponent);
+                sequenceMap->insert(*note);
             }
         }
     }
-}
-
-void PianoProjectMap::applyNoteBounds(ProjectMapNoteComponent *nc)
-{
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-
-    const float beat = (nc->getBeat() - this->rollFirstBeat);
-    const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
-
-    const float x = (mapWidth * (beat / projectLengthInBeats));
-    const float w = (mapWidth * (nc->getLength() / projectLengthInBeats));
-    const int y = this->getHeight() - int(nc->getKey() * this->componentHeight);
-    nc->setRealBounds(x, y, jmax(1.f, w), 1);
-}
-
-void PianoProjectMap::triggerBatchRepaintFor(ProjectMapNoteComponent *target)
-{
-    this->batchRepaintList.add(target);
-    this->triggerAsyncUpdate();
 }
 
 void PianoProjectMap::handleAsyncUpdate()
 {
-    // batch repaint & resize stuff
-    if (this->batchRepaintList.size() > 0)
-    {
-        PROJECT_MAP_BULK_REPAINT_START
-
-        for (int i = 0; i < this->batchRepaintList.size(); ++i)
-        {
-            // There are still many cases when a scheduled component is deleted at this time:
-            if (ProjectMapNoteComponent *component = this->batchRepaintList.getUnchecked(i))
-            {
-                this->applyNoteBounds(component);
-            }
-        }
-
-        PROJECT_MAP_BULK_REPAINT_END
-
-        this->batchRepaintList.clearQuick();
-    }
+    this->repaint();
 }

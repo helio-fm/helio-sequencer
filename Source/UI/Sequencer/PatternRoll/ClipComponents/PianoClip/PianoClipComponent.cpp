@@ -45,9 +45,23 @@ PianoClipComponent::~PianoClipComponent()
 // Component
 //===----------------------------------------------------------------------===//
 
-void PianoClipComponent::resized()
+void PianoClipComponent::paint(Graphics &g)
 {
-    this->repositionAllChildren();
+    // Draw the frame, set the colour, etc:
+    ClipComponent::paint(g);
+
+    for (const auto &note : this->displayedNotes)
+    {
+        const auto *ns = note.getSequence();
+        const float sequenceLength = ns->getLengthInBeats();
+        const float beat = note.getBeat() - ns->getFirstBeat();
+        const auto key = jlimit(0, 128, note.getKey() + this->clip.getKey());
+        const float x = float(this->getWidth()) * (beat / sequenceLength);
+        const float w = float(this->getWidth()) * (note.getLength() / sequenceLength);
+        const float h = float(this->getHeight());
+        const float y = roundf(h - key * h / 128.f);
+        g.fillRect(x, y, jmax(0.25f, w), 1.0f);
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -62,11 +76,10 @@ void PianoClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const Midi
         const Note &newNote = static_cast<const Note &>(newEvent);
         if (newNote.getSequence() != this->sequence) { return; }
 
-        if (const auto component = this->componentsMap[note].release())
+        if (this->displayedNotes.contains(note))
         {
-            this->componentsMap.erase(note);
-            this->componentsMap[newNote] = UniquePointer<PianoSequenceMapNoteComponent>(component);
-            this->applyNoteBounds(component);
+            this->displayedNotes.erase(note);
+            this->displayedNotes.insert(newNote);
         }
 
         this->roll.triggerBatchRepaintFor(this);
@@ -80,13 +93,7 @@ void PianoClipComponent::onAddMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
         if (note.getSequence() != this->sequence) { return; }
 
-        auto component = new PianoSequenceMapNoteComponent(note);
-        this->componentsMap[note] = UniquePointer<PianoSequenceMapNoteComponent>(component);
-
-        this->addAndMakeVisible(component);
-        this->applyNoteBounds(component);
-        component->toFront(false);
-
+        this->displayedNotes.insert(note);
         this->roll.triggerBatchRepaintFor(this);
     }
 }
@@ -98,9 +105,9 @@ void PianoClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
         if (note.getSequence() != this->sequence) { return; }
 
-        if (const auto deletedComponent = this->componentsMap[note].get())
+        if (this->displayedNotes.contains(note))
         {
-            this->componentsMap.erase(note);
+            this->displayedNotes.erase(note);
         }
 
         this->roll.triggerBatchRepaintFor(this);
@@ -112,22 +119,14 @@ void PianoClipComponent::onChangeClip(const Clip &oldClip, const Clip &newClip)
     if (this->clip == oldClip)
     {
         this->updateColours(); // transparency depends on clip velocity
-        this->repositionAllChildren(); // positions depend on key offset
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
 void PianoClipComponent::onChangeTrackProperties(MidiTrack *const track)
 {
     if (track->getSequence() != this->sequence) { return; }
-
-    //this->setVisible(false);
-    //for (const auto &e : this->componentsMap)
-    //{
-    //    e.second->updateColour();
-    //}
-    //this->setVisible(true);
-
-    this->repaint();
+    this->roll.triggerBatchRepaintFor(this);
 }
 
 void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
@@ -135,6 +134,7 @@ void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks
     if (this->sequence != nullptr)
     {
         this->reloadTrackMap();
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -144,6 +144,7 @@ void PianoClipComponent::onAddTrack(MidiTrack *const track)
         track->getSequence()->size() > 0)
     {
         this->reloadTrackMap();
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -154,9 +155,9 @@ void PianoClipComponent::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const Note &note = static_cast<const Note &>(*track->getSequence()->getUnchecked(i));
-        if (const auto deletedComponent = this->componentsMap[note].get())
+        if (this->displayedNotes.contains(note))
         {
-            this->componentsMap.erase(note);
+            this->displayedNotes.erase(note);
         }
     }
 }
@@ -167,9 +168,7 @@ void PianoClipComponent::onRemoveTrack(MidiTrack *const track)
 
 void PianoClipComponent::reloadTrackMap()
 {
-    this->componentsMap.clear();
-
-    this->setVisible(false);
+    this->displayedNotes.clear();
 
     for (auto *track : this->project.getTracks())
     {
@@ -177,43 +176,12 @@ void PianoClipComponent::reloadTrackMap()
 
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
-            MidiEvent *event = track->getSequence()->getUnchecked(j);
-
-            if (auto *note = dynamic_cast<Note *>(event))
+            auto *event = track->getSequence()->getUnchecked(j);
+            if (event != nullptr && event->isTypeOf(MidiEvent::Type::Note))
             {
-                auto noteComponent = new PianoSequenceMapNoteComponent(*note);
-                this->componentsMap[*note] = UniquePointer<PianoSequenceMapNoteComponent>(noteComponent);
-                this->addAndMakeVisible(noteComponent);
+                auto *note = static_cast<Note *>(event);
+                this->displayedNotes.insert(*note);
             }
         }
     }
-
-    this->repositionAllChildren();
-    this->roll.triggerBatchRepaintFor(this);
-    this->setVisible(true);
-}
-
-void PianoClipComponent::applyNoteBounds(PianoSequenceMapNoteComponent *nc)
-{
-    const auto *ns = nc->getNote().getSequence();
-    const float sequenceLength = ns->getLengthInBeats();
-    const float beat = nc->getBeat() - ns->getFirstBeat();
-    const auto key = jlimit(0, 128, nc->getKey() + this->clip.getKey());
-    const float x = float(this->getWidth()) * (beat / sequenceLength);
-    const float w = float(this->getWidth()) * (nc->getLength() / sequenceLength);
-    const float h = float(this->getHeight());
-    const int y = int(h - key * h / 128.f);
-    nc->setRealBounds(x, y, jmax(1.f, w), 1);
-}
-
-void PianoClipComponent::repositionAllChildren()
-{
-    this->setVisible(false);
-
-    for (const auto &e : this->componentsMap)
-    {
-        this->applyNoteBounds(e.second.get());
-    }
-
-    this->setVisible(true);
 }

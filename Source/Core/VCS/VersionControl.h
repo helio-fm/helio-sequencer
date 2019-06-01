@@ -83,7 +83,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void syncAllRevisions();
-    void syncRevision(const VCS::Revision::Ptr revision);
+    void pushBranch(const VCS::Revision::Ptr leaf);
+    void pullBranch(const VCS::Revision::Ptr leaf);
     void fetchRevisionsIfNeeded();
 
     void updateLocalSyncCache(const VCS::Revision::Ptr revision);
@@ -107,6 +108,7 @@ public:
 protected:
 
     VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
+    void syncBranch(const VCS::Revision::Ptr leaf, bool onlyShallowRevisions);
 
     VCS::Head head;
     VCS::RemoteCache remoteCache;

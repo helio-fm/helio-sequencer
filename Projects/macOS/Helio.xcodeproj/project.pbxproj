@@ -69,14 +69,6 @@
 			isa = PBXBuildFile;
 			fileRef = 049110EFE86677978F8FA611;
 		};
-		29C223D4EDC3F046663698C1 = {
-			isa = PBXBuildFile;
-			fileRef = DC11896BC12B330D03C7D902;
-		};
-		713B6C189BB5212469CA96A2 = {
-			isa = PBXBuildFile;
-			fileRef = F6BA889FA91B97EE77EBE80E;
-		};
 		8214F97DF5C7AAEF3A5D89BE = {
 			isa = PBXBuildFile;
 			fileRef = 58FF6F9E1929247D2B951913;
@@ -993,6 +985,13 @@
 			path = ../../Source/UI/Themes/HelioTheme.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		234E5614AE4D139E567D39C5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ProjectMapScroller.h;
+			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScroller.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		23DFDF295F0220A1BBCCCCE8 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -1427,13 +1426,6 @@
 			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsClipComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		3877B65574131D0D4D263430 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = TrackScroller.h;
-			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScroller.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		388334BF1C5751DEACCC2A33 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -1460,6 +1452,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Workspace.cpp;
 			path = ../../Source/Core/Workspace/Workspace.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		3AB1D3C667D95C917445A652 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = VelocityProjectMap.h;
+			path = ../../Source/UI/Sequencer/MiniMaps/LevelsMap/VelocityProjectMap.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		3AC04802D52DDD60C55C7FCB = {
@@ -1861,13 +1860,6 @@
 			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/DummyClipComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		4A436674C155112A94B099D5 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TrackScrollerScreen.cpp;
-			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		4A47F530CE17FF749803954C = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -2134,6 +2126,13 @@
 			path = ../../Resources/Icons/mediaForward.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		575817D8134E3052D14F04D4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = LevelsMapScroller.h;
+			path = ../../Source/UI/Sequencer/MiniMaps/LevelsMap/LevelsMapScroller.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		57D5D9DFD74CE88325112E4C = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -2300,13 +2299,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MenuItemComponent.cpp;
 			path = ../../Source/UI/Menus/Base/MenuItemComponent.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		5FC994742E317D09C4597E16 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = TrackScrollerScreen.h;
-			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScrollerScreen.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		5FE7C66273E6B419C5EE4FD4 = {
@@ -2783,6 +2775,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = LongTapController.h;
 			path = ../../Source/UI/Input/LongTapController.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		7A4FDD0E25BBD85997D7F349 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = VelocityProjectMap.cpp;
+			path = ../../Source/UI/Sequencer/MiniMaps/LevelsMap/VelocityProjectMap.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7A69A8F5C600901F1772BC33 = {
@@ -3317,6 +3316,13 @@
 			path = ../../Source/UI/Input/MultiTouchController.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		903955FFA5AFBE0E7B421E57 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ProjectMapScroller.cpp;
+			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScroller.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		9065B72CD8BCC0BF5D163B35 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3749,6 +3755,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = TimeSignatureDialog.h;
 			path = ../../Source/UI/Dialogs/TimeSignatureDialog.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		A5191044E39C4ECDE5F56AA0 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ProjectMapScrollerScreen.h;
+			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScrollerScreen.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		A533B6E5A65824292786111C = {
@@ -4486,6 +4499,13 @@
 			path = ../../Source/UI/Pages/VCS/RevisionItemComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		CA7FD4F76BE1CC6661CA3477 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ProjectMapScrollerScreen.cpp;
+			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScrollerScreen.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		CAE578CDEE4652B6F4168C3C = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4780,25 +4800,11 @@
 			path = ../../Source/Core/Tree/TreeNodeSerializer.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		D6D5DE5450277D2C9E9C10AD = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ProjectMapNoteComponent.h;
-			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapNoteComponent.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		D78CCF24A997CA01B989487F = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = OrchestraPit.h;
 			path = ../../Source/Core/Audio/Instruments/OrchestraPit.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		D7FB9E91ADA29558DE306FDC = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TrackScroller.cpp;
-			path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/TrackScroller.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		D84E1CE9EFE8BFADB3A28CA1 = {
@@ -4869,13 +4875,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = OpenProjectButton.cpp;
 			path = ../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		DC11896BC12B330D03C7D902 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = BinaryData2.cpp;
-			path = ../Projucer/JuceLibraryCode/BinaryData2.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		DC652073B48E01E79421C4D2 = {
@@ -5417,6 +5416,13 @@
 			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveHelper.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		F350CA503BE1F50F3CC773BA = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = LevelsMapScroller.cpp;
+			path = ../../Source/UI/Sequencer/MiniMaps/LevelsMap/LevelsMapScroller.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		F360A4402CC8ECCD04CD9B00 = {
 			isa = PBXFileReference;
 			lastKnownFileType = image.png;
@@ -5471,13 +5477,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = SpectralLogo.h;
 			path = ../../Source/UI/Common/SpectralLogo.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		F6BA889FA91B97EE77EBE80E = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = BinaryData3.cpp;
-			path = ../Projucer/JuceLibraryCode/BinaryData3.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		F6D0DCBDDDB1540F979066C1 = {
@@ -5660,13 +5659,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = ProjectSequencesWrapper.h;
 			path = ../../Source/Core/Audio/Transport/ProjectSequencesWrapper.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		FFE95E76C9E52E6492509A48 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = PianoSequenceMapNoteComponent.h;
-			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoSequenceMapNoteComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		13E54480CE9573457EA9FE0E = {
@@ -6691,7 +6683,6 @@
 			children = (
 				1E02CC0349F431E8A1BD1D7B,
 				5D2D534B84A9688633BC514E,
-				FFE95E76C9E52E6492509A48,
 			);
 			name = PianoClip;
 			sourceTree = "<group>";
@@ -6726,8 +6717,8 @@
 				220F852BD955D68095E99674,
 				AF75EE47FEFC2A343CFC147B,
 				F308BBBCEBFCA75701C6766A,
-				C3E0B73861D00982E28C63D0,
 				4904543A8478B7797EBCCA3D,
+				C3E0B73861D00982E28C63D0,
 				81D36278F0028B0649509527,
 				29A3339CC715D3A778B63D8B,
 				DD88422CE285B3AB6493BCF7,
@@ -6774,16 +6765,26 @@
 			name = KeySignaturesMap;
 			sourceTree = "<group>";
 		};
+		D86FEC411FE150896A73531F = {
+			isa = PBXGroup;
+			children = (
+				F350CA503BE1F50F3CC773BA,
+				575817D8134E3052D14F04D4,
+				7A4FDD0E25BBD85997D7F349,
+				3AB1D3C667D95C917445A652,
+			);
+			name = LevelsMap;
+			sourceTree = "<group>";
+		};
 		C158FAC275AE2DE76D308AB0 = {
 			isa = PBXGroup;
 			children = (
 				0174999DDF119F454ECC55E5,
 				44F3DB1E0FF9AFF85148A0F0,
-				D6D5DE5450277D2C9E9C10AD,
-				D7FB9E91ADA29558DE306FDC,
-				3877B65574131D0D4D263430,
-				4A436674C155112A94B099D5,
-				5FC994742E317D09C4597E16,
+				903955FFA5AFBE0E7B421E57,
+				234E5614AE4D139E567D39C5,
+				CA7FD4F76BE1CC6661CA3477,
+				A5191044E39C4ECDE5F56AA0,
 			);
 			name = PianoMap;
 			sourceTree = "<group>";
@@ -6807,6 +6808,7 @@
 			children = (
 				046878B21EC1906A07B37EC0,
 				9E2F138F7CBFA813B62F500A,
+				D86FEC411FE150896A73531F,
 				C158FAC275AE2DE76D308AB0,
 				D4D20CDD3ED97D12E6D04980,
 			);
@@ -6951,8 +6953,6 @@
 				80172CF73E1171F21223A619,
 				049110EFE86677978F8FA611,
 				3FB91D96C4360F419BEB3CAF,
-				DC11896BC12B330D03C7D902,
-				F6BA889FA91B97EE77EBE80E,
 				58FF6F9E1929247D2B951913,
 				46D4C80D6AE8FCB681197BC7,
 				B4FAC894B2C8A223A7006BD9,
@@ -7108,6 +7108,7 @@
 					"../../Source/UI/Sequencer/Helpers",
 					"../../Source/UI/Sequencer/MiniMaps/AnnotationsMap",
 					"../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap",
+					"../../Source/UI/Sequencer/MiniMaps/LevelsMap",
 					"../../Source/UI/Sequencer/MiniMaps/PianoMap",
 					"../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap",
 					"../../Source/UI/Sequencer/PatternRoll",
@@ -7146,7 +7147,7 @@
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = EQL633LLC8;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_NDEBUG=1",
 					"NDEBUG=1",
@@ -7222,6 +7223,7 @@
 					"../../Source/UI/Sequencer/Helpers",
 					"../../Source/UI/Sequencer/MiniMaps/AnnotationsMap",
 					"../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap",
+					"../../Source/UI/Sequencer/MiniMaps/LevelsMap",
 					"../../Source/UI/Sequencer/MiniMaps/PianoMap",
 					"../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap",
 					"../../Source/UI/Sequencer/PatternRoll",
@@ -7377,8 +7379,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6B221F9D2A7E49E5BEB05E3,
-				29C223D4EDC3F046663698C1,
-				713B6C189BB5212469CA96A2,
 				8214F97DF5C7AAEF3A5D89BE,
 				461C4208C242ED4626DFC76D,
 				7EE39683D2EDF150459153CB,
@@ -7431,7 +7431,7 @@
 		08DB4A16C7B3991E0F547761 = {
 			isa = PBXProject;
 			buildConfigurationList = CBBEDDA3CEDC22AE3C172D11;
-			attributes = { LastUpgradeCheck = 1010; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = C26CB8AD40490BB25FE36466;

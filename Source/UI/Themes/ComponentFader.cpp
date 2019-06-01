@@ -49,7 +49,7 @@ public:
         
         if (useProxyComponent)
         {
-            this->proxy = new ProxyComponent(*this->component);
+            this->proxy.reset(new ProxyComponent(*this->component));
         }
         else
         {
@@ -71,8 +71,8 @@ public:
     
     bool useTimeslice (const int elapsed)
     {
-        if (Component* const c = proxy != nullptr ? static_cast<Component*> (proxy)
-            : static_cast<Component*> (component))
+        if (auto *c = this->proxy != nullptr ?
+            static_cast<Component *>(this->proxy.get()) : static_cast<Component *>(component))
         {
             msElapsed += elapsed;
             double newProgress = msElapsed / static_cast<double>( msTotal);
@@ -162,7 +162,7 @@ public:
     };
     
     WeakReference<Component> component;
-    ScopedPointer<Component> proxy;
+    UniquePointer<Component> proxy;
     
     double destAlpha;
     

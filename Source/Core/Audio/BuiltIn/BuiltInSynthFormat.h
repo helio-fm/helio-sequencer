@@ -70,9 +70,8 @@ public:
         return StringArray();
     }
 
-    void createPluginInstance(const PluginDescription&, double initialSampleRate,
-                                      int initialBufferSize, void *userData,
-                                      void (*callback) (void*, AudioPluginInstance*, const String&)) override;
+    void createPluginInstance(const PluginDescription &, double initialSampleRate,
+        int initialBufferSize, PluginCreationCallback) override;
 
     bool requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const noexcept override
     {

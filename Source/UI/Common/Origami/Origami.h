@@ -36,10 +36,10 @@ public:
     struct Page final
     {
         SafePointer<Component> component;
-        ScopedPointer<Component> shadowAtStart;
-        ScopedPointer<Component> shadowAtEnd;
-        ScopedPointer<Component> resizer;
-        ScopedPointer<Origami::ChildConstrainer> constrainer;
+        UniquePointer<Component> shadowAtStart;
+        UniquePointer<Component> shadowAtEnd;
+        UniquePointer<Component> resizer;
+        UniquePointer<Origami::ChildConstrainer> constrainer;
         int size = 0;
         int min = ORIGAMI_DEFAULT_MIN_SIZE;
         int max = ORIGAMI_DEFAULT_MAX_SIZE;
@@ -47,7 +47,6 @@ public:
     };
 
     Origami();
-    ~Origami() override;
 
     //===------------------------------------------------------------------===//
     // Origami

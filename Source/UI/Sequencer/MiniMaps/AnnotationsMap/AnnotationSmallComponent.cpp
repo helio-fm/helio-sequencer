@@ -73,7 +73,7 @@ void AnnotationSmallComponent::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
     const Colour baseColour(findDefaultColour(Label::textColourId));
     g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.2f));
-    g.drawHorizontalLine(this->getHeight() - 4, 0.f, float(this->getWidth() - 4));
+    g.fillRect(0, this->getHeight() - 4, this->getWidth() - 4, 1);
     //[/UserPaint]
 }
 

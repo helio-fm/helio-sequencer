@@ -71,9 +71,14 @@ void MidiSequence::undo()
 {
     if (this->getUndoStack()->canUndo())
     {
-        this->checkpoint();
+        this->checkpoint(); // finish current transaction to be undoed
         this->getUndoStack()->undo();
     }
+}
+
+void MidiSequence::undoCurrentTransactionOnly()
+{
+    this->getUndoStack()->undoCurrentTransactionOnly();
 }
 
 void MidiSequence::redo()

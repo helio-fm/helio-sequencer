@@ -100,10 +100,11 @@ static String getHeaders()
         << "User-Agent: " << userAgent
         << "\r\n";
 
-    if (App::Workspace().getUserProfile().isLoggedIn())
+    const auto &profile = App::Workspace().getUserProfile();
+    if (profile.isLoggedIn())
     {
         extraHeaders
-            << "Authorization: Bearer " << App::Workspace().getUserProfile().getApiToken()
+            << "Authorization: Bearer " << profile.getApiToken()
             << "\r\n";
     }
 
@@ -178,7 +179,7 @@ BackendRequest::Response BackendRequest::del() const
 BackendRequest::Response BackendRequest::doRequest(const String &verb) const
 {
     Response response;
-    ScopedPointer<InputStream> stream;
+    UniquePointer<InputStream> stream;
     
     const auto url = URL(Routes::Api::baseURL + this->apiEndpoint);
 
@@ -186,21 +187,21 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
     do
     {
         DBG(">> " << verb << " " << this->apiEndpoint);
-        stream = url.createInputStream(false,
+        stream.reset(url.createInputStream(false,
             nullptr, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
-            5, verb);
+            5, verb));
     } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
 
-    processResponse(response, stream);
+    processResponse(response, stream.get());
     return response;
 }
 
 BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, const String &verb) const
 {
     Response response;
-    ScopedPointer<InputStream> stream;
+    UniquePointer<InputStream> stream;
 
     String jsonPayload;
     if (this->serializer.saveToString(jsonPayload, payload).failed())
@@ -217,13 +218,13 @@ BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, con
         DBG(">> " << verb << " " << this->apiEndpoint << " " 
             << jsonPayload.substring(0, 128) + (jsonPayload.length() > 128 ? ".." : ""));
 
-        stream = url.createInputStream(true,
+        stream.reset(url.createInputStream(true,
             nullptr, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
-            5, verb);
+            5, verb));
     } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
 
-    processResponse(response, stream);
+    processResponse(response, stream.get());
     return response;
 }

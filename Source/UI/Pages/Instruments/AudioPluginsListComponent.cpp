@@ -71,7 +71,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
 
     //[UserPreSize]
     this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->showScanButtonIf(this->pluginScanner.getList().getNumTypes() == 0);
+    this->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);
     //[/UserPreSize]
 
     this->setSize(600, 400);
@@ -183,11 +183,10 @@ void AudioPluginsListComponent::updateListContent()
 
 var AudioPluginsListComponent::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
 {
-    auto pd = this->pluginScanner.getList().getType(currentlySelectedRows[0]);
-    if (pd == nullptr) { return {}; }
+    const auto pd = this->pluginScanner.getPlugins()[currentlySelectedRows[0]];
 
     PluginDescriptionDragnDropWrapper::Ptr pluginWrapper = new PluginDescriptionDragnDropWrapper();
-    pluginWrapper->pluginDescription = PluginDescription(*pd);
+    pluginWrapper->pluginDescription = pd;
     var pluginVar(pluginWrapper.get());
 
     return pluginVar;
@@ -210,12 +209,7 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     int w, int h, bool rowIsSelected)
 {
     g.setFont(h * 0.27f);
-    const auto *pd = this->pluginScanner.getList().getType(rowNumber);
-    if (pd == nullptr)
-    {
-        // Plugin scanner must be re-building a list now
-        return;
-    }
+    const auto pd = this->pluginScanner.getPlugins()[rowNumber];
 
     const int margin = h / 12;
     const Colour colour(findDefaultColour(Label::textColourId));
@@ -224,17 +218,17 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     {
     case ColumnIds::vendorAndName:
     {
-        const String inputChannelsString = TRANS_PLURAL("{x} input channels", pd->numInputChannels);
-        const String outputChannelsString = TRANS_PLURAL("{x} output channels", pd->numOutputChannels);
+        const String inputChannelsString = TRANS_PLURAL("{x} input channels", pd.numInputChannels);
+        const String outputChannelsString = TRANS_PLURAL("{x} output channels", pd.numOutputChannels);
 
         g.setColour(colour);
-        g.drawText(pd->descriptiveName, margin, margin, w, h, Justification::topLeft, false);
+        g.drawText(pd.descriptiveName, margin, margin, w, h, Justification::topLeft, false);
 
         g.setColour(colour.withAlpha(0.7f));
-        g.drawText(pd->manufacturerName, margin, 0, w, h, Justification::centredLeft, false);
+        g.drawText(pd.manufacturerName, margin, 0, w, h, Justification::centredLeft, false);
 
         g.setColour(colour.withAlpha(0.5f));
-        g.drawText(pd->version + ", " + inputChannelsString + ", " + outputChannelsString,
+        g.drawText(pd.version + ", " + inputChannelsString + ", " + outputChannelsString,
             margin, -margin, w, h, Justification::bottomLeft, false);
 
         break;
@@ -242,13 +236,13 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     case ColumnIds::category:
     {
         g.setColour(colour.withAlpha(0.5f));
-        g.drawText(pd->category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
+        g.drawText(pd.category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
         break;
     }
     case ColumnIds::format:
     {
         g.setColour(colour.withAlpha(0.7f));
-        g.drawText(pd->pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
+        g.drawText(pd.pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
         break;
     }
     default:
@@ -275,7 +269,7 @@ void AudioPluginsListComponent::sortOrderChanged(int newSortColumnId, bool isFor
 
 int AudioPluginsListComponent::getNumRows()
 {
-    return this->pluginScanner.getList().getNumTypes();
+    return this->pluginScanner.getNumPlugins();
 }
 
 int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
@@ -295,9 +289,8 @@ int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
 
 String AudioPluginsListComponent::getCellTooltip(int rowNumber, int columnId)
 {
-    auto description = pluginScanner.getList().getType(rowNumber);
-    if (description == nullptr) { return {}; }
-    return description->fileOrIdentifier;
+    const auto description = pluginScanner.getPlugins()[rowNumber];
+    return description.fileOrIdentifier;
 }
 
 void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
@@ -326,12 +319,11 @@ void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
 bool AudioPluginsListComponent::hasMenu() const noexcept { return true; }
 bool AudioPluginsListComponent::canBeSelectedAsMenuItem() const { return false; }
 
-ScopedPointer<Component> AudioPluginsListComponent::createMenu()
+Component *AudioPluginsListComponent::createMenu()
 {
     const auto selectedRow = this->pluginsList->getSelectedRow();
-    const auto description = pluginScanner.getList().getType(selectedRow);
-    jassert(description);
-    return { new AudioPluginSelectionMenu(*description, this->instrumentsRoot, this->pluginScanner) };
+    const auto description = pluginScanner.getPlugins()[selectedRow];
+    return new AudioPluginSelectionMenu(description, this->instrumentsRoot, this->pluginScanner);
 }
 
 Image AudioPluginsListComponent::getIcon() const
@@ -342,9 +334,8 @@ Image AudioPluginsListComponent::getIcon() const
 String AudioPluginsListComponent::getName() const
 {
     const auto selectedRow = this->pluginsList->getSelectedRow();
-    auto description = pluginScanner.getList().getType(selectedRow);
-    jassert(description);
-    return description->descriptiveName;
+    const auto description = pluginScanner.getPlugins()[selectedRow];
+    return description.descriptiveName;
 }
 
 //[/MiscUserCode]

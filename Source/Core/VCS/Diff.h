@@ -57,7 +57,7 @@ namespace VCS
 
     private:
 
-        ScopedPointer<DiffLogic> logic;
+        UniquePointer<DiffLogic> logic;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Diff)
 

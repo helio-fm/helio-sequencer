@@ -30,7 +30,7 @@ SettingsListItemHighlighter::SettingsListItemHighlighter()
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (256, 32);
+    this->setSize(256, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -51,8 +51,14 @@ void SettingsListItemHighlighter::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x0b000000));
-    g.fillRoundedRectangle (40.0f, 2.0f, static_cast<float> (getWidth() - 45), static_cast<float> (getHeight() - 6), 6.000f);
+    {
+        float x = 40.0f, y = 2.0f, width = static_cast<float> (getWidth() - 45), height = static_cast<float> (getHeight() - 6);
+        Colour fillColour = Colour (0x0b000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 6.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -76,12 +82,12 @@ void SettingsListItemHighlighter::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="SettingsListItemHighlighter"
-                 template="../../Template" componentName="" parentClasses="public Component"
+                 template="../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
                  initialHeight="32">
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="40 2 45M 6M" cornerSize="6" fill="solid: b000000" hasStroke="0"/>
+    <ROUNDRECT pos="40 2 45M 6M" cornerSize="6.0" fill="solid: b000000" hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

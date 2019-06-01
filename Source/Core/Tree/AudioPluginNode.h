@@ -32,13 +32,13 @@ public:
     AudioProcessorGraph::NodeID getNodeId() const noexcept;
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    Component *createMenu() override;
 
     void showPage() override;
     
 private:
 
-    ScopedPointer<Component> audioPluginEditor;
+    UniquePointer<Component> audioPluginEditor;
     const AudioProcessorGraph::NodeID nodeId;
 
 };

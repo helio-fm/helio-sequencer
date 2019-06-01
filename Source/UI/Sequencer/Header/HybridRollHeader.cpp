@@ -87,8 +87,8 @@ void HybridRollHeader::updateSubrangeIndicator(const Colour &colour, float first
 {
     if (this->clipRangeIndicator == nullptr)
     {
-        this->clipRangeIndicator = new ClipRangeIndicator();
-        this->addAndMakeVisible(this->clipRangeIndicator);
+        this->clipRangeIndicator.reset(new ClipRangeIndicator());
+        this->addAndMakeVisible(this->clipRangeIndicator.get());
     }
 
     if (this->clipRangeIndicator->updateWith(colour, firstBeat, lastBeat))
@@ -182,9 +182,9 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         
         this->transport.probeSoundAt(transportPosition, nullptr);
         
-        this->playingIndicator = new SoundProbeIndicator();
-        this->roll.addAndMakeVisible(this->playingIndicator);
-        this->updateIndicatorPosition(this->playingIndicator, e);
+        this->playingIndicator.reset(new SoundProbeIndicator());
+        this->roll.addAndMakeVisible(this->playingIndicator.get());
+        this->updateIndicatorPosition(this->playingIndicator.get(), e);
     }
     else
     {
@@ -214,10 +214,10 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
             
             this->roll.getSelectionComponent()->beginLasso({ newX, 0.f }, &this->roll);
             
-            this->selectionIndicator = new HeaderSelectionIndicator();
-            this->addAndMakeVisible(this->selectionIndicator);
+            this->selectionIndicator.reset(new HeaderSelectionIndicator());
+            this->addAndMakeVisible(this->selectionIndicator.get());
             this->selectionIndicator->setBounds(0, this->getHeight() - this->selectionIndicator->getHeight(),
-                                                0, this->selectionIndicator->getHeight());
+                0, this->selectionIndicator->getHeight());
             
 #if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             this->selectionIndicator->setStartAnchor(this->getAlignedAnchorForEvent(e));
@@ -240,7 +240,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
     {
         if (this->pointingIndicator != nullptr)
         {
-            this->updateIndicatorPosition(this->pointingIndicator, e);
+            this->updateIndicatorPosition(this->pointingIndicator.get(), e);
 
             if (this->playingIndicator != nullptr)
             {
@@ -253,8 +253,8 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
                     
                     if (distance > MIN_TIME_DISTANCE_INDICATOR_SIZE)
                     {
-                        this->timeDistanceIndicator = new TimeDistanceIndicator();
-                        this->roll.addAndMakeVisible(this->timeDistanceIndicator);
+                        this->timeDistanceIndicator.reset(new TimeDistanceIndicator());
+                        this->roll.addAndMakeVisible(this->timeDistanceIndicator.get());
                         this->timeDistanceIndicator->setBounds(0, this->getBottom() + 4,
                                                                0, this->timeDistanceIndicator->getHeight());
                         this->updateTimeDistanceIndicator();
@@ -362,16 +362,16 @@ void HybridRollHeader::mouseMove(const MouseEvent &e)
 {
     if (this->pointingIndicator != nullptr)
     {
-        this->updateIndicatorPosition(this->pointingIndicator, e);
+        this->updateIndicatorPosition(this->pointingIndicator.get(), e);
     }
     
     if (this->soundProbeMode)
     {
         if (this->pointingIndicator == nullptr)
         {
-            this->pointingIndicator = new SoundProbeIndicator();
-            this->roll.addAndMakeVisible(this->pointingIndicator);
-            this->updateIndicatorPosition(this->pointingIndicator, e);
+            this->pointingIndicator.reset(new SoundProbeIndicator());
+            this->roll.addAndMakeVisible(this->pointingIndicator.get());
+            this->updateIndicatorPosition(this->pointingIndicator.get(), e);
         }
     }
 }
@@ -417,32 +417,32 @@ void HybridRollHeader::paint(Graphics &g)
     g.setColour(this->barColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 14), float(this->getHeight() - 1));
+        g.fillRect(floorf(f), float(this->getHeight() - 13), 1.f, 12.f);
     }
 
     g.setColour(this->barShadeColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawVerticalLine(int(floorf(f)) + 1, float(this->getHeight() - 13), float(this->getHeight() - 1));
+        g.fillRect(floorf(f + 1), float(this->getHeight() - 12), 1.f, 11.f);
     }
 
     g.setColour(this->beatColour);
     for (const auto f : this->roll.getVisibleBeats())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 8), float(this->getHeight() - 1));
+        g.fillRect(floorf(f), float(this->getHeight() - 8), 1.f, 7.f);
     }
 
     g.setColour(this->snapColour);
     for (const auto f : this->roll.getVisibleSnaps())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 4), float(this->getHeight() - 1));
+        g.fillRect(floorf(f), float(this->getHeight() - 4), 1.f, 3.f);
     }
 
     g.setColour(this->bevelLightColour);
-    g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
 
     g.setColour(this->bevelDarkColour);
-    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
 }
 
 void HybridRollHeader::resized()

@@ -56,7 +56,7 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     if (parentWorkspace != nullptr)
     {
 #if CALLOUT_HAS_BACKGROUND
-        this->backgroundWhite = new DialogBackground();
+        this->backgroundWhite.reset(new DialogBackground());
         parentWorkspace->addAndMakeVisible(this->backgroundWhite);
 #endif
         
@@ -111,7 +111,7 @@ public:
     //    }
     //}
     
-    ScopedPointer<Component> content;
+    UniquePointer<Component> content;
     HelioCallout callout;
     
     JUCE_DECLARE_NON_COPYABLE (HelioCallOutCallback)

@@ -76,10 +76,10 @@ void SeparatorVertical::paint (Graphics& g)
 #endif
 
     g.setColour (Colour (0x09ffffff));
-    g.drawVerticalLine(0, 0.f, float(this->getHeight()));
+    g.fillRect(0, 0, 1, this->getHeight());
 
     g.setColour (Colour (0x0b000000));
-    g.drawVerticalLine(1, 0.f, float(this->getHeight()));
+    g.fillRect(1, 0, 1, this->getHeight());
 
     //[/UserPaint]
 }

@@ -47,7 +47,7 @@ private:
     //[UserVariables]
 
     ComponentAnimator selectionAnimator;
-    ScopedPointer<Component> selectionComponent;
+    UniquePointer<Component> selectionComponent;
 
     Component *createHighlighterComponent() override;
 

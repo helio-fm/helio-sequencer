@@ -281,10 +281,10 @@ void ClipComponent::paint(Graphics &g)
     if (this->selectedState)
     {
         g.fillRect(1.f, 1.f, w - 2.f, 3.f);
-        g.drawHorizontalLine(this->getHeight() - 1, 1.f, w - 1.f);
-        const float wv = (w - 4.f) * v;
-        const float fs = ((w - 4.f) - wv) / 2.f;
-        g.drawHorizontalLine(5, 2.f + fs, w - fs - 2.f);
+        g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);
+
+        const float fs = (w - 4.f) - ((w - 4.f) * v);
+        g.fillRect(2.f + (fs / 2.f), 5.f, w - fs - 4.f, 2.f);
         g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
             textBounds, Justification::bottomLeft, false);
     }
@@ -305,8 +305,8 @@ void ClipComponent::paint(Graphics &g)
     }
 
     g.setColour(this->headDarkColour);
-    g.drawVerticalLine(0, 2.f, h - 1.f);
-    g.drawVerticalLine(this->getWidth() - 1, 2.f, h - 1.f);
+    g.fillRect(0, 2, 1, this->getHeight() - 3);
+    g.fillRect(this->getWidth() - 1, 2, 1, this->getHeight() - 3);
 
     // speedup: set colour to be used by all child components, so they don't have to 
     g.setColour(this->clip.isMuted() ? this->headDarkColour : this->eventColour);

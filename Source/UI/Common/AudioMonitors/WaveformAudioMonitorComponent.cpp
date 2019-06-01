@@ -118,7 +118,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     {
         const float peakL = waveformIecLevel(this->lPeakBuffer[i].get()) * midH;
         const float peakR = waveformIecLevel(this->rPeakBuffer[i].get()) * midH;
-        g.drawVerticalLine(1 + i * 2, midH - peakL, midH + peakR);
+        g.fillRect(1.f + (i * 2.f), midH - peakL, 1.f, peakR + peakL);
     }
 
     g.setColour(this->colour.withAlpha(0.25f));
@@ -127,6 +127,6 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     {
         const float rmsL = waveformIecLevel(this->lRmsBuffer[i].get()) * midH;
         const float rmsR = waveformIecLevel(this->rRmsBuffer[i].get()) * midH;
-        g.drawVerticalLine(i * 2, midH - rmsL, midH + rmsR);
+        g.fillRect(i * 2.f, midH - rmsL, 1.f, rmsR + rmsL);
     }
 }

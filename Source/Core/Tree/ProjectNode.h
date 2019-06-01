@@ -77,18 +77,20 @@ public:
 
     void safeRename(const String &newName, bool sendNotifications) override;
 
+    void switchMiniMaps();
     void showPatternEditor(WeakReference<TreeNode> source);
     void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
     WeakReference<TreeNode> getLastShownTrack() const noexcept;
 
-    void setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea = false);
+    void setEditableScope(MidiTrack *const activeTrack,
+        const Clip &activeClip, bool shouldFocusToArea = false);
 
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    Component *createMenu() override;
     
     //===------------------------------------------------------------------===//
     // Undos
@@ -192,16 +194,16 @@ private:
 
     void collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected = false) const;
 
-    ScopedPointer<Autosaver> autosaver;
-    ScopedPointer<Transport> transport;
+    UniquePointer<Autosaver> autosaver;
+    UniquePointer<Transport> transport;
 
-    ScopedPointer<SequencerLayout> sequencerLayout;
+    UniquePointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
     ListenerList<ProjectListener> changeListeners;
-    ScopedPointer<ProjectPage> projectPage;
+    UniquePointer<ProjectPage> projectPage;
     ReadWriteLock tracksListLock;
-    ScopedPointer<ProjectInfo> info;
-    ScopedPointer<ProjectTimeline> timeline;
+    UniquePointer<ProjectInfo> info;
+    UniquePointer<ProjectTimeline> timeline;
 
     WeakReference<TreeNode> lastShownTrack;
 
@@ -218,7 +220,7 @@ private:
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
 
-    ScopedPointer<UndoStack> undoStack;
+    UniquePointer<UndoStack> undoStack;
 
     mutable bool isTracksCacheOutdated;
     mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;

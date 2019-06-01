@@ -149,7 +149,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
 
 ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
 {
-    ScopedPointer<MidiTrackNode> newItem(new PianoTrackNode(name));
+    UniquePointer<MidiTrackNode> newItem(new PianoTrackNode(name));
     
     // We need to have at least one clip on a pattern:
     const Clip clip(newItem->getPattern());
@@ -169,7 +169,7 @@ ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String 
 ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
     int controllerNumber, const String &instrumentId) const
 {
-    ScopedPointer<MidiTrackNode> newItem(new AutomationTrackNode(name));
+    UniquePointer<MidiTrackNode> newItem(new AutomationTrackNode(name));
 
     // We need to have at least one clip on a pattern:
     const Clip clip(newItem->getPattern());

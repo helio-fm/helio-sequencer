@@ -27,7 +27,7 @@ void OrigamiVertical::addFlexiblePage(Component *targetComponent)
         return;
     }
 
-    auto newPage = new Origami::Page();
+    auto *newPage = new Origami::Page();
     newPage->fixedSize = false;
     newPage->component = targetComponent;
     newPage->component->setSize(this->getWidth(), this->getHeight());
@@ -62,7 +62,7 @@ void OrigamiVertical::addFixedPage(Component *targetComponent)
         return;
     }
 
-    auto newPage = new Origami::Page();
+    auto *newPage = new Origami::Page();
     newPage->fixedSize = true;
     newPage->component = targetComponent;
     newPage->min = newPage->max = targetComponent->getWidth();
@@ -71,7 +71,7 @@ void OrigamiVertical::addFixedPage(Component *targetComponent)
     const int commonFixedWidth = this->getCommonFixedWidth();
 
     // width justification
-    for (auto page : this->pages)
+    for (auto *page : this->pages)
     {
         if (!page->fixedSize)
         {
@@ -91,41 +91,39 @@ void OrigamiVertical::addFixedPage(Component *targetComponent)
 
 void OrigamiVertical::addShadowAtTheStart()
 {
-    if (Page *page = this->pages.getLast())
+    if (auto *page = this->pages.getLast())
     {
-        page->shadowAtStart = new ShadowRightwards(Normal);
+        page->shadowAtStart.reset(new ShadowRightwards(Normal));
         page->shadowAtStart->setSize(10, 10);
-        this->addAndMakeVisible(page->shadowAtStart);
+        this->addAndMakeVisible(page->shadowAtStart.get());
     }
 }
 
 void OrigamiVertical::addShadowAtTheEnd()
 {
-    if (Page *page = this->pages.getLast())
+    if (auto *page = this->pages.getLast())
     {
-        page->shadowAtEnd = new ShadowLeftwards(Normal);
+        page->shadowAtEnd.reset(new ShadowLeftwards(Normal));
         page->shadowAtEnd->setSize(10, 10);
-        this->addAndMakeVisible(page->shadowAtEnd);
+        this->addAndMakeVisible(page->shadowAtEnd.get());
     }
 }
 
 void OrigamiVertical::addResizer(int minSize, int maxSize)
 {
-    if (Page *page = this->pages.getLast())
+    if (auto *page = this->pages.getLast())
     {
         page->min = minSize;
         page->max = maxSize;
-        page->constrainer = new Origami::ChildConstrainer(*this);
+        page->constrainer.reset(new Origami::ChildConstrainer(*this));
         page->constrainer->setMinimumWidth(minSize);
         page->constrainer->setMaximumWidth(maxSize);
         page->constrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 
-        page->resizer =
-            new ResizableEdgeComponent(page->component,
-                page->constrainer,
-                ResizableEdgeComponent::rightEdge);
+        page->resizer.reset(new ResizableEdgeComponent(page->component,
+            page->constrainer.get(), ResizableEdgeComponent::rightEdge));
 
-        this->addAndMakeVisible(page->resizer);
+        this->addAndMakeVisible(page->resizer.get());
         page->resizer->toFront(false);
         page->resizer->setAlwaysOnTop(true);
     }
@@ -210,14 +208,14 @@ void OrigamiVertical::onPageResized(Component *component)
     // ищем дельту ширины
     for (int i = 0; i < this->pages.size(); ++i)
     {
-        Origami::Page *page = this->pages[i];
+        auto *page = this->pages[i];
 
         if (component == page->component)
         {
             const int deltaWidth = (page->component->getWidth() - page->size);
 
             // теперь надо ее же вычесть из ширины следующего, если он есть
-            if (Origami::Page *nextPage = this->pages[i + 1])
+            if (auto *nextPage = this->pages[i + 1])
             {
                 // OwnedArray вернет nullptr, если мы за границами массива
                 nextPage->component->setSize(
@@ -236,10 +234,9 @@ int OrigamiVertical::getCommonFixedWidth() const
 {
     int commonFixedWidth = 0;
 
-    for (auto page : this->pages)
+    for (auto *page : this->pages)
     {
-        commonFixedWidth +=
-            page->fixedSize ? page->component->getWidth() : 0;
+        commonFixedWidth += page->fixedSize ? page->component->getWidth() : 0;
     }
 
     return commonFixedWidth;
@@ -250,17 +247,17 @@ void OrigamiVertical::updateLayout(const Origami::Page *page, Rectangle<int> bou
     Component *c = page->component;
     c->setBounds(bounds);
 
-    if (Component *shadow = page->shadowAtStart)
+    if (auto *shadow = page->shadowAtStart.get())
     {
         shadow->setBounds(c->getX(), c->getY(), shadow->getWidth(), c->getHeight());
     }
 
-    if (Component *shadow = page->shadowAtEnd)
+    if (auto *shadow = page->shadowAtEnd.get())
     {
         shadow->setBounds(c->getRight() - shadow->getWidth(), c->getY(), shadow->getWidth(), c->getHeight());
     }
     
-    if (Component *resizer = page->resizer)
+    if (auto *resizer = page->resizer.get())
     {
         resizer->setBounds(c->getRight() - 1, 0, 2, c->getHeight());
     }

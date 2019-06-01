@@ -24,7 +24,7 @@ ProjectInfo::ProjectInfo(ProjectNode &parent) : project(parent)
 {
     using namespace Serialization::VCS;
 
-    this->vcsDiffLogic = new VCS::ProjectInfoDiffLogic(*this);
+    this->vcsDiffLogic.reset(new VCS::ProjectInfoDiffLogic(*this));
 
     this->initTimestamp = Time::getCurrentTime().toMilliseconds();
     this->license = "Copyright";
@@ -98,7 +98,7 @@ ValueTree ProjectInfo::getDeltaData(int deltaIndex) const
 
 VCS::DiffLogic *ProjectInfo::getDiffLogic() const
 {
-    return this->vcsDiffLogic;
+    return this->vcsDiffLogic.get();
 }
 
 void ProjectInfo::resetStateTo(const TrackedItem &newState)

@@ -173,7 +173,7 @@ private:
     void deserializeDeviceManager(const ValueTree &tree);
 
     OwnedArray<Instrument> instruments;
-    ScopedPointer<AudioMonitor> audioMonitor;
+    UniquePointer<AudioMonitor> audioMonitor;
 
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;

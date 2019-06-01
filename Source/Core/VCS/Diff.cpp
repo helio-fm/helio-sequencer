@@ -26,7 +26,7 @@ Diff::Diff(TrackedItem &diffTarget)
 {
     this->description = diffTarget.getVCSName();
     this->vcsUuid = diffTarget.getUuid();
-    this->logic = DiffLogic::createLogicCopy(diffTarget, *this);
+    this->logic.reset(DiffLogic::createLogicCopy(diffTarget, *this));
 }
 
 bool Diff::hasAnyChanges() const
@@ -87,7 +87,7 @@ String Diff::getVCSName() const
 
 DiffLogic *Diff::getDiffLogic() const
 {
-    return this->logic;
+    return this->logic.get();
 }
 
 }

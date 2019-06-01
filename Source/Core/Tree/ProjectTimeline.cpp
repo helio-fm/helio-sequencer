@@ -37,7 +37,7 @@ public:
     { return this->timeline.annotationsTrackId; }
 
     MidiSequence *getSequence() const noexcept override
-    { return this->timeline.annotationsSequence; }
+    { return this->timeline.annotationsSequence.get(); }
 
     ProjectTimeline &timeline;
 };
@@ -53,7 +53,7 @@ public:
     { return this->timeline.timeSignaturesTrackId; }
 
     MidiSequence *getSequence() const noexcept override
-    { return this->timeline.timeSignaturesSequence; }
+    { return this->timeline.timeSignaturesSequence.get(); }
 
     ProjectTimeline &timeline;
 };
@@ -69,7 +69,7 @@ public:
     { return this->timeline.keySignaturesTrackId; }
 
     MidiSequence *getSequence() const noexcept override
-    { return this->timeline.keySignaturesSequence; }
+    { return this->timeline.keySignaturesSequence.get(); }
 
     ProjectTimeline &timeline;
 };
@@ -80,46 +80,46 @@ ProjectTimeline::ProjectTimeline(ProjectNode &parentProject, String trackName) :
     timeSignaturesTrackId(Uuid().toString()),
     keySignaturesTrackId(Uuid().toString())
 {
-    this->annotationsTrack = new AnnotationsTrack(*this);
-    this->annotationsSequence = new AnnotationsSequence(*this->annotationsTrack, *this);
+    this->annotationsTrack.reset(new AnnotationsTrack(*this));
+    this->annotationsSequence.reset(new AnnotationsSequence(*this->annotationsTrack, *this));
 
-    this->timeSignaturesTrack = new TimeSignaturesTrack(*this);
-    this->timeSignaturesSequence = new TimeSignaturesSequence(*this->timeSignaturesTrack, *this);
+    this->timeSignaturesTrack.reset(new TimeSignaturesTrack(*this));
+    this->timeSignaturesSequence.reset(new TimeSignaturesSequence(*this->timeSignaturesTrack, *this));
 
-    this->keySignaturesTrack = new KeySignaturesTrack(*this);
-    this->keySignaturesSequence = new KeySignaturesSequence(*this->keySignaturesTrack, *this);
+    this->keySignaturesTrack.reset(new KeySignaturesTrack(*this));
+    this->keySignaturesSequence.reset(new KeySignaturesSequence(*this->keySignaturesTrack, *this));
 
     using namespace Serialization::VCS;
-    this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
+    this->vcsDiffLogic.reset(new VCS::ProjectTimelineDiffLogic(*this));
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::annotationsAdded));
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::keySignaturesAdded));
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::timeSignaturesAdded));
 
-    this->project.broadcastAddTrack(this->annotationsTrack);
-    this->project.broadcastAddTrack(this->keySignaturesTrack);
-    this->project.broadcastAddTrack(this->timeSignaturesTrack);
+    this->project.broadcastAddTrack(this->annotationsTrack.get());
+    this->project.broadcastAddTrack(this->keySignaturesTrack.get());
+    this->project.broadcastAddTrack(this->timeSignaturesTrack.get());
 }
 
 ProjectTimeline::~ProjectTimeline()
 {
-    this->project.broadcastRemoveTrack(this->timeSignaturesTrack);
-    this->project.broadcastRemoveTrack(this->keySignaturesTrack);
-    this->project.broadcastRemoveTrack(this->annotationsTrack);
+    this->project.broadcastRemoveTrack(this->timeSignaturesTrack.get());
+    this->project.broadcastRemoveTrack(this->keySignaturesTrack.get());
+    this->project.broadcastRemoveTrack(this->annotationsTrack.get());
 }
 
 MidiTrack *ProjectTimeline::getAnnotations() const noexcept
 {
-    return this->annotationsTrack;
+    return this->annotationsTrack.get();
 }
 
 MidiTrack *ProjectTimeline::getTimeSignatures() const noexcept
 {
-    return this->timeSignaturesTrack;
+    return this->timeSignaturesTrack.get();
 }
 
 MidiTrack *ProjectTimeline::getKeySignatures() const noexcept
 {
-    return this->keySignaturesTrack;
+    return this->keySignaturesTrack.get();
 }
 
 //===----------------------------------------------------------------------===//
@@ -157,17 +157,17 @@ static float findPreviousTrackAnchor(MidiTrack *track, float beat)
 // finds the nearest timeline event, like key or time signature, or annotation
 float ProjectTimeline::findNextAnchorBeat(float beat) const
 {
-    const auto keyEvent = findNextTrackAnchor(this->keySignaturesTrack, beat);
-    const auto timeEvent = findNextTrackAnchor(this->timeSignaturesTrack, beat);
-    const auto annotation = findNextTrackAnchor(this->annotationsTrack, beat);
+    const auto keyEvent = findNextTrackAnchor(this->keySignaturesTrack.get(), beat);
+    const auto timeEvent = findNextTrackAnchor(this->timeSignaturesTrack.get(), beat);
+    const auto annotation = findNextTrackAnchor(this->annotationsTrack.get(), beat);
     return jmin(keyEvent, timeEvent, annotation);
 }
 
 float ProjectTimeline::findPreviousAnchorBeat(float beat) const
 {
-    const auto keyEvent = findPreviousTrackAnchor(this->keySignaturesTrack, beat);
-    const auto timeEvent = findPreviousTrackAnchor(this->timeSignaturesTrack, beat);
-    const auto annotation = findPreviousTrackAnchor(this->annotationsTrack, beat);
+    const auto keyEvent = findPreviousTrackAnchor(this->keySignaturesTrack.get(), beat);
+    const auto timeEvent = findPreviousTrackAnchor(this->timeSignaturesTrack.get(), beat);
+    const auto annotation = findPreviousTrackAnchor(this->annotationsTrack.get(), beat);
     return jmax(keyEvent, timeEvent, annotation);
 }
 
@@ -229,7 +229,7 @@ ValueTree ProjectTimeline::getDeltaData(int deltaIndex) const
 
 VCS::DiffLogic *ProjectTimeline::getDiffLogic() const
 {
-    return this->vcsDiffLogic;
+    return this->vcsDiffLogic.get();
 }
 
 void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
@@ -261,7 +261,6 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
         }
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // ProjectEventDispatcher

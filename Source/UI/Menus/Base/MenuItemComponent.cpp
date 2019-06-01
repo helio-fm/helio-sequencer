@@ -478,11 +478,11 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
         {
 #if ! HAS_OPENGL_BUG
             // possible glDeleteTexture bug here?
-            ScopedPointer<CommandItemSelector> highlighter(new CommandItemSelector());
-            this->addAndMakeVisible(highlighter);
+            UniquePointer<CommandItemSelector> highlighter(new CommandItemSelector());
+            this->addAndMakeVisible(highlighter.get());
             highlighter->setBounds(this->getLocalBounds());
-            this->animator.animateComponent(highlighter, this->getLocalBounds(), 0.f, 200, true, 0.0, 0.0);
-            this->removeChildComponent(highlighter);
+            this->animator.animateComponent(highlighter.get(), this->getLocalBounds(), 0.f, 200, true, 0.0, 0.0);
+            this->removeChildComponent(highlighter.get());
 #endif
         }
 

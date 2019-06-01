@@ -25,8 +25,8 @@ ColourSwatches::ColourSwatches()
     for (const auto &c : colours.getAllValues())
     {
         const Colour colour(Colour::fromString(c));
-        ScopedPointer<ColourButton> button(new ColourButton(colour, this));
-        this->addAndMakeVisible(button);
+        UniquePointer<ColourButton> button(new ColourButton(colour, this));
+        this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
     }
 }

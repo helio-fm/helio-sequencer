@@ -166,56 +166,6 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
     }
 }
 
-void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack, 
-    const Clip &activeClip, bool shouldZoomToArea)
-{
-    if (this->lassoComponent->isDragging())
-    {
-        this->lassoComponent->endLasso();
-    }
-
-    this->selection.deselectAll();
-
-    this->activeTrack = activeTrack;
-    this->activeClip = activeClip;
-
-    int focusMinKey = INT_MAX;
-    int focusMaxKey = 0;
-    float focusMinBeat = FLT_MAX;
-    float focusMaxBeat = -FLT_MAX;
-
-    forEachEventComponent(this->patternMap, e)
-    {
-        auto *nc = e.second.get();
-        const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
-        const auto key = nc->getKey() + activeClip.getKey();
-        nc->setActive(isActive, true);
-
-        if (shouldZoomToArea && isActive)
-        {
-            focusMinKey = jmin(focusMinKey, key);
-            focusMaxKey = jmax(focusMaxKey, key);
-            focusMinBeat = jmin(focusMinBeat, nc->getBeat());
-            focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
-        }
-    }
-
-    // FIXME: zoom empty tracks properly
-
-    this->updateActiveRangeIndicator();
-
-    if (shouldZoomToArea)
-    {
-        this->zoomToArea(focusMinKey, focusMaxKey,
-            focusMinBeat + this->activeClip.getBeat(),
-            focusMaxBeat + this->activeClip.getBeat());
-    }
-    else
-    {
-        this->repaint(this->viewport.getViewArea());
-    }
-}
-
 void PianoRoll::updateActiveRangeIndicator() const
 {
     if (this->activeTrack != nullptr)
@@ -303,7 +253,6 @@ void PianoRoll::hideAllGhostNotes()
 // Input Listeners
 //===----------------------------------------------------------------------===//
 
-
 void PianoRoll::longTapEvent(const Point<float> &position,
     const WeakReference<Component> &target)
 {
@@ -315,7 +264,7 @@ void PianoRoll::longTapEvent(const Point<float> &position,
         if (nc != nullptr && !nc->isActive())
         {
             auto *track = nc->getNote().getSequence()->getTrack();
-            this->setEditableScope(track, nc->getClip(), false);
+            this->project.setEditableScope(track, nc->getClip(), false);
             return;
         }
     }
@@ -769,6 +718,63 @@ void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     HybridRoll::onChangeProjectBeatRange(firstBeat, lastBeat);
 }
 
+void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
+    const Clip &activeClip, bool shouldFocus)
+{
+    if (!shouldFocus &&
+        this->activeClip == activeClip &&
+        this->activeTrack == activeTrack)
+    {
+        return;
+    }
+
+    if (this->lassoComponent->isDragging())
+    {
+        this->lassoComponent->endLasso();
+    }
+
+    this->selection.deselectAll();
+
+    this->activeTrack = activeTrack;
+    this->activeClip = activeClip;
+
+    int focusMinKey = INT_MAX;
+    int focusMaxKey = 0;
+    float focusMinBeat = FLT_MAX;
+    float focusMaxBeat = -FLT_MAX;
+
+    forEachEventComponent(this->patternMap, e)
+    {
+        auto *nc = e.second.get();
+        const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
+        const auto key = nc->getKey() + activeClip.getKey();
+        nc->setActive(isActive, true);
+
+        if (shouldFocus && isActive)
+        {
+            focusMinKey = jmin(focusMinKey, key);
+            focusMaxKey = jmax(focusMaxKey, key);
+            focusMinBeat = jmin(focusMinBeat, nc->getBeat());
+            focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
+        }
+    }
+
+    // FIXME: zoom empty tracks properly
+
+    this->updateActiveRangeIndicator();
+
+    if (shouldFocus)
+    {
+        this->zoomToArea(focusMinKey, focusMaxKey,
+            focusMinBeat + this->activeClip.getBeat(),
+            focusMaxBeat + this->activeClip.getBeat());
+    }
+    else
+    {
+        this->repaint(this->viewport.getViewArea());
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // LassoSource
 //===----------------------------------------------------------------------===//
@@ -931,7 +937,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->selectAll();
         break;
     case CommandIDs::ZoomEntireClip:
-        this->setEditableScope(this->activeTrack, this->activeClip, true);
+        this->project.setEditableScope(this->activeTrack, this->activeClip, true);
         this->zoomOutImpulse(0.25f); // A bit of fancy animation
         break;
     case CommandIDs::RenameTrack:
@@ -1072,8 +1078,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->showChordTool(ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
-        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
+        this->project.switchMiniMaps();
+        // TODO if shift is pressed:
+        //if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        //HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
         break;
     case CommandIDs::TweakVolumeRandom:
         HYBRID_ROLL_BULK_REPAINT_START
@@ -1449,8 +1457,8 @@ void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)
     int duplicateSchemeIndex = this->binarySearchForHighlightingScheme(&key);
     if (duplicateSchemeIndex < 0)
     {
-        ScopedPointer<HighlightingScheme> scheme(new HighlightingScheme(key.getRootKey(), key.getScale()));
-        scheme->setRows(this->renderBackgroundCacheFor(scheme));
+        UniquePointer<HighlightingScheme> scheme(new HighlightingScheme(key.getRootKey(), key.getScale()));
+        scheme->setRows(this->renderBackgroundCacheFor(scheme.get()));
         this->backgroundsCache.addSorted(*this->defaultHighlighting, scheme.release());
     }
 
@@ -1501,7 +1509,7 @@ void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
 Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const scheme) const
 {
     Array<Image> result;
-    const auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const auto &theme = HelioTheme::getCurrentTheme();
     for (int j = 0; j < PIANOROLL_MIN_ROW_HEIGHT; ++j)
     {
         result.add({});

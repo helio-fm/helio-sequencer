@@ -55,7 +55,7 @@ public:
 
 private:
 
-    float alpha;
+    float alpha = 0.f;
 };
 //[/MiscUserDefs]
 
@@ -64,11 +64,12 @@ RadioButton::RadioButton(const String &text, Colour c, RadioButtonListener *list
       colour(c),
       owner(listener)
 {
-    addAndMakeVisible (label = new Label (String(),
-                                          TRANS("C#")));
-    label->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
-    label->setJustificationType (Justification::centred);
-    label->setEditable (false, false, false);
+    this->label.reset(new Label(String(),
+                                 TRANS("...")));
+    this->addAndMakeVisible(label.get());
+    this->label->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    label->setJustificationType(Justification::centred);
+    label->setEditable(false, false, false);
 
 
     //[UserPreSize]
@@ -76,7 +77,7 @@ RadioButton::RadioButton(const String &text, Colour c, RadioButtonListener *list
     this->label->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (32, 32);
+    this->setSize(32, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -125,7 +126,7 @@ void RadioButton::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    label->setBounds (0, 3, getWidth() - 0, getHeight() - 3);
+    label->setBounds(0, 3, getWidth() - 0, getHeight() - 3);
     //[UserResized] Add your own custom resize handling here..
     if (this->checkMark != nullptr)
     {
@@ -138,9 +139,13 @@ void RadioButton::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     if (this->isSelected())
-    { this->deselect(); }
+    {
+        this->deselect();
+    }
     else
-    { this->select(); }
+    {
+        this->select();
+    }
 
     this->owner->onRadioButtonClicked(this);
     //[/UserCode_mouseDown]
@@ -157,10 +162,10 @@ void RadioButton::select()
 {
     if (this->checkMark == nullptr)
     {
-        this->checkMark = new RadioButtonFrame(1.f);
-        this->addChildComponent(this->checkMark);
+        this->checkMark.reset(new RadioButtonFrame(1.f));
+        this->addChildComponent(this->checkMark.get());
         this->resized();
-        this->fader.fadeIn(this->checkMark, 100);
+        this->fader.fadeIn(this->checkMark.get(), 100);
     }
 }
 
@@ -168,7 +173,7 @@ void RadioButton::deselect()
 {
     if (this->checkMark != nullptr)
     {
-        this->fader.fadeOutSnapshot(this->checkMark, 200);
+        this->fader.fadeOutSnapshot(this->checkMark.get(), 200);
         this->checkMark = nullptr;
     }
 }
@@ -199,11 +204,14 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="ff14851992cbe505" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="0 3 0M 3M" labelText="C#" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0 3 0M 3M" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="18.0" kerning="0.0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

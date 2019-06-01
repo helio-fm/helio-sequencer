@@ -133,7 +133,7 @@ protected:
     String name;
     Identifier type;
     Array<Arpeggiator::Key> keys;
-    ScopedPointer<Arpeggiator::Mapper> mapper;
+    UniquePointer<Arpeggiator::Mapper> mapper;
 
     JUCE_LEAK_DETECTOR(Arpeggiator)
 };

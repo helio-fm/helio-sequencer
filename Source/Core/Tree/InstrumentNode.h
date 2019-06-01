@@ -52,7 +52,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    Component *createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -73,7 +73,7 @@ private:
     void removeInstrumentEditor();
     void notifyOrchestraChanged();
 
-    ScopedPointer<InstrumentEditor> instrumentEditor;
+    UniquePointer<InstrumentEditor> instrumentEditor;
     WeakReference<Instrument> instrument;
     WeakReference<AudioCore> audioCore;
 

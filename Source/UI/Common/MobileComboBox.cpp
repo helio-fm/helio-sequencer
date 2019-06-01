@@ -167,10 +167,10 @@ void MobileComboBox::initText(Label *label)
     this->currentNameLabel->setText(label->getText(), dontSendNotification);
 }
 
-void MobileComboBox::initBackground(ScopedPointer<Component> customBackground)
+void MobileComboBox::initBackground(Component *newCustomBackground)
 {
-    this->background.reset(customBackground != nullptr ?
-        customBackground.release() : new PanelBackgroundC());
+    this->background.reset(newCustomBackground != nullptr ?
+        newCustomBackground : new PanelBackgroundC());
     this->addAndMakeVisible(this->background.get());
     this->background->toBack();
 }
@@ -186,13 +186,13 @@ MobileComboBox::Primer::~Primer()
 }
 
 void MobileComboBox::Primer::initWith(WeakReference<Component> editor,
-    MenuPanel::Menu menu, ScopedPointer<Component> customBackground)
+    MenuPanel::Menu menu, Component *newCustomBackground)
 {
     this->toFront(false);
     this->textEditor = editor;
     this->combo.reset(new MobileComboBox(editor, this));
     this->combo->initMenu(menu);
-    this->combo->initBackground(customBackground);
+    this->combo->initBackground(newCustomBackground);
     this->comboTrigger.reset(new MobileComboBox::Trigger(this));
     if (this->textEditor != nullptr)
     {

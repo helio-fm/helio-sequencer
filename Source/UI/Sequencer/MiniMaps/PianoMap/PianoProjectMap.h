@@ -20,12 +20,12 @@
 #include "Clip.h"
 #include "Note.h"
 #include "ProjectListener.h"
-#include "ProjectMapNoteComponent.h"
 
 class HybridRoll;
 class ProjectNode;
+class ProjectMapNoteComponent;
 
-class PianoProjectMap :
+class PianoProjectMap final :
     public Component,
     public ProjectListener,
     public AsyncUpdater
@@ -40,6 +40,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void resized() override;
+    void paint(Graphics &g) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -58,33 +59,34 @@ public:
     void onChangeTrackProperties(MidiTrack *const track) override;
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewEditableScope(MidiTrack *const track, const Clip &clip, bool) override;
 
 private:
 
-    void applyNoteBounds(ProjectMapNoteComponent *nc);
     void reloadTrackMap();
     void loadTrack(const MidiTrack *const track);
 
-    float projectFirstBeat;
-    float projectLastBeat;
+    float projectFirstBeat = 0.f;
+    float projectLastBeat = 0.f;
 
-    float rollFirstBeat;
-    float rollLastBeat;
-    
-    float componentHeight;
-    
+    float rollFirstBeat = 0.f;
+    float rollLastBeat = 0.f;
+
+    float componentHeight = 1.f;
+
     HybridRoll &roll;
     ProjectNode &project;
-    
-    using SequenceMap = FlatHashMap<Note, UniquePointer<ProjectMapNoteComponent>, MidiEventHash>;
-    using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
+
+    Clip activeClip;
+    Colour baseColour;
+
+    using SequenceSet = FlatHashSet<Note, MidiEventHash>;
+    using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceSet>, ClipHash>;
     PatternMap patternMap;
 
-    void triggerBatchRepaintFor(ProjectMapNoteComponent *target);
     void handleAsyncUpdate() override;
-    Array<WeakReference<ProjectMapNoteComponent>> batchRepaintList;
 
     JUCE_LEAK_DETECTOR(PianoProjectMap)
 };

@@ -47,7 +47,7 @@ public:
 private:
 
     //[UserVariables]
-    ScopedPointer<HeadlineDropdown> dropdown;
+    UniquePointer<HeadlineDropdown> dropdown;
     Colour bgColour;
     //[/UserVariables]
 

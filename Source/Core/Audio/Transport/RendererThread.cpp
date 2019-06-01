@@ -56,7 +56,7 @@ void RendererThread::startRecording(const File &file)
 
     // Create an OutputStream to write to our destination file...
     file.deleteFile();
-    ScopedPointer<FileOutputStream> fileStream(file.createOutputStream());
+    UniquePointer<FileOutputStream> fileStream(file.createOutputStream());
 
     if (fileStream != nullptr)
     {
@@ -73,19 +73,18 @@ void RendererThread::startRecording(const File &file)
         {
             WavAudioFormat wavFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
+            this->writer.reset(wavFormat.createWriterFor(fileStream.release(), sampleRate, numChannels, bitDepth, {}, 0));
         }
         else if (file.getFileExtension().endsWithIgnoreCase("flac"))
         {
             FlacAudioFormat flacFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, bitDepth, {}, 0);
+            this->writer.reset(flacFormat.createWriterFor(fileStream.release(), sampleRate, numChannels, bitDepth, {}, 0));
         }
 
         if (writer != nullptr)
         {
             DBG(file.getFullPathName());
-            fileStream.release(); // (passes responsibility for deleting the stream to the writer object that is now using it)
             this->startThread(9);
         }
     }

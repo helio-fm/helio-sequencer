@@ -156,14 +156,14 @@ SequencerSidebarRight::~SequencerSidebarRight()
 void SequencerSidebarRight::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
-    g.drawVerticalLine(0, 0.f, float(this->getHeight()));
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+    g.fillRect(0, 0, 1, this->getHeight());
     //[/UserPaint]
 }
 

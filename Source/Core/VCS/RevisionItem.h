@@ -28,7 +28,7 @@ namespace VCS
     {
     public:
 
-        enum class Type : int
+        enum class Type : int8
         {
             Undefined = 0,
             Added = 1,
@@ -68,11 +68,10 @@ namespace VCS
 
         OwnedArray<Delta> deltas;
         Array<ValueTree> deltasData;
-        ScopedPointer<DiffLogic> logic;
+        UniquePointer<DiffLogic> logic;
 
         Type vcsItemType;
         String description;
-        String diffLogicType;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionItem);
 

@@ -603,39 +603,51 @@ void NoteComponent::paint(Graphics &g) noexcept
 {
     const float w = this->floatLocalBounds.getWidth() - .5f; // a small gap between notes
     const float h = this->floatLocalBounds.getHeight();
-    const float x1 = this->floatLocalBounds.getX();
-    const float x2 = x1 + w;
-    const float y1 = this->floatLocalBounds.getY();
-    const float y2 = y1 + h - 1;
+    const float x = this->floatLocalBounds.getX();
+    const float y = this->floatLocalBounds.getY();
     
-    g.setColour(this->colourLighter);
-    g.drawHorizontalLine(int(y1), x1 + 1.25f, x2 - 1.f);
-
-    g.setColour(this->colourDarker);
-    g.drawHorizontalLine(int(y2), x1 + 1.25f, x2 - 1.f);
-
     g.setColour(this->colour);
-    g.fillRect(x1 + 0.5f, y1 + h / 6.f, 0.5f, h / 1.5f);
-    g.fillRect(jmax(x1 + 0.5f, x2 - 0.75f), y1 + h / 6.f, 0.5f, h / 1.5f);
-    g.fillRect(x1 + 0.75f, y1 + 1.f, jmax(0.f, w - 1.25f), h - 2.f);
+    g.fillRect(x + 0.5f, y + h / 6.f, 0.5f, h / 1.5f);
 
-    const float sx = x1 + 2.f;
-    const float sy = float(this->getHeight() - 4);
-    const float sw1 = jmax(0.f, (w - 4.f)) * this->note.getVelocity();
-    const float sw2 = jmax(0.f, (w - 4.f)) * this->note.getVelocity() * this->clip.getVelocity();
-    g.setColour(this->colourVolume);
-    g.fillRect(sx, sy, sw1, 3.f);
-    g.fillRect(sx, sy, sw2, 3.f);
+    if (w >= 1.25f)
+    {
+        g.fillRect(x + w - 0.75f, y + h / 6.f, 0.5f, h / 1.5f);
+        g.fillRect(x + 0.75f, y + 1.f, w - 1.25f, h - 2.f);
+    }
+
+    if (w >= 2.25f)
+    {
+        g.setColour(this->colourLighter);
+        g.fillRect(x + 1.25f, roundf(y), w - 2.25f, 1.f);
+
+        g.setColour(this->colourDarker);
+        g.fillRect(x + 1.25f, roundf(y + h - 1), w - 2.25f, 1.f);
+    }
+
+    if (w >= 4.f)
+    {
+        g.setColour(this->colourVolume);
+        const float sx = x + 2.f;
+        const float sy = float(this->getHeight() - 4);
+        const float sw1 = (w - 4.f) * this->note.getVelocity();
+        const float sw2 = (w - 4.f) * this->note.getVelocity() * this->clip.getVelocity();
+        g.fillRect(sx, sy, sw1, 3.f);
+        g.fillRect(sx, sy, sw2, 3.f);
+    }
 
     const auto tuplet = this->note.getTuplet();
     if (tuplet > 1 && this->getWidth() > 25)
     {
+        g.setColour(this->colourLighter);
         for (int i = 1; i < tuplet; ++i)
         {
-            g.setColour(this->colourLighter);
-            g.fillRect(x1 + i * (w / tuplet) - 1.f, y1, 1.f, h);
-            g.setColour(this->colourVolume);
-            g.fillRect(x1 + i * (w / tuplet), y1, 1.5f, h);
+            g.fillRect(x + i * (w / tuplet) - 1.f, y, 1.f, h);
+        }
+
+        g.setColour(this->colourVolume);
+        for (int i = 1; i < tuplet; ++i)
+        {
+            g.fillRect(x + i * (w / tuplet), y, 1.5f, h);
         }
     }
 }

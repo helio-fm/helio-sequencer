@@ -93,8 +93,8 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
     this->addAndMakeVisible(separator.get());
 
     //[UserPreSize]
-    this->selectionComponent = new RevisionItemSelectionComponent();
-    this->addChildComponent(this->selectionComponent);
+    this->selectionComponent.reset(new RevisionItemSelectionComponent());
+    this->addChildComponent(this->selectionComponent.get());
 
     // Gray out details a bit:
     this->deltasLabel->setColour(Label::textColourId,
@@ -234,11 +234,11 @@ void RevisionItemComponent::invertSelection() const
 
     if (this->selectionComponent->isVisible() && !rowWillBeSelected)
     {
-        this->selectionAnimator.fadeOut(this->selectionComponent, 150);
+        this->selectionAnimator.fadeOut(this->selectionComponent.get(), 150);
     }
     else if (!this->selectionComponent->isVisible() && rowWillBeSelected)
     {
-        this->selectionAnimator.fadeIn(this->selectionComponent, 75);
+        this->selectionAnimator.fadeIn(this->selectionComponent.get(), 75);
     }
 
     this->list.flipRowSelection(this->row);

@@ -34,7 +34,7 @@ private:
     ComponentAnimator fader;
     Component fadingDummy;
 
-    ScopedPointer<Component> gfx;
+    UniquePointer<Component> gfx;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LogoFader)
 

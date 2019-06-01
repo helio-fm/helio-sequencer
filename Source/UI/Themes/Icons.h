@@ -32,7 +32,7 @@ public:
     static void drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy);
 
     static Path getPathByName(Icons::Id id);
-    static ScopedPointer<Drawable> getDrawableByName(Icons::Id id);
+    static UniquePointer<Drawable> getDrawableByName(Icons::Id id);
 
     enum Ids
     {

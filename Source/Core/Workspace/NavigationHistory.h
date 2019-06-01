@@ -34,7 +34,7 @@ public:
     
     NavigationHistory();
 
-    ScopedPointer<NavigationHistoryLock> lock();
+    UniquePointer<NavigationHistoryLock> lock();
         
     bool canGoForward() const;
     bool canGoBackward() const;

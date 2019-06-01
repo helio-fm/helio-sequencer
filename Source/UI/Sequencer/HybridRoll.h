@@ -54,6 +54,7 @@ class TimelineWarningMarker;
 
 #define HYBRID_ROLL_MAX_BAR_WIDTH (192)
 #define HYBRID_ROLL_HEADER_HEIGHT (40)
+#define HYBRID_ROLL_HEADER_SHADOW_SIZE (15)
 
 #define DEFAULT_NUM_BARS 8
 
@@ -332,7 +333,7 @@ protected:
     Point<int> viewportAnchor;
     Point<float> clickAnchor;
     Point<float> zoomAnchor;
-    ScopedPointer<Component> zoomMarker;
+    UniquePointer<Component> zoomMarker;
     
     void resetDraggingAnchors();
     void continueDragging(const MouseEvent &e);
@@ -369,14 +370,12 @@ protected:
     ComponentFader fader;
 
     UniquePointer<HybridRollHeader> header;
+    UniquePointer<Component> headerShadow;
     UniquePointer<Playhead> playhead;
     
     UniquePointer<AnnotationsProjectMap> annotationsTrack;
     UniquePointer<TimeSignaturesProjectMap> timeSignaturesTrack;
     UniquePointer<KeySignaturesProjectMap> keySignaturesTrack;
-
-    UniquePointer<Component> topShadow;
-    UniquePointer<Component> bottomShadow;
 
     UniquePointer<SelectionComponent> lassoComponent;
     
@@ -400,7 +399,7 @@ protected:
     UniquePointer<SmoothPanController> smoothPanController;
     UniquePointer<SmoothZoomController> smoothZoomController;
 
-    Array<WeakReference<FloatBoundsComponent>> batchRepaintList;
+    Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
 
 protected:
     

@@ -26,12 +26,12 @@ static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionCo
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
-        TRANS("menu::selection::vcs::checkout"))->closesMenu());
-
     const auto syncState = vcs.getRevisionSyncState(revision);
     const bool needsPush = (syncState == VCS::Revision::NoSync);
     const bool needsPull = (syncState == VCS::Revision::ShallowCopy);
+
+    menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
+        TRANS("menu::selection::vcs::checkout"))->disabledIf(needsPull)->closesMenu());
 
     menu.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPushSelected,
         TRANS("menu::selection::vcs::push"))->disabledIf(!needsPush)->closesMenu());
@@ -46,7 +46,7 @@ VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(VCS::Revi
     revision(revision),
     vcs(vcs)
 {
-    ScopedPointer<Component> content;
+    UniquePointer<Component> content;
     if (!revision->isShallowCopy())
     {
         content.reset(new RevisionTooltipComponent(revision));

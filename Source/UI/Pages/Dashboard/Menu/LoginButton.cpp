@@ -46,7 +46,7 @@ LoginButton::LoginButton()
 
 
     //[UserPreSize]
-    this->clickHandler->onClick = [this]() {
+    this->clickHandler->onClick = [](){
         App::Network().getSessionService()->signIn("Github");
     };
     //[/UserPreSize]

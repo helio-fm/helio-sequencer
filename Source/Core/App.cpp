@@ -444,7 +444,7 @@ void App::initialise(const String &commandLine)
         this->config.reset(new class Config());
         this->config->initResources();
 
-        ScopedPointer<HelioTheme> helioTheme(new HelioTheme());
+        UniquePointer<HelioTheme> helioTheme(new HelioTheme());
         helioTheme->initResources();
         helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
 
@@ -630,9 +630,9 @@ void App::checkPlugin(const String &markerFile)
             {
                 ValueTree typesNode(Serialization::Core::instrumentsList);
 
-                for (const auto description : typesFound)
+                for (const auto *description : typesFound)
                 {
-                    SerializablePluginDescription sd(description);
+                    const SerializablePluginDescription sd(*description);
                     typesNode.appendChild(sd.serialize(), nullptr);
                 }
 

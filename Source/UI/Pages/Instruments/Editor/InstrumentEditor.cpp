@@ -39,8 +39,8 @@ InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
     audioCore(audioCoreRef),
     selectedNode(0)
 {
-    this->background = new PanelBackgroundC();
-    this->addAndMakeVisible(this->background);
+    this->background.reset(new PanelBackgroundC());
+    this->addAndMakeVisible(this->background.get());
     
     this->instrument->addChangeListener(this);
     this->audioCore->getDevice().addChangeListener(this);
@@ -152,7 +152,7 @@ void InstrumentEditor::updateComponents()
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto fc = dynamic_cast<InstrumentComponent *>(getChildComponent(i)))
+        if (auto *fc = dynamic_cast<InstrumentComponent *>(getChildComponent(i)))
         {
             fc->update();
         }
@@ -161,7 +161,7 @@ void InstrumentEditor::updateComponents()
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
         auto cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
-        if (cc != nullptr && cc != this->draggingConnector)
+        if (cc != nullptr && cc != this->draggingConnector.get())
         {
             if (! instrument->isConnected(cc->connection))
             {
@@ -209,10 +209,10 @@ void InstrumentEditor::beginConnectorDrag(
     AudioProcessorGraph::NodeID destinationID, int destinationChannel,
     const MouseEvent &e)
 {
-    this->draggingConnector = dynamic_cast<InstrumentEditorConnector *>(e.originalComponent);
+    this->draggingConnector.reset(dynamic_cast<InstrumentEditorConnector *>(e.originalComponent));
     if (this->draggingConnector == nullptr)
     {
-        this->draggingConnector = new InstrumentEditorConnector(instrument);
+        this->draggingConnector.reset(new InstrumentEditorConnector(instrument));
     }
     
     AudioProcessorGraph::NodeAndChannel source;
@@ -226,7 +226,7 @@ void InstrumentEditor::beginConnectorDrag(
     this->draggingConnector->setInput(source);
     this->draggingConnector->setOutput(destination);
     
-    this->addAndMakeVisible(this->draggingConnector);
+    this->addAndMakeVisible(this->draggingConnector.get());
     this->draggingConnector->toFront(false);
     
     this->dragConnector(e);
@@ -280,7 +280,9 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
 void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
 {
     if (this->draggingConnector == nullptr)
-    { return; }
+    {
+        return;
+    }
     
     this->draggingConnector->setTooltip({});
     
@@ -292,7 +294,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
     auto dstNode = c.destination.nodeID;
     auto dstChannel = c.destination.channelIndex;
     
-    this->fader.fadeOut(draggingConnector, 250);
+    this->fader.fadeOut(this->draggingConnector.get(), 250);
     this->draggingConnector = nullptr;
     
     if (auto pin = findPinAt(e2.x, e2.y))
@@ -325,7 +327,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
 bool InstrumentEditor::hasMenu() const noexcept { return true; }
 bool InstrumentEditor::canBeSelectedAsMenuItem() const { return false; }
 
-ScopedPointer<Component> InstrumentEditor::createMenu()
+Component *InstrumentEditor::createMenu()
 {
     return new InstrumentNodeSelectionMenu(*this->instrument,
         this->instrument->getNodeForId(this->selectedNode));

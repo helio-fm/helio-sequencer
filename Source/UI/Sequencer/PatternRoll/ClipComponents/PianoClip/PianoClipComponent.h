@@ -20,7 +20,6 @@
 #include "Note.h"
 #include "ClipComponent.h"
 #include "ProjectListener.h"
-#include "PianoSequenceMapNoteComponent.h"
 
 class HybridRoll;
 class MidiSequence;
@@ -39,7 +38,7 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
-    void resized() override;
+    void paint(Graphics &g) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -63,14 +62,11 @@ public:
 
 private:
 
-    void applyNoteBounds(PianoSequenceMapNoteComponent *nc);
     void reloadTrackMap();
-    void repositionAllChildren();
 
     ProjectNode &project;
     WeakReference<MidiSequence> sequence;
-
-    FlatHashMap<Note, UniquePointer<PianoSequenceMapNoteComponent>, MidiEventHash> componentsMap;
+    FlatHashSet<Note, MidiEventHash> displayedNotes;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoClipComponent)
 };

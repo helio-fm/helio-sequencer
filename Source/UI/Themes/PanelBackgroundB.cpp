@@ -70,7 +70,7 @@ void PanelBackgroundB::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+    const auto &theme = HelioTheme::getCurrentTheme();
     //if (theme.getBgCacheB().isValid())
     //{
         g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);

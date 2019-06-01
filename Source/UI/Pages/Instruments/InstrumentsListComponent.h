@@ -61,7 +61,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    ScopedPointer<Component> createMenu() override;
+    Component *createMenu() override;
     Image getIcon() const override;
     String getName() const override;
     bool canBeSelectedAsMenuItem() const override;

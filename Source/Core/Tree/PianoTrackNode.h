@@ -61,7 +61,7 @@ public:
 
 private:
 
-    ScopedPointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
+    UniquePointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;
 
 };

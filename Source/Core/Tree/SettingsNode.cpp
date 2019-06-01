@@ -60,7 +60,7 @@ void SettingsNode::showPage()
         this->recreatePage();
     }
     
-    App::Layout().showPage(this->settingsPage, this);
+    App::Layout().showPage(this->settingsPage.get(), this);
 }
 
 void SettingsNode::recreatePage()
@@ -78,32 +78,32 @@ void SettingsNode::recreatePage()
     this->audioSettings = nullptr;
     this->settingsList = nullptr;
     
-    this->settingsList = new ComponentsList(0, 6);
+    this->settingsList.reset(new ComponentsList(0, 6));
     
-    this->translationSettings = new TranslationSettings();
+    this->translationSettings.reset(new TranslationSettings());
     const String untranslatedLanguageCaption(CharPointer_UTF8("Language / Sprache / Langue / \xe8\xaf\xad\xe8\xa8\x80 / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
-    this->translationSettingsWrapper = new LabeledSettingsWrapper(this->translationSettings, untranslatedLanguageCaption);
-    this->settingsList->addAndMakeVisible(this->translationSettingsWrapper);
+    this->translationSettingsWrapper.reset(new LabeledSettingsWrapper(this->translationSettings.get(), untranslatedLanguageCaption));
+    this->settingsList->addAndMakeVisible(this->translationSettingsWrapper.get());
 
-    this->themeSettings = new ThemeSettings();
-    this->themeSettingsWrapper = new LabeledSettingsWrapper(this->themeSettings, TRANS("settings::ui"));
-    this->settingsList->addAndMakeVisible(this->themeSettingsWrapper);
+    this->themeSettings.reset(new ThemeSettings());
+    this->themeSettingsWrapper.reset(new LabeledSettingsWrapper(this->themeSettings.get(), TRANS("settings::ui")));
+    this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
 #if HELIO_DESKTOP
-    this->uiSettings = new UserInterfaceSettings();
-    this->uiSettingsWrapper = new SimpleSettingsWrapper(this->uiSettings);
-    this->settingsList->addAndMakeVisible(this->uiSettingsWrapper);
+    this->uiSettings.reset(new UserInterfaceSettings());
+    this->uiSettingsWrapper.reset(new SimpleSettingsWrapper(this->uiSettings.get()));
+    this->settingsList->addAndMakeVisible(this->uiSettingsWrapper.get());
 #endif
 
-    this->audioSettings = new AudioSettings(App::Workspace().getAudioCore());
-    this->audioSettingsWrapper = new LabeledSettingsWrapper(this->audioSettings, TRANS("settings::audio"));
-    this->settingsList->addAndMakeVisible(this->audioSettingsWrapper);
+    this->audioSettings.reset(new AudioSettings(App::Workspace().getAudioCore()));
+    this->audioSettingsWrapper.reset(new LabeledSettingsWrapper(this->audioSettings.get(), TRANS("settings::audio")));
+    this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
 
-    this->syncSettings = new SyncSettings();
-    this->syncSettingsWrapper = new LabeledSettingsWrapper(this->syncSettings, TRANS("settings::sync"));
-    this->settingsList->addAndMakeVisible(this->syncSettingsWrapper);
+    this->syncSettings.reset(new SyncSettings());
+    this->syncSettingsWrapper.reset(new LabeledSettingsWrapper(this->syncSettings.get(), TRANS("settings::sync")));
+    this->settingsList->addAndMakeVisible(this->syncSettingsWrapper.get());
 
-    this->settingsPage = new SettingsPage(this->settingsList);
+    this->settingsPage.reset(new SettingsPage(this->settingsList.get()));
 }
 
 bool SettingsNode::hasMenu() const noexcept
@@ -111,7 +111,7 @@ bool SettingsNode::hasMenu() const noexcept
     return false;
 }
 
-ScopedPointer<Component> SettingsNode::createMenu()
+Component *SettingsNode::createMenu()
 {
     return nullptr;
 }

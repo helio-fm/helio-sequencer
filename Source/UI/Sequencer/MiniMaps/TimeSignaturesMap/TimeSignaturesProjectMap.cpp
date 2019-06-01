@@ -35,21 +35,17 @@
 TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
-    projectFirstBeat(0.f),
-    projectLastBeat(16.f), // non zero!
-    rollFirstBeat(0.f),
-    rollLastBeat(16.f),
     type(type)
 {
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
 
-    this->trackStartIndicator = new TrackStartIndicator();
-    this->addAndMakeVisible(this->trackStartIndicator);
+    this->trackStartIndicator.reset(new TrackStartIndicator());
+    this->addAndMakeVisible(this->trackStartIndicator.get());
     
-    this->trackEndIndicator = new TrackEndIndicator();
-    this->addAndMakeVisible(this->trackEndIndicator);
+    this->trackEndIndicator.reset(new TrackEndIndicator());
+    this->addAndMakeVisible(this->trackEndIndicator.get());
     
     this->updateTrackRangeIndicatorsAnchors();
     
@@ -84,7 +80,7 @@ void TimeSignaturesProjectMap::resized()
 
     for (int i = 0; i < this->timeSignatureComponents.size(); ++i)
     {
-        TimeSignatureComponent *current = this->timeSignatureComponents.getUnchecked(i);
+        auto *current = this->timeSignatureComponents.getUnchecked(i);
 
         if (previous != nullptr)
         {
@@ -114,8 +110,8 @@ void TimeSignaturesProjectMap::onChangeMidiEvent(const MidiEvent &oldEvent, cons
     if (newEvent.getSequence() ==
         this->project.getTimeline()->getTimeSignatures()->getSequence())
     {
-        const TimeSignatureEvent &timeSignature = static_cast<const TimeSignatureEvent &>(oldEvent);
-        const TimeSignatureEvent &newTimeSignature = static_cast<const TimeSignatureEvent &>(newEvent);
+        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(oldEvent);
+        const auto &newTimeSignature = static_cast<const TimeSignatureEvent &>(newEvent);
 
         if (TimeSignatureComponent *component = this->timeSignaturesHash[timeSignature])
         {
@@ -138,10 +134,12 @@ void TimeSignaturesProjectMap::alignTimeSignatureComponent(TimeSignatureComponen
     {
         this->applyTimeSignatureBounds(previousEventComponent, component);
         
-        TimeSignatureComponent *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
+        auto *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
         
         if (oneMorePrevious)
-        { this->applyTimeSignatureBounds(oneMorePrevious, previousEventComponent); }
+        {
+            this->applyTimeSignatureBounds(oneMorePrevious, previousEventComponent);
+        }
     }
     
     if (nextEventComponent)
@@ -159,14 +157,14 @@ void TimeSignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
     if (event.getSequence() ==
         this->project.getTimeline()->getTimeSignatures()->getSequence())
     {
-        const TimeSignatureEvent &timeSignature = static_cast<const TimeSignatureEvent &>(event);
+        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
 
         auto *component = this->createComponent(timeSignature);
         this->addChildComponent(component);
 
         const int indexOfSorted = this->timeSignatureComponents.addSorted(*component, component);
-        TimeSignatureComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-        TimeSignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+        auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
+        auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
 
         component->updateContent();
         this->applyTimeSignatureBounds(component, nextEventComponent);
@@ -191,7 +189,7 @@ void TimeSignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
     {
         const TimeSignatureEvent &timeSignature = static_cast<const TimeSignatureEvent &>(event);
 
-        if (TimeSignatureComponent *component = this->timeSignaturesHash[timeSignature])
+        if (auto *component = this->timeSignaturesHash[timeSignature])
         {
             this->animator.animateComponent(component,
                                             component->getBounds().translated(0, -component->getHeight()),
@@ -201,11 +199,13 @@ void TimeSignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
             this->timeSignaturesHash.erase(timeSignature);
 
             const int indexOfSorted = this->timeSignatureComponents.indexOfSorted(*component, component);
-            TimeSignatureComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-            TimeSignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
+            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
 
             if (previousEventComponent)
-            { this->applyTimeSignatureBounds(previousEventComponent, nextEventComponent); }
+            {
+                this->applyTimeSignatureBounds(previousEventComponent, nextEventComponent);
+            }
 
             this->timeSignatureComponents.removeObject(component, true);
         }

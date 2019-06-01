@@ -26,9 +26,9 @@ ScaleEditor::ScaleEditor() : scale(Scale::getNaturalMajorScale())
 
     for (int i = 0; i < 12; ++i)
     {
-        ScopedPointer<RadioButton> button(new RadioButton(String(i), base, this));
+        UniquePointer<RadioButton> button(new RadioButton(String(i), base, this));
         button->setButtonIndex(i);
-        this->addAndMakeVisible(button);
+        this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
     }
 

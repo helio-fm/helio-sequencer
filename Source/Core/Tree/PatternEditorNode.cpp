@@ -63,7 +63,7 @@ bool PatternEditorNode::hasMenu() const noexcept
     return true;
 }
 
-ScopedPointer<Component> PatternEditorNode::createMenu()
+Component *PatternEditorNode::createMenu()
 {
     return new PatternsMenu(*this);
 }

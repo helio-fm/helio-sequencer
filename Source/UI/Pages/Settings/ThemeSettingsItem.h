@@ -52,11 +52,11 @@ private:
     void applyTheme(const ColourScheme::Ptr theme);
 
     ColourScheme::Ptr colours;
-    ScopedPointer<HelioTheme> theme;
+    UniquePointer<HelioTheme> theme;
 
     ListBox &listBox;
     ComponentAnimator selectionAnimator;
-    ScopedPointer<Component> selectionComponent;
+    UniquePointer<Component> selectionComponent;
 
     Image rollImage;
     Image icon1;

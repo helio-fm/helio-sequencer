@@ -197,16 +197,14 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
         commandId <= (CommandIDs::SelectFont + this->systemFonts.size()))
     {
         const int fontIndex = commandId - CommandIDs::SelectFont;
-        if (auto *theme = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
+        auto &theme = dynamic_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+        theme.updateFont(this->systemFonts[fontIndex]);
+        SafePointer<Component> window = this->getTopLevelComponent();
+        App::recreateLayout();
+        if (window != nullptr)
         {
-            theme->updateFont(this->systemFonts[fontIndex]);
-            SafePointer<Component> window = this->getTopLevelComponent();
-            App::recreateLayout();
-            if (window != nullptr)
-            {
-                window->resized();
-                window->repaint();
-            }
+            window->resized();
+            window->repaint();
         }
     }
     //[/UserCode_handleCommandMessage]

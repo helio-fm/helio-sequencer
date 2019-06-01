@@ -49,8 +49,8 @@ TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox)
     this->addAndMakeVisible(separator.get());
 
     //[UserPreSize]
-    this->selectionComponent = new SettingsListItemSelection();
-    this->addChildComponent(this->selectionComponent);
+    this->selectionComponent.reset(new SettingsListItemSelection());
+    this->addChildComponent(this->selectionComponent.get());
     //[/UserPreSize]
 
     this->setSize(350, 32);
@@ -116,11 +116,11 @@ void TranslationSettingsItem::updateDescription(bool isLastRowInList, bool isCur
 
     if (isCurrentLocale)
     {
-        this->selectionAnimator.fadeIn(this->selectionComponent, 150);
+        this->selectionAnimator.fadeIn(this->selectionComponent.get(), 150);
     }
     else
     {
-        this->selectionAnimator.fadeOut(this->selectionComponent, 50);
+        this->selectionAnimator.fadeOut(this->selectionComponent.get(), 50);
     }
 }
 

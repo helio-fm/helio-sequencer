@@ -234,36 +234,40 @@ void ModalDialogConfirmation::okay()
 // Presets
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteProject()
+UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteProject()
 {
-    return { new ModalDialogConfirmation(
-        TRANS("dialog::deleteproject::caption"),
-        TRANS("dialog::deleteproject::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogConfirmation>(
+        new ModalDialogConfirmation(
+            TRANS("dialog::deleteproject::caption"),
+            TRANS("dialog::deleteproject::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
+UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
 {
-    return { new ModalDialogConfirmation(
-        TRANS("dialog::vcs::checkout::warning"),
-        TRANS("dialog::vcs::checkout::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogConfirmation>(
+        new ModalDialogConfirmation(
+            TRANS("dialog::vcs::checkout::warning"),
+            TRANS("dialog::vcs::checkout::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
+UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
 {
-    return { new ModalDialogConfirmation(
-        TRANS("dialog::vcs::reset::caption"),
-        TRANS("dialog::vcs::reset::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogConfirmation>(
+        new ModalDialogConfirmation(
+            TRANS("dialog::vcs::reset::caption"),
+            TRANS("dialog::vcs::reset::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
-ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
+UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
 {
-    return { new ModalDialogConfirmation(
-        TRANS("dialog::opengl::caption"),
-        TRANS("dialog::opengl::proceed"),
-        TRANS("dialog::common::cancel")) };
+    return UniquePointer<ModalDialogConfirmation>(
+        new ModalDialogConfirmation(
+            TRANS("dialog::opengl::caption"),
+            TRANS("dialog::opengl::proceed"),
+            TRANS("dialog::common::cancel")));
 }
 
 //[/MiscUserCode]

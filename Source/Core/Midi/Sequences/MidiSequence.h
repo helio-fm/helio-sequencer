@@ -39,6 +39,7 @@ public:
     String getLastUndoDescription() const;
     void checkpoint(const String &transactionName = {}) noexcept;
     void undo();
+    void undoCurrentTransactionOnly();
     void redo();
     void clearUndoHistory();
 
@@ -80,7 +81,7 @@ public:
     void checkoutEvent(const ValueTree &parameters)
     {
         static T empty;
-        ScopedPointer<T> event(new T(this, empty));
+        UniquePointer<T> event(new T(this, empty));
         event->deserialize(parameters);
 
         if (this->usedEventIds.contains(event->getId()))
@@ -112,10 +113,10 @@ public:
     inline int size() const noexcept
     { return this->midiEvents.size(); }
 
-    inline MidiEvent **begin() const noexcept
+    inline MidiEvent *const *begin() const noexcept
     { return this->midiEvents.begin(); }
     
-    inline MidiEvent **end() const noexcept
+    inline MidiEvent *const *end() const noexcept
     { return this->midiEvents.end(); }
     
     inline MidiEvent *getUnchecked(const int index) const noexcept

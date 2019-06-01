@@ -29,14 +29,15 @@
 
 FailTooltip::FailTooltip()
 {
-    addAndMakeVisible (imageRange = new Component());
+    this->imageRange.reset(new Component());
+    this->addAndMakeVisible(imageRange.get());
 
 
     //[UserPreSize]
     this->iconShape = Icons::getPathByName(Icons::fail);
     //[/UserPreSize]
 
-    setSize (96, 96);
+    this->setSize(96, 96);
 
     //[Constructor]
     this->startTimer(ONSCREEN_TIMS_MS);
@@ -59,8 +60,14 @@ void FailTooltip::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0xa0000000));
-    g.fillRoundedRectangle (static_cast<float> ((getWidth() / 2) - (96 / 2)), static_cast<float> ((getHeight() / 2) - (96 / 2)), 96.0f, 96.0f, 15.000f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) - (96 / 2)), y = static_cast<float> ((getHeight() / 2) - (96 / 2)), width = 96.0f, height = 96.0f;
+        Colour fillColour = Colour (0xa0000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 15.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     g.setColour(Colours::white.withAlpha(0.7f));
@@ -73,7 +80,7 @@ void FailTooltip::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    imageRange->setBounds ((getWidth() / 2) - (40 / 2), (getHeight() / 2) - (40 / 2), 40, 40);
+    imageRange->setBounds((getWidth() / 2) - (40 / 2), (getHeight() / 2) - (40 / 2), 40, 40);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -107,7 +114,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0Cc 0Cc 96 96" cornerSize="15" fill="solid: a0000000" hasStroke="0"/>
+    <ROUNDRECT pos="0Cc 0Cc 96 96" cornerSize="15.0" fill="solid: a0000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="1b627fc3e6ac501f" memberName="imageRange" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 40 40" class="Component"

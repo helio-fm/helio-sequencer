@@ -22,13 +22,12 @@
 //[/Headers]
 
 
-class SuccessTooltip  : public CenteredTooltipComponent,
-                        private Timer
+class SuccessTooltip final : public CenteredTooltipComponent,
+                             private Timer
 {
 public:
 
-    SuccessTooltip ();
-
+    SuccessTooltip();
     ~SuccessTooltip();
 
     //[UserMethods]
@@ -46,7 +45,7 @@ private:
     Path iconShape;
     //[/UserVariables]
 
-    ScopedPointer<Component> imageRange;
+    UniquePointer<Component> imageRange;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SuccessTooltip)
 };

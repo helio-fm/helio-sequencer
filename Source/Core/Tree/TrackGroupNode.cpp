@@ -142,7 +142,7 @@ bool TrackGroupNode::hasMenu() const noexcept
     return false;
 }
 
-ScopedPointer<Component> TrackGroupNode::createMenu()
+Component *TrackGroupNode::createMenu()
 {
     return nullptr;
 }

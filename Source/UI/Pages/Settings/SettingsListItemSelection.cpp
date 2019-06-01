@@ -27,14 +27,15 @@
 
 SettingsListItemSelection::SettingsListItemSelection()
 {
-    addAndMakeVisible (iconComponent = new IconComponent (Icons::apply));
+    this->iconComponent.reset(new IconComponent(Icons::apply));
+    this->addAndMakeVisible(iconComponent.get());
 
 
     //[UserPreSize]
     this->iconComponent->setAlpha(0.6f);
     //[/UserPreSize]
 
-    setSize (256, 32);
+    this->setSize(256, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -56,8 +57,14 @@ void SettingsListItemSelection::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x23000000));
-    g.fillRoundedRectangle (40.0f, 2.0f, static_cast<float> (getWidth() - 45), static_cast<float> (getHeight() - 6), 6.000f);
+    {
+        float x = 40.0f, y = 2.0f, width = static_cast<float> (getWidth() - 45), height = static_cast<float> (getHeight() - 6);
+        Colour fillColour = Colour (0x23000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 6.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -68,7 +75,7 @@ void SettingsListItemSelection::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    iconComponent->setBounds (3, (getHeight() / 2) + -1 - (28 / 2), 28, 28);
+    iconComponent->setBounds(3, (getHeight() / 2) + -1 - (28 / 2), 28, 28);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -82,12 +89,12 @@ void SettingsListItemSelection::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="SettingsListItemSelection"
-                 template="../../Template" componentName="" parentClasses="public Component"
+                 template="../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
                  initialHeight="32">
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="40 2 45M 6M" cornerSize="6" fill="solid: 23000000" hasStroke="0"/>
+    <ROUNDRECT pos="40 2 45M 6M" cornerSize="6.0" fill="solid: 23000000" hasStroke="0"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="935c1acd48db4664" memberName="iconComponent" virtualName=""
                     explicitFocusOrder="0" pos="3 -1Cc 28 28" class="IconComponent"

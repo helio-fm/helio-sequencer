@@ -53,7 +53,7 @@ private:
     void deserializeResources(const ValueTree &tree, Resources &outResources) override;
     void reset() override;
 
-    ScopedPointer<JavascriptEngine> engine;
+    UniquePointer<JavascriptEngine> engine;
     String equationResult;
 
     SpinLock currentTranslationLock;

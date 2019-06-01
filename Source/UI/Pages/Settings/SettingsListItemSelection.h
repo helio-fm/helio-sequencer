@@ -22,12 +22,11 @@ class IconComponent;
 //[/Headers]
 
 
-class SettingsListItemSelection  : public Component
+class SettingsListItemSelection final : public Component
 {
 public:
 
-    SettingsListItemSelection ();
-
+    SettingsListItemSelection();
     ~SettingsListItemSelection();
 
     //[UserMethods]
@@ -42,7 +41,7 @@ private:
     //[UserVariables]
     //[/UserVariables]
 
-    ScopedPointer<IconComponent> iconComponent;
+    UniquePointer<IconComponent> iconComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsListItemSelection)
 };

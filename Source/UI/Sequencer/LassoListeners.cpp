@@ -78,10 +78,10 @@ public:
 
     bool hasMenu() const noexcept override { return true; }
 
-    ScopedPointer<Component> createMenu() override
+    Component *createMenu() override
     {
-        return { new PianoRollSelectionMenu(this->lasso,
-            this->project.getTimeline()->getKeySignatures()) };
+        return new PianoRollSelectionMenu(this->lasso,
+            this->project.getTimeline()->getKeySignatures());
     }
 
     Image getIcon() const override
@@ -110,7 +110,7 @@ private:
 PianoRollSelectionMenuManager::PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectNode &project) :
     SelectionMenuManager(lasso, 2)
 {
-    this->menu = new PianoRollMenuSource(lasso, project);
+    this->menu.reset(new PianoRollMenuSource(lasso, project));
 }
 
 //===----------------------------------------------------------------------===//
@@ -125,7 +125,7 @@ public:
 
     bool hasMenu() const noexcept override { return true; }
 
-    ScopedPointer<Component> createMenu() override
+    Component *createMenu() override
     {
         return { new PatternRollSelectionMenu(this->lasso) };
     }
@@ -153,5 +153,5 @@ private:
 PatternRollSelectionMenuManager::PatternRollSelectionMenuManager(WeakReference<Lasso> lasso) :
     SelectionMenuManager(lasso, 1)
 {
-    this->menu = new PatternRollMenuSource(lasso);
+    this->menu.reset(new PatternRollMenuSource(lasso));
 }

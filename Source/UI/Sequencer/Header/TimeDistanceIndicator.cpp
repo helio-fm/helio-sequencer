@@ -26,14 +26,13 @@
 //[/MiscUserDefs]
 
 TimeDistanceIndicator::TimeDistanceIndicator()
-    : startAbsPosition(0.f),
-      endAbsPosition(0.f)
 {
-    addAndMakeVisible (timeLabel = new Label (String(),
-                                              TRANS("...")));
-    timeLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    timeLabel->setJustificationType (Justification::centred);
-    timeLabel->setEditable (false, false, false);
+    this->timeLabel.reset(new Label(String(),
+                                     TRANS("...")));
+    this->addAndMakeVisible(timeLabel.get());
+    this->timeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    timeLabel->setJustificationType(Justification::centred);
+    timeLabel->setEditable(false, false, false);
 
 
     //[UserPreSize]
@@ -41,7 +40,7 @@ TimeDistanceIndicator::TimeDistanceIndicator()
     this->setAlwaysOnTop(true);
     //[/UserPreSize]
 
-    setSize (128, 32);
+    this->setSize(128, 32);
 
     //[Constructor]
     this->setAlpha(0.f);
@@ -84,7 +83,7 @@ void TimeDistanceIndicator::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    timeLabel->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 4, getWidth() - 0, 20);
+    timeLabel->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 4, getWidth() - 0, 20);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -113,22 +112,25 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeDistanceIndicator" template="../../../Template"
                  componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="" variableInitialisers="startAbsPosition(0.f),&#10;endAbsPosition(0.f)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="32">
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="128"
+                 initialHeight="32">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
     <METHOD name="parentSizeChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="3 0 6M 2" cornerSize="1" fill="solid: 3dffffff" hasStroke="0"/>
+    <ROUNDRECT pos="3 0 6M 2" cornerSize="1.0" fill="solid: 3dffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="76c238702c82d339" memberName="timeLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 4 0M 20" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="21.0" kerning="0.0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

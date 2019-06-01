@@ -89,7 +89,7 @@ private:
 
     void recreateConnector();
 
-    ScopedPointer<AutomationStepEventsConnector> connector;
+    UniquePointer<AutomationStepEventsConnector> connector;
     SafePointer<AutomationStepEventComponent> nextEventHolder;
     SafePointer<AutomationStepEventComponent> prevEventHolder;
 

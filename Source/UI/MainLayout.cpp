@@ -48,11 +48,11 @@ MainLayout::MainLayout() :
     this->setOpaque(true);
     this->setVisible(false);
     
-    this->tooltipContainer = new TooltipContainer();
-    this->addChildComponent(this->tooltipContainer);
+    this->tooltipContainer.reset(new TooltipContainer());
+    this->addChildComponent(this->tooltipContainer.get());
 
-    this->headline = new Headline();
-    this->addAndMakeVisible(this->headline);
+    this->headline.reset(new Headline());
+    this->addAndMakeVisible(this->headline.get());
 
     // TODO make it able for user to select a scheme in settings page
     this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
@@ -71,8 +71,8 @@ MainLayout::MainLayout() :
     else
     {
 #if HELIO_DESKTOP
-        this->initScreen = new InitScreen();
-        this->addAndMakeVisible(this->initScreen);
+        this->initScreen.reset(new InitScreen());
+        this->addAndMakeVisible(this->initScreen.get());
 #endif
     }
 }
@@ -91,7 +91,7 @@ void MainLayout::show()
     if (this->initScreen != nullptr)
     {
         this->initScreen->toFront(false);
-        this->fader.fadeOut(this->initScreen, 500);
+        this->fader.fadeOut(this->initScreen.get(), 500);
         this->initScreen = nullptr;
     }
 }
@@ -179,10 +179,10 @@ void MainLayout::showModalComponentUnowned(Component *targetComponent)
 
     this->hideModalComponentIfAny();
 
-    ScopedPointer<Component> ownedTarget(targetComponent);
-    this->addChildComponent(ownedTarget);
+    UniquePointer<Component> ownedTarget(targetComponent);
+    this->addChildComponent(ownedTarget.get());
 
-    Desktop::getInstance().getAnimator().animateComponent(ownedTarget,
+    Desktop::getInstance().getAnimator().animateComponent(ownedTarget.get(),
         ownedTarget->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
     
     ownedTarget->toFront(false);
@@ -192,7 +192,7 @@ void MainLayout::showModalComponentUnowned(Component *targetComponent)
 
 void MainLayout::hideModalComponentIfAny()
 {
-    ScopedPointer<Component> deleter(Component::getCurrentlyModalComponent());
+    UniquePointer<Component> deleter(Component::getCurrentlyModalComponent());
 }
 
 // a hack!

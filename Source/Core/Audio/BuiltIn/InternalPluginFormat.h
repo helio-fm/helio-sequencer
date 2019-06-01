@@ -49,10 +49,9 @@ public:
     StringArray searchPathsForPlugins(const FileSearchPath &, bool, bool) override { return {}; }
     bool requiresUnblockedMessageThreadDuringCreation(const PluginDescription&) const noexcept override { return false; }
 
-    void createPluginInstance(const PluginDescription&, double initialSampleRate,
-        int initialBufferSize, void *userData,
-        void (*callback) (void*, AudioPluginInstance*, const String&)) override;
-
+    void createPluginInstance(const PluginDescription &desc,
+        double initialSampleRate, int initialBufferSize,
+        PluginCreationCallback callback) override;
 
 private:
 

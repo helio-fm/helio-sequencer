@@ -67,11 +67,11 @@ void Snapshot::mergeItem(RevisionItem::Ptr newItem)
 
     if (stateItem != nullptr) // есть куда мержить
     {
-        ScopedPointer<Diff> diff(newItem->getDiffLogic()->createMergedItem(*stateItem));
+        UniquePointer<Diff> diff(newItem->getDiffLogic()->createMergedItem(*stateItem));
 
         if (diff->hasAnyChanges())
         {
-            RevisionItem::Ptr mergedItem(new RevisionItem(stateItem->getType(), diff));
+            RevisionItem::Ptr mergedItem(new RevisionItem(stateItem->getType(), diff.get()));
             this->items.removeAllInstancesOf(stateItem);
             this->items.add(mergedItem);
         }

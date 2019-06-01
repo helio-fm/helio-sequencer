@@ -141,16 +141,16 @@ Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
         else
         {
             delete existingComponentToUpdate;
-            ScopedPointer<RecentProjectRow> newRow(new RecentProjectRow(*this, *this->listBox));
+            UniquePointer<RecentProjectRow> newRow(new RecentProjectRow(*this, *this->listBox));
             newRow->updateDescription(item, isLoaded, isLastRow);
             newRow->setSelected(isRowSelected);
-            existingComponentToUpdate = newRow;
+            existingComponentToUpdate = newRow.get();
             return newRow.release();
         }
     }
     else
     {
-        ScopedPointer<RecentProjectRow> row(new RecentProjectRow(*this, *this->listBox));
+        UniquePointer<RecentProjectRow> row(new RecentProjectRow(*this, *this->listBox));
         row->updateDescription(item, isLoaded, isLastRow);
         row->setSelected(isRowSelected);
         return row.release();

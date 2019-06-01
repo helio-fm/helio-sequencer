@@ -64,16 +64,16 @@ Headline::~Headline()
 void Headline::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheA(), {} });
     g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-    g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+    g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
     //[/UserPaint]
 }
 
@@ -111,7 +111,7 @@ void Headline::handleAsyncUpdate()
             posX = this->rebuildChain(lastItem);
             if (hasSelectionItem)
             {
-                this->animator.cancelAnimation(this->selectionItem, false);
+                this->animator.cancelAnimation(this->selectionItem.get(), false);
                 this->selectionItem->setTopLeftPosition(HEADLINE_ROOT_X, this->selectionItem->getY());
             }
 
@@ -136,8 +136,8 @@ void Headline::handleAsyncUpdate()
     if (hasSelectionItem)
     {
         const auto finalPos = this->selectionItem->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
-        this->animator.cancelAnimation(this->selectionItem, false);
-        this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 250, false, 1.f, 0.f);
+        this->animator.cancelAnimation(this->selectionItem.get(), false);
+        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, 250, false, 1.f, 0.f);
         this->selectionItem->toBack();
         this->navPanel->toFront(false);
     }
@@ -240,14 +240,14 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->hideSelectionMenu();
 
     const auto x = this->getChainWidth() + HEADLINE_ROOT_X;
-    this->selectionItem = new HeadlineItem(menuSource, *this);
+    this->selectionItem.reset(new HeadlineItem(menuSource, *this));
     this->selectionItem->updateContent();
-    this->addAndMakeVisible(this->selectionItem);
+    this->addAndMakeVisible(this->selectionItem.get());
     this->selectionItem->setTopLeftPosition(x - this->selectionItem->getWidth(), 0);
     this->selectionItem->setAlpha(this->getAlphaForAnimation());
     this->selectionItem->toBack();
     const auto finalPos = this->selectionItem->getBounds().withX(x);
-    this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 150, false, 1.f, 0.f);
+    this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, 150, false, 1.f, 0.f);
 
     this->navPanel->toFront(false);
 }
@@ -260,8 +260,8 @@ void Headline::hideSelectionMenu()
         //const auto w = this->selectionItem->getBounds().getWidth();
         //const auto finalPos = this->selectionItem->getBounds().translated(-w, 0);
         const auto finalPos = this->selectionItem->getBounds().withX(HEADLINE_ROOT_X);
-        this->animator.cancelAnimation(this->selectionItem, false);
-        this->animator.animateComponent(this->selectionItem, finalPos, this->getAlphaForAnimation(), 150, true, 0.f, 1.f);
+        this->animator.cancelAnimation(this->selectionItem.get(), false);
+        this->animator.animateComponent(this->selectionItem.get(), finalPos, this->getAlphaForAnimation(), 150, true, 0.f, 1.f);
         this->selectionItem = nullptr;
     }
 }

@@ -27,7 +27,7 @@ void OrigamiHorizontal::addFlexiblePage(Component *targetComponent)
         return;
     }
 
-    auto newPage = new Origami::Page();
+    auto *newPage = new Origami::Page();
 
     newPage->fixedSize = false;
     newPage->component = targetComponent;
@@ -66,7 +66,7 @@ void OrigamiHorizontal::addFixedPage(Component *targetComponent)
         return;
     }
 
-    auto newPage = new Origami::Page();
+    auto *newPage = new Origami::Page();
 
     newPage->fixedSize = true;
     newPage->component = targetComponent;
@@ -96,43 +96,41 @@ void OrigamiHorizontal::addFixedPage(Component *targetComponent)
 
 void OrigamiHorizontal::addShadowAtTheStart()
 {
-    if (Page *page = this->pages.getLast())
+    if (auto *page = this->pages.getLast())
     {
-        page->shadowAtStart = new ShadowDownwards(Normal);
+        page->shadowAtStart.reset(new ShadowDownwards(Normal));
         page->shadowAtStart->setSize(10, 10);
         page->shadowAtStart->setInterceptsMouseClicks(false, false);
-        this->addAndMakeVisible(page->shadowAtStart);
+        this->addAndMakeVisible(page->shadowAtStart.get());
     }
 }
 
 void OrigamiHorizontal::addShadowAtTheEnd()
 {
-    if (Page *page = this->pages.getLast())
+    if (auto *page = this->pages.getLast())
     {
-        page->shadowAtEnd = new ShadowUpwards(Normal);
+        page->shadowAtEnd.reset(new ShadowUpwards(Normal));
         page->shadowAtEnd->setSize(10, 10);
         page->shadowAtEnd->setInterceptsMouseClicks(false, false);
-        this->addAndMakeVisible(page->shadowAtEnd);
+        this->addAndMakeVisible(page->shadowAtEnd.get());
     }
 }
 
 void OrigamiHorizontal::addResizer(int minSize, int maxSize)
 {
-    if (Page *page = this->pages.getLast())
+    if (auto *page = this->pages.getLast())
     {
         page->min = minSize;
         page->max = maxSize;
-        page->constrainer = new Origami::ChildConstrainer(*this);
+        page->constrainer.reset(new Origami::ChildConstrainer(*this));
         page->constrainer->setMinimumHeight(minSize);
         page->constrainer->setMaximumHeight(maxSize);
         page->constrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 
-        page->resizer =
-            new ResizableEdgeComponent(page->component,
-                page->constrainer,
-                ResizableEdgeComponent::bottomEdge);
+        page->resizer.reset(new ResizableEdgeComponent(page->component,
+            page->constrainer.get(), ResizableEdgeComponent::bottomEdge));
 
-        this->addAndMakeVisible(page->resizer);
+        this->addAndMakeVisible(page->resizer.get());
         page->resizer->toFront(false);
         page->resizer->setAlwaysOnTop(true);
     }
@@ -215,13 +213,13 @@ void OrigamiHorizontal::onPageResized(Component *component)
 {
     for (int i = 0; i < this->pages.size(); ++i)
     {
-        Origami::Page *page = this->pages[i];
+        auto *page = this->pages[i];
 
         if (component == page->component)
         {
             const int deltaHeight = (page->component->getHeight() - page->size);
 
-            if (Origami::Page *nextPage = this->pages[i + 1])
+            if (auto *nextPage = this->pages[i + 1])
             {
                 nextPage->component->setSize(
                     nextPage->component->getWidth(),
@@ -239,10 +237,9 @@ int OrigamiHorizontal::getCommonFixedHeight() const
 {
     int commonFixedHeight = 0;
 
-    for (auto page : this->pages)
+    for (auto *page : this->pages)
     {
-        commonFixedHeight +=
-            page->fixedSize ? page->component->getHeight() : 0;
+        commonFixedHeight += page->fixedSize ? page->component->getHeight() : 0;
     }
 
     return commonFixedHeight;
@@ -253,17 +250,17 @@ void OrigamiHorizontal::updateLayout(const Origami::Page *page, Rectangle<int> b
     Component *c = page->component;
     c->setBounds(bounds);
 
-    if (Component *shadow = page->shadowAtStart)
+    if (auto *shadow = page->shadowAtStart.get())
     {
         shadow->setBounds(c->getX(), c->getY(), c->getWidth(), shadow->getHeight());
     }
 
-    if (Component *shadow = page->shadowAtEnd)
+    if (auto *shadow = page->shadowAtEnd.get())
     {
         shadow->setBounds(c->getX(), c->getBottom() - shadow->getHeight(), c->getWidth(), shadow->getHeight());
     }
     
-    if (Component *resizer = page->resizer)
+    if (auto *resizer = page->resizer.get())
     {
         resizer->setBounds(0, c->getBottom() - 1, c->getWidth(), 2);
     }

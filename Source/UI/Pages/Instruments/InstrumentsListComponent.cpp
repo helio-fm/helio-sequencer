@@ -204,12 +204,12 @@ void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const Mou
 bool InstrumentsListComponent::hasMenu() const noexcept { return true; }
 bool InstrumentsListComponent::canBeSelectedAsMenuItem() const { return false; }
 
-ScopedPointer<Component> InstrumentsListComponent::createMenu()
+Component *InstrumentsListComponent::createMenu()
 {
     const auto selectedRow = this->instrumentsList->getSelectedRow();
     const auto instrument = this->instruments[selectedRow];
     jassert(instrument);
-    return { new InstrumentMenu(*instrument, this->pluginScanner) };
+    return new InstrumentMenu(*instrument, this->pluginScanner);
 }
 
 Image InstrumentsListComponent::getIcon() const

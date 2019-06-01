@@ -33,13 +33,13 @@
 PianoTrackNode::PianoTrackNode(const String &name) :
     MidiTrackNode(name, Serialization::Core::pianoTrack)
 {
-    this->sequence = new PianoSequence(*this, *this);
-    this->pattern = new Pattern(*this, *this);
+    this->sequence.reset(new PianoSequence(*this, *this));
+    this->pattern.reset(new Pattern(*this, *this));
 
     // this will be set by transport
     //this->layer->setInstrumentId(this->workspace.getDefaultInstrument()->getInstrumentID());
 
-    this->vcsDiffLogic = new VCS::PianoTrackDiffLogic(*this);
+    this->vcsDiffLogic.reset(new VCS::PianoTrackDiffLogic(*this));
 
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
@@ -126,7 +126,7 @@ ValueTree PianoTrackNode::getDeltaData(int deltaIndex) const
 
 VCS::DiffLogic *PianoTrackNode::getDiffLogic() const
 {
-    return this->vcsDiffLogic;
+    return this->vcsDiffLogic.get();
 }
 
 void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)

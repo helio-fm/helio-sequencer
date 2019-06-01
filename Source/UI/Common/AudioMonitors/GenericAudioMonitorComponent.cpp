@@ -54,8 +54,8 @@ GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMo
         this->bands.add(new SpectrumBand());
     }
     
-    this->lPeakBand = new SpectrumBand();
-    this->rPeakBand = new SpectrumBand();
+    this->lPeakBand.reset(new SpectrumBand());
+    this->rPeakBand.reset(new SpectrumBand());
 
     if (this->audioMonitor != nullptr)
     {
@@ -142,13 +142,13 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
     const float yPeakL = (h - this->lPeakBand->peak - 1.f);
     g.setColour(this->colour.withAlpha(lAlpha));
     g.fillRect(0.f, yPeakL, w / 2.f - 1.f, this->lPeakBand->peak);
-    g.drawHorizontalLine(int(yPeakL), 0.f, w / 2.f - 1.f);
+    g.fillRect(0.f, yPeakL, w / 2.f - 1.f, 1.f);
 
     const float rAlpha = (0.375f - this->rPeakBand->peakDecayColour) / 12.f;
     const float yPeakR = (h - this->rPeakBand->peak - 1.f);
     g.setColour(this->colour.withAlpha(rAlpha));
     g.fillRect(w / 2.f, yPeakR, w / 2.f - 1.f, this->rPeakBand->peak);
-    g.drawHorizontalLine(int(yPeakR), w / 2.f, w);
+    g.fillRect(w / 2.f, yPeakR, w / 2.f - 1.f, 1.f);
 
 #endif
 
@@ -166,7 +166,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         const float x = i * bw + 1.f;
         for (int j = int(h + 1); j > (h - this->bands[i]->value); j -= 2)
         {
-            g.drawHorizontalLine(j, x, x + bw - 1.f);
+            g.fillRect(x, float(j), bw - 1.f, 1.f);
         }
     }
 
@@ -175,7 +175,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         const float x = i * bw + 1.f;
         g.setColour(this->colour.withAlpha(0.4f - this->bands[i]->peakDecayColour));
         const float peakH = (h - this->bands[i]->peak - 2.f);
-        g.drawHorizontalLine(int(peakH), x, x + bw - 1.f);
+        g.fillRect(x, peakH, bw - 1.f, 1.f);
     }
 
     // Show levels?
