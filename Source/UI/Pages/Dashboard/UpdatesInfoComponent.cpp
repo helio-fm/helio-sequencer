@@ -78,7 +78,7 @@ UpdatesInfoComponent::UpdatesInfoComponent()
                 version.getHumanReadableDescription()));
         }
 
-        this->comboPrimer->initWith(this->label.get(), menu, { new PanelBackgroundA() });
+        this->comboPrimer->initWith(this->label.get(), menu, new PanelBackgroundA());
     }
     else
     {

@@ -125,8 +125,6 @@ void PianoProjectMap::onAddMidiEvent(const MidiEvent &event)
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
-            const int i = track->getPattern()->indexOfSorted(&c.first);
-            jassert(i >= 0);
             sequenceMap.insert(note);
         }
 

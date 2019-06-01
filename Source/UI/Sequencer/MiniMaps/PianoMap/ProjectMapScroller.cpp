@@ -126,7 +126,6 @@ void ProjectMapScroller::xyMoveByUser()
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
-        const auto mapBounds = this->getMapBounds();
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
             this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
@@ -152,7 +151,6 @@ void ProjectMapScroller::xMoveByUser()
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
-        const auto mapBounds = this->getMapBounds();
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
             this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
@@ -181,7 +179,6 @@ void ProjectMapScroller::resizeByUser()
         this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
         this->screenRange->setRealBounds(p);
 
-        const auto mapBounds = this->getMapBounds();
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
             this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
@@ -206,7 +203,6 @@ void ProjectMapScroller::resized()
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
-    const auto mapBounds = this->getMapBounds();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
@@ -332,7 +328,6 @@ void ProjectMapScroller::timerCallback()
     this->helperRectangle->setBounds(helperBounds.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(targetAreaBounds);
 
-    const auto mapBounds = targetMapBounds.toType<int>();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         this->trackMaps.getUnchecked(i)->setBounds(targetMapBounds.toType<int>());
@@ -355,7 +350,6 @@ void ProjectMapScroller::handleAsyncUpdate()
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
-    const auto mapBounds = this->getMapBounds();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());

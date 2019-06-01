@@ -56,7 +56,6 @@ void LevelsMapScroller::removeOwnedMap(Component *existingTrackMap)
 
 void LevelsMapScroller::resized()
 {
-    const auto mapBounds = this->getMapBounds();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
@@ -110,7 +109,6 @@ void LevelsMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 
 void LevelsMapScroller::handleAsyncUpdate()
 {
-    const auto mapBounds = this->getMapBounds();
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());

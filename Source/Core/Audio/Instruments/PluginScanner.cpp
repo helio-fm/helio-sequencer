@@ -261,9 +261,8 @@ void PluginScanner::run()
                 // at this point we are still alive and plugin haven't crashed the app
                 if (typesFound.size() != 0)
                 {
-                    for (auto type : typesFound)
+                    for (auto *type : typesFound)
                     {
-                        const ScopedWriteLock lock(this->pluginsListLock);
                         this->pluginsList.addType(*type);
                     }
                 }

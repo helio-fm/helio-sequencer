@@ -1531,7 +1531,7 @@
       </MODULEPATHS>
     </VS2019>
     <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" bigIcon="DQTpOG"
-                smallIcon="DQTpOG" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess -fno-pie"
+                smallIcon="DQTpOG" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder -Wno-dynamic-class-memaccess"
                 cppLanguageStandard="-std=c++14" extraLinkerFlags="" usePrecompiledHeaders="0"
                 precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
                 unityBuild="1">

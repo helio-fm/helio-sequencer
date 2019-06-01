@@ -168,8 +168,6 @@ add_library( ${BINARY_NAME}
     "../../Projucer/JuceLibraryCode/AppConfig.h"
     "../../Projucer/JuceLibraryCode/BinaryData.cpp"
     "../../Projucer/JuceLibraryCode/BinaryData.h"
-    "../../Projucer/JuceLibraryCode/BinaryData2.cpp"
-    "../../Projucer/JuceLibraryCode/BinaryData3.cpp"
     "../../Projucer/JuceLibraryCode/include_juce_audio_basics.cpp"
     "../../Projucer/JuceLibraryCode/include_juce_audio_devices.cpp"
     "../../Projucer/JuceLibraryCode/include_juce_audio_formats.cpp"

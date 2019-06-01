@@ -42,12 +42,12 @@ matrix:
       os: linux
       dist: trusty
       addons: *gcc6
-      env: PLATFORM=linux CC=gcc-6 CXX=g++-6 CONFIG=Debug DISPLAY=localhost:1.0
+      env: PLATFORM=linux CC=gcc-6 CXX=g++-6 CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-fno-pie
     - name: "gcc 4, release build x64, deploy"
       os: linux
       dist: trusty
       addons: *gcc4
-      env: DEPLOY=true PLATFORM=linux CONFIG=Release64 DISPLAY=localhost:1.0
+      env: DEPLOY=true PLATFORM=linux CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-fno-pie
     - name: "xcode 10.1 mac, release and deploy"
       os: osx
       osx_image: xcode10.1

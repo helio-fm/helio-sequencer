@@ -127,7 +127,7 @@ public:
 
     Component *createMenu() override
     {
-        return { new PatternRollSelectionMenu(this->lasso) };
+        return new PatternRollSelectionMenu(this->lasso);
     }
 
     Image getIcon() const override
