@@ -28,7 +28,7 @@
 
 LevelsMapScroller::LevelsMapScroller(SafePointer<HybridRoll> roll) : roll(roll)
 {
-    this->setPaintingIsUnclipped(true);
+    this->setPaintingIsUnclipped(false); // cut dragger may and will go out of bounds
     this->setInterceptsMouseClicks(true, true);
     this->setOpaque(true);
 }

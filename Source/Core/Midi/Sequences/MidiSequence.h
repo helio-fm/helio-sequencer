@@ -39,6 +39,7 @@ public:
     String getLastUndoDescription() const;
     void checkpoint(const String &transactionName = {}) noexcept;
     void undo();
+    void undoCurrentTransactionOnly();
     void redo();
     void clearUndoHistory();
 

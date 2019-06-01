@@ -21,6 +21,8 @@
 #include "Note.h"
 #include "ProjectListener.h"
 
+#define VELOCITY_MAP_HEIGHT (128.f)
+
 class HybridRoll;
 class ProjectNode;
 class VelocityMapNoteComponent;
@@ -91,6 +93,9 @@ private:
     PatternMap patternMap;
 
     UniquePointer<VelocityLevelDraggingHelper> dragHelper;
+    FlatHashMap<Note, float, MidiEventHash> dragIntersections;
+    Array<Note> dragChangedNotes, dragChanges;
+    bool dragHasChanges = false;
 
     void triggerBatchRepaintFor(VelocityMapNoteComponent *target);
     void handleAsyncUpdate() override;
