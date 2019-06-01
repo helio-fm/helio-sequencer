@@ -74,6 +74,14 @@ private:
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
+    enum MenuMode
+    {
+        None,
+        PianoRollTools,
+        PatternRollTools
+    };
+
+    MenuMode menuMode = None;
     MenuPanel::Menu menu;
     void recreateMenu();
 

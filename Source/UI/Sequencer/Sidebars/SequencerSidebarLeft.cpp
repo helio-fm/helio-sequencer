@@ -216,6 +216,13 @@ void SequencerSidebarLeft::setLinearMode()
     this->buttonFader.cancelAllAnimations(false);
     this->buttonFader.fadeIn(this->switchPatternModeButton.get(), 200);
     this->buttonFader.fadeOut(this->switchLinearModeButton.get(), 200);
+
+    if (this->menuMode != PianoRollTools)
+    {
+        this->menuMode = PianoRollTools;
+        this->recreateMenu();
+        this->listBox->updateContent();
+    }
 }
 
 void SequencerSidebarLeft::setPatternMode()
@@ -223,6 +230,13 @@ void SequencerSidebarLeft::setPatternMode()
     this->buttonFader.cancelAllAnimations(false);
     this->buttonFader.fadeIn(this->switchLinearModeButton.get(), 200);
     this->buttonFader.fadeOut(this->switchPatternModeButton.get(), 200);
+
+    if (this->menuMode != PatternRollTools)
+    {
+        this->menuMode = PatternRollTools;
+        this->recreateMenu();
+        this->listBox->updateContent();
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -237,15 +251,19 @@ void SequencerSidebarLeft::recreateMenu()
     this->menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip));
 
     // Jump to playhead position (or start following playhead when playing)
-    //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::ZoomEntireClip));
+    //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::FollowFlayhead));
 
     // Jump to the next anchor, i.e. any timeline event
+    // FIXME: in a pattern mode they should jump over clips as well!
     this->menu.add(MenuItem::item(Icons::mediaRewind, CommandIDs::TimelineJumpPrevious));
     this->menu.add(MenuItem::item(Icons::mediaForward, CommandIDs::TimelineJumpNext));
 
-    // Focus on next/previous track
-    //this->menu.add(MenuItem::item(Icons::pageUp, CommandIDs::ZoomEntireClip));
-    //this->menu.add(MenuItem::item(Icons::pageDown, CommandIDs::ZoomEntireClip));
+    // TODO add some controls to switch focus between tracks?
+
+    if (this->menuMode == PianoRollTools)
+    {
+        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel));
+    }
 }
 
 Component *SequencerSidebarLeft::refreshComponentForRow(int rowNumber,

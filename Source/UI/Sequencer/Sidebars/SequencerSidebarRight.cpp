@@ -292,7 +292,6 @@ void SequencerSidebarRight::recreateMenu()
 
     if (this->menuMode == PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel));
         this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
 
         if (!App::Config().getArpeggiators()->isEmpty())
