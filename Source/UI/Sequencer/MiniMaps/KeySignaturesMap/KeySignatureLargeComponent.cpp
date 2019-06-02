@@ -116,8 +116,7 @@ void KeySignatureLargeComponent::mouseDown (const MouseEvent& e)
     }
     else
     {
-        this->editor.alternateActionFor(this);
-        //this->editor.showContextMenuFor(this);
+        this->editor.onKeySignatureSelected(this);
     }
     //[/UserCode_mouseDown]
 }
@@ -166,14 +165,20 @@ void KeySignatureLargeComponent::mouseUp (const MouseEvent& e)
         {
             this->setMouseCursor(MouseCursor::PointingHandCursor);
             this->draggingState = false;
-            this->editor.onKeySignatureMoved(this);
         }
 
         if (e.getDistanceFromDragStart() < 10 &&
             this->mouseDownWasTriggered &&
             !this->draggingHadCheckpoint)
         {
-            this->editor.onKeySignatureTapped(this);
+            if (e.mods.isAnyModifierKeyDown())
+            {
+                this->editor.onKeySignatureAltAction(this);
+            }
+            else
+            {
+                this->editor.onKeySignatureMainAction(this);
+            }
         }
     }
 

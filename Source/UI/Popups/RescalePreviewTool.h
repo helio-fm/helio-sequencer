@@ -20,19 +20,24 @@
 class Lasso;
 class MidiTrack;
 class PianoRoll;
+class ProjectNode;
 
 #include "MenuPanel.h"
 #include "Scale.h"
 #include "Note.h"
+#include "KeySignatureEvent.h"
 
 class RescalePreviewTool final : public MenuPanel
 {
 public:
 
-    RescalePreviewTool(PianoRoll &roll,
+    RescalePreviewTool(SafePointer<PianoRoll> roll,
         Note::Key keyContext, Scale::Ptr scaleContext);
-    
-    static RescalePreviewTool *createWithinContext(PianoRoll &roll,
+
+    RescalePreviewTool(const ProjectNode &project,
+        const KeySignatureEvent &event, float endBeat);
+
+    static RescalePreviewTool *createWithinSelectionAndContext(SafePointer<PianoRoll> roll,
         WeakReference<MidiTrack> keySignatures);
 
     void handleCommandMessage(int commandId) override;
@@ -42,7 +47,7 @@ private:
     void dismissAsync();
     void undoIfNeeded();
 
-    PianoRoll &roll;
+    SafePointer<PianoRoll> roll;
 
     Note::Key keyContext;
     Scale::Ptr scaleContext;

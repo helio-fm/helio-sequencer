@@ -1065,7 +1065,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ShowRescalePanel:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        if (auto *panel = RescalePreviewTool::createWithinContext(*this,
+        if (auto *panel = RescalePreviewTool::createWithinSelectionAndContext(this,
             this->project.getTimeline()->getKeySignatures()))
         {
             HelioCallout::emit(panel, this, true);

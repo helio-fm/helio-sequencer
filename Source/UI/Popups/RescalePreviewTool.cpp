@@ -16,6 +16,7 @@
 */
 
 #include "Common.h"
+#include "ProjectNode.h"
 #include "RescalePreviewTool.h"
 #include "PianoRoll.h"
 #include "Transport.h"
@@ -27,15 +28,15 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-RescalePreviewTool *RescalePreviewTool::createWithinContext(PianoRoll &roll,
+RescalePreviewTool *RescalePreviewTool::createWithinSelectionAndContext(SafePointer<PianoRoll> roll,
     WeakReference<MidiTrack> keySignatures)
 {
-    if (roll.getLassoSelection().getNumSelected() > 0)
+    if (roll->getLassoSelection().getNumSelected() > 0)
     {
         Note::Key key;
         Scale::Ptr scale = nullptr;
-        const Clip &clip = roll.getLassoSelection().getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(roll.getLassoSelection(), clip, keySignatures, scale, key))
+        const Clip &clip = roll->getLassoSelection().getFirstAs<NoteComponent>()->getClip();
+        if (!SequencerOperations::findHarmonicContext(roll->getLassoSelection(), clip, keySignatures, scale, key))
         {
             DBG("Warning: harmonic context could not be detected");
             return new RescalePreviewTool(roll, 0, Scale::getNaturalMajorScale());
@@ -47,7 +48,7 @@ RescalePreviewTool *RescalePreviewTool::createWithinContext(PianoRoll &roll,
     return nullptr;
 }
 
-RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
+RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     Note::Key keyContext, Scale::Ptr scaleContext) :
     roll(roll),
     keyContext(keyContext),
@@ -77,7 +78,7 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
                 return;
             }
 
-            auto &transport = this->roll.getTransport();
+            auto &transport = this->roll->getTransport();
             const auto scales = App::Config().getScales()->getAll();
             if (!scales[i]->isEquivalentTo(this->lastChosenScale))
             {
@@ -85,7 +86,7 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
                 const bool needsCheckpoint = !this->hasMadeChanges;
                 this->undoIfNeeded();
 
-                SequencerOperations::rescale(this->roll.getLassoSelection(),
+                SequencerOperations::rescale(this->roll->getLassoSelection(),
                     this->scaleContext, scales[i], needsCheckpoint);
 
                 this->lastChosenScale = scales[i];
@@ -98,16 +99,67 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
             }
             else
             {
-                const auto firstBeat = this->roll.getLassoStartBeat();
-                const auto lastBeat = this->roll.getLassoEndBeat();
-                const auto fragmentStart = this->roll.getTransportPositionByBeat(firstBeat);
-                const auto fragmentEnd = this->roll.getTransportPositionByBeat(lastBeat);
+                const auto firstBeat = this->roll->getLassoStartBeat();
+                const auto lastBeat = this->roll->getLassoEndBeat();
+                const auto fragmentStart = this->roll->getTransportPositionByBeat(firstBeat);
+                const auto fragmentEnd = this->roll->getTransportPositionByBeat(lastBeat);
                 transport.startPlaybackFragment(fragmentStart - 0.001, fragmentEnd);
             }
         }));
     }
 
     this->updateContent(menu, MenuPanel::SlideUp);
+}
+
+// One-shot rescale menu, no undos
+RescalePreviewTool::RescalePreviewTool(const ProjectNode &project,
+    const KeySignatureEvent &event, float endBeat)
+{
+    MenuPanel::Menu menu;
+
+    const auto scales = App::Config().getScales()->getAll();
+    for (int i = 0; i < scales.size(); ++i)
+    {
+        menu.add(MenuItem::item(Icons::arpeggiate,
+            scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
+        {
+            if (this->scaleContext == nullptr)
+            {
+                jassertfalse;
+                return;
+            }
+
+            auto &transport = this->roll->getTransport();
+            const auto scales = App::Config().getScales()->getAll();
+            if (!scales[i]->isEquivalentTo(this->lastChosenScale))
+            {
+                transport.stopPlayback();
+                const bool needsCheckpoint = !this->hasMadeChanges;
+                this->undoIfNeeded();
+
+                SequencerOperations::rescale(this->roll->getLassoSelection(),
+                    this->scaleContext, scales[i], needsCheckpoint);
+
+                this->lastChosenScale = scales[i];
+                this->hasMadeChanges = true;
+            }
+
+            if (transport.isPlaying())
+            {
+                transport.stopPlayback();
+            }
+            else
+            {
+                const auto firstBeat = this->roll->getLassoStartBeat();
+                const auto lastBeat = this->roll->getLassoEndBeat();
+                const auto fragmentStart = this->roll->getTransportPositionByBeat(firstBeat);
+                const auto fragmentEnd = this->roll->getTransportPositionByBeat(lastBeat);
+                transport.startPlaybackFragment(fragmentStart - 0.001, fragmentEnd);
+            }
+        }));
+    }
+
+    this->updateContent(menu, MenuPanel::SlideDown);
 }
 
 void RescalePreviewTool::handleCommandMessage(int commandId)
@@ -130,6 +182,6 @@ void RescalePreviewTool::undoIfNeeded()
 {
     if (this->hasMadeChanges)
     {
-        this->roll.getActiveTrack()->getSequence()->undo();
+        this->roll->getActiveTrack()->getSequence()->undo();
     }
 }
