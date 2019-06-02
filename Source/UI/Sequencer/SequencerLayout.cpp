@@ -31,7 +31,6 @@
 #include "SerializationKeys.h"
 #include "SequencerSidebarRight.h"
 #include "SequencerSidebarLeft.h"
-#include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
 #include "ShadowUpwards.h"
 #include "NoteComponent.h"
@@ -52,7 +51,7 @@
 #define VERTICAL_ROLLS_LAYOUT 1
 #define ROLLS_ANIMATION_START_SPEED 0.35f
 #define MAPS_ANIMATION_START_SPEED 0.25f
-#define SCROLLER_SHADOW_SIZE 15
+#define SCROLLER_SHADOW_SIZE 16
 
 //===----------------------------------------------------------------------===//
 // Rolls container responsible for switching between piano and pattern roll

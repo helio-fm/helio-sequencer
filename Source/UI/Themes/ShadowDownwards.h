@@ -39,7 +39,6 @@ public:
 private:
 
     //[UserVariables]
-    Colour shadow;
     //[/UserVariables]
 
 
