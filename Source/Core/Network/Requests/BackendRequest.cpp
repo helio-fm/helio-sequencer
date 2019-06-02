@@ -129,7 +129,7 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
         response.receipt = this->serializer.loadFromString(responseBody, parsedResponse);
         if (response.receipt.failed() || !parsedResponse.isValid())
         {
-            response.errors.add(TRANS("network error"));
+            response.errors.add(TRANS(I18n::Common::networkError));
             return;
         }
 

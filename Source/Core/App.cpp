@@ -282,7 +282,19 @@ String App::getDeviceId()
     return kDeviceId;
 }
 
+String App::translate(const Identifier &singular)
+{
+    return static_cast<App *>(getInstance())->config->
+        getTranslations()->translate(singular.toString());
+}
+
 String App::translate(const String &singular)
+{
+    return static_cast<App *>(getInstance())->config->
+        getTranslations()->translate(singular);
+}
+
+String App::translate(const char* singular)
 {
     return static_cast<App *>(getInstance())->config->
         getTranslations()->translate(singular);
@@ -358,7 +370,7 @@ String App::getHumanReadableDate(const Time &date)
     }
     if (dateIsYesterday(date))
     {
-        return TRANS("common::yesterday");
+        return TRANS(I18n::Common::yesterday);
     }
 
     const int month = date.getMonth() + 1;

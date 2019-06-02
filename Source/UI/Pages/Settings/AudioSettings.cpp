@@ -283,7 +283,7 @@ void AudioSettings::syncDeviceTypesList(AudioDeviceManager &deviceManager)
 
         if (isSelected)
         {
-            this->deviceTypeEditor->setText(TRANS("settings::audio::device") +
+            this->deviceTypeEditor->setText(TRANS(I18n::Settings::audioDevice) +
                 ": " + typeName, dontSendNotification);
         }
     }
@@ -310,7 +310,7 @@ void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
 
         if (isSelected)
         {
-            this->deviceEditor->setText(TRANS("settings::audio::driver") +
+            this->deviceEditor->setText(TRANS(I18n::Settings::audioDriver) +
                 ": " + deviceName, dontSendNotification);
         }
     }
@@ -336,7 +336,7 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
 
         if (isSelected)
         {
-            this->sampleRateEditor->setText(TRANS("settings::audio::samplerate") +
+            this->sampleRateEditor->setText(TRANS(I18n::Settings::audioSampleRate) +
                 ": " + String(sampleRate), dontSendNotification);
         }
     }
@@ -363,7 +363,7 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
 
         if (isSelected)
         {
-            this->bufferSizeEditor->setText(TRANS("settings::audio::buffersize") +
+            this->bufferSizeEditor->setText(TRANS(I18n::Settings::audioBufferSize) +
                 ": " + String(bufferSize), dontSendNotification);
         }
     }

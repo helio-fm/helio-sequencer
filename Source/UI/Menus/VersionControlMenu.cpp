@@ -35,7 +35,7 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
     const bool noStashNoChanges = !vcs.hasQuickStash() && !vcs.getHead().hasAnythingOnTheStage();
     const Icons::Id stashIcon = vcs.hasQuickStash() ? Icons::toggleOff : Icons::toggleOn;
     const String stashMessage = vcs.hasQuickStash() ?
-        TRANS("menu::vcs::changes::show") : TRANS("menu::vcs::changes::hide");
+        TRANS(I18n::Menu::vcsChangesShow) : TRANS(I18n::Menu::vcsChangesHide);
 
     menu.add(MenuItem::item(stashIcon,
         CommandIDs::VersionControlToggleQuickStash,
@@ -43,21 +43,21 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
 
     menu.add(MenuItem::item(Icons::commit,
         CommandIDs::VersionControlCommitAll,
-        TRANS("menu::vcs::commitall"))->closesMenu());
+        TRANS(I18n::Menu::vcsCommitAll))->closesMenu());
 
     menu.add(MenuItem::item(Icons::reset,
         CommandIDs::VersionControlResetAll,
-        TRANS("menu::vcs::resetall"))->closesMenu());
+        TRANS(I18n::Menu::vcsResetAll))->closesMenu());
 
     const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
 
     menu.add(MenuItem::item(Icons::push,
         CommandIDs::VersionControlSyncAll,
-        TRANS("menu::vcs::syncall"))->disabledIf(!loggedIn)->closesMenu());
+        TRANS(I18n::Menu::vcsSyncAll))->disabledIf(!loggedIn)->closesMenu());
 
     // TODO when stashes are ready
     //menu.add(MenuItem::item(Icons::stash, CommandIDs::VersionControlPopStash,
-    //    TRANS("menu::vcs::stash"))->withSubmenu());
+    //    TRANS(I18n::Menu::vcsStash))->withSubmenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }

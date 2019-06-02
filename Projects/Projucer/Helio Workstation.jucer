@@ -217,6 +217,8 @@
             <FILE id="hQLSXp" name="Script.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Script.h"/>
             <FILE id="IYGH5g" name="Translation.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Translation.cpp"/>
             <FILE id="UNzZAk" name="Translation.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Translation.h"/>
+            <FILE id="mbynio" name="TranslationKeys.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Models/TranslationKeys.h"/>
           </GROUP>
           <GROUP id="{EE94B8AA-34C3-554B-1F98-C48B06FE046C}" name="ResourceManagers">
             <FILE id="vWQoHw" name="ResourceManager.cpp" compile="1" resource="0"

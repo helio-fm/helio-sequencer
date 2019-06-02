@@ -236,36 +236,36 @@ UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteP
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::deleteproject::caption"),
-            TRANS("dialog::deleteproject::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::deleteProjectCaption),
+            TRANS(I18n::Dialog::deleteProjectProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::vcs::checkout::warning"),
-            TRANS("dialog::vcs::checkout::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::vcsCheckoutWarning),
+            TRANS(I18n::Dialog::vcsCheckoutProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::vcs::reset::caption"),
-            TRANS("dialog::vcs::reset::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::vcsResetCaption),
+            TRANS(I18n::Dialog::vcsResetProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::opengl::caption"),
-            TRANS("dialog::opengl::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::openglCaption),
+            TRANS(I18n::Dialog::openglProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 //[/MiscUserCode]

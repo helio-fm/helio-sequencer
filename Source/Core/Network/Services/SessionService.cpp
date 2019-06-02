@@ -148,7 +148,7 @@ void SessionService::cancelSignInProcess()
     if (auto *thread = this->getRunningThreadFor<AuthThread>())
     {
         thread->signalThreadShouldExit();
-        // TODO call authCallback with errors=[TRANS("popup::cancelled")]?
+        // TODO call authCallback with errors=[TRANS(I18n::Popup::cancelled)]?
     }
 }
 

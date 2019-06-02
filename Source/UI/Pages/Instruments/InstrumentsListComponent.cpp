@@ -38,7 +38,7 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     this->addAndMakeVisible(instrumentsList.get());
 
     this->titleLabel.reset(new Label(String(),
-                                      TRANS("page::orchestra::instruments")));
+                                      TRANS(I18n::Page::orchestraInstruments)));
     this->addAndMakeVisible(titleLabel.get());
     this->titleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType(Justification::centred);

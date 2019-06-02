@@ -62,7 +62,7 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll, Note::Key keyContext,
     // this code pretty much duplicates menu from PianoRollSelectionMenu,
     // but adds undos and starts/stops playback of the selected fragment
 
-    this->mainMenu.add(MenuItem::item(Icons::close, TRANS("menu::cancel"))->withAction([this]()
+    this->mainMenu.add(MenuItem::item(Icons::close, TRANS(I18n::Menu::cancel))->withAction([this]()
     {
         this->undoIfNeeded();
         this->dismissAsync();
@@ -100,7 +100,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->mainMenu, MenuPanel::SlideRight);
     }));

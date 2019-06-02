@@ -44,7 +44,7 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     this->addAndMakeVisible(revisionViewport.get());
 
     this->revisionTreeLabel.reset(new Label(String(),
-                                             TRANS("vcs::history::caption")));
+                                             TRANS(I18n::VCS::historyCaption)));
     this->addAndMakeVisible(revisionTreeLabel.get());
     this->revisionTreeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     revisionTreeLabel->setJustificationType(Justification::centred);
@@ -202,7 +202,7 @@ String HistoryComponent::getName() const
         return this->revisionTree->getSelectedRevision()->getMessage();
     }
 
-    return TRANS("menu::selection::vcs::history");
+    return TRANS(I18n::Menu::Selection::vcsHistory);
 }
 
 bool HistoryComponent::canBeSelectedAsMenuItem() const

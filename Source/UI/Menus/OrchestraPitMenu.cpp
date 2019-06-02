@@ -35,10 +35,10 @@ OrchestraPitMenu::OrchestraPitMenu(OrchestraPitNode &parentOrchestra) :
 
     if (!pluginsAreCurrentlyScanning)
     {
-        cmds.add(MenuItem::item(Icons::reset, CommandIDs::ScanAllPlugins, TRANS("menu::instruments::reload")));
+        cmds.add(MenuItem::item(Icons::reset, CommandIDs::ScanAllPlugins, TRANS(I18n::Menu::instrumentsReload)));
     }
     
-    cmds.add(MenuItem::item(Icons::browse, CommandIDs::ScanPluginsFolder, TRANS("menu::instruments::scanfolder")));
+    cmds.add(MenuItem::item(Icons::browse, CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder)));
         
     this->updateContent(cmds, MenuPanel::SlideRight);
 }
@@ -50,7 +50,7 @@ void OrchestraPitMenu::handleCommandMessage(int commandId)
         case CommandIDs::ScanPluginsFolder:
             
 #if HELIO_DESKTOP
-            FileChooser fc(TRANS("dialog::scanfolder::caption"),
+            FileChooser fc(TRANS(I18n::Dialog::scanFolderCaption),
                            File::getCurrentWorkingDirectory(), ("*.*"), true);
             
             if (fc.browseForDirectory())

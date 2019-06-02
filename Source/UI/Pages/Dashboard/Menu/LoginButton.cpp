@@ -35,7 +35,7 @@ LoginButton::LoginButton()
     this->separator.reset(new SeparatorVertical());
     this->addAndMakeVisible(separator.get());
     this->ctaLabel.reset(new Label(String(),
-                                    TRANS("dialog::auth::github")));
+                                    TRANS(I18n::Dialog::authGithub)));
     this->addAndMakeVisible(ctaLabel.get());
     this->ctaLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     ctaLabel->setJustificationType(Justification::centredLeft);

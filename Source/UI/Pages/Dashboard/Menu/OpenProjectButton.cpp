@@ -33,7 +33,7 @@ OpenProjectButton::OpenProjectButton()
     this->addAndMakeVisible(newProjectImage.get());
 
     this->openProjectLabel.reset(new Label(String(),
-                                            TRANS("menu::workspace::project::open")));
+                                            TRANS(I18n::Menu::workspaceProjectOpen)));
     this->addAndMakeVisible(openProjectLabel.get());
     this->openProjectLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     openProjectLabel->setJustificationType(Justification::centredLeft);

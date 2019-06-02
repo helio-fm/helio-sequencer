@@ -39,7 +39,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::create, TRANS("menu::selection::plugin::init"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::create, TRANS(I18n::Menu::Selection::pluginInit))->withAction([this]()
     {
         App::Workspace().getAudioCore().addInstrument(this->pluginDescription,
             this->pluginDescription.descriptiveName,
@@ -51,13 +51,13 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
     }));
 
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentNode>();
-    menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::selection::plugin::plug"))->
+    menu.add(MenuItem::item(Icons::audioPlugin, TRANS(I18n::Menu::Selection::pluginPlug))->
         withSubmenu()->disabledIf(instruments.isEmpty())->withAction([this]()
     {
         this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::plugin::remove"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::remove, TRANS(I18n::Menu::Selection::pluginRemove))->withAction([this]()
     {
         this->pluginScanner.removePlugin(this->pluginDescription);
         this->dismiss();
@@ -70,7 +70,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));

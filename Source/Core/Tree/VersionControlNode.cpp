@@ -79,7 +79,7 @@ void VersionControlNode::recreatePage()
 
 String VersionControlNode::getName() const noexcept
 {
-    return TRANS("tree::vcs");
+    return TRANS(I18n::Tree::vcs);
 }
 
 //===----------------------------------------------------------------------===//
@@ -111,7 +111,7 @@ String VersionControlNode::getStatsString() const
         countStatsFor(root, numRevisions, numDeltas);
 
         return String(TRANS_PLURAL("{x} revisions", numRevisions) + " " +
-            TRANS("common::and") + " " + TRANS_PLURAL("{x} deltas", numDeltas));
+            TRANS(I18n::Common::and) + " " + TRANS_PLURAL("{x} deltas", numDeltas));
     }
 
     return{};

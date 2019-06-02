@@ -58,7 +58,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     // but adds undos and starts/stops playback of the selected fragment
 
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::close, TRANS("menu::cancel"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::close, TRANS(I18n::Menu::cancel))->withAction([this]()
     {
         this->undoIfNeeded();
         this->dismissAsync();

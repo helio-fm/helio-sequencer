@@ -107,15 +107,15 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
 
-        this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::timesignature::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureAddCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::timeSignatureAddProceed));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
     }
     else
     {
-        this->messageLabel->setText(TRANS("dialog::timesignature::edit::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::timesignature::edit::apply"));
-        this->removeEventButton->setButtonText(TRANS("dialog::timesignature::edit::delete"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureEditCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::timeSignatureEditApply));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::timeSignatureEditDelete));
     }
 
     this->textEditor->addListener(this);

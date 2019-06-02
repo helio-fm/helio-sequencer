@@ -107,9 +107,9 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
 
-        this->messageLabel->setText(TRANS("dialog::keysignature::add::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::keysignature::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::keySignatureAddCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::keySignatureAddProceed));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
     }
     else
     {
@@ -119,9 +119,9 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->keySelector->setSelectedKey(this->key);
         this->scaleNameEditor->setText(this->scale->getLocalizedName(), dontSendNotification);
 
-        this->messageLabel->setText(TRANS("dialog::keysignature::edit::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::keysignature::edit::apply"));
-        this->removeEventButton->setButtonText(TRANS("dialog::keysignature::edit::delete"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::keySignatureEditCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::keySignatureEditApply));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::keySignatureEditDelete));
     }
     //[/UserPreSize]
 

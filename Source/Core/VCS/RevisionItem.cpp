@@ -53,15 +53,15 @@ String RevisionItem::getTypeAsString() const
 {
     if (this->vcsItemType == Type::Added)
     {
-        return TRANS("vcs::delta::type::added");
+        return TRANS(I18n::VCS::deltaTypeAdded);
     }
     if (this->vcsItemType == Type::Removed)
     {
-        return TRANS("vcs::delta::type::removed");
+        return TRANS(I18n::VCS::deltaTypeRemoved);
     }
     else if (this->vcsItemType == Type::Changed)
     {
-        return TRANS("vcs::delta::type::changed");
+        return TRANS(I18n::VCS::deltaTypeChanged);
     }
 
     return {};

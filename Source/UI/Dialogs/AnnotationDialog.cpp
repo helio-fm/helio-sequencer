@@ -128,15 +128,15 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
         sequence->checkpoint();
         sequence->insert(this->originalEvent, true);
 
-        this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::annotationAddCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::annotationAddProceed));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
     }
     else
     {
-        this->messageLabel->setText(TRANS("dialog::annotation::edit::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::annotation::edit::apply"));
-        this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::annotationEditCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::annotationEditApply));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::annotationEditDelete));
     }
 
     this->colourSwatches->setSelectedColour(this->originalEvent.getTrackColour());

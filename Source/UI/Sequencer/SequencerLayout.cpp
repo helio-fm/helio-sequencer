@@ -573,7 +573,7 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
     const String safeRenderName = File::createLegalFileName(renderFileName);
 
 #if HELIO_DESKTOP
-    FileChooser fc(TRANS("dialog::render::caption"),
+    FileChooser fc(TRANS(I18n::Dialog::renderCaption),
         File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
 
     if (fc.browseForFileToSave(true))
@@ -598,7 +598,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
             const String safeName = TreeNode::createSafeName(this->project.getName()) + ".mid";
             File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
             this->project.exportMidi(midiExport);
-            App::Layout().showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
+            App::Layout().showTooltip(TRANS(I18n::Menu::Project::render::savedto") + " '" + safeName + "');
             App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
 #else

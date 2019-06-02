@@ -47,7 +47,7 @@ RootNode::RootNode(const String &name) :
 String RootNode::getName() const noexcept
 {
     // TODO: if user is logged in, show his name rather than default value?
-    return TRANS("tree::root");
+    return TRANS(I18n::Tree::root);
 }
 
 Image RootNode::getIcon() const noexcept

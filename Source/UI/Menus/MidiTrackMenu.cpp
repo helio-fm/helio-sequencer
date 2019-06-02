@@ -48,8 +48,8 @@ MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
 void MidiTrackMenu::initDefaultMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS("menu::track::selectall"))->closesMenu());
-    menu.add(MenuItem::item(Icons::colour, TRANS("menu::track::change::colour"))->withSubmenu()->withAction([this]()
+    menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS(I18n::Menu::trackSelectall))->closesMenu());
+    menu.add(MenuItem::item(Icons::colour, TRANS(I18n::Menu::trackChangeColour))->withSubmenu()->withAction([this]()
     {
         this->initColorSelectionMenu();
     }));
@@ -58,23 +58,23 @@ void MidiTrackMenu::initDefaultMenu()
     const int numInstruments = info.size();
     if (numInstruments > 1)
     {
-        menu.add(MenuItem::item(Icons::instrument, TRANS("menu::track::change::instrument"))->withSubmenu()->withAction([this]()
+        menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->withSubmenu()->withAction([this]()
         {
             this->initInstrumentSelectionMenu();
         }));
     }
     
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
-        TRANS("menu::track::rename"))->closesMenu());
+        TRANS(I18n::Menu::trackRename))->closesMenu());
         
-    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS("menu::track::delete")));
+    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
     this->updateContent(menu, MenuPanel::SlideRight);
 }
 
 void MidiTrackMenu::initColorSelectionMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->initDefaultMenu();
     }));
@@ -100,7 +100,7 @@ void MidiTrackMenu::initColorSelectionMenu()
 void MidiTrackMenu::initInstrumentSelectionMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->initDefaultMenu();
     }));

@@ -29,7 +29,7 @@ FineTuningValueIndicator::FineTuningValueIndicator(float initialValue, String su
       suffix(suffix)
 {
     this->valueLabel.reset(new Label(String(),
-                                      TRANS("0.0")));
+                                      String()));
     this->addAndMakeVisible(valueLabel.get());
     this->valueLabel->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
     valueLabel->setJustificationType(Justification::centred);
@@ -123,7 +123,7 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="64" initialHeight="64">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="546fff7dc132314d" memberName="valueLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 2Rr 0M 24" labelText="0.0" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 2Rr 0M 24" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>

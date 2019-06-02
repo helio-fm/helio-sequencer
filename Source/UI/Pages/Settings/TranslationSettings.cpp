@@ -41,7 +41,7 @@ TranslationSettings::TranslationSettings()
 
     this->helpButton.reset(new TextButton(String()));
     this->addAndMakeVisible(helpButton.get());
-    helpButton->setButtonText(TRANS("settings::language::help"));
+    helpButton->setButtonText(TRANS(I18n::Settings::languageHelp));
     helpButton->addListener(this);
 
     this->shadow.reset(new SeparatorHorizontal());

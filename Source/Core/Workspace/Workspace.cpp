@@ -153,11 +153,11 @@ UserProfile &Workspace::getUserProfile() noexcept
 
 void Workspace::createEmptyProject()
 {
-    const String newProjectName = TRANS("defaults::newproject::name");
+    const String newProjectName = TRANS(I18n::Defaults::newProjectName);
 
 #if HELIO_DESKTOP
     const String fileName = newProjectName + ".helio";
-    FileChooser fc(TRANS("dialog::workspace::createproject::caption"),
+    FileChooser fc(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
     
     if (fc.browseForFileToSave(true))
@@ -339,7 +339,7 @@ void Workspace::failedDeserializationFallback()
     TreeNode *instruments = new OrchestraPitNode();
     this->treeRoot->addChildTreeItem(instruments);
     
-    if (auto *p = this->treeRoot->addDefaultProject(TRANS("defaults::newproject::name")))
+    if (auto *p = this->treeRoot->addDefaultProject(TRANS(I18n::Defaults::newProjectName)))
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
@@ -353,7 +353,7 @@ void Workspace::failedDeserializationFallback()
 void Workspace::importProject(const String &filePattern)
 {
 #if HELIO_DESKTOP
-    FileChooser fc(TRANS("dialog::document::import"),
+    FileChooser fc(TRANS(I18n::Dialog::documentImport),
         File::getCurrentWorkingDirectory(), filePattern, true);
 
     if (fc.browseForFileToOpen())

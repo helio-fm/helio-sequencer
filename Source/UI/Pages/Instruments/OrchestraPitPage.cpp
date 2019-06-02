@@ -149,7 +149,7 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     {
         //[UserButtonCode_scanButton] -- add your button handler code here..
 #if HELIO_DESKTOP
-        FileChooser fc(TRANS("dialog::scanfolder::caption"),
+        FileChooser fc(TRANS(I18n::Dialog::scanfolder::caption),
                        File::getCurrentWorkingDirectory(), ("*.*"), true);
 
         if (fc.browseForDirectory())

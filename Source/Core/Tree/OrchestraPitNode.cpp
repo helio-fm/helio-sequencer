@@ -41,7 +41,7 @@ Image OrchestraPitNode::getIcon() const noexcept
 
 String OrchestraPitNode::getName() const noexcept
 {
-    return TRANS("tree::instruments");
+    return TRANS(I18n::Tree::instruments);
 }
 
 void OrchestraPitNode::showPage()

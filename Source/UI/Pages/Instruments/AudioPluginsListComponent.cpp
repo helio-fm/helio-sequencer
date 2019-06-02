@@ -52,7 +52,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->pluginsList.reset(new TableListBox("Instruments", this));
     this->addAndMakeVisible(pluginsList.get());
 
-    this->initialScanButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS("instruments::initialscan"))));
+    this->initialScanButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS(I18n::Common::instrumentsInitialScan))));
     this->addAndMakeVisible(initialScanButton.get());
 
     this->separator1.reset(new SeparatorHorizontalFading());
@@ -60,7 +60,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->separator2.reset(new SeparatorHorizontalFading());
     this->addAndMakeVisible(separator2.get());
     this->titleLabel.reset(new Label(String(),
-                                      TRANS("page::orchestra::plugins")));
+                                      String()));
     this->addAndMakeVisible(titleLabel.get());
     this->titleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType(Justification::centred);
@@ -77,6 +77,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->setSize(600, 400);
 
     //[Constructor]
+    this->titleLabel->setText(TRANS(I18n::Page::orchestraPlugins), dontSendNotification);
 
     this->pluginsList->setRowHeight(PLUGINSLIST_ROW_HEIGHT);
     this->pluginsList->setHeaderHeight(PLUGINSLIST_HEADER_HEIGHT);
@@ -87,13 +88,13 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
         TableHeaderComponent::appearsOnColumnMenu |
         TableHeaderComponent::sortable;
 
-    this->pluginsList->getHeader().addColumn(TRANS("page::orchestra::category"),
+    this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraCategory),
         category, 50, 50, -1, columnFlags);
 
-    this->pluginsList->getHeader().addColumn(TRANS("page::orchestra::vendorandname"),
+    this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraVendorandname),
         vendorAndName, 50, 50, -1, columnFlags);
 
-    this->pluginsList->getHeader().addColumn(TRANS("page::orchestra::format"),
+    this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraFormat),
         format, 50, 50, -1, columnFlags);
 
     this->pluginsList->getHeader().setSortColumnId(vendorAndName, true);
@@ -359,7 +360,7 @@ BEGIN_JUCER_METADATA
                     params="&quot;Instruments&quot;, this"/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="initialScanButton" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 310 64" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS(&quot;instruments::initialscan&quot;))"/>
+                    params="this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS(I18n::Common::instrumentsInitialscan))"/>
   <JUCERCOMP name="" id="8817b1b124163b2f" memberName="separator1" virtualName=""
              explicitFocusOrder="0" pos="0Cc -18 300 3" posRelativeX="62a5bd7c1a3ec2"
              posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
@@ -369,7 +370,7 @@ BEGIN_JUCER_METADATA
              posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 0M 26" labelText="page::orchestra::plugins"
+         explicitFocusOrder="0" pos="0 0 0M 26" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>

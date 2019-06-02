@@ -108,7 +108,7 @@ RevisionsSyncThread *ProjectSyncService::prepareSyncRevisionsThread()
     {
         auto &layout = App::Layout();
         layout.hideModalComponentIfAny();
-        layout.showTooltip(nothingToSync ? TRANS("vcs::sync::uptodate") : TRANS("vcs::sync::done"));
+        layout.showTooltip(nothingToSync ? TRANS(I18n::VCS::syncUptodate) : TRANS(I18n::VCS::syncDone));
         layout.showModalComponentUnowned(new SuccessTooltip());
     };
 

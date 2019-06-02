@@ -69,17 +69,17 @@ void ProjectMenu::handleCommandMessage(int commandId)
             
             if (hasTempoTrack)
             {
-                App::Layout().showTooltip(TRANS("menu::project::addtempo::failed"));
+                App::Layout().showTooltip(TRANS(I18n::Menu::Project::addTempoFailed));
             }
             else
             {
                 const auto autoLayerParams =
-                    this->createAutoTrackTempate(TRANS("defaults::tempotrack::name"),
+                    this->createAutoTrackTempate(TRANS(I18n::Defaults::tempoTrackName),
                         MidiTrack::tempoController);
                 
                 this->project.getUndoStack()->beginNewTransaction();
                 this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
-                    &this->project, autoLayerParams,  TRANS("defaults::tempotrack::name")));
+                    &this->project, autoLayerParams,  TRANS(I18n::Defaults::tempoTrackName)));
             }
 
             this->dismiss();
@@ -134,7 +134,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
                     }
                     else
                     {
-                        App::Layout().showTooltip(TRANS("menu::project::delete::cancelled"));
+                        App::Layout().showTooltip(TRANS(I18n::Menu::Project::deleteCancelled));
                     }
                 };
 
@@ -201,34 +201,34 @@ void ProjectMenu::showMainMenu(AnimationType animationType)
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::piano, CommandIDs::SwitchToEditMode,
-        TRANS("menu::project::editor::linear"))->closesMenu());
+        TRANS(I18n::Menu::Project::editorLinear))->closesMenu());
 
     menu.add(MenuItem::item(Icons::patterns, CommandIDs::SwitchToArrangeMode,
-        TRANS("menu::project::editor::pattern"))->closesMenu());
+        TRANS(I18n::Menu::Project::editorPattern))->closesMenu());
 
     menu.add(MenuItem::item(Icons::versionControl, CommandIDs::SwitchToVersioningMode,
-        TRANS("menu::project::editor::vcs"))->closesMenu());
+        TRANS(I18n::Menu::Project::editorVcs))->closesMenu());
 
     menu.add(MenuItem::item(Icons::create,
-        TRANS("menu::project::additems"))->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Project::addItems))->withSubmenu()->withAction([this]()
         {
             this->showCreateItemsMenu(MenuPanel::SlideLeft);
         }));
 
     menu.add(MenuItem::item(Icons::render,
-        TRANS("menu::project::render"))->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Project::render))->withSubmenu()->withAction([this]()
         {
             this->showRenderMenu();
         }));
 
     menu.add(MenuItem::item(Icons::refactor,
-        TRANS("menu::project::refactor"))->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Project::refactor))->withSubmenu()->withAction([this]()
         {
             this->showBatchActionsMenu(MenuPanel::SlideLeft);
         }));
     
-    menu.add(MenuItem::item(Icons::close, CommandIDs::UnloadProject, TRANS("menu::project::unload")));
-    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteProject, TRANS("menu::project::delete")));
+    menu.add(MenuItem::item(Icons::close, CommandIDs::UnloadProject, TRANS(I18n::Menu::Project::unload)));
+    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteProject, TRANS(I18n::Menu::Project::deleteConfirm)));
     this->updateContent(menu, animationType);
 }
 
@@ -236,24 +236,24 @@ void ProjectMenu::showCreateItemsMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
         {
             this->showMainMenu(MenuPanel::SlideRight);
         }));
 
 #if HELIO_DESKTOP
     menu.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi,
-        TRANS("menu::project::import::midi"))->closesMenu());
+        TRANS(I18n::Menu::Project::importMidi))->closesMenu());
 #endif
 
     menu.add(MenuItem::item(Icons::pianoTrack,
-        TRANS("menu::project::addlayer"))->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Project::addTrack))->withSubmenu()->withAction([this]()
         {
             this->showNewTrackMenu(MenuPanel::SlideLeft);
         }));
 
     menu.add(MenuItem::item(Icons::automationTrack,
-        TRANS("menu::project::addautomation"))->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Project::addAutomation))->withSubmenu()->withAction([this]()
         {
             this->showNewAutomationMenu(MenuPanel::SlideLeft);
         }));
@@ -265,7 +265,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
         {
             this->showCreateItemsMenu(MenuPanel::SlideRight);
         }));
@@ -298,14 +298,14 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
         {
             this->showCreateItemsMenu(MenuPanel::SlideRight);
         }));
 
     menu.add(MenuItem::item(Icons::automationTrack,
         CommandIDs::AddTempoController,
-        TRANS("menu::project::addtempo")));
+        TRANS(I18n::Menu::Project::addTempo)));
 
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (int i = 0; i < instruments.size(); ++i)
@@ -325,7 +325,7 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
         {
             this->showNewAutomationMenu(MenuPanel::SlideRight);
         }));
@@ -366,19 +366,19 @@ void ProjectMenu::showRenderMenu()
 #endif
 
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
         {
             this->showMainMenu(MenuPanel::SlideRight);
         }));
 
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToWAV,
-        TRANS("menu::project::render::wav"))->disabledIf(noRender)->closesMenu());
+        TRANS(I18n::Menu::Project::renderWav))->disabledIf(noRender)->closesMenu());
 
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC,
-        TRANS("menu::project::render::flac"))->disabledIf(noRender)->closesMenu());
+        TRANS(I18n::Menu::Project::renderFlac))->disabledIf(noRender)->closesMenu());
 
     menu.add(MenuItem::item(Icons::commit, CommandIDs::ExportMidi,
-        TRANS("menu::project::render::midi"))->closesMenu());
+        TRANS(I18n::Menu::Project::renderMidi))->closesMenu());
 
     this->updateContent(menu, MenuPanel::SlideLeft);
 }
@@ -387,27 +387,27 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
         {
             this->showMainMenu(MenuPanel::SlideRight);
         }));
 
     menu.add(MenuItem::item(Icons::up,
         CommandIDs::ProjectTransposeUp,
-        TRANS("menu::project::transpose::up")));
+        TRANS(I18n::Menu::Project::transposeUp)));
 
     menu.add(MenuItem::item(Icons::down,
         CommandIDs::ProjectTransposeDown,
-        TRANS("menu::project::transpose::down")));
+        TRANS(I18n::Menu::Project::transposeDown)));
 
-    //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::cleanup")));
+    //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS(I18n::Menu::Project::cleanup)));
 
     const auto &tracks = this->project.findChildrenOfType<MidiTrackNode>();
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     if (instruments.size() > 1 && tracks.size() > 0)
     {
         menu.add(MenuItem::item(Icons::instrument,
-            TRANS("menu::project::change::instrument"))->withSubmenu()->withAction([this]()
+            TRANS(I18n::Menu::Project::changeInstrument))->withSubmenu()->withAction([this]()
             {
                 this->showSetInstrumentMenu();
             }));
@@ -420,7 +420,7 @@ void ProjectMenu::showSetInstrumentMenu()
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS("menu::back"))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
         {
             this->showBatchActionsMenu(MenuPanel::SlideRight);
         }));

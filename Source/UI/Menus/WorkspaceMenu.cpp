@@ -36,18 +36,18 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
     MenuPanel::Menu menu;
     
     //menu.add(MenuItem::item(Icons::create,
-    //    TRANS("menu::workspace::project::create"))->withAction([this]()
+    //    TRANS(I18n::Menu::workspace::project::create))->withAction([this]()
     //    {}));
 
     //menu.add(MenuItem::item(Icons::browse,
-    //    TRANS("menu::workspace::project::open"))->withAction([this]()
+    //    TRANS(I18n::Menu::workspace::project::open))->withAction([this]()
     //    {}));
 
     auto *root = this->workspace.getTreeRoot();
 
     if (auto *settings = root->findChildOfType<SettingsNode>())
     {
-        menu.add(MenuItem::item(Icons::settings, TRANS("tree::settings"))->
+        menu.add(MenuItem::item(Icons::settings, TRANS(I18n::Tree::settings))->
             disabledIf(settings->isSelected())->withAction([this, settings]()
         {
             settings->setSelected();
@@ -57,7 +57,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
 
     if (auto *instruments = root->findChildOfType<OrchestraPitNode>())
     {
-        menu.add(MenuItem::item(Icons::orchestraPit, TRANS("tree::instruments"))->
+        menu.add(MenuItem::item(Icons::orchestraPit, TRANS(I18n::Tree::instruments))->
             disabledIf(instruments->isSelected())->withAction([this, instruments]()
         {
             instruments->setSelected();

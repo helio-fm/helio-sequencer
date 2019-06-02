@@ -31,13 +31,13 @@ static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionCo
     const bool needsPull = (syncState == VCS::Revision::ShallowCopy);
 
     menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
-        TRANS("menu::selection::vcs::checkout"))->disabledIf(needsPull)->closesMenu());
+        TRANS(I18n::Menu::Selection::vcsCheckout))->disabledIf(needsPull)->closesMenu());
 
     menu.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPushSelected,
-        TRANS("menu::selection::vcs::push"))->disabledIf(!needsPush)->closesMenu());
+        TRANS(I18n::Menu::Selection::vcsPush))->disabledIf(!needsPush)->closesMenu());
 
     menu.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPullSelected,
-        TRANS("menu::selection::vcs::pull"))->disabledIf(!needsPull)->closesMenu());
+        TRANS(I18n::Menu::Selection::vcsPull))->disabledIf(!needsPull)->closesMenu());
 
     return menu;
 }
