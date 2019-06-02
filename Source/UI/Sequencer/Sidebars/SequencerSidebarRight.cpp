@@ -72,14 +72,14 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->separator.reset(new SeparatorHorizontal());
     this->addAndMakeVisible(separator.get());
     this->totalTime.reset(new Label(String(),
-                                     TRANS("...")));
+                                     String()));
     this->addAndMakeVisible(totalTime.get());
     this->totalTime->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
     totalTime->setJustificationType(Justification::centred);
     totalTime->setEditable(false, false, false);
 
     this->currentTime.reset(new Label(String(),
-                                       TRANS("...")));
+                                       String()));
     this->addAndMakeVisible(currentTime.get());
     this->currentTime->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     currentTime->setJustificationType(Justification::centred);
@@ -496,15 +496,13 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
-         explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
+         fontsize="14.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="b9e867ece7f52ad8" memberName="currentTime" virtualName=""
-         explicitFocusOrder="0" pos="80Cc 26Rr 72 22" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="80Cc 26Rr 72 22" labelText="" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
              constructorParams="Light"/>

@@ -76,14 +76,14 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
       row(0)
 {
     this->itemLabel.reset(new Label(String(),
-                                     TRANS("...")));
+                                     String()));
     this->addAndMakeVisible(itemLabel.get());
     this->itemLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     itemLabel->setJustificationType(Justification::centredLeft);
     itemLabel->setEditable(false, false, false);
 
     this->deltasLabel.reset(new Label(String(),
-                                       TRANS("...")));
+                                       String()));
     this->addAndMakeVisible(deltasLabel.get());
     this->deltasLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     deltasLabel->setJustificationType(Justification::topLeft);
@@ -262,12 +262,12 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="500" initialHeight="70">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="itemLabel" virtualName=""
-         explicitFocusOrder="0" pos="5 3 10M 24" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="5 3 10M 24" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <LABEL name="" id="12427a53408d61ee" memberName="deltasLabel" virtualName=""
-         explicitFocusOrder="0" pos="10 24 90M 38" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="10 24 90M 38" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="9"/>

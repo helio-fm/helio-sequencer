@@ -30,7 +30,7 @@ KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesProjectMap &
       textWidth(0.f)
 {
     this->signatureLabel.reset(new Label(String(),
-                                          TRANS("...")));
+                                          String()));
     this->addAndMakeVisible(signatureLabel.get());
     this->signatureLabel->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
     signatureLabel->setJustificationType(Justification::centredLeft);
@@ -135,7 +135,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 2 132 16" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0 2 132 16" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

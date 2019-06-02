@@ -55,7 +55,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->background.reset(new PanelBackgroundB());
     this->addAndMakeVisible(background.get());
     this->projectTitleEditor.reset(new Label(String(),
-                                              TRANS("...")));
+                                              String()));
     this->addAndMakeVisible(projectTitleEditor.get());
     this->projectTitleEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
     projectTitleEditor->setJustificationType(Justification::topLeft);
@@ -70,7 +70,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     projectTitleLabel->setEditable(false, false, false);
 
     this->authorEditor.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(authorEditor.get());
     this->authorEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
     authorEditor->setJustificationType(Justification::topLeft);
@@ -85,7 +85,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     authorLabel->setEditable(false, false, false);
 
     this->descriptionEditor.reset(new Label(String(),
-                                             TRANS("...")));
+                                             String()));
     this->addAndMakeVisible(descriptionEditor.get());
     this->descriptionEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
     descriptionEditor->setJustificationType(Justification::topLeft);
@@ -107,7 +107,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     locationLabel->setEditable(false, false, true);
 
     this->locationText.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(locationText.get());
     this->locationText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     locationText->setJustificationType(Justification::topLeft);
@@ -121,7 +121,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     contentStatsLabel->setEditable(false, false, true);
 
     this->contentStatsText.reset(new Label(String(),
-                                            TRANS("...")));
+                                            String()));
     this->addAndMakeVisible(contentStatsText.get());
     this->contentStatsText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     contentStatsText->setJustificationType(Justification::topLeft);
@@ -135,7 +135,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     vcsStatsLabel->setEditable(false, false, true);
 
     this->vcsStatsText.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(vcsStatsText.get());
     this->vcsStatsText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     vcsStatsText->setJustificationType(Justification::topLeft);
@@ -149,7 +149,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     startTimeLabel->setEditable(false, false, true);
 
     this->startTimeText.reset(new Label(String(),
-                                         TRANS("...")));
+                                         String()));
     this->addAndMakeVisible(startTimeText.get());
     this->startTimeText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     startTimeText->setJustificationType(Justification::topLeft);
@@ -163,7 +163,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     lengthLabel->setEditable(false, false, true);
 
     this->lengthText.reset(new Label(String(),
-                                      TRANS("...")));
+                                      String()));
     this->addAndMakeVisible(lengthText.get());
     this->lengthText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     lengthText->setJustificationType(Justification::topLeft);
@@ -185,7 +185,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     licenseLabel->setEditable(false, false, true);
 
     this->licenseEditor.reset(new Label(String(),
-                                         TRANS("...")));
+                                         String()));
     this->addAndMakeVisible(licenseEditor.get());
     this->licenseEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
     licenseEditor->setJustificationType(Justification::topLeft);
@@ -446,7 +446,7 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <LABEL name="" id="a162c9dbc90775e7" memberName="projectTitleEditor"
          virtualName="" explicitFocusOrder="0" pos="-100C 20 440 48" posRelativeY="b6ea6ccc6b9be1f8"
-         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         labelText="" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="37.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="b93b5ef0dc95ee24" memberName="projectTitleLabel"
@@ -456,7 +456,7 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="authorEditor" virtualName=""
          explicitFocusOrder="0" pos="-100C 90 440 48" posRelativeY="b6ea6ccc6b9be1f8"
-         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         labelText="" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="37.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="authorLabel" virtualName=""
@@ -466,7 +466,7 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="5b9fd0ca53fe4337" memberName="descriptionEditor"
          virtualName="" explicitFocusOrder="0" pos="-100C 160 440 48"
-         posRelativeY="b6ea6ccc6b9be1f8" labelText="..." editableSingleClick="1"
+         posRelativeY="b6ea6ccc6b9be1f8" labelText="" editableSingleClick="1"
          editableDoubleClick="1" focusDiscardsChanges="0" fontname="Default font"
          fontsize="37.0" kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="1a7ebced267e73e8" memberName="descriptionLabel" virtualName=""
@@ -481,7 +481,7 @@ BEGIN_JUCER_METADATA
          fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="e68c5a019e000a0b" memberName="locationText" virtualName=""
          explicitFocusOrder="0" pos="-100C 138 400 96" posRelativeY="91994c13c1a34ef8"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="e824154c21ea01f1" memberName="contentStatsLabel"
@@ -492,7 +492,7 @@ BEGIN_JUCER_METADATA
          italic="0" justification="10"/>
   <LABEL name="" id="4c13747d72949ab9" memberName="contentStatsText" virtualName=""
          explicitFocusOrder="0" pos="-100C 106 400 32" posRelativeY="91994c13c1a34ef8"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="fa70bc89acdb3acf" memberName="vcsStatsLabel" virtualName=""
@@ -502,7 +502,7 @@ BEGIN_JUCER_METADATA
          fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="6e9d6e323ae75809" memberName="vcsStatsText" virtualName=""
          explicitFocusOrder="0" pos="-100C 76 400 32" posRelativeY="91994c13c1a34ef8"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="1ca8b26361947f73" memberName="startTimeLabel" virtualName=""
@@ -512,7 +512,7 @@ BEGIN_JUCER_METADATA
          fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="5c9cf4e334ddde90" memberName="startTimeText" virtualName=""
          explicitFocusOrder="0" pos="-100C 46 400 32" posRelativeY="91994c13c1a34ef8"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="54f9aec3fdb83582" memberName="lengthLabel" virtualName=""
@@ -522,7 +522,7 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="3849b372a1b522da" memberName="lengthText" virtualName=""
          explicitFocusOrder="0" pos="-100C 16 400 32" posRelativeY="91994c13c1a34ef8"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="1" fontname="Default font" fontsize="16.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <GENERICCOMPONENT name="level1" id="b6ea6ccc6b9be1f8" memberName="level1" virtualName=""
@@ -538,7 +538,7 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="63b4a599dbfa30da" memberName="licenseEditor" virtualName=""
          explicitFocusOrder="0" pos="-100C 230 440 48" posRelativeY="b6ea6ccc6b9be1f8"
-         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         labelText="" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="37.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
   <JUCERCOMP name="" id="2ce00deefdf277e6" memberName="menuButton" virtualName=""

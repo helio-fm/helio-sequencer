@@ -32,14 +32,14 @@ TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox)
     : DraggingListBoxComponent(parentListBox.getViewport())
 {
     this->localeLabel.reset(new Label(String(),
-                                       TRANS("...")));
+                                       String()));
     this->addAndMakeVisible(localeLabel.get());
     this->localeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     localeLabel->setJustificationType(Justification::centredLeft);
     localeLabel->setEditable(false, false, false);
 
     this->idLabel.reset(new Label(String(),
-                                   TRANS("...")));
+                                   String()));
     this->addAndMakeVisible(idLabel.get());
     this->idLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     idLabel->setJustificationType(Justification::centredRight);
@@ -142,12 +142,12 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="350" initialHeight="32">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="localeLabel" virtualName=""
-         explicitFocusOrder="0" pos="48 0 38% 2M" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="48 0 38% 2M" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="idLabel" virtualName=""
-         explicitFocusOrder="0" pos="12Rr 0 47.714% 2M" labelText="..."
+         explicitFocusOrder="0" pos="12Rr 0 47.714% 2M" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="34"/>

@@ -22,8 +22,7 @@
 //[/Headers]
 
 
-class AnnotationLargeComponent final : public AnnotationComponent,
-                                       public Label::Listener
+class AnnotationLargeComponent final : public AnnotationComponent
 {
 public:
 
@@ -38,7 +37,6 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void labelTextChanged(Label* labelThatHasChanged) override;
     void mouseMove (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
@@ -57,6 +55,9 @@ private:
     Point<int> clickOffset;
     bool draggingState;
     bool draggingHadCheckpoint;
+
+    Font font;
+    String text;
     float textWidth;
 
     // workaround странного поведения juce
@@ -65,7 +66,6 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<Label> annotationLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationLargeComponent)
 };

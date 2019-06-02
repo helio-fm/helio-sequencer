@@ -44,7 +44,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->separator.reset(new SeparatorHorizontalReversed());
     this->addAndMakeVisible(separator.get());
     this->currentNameLabel.reset(new Label(String(),
-                                            TRANS("...")));
+                                            String()));
     this->addAndMakeVisible(currentNameLabel.get());
     this->currentNameLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     currentNameLabel->setJustificationType(Justification::centredLeft);
@@ -289,7 +289,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="1 32 2M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <LABEL name="" id="cc2095775f3aaed2" memberName="currentNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 0M 32" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0 0 0M 32" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>

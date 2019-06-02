@@ -28,7 +28,7 @@
 TimeDistanceIndicator::TimeDistanceIndicator()
 {
     this->timeLabel.reset(new Label(String(),
-                                     TRANS("...")));
+                                     String()));
     this->addAndMakeVisible(timeLabel.get());
     this->timeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     timeLabel->setJustificationType(Justification::centred);
@@ -123,7 +123,7 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="3 0 6M 2" cornerSize="1.0" fill="solid: 3dffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="76c238702c82d339" memberName="timeLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 4 0M 20" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 4 0M 20" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.0" kerning="0.0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>

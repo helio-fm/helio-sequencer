@@ -80,7 +80,7 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox)
       listBox(parentListBox)
 {
     this->schemeNameLabel.reset(new Label(String(),
-                                           TRANS("...")));
+                                           String()));
     this->addAndMakeVisible(schemeNameLabel.get());
     this->schemeNameLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     schemeNameLabel->setJustificationType(Justification::centredLeft);
@@ -371,7 +371,7 @@ BEGIN_JUCER_METADATA
     <RECT pos="247 4 1 10M" fill="solid: 9ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="c261305e2de1ebf2" memberName="schemeNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="67 2 174 6M" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="67 2 174 6M" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>

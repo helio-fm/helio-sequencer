@@ -66,10 +66,7 @@ void MidiTrackMenu::initDefaultMenu()
     
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS("menu::track::rename"))->closesMenu());
-    
-    // TODO: do we need mute/solo here? I guess not at least for now
-    //menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleMuteClips, TRANS("menu::track::unmute")));
-    
+        
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS("menu::track::delete")));
     this->updateContent(menu, MenuPanel::SlideRight);
 }

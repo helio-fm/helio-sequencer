@@ -32,22 +32,14 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent
       mouseDownWasTriggered(false),
       textWidth(0.f)
 {
-    this->annotationLabel.reset(new Label("annotationLabel",
-                                           String()));
-    this->addAndMakeVisible(annotationLabel.get());
-    this->annotationLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    annotationLabel->setJustificationType(Justification::centredLeft);
-    annotationLabel->setEditable(true, true, false);
-    this->annotationLabel->addListener(this);
-
 
     //[UserPreSize]
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
-    this->annotationLabel->setInterceptsMouseClicks(false, false);
+
+    this->font = Font(16.00f, Font::plain).withTypefaceStyle("Regular");
     this->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->annotationLabel->setVisible(false);
     //[/UserPreSize]
 
     this->setSize(128, 32);
@@ -61,7 +53,6 @@ AnnotationLargeComponent::~AnnotationLargeComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    annotationLabel = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -75,7 +66,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
 
     {
         int x = 2, y = 1, width = getWidth() - 6, height = getHeight() - 8;
-        String text (TRANS("..."));
+        String text (String());
         Colour fillColour = Colour (0x88ffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -127,24 +118,8 @@ void AnnotationLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    annotationLabel->setBounds(4, -40, getWidth() - 6, getHeight() - 8);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
-}
-
-void AnnotationLargeComponent::labelTextChanged(Label* labelThatHasChanged)
-{
-    //[UserlabelTextChanged_Pre]
-    //[/UserlabelTextChanged_Pre]
-
-    if (labelThatHasChanged == annotationLabel.get())
-    {
-        //[UserLabelCode_annotationLabel] -- add your label text handling code here..
-        //[/UserLabelCode_annotationLabel]
-    }
-
-    //[UserlabelTextChanged_Post]
-    //[/UserlabelTextChanged_Post]
 }
 
 void AnnotationLargeComponent::mouseMove (const MouseEvent& e)
@@ -257,10 +232,10 @@ void AnnotationLargeComponent::setRealBounds(const Rectangle<float> bounds)
 
 void AnnotationLargeComponent::updateContent()
 {
-    if (this->annotationLabel->getText() != this->event.getDescription())
+    if (this->text != this->event.getDescription())
     {
-        this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
-        this->textWidth = float(this->annotationLabel->getFont().getStringWidth(this->event.getDescription()));
+        this->text = this->event.getDescription();
+        this->textWidth = float(this->font.getStringWidth(this->event.getDescription()));
     }
 
     this->repaint();
@@ -291,16 +266,11 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <TEXT pos="2 1 6M 8M" fill="solid: 88ffffff" hasStroke="0" text="..."
-          fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
-          justification="33"/>
+    <TEXT pos="2 1 6M 8M" fill="solid: 88ffffff" hasStroke="0" text=""
+          fontname="Default font" fontsize="16.0" kerning="0.0" bold="0"
+          italic="0" justification="33"/>
     <RECT pos="0 0 0M 3" fill="solid: 20ffffff" hasStroke="0"/>
   </BACKGROUND>
-  <LABEL name="annotationLabel" id="3dbd8cef4b61c2fe" memberName="annotationLabel"
-         virtualName="" explicitFocusOrder="0" pos="4 -40 6M 8M" labelText=""
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
-         justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
