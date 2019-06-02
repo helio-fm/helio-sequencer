@@ -21,6 +21,7 @@
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
+#include "KeySignatureEvent.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
 #include "PianoTrackNode.h"
@@ -1765,7 +1766,17 @@ void SequencerOperations::applyTuplets(Lasso &selection, Note::Tuplet tuplet, bo
     sequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
+int SequencerOperations::findAbsoluteRootKey(const Scale::Ptr scale,
+    Note::Key relativeRoot, Note::Key keyToFindPeriodFor)
+{
+    const auto middleCOffset = MIDDLE_C % scale->getBasePeriod();
+    const auto sequenceBasePeriod = (keyToFindPeriodFor - middleCOffset - relativeRoot) / scale->getBasePeriod();
+    const auto absRootKey = (sequenceBasePeriod * scale->getBasePeriod()) + middleCOffset + relativeRoot;
+    return absRootKey;
+}
+
+void SequencerOperations::rescale(Lasso &selection, Note::Key rootKey,
+    Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1779,12 +1790,14 @@ void SequencerOperations::rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Pt
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto *nc = selection.getItemAs<NoteComponent>(i);
-        const auto key = nc->getKey(); // todo clip offset
-        const auto periodNumber = key / scaleA->getBasePeriod();
-        const auto inScaleKey = scaleA->getScaleKey(key);
+        const auto noteKey = nc->getKey() - rootKey; // todo clip offset
+        const auto periodNumber = noteKey / scaleA->getBasePeriod();
+        const auto inScaleKey = scaleA->getScaleKey(noteKey);
         if (inScaleKey >= 0)
         {
-            const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber + scaleB->getChromaticKey(inScaleKey);
+            const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber
+                + scaleB->getChromaticKey(inScaleKey) + rootKey;
+
             groupBefore.add(nc->getNote());
             groupAfter.add(nc->getNote().withKey(newChromaticKey));
         }
@@ -1803,7 +1816,18 @@ void SequencerOperations::rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Pt
     sequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-// Tries to detect if there's a one key signature that affects the whole sequence.
+void SequencerOperations::rescale(const ProjectNode &project, float startBeat, float endBeat,
+    Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
+{
+    // TODO
+    // skip clips of the same track if already processed any other?
+
+    const auto pianoTracks = project.findChildrenOfType<PianoTrackNode>();
+
+
+}
+
+// Tries to detect if there's one key signature that affects the whole sequence.
 // If there's none, of if there's more than one, returns false.
 bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip &clip,
     WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)

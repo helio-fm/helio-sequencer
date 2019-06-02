@@ -133,7 +133,9 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
             }
 
             const auto &scales = App::Config().getScales()->getAll();
-            SequencerOperations::rescale(*this->lasso, this->harmonicContextScale, scales[i], true);
+            SequencerOperations::rescale(*this->lasso, this->harmonicContextKey,
+                this->harmonicContextScale, scales[i], true);
+
             this->dismiss();
             return;
         }));

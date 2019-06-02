@@ -34,9 +34,6 @@ public:
     RescalePreviewTool(SafePointer<PianoRoll> roll,
         Note::Key keyContext, Scale::Ptr scaleContext);
 
-    RescalePreviewTool(const ProjectNode &project,
-        const KeySignatureEvent &event, float endBeat);
-
     static RescalePreviewTool *createWithinSelectionAndContext(SafePointer<PianoRoll> roll,
         WeakReference<MidiTrack> keySignatures);
 
@@ -52,8 +49,25 @@ private:
     Note::Key keyContext;
     Scale::Ptr scaleContext;
 
-    bool hasMadeChanges;
+    bool hasMadeChanges = false;
     Scale::Ptr lastChosenScale;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RescalePreviewTool)
+};
+
+
+class QuickRescaleMenu final : public MenuPanel
+{
+public:
+
+    QuickRescaleMenu(const ProjectNode &project,
+        const KeySignatureEvent &event, float endBeat);
+
+private:
+
+    const ProjectNode &project;
+    const KeySignatureEvent &event;
+    const float endBeat;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(QuickRescaleMenu)
 };

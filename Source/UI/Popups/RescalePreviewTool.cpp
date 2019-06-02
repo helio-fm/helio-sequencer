@@ -52,9 +52,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     Note::Key keyContext, Scale::Ptr scaleContext) :
     roll(roll),
     keyContext(keyContext),
-    scaleContext(scaleContext),
-    hasMadeChanges(false),
-    lastChosenScale(nullptr)
+    scaleContext(scaleContext)
 {
     // this code pretty much duplicates menu from PianoRollSelectionMenu,
     // but adds undos and starts/stops playback of the selected fragment
@@ -87,7 +85,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
                 this->undoIfNeeded();
 
                 SequencerOperations::rescale(this->roll->getLassoSelection(),
-                    this->scaleContext, scales[i], needsCheckpoint);
+                    this->keyContext, this->scaleContext, scales[i], needsCheckpoint);
 
                 this->lastChosenScale = scales[i];
                 this->hasMadeChanges = true;
@@ -109,57 +107,6 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     }
 
     this->updateContent(menu, MenuPanel::SlideUp);
-}
-
-// One-shot rescale menu, no undos
-RescalePreviewTool::RescalePreviewTool(const ProjectNode &project,
-    const KeySignatureEvent &event, float endBeat)
-{
-    MenuPanel::Menu menu;
-
-    const auto scales = App::Config().getScales()->getAll();
-    for (int i = 0; i < scales.size(); ++i)
-    {
-        menu.add(MenuItem::item(Icons::arpeggiate,
-            scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
-        {
-            if (this->scaleContext == nullptr)
-            {
-                jassertfalse;
-                return;
-            }
-
-            auto &transport = this->roll->getTransport();
-            const auto scales = App::Config().getScales()->getAll();
-            if (!scales[i]->isEquivalentTo(this->lastChosenScale))
-            {
-                transport.stopPlayback();
-                const bool needsCheckpoint = !this->hasMadeChanges;
-                this->undoIfNeeded();
-
-                SequencerOperations::rescale(this->roll->getLassoSelection(),
-                    this->scaleContext, scales[i], needsCheckpoint);
-
-                this->lastChosenScale = scales[i];
-                this->hasMadeChanges = true;
-            }
-
-            if (transport.isPlaying())
-            {
-                transport.stopPlayback();
-            }
-            else
-            {
-                const auto firstBeat = this->roll->getLassoStartBeat();
-                const auto lastBeat = this->roll->getLassoEndBeat();
-                const auto fragmentStart = this->roll->getTransportPositionByBeat(firstBeat);
-                const auto fragmentEnd = this->roll->getTransportPositionByBeat(lastBeat);
-                transport.startPlaybackFragment(fragmentStart - 0.001, fragmentEnd);
-            }
-        }));
-    }
-
-    this->updateContent(menu, MenuPanel::SlideDown);
 }
 
 void RescalePreviewTool::handleCommandMessage(int commandId)
@@ -184,4 +131,31 @@ void RescalePreviewTool::undoIfNeeded()
     {
         this->roll->getActiveTrack()->getSequence()->undo();
     }
+}
+
+// One-shot rescale menu
+QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
+    const KeySignatureEvent &event, float endBeat) :
+    project(project),
+    event(event),
+    endBeat(endBeat)
+{
+    MenuPanel::Menu menu;
+
+    const auto scales = App::Config().getScales()->getAll();
+    for (int i = 0; i < scales.size(); ++i)
+    {
+        menu.add(MenuItem::item(Icons::arpeggiate,
+            scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
+        {
+            const auto scales = App::Config().getScales()->getAll();
+            if (!scales[i]->isEquivalentTo(this->event.getScale()))
+            {
+                SequencerOperations::rescale(this->project, this->event.getBeat(), this->endBeat,
+                    this->event.getRootKey(), this->event.getScale(), scales[i], true);
+            }
+        })->closesMenu());
+    }
+
+    this->updateContent(menu, MenuPanel::SlideDown);
 }

@@ -337,9 +337,7 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
             const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*ksc, ksc);
             const auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
             const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
-
-            auto *panel = new RescalePreviewTool(this->project, ksc->getEvent(), endBeat);
-            HelioCallout::emit(panel, this, true);
+            HelioCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), this, true);
         }
         else
         {
