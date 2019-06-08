@@ -1000,6 +1000,9 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Dialogs\TrackPropertiesDialog.cpp">
+      <Filter>Helio\Source\UI\Dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Headline\Headline.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
@@ -3357,6 +3360,9 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\TranslationKeys.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.h">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
@@ -3826,6 +3832,9 @@
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.h">
+      <Filter>Helio\Source\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Dialogs\TrackPropertiesDialog.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Headline\Headline.h">

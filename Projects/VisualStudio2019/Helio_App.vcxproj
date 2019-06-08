@@ -566,6 +566,9 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Dialogs\TrackPropertiesDialog.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Headline\Headline.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2746,6 +2749,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Script.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\TranslationKeys.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ChordsManager.h"/>
@@ -2903,6 +2907,7 @@
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogInput.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\RenderDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.h"/>
+    <ClInclude Include="..\..\Source\UI\Dialogs\TrackPropertiesDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\Headline.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineDropdown.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItem.h"/>

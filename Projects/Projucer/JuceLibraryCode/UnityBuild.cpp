@@ -148,6 +148,7 @@
 #include "../../Source/UI/Dialogs/ModalDialogInput.cpp"
 #include "../../Source/UI/Dialogs/RenderDialog.cpp"
 #include "../../Source/UI/Dialogs/TimeSignatureDialog.cpp"
+#include "../../Source/UI/Dialogs/TrackPropertiesDialog.cpp"
 #include "../../Source/UI/Headline/Headline.cpp"
 #include "../../Source/UI/Headline/HeadlineDropdown.cpp"
 #include "../../Source/UI/Headline/HeadlineItem.cpp"
