@@ -48,6 +48,7 @@ bool PianoTrackInsertAction::perform()
 
     this->trackId = track->getTrackId();
     track->setTrackName(this->trackName, true);
+    track->dispatchChangeProjectBeatRange();
     return true;
 }
 
@@ -131,6 +132,7 @@ bool PianoTrackRemoveAction::undo()
         track->deserialize(this->serializedTreeItem);
         this->parentTreeItem->addChildTreeItem(track);
         track->setTrackName(this->trackName, true);
+        track->dispatchChangeProjectBeatRange();
         return true;
     }
     
