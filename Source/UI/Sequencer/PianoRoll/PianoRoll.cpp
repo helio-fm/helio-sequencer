@@ -29,6 +29,7 @@
 #include "AutomationTrackNode.h"
 #include "VersionControlNode.h"
 #include "ModalDialogInput.h"
+#include "TrackPropertiesDialog.h"
 #include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
@@ -943,9 +944,10 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::RenameTrack:
         if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveItem()))
         {
-            auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
-            inputDialog->onOk = trackNode->getRenameCallback();
-            App::Layout().showModalComponentUnowned(inputDialog.release());
+            //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
+            //inputDialog->onOk = trackNode->getRenameCallback();
+            auto *newDialog = new TrackPropertiesDialog(this->project, trackNode);
+            App::Layout().showModalComponentUnowned(newDialog);
         }
         break;
     case CommandIDs::CopyEvents:
