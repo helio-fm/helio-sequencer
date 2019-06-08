@@ -37,6 +37,14 @@
 #include "Transport.h"
 #include "CommandIDs.h"
 
+// a big FIXME:
+// most of this code assumes every track has its own undo stack;
+// sounds weird, which it is, but that's how it was implemented back in 2014;
+// later I've discovered that the idea of multiple undo stacks sucks,
+// and left wrappers in sequence classes which use call project's undo stack;
+// the code here still needs refactoring and passing common undo stack
+// reference to each method.
+
 using PianoChangeGroup = Array<Note>;
 using AnnotationChangeGroup = Array<AnnotationEvent>;
 using AutoChangeGroup = Array<AutomationEvent>;
@@ -1683,12 +1691,12 @@ void SequencerOperations::invertChord(Lasso &selection,
             }
             
             const bool isRootKey =
-            (deltaKey > 0) ?
-            (selectedNotes[i].getKey() < prevKey &&
-             selectedNotes[i].getKey() < nextKey)
-            :
-            (selectedNotes[i].getKey() > prevKey &&
-             selectedNotes[i].getKey() > nextKey);
+                (deltaKey > 0) ?
+                (selectedNotes[i].getKey() < prevKey &&
+                    selectedNotes[i].getKey() < nextKey)
+                :
+                (selectedNotes[i].getKey() > prevKey &&
+                    selectedNotes[i].getKey() > nextKey);
             
             if (isRootKey)
             {
@@ -1775,6 +1783,22 @@ int SequencerOperations::findAbsoluteRootKey(const Scale::Ptr scale,
     return absRootKey;
 }
 
+static inline void doRescaleLogic(PianoChangeGroup &groupBefore, PianoChangeGroup &groupAfter,
+    const Note &note, Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB)
+{
+    const auto noteKey = note.getKey() - rootKey; // todo clip key offset?
+    const auto periodNumber = noteKey / scaleA->getBasePeriod();
+    const auto inScaleKey = scaleA->getScaleKey(noteKey);
+    if (inScaleKey >= 0)
+    {
+        const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber
+            + scaleB->getChromaticKey(inScaleKey) + rootKey;
+
+        groupBefore.add(note);
+        groupAfter.add(note.withKey(newChromaticKey));
+    }
+}
+
 void SequencerOperations::rescale(Lasso &selection, Note::Key rootKey,
     Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
 {
@@ -1790,17 +1814,7 @@ void SequencerOperations::rescale(Lasso &selection, Note::Key rootKey,
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto *nc = selection.getItemAs<NoteComponent>(i);
-        const auto noteKey = nc->getKey() - rootKey; // todo clip offset
-        const auto periodNumber = noteKey / scaleA->getBasePeriod();
-        const auto inScaleKey = scaleA->getScaleKey(noteKey);
-        if (inScaleKey >= 0)
-        {
-            const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber
-                + scaleB->getChromaticKey(inScaleKey) + rootKey;
-
-            groupBefore.add(nc->getNote());
-            groupAfter.add(nc->getNote().withKey(newChromaticKey));
-        }
+        doRescaleLogic(groupBefore, groupAfter, nc->getNote(), rootKey, scaleA, scaleB);
     }
 
     if (groupBefore.size() == 0)
@@ -1816,15 +1830,57 @@ void SequencerOperations::rescale(Lasso &selection, Note::Key rootKey,
     sequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::rescale(const ProjectNode &project, float startBeat, float endBeat,
+bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, float endBeat,
     Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
 {
-    // TODO
-    // skip clips of the same track if already processed any other?
+    bool hasMadeChanges = false;
+    bool didCheckpoint = !shouldCheckpoint;
 
     const auto pianoTracks = project.findChildrenOfType<PianoTrackNode>();
+    for (const auto *track : pianoTracks)
+    {
+        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
 
+        PianoChangeGroup groupBefore, groupAfter;
 
+        // find events in between (only consider events of one clip!),
+        // skipping clips of the same track if already processed any other:
+
+        FlatHashSet<MidiEvent::Id, StringHash> usedClips;
+
+        for (int i = 0; i < sequence->size(); ++i)
+        {
+            const auto *note = static_cast<Note *>(sequence->getUnchecked(i));
+            for (const auto *clip : track->getPattern()->getClips())
+            {
+                if (usedClips.contains(clip->getId()) || usedClips.size() == 0) // || (clip->getKey() % 12) == 0
+                {
+                    if ((note->getBeat() + clip->getBeat()) >= startBeat &&
+                        (note->getBeat() + clip->getBeat()) < endBeat)
+                    {
+                        doRescaleLogic(groupBefore, groupAfter, *note, rootKey, scaleA, scaleB);
+                        usedClips.insert(clip->getId());
+                    }
+                }
+            }
+        }
+
+        if (groupBefore.size() == 0)
+        {
+            continue;
+        }
+
+        if (!didCheckpoint)
+        {
+            sequence->checkpoint();
+            didCheckpoint = true;
+        }
+
+        hasMadeChanges = true;
+        sequence->changeGroup(groupBefore, groupAfter, true);
+    }
+
+    return hasMadeChanges;
 }
 
 // Tries to detect if there's one key signature that affects the whole sequence.

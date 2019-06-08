@@ -41,7 +41,7 @@ public:
 
 private:
 
-    void dismissAsync();
+    void dismissCalloutAsync();
     void undoIfNeeded();
 
     SafePointer<PianoRoll> roll;
@@ -64,6 +64,8 @@ public:
         const KeySignatureEvent &event, float endBeat);
 
 private:
+
+    void dismissCalloutAsync();
 
     const ProjectNode &project;
     const KeySignatureEvent &event;

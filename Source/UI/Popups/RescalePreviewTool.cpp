@@ -25,6 +25,7 @@
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
 #include "PianoSequence.h"
+#include "KeySignaturesSequence.h"
 #include "CommandIDs.h"
 #include "Config.h"
 
@@ -61,7 +62,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     menu.add(MenuItem::item(Icons::close, TRANS(I18n::Menu::cancel))->withAction([this]()
     {
         this->undoIfNeeded();
-        this->dismissAsync();
+        this->dismissCalloutAsync();
     }));
 
     const auto scales = App::Config().getScales()->getAll();
@@ -117,7 +118,7 @@ void RescalePreviewTool::handleCommandMessage(int commandId)
     }
 }
 
-void RescalePreviewTool::dismissAsync()
+void RescalePreviewTool::dismissCalloutAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
@@ -151,11 +152,30 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
             const auto scales = App::Config().getScales()->getAll();
             if (!scales[i]->isEquivalentTo(this->event.getScale()))
             {
-                SequencerOperations::rescale(this->project, this->event.getBeat(), this->endBeat,
+                const bool hasMadeChanges = 
+                    SequencerOperations::rescale(this->project, this->event.getBeat(), this->endBeat,
                     this->event.getRootKey(), this->event.getScale(), scales[i], true);
+
+                auto *keySequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
+                if (!hasMadeChanges)
+                {
+                    keySequence->checkpoint();
+                }
+
+                keySequence->change(this->event, this->event.withScale(scales[i]), true);
+
+                this->dismissCalloutAsync();
             }
-        })->closesMenu());
+        }));
     }
 
     this->updateContent(menu, MenuPanel::SlideDown);
+}
+
+void QuickRescaleMenu::dismissCalloutAsync()
+{
+    if (auto *parent = this->getParentComponent())
+    {
+        parent->postCommandMessage(CommandIDs::HideCallout);
+    }
 }

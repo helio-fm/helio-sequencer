@@ -98,7 +98,7 @@ struct SequencerOperations final
     static void rescale(Lasso &selection, Note::Key rootKey,
         Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
 
-    static void rescale(const ProjectNode &project, float startBeat, float endBeat,
+    static bool rescale(const ProjectNode &project, float startBeat, float endBeat,
         Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
 
     static bool findHarmonicContext(const Lasso &selection, const Clip &clip,

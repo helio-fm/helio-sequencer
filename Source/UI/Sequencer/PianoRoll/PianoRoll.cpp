@@ -789,10 +789,10 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
 
     forEachEventComponent(this->patternMap, e)
     {
-        const auto component = e.second.get();
+        auto *component = e.second.get();
         if (component->isActive() &&
-            component->getBeat() >= startBeat &&
-            component->getBeat() < endBeat)
+            (component->getNote().getBeat() + component->getClip().getBeat()) >= startBeat &&
+            (component->getNote().getBeat() + component->getClip().getBeat()) < endBeat)
         {
             this->selection.addToSelection(component);
         }

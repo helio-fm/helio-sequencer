@@ -30,6 +30,7 @@ MenuPanel::MenuPanel() :
     lastAnimationType(AnimationType::None),
     shouldResizeToFitContent(false)
 {
+    this->setFocusContainer(false);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
