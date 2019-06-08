@@ -108,7 +108,6 @@ public:
 protected:
 
     VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
-    void syncBranch(const VCS::Revision::Ptr leaf, bool onlyShallowRevisions);
 
     VCS::Head head;
     VCS::RemoteCache remoteCache;

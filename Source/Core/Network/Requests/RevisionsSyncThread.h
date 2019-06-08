@@ -37,7 +37,8 @@ public:
 
     void doSync(WeakReference<VersionControl> vcs,
         const String &projectId, const String &projectName,
-        const Array<String> &revisionIdsToSync = {});
+        const Array<String> &revisionIdsToPull = {},
+        const Array<String> &revisionIdsToPush = {});
 
 private:
     
@@ -51,7 +52,8 @@ private:
     WeakReference<VersionControl> vcs;
 
     // If empty, synchronizes all revisions
-    Array<String> idsToSync;
+    Array<String> idsToPull;
+    Array<String> idsToPush;
 
     BackendRequest::Response response;
 

@@ -298,7 +298,7 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
 void VersionControl::syncAllRevisions()
 {
     App::Network().getProjectSyncService()->syncRevisions(this,
-        this->parent.getVCSId(), this->parent.getVCSName(), {});
+        this->parent.getVCSId(), this->parent.getVCSName(), {}, {});
 }
 
 void VersionControl::fetchRevisionsIfNeeded()
@@ -313,32 +313,39 @@ void VersionControl::fetchRevisionsIfNeeded()
 
 void VersionControl::pushBranch(const VCS::Revision::Ptr leaf)
 {
-    this->syncBranch(leaf, false);
-}
-
-void VersionControl::pullBranch(const VCS::Revision::Ptr leaf)
-{
-    this->syncBranch(leaf, true);
-}
-
-void VersionControl::syncBranch(const VCS::Revision::Ptr leaf, bool onlyShallowRevisions)
-{
     // we need to sync the whole branch, i.e. all parents of that revision:
-    Array<String> subtreeToSync = { leaf->getUuid() };
+    Array<String> subtreeToPush = { leaf->getUuid() };
 
     WeakReference<VCS::Revision> it = leaf.get();
     while (it->getParent() != nullptr)
     {
         it = it->getParent();
-        if (!onlyShallowRevisions || it->isShallowCopy())
+        subtreeToPush.add(it->getUuid());
+    }
+
+    App::Network().getProjectSyncService()->syncRevisions(this,
+        this->parent.getVCSId(), this->parent.getVCSName(),
+        {}, subtreeToPush);
+}
+
+void VersionControl::pullBranch(const VCS::Revision::Ptr leaf)
+{
+    // we need to sync the whole branch, i.e. all parents of that revision:
+    Array<String> subtreeToPull = { leaf->getUuid() };
+
+    WeakReference<VCS::Revision> it = leaf.get();
+    while (it->getParent() != nullptr)
+    {
+        it = it->getParent();
+        if (it->isShallowCopy())
         {
-            subtreeToSync.add(it->getUuid());
+            subtreeToPull.add(it->getUuid());
         }
     }
 
     App::Network().getProjectSyncService()->syncRevisions(this,
         this->parent.getVCSId(), this->parent.getVCSName(),
-        subtreeToSync);
+        subtreeToPull, {});
 }
 
 void VersionControl::updateLocalSyncCache(const VCS::Revision::Ptr revision)

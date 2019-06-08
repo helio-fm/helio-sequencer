@@ -48,13 +48,15 @@ void RevisionsSyncThread::doFetch(WeakReference<VersionControl> vcs,
     this->projectId = projectId;
     this->projectName = projectName;
     this->vcs = vcs;
-    this->idsToSync = {};
+    this->idsToPull = {};
+    this->idsToPush = {};
     this->startThread(2); // bg fetching is a really low priority task
 }
 
 void RevisionsSyncThread::doSync(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName,
-    const Array<String> &revisionIdsToSync)
+    const Array<String> &revisionIdsToPull,
+    const Array<String> &revisionIdsToPush)
 {
     if (this->isThreadRunning())
     {
@@ -67,7 +69,8 @@ void RevisionsSyncThread::doSync(WeakReference<VersionControl> vcs,
     this->projectName = projectName;
 
     this->vcs = vcs;
-    this->idsToSync = revisionIdsToSync;
+    this->idsToPull = revisionIdsToPull;
+    this->idsToPush = revisionIdsToPush;
     this->startThread(7);
 }
 
@@ -164,12 +167,12 @@ void RevisionsSyncThread::run()
     }
 
     Array<String> remoteRevisionsToPull;
-    if (!this->idsToSync.isEmpty())
+    if (!this->idsToPull.isEmpty())
     {
         // if told explicitly to sync some known revisions, only add them
         // (assuming they are all shallow copies, if you're getting exception
         // from updateShallowRevisionData() below, make sure to pass the correct ids):
-        remoteRevisionsToPull.addArray(this->idsToSync);
+        remoteRevisionsToPull.addArray(this->idsToPull);
     }
     else
     {
@@ -230,8 +233,9 @@ void RevisionsSyncThread::run()
 
 void RevisionsSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
 {
-    if (this->idsToSync.isEmpty() ||
-        this->idsToSync.contains(root->getUuid()))
+    // todo debug and fix `push branch` for non-existing remotely project
+    if (this->idsToPush.isEmpty() ||
+        this->idsToPush.contains(root->getUuid()))
     {
         const String revisionRoute(ApiRoutes::projectRevision
             .replace(":projectId", this->projectId)

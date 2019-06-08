@@ -31,10 +31,10 @@ public:
     void fetchRevisionsInfo(WeakReference<VersionControl> vcs,
         const String &projectId, const String &projectName);
 
-
     void syncRevisions(WeakReference<VersionControl> vcs,
         const String &projectId, const String &projectName,
-        const Array<String> &revisionIdsToSync);
+        const Array<String> &revisionIdsToPull,
+        const Array<String> &revisionIdsToPush);
 
     void cancelSyncRevisions();
 

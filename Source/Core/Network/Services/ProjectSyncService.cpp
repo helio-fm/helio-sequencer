@@ -39,7 +39,8 @@ void ProjectSyncService::fetchRevisionsInfo(WeakReference<VersionControl> vcs,
 
 void ProjectSyncService::syncRevisions(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName,
-    const Array<String> &revisionIdsToSync)
+    const Array<String> &revisionIdsToPull,
+    const Array<String> &revisionIdsToPush)
 {
     if (auto *thread = this->getRunningThreadFor<RevisionsSyncThread>())
     {
@@ -47,7 +48,8 @@ void ProjectSyncService::syncRevisions(WeakReference<VersionControl> vcs,
         return;
     }
 
-    this->prepareSyncRevisionsThread()->doSync(vcs, projectId, projectName, revisionIdsToSync);
+    this->prepareSyncRevisionsThread()->doSync(vcs, projectId,
+        projectName, revisionIdsToPull, revisionIdsToPush);
 }
 
 void ProjectSyncService::cancelSyncRevisions()
