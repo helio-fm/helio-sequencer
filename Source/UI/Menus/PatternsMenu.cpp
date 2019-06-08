@@ -26,19 +26,19 @@ PatternsMenu::PatternsMenu(PatternEditorNode &parentNode) :
 
     menu.add(MenuItem::item(Icons::annotation,
         CommandIDs::PatternsGroupByName,
-        TRANS("menu::groupby::name"))->closesMenu());
+        TRANS(I18n::Menu::groupByName))->closesMenu());
     
     menu.add(MenuItem::item(Icons::colour,
         CommandIDs::PatternsGroupByColour,
-        TRANS("menu::groupby::colour"))->closesMenu());
+        TRANS(I18n::Menu::groupByColour))->closesMenu());
 
     menu.add(MenuItem::item(Icons::instrument,
         CommandIDs::PatternsGroupByInstrument,
-        TRANS("menu::groupby::instrument"))->closesMenu());
+        TRANS(I18n::Menu::groupByInstrument))->closesMenu());
 
     menu.add(MenuItem::item(Icons::list,
         CommandIDs::PatternsGroupById,
-        TRANS("menu::groupby::none"))->closesMenu());
+        TRANS(I18n::Menu::groupByNone))->closesMenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }

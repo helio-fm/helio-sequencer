@@ -226,14 +226,14 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
       mouseDownWasTriggered(false)
 {
     this->subLabel.reset(new Label(String(),
-                                    TRANS("...")));
+                                    String()));
     this->addAndMakeVisible(subLabel.get());
     this->subLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     subLabel->setJustificationType(Justification::centredRight);
     subLabel->setEditable(false, false, false);
 
     this->textLabel.reset(new Label(String(),
-                                     TRANS("...")));
+                                     String()));
     this->addAndMakeVisible(textLabel.get());
     this->textLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     textLabel->setJustificationType(Justification::centredLeft);
@@ -628,12 +628,12 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0Rr 0M 1" fill="solid: f000000" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="8de701891a585730" memberName="subLabel" virtualName=""
-         explicitFocusOrder="0" pos="4Rr 0Cc 128 0M" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="4Rr 0Cc 128 0M" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="34"/>
   <LABEL name="" id="14908053d7863001" memberName="textLabel" virtualName=""
-         explicitFocusOrder="0" pos="48 0Cc 56M 0M" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="48 0Cc 56M 0M" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>

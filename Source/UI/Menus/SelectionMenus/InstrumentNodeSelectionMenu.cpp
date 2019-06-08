@@ -39,38 +39,38 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
     const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
 
-    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::getmidi"))->
+    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeGetMidi))->
         withSubmenu()->disabledIf(!acceptsMidi)->withAction([this]()
     {
         this->updateContent(this->createMidiSourcesMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::getaudio"))->
+    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeGetAudio))->
         withSubmenu()->disabledIf(!acceptsAudio)->withAction([this]()
     {
         this->updateContent(this->createAudioSourcesMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::sendmidi"))->
+    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeSendmidi))->
         withSubmenu()->disabledIf(!producesMidi)->withAction([this]()
     {
         this->updateContent(this->createMidiDestinationsMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::sendaudio"))->
+    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeSendaudio))->
         withSubmenu()->disabledIf(!producesAudio)->withAction([this]()
     {
         this->updateContent(this->createAudioDestinationsMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::close, TRANS("menu::selection::route::disconnect"))->
+    menu.add(MenuItem::item(Icons::close, TRANS(I18n::Menu::Selection::routeDisconnect))->
         disabledIf(!hasConnections)->withAction([this]()
     {
         this->instrument.removeAllConnectionsForNode(this->node);
         this->dismiss();
     }));
 
-    menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::route::remove"))->
+    menu.add(MenuItem::item(Icons::remove, TRANS(I18n::Menu::Selection::routeRemove))->
         disabledIf(this->instrument.isNodeStandardIOProcessor(this->node->nodeID))->withAction([this]()
     {
         this->instrument.removeNode(this->node->nodeID);
@@ -84,7 +84,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioSourcesMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -108,7 +108,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -131,7 +131,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu()
 MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiSourcesMenu()
 {    MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -155,7 +155,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiDestinationsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));

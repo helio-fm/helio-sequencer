@@ -45,7 +45,7 @@ void PatternEditorNode::recreatePage() {}
 
 String PatternEditorNode::getName() const noexcept
 {
-    return TRANS("tree::patterns");
+    return TRANS(I18n::Tree::patterns);
 }
 
 String PatternEditorNode::getStatsString() const

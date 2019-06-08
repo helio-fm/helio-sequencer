@@ -20,35 +20,56 @@
 class Lasso;
 class MidiTrack;
 class PianoRoll;
+class ProjectNode;
 
 #include "MenuPanel.h"
 #include "Scale.h"
 #include "Note.h"
+#include "KeySignatureEvent.h"
 
 class RescalePreviewTool final : public MenuPanel
 {
 public:
 
-    RescalePreviewTool(PianoRoll &roll,
+    RescalePreviewTool(SafePointer<PianoRoll> roll,
         Note::Key keyContext, Scale::Ptr scaleContext);
-    
-    static RescalePreviewTool *createWithinContext(PianoRoll &roll,
+
+    static RescalePreviewTool *createWithinSelectionAndContext(SafePointer<PianoRoll> roll,
         WeakReference<MidiTrack> keySignatures);
 
     void handleCommandMessage(int commandId) override;
 
 private:
 
-    void dismissAsync();
+    void dismissCalloutAsync();
     void undoIfNeeded();
 
-    PianoRoll &roll;
+    SafePointer<PianoRoll> roll;
 
     Note::Key keyContext;
     Scale::Ptr scaleContext;
 
-    bool hasMadeChanges;
+    bool hasMadeChanges = false;
     Scale::Ptr lastChosenScale;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RescalePreviewTool)
+};
+
+
+class QuickRescaleMenu final : public MenuPanel
+{
+public:
+
+    QuickRescaleMenu(const ProjectNode &project,
+        const KeySignatureEvent &event, float endBeat);
+
+private:
+
+    void dismissCalloutAsync();
+
+    const ProjectNode &project;
+    const KeySignatureEvent &event;
+    const float endBeat;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(QuickRescaleMenu)
 };

@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "Arpeggiator.h"
 #include "Note.h"
+#include "SequencerOperations.h"
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 #include "DocumentHelpers.h"
@@ -215,14 +216,6 @@ bool operator==(const Arpeggiator &l, const Arpeggiator &r)
     return &l == &r || l.name == r.name;
 }
 
-static int findAbsRootKey(const Scale::Ptr scale, Note::Key relativeRoot, Note::Key keyToFindPeriodFor)
-{
-    const auto middleCOffset = MIDDLE_C % scale->getBasePeriod();
-    const auto sequenceBasePeriod = (keyToFindPeriodFor - middleCOffset - relativeRoot) / scale->getBasePeriod();
-    const auto absRootKey = (sequenceBasePeriod * scale->getBasePeriod()) + middleCOffset + relativeRoot;
-    return absRootKey;
-}
-
 Arpeggiator::Arpeggiator(const String &name, const Scale::Ptr scale,
     const Array<Note> &sequence, Note::Key rootKey)
 {
@@ -235,7 +228,7 @@ Arpeggiator::Arpeggiator(const String &name, const Scale::Ptr scale,
     }
 
     sequenceMeanKey /= sequence.size();
-    const auto absRootKey = findAbsRootKey(scale, rootKey, sequenceMeanKey);
+    const auto absRootKey = SequencerOperations::findAbsoluteRootKey(scale, rootKey, sequenceMeanKey);
 
     static Key sorter;
     for (const auto &note : sequence)
@@ -322,7 +315,8 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
     const auto arpKey = this->keys.getUnchecked(safeKeyIndex);
     const auto arpKeyOrReversed = this->keys.getUnchecked(safeKeyIndexOrReversed);
 
-    const auto absChordRoot = findAbsRootKey(chordScale, chordRoot, chord.getUnchecked(0).getKey());
+    const auto absChordRoot = SequencerOperations::findAbsoluteRootKey(chordScale,
+        chordRoot, chord.getUnchecked(0).getKey());
 
     static Random rng; // add -1, 0 or 1 scale offset randomly:
     const int randomScaleOffset = lround((rng.nextFloat() * randomness * 2.f) - 1.f);

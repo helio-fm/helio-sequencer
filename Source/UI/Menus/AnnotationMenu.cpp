@@ -34,7 +34,7 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
     annotation(targetAnnotation)
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameAnnotation, TRANS("menu::annotation::rename")));
+    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameAnnotation, TRANS(I18n::Menu::annotationRename)));
     
     const StringPairArray colours(MenuPanel::getColoursList());
     
@@ -46,7 +46,7 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
         cmds.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetAnnotationColour + i, name)->colouredWith(colour));
     }
     
-    cmds.add(MenuItem::item(Icons::close, CommandIDs::DeleteAnnotation, TRANS("menu::annotation::delete")));
+    cmds.add(MenuItem::item(Icons::close, CommandIDs::DeleteAnnotation, TRANS(I18n::Menu::annotationDelete)));
     this->updateContent(cmds, SlideDown);
 }
 

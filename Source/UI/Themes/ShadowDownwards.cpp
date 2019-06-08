@@ -88,10 +88,7 @@ void ShadowDownwards::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setGradientFill(this->gradient1);
-    g.fillRect(this->getLocalBounds());
-
-    g.setGradientFill(this->gradient2);
+    g.setTiledImageFill(this->cachedImage, 0, 0, 1.f);
     g.fillRect(this->getLocalBounds());
 
     //[/UserPaint]
@@ -100,11 +97,22 @@ void ShadowDownwards::paint (Graphics& g)
 void ShadowDownwards::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    const float h = float(this->getHeight());
-    this->gradient1 = ColourGradient(this->shadowColour,
-        0.f, 0.f, Colours::transparentBlack, 0.f, h, false);
-    this->gradient2 = ColourGradient(this->shadowColour,
-        0.f, 0.0f, Colours::transparentBlack, 0.f, h / 2.5f, false);
+    if (this->cachedImage.getHeight() != this->getHeight())
+    {
+        const float h = float(this->getHeight());
+        this->cachedImage = Image(Image::ARGB, SHADOW_COMPONENT_CACHED_IMAGE_SIZE,
+            this->getHeight() + SHADOW_COMPONENT_CACHED_IMAGE_MARGIN, true);
+
+        Graphics g(this->cachedImage);
+
+        g.setGradientFill(ColourGradient(this->shadowColour,
+            0.f, 0.f, Colours::transparentBlack, 0.f, h, false));
+        g.fillRect(this->cachedImage.getBounds());
+
+        g.setGradientFill(ColourGradient(this->shadowColour,
+            0.f, 0.f, Colours::transparentBlack, 0.f, h / 2.5f, false));
+        g.fillRect(this->cachedImage.getBounds());
+    }
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..

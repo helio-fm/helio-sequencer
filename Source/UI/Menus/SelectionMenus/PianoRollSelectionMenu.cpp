@@ -39,16 +39,16 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
-        TRANS("menu::selection::notes::copy"))->closesMenu());
+        TRANS(I18n::Menu::Selection::notesCopy))->closesMenu());
 
     menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::selection::notes::cut"))->closesMenu());
+        TRANS(I18n::Menu::Selection::notesCut))->closesMenu());
 
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents,
-        TRANS("menu::selection::notes::delete"))->closesMenu());
+        TRANS(I18n::Menu::Selection::notesDelete))->closesMenu());
 
     menu.add(MenuItem::item(Icons::refactor,
-        TRANS("menu::selection::notes::refactor"))->
+        TRANS(I18n::Menu::Selection::notesRefactor))->
         withSubmenu()->withAction([this]()
     {
         this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideLeft);
@@ -57,7 +57,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     const bool canArpeggiate = (this->lasso->getNumSelected() > 1) && (this->harmonicContextScale != nullptr);
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        TRANS("menu::selection::notes::arpeggiate"))->
+        TRANS(I18n::Menu::Selection::notesArpeggiate))->
         disabledIf(!canArpeggiate)->
         withSubmenu()->withAction([this]()
     {
@@ -65,7 +65,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     }));
 
     menu.add(MenuItem::item(Icons::ellipsis,
-        TRANS("menu::selection::notes::divisions"))->
+        TRANS(I18n::Menu::Selection::notesDivisions))->
         withSubmenu()->withAction([this]()
     {
         this->updateContent(this->createTupletsPanel(), MenuPanel::SlideLeft);
@@ -78,21 +78,21 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
     
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
-        TRANS("menu::selection::notes::totrack"))->closesMenu());
+        TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
 
     const bool canInvert = this->lasso->getNumSelected() > 1;
 
     menu.add(MenuItem::item(Icons::inverseUp, CommandIDs::InvertChordUp,
-        TRANS("menu::refactoring::inverseup"))->disabledIf(!canInvert)->closesMenu());
+        TRANS(I18n::Menu::refactoringInverseUp))->disabledIf(!canInvert)->closesMenu());
 
     menu.add(MenuItem::item(Icons::inverseDown, CommandIDs::InvertChordDown,
-        TRANS("menu::refactoring::inversedown"))->disabledIf(!canInvert)->closesMenu());
+        TRANS(I18n::Menu::refactoringInverseDown))->disabledIf(!canInvert)->closesMenu());
 
     // TODO
     // Cleanup
@@ -103,7 +103,8 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     const bool canRescale = (this->harmonicContextScale != nullptr);
 
     menu.add(MenuItem::item(Icons::arpeggiate, // todo new icon for this
-        TRANS("menu::selection::notes::rescale"))->disabledIf(!canRescale)->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Selection::notesRescale))->
+        disabledIf(!canRescale)->withSubmenu()->withAction([this]()
     {
         this->updateContent(this->createScalesPanel(), MenuPanel::SlideLeft);
     }));
@@ -115,7 +116,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideRight);
     }));
@@ -133,7 +134,9 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
             }
 
             const auto &scales = App::Config().getScales()->getAll();
-            SequencerOperations::rescale(*this->lasso, this->harmonicContextScale, scales[i], true);
+            SequencerOperations::rescale(*this->lasso, this->harmonicContextKey,
+                this->harmonicContextScale, scales[i], true);
+
             this->dismiss();
             return;
         }));
@@ -146,20 +149,20 @@ MenuPanel::Menu PianoRollSelectionMenu::createTupletsPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet1, TRANS("menu::tuplet::1"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet2, TRANS("menu::tuplet::2"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet3, TRANS("menu::tuplet::3"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet4, TRANS("menu::tuplet::4"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet5, TRANS("menu::tuplet::5"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet6, TRANS("menu::tuplet::6"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet7, TRANS("menu::tuplet::7"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet8, TRANS("menu::tuplet::8"))->closesMenu());
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet9, TRANS("menu::tuplet::9"))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet1, TRANS(I18n::Menu::tuplet1))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet2, TRANS(I18n::Menu::tuplet2))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet3, TRANS(I18n::Menu::tuplet3))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet4, TRANS(I18n::Menu::tuplet4))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet5, TRANS(I18n::Menu::tuplet5))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet6, TRANS(I18n::Menu::tuplet6))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet7, TRANS(I18n::Menu::tuplet7))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet8, TRANS(I18n::Menu::tuplet8))->closesMenu());
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet9, TRANS(I18n::Menu::tuplet9))->closesMenu());
 
     return menu;
 }
@@ -168,13 +171,13 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
     menu.add(MenuItem::item(Icons::create, CommandIDs::CreateArpeggiatorFromSelection,
-        TRANS("menu::arpeggiators::create"))->closesMenu());
+        TRANS(I18n::Menu::arpeggiatorsCreate))->closesMenu());
 
     const auto arps = App::Config().getArpeggiators()->getAll();
     for (int i = 0; i < arps.size(); ++i)

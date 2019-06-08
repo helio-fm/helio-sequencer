@@ -35,7 +35,7 @@ UpdatesInfoComponent::UpdatesInfoComponent()
     this->addAndMakeVisible(comboPrimer.get());
 
     this->label.reset(new Label(String(),
-                                 TRANS("update::proceed")));
+                                 TRANS(I18n::Common::updateProceed)));
     this->addAndMakeVisible(label.get());
     this->label->setFont(Font (17.00f, Font::plain).withTypefaceStyle ("Regular"));
     label->setJustificationType(Justification::centredBottom);

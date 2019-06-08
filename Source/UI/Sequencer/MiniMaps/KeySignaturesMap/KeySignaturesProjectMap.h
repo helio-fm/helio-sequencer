@@ -73,17 +73,17 @@ public:
     // Stuff for children
     //===------------------------------------------------------------------===//
 
-    void onKeySignatureMoved(KeySignatureComponent *nc);
-    void onKeySignatureTapped(KeySignatureComponent *nc);
-    void showContextMenuFor(KeySignatureComponent *nc);
-    void alternateActionFor(KeySignatureComponent *nc);
+    void onKeySignatureSelected(KeySignatureComponent *nc);
+    void onKeySignatureMainAction(KeySignatureComponent *nc);
+    void onKeySignatureAltAction(KeySignatureComponent *nc);
     float getBeatByXPosition(int x) const;
     
 private:
-    
+
     void reloadTrackMap();
     void applyKeySignatureBounds(KeySignatureComponent *nc, KeySignatureComponent *nextOne = nullptr);
-    
+    void keySignatureTapAction(KeySignatureComponent *nc, bool altMode);
+
     KeySignatureComponent *getPreviousEventComponent(int indexOfSorted) const;
     KeySignatureComponent *getNextEventComponent(int indexOfSorted) const;
     

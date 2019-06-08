@@ -29,6 +29,7 @@
 #include "AutomationTrackNode.h"
 #include "VersionControlNode.h"
 #include "ModalDialogInput.h"
+#include "TrackPropertiesDialog.h"
 #include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
@@ -788,10 +789,10 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
 
     forEachEventComponent(this->patternMap, e)
     {
-        const auto component = e.second.get();
+        auto *component = e.second.get();
         if (component->isActive() &&
-            component->getBeat() >= startBeat &&
-            component->getBeat() < endBeat)
+            (component->getNote().getBeat() + component->getClip().getBeat()) >= startBeat &&
+            (component->getNote().getBeat() + component->getClip().getBeat()) < endBeat)
         {
             this->selection.addToSelection(component);
         }
@@ -943,9 +944,10 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::RenameTrack:
         if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveItem()))
         {
-            auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
-            inputDialog->onOk = trackNode->getRenameCallback();
-            App::Layout().showModalComponentUnowned(inputDialog.release());
+            //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
+            //inputDialog->onOk = trackNode->getRenameCallback();
+            auto *newDialog = new TrackPropertiesDialog(this->project, trackNode);
+            App::Layout().showModalComponentUnowned(newDialog);
         }
         break;
     case CommandIDs::CopyEvents:
@@ -1065,7 +1067,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ShowRescalePanel:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        if (auto *panel = RescalePreviewTool::createWithinContext(*this,
+        if (auto *panel = RescalePreviewTool::createWithinSelectionAndContext(this,
             this->project.getTimeline()->getKeySignatures()))
         {
             HelioCallout::emit(panel, this, true);

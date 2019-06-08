@@ -51,7 +51,7 @@ StageComponent::StageComponent(VersionControl &versionControl)
     this->addAndMakeVisible(horizontalCenter.get());
 
     this->titleLabel.reset(new Label(String(),
-                                      TRANS("vcs::stage::caption")));
+                                      TRANS(I18n::VCS::stageCaption)));
     this->addAndMakeVisible(titleLabel.get());
     this->titleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType(Justification::centred);
@@ -315,7 +315,7 @@ Image StageComponent::getIcon() const
 
 String StageComponent::getName() const
 {
-    return TRANS("menu::selection::vcs::stage");
+    return TRANS(I18n::Menu::Selection::vcsStage);
 }
 
 //===----------------------------------------------------------------------===//
@@ -346,7 +346,7 @@ void StageComponent::toggleQuickStash()
     }
     else if (case4)
     {
-        App::Layout().showTooltip(TRANS("vcs::warning::cannotrevert"));
+        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert));
         App::Layout().showModalComponentUnowned(new FailTooltip());
     }
 }
@@ -355,7 +355,7 @@ void StageComponent::commitSelected()
 {
     if (this->changesList->getSelectedRows().isEmpty())
     {
-        App::Layout().showTooltip(TRANS("vcs::warning::cannotcommit"), 3000);
+        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotCommit), 3000);
         return;
     }
 
@@ -379,7 +379,7 @@ void StageComponent::resetSelected()
 {
     if (this->changesList->getSelectedRows().isEmpty())
     {
-        App::Layout().showTooltip(TRANS("vcs::warning::cannotreset"), 3000);
+        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotReset), 3000);
         return;
     }
 

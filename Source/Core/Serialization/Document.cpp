@@ -115,7 +115,7 @@ void Document::saveAs()
 {
 #if HELIO_DESKTOP
 
-        FileChooser fc(TRANS("dialog::document::save"),
+        FileChooser fc(TRANS(I18n::Dialog::documentSave),
                        File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
 
         if (fc.browseForFileToSave(true))
@@ -131,7 +131,7 @@ void Document::exportAs(const String &exportExtension,
 {
 #if HELIO_DESKTOP
 
-    FileChooser fc(TRANS("dialog::document::export"),
+    FileChooser fc(TRANS(I18n::Dialog::documentExport),
         DocumentHelpers::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
         exportExtension, true);
 
@@ -162,7 +162,7 @@ bool Document::load(const File &file, const File &relativeFile)
         if (!relativeFile.existsAsFile())
         {
 #if HELIO_DESKTOP
-            FileChooser fc(TRANS("dialog::document::load"),
+            FileChooser fc(TRANS(I18n::Dialog::documentLoad),
                 File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
 
             if (fc.browseForFileToOpen())
@@ -189,7 +189,7 @@ void Document::import(const String &filePattern)
 {
 #if HELIO_DESKTOP
 
-    FileChooser fc(TRANS("dialog::document::import"),
+    FileChooser fc(TRANS(I18n::Dialog::documentImport),
                    File::getCurrentWorkingDirectory(), (filePattern), true);
 
     if (fc.browseForFileToOpen())

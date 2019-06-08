@@ -41,13 +41,11 @@ UserInterfaceSettings::UserInterfaceSettings()
 
     this->openGLRendererButton.reset(new ToggleButton(String()));
     this->addAndMakeVisible(openGLRendererButton.get());
-    openGLRendererButton->setButtonText(TRANS("settings::renderer::opengl"));
     openGLRendererButton->setRadioGroupId(1);
     openGLRendererButton->addListener(this);
 
     this->defaultRendererButton.reset(new ToggleButton(String()));
     this->addAndMakeVisible(defaultRendererButton.get());
-    defaultRendererButton->setButtonText(TRANS("settings::renderer::default"));
     defaultRendererButton->setRadioGroupId(1);
     defaultRendererButton->addListener(this);
     defaultRendererButton->setToggleState (true, dontSendNotification);
@@ -70,12 +68,15 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
 
+    this->openGLRendererButton->setButtonText(TRANS(I18n::Settings::rendererOpengl));
+    this->defaultRendererButton->setButtonText(TRANS(I18n::Settings::rendererDefault));
+
 #if JUCE_MAC
-    this->defaultRendererButton->setButtonText(TRANS("settings::renderer::coregraphics"));
+    this->defaultRendererButton->setButtonText(TRANS(I18n::Settings::rendererCoreGraphics));
 #elif JUCE_WINDOWS
-    this->defaultRendererButton->setButtonText(TRANS("settings::renderer::direct2d"));
+    this->defaultRendererButton->setButtonText(TRANS(I18n::Settings::rendererDirect2d));
 #elif JUCE_LINUX
-    this->defaultRendererButton->setButtonText(TRANS("settings::renderer::native"));
+    this->defaultRendererButton->setButtonText(TRANS(I18n::Settings::rendererNative));
 #endif
     //[/UserPreSize]
 
@@ -96,7 +97,7 @@ UserInterfaceSettings::UserInterfaceSettings()
 
     this->fontEditor->setInterceptsMouseClicks(false, true);
     this->fontEditor->setFont(18.f);
-    this->fontEditor->setText(TRANS("settings::ui::font") + ": " + lastUsedFontName);
+    this->fontEditor->setText(TRANS(I18n::Settings::uiFont) + ": " + lastUsedFontName);
     this->fontComboPrimer->initWith(this->fontEditor.get(), fontsMenu);
     //[/Constructor]
 }
@@ -238,11 +239,11 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <TOGGLEBUTTON name="" id="42fbb3993c5b4950" memberName="openGLRendererButton"
                 virtualName="" explicitFocusOrder="0" pos="16 32 32M 32" posRelativeY="1f025eebf3951095"
-                buttonText="settings::renderer::opengl" connectedEdges="0" needsCallback="1"
+                buttonText="" connectedEdges="0" needsCallback="1"
                 radioGroupId="1" state="0"/>
   <TOGGLEBUTTON name="" id="1f025eebf3951095" memberName="defaultRendererButton"
                 virtualName="" explicitFocusOrder="0" pos="16 6 32M 32" posRelativeY="68d81e5e36696154"
-                buttonText="settings::renderer::default" connectedEdges="0" needsCallback="1"
+                buttonText="" connectedEdges="0" needsCallback="1"
                 radioGroupId="1" state="1"/>
   <JUCERCOMP name="" id="68d81e5e36696154" memberName="separator2" virtualName=""
              explicitFocusOrder="0" pos="16 -16R 32M 4" posRelativeY="4fd07309a20b15b6"

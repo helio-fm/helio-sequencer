@@ -92,7 +92,14 @@ struct SequencerOperations final
 
     static void applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint = true);
 
-    static void rescale(Lasso &selection, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
+    static int findAbsoluteRootKey(const Scale::Ptr scale,
+        Note::Key relativeRoot, Note::Key keyToFindPeriodFor);
+
+    static void rescale(Lasso &selection, Note::Key rootKey,
+        Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
+
+    static bool rescale(const ProjectNode &project, float startBeat, float endBeat,
+        Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
 
     static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
         WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);

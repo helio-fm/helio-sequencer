@@ -1133,6 +1133,13 @@
 			path = ../../Source/UI/Pages/Dashboard/LogoFader.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		2BBC7BF4112C3BFF7F841C3D = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TrackPropertiesDialog.cpp;
+			path = ../../Source/UI/Dialogs/TrackPropertiesDialog.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		2BFA98FEA3648E16A044DFB6 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -2930,6 +2937,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MidiTrackMenu.cpp;
 			path = ../../Source/UI/Menus/MidiTrackMenu.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		7EA9485E18D0B9569175FFB9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TranslationKeys.h;
+			path = ../../Source/Core/Configuration/Models/TranslationKeys.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7EF99CFAEDFC0330494A7C17 = {
@@ -5249,6 +5263,13 @@
 			path = ../../Source/Core/Midi/Sequences/AutomationSequence.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		EB1E21DF8B682D263D761C72 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TrackPropertiesDialog.h;
+			path = ../../Source/UI/Dialogs/TrackPropertiesDialog.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		EB6D379742D31759FB986F01 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.flac;
@@ -5897,6 +5918,7 @@
 				4CB4193955D65B4696E93440,
 				E7198041504784409868B07B,
 				C63A28C80B15F986AED2D11D,
+				7EA9485E18D0B9569175FFB9,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -6348,6 +6370,8 @@
 				9BCD653A822231B2ACDE833F,
 				705E5C79C9A9AE72248B71E9,
 				A3DDC9CF37C94393EF6E8063,
+				2BBC7BF4112C3BFF7F841C3D,
+				EB1E21DF8B682D263D761C72,
 			);
 			name = Dialogs;
 			sourceTree = "<group>";

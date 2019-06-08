@@ -133,13 +133,13 @@ void Chord::reset()
 Array<String> Chord::getLocalizedFunctionNames()
 {
     static Array<String> names = {
-        TRANS("popup::chord::function::1"),
-        TRANS("popup::chord::function::2"),
-        TRANS("popup::chord::function::3"),
-        TRANS("popup::chord::function::4"),
-        TRANS("popup::chord::function::5"),
-        TRANS("popup::chord::function::6"),
-        TRANS("popup::chord::function::7")
+        TRANS(I18n::Popup::chordFunction1),
+        TRANS(I18n::Popup::chordFunction2),
+        TRANS(I18n::Popup::chordFunction3),
+        TRANS(I18n::Popup::chordFunction4),
+        TRANS(I18n::Popup::chordFunction5),
+        TRANS(I18n::Popup::chordFunction6),
+        TRANS(I18n::Popup::chordFunction7)
     };
 
     return names;

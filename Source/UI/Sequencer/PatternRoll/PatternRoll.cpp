@@ -36,6 +36,7 @@
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "ModalDialogInput.h"
+#include "TrackPropertiesDialog.h"
 #include "PatternOperations.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
@@ -623,9 +624,10 @@ void PatternRoll::handleCommandMessage(int commandId)
             }
 
             auto *trackNode = this->project.findTrackById<MidiTrackNode>(trackId);
-            auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
-            inputDialog->onOk = trackNode->getRenameCallback();
-            App::Layout().showModalComponentUnowned(inputDialog.release());
+            //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getTrackName());
+            //inputDialog->onOk = trackNode->getRenameCallback();
+            auto *newDialog = new TrackPropertiesDialog(this->project, trackNode);
+            App::Layout().showModalComponentUnowned(newDialog);
         }
         break;
     case CommandIDs::DeleteClips:

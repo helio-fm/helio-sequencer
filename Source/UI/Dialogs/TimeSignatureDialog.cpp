@@ -57,7 +57,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     this->addAndMakeVisible(comboPrimer.get());
 
     this->messageLabel.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(messageLabel.get());
     this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType(Justification::centred);
@@ -65,13 +65,13 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
 
     this->removeEventButton.reset(new TextButton(String()));
     this->addAndMakeVisible(removeEventButton.get());
-    removeEventButton->setButtonText(TRANS("..."));
+    removeEventButton->setButtonText(String());
     removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     removeEventButton->addListener(this);
 
     this->okButton.reset(new TextButton(String()));
     this->addAndMakeVisible(okButton.get());
-    okButton->setButtonText(TRANS("..."));
+    okButton->setButtonText(String());
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener(this);
 
@@ -107,15 +107,15 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
 
-        this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::timesignature::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureAddCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::timeSignatureAddProceed));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
     }
     else
     {
-        this->messageLabel->setText(TRANS("dialog::timesignature::edit::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::timesignature::edit::apply"));
-        this->removeEventButton->setButtonText(TRANS("dialog::timesignature::edit::delete"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureEditCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::timeSignatureEditApply));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::timeSignatureEditDelete));
     }
 
     this->textEditor->addListener(this);
@@ -449,14 +449,14 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 20 32M 36" posRelativeY="e96b77baef792d3a"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
-              virtualName="" explicitFocusOrder="0" pos="4 4Rr 180 48" buttonText="..."
+              virtualName="" explicitFocusOrder="0" pos="4 4Rr 180 48" buttonText=""
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 181 48" buttonText="..."
+              explicitFocusOrder="0" pos="4Rr 4Rr 181 48" buttonText=""
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"

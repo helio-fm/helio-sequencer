@@ -91,7 +91,7 @@ public:
 
     String getName() const override
     {
-        return TRANS("menu::selection::notes");
+        return TRANS(I18n::Menu::Selection::notes);
     }
 
     bool canBeSelectedAsMenuItem() const override { return false; }
@@ -137,7 +137,7 @@ public:
 
     String getName() const override
     {
-        return TRANS("menu::selection::notes");
+        return TRANS(I18n::Menu::Selection::notes);
     }
 
     bool canBeSelectedAsMenuItem() const override { return false; }

@@ -31,7 +31,6 @@
 #include "SerializationKeys.h"
 #include "SequencerSidebarRight.h"
 #include "SequencerSidebarLeft.h"
-#include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
 #include "ShadowUpwards.h"
 #include "NoteComponent.h"
@@ -52,7 +51,7 @@
 #define VERTICAL_ROLLS_LAYOUT 1
 #define ROLLS_ANIMATION_START_SPEED 0.35f
 #define MAPS_ANIMATION_START_SPEED 0.25f
-#define SCROLLER_SHADOW_SIZE 15
+#define SCROLLER_SHADOW_SIZE 16
 
 //===----------------------------------------------------------------------===//
 // Rolls container responsible for switching between piano and pattern roll
@@ -574,7 +573,7 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
     const String safeRenderName = File::createLegalFileName(renderFileName);
 
 #if HELIO_DESKTOP
-    FileChooser fc(TRANS("dialog::render::caption"),
+    FileChooser fc(TRANS(I18n::Dialog::renderCaption),
         File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
 
     if (fc.browseForFileToSave(true))
@@ -599,7 +598,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
             const String safeName = TreeNode::createSafeName(this->project.getName()) + ".mid";
             File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
             this->project.exportMidi(midiExport);
-            App::Layout().showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
+            App::Layout().showTooltip(TRANS(I18n::Menu::Project::render::savedto") + " '" + safeName + "');
             App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
 #else

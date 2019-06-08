@@ -30,7 +30,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     this->background.reset(new DialogPanel());
     this->addAndMakeVisible(background.get());
     this->messageLabel.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(messageLabel.get());
     this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType(Justification::centred);
@@ -38,13 +38,11 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
 
     this->cancelButton.reset(new TextButton(String()));
     this->addAndMakeVisible(cancelButton.get());
-    cancelButton->setButtonText(TRANS("..."));
     cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     cancelButton->addListener(this);
 
     this->okButton.reset(new TextButton(String()));
     this->addAndMakeVisible(okButton.get());
-    okButton->setButtonText(TRANS("..."));
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener(this);
 
@@ -238,36 +236,36 @@ UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteP
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::deleteproject::caption"),
-            TRANS("dialog::deleteproject::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::deleteProjectCaption),
+            TRANS(I18n::Dialog::deleteProjectProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::vcs::checkout::warning"),
-            TRANS("dialog::vcs::checkout::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::vcsCheckoutWarning),
+            TRANS(I18n::Dialog::vcsCheckoutProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::vcs::reset::caption"),
-            TRANS("dialog::vcs::reset::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::vcsResetCaption),
+            TRANS(I18n::Dialog::vcsResetProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
 {
     return UniquePointer<ModalDialogConfirmation>(
         new ModalDialogConfirmation(
-            TRANS("dialog::opengl::caption"),
-            TRANS("dialog::opengl::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::openglCaption),
+            TRANS(I18n::Dialog::openglProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 //[/MiscUserCode]
@@ -289,23 +287,22 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
-               hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.0" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 96" posRelativeY="e96b77baef792d3a"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="4 4Rr 200 48" buttonText="..." connectedEdges="6"
+              explicitFocusOrder="0" pos="4 4Rr 200 48" buttonText="" connectedEdges="6"
               needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 201 48" buttonText="..."
-              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 201 48" buttonText="" connectedEdges="5"
+              needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>

@@ -29,7 +29,7 @@
 UserProfileComponent::UserProfileComponent()
 {
     this->nameLabel.reset(new Label(String(),
-                                     TRANS("...")));
+                                     String()));
     this->addAndMakeVisible(nameLabel.get());
     this->nameLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     nameLabel->setJustificationType(Justification::centredLeft);
@@ -121,7 +121,7 @@ BEGIN_JUCER_METADATA
                  overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="32">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="d16eb130158ae29c" memberName="nameLabel" virtualName=""
-         explicitFocusOrder="0" pos="38 0 38M 2M" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="38 0 38M 2M" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>

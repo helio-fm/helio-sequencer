@@ -30,6 +30,7 @@ MenuPanel::MenuPanel() :
     lastAnimationType(AnimationType::None),
     shouldResizeToFitContent(false)
 {
+    this->setFocusContainer(false);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
@@ -71,23 +72,23 @@ void MenuPanel::handleCommandMessage (int commandId)
 StringPairArray MenuPanel::getColoursList()
 {
     StringPairArray c;
-    //c.set(TRANS("colours::none"),           Colours::transparentWhite.toString());
-    //c.set(TRANS("colours::black"),          Colours::black.toString());
-    c.set(TRANS("colours::white"),          Colours::white.toString());
-    c.set(TRANS("colours::red"),            Colours::red.toString());
-    c.set(TRANS("colours::crimson"),        Colours::crimson.toString());
-    c.set(TRANS("colours::deeppink"),       Colours::deeppink.toString());
-    c.set(TRANS("colours::darkviolet"),     Colours::darkviolet.toString());
-    c.set(TRANS("colours::blueviolet"),     Colours::blueviolet.toString());
-    c.set(TRANS("colours::blue"),           Colours::blue.toString());
-    c.set(TRANS("colours::royalblue"),      Colours::royalblue.toString());
-    c.set(TRANS("colours::springgreen"),    Colours::springgreen.toString());
-    c.set(TRANS("colours::lime"),           Colours::lime.toString());
-    c.set(TRANS("colours::greenyellow"),    Colours::greenyellow.toString());
-    c.set(TRANS("colours::gold"),           Colours::gold.toString());
-    c.set(TRANS("colours::darkorange"),     Colours::darkorange.toString());
-    c.set(TRANS("colours::tomato"),         Colours::tomato.toString());
-    c.set(TRANS("colours::orangered"),      Colours::orangered.toString());
+    //c.set(TRANS(I18n::Colours::none),           Colours::transparentWhite.toString());
+    //c.set(TRANS(I18n::Colours::black),          Colours::black.toString());
+    c.set(TRANS(I18n::Colours::white),          Colours::white.toString());
+    c.set(TRANS(I18n::Colours::red),            Colours::red.toString());
+    c.set(TRANS(I18n::Colours::crimson),        Colours::crimson.toString());
+    c.set(TRANS(I18n::Colours::deepPink),       Colours::deeppink.toString());
+    c.set(TRANS(I18n::Colours::darkViolet),     Colours::darkviolet.toString());
+    c.set(TRANS(I18n::Colours::blueViolet),     Colours::blueviolet.toString());
+    c.set(TRANS(I18n::Colours::blue),           Colours::blue.toString());
+    c.set(TRANS(I18n::Colours::royalBlue),      Colours::royalblue.toString());
+    c.set(TRANS(I18n::Colours::springGreen),    Colours::springgreen.toString());
+    c.set(TRANS(I18n::Colours::lime),           Colours::lime.toString());
+    c.set(TRANS(I18n::Colours::greenYellow),    Colours::greenyellow.toString());
+    c.set(TRANS(I18n::Colours::gold),           Colours::gold.toString());
+    c.set(TRANS(I18n::Colours::darkOrange),     Colours::darkorange.toString());
+    c.set(TRANS(I18n::Colours::tomato),         Colours::tomato.toString());
+    c.set(TRANS(I18n::Colours::orangeRed),      Colours::orangered.toString());
     return c;
 }
 

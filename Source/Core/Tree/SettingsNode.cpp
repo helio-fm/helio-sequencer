@@ -50,7 +50,7 @@ Image SettingsNode::getIcon() const noexcept
 
 String SettingsNode::getName() const noexcept
 {
-    return TRANS("tree::settings");
+    return TRANS(I18n::Tree::settings);
 }
 
 void SettingsNode::showPage()
@@ -86,7 +86,7 @@ void SettingsNode::recreatePage()
     this->settingsList->addAndMakeVisible(this->translationSettingsWrapper.get());
 
     this->themeSettings.reset(new ThemeSettings());
-    this->themeSettingsWrapper.reset(new LabeledSettingsWrapper(this->themeSettings.get(), TRANS("settings::ui")));
+    this->themeSettingsWrapper.reset(new LabeledSettingsWrapper(this->themeSettings.get(), TRANS(I18n::Settings::ui)));
     this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
 #if HELIO_DESKTOP
@@ -96,11 +96,11 @@ void SettingsNode::recreatePage()
 #endif
 
     this->audioSettings.reset(new AudioSettings(App::Workspace().getAudioCore()));
-    this->audioSettingsWrapper.reset(new LabeledSettingsWrapper(this->audioSettings.get(), TRANS("settings::audio")));
+    this->audioSettingsWrapper.reset(new LabeledSettingsWrapper(this->audioSettings.get(), TRANS(I18n::Settings::audio)));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
 
     this->syncSettings.reset(new SyncSettings());
-    this->syncSettingsWrapper.reset(new LabeledSettingsWrapper(this->syncSettings.get(), TRANS("settings::sync")));
+    this->syncSettingsWrapper.reset(new LabeledSettingsWrapper(this->syncSettings.get(), TRANS(I18n::Settings::sync)));
     this->settingsList->addAndMakeVisible(this->syncSettingsWrapper.get());
 
     this->settingsPage.reset(new SettingsPage(this->settingsList.get()));

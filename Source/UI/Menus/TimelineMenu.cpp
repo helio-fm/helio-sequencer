@@ -77,21 +77,21 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
     {
         cmds.add(MenuItem::item(Icons::create,
             CommandIDs::AddAnnotation,
-            TRANS("menu::annotation::add"))->closesMenu());
+            TRANS(I18n::Menu::annotationAdd))->closesMenu());
     }
 
     if (selectedKeySignature == nullptr)
     {
         cmds.add(MenuItem::item(Icons::create,
             CommandIDs::AddKeySignature,
-            TRANS("menu::keysignature::add"))->closesMenu());
+            TRANS(I18n::Menu::keySignatureAdd))->closesMenu());
     }
 
     if (selectedTimeSignature == nullptr)
     {
         cmds.add(MenuItem::item(Icons::create,
             CommandIDs::AddTimeSignature,
-            TRANS("menu::timesignature::add"))->closesMenu());
+            TRANS(I18n::Menu::timeSignatureAdd))->closesMenu());
     }
 
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))

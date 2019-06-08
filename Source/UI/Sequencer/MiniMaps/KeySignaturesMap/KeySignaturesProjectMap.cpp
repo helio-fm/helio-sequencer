@@ -28,6 +28,8 @@
 #include "MainLayout.h"
 #include "KeySignatureLargeComponent.h"
 #include "KeySignatureSmallComponent.h"
+#include "RescalePreviewTool.h"
+#include "HelioCallout.h"
 
 KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
     project(parentProject),
@@ -253,16 +255,47 @@ void KeySignaturesProjectMap::onChangeViewBeatRange(float firstBeat, float lastB
     this->resized();
 }
 
+//===----------------------------------------------------------------------===//
+// Stuff for children
+//===----------------------------------------------------------------------===//
+
+void KeySignaturesProjectMap::onKeySignatureSelected(KeySignatureComponent *nc)
+{
+    // Selects everything within the range of this keySignature
+    this->keySignatureComponents.sort(*nc);
+    const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*nc, nc);
+    KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+
+    const float startBeat = nc->getBeat();
+    const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
+    const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
+    const bool shouldClearSelection = !isShiftPressed;
+
+    this->roll.selectEventsInRange(startBeat, endBeat, shouldClearSelection);
+}
+
+void KeySignaturesProjectMap::onKeySignatureMainAction(KeySignatureComponent *ksc)
+{
+    this->keySignatureTapAction(ksc, false);
+}
+
+void KeySignaturesProjectMap::onKeySignatureAltAction(KeySignatureComponent *ksc)
+{
+    this->keySignatureTapAction(ksc, true);
+}
+
+float KeySignaturesProjectMap::getBeatByXPosition(int x) const
+{
+    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
+    const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
+    return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
+}
 
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
-void KeySignaturesProjectMap::onKeySignatureMoved(KeySignatureComponent *nc)
-{
-}
-
-void KeySignaturesProjectMap::onKeySignatureTapped(KeySignatureComponent *nc)
+void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, bool altMode)
 {
     const KeySignatureEvent *keySignatureUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
@@ -272,17 +305,16 @@ void KeySignaturesProjectMap::onKeySignatureTapped(KeySignatureComponent *nc)
     for (int i = 0; i < keySignatures->size(); ++i)
     {
         const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
-        KeySignatureEvent *keySignature =
-            static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
-            
-        if (fabs(keySignature->getBeat() - seekBeat) < 0.1)
+        auto *keySignature = static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
+
+        if (fabs(keySignature->getBeat() - seekBeat) < 0.1f)
         {
             keySignatureUnderSeekCursor = keySignature;
             break;
         }
     }
 
-    const double newSeekPosition = this->roll.getTransportPositionByBeat(nc->getBeat());
+    const double newSeekPosition = this->roll.getTransportPositionByBeat(ksc->getBeat());
     const bool wasPlaying = this->project.getTransport().isPlaying();
 
     if (wasPlaying)
@@ -297,42 +329,22 @@ void KeySignaturesProjectMap::onKeySignatureTapped(KeySignatureComponent *nc)
     //    this->project.getTransport().startPlayback();
     //}
 
-    if (keySignatureUnderSeekCursor == &nc->getEvent() && !wasPlaying)
+    if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)
     {
-        this->showContextMenuFor(nc);
+        if (altMode)
+        {
+            this->keySignatureComponents.sort(*ksc);
+            const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*ksc, ksc);
+            const auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
+            const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
+            HelioCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), this, true);
+        }
+        else
+        {
+            auto *dialog = KeySignatureDialog::createEditingDialog(*this, this->project.getTransport(), ksc->getEvent());
+            App::Layout().showModalComponentUnowned(dialog);
+        }
     }
-}
-
-void KeySignaturesProjectMap::showContextMenuFor(KeySignatureComponent *nc)
-{
-    if (! this->project.getTransport().isPlaying())
-    {
-        Component *dialog =
-            KeySignatureDialog::createEditingDialog(*this, this->project.getTransport(), nc->getEvent());
-        App::Layout().showModalComponentUnowned(dialog);
-    }
-}
-
-void KeySignaturesProjectMap::alternateActionFor(KeySignatureComponent *nc)
-{
-    // Selects everything within the range of this keySignature
-    this->keySignatureComponents.sort(*nc);
-    const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*nc, nc);
-    KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
-    
-    const float startBeat = nc->getBeat();
-    const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
-    const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-    const bool shouldClearSelection = !isShiftPressed;
-    
-    this->roll.selectEventsInRange(startBeat, endBeat, shouldClearSelection);
-}
-
-float KeySignaturesProjectMap::getBeatByXPosition(int x) const
-{
-    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
-    const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
-    return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 
 void KeySignaturesProjectMap::reloadTrackMap()

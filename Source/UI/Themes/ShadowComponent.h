@@ -25,6 +25,10 @@ enum ShadowType
     Light
 };
 
+#define SHADOW_COMPONENT_CACHED_IMAGE_SIZE (32)
+// a way to fix OpenGL non-pow-of-2 texture artifacts
+#define SHADOW_COMPONENT_CACHED_IMAGE_MARGIN (4)
+
 class ShadowComponent : public Component
 {
 public:
@@ -32,18 +36,18 @@ public:
     ShadowComponent(ShadowType type)
     {
         this->setOpaque(false);
-        this->setWantsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
-        this->setMouseClickGrabsKeyboardFocus(false);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
 
         switch (type)
         {
         case Normal:
-            this->shadowColour = Colour(0x16000000);
+            this->shadowColour = Colours::black.withAlpha(0.1f);
             this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
             break;
         case Light:
-            this->shadowColour = Colour(0x09000000);
+            this->shadowColour = Colours::black.withAlpha(0.045f);
             this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.35f);
             break;
         default:
@@ -51,14 +55,18 @@ public:
             this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark);
             break;
         }
+
+        // shadow debug
+        //this->shadowColour = Colours::limegreen;
+        //this->lineColour = Colours::red;
     }
 
 protected:
 
     Colour lineColour;
     Colour shadowColour;
-    ColourGradient gradient1;
-    ColourGradient gradient2;
+
+    Image cachedImage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShadowComponent)
 };

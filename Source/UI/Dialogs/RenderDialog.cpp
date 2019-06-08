@@ -42,12 +42,11 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->addAndMakeVisible(background.get());
     this->renderButton.reset(new TextButton(String()));
     this->addAndMakeVisible(renderButton.get());
-    renderButton->setButtonText(TRANS("dialog::render::proceed"));
     renderButton->setConnectedEdges (Button::ConnectedOnTop);
     renderButton->addListener(this);
 
     this->filenameEditor.reset(new Label(String(),
-                                          TRANS("...")));
+                                          String()));
     this->addAndMakeVisible(filenameEditor.get());
     this->filenameEditor->setFont(Font (28.00f, Font::plain).withTypefaceStyle ("Regular"));
     filenameEditor->setJustificationType(Justification::topLeft);
@@ -55,7 +54,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->filenameEditor->addListener(this);
 
     this->filenameLabel.reset(new Label(String(),
-                                         TRANS("dialog::render::caption")));
+                                         String()));
     this->addAndMakeVisible(filenameLabel.get());
     this->filenameLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     filenameLabel->setJustificationType(Justification::centredLeft);
@@ -63,7 +62,6 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
 
     this->cancelButton.reset(new TextButton(String()));
     this->addAndMakeVisible(cancelButton.get());
-    cancelButton->setButtonText(TRANS("dialog::render::close"));
     cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     cancelButton->addListener(this);
 
@@ -81,7 +79,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->addAndMakeVisible(browseButton.get());
 
     this->pathEditor.reset(new Label(String(),
-                                      TRANS("...")));
+                                      String()));
     this->addAndMakeVisible(pathEditor.get());
     this->pathEditor->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     pathEditor->setJustificationType(Justification::centredLeft);
@@ -95,6 +93,10 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->addAndMakeVisible(separatorH.get());
 
     //[UserPreSize]
+    this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
+    this->cancelButton->setButtonText(TRANS(I18n::Dialog::renderClose));
+    this->filenameLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
+
     // just in case..
     this->project.getTransport().stopPlayback();
 
@@ -259,7 +261,7 @@ void RenderDialog::handleCommandMessage (int commandId)
     else if (commandId == CommandIDs::Browse)
     {
 #if HELIO_DESKTOP
-        FileChooser fc(TRANS("dialog::render::selectfile"),
+        FileChooser fc(TRANS(I18n::Dialog::renderSelectFile),
                        File(this->getFileName()), ("*." + this->extension), true);
 
         if (fc.browseForFileToSave(true))
@@ -353,7 +355,7 @@ void RenderDialog::startTrackingProgress()
     this->startTimerHz(60);
     this->indicator->startAnimating();
     this->animator.fadeIn(this->indicator.get(), 250);
-    this->renderButton->setButtonText(TRANS("dialog::render::abort"));
+    this->renderButton->setButtonText(TRANS(I18n::Dialog::renderAbort));
 }
 
 void RenderDialog::stopTrackingProgress()
@@ -366,7 +368,7 @@ void RenderDialog::stopTrackingProgress()
 
     this->animator.fadeOut(this->indicator.get(), 250);
     this->indicator->stopAnimating();
-    this->renderButton->setButtonText(TRANS("dialog::render::proceed"));
+    this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
 }
 
 //[/MiscUserCode]
@@ -389,34 +391,31 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
-               hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.0" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="renderButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 8M 48" buttonText="dialog::render::proceed"
+              explicitFocusOrder="0" pos="4Rr 4Rr 8M 48" buttonText=""
               connectedEdges="4" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="filenameEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 71 406 32" posRelativeY="e96b77baef792d3a"
-         labelText="..." editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="28.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
+         labelText="" editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="28.0"
+         kerning="0.0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="filenameLabel" virtualName=""
          explicitFocusOrder="0" pos="29Cc 16 414 22" posRelativeY="e96b77baef792d3a"
-         labelText="dialog::render::caption" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="0 -74Rr 255 48" buttonText="dialog::render::close"
+              explicitFocusOrder="0" pos="0 -74Rr 255 48" buttonText=""
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="" id="53d73eae72d7741b" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0.00000000000000000000"
-          max="1000.00000000000000000000" int="0.00000000000000000000"
-          style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
-          needsCallback="1"/>
+          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0.0" max="1000.0"
+          int="0.0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
                     explicitFocusOrder="0" pos="-212Cc -2Cc 32 32" posRelativeY="53d73eae72d7741b"
                     class="ProgressIndicator" params=""/>
@@ -425,9 +424,9 @@ BEGIN_JUCER_METADATA
                     params="this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse)"/>
   <LABEL name="" id="2310f57af9b4eefb" memberName="pathEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 48 406 24" posRelativeY="e96b77baef792d3a"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="16.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="16.0"
+         kerning="0.0" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="ab3833b58a212645" memberName="component3" virtualName=""
              explicitFocusOrder="0" pos="32 121 456 8" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>

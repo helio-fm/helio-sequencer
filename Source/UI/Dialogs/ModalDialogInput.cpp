@@ -37,7 +37,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message, co
     this->background.reset(new DialogPanel());
     this->addAndMakeVisible(background.get());
     this->messageLabel.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(messageLabel.get());
     this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType(Justification::centred);
@@ -45,13 +45,11 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message, co
 
     this->cancelButton.reset(new TextButton(String()));
     this->addAndMakeVisible(cancelButton.get());
-    cancelButton->setButtonText(TRANS("..."));
     cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     cancelButton->addListener(this);
 
     this->okButton.reset(new TextButton(String()));
     this->addAndMakeVisible(okButton.get());
-    okButton->setButtonText(TRANS("..."));
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener(this);
 
@@ -313,73 +311,73 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameAnnotation(cons
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput(name,
-            TRANS("dialog::annotation::rename::caption"),
-            TRANS("dialog::annotation::rename::proceed"),
-            TRANS("dialog::annotation::rename::cancel")));
+            TRANS(I18n::Dialog::annotationRenameCaption),
+            TRANS(I18n::Dialog::annotationRenameProceed),
+            TRANS(I18n::Dialog::annotationRenameCancel)));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameInstrument(const String &name)
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput(name,
-            TRANS("dialog::instrument::rename::caption"),
-            TRANS("dialog::instrument::rename::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::instrumentRenameCaption),
+            TRANS(I18n::Dialog::instrumentRenameProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::changeTimeSignature(const String &name)
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput(name,
-            TRANS("dialog::timesignature::edit::caption"),
-            TRANS("dialog::timesignature::edit::apply"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::timeSignatureEditCaption),
+            TRANS(I18n::Dialog::timeSignatureEditApply),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameTrack(const String &name)
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput(name,
-            TRANS("dialog::renametrack::caption"),
-            TRANS("dialog::renametrack::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::renameTrackCaption),
+            TRANS(I18n::Dialog::renameTrackProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput(
-            TRANS("defaults::newtrack::name"),
-            TRANS("dialog::addtrack::caption"),
-            TRANS("dialog::addtrack::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Defaults::midiTrackName),
+            TRANS(I18n::Dialog::addTrackCaption),
+            TRANS(I18n::Dialog::addTrackProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirmation()
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput({},
-            TRANS("dialog::deleteproject::confirm::caption"),
-            TRANS("dialog::deleteproject::confirm::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::deleteProjectConfirmCaption),
+            TRANS(I18n::Dialog::deleteProjectConfirmProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &name)
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput(name,
-            TRANS("dialog::vcs::commit::caption"),
-            TRANS("dialog::vcs::commit::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::vcsCommitCaption),
+            TRANS(I18n::Dialog::vcsCommitProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
 {
     return UniquePointer<ModalDialogInput>(
         new ModalDialogInput({},
-            TRANS("dialog::addarp::caption"),
-            TRANS("dialog::addarp::proceed"),
-            TRANS("dialog::common::cancel")));
+            TRANS(I18n::Dialog::addArpCaption),
+            TRANS(I18n::Dialog::addArpProceed),
+            TRANS(I18n::Dialog::cancel)));
 }
 
 //[/MiscUserCode]
@@ -402,23 +400,22 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
-               hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.0" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 60M 36" posRelativeY="e96b77baef792d3a"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="..." connectedEdges="6"
+              explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="" connectedEdges="6"
               needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="..."
-              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="" connectedEdges="5"
+              needsCallback="1" radioGroupId="0"/>
   <TEXTEDITOR name="" id="4d16d51ea0c579db" memberName="textEditor" virtualName=""
               explicitFocusOrder="0" pos="0Cc 58 60M 36" initialText="" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="0" caret="1" popupmenu="1"/>

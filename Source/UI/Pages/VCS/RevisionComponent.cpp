@@ -45,14 +45,14 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
       leftmostSibling(nullptr)
 {
     this->revisionDescription.reset(new Label(String(),
-                                               TRANS("...")));
+                                               String()));
     this->addAndMakeVisible(revisionDescription.get());
     this->revisionDescription->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     revisionDescription->setJustificationType(Justification::centred);
     revisionDescription->setEditable(false, false, false);
 
     this->revisionDate.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(revisionDate.get());
     this->revisionDate->setFont(Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
     revisionDate->setJustificationType(Justification::centred);
@@ -236,12 +236,12 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="45b178bfb039403" memberName="revisionDescription"
-         virtualName="" explicitFocusOrder="0" pos="0Cc 1 8M 20" labelText="..."
+         virtualName="" explicitFocusOrder="0" pos="0Cc 1 8M 20" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>
   <LABEL name="" id="30ac314958873bc0" memberName="revisionDate" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 20 32M 14" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 20 32M 14" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>

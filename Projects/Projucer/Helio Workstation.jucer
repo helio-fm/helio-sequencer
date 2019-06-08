@@ -217,6 +217,8 @@
             <FILE id="hQLSXp" name="Script.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Script.h"/>
             <FILE id="IYGH5g" name="Translation.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Translation.cpp"/>
             <FILE id="UNzZAk" name="Translation.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Translation.h"/>
+            <FILE id="mbynio" name="TranslationKeys.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Models/TranslationKeys.h"/>
           </GROUP>
           <GROUP id="{EE94B8AA-34C3-554B-1F98-C48B06FE046C}" name="ResourceManagers">
             <FILE id="vWQoHw" name="ResourceManager.cpp" compile="1" resource="0"
@@ -718,6 +720,10 @@
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.cpp"/>
           <FILE id="ny7iGn" name="TimeSignatureDialog.h" compile="0" resource="0"
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.h"/>
+          <FILE id="OPwgqQ" name="TrackPropertiesDialog.cpp" compile="1" resource="0"
+                file="../../Source/UI/Dialogs/TrackPropertiesDialog.cpp"/>
+          <FILE id="nDihFj" name="TrackPropertiesDialog.h" compile="0" resource="0"
+                file="../../Source/UI/Dialogs/TrackPropertiesDialog.h"/>
         </GROUP>
         <GROUP id="{41B9A65A-6B5E-1E5E-01CC-9FDE9CAF4523}" name="Headline">
           <FILE id="LYtBdU" name="Headline.cpp" compile="1" resource="0" file="../../Source/UI/Headline/Headline.cpp"/>

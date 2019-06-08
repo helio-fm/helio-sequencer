@@ -79,7 +79,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     this->addAndMakeVisible(comboPrimer.get());
 
     this->messageLabel.reset(new Label(String(),
-                                        TRANS("...")));
+                                        String()));
     this->addAndMakeVisible(messageLabel.get());
     this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType(Justification::centred);
@@ -87,13 +87,11 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
 
     this->removeEventButton.reset(new TextButton(String()));
     this->addAndMakeVisible(removeEventButton.get());
-    removeEventButton->setButtonText(TRANS("..."));
     removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     removeEventButton->addListener(this);
 
     this->okButton.reset(new TextButton(String()));
     this->addAndMakeVisible(okButton.get());
-    okButton->setButtonText(TRANS("..."));
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener(this);
 
@@ -130,15 +128,15 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
         sequence->checkpoint();
         sequence->insert(this->originalEvent, true);
 
-        this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
-        this->removeEventButton->setButtonText(TRANS("dialog::common::cancel"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::annotationAddCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::annotationAddProceed));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
     }
     else
     {
-        this->messageLabel->setText(TRANS("dialog::annotation::edit::caption"), dontSendNotification);
-        this->okButton->setButtonText(TRANS("dialog::annotation::edit::apply"));
-        this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
+        this->messageLabel->setText(TRANS(I18n::Dialog::annotationEditCaption), dontSendNotification);
+        this->okButton->setButtonText(TRANS(I18n::Dialog::annotationEditApply));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::annotationEditDelete));
     }
 
     this->colourSwatches->setSelectedColour(this->originalEvent.getTrackColour());
@@ -471,8 +469,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
-               hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.0" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
@@ -482,15 +479,15 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 16 48M 36" posRelativeY="e96b77baef792d3a"
-         labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+         labelText="" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
-              virtualName="" explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="..."
+              virtualName="" explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText=""
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="..."
-              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="" connectedEdges="5"
+              needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>

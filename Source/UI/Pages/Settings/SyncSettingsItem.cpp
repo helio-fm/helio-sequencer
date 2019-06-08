@@ -36,7 +36,7 @@ SyncSettingsItem::SyncSettingsItem(ListBox &parentListBox)
     this->addAndMakeVisible(separator.get());
     this->toggleButton.reset(new ToggleButton(String()));
     this->addAndMakeVisible(toggleButton.get());
-    toggleButton->setButtonText(TRANS("..."));
+    toggleButton->setButtonText(String());
     toggleButton->addListener(this);
 
 
@@ -146,7 +146,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="40 0Rr 46M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <TOGGLEBUTTON name="" id="d15a0d8489a53bdd" memberName="toggleButton" virtualName=""
-                explicitFocusOrder="0" pos="8 -1Cc 14M 24" buttonText="..." connectedEdges="0"
+                explicitFocusOrder="0" pos="8 -1Cc 14M 24" buttonText="" connectedEdges="0"
                 needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

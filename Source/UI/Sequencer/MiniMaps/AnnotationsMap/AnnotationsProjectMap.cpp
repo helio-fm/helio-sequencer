@@ -271,7 +271,7 @@ void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *nc)
 
     for (int i = 0; i < annotations->size(); ++i)
     {
-        if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
+        if (auto *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
         {
             const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
             
@@ -309,8 +309,7 @@ void AnnotationsProjectMap::showContextMenuFor(AnnotationComponent *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        Component *dialog =
-            AnnotationDialog::createEditingDialog(*this, nc->getEvent());
+        auto *dialog = AnnotationDialog::createEditingDialog(*this, nc->getEvent());
         App::Layout().showModalComponentUnowned(dialog);
     }
 }

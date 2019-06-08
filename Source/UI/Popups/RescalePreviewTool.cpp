@@ -16,6 +16,7 @@
 */
 
 #include "Common.h"
+#include "ProjectNode.h"
 #include "RescalePreviewTool.h"
 #include "PianoRoll.h"
 #include "Transport.h"
@@ -24,18 +25,19 @@
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
 #include "PianoSequence.h"
+#include "KeySignaturesSequence.h"
 #include "CommandIDs.h"
 #include "Config.h"
 
-RescalePreviewTool *RescalePreviewTool::createWithinContext(PianoRoll &roll,
+RescalePreviewTool *RescalePreviewTool::createWithinSelectionAndContext(SafePointer<PianoRoll> roll,
     WeakReference<MidiTrack> keySignatures)
 {
-    if (roll.getLassoSelection().getNumSelected() > 0)
+    if (roll->getLassoSelection().getNumSelected() > 0)
     {
         Note::Key key;
         Scale::Ptr scale = nullptr;
-        const Clip &clip = roll.getLassoSelection().getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(roll.getLassoSelection(), clip, keySignatures, scale, key))
+        const Clip &clip = roll->getLassoSelection().getFirstAs<NoteComponent>()->getClip();
+        if (!SequencerOperations::findHarmonicContext(roll->getLassoSelection(), clip, keySignatures, scale, key))
         {
             DBG("Warning: harmonic context could not be detected");
             return new RescalePreviewTool(roll, 0, Scale::getNaturalMajorScale());
@@ -47,22 +49,20 @@ RescalePreviewTool *RescalePreviewTool::createWithinContext(PianoRoll &roll,
     return nullptr;
 }
 
-RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
+RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     Note::Key keyContext, Scale::Ptr scaleContext) :
     roll(roll),
     keyContext(keyContext),
-    scaleContext(scaleContext),
-    hasMadeChanges(false),
-    lastChosenScale(nullptr)
+    scaleContext(scaleContext)
 {
     // this code pretty much duplicates menu from PianoRollSelectionMenu,
     // but adds undos and starts/stops playback of the selected fragment
 
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::close, TRANS("menu::cancel"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::close, TRANS(I18n::Menu::cancel))->withAction([this]()
     {
         this->undoIfNeeded();
-        this->dismissAsync();
+        this->dismissCalloutAsync();
     }));
 
     const auto scales = App::Config().getScales()->getAll();
@@ -77,7 +77,7 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
                 return;
             }
 
-            auto &transport = this->roll.getTransport();
+            auto &transport = this->roll->getTransport();
             const auto scales = App::Config().getScales()->getAll();
             if (!scales[i]->isEquivalentTo(this->lastChosenScale))
             {
@@ -85,8 +85,8 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
                 const bool needsCheckpoint = !this->hasMadeChanges;
                 this->undoIfNeeded();
 
-                SequencerOperations::rescale(this->roll.getLassoSelection(),
-                    this->scaleContext, scales[i], needsCheckpoint);
+                SequencerOperations::rescale(this->roll->getLassoSelection(),
+                    this->keyContext, this->scaleContext, scales[i], needsCheckpoint);
 
                 this->lastChosenScale = scales[i];
                 this->hasMadeChanges = true;
@@ -98,10 +98,10 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
             }
             else
             {
-                const auto firstBeat = this->roll.getLassoStartBeat();
-                const auto lastBeat = this->roll.getLassoEndBeat();
-                const auto fragmentStart = this->roll.getTransportPositionByBeat(firstBeat);
-                const auto fragmentEnd = this->roll.getTransportPositionByBeat(lastBeat);
+                const auto firstBeat = this->roll->getLassoStartBeat();
+                const auto lastBeat = this->roll->getLassoEndBeat();
+                const auto fragmentStart = this->roll->getTransportPositionByBeat(firstBeat);
+                const auto fragmentEnd = this->roll->getTransportPositionByBeat(lastBeat);
                 transport.startPlaybackFragment(fragmentStart - 0.001, fragmentEnd);
             }
         }));
@@ -118,7 +118,7 @@ void RescalePreviewTool::handleCommandMessage(int commandId)
     }
 }
 
-void RescalePreviewTool::dismissAsync()
+void RescalePreviewTool::dismissCalloutAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
@@ -130,6 +130,52 @@ void RescalePreviewTool::undoIfNeeded()
 {
     if (this->hasMadeChanges)
     {
-        this->roll.getActiveTrack()->getSequence()->undo();
+        this->roll->getActiveTrack()->getSequence()->undo();
+    }
+}
+
+// One-shot rescale menu
+QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
+    const KeySignatureEvent &event, float endBeat) :
+    project(project),
+    event(event),
+    endBeat(endBeat)
+{
+    MenuPanel::Menu menu;
+
+    const auto scales = App::Config().getScales()->getAll();
+    for (int i = 0; i < scales.size(); ++i)
+    {
+        menu.add(MenuItem::item(Icons::arpeggiate,
+            scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
+        {
+            const auto scales = App::Config().getScales()->getAll();
+            if (!scales[i]->isEquivalentTo(this->event.getScale()))
+            {
+                const bool hasMadeChanges = 
+                    SequencerOperations::rescale(this->project, this->event.getBeat(), this->endBeat,
+                    this->event.getRootKey(), this->event.getScale(), scales[i], true);
+
+                auto *keySequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
+                if (!hasMadeChanges)
+                {
+                    keySequence->checkpoint();
+                }
+
+                keySequence->change(this->event, this->event.withScale(scales[i]), true);
+
+                this->dismissCalloutAsync();
+            }
+        }));
+    }
+
+    this->updateContent(menu, MenuPanel::SlideDown);
+}
+
+void QuickRescaleMenu::dismissCalloutAsync()
+{
+    if (auto *parent = this->getParentComponent())
+    {
+        parent->postCommandMessage(CommandIDs::HideCallout);
     }
 }

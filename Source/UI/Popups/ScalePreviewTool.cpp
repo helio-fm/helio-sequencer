@@ -354,7 +354,7 @@ bool ScalePreviewTool::onPopupButtonDrag(PopupButton *button)
         {
             this->buildNewNote(true);
             const String rootKey = keyName(this->targetKey);
-            App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
+            App::Layout().showTooltip(TRANS(I18n::Popup::chordRootKey) + ": " + rootKey);
         }
 
         // prevents it to be clicked and hid

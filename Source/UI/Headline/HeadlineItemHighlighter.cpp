@@ -31,7 +31,7 @@ HeadlineItemHighlighter::HeadlineItemHighlighter(WeakReference<HeadlineItemDataS
     : item(targetItem)
 {
     this->titleLabel.reset(new Label(String(),
-                                      TRANS("Project")));
+                                      String()));
     this->addAndMakeVisible(titleLabel.get());
     this->titleLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType(Justification::centredLeft);
@@ -204,7 +204,7 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 3R 2R, 17R 5, 0=27ffffff, 1=bffffff" nonZeroWinding="1">s -24R 0 l 17R 0 l 3R 2R l -24R 2R x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="33 -1Cc 44M 30" labelText="Project"
+         explicitFocusOrder="0" pos="33 -1Cc 44M 30" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>

@@ -50,23 +50,23 @@ void PatternRollSelectionMenu::initDefaultMenu()
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip,
-        TRANS("menu::selection::clips::edit"))->
+        TRANS(I18n::Menu::Selection::clipsEdit))->
         disabledIf(lasso->getNumSelected() == 0)->closesMenu());
 
     menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
-        TRANS("menu::selection::clips::transpose::up")));
+        TRANS(I18n::Menu::Selection::clipsTransposeUp)));
 
     menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
-        TRANS("menu::selection::clips::transpose::down")));
+        TRANS(I18n::Menu::Selection::clipsTransposeDown)));
 
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
-        TRANS("menu::track::rename"))->disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
+        TRANS(I18n::Menu::trackRename))->disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
 
     const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso) ?
-        TRANS("menu::unmute") : TRANS("menu::mute");
+        TRANS(I18n::Menu::unmute) : TRANS(I18n::Menu::mute);
 
     const auto soloAction = PatternOperations::lassoContainsSoloedClip(*this->lasso) ?
-        TRANS("menu::unsolo") : TRANS("menu::solo");
+        TRANS(I18n::Menu::unsolo) : TRANS(I18n::Menu::solo);
 
     // TODO icons
     menu.add(MenuItem::item(Icons::mute, CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
@@ -74,13 +74,13 @@ void PatternRollSelectionMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleSoloClips, soloAction)->closesMenu());
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips,
-        TRANS("menu::selection::clips::copy"))->closesMenu());
+        TRANS(I18n::Menu::Selection::clipsCopy))->closesMenu());
 
     menu.add(MenuItem::item(Icons::cut, CommandIDs::CutClips,
-        TRANS("menu::selection::clips::cut"))->closesMenu());
+        TRANS(I18n::Menu::Selection::clipsCut))->closesMenu());
 
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
-        TRANS("menu::selection::clips::delete"))->closesMenu());
+        TRANS(I18n::Menu::Selection::clipsDelete))->closesMenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }

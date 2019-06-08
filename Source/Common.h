@@ -153,6 +153,7 @@ inline constexpr uint32 CompileTimeHash(const char *const str, const uint32 valu
 //===----------------------------------------------------------------------===//
 
 #include "App.h"
+#include "TranslationKeys.h"
 
 #if defined TRANS
 #   undef TRANS

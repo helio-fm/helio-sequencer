@@ -29,7 +29,7 @@ VersionControl::VersionControl(VCS::TrackedItemsSource &parent) :
     parent(parent),
     head(parent),
     stashes(new VCS::StashesRepository()),
-    rootRevision(new VCS::Revision(TRANS("defaults::newproject::firstcommit")))
+    rootRevision(new VCS::Revision(TRANS(I18n::Defaults::newProjectFirstCommit)))
 {
     MessageManagerLock lock;
     this->addChangeListener(&this->head);

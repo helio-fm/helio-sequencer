@@ -21,7 +21,7 @@
 
 class MainLayout;
 
-class HelioCallout : public Component
+class HelioCallout final : public Component
 {
 public:
 
@@ -41,7 +41,6 @@ public:
                      bool alignsToMousePosition = false);
     
     static int numClicksSinceLastStartedPopup();
-    
     static int numClicksSinceLastClosedPopup();
     
     
@@ -50,23 +49,14 @@ public:
     //===------------------------------------------------------------------===//
     
     void paint(Graphics &) override;
-
     void resized() override;
-
     void moved() override;
-
     void parentSizeChanged() override;
-    
     void childBoundsChanged(Component *) override;
-
     bool hitTest(int x, int y) override;
-
     void inputAttemptWhenModal() override;
-
     bool keyPressed(const KeyPress &) override;
-
     void handleCommandMessage(int) override;
-
     int getBorderSize() const noexcept;
     
 private:

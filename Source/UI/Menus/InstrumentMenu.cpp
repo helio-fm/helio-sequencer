@@ -38,14 +38,14 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 
     if (!instrumentNode.isSelected())
     {
-        menu.add(MenuItem::item(Icons::routing, TRANS("menu::instrument::showeditor"))->withAction([this]()
+        menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::instrumentShowEditor))->withAction([this]()
         {
             instrumentNode.setSelected();
             this->dismiss();
         }));
     }
 
-    menu.add(MenuItem::item(Icons::ellipsis, TRANS("menu::instrument::rename"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::ellipsis, TRANS(I18n::Menu::instrumentRename))->withAction([this]()
     {
         auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
         dialog->onOk = this->instrumentNode.getRenameCallback();
@@ -53,22 +53,22 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     }));
 
     // TODO:
-    //menu.add(MenuItem::item(Icons::icon, TRANS("menu::instrument::seticon")));
-    //menu.add(MenuItem::item(Icons::colour, TRANS("menu::instrument::setcolour")));
+    //menu.add(MenuItem::item(Icons::icon, TRANS(I18n::Menu::instrument::seticon)));
+    //menu.add(MenuItem::item(Icons::colour, TRANS(I18n::Menu::instrument::setcolour)));
 
-    menu.add(MenuItem::item(Icons::instrument, TRANS("menu::instrument::addinstrument"))->
+    menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::instrumentAdd))->
         withSubmenu()->disabledIf(!this->pluginScanner.hasInstruments())->withAction([this]()
     {
         this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::instrument::addeffect"))->
+    menu.add(MenuItem::item(Icons::audioPlugin, TRANS(I18n::Menu::instrumentAddEffect))->
         withSubmenu()->disabledIf(!this->pluginScanner.hasEffects())->withAction([this]()
     {
         this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::remove, TRANS("menu::instrument::delete"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::remove, TRANS(I18n::Menu::instrumentDelete))->withAction([this]()
     {
         TreeNode::deleteItem(&this->instrumentNode, true);
         this->dismiss();
@@ -81,7 +81,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -109,7 +109,7 @@ MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));

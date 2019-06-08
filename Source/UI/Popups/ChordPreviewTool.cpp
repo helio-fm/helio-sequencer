@@ -220,7 +220,7 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
         {
             this->buildNewNote(true);
             const auto rootKey = MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3);
-            App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
+            App::Layout().showTooltip(TRANS(I18n::Popup::chordRootKey) + ": " + rootKey);
         }
 
         // reset click state:
