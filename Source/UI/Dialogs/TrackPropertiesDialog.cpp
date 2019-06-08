@@ -245,29 +245,26 @@ void TrackPropertiesDialog::cancelChangesIfAny()
 
 void TrackPropertiesDialog::applyChangesIfAny()
 {
-    if (this->hasChanges())
+    const auto &trackId = this->track->getTrackId();
+
+    if (this->hasMadeChanges)
     {
-        const auto &trackId = this->track->getTrackId();
-
-        if (this->hasMadeChanges)
-        {
-            this->project.getUndoStack()->undoCurrentTransactionOnly();
-        }
-
-        this->project.getUndoStack()->beginNewTransaction();
-
-        if (this->newName != this->originalName)
-        {
-            this->project.getUndoStack()->perform(new MidiTrackRenameAction(this->project, trackId, this->newName));
-        }
-
-        if (this->newColour != this->originalColour)
-        {
-            this->project.getUndoStack()->perform(new MidiTrackChangeColourAction(this->project, trackId, this->newColour));
-        }
-
-        this->hasMadeChanges = true;
+        this->project.getUndoStack()->undoCurrentTransactionOnly();
     }
+
+    this->project.getUndoStack()->beginNewTransaction();
+
+    if (this->newName != this->originalName)
+    {
+        this->project.getUndoStack()->perform(new MidiTrackRenameAction(this->project, trackId, this->newName));
+    }
+
+    if (this->newColour != this->originalColour)
+    {
+        this->project.getUndoStack()->perform(new MidiTrackChangeColourAction(this->project, trackId, this->newColour));
+    }
+
+    this->hasMadeChanges = true;
 }
 
 void TrackPropertiesDialog::textEditorTextChanged(TextEditor&)
