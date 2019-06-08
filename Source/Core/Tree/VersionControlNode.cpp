@@ -111,7 +111,7 @@ String VersionControlNode::getStatsString() const
         countStatsFor(root, numRevisions, numDeltas);
 
         return String(TRANS_PLURAL("{x} revisions", numRevisions) + " " +
-            TRANS(I18n::Common::and) + " " + TRANS_PLURAL("{x} deltas", numDeltas));
+            TRANS(I18n::Common::conjunction) + " " + TRANS_PLURAL("{x} deltas", numDeltas));
     }
 
     return{};

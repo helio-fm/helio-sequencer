@@ -18,167 +18,6 @@
 #include "Common.h"
 #include "ComponentFader.h"
 
-class ComponentFader::AnimationTask
-{
-public:
-    explicit AnimationTask (Component* c) noexcept  : component (c) {}
-    
-    void reset (float finalAlpha,
-                int millisecondsToSpendMoving,
-                bool useProxyComponent,
-                bool useProxyOnly)
-    {
-        this->msElapsed = 0;
-        this->msTotal = jmax (1, millisecondsToSpendMoving);
-        this->lastProgress = 0;
-        this->destAlpha = finalAlpha;
-        this->allowedToModifyOrigin = !useProxyOnly;
-        
-        this->isChangingAlpha = (finalAlpha != component->getAlpha());
-        
-        this->left    = this->component->getX();
-        this->top     = this->component->getY();
-        this->right   = this->component->getRight();
-        this->bottom  = this->component->getBottom();
-        this->alpha   = this->component->getAlpha();
-        
-        const double invTotalDistance = 4.0 / 2.0;
-        this->startSpeed = 0.0;
-        this->midSpeed = invTotalDistance;
-        this->endSpeed = 0.0;
-        
-        if (useProxyComponent)
-        {
-            this->proxy.reset(new ProxyComponent(*this->component));
-        }
-        else
-        {
-            this->proxy = nullptr;
-        }
-        
-        if (this->allowedToModifyOrigin)
-        {
-            this->component->setVisible (! useProxyComponent);
-        }
-        else
-        {
-            if (this->proxy != nullptr)
-            {
-                this->proxy->setAlwaysOnTop(true);
-            }
-        }
-    }
-    
-    bool useTimeslice (const int elapsed)
-    {
-        if (auto *c = this->proxy != nullptr ?
-            static_cast<Component *>(this->proxy.get()) : static_cast<Component *>(component))
-        {
-            msElapsed += elapsed;
-            double newProgress = msElapsed / static_cast<double>( msTotal);
-            
-            if (newProgress >= 0 && newProgress < 1.0)
-            {
-                newProgress = ComponentFader::timeToDistance (newProgress, startSpeed, midSpeed, endSpeed);
-                const double delta = (newProgress - lastProgress) / (1.0 - lastProgress);
-                jassert (newProgress >= lastProgress);
-                lastProgress = newProgress;
-                
-                if (delta < 1.0)
-                {
-                    bool stillBusy = false;
-                    
-                    if (isChangingAlpha)
-                    {
-                        alpha += (destAlpha - alpha) * delta;
-                        c->setAlpha (static_cast<float>( alpha));
-                        stillBusy = true;
-                    }
-                    
-                    if (stillBusy) {
-                        return true;
-                    }
-                }
-            }
-        }
-        
-        moveToFinalDestination();
-        return false;
-    }
-    
-    void moveToFinalDestination()
-    {
-        if (component != nullptr &&
-            this->allowedToModifyOrigin)
-        {
-            component->setAlpha (static_cast<float>( destAlpha));
-            
-            if (proxy != nullptr) {
-                component->setVisible (destAlpha > 0);
-            }
-        }
-    }
-    
-    class ProxyComponent final : public Component
-    {
-    public:
-        explicit ProxyComponent (Component& c)
-        {
-            setWantsKeyboardFocus (false);
-            setBounds (c.getBounds());
-            setTransform (c.getTransform());
-            setAlpha (c.getAlpha());
-            setInterceptsMouseClicks (false, false);
-            
-            if (Component* const parent = c.getParentComponent()) {
-                parent->addAndMakeVisible (this);
-            } else if (c.isOnDesktop() && c.getPeer() != nullptr) {
-                addToDesktop (c.getPeer()->getStyleFlags() | ComponentPeer::windowIgnoresKeyPresses);
-            } else {
-                jassertfalse; // seem to be trying to animate a component that's not visible..
-            }
-            
-            const float scale = static_cast<float>(Desktop::getInstance().getDisplays()
-                .findDisplayForPoint(getScreenBounds().getCentre()).scale);
-            
-            image = c.createComponentSnapshot (c.getLocalBounds(), true, scale);
-            
-            setVisible (true);
-            toBehind (&c);
-        }
-        
-        void paint (Graphics& g) override
-        {
-            g.setOpacity (1.0f);
-            g.drawImageTransformed(image, AffineTransform::scale(getWidth()  / (float)image.getWidth(),
-                                                                 getHeight() / (float)image.getHeight()), false);
-        }
-        
-    private:
-        
-        Image image;
-        
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProxyComponent)
-    };
-    
-    WeakReference<Component> component;
-    UniquePointer<Component> proxy;
-    
-    double destAlpha;
-    
-    int msElapsed, msTotal;
-    double startSpeed, midSpeed, endSpeed, lastProgress;
-    double left, top, right, bottom, alpha;
-    bool isChangingAlpha;
-    bool allowedToModifyOrigin;
-    
-};
-
-
-ComponentFader::ComponentFader() : lastTime (0) {}
-
-ComponentFader::~ComponentFader() {}
-
 ComponentFader::AnimationTask *ComponentFader::findTaskFor(Component *const component) const noexcept
 {
     for (int i = tasks.size(); --i >= 0;) {
@@ -211,7 +50,7 @@ void ComponentFader::animateComponent(Component *component,
         
         if (! isTimerRunning())
         {
-            lastTime = Time::getMillisecondCounter();
+            this->lastTime = Time::getMillisecondCounter();
             startTimer (1000 / 50);
         }
     }
@@ -311,11 +150,12 @@ void ComponentFader::timerCallback()
 {
     const uint32 timeNow = Time::getMillisecondCounter();
     
-    if (lastTime == 0 || lastTime == timeNow) {
-        lastTime = timeNow;
+    if (this->lastTime == 0 || this->lastTime == timeNow)
+    {
+        this->lastTime = timeNow;
     }
     
-    const int elapsed = static_cast<int> (timeNow - lastTime);
+    const int elapsed = static_cast<int> (timeNow - this->lastTime);
     
     for (int i = tasks.size(); --i >= 0;)
     {
@@ -326,9 +166,137 @@ void ComponentFader::timerCallback()
         }
     }
     
-    lastTime = timeNow;
+    this->lastTime = timeNow;
     
-    if (tasks.size() == 0) {
+    if (tasks.size() == 0)
+    {
         stopTimer();
     }
+}
+
+void ComponentFader::AnimationTask::reset(float finalAlpha, int millisecondsToSpendMoving, bool useProxyComponent, bool useProxyOnly)
+{
+    this->msElapsed = 0;
+    this->msTotal = jmax(1, millisecondsToSpendMoving);
+    this->lastProgress = 0;
+    this->destAlpha = finalAlpha;
+    this->allowedToModifyOrigin = !useProxyOnly;
+
+    this->isChangingAlpha = (finalAlpha != component->getAlpha());
+
+    this->left = this->component->getX();
+    this->top = this->component->getY();
+    this->right = this->component->getRight();
+    this->bottom = this->component->getBottom();
+    this->alpha = this->component->getAlpha();
+
+    const double invTotalDistance = 4.0 / 2.0;
+    this->startSpeed = 0.0;
+    this->midSpeed = invTotalDistance;
+    this->endSpeed = 0.0;
+
+    if (useProxyComponent)
+    {
+        this->proxy.reset(new ProxyComponent(*this->component));
+    }
+    else
+    {
+        this->proxy = nullptr;
+    }
+
+    if (this->allowedToModifyOrigin)
+    {
+        this->component->setVisible(!useProxyComponent);
+    }
+    else
+    {
+        if (this->proxy != nullptr)
+        {
+            this->proxy->setAlwaysOnTop(true);
+        }
+    }
+}
+
+bool ComponentFader::AnimationTask::useTimeslice(const int elapsed)
+{
+    if (auto *c = this->proxy != nullptr ?
+        static_cast<Component *>(this->proxy.get()) : static_cast<Component *>(component))
+    {
+        msElapsed += elapsed;
+        double newProgress = msElapsed / static_cast<double>(msTotal);
+
+        if (newProgress >= 0 && newProgress < 1.0)
+        {
+            newProgress = ComponentFader::timeToDistance(newProgress, startSpeed, midSpeed, endSpeed);
+            const double delta = (newProgress - lastProgress) / (1.0 - lastProgress);
+            jassert(newProgress >= lastProgress);
+            lastProgress = newProgress;
+
+            if (delta < 1.0)
+            {
+                bool stillBusy = false;
+
+                if (isChangingAlpha)
+                {
+                    alpha += (destAlpha - alpha) * delta;
+                    c->setAlpha(static_cast<float>(alpha));
+                    stillBusy = true;
+                }
+
+                if (stillBusy) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    moveToFinalDestination();
+    return false;
+}
+
+void ComponentFader::AnimationTask::moveToFinalDestination()
+{
+    if (component != nullptr &&
+        this->allowedToModifyOrigin)
+    {
+        component->setAlpha(static_cast<float>(destAlpha));
+
+        if (proxy != nullptr) {
+            component->setVisible(destAlpha > 0);
+        }
+    }
+}
+
+ComponentFader::AnimationTask::ProxyComponent::ProxyComponent(Component& c)
+{
+    setWantsKeyboardFocus(false);
+    setBounds(c.getBounds());
+    setTransform(c.getTransform());
+    setAlpha(c.getAlpha());
+    setInterceptsMouseClicks(false, false);
+
+    if (Component* const parent = c.getParentComponent()) {
+        parent->addAndMakeVisible(this);
+    }
+    else if (c.isOnDesktop() && c.getPeer() != nullptr) {
+        addToDesktop(c.getPeer()->getStyleFlags() | ComponentPeer::windowIgnoresKeyPresses);
+    }
+    else {
+        jassertfalse; // seem to be trying to animate a component that's not visible..
+    }
+
+    const float scale = static_cast<float>(Desktop::getInstance().getDisplays()
+        .findDisplayForPoint(getScreenBounds().getCentre()).scale);
+
+    image = c.createComponentSnapshot(c.getLocalBounds(), true, scale);
+
+    setVisible(true);
+    toBehind(&c);
+}
+
+void ComponentFader::AnimationTask::ProxyComponent::paint(Graphics &g)
+{
+    g.setOpacity(1.0f);
+    g.drawImageTransformed(image, AffineTransform::scale(getWidth() / (float)image.getWidth(),
+        getHeight() / (float)image.getHeight()), false);
 }

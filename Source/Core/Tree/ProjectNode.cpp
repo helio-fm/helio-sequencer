@@ -147,7 +147,8 @@ String ProjectNode::getStats() const
         numEvents += layerItems[i]->getSequence()->size();
     }
 
-    return String(TRANS_PLURAL("{x} layers", numLayers) + " " + TRANS(I18n::Common::and) + " " + TRANS_PLURAL("{x} events", numEvents));
+    return String(TRANS_PLURAL("{x} layers", numLayers) + " " + 
+        TRANS(I18n::Common::conjunction) + " " + TRANS_PLURAL("{x} events", numEvents));
 }
 
 Transport &ProjectNode::getTransport() const noexcept

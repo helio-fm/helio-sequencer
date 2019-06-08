@@ -42,7 +42,7 @@ namespace I18n
 
     namespace Common
     {
-        static const Identifier and = "common::and";
+        static const Identifier conjunction = "common::and";
         static const Identifier yesterday = "common::yesterday";
         static const Identifier instrumentsInitialScan = "instruments::initialscan";
         static const Identifier networkError = "network error";

@@ -17,13 +17,11 @@
 
 #pragma once
 
-class ComponentFader : public ChangeBroadcaster, private Timer
+class ComponentFader final : public ChangeBroadcaster, private Timer
 {
 public:
 
-    ComponentFader();
-    
-    ~ComponentFader() override;
+    ComponentFader() = default;
     
     void animateComponent(Component *component,
                           float finalAlpha,
@@ -65,9 +63,41 @@ public:
 
 private:
 
-    class AnimationTask;
+    class AnimationTask final
+    {
+    public:
+
+        explicit AnimationTask(Component *c) noexcept : component(c) {}
+
+        void reset(float finalAlpha,
+            int millisecondsToSpendMoving,
+            bool useProxyComponent,
+            bool useProxyOnly);
+        bool useTimeslice(const int elapsed);
+        void moveToFinalDestination();
+
+        class ProxyComponent final : public Component
+        {
+        public:
+            explicit ProxyComponent(Component& c);
+            void paint(Graphics& g) override;
+            Image image;
+            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProxyComponent)
+        };
+
+        WeakReference<Component> component;
+        UniquePointer<Component> proxy;
+
+        double destAlpha;
+        int msElapsed, msTotal;
+        double startSpeed, midSpeed, endSpeed, lastProgress;
+        double left, top, right, bottom, alpha;
+        bool isChangingAlpha;
+        bool allowedToModifyOrigin;
+    };
+
     OwnedArray<AnimationTask> tasks;
-    uint32 lastTime;
+    uint32 lastTime = 0;
     
     AnimationTask *findTaskFor(Component *) const noexcept;
     void timerCallback() override;

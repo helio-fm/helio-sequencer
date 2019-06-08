@@ -598,7 +598,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
             const String safeName = TreeNode::createSafeName(this->project.getName()) + ".mid";
             File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
             this->project.exportMidi(midiExport);
-            App::Layout().showTooltip(TRANS(I18n::Menu::Project::render::savedto") + " '" + safeName + "');
+            App::Layout().showTooltip(TRANS(I18n::Menu::Project::renderSavedTo) + " '" + safeName + "'");
             App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
 #else
