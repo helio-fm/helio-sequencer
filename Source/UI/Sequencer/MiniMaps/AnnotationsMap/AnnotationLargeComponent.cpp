@@ -165,17 +165,22 @@ void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
 
             if (beatHasChanged)
             {
+                const bool firstChangeIsToCome = !this->draggingHadCheckpoint;
+                auto *sequence = static_cast<AnnotationsSequence *>(this->event.getSequence());
+
                 if (! this->draggingHadCheckpoint)
                 {
-                    this->event.getSequence()->checkpoint();
+                    sequence->checkpoint();
                     this->draggingHadCheckpoint = true;
                 }
 
-                Array<AnnotationEvent> groupDragBefore, groupDragAfter;
-                groupDragBefore.add(this->event);
-                groupDragAfter.add(this->event.withBeat(newBeat));
-                AnnotationsSequence *sequence = static_cast<AnnotationsSequence *>(this->event.getSequence());
-                sequence->changeGroup(groupDragBefore, groupDragAfter, true);
+                // Drag-and-copy logic:
+                if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
+                {
+                    sequence->insert(this->event.copyWithNewId(), true);
+                }
+
+                sequence->change(this->event, this->event.withBeat(newBeat), true);
             }
             else
             {

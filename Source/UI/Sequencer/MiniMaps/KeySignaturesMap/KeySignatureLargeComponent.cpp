@@ -135,17 +135,22 @@ void KeySignatureLargeComponent::mouseDrag (const MouseEvent& e)
 
             if (beatHasChanged)
             {
+                const bool firstChangeIsToCome = !this->draggingHadCheckpoint;
+                auto *sequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
+
                 if (! this->draggingHadCheckpoint)
                 {
-                    this->event.getSequence()->checkpoint();
+                    sequence->checkpoint();
                     this->draggingHadCheckpoint = true;
                 }
 
-                Array<KeySignatureEvent> groupDragBefore, groupDragAfter;
-                groupDragBefore.add(this->event);
-                groupDragAfter.add(this->event.withBeat(newBeat));
-                KeySignaturesSequence *sequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
-                sequence->changeGroup(groupDragBefore, groupDragAfter, true);
+                // Drag-and-copy logic:
+                if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
+                {
+                    sequence->insert(this->event.copyWithNewId(), true);
+                }
+
+                sequence->change(this->event, this->event.withBeat(newBeat), true);
             }
             else
             {
