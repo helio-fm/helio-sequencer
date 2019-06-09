@@ -1784,15 +1784,15 @@ int SequencerOperations::findAbsoluteRootKey(const Scale::Ptr scale,
 }
 
 static inline void doRescaleLogic(PianoChangeGroup &groupBefore, PianoChangeGroup &groupAfter,
-    const Note &note, Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB)
+    const Note &note, Note::Key keyOffset, Scale::Ptr scaleA, Scale::Ptr scaleB)
 {
-    const auto noteKey = note.getKey() - rootKey; // todo clip key offset?
+    const auto noteKey = note.getKey() - keyOffset;
     const auto periodNumber = noteKey / scaleA->getBasePeriod();
     const auto inScaleKey = scaleA->getScaleKey(noteKey);
     if (inScaleKey >= 0)
     {
         const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber
-            + scaleB->getChromaticKey(inScaleKey) + rootKey;
+            + scaleB->getChromaticKey(inScaleKey) + keyOffset;
 
         groupBefore.add(note);
         groupAfter.add(note.withKey(newChromaticKey));
@@ -1814,6 +1814,7 @@ void SequencerOperations::rescale(Lasso &selection, Note::Key rootKey,
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto *nc = selection.getItemAs<NoteComponent>(i);
+        // todo clip key offset?
         doRescaleLogic(groupBefore, groupAfter, nc->getNote(), rootKey, scaleA, scaleB);
     }
 
@@ -1853,12 +1854,13 @@ bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, f
             const auto *note = static_cast<Note *>(sequence->getUnchecked(i));
             for (const auto *clip : track->getPattern()->getClips())
             {
-                if (usedClips.contains(clip->getId()) || usedClips.size() == 0) // || (clip->getKey() % 12) == 0
+                if (usedClips.contains(clip->getId()) || usedClips.size() == 0)
                 {
                     if ((note->getBeat() + clip->getBeat()) >= startBeat &&
                         (note->getBeat() + clip->getBeat()) < endBeat)
                     {
-                        doRescaleLogic(groupBefore, groupAfter, *note, rootKey, scaleA, scaleB);
+                        const auto keyOffset = rootKey - clip->getKey();
+                        doRescaleLogic(groupBefore, groupAfter, *note, keyOffset, scaleA, scaleB);
                         usedClips.insert(clip->getId());
                     }
                 }

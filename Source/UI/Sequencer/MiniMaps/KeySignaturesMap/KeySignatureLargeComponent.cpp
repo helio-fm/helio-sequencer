@@ -116,7 +116,7 @@ void KeySignatureLargeComponent::mouseDown (const MouseEvent& e)
     }
     else
     {
-        this->editor.onKeySignatureSelected(this);
+        this->editor.onKeySignatureAltAction(this);
     }
     //[/UserCode_mouseDown]
 }

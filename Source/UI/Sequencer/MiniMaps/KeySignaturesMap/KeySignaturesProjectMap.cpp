@@ -297,6 +297,16 @@ float KeySignaturesProjectMap::getBeatByXPosition(int x) const
 
 void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, bool altMode)
 {
+    if (altMode)
+    {
+        this->keySignatureComponents.sort(*ksc);
+        const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*ksc, ksc);
+        const auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
+        const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
+        HelioCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), this, true);
+        return;
+    }
+
     const KeySignatureEvent *keySignatureUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
     const auto keySignatures = timeline->getKeySignatures()->getSequence();
@@ -324,26 +334,10 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
 
     this->project.getTransport().seekToPosition(newSeekPosition);
 
-    //if (wasPlaying)
-    //{
-    //    this->project.getTransport().startPlayback();
-    //}
-
     if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)
     {
-        if (altMode)
-        {
-            this->keySignatureComponents.sort(*ksc);
-            const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*ksc, ksc);
-            const auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-            const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
-            HelioCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), this, true);
-        }
-        else
-        {
-            auto *dialog = KeySignatureDialog::createEditingDialog(*this, this->project.getTransport(), ksc->getEvent());
-            App::Layout().showModalComponentUnowned(dialog);
-        }
+        auto *dialog = KeySignatureDialog::createEditingDialog(*this, this->project.getTransport(), ksc->getEvent());
+        App::Layout().showModalComponentUnowned(dialog);
     }
 }
 
