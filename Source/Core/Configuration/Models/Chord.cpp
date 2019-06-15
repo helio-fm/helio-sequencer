@@ -34,7 +34,7 @@ Chord::Chord(const String &name) noexcept :
 Chord::Ptr Chord::getTriad()
 {
     Chord::Ptr s(new Chord());
-    s->scaleKeys = { Key::I, Key::III, Key::V };
+    s->scaleKeys = { Key::InScale::I, Key::InScale::III, Key::InScale::V };
     s->name = "3"; // FIXME proper translated names?
     return s;
 }
@@ -42,7 +42,7 @@ Chord::Ptr Chord::getTriad()
 Chord::Ptr Chord::getPowerChord()
 {
     Chord::Ptr s(new Chord());
-    s->scaleKeys = { Key::I, Key::V };
+    s->scaleKeys = { Key::InScale::I, Key::InScale::V };
     s->name = "5"; // FIXME proper translated names?
     return s;
 }
@@ -50,7 +50,7 @@ Chord::Ptr Chord::getPowerChord()
 Chord::Ptr Chord::getSeventhChord()
 {
     Chord::Ptr s(new Chord());
-    s->scaleKeys = { Key::I, Key::III, Key::V, Key::VII };
+    s->scaleKeys = { Key::InScale::I, Key::InScale::III, Key::InScale::V, Key::InScale::VII };
     s->name = "7"; // FIXME proper translated names?
     return s;
 }
@@ -95,12 +95,12 @@ ValueTree Chord::serialize() const
     tree.setProperty(Serialization::Midi::chordName, this->name, nullptr);
 
     String keysString;
-    for (auto key : this->scaleKeys)
+    for (auto &key : this->scaleKeys)
     {
-        keysString += String(key + 1) + " ";
+        keysString += key.getStringValue() + " ";
     }
 
-    tree.setProperty(Serialization::Midi::chordScaleKeys, keysString, nullptr);
+    tree.setProperty(Serialization::Midi::chordScaleKeys, keysString.trim(), nullptr);
     return tree;
 }
 
@@ -118,9 +118,13 @@ void Chord::deserialize(const ValueTree &tree)
 
     StringArray tokens;
     tokens.addTokens(keysString, true);
-    for (auto key : tokens)
+    for (auto &key : tokens)
     {
-        this->scaleKeys.add(Key(jlimit(0, 13, key.getIntValue() - 1)));
+        const bool isAugmented = key.containsChar('#');
+        const bool isDiminished = key.containsChar('b');
+        const auto cleanedUpKey = key.removeCharacters("#b");
+        const auto keyIntValue = Key::InScale(jlimit(0, 13, cleanedUpKey.getIntValue() - 1));
+        this->scaleKeys.add(Key(keyIntValue, isAugmented, isDiminished));
     }
 }
 

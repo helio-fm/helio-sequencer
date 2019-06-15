@@ -31,22 +31,55 @@ public:
     Identifier getResourceType() const noexcept override;
     using Ptr = ReferenceCountedObjectPtr<Chord>;
 
-    enum Key // meaning: in-scale key
+    struct Key final
     {
-        I = 0,
-        II = 1,
-        III = 2,
-        IV = 3,
-        V = 4,
-        VI = 5,
-        VII = 6,
-        VIII = 7,
-        IX = 8,
-        X = 9,
-        XI = 10,
-        XII = 11,
-        XIII = 12,
-        XIV = 13
+        enum class InScale : int
+        {
+            I = 0,
+            II = 1,
+            III = 2,
+            IV = 3,
+            V = 4,
+            VI = 5,
+            VII = 6,
+            VIII = 7,
+            IX = 8,
+            X = 9,
+            XI = 10,
+            XII = 11,
+            XIII = 12,
+            XIV = 13
+        };
+
+        Key() = default;
+        Key(InScale key) : key(key) {}; // no explicit for convenience
+        Key(InScale key, bool aug, bool dim) :
+            key(key), isAugmented(aug), isDiminished(dim) {};
+
+        int getInScaleKey() const noexcept
+        {
+            return int(this->key);
+        }
+
+        int getChromaticOffset() const noexcept
+        {
+            return this->isAugmented ? 1 : (this->isDiminished ? -1 : 0);
+        }
+
+        String getStringValue() const noexcept
+        {
+            return String(this->getInScaleKey() + 1) +
+                (this->isAugmented ? "#" : (this->isDiminished ? "b" : ""));
+        }
+
+    private:
+
+        InScale key = InScale::I;
+
+        bool isAugmented = false;
+        bool isDiminished = false;
+
+        JUCE_LEAK_DETECTOR(Key)
     };
 
     const bool isValid() const noexcept;
@@ -76,7 +109,6 @@ private:
     String name;
 
     // Chord keys indices for target scale
-    // (does not support non-scale keys at the moment, so no aug/dim chords)
     Array<Key> scaleKeys;
 
     // todo in future:
