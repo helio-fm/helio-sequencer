@@ -1792,7 +1792,7 @@ static inline void doRescaleLogic(PianoChangeGroup &groupBefore, PianoChangeGrou
     if (inScaleKey >= 0)
     {
         const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber
-            + scaleB->getChromaticKey(inScaleKey) + keyOffset;
+            + scaleB->getChromaticKey(inScaleKey, 0, false) + keyOffset;
 
         groupBefore.add(note);
         groupAfter.add(note.withKey(newChromaticKey));

@@ -48,7 +48,9 @@ Scale::Ptr Scale::withKeys(const Array<int> &keys) const noexcept
 //===----------------------------------------------------------------------===//
 
 inline static Array<int> getChromaticKeys()
-{ return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; }
+{
+    return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+}
 
 Scale::Ptr Scale::getChromaticScale()
 {
@@ -107,9 +109,10 @@ String Scale::getLocalizedName() const
 Array<int> Scale::getChord(Chord::Ptr chord, Function fun, bool oneOctave) const
 {
     Array<int> result;
-    for (const Chord::Key key : chord->getScaleKeys())
+    for (const auto &chordKey : chord->getScaleKeys())
     {
-        result.add(this->getChromaticKey(key + fun, oneOctave));
+        result.add(this->getChromaticKey(chordKey.getInScaleKey() + fun,
+            chordKey.getChromaticOffset(), oneOctave));
     }
     return result;
 }
@@ -132,7 +135,7 @@ Array<int> Scale::getDownScale() const
 
 bool Scale::seemsMinor() const noexcept
 {
-    return this->getChromaticKey(Chord::Key::III) == 3;
+    return this->getChromaticKey(int(Chord::Key::InScale::III), 0, false) == 3;
 }
 
 // Wraps a chromatic key (may be negative)
@@ -159,12 +162,14 @@ int Scale::getScaleKey(int chormaticKey) const
     return this->keys.indexOf(wrappedKey);
 }
 
-int Scale::getChromaticKey(int key, bool shouldRestrictToOneOctave /*= false*/) const noexcept
+int Scale::getChromaticKey(int inScaleKey, int extraChromaticOffset,
+    bool shouldRestrictToOneOctave) const noexcept
 {
-    jassert(key >= 0);
-    const int idx = this->keys[key % this->getSize()];
-    return shouldRestrictToOneOctave ? idx :
-        idx + (this->getBasePeriod() * (key / this->getSize()));
+    jassert(inScaleKey >= 0);
+    const int idx = this->keys[inScaleKey % this->getSize()];
+    const auto scaleToChromatic = shouldRestrictToOneOctave ? idx :
+        idx + (this->getBasePeriod() * (inScaleKey / this->getSize()));
+    return scaleToChromatic + extraChromaticOffset;
 }
 
 int Scale::getBasePeriod() const noexcept
