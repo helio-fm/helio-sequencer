@@ -11931,20 +11931,22 @@ static const unsigned char temp_binary_data_97[] =
 "{\n"
 "  /*\n"
 "    A number of chords that are easy to define with in-scale keys.\n"
+"    Sharp or flat near the number simply works as a halftone up/down.\n"
 "  */\n"
 "  \"chords\": {\n"
 "    \"chord\": [\n"
 "      { \"name\": \"3\", \"keys\": \"1 3 5\" },\n"
 "      { \"name\": \"sus2\", \"keys\": \"1 2 5\" },\n"
 "      { \"name\": \"sus4\", \"keys\": \"1 4 5\" },\n"
+"      { \"name\": \"aug\", \"keys\": \"1 3 5#\" },\n"
+"      { \"name\": \"dim\", \"keys\": \"1 3 5b\" },\n"
 "      { \"name\": \"6\", \"keys\": \"1 3 5 6\" },\n"
 "      { \"name\": \"7\", \"keys\": \"1 3 5 7\" },\n"
 "      { \"name\": \"7sus2\", \"keys\": \"1 2 5 7\" },\n"
 "      { \"name\": \"7sus4\", \"keys\": \"1 4 5 7\" },\n"
 "      { \"name\": \"9\", \"keys\": \"1 3 5 7 9\" },\n"
 "      { \"name\": \"add9\", \"keys\": \"1 3 5 9\" },\n"
-"      { \"name\": \"add11\", \"keys\": \"1 3 5 11\" },\n"
-"      { \"name\": \"add13\", \"keys\": \"1 3 5 13\" },\n"
+"      { \"name\": \"add11\", \"keys\": \"1 3 5 11\" }\n"
 "    ]\n"
 "  }\n"
 "}";
@@ -14803,7 +14805,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x3c71eb84:  numBytes = 317; return noise_png;
         case 0xe05deb51:  numBytes = 25962; return logov2_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
-        case 0xd1d24c90:  numBytes = 604; return chords_json;
+        case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 15350; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3513; return scales_json;
