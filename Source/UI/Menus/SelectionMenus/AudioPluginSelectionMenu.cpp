@@ -45,7 +45,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
             this->pluginDescription.descriptiveName,
             [this](Instrument *instrument)
         {
-            this->orchestraNode.addInstrumentTreeItem(instrument);
+            this->orchestraNode.addInstrumentNode(instrument);
         });
         this->dismiss();
     }));

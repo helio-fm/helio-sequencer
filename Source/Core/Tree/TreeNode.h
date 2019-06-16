@@ -173,7 +173,7 @@ public:
     void addChildTreeItem(TreeNode *child, int insertIndex = -1, bool sendNotifications = true);
     virtual void onItemAddedToTree(bool sendNotifications) {}
 
-    static bool deleteItem(TreeNode *itemToDelete, bool sendNotifications);
+    static bool deleteNode(TreeNode *itemToDelete, bool sendNotifications);
     virtual void onItemDeletedFromTree(bool sendNotifications) {}
 
     //===------------------------------------------------------------------===//

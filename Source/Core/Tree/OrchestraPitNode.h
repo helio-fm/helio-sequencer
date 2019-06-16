@@ -48,7 +48,7 @@ private:
     friend class OrchestraPitMenu;
     friend class AudioPluginSelectionMenu;
     
-    InstrumentNode *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
+    InstrumentNode *addInstrumentNode(Instrument *instrument, int insertIndex = -1);
     UniquePointer<OrchestraPitPage> instrumentsPage;
 
 };

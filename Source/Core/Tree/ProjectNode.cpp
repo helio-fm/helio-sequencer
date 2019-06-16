@@ -915,7 +915,7 @@ bool ProjectNode::deleteTrackedItem(VCS::TrackedItem *item)
 {
     if (auto *treeItem = dynamic_cast<MidiTrackNode *>(item))
     {
-        TreeNode::deleteItem(treeItem, false); // don't broadcastRemoveTrack
+        TreeNode::deleteNode(treeItem, false); // don't broadcastRemoveTrack
         this->vcsItems.removeAllInstancesOf(item);
         this->isTracksCacheOutdated = true;
         return true;

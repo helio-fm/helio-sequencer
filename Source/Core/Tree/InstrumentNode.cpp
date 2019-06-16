@@ -31,7 +31,6 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 
-
 InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
     TreeNode({}, Serialization::Core::instrumentRoot),
     instrument(targetInstrument),

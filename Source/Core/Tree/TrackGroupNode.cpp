@@ -60,7 +60,7 @@ void TrackGroupNode::removeAllEmptyGroupsInProject(ProjectNode *project)
             
             for (int i = 0; i < groupsToDelete.size(); ++i)
             {
-                TreeNode::deleteItem(groupsToDelete.getUnchecked(i), true);
+                TreeNode::deleteNode(groupsToDelete.getUnchecked(i), true);
             }
         }
         while (numGroupsDeleted > 0);

@@ -57,7 +57,7 @@ bool AutomationTrackInsertAction::undo()
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
-        return this->parentTreeItem->deleteItem(treeItem, true);
+        return this->parentTreeItem->deleteNode(treeItem, true);
     }
     
     return false;
@@ -114,7 +114,7 @@ bool AutomationTrackRemoveAction::perform()
         this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
         this->trackName = treeItem->getTrackName();
-        return this->parentTreeItem->deleteItem(treeItem, true);
+        return this->parentTreeItem->deleteNode(treeItem, true);
     }
     
     return false;

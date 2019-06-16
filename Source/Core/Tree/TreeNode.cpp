@@ -177,17 +177,17 @@ void TreeNode::itemSelectionChanged(bool isNowSelected)
 // Cleanup
 //===----------------------------------------------------------------------===//
 
-bool TreeNode::deleteItem(TreeNode *itemToDelete, bool sendNotifications)
+bool TreeNode::deleteNode(TreeNode *nodeToDelete, bool sendNotifications)
 {
-    if (!itemToDelete) { return false; }
-    if (itemToDelete->getRootNode() == itemToDelete) { return false; }
-    const bool shouldRefocus = itemToDelete->isSelected();
+    if (!nodeToDelete) { return false; }
+    if (nodeToDelete->getRootNode() == nodeToDelete) { return false; }
+    const bool shouldRefocus = nodeToDelete->isSelected();
     
-    WeakReference<TreeNode> root = itemToDelete->getRootNode();
-    WeakReference<TreeNode> parent = itemToDelete->findParentOfType<ProjectNode>();
+    WeakReference<TreeNode> root = nodeToDelete->getRootNode();
+    WeakReference<TreeNode> parent = nodeToDelete->findParentOfType<ProjectNode>();
 
-    itemToDelete->onItemDeletedFromTree(sendNotifications);
-    delete itemToDelete;
+    nodeToDelete->onItemDeletedFromTree(sendNotifications);
+    delete nodeToDelete;
 
     if (parent != nullptr)
     {

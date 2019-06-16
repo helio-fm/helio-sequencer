@@ -42,8 +42,6 @@ public:
     //===------------------------------------------------------------------===//
 
     WeakReference<Instrument> getInstrument() const noexcept;
-    Array<uint32> getInstrumentNodeIds() const;
-    bool hasInstrumentWithNodeId(uint32 nodeId) const;
     TreeNode *findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const;
     String getInstrumentIdAndHash() const;
     

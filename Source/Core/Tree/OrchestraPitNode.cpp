@@ -72,7 +72,7 @@ Component *OrchestraPitNode::createMenu()
 // Private
 //===----------------------------------------------------------------------===//
 
-InstrumentNode *OrchestraPitNode::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
+InstrumentNode *OrchestraPitNode::addInstrumentNode(Instrument *instrument, int insertIndex)
 {
     jassert(MessageManager::getInstance()->isThisTheMessageThread());
     auto *newInstrument = new InstrumentNode(instrument);
