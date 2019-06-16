@@ -80,3 +80,9 @@ InstrumentNode *OrchestraPitNode::addInstrumentNode(Instrument *instrument, int 
     this->sendChangeMessage();
     return newInstrument;
 }
+
+void OrchestraPitNode::removeInstrumentNode(InstrumentNode *node)
+{
+    TreeNode::deleteNode(node, true);
+    this->sendChangeMessage();
+}

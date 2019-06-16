@@ -31,6 +31,7 @@ public:
     ~InstrumentNode() override;
 
     void updateChildrenEditors();
+    void removeFromOrchestraAndDelete();
 
     Image getIcon() const noexcept override;
 
