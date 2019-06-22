@@ -736,8 +736,14 @@ void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
     jassert(dynamic_cast<Lasso *>(source));
     const auto *selection = static_cast<Lasso *>(source);
 
-    const auto *activeMap = this->patternMap.at(this->activeClip).get();
-    jassert(activeMap);
+    const auto activeMapIt = this->patternMap.find(this->activeClip);
+    if (activeMapIt == this->patternMap.end())
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto *activeMap = activeMapIt->second.get();
 
     VELOCITY_MAP_BULK_REPAINT_START
 
