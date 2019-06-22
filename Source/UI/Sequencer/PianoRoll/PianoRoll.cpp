@@ -743,6 +743,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
     int focusMaxKey = 0;
     float focusMinBeat = FLT_MAX;
     float focusMaxBeat = -FLT_MAX;
+    bool hasComponentsToFocusOn = false;
 
     forEachEventComponent(this->patternMap, e)
     {
@@ -753,6 +754,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
 
         if (shouldFocus && isActive)
         {
+            hasComponentsToFocusOn = true;
             focusMinKey = jmin(focusMinKey, key);
             focusMaxKey = jmax(focusMaxKey, key);
             focusMinBeat = jmin(focusMinBeat, nc->getBeat());
@@ -760,12 +762,19 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
         }
     }
 
-    // FIXME: zoom empty tracks properly
-
     this->updateActiveRangeIndicator();
 
     if (shouldFocus)
     {
+        // hardcoded zoom settings for empty tracks:
+        if (!hasComponentsToFocusOn)
+        {
+            focusMinKey = 32;
+            focusMaxKey = 96;
+            focusMinBeat = this->activeClip.getBeat();
+            focusMaxBeat = focusMinBeat + float(BEATS_PER_BAR * 6);
+        }
+
         this->zoomToArea(focusMinKey, focusMaxKey,
             focusMinBeat + this->activeClip.getBeat(),
             focusMaxBeat + this->activeClip.getBeat());
