@@ -72,9 +72,11 @@ String Document::getFullPath() const
 void Document::renameFile(const String &newName)
 {
     if (newName == this->workingFile.getFileNameWithoutExtension())
-    { return; }
+    {
+        return;
+    }
 
-    const String safeNewName = File::createLegalFileName(newName);
+    const auto safeNewName = File::createLegalFileName(newName).trimCharactersAtEnd(".");
 
     File newFile(this->workingFile.getSiblingFile(safeNewName + "." + this->extension));
 
@@ -89,7 +91,6 @@ void Document::renameFile(const String &newName)
         this->workingFile = newFile;
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Save
@@ -116,7 +117,7 @@ void Document::saveAs()
 #if HELIO_DESKTOP
 
         FileChooser fc(TRANS(I18n::Dialog::documentSave),
-                       File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
+            File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
 
         if (fc.browseForFileToSave(true))
         {
