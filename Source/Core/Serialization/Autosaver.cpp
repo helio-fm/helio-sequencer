@@ -35,7 +35,10 @@ Autosaver::~Autosaver()
 
 void Autosaver::changeListenerCallback(ChangeBroadcaster *source)
 {
-    this->startTimer(this->delay);
+    // add some randomness to the delay, so that 
+    // several open projects are not saved at once:
+    static Random r;
+    this->startTimer(this->delay + r.nextInt(1000));
 }
 
 void Autosaver::timerCallback()
