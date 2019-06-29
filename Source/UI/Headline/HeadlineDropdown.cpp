@@ -55,9 +55,10 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     //[Constructor]
     if (this->item != nullptr)
     {
-        if (auto *menu = this->item->createMenu())
+        auto menu = this->item->createMenu();
+        if (menu != nullptr)
         {
-            this->content.reset(menu);
+            this->content = std::move(menu);
             this->addAndMakeVisible(this->content.get());
             this->syncWidthWithContent();
         }

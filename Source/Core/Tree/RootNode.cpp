@@ -255,9 +255,9 @@ bool RootNode::hasMenu() const noexcept
     return true;
 }
 
-Component *RootNode::createMenu()
+UniquePointer<Component> RootNode::createMenu()
 {
-    return new WorkspaceMenu(App::Workspace());
+    return MakeUnique<WorkspaceMenu>(App::Workspace());
 }
 
 //===----------------------------------------------------------------------===//

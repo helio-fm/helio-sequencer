@@ -468,9 +468,9 @@ bool MidiTrackNode::hasMenu() const noexcept
     return true;
 }
 
-Component *MidiTrackNode::createMenu()
+UniquePointer<Component> MidiTrackNode::createMenu()
 {
-    return new MidiTrackMenu(*this);
+    return MakeUnique<MidiTrackMenu>(*this);
 }
 
 //===----------------------------------------------------------------------===//

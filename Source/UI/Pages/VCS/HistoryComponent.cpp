@@ -178,11 +178,11 @@ bool HistoryComponent::hasMenu() const noexcept
     return true;
 }
 
-Component *HistoryComponent::createMenu()
+UniquePointer<Component> HistoryComponent::createMenu()
 {
     if (this->revisionTree != nullptr)
     {
-        return new VersionControlHistorySelectionMenu(this->revisionTree->getSelectedRevision(), this->vcs);
+        return MakeUnique<VersionControlHistorySelectionMenu>(this->revisionTree->getSelectedRevision(), this->vcs);
     }
 
     jassertfalse;

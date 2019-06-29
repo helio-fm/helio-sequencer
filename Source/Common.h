@@ -86,10 +86,16 @@ struct IdentifierHash
 // Various helpers
 //===----------------------------------------------------------------------===//
 
-template <class T>
+template <typename T>
 using UniquePointer = std::unique_ptr<T>;
 
-template <class T>
+template <typename T, typename... Args> inline
+UniquePointer<T> MakeUnique(Args&&... args)
+{
+    return UniquePointer<T>(new T(std::forward<Args>(args)...));
+}
+
+template <typename T>
 using Function = std::function<T>;
 
 #if _MSC_VER

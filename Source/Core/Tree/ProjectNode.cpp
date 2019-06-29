@@ -285,9 +285,9 @@ bool ProjectNode::hasMenu() const noexcept
     return true;
 }
 
-Component *ProjectNode::createMenu()
+UniquePointer<Component> ProjectNode::createMenu()
 {
-    return new ProjectMenu(*this, MenuPanel::SlideRight);
+    return MakeUnique<ProjectMenu>(*this, MenuPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//

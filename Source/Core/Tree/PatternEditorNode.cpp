@@ -63,7 +63,7 @@ bool PatternEditorNode::hasMenu() const noexcept
     return true;
 }
 
-Component *PatternEditorNode::createMenu()
+UniquePointer<Component> PatternEditorNode::createMenu()
 {
-    return new PatternsMenu(*this);
+    return MakeUnique<PatternsMenu>(*this);
 }
