@@ -42,7 +42,7 @@ bool AutomationTrackInsertAction::perform()
 {
     MidiTrackNode *track = new AutomationTrackNode("empty");
     track->deserialize(this->trackState);
-    this->parentTreeItem->addChildTreeItem(track);
+    this->parentTreeItem->addChildNode(track);
 
     this->trackId = track->getTrackId();
     track->setTrackName(this->trackName, true);
@@ -126,7 +126,7 @@ bool AutomationTrackRemoveAction::undo()
     {
         MidiTrackNode *track = new AutomationTrackNode("empty");
         track->deserialize(this->serializedTreeItem);
-        this->parentTreeItem->addChildTreeItem(track);
+        this->parentTreeItem->addChildNode(track);
         track->setTrackName(this->trackName, true);
         return true;
     }

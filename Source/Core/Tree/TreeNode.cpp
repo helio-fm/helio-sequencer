@@ -96,7 +96,7 @@ void TreeNodeBase::setSelected(NotificationType shouldNotify /*= sendNotificatio
 
         if (shouldNotify != dontSendNotification)
         {
-            this->itemSelectionChanged(true);
+            this->nodeSelectionChanged(true);
         }
     }
 }
@@ -112,7 +112,7 @@ void TreeNodeBase::deselectAllRecursively(TreeNodeBase *toIgnore)
     if (this != toIgnore && this->selected)
     {
         this->selected = false;
-        this->itemSelectionChanged(false);
+        this->nodeSelectionChanged(false);
     }
 
     for (auto *i : this->children)
@@ -165,7 +165,7 @@ String TreeNode::getName() const noexcept
 // Menu
 //===----------------------------------------------------------------------===//
 
-void TreeNode::itemSelectionChanged(bool isNowSelected)
+void TreeNode::nodeSelectionChanged(bool isNowSelected)
 {
     if (isNowSelected)
     {
@@ -186,7 +186,7 @@ bool TreeNode::deleteNode(TreeNode *nodeToDelete, bool sendNotifications)
     WeakReference<TreeNode> root = nodeToDelete->getRootNode();
     WeakReference<TreeNode> parent = nodeToDelete->findParentOfType<ProjectNode>();
 
-    nodeToDelete->onItemDeletedFromTree(sendNotifications);
+    nodeToDelete->onNodeDeletedFromTree(sendNotifications);
     delete nodeToDelete;
 
     if (parent != nullptr)
@@ -243,7 +243,7 @@ void TreeNode::removeNodeFromParent()
 
 static void notifySubtreeParentChanged(TreeNode *node, bool sendNotifications)
 {
-    node->onItemAddedToTree(sendNotifications);
+    node->onNodeAddedToTree(sendNotifications);
 
     for (int i = 0; i < node->getNumChildren(); ++i)
     {
@@ -252,7 +252,7 @@ static void notifySubtreeParentChanged(TreeNode *node, bool sendNotifications)
     }
 }
 
-void TreeNode::addChildTreeItem(TreeNode *child, int insertIndex /*= -1*/, bool sendNotifications /*= true*/)
+void TreeNode::addChildNode(TreeNode *child, int insertIndex /*= -1*/, bool sendNotifications /*= true*/)
 {
     this->addChild(child, insertIndex);
     notifySubtreeParentChanged(child, sendNotifications);

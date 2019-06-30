@@ -62,7 +62,7 @@ void TreeNodeSerializer::deserializeChildren(TreeNode &parentItem, const ValueTr
 
         if (child != nullptr)
         {
-            parentItem.addChildTreeItem(child);
+            parentItem.addChildNode(child);
             child->deserialize(e);
         }
     }

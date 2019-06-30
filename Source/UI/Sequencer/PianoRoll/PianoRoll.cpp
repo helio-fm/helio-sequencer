@@ -951,7 +951,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse(0.25f); // A bit of fancy animation
         break;
     case CommandIDs::RenameTrack:
-        if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveItem()))
+        if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
         {
             //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
             //inputDialog->onOk = trackNode->getRenameCallback();

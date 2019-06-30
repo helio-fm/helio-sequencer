@@ -76,7 +76,7 @@ InstrumentNode *OrchestraPitNode::addInstrumentNode(Instrument *instrument, int 
 {
     jassert(MessageManager::getInstance()->isThisTheMessageThread());
     auto *newInstrument = new InstrumentNode(instrument);
-    this->addChildTreeItem(newInstrument, insertIndex);
+    this->addChildNode(newInstrument, insertIndex);
     this->sendChangeMessage();
     return newInstrument;
 }

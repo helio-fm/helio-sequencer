@@ -111,7 +111,7 @@ void TrackGroupNode::sortByNameAmongSiblings()
 
         if (!foundRightPlace) { ++insertIndex; }
         
-        parentItem->addChildTreeItem(this, insertIndex);
+        parentItem->addChildNode(this, insertIndex);
     }
 }
 

@@ -44,7 +44,7 @@ bool PianoTrackInsertAction::perform()
     MidiTrackNode *track = new PianoTrackNode("empty");
     track->deserialize(this->trackState);
 
-    this->parentTreeItem->addChildTreeItem(track);
+    this->parentTreeItem->addChildNode(track);
 
     this->trackId = track->getTrackId();
     track->setTrackName(this->trackName, true);
@@ -130,7 +130,7 @@ bool PianoTrackRemoveAction::undo()
     {
         MidiTrackNode *track = new PianoTrackNode("empty");
         track->deserialize(this->serializedTreeItem);
-        this->parentTreeItem->addChildTreeItem(track);
+        this->parentTreeItem->addChildNode(track);
         track->setTrackName(this->trackName, true);
         track->dispatchChangeProjectBeatRange();
         return true;

@@ -148,7 +148,7 @@ void InstrumentNode::updateChildrenEditors()
 
         // неюзабельно, используем только на мобилках
         auto *ap = new AudioPluginNode(node->nodeID, node->getProcessor()->getName());
-        this->addChildTreeItem(ap);
+        this->addChildNode(ap);
     }
 }
 

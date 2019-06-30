@@ -334,10 +334,10 @@ void Workspace::failedDeserializationFallback()
     this->getAudioCore().initDefaultInstrument();
 
     TreeNode *settings = new SettingsNode();
-    this->treeRoot->addChildTreeItem(settings);
+    this->treeRoot->addChildNode(settings);
     
     TreeNode *instruments = new OrchestraPitNode();
-    this->treeRoot->addChildTreeItem(instruments);
+    this->treeRoot->addChildNode(instruments);
     
     if (auto *p = this->treeRoot->addDefaultProject(TRANS(I18n::Defaults::newProjectName)))
     {
@@ -486,11 +486,11 @@ void Workspace::deserialize(const ValueTree &tree)
     // If no instruments root item is found for whatever reason
     // (i.e. malformed tree), make sure to add one:
     if (nullptr == this->treeRoot->findChildOfType<OrchestraPitNode>())
-    { this->treeRoot->addChildTreeItem(new OrchestraPitNode(), 0); }
+    { this->treeRoot->addChildNode(new OrchestraPitNode(), 0); }
     
     // The same hack for settings root:
     if (nullptr == this->treeRoot->findChildOfType<SettingsNode>())
-    { this->treeRoot->addChildTreeItem(new SettingsNode(), 0); }
+    { this->treeRoot->addChildNode(new SettingsNode(), 0); }
 
     if (! foundActiveNode)
     {
