@@ -193,7 +193,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
 
             const auto arps = App::Config().getArpeggiators()->getAll();
             SequencerOperations::arpeggiate(*this->lasso, this->harmonicContextScale,
-                this->harmonicContextKey, arps[i], false, false, true);
+                this->harmonicContextKey, arps[i], 1.0f, 0.0f, false, false, true);
 
             this->dismiss();
             return;
