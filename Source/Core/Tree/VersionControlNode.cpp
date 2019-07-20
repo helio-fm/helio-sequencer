@@ -168,7 +168,7 @@ void VersionControlNode::toggleQuickStash()
 // Tree
 //===----------------------------------------------------------------------===//
 
-void VersionControlNode::onItemAddedToTree(bool sendNotifications)
+void VersionControlNode::onNodeAddedToTree(bool sendNotifications)
 {
     // Could be still uninitialized at this moment
     if (this->vcs == nullptr)
@@ -178,7 +178,7 @@ void VersionControlNode::onItemAddedToTree(bool sendNotifications)
     }
 }
 
-void VersionControlNode::onItemDeletedFromTree(bool sendNotifications)
+void VersionControlNode::onNodeDeletedFromTree(bool sendNotifications)
 {
     this->shutdownEditor();
     this->shutdownVCS();
@@ -193,11 +193,11 @@ bool VersionControlNode::hasMenu() const noexcept
     return this->vcs != nullptr;
 }
 
-Component *VersionControlNode::createMenu()
+UniquePointer<Component> VersionControlNode::createMenu()
 {
     if (this->vcs != nullptr)
     {
-        return new VersionControlMenu(*this->vcs);
+        return MakeUnique<VersionControlMenu>(*this->vcs);
     }
     
     return nullptr;

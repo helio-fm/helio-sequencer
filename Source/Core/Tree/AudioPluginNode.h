@@ -32,7 +32,7 @@ public:
     AudioProcessorGraph::NodeID getNodeId() const noexcept;
 
     bool hasMenu() const noexcept override;
-    Component *createMenu() override;
+    UniquePointer<Component> createMenu() override;
 
     void showPage() override;
     

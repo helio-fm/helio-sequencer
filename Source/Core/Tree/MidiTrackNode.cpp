@@ -278,7 +278,7 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
         if (! foundSubGroup)
         {
             auto group = new TrackGroupNode(parts[i]);
-            rootItem->addChildTreeItem(group);
+            rootItem->addChildNode(group);
             group->sortByNameAmongSiblings();
             rootItem = group;
         }
@@ -325,7 +325,7 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
     if (!foundRightPlace) { ++insertIndex; }
 
     // This will also send changed-parent notifications
-    rootItem->addChildTreeItem(this, insertIndex, sendNotifications);
+    rootItem->addChildNode(this, insertIndex, sendNotifications);
     
     // Cleanup all empty groups
     if (ProjectNode *parentProject = this->findParentOfType<ProjectNode>())
@@ -426,7 +426,7 @@ ProjectNode *MidiTrackNode::getProject() const noexcept
 // Add to tree and remove from tree callbacks
 //===----------------------------------------------------------------------===//
 
-void MidiTrackNode::onItemAddedToTree(bool sendNotifications)
+void MidiTrackNode::onNodeAddedToTree(bool sendNotifications)
 {
     auto *newParent = this->findParentOfType<ProjectNode>();
     jassert(newParent != nullptr);
@@ -442,7 +442,7 @@ void MidiTrackNode::onItemAddedToTree(bool sendNotifications)
     }
 }
 
-void MidiTrackNode::onItemDeletedFromTree(bool sendNotifications)
+void MidiTrackNode::onNodeDeletedFromTree(bool sendNotifications)
 {
     this->lastFoundParent = this->findParentOfType<ProjectNode>();
     if (this->lastFoundParent != nullptr)
@@ -468,9 +468,9 @@ bool MidiTrackNode::hasMenu() const noexcept
     return true;
 }
 
-Component *MidiTrackNode::createMenu()
+UniquePointer<Component> MidiTrackNode::createMenu()
 {
-    return new MidiTrackMenu(*this);
+    return MakeUnique<MidiTrackMenu>(*this);
 }
 
 //===----------------------------------------------------------------------===//

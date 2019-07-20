@@ -31,6 +31,7 @@ public:
     ~InstrumentNode() override;
 
     void updateChildrenEditors();
+    void removeFromOrchestraAndDelete();
 
     Image getIcon() const noexcept override;
 
@@ -42,8 +43,6 @@ public:
     //===------------------------------------------------------------------===//
 
     WeakReference<Instrument> getInstrument() const noexcept;
-    Array<uint32> getInstrumentNodeIds() const;
-    bool hasInstrumentWithNodeId(uint32 nodeId) const;
     TreeNode *findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const;
     String getInstrumentIdAndHash() const;
     
@@ -52,7 +51,7 @@ public:
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    Component *createMenu() override;
+    UniquePointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Serializable

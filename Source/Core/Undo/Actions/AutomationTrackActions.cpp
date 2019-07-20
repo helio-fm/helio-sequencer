@@ -42,7 +42,7 @@ bool AutomationTrackInsertAction::perform()
 {
     MidiTrackNode *track = new AutomationTrackNode("empty");
     track->deserialize(this->trackState);
-    this->parentTreeItem->addChildTreeItem(track);
+    this->parentTreeItem->addChildNode(track);
 
     this->trackId = track->getTrackId();
     track->setTrackName(this->trackName, true);
@@ -57,7 +57,7 @@ bool AutomationTrackInsertAction::undo()
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
-        return this->parentTreeItem->deleteItem(treeItem, true);
+        return this->parentTreeItem->deleteNode(treeItem, true);
     }
     
     return false;
@@ -114,7 +114,7 @@ bool AutomationTrackRemoveAction::perform()
         this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
         this->trackName = treeItem->getTrackName();
-        return this->parentTreeItem->deleteItem(treeItem, true);
+        return this->parentTreeItem->deleteNode(treeItem, true);
     }
     
     return false;
@@ -126,7 +126,7 @@ bool AutomationTrackRemoveAction::undo()
     {
         MidiTrackNode *track = new AutomationTrackNode("empty");
         track->deserialize(this->serializedTreeItem);
-        this->parentTreeItem->addChildTreeItem(track);
+        this->parentTreeItem->addChildNode(track);
         track->setTrackName(this->trackName, true);
         return true;
     }

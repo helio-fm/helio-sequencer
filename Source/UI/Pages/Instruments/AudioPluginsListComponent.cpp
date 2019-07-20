@@ -320,11 +320,11 @@ void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
 bool AudioPluginsListComponent::hasMenu() const noexcept { return true; }
 bool AudioPluginsListComponent::canBeSelectedAsMenuItem() const { return false; }
 
-Component *AudioPluginsListComponent::createMenu()
+UniquePointer<Component> AudioPluginsListComponent::createMenu()
 {
     const auto selectedRow = this->pluginsList->getSelectedRow();
     const auto description = pluginScanner.getPlugins()[selectedRow];
-    return new AudioPluginSelectionMenu(description, this->instrumentsRoot, this->pluginScanner);
+    return MakeUnique<AudioPluginSelectionMenu>(description, this->instrumentsRoot, this->pluginScanner);
 }
 
 Image AudioPluginsListComponent::getIcon() const

@@ -37,7 +37,7 @@ Note::Key Arpeggiator::Mapper::getChordKey(const Array<Note> &chord, int chordKe
     jassert(chordKeyNoRootOffset >= 0);
     const int targetScaleKey = chordScale->getScaleKey(chordKeyNoRootOffset) + scaleOffset;
     return (targetScaleKey >= 0) ?
-        chordScale->getChromaticKey(targetScaleKey) + chordRoot :
+        chordScale->getChromaticKey(targetScaleKey, 0, false) + chordRoot :
         chordKey; // a non-scale key is found in the chord, so just fallback to that key
 }
 

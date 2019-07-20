@@ -99,15 +99,15 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    void onItemAddedToTree(bool sendNotifications) override;
-    void onItemDeletedFromTree(bool sendNotifications) override;
+    void onNodeAddedToTree(bool sendNotifications) override;
+    void onNodeDeletedFromTree(bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
-    Component *createMenu() override;
+    UniquePointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Callbacks

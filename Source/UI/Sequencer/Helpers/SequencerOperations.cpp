@@ -639,33 +639,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
     }
     
     bool didCheckpoint = !shouldCheckpoint;
-    
-    // 0 snap to 0.001 beat
-    PianoChangeGroup group0Before, group0After;
-    
-    for (int i = 0; i < selection.getNumSelected(); ++i)
-    {
-        NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
         
-        const float minSnap = 0.1f;
-        const float startBeat = nc->getBeat();
-        const float startBeatSnap = snappedBeat(startBeat, minSnap);
-        
-        const float endBeat = nc->getBeat() + nc->getLength();
-        const float endBeatSnap = snappedBeat(endBeat, minSnap);
-        const float lengthSnap = endBeatSnap - startBeatSnap;
-        
-        if (startBeat != startBeatSnap ||
-            endBeat != endBeatSnap)
-        {
-            group0Before.add(nc->getNote());
-            group0After.add(nc->getNote().withBeat(startBeatSnap).withLength(lengthSnap));
-        }
-    }
-    
-    applyPianoChanges(group0Before, group0After, didCheckpoint);
-    
-    
     // 1 convert this
     //    ----
     // ------------
@@ -683,7 +657,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
         
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             
             // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
             
@@ -736,7 +710,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
         
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             
             // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
             
@@ -789,7 +763,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
         
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             
             // для каждой ноты найти ноту, которая перекрывает ее максимально
             
@@ -835,7 +809,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
         
         for (int j = 0; j < selection.getNumSelected(); ++j)
         {
@@ -844,7 +818,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
                 continue;
             }
             
-            NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+            const auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
             
             // full overlap
             //const bool isOverlappingNote = (nc->getKey() == nc2->getKey() &&
@@ -1792,7 +1766,7 @@ static inline void doRescaleLogic(PianoChangeGroup &groupBefore, PianoChangeGrou
     if (inScaleKey >= 0)
     {
         const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber
-            + scaleB->getChromaticKey(inScaleKey) + keyOffset;
+            + scaleB->getChromaticKey(inScaleKey, 0, false) + keyOffset;
 
         groupBefore.add(note);
         groupAfter.add(note.withKey(newChromaticKey));

@@ -296,7 +296,7 @@ void MainLayout::modifierKeysChanged(const ModifierKeys &modifiers)
 
 static ProjectNode *findParentProjectOfSelectedNode()
 {
-    if (auto *active = App::Workspace().getTreeRoot()->findActiveItem())
+    if (auto *active = App::Workspace().getTreeRoot()->findActiveNode())
     {
         if (auto *projectItself = dynamic_cast<ProjectNode *>(active))
         {

@@ -29,10 +29,11 @@ String DocumentHelpers::getTemporaryFolder()
         getFullPathName() + "/Helio");
 
     if (tempFolder.existsAsFile())
-    { tempFolder.deleteFile(); }
+    {
+        tempFolder.deleteFile();
+    }
 
     //DBG("DocumentHelpers::getTemporaryFolder :: " + tempFolder.getFullPathName());
-
     return tempFolder.getFullPathName();
 }
 

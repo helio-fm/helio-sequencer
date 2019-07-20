@@ -92,7 +92,7 @@ ProjectNode *RootNode::openProject(const File &file)
     if (file.existsAsFile())
     {
         UniquePointer<ProjectNode> project(new ProjectNode(file));
-        this->addChildTreeItem(project.get(), 1);
+        this->addChildNode(project.get(), 1);
 
         if (!project->getDocument()->load(file.getFullPathName()))
         {
@@ -126,10 +126,10 @@ ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
         // construct a stub project with no first revision and no tracks,
         // only the essential stuff it will need anyway:
         UniquePointer<ProjectNode> project(new ProjectNode(name, id));
-        this->addChildTreeItem(project.get(), 1);
+        this->addChildNode(project.get(), 1);
         UniquePointer<VersionControlNode> vcs(new VersionControlNode());
-        project->addChildTreeItem(vcs.get());
-        project->addChildTreeItem(new PatternEditorNode());
+        project->addChildNode(vcs.get());
+        project->addChildNode(new PatternEditorNode());
         vcs->cloneProject();
         vcs.release();
         return project.release();
@@ -142,7 +142,7 @@ ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
 ProjectNode *RootNode::addDefaultProject(const File &projectLocation)
 {
     auto *newProject = new ProjectNode(projectLocation);
-    this->addChildTreeItem(newProject);
+    this->addChildNode(newProject);
     return this->createDefaultProjectChildren(newProject);
 }
 
@@ -150,14 +150,14 @@ ProjectNode *RootNode::addDefaultProject(const File &projectLocation)
 ProjectNode *RootNode::addDefaultProject(const String &projectName)
 {
     auto *newProject = new ProjectNode(projectName);
-    this->addChildTreeItem(newProject);
+    this->addChildNode(newProject);
     return this->createDefaultProjectChildren(newProject);
 }
 
 static VersionControlNode *addVCS(TreeNode *parent)
 {
     auto vcs = new VersionControlNode();
-    parent->addChildTreeItem(vcs);
+    parent->addChildNode(vcs);
 
     // при создании рутовой ноды vcs, туда надо первым делом коммитить пустой ProjectInfo,
     // чтобы оной в списке изменений всегда показывался как измененный (не добавленный)
@@ -171,7 +171,7 @@ static PianoTrackNode *addPianoTrack(TreeNode *parent, const String &name)
     auto *item = new PianoTrackNode(name);
     const Clip clip(item->getPattern());
     item->getPattern()->insert(clip, false);
-    parent->addChildTreeItem(item);
+    parent->addChildNode(item);
     return item;
 }
 
@@ -182,7 +182,7 @@ static MidiTrackNode *addAutoLayer(TreeNode *parent, const String &name, int con
     item->getPattern()->insert(clip, false);
     item->setTrackControllerNumber(controllerNumber, false);
     auto *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
-    parent->addChildTreeItem(item);
+    parent->addChildNode(item);
     itemLayer->insert(AutomationEvent(itemLayer, 0.f, 0.5f), false);
     itemLayer->insert(AutomationEvent(itemLayer, BEATS_PER_BAR * 4, 0.5f), false);
     return item;
@@ -191,7 +191,7 @@ static MidiTrackNode *addAutoLayer(TreeNode *parent, const String &name, int con
 void RootNode::importMidi(const File &file)
 {
     auto *project = new ProjectNode(file.getFileNameWithoutExtension());
-    this->addChildTreeItem(project);
+    this->addChildNode(project);
     addVCS(project);
     project->importMidi(file);
 }
@@ -200,7 +200,7 @@ void RootNode::importMidi(const File &file)
 ProjectNode *RootNode::createDefaultProjectChildren(ProjectNode *project)
 {
     addVCS(project);
-    project->addChildTreeItem(new PatternEditorNode());
+    project->addChildNode(new PatternEditorNode());
 
     {
         auto *t1 = addPianoTrack(project, "Melodic");
@@ -255,9 +255,9 @@ bool RootNode::hasMenu() const noexcept
     return true;
 }
 
-Component *RootNode::createMenu()
+UniquePointer<Component> RootNode::createMenu()
 {
-    return new WorkspaceMenu(App::Workspace());
+    return MakeUnique<WorkspaceMenu>(App::Workspace());
 }
 
 //===----------------------------------------------------------------------===//

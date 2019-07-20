@@ -83,7 +83,8 @@ public:
     int getScaleKey(int chormaticKey) const;
 
     // Key (input and returned) starts from 0
-    int getChromaticKey(int key, bool restrictToOneOctave = false) const noexcept;
+    int getChromaticKey(int inScaleKey, int extraChromaticOffset,
+        bool restrictToOneOctave) const noexcept;
 
     // Base octave size - like chromatic octave for diatonic scales
     // (hard-coded to 12, FIXME in future)

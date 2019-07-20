@@ -57,7 +57,7 @@ bool AudioPluginNode::hasMenu() const noexcept
     return false;
 }
 
-Component *AudioPluginNode::createMenu()
+UniquePointer<Component> AudioPluginNode::createMenu()
 {
     return nullptr;
 }

@@ -63,20 +63,26 @@ bool OrchestraPitNode::hasMenu() const noexcept
     return true;
 }
 
-Component *OrchestraPitNode::createMenu()
+UniquePointer<Component> OrchestraPitNode::createMenu()
 {
-    return new OrchestraPitMenu(*this);
+    return MakeUnique<OrchestraPitMenu>(*this);
 }
 
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
-InstrumentNode *OrchestraPitNode::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
+InstrumentNode *OrchestraPitNode::addInstrumentNode(Instrument *instrument, int insertIndex)
 {
     jassert(MessageManager::getInstance()->isThisTheMessageThread());
     auto *newInstrument = new InstrumentNode(instrument);
-    this->addChildTreeItem(newInstrument, insertIndex);
+    this->addChildNode(newInstrument, insertIndex);
     this->sendChangeMessage();
     return newInstrument;
+}
+
+void OrchestraPitNode::removeInstrumentNode(InstrumentNode *node)
+{
+    TreeNode::deleteNode(node, true);
+    this->sendChangeMessage();
 }

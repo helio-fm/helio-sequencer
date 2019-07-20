@@ -47,7 +47,7 @@ public:
 
 protected:
 
-    virtual void itemSelectionChanged(bool isNowSelected) {}
+    virtual void nodeSelectionChanged(bool isNowSelected) {}
     TreeNodeBase *getTopLevelNode() noexcept;
 
 private:
@@ -77,13 +77,13 @@ public:
     template<typename T>
     T *findParentOfType() const
     {
-        const TreeNodeBase *rootItem = this;
+        const TreeNodeBase *rootNode = this;
 
-        while (TreeNodeBase *item = rootItem->getParent())
+        while (TreeNodeBase *node = rootNode->getParent())
         {
-            rootItem = item;
+            rootNode = node;
 
-            if (T *parentOfType = dynamic_cast<T *>(item))
+            if (T *parentOfType = dynamic_cast<T *>(node))
             {
                 return parentOfType;
             }
@@ -95,11 +95,11 @@ public:
     template<typename T>
     T *findChildOfType() const
     {
-        const TreeNodeBase *rootItem = this;
+        const TreeNodeBase *rootNode = this;
 
-        for (int i = 0; i < rootItem->getNumChildren(); ++i)
+        for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
-            if (T *childOfType = dynamic_cast<T *>(rootItem->getChild(i)))
+            if (T *childOfType = dynamic_cast<T *>(rootNode->getChild(i)))
             {
                 return childOfType;
             }
@@ -136,15 +136,15 @@ public:
         return children;
     }
 
-    TreeNode *findActiveItem() const
+    TreeNode *findActiveNode() const
     {
-        Array<TreeNode *> activeItems;
-        TreeNode::collectActiveSubItems(this, activeItems);
+        Array<TreeNode *> activeNodes;
+        TreeNode::collectActiveSubNodes(this, activeNodes);
         
-        jassert(activeItems.size() > 0);
-        if (activeItems.size() > 0)
+        jassert(activeNodes.size() > 0);
+        if (activeNodes.size() > 0)
         {
-            return activeItems.getFirst();
+            return activeNodes.getFirst();
         }
         
         // this should never happen normally
@@ -170,11 +170,11 @@ public:
     // Adding nodes to the tree and removing them
     //===------------------------------------------------------------------===//
 
-    void addChildTreeItem(TreeNode *child, int insertIndex = -1, bool sendNotifications = true);
-    virtual void onItemAddedToTree(bool sendNotifications) {}
+    void addChildNode(TreeNode *child, int insertIndex = -1, bool sendNotifications = true);
+    virtual void onNodeAddedToTree(bool sendNotifications) {}
 
-    static bool deleteItem(TreeNode *itemToDelete, bool sendNotifications);
-    virtual void onItemDeletedFromTree(bool sendNotifications) {}
+    static bool deleteNode(TreeNode *nodeToDelete, bool sendNotifications);
+    virtual void onNodeDeletedFromTree(bool sendNotifications) {}
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -187,7 +187,7 @@ public:
 protected:
 
     void dispatchChangeTreeNodeViews();
-    void itemSelectionChanged(bool isNowSelected) override;
+    void nodeSelectionChanged(bool isNowSelected) override;
 
     template<typename T, typename ArrayType>
     static void collectChildrenOfType(const TreeNode *rootNode, ArrayType &resultArray, bool pickOnlySelectedOnes)
@@ -196,11 +196,11 @@ protected:
         {
             TreeNode *child = static_cast<TreeNode *>(rootNode->getChild(i));
 
-            if (T *targetTreeItem = dynamic_cast<T *>(child))
+            if (T *targetNode = dynamic_cast<T *>(child))
             {
                 if (!pickOnlySelectedOnes || child->isSelected())
                 {
-                    resultArray.add(targetTreeItem);
+                    resultArray.add(targetNode);
                 }
             }
 
@@ -211,7 +211,7 @@ protected:
         }
     }
 
-    static void collectActiveSubItems(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
+    static void collectActiveSubNodes(const TreeNode *rootNode, Array<TreeNode *> &resultArray)
     {
         for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
@@ -224,7 +224,7 @@ protected:
         
             if (child->getNumChildren() > 0)
             {
-                TreeNode::collectActiveSubItems(child, resultArray);
+                TreeNode::collectActiveSubNodes(child, resultArray);
             }
         }
     }

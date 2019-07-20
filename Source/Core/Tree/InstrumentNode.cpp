@@ -31,7 +31,6 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 
-
 InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
     TreeNode({}, Serialization::Core::instrumentRoot),
     instrument(targetInstrument),
@@ -67,7 +66,7 @@ void InstrumentNode::showPage()
 {
     if (this->instrument.wasObjectDeleted())
     {
-        delete this;
+        this->removeFromOrchestraAndDelete();
         return;
     }
 
@@ -78,7 +77,7 @@ void InstrumentNode::safeRename(const String &newName, bool sendNotifications)
 {
     if (this->instrument.wasObjectDeleted())
     { 
-        delete this;
+        this->removeFromOrchestraAndDelete();
         return;
     }
 
@@ -106,31 +105,6 @@ String InstrumentNode::getInstrumentIdAndHash() const
     return this->instrument->getIdAndHash();
 }
 
-Array<uint32> InstrumentNode::getInstrumentNodeIds() const
-{
-    Array<uint32> result;
-
-    for (int i = 0; i < this->instrument->getNumNodes(); ++i)
-    {
-        result.add(this->instrument->getNode(i)->nodeID.uid);
-    }
-
-    return result;
-}
-
-bool InstrumentNode::hasInstrumentWithNodeId(uint32 targetNodeId) const
-{
-    for (const uint32 existingNodeId : this->getInstrumentNodeIds())
-    {
-        if (existingNodeId == targetNodeId)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 TreeNode *InstrumentNode::findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const
 {
     for (const auto audioPluginTreeItem : this->findChildrenOfType<AudioPluginNode>())
@@ -153,9 +127,9 @@ bool InstrumentNode::hasMenu() const noexcept
     return true;
 }
 
-Component *InstrumentNode::createMenu()
+UniquePointer<Component> InstrumentNode::createMenu()
 {
-    return new InstrumentMenu(*this, App::Workspace().getPluginManager());
+    return MakeUnique<InstrumentMenu>(*this, App::Workspace().getPluginManager());
 }
 
 void InstrumentNode::updateChildrenEditors()
@@ -174,7 +148,7 @@ void InstrumentNode::updateChildrenEditors()
 
         // неюзабельно, используем только на мобилках
         auto *ap = new AudioPluginNode(node->nodeID, node->getProcessor()->getName());
-        this->addChildTreeItem(ap);
+        this->addChildNode(ap);
     }
 }
 
@@ -216,7 +190,7 @@ void InstrumentNode::deserialize(const ValueTree &tree)
     if (this->instrument == nullptr ||
         !this->instrument->isValid())
     {
-        delete this;
+        this->removeFromOrchestraAndDelete();
         return;
     }
 
@@ -250,5 +224,13 @@ void InstrumentNode::notifyOrchestraChanged()
     if (auto *orchestra = dynamic_cast<OrchestraPitNode *>(this->getParent()))
     {
         orchestra->sendChangeMessage();
+    }
+}
+
+void InstrumentNode::removeFromOrchestraAndDelete()
+{
+    if (auto *parent = dynamic_cast<OrchestraPitNode *>(this->getParent()))
+    {
+        parent->removeInstrumentNode(this);
     }
 }

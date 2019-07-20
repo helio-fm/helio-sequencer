@@ -147,53 +147,58 @@ void ProjectMenu::handleCommandMessage(int commandId)
     }
 }
 
-ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
+ValueTree ProjectMenu::createPianoTrackTempate(const String &name,
+    const String &instrumentId, String &outTrackId) const
 {
-    UniquePointer<MidiTrackNode> newItem(new PianoTrackNode(name));
+    UniquePointer<MidiTrackNode> newNode(new PianoTrackNode(name));
     
     // We need to have at least one clip on a pattern:
-    const Clip clip(newItem->getPattern());
-    newItem->getPattern()->insert(clip, false);
+    const Clip clip(newNode->getPattern());
+    newNode->getPattern()->insert(clip, false);
 
     Random r;
     const auto colours = MenuPanel::getColoursList().getAllValues();
     const int ci = r.nextInt(colours.size());
-    newItem->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
-    newItem->setTrackInstrumentId(instrumentId, false);
+    newNode->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false);
 
-    // TODO insert a single note?
+    // insert a single note just so there is a visual anchor in the piano roll:
+    const float firstBeat = this->project.getProjectRangeInBeats().getX();
+    auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
+    pianoSequence->insert(Note(pianoSequence, MIDDLE_C, firstBeat, float(BEATS_PER_BAR), 0.5f), false);
 
-    return newItem->serialize();
+    outTrackId = newNode->getTrackId();
+    return newNode->serialize();
 }
 
 ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
     int controllerNumber, const String &instrumentId) const
 {
-    UniquePointer<MidiTrackNode> newItem(new AutomationTrackNode(name));
+    UniquePointer<MidiTrackNode> newNode(new AutomationTrackNode(name));
 
     // We need to have at least one clip on a pattern:
-    const Clip clip(newItem->getPattern());
-    newItem->getPattern()->insert(clip, false);
+    const Clip clip(newNode->getPattern());
+    newNode->getPattern()->insert(clip, false);
 
-    auto itemLayer = static_cast<AutomationSequence *>(newItem->getSequence());
+    auto *autoSequence = static_cast<AutomationSequence *>(newNode->getSequence());
     
-    newItem->setTrackControllerNumber(controllerNumber, false);
-    newItem->setTrackInstrumentId(instrumentId, false);
-    newItem->setTrackColour(Colours::royalblue, false);
+    newNode->setTrackControllerNumber(controllerNumber, false);
+    newNode->setTrackInstrumentId(instrumentId, false);
+    newNode->setTrackColour(Colours::royalblue, false);
     
     // init with a couple of events
-    const float cv1 = newItem->isOnOffAutomationTrack() ? 1.f : 0.5f;
-    const float cv2 = newItem->isOnOffAutomationTrack() ? 0.f : 0.5f;
+    const float cv1 = newNode->isOnOffAutomationTrack() ? 1.f : 0.5f;
+    const float cv2 = newNode->isOnOffAutomationTrack() ? 0.f : 0.5f;
 
     const auto beatRange = this->project.getProjectRangeInBeats();
     const float firstBeat = beatRange.getX();
     const float lastBeat = beatRange.getY();
 
-    itemLayer->insert(AutomationEvent(itemLayer, firstBeat, cv1), false);
+    autoSequence->insert(AutomationEvent(autoSequence, firstBeat, cv1), false);
     // second event is placed at the end of the track for convenience:
-    itemLayer->insert(AutomationEvent(itemLayer, lastBeat, cv2), false);
+    autoSequence->insert(AutomationEvent(autoSequence, lastBeat, cv2), false);
 
-    return newItem->serialize();
+    return newNode->serialize();
 }
 
 void ProjectMenu::showMainMenu(AnimationType animationType)
@@ -278,13 +283,21 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
             instruments[i]->getName())->withAction([this, instrumentId]()
             {
                 auto &project = this->project;
-                const ValueTree trackTemplate = this->createPianoTrackTempate("", instrumentId);
+                String outTrackId;
+                const ValueTree trackTemplate = this->createPianoTrackTempate("", instrumentId, outTrackId);
                 auto inputDialog = ModalDialogInput::Presets::newTrack();
-                inputDialog->onOk = [trackTemplate, &project](const String &input)
+                inputDialog->onOk = [trackTemplate, outTrackId, &project](const String &input)
                 {
                     project.checkpoint();
                     project.getUndoStack()->perform(new PianoTrackInsertAction(project,
                         &project, trackTemplate, input));
+
+                    // select and auto-zoom the new track for convenience:
+                    if (auto *midiTrack = project.findTrackById<PianoTrackNode>(outTrackId))
+                    {
+                        const auto *clip = midiTrack->getPattern()->getClips().getFirst();
+                        project.setEditableScope(midiTrack, *clip, true);
+                    }
                 };
 
                 App::Layout().showModalComponentUnowned(inputDialog.release());

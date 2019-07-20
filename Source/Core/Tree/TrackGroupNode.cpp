@@ -60,7 +60,7 @@ void TrackGroupNode::removeAllEmptyGroupsInProject(ProjectNode *project)
             
             for (int i = 0; i < groupsToDelete.size(); ++i)
             {
-                TreeNode::deleteItem(groupsToDelete.getUnchecked(i), true);
+                TreeNode::deleteNode(groupsToDelete.getUnchecked(i), true);
             }
         }
         while (numGroupsDeleted > 0);
@@ -111,7 +111,7 @@ void TrackGroupNode::sortByNameAmongSiblings()
 
         if (!foundRightPlace) { ++insertIndex; }
         
-        parentItem->addChildTreeItem(this, insertIndex);
+        parentItem->addChildNode(this, insertIndex);
     }
 }
 
@@ -142,7 +142,7 @@ bool TrackGroupNode::hasMenu() const noexcept
     return false;
 }
 
-Component *TrackGroupNode::createMenu()
+UniquePointer<Component> TrackGroupNode::createMenu()
 {
     return nullptr;
 }

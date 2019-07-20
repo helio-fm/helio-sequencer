@@ -303,9 +303,9 @@ void StageComponent::stopProgressAnimation()
 bool StageComponent::hasMenu() const noexcept { return true; }
 bool StageComponent::canBeSelectedAsMenuItem() const { return false; }
 
-Component *StageComponent::createMenu()
+UniquePointer<Component> StageComponent::createMenu()
 {
-    return new VersionControlStageSelectionMenu();
+    return MakeUnique<VersionControlStageSelectionMenu>();
 }
 
 Image StageComponent::getIcon() const

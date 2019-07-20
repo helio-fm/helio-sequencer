@@ -743,6 +743,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
     int focusMaxKey = 0;
     float focusMinBeat = FLT_MAX;
     float focusMaxBeat = -FLT_MAX;
+    bool hasComponentsToFocusOn = false;
 
     forEachEventComponent(this->patternMap, e)
     {
@@ -753,6 +754,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
 
         if (shouldFocus && isActive)
         {
+            hasComponentsToFocusOn = true;
             focusMinKey = jmin(focusMinKey, key);
             focusMaxKey = jmax(focusMaxKey, key);
             focusMinBeat = jmin(focusMinBeat, nc->getBeat());
@@ -760,12 +762,19 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
         }
     }
 
-    // FIXME: zoom empty tracks properly
-
     this->updateActiveRangeIndicator();
 
     if (shouldFocus)
     {
+        // hardcoded zoom settings for empty tracks:
+        if (!hasComponentsToFocusOn)
+        {
+            focusMinKey = 32;
+            focusMaxKey = 96;
+            focusMinBeat = this->activeClip.getBeat();
+            focusMaxBeat = focusMinBeat + float(BEATS_PER_BAR * 6);
+        }
+
         this->zoomToArea(focusMinKey, focusMaxKey,
             focusMinBeat + this->activeClip.getBeat(),
             focusMaxBeat + this->activeClip.getBeat());
@@ -942,7 +951,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse(0.25f); // A bit of fancy animation
         break;
     case CommandIDs::RenameTrack:
-        if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveItem()))
+        if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
         {
             //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
             //inputDialog->onOk = trackNode->getRenameCallback();

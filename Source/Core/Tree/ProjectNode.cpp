@@ -285,9 +285,9 @@ bool ProjectNode::hasMenu() const noexcept
     return true;
 }
 
-Component *ProjectNode::createMenu()
+UniquePointer<Component> ProjectNode::createMenu()
 {
-    return new ProjectMenu(*this, MenuPanel::SlideRight);
+    return MakeUnique<ProjectMenu>(*this, MenuPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//
@@ -509,7 +509,7 @@ void ProjectNode::load(const ValueTree &tree)
     if (nullptr == this->findChildOfType<PatternEditorNode>())
     {
         // Try to place it after 'Versions' (presumably, index 1)
-        this->addChildTreeItem(new PatternEditorNode(), 1);
+        this->addChildNode(new PatternEditorNode(), 1);
     }
 
     this->broadcastReloadProjectContent();
@@ -556,7 +556,7 @@ void ProjectNode::importMidi(const File &file)
         const Clip clip(track->getPattern());
         track->getPattern()->insert(clip, false);
 
-        this->addChildTreeItem(track, -1, false);
+        this->addChildNode(track, -1, false);
 
         // Set some colour
         const int ci = r.nextInt(colours.size());
@@ -878,7 +878,7 @@ VCS::TrackedItem *ProjectNode::initTrackedItem(const Identifier &type,
     {
         auto *track = new PianoTrackNode("");
         track->setVCSUuid(id);
-        this->addChildTreeItem(track, -1, false);
+        this->addChildNode(track, -1, false);
         // add explicitly, since we aren't going to receive a notification:
         this->isTracksCacheOutdated = true;
         this->vcsItems.addIfNotAlreadyThere(track);
@@ -889,7 +889,7 @@ VCS::TrackedItem *ProjectNode::initTrackedItem(const Identifier &type,
     {
         auto *track = new AutomationTrackNode("");
         track->setVCSUuid(id);
-        this->addChildTreeItem(track, -1, false);
+        this->addChildNode(track, -1, false);
         this->isTracksCacheOutdated = true;
         this->vcsItems.addIfNotAlreadyThere(track);
         track->resetStateTo(newState);
@@ -915,7 +915,7 @@ bool ProjectNode::deleteTrackedItem(VCS::TrackedItem *item)
 {
     if (auto *treeItem = dynamic_cast<MidiTrackNode *>(item))
     {
-        TreeNode::deleteItem(treeItem, false); // don't broadcastRemoveTrack
+        TreeNode::deleteNode(treeItem, false); // don't broadcastRemoveTrack
         this->vcsItems.removeAllInstancesOf(item);
         this->isTracksCacheOutdated = true;
         return true;

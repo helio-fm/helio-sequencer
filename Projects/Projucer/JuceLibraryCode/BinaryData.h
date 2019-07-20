@@ -300,7 +300,7 @@ namespace BinaryData
     const int            arpeggiators_jsonSize = 64;
 
     extern const char*   chords_json;
-    const int            chords_jsonSize = 604;
+    const int            chords_jsonSize = 712;
 
     extern const char*   colourSchemes_json;
     const int            colourSchemes_jsonSize = 3279;
