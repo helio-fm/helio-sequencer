@@ -12198,15 +12198,17 @@ static const unsigned char temp_binary_data_99[] =
 "        { \"receiver\": \"PianoRoll\", \"command\": \"OctaveShiftDown\", \"key\": \"Shift + Cursor Down\" },\n"
 "\n"
 "        // Refactor selection\n"
-"        { \"receiver\": \"PianoRoll\", \"command\": \"CleanupOverlaps\", \"key\": \"O\" },\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"MelodicInversion\", \"key\": \"Alt + I\" },\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"CleanupOverlaps\", \"key\": \"Alt + O\" },\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"TweakVolumeRandom\", \"key\": \"Alt + V\" },\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"TweakVolumeFadeOut\", \"key\": \"Alt + F\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"InvertChordUp\", \"key\": \"Alt + Cursor Up\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"InvertChordUp\", \"key\": \"Command + Cursor Up\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"InvertChordUp\", \"key\": \"Control + Cursor Up\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"InvertChordDown\", \"key\": \"Alt + Cursor Down\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"InvertChordDown\", \"key\": \"Command + Cursor Down\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"InvertChordDown\", \"key\": \"Control + Cursor Down\" },\n"
-"        { \"receiver\": \"PianoRoll\", \"command\": \"TweakVolumeRandom\", \"key\": \"Shift + R\" },\n"
-"        { \"receiver\": \"PianoRoll\", \"command\": \"TweakVolumeFadeOut\", \"key\": \"Shift + F\" },\n"
 "\n"
 "        // Multiplets\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"Tuplet1\", \"key\": \"Alt + 1\" },\n"
@@ -14807,7 +14809,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 15350; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 15518; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3513; return scales_json;
         case 0xf8655f25:  numBytes = 158811; return translations_json;
         default: break;
