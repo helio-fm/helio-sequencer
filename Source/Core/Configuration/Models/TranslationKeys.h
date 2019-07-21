@@ -134,8 +134,12 @@ namespace I18n
         static const Identifier instrumentsReload = "menu::instruments::reload";
         static const Identifier instrumentsScanFolder = "menu::instruments::scanfolder";
         static const Identifier keySignatureAdd = "menu::keysignature::add";
+
         static const Identifier refactoringInverseDown = "menu::refactoring::inversedown";
         static const Identifier refactoringInverseUp = "menu::refactoring::inverseup";
+        static const Identifier refactoringMelodicInversion = "menu::refactoring::inversion";
+        static const Identifier refactoringRetrograde = "menu::refactoring::retrograde";
+        static const Identifier refactoringCleanup = "menu::refactoring::cleanup";
 
         namespace Project
         {
@@ -145,7 +149,6 @@ namespace I18n
             static const Identifier addTempo = "menu::project::addtempo";
             static const Identifier addTempoFailed = "menu::project::addtempo::failed";
             static const Identifier changeInstrument = "menu::project::change::instrument";
-            static const Identifier cleanup = "menu::project::cleanup";
             static const Identifier deleteConfirm = "menu::project::delete";
             static const Identifier deleteCancelled = "menu::project::delete::cancelled";
             static const Identifier editorLinear = "menu::project::editor::linear";

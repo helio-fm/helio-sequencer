@@ -203,18 +203,20 @@ namespace CommandIDs
         KeyShiftDown                    = 0x4025,
         OctaveShiftUp                   = 0x4026,
         OctaveShiftDown                 = 0x4027,
-        CleanupOverlaps                 = 0x4028,
-        InvertChordUp                   = 0x4029,
-        InvertChordDown                 = 0x402a,
+
+        CleanupOverlaps                 = 0x4030,
+        InvertChordUp                   = 0x4031,
+        InvertChordDown                 = 0x4032,
+        MelodicInversion                = 0x4033,
+        Retrograde                      = 0x4034,
+        TweakVolumeRandom               = 0x4035,
+        TweakVolumeFadeOut              = 0x4036,
 
         ShowArpeggiatorsPanel           = 0x4040,
         ShowVolumePanel                 = 0x4041,
         ShowRescalePanel                = 0x4042,
         ShowScalePanel                  = 0x4043,
         ShowChordPanel                  = 0x4044,
-
-        TweakVolumeRandom               = 0x4050,
-        TweakVolumeFadeOut              = 0x4051,
 
         // Version control
         VersionControlToggleQuickStash  = 0x4060,

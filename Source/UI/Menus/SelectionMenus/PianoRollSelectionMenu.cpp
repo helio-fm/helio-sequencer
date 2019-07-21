@@ -86,21 +86,25 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
         TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
 
-    const bool canInvert = this->lasso->getNumSelected() > 1;
+    const bool canRefactor = this->lasso->getNumSelected() > 1;
 
     menu.add(MenuItem::item(Icons::inverseUp, CommandIDs::InvertChordUp,
-        TRANS(I18n::Menu::refactoringInverseUp))->disabledIf(!canInvert)->closesMenu());
+        TRANS(I18n::Menu::refactoringInverseUp))->disabledIf(!canRefactor)->closesMenu());
 
     menu.add(MenuItem::item(Icons::inverseDown, CommandIDs::InvertChordDown,
-        TRANS(I18n::Menu::refactoringInverseDown))->disabledIf(!canInvert)->closesMenu());
+        TRANS(I18n::Menu::refactoringInverseDown))->disabledIf(!canRefactor)->closesMenu());
 
-    // TODO
-    // Cleanup
-    // Not implemented:
-    // Double time
-    // Half time
+    // todo icons for refactoring commands:
+    menu.add(MenuItem::item(Icons::refactor, CommandIDs::MelodicInversion,
+        TRANS(I18n::Menu::refactoringMelodicInversion))->disabledIf(!canRefactor)->closesMenu());
 
-    const bool canRescale = (this->harmonicContextScale != nullptr);
+    menu.add(MenuItem::item(Icons::refactor, CommandIDs::Retrograde,
+        TRANS(I18n::Menu::refactoringRetrograde))->disabledIf(!canRefactor)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::refactor, CommandIDs::CleanupOverlaps,
+        TRANS(I18n::Menu::refactoringCleanup))->disabledIf(!canRefactor)->closesMenu());
+
+    const bool canRescale = this->harmonicContextScale != nullptr;
 
     menu.add(MenuItem::item(Icons::arpeggiate, // todo new icon for this
         TRANS(I18n::Menu::Selection::notesRescale))->
