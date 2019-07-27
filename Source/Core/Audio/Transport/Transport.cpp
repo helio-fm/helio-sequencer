@@ -444,8 +444,8 @@ void Transport::instrumentRemovedPostAction()
 //===----------------------------------------------------------------------===//
 
 // FIXME: need to do something more reasonable than this workaround:
-#define updateLengthAndTimeIfNeeded(track) \
-    if (track->getTrackControllerNumber() == MidiTrack::tempoController) \
+#define updateLengthAndTimeIfNeeded(event) \
+    if (event->getTrackControllerNumber() == MidiTrack::tempoController) \
     { \
         this->seekToPosition(this->getSeekPosition()); \
     }

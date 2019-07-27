@@ -86,8 +86,7 @@ public:
     int getChromaticKey(int inScaleKey, int extraChromaticOffset,
         bool restrictToOneOctave) const noexcept;
 
-    // Base octave size - like chromatic octave for diatonic scales
-    // (hard-coded to 12, FIXME in future)
+    // Base octave size - like 12 tone chromatic octave for diatonic scales
     int getBasePeriod() const noexcept;
 
     //===------------------------------------------------------------------===//
