@@ -904,10 +904,37 @@ void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoi
         return;
     }
 
-    //bool didCheckpoint = !shouldCheckpoint;
+    bool didCheckpoint = !shouldCheckpoint;
 
-    // TODO
+    // 1. sort selection
+    Array<Note> sortedSelection;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        sortedSelection.addSorted(nc->getNote(), nc->getNote());
+    }
 
+    PianoChangeGroup groupBefore;
+    PianoChangeGroup groupAfter;
+
+    // 2. invert key intervals between each note and the previous one
+    // (as well as retrograde, this assumes selection is a melodic line,
+    // and will work weird for chord sequences)
+    int keyOffset = 0;
+    for (int i = 0; i < sortedSelection.size() - 1; ++i)
+    {
+        const auto &prev = sortedSelection.getReference(i);
+        const auto &next = sortedSelection.getReference(i + 1);
+        const int deltaKey = next.getKey() - prev.getKey();
+
+        // simple chromatic inversion, todo scale-aware?
+        keyOffset += deltaKey * -2;
+
+        groupBefore.add(next);
+        groupAfter.add(next.withDeltaKey(keyOffset));
+    }
+
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
 }
 
 
