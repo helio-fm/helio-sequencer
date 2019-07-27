@@ -861,10 +861,40 @@ void SequencerOperations::retrograde(Lasso &selection, bool shouldCheckpoint /*=
         return;
     }
 
-    //bool didCheckpoint = !shouldCheckpoint;
+    bool didCheckpoint = !shouldCheckpoint;
 
-    // TODO
+    // 1. sort selection
+    Array<Note> sortedSelection;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        sortedSelection.addSorted(nc->getNote(), nc->getNote());
+    }
 
+    PianoChangeGroup groupBefore;
+    PianoChangeGroup groupAfter;
+
+    // 2. pick a note at the start and at the end swap keys
+    // (assumes selection is a melodic line, will work weird for chord sequences)
+    int start = 0;
+    int end = sortedSelection.size() - 1;
+    do
+    {
+        const auto &n1 = sortedSelection.getReference(start);
+        const auto &n2 = sortedSelection.getReference(end);
+
+        groupBefore.add(n1);
+        groupAfter.add(n1.withKey(n2.getKey()));
+
+        groupBefore.add(n2);
+        groupAfter.add(n2.withKey(n1.getKey()));
+
+        start++;
+        end--;
+    }
+    while (start < end);
+
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
 }
 
 void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoint /*= true*/)
