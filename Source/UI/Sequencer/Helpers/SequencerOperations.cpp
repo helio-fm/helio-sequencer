@@ -631,15 +631,15 @@ void SequencerOperations::snapSelection(Lasso &selection, float snapsPerBeat, bo
 }
 
 
-void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint)
+void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    if (selection.getNumSelected() < 2)
     {
         return;
     }
-    
+
     bool didCheckpoint = !shouldCheckpoint;
-        
+
     // 1 convert this
     //    ----
     // ------------
@@ -654,7 +654,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
     do
     {
         PianoChangeGroup group1Before, group1After;
-        
+
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
             const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
@@ -666,7 +666,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             for (int j = 0; j < selection.getNumSelected(); ++j)
             {
-                NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
                 
                 if (nc->getKey() == nc2->getKey() &&
                     nc->getBeat() > nc2->getBeat() &&
@@ -719,7 +719,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             for (int j = 0; j < selection.getNumSelected(); ++j)
             {
-                NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
                 
                 if (nc->getKey() == nc2->getKey() &&
                     nc->getBeat() > nc2->getBeat() &&
@@ -749,11 +749,11 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
     
     
     // 3 convert this
-    // ------------    ------------
-    //    ---------       ---------
+    // ------------       ---------
+    //    ---------    ------------
     // into this
-    // ---             ---
-    //    ---------       ---------
+    // ---                ---------
+    //    ---------    ---         
     
     bool step3HasChanges = false;
 
@@ -772,7 +772,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             for (int j = 0; j < selection.getNumSelected(); ++j)
             {
-                NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
                 
                 if (nc->getKey() == nc2->getKey() &&
                     nc->getBeat() < nc2->getBeat() &&
@@ -853,6 +853,33 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
 
     applyPianoRemovals(removalGroup, didCheckpoint);
 }
+
+void SequencerOperations::retrograde(Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() < 2)
+    {
+        return;
+    }
+
+    //bool didCheckpoint = !shouldCheckpoint;
+
+    // TODO
+
+}
+
+void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() < 2)
+    {
+        return;
+    }
+
+    //bool didCheckpoint = !shouldCheckpoint;
+
+    // TODO
+
+}
+
 
 void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
 {

@@ -1024,9 +1024,13 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -12, true, &this->getTransport());
         break;
     case CommandIDs::CleanupOverlaps:
-        HYBRID_ROLL_BULK_REPAINT_START
-        SequencerOperations::removeOverlaps(this->getLassoSelection());
-        HYBRID_ROLL_BULK_REPAINT_END
+        SequencerOperations::cleanupOverlaps(this->getLassoSelection());
+        break;
+    case CommandIDs::MelodicInversion:
+        SequencerOperations::melodicInversion(this->getLassoSelection());
+        break;
+    case CommandIDs::Retrograde:
+        SequencerOperations::retrograde(this->getLassoSelection());
         break;
     case CommandIDs::InvertChordUp:
         SequencerOperations::invertChord(this->getLassoSelection(), 12, true, &this->getTransport());

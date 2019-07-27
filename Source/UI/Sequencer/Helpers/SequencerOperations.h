@@ -54,14 +54,13 @@ struct SequencerOperations final
         float targetBeat, float beatOffset, bool shouldCheckpoint = true);
     
     static void snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint = true);
-    static void removeOverlaps(Lasso &selection, bool shouldCheckpoint = true);
     static void removeDuplicates(Lasso &selection, bool shouldCheckpoint = true);
-    
+
     static void moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint = true);
     
     static bool arpeggiate(Lasso &selection,
         const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
-        float durationMultiplier = 1.f, float randomness = 0.f,
+        float durationMultiplier, float randomness,
         bool reversed = false, bool limitToChord = false,
         bool shouldCheckpoint = true);
 
@@ -89,6 +88,10 @@ struct SequencerOperations final
     
     static void invertChord(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);
+
+    static void cleanupOverlaps(Lasso &selection, bool shouldCheckpoint = true);
+    static void retrograde(Lasso &selection, bool shouldCheckpoint = true);
+    static void melodicInversion(Lasso &selection, bool shouldCheckpoint = true);
 
     static void applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint = true);
 
