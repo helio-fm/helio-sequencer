@@ -27,7 +27,6 @@ class AnnotationMenu final : public MenuPanel
 public:
     
     AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent &targetAnnotation);
-    void handleCommandMessage(int commandId) override;
     
 private:
     
