@@ -627,7 +627,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getTrackName());
             //inputDialog->onOk = trackNode->getRenameCallback();
             auto *newDialog = new TrackPropertiesDialog(this->project, trackNode);
-            App::Layout().showModalComponentUnowned(newDialog);
+            App::Layout().showModalDialog(newDialog);
         }
         break;
     case CommandIDs::DeleteClips:

@@ -26,6 +26,8 @@
 #include "SerializationKeys.h"
 #include "RootNode.h"
 #include "GenericTooltip.h"
+#include "SuccessTooltip.h"
+#include "FailTooltip.h"
 #include "MidiTrackNode.h"
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
@@ -52,7 +54,12 @@ MainLayout::MainLayout() :
     this->addChildComponent(this->tooltipContainer.get());
 
     this->headline.reset(new Headline());
+
+#if HELIO_HAS_CUSTOM_TITLEBAR
+    App::setWindowTitleComponent(this->headline.get());
+#else
     this->addAndMakeVisible(this->headline.get());
+#endif
 
     // TODO make it able for user to select a scheme in settings page
     this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
@@ -98,7 +105,8 @@ void MainLayout::show()
 
 void MainLayout::restoreLastOpenedPage()
 {
-    App::Workspace().activateTreeItem(App::Config().getProperty(Serialization::Config::lastShownPageId));
+    const auto lastPageId = App::Config().getProperty(Serialization::Config::lastShownPageId);
+    App::Workspace().selectTreeNodeWithId(lastPageId);
 }
 
 //===----------------------------------------------------------------------===//
@@ -153,14 +161,23 @@ void MainLayout::hideSelectionMenu()
 // Tooltips
 //===----------------------------------------------------------------------===//
 
-void MainLayout::showTooltip(const String &message, int timeoutMs)
+void MainLayout::showTooltip(const String &message, TooltipType type, int timeoutMs)
 {
-    this->tooltipContainer->showWithComponent(new GenericTooltip(message), timeoutMs);
-}
+    App::dismissAllModalComponents();
 
-void MainLayout::showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeoutMs)
-{
-    this->tooltipContainer->showWithComponent(newTooltip, callerScreenBounds, timeoutMs);
+    if (message.isNotEmpty())
+    {
+        this->tooltipContainer->showWithComponent(MakeUnique<GenericTooltip>(message), timeoutMs);
+    }
+
+    if (type == TooltipType::Success)
+    {
+        App::showModalComponentUnowned(new SuccessTooltip());
+    }
+    else if (type == TooltipType::Failure)
+    {
+        App::showModalComponentUnowned(new FailTooltip());
+    }
 }
 
 void MainLayout::hideTooltipIfAny()
@@ -168,31 +185,9 @@ void MainLayout::hideTooltipIfAny()
     this->tooltipContainer->showWithComponent(nullptr);
 }
 
-//===----------------------------------------------------------------------===//
-// Modal components
-//===----------------------------------------------------------------------===//
-
-void MainLayout::showModalComponentUnowned(Component *targetComponent)
+void MainLayout::showModalDialog(Component *targetComponent)
 {
-    // showing a dialog when another one is still present is kinda suspicious
-    //jassert(Component::getCurrentlyModalComponent() == nullptr);
-
-    this->hideModalComponentIfAny();
-
-    UniquePointer<Component> ownedTarget(targetComponent);
-    this->addChildComponent(ownedTarget.get());
-
-    Desktop::getInstance().getAnimator().animateComponent(ownedTarget.get(),
-        ownedTarget->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
-    
-    ownedTarget->toFront(false);
-    ownedTarget->enterModalState(true, nullptr, true);
-    ownedTarget.release();
-}
-
-void MainLayout::hideModalComponentIfAny()
-{
-    UniquePointer<Component> deleter(Component::getCurrentlyModalComponent());
+    App::showModalComponentUnowned(targetComponent);
 }
 
 // a hack!
@@ -201,7 +196,9 @@ Rectangle<int> MainLayout::getPageBounds() const
     Rectangle<int> r(this->getLocalBounds());
     r.removeFromLeft(SEQUENCER_SIDEBAR_WIDTH);
     r.removeFromRight(SEQUENCER_SIDEBAR_WIDTH);
+#if ! HELIO_HAS_CUSTOM_TITLEBAR
     r.removeFromTop(HEADLINE_HEIGHT);
+#endif
     return r;
 }
 
@@ -214,7 +211,9 @@ void MainLayout::resized()
     Rectangle<int> r(this->getLocalBounds());
     if (r.isEmpty()) { return; }
 
+#if ! HELIO_HAS_CUSTOM_TITLEBAR
     this->headline->setBounds(r.removeFromTop(HEADLINE_HEIGHT));
+#endif
 
     if (this->currentContent)
     {

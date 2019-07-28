@@ -106,7 +106,7 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
     {
-        App::Layout().showModalComponentUnowned(new ProgressTooltip(false));
+        App::showModalComponentUnowned(new ProgressTooltip(false));
         this->pluginScanner.runInitialScan();
         this->pluginsList->showScanButtonIf(false);
     }

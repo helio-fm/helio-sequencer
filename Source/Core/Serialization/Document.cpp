@@ -143,7 +143,7 @@ void Document::exportAs(const String &exportExtension,
         
         if (savedOk)
         {
-            App::Layout().showTooltip("dialog::document::export::done", 3000);
+            App::Layout().showTooltip("dialog::document::export::done");
         }
     }
 

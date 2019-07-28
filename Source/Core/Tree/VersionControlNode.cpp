@@ -142,8 +142,7 @@ void VersionControlNode::toggleQuickStash()
     {
         if (this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Layout().showTooltip("Cannot revert, stage is not empty!");
-            App::Layout().showModalComponentUnowned(new FailTooltip());
+            App::Layout().showTooltip("Cannot revert, stage is not empty!", MainLayout::TooltipType::Failure);
             return;
         }
         
@@ -154,8 +153,7 @@ void VersionControlNode::toggleQuickStash()
     {
         if (! this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Layout().showTooltip("Cannot reset, stage is empty!");
-            App::Layout().showModalComponentUnowned(new FailTooltip());
+            App::Layout().showTooltip("Cannot reset, stage is empty!", MainLayout::TooltipType::Failure);
             return;
         }
         

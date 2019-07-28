@@ -578,10 +578,10 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
 
     if (fc.browseForFileToSave(true))
     {
-        App::Layout().showModalComponentUnowned(new RenderDialog(this->project, fc.getResult(), extension));
+        App::Layout().showModalDialog(new RenderDialog(this->project, fc.getResult(), extension));
     }
 #else
-    App::Layout().showModalComponentUnowned(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
+    App::Layout().showModalDialog(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     }
 
@@ -598,8 +598,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
             const String safeName = TreeNode::createSafeName(this->project.getName()) + ".mid";
             File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
             this->project.exportMidi(midiExport);
-            App::Layout().showTooltip(TRANS(I18n::Menu::Project::renderSavedTo) + " '" + safeName + "'");
-            App::Layout().showModalComponentUnowned(new SuccessTooltip());
+            App::Layout().showTooltip(TRANS(I18n::Menu::Project::renderSavedTo) + " '" + safeName + "'", MainLayout::TooltipType::Success);
         }
 #else
         this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");

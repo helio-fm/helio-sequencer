@@ -103,6 +103,20 @@ public:
         this->dismissLayoutComponent();
     }
 
+
+    // Overridden to avoid assertions in ResizableWindow:
+#if JUCE_DEBUG
+    void addChildComponent(Component *child, int zOrder = -1)
+    {
+        Component::addChildComponent(child, zOrder);
+    }
+
+    void addAndMakeVisible(Component *child, int zOrder = -1)
+    {
+        Component::addAndMakeVisible(child, zOrder);
+    }
+#endif
+
 private:
 
 #if HELIO_HAS_CUSTOM_TITLEBAR
@@ -397,14 +411,36 @@ void App::recreateLayout()
     window->createLayoutComponent();
 }
 
+//===----------------------------------------------------------------------===//
+// Modal components
+//===----------------------------------------------------------------------===//
+
+void App::showModalComponentUnowned(Component *targetComponent)
+{
+    // showing a dialog when another one is still present is kinda suspicious
+    //jassert(Component::getCurrentlyModalComponent() == nullptr);
+
+    App::dismissAllModalComponents();
+
+    UniquePointer<Component> ownedTarget(targetComponent);
+
+    auto *window = static_cast<App *>(getInstance())->window.get();
+    window->addChildComponent(ownedTarget.get());
+
+    Desktop::getInstance().getAnimator().animateComponent(ownedTarget.get(),
+        ownedTarget->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
+
+    ownedTarget->toFront(false);
+    ownedTarget->enterModalState(true, nullptr, true);
+    ownedTarget.release();
+}
+
 void App::dismissAllModalComponents()
 {
-    while (Component *modal = Component::getCurrentlyModalComponent(0))
+    while (auto *modal = Component::getCurrentlyModalComponent(0))
     {
-        //jassertfalse;
-        DBG("Dismissing a modal component");
-        modal->exitModalState(0);
-        // Unowned components may leak here, use with caution
+        //DBG("Dismissing a modal component");
+        UniquePointer<Component> deleter(modal);
     }
 }
 
@@ -426,7 +462,6 @@ void App::setOpenGLRendererEnabled(bool shouldBeEnabled)
             Serialization::Config::disabledState.toString());
     }
 }
-
 
 bool App::isOpenGLRendererEnabled() noexcept
 {
