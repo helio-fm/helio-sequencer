@@ -93,11 +93,6 @@ NavigationHistory &Workspace::getNavigationHistory()
     return this->navigationHistory;
 }
 
-WeakReference<TreeNode> Workspace::getActiveTreeItem() const
-{
-    return this->navigationHistory.getCurrentItem();
-}
-
 void Workspace::navigateBackwardIfPossible()
 {
     TreeNode *treeItem = this->navigationHistory.goBack();
@@ -213,7 +208,7 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
 void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool deleteRemotely)
 {
     const auto projects = this->treeRoot->findChildrenOfType<ProjectNode>();
-    TreeNode *currentShowingItem = this->getActiveTreeItem();
+    TreeNode *currentShowingItem = this->navigationHistory.getCurrentItem();
     ProjectNode *projectToDelete = nullptr;
     ProjectNode *projectToSwitchTo = nullptr;
     
@@ -419,7 +414,7 @@ static TreeNode *selectActiveSubItemWithId(TreeNodeBase *item, const String &id)
     return nullptr;
 }
 
-void Workspace::activateTreeItem(const String &id)
+void Workspace::selectTreeNodeWithId(const String &id)
 {
     selectActiveSubItemWithId(this->treeRoot.get(), id);
 }

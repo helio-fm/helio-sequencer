@@ -567,7 +567,6 @@ public:
         if (isMouseOverButton)
         {
             g.setColour(colour.withAlpha(alpha * 0.05f));
-            //g.fillEllipse(x + 0.5f, y + 0.5f, diam - 1.f, diam - 1.f);
             g.fillAll();
         }
 

@@ -38,8 +38,7 @@ public:
     bool isInitialized() const noexcept;
     void stopPlaybackForAllProjects(); // on app suspend / shutdown
 
-    void activateTreeItem(const String &id);
-    WeakReference<TreeNode> getActiveTreeItem() const;
+    void selectTreeNodeWithId(const String &id);
 
     NavigationHistory &getNavigationHistory();
     void navigateBackwardIfPossible();
