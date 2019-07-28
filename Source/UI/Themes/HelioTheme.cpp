@@ -587,30 +587,30 @@ private:
 };
 
 void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
-        Graphics &g, int w, int h,
-        int titleSpaceX, int titleSpaceW,
-        const Image *icon,
-        bool drawTitleTextOnLeft)
+    Graphics &g, int w, int h,
+    int titleSpaceX, int titleSpaceW,
+    const Image *icon,
+    bool drawTitleTextOnLeft)
 {
 #if HELIO_DESKTOP
-    g.setColour(findDefaultColour(ResizableWindow::backgroundColourId));
-    g.fillAll();
+    const auto &theme = HelioTheme::getCurrentTheme();
+    g.setFillType({ theme.getBgCacheA(), {} });
+    g.fillRect(0, 0, w, h);
 
-    HelioTheme::drawNoise(*this, g, 1.f);
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+    g.fillRect(0, h - 2, w, 1);
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+    g.fillRect(0, h - 1, w, 1);
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f));
+    g.fillRect(0, 0, w, 1);
 
-    g.setColour(Colour(0x32000000));
-    g.drawHorizontalLine(h - 2, 0.f, float(w));
-
-    g.setColour(Colour(0x0cffffff));
-    g.drawHorizontalLine(h - 1, 0.f, float(w));
-
-    Font font(16.f, Font::plain);
+    static const Font font(16.f, Font::plain);
     g.setFont(font);
-    g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.33f));
 
-    const String title = "Helio " + App::getAppReadableVersion();
-    const int textW = font.getStringWidth(title);
-    g.drawText(title, titleSpaceX + 2, 0, textW, h - 2, Justification::centredLeft, true);
+    static const String title = "helio " + App::getAppReadableVersion();
+    static const int textW = font.getStringWidth(title);
+    g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.25f));
+    g.drawText(title, w - titleSpaceX - textW - 90, 0, textW, h - 2, Justification::centredLeft, true);
 #endif
 }
 
@@ -651,23 +651,26 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
         Button *closeButton,
         bool positionTitleBarButtonsOnLeft)
 {
-    const int buttonW = titleBarH - titleBarH / 8;
-    int x = titleBarX + titleBarW - buttonW - buttonW / 4;
+    const int buttonSize = 23; // titleBarH - titleBarH / 8;
+    const int y = ((titleBarH - titleBarY) / 2) - (buttonSize / 2) - 1;
+    int x = titleBarX + titleBarW - buttonSize - buttonSize / 4;
 
     if (closeButton != nullptr)
     {
-        closeButton->setBounds(x, titleBarY, buttonW, buttonW);
-        x += -(buttonW + buttonW / 4);
+        closeButton->setBounds(x, y, buttonSize, buttonSize);
+        x += -(buttonSize + buttonSize / 4);
     }
 
     if (maximiseButton != nullptr)
     {
-        maximiseButton->setBounds(x, titleBarY, buttonW, buttonW);
-        x += -(buttonW + buttonW / 4);
+        maximiseButton->setBounds(x, y, buttonSize, buttonSize);
+        x += -(buttonSize + buttonSize / 4);
     }
 
     if (minimiseButton != nullptr)
-        minimiseButton->setBounds(x, titleBarY, buttonW, buttonW);
+    {
+        minimiseButton->setBounds(x, y, buttonSize, buttonSize);
+    }
 }
 
 void HelioTheme::initResources()

@@ -70,7 +70,7 @@ public:
     static String translate(const String &plural, int64 number);
 
     static void recreateLayout();
-    static void dismissAllModalComponents();
+    static void setWindowTitleComponent(WeakReference<Component> component);
 
     static bool isOpenGLRendererEnabled() noexcept;
     static void setOpenGLRendererEnabled(bool shouldBeEnabled);
