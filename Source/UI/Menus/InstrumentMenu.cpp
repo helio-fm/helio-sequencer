@@ -38,41 +38,53 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 
     if (!instrumentNode.isSelected())
     {
-        menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::instrumentShowEditor))->withAction([this]()
-        {
-            instrumentNode.setSelected();
-            this->dismiss();
-        }));
+        menu.add(MenuItem::item(Icons::routing,
+            TRANS(I18n::Menu::instrumentShowEditor))->
+            closesMenu()->
+            withAction([this]()
+            {
+                instrumentNode.setSelected();
+            }));
     }
 
-    menu.add(MenuItem::item(Icons::ellipsis, TRANS(I18n::Menu::instrumentRename))->withAction([this]()
-    {
-        auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
-        dialog->onOk = this->instrumentNode.getRenameCallback();
-        App::Layout().showModalComponentUnowned(dialog.release());
-    }));
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS(I18n::Menu::instrumentRename))->
+        withAction([this]()
+        {
+            auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
+            dialog->onOk = this->instrumentNode.getRenameCallback();
+            App::Layout().showModalDialog(dialog.release());
+        }));
 
     // TODO:
     //menu.add(MenuItem::item(Icons::icon, TRANS(I18n::Menu::instrument::seticon)));
     //menu.add(MenuItem::item(Icons::colour, TRANS(I18n::Menu::instrument::setcolour)));
 
-    menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::instrumentAdd))->
-        withSubmenu()->disabledIf(!this->pluginScanner.hasInstruments())->withAction([this]()
-    {
-        this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
-    }));
+    menu.add(MenuItem::item(Icons::instrument,
+        TRANS(I18n::Menu::instrumentAdd))->
+        withSubmenu()->
+        disabledIf(!this->pluginScanner.hasInstruments())->
+        withAction([this]()
+        {
+            this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
+        }));
 
-    menu.add(MenuItem::item(Icons::audioPlugin, TRANS(I18n::Menu::instrumentAddEffect))->
-        withSubmenu()->disabledIf(!this->pluginScanner.hasEffects())->withAction([this]()
-    {
-        this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
-    }));
+    menu.add(MenuItem::item(Icons::audioPlugin,
+        TRANS(I18n::Menu::instrumentAddEffect))->
+        withSubmenu()->
+        disabledIf(!this->pluginScanner.hasEffects())->
+        withAction([this]()
+        {
+            this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
+        }));
 
-    menu.add(MenuItem::item(Icons::remove, TRANS(I18n::Menu::instrumentDelete))->withAction([this]()
-    {
-        this->instrumentNode.removeFromOrchestraAndDelete();
-        this->dismiss();
-    }));
+    menu.add(MenuItem::item(Icons::remove,
+        TRANS(I18n::Menu::instrumentDelete))->
+        closesMenu()->
+        withAction([this]()
+        {
+            this->instrumentNode.removeFromOrchestraAndDelete();
+        }));
 
     return menu;
 }
@@ -90,15 +102,17 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
     {
         if (!description.isInstrument)
         {
-            menu.add(MenuItem::item(Icons::audioPlugin, description.descriptiveName)->withAction([this, description]()
-            {
-                this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
+            menu.add(MenuItem::item(Icons::audioPlugin,
+                description.descriptiveName)->
+                closesMenu()->
+                withAction([this, description]()
                 {
-                    this->instrumentNode.updateChildrenEditors();
-                    this->instrumentNode.setSelected();
-                });
-                this->dismiss();
-            }));
+                    this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
+                    {
+                        this->instrumentNode.updateChildrenEditors();
+                        this->instrumentNode.setSelected();
+                    });
+                }));
         }
     }
 
@@ -118,15 +132,17 @@ MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
     {
         if (description.isInstrument)
         {
-            menu.add(MenuItem::item(Icons::audioPlugin, description.descriptiveName)->withAction([this, description]()
-            {
-                this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
+            menu.add(MenuItem::item(Icons::audioPlugin,
+                description.descriptiveName)->
+                closesMenu()->
+                withAction([this, description]()
                 {
-                    this->instrumentNode.updateChildrenEditors();
-                    this->instrumentNode.setSelected();
-                });
-                this->dismiss();
-            }));
+                    this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
+                    {
+                        this->instrumentNode.updateChildrenEditors();
+                        this->instrumentNode.setSelected();
+                    });
+                }));
         }
     }
 

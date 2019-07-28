@@ -39,7 +39,9 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::create, TRANS(I18n::Menu::Selection::pluginInit))->withAction([this]()
+    menu.add(MenuItem::item(Icons::create, TRANS(I18n::Menu::Selection::pluginInit))->
+        closesMenu()->
+        withAction([this]()
     {
         App::Workspace().getAudioCore().addInstrument(this->pluginDescription,
             this->pluginDescription.descriptiveName,
@@ -47,12 +49,14 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
         {
             this->orchestraNode.addInstrumentNode(instrument);
         });
-        this->dismiss();
     }));
 
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentNode>();
     menu.add(MenuItem::item(Icons::audioPlugin, TRANS(I18n::Menu::Selection::pluginPlug))->
-        withSubmenu()->disabledIf(instruments.isEmpty())->withAction([this]()
+        withSubmenu()->
+        disabledIf(instruments.isEmpty())->
+        closesMenu()->
+        withAction([this]()
     {
         this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
     }));
@@ -60,7 +64,6 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
     menu.add(MenuItem::item(Icons::remove, TRANS(I18n::Menu::Selection::pluginRemove))->withAction([this]()
     {
         this->pluginScanner.removePlugin(this->pluginDescription);
-        this->dismiss();
     }));
 
     return menu;
@@ -70,7 +73,9 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->
+        withTimer()->
+        withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -78,15 +83,15 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentNode>();
     for (const auto instrumentNode : instruments)
     {
-        menu.add(MenuItem::item(Icons::instrument, instrumentNode->getName())->withAction([this, instrumentNode]()
+        menu.add(MenuItem::item(Icons::instrument, instrumentNode->getName())->
+            closesMenu()->
+            withAction([this, instrumentNode]()
         {
             instrumentNode->getInstrument()->addNodeToFreeSpace(this->pluginDescription,
                 [this, instrumentNode](Instrument *instrument)
                 {
                     instrumentNode->updateChildrenEditors();
                 });
-
-            this->dismiss();
         }));
     }
 

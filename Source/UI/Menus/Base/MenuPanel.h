@@ -53,13 +53,14 @@ public:
     void resized() override;
     void handleCommandMessage (int commandId) override;
 
-protected:
+private:
 
     friend class MenuItemComponent;
 
     virtual void dismiss() const
     {
-        if (auto parent = this->getParentComponent())
+        // assumes being owned by a modal component:
+        if (auto *parent = this->getParentComponent())
         {
             parent->exitModalState(0);
         }
