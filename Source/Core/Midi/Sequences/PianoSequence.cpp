@@ -37,7 +37,6 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFo
 {
     this->clearUndoHistory();
     this->checkpoint();
-    this->reset();
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {

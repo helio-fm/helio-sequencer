@@ -352,7 +352,7 @@ Array<MidiTrack *> ProjectNode::getTracks() const
     // now get all layers inside a tree hierarchy
     this->collectTracks(tracks);
     
-    // and explicitly add the only non-tree-owned layers
+    // and explicitly add the only non-tree-owned tracks
     tracks.add(this->timeline->getAnnotations());
     tracks.add(this->timeline->getKeySignatures());
     tracks.add(this->timeline->getTimeSignatures());
@@ -370,14 +370,13 @@ Array<MidiTrack *> ProjectNode::getSelectedTracks() const
 
 void ProjectNode::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected /*= false*/) const
 {
-    const Array<MidiTrackNode *> treeItems =
-        this->findChildrenOfType<MidiTrackNode>();
+    const auto trackNodes = this->findChildrenOfType<MidiTrackNode>();
     
-    for (int i = 0; i < treeItems.size(); ++i)
+    for (int i = 0; i < trackNodes.size(); ++i)
     {
-        if (treeItems.getUnchecked(i)->isSelected() || !onlySelected)
+        if (trackNodes.getUnchecked(i)->isSelected() || !onlySelected)
         {
-            resultArray.add(treeItems.getUnchecked(i));
+            resultArray.add(trackNodes.getUnchecked(i));
         }
     }
 }
@@ -536,9 +535,8 @@ void ProjectNode::importMidi(const File &file)
 {
     MidiFile tempFile;
     FileInputStream in(file);
-    const bool readOk = tempFile.readFrom(in);
 
-    if (!readOk)
+    if (!tempFile.readFrom(in))
     {
         DBG("Midi file appears corrupted");
         return;
@@ -546,27 +544,88 @@ void ProjectNode::importMidi(const File &file)
 
     Random r;
     const auto colours = MenuPanel::getColoursList().getAllValues();
+    const auto timeFormat = tempFile.getTimeFormat();
+
+    this->timeline->reset();
 
     for (int i = 0; i < tempFile.getNumTracks(); i++)
     {
-        const MidiMessageSequence *currentTrack = tempFile.getTrack(i);
-        const String trackName = "Track " + String(i);
-        MidiTrackNode *track = new PianoTrackNode(trackName);
+        const auto *importedTrack = tempFile.getTrack(i);
 
-        const Clip clip(track->getPattern());
-        track->getPattern()->insert(clip, false);
+        bool hasPianoEvents = false;
+        bool hasControllerEvents = false;
+        int trackControllerNumber = 0;
+        String trackName = "Track " + String(i);
 
-        this->addChildNode(track, -1, false);
+        const int ci = r.nextInt(colours.size()); // set some random colour
+        const Colour colour = Colour::fromString(colours[ci]);
 
-        // Set some colour
-        const int ci = r.nextInt(colours.size());
-        track->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
+        for (int j = 0; j < importedTrack->getNumEvents(); ++j)
+        {
+            const auto *event = importedTrack->getEventPointer(j);
+            if (event->message.isTrackNameEvent())
+            {
+                trackName = event->message.getTextFromTextMetaEvent();
+            }
+            else if (event->message.isController())
+            {
+                trackControllerNumber = event->message.getControllerNumber();
+                hasControllerEvents = true;
+            }
+            else if (event->message.isTempoMetaEvent())
+            {
+                trackControllerNumber = MidiTrack::tempoController;
+                hasControllerEvents = true;
+            }
+            else if (event->message.isNoteOnOrOff())
+            {
+                hasPianoEvents = true;
+            }
+        }
 
-        track->importMidi(*currentTrack, tempFile.getTimeFormat());
+        if (hasControllerEvents)
+        {
+            const String controllerName = trackControllerNumber == MidiTrack::tempoController ?
+                "Tempo" : MidiMessage::getControllerName(trackControllerNumber);
+
+            MidiTrackNode *trackNode = new AutomationTrackNode(trackName + " - " + controllerName);
+
+            const Clip clip(trackNode->getPattern());
+            trackNode->getPattern()->insert(clip, false);
+
+            this->addChildNode(trackNode, -1, false);
+
+            trackNode->setTrackControllerNumber(trackControllerNumber, dontSendNotification);
+            trackNode->setTrackColour(colour, dontSendNotification);
+            trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
+        }
+
+        if (hasPianoEvents)
+        {
+            MidiTrackNode *trackNode = new PianoTrackNode(trackName);
+
+            const Clip clip(trackNode->getPattern());
+            trackNode->getPattern()->insert(clip, false);
+
+            this->addChildNode(trackNode, -1, false);
+
+            trackNode->setTrackColour(colour, dontSendNotification);
+            trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
+        }
+
+        // if the track contains any key/time signatures, try importing them all,
+        // skipping others (assuming that there might be cases where tracks contain
+        // events of different types, e.g. mostly notes but also some meta events):
+        this->timeline->getAnnotations()->getSequence()->importMidi(*importedTrack, timeFormat);
+        this->timeline->getKeySignatures()->getSequence()->importMidi(*importedTrack, timeFormat);
+        this->timeline->getTimeSignatures()->getSequence()->importMidi(*importedTrack, timeFormat);
     }
     
+    this->isTracksCacheOutdated = true;
     this->broadcastReloadProjectContent();
-    this->broadcastChangeProjectBeatRange();
+    const auto range = this->broadcastChangeProjectBeatRange();
+    this->broadcastChangeViewBeatRange(range.getX(), range.getY());
+
     this->getDocument()->save();
 }
 
@@ -788,6 +847,7 @@ void ProjectNode::exportMidi(File &file) const
     for (const auto *track : tracks)
     {
         MidiMessageSequence sequence;
+        // todo add more meta events like track name
 
         if (track->getPattern() != nullptr)
         {

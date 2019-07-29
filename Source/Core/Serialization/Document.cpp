@@ -138,12 +138,13 @@ void Document::exportAs(const String &exportExtension,
 
     if (fc.browseForFileToSave(true))
     {
+        // FIXME: at this point, edited filename might come without extension
         File result(fc.getResult());
         const bool savedOk = this->owner.onDocumentExport(result);
         
         if (savedOk)
         {
-            App::Layout().showTooltip("dialog::document::export::done", 3000);
+            App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone), 3000);
         }
     }
 

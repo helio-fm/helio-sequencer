@@ -34,7 +34,6 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence, shor
 {
     this->clearUndoHistory();
     this->checkpoint();
-    this->reset();
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {

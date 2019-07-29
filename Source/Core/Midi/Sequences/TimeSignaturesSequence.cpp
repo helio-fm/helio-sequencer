@@ -35,7 +35,6 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence, sho
 {
     this->clearUndoHistory();
     this->checkpoint();
-    this->reset();
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {

@@ -36,16 +36,21 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence, short t
 {
     this->clearUndoHistory();
     this->checkpoint();
-    this->reset();
     
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
         const MidiMessage &message = sequence.getEventPointer(i)->message;
+        const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
         if (message.isController())
         {
-            const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
             const int controllerValue = message.getControllerValue();
-            const AutomationEvent event(this, startBeat, float(controllerValue));
+            const AutomationEvent event(this, startBeat, float(controllerValue) / 127.f);
+            this->importMidiEvent<AutomationEvent>(event);
+        }
+        else if (message.isTempoMetaEvent())
+        {
+            const float controllerValue = Transport::getControllerValueByTempo(message.getTempoSecondsPerQuarterNote());
+            const AutomationEvent event(this, startBeat, controllerValue);
             this->importMidiEvent<AutomationEvent>(event);
         }
     }

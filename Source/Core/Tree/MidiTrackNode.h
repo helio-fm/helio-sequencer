@@ -44,8 +44,6 @@ public:
     void showPage() override;
     void safeRename(const String &newName, bool sendNotifications) override;
 
-    void importMidi(const MidiMessageSequence &sequence, short timeFormat);
-
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//

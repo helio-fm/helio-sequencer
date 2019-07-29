@@ -78,6 +78,7 @@ namespace I18n
         static const Identifier deleteProjectConfirmProceed = "dialog::deleteproject::confirm::proceed";
         static const Identifier deleteProjectProceed = "dialog::deleteproject::proceed";
         static const Identifier documentExport = "dialog::document::export";
+        static const Identifier documentExportDone = "dialog::document::export::done";
         static const Identifier documentImport = "dialog::document::import";
         static const Identifier documentLoad = "dialog::document::load";
         static const Identifier documentSave = "dialog::document::save";

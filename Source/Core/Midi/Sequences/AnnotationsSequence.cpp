@@ -35,12 +35,11 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence, short 
 {
     this->clearUndoHistory();
     this->checkpoint();
-    this->reset();
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
         const MidiMessage &message = sequence.getEventPointer(i)->message;
-        if (message.isTextMetaEvent())
+        if (message.isTextMetaEvent() && !message.isTrackNameEvent())
         {
             const String text = message.getTextFromTextMetaEvent();
             const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);

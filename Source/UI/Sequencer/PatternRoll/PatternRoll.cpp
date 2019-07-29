@@ -164,6 +164,8 @@ void PatternRoll::reloadRollContent()
     this->tracks.clearQuick();
     this->rows.clearQuick();
 
+    HYBRID_ROLL_BULK_REPAINT_START
+
     for (auto *track : this->project.getTracks())
     {
         // Only show tracks with patterns (i.e. ignore timeline tracks)
@@ -185,6 +187,8 @@ void PatternRoll::reloadRollContent()
     }
 
     this->repaint(this->viewport.getViewArea());
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 int PatternRoll::getNumRows() const noexcept

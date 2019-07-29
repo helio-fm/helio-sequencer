@@ -93,7 +93,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
 
     if (isTempoTrack)
     {
-        cc = MidiMessage::tempoMetaEvent(Transport::getTempoByCV(this->controllerValue));
+        cc = MidiMessage::tempoMetaEvent(Transport::getTempoByControllerValue(this->controllerValue));
     }
     else
     {
@@ -128,7 +128,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                 const double interpolatedTs = (interpolatedBeat + clip.getBeat()) * timeFactor;
                 if (isTempoTrack)
                 {
-                    MidiMessage ci(MidiMessage::tempoMetaEvent(Transport::getTempoByCV(interpolatedValue)));
+                    MidiMessage ci(MidiMessage::tempoMetaEvent(Transport::getTempoByControllerValue(interpolatedValue)));
                     ci.setTimeStamp(interpolatedTs);
                     outSequence.addEvent(ci, timeOffset);
                 }
@@ -209,7 +209,7 @@ AutomationEvent AutomationEvent::withParameters(const ValueTree &parameters) con
 
 int AutomationEvent::getControllerValueAsBPM() const noexcept
 {
-    const int msPerQuarterNote = Transport::getTempoByCV(this->controllerValue) / 1000;
+    const int msPerQuarterNote = Transport::getTempoByControllerValue(this->controllerValue) / 1000;
     return 60000 / jmax(1, msPerQuarterNote);
 }
 

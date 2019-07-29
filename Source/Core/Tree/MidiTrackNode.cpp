@@ -71,11 +71,6 @@ void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
     this->setXPath(fixedName, sendNotifications);
 }
 
-void MidiTrackNode::importMidi(const MidiMessageSequence &sequence, short timeFormat)
-{
-    this->sequence->importMidi(sequence, timeFormat);
-}
-
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//
