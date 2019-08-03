@@ -28,7 +28,7 @@ class ProjectPage;
 class Origami;
 class TrackMap;
 class Transport;
-class ProjectInfo;
+class ProjectMetadata;
 class ProjectTimeline;
 class UndoStack;
 class Pattern;
@@ -62,7 +62,7 @@ public:
     String getStats() const;
 
     Transport &getTransport() const noexcept;
-    ProjectInfo *getProjectInfo() const noexcept;
+    ProjectMetadata *getProjectInfo() const noexcept;
     ProjectTimeline *getTimeline() const noexcept;
     HybridRollEditMode &getEditMode() noexcept;
     HybridRoll *getLastFocusedRoll() const;
@@ -108,7 +108,6 @@ public:
     //===------------------------------------------------------------------===//
 
     Array<MidiTrack *> getTracks() const;
-    Array<MidiTrack *> getSelectedTracks() const;
     Point<float> getProjectRangeInBeats() const;
     StringArray getAllTrackNames() const;
 
@@ -146,7 +145,7 @@ public:
     void broadcastRemoveClip(const Clip &clip);
     void broadcastPostRemoveClip(Pattern *const pattern);
 
-    void broadcastChangeProjectInfo(const ProjectInfo *info);
+    void broadcastChangeProjectInfo(const ProjectMetadata *info);
     void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
     void broadcastReloadProjectContent();
     Point<float> broadcastChangeProjectBeatRange();
@@ -202,7 +201,7 @@ private:
     ListenerList<ProjectListener> changeListeners;
     UniquePointer<ProjectPage> projectPage;
     ReadWriteLock tracksListLock;
-    UniquePointer<ProjectInfo> info;
+    UniquePointer<ProjectMetadata> metadata;
     UniquePointer<ProjectTimeline> timeline;
 
     WeakReference<TreeNode> lastShownTrack;

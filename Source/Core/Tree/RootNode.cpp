@@ -34,7 +34,7 @@
 #include "KeySignaturesSequence.h"
 #include "TimeSignaturesSequence.h"
 #include "AutomationEvent.h"
-#include "ProjectInfo.h"
+#include "ProjectMetadata.h"
 #include "WorkspaceMenu.h"
 
 #include "MainLayout.h"

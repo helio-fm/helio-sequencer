@@ -77,7 +77,7 @@
 #include "../../Source/Core/Tree/OrchestraPitNode.cpp"
 #include "../../Source/Core/Tree/PatternEditorNode.cpp"
 #include "../../Source/Core/Tree/PianoTrackNode.cpp"
-#include "../../Source/Core/Tree/ProjectInfo.cpp"
+#include "../../Source/Core/Tree/ProjectMetadata.cpp"
 #include "../../Source/Core/Tree/ProjectTimeline.cpp"
 #include "../../Source/Core/Tree/ProjectNode.cpp"
 #include "../../Source/Core/Tree/RootNode.cpp"

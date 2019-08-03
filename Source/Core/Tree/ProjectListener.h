@@ -22,7 +22,7 @@ class MidiEvent;
 class MidiSequence;
 class Pattern;
 class Clip;
-class ProjectInfo;
+class ProjectMetadata;
 
 class ProjectListener
 {
@@ -45,7 +45,7 @@ public:
     virtual void onRemoveTrack(MidiTrack *const track) = 0;
     virtual void onChangeTrackProperties(MidiTrack *const track) = 0;
 
-    virtual void onChangeProjectInfo(const ProjectInfo *info) {}
+    virtual void onChangeProjectInfo(const ProjectMetadata *info) {}
     virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;
 
     // Any editor should restrict editing to a single clip of one track at time.

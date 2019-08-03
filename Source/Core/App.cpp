@@ -341,19 +341,7 @@ String App::getAppReadableVersion()
     
     if (v.isEmpty())
     {
-        if (String(APP_VERSION_REVISION).getIntValue() > 0)
-        {
-            v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR << "." << APP_VERSION_REVISION;
-        }
-        else
-        {
-            v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR;
-        }
-
-        if (String(APP_VERSION_NAME).isNotEmpty())
-        {
-            v << " \"" << APP_VERSION_NAME << "\"";
-        }
+        v << ProjectInfo::versionString;
 
 #if JUCE_64BIT
         v << " (64-bit)";
@@ -397,7 +385,7 @@ String App::getHumanReadableDate(const Time &date)
 
         return timeString.trimEnd();
     }
-    if (dateIsYesterday(date))
+    else if (dateIsYesterday(date))
     {
         return TRANS(I18n::Common::yesterday);
     }

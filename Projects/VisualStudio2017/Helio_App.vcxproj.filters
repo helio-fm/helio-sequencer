@@ -787,7 +787,7 @@
     <ClCompile Include="..\..\Source\Core\Tree\PianoTrackNode.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\ProjectInfo.cpp">
+    <ClCompile Include="..\..\Source\Core\Tree\ProjectMetadata.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\ProjectTimeline.cpp">
@@ -3579,7 +3579,7 @@
     <ClInclude Include="..\..\Source\Core\Tree\PianoTrackNode.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\ProjectInfo.h">
+    <ClInclude Include="..\..\Source\Core\Tree\ProjectMetadata.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectTimeline.h">

@@ -44,7 +44,7 @@
 #include "HybridRoll.h"
 #include "UndoStack.h"
 
-#include "ProjectInfo.h"
+#include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
 #include "ProjectListener.h"
 #include "ProjectPage.h"
@@ -86,19 +86,18 @@ void ProjectNode::initialize()
 {
     this->isTracksCacheOutdated = true;
 
-    this->undoStack.reset(new UndoStack(*this));
-
-    this->autosaver.reset(new Autosaver(*this));
+    this->undoStack = MakeUnique<UndoStack>(*this);
+    this->autosaver = MakeUnique<Autosaver>(*this);
 
     auto &orchestra = App::Workspace().getAudioCore();
     auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
-    this->transport.reset(new Transport(orchestra, audioCoreSleepTimer));
+    this->transport = MakeUnique<Transport>(orchestra, audioCoreSleepTimer);
     this->addListener(this->transport.get());
 
-    this->info.reset(new ProjectInfo(*this));
-    this->vcsItems.add(this->info.get());
+    this->metadata = MakeUnique<ProjectMetadata>(*this);
+    this->vcsItems.add(this->metadata.get());
 
-    this->timeline.reset(new ProjectTimeline(*this, "Project Timeline"));
+    this->timeline = MakeUnique<ProjectTimeline>(*this, "Project Timeline");
     this->vcsItems.add(this->timeline.get());
 
     this->transport->seekToPosition(0.0);
@@ -122,7 +121,7 @@ ProjectNode::~ProjectNode()
     this->sequencerLayout = nullptr;
 
     this->timeline = nullptr;
-    this->info = nullptr;
+    this->metadata = nullptr;
 
     this->removeListener(this->transport.get());
     this->transport = nullptr;
@@ -157,10 +156,10 @@ Transport &ProjectNode::getTransport() const noexcept
     return (*this->transport);
 }
 
-ProjectInfo *ProjectNode::getProjectInfo() const noexcept
+ProjectMetadata *ProjectNode::getProjectInfo() const noexcept
 {
-    jassert(this->info);
-    return this->info.get();
+    jassert(this->metadata);
+    return this->metadata.get();
 }
 
 ProjectTimeline *ProjectNode::getTimeline() const noexcept
@@ -203,7 +202,7 @@ void ProjectNode::safeRename(const String &newName, bool sendNotifications)
 
     if (sendNotifications)
     {
-        this->broadcastChangeProjectInfo(this->info.get());
+        this->broadcastChangeProjectInfo(this->metadata.get());
 
         App::Workspace().getUserProfile()
             .onProjectLocalInfoUpdated(this->getId(), this->getName(),
@@ -360,14 +359,6 @@ Array<MidiTrack *> ProjectNode::getTracks() const
     return tracks;
 }
 
-Array<MidiTrack *> ProjectNode::getSelectedTracks() const
-{
-    const ScopedReadLock lock(this->tracksListLock);
-    Array<MidiTrack *> tracks;
-    this->collectTracks(tracks, true);
-    return tracks;
-}
-
 void ProjectNode::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected /*= false*/) const
 {
     const auto trackNodes = this->findChildrenOfType<MidiTrackNode>();
@@ -463,7 +454,7 @@ void ProjectNode::reset()
 {
     this->transport->seekToPosition(0.f);
     this->vcsItems.clear();
-    this->vcsItems.add(this->info.get());
+    this->vcsItems.add(this->metadata.get());
     this->vcsItems.add(this->timeline.get());
     this->undoStack->clearUndoHistory();
     TreeNode::reset();
@@ -476,7 +467,7 @@ ValueTree ProjectNode::save() const
     tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
     tree.setProperty(Serialization::Core::projectId, this->id, nullptr);
 
-    tree.appendChild(this->info->serialize(), nullptr);
+    tree.appendChild(this->metadata->serialize(), nullptr);
     tree.appendChild(this->timeline->serialize(), nullptr);
     tree.appendChild(this->undoStack->serialize(), nullptr);
     tree.appendChild(this->transport->serialize(), nullptr);
@@ -498,7 +489,7 @@ void ProjectNode::load(const ValueTree &tree)
 
     this->id = root.getProperty(Serialization::Core::projectId, Uuid().toString());
 
-    this->info->deserialize(root);
+    this->metadata->deserialize(root);
     this->timeline->deserialize(root);
 
     // Proceed with basic properties and children
@@ -742,7 +733,7 @@ void ProjectNode::broadcastPostRemoveClip(Pattern *const pattern)
     this->sendChangeMessage();
 }
 
-void ProjectNode::broadcastChangeProjectInfo(const ProjectInfo *info)
+void ProjectNode::broadcastChangeProjectInfo(const ProjectMetadata *info)
 {
     this->changeListeners.call(&ProjectListener::onChangeProjectInfo, info);
     this->sendChangeMessage();
@@ -957,9 +948,9 @@ VCS::TrackedItem *ProjectNode::initTrackedItem(const Identifier &type,
     }
     else if (type == Serialization::Core::projectInfo)
     {
-        this->info->setVCSUuid(id);
-        this->info->resetStateTo(newState);
-        return this->info.get();
+        this->metadata->setVCSUuid(id);
+        this->metadata->resetStateTo(newState);
+        return this->metadata.get();
     }
     else if (type == Serialization::Core::projectTimeline)
     {

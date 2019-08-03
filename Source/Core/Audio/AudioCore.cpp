@@ -388,7 +388,6 @@ void AudioCore::deserializeDeviceManager(const ValueTree &tree)
 
 ValueTree AudioCore::serialize() const
 {
-    DBG("AudioCore::serialize");
     using namespace Serialization;
 
     // serializes all settings and instruments (with their graphs)
@@ -411,7 +410,6 @@ ValueTree AudioCore::serialize() const
 
 void AudioCore::deserialize(const ValueTree &tree)
 {
-    DBG("AudioCore::deserialize");
     using namespace Serialization;
 
     // re-creates deviceManager's graph each time on deserialization

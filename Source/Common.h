@@ -105,11 +105,6 @@ inline float roundf(float x)
 }
 #endif
 
-#define APP_VERSION_MAJOR "2"
-#define APP_VERSION_MINOR "3"
-#define APP_VERSION_REVISION "0"
-#define APP_VERSION_NAME ""
-
 #if JUCE_ANDROID || JUCE_IOS
 #   define HELIO_MOBILE 1
 #else

@@ -66,14 +66,12 @@ public:
         {
             return true;
         }
+        
+        static const auto v0 = this->getVersionComponents(ProjectInfo::versionString);
+        const auto v1 = this->getVersionComponents(this->getVersion());
 
-        static const int v0 = String(APP_VERSION_MAJOR).getIntValue();
-        static const int v1 = String(APP_VERSION_MINOR).getIntValue();
-        static const int v2 = String(APP_VERSION_REVISION).getIntValue();
-
-        const auto v = this->getVersionComponents(this->getVersion());
-        return (v[0] > v0) || (v[0] == v0 && v[1] > v1) ||
-            (v[0] == v0 && v[1] == v1 && v[2] > v2);
+        return (v1[0] > v0[0]) || (v1[0] == v0[0] && v1[1] > v0[1]) ||
+            (v1[0] == v0[0] && v1[1] == v0[1] && v1[2] > v0[2]);
     }
 
     JUCE_LEAK_DETECTOR(AppVersionDto)

@@ -21,7 +21,7 @@
 #include "ProjectNode.h"
 #include "VersionControl.h"
 #include "Head.h"
-#include "ProjectInfo.h"
+#include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
 #include "FailTooltip.h"
 #include "SuccessTooltip.h"

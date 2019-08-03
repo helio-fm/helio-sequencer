@@ -25,7 +25,7 @@
 #include "VersionControlNode.h"
 #include "PlayerThread.h"
 #include "ProjectNode.h"
-#include "ProjectInfo.h"
+#include "ProjectMetadata.h"
 #include "HelioTheme.h"
 #include "HelioCallout.h"
 #include "ProjectMenu.h"

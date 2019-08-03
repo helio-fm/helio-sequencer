@@ -23,26 +23,26 @@ class ProjectNode;
 #include "TrackedItem.h"
 #include "Delta.h"
 
-class ProjectInfo :
+class ProjectMetadata final :
     public Serializable,
     public VCS::TrackedItem
 {
 public:
 
-    explicit ProjectInfo(ProjectNode &parent);
+    explicit ProjectMetadata(ProjectNode &parent);
 
-    int64 getStartTimestamp() const;
+    int64 getStartTimestamp() const noexcept;
 
-    String getLicense() const;
+    String getLicense() const noexcept;
     void setLicense(String val);
 
-    String getFullName() const;
+    String getFullName() const noexcept;
     void setFullName(String val);
 
-    String getAuthor() const;
+    String getAuthor() const noexcept;
     void setAuthor(String val);
 
-    String getDescription() const;
+    String getDescription() const noexcept;
     void setDescription(String val);
 
     //===------------------------------------------------------------------===//
@@ -97,5 +97,5 @@ private:
     // int32 getMiddleC() const noexcept;
     // Temperament temperament;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectInfo);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMetadata);
 };

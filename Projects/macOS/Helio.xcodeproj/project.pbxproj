@@ -1377,13 +1377,6 @@
 			path = ../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		36C559FA45647F23A8907147 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ProjectInfo.cpp;
-			path = ../../Source/Core/Tree/ProjectInfo.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		36F5E7A2FC732CDA57B7848A = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -3204,6 +3197,13 @@
 			path = ../../Resources/Icons/zoomIn.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		8A4B64DCE3FDA798D0632391 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ProjectMetadata.h;
+			path = ../../Source/Core/Tree/ProjectMetadata.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		8ACC97861C00C49EF341371C = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4317,6 +4317,13 @@
 			path = ../../Source/UI/Sequencer/HybridRollEditMode.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		C0F31CBDDFD070E47C6C05EB = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = ProjectMetadata.cpp;
+			path = ../../Source/Core/Tree/ProjectMetadata.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		C12CE47F3888AFF2D684E4B7 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4693,13 +4700,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = Playhead.cpp;
 			path = ../../Source/UI/Sequencer/Header/Playhead.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		D32EF73B782E5269258844A2 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ProjectInfo.h;
-			path = ../../Source/Core/Tree/ProjectInfo.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		D3381B9241A83327DFE9B5C8 = {
@@ -6109,8 +6109,8 @@
 				1D7CDF962A863B66F1352280,
 				C30363796553E324FD3F7541,
 				95814179DCC11388EA8DC62C,
-				36C559FA45647F23A8907147,
-				D32EF73B782E5269258844A2,
+				C0F31CBDDFD070E47C6C05EB,
+				8A4B64DCE3FDA798D0632391,
 				5EB631A033A543A343A0A138,
 				98A8C0A00E7DACE270487093,
 				20B1E32E18E1E4BD94C73F60,
@@ -7061,7 +7061,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_DEBUG=1",
 					"DEBUG=1",
-					"JUCE_DONT_DECLARE_PROJECTINFO=1",
 					"JUCER_XCODE_MAC_DC265B5E=1",
 					"JUCE_APP_VERSION=2.3",
 					"JUCE_APP_VERSION_HEX=0x20300",
@@ -7175,7 +7174,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_NDEBUG=1",
 					"NDEBUG=1",
-					"JUCE_DONT_DECLARE_PROJECTINFO=1",
 					"JUCER_XCODE_MAC_DC265B5E=1",
 					"JUCE_APP_VERSION=2.3",
 					"JUCE_APP_VERSION_HEX=0x20300",

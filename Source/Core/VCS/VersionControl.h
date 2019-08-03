@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ProjectInfo;
+class ProjectMetadata;
 class VersionControlEditor;
 
 #include "TreeNode.h"

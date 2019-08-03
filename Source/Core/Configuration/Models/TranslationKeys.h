@@ -310,5 +310,7 @@ namespace I18n
         static const Identifier warningCannotCommit = "vcs::warning::cannotcommit";
         static const Identifier warningCannotReset = "vcs::warning::cannotreset";
         static const Identifier warningCannotRevert = "vcs::warning::cannotrevert";
+        static const Identifier projectMetadata = "vcs::items::projectinfo";
+        static const Identifier projectTimeline = "vcs::items::timeline";
     }
 } // namespace Translations
