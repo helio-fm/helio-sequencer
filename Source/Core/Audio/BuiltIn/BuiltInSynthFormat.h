@@ -78,6 +78,11 @@ public:
         return false;
     }
 
+    bool isTrivialToScan() const noexcept override
+    {
+        return true;
+    };
+
 private:
 
     PluginDescription pianoDescription;

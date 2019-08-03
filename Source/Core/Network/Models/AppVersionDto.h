@@ -44,11 +44,11 @@ public:
             (this->getArchitecture().startsWithIgnoreCase("all") ? "" : ", " + this->getArchitecture());
     }
 
-    Array<int> getVersionComponents() const
+    Array<int> getVersionComponents(const String &versionString) const
     {
         Array<int> result;
         StringArray components;
-        components.addTokens(this->getVersion(), ".", "");
+        components.addTokens(versionString, ".", "");
         for (const auto &c : components)
         {
             result.add(c.getIntValue());
@@ -70,7 +70,8 @@ public:
         static const int v0 = String(APP_VERSION_MAJOR).getIntValue();
         static const int v1 = String(APP_VERSION_MINOR).getIntValue();
         static const int v2 = String(APP_VERSION_REVISION).getIntValue();
-        const auto v = this->getVersionComponents();
+
+        const auto v = this->getVersionComponents(this->getVersion());
         return (v[0] > v0) || (v[0] == v0 && v[1] > v1) ||
             (v[0] == v0 && v[1] == v1 && v[2] > v2);
     }
