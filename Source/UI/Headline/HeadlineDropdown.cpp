@@ -64,7 +64,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
         }
     }
 
-    this->startTimer(175);
+    this->startTimer(150);
     //[/Constructor]
 }
 

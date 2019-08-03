@@ -163,8 +163,6 @@ void MainLayout::hideSelectionMenu()
 
 void MainLayout::showTooltip(const String &message, TooltipType type, int timeoutMs)
 {
-    App::dismissAllModalComponents();
-
     if (message.isNotEmpty())
     {
         this->tooltipContainer->showWithComponent(MakeUnique<GenericTooltip>(message), timeoutMs);

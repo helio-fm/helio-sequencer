@@ -64,7 +64,6 @@ InitScreen::InitScreen()
 InitScreen::~InitScreen()
 {
     //[Destructor_pre]
-    Desktop::getInstance().getAnimator().fadeOut(this, SHORT_FADE_TIME);
     //[/Destructor_pre]
 
     headLine = nullptr;

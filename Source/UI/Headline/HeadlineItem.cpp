@@ -122,7 +122,7 @@ void HeadlineItem::mouseEnter (const MouseEvent& e)
         Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
     if (lastMouseDown != e.getScreenPosition())
     {
-        this->startTimer(200);
+        this->startTimer(100);
     }
 #endif
     //[/UserCode_mouseEnter]
