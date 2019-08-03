@@ -21,8 +21,6 @@
 #include "Config.h"
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
 
 // Try to update our sliding session after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
@@ -133,12 +131,12 @@ void SessionService::signIn(const String &provider)
         return;
     }
 
-    UniquePointer<ProgressTooltip> tooltip(new ProgressTooltip(true));
+    auto tooltip = MakeUnique<ProgressTooltip>(true);
     tooltip->onCancel = [this]() {
         this->cancelSignInProcess();
     };
 
-    App::Layout().showModalComponentUnowned(tooltip.release());
+    App::showModalComponentUnowned(tooltip.release());
 
     this->prepareAuthThread()->requestWebAuth(provider);
 }
@@ -174,9 +172,7 @@ AuthThread *SessionService::prepareAuthThread()
 
     thread->onAuthSessionFinished = [this](const AuthSessionDto session)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        layout.showModalComponentUnowned(new SuccessTooltip());
+        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
 
         this->userProfile.setApiToken(session.getToken());
         // don't call authCallback right now, instead request a user profile and callback when ready;
@@ -186,10 +182,7 @@ AuthThread *SessionService::prepareAuthThread()
 
     thread->onAuthSessionFailed = [this](const Array<String> &errors)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        layout.showTooltip(errors.getFirst());
-        layout.showModalComponentUnowned(new FailTooltip());
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
         DBG("Login failed: " + errors.getFirst());
     };
 

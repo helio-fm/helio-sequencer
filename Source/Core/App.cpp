@@ -40,18 +40,14 @@
 // Window
 //===----------------------------------------------------------------------===//
 
-#if JUCE_WINDOWS || JUCE_LINUX
-#   define HELIO_HAS_CUSTOM_TITLEBAR 1
-#else
-#   define HELIO_HAS_CUSTOM_TITLEBAR 0
-#endif
-
 class MainWindow final : public DocumentWindow
 {
 public:
 
-    MainWindow(bool enableOpenGl = false) :
-        DocumentWindow("Helio", Colours::darkgrey, DocumentWindow::allButtons)
+    MainWindow() : DocumentWindow("Helio", Colours::darkgrey, DocumentWindow::allButtons) {}
+
+    // the reason for this method to exist is that heavy-weight constructor is evil:
+    void init(bool enableOpenGl = false)
     {
         this->setWantsKeyboardFocus(false);
 
@@ -103,6 +99,29 @@ public:
         this->dismissLayoutComponent();
     }
 
+    void resized() override
+    {
+        DocumentWindow::resized();
+
+        if (this->header != nullptr)
+        {
+            this->header->setBounds(0, 1, this->getWidth(), this->header->getHeight());
+        }
+    }
+
+    // Overridden to avoid assertions in ResizableWindow:
+#if JUCE_DEBUG
+    void addChildComponent(Component *child, int zOrder = -1)
+    {
+        Component::addChildComponent(child, zOrder);
+    }
+
+    void addAndMakeVisible(Component *child, int zOrder = -1)
+    {
+        Component::addAndMakeVisible(child, zOrder);
+    }
+#endif
+
 private:
 
 #if HELIO_HAS_CUSTOM_TITLEBAR
@@ -150,6 +169,16 @@ private:
         this->setContentNonOwned(this->layout.get(), false);
         this->layout->restoreLastOpenedPage();
     }
+
+    void setTitleComponent(WeakReference<Component> component)
+    {
+        this->header = component;
+        this->setTitleBarHeight(this->header->getHeight() + 1);
+        Component::addAndMakeVisible(this->header, -1);
+        this->resized();
+    }
+
+    WeakReference<Component> header;
 
     UniquePointer<MainLayout> layout;
     UniquePointer<OpenGLContext> openGLContext;
@@ -397,14 +426,36 @@ void App::recreateLayout()
     window->createLayoutComponent();
 }
 
+//===----------------------------------------------------------------------===//
+// Modal components
+//===----------------------------------------------------------------------===//
+
+void App::showModalComponentUnowned(Component *targetComponent)
+{
+    // showing a dialog when another one is still present is kinda suspicious
+    //jassert(Component::getCurrentlyModalComponent() == nullptr);
+
+    App::dismissAllModalComponents();
+
+    UniquePointer<Component> ownedTarget(targetComponent);
+
+    auto *window = static_cast<App *>(getInstance())->window.get();
+    window->addChildComponent(ownedTarget.get());
+
+    Desktop::getInstance().getAnimator().animateComponent(ownedTarget.get(),
+        ownedTarget->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
+
+    ownedTarget->toFront(false);
+    ownedTarget->enterModalState(true, nullptr, true);
+    ownedTarget.release();
+}
+
 void App::dismissAllModalComponents()
 {
-    while (Component *modal = Component::getCurrentlyModalComponent(0))
+    while (auto *modal = Component::getCurrentlyModalComponent(0))
     {
-        //jassertfalse;
-        DBG("Dismissing a modal component");
-        modal->exitModalState(0);
-        // Unowned components may leak here, use with caution
+        //DBG("Dismissing a modal component");
+        UniquePointer<Component> deleter(modal);
     }
 }
 
@@ -427,10 +478,15 @@ void App::setOpenGLRendererEnabled(bool shouldBeEnabled)
     }
 }
 
-
 bool App::isOpenGLRendererEnabled() noexcept
 {
     return static_cast<App *>(getInstance())->window->openGLContext != nullptr;
+}
+
+void App::setWindowTitleComponent(WeakReference<Component> component)
+{
+    auto *window = static_cast<App *>(getInstance())->window.get();
+    window->setTitleComponent(component);
 }
 
 //===----------------------------------------------------------------------===//
@@ -478,7 +534,8 @@ void App::initialise(const String &commandLine)
             (opeGlState == Serialization::Config::enabledState.toString());
 #endif
 
-        this->window.reset(new MainWindow(enableOpenGL));
+        this->window.reset(new MainWindow());
+        this->window->init(enableOpenGL);
 
         this->network.reset(new class Network(*this->workspace.get()));
 

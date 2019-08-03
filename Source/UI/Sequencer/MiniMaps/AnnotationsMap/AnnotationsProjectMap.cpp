@@ -310,7 +310,7 @@ void AnnotationsProjectMap::showContextMenuFor(AnnotationComponent *nc)
     if (! this->project.getTransport().isPlaying())
     {
         auto *dialog = AnnotationDialog::createEditingDialog(*this, nc->getEvent());
-        App::Layout().showModalComponentUnowned(dialog);
+        App::Layout().showModalDialog(dialog);
     }
 }
 

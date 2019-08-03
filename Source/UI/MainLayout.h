@@ -55,18 +55,17 @@ public:
     // Tooltip: non-modal and can only be one at the time
     //===------------------------------------------------------------------===//
 
-    void showTooltip(const String &message, int timeoutMs = 15000);
-    void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeoutMs = 15000);
+    enum class TooltipType : int8
+    {
+        Simple,
+        Success,
+        Failure
+    };
+
+    void showTooltip(const String &message, TooltipType type = TooltipType::Simple, int timeoutMs = 15000);
     void hideTooltipIfAny();
 
-    //===------------------------------------------------------------------===//
-    // Modal components (like dialogs)
-    //===------------------------------------------------------------------===//
-
-    // modal components are unowned (which sucks, but we still need
-    // to let modal dialogs delete themselves when they want to):
-    void showModalComponentUnowned(Component *targetComponent);
-    void hideModalComponentIfAny();
+    void showModalDialog(Component *targetComponent);
 
     //===------------------------------------------------------------------===//
     // Component

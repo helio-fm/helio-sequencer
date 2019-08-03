@@ -21,7 +21,6 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
-#include "HybridRoll.h"
 #include "TimeSignatureEvent.h"
 #include "TimeSignaturesSequence.h"
 #include "PianoTrackNode.h"
@@ -34,34 +33,28 @@ TimeSignatureMenu::TimeSignatureMenu(ProjectNode &parentProject,
     project(parentProject),
     event(targetEvent)
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::ChangeTimeSignature, TRANS(I18n::Menu::timeSignatureChange)));
-    cmds.add(MenuItem::item(Icons::close, CommandIDs::DeleteTimeSignature, TRANS(I18n::Menu::timeSignatureDelete)));
-    this->updateContent(cmds, SlideDown);
-}
+    MenuPanel::Menu menu;
 
-void TimeSignatureMenu::handleCommandMessage(int commandId)
-{
-    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
-    {
-        if (commandId == CommandIDs::ChangeTimeSignature)
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS(I18n::Menu::timeSignatureChange))->
+        closesMenu()->
+        withAction([this]()
         {
-            auto sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
+            auto *sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
             auto inputDialog = ModalDialogInput::Presets::changeTimeSignature(this->event.toString());
             inputDialog->onOk = sequence->getEventChangeCallback(this->event);
-            App::Layout().showModalComponentUnowned(inputDialog.release());
-        }
-        else if (commandId == CommandIDs::DeleteTimeSignature)
-        {
-            TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
-            autoLayer->checkpoint();
-            autoLayer->remove(this->event, true);
-        }
+            App::Layout().showModalDialog(inputDialog.release());
+        }));
 
-        this->dismiss();
-    }
-    else
-    {
-        jassertfalse;
-    }
+    menu.add(MenuItem::item(Icons::close,
+        TRANS(I18n::Menu::timeSignatureDelete))->
+        closesMenu()->
+        withAction([this]()
+        {
+            auto *autoSequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
+            autoSequence->checkpoint();
+            autoSequence->remove(this->event, true);
+        }));
+
+    this->updateContent(menu, SlideDown);
 }

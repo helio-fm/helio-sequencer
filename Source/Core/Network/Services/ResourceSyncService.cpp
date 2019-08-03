@@ -69,10 +69,7 @@ UserConfigSyncThread *ResourceSyncService::prepareSyncThread()
 
     thread->onQueueEmptied = [this]()
     {
-        // todo test silent mode
-        //auto &layout = App::Layout();
-        //layout.hideModalComponentIfAny();
-        //layout.showModalComponentUnowned(new SuccessTooltip());
+        DBG("Sync queue empty");
     };
 
     thread->onSyncError = [this](const Array<String> &errors)

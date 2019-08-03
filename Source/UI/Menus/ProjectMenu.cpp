@@ -53,39 +53,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-        case CommandIDs::AddTempoController:
-        {
-            bool hasTempoTrack = false;
-            const auto autoTracks = this->project.findChildrenOfType<AutomationTrackNode>();
-            
-            for (auto *i : autoTracks)
-            {
-                if (i->getTrackControllerNumber() == MidiTrack::tempoController)
-                {
-                    hasTempoTrack = true;
-                    break;
-                }
-            }
-            
-            if (hasTempoTrack)
-            {
-                App::Layout().showTooltip(TRANS(I18n::Menu::Project::addTempoFailed));
-            }
-            else
-            {
-                const auto autoLayerParams =
-                    this->createAutoTrackTempate(TRANS(I18n::Defaults::tempoTrackName),
-                        MidiTrack::tempoController);
-                
-                this->project.getUndoStack()->beginNewTransaction();
-                this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
-                    &this->project, autoLayerParams,  TRANS(I18n::Defaults::tempoTrackName)));
-            }
-
-            this->dismiss();
-            return;
-        }
-
         case CommandIDs::ProjectTransposeUp:
         {
             this->project.checkpoint();
@@ -114,11 +81,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
         }
         return;
 
-        case CommandIDs::UnloadProject:
-            App::Workspace().unloadProject(this->project.getId(), false, false);
-            this->dismiss();
-            return;
-
         case CommandIDs::DeleteProject:
         {
             auto confirmationDialog = ModalDialogConfirmation::Presets::deleteProject();
@@ -138,67 +100,13 @@ void ProjectMenu::handleCommandMessage(int commandId)
                     }
                 };
 
-                App::Layout().showModalComponentUnowned(inputDialog.release());
+                App::Layout().showModalDialog(inputDialog.release());
             };
 
-            App::Layout().showModalComponentUnowned(confirmationDialog.release());
+            App::Layout().showModalDialog(confirmationDialog.release());
             return;
         }
     }
-}
-
-ValueTree ProjectMenu::createPianoTrackTempate(const String &name,
-    const String &instrumentId, String &outTrackId) const
-{
-    UniquePointer<MidiTrackNode> newNode(new PianoTrackNode(name));
-    
-    // We need to have at least one clip on a pattern:
-    const Clip clip(newNode->getPattern());
-    newNode->getPattern()->insert(clip, false);
-
-    Random r;
-    const auto colours = MenuPanel::getColoursList().getAllValues();
-    const int ci = r.nextInt(colours.size());
-    newNode->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
-    newNode->setTrackInstrumentId(instrumentId, false);
-
-    // insert a single note just so there is a visual anchor in the piano roll:
-    const float firstBeat = this->project.getProjectRangeInBeats().getX();
-    auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
-    pianoSequence->insert(Note(pianoSequence, MIDDLE_C, firstBeat, float(BEATS_PER_BAR), 0.5f), false);
-
-    outTrackId = newNode->getTrackId();
-    return newNode->serialize();
-}
-
-ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
-    int controllerNumber, const String &instrumentId) const
-{
-    UniquePointer<MidiTrackNode> newNode(new AutomationTrackNode(name));
-
-    // We need to have at least one clip on a pattern:
-    const Clip clip(newNode->getPattern());
-    newNode->getPattern()->insert(clip, false);
-
-    auto *autoSequence = static_cast<AutomationSequence *>(newNode->getSequence());
-    
-    newNode->setTrackControllerNumber(controllerNumber, false);
-    newNode->setTrackInstrumentId(instrumentId, false);
-    newNode->setTrackColour(Colours::royalblue, false);
-    
-    // init with a couple of events
-    const float cv1 = newNode->isOnOffAutomationTrack() ? 1.f : 0.5f;
-    const float cv2 = newNode->isOnOffAutomationTrack() ? 0.f : 0.5f;
-
-    const auto beatRange = this->project.getProjectRangeInBeats();
-    const float firstBeat = beatRange.getX();
-    const float lastBeat = beatRange.getY();
-
-    autoSequence->insert(AutomationEvent(autoSequence, firstBeat, cv1), false);
-    // second event is placed at the end of the track for convenience:
-    autoSequence->insert(AutomationEvent(autoSequence, lastBeat, cv2), false);
-
-    return newNode->serialize();
 }
 
 void ProjectMenu::showMainMenu(AnimationType animationType)
@@ -221,19 +129,31 @@ void ProjectMenu::showMainMenu(AnimationType animationType)
         }));
 
     menu.add(MenuItem::item(Icons::render,
-        TRANS(I18n::Menu::Project::render))->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Project::render))->
+        withSubmenu()->
+        withAction([this]()
         {
             this->showRenderMenu();
         }));
 
     menu.add(MenuItem::item(Icons::refactor,
-        TRANS(I18n::Menu::Project::refactor))->withSubmenu()->withAction([this]()
+        TRANS(I18n::Menu::Project::refactor))->
+        withSubmenu()->
+        withAction([this]()
         {
             this->showBatchActionsMenu(MenuPanel::SlideLeft);
         }));
     
-    menu.add(MenuItem::item(Icons::close, CommandIDs::UnloadProject, TRANS(I18n::Menu::Project::unload)));
+    menu.add(MenuItem::item(Icons::close,
+        TRANS(I18n::Menu::Project::unload))->
+        closesMenu()->
+        withAction([this]()
+        {
+            App::Workspace().unloadProject(this->project.getId(), false, false);
+        }));
+
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteProject, TRANS(I18n::Menu::Project::deleteConfirm)));
+
     this->updateContent(menu, animationType);
 }
 
@@ -300,7 +220,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
                     }
                 };
 
-                App::Layout().showModalComponentUnowned(inputDialog.release());
+                App::Layout().showModalDialog(inputDialog.release());
             }));
     }
 
@@ -317,8 +237,19 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
         }));
 
     menu.add(MenuItem::item(Icons::automationTrack,
-        CommandIDs::AddTempoController,
-        TRANS(I18n::Menu::Project::addTempo)));
+        TRANS(I18n::Menu::Project::addTempo))->
+        closesMenu()->
+        withAction([this]()
+        {
+            const auto autoTracks = this->project.findChildrenOfType<AutomationTrackNode>();
+            const auto autoTrackParams =
+                this->createAutoTrackTempate(TRANS(I18n::Defaults::tempoTrackName),
+                    MidiTrack::tempoController);
+
+            this->project.getUndoStack()->beginNewTransaction();
+            this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
+                &this->project, autoTrackParams, TRANS(I18n::Defaults::tempoTrackName)));
+        }));
 
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (int i = 0; i < instruments.size(); ++i)
@@ -349,7 +280,9 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
         if (controllerName.isNotEmpty())
         {
             menu.add(MenuItem::item(Icons::automationTrack,
-                String(controllerNumber) + ": " + TRANS(controllerName))->withAction([this, controllerNumber, instrument]()
+                String(controllerNumber) + ": " + TRANS(controllerName))->
+                closesMenu()->
+                withAction([this, controllerNumber, instrument]()
                 {
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
                     const String trackName = TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));
@@ -358,8 +291,6 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
                     this->project.getUndoStack()->beginNewTransaction();
                     this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
                         &this->project, autoTrackParams, trackName));
-
-                    this->dismiss();
                 }));
         }
     }
@@ -441,29 +372,84 @@ void ProjectMenu::showSetInstrumentMenu()
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (int i = 0; i < instruments.size(); ++i)
     {
-        menu.add(MenuItem::item(Icons::instrument, instruments[i]->getName())->withAction([this, i, instruments]()
-        {
-            DBG(instruments[i]->getIdAndHash());
-
-            const Array<MidiTrackNode *> tracks =
-                this->project.findChildrenOfType<MidiTrackNode>();
-
-            if (tracks.size() > 0)
+        menu.add(MenuItem::item(Icons::instrument,
+            instruments[i]->getName())->
+            closesMenu()->
+            withAction([this, i, instruments]()
             {
-                this->project.getUndoStack()->beginNewTransaction();
+                DBG(instruments[i]->getIdAndHash());
 
-                for (auto *track : tracks)
+                const Array<MidiTrackNode *> tracks =
+                    this->project.findChildrenOfType<MidiTrackNode>();
+
+                if (tracks.size() > 0)
                 {
-                    const auto instrumentId = instruments[i]->getIdAndHash();
-                    this->project.getUndoStack()->
-                        perform(new MidiTrackChangeInstrumentAction(this->project,
-                            track->getTrackId(), instrumentId));
-                }
-            }
+                    this->project.getUndoStack()->beginNewTransaction();
 
-            this->dismiss();
-        }));
+                    for (auto *track : tracks)
+                    {
+                        const auto instrumentId = instruments[i]->getIdAndHash();
+                        this->project.getUndoStack()->
+                            perform(new MidiTrackChangeInstrumentAction(this->project,
+                                track->getTrackId(), instrumentId));
+                    }
+                }
+            }));
     }
     
     this->updateContent(menu, MenuPanel::SlideLeft);
+}
+
+ValueTree ProjectMenu::createPianoTrackTempate(const String &name,
+    const String &instrumentId, String &outTrackId) const
+{
+    auto newNode = MakeUnique<PianoTrackNode>(name);
+
+    // We need to have at least one clip on a pattern:
+    const Clip clip(newNode->getPattern());
+    newNode->getPattern()->insert(clip, false);
+
+    Random r;
+    const auto colours = MenuPanel::getColoursList().getAllValues();
+    const int ci = r.nextInt(colours.size());
+    newNode->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false);
+
+    // insert a single note just so there is a visual anchor in the piano roll:
+    const float firstBeat = this->project.getProjectRangeInBeats().getX();
+    auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
+    pianoSequence->insert(Note(pianoSequence, MIDDLE_C, firstBeat, float(BEATS_PER_BAR), 0.5f), false);
+
+    outTrackId = newNode->getTrackId();
+    return newNode->serialize();
+}
+
+ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
+    int controllerNumber, const String &instrumentId) const
+{
+    auto newNode = MakeUnique<AutomationTrackNode>(name);
+
+    // We need to have at least one clip on a pattern:
+    const Clip clip(newNode->getPattern());
+    newNode->getPattern()->insert(clip, false);
+
+    auto *autoSequence = static_cast<AutomationSequence *>(newNode->getSequence());
+
+    newNode->setTrackControllerNumber(controllerNumber, false);
+    newNode->setTrackInstrumentId(instrumentId, false);
+    newNode->setTrackColour(Colours::royalblue, false);
+
+    // init with a couple of events
+    const float cv1 = newNode->isOnOffAutomationTrack() ? 1.f : 0.5f;
+    const float cv2 = newNode->isOnOffAutomationTrack() ? 0.f : 0.5f;
+
+    const auto beatRange = this->project.getProjectRangeInBeats();
+    const float firstBeat = beatRange.getX();
+    const float lastBeat = beatRange.getY();
+
+    autoSequence->insert(AutomationEvent(autoSequence, firstBeat, cv1), false);
+    // second event is placed at the end of the track for convenience:
+    autoSequence->insert(AutomationEvent(autoSequence, lastBeat, cv2), false);
+
+    return newNode->serialize();
 }

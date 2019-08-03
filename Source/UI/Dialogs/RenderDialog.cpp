@@ -27,8 +27,6 @@
 #include "ProjectNode.h"
 #include "PlayerThread.h"
 #include "ProgressIndicator.h"
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
 #include "MenuItemComponent.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]
@@ -311,7 +309,7 @@ void RenderDialog::startOrAbortRender()
     {
         transport.stopRender();
         this->stopTrackingProgress();
-        App::Layout().showModalComponentUnowned(new FailTooltip());
+        App::Layout().showTooltip({}, MainLayout::TooltipType::Failure);
     }
 }
 
@@ -345,8 +343,8 @@ void RenderDialog::timerCallback()
     else
     {
         this->stopTrackingProgress();
-        App::Layout().showModalComponentUnowned(new SuccessTooltip());
         transport.stopRender();
+        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
     }
 }
 

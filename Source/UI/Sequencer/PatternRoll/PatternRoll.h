@@ -132,6 +132,9 @@ protected:
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
     void updateRollSize();
 
+    float findNextAnchorBeat(float beat) const override;
+    float findPreviousAnchorBeat(float beat) const override;
+
 public:
 
     Image rowPattern;

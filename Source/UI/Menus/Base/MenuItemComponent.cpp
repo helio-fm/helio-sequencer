@@ -365,7 +365,7 @@ void MenuItemComponent::mouseMove (const MouseEvent& e)
         e.getScreenPosition().getDistanceSquaredFrom(this->lastMouseScreenPosition) > 0 &&
         !this->isTimerRunning())
     {
-        this->startTimer(650);
+        this->startTimer(750);
     }
 
     DraggingListBoxComponent::mouseMove(e);
@@ -595,6 +595,11 @@ void MenuItemComponent::doAction()
         }
 
         App::Layout().broadcastCommandMessage(this->description->commandId);
+    }
+
+    if (checker.shouldBailOut())
+    {
+        return;
     }
 
     auto panel = dynamic_cast<MenuPanel *>(this->parent.getComponent());

@@ -27,7 +27,6 @@ class TimeSignatureMenu final : public MenuPanel
 public:
     
     TimeSignatureMenu(ProjectNode &parentProject, const TimeSignatureEvent &targetEvent);
-    void handleCommandMessage(int commandId) override;
     
 private:
     

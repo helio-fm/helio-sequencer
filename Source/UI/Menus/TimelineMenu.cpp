@@ -70,62 +70,62 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
         selectedKeySignature = findSelectedEventOfType<KeySignatureEvent>(keySignaturesSequence, roll, seekPosition, seekThreshold);
         selectedTimeSignature = findSelectedEventOfType<TimeSignatureEvent>(timeSignaturesSequence, roll, seekPosition, seekThreshold);
     }
-    
-    ReferenceCountedArray<MenuItem> cmds;
-    
+
+    MenuPanel::Menu menu;
+
     if (selectedAnnotation == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create,
+        menu.add(MenuItem::item(Icons::create,
             CommandIDs::AddAnnotation,
             TRANS(I18n::Menu::annotationAdd))->closesMenu());
     }
 
     if (selectedKeySignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create,
+        menu.add(MenuItem::item(Icons::create,
             CommandIDs::AddKeySignature,
             TRANS(I18n::Menu::keySignatureAdd))->closesMenu());
     }
 
     if (selectedTimeSignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create,
+        menu.add(MenuItem::item(Icons::create,
             CommandIDs::AddTimeSignature,
             TRANS(I18n::Menu::timeSignatureAdd))->closesMenu());
     }
 
-    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+    if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
         const auto annotationsSequence = timeline->getAnnotations()->getSequence();
 
         for (int i = 0; i < annotationsSequence->size(); ++i)
         {
-            if (AnnotationEvent *annotation =
-                dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
+            if (auto *annotation = dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
             {
                 //double outTimeMs = 0.0;
                 //double outTempo = 0.0;
                 //const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
                 //this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
                 
-                cmds.add(MenuItem::item(Icons::annotation, annotation->getDescription())->
+                menu.add(MenuItem::item(Icons::annotation,
+                    annotation->getDescription())->
                     //withSubLabel(Transport::getTimeString(outTimeMs))->
-                    colouredWith(annotation->getTrackColour())->withAction([this, i]()
-                {
-                    const auto timeline = this->project.getTimeline();
-                    const auto annotations = timeline->getAnnotations()->getSequence();
-                    if (auto roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+                    colouredWith(annotation->getTrackColour())->
+                    closesMenu()->
+                    withAction([this, i]()
                     {
-                        if (auto annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
+                        const auto timeline = this->project.getTimeline();
+                        const auto annotations = timeline->getAnnotations()->getSequence();
+                        if (auto roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
                         {
-                            const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                            this->project.getTransport().seekToPosition(seekPosition);
-                            roll->scrollToSeekPosition();
+                            if (auto annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
+                            {
+                                const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
+                                this->project.getTransport().seekToPosition(seekPosition);
+                                roll->scrollToSeekPosition();
+                            }
                         }
-                    }
-
-                    this->dismiss();
-                }));
+                    }));
             }
         }
     }
@@ -134,5 +134,5 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
         jassertfalse;
     }
     
-    this->updateContent(cmds, SlideDown);
+    this->updateContent(menu, SlideDown);
 }

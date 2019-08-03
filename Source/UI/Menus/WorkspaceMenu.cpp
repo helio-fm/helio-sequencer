@@ -34,48 +34,43 @@ WorkspaceMenu::WorkspaceMenu(Workspace &workspace) :
 void WorkspaceMenu::showMainMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
-    
-    //menu.add(MenuItem::item(Icons::create,
-    //    TRANS(I18n::Menu::workspace::project::create))->withAction([this]()
-    //    {}));
-
-    //menu.add(MenuItem::item(Icons::browse,
-    //    TRANS(I18n::Menu::workspace::project::open))->withAction([this]()
-    //    {}));
 
     auto *root = this->workspace.getTreeRoot();
 
     if (auto *settings = root->findChildOfType<SettingsNode>())
     {
         menu.add(MenuItem::item(Icons::settings, TRANS(I18n::Tree::settings))->
-            disabledIf(settings->isSelected())->withAction([this, settings]()
-        {
-            settings->setSelected();
-            this->dismiss();
-        }));
+            disabledIf(settings->isSelected())->
+            closesMenu()->
+            withAction([this, settings]()
+            {
+                settings->setSelected();
+            }));
     }
 
     if (auto *instruments = root->findChildOfType<OrchestraPitNode>())
     {
         menu.add(MenuItem::item(Icons::orchestraPit, TRANS(I18n::Tree::instruments))->
-            disabledIf(instruments->isSelected())->withAction([this, instruments]()
-        {
-            instruments->setSelected();
-            this->dismiss();
-        }));
+            disabledIf(instruments->isSelected())->
+            closesMenu()->
+            withAction([this, instruments]()
+            {
+                instruments->setSelected();
+            }));
     }
 
-    const auto &projects = root->findChildrenOfType<ProjectNode>();
+    const auto projects = root->findChildrenOfType<ProjectNode>();
     for (int i = 0; i < projects.size(); ++i)
     {
         const auto *project = projects.getUnchecked(i);
         const bool isShowingCurrent = project->isSelectedOrHasSelectedChild();
         menu.add(MenuItem::item(Icons::project, project->getName())->
-            disabledIf(isShowingCurrent)->withAction([this, project]()
-        {
-            project->selectChildOfType<PianoTrackNode>();
-            this->dismiss();
-        }));
+            disabledIf(isShowingCurrent)->
+            closesMenu()->
+            withAction([this, project]()
+            {
+                project->selectChildOfType<PianoTrackNode>();
+            }));
     }
 
     this->updateContent(menu, animationType);

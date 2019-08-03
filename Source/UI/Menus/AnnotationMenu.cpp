@@ -21,7 +21,6 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
-#include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "AnnotationsSequence.h"
 #include "PianoTrackNode.h"
@@ -33,8 +32,18 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
     project(parentProject),
     annotation(targetAnnotation)
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameAnnotation, TRANS(I18n::Menu::annotationRename)));
+    MenuPanel::Menu menu;
+
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS(I18n::Menu::annotationRename))->
+        closesMenu()->
+        withAction([this]()
+        {
+            auto *sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
+            auto inputDialog = ModalDialogInput::Presets::renameAnnotation(this->annotation.getDescription());
+            inputDialog->onOk = sequence->getEventRenameCallback(this->annotation);
+            App::Layout().showModalDialog(inputDialog.release());
+        }));
     
     const StringPairArray colours(MenuPanel::getColoursList());
     
@@ -43,54 +52,32 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
         const String name(colours.getAllKeys()[i]);
         const Colour colour(Colour::fromString(colours[name]));
         const bool isSelected = (colour == this->annotation.getTrackColour());
-        cmds.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetAnnotationColour + i, name)->colouredWith(colour));
+
+        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, name)->
+            colouredWith(colour)->
+            closesMenu()->
+            withAction([this, colour]()
+            {
+                if (colour == this->annotation.getTrackColour())
+                {
+                    return;
+                }
+
+                auto *sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
+                sequence->checkpoint();
+                sequence->change(this->annotation, this->annotation.withColour(colour), true);
+            }));
     }
     
-    cmds.add(MenuItem::item(Icons::close, CommandIDs::DeleteAnnotation, TRANS(I18n::Menu::annotationDelete)));
-    this->updateContent(cmds, SlideDown);
-}
-
-void AnnotationMenu::handleCommandMessage(int commandId)
-{
-    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
-    {
-        if (commandId == CommandIDs::RenameAnnotation)
+    menu.add(MenuItem::item(Icons::close,
+        TRANS(I18n::Menu::annotationDelete))->
+        closesMenu()->
+        withAction([this]()
         {
-            auto sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
-            auto inputDialog = ModalDialogInput::Presets::renameAnnotation(this->annotation.getDescription());
-            inputDialog->onOk = sequence->getEventRenameCallback(this->annotation);
-            App::Layout().showModalComponentUnowned(inputDialog.release());
-        }
-        else if (commandId == CommandIDs::DeleteAnnotation)
-        {
-            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
-            autoLayer->checkpoint();
-            autoLayer->remove(this->annotation, true);
-        }
-        else
-        {
-            const StringPairArray colours(MenuPanel::getColoursList());
-            const int colourIndex = (commandId - CommandIDs::SetAnnotationColour);
-            const String name(colours.getAllKeys()[colourIndex]);
-            const Colour colour(Colour::fromString(colours[name]));
-            
-            if (colour == this->annotation.getTrackColour())
-            {
-                return;
-            }
+            auto *sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
+            sequence->checkpoint();
+            sequence->remove(this->annotation, true);
+        }));
 
-            Array<AnnotationEvent> groupDragBefore, groupDragAfter;
-            groupDragBefore.add(this->annotation);
-            groupDragAfter.add(this->annotation.withColour(colour));
-            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
-            autoLayer->checkpoint();
-            autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
-        }
-
-        this->dismiss();
-    }
-    else
-    {
-        jassertfalse;
-    }
+    this->updateContent(menu, SlideDown);
 }

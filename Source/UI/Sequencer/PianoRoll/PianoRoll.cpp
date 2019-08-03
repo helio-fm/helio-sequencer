@@ -956,7 +956,7 @@ void PianoRoll::handleCommandMessage(int commandId)
             //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
             //inputDialog->onOk = trackNode->getRenameCallback();
             auto *newDialog = new TrackPropertiesDialog(this->project, trackNode);
-            App::Layout().showModalComponentUnowned(newDialog);
+            App::Layout().showModalDialog(newDialog);
         }
         break;
     case CommandIDs::CopyEvents:
@@ -996,7 +996,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                     &this->project, trackTemplate, input));
             };
 
-            App::Layout().showModalComponentUnowned(inputDialog.release());
+            App::Layout().showModalDialog(inputDialog.release());
         }
         break;
     case CommandIDs::BeatShiftLeft:
@@ -1024,9 +1024,13 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -12, true, &this->getTransport());
         break;
     case CommandIDs::CleanupOverlaps:
-        HYBRID_ROLL_BULK_REPAINT_START
-        SequencerOperations::removeOverlaps(this->getLassoSelection());
-        HYBRID_ROLL_BULK_REPAINT_END
+        SequencerOperations::cleanupOverlaps(this->getLassoSelection());
+        break;
+    case CommandIDs::MelodicInversion:
+        SequencerOperations::melodicInversion(this->getLassoSelection());
+        break;
+    case CommandIDs::Retrograde:
+        SequencerOperations::retrograde(this->getLassoSelection());
         break;
     case CommandIDs::InvertChordUp:
         SequencerOperations::invertChord(this->getLassoSelection(), 12, true, &this->getTransport());
@@ -1062,7 +1066,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                     App::Config().getArpeggiators()->updateUserResource(arp);
                 };
 
-                App::Layout().showModalComponentUnowned(newArpDialog.release());
+                App::Layout().showModalDialog(newArpDialog.release());
             }
         }
         break;

@@ -631,15 +631,15 @@ void SequencerOperations::snapSelection(Lasso &selection, float snapsPerBeat, bo
 }
 
 
-void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint)
+void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    if (selection.getNumSelected() < 2)
     {
         return;
     }
-    
+
     bool didCheckpoint = !shouldCheckpoint;
-        
+
     // 1 convert this
     //    ----
     // ------------
@@ -654,7 +654,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
     do
     {
         PianoChangeGroup group1Before, group1After;
-        
+
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
             const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
@@ -666,7 +666,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             for (int j = 0; j < selection.getNumSelected(); ++j)
             {
-                NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
                 
                 if (nc->getKey() == nc2->getKey() &&
                     nc->getBeat() > nc2->getBeat() &&
@@ -719,7 +719,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             for (int j = 0; j < selection.getNumSelected(); ++j)
             {
-                NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
                 
                 if (nc->getKey() == nc2->getKey() &&
                     nc->getBeat() > nc2->getBeat() &&
@@ -749,11 +749,11 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
     
     
     // 3 convert this
-    // ------------    ------------
-    //    ---------       ---------
+    // ------------       ---------
+    //    ---------    ------------
     // into this
-    // ---             ---
-    //    ---------       ---------
+    // ---                ---------
+    //    ---------    ---         
     
     bool step3HasChanges = false;
 
@@ -772,7 +772,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             
             for (int j = 0; j < selection.getNumSelected(); ++j)
             {
-                NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
                 
                 if (nc->getKey() == nc2->getKey() &&
                     nc->getBeat() < nc2->getBeat() &&
@@ -853,6 +853,90 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
 
     applyPianoRemovals(removalGroup, didCheckpoint);
 }
+
+void SequencerOperations::retrograde(Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() < 2)
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    // 1. sort selection
+    Array<Note> sortedSelection;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        sortedSelection.addSorted(nc->getNote(), nc->getNote());
+    }
+
+    PianoChangeGroup groupBefore;
+    PianoChangeGroup groupAfter;
+
+    // 2. pick a note at the start and at the end swap keys
+    // (assumes selection is a melodic line, will work weird for chord sequences)
+    int start = 0;
+    int end = sortedSelection.size() - 1;
+    do
+    {
+        const auto &n1 = sortedSelection.getReference(start);
+        const auto &n2 = sortedSelection.getReference(end);
+
+        groupBefore.add(n1);
+        groupAfter.add(n1.withKey(n2.getKey()));
+
+        groupBefore.add(n2);
+        groupAfter.add(n2.withKey(n1.getKey()));
+
+        start++;
+        end--;
+    }
+    while (start < end);
+
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
+}
+
+void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() < 2)
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    // 1. sort selection
+    Array<Note> sortedSelection;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        sortedSelection.addSorted(nc->getNote(), nc->getNote());
+    }
+
+    PianoChangeGroup groupBefore;
+    PianoChangeGroup groupAfter;
+
+    // 2. invert key intervals between each note and the previous one
+    // (as well as retrograde, this assumes selection is a melodic line,
+    // and will work weird for chord sequences)
+    int keyOffset = 0;
+    for (int i = 0; i < sortedSelection.size() - 1; ++i)
+    {
+        const auto &prev = sortedSelection.getReference(i);
+        const auto &next = sortedSelection.getReference(i + 1);
+        const int deltaKey = next.getKey() - prev.getKey();
+
+        // simple chromatic inversion, todo scale-aware?
+        keyOffset += deltaKey * -2;
+
+        groupBefore.add(next);
+        groupAfter.add(next.withDeltaKey(keyOffset));
+    }
+
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
+}
+
 
 void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
 {

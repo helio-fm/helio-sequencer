@@ -39,43 +39,59 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
     const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
 
-    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeGetMidi))->
-        withSubmenu()->disabledIf(!acceptsMidi)->withAction([this]()
-    {
-        this->updateContent(this->createMidiSourcesMenu(), MenuPanel::SlideLeft);
-    }));
+    menu.add(MenuItem::item(Icons::routing,
+        TRANS(I18n::Menu::Selection::routeGetMidi))->
+        withSubmenu()->
+        disabledIf(!acceptsMidi)->
+        withAction([this]()
+        {
+            this->updateContent(this->createMidiSourcesMenu(), MenuPanel::SlideLeft);
+        }));
 
-    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeGetAudio))->
-        withSubmenu()->disabledIf(!acceptsAudio)->withAction([this]()
-    {
-        this->updateContent(this->createAudioSourcesMenu(), MenuPanel::SlideLeft);
-    }));
+    menu.add(MenuItem::item(Icons::routing,
+        TRANS(I18n::Menu::Selection::routeGetAudio))->
+        withSubmenu()->
+        disabledIf(!acceptsAudio)->
+        withAction([this]()
+        {
+            this->updateContent(this->createAudioSourcesMenu(), MenuPanel::SlideLeft);
+        }));
 
-    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeSendmidi))->
-        withSubmenu()->disabledIf(!producesMidi)->withAction([this]()
-    {
-        this->updateContent(this->createMidiDestinationsMenu(), MenuPanel::SlideLeft);
-    }));
+    menu.add(MenuItem::item(Icons::routing,
+        TRANS(I18n::Menu::Selection::routeSendmidi))->
+        withSubmenu()->
+        disabledIf(!producesMidi)->
+        withAction([this]()
+        {
+            this->updateContent(this->createMidiDestinationsMenu(), MenuPanel::SlideLeft);
+        }));
 
-    menu.add(MenuItem::item(Icons::routing, TRANS(I18n::Menu::Selection::routeSendaudio))->
-        withSubmenu()->disabledIf(!producesAudio)->withAction([this]()
-    {
-        this->updateContent(this->createAudioDestinationsMenu(), MenuPanel::SlideLeft);
-    }));
+    menu.add(MenuItem::item(Icons::routing,
+        TRANS(I18n::Menu::Selection::routeSendaudio))->
+        withSubmenu()->
+        disabledIf(!producesAudio)->
+        withAction([this]()
+        {
+            this->updateContent(this->createAudioDestinationsMenu(), MenuPanel::SlideLeft);
+        }));
 
-    menu.add(MenuItem::item(Icons::close, TRANS(I18n::Menu::Selection::routeDisconnect))->
-        disabledIf(!hasConnections)->withAction([this]()
-    {
-        this->instrument.removeAllConnectionsForNode(this->node);
-        this->dismiss();
-    }));
+    menu.add(MenuItem::item(Icons::close,
+        TRANS(I18n::Menu::Selection::routeDisconnect))->
+        disabledIf(!hasConnections)->
+        closesMenu()->
+        withAction([this]()
+        {
+            this->instrument.removeAllConnectionsForNode(this->node);
+        }));
 
-    menu.add(MenuItem::item(Icons::remove, TRANS(I18n::Menu::Selection::routeRemove))->
-        disabledIf(this->instrument.isNodeStandardIOProcessor(this->node->nodeID))->withAction([this]()
-    {
-        this->instrument.removeNode(this->node->nodeID);
-        this->dismiss();
-    }));
+    menu.add(MenuItem::item(Icons::remove,
+        TRANS(I18n::Menu::Selection::routeRemove))->
+        disabledIf(this->instrument.isNodeStandardIOProcessor(this->node->nodeID))->
+        closesMenu()->
+        withAction([this]()
+        {
+            this->instrument.removeNode(this->node->nodeID);
+        }));
 
     return menu;
 }
@@ -92,12 +108,14 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioSourcesMenu()
     for (const auto &n : this->instrument.findAudioProducers())
     {
         const bool hasConnection = this->instrument.hasAudioConnection(n , this->node);
-        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
-            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin,
+            n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->
+            closesMenu()->
+            withAction([this, n]()
         {
             this->instrument.addConnection(n->nodeID, 0, this->node->nodeID, 0);
             this->instrument.addConnection(n->nodeID, 1, this->node->nodeID, 1);
-            this->dismiss();
         }));
     }
 
@@ -116,12 +134,14 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu()
     for (const auto &n : this->instrument.findAudioAcceptors())
     {
         const bool hasConnection = this->instrument.hasAudioConnection(this->node, n);
-        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
-            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin,
+            n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->
+            closesMenu()->
+            withAction([this, n]()
         {
             this->instrument.addConnection(this->node->nodeID, 0, n->nodeID, 0);
             this->instrument.addConnection(this->node->nodeID, 1, n->nodeID, 1);
-            this->dismiss();
         }));
     }
 
@@ -139,12 +159,14 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiSourcesMenu()
     for (const auto &n : this->instrument.findMidiProducers())
     {
         const bool hasConnection = this->instrument.hasMidiConnection(n, this->node);
-        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
-            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin,
+            n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->
+            closesMenu()->
+            withAction([this, n]()
         {
             this->instrument.addConnection(n->nodeID,
                 Instrument::midiChannelNumber, this->node->nodeID, Instrument::midiChannelNumber);
-            this->dismiss();
         }));
     }
 
@@ -163,12 +185,14 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiDestinationsMenu()
     for (const auto &n : this->instrument.findMidiAcceptors())
     {
         const bool hasConnection = this->instrument.hasMidiConnection(this->node, n);
-        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
-            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin,
+            n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->
+            closesMenu()->
+            withAction([this, n]()
         {
             this->instrument.addConnection(this->node->nodeID,
                 Instrument::midiChannelNumber, n->nodeID, Instrument::midiChannelNumber);
-            this->dismiss();
         }));
     }
 

@@ -631,7 +631,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getTrackName());
             //inputDialog->onOk = trackNode->getRenameCallback();
             auto *newDialog = new TrackPropertiesDialog(this->project, trackNode);
-            App::Layout().showModalComponentUnowned(newDialog);
+            App::Layout().showModalDialog(newDialog);
         }
         break;
     case CommandIDs::DeleteClips:
@@ -746,6 +746,66 @@ void PatternRoll::paint(Graphics &g)
 void PatternRoll::parentSizeChanged()
 {
     this->updateRollSize();
+}
+
+float PatternRoll::findNextAnchorBeat(float beat) const
+{
+    float minDistance = FLT_MAX;
+    float result = this->getLastBeat();
+
+    for (const auto *track : this->tracks)
+    {
+        const float sequenceOffset = track->getSequence()->size() > 0 ?
+            track->getSequence()->getFirstBeat() : 0.f;
+
+        for (const auto *clip : track->getPattern()->getClips())
+        {
+            const auto clipStart = clip->getBeat() + sequenceOffset;
+            if (clipStart <= beat)
+            {
+                continue;
+            }
+
+            const auto beatDistance = clipStart - beat;
+            if (beatDistance < minDistance)
+            {
+                minDistance = beatDistance;
+                result = clipStart;
+            }
+        }
+    }
+
+    return result;
+}
+
+float PatternRoll::findPreviousAnchorBeat(float beat) const
+{
+    float minDistance = FLT_MAX;
+    float result = this->getFirstBeat();
+
+    for (const auto *track : this->tracks)
+    {
+        const float sequenceOffset = track->getSequence()->size() > 0 ?
+            track->getSequence()->getFirstBeat() : 0.f;
+
+        for (const auto *clip : track->getPattern()->getClips())
+        {
+            const auto clipStart = clip->getBeat() + sequenceOffset;
+            if (clipStart >= beat)
+            {
+                continue;
+            }
+
+            const auto beatDistance = beat - clipStart;
+            if (beatDistance < minDistance)
+            {
+                minDistance = beatDistance;
+                result = clipStart;
+            }
+        }
+    }
+
+    return result;
 }
 
 void PatternRoll::insertNewClipAt(const MouseEvent &e)

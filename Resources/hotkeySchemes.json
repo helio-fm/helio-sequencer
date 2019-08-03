@@ -126,15 +126,17 @@
         { "receiver": "PianoRoll", "command": "OctaveShiftDown", "key": "Shift + Cursor Down" },
 
         // Refactor selection
-        { "receiver": "PianoRoll", "command": "CleanupOverlaps", "key": "O" },
+        { "receiver": "PianoRoll", "command": "Retrograde", "key": "Alt + R" },
+        { "receiver": "PianoRoll", "command": "MelodicInversion", "key": "Alt + I" },
+        { "receiver": "PianoRoll", "command": "CleanupOverlaps", "key": "Alt + O" },
+        { "receiver": "PianoRoll", "command": "TweakVolumeRandom", "key": "Alt + V" },
+        { "receiver": "PianoRoll", "command": "TweakVolumeFadeOut", "key": "Alt + F" },
         { "receiver": "PianoRoll", "command": "InvertChordUp", "key": "Alt + Cursor Up" },
         { "receiver": "PianoRoll", "command": "InvertChordUp", "key": "Command + Cursor Up" },
         { "receiver": "PianoRoll", "command": "InvertChordUp", "key": "Control + Cursor Up" },
         { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Alt + Cursor Down" },
         { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Command + Cursor Down" },
         { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Control + Cursor Down" },
-        { "receiver": "PianoRoll", "command": "TweakVolumeRandom", "key": "Shift + R" },
-        { "receiver": "PianoRoll", "command": "TweakVolumeFadeOut", "key": "Shift + F" },
 
         // Multiplets
         { "receiver": "PianoRoll", "command": "Tuplet1", "key": "Alt + 1" },

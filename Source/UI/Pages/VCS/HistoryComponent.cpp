@@ -111,7 +111,7 @@ void HistoryComponent::handleCommandMessage (int commandId)
             {
                 this->vcs.checkout(this->revisionTree->getSelectedRevision());
             };
-            App::Layout().showModalComponentUnowned(confirmationDialog.release());
+            App::Layout().showModalDialog(confirmationDialog.release());
         }
         else
         {

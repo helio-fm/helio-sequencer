@@ -610,7 +610,7 @@ void Head::run()
     this->sendChangeMessage();
 }
 
-// FIXME: lots of duplicate code form Head::run
+// FIXME: lots of duplicate code from Head::run
 void Head::rebuildDiffSynchronously()
 {
     if (this->state == nullptr)

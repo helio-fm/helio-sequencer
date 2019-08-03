@@ -40,7 +40,11 @@ Headline::Headline()
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
+#if HELIO_HAS_CUSTOM_TITLEBAR
+    this->setOpaque(false);
+#else
     this->setOpaque(true);
+#endif
     //[/UserPreSize]
 
     this->setSize(600, 34);
@@ -64,6 +68,7 @@ Headline::~Headline()
 void Headline::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if ! HELIO_HAS_CUSTOM_TITLEBAR
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheA(), {} });
     g.fillRect(this->getLocalBounds());
@@ -74,6 +79,7 @@ void Headline::paint (Graphics& g)
     g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
     g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
+#endif
     //[/UserPaint]
 }
 

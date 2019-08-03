@@ -43,6 +43,12 @@ InitScreen::InitScreen()
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
     this->setOpaque(true);
+
+#if HELIO_HAS_CUSTOM_TITLEBAR
+    this->headLine->setVisible(false);
+    this->headShadow->setVisible(false);
+    this->gradient1->setVisible(false);
+#endif
     //[/UserPreSize]
 
     this->setSize(600, 400);

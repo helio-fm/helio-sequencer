@@ -1148,7 +1148,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         if (!this->project.getTransport().isPlaying())
         {
             this->stopFollowingPlayhead();
-            const auto beat = this->project.getTimeline()->findNextAnchorBeat(this->getSeekBeat());
+            const auto beat = this->findNextAnchorBeat(this->getSeekBeat());
             const auto newSeek = this->getTransportPositionByBeat(beat);
             this->getTransport().seekToPosition(newSeek);
             this->scrollToSeekPosition();
@@ -1158,7 +1158,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         if (!this->project.getTransport().isPlaying())
         {
             this->stopFollowingPlayhead();
-            const auto beat = this->project.getTimeline()->findPreviousAnchorBeat(this->getSeekBeat());
+            const auto beat = this->findPreviousAnchorBeat(this->getSeekBeat());
             const auto newSeek = this->getTransportPositionByBeat(beat);
             this->getTransport().seekToPosition(newSeek);
             this->scrollToSeekPosition();
@@ -1215,8 +1215,8 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            Component *dialog = AnnotationDialog::createAddingDialog(*this, sequence, targetBeat);
-            App::Layout().showModalComponentUnowned(dialog);
+            auto *dialog = AnnotationDialog::createAddingDialog(*this, sequence, targetBeat);
+            App::Layout().showModalDialog(dialog);
         }
         break;
     case CommandIDs::AddTimeSignature:
@@ -1224,8 +1224,8 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            Component *dialog = TimeSignatureDialog::createAddingDialog(*this, sequence, targetBeat);
-            App::Layout().showModalComponentUnowned(dialog);
+            auto *dialog = TimeSignatureDialog::createAddingDialog(*this, sequence, targetBeat);
+            App::Layout().showModalDialog(dialog);
         }
         break;
     case CommandIDs::AddKeySignature:
@@ -1233,9 +1233,9 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            Component *dialog = KeySignatureDialog::createAddingDialog(*this,
+            auto *dialog = KeySignatureDialog::createAddingDialog(*this,
                 this->getTransport(), sequence, targetBeat);
-            App::Layout().showModalComponentUnowned(dialog);
+            App::Layout().showModalDialog(dialog);
         }
         break;
     default:
@@ -1743,6 +1743,17 @@ void HybridRoll::updateChildrenPositions()
     this->broadcastRollMoved();
 
     HYBRID_ROLL_BULK_REPAINT_END
+}
+
+float HybridRoll::findNextAnchorBeat(float beat) const
+{
+    // to be overridden in subclasses
+    return this->project.getTimeline()->findNextAnchorBeat(beat);
+}
+
+float HybridRoll::findPreviousAnchorBeat(float beat) const
+{
+    return this->project.getTimeline()->findPreviousAnchorBeat(beat);
 }
 
 //===----------------------------------------------------------------------===//

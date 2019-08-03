@@ -49,7 +49,8 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
 
     menu.add(MenuItem::item(Icons::refactor,
         TRANS(I18n::Menu::Selection::notesRefactor))->
-        withSubmenu()->withAction([this]()
+        withSubmenu()->
+        withAction([this]()
     {
         this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideLeft);
     }));
@@ -59,14 +60,16 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS(I18n::Menu::Selection::notesArpeggiate))->
         disabledIf(!canArpeggiate)->
-        withSubmenu()->withAction([this]()
+        withSubmenu()->
+        withAction([this]()
     {
         this->updateContent(this->createArpsPanel(), MenuPanel::SlideLeft);
     }));
 
     menu.add(MenuItem::item(Icons::ellipsis,
         TRANS(I18n::Menu::Selection::notesDivisions))->
-        withSubmenu()->withAction([this]()
+        withSubmenu()->
+        withAction([this]()
     {
         this->updateContent(this->createTupletsPanel(), MenuPanel::SlideLeft);
     }));
@@ -86,25 +89,31 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
         TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
 
-    const bool canInvert = this->lasso->getNumSelected() > 1;
+    const bool canRefactor = this->lasso->getNumSelected() > 1;
 
     menu.add(MenuItem::item(Icons::inverseUp, CommandIDs::InvertChordUp,
-        TRANS(I18n::Menu::refactoringInverseUp))->disabledIf(!canInvert)->closesMenu());
+        TRANS(I18n::Menu::refactoringInverseUp))->disabledIf(!canRefactor)->closesMenu());
 
     menu.add(MenuItem::item(Icons::inverseDown, CommandIDs::InvertChordDown,
-        TRANS(I18n::Menu::refactoringInverseDown))->disabledIf(!canInvert)->closesMenu());
+        TRANS(I18n::Menu::refactoringInverseDown))->disabledIf(!canRefactor)->closesMenu());
 
-    // TODO
-    // Cleanup
-    // Not implemented:
-    // Double time
-    // Half time
+    // todo icons for refactoring commands:
+    menu.add(MenuItem::item(Icons::refactor, CommandIDs::MelodicInversion,
+        TRANS(I18n::Menu::refactoringMelodicInversion))->disabledIf(!canRefactor)->closesMenu());
 
-    const bool canRescale = (this->harmonicContextScale != nullptr);
+    menu.add(MenuItem::item(Icons::refactor, CommandIDs::Retrograde,
+        TRANS(I18n::Menu::refactoringRetrograde))->disabledIf(!canRefactor)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::refactor, CommandIDs::CleanupOverlaps,
+        TRANS(I18n::Menu::refactoringCleanup))->disabledIf(!canRefactor)->closesMenu());
+
+    const bool canRescale = this->harmonicContextScale != nullptr;
 
     menu.add(MenuItem::item(Icons::arpeggiate, // todo new icon for this
         TRANS(I18n::Menu::Selection::notesRescale))->
-        disabledIf(!canRescale)->withSubmenu()->withAction([this]()
+        disabledIf(!canRescale)->
+        withSubmenu()->
+        withAction([this]()
     {
         this->updateContent(this->createScalesPanel(), MenuPanel::SlideLeft);
     }));
@@ -124,21 +133,20 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
     const auto &scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
-        menu.add(MenuItem::item(Icons::arpeggiate, scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
+        menu.add(MenuItem::item(Icons::arpeggiate,
+            scales.getUnchecked(i)->getLocalizedName())->
+            closesMenu()->
+            withAction([this, i]()
         {
             if (this->harmonicContextScale == nullptr)
             {
                 jassertfalse;
-                this->dismiss();
                 return;
             }
 
             const auto &scales = App::Config().getScales()->getAll();
             SequencerOperations::rescale(*this->lasso, this->harmonicContextKey,
                 this->harmonicContextScale, scales[i], true);
-
-            this->dismiss();
-            return;
         }));
     }
 
@@ -176,27 +184,27 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
-    menu.add(MenuItem::item(Icons::create, CommandIDs::CreateArpeggiatorFromSelection,
+    menu.add(MenuItem::item(Icons::create,
+        CommandIDs::CreateArpeggiatorFromSelection,
         TRANS(I18n::Menu::arpeggiatorsCreate))->closesMenu());
 
     const auto arps = App::Config().getArpeggiators()->getAll();
     for (int i = 0; i < arps.size(); ++i)
     {
-        menu.add(MenuItem::item(Icons::arpeggiate, arps.getUnchecked(i)->getName())->withAction([this, i]()
+        menu.add(MenuItem::item(Icons::arpeggiate,
+            arps.getUnchecked(i)->getName())->
+            closesMenu()->
+            withAction([this, i]()
         {
             if (this->lasso->getNumSelected() < 2 || this->harmonicContextScale == nullptr)
             {
                 jassertfalse;
-                this->dismiss();
                 return;
             }
 
             const auto arps = App::Config().getArpeggiators()->getAll();
             SequencerOperations::arpeggiate(*this->lasso, this->harmonicContextScale,
                 this->harmonicContextKey, arps[i], 1.0f, 0.0f, false, false, true);
-
-            this->dismiss();
-            return;
         }));
     }
 

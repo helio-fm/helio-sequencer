@@ -22,8 +22,6 @@
 #include "Workspace.h"
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
 
 void ProjectSyncService::fetchRevisionsInfo(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName)
@@ -68,8 +66,8 @@ void ProjectSyncService::cloneProject(WeakReference<VersionControl> vcs, const S
         return;
     }
 
-    UniquePointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
-    App::Layout().showModalComponentUnowned(tooltip.release());
+    auto tooltip = MakeUnique<ProgressTooltip>(false);
+    App::showModalComponentUnowned(tooltip.release());
 
     this->prepareProjectCloneThread()->doClone(vcs, projectId);
 }
@@ -90,8 +88,8 @@ void ProjectSyncService::deleteProject(const String &projectId)
         return;
     }
 
-    UniquePointer<ProgressTooltip> tooltip(new ProgressTooltip(false));
-    App::Layout().showModalComponentUnowned(tooltip.release());
+    auto tooltip = MakeUnique<ProgressTooltip>(false);
+    App::showModalComponentUnowned(tooltip.release());
 
     this->prepareProjectDeleteThread()->doDelete(projectId);
 }
@@ -108,21 +106,13 @@ RevisionsSyncThread *ProjectSyncService::prepareSyncRevisionsThread()
 
     thread->onSyncDone = [this](bool nothingToSync)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        layout.showTooltip(nothingToSync ? TRANS(I18n::VCS::syncUptodate) : TRANS(I18n::VCS::syncDone));
-        layout.showModalComponentUnowned(new SuccessTooltip());
+        const String message = nothingToSync ? TRANS(I18n::VCS::syncUptodate) : TRANS(I18n::VCS::syncDone);
+        App::Layout().showTooltip(message, MainLayout::TooltipType::Success);
     };
 
     thread->onSyncFailed = [](const Array<String> &errors)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        if (errors.size() > 0)
-        {
-            layout.showTooltip(errors.getFirst());
-        }
-        layout.showModalComponentUnowned(new FailTooltip());
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
     };
 
     return thread;
@@ -142,18 +132,13 @@ ProjectCloneThread *ProjectSyncService::prepareProjectCloneThread()
     
     thread->onCloneDone = []()
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        layout.showModalComponentUnowned(new SuccessTooltip());
+        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
         // do nothing? VCS will sendChangeMessage
         // and views will update themselves on the message thread
     };
 
     thread->onProjectMissing = [](const String &projectId)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-
         // unload and delete the stub, remove remote info
         auto &workspace = App::Workspace();
         workspace.unloadProject(projectId, true, false);
@@ -162,17 +147,9 @@ ProjectCloneThread *ProjectSyncService::prepareProjectCloneThread()
 
     thread->onCloneFailed = [](const Array<String> &errors, const String &projectId)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        if (errors.size() > 0)
-        {
-            layout.showTooltip(errors.getFirst());
-        }
-        layout.showModalComponentUnowned(new FailTooltip());
-
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
         // now find project stub by id, unload and delete it locally
-        auto &workspace = App::Workspace();
-        workspace.unloadProject(projectId, true, false);
+        App::Workspace().unloadProject(projectId, true, false);
     };
 
     return thread;
@@ -184,23 +161,13 @@ ProjectDeleteThread *ProjectSyncService::prepareProjectDeleteThread()
 
     thread->onDeleteDone = [](const String &projectId)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        layout.showModalComponentUnowned(new SuccessTooltip());
-
-        auto &workspace = App::Workspace();
-        workspace.getUserProfile().onProjectRemoteInfoReset(projectId);
+        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
+        App::Workspace().getUserProfile().onProjectRemoteInfoReset(projectId);
     };
 
     thread->onDeleteFailed = [](const Array<String> &errors, const String &projectId)
     {
-        auto &layout = App::Layout();
-        layout.hideModalComponentIfAny();
-        if (errors.size() > 0)
-        {
-            layout.showTooltip(errors.getFirst());
-        }
-        layout.showModalComponentUnowned(new FailTooltip());
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
     };
 
     return thread;

@@ -165,7 +165,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
                 this->updateButtons();
             };
 
-            App::Layout().showModalComponentUnowned(dialog.release());
+            App::Layout().showModalDialog(dialog.release());
         }
         //[/UserButtonCode_openGLRendererButton]
     }

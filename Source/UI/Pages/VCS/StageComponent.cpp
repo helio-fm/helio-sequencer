@@ -35,7 +35,6 @@
 
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
-#include "FailTooltip.h"
 
 #if HELIO_DESKTOP
 #    define VCS_STAGE_ROW_HEIGHT (65)
@@ -346,8 +345,7 @@ void StageComponent::toggleQuickStash()
     }
     else if (case4)
     {
-        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert));
-        App::Layout().showModalComponentUnowned(new FailTooltip());
+        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert), MainLayout::TooltipType::Failure);
     }
 }
 
@@ -355,7 +353,7 @@ void StageComponent::commitSelected()
 {
     if (this->changesList->getSelectedRows().isEmpty())
     {
-        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotCommit), 3000);
+        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotCommit));
         return;
     }
 
@@ -372,14 +370,14 @@ void StageComponent::commitSelected()
         this->lastCommitMessage = input;
     };
 
-    App::Layout().showModalComponentUnowned(dialog.release());
+    App::Layout().showModalDialog(dialog.release());
 }
 
 void StageComponent::resetSelected()
 {
     if (this->changesList->getSelectedRows().isEmpty())
     {
-        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotReset), 3000);
+        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotReset));
         return;
     }
 
@@ -390,7 +388,7 @@ void StageComponent::resetSelected()
         this->vcs.resetChanges(this->changesList->getSelectedRows());
     };
 
-    App::Layout().showModalComponentUnowned(dialog.release());
+    App::Layout().showModalDialog(dialog.release());
 }
 
 //[/MiscUserCode]

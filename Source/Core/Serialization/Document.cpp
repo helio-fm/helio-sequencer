@@ -144,7 +144,7 @@ void Document::exportAs(const String &exportExtension,
         
         if (savedOk)
         {
-            App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone), 3000);
+            App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone));
         }
     }
 

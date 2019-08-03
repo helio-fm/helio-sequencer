@@ -322,6 +322,9 @@ protected:
     virtual void updateChildrenPositions();
     virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
 
+    virtual float findNextAnchorBeat(float beat) const;
+    virtual float findPreviousAnchorBeat(float beat) const;
+
     void updateBounds();
     
     WeakReference<AudioMonitor> clippingDetector;

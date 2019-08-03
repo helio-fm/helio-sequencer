@@ -22,6 +22,12 @@
 #define SHORT_FADE_TIME (150)
 #define LONG_FADE_TIME (250)
 
+#if JUCE_WINDOWS || JUCE_LINUX
+#   define HELIO_HAS_CUSTOM_TITLEBAR 1
+#else
+#   define HELIO_HAS_CUSTOM_TITLEBAR 0
+#endif
+
 class HelioTheme final : public LookAndFeel_V4
 {
 public:

@@ -32,10 +32,11 @@ public:
     //[UserMethods]
 
     // set -1 timeout if it should not hide
-    void showWithComponent(Component *newTargetComponent, int timeOutMs = -1);
+    void showWithComponent(UniquePointer<Component> newTargetComponent,
+        int timeOutMs = -1);
 
-    void showWithComponent(Component *newTargetComponent,
-                           Rectangle<int> callerScreenBounds, int timeOutMs = -1);
+    void showWithComponent(UniquePointer<Component> newTargetComponent,
+        Rectangle<int> callerScreenBounds, int timeOutMs = -1);
 
     void hide();
 

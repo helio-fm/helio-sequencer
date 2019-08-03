@@ -70,11 +70,16 @@ public:
     static String translate(const String &plural, int64 number);
 
     static void recreateLayout();
-    static void dismissAllModalComponents();
+    static void setWindowTitleComponent(WeakReference<Component> component);
 
     static bool isOpenGLRendererEnabled() noexcept;
     static void setOpenGLRendererEnabled(bool shouldBeEnabled);
-    
+
+    // modal components are unowned (which sucks, but we still need
+    // to let modal dialogs delete themselves when they want to):
+    static void showModalComponentUnowned(Component *targetComponent);
+    static void dismissAllModalComponents();
+
 private:
 
     //===------------------------------------------------------------------===//
