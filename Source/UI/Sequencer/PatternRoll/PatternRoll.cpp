@@ -234,7 +234,7 @@ void PatternRoll::updateRollSize()
 
 void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)
 {
-    auto component = new DummyClipComponent(*this, targetClipComponent->getClip());
+    auto *component = new DummyClipComponent(*this, targetClipComponent->getClip());
     component->setEnabled(false);
     component->setGhostMode();
 

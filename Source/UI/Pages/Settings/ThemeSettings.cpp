@@ -141,14 +141,14 @@ Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelect
 
     if (existingComponentToUpdate != nullptr)
     {
-        if (ThemeSettingsItem *row = dynamic_cast<ThemeSettingsItem *>(existingComponentToUpdate))
+        if (auto *row = dynamic_cast<ThemeSettingsItem *>(existingComponentToUpdate))
         {
             row->updateDescription(isLastRow, isCurrentScheme, this->schemes[rowNumber]);
         }
     }
     else
     {
-        auto row = new ThemeSettingsItem(*this->themesList);
+        auto *row = new ThemeSettingsItem(*this->themesList);
         row->updateDescription(isLastRow, isCurrentScheme, this->schemes[rowNumber]);
         return row;
     }

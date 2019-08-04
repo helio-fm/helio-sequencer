@@ -573,7 +573,7 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
     {
         forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
         {
-            auto note = new Note();
+            auto *note = new Note();
             note->deserialize(e);
             stateNotes.addSorted(*note, note);
         }
@@ -583,7 +583,7 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
     {
         forEachValueTreeChildWithType(changes, e, Serialization::Midi::note)
         {
-            auto note = new Note();
+            auto *note = new Note();
             note->deserialize(e);
             changesNotes.addSorted(*note, note);
         }

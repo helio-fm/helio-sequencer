@@ -166,12 +166,6 @@ void SequencerSidebarLeft::resized()
     //[/UserResized]
 }
 
-void SequencerSidebarLeft::handleCommandMessage (int commandId)
-{
-    //[UserCode_handleCommandMessage] -- Add your code here...
-    //[/UserCode_handleCommandMessage]
-}
-
 
 //[MiscUserCode]
 void SequencerSidebarLeft::setAudioMonitor(AudioMonitor *audioMonitor)
@@ -311,9 +305,6 @@ BEGIN_JUCER_METADATA
                  constructorParams="ProjectNode &amp;project" variableInitialisers="project(project)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="48" initialHeight="640">
-  <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
@@ -346,3 +337,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

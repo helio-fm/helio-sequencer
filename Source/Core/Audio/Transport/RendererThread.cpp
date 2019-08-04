@@ -151,7 +151,7 @@ void RendererThread::run()
     for (int i = 0; i < uniqueInstruments.size(); ++i)
     {
         Instrument *instrument = uniqueInstruments[i];
-        auto subBuffer = new RenderBuffer();
+        auto *subBuffer = new RenderBuffer();
         subBuffer->instrument = instrument;
         subBuffer->sampleBuffer = AudioSampleBuffer(numOutChannels, bufferSize);
         subBuffers.add(subBuffer);

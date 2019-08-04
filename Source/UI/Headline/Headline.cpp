@@ -210,7 +210,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
     int lastPosX = fadePositionX;
     for (int i = firstInvalidUnitIndex; i < branch.size(); i++)
     {
-        const auto child = new HeadlineItem(branch[i], *this);
+        auto *child = new HeadlineItem(branch[i], *this);
         child->updateContent();
         this->chain.add(child);
         this->addAndMakeVisible(child);

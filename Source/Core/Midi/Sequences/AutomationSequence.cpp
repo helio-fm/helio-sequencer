@@ -72,7 +72,7 @@ MidiEvent *AutomationSequence::insert(const AutomationEvent &eventParams, bool u
     }
     else
     {
-        const auto ownedEvent = new AutomationEvent(this, eventParams);
+        auto *ownedEvent = new AutomationEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
         this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         this->updateBeatRange(true);
@@ -150,8 +150,8 @@ bool AutomationSequence::insertGroup(Array<AutomationEvent> &group, bool undoabl
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const AutomationEvent &eventParams = group.getUnchecked(i);
-            auto ownedEvent = new AutomationEvent(this, eventParams);
+            const auto &eventParams = group.getUnchecked(i);
+            auto *ownedEvent = new AutomationEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
             this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
@@ -258,7 +258,7 @@ void AutomationSequence::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(root, e, Serialization::Midi::automationEvent)
     {
-        auto event = new AutomationEvent(this, 0, 0);
+        auto *event = new AutomationEvent(this, 0, 0);
         event->deserialize(e);
         
         this->midiEvents.add(event); // sorted later

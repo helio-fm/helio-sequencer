@@ -156,7 +156,7 @@ ProjectNode *RootNode::addDefaultProject(const String &projectName)
 
 static VersionControlNode *addVCS(TreeNode *parent)
 {
-    auto vcs = new VersionControlNode();
+    auto *vcs = new VersionControlNode();
     parent->addChildNode(vcs);
 
     // при создании рутовой ноды vcs, туда надо первым делом коммитить пустой ProjectInfo,
