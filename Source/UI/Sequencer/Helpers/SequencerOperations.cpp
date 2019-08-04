@@ -1625,8 +1625,8 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto trackSelection(s.second);
-        PianoSequence *pianoLayer = getPianoSequence(trackSelection);
-        jassert(pianoLayer);
+        auto *pianoSequence = getPianoSequence(trackSelection);
+        jassert(pianoSequence);
 
         const int numSelected = trackSelection->size();
         PianoChangeGroup groupBefore, groupAfter;
@@ -1641,8 +1641,9 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             
             if (transport != nullptr && numSelected < 8)
             {
-                transport->previewMidiMessage(pianoLayer->getTrackId(),
-                    MidiMessage::noteOn(newNote.getTrackChannel(), newNote.getKey(), newNote.getVelocity()));
+                transport->previewMidiMessage(pianoSequence->getTrackId(),
+                    MidiMessage::noteOn(newNote.getTrackChannel(),
+                        newNote.getKey() + nc->getClip().getKey(), newNote.getVelocity()));
             }
         }
         
@@ -1650,12 +1651,12 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
         {
             if (! didCheckpoint)
             {
-                pianoLayer->checkpoint(transactionId);
+                pianoSequence->checkpoint(transactionId);
                 didCheckpoint = true;
             }
         }
         
-        pianoLayer->changeGroup(groupBefore, groupAfter, true);
+        pianoSequence->changeGroup(groupBefore, groupAfter, true);
     }
 }
 
@@ -1790,9 +1791,10 @@ void SequencerOperations::invertChord(Lasso &selection,
         {
             for (int i = 0; i < numSelected; ++i)
             {
-                NoteComponent *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
                 transport->previewMidiMessage(pianoSequence->getTrackId(),
-                    MidiMessage::noteOn(pianoSequence->getChannel(), nc->getKey(), nc->getVelocity()));
+                    MidiMessage::noteOn(pianoSequence->getChannel(),
+                        nc->getNote().getKey() + nc->getClip().getKey(), nc->getVelocity()));
             }
         }
     }
