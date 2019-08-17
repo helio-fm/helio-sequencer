@@ -110,10 +110,7 @@ static void updateTrackRowPosition(Array<String> &rows,
 PatternRoll::PatternRoll(ProjectNode &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true),
-    newClipDragging(nullptr),
-    addNewClipMode(false),
-    groupMode(GroupByName)
+    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
 {
     this->selectedClipsMenuManager.reset(new PatternRollSelectionMenuManager(&this->selection));
 
