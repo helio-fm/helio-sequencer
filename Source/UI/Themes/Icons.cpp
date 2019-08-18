@@ -249,7 +249,7 @@ Path Icons::getPathByName(Icons::Id id)
     return Path(extractPathFromDrawable(drawableSVG.get()));
 }
 
-static HashMap<String, Image> prerenderedVectors;
+static FlatHashMap<uint32, Image> prerenderedVectors;
 
 void Icons::clearPrerenderedCache()
 {
@@ -269,17 +269,17 @@ Image Icons::findByName(Icons::Id id, int maxSize)
 #endif
 
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
-    const String nameKey = String(id) + "@" + String(fixedSize);
+    const uint32 iconKey = (id * 1000) + fixedSize;
     
-    if (prerenderedVectors.contains(nameKey))
+    if (prerenderedVectors.contains(iconKey))
     {
-        return prerenderedVectors[nameKey];
+        return prerenderedVectors[iconKey];
     }
     
     const Colour iconBaseColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::shadow));
     const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
-    prerenderedVectors.set(nameKey, prerenderedImage);
+    prerenderedVectors[iconKey] = prerenderedImage;
 
     return prerenderedImage;
 }
