@@ -79,7 +79,7 @@ void SettingsPage::resized()
     //[/UserPreResize]
 
     background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    viewport->setBounds(16, 16, getWidth() - 32, getHeight() - 32);
+    viewport->setBounds(16, 0, getWidth() - 32, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     this->viewport->getViewedComponent()->
         setSize(this->viewport->getMaximumVisibleWidth(),
@@ -104,7 +104,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <VIEWPORT name="" id="1df16503f554b532" memberName="viewport" virtualName=""
-            explicitFocusOrder="0" pos="16 16 32M 32M" vscroll="1" hscroll="0"
+            explicitFocusOrder="0" pos="16 0 32M 0M" vscroll="1" hscroll="0"
             scrollbarThickness="30" contentType="0" jucerFile="" contentClass=""
             constructorParams=""/>
 </JUCER_COMPONENT>
