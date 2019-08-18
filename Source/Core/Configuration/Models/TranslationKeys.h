@@ -287,6 +287,7 @@ namespace I18n
         static const Identifier sync = "settings::sync";
         static const Identifier ui = "settings::ui";
         static const Identifier uiFont = "settings::ui::font";
+        static const Identifier nativeTitleBar = "settings::ui::nativebar";
     }
 
     namespace Tree

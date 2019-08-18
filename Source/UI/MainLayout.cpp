@@ -55,11 +55,14 @@ MainLayout::MainLayout() :
 
     this->headline.reset(new Headline());
 
-#if HELIO_HAS_CUSTOM_TITLEBAR
-    App::setWindowTitleComponent(this->headline.get());
-#else
-    this->addAndMakeVisible(this->headline.get());
-#endif
+    if (App::isUsingNativeTitleBar())
+    {
+        this->addAndMakeVisible(this->headline.get());
+    }
+    else
+    {
+        App::setTitleBarComponent(this->headline.get());
+    }
 
     // TODO make it able for user to select a scheme in settings page
     this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
@@ -192,11 +195,15 @@ void MainLayout::showModalDialog(Component *targetComponent)
 Rectangle<int> MainLayout::getPageBounds() const
 {
     Rectangle<int> r(this->getLocalBounds());
+
     r.removeFromLeft(SEQUENCER_SIDEBAR_WIDTH);
     r.removeFromRight(SEQUENCER_SIDEBAR_WIDTH);
-#if ! HELIO_HAS_CUSTOM_TITLEBAR
-    r.removeFromTop(HEADLINE_HEIGHT);
-#endif
+
+    if (App::isUsingNativeTitleBar())
+    {
+        r.removeFromTop(HEADLINE_HEIGHT);
+    }
+
     return r;
 }
 
@@ -207,11 +214,15 @@ Rectangle<int> MainLayout::getPageBounds() const
 void MainLayout::resized()
 {
     Rectangle<int> r(this->getLocalBounds());
-    if (r.isEmpty()) { return; }
+    if (r.isEmpty())
+    {
+        return;
+    }
 
-#if ! HELIO_HAS_CUSTOM_TITLEBAR
-    this->headline->setBounds(r.removeFromTop(HEADLINE_HEIGHT));
-#endif
+    if (App::isUsingNativeTitleBar())
+    {
+        this->headline->setBounds(r.removeFromTop(HEADLINE_HEIGHT));
+    }
 
     if (this->currentContent)
     {

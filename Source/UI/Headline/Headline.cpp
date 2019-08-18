@@ -40,11 +40,7 @@ Headline::Headline()
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
-#if HELIO_HAS_CUSTOM_TITLEBAR
-    this->setOpaque(false);
-#else
-    this->setOpaque(true);
-#endif
+    this->setOpaque(App::isUsingNativeTitleBar());
     //[/UserPreSize]
 
     this->setSize(600, 34);
@@ -68,18 +64,20 @@ Headline::~Headline()
 void Headline::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-#if ! HELIO_HAS_CUSTOM_TITLEBAR
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getBgCacheA(), {} });
-    g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-    g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
-#endif
+    if (App::isUsingNativeTitleBar())
+    {
+        const auto &theme = HelioTheme::getCurrentTheme();
+        g.setFillType({ theme.getBgCacheA(),{} });
+        g.fillRect(this->getLocalBounds());
+
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+        g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+        g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
+    }
     //[/UserPaint]
 }
 

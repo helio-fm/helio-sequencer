@@ -70,7 +70,10 @@ public:
     static String translate(const String &plural, int64 number);
 
     static void recreateLayout();
-    static void setWindowTitleComponent(WeakReference<Component> component);
+ 
+    static bool isUsingNativeTitleBar();
+    static void setUsingNativeTitleBar(bool shouldUseNative);
+    static void setTitleBarComponent(WeakReference<Component> titleComponent);
 
     static bool isOpenGLRendererEnabled() noexcept;
     static void setOpenGLRendererEnabled(bool shouldBeEnabled);

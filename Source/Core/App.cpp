@@ -47,7 +47,7 @@ public:
     MainWindow() : DocumentWindow("Helio", Colours::darkgrey, DocumentWindow::allButtons) {}
 
     // the reason for this method to exist is that heavy-weight constructor is evil:
-    void init(bool enableOpenGl = false)
+    void init(bool enableOpenGl, bool useNativeTitleBar)
     {
         this->setWantsKeyboardFocus(false);
 
@@ -56,14 +56,8 @@ public:
         //this->setResizeLimits(568, 320, 8192, 8192); // phone size test
         this->setResizeLimits(1024, 650, 8192, 8192); // production
 
-#if HELIO_HAS_CUSTOM_TITLEBAR
-        this->setResizable(true, true);
-        this->setUsingNativeTitleBar(false);
-#else
-        this->setResizable(true, false);
-        this->setUsingNativeTitleBar(true);
-#endif
-
+        this->setUseNativeTitleBar(useNativeTitleBar);
+        
         this->setBounds(int(0.1f * this->getParentWidth()),
             int(0.1f * this->getParentHeight()),
             jmin(1280, int(0.85f * this->getParentWidth())),
@@ -109,6 +103,14 @@ public:
         }
     }
 
+    void paint(Graphics &g) override
+    {
+        if (!this->isUsingNativeTitleBar())
+        {
+            DocumentWindow::paint(g);
+        }
+    }
+
     // Overridden to avoid assertions in ResizableWindow:
 #if JUCE_DEBUG
     void addChildComponent(Component *child, int zOrder = -1)
@@ -124,12 +126,10 @@ public:
 
 private:
 
-#if HELIO_HAS_CUSTOM_TITLEBAR
     BorderSize<int> getBorderThickness() override
     {
         return BorderSize<int>(0);
     }
-#endif
 
     void closeButtonPressed() override
     {
@@ -168,6 +168,12 @@ private:
         // this->setContentOwned(new ScaledComponentProxy(this->layout), false);
         this->setContentNonOwned(this->layout.get(), false);
         this->layout->restoreLastOpenedPage();
+    }
+
+    void setUseNativeTitleBar(bool useNativeTitleBar)
+    {
+        this->setResizable(true, !useNativeTitleBar);
+        this->setUsingNativeTitleBar(useNativeTitleBar);
     }
 
     void setTitleComponent(WeakReference<Component> component)
@@ -449,16 +455,21 @@ void App::dismissAllModalComponents()
 
 void App::setOpenGLRendererEnabled(bool shouldBeEnabled)
 {
+    if (isOpenGLRendererEnabled() == shouldBeEnabled)
+    {
+        return;
+    }
+
     auto *window = static_cast<App *>(getInstance())->window.get();
     auto *config = static_cast<App *>(getInstance())->config.get();
 
-    if (shouldBeEnabled && !isOpenGLRendererEnabled())
+    if (shouldBeEnabled)
     {
         window->attachOpenGLContext();
         config->setProperty(Serialization::Config::openGLState,
             Serialization::Config::enabledState.toString());
     }
-    else if (!shouldBeEnabled && isOpenGLRendererEnabled())
+    else
     {
         window->detachOpenGLContextIfAny();
         config->setProperty(Serialization::Config::openGLState,
@@ -471,8 +482,42 @@ bool App::isOpenGLRendererEnabled() noexcept
     return static_cast<App *>(getInstance())->window->openGLContext != nullptr;
 }
 
-void App::setWindowTitleComponent(WeakReference<Component> component)
+bool App::isUsingNativeTitleBar()
 {
+#if JUCE_WINDOWS || JUCE_LINUX
+    return static_cast<App *>(getInstance())->window->isUsingNativeTitleBar();
+#else
+    return true;
+#endif
+}
+
+void App::setUsingNativeTitleBar(bool shouldUseNative)
+{
+#if JUCE_WINDOWS || JUCE_LINUX
+    if (isUsingNativeTitleBar() == shouldUseNative)
+    {
+        return;
+    }
+
+    auto *window = static_cast<App *>(getInstance())->window.get();
+    auto *config = static_cast<App *>(getInstance())->config.get();
+
+    window->setUseNativeTitleBar(shouldUseNative);
+    config->setProperty(Serialization::Config::nativeTitleBar,
+        shouldUseNative ?
+        Serialization::Config::enabledState.toString() :
+        Serialization::Config::disabledState.toString());
+
+    recreateLayout();
+
+#else
+    jassertfalse; // should never hit that
+#endif
+}
+
+void App::setTitleBarComponent(WeakReference<Component> component)
+{
+    jassert(! isUsingNativeTitleBar());
     auto *window = static_cast<App *>(getInstance())->window.get();
     window->setTitleComponent(component);
 }
@@ -512,18 +557,23 @@ void App::initialise(const String &commandLine)
 #if JUCE_ANDROID
         // OpenGL seems to be the only sensible option on Android:
         const bool enableOpenGL = true;
+        const bool shouldUseNativeTitleBar = true;
 #elif JUCE_IOS
         // CoreGraphics renderer is faster anyway:
         const bool enableOpenGL = false;
+        const bool shouldUseNativeTitleBar = true;
 #else
-        const auto opeGlState =
-            this->config->getProperty(Serialization::Config::openGLState);
-        const bool enableOpenGL = opeGlState.isEmpty() ||
-            (opeGlState == Serialization::Config::enabledState.toString());
+        const auto enabledState = Serialization::Config::enabledState.toString();
+
+        const auto opeGlState = this->config->getProperty(Serialization::Config::openGLState);
+        const bool shouldEnableOpenGL = opeGlState.isEmpty() || opeGlState == enabledState;
+
+        const auto titleBarState = this->config->getProperty(Serialization::Config::nativeTitleBar);
+        const bool shouldUseNativeTitleBar = titleBarState == enabledState;
 #endif
 
         this->window.reset(new MainWindow());
-        this->window->init(enableOpenGL);
+        this->window->init(shouldEnableOpenGL, shouldUseNativeTitleBar);
 
         this->network.reset(new class Network(*this->workspace.get()));
 
