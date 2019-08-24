@@ -69,6 +69,12 @@ Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon
 Polish - Dawid Bugajski  
 
 
+## Donations
+
+* [Become a backer on Patreon](https://www.patreon.com/peterrudenko)
+* [Become a backer on OpenCollective](https://opencollective.com/helio-workstation#sponsor)
+
+
 ## License
 
 GNU GPL v3, see ``LICENSE`` for more information.

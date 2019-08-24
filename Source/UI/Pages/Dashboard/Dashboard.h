@@ -66,6 +66,8 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void updateProfileViews();
 
+    UniquePointer<Component> patreonButton;
+
     //[/UserVariables]
 
     UniquePointer<SeparatorVerticalSkew> skew;

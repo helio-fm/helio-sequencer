@@ -78,6 +78,12 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
 
 
     //[UserPreSize]
+    this->patreonButton.reset(new HyperlinkButton(TRANS("Support the project"),
+        URL("https://www.patreon.com/peterrudenko")));
+    this->addAndMakeVisible(this->patreonButton.get());
+    this->patreonButton->setColour(HyperlinkButton::textColourId,
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.25f));
+
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
     this->setOpaque(true);
@@ -125,6 +131,7 @@ void Dashboard::paint (Graphics& g)
 void Dashboard::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    this->patreonButton->setBounds(88, getHeight() - 33, 184, 21);
     //[/UserPreResize]
 
     skew->setBounds(0 + 320, 0, 64, getHeight() - 0);
