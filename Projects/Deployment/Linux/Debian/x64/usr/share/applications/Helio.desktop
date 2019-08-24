@@ -2,8 +2,10 @@
 Version=1.0
 Type=Application
 Name=Helio
-GenericName=Midi Sequencer
+GenericName=MIDI Sequencer
+GenericName[fr]=Séquenceur MIDI
 Comment=Free and cross-platform lightweight music sequencer
+Comment[fr]=Séquenceur musical léger, multi-plateformes, et libre
 Exec=/usr/bin/helio
 Terminal=false
 Icon=helio-workstation
