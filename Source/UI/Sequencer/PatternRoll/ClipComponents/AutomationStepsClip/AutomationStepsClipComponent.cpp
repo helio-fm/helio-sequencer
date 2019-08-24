@@ -370,7 +370,7 @@ void AutomationStepsClipComponent::reloadTrack()
         
         if (AutomationEvent *autoEvent = dynamic_cast<AutomationEvent *>(event))
         {
-            auto component = new AutomationStepEventComponent(*this, *autoEvent);
+            auto *component = new AutomationStepEventComponent(*this, *autoEvent);
             this->addAndMakeVisible(component);
             
             // update links and connectors

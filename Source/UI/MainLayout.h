@@ -52,7 +52,7 @@ public:
     void broadcastCommandMessage(int commandId);
 
     //===------------------------------------------------------------------===//
-    // Tooltip: non-modal and can only be one at the time
+    // Tooltip is non-modal and can only be shown one at time
     //===------------------------------------------------------------------===//
 
     enum class TooltipType : int8

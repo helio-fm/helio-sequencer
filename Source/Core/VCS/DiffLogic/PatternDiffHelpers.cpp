@@ -88,17 +88,17 @@ ValueTree PatternDiffHelpers::mergeClipsAdded(const ValueTree &state, const Valu
     Array<Clip> result;
     result.addArray(stateClips);
 
-    HashMap<Clip::Id, int> stateIDs;
+    FlatHashSet<Clip::Id> stateIDs;
 
     for (int j = 0; j < stateClips.size(); ++j)
     {
-        stateIDs.set(stateClips.getUnchecked(j).getId(), j);
+        stateIDs.insert(stateClips.getUnchecked(j).getId());
     }
 
     for (int i = 0; i < changesClips.size(); ++i)
     {
         const Clip changesClip(changesClips.getUnchecked(i));
-        bool foundInState = stateIDs.contains(changesClip.getId());
+        const bool foundInState = stateIDs.contains(changesClip.getId());
 
         if (!foundInState)
         {
@@ -118,17 +118,17 @@ ValueTree PatternDiffHelpers::mergeClipsRemoved(const ValueTree &state, const Va
     deserializePatternChanges(state, changes, stateClips, changesClips);
 
     Array<Clip> result;
-    HashMap<Clip::Id, int> changesIDs;
+    FlatHashSet<Clip::Id> changesIDs;
 
     for (int j = 0; j < changesClips.size(); ++j)
     {
-        changesIDs.set(changesClips.getUnchecked(j).getId(), j);
+        changesIDs.insert(changesClips.getUnchecked(j).getId());
     }
 
     for (int i = 0; i < stateClips.size(); ++i)
     {
         const Clip stateClip(stateClips.getUnchecked(i));
-        bool foundInChanges = changesIDs.contains(stateClip.getId());
+        const bool foundInChanges = changesIDs.contains(stateClip.getId());
 
         if (!foundInChanges)
         {
@@ -150,12 +150,12 @@ ValueTree PatternDiffHelpers::mergeClipsChanged(const ValueTree &state, const Va
     Array<Clip> result;
     result.addArray(stateClips);
 
-    HashMap<Clip::Id, Clip> changesIDs;
+    FlatHashMap<Clip::Id, Clip> changesIDs;
 
     for (int j = 0; j < changesClips.size(); ++j)
     {
         const Clip changesClip(changesClips.getUnchecked(j));
-        changesIDs.set(changesClip.getId(), changesClip);
+        changesIDs[changesClip.getId()] = changesClip;
     }
 
     for (int i = 0; i < stateClips.size(); ++i)
@@ -164,7 +164,7 @@ ValueTree PatternDiffHelpers::mergeClipsChanged(const ValueTree &state, const Va
 
         if (changesIDs.contains(stateClip.getId()))
         {
-            const Clip changesClip = changesIDs[stateClip.getId()];
+            const auto changesClip = changesIDs[stateClip.getId()];
             result.removeAllInstancesOf(stateClip);
             result.addIfNotAlreadyThere(changesClip);
         }

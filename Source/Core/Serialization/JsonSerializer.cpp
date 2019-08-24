@@ -428,19 +428,29 @@ struct JsonFormatter final
             }
         }
 
-        using GroupedChildren = HashMap<Identifier, Array<ValueTree>, IdentifierHash>;
+        using GroupedChildren = FlatHashMap<Identifier, Array<ValueTree>, IdentifierHash>;
         GroupedChildren children;
-        for (const auto child : tree)
+        for (const auto &child : tree)
         {
-            children.getReference(child.getType()).add(child);
+            if (!children.contains(child.getType()))
+            {
+                children[child.getType()] = Array<ValueTree>(child);
+                continue;
+            }
+
+            children.at(child.getType()).add(child);
         }
 
-        for (GroupedChildren::Iterator i(children); i.next();)
+        for (auto i = children.begin(); i != children.end(); ++i)
         {
-            const auto childrenType(i.getKey());
-            const auto childGroupOfSameType(i.getValue());
+            const auto &childrenType = i->first;
+            const auto &childGroupOfSameType = i->second;
 
-            if (!allOnOneLine) { writeSpaces(out, indentLevel + indentSize); }
+            if (!allOnOneLine)
+            {
+                writeSpaces(out, indentLevel + indentSize);
+            }
+
             out << '"';
             writeString(out, childrenType);
             out << "\": ";
@@ -456,8 +466,7 @@ struct JsonFormatter final
                     indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
             }
 
-            GroupedChildren::Iterator endCheck(i);
-            if (endCheck.next())
+            if (i != children.end() && std::next(i) != children.end())
             {
                 if (allOnOneLine) { out << ", "; } else { out << ',' << newLine; }
             }
@@ -467,7 +476,11 @@ struct JsonFormatter final
             }
         }
 
-        if (!allOnOneLine) { writeSpaces(out, indentLevel); }
+        if (!allOnOneLine)
+        {
+            writeSpaces(out, indentLevel);
+        }
+
         out << '}';
     }
 

@@ -445,7 +445,7 @@ void UndoStack::deserialize(const ValueTree &tree)
     
     for (const auto &childTransaction : root)
     {
-        auto actionSet = new ActionSet(this->project, {});
+        auto *actionSet = new ActionSet(this->project, {});
         actionSet->deserialize(childTransaction);
         this->transactions.insert(this->nextIndex, actionSet);
         ++this->nextIndex;

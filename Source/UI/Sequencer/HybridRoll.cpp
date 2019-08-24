@@ -1327,7 +1327,7 @@ void HybridRoll::onClippingWarning()
         }
     }
     
-    auto newMarker = new TimelineWarningMarker(TimelineWarningMarker::Red, *this, clippingBeat);
+    auto *newMarker = new TimelineWarningMarker(TimelineWarningMarker::Red, *this, clippingBeat);
     this->clippingIndicators.add(newMarker);
     this->addAndMakeVisible(newMarker);
 }
@@ -1358,7 +1358,7 @@ void HybridRoll::onOversaturationWarning()
         }
     }
     
-    auto newMarker = new TimelineWarningMarker(TimelineWarningMarker::Yellow, *this, warningBeat);
+    auto *newMarker = new TimelineWarningMarker(TimelineWarningMarker::Yellow, *this, warningBeat);
     this->oversaturationIndicators.add(newMarker);
     this->addAndMakeVisible(newMarker);
 }

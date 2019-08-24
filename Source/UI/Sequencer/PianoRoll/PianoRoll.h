@@ -251,12 +251,6 @@ private:
     UniquePointer<HighlightingScheme> defaultHighlighting;
     int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
     friend class ThemeSettingsItem; // to be able to call renderRowsPattern
-
-private:
-
-    void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
-    class FocusToRegionAnimator;
-    UniquePointer<Timer> focusToRegionAnimator;
     
 private:
     

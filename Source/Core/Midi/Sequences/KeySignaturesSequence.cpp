@@ -271,7 +271,7 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(root, e, Serialization::Midi::keySignature)
     {
-        auto signature = new KeySignatureEvent(this);
+        auto *signature = new KeySignatureEvent(this);
         signature->deserialize(e);
         
         this->midiEvents.add(signature); // sorted later

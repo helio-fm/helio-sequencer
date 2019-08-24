@@ -31,10 +31,9 @@ ColourScheme &ColourScheme::operator=(const ColourScheme &other)
     this->name = other.name;
     this->colours.clear();
 
-    ColourMap::Iterator i(other.colours);
-    while (i.next())
+    for (const auto &i : other.colours)
     {
-        this->colours.set(i.getKey(), i.getValue());
+        this->colours[i.first] = i.second;
     }
 
     return *this;
@@ -42,36 +41,16 @@ ColourScheme &ColourScheme::operator=(const ColourScheme &other)
 
 bool operator==(const ColourScheme &lhs, const ColourScheme &rhs)
 {
-    ColourScheme::ColourMap::Iterator i(lhs.colours);
-    while (i.next())
+    for (const auto &i : lhs.colours)
     {
-        if (rhs.colours[i.getKey()] != i.getValue())
+        if (!rhs.colours.contains(i.first) ||
+            rhs.colours.at(i.first) != i.second)
         {
             return false;
         }
     }
 
     return lhs.name == rhs.name;
-}
-
-void ColourScheme::randomize()
-{
-    ColourMap newMap;
-    ColourMap::Iterator i(this->colours);
-
-    while (i.next())
-    {
-        Random rnd(Random::getSystemRandom());
-        rnd.setSeedRandomly();
-
-        const float r = rnd.nextFloat();
-        const float g = rnd.nextFloat();
-        const float b = rnd.nextFloat();
-        const float a = 1.f;
-        newMap.set(i.getKey(), Colour(r, g, b, a));
-    }
-
-    this->colours.swapWith(newMap);
 }
 
 String ColourScheme::getName() const noexcept
@@ -82,105 +61,105 @@ String ColourScheme::getName() const noexcept
 Colour ColourScheme::getPrimaryGradientColourA() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::primaryGradientA]);
+    const auto c = this->colours.at(UI::Colours::primaryGradientA);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPrimaryGradientColourB() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::primaryGradientB]);
+    const auto c = this->colours.at(UI::Colours::primaryGradientB);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getSecondaryGradientColourA() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::secondaryGradientA]);
+    const auto c = this->colours.at(UI::Colours::secondaryGradientA);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getSecondaryGradientColourB() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::secondaryGradientB]);
+    const auto c = this->colours.at(UI::Colours::secondaryGradientB);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPanelFillColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::panelFill]);
+    const auto c = this->colours.at(UI::Colours::panelFill);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPanelBorderColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::panelBorder]);
+    const auto c = this->colours.at(UI::Colours::panelBorder);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getLassoFillColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::lassoFill]);
+    const auto c = this->colours.at(UI::Colours::lassoFill);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getLassoBorderColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::lassoBorder]);
+    const auto c = this->colours.at(UI::Colours::lassoBorder);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getBlackKeyColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::blackKey]);
+    const auto c = this->colours.at(UI::Colours::blackKey);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getWhiteKeyColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::whiteKey]);
+    const auto c = this->colours.at(UI::Colours::whiteKey);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getRowColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::row]);
+    const auto c = this->colours.at(UI::Colours::row);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getBarColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::bar]);
+    const auto c = this->colours.at(UI::Colours::bar);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getTextColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::text]);
+    const auto c = this->colours.at(UI::Colours::text);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getIconBaseColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::iconBase]);
+    const auto c = this->colours.at(UI::Colours::iconBase);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getIconShadowColour() const
 {
     using namespace Serialization;
-    const Colour c(this->colours[UI::Colours::iconShadow]);
+    const auto c = this->colours.at(UI::Colours::iconShadow);
     return JUCE_LIVE_CONSTANT(c);
 }
 
@@ -195,21 +174,21 @@ void ColourScheme::syncWithLiveConstantEditor()
 
     this->reset();
 
-    this->colours.set(UI::Colours::primaryGradientA, this->getPrimaryGradientColourA());
-    this->colours.set(UI::Colours::primaryGradientB, this->getPrimaryGradientColourB());
-    this->colours.set(UI::Colours::secondaryGradientA, this->getSecondaryGradientColourA());
-    this->colours.set(UI::Colours::secondaryGradientB, this->getSecondaryGradientColourB());
-    this->colours.set(UI::Colours::panelFill, this->getPanelFillColour());
-    this->colours.set(UI::Colours::lassoBorder, this->getLassoBorderColour());
-    this->colours.set(UI::Colours::panelBorder, this->getPanelBorderColour());
-    this->colours.set(UI::Colours::lassoFill, this->getLassoFillColour());
-    this->colours.set(UI::Colours::blackKey, this->getBlackKeyColour());
-    this->colours.set(UI::Colours::whiteKey, this->getWhiteKeyColour());
-    this->colours.set(UI::Colours::row, this->getRowColour());
-    this->colours.set(UI::Colours::bar, this->getBarColour());
-    this->colours.set(UI::Colours::text, this->getTextColour());
-    this->colours.set(UI::Colours::iconBase, this->getIconBaseColour());
-    this->colours.set(UI::Colours::iconShadow, this->getIconShadowColour());
+    this->colours[UI::Colours::primaryGradientA] = this->getPrimaryGradientColourA();
+    this->colours[UI::Colours::primaryGradientB] = this->getPrimaryGradientColourB();
+    this->colours[UI::Colours::secondaryGradientA] = this->getSecondaryGradientColourA();
+    this->colours[UI::Colours::secondaryGradientB] = this->getSecondaryGradientColourB();
+    this->colours[UI::Colours::panelFill] = this->getPanelFillColour();
+    this->colours[UI::Colours::lassoBorder] = this->getLassoBorderColour();
+    this->colours[UI::Colours::panelBorder] = this->getPanelBorderColour();
+    this->colours[UI::Colours::lassoFill] = this->getLassoFillColour();
+    this->colours[UI::Colours::blackKey] = this->getBlackKeyColour();
+    this->colours[UI::Colours::whiteKey] = this->getWhiteKeyColour();
+    this->colours[UI::Colours::row] = this->getRowColour();
+    this->colours[UI::Colours::bar] = this->getBarColour();
+    this->colours[UI::Colours::text] = this->getTextColour();
+    this->colours[UI::Colours::iconBase] = this->getIconBaseColour();
+    this->colours[UI::Colours::iconShadow] = this->getIconShadowColour();
 }
 
 ValueTree ColourScheme::serialize() const
@@ -221,10 +200,9 @@ ValueTree ColourScheme::serialize() const
 
     ValueTree mapXml(UI::Colours::colourMap);
 
-    ColourMap::Iterator i(this->colours);
-    while (i.next())
+    for (const auto &i : this->colours)
     {
-        mapXml.setProperty(i.getKey(), i.getValue().toString(), nullptr);
+        mapXml.setProperty(i.first, i.second.toString(), nullptr);
     }
 
     tree.appendChild(mapXml, nullptr);
@@ -250,7 +228,7 @@ void ColourScheme::deserialize(const ValueTree &tree)
     {
         const auto propertyName = map.getPropertyName(i);
         const Colour c(Colour::fromString(map[propertyName].toString()));
-        this->colours.set(propertyName.toString(), c);
+        this->colours[propertyName] = c;
     }
 }
 
@@ -262,21 +240,21 @@ void ColourScheme::reset()
     this->colours.clear();
 
     // todo set reasonable defaults?
-    this->colours.set(UI::Colours::primaryGradientA, Colours::black);
-    this->colours.set(UI::Colours::primaryGradientB, Colours::black);
-    this->colours.set(UI::Colours::secondaryGradientA, Colours::black);
-    this->colours.set(UI::Colours::secondaryGradientB, Colours::black);
-    this->colours.set(UI::Colours::panelFill, Colours::black);
-    this->colours.set(UI::Colours::lassoBorder, Colours::black);
-    this->colours.set(UI::Colours::panelBorder, Colours::black);
-    this->colours.set(UI::Colours::lassoFill, Colours::black);
-    this->colours.set(UI::Colours::blackKey, Colours::black);
-    this->colours.set(UI::Colours::whiteKey, Colours::black);
-    this->colours.set(UI::Colours::row, Colours::black);
-    this->colours.set(UI::Colours::bar, Colours::black);
-    this->colours.set(UI::Colours::text, Colours::black);
-    this->colours.set(UI::Colours::iconBase, Colours::black.withAlpha(0.25f));
-    this->colours.set(UI::Colours::iconShadow, Colours::white.withAlpha(0.115f));
+    this->colours[UI::Colours::primaryGradientA] = Colours::black;
+    this->colours[UI::Colours::primaryGradientB] = Colours::black;
+    this->colours[UI::Colours::secondaryGradientA] = Colours::black;
+    this->colours[UI::Colours::secondaryGradientB] = Colours::black;
+    this->colours[UI::Colours::panelFill] = Colours::black;
+    this->colours[UI::Colours::lassoBorder] = Colours::black;
+    this->colours[UI::Colours::panelBorder] = Colours::black;
+    this->colours[UI::Colours::lassoFill] = Colours::black;
+    this->colours[UI::Colours::blackKey] = Colours::black;
+    this->colours[UI::Colours::whiteKey] = Colours::black;
+    this->colours[UI::Colours::row] = Colours::black;
+    this->colours[UI::Colours::bar] = Colours::black;
+    this->colours[UI::Colours::text] = Colours::black;
+    this->colours[UI::Colours::iconBase] = Colours::black.withAlpha(0.25f);
+    this->colours[UI::Colours::iconShadow] = Colours::white.withAlpha(0.115f);
 }
 
 String ColourScheme::getResourceId() const noexcept

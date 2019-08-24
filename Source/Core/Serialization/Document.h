@@ -46,10 +46,9 @@ public:
     //===------------------------------------------------------------------===//
 
     void save();
-    void forceSave();
     void saveAs();
     void exportAs(const String &exportExtension,
-                  const String &defaultFilename = "");
+        const String &defaultFilename = "");
 
     void updateHash();
     bool hasUnsavedChanges() const noexcept;

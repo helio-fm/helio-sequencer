@@ -604,7 +604,7 @@ void deserializeAutoTrackChanges(const ValueTree &state, const ValueTree &change
     {
         forEachValueTreeChildWithType(state, e, Serialization::Midi::automationEvent)
         {
-            auto event = new AutomationEvent();
+            auto *event = new AutomationEvent();
             event->deserialize(e);
             stateNotes.addSorted(*event, event);
         }
@@ -614,7 +614,7 @@ void deserializeAutoTrackChanges(const ValueTree &state, const ValueTree &change
     {
         forEachValueTreeChildWithType(changes, e, Serialization::Midi::automationEvent)
         {
-            auto event = new AutomationEvent();
+            auto *event = new AutomationEvent();
             event->deserialize(e);
             changesNotes.addSorted(*event, event);
         }

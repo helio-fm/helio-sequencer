@@ -251,7 +251,7 @@ bool Pattern::insertGroup(Array<Clip> &group, bool undoable)
         for (int i = 0; i < group.size(); ++i)
         {
             const Clip &eventParams = group.getReference(i);
-            const auto ownedClip = new Clip(this, eventParams);
+            auto *ownedClip = new Clip(this, eventParams);
             this->clips.addSorted(*ownedClip, ownedClip);
             this->notifyClipAdded(*ownedClip);
         }

@@ -144,8 +144,8 @@ bool AnnotationsSequence::insertGroup(Array<AnnotationEvent> &group, bool undoab
     {
         for (int i = 0; i < group.size(); ++i)
         {
-            const AnnotationEvent &eventParams = group.getReference(i);
-            const auto ownedEvent = new AnnotationEvent(this, eventParams);
+            const auto &eventParams = group.getReference(i);
+            auto *ownedEvent = new AnnotationEvent(this, eventParams);
             jassert(ownedEvent->isValid());
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
             this->eventDispatcher.dispatchAddEvent(*ownedEvent);

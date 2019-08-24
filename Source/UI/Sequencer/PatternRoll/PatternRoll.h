@@ -144,14 +144,10 @@ public:
     void reloadRollContent();
     void insertNewClipAt(const MouseEvent &e);
 
-    void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
-    class FocusToRegionAnimator;
-    UniquePointer<Timer> focusToRegionAnimator;
-    
 private:
 
-    ClipComponent *newClipDragging;
-    bool addNewClipMode;
+    ClipComponent *newClipDragging = nullptr;
+    bool addNewClipMode = false;
 
     UniquePointer<CutPointMark> knifeToolHelper;
     void startCuttingClips(const MouseEvent &e);
@@ -164,7 +160,7 @@ private:
     Array<String> rows;
     Array<const MidiTrack *> tracks;
     void reloadRowsGrouping();
-    GroupMode groupMode;
+    GroupMode groupMode = GroupMode::GroupByName;
 
 private:
 

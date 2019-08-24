@@ -110,7 +110,7 @@ void AudioPluginNode::showPage()
         }
         else
         {
-            auto *const ui = new HelioAudioProcessorEditor(*f->getProcessor());
+            auto *ui = new HelioAudioProcessorEditor(*f->getProcessor());
             auto *plugin = dynamic_cast<AudioPluginInstance *>(f->getProcessor());
 
             if (plugin != nullptr)

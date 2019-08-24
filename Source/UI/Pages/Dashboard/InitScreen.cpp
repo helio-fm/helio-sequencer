@@ -44,11 +44,12 @@ InitScreen::InitScreen()
     this->setFocusContainer(false);
     this->setOpaque(true);
 
-#if HELIO_HAS_CUSTOM_TITLEBAR
-    this->headLine->setVisible(false);
-    this->headShadow->setVisible(false);
-    this->gradient1->setVisible(false);
-#endif
+    if (!App::isUsingNativeTitleBar())
+    {
+        this->headLine->setVisible(false);
+        this->headShadow->setVisible(false);
+        this->gradient1->setVisible(false);
+    }
     //[/UserPreSize]
 
     this->setSize(600, 400);
@@ -112,8 +113,8 @@ void InitScreen::visibilityChanged()
     if (this->isVisible())
     {
         // Debug png logos generator
-        //this->startTimer(5000);
-        this->postCommandMessage(CommandIDs::InitWorkspace);
+        this->startTimer(10);
+        //this->postCommandMessage(CommandIDs::InitWorkspace);
     }
     //[/UserCode_visibilityChanged]
 }

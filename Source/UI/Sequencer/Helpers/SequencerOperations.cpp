@@ -61,9 +61,9 @@ using PianoChangeGroupProxy = ChangeGroupProxy<PianoChangeGroup>;
 using AnnotationChangeGroupProxy = ChangeGroupProxy<AnnotationChangeGroup>;
 using AutoChangeGroupProxy = ChangeGroupProxy<AutoChangeGroup>;
 
-using PianoChangeGroupsPerLayer = HashMap<String, PianoChangeGroupProxy::Ptr>;
-using AnnotationChangeGroupsPerLayer = HashMap<String, AnnotationChangeGroupProxy::Ptr>;
-using AutoChangeGroupsPerLayer = HashMap<String, AutoChangeGroupProxy::Ptr>;
+using PianoChangeGroupsPerLayer = FlatHashMap<String, PianoChangeGroupProxy::Ptr, StringHash>;
+using AnnotationChangeGroupsPerLayer = FlatHashMap<String, AnnotationChangeGroupProxy::Ptr, StringHash>;
+using AutoChangeGroupsPerLayer = FlatHashMap<String, AutoChangeGroupProxy::Ptr, StringHash>;
 
 template<typename TEvent, typename TGroup, typename TGroups>
 void splitChangeGroupByLayers(const TGroup &group, TGroups &outGroups)
@@ -85,7 +85,7 @@ void splitChangeGroupByLayers(const TGroup &group, TGroups &outGroups)
         }
         
         targetArray->add(note);
-        outGroups.set(trackId, targetArray);
+        outGroups[trackId] = targetArray;
     }
 }
 
@@ -111,12 +111,10 @@ bool applyChanges(const TGroup &groupBefore,
     splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupBefore, groupsBefore);
     splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupAfter, groupsAfter);
     
-    typename TGroups::Iterator changeGroupsIterator(groupsBefore);
-    
-    while (changeGroupsIterator.next())
+    for (const auto &changeGroupsIterator : groupsBefore)
     {
-        typename ChangeGroupProxy<TGroup>::Ptr currentGroupBefore(changeGroupsIterator.getValue());
-        typename ChangeGroupProxy<TGroup>::Ptr currentGroupAfter(groupsAfter[changeGroupsIterator.getKey()]);
+        auto currentGroupBefore = changeGroupsIterator.second;
+        auto currentGroupAfter = groupsAfter[changeGroupsIterator.first];
         
         MidiSequence *midiLayer = currentGroupBefore->getFirst().getSequence();
         TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
@@ -146,11 +144,9 @@ bool applyRemovals(const TGroup &groupToRemove,
     
     splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupToRemove, groupsToRemove);
     
-    typename TGroups::Iterator changeGroupsIterator(groupsToRemove);
-    
-    while (changeGroupsIterator.next())
+    for (const auto &changeGroupsIterator : groupsToRemove)
     {
-        typename ChangeGroupProxy<TGroup>::Ptr currentRemovalGroup(changeGroupsIterator.getValue());
+        auto currentRemovalGroup = changeGroupsIterator.second;
         
         MidiSequence *midiLayer = currentRemovalGroup->getFirst().getSequence();
         TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
@@ -180,11 +176,9 @@ bool applyInsertions(const TGroup &groupToInsert,
     
     splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupToInsert, groupsToInsert);
     
-    typename TGroups::Iterator changeGroupsIterator(groupsToInsert);
-    
-    while (changeGroupsIterator.next())
+    for (const auto &changeGroupsIterator : groupsToInsert)
     {
-        typename ChangeGroupProxy<TGroup>::Ptr currentInsertionGroup(changeGroupsIterator.getValue());
+        auto currentInsertionGroup = changeGroupsIterator.second;
         
         MidiSequence *midiLayer = currentInsertionGroup->getFirst().getSequence();
         TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
@@ -229,11 +223,9 @@ bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
     
     splitChangeGroupByLayers<AutomationEvent, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, groupsToRemove);
     
-    AutoChangeGroupsPerLayer::Iterator changeGroupsIterator(groupsToRemove);
-    
-    while (changeGroupsIterator.next())
+    for (const auto &changeGroupsIterator : groupsToRemove)
     {
-        ChangeGroupProxy<AutoChangeGroup>::Ptr currentRemovalGroup(changeGroupsIterator.getValue());
+        auto currentRemovalGroup = changeGroupsIterator.second;
         
         MidiSequence *sequence = currentRemovalGroup->getFirst().getSequence();
         AutomationSequence *targetLayer = dynamic_cast<AutomationSequence *>(sequence);
@@ -804,8 +796,8 @@ void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoin
     
     // remove duplicates
     
-    HashMap<MidiEvent::Id, Note> deferredRemoval;
-    HashMap<MidiEvent::Id, Note> unremovableNotes;
+    FlatHashMap<MidiEvent::Id, Note> deferredRemoval;
+    FlatHashMap<MidiEvent::Id, Note> unremovableNotes;
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -838,17 +830,16 @@ void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoin
             if (! isOriginalNote &&
                 (isOverlappingNote || startsFromTheSameBeat))
             {
-                unremovableNotes.set(nc->getNote().getId(), nc->getNote());
-                deferredRemoval.set(nc2->getNote().getId(), nc2->getNote());
+                unremovableNotes[nc->getNote().getId()] = nc->getNote();
+                deferredRemoval[nc2->getNote().getId()] = nc2->getNote();
             }
         }
     }
     
     PianoChangeGroup removalGroup;
-    HashMap<MidiEvent::Id, Note>::Iterator deferredRemovalIterator(deferredRemoval);
-    while (deferredRemovalIterator.next())
+    for (const auto &deferredRemovalIterator : deferredRemoval)
     {
-        removalGroup.add(deferredRemovalIterator.getValue());
+        removalGroup.add(deferredRemovalIterator.second);
     }
 
     applyPianoRemovals(removalGroup, didCheckpoint);
@@ -943,8 +934,8 @@ void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoi
     if (selection.getNumSelected() == 0)
     { return; }
     
-    HashMap<MidiEvent::Id, Note> deferredRemoval;
-    HashMap<MidiEvent::Id, Note> unremovableNotes;
+    FlatHashMap<MidiEvent::Id, Note> deferredRemoval;
+    FlatHashMap<MidiEvent::Id, Note> unremovableNotes;
     
     bool didCheckpoint = !shouldCheckpoint;
 
@@ -974,17 +965,16 @@ void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoi
             if (! isOriginalNote &&
                 (isOverlappingNote || startsFromTheSameBeat))
             {
-                unremovableNotes.set(nc->getNote().getId(), nc->getNote());
-                deferredRemoval.set(nc2->getNote().getId(), nc2->getNote());
+                unremovableNotes[nc->getNote().getId()] = nc->getNote();
+                deferredRemoval[nc2->getNote().getId()] = nc2->getNote();
             }
         }
     }
     
     PianoChangeGroup removalGroup;
-    HashMap<MidiEvent::Id, Note>::Iterator deferredRemovalIterator(deferredRemoval);
-    while (deferredRemovalIterator.next())
+    for (const auto &deferredRemovalIterator : deferredRemoval)
     {
-        removalGroup.add(deferredRemovalIterator.getValue());
+        removalGroup.add(deferredRemovalIterator.second);
     }
     
     applyPianoRemovals(removalGroup, didCheckpoint);
@@ -1051,16 +1041,16 @@ void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, boo
                     }
                 }
                 
-                deferredRemovals.set(sourcePianoLayer->getTrackId(), removalsForThisLayer);
+                deferredRemovals[sourcePianoLayer->getTrackId()] = removalsForThisLayer;
             }
         }
     }
     
     // events removal
-    PianoChangeGroupsPerLayer::Iterator deferredRemovalIterator(deferredRemovals);
-    while (deferredRemovalIterator.next())
+
+    for (const auto &deferredRemovalIterator : deferredRemovals)
     {
-        PianoChangeGroupProxy::Ptr groupToRemove(deferredRemovalIterator.getValue());
+        auto groupToRemove = deferredRemovalIterator.second;
         MidiSequence *midiLayer = groupToRemove->getFirst().getSequence();
         PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
         pianoLayer->removeGroup(*groupToRemove, true);
@@ -1625,8 +1615,8 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto trackSelection(s.second);
-        PianoSequence *pianoLayer = getPianoSequence(trackSelection);
-        jassert(pianoLayer);
+        auto *pianoSequence = getPianoSequence(trackSelection);
+        jassert(pianoSequence);
 
         const int numSelected = trackSelection->size();
         PianoChangeGroup groupBefore, groupAfter;
@@ -1641,8 +1631,9 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             
             if (transport != nullptr && numSelected < 8)
             {
-                transport->previewMidiMessage(pianoLayer->getTrackId(),
-                    MidiMessage::noteOn(newNote.getTrackChannel(), newNote.getKey(), newNote.getVelocity()));
+                transport->previewMidiMessage(pianoSequence->getTrackId(),
+                    MidiMessage::noteOn(newNote.getTrackChannel(),
+                        newNote.getKey() + nc->getClip().getKey(), newNote.getVelocity()));
             }
         }
         
@@ -1650,12 +1641,12 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
         {
             if (! didCheckpoint)
             {
-                pianoLayer->checkpoint(transactionId);
+                pianoSequence->checkpoint(transactionId);
                 didCheckpoint = true;
             }
         }
         
-        pianoLayer->changeGroup(groupBefore, groupAfter, true);
+        pianoSequence->changeGroup(groupBefore, groupAfter, true);
     }
 }
 
@@ -1790,9 +1781,10 @@ void SequencerOperations::invertChord(Lasso &selection,
         {
             for (int i = 0; i < numSelected; ++i)
             {
-                NoteComponent *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
                 transport->previewMidiMessage(pianoSequence->getTrackId(),
-                    MidiMessage::noteOn(pianoSequence->getChannel(), nc->getKey(), nc->getVelocity()));
+                    MidiMessage::noteOn(pianoSequence->getChannel(),
+                        nc->getNote().getKey() + nc->getClip().getKey(), nc->getVelocity()));
             }
         }
     }

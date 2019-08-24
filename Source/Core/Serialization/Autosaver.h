@@ -19,7 +19,7 @@
 
 class DocumentOwner;
 
-class Autosaver :
+class Autosaver final :
     private ChangeListener,
     private Timer
 {

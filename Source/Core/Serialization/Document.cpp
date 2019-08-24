@@ -104,14 +104,6 @@ void Document::save()
     }
 }
 
-void Document::forceSave()
-{
-    if (this->workingFile.getFullPathName().isNotEmpty())
-    {
-        this->internalSave(this->workingFile);
-    }
-}
-
 void Document::saveAs()
 {
 #if HELIO_DESKTOP

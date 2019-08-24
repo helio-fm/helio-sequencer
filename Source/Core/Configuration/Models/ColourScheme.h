@@ -29,9 +29,7 @@ public:
     ColourScheme(const ColourScheme &other);
 
     using Ptr = ReferenceCountedObjectPtr<ColourScheme>;
-    using ColourMap = HashMap<Identifier, Colour, IdentifierHash>;
-
-    void randomize();
+    using ColourMap = FlatHashMap<Identifier, Colour, IdentifierHash>;
 
     ColourScheme &operator=(const ColourScheme &other);
     friend bool operator==(const ColourScheme &lhs, const ColourScheme &rhs);

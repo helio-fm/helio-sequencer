@@ -330,18 +330,18 @@ ValueTree mergeNotesAdded(const ValueTree &state, const ValueTree &changes)
     result.addArray(stateNotes);
 
     // на всякий пожарный, ищем, нет ли в состоянии нот с теми же id, где нет - добавляем
-    HashMap<MidiEvent::Id, int> stateIDs;
+    FlatHashSet<MidiEvent::Id> stateIDs;
     
     for (int j = 0; j < stateNotes.size(); ++j)
     {
         const Note *stateNote = stateNotes.getUnchecked(j);
-        stateIDs.set(stateNote->getId(), j);
+        stateIDs.insert(stateNote->getId());
     }
 
     for (int i = 0; i < changesNotes.size(); ++i)
     {
         const Note *changesNote = changesNotes.getUnchecked(i);
-        bool foundNoteInState = stateIDs.contains(changesNote->getId());
+        const bool foundNoteInState = stateIDs.contains(changesNote->getId());
 
         if (! foundNoteInState)
         {
@@ -363,12 +363,12 @@ ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &changes)
     Array<const MidiEvent *> result;
 
     // добавляем все ноты из состояния, которых нет в изменениях
-    HashMap<MidiEvent::Id, int> changesIDs;
+    FlatHashSet<MidiEvent::Id> changesIDs;
 
     for (int j = 0; j < changesNotes.size(); ++j)
     {
         const Note *changesNote = changesNotes.getUnchecked(j);
-        changesIDs.set(changesNote->getId(), j);
+        changesIDs.insert(changesNote->getId());
     }
     
     for (int i = 0; i < stateNotes.size(); ++i)
@@ -397,20 +397,20 @@ ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes)
     result.addArray(stateNotes);
 
     // снова ищем по id и заменяем
-    HashMap<MidiEvent::Id, const Note *> changesIDs;
+    FlatHashMap<MidiEvent::Id, const Note *> changesIDs;
     
     for (int j = 0; j < changesNotes.size(); ++j)
     {
         const Note *changesNote = changesNotes.getUnchecked(j);
-        changesIDs.set(changesNote->getId(), changesNote);
+        changesIDs[changesNote->getId()] = changesNote;
     }
 
     for (int i = 0; i < stateNotes.size(); ++i)
     {
-        const Note *stateNote = stateNotes.getUnchecked(i);
+        const auto *stateNote = stateNotes.getUnchecked(i);
         if (changesIDs.contains(stateNote->getId()))
         {
-            const Note *changesNote = changesIDs[stateNote->getId()];
+            const auto *changesNote = changesIDs[stateNote->getId()];
             result.removeAllInstancesOf(stateNote);
             result.addIfNotAlreadyThere(changesNote);
         }
@@ -573,7 +573,7 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
     {
         forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
         {
-            auto note = new Note();
+            auto *note = new Note();
             note->deserialize(e);
             stateNotes.addSorted(*note, note);
         }
@@ -583,7 +583,7 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
     {
         forEachValueTreeChildWithType(changes, e, Serialization::Midi::note)
         {
-            auto note = new Note();
+            auto *note = new Note();
             note->deserialize(e);
             changesNotes.addSorted(*note, note);
         }

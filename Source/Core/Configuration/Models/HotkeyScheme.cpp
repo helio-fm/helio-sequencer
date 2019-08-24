@@ -120,7 +120,7 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
         this->receiverChildren.clear();
     }
 
-    WeakReference<Component> receiver = this->receiverChildren[key.componentId];
+    auto receiver = this->receiverChildren[key.componentId];
     if (receiver == nullptr)
     {
         if (keyPressReceiver != nullptr &&
@@ -133,7 +133,7 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
             receiver = findMessageReceiver(messageReceiver, key.componentId);
         }
 
-        this->receiverChildren.set(key.componentId, receiver);
+        this->receiverChildren[key.componentId] = receiver;
     }
 
     if (receiver != nullptr)

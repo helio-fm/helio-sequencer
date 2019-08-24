@@ -21,7 +21,8 @@
 #include "MobileComboBox.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/SeparatorHorizontal.h"
+#include "../../Themes/SeparatorHorizontal.h"
 
 class UserInterfaceSettings final : public Component,
                                     public Button::Listener
@@ -51,8 +52,12 @@ private:
     UniquePointer<MobileComboBox::Primer> fontComboPrimer;
     UniquePointer<ToggleButton> openGLRendererButton;
     UniquePointer<ToggleButton> defaultRendererButton;
-    UniquePointer<SeparatorHorizontalFading> separator2;
+    UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<TextEditor> fontEditor;
+    UniquePointer<SeparatorHorizontal> separator2;
+    UniquePointer<ToggleButton> nativeTitleBarButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserInterfaceSettings)
 };
+
+

@@ -95,7 +95,7 @@ MidiEvent *PianoSequence::insert(const Note &eventParams, const bool undoable)
     }
     else
     {
-        const auto ownedNote = new Note(this, eventParams);
+        auto *ownedNote = new Note(this, eventParams);
         this->midiEvents.addSorted(*ownedNote, ownedNote);
         this->eventDispatcher.dispatchAddEvent(*ownedNote);
         this->updateBeatRange(true);
@@ -177,7 +177,7 @@ bool PianoSequence::insertGroup(Array<Note> &group, bool undoable)
         for (int i = 0; i < group.size(); ++i)
         {
             const Note &eventParams = group.getUnchecked(i);
-            const auto ownedNote = new Note(this, eventParams);
+            auto *ownedNote = new Note(this, eventParams);
             this->midiEvents.addSorted(*ownedNote, ownedNote);
             this->eventDispatcher.dispatchAddEvent(*ownedNote);
         }
@@ -322,7 +322,7 @@ void PianoSequence::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(root, e, Serialization::Midi::note)
     {
-        auto note = new Note(this);
+        auto *note = new Note(this);
         note->deserialize(e);
 
         this->midiEvents.add(note); // sorted later

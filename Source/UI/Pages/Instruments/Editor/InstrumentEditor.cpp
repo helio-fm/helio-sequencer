@@ -179,7 +179,7 @@ void InstrumentEditor::updateComponents()
         const AudioProcessorGraph::Node::Ptr f(instrument->getNode(i));
         if (this->getComponentForNode(f->nodeID) == nullptr)
         {
-            auto const comp = new InstrumentComponent(instrument, f->nodeID);
+            auto *comp = new InstrumentComponent(instrument, f->nodeID);
             this->addAndMakeVisible(comp);
             comp->update();
         }
@@ -192,7 +192,7 @@ void InstrumentEditor::updateComponents()
         AudioProcessorGraph::Connection c = connections.at(i);
         if (this->getComponentForConnection(c) == nullptr)
         {
-            auto const comp = new InstrumentEditorConnector(instrument);
+            auto *comp = new InstrumentEditorConnector(instrument);
             this->addAndMakeVisible(comp);
             comp->setInput(c.source);
             comp->setOutput(c.destination);

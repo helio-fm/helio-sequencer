@@ -38,7 +38,7 @@
 static Label *createPopupButtonLabel(const String &text)
 {
     const int size = CHORD_BUILDER_LABEL_SIZE;
-    auto newLabel = new Label(text, text);
+    auto *newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
     newLabel->setName(text + "_outline");

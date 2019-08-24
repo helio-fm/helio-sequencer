@@ -147,7 +147,7 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
     {
         const Clip *clip = track->getPattern()->getUnchecked(i);
 
-        auto sequenceMap = new SequenceMap();
+        auto *sequenceMap = new SequenceMap();
         this->patternMap[*clip] = UniquePointer<SequenceMap>(sequenceMap);
 
         for (int j = 0; j < track->getSequence()->size(); ++j)
@@ -156,7 +156,7 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
             if (event->isTypeOf(MidiEvent::Type::Note))
             {
                 const Note *note = static_cast<const Note *>(event);
-                auto nc = new NoteComponent(*this, *note, *clip);
+                auto *nc = new NoteComponent(*this, *note, *clip);
                 (*sequenceMap)[*note] = UniquePointer<NoteComponent>(nc);
                 const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
                 nc->setActive(isActive, true);
@@ -203,7 +203,7 @@ void PianoRoll::selectAll()
 {
     forEachEventComponent(this->patternMap, e)
     {
-        const auto childComponent = e.second.get();
+        auto *childComponent = e.second.get();
         if (childComponent->belongsTo(this->activeTrack, activeClip))
         {
             this->selection.addToSelection(childComponent);
@@ -215,7 +215,7 @@ void PianoRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
 {
     forEachEventComponent(this->patternMap, e)
     {
-        const auto childComponent = e.second.get();
+        auto *childComponent = e.second.get();
         childComponent->setInterceptsMouseClicks(interceptsMouse, interceptsMouse);
         childComponent->setMouseCursor(cursor);
     }
@@ -227,7 +227,7 @@ void PianoRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
 
 void PianoRoll::showGhostNoteFor(NoteComponent *target)
 {
-    auto component = new NoteComponent(*this, target->getNote(), target->getClip());
+    auto *component = new NoteComponent(*this, target->getNote(), target->getClip());
     component->setEnabled(false);
 
     //component->setAlpha(0.2f); // setAlpha makes everything slower
@@ -248,7 +248,6 @@ void PianoRoll::hideAllGhostNotes()
 
     this->ghostNotes.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Input Listeners
@@ -288,7 +287,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
         newRowHeight = (factor.getY() < -yZoomThreshold) ? (newRowHeight - 1) : newRowHeight;
         newRowHeight = (factor.getY() > yZoomThreshold) ? (newRowHeight + 1) : newRowHeight;
 
-        const float estimatedNewHeight = float(newRowHeight * this->getNumRows());
+        const float estimatedNewHeight = float(newRowHeight * this->numRows);
 
         if (estimatedNewHeight < this->viewport.getViewHeight() ||
             newRowHeight > PIANOROLL_MAX_ROW_HEIGHT ||
@@ -310,7 +309,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
 
 void PianoRoll::zoomAbsolute(const Point<float> &zoom)
 {
-    const float newHeight = (this->getNumRows() * PIANOROLL_MAX_ROW_HEIGHT) * zoom.getY();
+    const float newHeight = (this->numRows * PIANOROLL_MAX_ROW_HEIGHT) * zoom.getY();
     const float rowsOnNewScreen = float(newHeight / PIANOROLL_MAX_ROW_HEIGHT);
     const float viewHeight = float(this->viewport.getViewHeight());
     const float newRowHeight = floorf(viewHeight / rowsOnNewScreen + .5f);
@@ -355,7 +354,7 @@ void PianoRoll::addNote(int key, float beat, float length, float velocity)
 
 Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
-    jassert(dynamic_cast<NoteComponent *>(mc));
+    //jassert(dynamic_cast<NoteComponent *>(mc));
     const auto *nc = static_cast<NoteComponent *>(mc);
     return this->getEventBounds(nc->getKey() + nc->getClip().getKey(),
         nc->getBeat() + nc->getClip().getBeat(), nc->getLength());
@@ -491,7 +490,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             jassert(i >= 0);
             
             const Clip *realClip = track->getPattern()->getUnchecked(i);
-            auto component = new NoteComponent(*this, note, *realClip);
+            auto *component = new NoteComponent(*this, note, *realClip);
             sequenceMap[note] = UniquePointer<NoteComponent>(component);
             this->addAndMakeVisible(component);
 
@@ -581,14 +580,14 @@ void PianoRoll::onAddClip(const Clip &clip)
         return;
     }
 
-    auto sequenceMap = new SequenceMap();
+    auto *sequenceMap = new SequenceMap();
     this->patternMap[clip] = UniquePointer<SequenceMap>(sequenceMap);
 
     for (const auto &e : *referenceMap)
     {
         // reference the same note as neighbor components:
         const auto &note = e.second.get()->getNote();
-        auto component = new NoteComponent(*this, note, clip);
+        auto *component = new NoteComponent(*this, note, clip);
         (*sequenceMap)[note] = UniquePointer<NoteComponent>(component);
         this->addAndMakeVisible(component);
 
@@ -951,7 +950,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse(0.25f); // A bit of fancy animation
         break;
     case CommandIDs::RenameTrack:
-        if (auto trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
+        if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
         {
             //auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
             //inputDialog->onOk = trackNode->getRenameCallback();

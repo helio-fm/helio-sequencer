@@ -73,7 +73,7 @@ private:
     Array<KeyPress> holdKeys;
 
     WeakReference<Component> lastReceiver;
-    HashMap<String, WeakReference<Component>> receiverChildren;
+    FlatHashMap<String, WeakReference<Component>, StringHash> receiverChildren;
 
     bool sendHotkeyCommand(Hotkey key,
         WeakReference<Component> root,

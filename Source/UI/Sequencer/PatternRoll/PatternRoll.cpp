@@ -110,10 +110,7 @@ static void updateTrackRowPosition(Array<String> &rows,
 PatternRoll::PatternRoll(ProjectNode &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true),
-    newClipDragging(nullptr),
-    addNewClipMode(false),
-    groupMode(GroupByName)
+    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
 {
     this->selectedClipsMenuManager.reset(new PatternRollSelectionMenuManager(&this->selection));
 
@@ -234,7 +231,7 @@ void PatternRoll::updateRollSize()
 
 void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)
 {
-    auto component = new DummyClipComponent(*this, targetClipComponent->getClip());
+    auto *component = new DummyClipComponent(*this, targetClipComponent->getClip());
     component->setEnabled(false);
     component->setGhostMode();
 
