@@ -718,12 +718,12 @@ void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     HybridRoll::onChangeProjectBeatRange(firstBeat, lastBeat);
 }
 
-void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
-    const Clip &activeClip, bool shouldFocus)
+void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
+    const Clip &newActiveClip, bool shouldFocus)
 {
     if (!shouldFocus &&
-        this->activeClip == activeClip &&
-        this->activeTrack == activeTrack)
+        this->activeClip == newActiveClip &&
+        this->activeTrack == newActiveTrack)
     {
         return;
     }
@@ -735,8 +735,8 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
 
     this->selection.deselectAll();
 
-    this->activeTrack = activeTrack;
-    this->activeClip = activeClip;
+    this->activeTrack = newActiveTrack;
+    this->activeClip = newActiveClip;
 
     int focusMinKey = INT_MAX;
     int focusMaxKey = 0;
@@ -748,7 +748,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const activeTrack,
     {
         auto *nc = e.second.get();
         const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
-        const auto key = nc->getKey() + activeClip.getKey();
+        const auto key = nc->getKey() + this->activeClip.getKey();
         nc->setActive(isActive, true);
 
         if (shouldFocus && isActive)
@@ -1195,7 +1195,6 @@ void PianoRoll::paint(Graphics &g)
         if (index < 0)
         {
             DBG("Missing " + key->toString());
-            jassert(index >= 0);
         }
 #endif
 

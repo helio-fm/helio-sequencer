@@ -40,21 +40,21 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     const Rectangle<int> &area(this->targetComponent->getScreenBounds());
     
     kClickCounterOnPopupStart = Desktop::getInstance().getMouseButtonClickCounter();
-    
-    const Rectangle<int> b = parentWorkspace->getScreenBounds();
-
-#if HELIO_DESKTOP
-    const auto p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
-#elif HELIO_MOBILE
-    const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
-#endif
-
-    this->clickPointAbs = Point<float>(p.getX() / float(b.getWidth()), p.getY() / float(b.getHeight()));
-    
+        
     this->addAndMakeVisible(this->contentComponent);
     
     if (parentWorkspace != nullptr)
     {
+        const auto b = parentWorkspace->getScreenBounds();
+
+#if HELIO_DESKTOP
+        const auto p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
+#elif HELIO_MOBILE
+        const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
+#endif
+
+        this->clickPointAbs = Point<float>(p.getX() / float(b.getWidth()), p.getY() / float(b.getHeight()));
+
 #if CALLOUT_HAS_BACKGROUND
         this->backgroundWhite.reset(new DialogBackground());
         parentWorkspace->addAndMakeVisible(this->backgroundWhite);

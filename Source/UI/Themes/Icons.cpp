@@ -36,6 +36,10 @@ struct BuiltInImageData final
 {
     BuiltInImageData() = default;
 
+    BuiltInImageData(const BuiltInImageData &other) :
+        data(other.data),
+        numBytes(other.numBytes) {}
+
     BuiltInImageData(const String &name)
     {
         const String assumedFileName = getIconFileName(name) + "_svg";

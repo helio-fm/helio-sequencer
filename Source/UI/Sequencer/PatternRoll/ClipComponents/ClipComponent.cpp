@@ -132,18 +132,18 @@ void ClipComponent::mouseDown(const MouseEvent &e)
     {
         this->dragger.startDraggingComponent(this, e);
 
-        forEachSelectedClip(selection, clip)
+        forEachSelectedClip(selection, selectedClip)
         {
-            //if (selection.shouldDisplayGhostClips()) { clip->getRoll().showGhostClipFor(clip); }
-            clip->startDragging();
+            //if (selection.shouldDisplayGhostClips()) { selectedClip->getRoll().showGhostClipFor(selectedClip); }
+            selectedClip->startDragging();
         }
     }
     else if (e.mods.isMiddleButtonDown())
     {
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
-        forEachSelectedClip(selection, clip)
+        forEachSelectedClip(selection, selectedClip)
         {
-            clip->startTuning();
+            selectedClip->startTuning();
         }
     }
 }

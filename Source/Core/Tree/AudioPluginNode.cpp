@@ -120,13 +120,13 @@ void AudioPluginNode::showPage()
 
             this->audioPluginEditor.reset(new AudioPluginEditorPage(ui));
         }
-    }
 
-    // Something went wrong
-    if (!this->audioPluginEditor)
-    {
-        delete this;
-        return;
+        // Something went wrong
+        if (!this->audioPluginEditor)
+        {
+            delete this;
+            return;
+        }
     }
 
     App::Layout().showPage(this->audioPluginEditor.get(), this);

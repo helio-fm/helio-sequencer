@@ -204,18 +204,18 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             if (e.mods.isShiftDown())
             {
                 const float groupStartBeat = SequencerOperations::findStartBeat(selection);
-                forEachSelectedNote(selection, note)
+                forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                    note->startGroupScalingRight(groupStartBeat);
+                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    selectedNote->startGroupScalingRight(groupStartBeat);
                 }
             }
             else
             {
-                forEachSelectedNote(selection, note)
+                forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                    note->startResizingRight(shouldSendMidi);
+                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    selectedNote->startResizingRight(shouldSendMidi);
                 }
             }
         }
@@ -224,37 +224,37 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             if (e.mods.isShiftDown())
             {
                 const float groupEndBeat = SequencerOperations::findEndBeat(selection);
-                forEachSelectedNote(selection, note)
+                forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                    note->startGroupScalingLeft(groupEndBeat);
+                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    selectedNote->startGroupScalingLeft(groupEndBeat);
                 }
             }
             else
             {
-                forEachSelectedNote(selection, note)
+                forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                    note->startResizingLeft(shouldSendMidi);
+                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    selectedNote->startResizingLeft(shouldSendMidi);
                 }
             }
         }
         else
         {
             this->dragger.startDraggingComponent(this, e);
-            forEachSelectedNote(selection, note)
+            forEachSelectedNote(selection, selectedNote)
             {
-                if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                note->startDragging(shouldSendMidi);
+                if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                selectedNote->startDragging(shouldSendMidi);
             }
         }
     }
     else if (e.mods.isMiddleButtonDown())
     {
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
-        forEachSelectedNote(selection, note)
+        forEachSelectedNote(selection, selectedNote)
         {
-            note->startTuning();
+            selectedNote->startTuning();
         }
     }
 }
