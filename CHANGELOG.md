@@ -12,6 +12,7 @@ For more detailed info, please see the git log.
  - Added shift-drag-to-copy for all timeline events
  - Go to next/previous anchor now jumps over clips in pattern mode
  - Reworked midi import, should fix importing controller tracks, key/time signatures and track names
+ - Made plugins search less likely to stuck and cancellable with a click or escape keypress
 
 ## Version 2.2
   - Long-overdue implementation of inline velocity map/editor (toggled by V button)
