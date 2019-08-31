@@ -17,7 +17,7 @@
 
 #pragma once
 
-class PluginScanner :
+class PluginScanner final :
     public Serializable,
     private Thread,
     private WaitableEvent,
@@ -66,14 +66,14 @@ private:
     void run() override;
 
     KnownPluginList pluginsList;
-
-    ReadWriteLock filesListLock;
-    StringArray filesToScan;
     
     Atomic<bool> working = false;
     Atomic<bool> cancelled = false;
 
-    StringArray getFilesToScan() const;
+    // paths and files to be checked in a search thread:
+    FileSearchPath searchPath;
+    StringArray filesToScan;
+
     FileSearchPath getTypicalFolders();
     void scanPossibleSubfolders(const StringArray &possibleSubfolders,
         const File &currentSystemFolder, FileSearchPath &foldersOut);

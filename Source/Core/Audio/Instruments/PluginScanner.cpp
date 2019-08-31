@@ -20,7 +20,9 @@
 #include "AudioCore.h"
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
+#include "App.h"
 #include "Config.h"
+#include "MainLayout.h"
 #include "SerializationKeys.h"
 #include "BuiltInSynthFormat.h"
 #include "SerializablePluginDescription.h"
@@ -81,12 +83,6 @@ void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool for
     this->pluginsList.sort(fieldToSortBy, forwards);
 }
 
-StringArray PluginScanner::getFilesToScan() const
-{
-    const ScopedReadLock lock(this->filesListLock);
-    return this->filesToScan;
-}
-
 bool PluginScanner::isWorking() const
 {
     return this->working.get();
@@ -107,38 +103,40 @@ void PluginScanner::runInitialScan()
 {
     if (this->isWorking())
     {
+        App::Layout().showTooltip({}, MainLayout::TooltipType::Failure);
         DBG("PluginScanner scan thread is already running!");
         return;
     }
-    
-    FileSearchPath pathToScan = this->getTypicalFolders();
 
+    // prepare search paths, prepare specific files to scan,
+    // clear the existing list and resume search thread
+
+    this->filesToScan.clearQuick();
+    this->searchPath = this->getTypicalFolders();
+
+    // built-in synths to be add at the first place:
+    this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::pianoId);
+
+    // known synths to be re-checked first as well:
+    for (const auto &it : this->getPlugins())
     {
-        const ScopedWriteLock filesLock(this->filesListLock);
-        this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::pianoId); // add built-in synths
+        this->filesToScan.addIfNotAlreadyThere(it.fileOrIdentifier);
+    }
 
-        for (const auto &it : this->getPlugins())
+    this->pluginsList.clear();
+
+    AudioPluginFormatManager formatManager;
+    AudioCore::initAudioFormats(formatManager);
+
+    // add more typical folders we might have missed in getTypicalFolders():
+    for (int i = 0; i < formatManager.getNumFormats(); ++i)
+    {
+        auto *format = formatManager.getFormat(i);
+        const auto defaultLocations = format->getDefaultLocationsToSearch();
+
+        for (int j = 0; j < defaultLocations.getNumPaths(); ++j)
         {
-            this->filesToScan.addIfNotAlreadyThere(it.fileOrIdentifier);
-        }
-
-        this->pluginsList.clear();
-
-        AudioPluginFormatManager formatManager;
-        AudioCore::initAudioFormats(formatManager);
-
-        for (int i = 0; i < formatManager.getNumFormats(); ++i)
-        {
-            AudioPluginFormat *format = formatManager.getFormat(i);
-            FileSearchPath defaultLocations = format->getDefaultLocationsToSearch();
-
-            for (int j = 0; j < defaultLocations.getNumPaths(); ++j)
-            {
-                pathToScan.addIfNotAlreadyThere(defaultLocations[j]);
-            }
-
-            StringArray foundPlugins = format->searchPathsForPlugins(pathToScan, true, true);
-            this->filesToScan.addArray(foundPlugins);
+            this->searchPath.addIfNotAlreadyThere(defaultLocations[j]);
         }
     }
 
@@ -149,32 +147,22 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
 {
     if (this->isWorking())
     {
+        App::Layout().showTooltip({}, MainLayout::TooltipType::Failure);
         DBG("PluginScanner scan thread is already running!");
         return;
     }
 
-    FileSearchPath pathToScan = dir.getFullPathName();
+    // prepare search paths and resume search thread
+
+    this->filesToScan.clearQuick();
+    this->searchPath = dir.getFullPathName();
 
     Array<File> subPaths;
-    pathToScan.findChildFiles(subPaths, File::findDirectories, false);
+    this->searchPath.findChildFiles(subPaths, File::findDirectories, false);
 
     for (auto &subPath : subPaths)
     {
-        pathToScan.addIfNotAlreadyThere(subPath);
-    }
-
-    {
-        const ScopedWriteLock lock(this->filesListLock);
-
-        AudioPluginFormatManager formatManager;
-        AudioCore::initAudioFormats(formatManager);
-
-        for (int i = 0; i < formatManager.getNumFormats(); ++i)
-        {
-            AudioPluginFormat *format = formatManager.getFormat(i);
-            StringArray foundPlugins = format->searchPathsForPlugins(pathToScan, true);
-            this->filesToScan.addArray(foundPlugins);
-        }
+        this->searchPath.addIfNotAlreadyThere(subPath);
     }
 
     this->signal();
@@ -195,15 +183,27 @@ void PluginScanner::run()
     {
         this->working = true;
 
-        // list might have changed while waiting:
+        // plugins list might have changed while waiting:
         this->sendChangeMessage();
 
-        StringArray uncheckedList = this->getFilesToScan();
-        const auto myPath(File::getSpecialLocation(File::currentExecutableFile).getFullPathName());
+        for (int i = 0; i < formatManager.getNumFormats(); ++i)
+        {
+            auto *format = formatManager.getFormat(i);
+            const auto foundPlugins = format->searchPathsForPlugins(this->searchPath, true, true);
+            this->filesToScan.addArray(foundPlugins);
+
+            if (this->cancelled.get())
+            {
+                DBG("Plugin scanning canceled");
+                break;
+            }
+        }
 
         try
         {
-            for (const auto &pluginPath : uncheckedList)
+            const auto myPath(File::getSpecialLocation(File::currentExecutableFile).getFullPathName());
+
+            for (const auto &pluginPath : this->filesToScan)
             {
                 if (this->cancelled.get())
                 {
