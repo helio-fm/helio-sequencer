@@ -108,13 +108,12 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     {
         auto tooltip = MakeUnique<ProgressTooltip>(true);
         tooltip->onCancel = [this]() {
-            this->cancelSignInProcess();
+            this->pluginScanner.cancelRunningScan();
         };
 
         App::showModalComponentUnowned(tooltip.release());
 
         this->pluginScanner.runInitialScan();
-        this->pluginsList->showScanButtonIf(false);
     }
     else if (commandId == CommandIDs::ScanPluginsFolder)
     {
@@ -126,12 +125,12 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
         {
             auto tooltip = MakeUnique<ProgressTooltip>(true);
             tooltip->onCancel = [this]() {
-                this->cancelSignInProcess();
+                this->pluginScanner.cancelRunningScan();
             };
 
             App::showModalComponentUnowned(tooltip.release());
 
-            App::Workspace().getPluginManager().scanFolderAndAddResults(fc.getResult());
+            this->pluginScanner.scanFolderAndAddResults(fc.getResult());
         }
 #endif
     }
@@ -150,13 +149,11 @@ void OrchestraPitPage::changeListenerCallback(ChangeBroadcaster *source)
 
     App::Layout().hideSelectionMenu();
 
-    if (!this->pluginScanner.isWorking())
+    if (dynamic_cast<PluginScanner *>(source) &&
+        !this->pluginScanner.isWorking())
     {
-        if (auto spinner = App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
-        {
-            // Nasty hack -_-
-            delete spinner;
-        }
+        // hides the spinner, if any
+        App::dismissAllModalComponents();
     }
 }
 

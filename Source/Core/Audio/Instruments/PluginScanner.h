@@ -19,8 +19,8 @@
 
 class PluginScanner :
     public Serializable,
-    public Thread,
-    public WaitableEvent,
+    private Thread,
+    private WaitableEvent,
     public ChangeBroadcaster
 {
 public:
@@ -47,12 +47,7 @@ public:
 
     void runInitialScan();
     void scanFolderAndAddResults(const File &dir);
-
-    //===------------------------------------------------------------------===//
-    // Thread
-    //===------------------------------------------------------------------===//
-
-    void run() override;
+    void cancelRunningScan();
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -64,18 +59,22 @@ public:
 
 private:
 
+    //===------------------------------------------------------------------===//
+    // Thread
+    //===------------------------------------------------------------------===//
+
+    void run() override;
+
     KnownPluginList pluginsList;
 
     ReadWriteLock filesListLock;
     StringArray filesToScan;
     
-    ReadWriteLock workingFlagLock;
-    
-    bool working;
-    
+    Atomic<bool> working = false;
+    Atomic<bool> cancelled = false;
+
     StringArray getFilesToScan() const;
     FileSearchPath getTypicalFolders();
     void scanPossibleSubfolders(const StringArray &possibleSubfolders,
-                                const File &currentSystemFolder,
-                                FileSearchPath &foldersOut);
+        const File &currentSystemFolder, FileSearchPath &foldersOut);
 };

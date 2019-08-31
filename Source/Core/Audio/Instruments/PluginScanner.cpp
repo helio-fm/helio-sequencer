@@ -32,8 +32,7 @@
 #endif
 
 PluginScanner::PluginScanner() :
-    Thread("Plugin Scanner Thread"),
-    working(false)
+    Thread("Plugin Scanner")
 {
     this->startThread(0);
 }
@@ -90,8 +89,18 @@ StringArray PluginScanner::getFilesToScan() const
 
 bool PluginScanner::isWorking() const
 {
-    const ScopedReadLock lock(this->workingFlagLock);
-    return this->working;
+    return this->working.get();
+}
+
+void PluginScanner::cancelRunningScan()
+{
+    if (!this->isWorking())
+    {
+        jassertfalse;
+        return;
+    }
+
+    this->cancelled = true;
 }
 
 void PluginScanner::runInitialScan()
@@ -143,13 +152,13 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
         DBG("PluginScanner scan thread is already running!");
         return;
     }
-        
+
     FileSearchPath pathToScan = dir.getFullPathName();
 
     Array<File> subPaths;
     pathToScan.findChildFiles(subPaths, File::findDirectories, false);
 
-    for (auto && subPath : subPaths)
+    for (auto &subPath : subPaths)
     {
         pathToScan.addIfNotAlreadyThere(subPath);
     }
@@ -171,7 +180,6 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
     this->signal();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Thread
 //===----------------------------------------------------------------------===//
@@ -185,11 +193,11 @@ void PluginScanner::run()
     
     while (!this->threadShouldExit())
     {
-        {
-            const ScopedWriteLock lock(this->workingFlagLock);
-            this->working = true;
-        }
-        
+        this->working = true;
+
+        // list might have changed while waiting:
+        this->sendChangeMessage();
+
         StringArray uncheckedList = this->getFilesToScan();
         const auto myPath(File::getSpecialLocation(File::currentExecutableFile).getFullPathName());
 
@@ -197,13 +205,19 @@ void PluginScanner::run()
         {
             for (const auto &pluginPath : uncheckedList)
             {
+                if (this->cancelled.get())
+                {
+                    DBG("Plugin scanning canceled");
+                    break;
+                }
+
 #if SAFE_SCAN
                 DBG("Safe scanning: " + pluginPath);
 
                 const Uuid tempFileName;
                 const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
                 tempFile.appendText(pluginPath, false, false);
-                    
+
                 Thread::sleep(50);
 
                 ChildProcess checkerProcess;
@@ -236,8 +250,7 @@ void PluginScanner::run()
                                 this->sendChangeMessage();
                             }
                         }
-                        catch (...)
-                        { }
+                        catch (...) {}
                     }
                 }
 
@@ -272,10 +285,10 @@ void PluginScanner::run()
 #endif
             }
         }
-        catch (...) { }
+        catch (...) {}
 
         {
-            const ScopedWriteLock lock(this->workingFlagLock);
+            this->cancelled = false;
             this->working = false;
             
             DBG("Done scanning for audio plugins");
@@ -323,7 +336,7 @@ FileSearchPath PluginScanner::getTypicalFolders()
         Array<File> subPaths;
         systemFolder.findChildFiles(subPaths, File::findDirectories, false);
 
-        for (auto && subPath : subPaths)
+        for (auto &subPath : subPaths)
         {
             this->scanPossibleSubfolders(possibleSubfolders, subPath, folders);
         }
