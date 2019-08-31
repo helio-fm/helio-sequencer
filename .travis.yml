@@ -16,6 +16,7 @@ branches:
 
 addons_shortcuts:
   addons_clang7: &clang7
+    ssh_known_hosts: helio.fm
     apt:
       packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
   addons_gcc6: &gcc6
@@ -25,7 +26,6 @@ addons_shortcuts:
   # Use old enough compiler and no unsupported packages so that release build runs on older systems
   # TODO test building with -static-libstdc++ or -static-libgcc on older systems
   addons_gcc4: &gcc4
-    ssh_known_hosts: helio.fm
     apt:
       packages: [ 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
   addons_deploy: &deploy
@@ -33,21 +33,21 @@ addons_shortcuts:
 
 matrix:
   include:
-    - name: "clang 7, debug build x64"
+    - name: "gcc 4, debug build x64"
       os: linux
-      dist: xenial
-      addons: *clang7
-      env: PLATFORM=linux CC=clang CXX=clang++ CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+      dist: trusty
+      addons: *gcc4
+      env: PLATFORM=linux CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-fno-pie
     - name: "gcc 6, debug build x64"
       os: linux
       dist: trusty
       addons: *gcc6
       env: PLATFORM=linux CC=gcc-6 CXX=g++-6 CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-fno-pie
-    - name: "gcc 4, release build x64, deploy"
+    - name: "clang 7, release build x64, deploy"
       os: linux
-      dist: trusty
-      addons: *gcc4
-      env: DEPLOY=true PLATFORM=linux CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-fno-pie
+      dist: xenial
+      addons: *clang7
+      env: DEPLOY=true PLATFORM=linux CC=clang CXX=clang++ CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
     - name: "xcode 10.1 mac, release and deploy"
       os: osx
       osx_image: xcode10.1
