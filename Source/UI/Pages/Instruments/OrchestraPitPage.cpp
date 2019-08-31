@@ -106,63 +106,37 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
     {
-        App::showModalComponentUnowned(new ProgressTooltip(false));
+        auto tooltip = MakeUnique<ProgressTooltip>(true);
+        tooltip->onCancel = [this]() {
+            this->cancelSignInProcess();
+        };
+
+        App::showModalComponentUnowned(tooltip.release());
+
         this->pluginScanner.runInitialScan();
         this->pluginsList->showScanButtonIf(false);
     }
-    //[/UserCode_handleCommandMessage]
-}
-
-
-//[MiscUserCode]
-/*
-    if (buttonThatWasClicked == initButton)
+    else if (commandId == CommandIDs::ScanPluginsFolder)
     {
-        //[UserButtonCode_initButton] -- add your button handler code here..
-        const int selectedRow = this->pluginsList->getSelectedRow();
-        if (this->pluginScanner.getList().getType(selectedRow) != nullptr)
-        {
-            const PluginDescription pluginDescription(*this->pluginScanner.getList().getType(selectedRow));
-            App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
-                [this](Instrument *instrument)
-            {
-                this->instrumentsRoot.addInstrumentTreeItem(instrument);
-                this->pluginsList->setSelectedRows(SparseSet<int>());
-            });
-        }
-        //[/UserButtonCode_initButton]
-    }
-    else if (buttonThatWasClicked == removeButton)
-    {
-        //[UserButtonCode_removeButton] -- add your button handler code here..
-        const int selectedRow = this->pluginsList->getSelectedRow();
-        PluginDescription *pluginDescription = this->pluginScanner.getList().getType(selectedRow);
-
-        if (pluginDescription != nullptr)
-        {
-            this->pluginScanner.removeListItem(selectedRow);
-            this->pluginsList->updateContent();
-        }
-        //[/UserButtonCode_removeButton]
-    }
-    else if (buttonThatWasClicked == scanButton)
-    {
-        //[UserButtonCode_scanButton] -- add your button handler code here..
 #if HELIO_DESKTOP
-        FileChooser fc(TRANS(I18n::Dialog::scanfolder::caption),
-                       File::getCurrentWorkingDirectory(), ("*.*"), true);
+        FileChooser fc(TRANS(I18n::Dialog::scanFolderCaption),
+            File::getCurrentWorkingDirectory(), ("*.*"), true);
 
         if (fc.browseForDirectory())
         {
-            App::Layout().showModalComponentUnowned(new ProgressTooltip());
-            this->pluginScanner.scanFolderAndAddResults(fc.getResult());
-            this->pluginsList->updateContent();
+            auto tooltip = MakeUnique<ProgressTooltip>(true);
+            tooltip->onCancel = [this]() {
+                this->cancelSignInProcess();
+            };
+
+            App::showModalComponentUnowned(tooltip.release());
+
+            App::Workspace().getPluginManager().scanFolderAndAddResults(fc.getResult());
         }
 #endif
-        //[/UserButtonCode_scanButton]
     }
-
-*/
+    //[/UserCode_handleCommandMessage]
+}
 
 //===----------------------------------------------------------------------===//
 // ChangeListener

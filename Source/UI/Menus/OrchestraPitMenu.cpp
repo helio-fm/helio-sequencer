@@ -21,44 +21,26 @@
 #include "Icons.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
-#include "AudioCore.h"
-#include "Document.h"
 #include "PluginScanner.h"
 #include "Workspace.h"
 
 OrchestraPitMenu::OrchestraPitMenu(OrchestraPitNode &parentOrchestra) :
     instrumentsRoot(parentOrchestra)
 {
-    MenuPanel::Menu cmds;
+    MenuPanel::Menu menu;
 
     const bool pluginsAreCurrentlyScanning = App::Workspace().getPluginManager().isWorking();
 
     if (!pluginsAreCurrentlyScanning)
     {
-        cmds.add(MenuItem::item(Icons::reset, CommandIDs::ScanAllPlugins, TRANS(I18n::Menu::instrumentsReload)));
+        menu.add(MenuItem::item(Icons::reset,
+            CommandIDs::ScanAllPlugins,
+            TRANS(I18n::Menu::instrumentsReload))->closesMenu());
     }
     
-    cmds.add(MenuItem::item(Icons::browse, CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder)));
+    menu.add(MenuItem::item(Icons::browse,
+        CommandIDs::ScanPluginsFolder,
+        TRANS(I18n::Menu::instrumentsScanFolder))->closesMenu());
         
-    this->updateContent(cmds, MenuPanel::SlideRight);
-}
-
-void OrchestraPitMenu::handleCommandMessage(int commandId)
-{
-    switch (commandId)
-    {
-        case CommandIDs::ScanPluginsFolder:
-            
-#if HELIO_DESKTOP
-            FileChooser fc(TRANS(I18n::Dialog::scanFolderCaption),
-                           File::getCurrentWorkingDirectory(), ("*.*"), true);
-            
-            if (fc.browseForDirectory())
-            {
-                App::Workspace().getPluginManager().scanFolderAndAddResults(fc.getResult());
-            }
-#endif
-            
-            break;
-    }
+    this->updateContent(menu, MenuPanel::SlideRight);
 }

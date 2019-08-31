@@ -26,10 +26,8 @@ class OrchestraPitMenu final : public MenuPanel
 public:
     
     explicit OrchestraPitMenu(OrchestraPitNode &parentOrchestra);
-    void handleCommandMessage(int commandId) override;
     
 private:
-    
+  
     OrchestraPitNode &instrumentsRoot;
-    
 };

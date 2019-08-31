@@ -52,7 +52,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->pluginsList.reset(new TableListBox("Instruments", this));
     this->addAndMakeVisible(pluginsList.get());
 
-    this->initialScanButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS(I18n::Common::instrumentsInitialScan))));
+    this->initialScanButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder))));
     this->addAndMakeVisible(initialScanButton.get());
 
     this->separator1.reset(new SeparatorHorizontalFading());
@@ -77,6 +77,19 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->setSize(600, 400);
 
     //[Constructor]
+#if HELIO_MOBILE
+
+    // on mobile, there's no such thing as `scan folder`:
+
+    this->initialScanButton.reset(new MenuItemComponent(this, nullptr,
+        MenuItem::item(Icons::instrument,
+            CommandIDs::ScanAllPlugins,
+            TRANS(I18n::Menu::instrumentsReload))));
+
+    this->addAndMakeVisible(initialScanButton.get());
+
+#endif
+
     this->titleLabel->setText(TRANS(I18n::Page::orchestraPlugins), dontSendNotification);
 
     this->pluginsList->setRowHeight(PLUGINSLIST_ROW_HEIGHT);
@@ -136,9 +149,9 @@ void AudioPluginsListComponent::resized()
     //[/UserPreResize]
 
     pluginsList->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
-    initialScanButton->setBounds((getWidth() / 2) - (310 / 2), (getHeight() / 2) - (64 / 2), 310, 64);
-    separator1->setBounds(((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + -18, 300, 3);
-    separator2->setBounds(((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + 64 - -14, 300, 3);
+    initialScanButton->setBounds((getWidth() / 2) - (172 / 2), (getHeight() / 2) - (64 / 2), 172, 64);
+    separator1->setBounds(((getWidth() / 2) - (172 / 2)) + 172 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + -18, 300, 3);
+    separator2->setBounds(((getWidth() / 2) - (172 / 2)) + 172 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + 64 - -14, 300, 3);
     titleLabel->setBounds(0, 0, getWidth() - 0, 26);
     separator3->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
     //[UserResized] Add your own custom resize handling here..
@@ -359,8 +372,8 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="1 42 2M 43M" class="TableListBox"
                     params="&quot;Instruments&quot;, this"/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="initialScanButton" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 0Cc 310 64" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS(I18n::Common::instrumentsInitialscan))"/>
+                    explicitFocusOrder="0" pos="0Cc 0Cc 172 64" class="MenuItemComponent"
+                    params="this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder))"/>
   <JUCERCOMP name="" id="8817b1b124163b2f" memberName="separator1" virtualName=""
              explicitFocusOrder="0" pos="0Cc -18 300 3" posRelativeX="62a5bd7c1a3ec2"
              posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
@@ -370,12 +383,11 @@ BEGIN_JUCER_METADATA
              posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 0M 26" labelText=""
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="0 0 0M 26" labelText="" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="21.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
-             explicitFocusOrder="0" pos="0.5Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 
