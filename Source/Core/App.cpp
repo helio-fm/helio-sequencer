@@ -556,11 +556,11 @@ void App::initialise(const String &commandLine)
 
 #if JUCE_ANDROID
         // OpenGL seems to be the only sensible option on Android:
-        const bool enableOpenGL = true;
+        const bool shouldEnableOpenGL = true;
         const bool shouldUseNativeTitleBar = true;
 #elif JUCE_IOS
         // CoreGraphics renderer is faster anyway:
-        const bool enableOpenGL = false;
+        const bool shouldEnableOpenGL = false;
         const bool shouldUseNativeTitleBar = true;
 #else
         const auto enabledState = Serialization::Config::enabledState.toString();
