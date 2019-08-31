@@ -502,13 +502,14 @@ void App::setUsingNativeTitleBar(bool shouldUseNative)
     auto *window = static_cast<App *>(getInstance())->window.get();
     auto *config = static_cast<App *>(getInstance())->config.get();
 
-    window->setUseNativeTitleBar(shouldUseNative);
     config->setProperty(Serialization::Config::nativeTitleBar,
         shouldUseNative ?
         Serialization::Config::enabledState.toString() :
         Serialization::Config::disabledState.toString());
 
-    recreateLayout();
+    window->dismissLayoutComponent();
+    window->setUseNativeTitleBar(shouldUseNative);
+    window->createLayoutComponent();
 
 #else
     jassertfalse; // should never hit that
