@@ -17,18 +17,19 @@
 
 #include "Common.h"
 #include "VelocityProjectMap.h"
+#include "PlayerThread.h"
 #include "ProjectNode.h"
 #include "MidiTrack.h"
 #include "MidiSequence.h"
 #include "Pattern.h"
 #include "PianoSequence.h"
-#include "PlayerThread.h"
-#include "HybridRoll.h"
-#include "Lasso.h"
-#include "NoteComponent.h"
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
+#include "HybridRoll.h"
+#include "Lasso.h"
 #include "ColourIDs.h"
+#include "NoteComponent.h"
+#include "FineTuningValueIndicator.h"
 
 #define VELOCITY_MAP_LINE_EXTENT (1000)
 
@@ -292,10 +293,10 @@ private:
     {
         if (const auto *p = this->getParentComponent())
         {
-            return{ double(p->getWidth()), double(p->getHeight()) };
+            return { double(p->getWidth()), double(p->getHeight()) };
         }
 
-        return{ 1.0, 1.0 };
+        return { 1.0, 1.0 };
     }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityLevelDraggingHelper);
@@ -311,6 +312,12 @@ VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, HybridRoll &p
 {
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
+
+    this->volumeBlendingIndicator = MakeUnique<FineTuningValueIndicator>(this->volumeBlendingAmount, "");
+    this->volumeBlendingIndicator->setDisplayValue(false);
+    this->volumeBlendingIndicator->setSize(40, 40);
+    this->addChildComponent(this->volumeBlendingIndicator.get());
+
     this->reloadTrackMap();
 
     this->project.addListener(this);
@@ -353,7 +360,10 @@ void VelocityProjectMap::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isLeftButtonDown())
     {
-        this->dragHelper.reset(new VelocityLevelDraggingHelper(*this));
+        this->volumeBlendingIndicator->toFront(false);
+        this->updateVolumeBlendingIndicator(e.getPosition());
+
+        this->dragHelper = MakeUnique<VelocityLevelDraggingHelper>(*this);
         this->addAndMakeVisible(this->dragHelper.get());
         this->dragHelper->setStartPosition(e.position);
         this->dragHelper->setEndPosition(e.position);
@@ -369,114 +379,10 @@ void VelocityProjectMap::mouseDrag(const MouseEvent &e)
 {
     if (this->dragHelper != nullptr)
     {
+        this->updateVolumeBlendingIndicator(e.getPosition());
         this->dragHelper->setEndPosition(e.position);
         this->dragHelper->updateBounds();
-
-        const auto *activeMap = this->patternMap.at(this->activeClip).get();
-        jassert(activeMap);
-
-        // this is where things start looking a bit dirty:
-        // to update notes velocities on the fly, we use undo/redo actions (as always),
-        // but we don't want to have lots of those actions in undo transaction in the end,
-        // there should only be one action, which holds original notes and final new parameters;
-        // undo action and undo stack are smart enough to turn a -> b, b -> c into a -> c,
-        // but it only works within exactly the same group of notes,
-        // which may - and will - change as the user drags the helper around,
-        // so we are to track moments when a group changes and undo current transaction
-
-        bool shouldUndo = false;
-        Point<float> intersectionA;
-        Point<float> intersectionB;
-
-        const auto &dragLine = this->dragHelper->getLine();
-        const auto &dragLineExt = this->dragHelper->getExtendedLine();
-        const bool ascending = (dragLine.getStartX() <= dragLine.getEndX() && dragLine.getStartY() >= dragLine.getEndY())
-            || (dragLine.getStartX() > dragLine.getEndX() && dragLine.getStartY() < dragLine.getEndY());
-
-        for (const auto &i : *activeMap)
-        {
-            if (!i.second->isEditable())
-            {
-                continue;
-            }
-
-            const bool ia = dragLine.intersects(i.second->getStartLine(), intersectionA);
-            const bool ib = dragLine.intersects(i.second->getEndLine(), intersectionB);
-            const bool hasIntersection = ia || ib; // (ascending && ia) || (!ascending && ib);
-
-            float intersectionVelocity = 0.f;
-            if (ascending)
-            {
-                if (ia)
-                {
-                    intersectionVelocity = getVelocityByIntersection(intersectionA);
-                }
-                else
-                {
-                    dragLineExt.intersects(i.second->getStartLine(), intersectionA);
-                    intersectionVelocity = getVelocityByIntersection(intersectionA);
-                }
-            }
-            else
-            {
-                if (ib)
-                {
-                    intersectionVelocity = getVelocityByIntersection(intersectionB);
-                }
-                else
-                {
-                    dragLineExt.intersects(i.second->getEndLine(), intersectionB);
-                    intersectionVelocity = getVelocityByIntersection(intersectionB);
-                }
-            }
-
-            auto existingIntersection = this->dragIntersections.find(i.first);
-            if (hasIntersection && existingIntersection == this->dragIntersections.end())
-            {
-                // found new intersection
-                shouldUndo = true;
-                this->dragIntersections.emplace(i.first, intersectionVelocity);
-            }
-            else if (!hasIntersection && existingIntersection != this->dragIntersections.end())
-            {
-                // lost existing intersection
-                shouldUndo = true;
-                this->dragIntersections.erase(existingIntersection);
-            }
-            else if (hasIntersection)
-            {
-                this->dragIntersections[i.first] = intersectionVelocity;
-            }
-        }
-
-        // filling up arrays all the time on mouse drag - kinda sucks, nah?
-        // todo test performance
-        this->dragChangedNotes.clearQuick();
-        this->dragChanges.clearQuick();
-
-        for (const auto &i : this->dragIntersections)
-        {
-            this->dragChangedNotes.add(i.first);
-            this->dragChanges.add(i.first.withVelocity(i.second));
-        }
-
-        auto *sequence = static_cast<PianoSequence *>(this->activeClip.getPattern()->getTrack()->getSequence());
-
-        if (shouldUndo && this->dragHasChanges)
-        {
-            sequence->undoCurrentTransactionOnly();
-        }
-
-        if (!this->dragChangedNotes.isEmpty())
-        {
-            if (!this->dragHasChanges)
-            {
-                this->dragHasChanges = true;
-                sequence->checkpoint();
-            }
-
-            sequence->changeGroup(this->dragChangedNotes, this->dragChanges, true);
-        }
+        this->applyVolumeChanges();
     }
 }
 
@@ -484,11 +390,30 @@ void VelocityProjectMap::mouseUp(const MouseEvent &e)
 {
     if (this->dragHelper != nullptr)
     {
+        this->volumeBlendingIndicator->setVisible(false);
         this->dragHelper = nullptr;
         this->dragIntersections.clear();
         this->dragChangedNotes.clear();
         this->dragChanges.clear();
         this->dragHasChanges = false;
+    }
+}
+
+#define VOLUME_BLENDING_WHEEL_SENSIVITY 5.f
+
+void VelocityProjectMap::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+{
+    if (this->dragHelper != nullptr)
+    {
+        const float delta = wheel.deltaY * (wheel.isReversed ? -1.f : 1.f);
+        const float newBlendingAmount = this->volumeBlendingAmount + delta / VOLUME_BLENDING_WHEEL_SENSIVITY;
+        this->volumeBlendingAmount = jlimit(0.f, 1.f, newBlendingAmount);
+        this->updateVolumeBlendingIndicator(e.getPosition());
+        this->applyVolumeChanges();
+    }
+    else
+    {
+        this->roll.mouseWheelMove(e.getEventRelativeTo(&this->roll), wheel);
     }
 }
 
@@ -775,6 +700,135 @@ void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
+
+void VelocityProjectMap::updateVolumeBlendingIndicator(const Point<int> &pos)
+{
+    if (this->volumeBlendingAmount == 1.f && this->volumeBlendingIndicator->isVisible())
+    {
+        this->fader.fadeOut(this->volumeBlendingIndicator.get(), 200);
+    }
+    else if (this->volumeBlendingAmount < 1.f && !this->volumeBlendingIndicator->isVisible())
+    {
+        this->fader.fadeIn(this->volumeBlendingIndicator.get(), 200);
+    }
+
+    //this->volumeBlendingIndicator->setVisible(this->volumeBlendingAmount != 1.f);
+    this->volumeBlendingIndicator->setValue(this->volumeBlendingAmount);
+    this->volumeBlendingIndicator->setCentrePosition(pos);
+}
+
+void VelocityProjectMap::applyVolumeChanges()
+{
+    const auto *activeMap = this->patternMap.at(this->activeClip).get();
+    jassert(activeMap);
+
+    // this is where things start looking a bit dirty:
+    // to update notes velocities on the fly, we use undo/redo actions (as always),
+    // but we don't want to have lots of those actions in undo transaction in the end,
+    // there should only be one action, which holds original notes and final new parameters;
+    // undo action and undo stack are smart enough to turn a -> b, b -> c into a -> c,
+    // but it only works within exactly the same group of notes,
+    // which may - and will - change as the user drags the helper around,
+    // so we are to track moments when a group changes and undo current transaction
+
+    bool shouldUndo = false;
+    Point<float> intersectionA;
+    Point<float> intersectionB;
+
+    jassert(this->dragHelper);
+    const auto &dragLine = this->dragHelper->getLine();
+    const auto &dragLineExt = this->dragHelper->getExtendedLine();
+    const bool ascending = (dragLine.getStartX() <= dragLine.getEndX() && dragLine.getStartY() >= dragLine.getEndY())
+        || (dragLine.getStartX() > dragLine.getEndX() && dragLine.getStartY() < dragLine.getEndY());
+
+    for (const auto &i : *activeMap)
+    {
+        if (!i.second->isEditable())
+        {
+            continue;
+        }
+
+        const bool ia = dragLine.intersects(i.second->getStartLine(), intersectionA);
+        const bool ib = dragLine.intersects(i.second->getEndLine(), intersectionB);
+        const bool hasIntersection = ia || ib; // (ascending && ia) || (!ascending && ib);
+
+        float intersectionVelocity = 0.f;
+        if (ascending)
+        {
+            if (ia)
+            {
+                intersectionVelocity = getVelocityByIntersection(intersectionA);
+            }
+            else
+            {
+                dragLineExt.intersects(i.second->getStartLine(), intersectionA);
+                intersectionVelocity = getVelocityByIntersection(intersectionA);
+            }
+        }
+        else
+        {
+            if (ib)
+            {
+                intersectionVelocity = getVelocityByIntersection(intersectionB);
+            }
+            else
+            {
+                dragLineExt.intersects(i.second->getEndLine(), intersectionB);
+                intersectionVelocity = getVelocityByIntersection(intersectionB);
+            }
+        }
+
+        auto existingIntersection = this->dragIntersections.find(i.first);
+        if (hasIntersection && existingIntersection == this->dragIntersections.end())
+        {
+            // found new intersection
+            shouldUndo = true;
+            this->dragIntersections.emplace(i.first, intersectionVelocity);
+        }
+        else if (!hasIntersection && existingIntersection != this->dragIntersections.end())
+        {
+            // lost existing intersection
+            shouldUndo = true;
+            this->dragIntersections.erase(existingIntersection);
+        }
+        else if (hasIntersection)
+        {
+            this->dragIntersections[i.first] = intersectionVelocity;
+        }
+    }
+
+    // filling up arrays all the time on mouse drag - kinda sucks, nah?
+    // todo test performance
+    this->dragChangedNotes.clearQuick();
+    this->dragChanges.clearQuick();
+
+    for (const auto &i : this->dragIntersections)
+    {
+        const auto newVelocity = (i.second * this->volumeBlendingAmount) +
+            (i.first.getVelocity() * (1.f - this->volumeBlendingAmount));
+
+        this->dragChangedNotes.add(i.first);
+        this->dragChanges.add(i.first.withVelocity(newVelocity));
+    }
+
+    auto *sequence = static_cast<PianoSequence *>(this->activeClip.getPattern()->getTrack()->getSequence());
+
+    if (shouldUndo && this->dragHasChanges)
+    {
+        sequence->undoCurrentTransactionOnly();
+    }
+
+    if (!this->dragChangedNotes.isEmpty())
+    {
+        if (!this->dragHasChanges)
+        {
+            this->dragHasChanges = true;
+            sequence->checkpoint();
+        }
+
+        sequence->changeGroup(this->dragChangedNotes, this->dragChanges, true);
+    }
+}
 
 void VelocityProjectMap::reloadTrackMap()
 {

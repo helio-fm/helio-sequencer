@@ -123,7 +123,7 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
                 }
                 else
                 {
-                    this->tuningIndicator->setValue(cv, cv);
+                    this->tuningIndicator->setValue(cv);
                 }
                 this->tuningIndicator->repositionToTargetAt(this, this->editor.getPosition());
             }

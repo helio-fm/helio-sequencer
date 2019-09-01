@@ -462,6 +462,8 @@ void HelioTheme::drawRotarySlider(Graphics &g, int x, int y, int width, int heig
     float sliderPos, float rotaryStartAngle, float rotaryEndAngle, Slider &slider)
 {
     const auto fill = slider.findColour(Slider::rotarySliderFillColourId);
+    const auto outline = slider.findColour(Slider::rotarySliderOutlineColourId);
+    
     const auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
     const auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
     const auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
@@ -470,6 +472,13 @@ void HelioTheme::drawRotarySlider(Graphics &g, int x, int y, int width, int heig
 
     if (slider.isEnabled())
     {
+        Path fullArc;
+        fullArc.addCentredArc(bounds.getCentreX(), bounds.getCentreY(),
+            arcRadius, arcRadius, 0.0f, rotaryStartAngle, rotaryEndAngle, true);
+
+        g.setColour(outline);
+        g.strokePath(fullArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
+
         Path valueArc;
         valueArc.addCentredArc(bounds.getCentreX(), bounds.getCentreY(),
             arcRadius, arcRadius, 0.0f, rotaryStartAngle, toAngle, true);
@@ -751,7 +760,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // JUCE component colour id's:
 
     // Sliders
-    this->setColour(Slider::rotarySliderOutlineColourId, Colours::transparentBlack);
+    this->setColour(Slider::rotarySliderOutlineColourId, s->getTextColour().contrasting(0.9f).withMultipliedAlpha(0.5f));
     this->setColour(Slider::rotarySliderFillColourId, s->getTextColour());
     this->setColour(Slider::thumbColourId, s->getTextColour());
 

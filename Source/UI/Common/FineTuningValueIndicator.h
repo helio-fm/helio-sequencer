@@ -29,9 +29,11 @@ public:
     ~FineTuningValueIndicator();
 
     //[UserMethods]
+    void setValue(float newValue);
     void setValue(float newValue, int valueView);
     void setValue(float newValue, float valueView);
     void repositionToTargetAt(Component *component, Point<int> offset);
+    void setDisplayValue(bool shouldDisplay);
     //[/UserMethods]
 
     void paint (Graphics& g) override;

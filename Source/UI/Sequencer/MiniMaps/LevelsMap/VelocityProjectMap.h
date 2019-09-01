@@ -20,6 +20,7 @@
 #include "Clip.h"
 #include "Note.h"
 #include "ProjectListener.h"
+#include "ComponentFader.h"
 
 #define VELOCITY_MAP_HEIGHT (128.f)
 
@@ -27,6 +28,7 @@ class HybridRoll;
 class ProjectNode;
 class VelocityMapNoteComponent;
 class VelocityLevelDraggingHelper;
+class FineTuningValueIndicator;
 
 class VelocityProjectMap :
     public Component,
@@ -47,6 +49,7 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -96,6 +99,13 @@ private:
     FlatHashMap<Note, float, MidiEventHash> dragIntersections;
     Array<Note> dragChangedNotes, dragChanges;
     bool dragHasChanges = false;
+
+    float volumeBlendingAmount = 1.f;
+    UniquePointer<FineTuningValueIndicator> volumeBlendingIndicator;
+    void updateVolumeBlendingIndicator(const Point<int> &pos);
+    ComponentFader fader;
+
+    void applyVolumeChanges();
 
     void triggerBatchRepaintFor(VelocityMapNoteComponent *target);
     void handleAsyncUpdate() override;

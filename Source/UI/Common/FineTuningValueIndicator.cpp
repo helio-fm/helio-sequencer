@@ -85,6 +85,11 @@ void FineTuningValueIndicator::resized()
 
 #define NUM_DECIMAL_PLACES (3)
 
+void FineTuningValueIndicator::setValue(float newValue)
+{
+    this->setValue(newValue, newValue);
+}
+
 void FineTuningValueIndicator::setValue(float newValue, float valueView)
 {
     if (this->value != newValue)
@@ -108,6 +113,11 @@ void FineTuningValueIndicator::setValue(float newValue, int valueView)
 void FineTuningValueIndicator::repositionToTargetAt(Component *component, Point<int> offset)
 {
     this->setTopLeftPosition(offset + component->getBounds().getCentre() - this->getLocalBounds().getCentre());
+}
+
+void FineTuningValueIndicator::setDisplayValue(bool shouldDisplay)
+{
+    this->valueLabel->setVisible(shouldDisplay);
 }
 
 //[/MiscUserCode]
