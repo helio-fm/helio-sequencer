@@ -1,5 +1,13 @@
 #!/bin/bash
 
+set -e
+
+# Bail out on PR builds immediately
+if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
+    echo "Skipping setup step for PR build"
+    exit 0
+fi
+
 # Decrypt the secrets
 openssl aes-256-cbc -K $encrypted_4bdaf07bd33c_key -iv $encrypted_4bdaf07bd33c_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/certificates-ios.tar.enc -out /tmp/certificates.tar -d
 tar xvf /tmp/certificates.tar -C /tmp

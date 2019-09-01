@@ -90,10 +90,10 @@ script:
   - if [[ "${PLATFORM}" == "android" ]]; then
     cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
     fi
-  - if [[ "${PLATFORM}" == "osx" ]]; then
+  - if [[ "${PLATFORM}" == "osx" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
     xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
-  - if [[ "${PLATFORM}" == "ios" ]]; then
+  - if [[ "${PLATFORM}" == "ios" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
     xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
 
