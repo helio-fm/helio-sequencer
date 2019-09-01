@@ -23,7 +23,6 @@ addons_shortcuts:
     apt:
       sources: [ 'ubuntu-toolchain-r-test' ]
       packages: [ 'g++-6', 'gcc-6', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  # Use old enough compiler and no unsupported packages so that release build runs on older systems
   # TODO test building with -static-libstdc++ or -static-libgcc on older systems
   addons_gcc4: &gcc4
     apt:
@@ -88,14 +87,14 @@ script:
   - if [[ "${PLATFORM}" == "linux" ]]; then
     xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
     fi
+  - if [[ "${PLATFORM}" == "android" ]]; then
+    cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
+    fi
   - if [[ "${PLATFORM}" == "osx" ]]; then
     xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
   - if [[ "${PLATFORM}" == "ios" ]]; then
     xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
-    fi
-  - if [[ "${PLATFORM}" == "android" ]]; then
-    cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
     fi
 
 before_deploy:
