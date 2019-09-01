@@ -479,14 +479,14 @@ void HybridRoll::startSmoothZoom(const Point<float> &origin, const Point<float> 
 void HybridRoll::zoomInImpulse(float factor)
 {
     const auto origin = this->getViewport().getLocalBounds().getCentre();
-    const Point<float> f(0.15f * factor, 0.05f * factor);
+    const Point<float> f(0.15f * factor, 0.15f * factor);
     this->startSmoothZoom(origin.toFloat(), f);
 }
 
 void HybridRoll::zoomOutImpulse(float factor)
 {
     const auto origin = this->getViewport().getLocalBounds().getCentre();
-    const Point<float> f(-0.15f * factor, -0.05f * factor);
+    const Point<float> f(-0.15f * factor, -0.15f * factor);
     this->startSmoothZoom(origin.toFloat(), f);
 }
 
@@ -530,7 +530,7 @@ void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &fa
     { newBarWidth = (float(this->viewport.getWidth() + 1) / this->getNumBars()); } // a hack
     //{ newBarWidth = (float(this->viewport.getViewWidth()) / this->getNumBars()); }
 
-    this->setBarWidth(newBarWidth);
+    this->setBarWidth(newBarWidth); // will updateBounds() -> setSize() -> resized() -> updateChildrenBounds()
 
     const float newWidth = float(this->getWidth());
     const float mouseOffsetX = float(absoluteOrigin.getX() - oldViewPosition.getX());

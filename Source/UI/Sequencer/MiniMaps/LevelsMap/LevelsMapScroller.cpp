@@ -89,7 +89,7 @@ void LevelsMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheel
 
 void LevelsMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
 {
-    if (this->roll == targetRoll)
+    if (this->isVisible() && this->roll == targetRoll)
     {
         this->triggerAsyncUpdate();
     }
@@ -97,7 +97,7 @@ void LevelsMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
 
 void LevelsMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 {
-    if (this->roll == targetRoll)
+    if (this->isVisible() && this->roll == targetRoll)
     {
         this->triggerAsyncUpdate();
     }

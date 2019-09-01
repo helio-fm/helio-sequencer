@@ -91,8 +91,7 @@ public:
     // SmoothZoomListener
     //===------------------------------------------------------------------===//
 
-    void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
-    void zoomAbsolute(const Point<float> &zoom) override;
+    // TODO: should we zoom rows?
     float getZoomFactorY() const noexcept override;
 
     //===------------------------------------------------------------------===//

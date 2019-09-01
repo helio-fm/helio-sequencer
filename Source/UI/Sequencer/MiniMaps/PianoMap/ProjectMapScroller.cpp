@@ -254,7 +254,7 @@ void ProjectMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWhee
 
 void ProjectMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
 {
-    if (this->roll == targetRoll && !this->isTimerRunning())
+    if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
         this->triggerAsyncUpdate();
     }
@@ -262,7 +262,7 @@ void ProjectMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
 
 void ProjectMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 {
-    if (this->roll == targetRoll && !this->isTimerRunning())
+    if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
         this->triggerAsyncUpdate();
     }

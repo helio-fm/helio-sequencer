@@ -275,7 +275,7 @@ void PianoRoll::longTapEvent(const Point<float> &position,
 
 void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
-    static const float yZoomThreshold = 0.005f;
+    static const float yZoomThreshold = 0.035f;
 
     if (fabs(factor.getY()) > yZoomThreshold)
     {

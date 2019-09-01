@@ -29,7 +29,7 @@ public:
         Thread("SmoothZoom"),
         listener(parent)
     {
-        this->startThread(7);
+        this->startThread(8);
     }
 
     ~SmoothZoomController() override
@@ -57,8 +57,8 @@ public:
 
     void zoomRelative(const Point<float> &from, const Point<float> &zoom) noexcept
     {
-        this->factorX = this->factorX.get() + zoom.getX();
-        this->factorY = this->factorY.get() + zoom.getY();
+        this->factorX = (this->factorX.get() + zoom.getX()) * this->zoomDecayFactor;
+        this->factorY = (this->factorY.get() + zoom.getY()) * this->zoomDecayFactor;
         this->originX = from.getX();
         this->originY = from.getY();
 
@@ -100,7 +100,7 @@ private:
         }
     }
 
-    void handleAsyncUpdate() override
+    void handleAsyncUpdate() noexcept override
     {
         this->listener.zoomRelative(
             { this->originX.get(), this->originY.get() },
@@ -117,9 +117,15 @@ private:
 private:
 
     const int timerDelay = 7;
+    const float zoomDecayFactor = 0.85f;
+
+#if JUCE_WINDOWS
     const float zoomStopFactor = 0.001f;
-    const float zoomDecayFactor = 0.825f;
-    const float initialZoomSpeed = 0.25f;
+    const float initialZoomSpeed = 0.3f;
+#else
+    const float zoomStopFactor = 0.005f;
+    const float initialZoomSpeed = 0.5f;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SmoothZoomController)
 };

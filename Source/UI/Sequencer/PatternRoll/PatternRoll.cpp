@@ -493,23 +493,6 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
 // SmoothZoomListener
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
-{
-    const float yZoomThreshold = 0.005f;
-    if (fabs(factor.getY()) > yZoomThreshold)
-    {
-        // TODO: should we zoom rows?
-    }
-
-    HybridRoll::zoomRelative(origin, factor);
-}
-
-void PatternRoll::zoomAbsolute(const Point<float> &zoom)
-{
-    // TODO: should we zoom rows?
-    HybridRoll::zoomAbsolute(zoom);
-}
-
 float PatternRoll::getZoomFactorY() const noexcept
 {
     const float viewHeight = float(this->viewport.getViewHeight());
