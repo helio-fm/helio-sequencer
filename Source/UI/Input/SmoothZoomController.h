@@ -19,11 +19,6 @@
 
 #include "SmoothZoomListener.h"
 
-#define SMOOTH_ZOOM_TIMER_DELAY_MS 8
-#define ZOOM_STOP_FACTOR 0.001f
-#define ZOOM_DECAY_FACTOR 0.77f
-#define ZOOM_INITIAL_SPEED 0.55f
-
 class SmoothZoomController final : private Thread,
                                    private WaitableEvent,
                                    private AsyncUpdater
@@ -31,18 +26,10 @@ class SmoothZoomController final : private Thread,
 public:
 
     explicit SmoothZoomController(SmoothZoomListener &parent) :
-        Thread("SmoothZoomController"),
-        listener(parent),
-        factorX(0.f),
-        factorY(0.f),
-        originX(0.f),
-        originY(0.f),
-        timerDelay(SMOOTH_ZOOM_TIMER_DELAY_MS),
-        zoomStopFactor(ZOOM_STOP_FACTOR),
-        zoomDecayFactor(ZOOM_DECAY_FACTOR),
-        initialZoomSpeed(ZOOM_INITIAL_SPEED)
+        Thread("SmoothZoom"),
+        listener(parent)
     {
-        this->startThread(5);
+        this->startThread(7);
     }
 
     ~SmoothZoomController() override
@@ -52,45 +39,35 @@ public:
         this->stopThread(500);
     }
 
-    inline int getTimerDelay() const noexcept { return timerDelay; }
-    inline float getZoomStopFactor() const noexcept { return zoomStopFactor; }
-    inline float getZoomDecayFactor() const noexcept { return zoomDecayFactor; }
-    inline float getInitialZoomSpeed() const noexcept { return initialZoomSpeed; }
+    inline int getTimerDelay() const noexcept { return this->timerDelay; }
+    inline float getZoomStopFactor() const noexcept { return this->zoomStopFactor; }
+    inline float getZoomDecayFactor() const noexcept { return this->zoomDecayFactor; }
+    inline float getInitialZoomSpeed() const noexcept { return this->initialZoomSpeed; }
 
-    bool isZooming() const
+    bool isZooming() const noexcept
     {
         return fabs(this->factorX.get()) > 0.f;
     }
 
-    void cancelZoom()
+    void cancelZoom() noexcept
     {
         this->factorX = 0.f;
         this->factorY = 0.f;
     }
 
-    void zoomRelative(const Point<float> &from, const Point<float> &zoom)
+    void zoomRelative(const Point<float> &from, const Point<float> &zoom) noexcept
     {
-        if (! this->isZooming())
-        {
-            this->factorX = zoom.getX();
-            this->factorY = zoom.getY();
-            this->originX = from.getX();
-            this->originY = from.getY();
-        }
-        else
-        {
-            this->factorX = (this->factorX.get() + zoom.getX()) / 2.f;
-            this->factorY = (this->factorY.get() + zoom.getY()) / 2.f;
-            this->originX = (this->originX.get() + from.getX()) / 2.f;
-            this->originY = (this->originY.get() + from.getY()) / 2.f;
-        }
+        this->factorX = this->factorX.get() + zoom.getX();
+        this->factorY = this->factorY.get() + zoom.getY();
+        this->originX = from.getX();
+        this->originY = from.getY();
 
         WaitableEvent::signal();
     }
 
 private:
 
-    inline bool stillNeedsZoom() const
+    inline bool stillNeedsZoom() const noexcept
     {
         return juce_hypot(this->factorX.get(), this->factorY.get()) >= this->zoomStopFactor;
     }
@@ -101,20 +78,21 @@ private:
         {
             while (this->stillNeedsZoom())
             {
-                const double b = Time::getMillisecondCounterHiRes();
-                this->factorX = this->factorX.get() * this->zoomDecayFactor;
-                this->factorY = this->factorY.get() * this->zoomDecayFactor;
-
-                this->triggerAsyncUpdate();
-                
                 if (this->threadShouldExit())
                 {
                     return;
                 }
 
-                const double a = Time::getMillisecondCounterHiRes();
-                const int skewTime = int(a - b);
-                Thread::sleep(jlimit(10, 100, this->timerDelay - skewTime));
+                this->factorX = this->factorX.get() * this->zoomDecayFactor;
+                this->factorY = this->factorY.get() * this->zoomDecayFactor;
+
+                this->triggerAsyncUpdate();
+                Thread::sleep(this->timerDelay);
+            }
+
+            if (this->threadShouldExit())
+            {
+                return;
             }
 
             this->cancelZoom();
@@ -124,23 +102,24 @@ private:
 
     void handleAsyncUpdate() override
     {
-        this->listener.zoomRelative({ this->originX.get(), this->originY.get() },
+        this->listener.zoomRelative(
+            { this->originX.get(), this->originY.get() },
             { this->factorX.get(), this->factorY.get() });
     }
 
     SmoothZoomListener &listener;
 
-    Atomic<float> factorX;
-    Atomic<float> factorY;
-    Atomic<float> originX;
-    Atomic<float> originY;
+    Atomic<float> factorX = 0.f;
+    Atomic<float> factorY = 0.f;
+    Atomic<float> originX = 0.f;
+    Atomic<float> originY = 0.f;
 
 private:
 
-    int timerDelay;
-    float zoomStopFactor;
-    float zoomDecayFactor;
-    float initialZoomSpeed;
+    const int timerDelay = 7;
+    const float zoomStopFactor = 0.001f;
+    const float zoomDecayFactor = 0.825f;
+    const float initialZoomSpeed = 0.25f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SmoothZoomController)
 };

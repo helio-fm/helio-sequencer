@@ -28,9 +28,7 @@ class SmoothPanController final : private Timer
 public:
 
     explicit SmoothPanController(SmoothPanListener &parent) :
-        listener(parent),
-        origin(0, 0),
-        target(0, 0) {}
+        listener(parent) {}
 
     void cancelPan()
     {
@@ -84,7 +82,7 @@ private:
 
     SmoothPanListener &listener;
 
-    Point<float> origin;
-    Point<float> target;
+    Point<float> origin = { 0.f, 0.f };
+    Point<float> target = { 0.f, 0.f };
 
 };
