@@ -23,9 +23,9 @@ public:
 
     virtual ~SmoothPanListener() {}
 
-    virtual void panByOffset(const int offsetX, const int offsetY) = 0;
+    virtual void panByOffset(int offsetX, int offsetY) = 0;
 
-    virtual void panProportionally(const float absX, const float absY) = 0;
+    virtual void panProportionally(float absX, float absY) = 0;
 
     virtual Point<int> getPanOffset() const = 0;
 

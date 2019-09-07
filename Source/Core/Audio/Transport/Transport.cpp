@@ -43,7 +43,7 @@ Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     sequencesAreOutdated(true),
     totalTime(500.0 * 8.0),
     projectFirstBeat(0.f),
-    projectLastBeat(DEFAULT_NUM_BARS * BEATS_PER_BAR)
+    projectLastBeat(PROJECT_DEFAULT_NUM_BEATS)
 {
     this->player.reset(new PlayerThreadPool(*this));
     this->renderer.reset(new RendererThread(*this));

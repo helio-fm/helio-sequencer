@@ -30,7 +30,6 @@
 #include "VersionControlNode.h"
 #include "ModalDialogInput.h"
 #include "TrackPropertiesDialog.h"
-#include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
@@ -103,7 +102,7 @@ PianoRoll::PianoRoll(ProjectNode &parentProject,
     this->addChildComponent(this->draggingHelper.get());
 
     this->reloadRollContent();
-    this->setBeatRange(0, 32);
+    this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
 }
 
 void PianoRoll::reloadRollContent()

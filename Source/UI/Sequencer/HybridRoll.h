@@ -19,7 +19,6 @@
 
 class MidiSequence;
 class SelectionComponent;
-class ProjectNode;
 class LongTapController;
 class SmartDragController;
 class SmoothPanController;
@@ -43,6 +42,7 @@ class TimelineWarningMarker;
 #include "SmoothPanListener.h"
 #include "SmoothZoomListener.h"
 #include "MultiTouchListener.h"
+#include "ProjectNode.h"
 #include "ProjectListener.h"
 #include "Lasso.h"
 #include "HybridRollEditMode.h"
@@ -55,8 +55,6 @@ class TimelineWarningMarker;
 #define HYBRID_ROLL_MAX_BEAT_WIDTH (48)
 #define HYBRID_ROLL_HEADER_HEIGHT (40)
 #define HYBRID_ROLL_HEADER_SHADOW_SIZE (16)
-
-#define DEFAULT_NUM_BARS 8
 
 #define HYBRID_ROLL_BULK_REPAINT_START \
     if (this->isEnabled()) { this->setVisible(false); }
@@ -156,8 +154,8 @@ public:
     // SmoothPanListener
     //===------------------------------------------------------------------===//
 
-    void panByOffset(const int offsetX, const int offsetY) override;
-    void panProportionally(const float absX, const float absY) override;
+    void panByOffset(int offsetX, int offsetY) override;
+    void panProportionally(float absX, float absY) override;
 
     Point<int> getPanOffset() const override;
 
@@ -353,7 +351,7 @@ protected:
     float lastBeat = -FLT_MAX;
 
     float projectFirstBeat = 0.f;
-    float projectLastBeat = DEFAULT_NUM_BARS * BEATS_PER_BAR;
+    float projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
 
     float beatWidth = 0.f;
     

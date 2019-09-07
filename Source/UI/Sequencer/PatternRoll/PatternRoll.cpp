@@ -26,7 +26,6 @@
 #include "AutomationTrackNode.h"
 #include "VersionControlNode.h"
 #include "PatternEditorNode.h"
-#include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "ClipComponent.h"
 #include "SmoothZoomController.h"
@@ -118,7 +117,7 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
-    this->setBeatRange(0, 32);
+    this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
 }
 
 void PatternRoll::selectAll()

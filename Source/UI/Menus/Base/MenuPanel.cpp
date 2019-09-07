@@ -93,7 +93,6 @@ StringPairArray MenuPanel::getColoursList()
 }
 
 #define ANIM_TIME_MS 175
-#define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 
 void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
@@ -114,22 +113,22 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
         else if (animationType == SlideLeft)
         {
             const auto fb(this->listBox->getBounds().translated(-this->listBox->getWidth(), 0));
-            this->animator.animateComponent(this->listBox.get(), fb, FADE_ALPHA, ANIM_TIME_MS, true, 1.0, 0.0);
+            this->animator.animateComponent(this->listBox.get(), fb, 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
         }
         else if (animationType == SlideRight)
         {
             const auto fb(this->listBox->getBounds().translated(this->listBox->getWidth(), 0));
-            this->animator.animateComponent(this->listBox.get(), fb, FADE_ALPHA, ANIM_TIME_MS, true, 1.0, 0.0);
+            this->animator.animateComponent(this->listBox.get(), fb, 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
         }
         else if (animationType == SlideUp)
         {
             const auto fb(this->listBox->getBounds().translated(0, -this->listBox->getHeight()));
-            this->animator.animateComponent(this->listBox.get(), fb, FADE_ALPHA, 200, true, 1.0, 0.0);
+            this->animator.animateComponent(this->listBox.get(), fb, 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
         }
         else if (animationType == SlideDown)
         {
             const auto fb(this->listBox->getBounds().translated(0, this->listBox->getHeight()));
-            this->animator.animateComponent(this->listBox.get(), fb, FADE_ALPHA, 200, true, 1.0, 0.0);
+            this->animator.animateComponent(this->listBox.get(), fb, 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
         }
 
         this->removeChildComponent(this->listBox.get());
@@ -161,48 +160,40 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
     }
     else if (animationType == SlideLeft)
     {
-        this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getMenuBounds().translated(this->getWidth(), 0));
         this->animator.animateComponent(this->listBox.get(), this->getMenuBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         if (this->customFooter.get() != nullptr)
         {
-            this->customFooter->setAlpha(FADE_ALPHA);
             this->customFooter->setBounds(this->getFooterBounds().translated(this->getWidth(), 0));
             this->animator.animateComponent(this->customFooter.get(), this->getFooterBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         }
     }
     else if (animationType == SlideRight)
     {
-        this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getMenuBounds().translated(-this->getWidth(), 0));
         this->animator.animateComponent(this->listBox.get(), this->getMenuBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         if (this->customFooter.get() != nullptr)
         {
-            this->customFooter->setAlpha(FADE_ALPHA);
             this->customFooter->setBounds(this->getFooterBounds().translated(-this->getWidth(), 0));
             this->animator.animateComponent(this->customFooter.get(), this->getFooterBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         }
     }
     else if (animationType == SlideUp)
     {
-        this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getMenuBounds().translated(0, this->getHeight()));
         this->animator.animateComponent(this->listBox.get(), this->getMenuBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         if (this->customFooter.get() != nullptr)
         {
-            this->customFooter->setAlpha(FADE_ALPHA);
             this->customFooter->setBounds(this->getFooterBounds().translated(0, this->getHeight()));
             this->animator.animateComponent(this->customFooter.get(), this->getFooterBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         }
     }
     else if (animationType == SlideDown)
     {
-        this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getMenuBounds().translated(0, -this->getHeight()));
         this->animator.animateComponent(this->listBox.get(), this->getMenuBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         if (this->customFooter.get() != nullptr)
         {
-            this->customFooter->setAlpha(FADE_ALPHA);
             this->customFooter->setBounds(this->getFooterBounds().translated(0, -this->getHeight()));
             this->animator.animateComponent(this->customFooter.get(), this->getFooterBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
         }

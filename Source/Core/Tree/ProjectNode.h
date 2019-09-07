@@ -44,6 +44,8 @@ class Clip;
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"
 
+#define PROJECT_DEFAULT_NUM_BEATS 32
+
 class ProjectNode final :
     public TreeNode,
     public DocumentOwner,

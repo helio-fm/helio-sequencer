@@ -390,20 +390,18 @@ Point<float> ProjectNode::getProjectRangeInBeats() const
         lastBeat = jmax(lastBeat, sequenceLastBeat + patternLastBeat);
     }
     
-    const float defaultNumBeats = DEFAULT_NUM_BARS * BEATS_PER_BAR;
-
     if (firstBeat == FLT_MAX)
     {
         firstBeat = 0;
     }
     else if (firstBeat > lastBeat)
     {
-        firstBeat = lastBeat - defaultNumBeats;
+        firstBeat = lastBeat - PROJECT_DEFAULT_NUM_BEATS;
     }
     
-    if ((lastBeat - firstBeat) < defaultNumBeats)
+    if ((lastBeat - firstBeat) < PROJECT_DEFAULT_NUM_BEATS)
     {
-        lastBeat = firstBeat + defaultNumBeats;
+        lastBeat = firstBeat + PROJECT_DEFAULT_NUM_BEATS;
     }
 
     return { firstBeat, lastBeat };

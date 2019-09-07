@@ -28,7 +28,6 @@
 #include "MidiEventComponent.h"
 #include "MidiSequence.h"
 #include "SelectionComponent.h"
-#include "ProjectNode.h"
 
 #include "UndoStack.h"
 #include "NoteActions.h"
@@ -390,7 +389,7 @@ Point<float> HybridRoll::getMultiTouchOrigin(const Point<float> &from)
 // SmoothPanListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::panByOffset(const int offsetX, const int offsetY)
+void HybridRoll::panByOffset(int offsetX, int offsetY)
 {
     this->stopFollowingPlayhead();
 
@@ -398,19 +397,22 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     const bool needsToStretchLeft = (offsetX <= 0);
 
     float numBeatsToExpand = 1.f;
-    if (this->beatWidth <= 1)
-    {
-        numBeatsToExpand = 128.f;
-    }
-    else if (this->beatWidth <= 4)
+    if (this->beatWidth <= 1.f)
     {
         numBeatsToExpand = 32.f;
     }
-    else if (this->beatWidth <= 16)
+    else if (this->beatWidth <= 16.f)
     {
-        numBeatsToExpand = 8.f;
+        numBeatsToExpand = 16.f;
     }
-    
+    else if (this->beatWidth <= 64.f)
+    {
+        numBeatsToExpand = 4.f;
+    }
+
+    //DBG(this->beatWidth);
+    //DBG(numBeatsToExpand);
+
     if (needsToStretchRight)
     {
         this->project.broadcastChangeViewBeatRange(this->firstBeat, this->lastBeat + numBeatsToExpand);
@@ -434,7 +436,7 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     this->updateChildrenPositions();
 }
 
-void HybridRoll::panProportionally(const float absX, const float absY)
+void HybridRoll::panProportionally(float absX, float absY)
 {
     this->stopFollowingPlayhead();
     this->viewport.setViewPositionProportionately(absX, absY);
@@ -648,7 +650,7 @@ void HybridRoll::setBeatRange(float first, float last)
 void HybridRoll::setBeatWidth(const float newBeatWidth)
 {
     if (this->beatWidth == newBeatWidth ||
-        newBeatWidth > (1440 / BEATS_PER_BAR) || newBeatWidth <= 0)
+        newBeatWidth > 360 || newBeatWidth <= 0)
     {
         return;
     }
@@ -746,7 +748,7 @@ void HybridRoll::computeVisibleBeatLines()
         barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
 
         // When in the drawing area:
-        if (barIterator >= paintStartBar)
+        if (barIterator > paintStartBar)
         {
             if (canDrawBarLine)
             {

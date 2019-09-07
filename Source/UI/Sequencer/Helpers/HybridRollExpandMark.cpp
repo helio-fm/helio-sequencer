@@ -37,6 +37,7 @@ HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetB
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     this->setSize(256, 48);
@@ -60,9 +61,9 @@ HybridRollExpandMark::~HybridRollExpandMark()
 void HybridRollExpandMark::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+    g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.15f * this->alpha));
+    g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
-
-    g.fillAll (Colour (0x0fffffff));
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -104,9 +105,9 @@ void HybridRollExpandMark::updatePosition()
 
 void HybridRollExpandMark::timerCallback()
 {
-    this->alpha -= 0.015f;
+    this->alpha *= 0.945f;
 
-    if (this->alpha <= 0)
+    if (this->alpha <= 0.02f)
     {
         delete this;
     }
@@ -131,7 +132,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
-  <BACKGROUND backgroundColour="fffffff"/>
+  <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="plusImage" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 16 16" class="IconComponent"
                     params="Icons::expand"/>
@@ -140,3 +141,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

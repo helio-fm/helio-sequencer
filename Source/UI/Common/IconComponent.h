@@ -24,13 +24,11 @@ class IconComponent : virtual public Component
 public:
     
     explicit IconComponent(Icons::Id iconId, float alpha = 1.f) :
-        iconId(iconId)
+        iconId(iconId),
+        alpha(alpha)
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
-        
-        if (alpha < 1.f)
-        { this->setAlpha(alpha); }
     }
 
     explicit IconComponent(Image targetImage) :
@@ -58,7 +56,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::black);
+        g.setColour(findDefaultColour(Label::textColourId).withMultipliedAlpha(this->alpha));
         if (this->image.isNull())
         {
             Image i(Icons::findByName(this->iconId, this->getHeight()));
@@ -72,6 +70,7 @@ public:
     
 protected:
     
+    float alpha = 1.f;
     Icons::Id iconId = Icons::empty;
     Image image;
     
