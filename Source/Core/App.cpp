@@ -664,12 +664,6 @@ void App::anotherInstanceStarted(const String &commandLine)
     //Logger::outputDebugString(focused ? focused->getName() : "");
 }
 
-void App::unhandledException(const std::exception *e, const String &file, int)
-{
-    DBG("! unhandledException: " + String(e->what()));
-    jassertfalse;
-}
-
 void App::systemRequestedQuit()
 {
     if (this->workspace != nullptr)

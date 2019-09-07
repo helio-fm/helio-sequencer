@@ -97,7 +97,6 @@ private:
 
     bool moreThanOneInstanceAllowed() override;
     void anotherInstanceStarted(const String &) override;
-    void unhandledException(const std::exception *, const String &, int) override;
     void systemRequestedQuit() override;
     void suspended() override;
     void resumed() override;
