@@ -79,10 +79,10 @@ void PianoProjectMap::paint(Graphics &g)
             const float x = (mapWidth * (beat / projectLengthInBeats));
             const float w = (mapWidth * (length / projectLengthInBeats));
 
-            // with roundf, it just looks better:
-            const float y = roundf(this->getHeight() - (key * this->componentHeight));
+            // with rounding, it just looks better:
+            const int y = this->getHeight() - static_cast<int>(key * this->componentHeight);
 
-            g.fillRect(x, y, jmax(0.25f, w), 1.0f);
+            g.fillRect(x, static_cast<float>(y), jmax(0.25f, w), 1.0f);
         }
     }
 }

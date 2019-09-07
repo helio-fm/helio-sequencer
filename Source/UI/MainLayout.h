@@ -72,6 +72,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void resized() override;
+    void paint(Graphics &g) override {}
     void lookAndFeelChanged() override;
     bool keyPressed(const KeyPress &key) override;
     bool keyStateChanged(bool isKeyDown) override;

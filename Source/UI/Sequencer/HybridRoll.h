@@ -377,6 +377,8 @@ protected:
     Array<float> visibleBars;
     Array<float> visibleBeats;
     Array<float> visibleSnaps;
+    // contains all three above so that it' easier to iterate them
+    Array<float> allSnaps;
 
     const Colour barLineColour;
     const Colour barLineBevelColour;

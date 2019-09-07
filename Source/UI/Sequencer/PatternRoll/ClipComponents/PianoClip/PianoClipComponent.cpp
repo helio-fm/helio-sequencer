@@ -56,11 +56,11 @@ void PianoClipComponent::paint(Graphics &g)
         const float sequenceLength = ns->getLengthInBeats();
         const float beat = note.getBeat() - ns->getFirstBeat();
         const auto key = jlimit(0, 128, note.getKey() + this->clip.getKey());
-        const float x = float(this->getWidth()) * (beat / sequenceLength);
-        const float w = float(this->getWidth()) * (note.getLength() / sequenceLength);
-        const float h = float(this->getHeight());
-        const float y = roundf(h - key * h / 128.f);
-        g.fillRect(x, y, jmax(0.25f, w), 1.0f);
+        const float x = static_cast<float>(this->getWidth()) * (beat / sequenceLength);
+        const float w = static_cast<float>(this->getWidth()) * (note.getLength() / sequenceLength);
+        const float h = static_cast<float>(this->getHeight());
+        const int y = static_cast<int>(h - key * h / 128.f);
+        g.fillRect(x, static_cast<float>(y), jmax(0.25f, w), 1.f);
     }
 }
 

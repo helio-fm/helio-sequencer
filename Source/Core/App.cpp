@@ -50,6 +50,7 @@ public:
     void init(bool enableOpenGl, bool useNativeTitleBar)
     {
         this->setWantsKeyboardFocus(false);
+        this->setOpaque(true);
 
 #if HELIO_DESKTOP
 
@@ -172,8 +173,14 @@ private:
 
     void setUseNativeTitleBar(bool useNativeTitleBar)
     {
-        this->setResizable(true, !useNativeTitleBar);
+        const bool hasResizableCorner = !useNativeTitleBar;
+        this->setResizable(true, hasResizableCorner);
         this->setUsingNativeTitleBar(useNativeTitleBar);
+        if (this->resizableCorner != nullptr) {
+            this->resizableCorner->setRepaintsOnMouseActivity(false);
+            this->resizableCorner->setPaintingIsUnclipped(true);
+            this->resizableCorner->setBufferedToImage(true);
+        }
     }
 
     void setTitleComponent(WeakReference<Component> component)

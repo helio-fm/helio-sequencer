@@ -46,10 +46,15 @@ MainLayout::MainLayout() :
     currentContent(nullptr)
 {
     this->setComponentID(ComponentIDs::mainLayoutId);
-    this->setInterceptsMouseClicks(false, true);
-    this->setOpaque(true);
+    this->setPaintingIsUnclipped(true);
     this->setVisible(false);
-    
+    this->setOpaque(true);
+
+    this->setInterceptsMouseClicks(false, true);
+    this->setMouseClickGrabsKeyboardFocus(true);
+    this->setWantsKeyboardFocus(true);
+    this->setFocusContainer(true);
+
     this->tooltipContainer.reset(new TooltipContainer());
     this->addChildComponent(this->tooltipContainer.get());
 
@@ -66,13 +71,6 @@ MainLayout::MainLayout() :
 
     // TODO make it able for user to select a scheme in settings page
     this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
-
-    this->setPaintingIsUnclipped(true);
-    this->setOpaque(false);
-
-    this->setMouseClickGrabsKeyboardFocus(true);
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {

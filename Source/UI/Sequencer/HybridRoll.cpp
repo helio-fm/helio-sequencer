@@ -389,6 +389,23 @@ Point<float> HybridRoll::getMultiTouchOrigin(const Point<float> &from)
 // SmoothPanListener
 //===----------------------------------------------------------------------===//
 
+inline float getNumBeatsToExpand(float beatWidth)
+{
+    // find the number of beats to expand, depending on a beat width, like this:
+    // 1  2  4  8 16 32 64 128 256
+    // |  |  |  | \/ |  |  |   |
+    // |  |  |  \____/  |  |   |
+    // |  |  \__________/  |   |
+    // |  \________________/   |
+    // \_______________________/
+
+    const float nearestPowTwo = ceilf(log(beatWidth) / log(2.f));
+    return powf(2.f, jlimit(0.f, 8.f, 8.f - nearestPowTwo));
+
+    //DBG(this->beatWidth);
+    //DBG(numBeatsToExpand);
+}
+
 void HybridRoll::panByOffset(int offsetX, int offsetY)
 {
     this->stopFollowingPlayhead();
@@ -396,25 +413,9 @@ void HybridRoll::panByOffset(int offsetX, int offsetY)
     const bool needsToStretchRight = (offsetX >= (this->getWidth() - this->viewport.getViewWidth()));
     const bool needsToStretchLeft = (offsetX <= 0);
 
-    float numBeatsToExpand = 1.f;
-    if (this->beatWidth <= 1.f)
-    {
-        numBeatsToExpand = 32.f;
-    }
-    else if (this->beatWidth <= 16.f)
-    {
-        numBeatsToExpand = 16.f;
-    }
-    else if (this->beatWidth <= 64.f)
-    {
-        numBeatsToExpand = 4.f;
-    }
-
-    //DBG(this->beatWidth);
-    //DBG(numBeatsToExpand);
-
     if (needsToStretchRight)
     {
+        const float numBeatsToExpand = getNumBeatsToExpand(this->beatWidth);
         this->project.broadcastChangeViewBeatRange(this->firstBeat, this->lastBeat + numBeatsToExpand);
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBeat
         const float beatCloseToTheRight = this->lastBeat - numBeatsToExpand;
@@ -422,6 +423,7 @@ void HybridRoll::panByOffset(int offsetX, int offsetY)
     }
     else if (needsToStretchLeft)
     {
+        const float numBeatsToExpand = getNumBeatsToExpand(this->beatWidth);
         const float deltaW = float(this->beatWidth * numBeatsToExpand);
         this->clickAnchor.addXY(deltaW, 0); // an ugly hack
         this->project.broadcastChangeViewBeatRange(this->firstBeat - numBeatsToExpand, this->lastBeat);
@@ -491,10 +493,10 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
 void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
     const float newWidth = this->getNumBeats() * HYBRID_ROLL_MAX_BEAT_WIDTH * zoom.getX();
-    const float barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BEAT_WIDTH);
+    const float beatsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BEAT_WIDTH);
     const float viewWidth = float(this->viewport.getViewWidth());
-    const float newBarWidth = floorf(viewWidth / barsOnNewScreen + .5f);
-    this->setBeatWidth(newBarWidth);
+    const float newBeatWidth = floorf(viewWidth / beatsOnNewScreen + .5f);
+    this->setBeatWidth(newBeatWidth);
     this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
 }
 
@@ -590,14 +592,9 @@ int HybridRoll::getXPositionByBeat(float targetBeat) const
 
 float HybridRoll::getFloorBeatByXPosition(int x) const
 {
-    Array<float> allSnaps;
-    allSnaps.addArray(this->visibleBars);
-    allSnaps.addArray(this->visibleBeats);
-    allSnaps.addArray(this->visibleSnaps);
-
     float d = FLT_MAX;
     float targetX = float(x);
-    for (float snapX : allSnaps)
+    for (const float &snapX : this->allSnaps)
     {
         const float distance = fabs(x - snapX);
         if (distance < d && snapX < x)
@@ -613,14 +610,9 @@ float HybridRoll::getFloorBeatByXPosition(int x) const
 
 float HybridRoll::getRoundBeatByXPosition(int x) const
 {
-    Array<float> allSnaps;
-    allSnaps.addArray(this->visibleBars);
-    allSnaps.addArray(this->visibleBeats);
-    allSnaps.addArray(this->visibleSnaps);
-
     float d = FLT_MAX;
     float targetX = float(x);
-    for (float snapX : allSnaps)
+    for (const float &snapX : this->allSnaps)
     {
         const float distance = fabs(x - snapX);
         if (distance < d)
@@ -667,6 +659,7 @@ void HybridRoll::computeVisibleBeatLines()
     this->visibleBars.clearQuick();
     this->visibleBeats.clearQuick();
     this->visibleSnaps.clearQuick();
+    this->allSnaps.clearQuick();
 
     const auto *tsSequence =
         this->project.getTimeline()->getTimeSignatures()->getSequence();
@@ -679,10 +672,9 @@ void HybridRoll::computeVisibleBeatLines()
     const float barWidth = float(this->beatWidth * BEATS_PER_BAR);
     const float firstBar = this->firstBeat / float(BEATS_PER_BAR);
 
-    // to be adjusted later: the first time signature defines the offset from the start (== its bar size)
-    float paintStartBar = floorf(paintStartX / barWidth);
-    const float paintEndBar = ceilf(paintEndX / barWidth) + 1.f;
-    
+    const float paintStartBar = floorf(paintStartX / barWidth);
+    const float paintEndBar = ceilf(paintEndX / barWidth);
+
     // Get number of snaps depending on bar width, 
     // 2 for 64, 4 for 128, 8 for 256, etc:
     const float nearestPowTwo = ceilf(log(barWidth) / log(2.f));
@@ -692,14 +684,14 @@ void HybridRoll::computeVisibleBeatLines()
     int numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
     int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
     float barIterator = firstBar;
-    int nextSignatureIdx = 0;
+    int nextTsIdx = 0;
     bool firstEvent = true;
 
     // Find a time signature to start from (or use default values):
     // find a first time signature after a paint start and take a previous one, if any
-    for (; nextSignatureIdx < tsSequence->size(); ++nextSignatureIdx)
+    for (; nextTsIdx < tsSequence->size(); ++nextTsIdx)
     {
-        const auto *signature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
+        const auto *signature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextTsIdx));
         const float signatureBar = (signature->getBeat() / BEATS_PER_BAR);
 
         // The very first event defines what's before it (both time signature and offset)
@@ -710,7 +702,6 @@ void HybridRoll::computeVisibleBeatLines()
             const float beatStep = 1.f / float(denominator);
             const float barStep = beatStep * float(numerator);
             barIterator += (fmodf(signatureBar - firstBar, barStep) - barStep);
-            paintStartBar -= barStep;
             firstEvent = false;
         }
 
@@ -748,19 +739,17 @@ void HybridRoll::computeVisibleBeatLines()
         barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
 
         // When in the drawing area:
-        if (barIterator > paintStartBar)
+        if (barIterator >= (paintStartBar - barStep))
         {
             if (canDrawBarLine)
             {
-                visibleBars.add(barStartX);
+                this->visibleBars.add(barStartX);
+                this->allSnaps.add(barStartX);
             }
 
             // Check if we have more time signatures to come
-            TimeSignatureEvent *nextSignature = nullptr;
-            if (nextSignatureIdx < tsSequence->size())
-            {
-                nextSignature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
-            }
+            const TimeSignatureEvent *nextSignature = (nextTsIdx >= tsSequence->size()) ? nullptr :
+                static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextTsIdx));
 
             // Now for the beat lines
             bool lastFrame = false;
@@ -779,7 +768,7 @@ void HybridRoll::computeVisibleBeatLines()
                         denominator = nextSignature->getDenominator();
                         barStep = (tsBar - barIterator); // i.e. incomplete bar
                         nextBeatStartX = barStartX + barWidth * barStep;
-                        nextSignatureIdx++;
+                        nextTsIdx++;
                         barWidthSum = MIN_BAR_WIDTH; // forces to draw the next bar line
                         lastFrame = true;
                     }
@@ -792,7 +781,8 @@ void HybridRoll::computeVisibleBeatLines()
                 {
                     if (k >= viewPosX)
                     {
-                        visibleSnaps.add(k);
+                        this->visibleSnaps.add(k);
+                        this->allSnaps.add(k);
                     }
                 }
 
@@ -800,7 +790,8 @@ void HybridRoll::computeVisibleBeatLines()
                     j >= beatStep && // don't draw the first one as it is a bar line
                     (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
                 {
-                    visibleBeats.add(beatStartX);
+                    this->visibleBeats.add(beatStartX);
+                    this->allSnaps.add(beatStartX);
                 }
             }
         }
@@ -885,7 +876,7 @@ void HybridRoll::selectEvent(SelectableComponent *event, bool shouldClearAllOthe
         this->selection.deselectAll();
     }
 
-    if (event)
+    if (event != nullptr)
     {
         this->selection.addToSelection(event);
     }
