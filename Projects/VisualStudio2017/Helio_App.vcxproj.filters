@@ -760,9 +760,6 @@
     <ClCompile Include="..\..\Source\Core\Serialization\JsonSerializer.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Serialization\LegacySerializer.cpp">
-      <Filter>Helio\Source\Core\Serialization</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
@@ -3547,9 +3544,6 @@
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h">
-      <Filter>Helio\Source\Core\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Serialization\LegacySerializer.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h">

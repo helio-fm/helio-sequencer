@@ -410,10 +410,6 @@
                 file="../../Source/Core/Serialization/JsonSerializer.cpp"/>
           <FILE id="AKOSjj" name="JsonSerializer.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/JsonSerializer.h"/>
-          <FILE id="G0JRnw" name="LegacySerializer.cpp" compile="1" resource="0"
-                file="../../Source/Core/Serialization/LegacySerializer.cpp"/>
-          <FILE id="KmOUpH" name="LegacySerializer.h" compile="0" resource="0"
-                file="../../Source/Core/Serialization/LegacySerializer.h"/>
           <FILE id="xyA5ne" name="XmlSerializer.cpp" compile="1" resource="0"
                 file="../../Source/Core/Serialization/XmlSerializer.cpp"/>
           <FILE id="cf5hpo" name="XmlSerializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/XmlSerializer.h"/>

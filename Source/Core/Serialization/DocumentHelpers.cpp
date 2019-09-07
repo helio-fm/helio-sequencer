@@ -21,7 +21,6 @@
 #include "JsonSerializer.h"
 #include "XmlSerializer.h"
 #include "BinarySerializer.h"
-#include "LegacySerializer.h"
 
 String DocumentHelpers::getTemporaryFolder()
 {
@@ -153,7 +152,6 @@ static const OwnedArray<Serializer> &getSerializers()
         serializers.add(new XmlSerializer());
         serializers.add(new JsonSerializer());
         serializers.add(new BinarySerializer());
-        serializers.add(new LegacySerializer());
     }
 
     return serializers;

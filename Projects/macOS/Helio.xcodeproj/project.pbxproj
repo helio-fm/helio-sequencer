@@ -537,13 +537,6 @@
 			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepEventComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		1135769CB28DA8A676099B77 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = LegacySerializer.h;
-			path = ../../Source/Core/Serialization/LegacySerializer.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		11361C4E63D5B6E6FE82E917 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5108,13 +5101,6 @@
 			path = ../../Source/Core/Tree/RootNode.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		E3882B8753BA446862F475E4 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = LegacySerializer.cpp;
-			path = ../../Source/Core/Serialization/LegacySerializer.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		E3E7AEE0AE3A65EE281E1BE6 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -6083,8 +6069,6 @@
 				685E005B67E2F1E5122D6EFF,
 				180EFE876C7BC15C97223FA5,
 				DFF1741E434F98A023CEF061,
-				E3882B8753BA446862F475E4,
-				1135769CB28DA8A676099B77,
 				525B003B869BA778F9B069DA,
 				177897A2F8B5F4D967676B74,
 			);

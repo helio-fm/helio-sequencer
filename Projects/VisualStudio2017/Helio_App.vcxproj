@@ -271,7 +271,6 @@
     <ClCompile Include="..\..\Source\Core\Serialization\DocumentHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\BinarySerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\JsonSerializer.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Serialization\LegacySerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\AudioPluginNode.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackNode.cpp"/>
@@ -2319,7 +2318,6 @@
     <ClInclude Include="..\..\Source\Core\Serialization\Serializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\BinarySerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h"/>
-    <ClInclude Include="..\..\Source\Core\Serialization\LegacySerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\AudioPluginNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackNode.h"/>

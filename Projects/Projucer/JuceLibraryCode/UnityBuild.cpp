@@ -68,7 +68,6 @@
 #include "../../Source/Core/Serialization/DocumentHelpers.cpp"
 #include "../../Source/Core/Serialization/BinarySerializer.cpp"
 #include "../../Source/Core/Serialization/JsonSerializer.cpp"
-#include "../../Source/Core/Serialization/LegacySerializer.cpp"
 #include "../../Source/Core/Serialization/XmlSerializer.cpp"
 #include "../../Source/Core/Tree/AudioPluginNode.cpp"
 #include "../../Source/Core/Tree/AutomationTrackNode.cpp"
