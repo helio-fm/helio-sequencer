@@ -52,7 +52,7 @@ class TimelineWarningMarker;
 #   define HYBRID_ROLL_LISTENS_LONG_TAP 1
 #endif
 
-#define HYBRID_ROLL_MAX_BAR_WIDTH (192)
+#define HYBRID_ROLL_MAX_BEAT_WIDTH (48)
 #define HYBRID_ROLL_HEADER_HEIGHT (40)
 #define HYBRID_ROLL_HEADER_SHADOW_SIZE (16)
 
@@ -185,25 +185,18 @@ public:
     double getTransportPositionByBeat(float targetBeat) const;
     float getBeatByTransportPosition(double absSeekPosition) const;
 
-    float getBarByXPosition(int xPosition) const;
-    int getXPositionByBar(float targetBar) const;
-
     int getXPositionByBeat(float targetBeat) const;
     float getFloorBeatByXPosition(int x) const;
     float getRoundBeatByXPosition(int x) const;
-    
-    inline float getLastBar() const noexcept { return this->lastBar; }
-    inline float getLastBeat() const noexcept { return this->lastBar * float(BEATS_PER_BAR); }
-    
-    inline float getFirstBar() const noexcept { return this->firstBar; }
-    inline float getFirstBeat() const noexcept { return this->firstBar * float(BEATS_PER_BAR); }
-    
-    void setBarRange(float first, float last);
-    inline float getNumBars() const noexcept { return this->lastBar - this->firstBar; }
-    inline float getNumBeats() const noexcept { return this->getNumBars() * BEATS_PER_BAR; }
 
-    virtual void setBarWidth(const float newBarWidth);
-    float getBarWidth() const noexcept { return this->barWidth; }
+    inline float getLastBeat() const noexcept { return this->lastBeat; }
+    inline float getFirstBeat() const noexcept { return this->firstBeat; }
+    
+    void setBeatRange(float first, float last);
+    inline float getNumBeats() const noexcept { return this->lastBeat - this->firstBeat; }
+
+    virtual void setBeatWidth(const float newBeatWidth);
+    inline float getBeatWidth() const noexcept { return this->beatWidth; }
 
     inline const Array<float> &getVisibleBars() const noexcept  { return this->visibleBars; }
     inline const Array<float> &getVisibleBeats() const noexcept { return this->visibleBeats; }
@@ -295,10 +288,10 @@ protected:
     void onPlay() override;
     void onStop() override;
 
-    Atomic<double> lastTransportPosition; // modified from a player thread
+    Atomic<double> lastTransportPosition = 0.0; // modified from a player thread
 
-    double playheadOffset;
-    bool shouldFollowPlayhead;
+    double playheadOffset = 0.0;
+    bool shouldFollowPlayhead = false;
     
     //===------------------------------------------------------------------===//
     // AsyncUpdater
@@ -333,9 +326,9 @@ protected:
     
     OwnedArray<Component> trackMaps;
 
-    Point<int> viewportAnchor;
-    Point<float> clickAnchor;
-    Point<float> zoomAnchor;
+    Point<int> viewportAnchor = { 0, 0 };
+    Point<float> clickAnchor = { 0, 0 };
+    Point<float> zoomAnchor = { 0, 0 };
     UniquePointer<Component> zoomMarker;
     
     void resetDraggingAnchors();
@@ -356,18 +349,17 @@ protected:
     bool isLassoEvent(const MouseEvent &e) const;
     bool isKnifeToolEvent(const MouseEvent &e) const;
 
-    float firstBar;
-    float lastBar;
+    float firstBeat = FLT_MAX;
+    float lastBeat = -FLT_MAX;
 
-    float projectFirstBeat;
-    float projectLastBeat;
+    float projectFirstBeat = 0.f;
+    float projectLastBeat = DEFAULT_NUM_BARS * BEATS_PER_BAR;
 
-    float barWidth;
-    float beatDelta;
+    float beatWidth = 0.f;
     
-    bool altDrawMode;
-    bool spaceDragMode;
-    int draggedDistance;
+    bool altDrawMode = false;
+    bool spaceDragMode = false;
+    int draggedDistance = 0;
     Time timeEnteredDragMode;
 
     ComponentFader fader;

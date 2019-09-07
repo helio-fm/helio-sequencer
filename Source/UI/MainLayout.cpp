@@ -101,7 +101,7 @@ void MainLayout::show()
     if (this->initScreen != nullptr)
     {
         this->initScreen->toFront(false);
-        this->fader.fadeOut(this->initScreen.get(), 500);
+        this->fader.fadeOut(this->initScreen.get(), 200);
         this->initScreen = nullptr;
     }
 }

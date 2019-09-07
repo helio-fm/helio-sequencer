@@ -118,7 +118,7 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
-    this->setBarRange(0, 8);
+    this->setBeatRange(0, 32);
 }
 
 void PatternRoll::selectAll()
@@ -279,14 +279,13 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const auto trackGroupKey = getTrackGroupKey(this->groupMode, track);
     const int trackIndex = this->rows.indexOfSorted(kStringSort, trackGroupKey);
 
-    const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
 
     // In case there are no events, still display a clip of some default length:
     const float sequenceLength = jmax(sequence->getLengthInBeats(), float(BEATS_PER_BAR));
 
-    const float w = this->barWidth * sequenceLength / BEATS_PER_BAR;
-    const float x = this->barWidth * (sequenceOffset + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
+    const float w = this->beatWidth * sequenceLength;
+    const float x = this->beatWidth * (sequenceOffset + clipBeat - this->firstBeat);
     const float y = float(trackIndex * rowHeight());
 
     return Rectangle<float>(x,
@@ -884,13 +883,13 @@ ValueTree PatternRoll::serialize() const
     using namespace Serialization;
     ValueTree tree(UI::patternRoll);
 
-    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()), nullptr);
+    tree.setProperty(UI::beatWidth, roundf(this->beatWidth), nullptr);
 
-    tree.setProperty(UI::startBar,
-        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())), nullptr);
+    tree.setProperty(UI::startBeat,
+        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX())), nullptr);
 
-    tree.setProperty(UI::endBar,
-        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX() +
+    tree.setProperty(UI::endBeat,
+        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX() +
             this->getViewport().getViewWidth())), nullptr);
 
     tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);
@@ -911,13 +910,15 @@ void PatternRoll::deserialize(const ValueTree &tree)
         tree : tree.getChildWithName(UI::patternRoll);
 
     if (!root.isValid())
-    { return; }
+    {
+        return;
+    }
 
-    this->setBarWidth(float(root.getProperty(UI::barWidth, this->getBarWidth())));
+    this->setBeatWidth(float(root.getProperty(UI::beatWidth, this->beatWidth)));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root.getProperty(UI::startBar, 0.0));
-    const int x = this->getXPositionByBar(startBar);
+    const float startBeat = float(root.getProperty(UI::startBeat, 0.f));
+    const int x = this->getXPositionByBeat(startBeat);
     const int y = root.getProperty(UI::viewportPositionY);
     this->getViewport().setViewPosition(x, y);
 

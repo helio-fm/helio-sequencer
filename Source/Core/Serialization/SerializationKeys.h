@@ -209,9 +209,9 @@ namespace Serialization
         static const Identifier pianoRoll = "pianoRoll";
         static const Identifier patternRoll = "patternRoll";
 
-        static const Identifier startBar = "startBar";
-        static const Identifier endBar = "endBar";
-        static const Identifier barWidth = "barWidth";
+        static const Identifier startBeat = "startBeat";
+        static const Identifier endBeat = "endBeat";
+        static const Identifier beatWidth = "beatWidth";
         static const Identifier rowHeight = "rowHeight";
         static const Identifier viewportPositionX = "viewportX";
         static const Identifier viewportPositionY = "viewportY";

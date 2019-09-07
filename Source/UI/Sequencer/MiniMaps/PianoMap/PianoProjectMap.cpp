@@ -78,7 +78,7 @@ void PianoProjectMap::paint(Graphics &g)
 
             const float x = (mapWidth * (beat / projectLengthInBeats));
             const float w = (mapWidth * (length / projectLengthInBeats));
-            const float y = roundf(this->getHeight() - (key * this->componentHeight));
+            const float y = (this->getHeight() - (key * this->componentHeight));
 
             g.fillRect(x, y, jmax(0.25f, w), 1.0f);
         }

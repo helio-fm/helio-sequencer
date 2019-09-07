@@ -116,12 +116,12 @@ private:
 
 private:
 
-    const int timerDelay = 7;
-    const float zoomDecayFactor = 0.85f;
+    const int timerDelay = 8;
+    const float zoomDecayFactor = 0.825f;
 
 #if JUCE_WINDOWS
     const float zoomStopFactor = 0.001f;
-    const float initialZoomSpeed = 0.3f;
+    const float initialZoomSpeed = 0.25f;
 #else
     const float zoomStopFactor = 0.005f;
     const float initialZoomSpeed = 0.5f;

@@ -103,7 +103,7 @@ PianoRoll::PianoRoll(ProjectNode &parentProject,
     this->addChildComponent(this->draggingHelper.get());
 
     this->reloadRollContent();
-    this->setBarRange(0, 8);
+    this->setBeatRange(0, 32);
 }
 
 void PianoRoll::reloadRollContent()
@@ -364,13 +364,11 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
 {
     jassert(key >= -128 && key <= 128);
 
-    const double startOffsetBeat = this->firstBar * double(BEATS_PER_BAR);
-    const double x = this->barWidth * double(beat - startOffsetBeat) / double(BEATS_PER_BAR);
-
-    const float w = this->barWidth * length / float(BEATS_PER_BAR);
+    const float x = this->beatWidth * (beat - this->firstBeat);
+    const float w = this->beatWidth * length;
     const float yPosition = float(this->getYPositionByKey(key));
 
-    return { float(x), yPosition + 1, w, float(this->rowHeight - 1) };
+    return { x, yPosition + 1.f, w, float(this->rowHeight - 1) };
 }
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
@@ -417,9 +415,8 @@ void PianoRoll::hideHelpers()
 
 void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 {
-    const float firstBeat = this->firstBar * float(BEATS_PER_BAR);
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
-    const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + firstBeat, 1.f);
+    const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + this->firstBeat, 1.f);
 
     const int deltaX = int(delta.getTopLeft().getX());
     const int deltaY = int(delta.getTopLeft().getY() - this->getHeight() - 1);
@@ -1180,7 +1177,7 @@ void PianoRoll::paint(Graphics &g)
 
     static const float paintOffsetY = float(HYBRID_ROLL_HEADER_HEIGHT);
 
-    int prevBarX = paintStartX;
+    int prevBeatX = paintStartX;
     const HighlightingScheme *prevScheme = nullptr;
     const int y = this->viewport.getViewPositionY();
     const int h = this->viewport.getViewHeight();
@@ -1188,7 +1185,7 @@ void PianoRoll::paint(Graphics &g)
     for (int nextKeyIdx = 0; nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
     {
         const auto *key = static_cast<KeySignatureEvent *>(keysSequence->getUnchecked(nextKeyIdx));
-        const int barX = int(((key->getBeat() / float(BEATS_PER_BAR)) - this->firstBar)  * this->barWidth);
+        const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
         const int index = this->binarySearchForHighlightingScheme(key);
 
 #if DEBUG
@@ -1202,27 +1199,27 @@ void PianoRoll::paint(Graphics &g)
         const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
         g.setFillType(fillType);
 
-        if (barX >= paintEndX)
+        if (beatX >= paintEndX)
         {
-            g.fillRect(prevBarX, y, barX - prevBarX, h);
+            g.fillRect(prevBeatX, y, beatX - prevBeatX, h);
             HybridRoll::paint(g);
             return;
         }
-        else if (barX >= paintStartX)
+        else if (beatX >= paintStartX)
         {
-            g.fillRect(prevBarX, y, barX - prevBarX, h);
+            g.fillRect(prevBeatX, y, beatX - prevBeatX, h);
         }
 
-        prevBarX = barX;
+        prevBeatX = beatX;
         prevScheme = this->backgroundsCache.getUnchecked(index);
     }
 
-    if (prevBarX < paintEndX)
+    if (prevBeatX < paintEndX)
     {
         const auto *s = (prevScheme == nullptr) ? this->defaultHighlighting.get() : prevScheme;
         const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
         g.setFillType(fillType);
-        g.fillRect(prevBarX, y, paintEndX - prevBarX, h);
+        g.fillRect(prevBeatX, y, paintEndX - prevBeatX, h);
         HybridRoll::paint(g);
     }
 }
@@ -1416,14 +1413,14 @@ ValueTree PianoRoll::serialize() const
     using namespace Serialization;
     ValueTree tree(UI::pianoRoll);
     
-    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()), nullptr);
+    tree.setProperty(UI::beatWidth, roundf(this->beatWidth), nullptr);
     tree.setProperty(UI::rowHeight, this->getRowHeight(), nullptr);
 
-    tree.setProperty(UI::startBar,
-        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())), nullptr);
+    tree.setProperty(UI::startBeat,
+        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX())), nullptr);
 
-    tree.setProperty(UI::endBar,
-        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX() +
+    tree.setProperty(UI::endBeat,
+        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX() +
             this->getViewport().getViewWidth())), nullptr);
 
     tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);
@@ -1447,12 +1444,12 @@ void PianoRoll::deserialize(const ValueTree &tree)
         return;
     }
     
-    this->setBarWidth(float(root.getProperty(UI::barWidth, this->getBarWidth())));
+    this->setBeatWidth(float(root.getProperty(UI::beatWidth, this->beatWidth)));
     this->setRowHeight(root.getProperty(UI::rowHeight, this->getRowHeight()));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root.getProperty(UI::startBar, 0.0));
-    const int x = this->getXPositionByBar(startBar);
+    const float startBeat = float(root.getProperty(UI::startBeat, 0.f));
+    const int x = this->getXPositionByBeat(startBeat);
     const int y = root.getProperty(UI::viewportPositionY);
     this->getViewport().setViewPosition(x, y);
 

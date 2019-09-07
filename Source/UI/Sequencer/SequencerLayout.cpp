@@ -150,14 +150,14 @@ public:
         this->updateAnimatedRollsBounds();
         this->updateAnimatedMapsBounds();
 
-        if ((this->pianoRoll->getBarWidth() * this->pianoRoll->getNumBars()) < this->getWidth())
+        if ((this->pianoRoll->getBeatWidth() * this->pianoRoll->getNumBeats()) < this->getWidth())
         {
-            this->pianoRoll->setBarWidth(float(this->getWidth()) / float(this->pianoRoll->getNumBars()));
+            this->pianoRoll->setBeatWidth(float(this->getWidth()) / float(this->pianoRoll->getNumBeats()));
         }
 
-        if ((this->patternRoll->getBarWidth() * this->patternRoll->getNumBars()) < this->getWidth())
+        if ((this->patternRoll->getBeatWidth() * this->patternRoll->getNumBeats()) < this->getWidth())
         {
-            this->patternRoll->setBarWidth(float(this->getWidth()) / float(this->patternRoll->getNumBars()));
+            this->patternRoll->setBeatWidth(float(this->getWidth()) / float(this->patternRoll->getNumBeats()));
         }
 
         // Force update children bounds, even if they have just moved
@@ -408,12 +408,12 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
 
     this->scrollerShadow.reset(new ShadowUpwards(Normal));
 
-    this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
+    this->pianoRoll->setBeatWidth(HYBRID_ROLL_MAX_BEAT_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
     this->pianoRoll->addRollListener(this->mapScroller.get());
     this->pianoRoll->addRollListener(this->levelsScroller.get());
 
-    this->patternRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
+    this->patternRoll->setBeatWidth(HYBRID_ROLL_MAX_BEAT_WIDTH);
     this->patternViewport->setViewedComponent(this->patternRoll.get(), false);
     this->patternRoll->addRollListener(this->mapScroller.get());
 

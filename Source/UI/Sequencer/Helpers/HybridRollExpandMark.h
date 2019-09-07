@@ -28,7 +28,7 @@ class HybridRollExpandMark final : public Component,
 {
 public:
 
-    HybridRollExpandMark(HybridRoll &parentRoll, float targetBar, int numBarsToTake);
+    HybridRollExpandMark(HybridRoll &parentRoll, float targetBeat, int numBeatsToTake);
     ~HybridRollExpandMark();
 
     //[UserMethods]
@@ -49,9 +49,9 @@ private:
 
     HybridRoll &roll;
 
-    float bar;
+    float beat;
     float alpha;
-    int numBars;
+    int numBeats;
 
     //[/UserVariables]
 

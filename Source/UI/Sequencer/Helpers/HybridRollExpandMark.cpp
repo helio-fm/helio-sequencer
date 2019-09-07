@@ -25,10 +25,10 @@
 #include "HybridRoll.h"
 //[/MiscUserDefs]
 
-HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetBar, int numBarsToTake)
+HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetBeat, int numBeatsToTake)
     : roll(parentRoll),
-      bar(targetBar),
-      numBars(numBarsToTake),
+      beat(targetBeat),
+      numBeats(numBeatsToTake),
       alpha(1.f)
 {
     this->plusImage.reset(new IconComponent(Icons::expand));
@@ -96,9 +96,9 @@ void HybridRollExpandMark::parentSizeChanged()
 //[MiscUserCode]
 void HybridRollExpandMark::updatePosition()
 {
-    const float barOffset = this->bar - this->roll.getFirstBar();
-    const int xOffset = int(barOffset * this->roll.getBarWidth());
-    const int newWidth = int(this->roll.getBarWidth() * this->numBars);
+    const float beatOffset = this->beat - this->roll.getFirstBeat();
+    const int xOffset = int(beatOffset * this->roll.getBeatWidth());
+    const int newWidth = int(this->roll.getBeatWidth() * this->numBeats);
     this->setBounds(xOffset, 0, newWidth, this->getParentHeight());
 }
 
@@ -123,8 +123,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HybridRollExpandMark" template="../../../Template"
                  componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="HybridRoll &amp;parentRoll, float targetBar, int numBarsToTake"
-                 variableInitialisers="roll(parentRoll),&#10;bar(targetBar),&#10;numBars(numBarsToTake),&#10;alpha(1.f)"
+                 constructorParams="HybridRoll &amp;parentRoll, float targetBeat, int numBeatsToTake"
+                 variableInitialisers="roll(parentRoll),&#10;beat(targetBeat),&#10;numBeats(numBeatsToTake),&#10;alpha(1.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="48">
   <METHODS>
