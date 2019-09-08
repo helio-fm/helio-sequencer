@@ -207,7 +207,7 @@ void AutomationCurveClipComponent::getRowsColsByMousePosition(int x, int y, floa
     const int radius = int(this->getEventDiameter() / 2.f);
     const int xRoll = this->getX() + x + radius;
 
-    targetBeat = this->roll.getRoundBeatByXPosition(xRoll) - this->clip.getBeat();
+    targetBeat = this->roll.getRoundBeatSnapByXPosition(xRoll) - this->clip.getBeat();
     targetValue = float(this->getAvailableHeight() - y - radius) / float(this->getAvailableHeight()); // flip upside down
     targetValue = jlimit(0.f, 1.f, targetValue);
 }

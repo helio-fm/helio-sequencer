@@ -106,7 +106,7 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
     {
-        auto tooltip = MakeUnique<ProgressTooltip>(true);
+        auto tooltip = makeUnique<ProgressTooltip>(true);
         tooltip->onCancel = [this]() {
             this->pluginScanner.cancelRunningScan();
         };
@@ -123,7 +123,7 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
 
         if (fc.browseForDirectory())
         {
-            auto tooltip = MakeUnique<ProgressTooltip>(true);
+            auto tooltip = makeUnique<ProgressTooltip>(true);
             tooltip->onCancel = [this]() {
                 this->pluginScanner.cancelRunningScan();
             };

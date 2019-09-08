@@ -297,14 +297,14 @@ float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
     // One trick here is that displayed clip position depends on a sequence's first beat as well:
     const auto *sequence = clip.getPattern()->getTrack()->getSequence();
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
-    return this->getRoundBeatByXPosition(int(x)) - sequenceOffset; /* - 0.5f ? */
+    return this->getRoundBeatSnapByXPosition(int(x)) - sequenceOffset; /* - 0.5f ? */
 }
 
 float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
 {
     const auto *sequence = pattern->getTrack()->getSequence();
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
-    return this->getFloorBeatByXPosition(x) - sequenceOffset;
+    return this->getFloorBeatSnapByXPosition(x) - sequenceOffset;
 }
 
 //===----------------------------------------------------------------------===//
@@ -837,7 +837,7 @@ void PatternRoll::startCuttingClips(const MouseEvent &e)
         this->knifeToolHelper.reset(new CutPointMark(targetClip, 0.5f));
         this->addAndMakeVisible(this->knifeToolHelper.get());
 
-        const float cutBeat = this->getRoundBeatByXPosition(e.getPosition().x);
+        const float cutBeat = this->getRoundBeatSnapByXPosition(e.getPosition().x);
         const int beatX = this->getXPositionByBeat(cutBeat);
         this->knifeToolHelper->toFront(false);
         this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
@@ -849,7 +849,7 @@ void PatternRoll::continueCuttingClips(const MouseEvent &e)
 {
     if (this->knifeToolHelper != nullptr)
     {
-        const float cutBeat = this->getRoundBeatByXPosition(e.getPosition().x);
+        const float cutBeat = this->getRoundBeatSnapByXPosition(e.getPosition().x);
         const int beatX = this->getXPositionByBeat(cutBeat);
         this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
     }
@@ -864,7 +864,7 @@ void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
         const auto *cc = dynamic_cast<ClipComponent *>(this->knifeToolHelper->getComponent());
         if (cc != nullptr && cutPos > 0.f && cutPos < 1.f)
         {
-            const float cutBeat = this->getRoundBeatByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
+            const float cutBeat = this->getRoundBeatSnapByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
             PatternOperations::cutClip(this->project, cc->getClip(), cutBeat, shouldRenameNewTracks);
         }
         this->applyEditModeUpdates(); // update behaviour of newly created clip components
@@ -885,10 +885,10 @@ ValueTree PatternRoll::serialize() const
     tree.setProperty(UI::beatWidth, roundf(this->beatWidth), nullptr);
 
     tree.setProperty(UI::startBeat,
-        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX())), nullptr);
+        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX())), nullptr);
 
     tree.setProperty(UI::endBeat,
-        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX() +
+        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX() +
             this->getViewport().getViewWidth())), nullptr);
 
     tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);

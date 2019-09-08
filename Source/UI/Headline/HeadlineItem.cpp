@@ -202,7 +202,7 @@ void HeadlineItem::showMenuIfAny()
 {
     if (this->item != nullptr && this->item->hasMenu())
     {
-        auto dropdown = MakeUnique<HeadlineDropdown>(this->item);
+        auto dropdown = makeUnique<HeadlineDropdown>(this->item);
         dropdown->setTopLeftPosition(this->getPosition());
         dropdown->setAlpha(0.f);
         App::showModalComponentUnowned(dropdown.release());

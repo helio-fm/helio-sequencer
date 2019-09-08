@@ -337,7 +337,7 @@ UniquePointer<Component> AudioPluginsListComponent::createMenu()
 {
     const auto selectedRow = this->pluginsList->getSelectedRow();
     const auto description = pluginScanner.getPlugins()[selectedRow];
-    return MakeUnique<AudioPluginSelectionMenu>(description, this->instrumentsRoot, this->pluginScanner);
+    return makeUnique<AudioPluginSelectionMenu>(description, this->instrumentsRoot, this->pluginScanner);
 }
 
 Image AudioPluginsListComponent::getIcon() const

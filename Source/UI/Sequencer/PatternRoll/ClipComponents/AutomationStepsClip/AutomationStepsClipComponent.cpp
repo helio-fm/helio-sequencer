@@ -189,7 +189,7 @@ AutomationStepEventComponent *AutomationStepsClipComponent::getNextEventComponen
 float AutomationStepsClipComponent::getBeatByXPosition(int x) const
 {
     const int xRoll = this->getX() + x;
-    return this->roll.getRoundBeatByXPosition(xRoll) - this->clip.getBeat();
+    return this->roll.getRoundBeatSnapByXPosition(xRoll) - this->clip.getBeat();
 }
 
 //===----------------------------------------------------------------------===//

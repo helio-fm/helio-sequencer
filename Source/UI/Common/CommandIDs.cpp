@@ -19,12 +19,12 @@
 #include "CommandIDs.h"
 
 #define CASE_FOR(x) \
-    case CompileTimeHash(#x): \
+    case constexprHash(#x): \
     return x; \
 
 int CommandIDs::getIdForName(const String &command)
 {
-    switch (CompileTimeHash(command.toRawUTF8()))
+    switch (constexprHash(command.toRawUTF8()))
     {
         CASE_FOR(Back)
         CASE_FOR(Cancel)

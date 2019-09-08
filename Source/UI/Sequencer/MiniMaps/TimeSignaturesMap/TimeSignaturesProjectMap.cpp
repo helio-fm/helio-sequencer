@@ -361,7 +361,7 @@ void TimeSignaturesProjectMap::alternateActionFor(TimeSignatureComponent *nc)
 float TimeSignaturesProjectMap::getBeatByXPosition(int x) const
 {
     const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
-    const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
+    const float targetBeat = this->roll.getRoundBeatSnapByXPosition(xRoll);
     return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 

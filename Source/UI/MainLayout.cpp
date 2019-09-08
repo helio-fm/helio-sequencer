@@ -166,7 +166,7 @@ void MainLayout::showTooltip(const String &message, TooltipType type, int timeou
 {
     if (message.isNotEmpty())
     {
-        this->tooltipContainer->showWithComponent(MakeUnique<GenericTooltip>(message), timeoutMs);
+        this->tooltipContainer->showWithComponent(makeUnique<GenericTooltip>(message), timeoutMs);
     }
 
     if (type == TooltipType::Success)

@@ -304,7 +304,7 @@ bool StageComponent::canBeSelectedAsMenuItem() const { return false; }
 
 UniquePointer<Component> StageComponent::createMenu()
 {
-    return MakeUnique<VersionControlStageSelectionMenu>();
+    return makeUnique<VersionControlStageSelectionMenu>();
 }
 
 Image StageComponent::getIcon() const

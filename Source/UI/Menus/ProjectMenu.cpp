@@ -403,7 +403,7 @@ void ProjectMenu::showSetInstrumentMenu()
 ValueTree ProjectMenu::createPianoTrackTempate(const String &name,
     const String &instrumentId, String &outTrackId) const
 {
-    auto newNode = MakeUnique<PianoTrackNode>(name);
+    auto newNode = makeUnique<PianoTrackNode>(name);
 
     // We need to have at least one clip on a pattern:
     const Clip clip(newNode->getPattern());
@@ -427,7 +427,7 @@ ValueTree ProjectMenu::createPianoTrackTempate(const String &name,
 ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
     int controllerNumber, const String &instrumentId) const
 {
-    auto newNode = MakeUnique<AutomationTrackNode>(name);
+    auto newNode = makeUnique<AutomationTrackNode>(name);
 
     // We need to have at least one clip on a pattern:
     const Clip clip(newNode->getPattern());

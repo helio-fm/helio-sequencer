@@ -86,18 +86,18 @@ void ProjectNode::initialize()
 {
     this->isTracksCacheOutdated = true;
 
-    this->undoStack = MakeUnique<UndoStack>(*this);
-    this->autosaver = MakeUnique<Autosaver>(*this);
+    this->undoStack = makeUnique<UndoStack>(*this);
+    this->autosaver = makeUnique<Autosaver>(*this);
 
     auto &orchestra = App::Workspace().getAudioCore();
     auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
-    this->transport = MakeUnique<Transport>(orchestra, audioCoreSleepTimer);
+    this->transport = makeUnique<Transport>(orchestra, audioCoreSleepTimer);
     this->addListener(this->transport.get());
 
-    this->metadata = MakeUnique<ProjectMetadata>(*this);
+    this->metadata = makeUnique<ProjectMetadata>(*this);
     this->vcsItems.add(this->metadata.get());
 
-    this->timeline = MakeUnique<ProjectTimeline>(*this, "Project Timeline");
+    this->timeline = makeUnique<ProjectTimeline>(*this, "Project Timeline");
     this->vcsItems.add(this->timeline.get());
 
     this->transport->seekToPosition(0.0);
@@ -286,7 +286,7 @@ bool ProjectNode::hasMenu() const noexcept
 
 UniquePointer<Component> ProjectNode::createMenu()
 {
-    return MakeUnique<ProjectMenu>(*this, MenuPanel::SlideRight);
+    return makeUnique<ProjectMenu>(*this, MenuPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//

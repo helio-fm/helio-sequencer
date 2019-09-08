@@ -131,7 +131,7 @@ void SessionService::signIn(const String &provider)
         return;
     }
 
-    auto tooltip = MakeUnique<ProgressTooltip>(true);
+    auto tooltip = makeUnique<ProgressTooltip>(true);
     tooltip->onCancel = [this]() {
         this->cancelSignInProcess();
     };

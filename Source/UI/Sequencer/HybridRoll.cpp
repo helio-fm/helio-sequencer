@@ -212,11 +212,11 @@ float HybridRoll::getPositionForNewTimelineEvent() const
     {
         const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
         const int playheadPosition = viewCentre + int(playheadOffset);
-        return this->getRoundBeatByXPosition(playheadPosition);
+        return this->getRoundBeatSnapByXPosition(playheadPosition);
     }
 
     const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
-    return this->getRoundBeatByXPosition(viewCentre);
+    return this->getRoundBeatSnapByXPosition(viewCentre);
 }
 
 void HybridRoll::insertAnnotationWithinScreen(const String &annotation)
@@ -590,7 +590,7 @@ int HybridRoll::getXPositionByBeat(float targetBeat) const
     return int(roundf((targetBeat - this->firstBeat) * this->beatWidth));
 }
 
-float HybridRoll::getFloorBeatByXPosition(int x) const
+float HybridRoll::getFloorBeatSnapByXPosition(int x) const
 {
     float d = FLT_MAX;
     float targetX = float(x);
@@ -604,11 +604,10 @@ float HybridRoll::getFloorBeatByXPosition(int x) const
         }
     }
 
-    const float beatNumber = roundBeat(targetX / this->beatWidth + this->firstBeat);
-    return jlimit(this->firstBeat, this->lastBeat, beatNumber);
+    return this->getBeatByXPosition(targetX);
 }
 
-float HybridRoll::getRoundBeatByXPosition(int x) const
+float HybridRoll::getRoundBeatSnapByXPosition(int x) const
 {
     float d = FLT_MAX;
     float targetX = float(x);
@@ -623,8 +622,7 @@ float HybridRoll::getRoundBeatByXPosition(int x) const
         }
     }
 
-    const float beatNumber = roundBeat(targetX / this->beatWidth + this->firstBeat);
-    return jlimit(this->firstBeat, this->lastBeat, beatNumber);
+    return this->getBeatByXPosition(targetX);
 }
 
 void HybridRoll::setBeatRange(float first, float last)
@@ -949,7 +947,7 @@ void HybridRoll::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
 void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
 {
     const auto viewPos = this->viewport.getViewPosition();
-    const auto unalignedViewStartBeat = roundBeat(viewPos.x / this->beatWidth + this->firstBeat);
+    const auto viewStartBeat = this->getBeatByXPosition(float(viewPos.x));
 
     this->setBeatRange(newFirstBeat, newLastBeat);
 
@@ -958,7 +956,7 @@ void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
     // let's try to detect that and preserve offset, when the roll is inactive:
     if (!this->isVisible())
     {
-        const auto newViewX = this->getXPositionByBeat(unalignedViewStartBeat);
+        const auto newViewX = this->getXPositionByBeat(viewStartBeat);
         this->viewport.setViewPosition(newViewX, viewPos.y);
     }
 }

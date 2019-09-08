@@ -372,14 +372,14 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
 {
-    beatNumber = this->getRoundBeatByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
+    beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, numRows - 1, noteNumber);
 }
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
-    beatNumber = this->getFloorBeatByXPosition(x) - this->activeClip.getBeat();
+    beatNumber = this->getFloorBeatSnapByXPosition(x) - this->activeClip.getBeat();
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, numRows - 1, noteNumber);
 }
@@ -1268,7 +1268,7 @@ void PianoRoll::continueCuttingEvents(const MouseEvent &event)
 
                 if (this->knifeToolHelper->getLine().intersects(noteLine, intersection))
                 {
-                    const float relativeCutBeat = this->getRoundBeatByXPosition(int(intersection.getX()))
+                    const float relativeCutBeat = this->getRoundBeatSnapByXPosition(int(intersection.getX()))
                         - this->activeClip.getBeat() - nc->getBeat();
  
                     if (relativeCutBeat > 0.f && relativeCutBeat < nc->getLength())
@@ -1416,10 +1416,10 @@ ValueTree PianoRoll::serialize() const
     tree.setProperty(UI::rowHeight, this->getRowHeight(), nullptr);
 
     tree.setProperty(UI::startBeat,
-        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX())), nullptr);
+        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX())), nullptr);
 
     tree.setProperty(UI::endBeat,
-        roundf(this->getRoundBeatByXPosition(this->getViewport().getViewPositionX() +
+        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX() +
             this->getViewport().getViewWidth())), nullptr);
 
     tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);

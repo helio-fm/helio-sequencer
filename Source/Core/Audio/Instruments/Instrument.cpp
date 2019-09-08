@@ -69,7 +69,7 @@ String Instrument::getInstrumentHash() const
             properties[Serialization::Audio::nodeHash].toString();
     }
     
-    return String(CompileTimeHash(instrumentId.toUTF8()));
+    return String(constexprHash(instrumentId.toUTF8()));
 }
 
 String Instrument::getIdAndHash() const
@@ -633,7 +633,7 @@ void Instrument::configureNode(AudioProcessorGraph::Node::Ptr node,
                                       String(desc.numInputChannels) +
                                       String(desc.numOutputChannels));
     
-    const String nodeHash = String(CompileTimeHash(descriptionString.toUTF8()));
+    const String nodeHash = String(constexprHash(descriptionString.toUTF8()));
     
     node->properties.set(Serialization::Audio::nodeHash, nodeHash);
     node->properties.set(Serialization::UI::positionX, x);

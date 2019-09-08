@@ -90,7 +90,7 @@ template <typename T>
 using UniquePointer = std::unique_ptr<T>;
 
 template <typename T, typename... Args> inline
-UniquePointer<T> MakeUnique(Args&&... args)
+UniquePointer<T> makeUnique(Args&&... args)
 {
     return UniquePointer<T>(new T(std::forward<Args>(args)...));
 }
@@ -141,12 +141,11 @@ inline float roundBeat(float beat)
 
 #define findDefaultColour(x) LookAndFeel::getDefaultLookAndFeel().findColour(x)
 
-// Implements compile-time FNV1a hash:
-constexpr uint32 fnv1a_32_val = 0x811c9dc5;
-constexpr uint64 fnv1a_32_prime = 0x1000193;
-inline constexpr uint32 CompileTimeHash(const char *const str, const uint32 value = fnv1a_32_val) noexcept
+constexpr uint32 fnv1a32val = 0x811c9dc5;
+constexpr uint64 fnv1a32prime = 0x1000193;
+inline constexpr uint32 constexprHash(const char *const str, const uint32 value = fnv1a32val) noexcept
 {
-    return (str[0] == '\0') ? value : CompileTimeHash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a_32_prime);
+    return (str[0] == '\0') ? value : constexprHash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a32prime);
 }
 
 //===----------------------------------------------------------------------===//

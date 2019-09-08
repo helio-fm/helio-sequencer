@@ -66,7 +66,7 @@ void ProjectSyncService::cloneProject(WeakReference<VersionControl> vcs, const S
         return;
     }
 
-    auto tooltip = MakeUnique<ProgressTooltip>(false);
+    auto tooltip = makeUnique<ProgressTooltip>(false);
     App::showModalComponentUnowned(tooltip.release());
 
     this->prepareProjectCloneThread()->doClone(vcs, projectId);
@@ -88,7 +88,7 @@ void ProjectSyncService::deleteProject(const String &projectId)
         return;
     }
 
-    auto tooltip = MakeUnique<ProgressTooltip>(false);
+    auto tooltip = makeUnique<ProgressTooltip>(false);
     App::showModalComponentUnowned(tooltip.release());
 
     this->prepareProjectDeleteThread()->doDelete(projectId);

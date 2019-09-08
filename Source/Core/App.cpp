@@ -307,7 +307,7 @@ String App::getDeviceId()
         const auto &ids = SystemStats::getDeviceIdentifiers();
         if (!ids.isEmpty())
         {
-            kDeviceId = String(CompileTimeHash(ids.joinIntoString({}).toUTF8()));
+            kDeviceId = String(constexprHash(ids.joinIntoString({}).toUTF8()));
         }
         else
         {
@@ -317,7 +317,7 @@ String App::getDeviceId()
                 SystemStats::getOperatingSystemName() +
                 SystemStats::getCpuVendor();
 
-            kDeviceId = String(CompileTimeHash(systemStats.toUTF8()));
+            kDeviceId = String(constexprHash(systemStats.toUTF8()));
         }
     }
 

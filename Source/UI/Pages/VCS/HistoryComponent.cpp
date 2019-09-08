@@ -182,7 +182,8 @@ UniquePointer<Component> HistoryComponent::createMenu()
 {
     if (this->revisionTree != nullptr)
     {
-        return MakeUnique<VersionControlHistorySelectionMenu>(this->revisionTree->getSelectedRevision(), this->vcs);
+        return makeUnique<VersionControlHistorySelectionMenu>(
+            this->revisionTree->getSelectedRevision(), this->vcs);
     }
 
     jassertfalse;

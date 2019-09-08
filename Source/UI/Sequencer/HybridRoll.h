@@ -184,8 +184,7 @@ public:
     float getBeatByTransportPosition(double absSeekPosition) const;
 
     int getXPositionByBeat(float targetBeat) const;
-    float getFloorBeatByXPosition(int x) const;
-    float getRoundBeatByXPosition(int x) const;
+    float getRoundBeatSnapByXPosition(int x) const;
 
     inline float getLastBeat() const noexcept { return this->lastBeat; }
     inline float getFirstBeat() const noexcept { return this->firstBeat; }
@@ -315,6 +314,13 @@ protected:
 
     virtual float findNextAnchorBeat(float beat) const;
     virtual float findPreviousAnchorBeat(float beat) const;
+
+    float getFloorBeatSnapByXPosition(int x) const;
+    inline float getBeatByXPosition(float x) const
+    {
+        const float beatNumber = roundBeat(x / this->beatWidth + this->firstBeat);
+        return jlimit(this->firstBeat, this->lastBeat, beatNumber);
+    }
 
     void updateBounds();
     
