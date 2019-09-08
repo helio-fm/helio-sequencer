@@ -929,26 +929,38 @@ void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+void HybridRoll::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
 {
-    if (this->projectFirstBeat == firstBeat &&
-        this->projectLastBeat == lastBeat)
+    if (this->projectFirstBeat == newFirstBeat &&
+        this->projectLastBeat == newLastBeat)
     {
         return;
     }
 
-    this->projectFirstBeat = firstBeat;
-    this->projectLastBeat = lastBeat;
+    this->projectFirstBeat = newFirstBeat;
+    this->projectLastBeat = newLastBeat;
 
-    const float rollFirstBeat = jmin(this->firstBeat, firstBeat);
-    const float rollLastBeat = jmax(this->lastBeat, lastBeat);
+    const float rollFirstBeat = jmin(this->firstBeat, newFirstBeat);
+    const float rollLastBeat = jmax(this->lastBeat, newLastBeat);
 
     this->setBeatRange(rollFirstBeat, rollLastBeat);
 }
 
-void HybridRoll::onChangeViewBeatRange(float firstBeat, float lastBeat)
+void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
 {
-    this->setBeatRange(firstBeat, lastBeat);
+    const auto viewPos = this->viewport.getViewPosition();
+    const auto unalignedViewStartBeat = roundBeat(viewPos.x / this->beatWidth + this->firstBeat);
+
+    this->setBeatRange(newFirstBeat, newLastBeat);
+
+    // It's often the case that I expand visible range in a pattern editor,
+    // then switch back to piano roll and find the viewport focus fucked up;
+    // let's try to detect that and preserve offset, when the roll is inactive:
+    if (!this->isVisible())
+    {
+        const auto newViewX = this->getXPositionByBeat(unalignedViewStartBeat);
+        this->viewport.setViewPosition(newViewX, viewPos.y);
+    }
 }
 
 //===----------------------------------------------------------------------===//
