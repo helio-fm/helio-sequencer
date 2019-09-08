@@ -106,12 +106,9 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
     {
-        auto tooltip = makeUnique<ProgressTooltip>(true);
-        tooltip->onCancel = [this]() {
+        App::showModalComponent(ProgressTooltip::cancellable([this]() {
             this->pluginScanner.cancelRunningScan();
-        };
-
-        App::showModalComponentUnowned(tooltip.release());
+        }));
 
         this->pluginScanner.runInitialScan();
     }
@@ -123,12 +120,9 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
 
         if (fc.browseForDirectory())
         {
-            auto tooltip = makeUnique<ProgressTooltip>(true);
-            tooltip->onCancel = [this]() {
+            App::showModalComponent(ProgressTooltip::cancellable([this]() {
                 this->pluginScanner.cancelRunningScan();
-            };
-
-            App::showModalComponentUnowned(tooltip.release());
+            }));
 
             this->pluginScanner.scanFolderAndAddResults(fc.getResult());
         }

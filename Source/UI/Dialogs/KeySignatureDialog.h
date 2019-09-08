@@ -46,9 +46,10 @@ public:
     ~KeySignatureDialog();
 
     //[UserMethods]
-    static KeySignatureDialog *createEditingDialog(Component &owner,
+    static UniquePointer<Component> editingDialog(Component &owner,
         Transport &transport, const KeySignatureEvent &event);
-    static KeySignatureDialog *createAddingDialog(Component &owner,
+
+    static UniquePointer<Component> addingDialog(Component &owner,
         Transport &transport,  KeySignaturesSequence *annotationsLayer,
         float targetBeat);
     //[/UserMethods]

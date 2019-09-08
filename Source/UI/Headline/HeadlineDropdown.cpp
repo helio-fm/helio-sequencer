@@ -36,7 +36,7 @@ static constexpr int getPadding() { return 4; }
 
 //[/MiscUserDefs]
 
-HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem)
+HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position)
     : item(targetItem)
 {
     this->content.reset(new Component());
@@ -46,6 +46,9 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     this->addAndMakeVisible(header.get());
 
     //[UserPreSize]
+    this->setAlpha(0.f);
+    this->setTopLeftPosition(position);
+
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
@@ -55,10 +58,9 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     //[Constructor]
     if (this->item != nullptr)
     {
-        auto menu = this->item->createMenu();
-        if (menu != nullptr)
+        this->content = this->item->createMenu();
+        if (this->content != nullptr)
         {
-            this->content = std::move(menu);
             this->addAndMakeVisible(this->content.get());
             this->syncWidthWithContent();
         }
@@ -201,7 +203,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineDropdown" template="../../Template"
                  componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; targetItem"
+                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; targetItem, const Point&lt;int&gt; &amp;position"
                  variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
                  initialHeight="34">
@@ -220,3 +222,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

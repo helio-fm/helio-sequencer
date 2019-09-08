@@ -171,11 +171,11 @@ void MainLayout::showTooltip(const String &message, TooltipType type, int timeou
 
     if (type == TooltipType::Success)
     {
-        App::showModalComponentUnowned(new SuccessTooltip());
+        App::showModalComponent(makeUnique<SuccessTooltip>());
     }
     else if (type == TooltipType::Failure)
     {
-        App::showModalComponentUnowned(new FailTooltip());
+        App::showModalComponent(makeUnique<FailTooltip>());
     }
 }
 
@@ -184,9 +184,9 @@ void MainLayout::hideTooltipIfAny()
     this->tooltipContainer->showWithComponent(nullptr);
 }
 
-void MainLayout::showModalDialog(Component *targetComponent)
+void MainLayout::showModalDialog(UniquePointer<Component> target)
 {
-    App::showModalComponentUnowned(targetComponent);
+    App::showModalComponent(std::move(target));
 }
 
 // a hack!

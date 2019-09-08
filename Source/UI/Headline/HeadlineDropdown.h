@@ -32,7 +32,7 @@ class HeadlineDropdown final : public Component,
 {
 public:
 
-    HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem);
+    HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position);
     ~HeadlineDropdown();
 
     //[UserMethods]

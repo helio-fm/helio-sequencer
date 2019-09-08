@@ -78,9 +78,7 @@ public:
     static bool isOpenGLRendererEnabled() noexcept;
     static void setOpenGLRendererEnabled(bool shouldBeEnabled);
 
-    // modal components are unowned (which sucks, but we still need
-    // to let modal dialogs delete themselves when they want to):
-    static void showModalComponentUnowned(Component *targetComponent);
+    static void showModalComponent(UniquePointer<Component> target);
     static void dismissAllModalComponents();
 
 private:

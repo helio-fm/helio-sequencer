@@ -100,10 +100,10 @@ void ProjectMenu::handleCommandMessage(int commandId)
                     }
                 };
 
-                App::Layout().showModalDialog(inputDialog.release());
+                App::Layout().showModalDialog(std::move(inputDialog));
             };
 
-            App::Layout().showModalDialog(confirmationDialog.release());
+            App::Layout().showModalDialog(std::move(confirmationDialog));
             return;
         }
     }
@@ -220,7 +220,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
                     }
                 };
 
-                App::Layout().showModalDialog(inputDialog.release());
+                App::Layout().showModalDialog(std::move(inputDialog));
             }));
     }
 

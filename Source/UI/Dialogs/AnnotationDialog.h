@@ -43,8 +43,8 @@ public:
     ~AnnotationDialog();
 
     //[UserMethods]
-    static AnnotationDialog *createEditingDialog(Component &owner, const AnnotationEvent &event);
-    static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat);
+    static UniquePointer<Component> editingDialog(Component &owner, const AnnotationEvent &event);
+    static UniquePointer<Component> addingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat);
 
     void onColourButtonClicked(ColourButton *button) override;
     //[/UserMethods]

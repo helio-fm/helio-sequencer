@@ -33,7 +33,12 @@ public:
     ~ProgressTooltip();
 
     //[UserMethods]
-    SimpleCloseCallback onCancel;
+    static UniquePointer<ProgressTooltip> cancellable(SimpleCloseCallback callback)
+    {
+        auto tooltip = makeUnique<ProgressTooltip>(true);
+        tooltip->onCancel = callback;
+        return tooltip;
+    }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -47,6 +52,7 @@ public:
 private:
 
     //[UserVariables]
+    SimpleCloseCallback onCancel;
     bool isCancellable;
     void cancel();
     //[/UserVariables]

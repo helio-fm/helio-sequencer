@@ -69,22 +69,22 @@ void InternalPluginFormat::createPluginInstance(const PluginDescription &desc,
 {
     if (desc.uid == this->audioOutDesc.uid || desc.name == this->audioOutDesc.name)
     {
-        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode)), {});
+        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), {});
         return;
     }
     if (desc.uid == this->audioInDesc.uid || desc.name == this->audioInDesc.name)
     {
-        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode)), {});
+        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode), {});
         return;
     }
     if (desc.uid == this->midiInDesc.uid || desc.name == this->midiInDesc.name)
     {
-        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode)), {});
+        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode), {});
         return;
     }
     else if (desc.uid == this->midiOutDesc.uid || desc.name == this->midiOutDesc.name)
     {
-        callback(UniquePointer<AudioPluginInstance>(new AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode)), {});
+        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
         return;
     }
     

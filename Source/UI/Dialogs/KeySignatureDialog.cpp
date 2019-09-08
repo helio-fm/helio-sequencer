@@ -327,14 +327,18 @@ void KeySignatureDialog::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-KeySignatureDialog *KeySignatureDialog::createEditingDialog(Component &owner, Transport &transport, const KeySignatureEvent &event)
+UniquePointer<Component> KeySignatureDialog::editingDialog(Component &owner,
+    Transport &transport, const KeySignatureEvent &event)
 {
-    return new KeySignatureDialog(owner, transport, static_cast<KeySignaturesSequence *>(event.getSequence()), event, false, 0.f);
+    return makeUnique<KeySignatureDialog>(owner, transport,
+        static_cast<KeySignaturesSequence *>(event.getSequence()), event, false, 0.f);
 }
 
-KeySignatureDialog *KeySignatureDialog::createAddingDialog(Component &owner, Transport &transport, KeySignaturesSequence *annotationsLayer, float targetBeat)
+UniquePointer<Component> KeySignatureDialog::addingDialog(Component &owner,
+    Transport &transport, KeySignaturesSequence *annotationsLayer, float targetBeat)
 {
-    return new KeySignatureDialog(owner, transport, annotationsLayer, KeySignatureEvent(), true, targetBeat);
+    return makeUnique<KeySignatureDialog>(owner, transport,
+        annotationsLayer, KeySignatureEvent(), true, targetBeat);
 }
 
 void KeySignatureDialog::updateOkButtonState()

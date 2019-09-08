@@ -338,8 +338,7 @@ void TimeSignaturesProjectMap::showContextMenuFor(TimeSignatureComponent *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        auto *dialog = TimeSignatureDialog::createEditingDialog(*this, nc->getEvent());
-        App::Layout().showModalDialog(dialog);
+        App::Layout().showModalDialog(TimeSignatureDialog::editingDialog(*this, nc->getEvent()));
     }
 }
 

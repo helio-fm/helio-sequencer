@@ -62,10 +62,12 @@ public:
         Failure
     };
 
-    void showTooltip(const String &message, TooltipType type = TooltipType::Simple, int timeoutMs = 15000);
     void hideTooltipIfAny();
+    void showTooltip(const String &message,
+        TooltipType type = TooltipType::Simple,
+        int timeoutMs = 15000);
 
-    void showModalDialog(Component *targetComponent);
+    void showModalDialog(UniquePointer<Component> target);
 
     //===------------------------------------------------------------------===//
     // Component

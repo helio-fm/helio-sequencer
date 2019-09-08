@@ -431,24 +431,25 @@ void App::recreateLayout()
 // Modal components
 //===----------------------------------------------------------------------===//
 
-void App::showModalComponentUnowned(Component *targetComponent)
+void App::showModalComponent(UniquePointer<Component> target)
 {
     // showing a dialog when another one is still present is kinda suspicious
     //jassert(Component::getCurrentlyModalComponent() == nullptr);
 
     App::dismissAllModalComponents();
 
-    UniquePointer<Component> ownedTarget(targetComponent);
-
     auto *window = static_cast<App *>(getInstance())->window.get();
-    window->addChildComponent(ownedTarget.get());
+    window->addChildComponent(target.get());
 
-    Desktop::getInstance().getAnimator().animateComponent(ownedTarget.get(),
-        ownedTarget->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
+    Desktop::getInstance().getAnimator().animateComponent(target.get(),
+        target->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
 
-    ownedTarget->toFront(false);
-    ownedTarget->enterModalState(true, nullptr, true);
-    ownedTarget.release();
+    target->toFront(false);
+    target->enterModalState(true, nullptr, true);
+
+    // modal components are unowned (which sucks, but we still need
+    // to let modal dialogs delete themselves when they want to):
+    target.release();
 }
 
 void App::dismissAllModalComponents()

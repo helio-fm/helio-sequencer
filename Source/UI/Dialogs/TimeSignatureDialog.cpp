@@ -284,14 +284,14 @@ void TimeSignatureDialog::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-TimeSignatureDialog *TimeSignatureDialog::createEditingDialog(Component &owner, const TimeSignatureEvent &event)
+UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner, const TimeSignatureEvent &event)
 {
-    return new TimeSignatureDialog(owner, static_cast<TimeSignaturesSequence *>(event.getSequence()), event, false, 0.f);
+    return makeUnique<TimeSignatureDialog>(owner, static_cast<TimeSignaturesSequence *>(event.getSequence()), event, false, 0.f);
 }
 
-TimeSignatureDialog *TimeSignatureDialog::createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat)
+UniquePointer<Component> TimeSignatureDialog::addingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat)
 {
-    return new TimeSignatureDialog(owner, annotationsLayer, TimeSignatureEvent(), true, targetBeat);
+    return makeUnique<TimeSignatureDialog>(owner, annotationsLayer, TimeSignatureEvent(), true, targetBeat);
 }
 
 void TimeSignatureDialog::updateOkButtonState()

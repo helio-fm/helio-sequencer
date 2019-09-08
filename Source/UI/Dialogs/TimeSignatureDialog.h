@@ -40,8 +40,8 @@ public:
     ~TimeSignatureDialog();
 
     //[UserMethods]
-    static TimeSignatureDialog *createEditingDialog(Component &owner, const TimeSignatureEvent &event);
-    static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat);
+    static UniquePointer<Component> editingDialog(Component &owner, const TimeSignatureEvent &event);
+    static UniquePointer<Component> addingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;

@@ -179,7 +179,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
                 this->updateButtons();
             };
 
-            App::Layout().showModalDialog(dialog.release());
+            App::Layout().showModalDialog(std::move(dialog));
         }
         //[/UserButtonCode_openGLRendererButton]
     }

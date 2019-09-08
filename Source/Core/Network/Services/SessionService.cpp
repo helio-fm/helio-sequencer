@@ -131,12 +131,9 @@ void SessionService::signIn(const String &provider)
         return;
     }
 
-    auto tooltip = makeUnique<ProgressTooltip>(true);
-    tooltip->onCancel = [this]() {
+    App::showModalComponent(ProgressTooltip::cancellable([this](){
         this->cancelSignInProcess();
-    };
-
-    App::showModalComponentUnowned(tooltip.release());
+    }));
 
     this->prepareAuthThread()->requestWebAuth(provider);
 }

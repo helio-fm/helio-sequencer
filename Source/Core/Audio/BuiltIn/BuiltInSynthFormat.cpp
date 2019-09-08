@@ -53,7 +53,7 @@ void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc,
 {
     if (desc.name == this->pianoDescription.name)
     {
-        callback(UniquePointer<AudioPluginInstance>(new BuiltInSynthPiano()), {});
+        callback(makeUnique<BuiltInSynthPiano>(), {});
         return;
     }
     

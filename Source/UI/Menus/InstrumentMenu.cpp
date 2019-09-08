@@ -53,7 +53,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         {
             auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
             dialog->onOk = this->instrumentNode.getRenameCallback();
-            App::Layout().showModalDialog(dialog.release());
+            App::Layout().showModalDialog(std::move(dialog));
         }));
 
     // TODO:

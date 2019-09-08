@@ -315,14 +315,18 @@ void AnnotationDialog::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-AnnotationDialog *AnnotationDialog::createEditingDialog(Component &owner, const AnnotationEvent &event)
+UniquePointer<Component> AnnotationDialog::editingDialog(Component &owner,
+    const AnnotationEvent &event)
 {
-    return new AnnotationDialog(owner, static_cast<AnnotationsSequence *>(event.getSequence()), event, false, 0.f);
+    return makeUnique<AnnotationDialog>(owner,
+        static_cast<AnnotationsSequence *>(event.getSequence()), event, false, 0.f);
 }
 
-AnnotationDialog *AnnotationDialog::createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat)
+UniquePointer<Component> AnnotationDialog::addingDialog(Component &owner,
+    AnnotationsSequence *annotationsLayer, float targetBeat)
 {
-    return new AnnotationDialog(owner, annotationsLayer, AnnotationEvent(), true, targetBeat);
+    return makeUnique<AnnotationDialog>(owner,
+        annotationsLayer, AnnotationEvent(), true, targetBeat);
 }
 
 void AnnotationDialog::updateOkButtonState()

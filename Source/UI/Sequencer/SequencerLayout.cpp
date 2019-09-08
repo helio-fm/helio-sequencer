@@ -578,10 +578,10 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
 
     if (fc.browseForFileToSave(true))
     {
-        App::Layout().showModalDialog(new RenderDialog(this->project, fc.getResult(), extension));
+        App::Layout().showModalDialog(makeUnique<RenderDialog>(this->project, fc.getResult(), extension));
     }
 #else
-    App::Layout().showModalDialog(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
+    App::Layout().showModalDialog(makeUnique<RenderDialog>(this->project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     }
 

@@ -111,7 +111,7 @@ void HistoryComponent::handleCommandMessage (int commandId)
             {
                 this->vcs.checkout(this->revisionTree->getSelectedRevision());
             };
-            App::Layout().showModalDialog(confirmationDialog.release());
+            App::Layout().showModalDialog(std::move(confirmationDialog));
         }
         else
         {

@@ -370,7 +370,7 @@ void StageComponent::commitSelected()
         this->lastCommitMessage = input;
     };
 
-    App::Layout().showModalDialog(dialog.release());
+    App::Layout().showModalDialog(std::move(dialog));
 }
 
 void StageComponent::resetSelected()
@@ -388,7 +388,7 @@ void StageComponent::resetSelected()
         this->vcs.resetChanges(this->changesList->getSelectedRows());
     };
 
-    App::Layout().showModalDialog(dialog.release());
+    App::Layout().showModalDialog(std::move(dialog));
 }
 
 //[/MiscUserCode]
