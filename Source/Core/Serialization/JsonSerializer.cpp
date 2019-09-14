@@ -23,18 +23,18 @@
 //===----------------------------------------------------------------------===//
 
 // Slightly modified JSONParser from JUCE classes,
-// but returns ValueTree instead of var, and supports comments like `//` and `/* */`.
+// but returns SerializedData instead of var, and supports comments like `//` and `/* */`.
 // Parses arrays and objects as nodes/children, and all others as properties.
 
 struct JsonParser final
 {
-    static Result parseObjectOrArray(String::CharPointerType t, ValueTree &result)
+    static Result parseObjectOrArray(String::CharPointerType t, SerializedData &result)
     {
         skipCommentsAndWhitespaces(t);
 
         switch (t.getAndAdvance())
         {
-        case 0:      result = ValueTree(); return Result::ok();
+        case 0:      result = SerializedData(); return Result::ok();
         case '{':    return parseObject(t, result);
         case '[':    return parseArray(t, result, result.getType());
         }
@@ -42,13 +42,13 @@ struct JsonParser final
         return createFail("Expected '{' or '['", &t);
     }
 
-    static Result parseStringProperty(const juce_wchar quoteChar, String::CharPointerType &t, const Identifier &propertyName, ValueTree &tree)
+    static Result parseStringProperty(const juce_wchar quoteChar, String::CharPointerType &t, const Identifier &propertyName, SerializedData &tree)
     {
         String property;
         const auto r = parseString(quoteChar, t, property);
         if (r.wasOk())
         {
-            tree.setProperty(propertyName, property, nullptr);
+            tree.setProperty(propertyName, property);
         }
 
         return r;
@@ -148,7 +148,7 @@ struct JsonParser final
         }
     }
 
-    static Result parseAny(String::CharPointerType &t, ValueTree &result, const Identifier &nodeOrProperty)
+    static Result parseAny(String::CharPointerType &t, SerializedData &result, const Identifier &nodeOrProperty)
     {
         skipCommentsAndWhitespaces(t);
         auto t2 = t;
@@ -158,8 +158,8 @@ struct JsonParser final
         case '{':
             {
                 t = t2;
-                ValueTree child(nodeOrProperty);
-                result.appendChild(child, nullptr);
+                SerializedData child(nodeOrProperty);
+                result.appendChild(child);
                 return parseObject(t, child);
             }
 
@@ -191,7 +191,7 @@ struct JsonParser final
             if (t2.getAndAdvance() == 'r' && t2.getAndAdvance() == 'u' && t2.getAndAdvance() == 'e')
             {
                 t = t2;
-                result.setProperty(nodeOrProperty, true, nullptr);
+                result.setProperty(nodeOrProperty, true);
                 return Result::ok();
             }
             break;
@@ -201,7 +201,7 @@ struct JsonParser final
                 && t2.getAndAdvance() == 's' && t2.getAndAdvance() == 'e')
             {
                 t = t2;
-                result.setProperty(nodeOrProperty, false, nullptr);
+                result.setProperty(nodeOrProperty, false);
                 return Result::ok();
             }
             break;
@@ -232,7 +232,7 @@ private:
         return Result::fail(m);
     }
 
-    static Result parseNumberProperty(String::CharPointerType &t, const Identifier &propertyName, ValueTree &result, const bool isNegative)
+    static Result parseNumberProperty(String::CharPointerType &t, const Identifier &propertyName, SerializedData &result, const bool isNegative)
     {
         auto oldT = t;
 
@@ -255,7 +255,7 @@ private:
             {
                 t = oldT;
                 auto asDouble = CharacterFunctions::readDoubleValue(t);
-                result.setProperty(propertyName, isNegative ? -asDouble : asDouble, nullptr);
+                result.setProperty(propertyName, isNegative ? -asDouble : asDouble);
                 return Result::ok();
             }
 
@@ -272,14 +272,14 @@ private:
         auto correctedValue = isNegative ? -intValue : intValue;
 
         if ((intValue >> 31) != 0)
-            result.setProperty(propertyName, correctedValue, nullptr);
+            result.setProperty(propertyName, correctedValue);
         else
-            result.setProperty(propertyName, (int)correctedValue, nullptr);
+            result.setProperty(propertyName, (int)correctedValue);
 
         return Result::ok();
     }
 
-    static Result parseObject(String::CharPointerType &t, ValueTree &result)
+    static Result parseObject(String::CharPointerType &t, SerializedData &result)
     {
         for (;;)
         {
@@ -324,7 +324,7 @@ private:
         return Result::ok();
     }
 
-    static Result parseArray(String::CharPointerType &t, ValueTree &result, const Identifier &nodeName)
+    static Result parseArray(String::CharPointerType &t, SerializedData &result, const Identifier &nodeName)
     {
         for (;;)
         {
@@ -360,7 +360,7 @@ private:
 
 struct JsonFormatter final
 {
-    static void write(OutputStream &out, const ValueTree &tree, const StringArray &headerComments,
+    static void write(OutputStream &out, const SerializedData &tree, const StringArray &headerComments,
         int indentLevel, bool oneLine, int maximumDecimalPlaces)
     {
         out << '{';
@@ -399,7 +399,7 @@ struct JsonFormatter final
         out << '}';
     }
 
-    static void writeObject(OutputStream &out, const ValueTree &tree,
+    static void writeObject(OutputStream &out, const SerializedData &tree,
         int indentLevel, bool allOnOneLine, int maximumDecimalPlaces)
     {
         out << '{';
@@ -428,13 +428,13 @@ struct JsonFormatter final
             }
         }
 
-        using GroupedChildren = FlatHashMap<Identifier, Array<ValueTree>, IdentifierHash>;
+        using GroupedChildren = FlatHashMap<Identifier, Array<SerializedData>, IdentifierHash>;
         GroupedChildren children;
         for (const auto &child : tree)
         {
             if (!children.contains(child.getType()))
             {
-                children[child.getType()] = Array<ValueTree>(child);
+                children[child.getType()] = Array<SerializedData>(child);
                 continue;
             }
 
@@ -578,7 +578,7 @@ struct JsonFormatter final
         out.writeRepeatedByte(' ', (size_t)numSpaces);
     }
 
-    static void writeArray(OutputStream &out, const Array<ValueTree> &array,
+    static void writeArray(OutputStream &out, const Array<SerializedData> &array,
         int indentLevel, bool allOnOneLine, int maximumDecimalPlaces)
     {
         out << '[';
@@ -627,7 +627,7 @@ void JsonSerializer::setHeaderComments(StringArray comments) noexcept
     this->headerComments = comments;
 }
 
-Result JsonSerializer::saveToFile(File file, const ValueTree &tree) const
+Result JsonSerializer::saveToFile(File file, const SerializedData &tree) const
 {
     FileOutputStream fileStream(file);
     if (fileStream.openedOk())
@@ -642,10 +642,10 @@ Result JsonSerializer::saveToFile(File file, const ValueTree &tree) const
     return Result::fail("Failed to save");
 }
 
-Result JsonSerializer::loadFromFile(const File &file, ValueTree &tree) const
+Result JsonSerializer::loadFromFile(const File &file, SerializedData &tree) const
 {
     const String text(file.loadFileAsString());
-    ValueTree root(fakeRoot);
+    SerializedData root(fakeRoot);
     const auto result = JsonParser::parseObjectOrArray(text.getCharPointer(), root);
     if (result.wasOk())
     {
@@ -656,7 +656,7 @@ Result JsonSerializer::loadFromFile(const File &file, ValueTree &tree) const
     return Result::fail("Failed to load JSON");
 }
 
-Result JsonSerializer::saveToString(String &string, const ValueTree &tree) const
+Result JsonSerializer::saveToString(String &string, const SerializedData &tree) const
 {
     MemoryOutputStream mo(1024);
     JsonFormatter::write(mo, tree, this->headerComments, 0, this->allOnOneLine, 6);
@@ -664,9 +664,9 @@ Result JsonSerializer::saveToString(String &string, const ValueTree &tree) const
     return Result::ok();
 }
 
-Result JsonSerializer::loadFromString(const String &string, ValueTree &tree) const
+Result JsonSerializer::loadFromString(const String &string, SerializedData &tree) const
 {
-    ValueTree root(fakeRoot);
+    SerializedData root(fakeRoot);
     const auto result = JsonParser::parseObjectOrArray(string.getCharPointer(), root);
     if (result.wasOk())
     {

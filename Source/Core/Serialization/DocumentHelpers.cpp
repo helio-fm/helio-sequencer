@@ -187,9 +187,9 @@ static const Array<Serializer *> getSerializersForHeader(const String &header)
     return result;
 }
 
-ValueTree DocumentHelpers::load(const File &file)
+SerializedData DocumentHelpers::load(const File &file)
 {
-    ValueTree result;
+    SerializedData result;
 
     if (!file.existsAsFile())
     {
@@ -202,7 +202,7 @@ ValueTree DocumentHelpers::load(const File &file)
     // if exactly one serializer reports to support target file extension, then use that one
     if (onesThatSupportExtension.size() == 1)
     {
-        ValueTree tree;
+        SerializedData tree;
         onesThatSupportExtension.getFirst()->loadFromFile(file, tree);
         return tree;
     }
@@ -224,7 +224,7 @@ ValueTree DocumentHelpers::load(const File &file)
     const auto onesThatSupportHeader(getSerializersForHeader(header.toUTF8()));
     if (!onesThatSupportHeader.isEmpty())
     {
-        ValueTree tree;
+        SerializedData tree;
         onesThatSupportHeader.getFirst()->loadFromFile(file, tree);
         return tree;
     }
@@ -233,15 +233,15 @@ ValueTree DocumentHelpers::load(const File &file)
     return DocumentHelpers::load<BinarySerializer>(file);
 }
 
-ValueTree DocumentHelpers::load(const String &string)
+SerializedData DocumentHelpers::load(const String &string)
 {
-    ValueTree result;
+    SerializedData result;
     const String header(string.substring(0, 8));
 
     const auto onesThatSupportHeader(getSerializersForHeader(header));
     if (!onesThatSupportHeader.isEmpty())
     {
-        ValueTree tree;
+        SerializedData tree;
         onesThatSupportHeader.getFirst()->loadFromString(string, tree);
         return tree;
     }

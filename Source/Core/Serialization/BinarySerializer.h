@@ -23,11 +23,11 @@ class BinarySerializer final : public Serializer
 {
 public:
 
-    Result saveToFile(File file, const ValueTree &tree) const override;
-    Result loadFromFile(const File &file, ValueTree &tree) const override;
+    Result saveToFile(File file, const SerializedData &tree) const override;
+    Result loadFromFile(const File &file, SerializedData &tree) const override;
 
-    Result saveToString(String &string, const ValueTree &tree) const override;
-    Result loadFromString(const String &string, ValueTree &tree) const override;
+    Result saveToString(String &string, const SerializedData &tree) const override;
+    Result loadFromString(const String &string, SerializedData &tree) const override;
 
     bool supportsFileWithExtension(const String &extension) const override;
     bool supportsFileWithHeader(const String &header) const override;

@@ -18,6 +18,7 @@
 #pragma once
 
 class Serializable;
+class SerializedData;
 
 class Serializer
 {
@@ -25,11 +26,11 @@ public:
 
     virtual ~Serializer() {}
 
-    virtual Result saveToFile(File file, const ValueTree &tree) const = 0;
-    virtual Result loadFromFile(const File &file, ValueTree &tree) const = 0;
+    virtual Result saveToFile(File file, const SerializedData &tree) const = 0;
+    virtual Result loadFromFile(const File &file, SerializedData &tree) const = 0;
 
-    virtual Result saveToString(String &string, const ValueTree &tree) const = 0;
-    virtual Result loadFromString(const String &string, ValueTree &tree) const = 0;
+    virtual Result saveToString(String &string, const SerializedData &tree) const = 0;
+    virtual Result loadFromString(const String &string, SerializedData &tree) const = 0;
 
     virtual bool supportsFileWithExtension(const String &extension) const = 0;
     virtual bool supportsFileWithHeader(const String &header) const = 0;

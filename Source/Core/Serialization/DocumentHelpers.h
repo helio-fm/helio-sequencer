@@ -27,30 +27,30 @@ public:
     static File getTempSlot(const String &fileName);
 
     template<typename T>
-    static ValueTree read(const String &data)
+    static SerializedData read(const String &data)
     {
         T serializer;
-        ValueTree tree;
+        SerializedData tree;
         serializer.loadFromString(data, tree);
         return tree;
     }
 
     // This tries to auto-detect a serializer type for a given file
     // by extension and return a valid value tree
-    static ValueTree load(const File &file);
-    static ValueTree load(const String &string);
+    static SerializedData load(const File &file);
+    static SerializedData load(const String &string);
 
     template<typename T>
-    static ValueTree load(const File &file)
+    static SerializedData load(const File &file)
     {
         T serializer;
-        ValueTree tree;
+        SerializedData tree;
         serializer.loadFromFile(file, tree);
         return tree;
     }
 
     template<typename T>
-    static bool save(const File &file, const ValueTree &tree)
+    static bool save(const File &file, const SerializedData &tree)
     {
         T serializer;
         TempDocument tempDoc(file);

@@ -43,7 +43,7 @@ public:
         const String resourceDocument =
             BinaryData::getNamedResource(resourceName, numBytes);
 
-        const ValueTree tree(DocumentHelpers::load(resourceDocument));
+        const auto tree = DocumentHelpers::load(resourceDocument);
         if (!tree.isValid())
         {
             return this->cache;

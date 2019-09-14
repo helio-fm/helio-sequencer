@@ -29,9 +29,9 @@ static XmlElement::TextFormat getXmlFormat()
     return format;
 }
 
-Result XmlSerializer::saveToFile(File file, const ValueTree &tree) const
+Result XmlSerializer::saveToFile(File file, const SerializedData &tree) const
 {
-    UniquePointer<XmlElement> xml(tree.createXml());
+    UniquePointer<XmlElement> xml(tree.writeToXml());
     if (xml != nullptr)
     {
         const auto saved = xml->writeTo(file, getXmlFormat());
@@ -41,22 +41,22 @@ Result XmlSerializer::saveToFile(File file, const ValueTree &tree) const
     return Result::fail({});
 }
 
-Result XmlSerializer::loadFromFile(const File &file, ValueTree &tree) const
+Result XmlSerializer::loadFromFile(const File &file, SerializedData &tree) const
 {
     XmlDocument document(file);
     UniquePointer<XmlElement> xml(document.getDocumentElement());
     if (xml != nullptr)
     {
-        tree = ValueTree::fromXml(*xml);
+        tree = SerializedData::readFromXml(*xml);
         return Result::ok();
     }
 
     return Result::fail("Failed to parse xml data");
 }
 
-Result XmlSerializer::saveToString(String &string, const ValueTree &tree) const
+Result XmlSerializer::saveToString(String &string, const SerializedData &tree) const
 {
-    UniquePointer<XmlElement> xml(tree.createXml());
+    UniquePointer<XmlElement> xml(tree.writeToXml());
     if (xml != nullptr)
     {
         string = xml->toString(getXmlFormat());
@@ -66,11 +66,11 @@ Result XmlSerializer::saveToString(String &string, const ValueTree &tree) const
     return Result::fail({});
 }
 
-Result XmlSerializer::loadFromString(const String &string, ValueTree &tree) const
+Result XmlSerializer::loadFromString(const String &string, SerializedData &tree) const
 {
     XmlDocument document(string);
     UniquePointer<XmlElement> xml(document.getDocumentElement());
-    tree = ValueTree::fromXml(*xml);
+    tree = SerializedData::readFromXml(*xml);
     return Result::ok();
 }
 

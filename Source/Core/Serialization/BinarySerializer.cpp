@@ -21,7 +21,7 @@
 static const char *kHelioHeaderV2String = "Helio2::";
 static const uint64 kHelioHeaderV2 = ByteOrder::littleEndianInt64(kHelioHeaderV2String);
 
-Result BinarySerializer::saveToFile(File file, const ValueTree &tree) const
+Result BinarySerializer::saveToFile(File file, const SerializedData &tree) const
 {
     FileOutputStream fileStream(file);
     if (fileStream.openedOk())
@@ -36,7 +36,7 @@ Result BinarySerializer::saveToFile(File file, const ValueTree &tree) const
     return Result::fail("Failed to save");
 }
 
-Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
+Result BinarySerializer::loadFromFile(const File &file, SerializedData &tree) const
 {
     // here's the thing: reading from FileInputStream is slow asfuck (at least, on Windows);
     // adding BufferedInputStream bufferedStream(fileStream) - kinda helps, but:
@@ -52,7 +52,7 @@ Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
         const auto magicNumber = static_cast<uint64>(inputStream.readInt64());
         if (magicNumber == kHelioHeaderV2)
         {
-            tree = ValueTree::readFromStream(inputStream);
+            tree = SerializedData::readFromStream(inputStream);
             return Result::ok();
         }
     }
@@ -60,7 +60,7 @@ Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
     return Result::fail("Failed to load");
 }
 
-Result BinarySerializer::saveToString(String &string, const ValueTree &tree) const
+Result BinarySerializer::saveToString(String &string, const SerializedData &tree) const
 {
     MemoryOutputStream memStream;
     memStream.writeInt64(kHelioHeaderV2);
@@ -69,11 +69,11 @@ Result BinarySerializer::saveToString(String &string, const ValueTree &tree) con
     return Result::ok();
 }
 
-Result BinarySerializer::loadFromString(const String &string, ValueTree &tree) const
+Result BinarySerializer::loadFromString(const String &string, SerializedData &tree) const
 {
     if (string.isNotEmpty())
     {
-        tree = ValueTree::readFromData(string.toUTF8(), string.getNumBytesAsUTF8());
+        tree = SerializedData::readFromData(string.toUTF8(), string.getNumBytesAsUTF8());
         return Result::ok();
     }
 
