@@ -66,6 +66,7 @@
 #include "../../Source/Core/Serialization/Autosaver.cpp"
 #include "../../Source/Core/Serialization/Document.cpp"
 #include "../../Source/Core/Serialization/DocumentHelpers.cpp"
+#include "../../Source/Core/Serialization/SerializedData.cpp"
 #include "../../Source/Core/Serialization/BinarySerializer.cpp"
 #include "../../Source/Core/Serialization/JsonSerializer.cpp"
 #include "../../Source/Core/Serialization/XmlSerializer.cpp"

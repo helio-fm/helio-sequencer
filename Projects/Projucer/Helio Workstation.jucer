@@ -401,6 +401,10 @@
           <FILE id="nw4n10" name="Serializable.h" compile="0" resource="0" file="../../Source/Core/Serialization/Serializable.h"/>
           <FILE id="EGpzhA" name="SerializationKeys.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/SerializationKeys.h"/>
+          <FILE id="B4toTl" name="SerializedData.cpp" compile="1" resource="0"
+                file="../../Source/Core/Serialization/SerializedData.cpp"/>
+          <FILE id="aIsFFU" name="SerializedData.h" compile="0" resource="0"
+                file="../../Source/Core/Serialization/SerializedData.h"/>
           <FILE id="KXPMri" name="Serializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/Serializer.h"/>
           <FILE id="l2qFPw" name="BinarySerializer.cpp" compile="1" resource="0"
                 file="../../Source/Core/Serialization/BinarySerializer.cpp"/>

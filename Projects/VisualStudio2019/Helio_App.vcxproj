@@ -320,6 +320,9 @@
     <ClCompile Include="..\..\Source\Core\Serialization\DocumentHelpers.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Serialization\SerializedData.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Serialization\BinarySerializer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2806,6 +2809,7 @@
     <ClInclude Include="..\..\Source\Core\Serialization\ResourceCache.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\Serializable.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\SerializationKeys.h"/>
+    <ClInclude Include="..\..\Source\Core\Serialization\SerializedData.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\Serializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\BinarySerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h"/>

@@ -266,6 +266,7 @@
     <ClCompile Include="..\..\Source\Core\Serialization\Autosaver.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\Document.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\DocumentHelpers.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Serialization\SerializedData.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\BinarySerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\JsonSerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp"/>
@@ -2312,6 +2313,7 @@
     <ClInclude Include="..\..\Source\Core\Serialization\ResourceCache.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\Serializable.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\SerializationKeys.h"/>
+    <ClInclude Include="..\..\Source\Core\Serialization\SerializedData.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\Serializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\BinarySerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h"/>

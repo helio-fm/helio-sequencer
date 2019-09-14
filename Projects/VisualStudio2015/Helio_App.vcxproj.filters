@@ -754,6 +754,9 @@
     <ClCompile Include="..\..\Source\Core\Serialization\DocumentHelpers.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Serialization\SerializedData.cpp">
+      <Filter>Helio\Source\Core\Serialization</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Serialization\BinarySerializer.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
@@ -3535,6 +3538,9 @@
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\SerializationKeys.h">
+      <Filter>Helio\Source\Core\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Serialization\SerializedData.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\Serializer.h">

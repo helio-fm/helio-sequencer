@@ -1377,6 +1377,13 @@
 			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveEventComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		37B8948AEF397A704A256C54 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SerializedData.cpp;
+			path = ../../Source/Core/Serialization/SerializedData.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		3801A0A74563FA342C7CC07F = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5255,6 +5262,13 @@
 			path = ../../Source/UI/Themes/ShadowLeftwards.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		EC38F7E6A2E647CA075F17C1 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SerializedData.h;
+			path = ../../Source/Core/Serialization/SerializedData.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		ECB3C5E32881D13E11E21F8A = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -6064,6 +6078,8 @@
 				9BC4947AA737FCCA8F48DC32,
 				A797173F1F4C165290FA4E1E,
 				AC92C2151D0DEC9448D88839,
+				37B8948AEF397A704A256C54,
+				EC38F7E6A2E647CA075F17C1,
 				07A95A4F9E1D2DD836B06351,
 				7FC71588D0DA6B4405896608,
 				685E005B67E2F1E5122D6EFF,

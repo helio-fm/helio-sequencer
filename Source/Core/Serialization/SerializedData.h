@@ -34,7 +34,7 @@ public:
     bool operator!= (const SerializedData &) const noexcept;
 
     bool isEquivalentTo(const SerializedData &) const;
-    bool isValid() const noexcept { return this->data != nullptr; }
+    bool isValid() const noexcept;
 
     SerializedData createCopy() const;
 
