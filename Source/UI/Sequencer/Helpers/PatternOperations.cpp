@@ -271,7 +271,7 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
         }
 
         const auto newTrack = SequencerOperations::createPianoTrack(eventsToBeMoved, clip.getPattern());
-        const ValueTree trackTemplate = newTrack->serialize();
+        const auto trackTemplate = newTrack->serialize();
 
         sequence->removeGroup(eventsToBeMoved, true);
         project.getUndoStack()->perform(new PianoTrackInsertAction(project, &project, trackTemplate, newName));
@@ -290,7 +290,7 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
         }
 
         const auto newTrack = SequencerOperations::createAutomationTrack(eventsToBeMoved, clip.getPattern());
-        const ValueTree trackTemplate = newTrack->serialize();
+        const auto trackTemplate = newTrack->serialize();
 
         if (shouldCheckpoint)
         {

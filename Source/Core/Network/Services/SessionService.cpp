@@ -78,7 +78,7 @@ public:
 
 private:
 
-    ValueTree jwt;
+    SerializedData jwt;
 };
 
 SessionService::SessionService(UserProfile &userProfile) : userProfile(userProfile)

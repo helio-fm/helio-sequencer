@@ -34,20 +34,20 @@ String Translation::getId() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Translation::serialize() const
+SerializedData Translation::serialize() const
 {
-    ValueTree emptyXml(Serialization::Translations::locale);
+    SerializedData emptyXml(Serialization::Translations::locale);
     // TODO
     return emptyXml;
 }
 
-void Translation::deserialize(const ValueTree &tree)
+void Translation::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
 
-    const auto root = tree.hasType(Translations::locale) ?
-        tree : tree.getChildWithName(Translations::locale);
+    const auto root = data.hasType(Translations::locale) ?
+        data : data.getChildWithName(Translations::locale);
 
     if (!root.isValid()) { return; }
 
@@ -59,14 +59,14 @@ void Translation::deserialize(const ValueTree &tree)
         Translations::wrapperMethodName + "(" +
         root.getProperty(Translations::pluralEquation, "1").toString() + ")";
 
-    forEachValueTreeChildWithType(root, pluralLiteral, Translations::pluralLiteral)
+    forEachChildWithType(root, pluralLiteral, Translations::pluralLiteral)
     {
         const String baseLiteral = pluralLiteral.getProperty(Translations::name);
 
         auto *formsAndTranslations = new TranslationMap();
         this->plurals[baseLiteral] = UniquePointer<TranslationMap>(formsAndTranslations);
         
-        forEachValueTreeChildWithType(pluralLiteral, pluralTranslation, Translations::translation)
+        forEachChildWithType(pluralLiteral, pluralTranslation, Translations::translation)
         {
             const String translatedLiteral = pluralTranslation.getProperty(Translations::name);
             const String pluralForm = pluralTranslation.getProperty(Translations::pluralForm);
@@ -74,7 +74,7 @@ void Translation::deserialize(const ValueTree &tree)
         }
     }
 
-    forEachValueTreeChildWithType(root, literal, Translations::literal)
+    forEachChildWithType(root, literal, Translations::literal)
     {
         const String literalName = literal.getProperty(Translations::name);
         const String translatedLiteral = literal.getProperty(Translations::translation);

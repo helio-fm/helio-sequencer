@@ -191,31 +191,31 @@ void ColourScheme::syncWithLiveConstantEditor()
     this->colours[UI::Colours::iconShadow] = this->getIconShadowColour();
 }
 
-ValueTree ColourScheme::serialize() const
+SerializedData ColourScheme::serialize() const
 {
     using namespace Serialization;
 
-    ValueTree tree(UI::Colours::scheme);
-    tree.setProperty(UI::Colours::name, this->name, nullptr);
+    SerializedData tree(UI::Colours::scheme);
+    tree.setProperty(UI::Colours::name, this->name);
 
-    ValueTree mapXml(UI::Colours::colourMap);
+    SerializedData mapXml(UI::Colours::colourMap);
 
     for (const auto &i : this->colours)
     {
-        mapXml.setProperty(i.first, i.second.toString(), nullptr);
+        mapXml.setProperty(i.first, i.second.toString());
     }
 
-    tree.appendChild(mapXml, nullptr);
+    tree.appendChild(mapXml);
     return tree;
 }
 
-void ColourScheme::deserialize(const ValueTree &tree)
+void ColourScheme::deserialize(const SerializedData &data)
 {
     using namespace Serialization;
 
     const auto root =
-        tree.hasType(UI::Colours::scheme) ?
-        tree : tree.getChildWithName(UI::Colours::scheme);
+        data.hasType(UI::Colours::scheme) ?
+        data : data.getChildWithName(UI::Colours::scheme);
 
     if (!root.isValid()) { return; }
 
@@ -227,7 +227,7 @@ void ColourScheme::deserialize(const ValueTree &tree)
     for (int i = 0; i < map.getNumProperties(); ++i)
     {
         const auto propertyName = map.getPropertyName(i);
-        const Colour c(Colour::fromString(map[propertyName].toString()));
+        const Colour c(Colour::fromString(map.getProperty(propertyName).toString()));
         this->colours[propertyName] = c;
     }
 }

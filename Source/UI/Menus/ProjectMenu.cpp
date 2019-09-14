@@ -204,7 +204,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
             {
                 auto &project = this->project;
                 String outTrackId;
-                const ValueTree trackTemplate = this->createPianoTrackTempate("", instrumentId, outTrackId);
+                const auto trackTemplate = this->createPianoTrackTempate("", instrumentId, outTrackId);
                 auto inputDialog = ModalDialogInput::Presets::newTrack();
                 inputDialog->onOk = [trackTemplate, outTrackId, &project](const String &input)
                 {
@@ -286,7 +286,7 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
                 {
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
                     const String trackName = TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));
-                    const ValueTree autoTrackParams = this->createAutoTrackTempate(trackName, controllerNumber, instrumentId);
+                    const auto autoTrackParams = this->createAutoTrackTempate(trackName, controllerNumber, instrumentId);
 
                     this->project.getUndoStack()->beginNewTransaction();
                     this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
@@ -400,7 +400,7 @@ void ProjectMenu::showSetInstrumentMenu()
     this->updateContent(menu, MenuPanel::SlideLeft);
 }
 
-ValueTree ProjectMenu::createPianoTrackTempate(const String &name,
+SerializedData ProjectMenu::createPianoTrackTempate(const String &name,
     const String &instrumentId, String &outTrackId) const
 {
     auto newNode = makeUnique<PianoTrackNode>(name);
@@ -424,7 +424,7 @@ ValueTree ProjectMenu::createPianoTrackTempate(const String &name,
     return newNode->serialize();
 }
 
-ValueTree ProjectMenu::createAutoTrackTempate(const String &name,
+SerializedData ProjectMenu::createAutoTrackTempate(const String &name,
     int controllerNumber, const String &instrumentId) const
 {
     auto newNode = makeUnique<AutomationTrackNode>(name);

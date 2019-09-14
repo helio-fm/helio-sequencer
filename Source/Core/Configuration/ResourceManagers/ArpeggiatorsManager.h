@@ -38,7 +38,7 @@ public:
 
 private:
     
-    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
+    void deserializeResources(const SerializedData &tree, Resources &outResources) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
 };

@@ -49,7 +49,7 @@ public:
             return this->cache;
         }
 
-        forEachValueTreeChildWithType(tree, resourceRoot, tag)
+        forEachChildWithType(tree, resourceRoot, tag)
         {
             T t;
             t.deserialize(resourceRoot);

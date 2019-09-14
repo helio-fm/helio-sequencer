@@ -26,7 +26,7 @@ class AppInfoDto final : public ApiModel
 public:
 
     AppInfoDto() noexcept : ApiModel({}) {}
-    AppInfoDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    AppInfoDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     Array<AppVersionDto> getVersions() const { return DTO_CHILDREN(AppVersionDto, Versions::versions); }
     Array<AppResourceDto> getResources() const { return DTO_CHILDREN(AppResourceDto, Resources::resources); }
@@ -36,7 +36,7 @@ public:
     bool resourceSeemsOutdated(const AppResourceDto &newResource) const
     {
         bool hasInfoForNewResource = false;
-        forEachValueTreeChildWithType(this->data, resourceData, Serialization::Api::V1::Resources::resources)
+        forEachChildWithType(this->data, resourceData, Serialization::Api::V1::Resources::resources)
         {
             const AppResourceDto oldResource(resourceData);
             if (oldResource.getType() == newResource.getType())

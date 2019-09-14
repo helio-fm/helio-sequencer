@@ -28,25 +28,25 @@
 #include "PatternEditorNode.h"
 #include "SettingsNode.h"
 
-void TreeNodeSerializer::serializeChildren(const TreeNode &parentItem, ValueTree &parent)
+void TreeNodeSerializer::serializeChildren(const TreeNode &parentItem, SerializedData &parent)
 {
     for (int i = 0; i < parentItem.getNumChildren(); ++i)
     {
         if (auto *sub = parentItem.getChild(i))
         {
-            TreeNode *treeItem = static_cast<TreeNode *>(sub);
-            parent.appendChild(treeItem->serialize(), nullptr);
+            auto *treeItem = static_cast<TreeNode *>(sub);
+            parent.appendChild(treeItem->serialize());
         }
     }
 }
 
-void TreeNodeSerializer::deserializeChildren(TreeNode &parentItem, const ValueTree &parent)
+void TreeNodeSerializer::deserializeChildren(TreeNode &parentItem, const SerializedData &parent)
 {
     using namespace Serialization;
 
-    forEachValueTreeChildWithType(parent, e, Core::treeNode)
+    forEachChildWithType(parent, e, Core::treeNode)
     {
-        const auto type = Identifier(e.getProperty(Core::treeNodeType));
+        const Identifier type = e.getProperty(Core::treeNodeType);
 
         TreeNode *child = nullptr;
 

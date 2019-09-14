@@ -26,27 +26,27 @@
 namespace VCS
 {
 
-static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeColour(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeInstrument(const ValueTree &state, const ValueTree &changes);
+static SerializedData mergePath(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeColour(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes);
 
-static ValueTree mergeNotesAdded(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes);
+static SerializedData mergeNotesAdded(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeNotesRemoved(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeNotesChanged(const SerializedData &state, const SerializedData &changes);
 
-static DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes);
 
-static Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &changes);
+static Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const SerializedData &changes);
 
-static void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
+static void deserializeLayerChanges(const SerializedData &state, const SerializedData &changes,
     OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes);
 
 static DeltaDiff serializePianoTrackChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges,  const Identifier &deltaType);
 
-static ValueTree serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
+static SerializedData serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
 static bool checkIfDeltaIsNotesType(const Delta *delta);
 
 
@@ -69,7 +69,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
         const Delta *myDelta = this->target.getDelta(i);
 
         const auto myDeltaData(this->target.getDeltaData(i));
-        ValueTree stateDeltaData;
+        SerializedData stateDeltaData;
 
         bool deltaFoundInState = false;
         bool dataHasChanged = false;
@@ -140,13 +140,13 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             DeltaDescription(Serialization::VCS::headStateDelta),
             PianoSequenceDeltas::notesAdded));
 
-        ValueTree notesDeltaData;
+        SerializedData notesDeltaData;
 
         UniquePointer<Delta> clipsDelta(new Delta(
             DeltaDescription(Serialization::VCS::headStateDelta),
             PatternDeltas::clipsAdded));
 
-        ValueTree clipsDeltaData;
+        SerializedData clipsDeltaData;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
@@ -160,19 +160,19 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
                 if (targetDelta->hasType(MidiTrackDeltas::trackPath))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
@@ -258,7 +258,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
-        ValueTree clipsDeltaData;
+        SerializedData clipsDeltaData;
         UniquePointer<Delta> clipsDelta(new Delta(
             DeltaDescription(Serialization::VCS::headStateDelta),
             PatternDeltas::clipsAdded));
@@ -270,7 +270,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
             if (foundMissingClip)
             {
-                ValueTree emptyClipDeltaData(serializePianoSequence({}, PatternDeltas::clipsAdded));
+                SerializedData emptyClipDeltaData(serializePianoSequence({}, PatternDeltas::clipsAdded));
                 const bool incrementalMerge = clipsDeltaData.isValid();
 
                 if (targetDelta->hasType(PatternDeltas::clipsAdded))
@@ -302,22 +302,22 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 // Merge
 //===----------------------------------------------------------------------===//
 
-ValueTree mergePath(const ValueTree &state, const ValueTree &changes)
+SerializedData mergePath(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeColour(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeColour(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeInstrument(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeNotesAdded(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeNotesAdded(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -352,7 +352,7 @@ ValueTree mergeNotesAdded(const ValueTree &state, const ValueTree &changes)
     return serializePianoSequence(result, PianoSequenceDeltas::notesAdded);
 }
 
-ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeNotesRemoved(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -384,7 +384,7 @@ ValueTree mergeNotesRemoved(const ValueTree &state, const ValueTree &changes)
     return serializePianoSequence(result, PianoSequenceDeltas::notesAdded);
 }
 
-ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeNotesChanged(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -424,7 +424,7 @@ ValueTree mergeNotesChanged(const ValueTree &state, const ValueTree &changes)
 // Diff
 //===----------------------------------------------------------------------===//
 
-DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -435,7 +435,7 @@ DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
     return res;
 }
 
-DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -445,7 +445,7 @@ DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes)
     return res;
 }
 
-DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -455,7 +455,7 @@ DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes)
     return res;
 }
 
-Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &changes)
+Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -566,12 +566,12 @@ Array<DeltaDiff> createEventsDiffs(const ValueTree &state, const ValueTree &chan
 }
 
 
-void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
+void deserializeLayerChanges(const SerializedData &state, const SerializedData &changes,
         OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes)
 {
     if (state.isValid())
     {
-        forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
+        forEachChildWithType(state, e, Serialization::Midi::note)
         {
             auto *note = new Note();
             note->deserialize(e);
@@ -581,7 +581,7 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
 
     if (changes.isValid())
     {
-        forEachValueTreeChildWithType(changes, e, Serialization::Midi::note)
+        forEachChildWithType(changes, e, Serialization::Midi::note)
         {
             auto *note = new Note();
             note->deserialize(e);
@@ -599,14 +599,14 @@ DeltaDiff serializePianoTrackChanges(Array<const MidiEvent *> changes,
     return changesFullDelta;
 }
 
-ValueTree serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag)
+SerializedData serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag)
 {
-    ValueTree tree(tag);
+    SerializedData tree(tag);
 
     for (int i = 0; i < changes.size(); ++i)
     {
         const MidiEvent *event = changes.getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        tree.appendChild(event->serialize());
     }
 
     return tree;

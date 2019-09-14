@@ -128,7 +128,7 @@ Clip Clip::copyWithNewId(Pattern *newOwner) const
     return c;
 }
 
-Clip Clip::withParameters(const ValueTree &tree) const
+Clip Clip::withParameters(const SerializedData &tree) const
 {
     Clip c(*this);
     c.deserialize(tree);
@@ -201,39 +201,39 @@ Clip Clip::withSolo(bool solo) const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Clip::serialize() const
+SerializedData Clip::serialize() const
 {
     using namespace Serialization;
 
-    ValueTree tree(Midi::clip);
-    tree.setProperty(Midi::key, this->key, nullptr);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
-    tree.setProperty(Midi::id, this->id, nullptr);
+    SerializedData tree(Midi::clip);
+    tree.setProperty(Midi::key, this->key);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
+    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY));
+    tree.setProperty(Midi::id, this->id);
 
     if (this->mute)
     {
-        tree.setProperty(Midi::mute, 1, nullptr);
+        tree.setProperty(Midi::mute, 1);
     }
 
     if (this->solo)
     {
-        tree.setProperty(Midi::solo, 1, nullptr);
+        tree.setProperty(Midi::solo, 1);
     }
 
     return tree;
 }
 
-void Clip::deserialize(const ValueTree &tree)
+void Clip::deserialize(const SerializedData &data)
 {
     using namespace Serialization;
-    this->key = tree.getProperty(Midi::key, 0);
-    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = tree.getProperty(Midi::id, this->id);
-    const auto vol = float(tree.getProperty(Midi::volume, VELOCITY_SAVE_ACCURACY)) / VELOCITY_SAVE_ACCURACY;
+    this->key = data.getProperty(Midi::key, 0);
+    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->id = data.getProperty(Midi::id, this->id);
+    const auto vol = float(data.getProperty(Midi::volume, VELOCITY_SAVE_ACCURACY)) / VELOCITY_SAVE_ACCURACY;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
-    this->mute = bool(tree.getProperty(Midi::mute, 0));
-    this->solo = bool(tree.getProperty(Midi::solo, 0));
+    this->mute = bool(data.getProperty(Midi::mute, 0));
+    this->solo = bool(data.getProperty(Midi::solo, 0));
     this->updateCaches();
 }
 

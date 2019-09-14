@@ -979,7 +979,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         if (this->getLassoSelection().getNumSelected() > 0)
         {
             const auto track = SequencerOperations::createPianoTrack(this->getLassoSelection());
-            const ValueTree trackTemplate = track->serialize();
+            const auto trackTemplate = track->serialize();
             auto inputDialog = ModalDialogInput::Presets::newTrack();
             inputDialog->onOk = [trackTemplate, this](const String &input)
             {
@@ -1404,36 +1404,36 @@ void PianoRoll::updateChildrenPositions()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree PianoRoll::serialize() const
+SerializedData PianoRoll::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(UI::pianoRoll);
+    SerializedData tree(UI::pianoRoll);
     
-    tree.setProperty(UI::beatWidth, roundf(this->beatWidth), nullptr);
-    tree.setProperty(UI::rowHeight, this->getRowHeight(), nullptr);
+    tree.setProperty(UI::beatWidth, roundf(this->beatWidth));
+    tree.setProperty(UI::rowHeight, this->getRowHeight());
 
     tree.setProperty(UI::startBeat,
-        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX())), nullptr);
+        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX())));
 
     tree.setProperty(UI::endBeat,
         roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX() +
-            this->getViewport().getViewWidth())), nullptr);
+            this->getViewport().getViewWidth())));
 
-    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);
+    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
 
     // m?
-    //tree.setProperty(UI::selection, this->getLassoSelection().serialize(), nullptr);
+    //tree.setProperty(UI::selection, this->getLassoSelection().serialize());
 
     return tree;
 }
 
-void PianoRoll::deserialize(const ValueTree &tree)
+void PianoRoll::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
 
-    const auto root = tree.hasType(UI::pianoRoll) ?
-        tree : tree.getChildWithName(UI::pianoRoll);
+    const auto root = data.hasType(UI::pianoRoll) ?
+        data : data.getChildWithName(UI::pianoRoll);
 
     if (!root.isValid())
     {

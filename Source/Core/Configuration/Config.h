@@ -64,7 +64,7 @@ private:
     File propertiesFile;
     
     FlatHashMap<Identifier, var, IdentifierHash> properties;
-    FlatHashMap<Identifier, ValueTree, IdentifierHash> children;
+    FlatHashMap<Identifier, SerializedData, IdentifierHash> children;
 
     // As the app development moves forward, some properties
     // become deprecated, but they will still present in config file,

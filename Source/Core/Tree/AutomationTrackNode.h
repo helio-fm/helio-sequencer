@@ -34,7 +34,7 @@ public:
 
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    ValueTree getDeltaData(int deltaIndex) const override;
+    SerializedData getDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
 
@@ -42,24 +42,24 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
 
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
-    ValueTree serializePathDelta() const;
-    ValueTree serializeColourDelta() const;
-    ValueTree serializeInstrumentDelta() const;
-    ValueTree serializeControllerDelta() const;
-    ValueTree serializeEventsDelta() const;
+    SerializedData serializePathDelta() const;
+    SerializedData serializeColourDelta() const;
+    SerializedData serializeInstrumentDelta() const;
+    SerializedData serializeControllerDelta() const;
+    SerializedData serializeEventsDelta() const;
 
-    void resetPathDelta(const ValueTree &state);
-    void resetColourDelta(const ValueTree &state);
-    void resetInstrumentDelta(const ValueTree &state);
-    void resetControllerDelta(const ValueTree &state);
-    void resetEventsDelta(const ValueTree &state);
+    void resetPathDelta(const SerializedData &state);
+    void resetColourDelta(const SerializedData &state);
+    void resetInstrumentDelta(const SerializedData &state);
+    void resetControllerDelta(const SerializedData &state);
+    void resetEventsDelta(const SerializedData &state);
 
 private:
 

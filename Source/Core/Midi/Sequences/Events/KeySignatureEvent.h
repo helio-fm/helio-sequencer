@@ -43,7 +43,7 @@ public:
     KeySignatureEvent withBeat(float newBeat) const noexcept;
     KeySignatureEvent withRootKey(Note::Key key) const noexcept;
     KeySignatureEvent withScale(Scale::Ptr scale) const noexcept;
-    KeySignatureEvent withParameters(const ValueTree &parameters) const noexcept;
+    KeySignatureEvent withParameters(const SerializedData &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -56,8 +56,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const noexcept override;
-    void deserialize(const ValueTree &tree) noexcept override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() noexcept override;
 
     //===------------------------------------------------------------------===//

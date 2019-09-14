@@ -67,12 +67,12 @@ namespace VCS
 
         // with no properties and no children, but with full deltas data
         // (to be used in synchronization threads):
-        ValueTree serializeDeltas() const;
-        void deserializeDeltas(ValueTree data);
+        SerializedData serializeDeltas() const;
+        void deserializeDeltas(SerializedData data);
 
-        ValueTree serialize() const;
-        void deserialize(const ValueTree &tree);
-        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
+        SerializedData serialize() const;
+        void deserialize(const SerializedData &data);
+        void deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup);
         void reset();
 
     private:

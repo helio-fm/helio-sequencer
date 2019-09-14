@@ -35,17 +35,17 @@ namespace VCS
         
         virtual int getNumDeltas() const = 0;
         virtual Delta *getDelta(int index) const = 0;
-        virtual ValueTree getDeltaData(int deltaIndex) const = 0;
+        virtual SerializedData getDeltaData(int deltaIndex) const = 0;
         virtual String getVCSName() const = 0;
         virtual DiffLogic *getDiffLogic() const = 0;
         virtual void resetStateTo(const TrackedItem &newState) = 0;
 
-        void serializeVCSUuid(ValueTree &tree) const
+        void serializeVCSUuid(SerializedData &tree) const
         {
-            tree.setProperty(Serialization::VCS::vcsItemId, this->getUuid().toString(), nullptr);
+            tree.setProperty(Serialization::VCS::vcsItemId, this->getUuid().toString());
         }
 
-        void deserializeVCSUuid(const ValueTree &tree)
+        void deserializeVCSUuid(const SerializedData &tree)
         {
             this->vcsUuid = tree.getProperty(Serialization::VCS::vcsItemId, this->vcsUuid.toString());
         }

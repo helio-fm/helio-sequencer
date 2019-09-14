@@ -27,7 +27,7 @@ class PianoTrackNode;
 
 namespace VCS
 {
-    class PianoTrackDiffLogic : public DiffLogic
+    class PianoTrackDiffLogic final : public DiffLogic
     {
     public:
 

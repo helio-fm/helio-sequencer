@@ -26,7 +26,7 @@ class UserProfileDto final : public ApiModel
 {
 public:
 
-    UserProfileDto(const ValueTree &tree, const MemoryBlock &image = {}) noexcept :
+    UserProfileDto(const SerializedData &tree, const MemoryBlock &image = {}) noexcept :
         ApiModel(tree), avatarData(image) {}
     
     String getName() const noexcept { return DTO_PROPERTY(Identity::name); }

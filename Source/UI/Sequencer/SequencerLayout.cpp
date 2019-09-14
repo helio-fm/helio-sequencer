@@ -642,20 +642,20 @@ void SequencerLayout::handleCommandMessage(int commandId)
 // UI State Serialization
 //===----------------------------------------------------------------------===//
 
-ValueTree SequencerLayout::serialize() const
+SerializedData SequencerLayout::serialize() const
 {
-    ValueTree tree(Serialization::UI::sequencer);
-    tree.appendChild(this->pianoRoll->serialize(), nullptr);
-    tree.appendChild(this->patternRoll->serialize(), nullptr);
+    SerializedData tree(Serialization::UI::sequencer);
+    tree.appendChild(this->pianoRoll->serialize());
+    tree.appendChild(this->patternRoll->serialize());
     return tree;
 }
 
-void SequencerLayout::deserialize(const ValueTree &tree)
+void SequencerLayout::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const auto root = tree.hasType(Serialization::UI::sequencer) ?
-        tree : tree.getChildWithName(Serialization::UI::sequencer);
+    const auto root = data.hasType(Serialization::UI::sequencer) ?
+        data : data.getChildWithName(Serialization::UI::sequencer);
 
     if (!root.isValid())
     { return; }

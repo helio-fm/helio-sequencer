@@ -23,7 +23,7 @@ class AppResourceDto final : public ApiModel
 {
 public:
 
-    AppResourceDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    AppResourceDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     String getType() const noexcept { return DTO_PROPERTY(Resources::type); }
     String getHash() const noexcept { return DTO_PROPERTY(Resources::hash); }

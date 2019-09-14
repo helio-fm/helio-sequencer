@@ -47,7 +47,7 @@ namespace VCS
 
         int getNumDeltas() const noexcept override;
         Delta *getDelta(int index) const noexcept override;
-        ValueTree getDeltaData(int deltaIndex) const noexcept override;
+        SerializedData getDeltaData(int deltaIndex) const noexcept override;
 
         String getVCSName() const noexcept override;
         DiffLogic *getDiffLogic() const noexcept override;
@@ -57,9 +57,9 @@ namespace VCS
         // Serializable
         //===--------------------------------------------------------------===//
 
-        ValueTree serialize() const override;
-        void deserialize(const ValueTree &tree) override;
-        void deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup);
+        SerializedData serialize() const override;
+        void deserialize(const SerializedData &data) override;
+        void deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup);
         void reset() override;
 
         using Ptr = ReferenceCountedObjectPtr<RevisionItem>;
@@ -67,7 +67,7 @@ namespace VCS
     private:
 
         OwnedArray<Delta> deltas;
-        Array<ValueTree> deltasData;
+        Array<SerializedData> deltasData;
         UniquePointer<DiffLogic> logic;
 
         Type vcsItemType;

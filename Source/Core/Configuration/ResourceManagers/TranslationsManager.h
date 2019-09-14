@@ -50,7 +50,7 @@ public:
     
 private:
 
-    void deserializeResources(const ValueTree &tree, Resources &outResources) override;
+    void deserializeResources(const SerializedData &tree, Resources &outResources) override;
     void reset() override;
 
     UniquePointer<JavascriptEngine> engine;

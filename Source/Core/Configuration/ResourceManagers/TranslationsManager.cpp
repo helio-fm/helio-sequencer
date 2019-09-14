@@ -163,7 +163,7 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
 
 const static String fallbackTranslationId = "en";
 
-void TranslationsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
+void TranslationsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::translations) ?
         tree : tree.getChildWithName(Serialization::Resources::translations);
@@ -173,7 +173,7 @@ void TranslationsManager::deserializeResources(const ValueTree &tree, Resources 
     const String selectedLocaleId = this->getSelectedLocaleId();
 
     // First, fill up the available translations
-    forEachValueTreeChildWithType(root, translationRoot, Serialization::Translations::locale)
+    forEachChildWithType(root, translationRoot, Serialization::Translations::locale)
     {
         Translation::Ptr translation(new Translation());
         translation->deserialize(translationRoot);

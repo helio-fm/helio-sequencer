@@ -103,7 +103,7 @@ void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const Strin
     }
 }
 
-VCS::Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const ValueTree &data)
+VCS::Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const SerializedData &data)
 {
     if (auto revision = this->getRevisionById(this->rootRevision, id))
     {
@@ -378,26 +378,26 @@ VCS::Revision::SyncState VersionControl::getRevisionSyncState(const VCS::Revisio
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VersionControl::serialize() const
+SerializedData VersionControl::serialize() const
 {
-    ValueTree tree(Serialization::Core::versionControl);
+    SerializedData tree(Serialization::Core::versionControl);
 
-    tree.setProperty(Serialization::VCS::headRevisionId, this->head.getHeadingRevision()->getUuid(), nullptr);
+    tree.setProperty(Serialization::VCS::headRevisionId, this->head.getHeadingRevision()->getUuid());
     
-    tree.appendChild(this->rootRevision->serialize(), nullptr);
-    tree.appendChild(this->stashes->serialize(), nullptr);
-    tree.appendChild(this->head.serialize(), nullptr);
-    tree.appendChild(this->remoteCache.serialize(), nullptr);
+    tree.appendChild(this->rootRevision->serialize());
+    tree.appendChild(this->stashes->serialize());
+    tree.appendChild(this->head.serialize());
+    tree.appendChild(this->remoteCache.serialize());
 
     return tree;
 }
 
-void VersionControl::deserialize(const ValueTree &tree)
+void VersionControl::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const auto root = tree.hasType(Serialization::Core::versionControl) ?
-        tree : tree.getChildWithName(Serialization::Core::versionControl);
+    const auto root = data.hasType(Serialization::Core::versionControl) ?
+        data : data.getChildWithName(Serialization::Core::versionControl);
 
     if (!root.isValid()) { return; }
 
@@ -426,7 +426,7 @@ void VersionControl::deserialize(const ValueTree &tree)
             Conclusion: premature optimization considered harmful.
         */
 
-        forEachValueTreeChildWithType(packNode, e, Serialization::VCS::packItem)
+        forEachChildWithType(packNode, e, Serialization::VCS::packItem)
         {
             const auto deltaId = e.getProperty(Serialization::VCS::packItemDeltaId);
             jassert(e.getNumChildren() == 1);

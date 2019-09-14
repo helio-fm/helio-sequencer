@@ -39,7 +39,7 @@ class DummyBaseResource : public BaseResource
 public:
     String getResourceId() const override { return {}; }
     Identifier getResourceType() const override { return {}; }
-    ValueTree serialize() const override { return {}; }
-    void deserialize(const ValueTree &tree) override {}
+    SerializedData serialize() const override { return {}; }
+    void deserialize(const SerializedData &data) override {}
     void reset() override {}
 };

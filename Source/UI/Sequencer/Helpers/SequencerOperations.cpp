@@ -1393,7 +1393,7 @@ void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &sel
         return;
     }
 
-    ValueTree tree(Serialization::Clipboard::clipboard);
+    SerializedData tree(Serialization::Clipboard::clipboard);
 
     float firstBeat = FLT_MAX;
 
@@ -1402,7 +1402,7 @@ void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &sel
         const String trackId(s.first);
         const auto trackSelection(s.second);
 
-        ValueTree trackRoot(Serialization::Clipboard::track);
+        SerializedData trackRoot(Serialization::Clipboard::track);
         //trackRoot.setProperty(Serialization::Clipboard::trackId, trackId, nullptr);
         //trackRoot.setProperty(Serialization::Clipboard::trackType, todo, nullptr);
         //trackRoot.setProperty(Serialization::Clipboard::trackMetaInfo, todo, nullptr);
@@ -1413,21 +1413,21 @@ void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &sel
             if (const NoteComponent *noteComponent =
                 dynamic_cast<NoteComponent *>(trackSelection->getUnchecked(i)))
             {
-                trackRoot.appendChild(noteComponent->getNote().serialize(), nullptr);
+                trackRoot.appendChild(noteComponent->getNote().serialize());
                 firstBeat = jmin(firstBeat, noteComponent->getBeat());
             }
             else if (const ClipComponent *clipComponent =
                 dynamic_cast<ClipComponent *>(trackSelection->getUnchecked(i)))
             {
-                trackRoot.appendChild(clipComponent->getClip().serialize(), nullptr);
+                trackRoot.appendChild(clipComponent->getClip().serialize());
                 firstBeat = jmin(firstBeat, clipComponent->getBeat());
             }
         }
 
-        tree.appendChild(trackRoot, nullptr);
+        tree.appendChild(trackRoot);
     }
 
-    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat, nullptr);
+    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat);
     clipboard.copy(tree, false);
 }
 
@@ -1447,7 +1447,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
     const float firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
     const float deltaBeat = (targetBeat - roundBeat(firstBeat));
 
-    forEachValueTreeChildWithType(root, layerElement, Serialization::Core::track)
+    forEachChildWithType(root, layerElement, Serialization::Core::track)
     {
         const String trackId = layerElement.getProperty(Serialization::Clipboard::trackId);
 
@@ -1463,7 +1463,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
         if (auto *annotationsSequence = dynamic_cast<AnnotationsSequence *>(selectedTrack->getSequence()))
         {
             Array<AnnotationEvent> pastedAnnotations;
-            forEachValueTreeChildWithType(layerElement, annotationElement, Serialization::Midi::annotation)
+            forEachChildWithType(layerElement, annotationElement, Serialization::Midi::annotation)
             {
                 const auto &ae = AnnotationEvent(annotationsSequence).withParameters(annotationElement).copyWithNewId();
                 pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
@@ -1483,7 +1483,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
         else if (auto *automationSequence = dynamic_cast<AutomationSequence *>(selectedTrack->getSequence()))
         {
             Array<AutomationEvent> pastedEvents;
-            forEachValueTreeChildWithType(layerElement, autoElement, Serialization::Midi::automationEvent)
+            forEachChildWithType(layerElement, autoElement, Serialization::Midi::automationEvent)
             {
                 const auto &ae = AutomationEvent(automationSequence).withParameters(autoElement).copyWithNewId();
                 pastedEvents.add(ae.withDeltaBeat(deltaBeat));
@@ -1503,7 +1503,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
         else if (auto *pianoSequence = dynamic_cast<PianoSequence *>(selectedTrack->getSequence()))
         {
             Array<Note> pastedNotes;
-            forEachValueTreeChildWithType(layerElement, noteElement, Serialization::Midi::note)
+            forEachChildWithType(layerElement, noteElement, Serialization::Midi::note)
             {
                 const auto &n = Note(pianoSequence).withParameters(noteElement).copyWithNewId();
                 pastedNotes.add(n.withDeltaBeat(deltaBeat));
@@ -1521,14 +1521,14 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             }
         }
 
-        forEachValueTreeChildWithType(root, patternElement, Serialization::Midi::pattern)
+        forEachChildWithType(root, patternElement, Serialization::Midi::pattern)
         {
             Array<Clip> pastedClips;
             if (auto *targetPattern = selectedTrack->getPattern())
             {
-                forEachValueTreeChildWithType(patternElement, clipElement, Serialization::Midi::clip)
+                forEachChildWithType(patternElement, clipElement, Serialization::Midi::clip)
                 {
-                    Clip &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
+                    auto &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
                     pastedClips.add(c.withDeltaBeat(deltaBeat));
                 }
         

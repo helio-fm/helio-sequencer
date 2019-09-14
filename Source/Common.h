@@ -39,7 +39,6 @@
 #endif
 
 #include "JuceHeader.h"
-#include "Serializable.h"
 
 #include <limits.h>
 #include <float.h>
@@ -125,7 +124,7 @@ inline float roundBeat(float beat)
     return roundf(beat * static_cast<float>(TICKS_PER_BEAT)) / static_cast<float>(TICKS_PER_BEAT);
 }
 
-#define forEachValueTreeChildWithType(parentElement, child, requiredType) \
+#define forEachChildWithType(parentElement, child, requiredType) \
     for (const auto &child : parentElement) if (child.hasType(requiredType))
 
 #define callbackOnMessageThread(cls, function, ...) \
@@ -151,6 +150,8 @@ inline constexpr uint32 constexprHash(const char *const str, const uint32 value 
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//
+
+#include "Serializable.h"
 
 #include "App.h"
 #include "TranslationKeys.h"

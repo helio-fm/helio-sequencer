@@ -429,10 +429,10 @@ void Head::rebuildDiffNow()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Head::serialize() const
+SerializedData Head::serialize() const
 {
-    ValueTree tree(Serialization::VCS::head);
-    ValueTree snapshotNode(Serialization::VCS::snapshot);
+    SerializedData tree(Serialization::VCS::head);
+    SerializedData snapshotNode(Serialization::VCS::snapshot);
 
     {
         const ScopedReadLock lock(this->stateLock);
@@ -441,20 +441,20 @@ ValueTree Head::serialize() const
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
             const auto serializedItem = stateItem->serialize();
-            snapshotNode.appendChild(serializedItem, nullptr);
+            snapshotNode.appendChild(serializedItem);
         }
     }
     
-    tree.appendChild(snapshotNode, nullptr);
+    tree.appendChild(snapshotNode);
     return tree;
 }
 
-void Head::deserialize(const ValueTree &tree)
+void Head::deserialize(const SerializedData &data)
 {
     this->reset();
     
-    const auto root = tree.hasType(Serialization::VCS::head) ?
-        tree : tree.getChildWithName(Serialization::VCS::head);
+    const auto root = data.hasType(Serialization::VCS::head) ?
+        data : data.getChildWithName(Serialization::VCS::head);
 
     if (!root.isValid()) { return; }
     
@@ -464,7 +464,7 @@ void Head::deserialize(const ValueTree &tree)
     // A temporary workaround, see the comment in VersionControl::deserialize()
     DeltaDataLookup deltaDataLookup;
     const auto snapshotDataNode = root.getChildWithName(Serialization::VCS::snapshotData);
-    forEachValueTreeChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
+    forEachChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
     {
         const String deltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
         const auto deltaData = dataElement.getChild(0);
@@ -472,7 +472,7 @@ void Head::deserialize(const ValueTree &tree)
         deltaDataLookup[deltaId] = deltaData;
     }
 
-    forEachValueTreeChildWithType(snapshotNode, stateElement, Serialization::VCS::revisionItem)
+    forEachChildWithType(snapshotNode, stateElement, Serialization::VCS::revisionItem)
     {
         RevisionItem::Ptr snapshotItem(new RevisionItem(RevisionItem::Type::Added, nullptr));
         snapshotItem->deserialize(stateElement, deltaDataLookup);

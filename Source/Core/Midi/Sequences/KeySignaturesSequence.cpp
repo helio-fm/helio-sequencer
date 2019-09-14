@@ -240,26 +240,26 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree KeySignaturesSequence::serialize() const
+SerializedData KeySignaturesSequence::serialize() const
 {
-    ValueTree tree(Serialization::Midi::keySignatures);
+    SerializedData tree(Serialization::Midi::keySignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
-        const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        const auto *event = this->midiEvents.getUnchecked(i);
+        tree.appendChild(event->serialize());
     }
 
     return tree;
 }
 
-void KeySignaturesSequence::deserialize(const ValueTree &tree)
+void KeySignaturesSequence::deserialize(const SerializedData &data)
 {
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Midi::keySignatures) ?
-        tree : tree.getChildWithName(Serialization::Midi::keySignatures);
+        data.hasType(Serialization::Midi::keySignatures) ?
+        data : data.getChildWithName(Serialization::Midi::keySignatures);
 
     if (!root.isValid())
     {
@@ -269,7 +269,7 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::keySignature)
+    forEachChildWithType(root, e, Serialization::Midi::keySignature)
     {
         auto *signature = new KeySignatureEvent(this);
         signature->deserialize(e);

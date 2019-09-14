@@ -49,8 +49,8 @@ public:
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
-    ValueTree serializeClipsDelta() const;
-    void resetClipsDelta(const ValueTree &state);
+    SerializedData serializeClipsDelta() const;
+    void resetClipsDelta(const SerializedData &state);
 
     //===------------------------------------------------------------------===//
     // MidiTrack

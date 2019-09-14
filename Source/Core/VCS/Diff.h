@@ -35,7 +35,7 @@ namespace VCS
         bool hasAnyChanges() const;
         void applyDeltas(Array<DeltaDiff> &&deltaDiffs);
         void applyDelta(DeltaDiff &&deltaDiff);
-        void applyDelta(Delta *newDelta, ValueTree data);
+        void applyDelta(Delta *newDelta, SerializedData data);
         void clear();
 
         //===--------------------------------------------------------------===//
@@ -44,7 +44,7 @@ namespace VCS
 
         int getNumDeltas() const override;
         Delta *getDelta(int index) const override;
-        ValueTree getDeltaData(int deltaIndex) const override;
+        SerializedData getDeltaData(int deltaIndex) const override;
         String getVCSName() const override;
         DiffLogic *getDiffLogic() const override;
         void resetStateTo(const TrackedItem &newState) override {}
@@ -52,7 +52,7 @@ namespace VCS
     protected:
 
         OwnedArray<Delta> deltas;
-        Array<ValueTree> deltasData;
+        Array<SerializedData> deltasData;
         String description;
 
     private:

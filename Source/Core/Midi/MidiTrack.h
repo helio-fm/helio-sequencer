@@ -75,8 +75,8 @@ public:
         return static_cast<HashCode>(this->getTrackId().hashCode());
     }
 
-    void serializeTrackProperties(ValueTree &tree) const;
-    void deserializeTrackProperties(const ValueTree &tree);
+    void serializeTrackProperties(SerializedData &tree) const;
+    void deserializeTrackProperties(const SerializedData &tree);
 
     enum DefaultControllers
     {

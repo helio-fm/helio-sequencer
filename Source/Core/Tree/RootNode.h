@@ -62,7 +62,7 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    void deserialize(const ValueTree &tree) override;
+    void deserialize(const SerializedData &data) override;
 
 private:
 

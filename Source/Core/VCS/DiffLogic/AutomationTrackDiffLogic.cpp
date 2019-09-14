@@ -26,28 +26,28 @@
 namespace VCS
 {
 
-static ValueTree mergeAuthTrackPath(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAutoTrackColour(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAutoTrackInstrument(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAutoTrackController(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAutoEventsAdded(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAutoEventsRemoved(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAutoEventsChanged(const ValueTree &state, const ValueTree &changes);
+static SerializedData mergeAuthTrackPath(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeAutoTrackColour(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeAutoTrackInstrument(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeAutoTrackController(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeAutoEventsAdded(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeAutoEventsRemoved(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeAutoEventsChanged(const SerializedData &state, const SerializedData &changes);
 
-static DeltaDiff createAutoTrackPathDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createAutoTrackColourDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createAutoTrackInstrumentDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createAutoTrackControllerDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createAutoTrackPathDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createAutoTrackColourDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createAutoTrackInstrumentDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createAutoTrackControllerDiff(const SerializedData &state, const SerializedData &changes);
 
-static Array<DeltaDiff> createAutoEventsDiffs(const ValueTree &state, const ValueTree &changes);
+static Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const SerializedData &changes);
 
-static void deserializeAutoTrackChanges(const ValueTree &state, const ValueTree &changes,
+static void deserializeAutoTrackChanges(const SerializedData &state, const SerializedData &changes,
     OwnedArray<MidiEvent> &stateNotes, OwnedArray<MidiEvent> &changesNotes);
 
 static DeltaDiff serializeAutoTrackChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges, const Identifier &deltaType);
 
-static ValueTree serializeAutoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
+static SerializedData serializeAutoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
 static bool checkIfDeltaIsEventsType(const Delta *delta);
 
 AutomationTrackDiffLogic::AutomationTrackDiffLogic(TrackedItem &targetItem) :
@@ -78,7 +78,7 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
         const Delta *myDelta = this->target.getDelta(i);
 
         const auto myDeltaData(this->target.getDeltaData(i));
-        ValueTree stateDeltaData;
+        SerializedData stateDeltaData;
 
         bool deltaFoundInState = false;
         bool dataHasChanged = false;
@@ -151,13 +151,13 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
             DeltaDescription(Serialization::VCS::headStateDelta),
             AutoSequenceDeltas::eventsAdded));
 
-        ValueTree eventsDeltaData;
+        SerializedData eventsDeltaData;
 
         UniquePointer<Delta> clipsDelta(new Delta(
             DeltaDescription(Serialization::VCS::headStateDelta),
             PatternDeltas::clipsAdded));
 
-        ValueTree clipsDeltaData;
+        SerializedData clipsDeltaData;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
@@ -174,25 +174,25 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
                 if (targetDelta->hasType(MidiTrackDeltas::trackPath))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeAuthTrackPath(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeAuthTrackPath(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeAutoTrackColour(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeAutoTrackColour(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeAutoTrackInstrument(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeAutoTrackInstrument(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackController))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeAutoTrackController(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeAutoTrackController(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
@@ -275,7 +275,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
-        ValueTree clipsDeltaData;
+        SerializedData clipsDeltaData;
         UniquePointer<Delta> clipsDelta(new Delta(
             DeltaDescription(Serialization::VCS::headStateDelta),
             PatternDeltas::clipsAdded));
@@ -287,7 +287,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
             const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
             if (foundMissingClip)
             {
-                ValueTree emptyClipDeltaData(serializeAutoSequence({}, PatternDeltas::clipsAdded));
+                SerializedData emptyClipDeltaData(serializeAutoSequence({}, PatternDeltas::clipsAdded));
                 const bool incrementalMerge = clipsDeltaData.isValid();
 
                 if (targetDelta->hasType(PatternDeltas::clipsAdded))
@@ -319,27 +319,27 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
 // Merge
 //===----------------------------------------------------------------------===//
 
-ValueTree mergeAuthTrackPath(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAuthTrackPath(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeAutoTrackColour(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAutoTrackColour(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeAutoTrackInstrument(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAutoTrackInstrument(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeAutoTrackController(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAutoTrackController(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeAutoEventsAdded(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAutoEventsAdded(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -376,7 +376,7 @@ ValueTree mergeAutoEventsAdded(const ValueTree &state, const ValueTree &changes)
     return serializeAutoSequence(result, AutoSequenceDeltas::eventsAdded);
 }
 
-ValueTree mergeAutoEventsRemoved(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAutoEventsRemoved(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -412,7 +412,7 @@ ValueTree mergeAutoEventsRemoved(const ValueTree &state, const ValueTree &change
     return serializeAutoSequence(result, AutoSequenceDeltas::eventsAdded);
 }
 
-ValueTree mergeAutoEventsChanged(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAutoEventsChanged(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -454,7 +454,7 @@ ValueTree mergeAutoEventsChanged(const ValueTree &state, const ValueTree &change
 // Diff
 //===----------------------------------------------------------------------===//
 
-DeltaDiff createAutoTrackPathDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createAutoTrackPathDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -465,7 +465,7 @@ DeltaDiff createAutoTrackPathDiff(const ValueTree &state, const ValueTree &chang
     return res;
 }
 
-DeltaDiff createAutoTrackColourDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createAutoTrackColourDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -474,7 +474,7 @@ DeltaDiff createAutoTrackColourDiff(const ValueTree &state, const ValueTree &cha
     return res;
 }
 
-DeltaDiff createAutoTrackInstrumentDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createAutoTrackInstrumentDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -483,7 +483,7 @@ DeltaDiff createAutoTrackInstrumentDiff(const ValueTree &state, const ValueTree 
     return res;
 }
 
-DeltaDiff createAutoTrackControllerDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createAutoTrackControllerDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -492,7 +492,7 @@ DeltaDiff createAutoTrackControllerDiff(const ValueTree &state, const ValueTree 
     return res;
 }
 
-Array<DeltaDiff> createAutoEventsDiffs(const ValueTree &state, const ValueTree &changes)
+Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -597,12 +597,12 @@ Array<DeltaDiff> createAutoEventsDiffs(const ValueTree &state, const ValueTree &
     return res;
 }
 
-void deserializeAutoTrackChanges(const ValueTree &state, const ValueTree &changes,
+void deserializeAutoTrackChanges(const SerializedData &state, const SerializedData &changes,
         OwnedArray<MidiEvent> &stateNotes, OwnedArray<MidiEvent> &changesNotes)
 {
     if (state.isValid())
     {
-        forEachValueTreeChildWithType(state, e, Serialization::Midi::automationEvent)
+        forEachChildWithType(state, e, Serialization::Midi::automationEvent)
         {
             auto *event = new AutomationEvent();
             event->deserialize(e);
@@ -612,7 +612,7 @@ void deserializeAutoTrackChanges(const ValueTree &state, const ValueTree &change
 
     if (changes.isValid())
     {
-        forEachValueTreeChildWithType(changes, e, Serialization::Midi::automationEvent)
+        forEachChildWithType(changes, e, Serialization::Midi::automationEvent)
         {
             auto *event = new AutomationEvent();
             event->deserialize(e);
@@ -630,14 +630,14 @@ DeltaDiff serializeAutoTrackChanges(Array<const MidiEvent *> changes,
     return changesFullDelta;
 }
 
-ValueTree serializeAutoSequence(Array<const MidiEvent *> changes, const Identifier &tag)
+SerializedData serializeAutoSequence(Array<const MidiEvent *> changes, const Identifier &tag)
 {
-    ValueTree tree(tag);
+    SerializedData tree(tag);
 
     for (int i = 0; i < changes.size(); ++i)
     {
         const MidiEvent *event = changes.getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        tree.appendChild(event->serialize());
     }
 
     return tree;

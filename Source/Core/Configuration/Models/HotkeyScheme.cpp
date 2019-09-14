@@ -152,15 +152,15 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree HotkeyScheme::serialize() const
+SerializedData HotkeyScheme::serialize() const
 {
-    ValueTree tree(Serialization::UI::Hotkeys::scheme);
-    tree.setProperty(Serialization::UI::Hotkeys::schemeName, this->name, nullptr);
+    SerializedData tree(Serialization::UI::Hotkeys::scheme);
+    tree.setProperty(Serialization::UI::Hotkeys::schemeName, this->name);
     // Not implemented (cannot convert command id's to string messages back)
     return tree;
 }
 
-static inline HotkeyScheme::Hotkey createHotkey(const ValueTree &e)
+static inline HotkeyScheme::Hotkey createHotkey(const SerializedData &e)
 {
     HotkeyScheme::Hotkey key;
     auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
@@ -172,13 +172,13 @@ static inline HotkeyScheme::Hotkey createHotkey(const ValueTree &e)
     return key;
 }
 
-void HotkeyScheme::deserialize(const ValueTree &tree)
+void HotkeyScheme::deserialize(const SerializedData &data)
 {
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::UI::Hotkeys::scheme) ?
-        tree : tree.getChildWithName(Serialization::UI::Hotkeys::scheme);
+        data.hasType(Serialization::UI::Hotkeys::scheme) ?
+        data : data.getChildWithName(Serialization::UI::Hotkeys::scheme);
 
     if (!root.isValid())
     {
@@ -187,17 +187,17 @@ void HotkeyScheme::deserialize(const ValueTree &tree)
 
     this->name = root.getProperty(Serialization::UI::Hotkeys::schemeName);
 
-    forEachValueTreeChildWithType(root, e, Serialization::UI::Hotkeys::keyPress)
+    forEachChildWithType(root, e, Serialization::UI::Hotkeys::keyPress)
     {
         this->keyPresses.add(createHotkey(e));
     }
 
-    forEachValueTreeChildWithType(root, e, Serialization::UI::Hotkeys::keyDown)
+    forEachChildWithType(root, e, Serialization::UI::Hotkeys::keyDown)
     {
         this->keyDowns.add(createHotkey(e));
     }
 
-    forEachValueTreeChildWithType(root, e, Serialization::UI::Hotkeys::keyUp)
+    forEachChildWithType(root, e, Serialization::UI::Hotkeys::keyUp)
     {
         this->keyUps.add(createHotkey(e));
     }

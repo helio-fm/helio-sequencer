@@ -345,56 +345,56 @@ UserSessionInfo *UserProfile::findSession(const String &deviceId) const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree UserProfile::serialize() const
+SerializedData UserProfile::serialize() const
 {
     using namespace Serialization::User;
 
-    ValueTree tree(Profile::userProfile);
+    SerializedData tree(Profile::userProfile);
 
     if (this->profileUrl.isNotEmpty())
     {
-        tree.setProperty(Profile::url, this->profileUrl, nullptr);
+        tree.setProperty(Profile::url, this->profileUrl);
     }
 
     if (this->name.isNotEmpty())
     {
-        tree.setProperty(Profile::name, this->name, nullptr);
+        tree.setProperty(Profile::name, this->name);
     }
 
     if (this->login.isNotEmpty())
     {
-        tree.setProperty(Profile::login, this->login, nullptr);
+        tree.setProperty(Profile::login, this->login);
     }
 
     if (this->avatarThumbnail.isNotEmpty())
     {
-        tree.setProperty(Profile::thumbnail, this->avatarThumbnail, nullptr);
+        tree.setProperty(Profile::thumbnail, this->avatarThumbnail);
     }
 
     for (const auto *project : this->projects)
     {
-        tree.appendChild(project->serialize(), nullptr);
+        tree.appendChild(project->serialize());
     }
 
     for (const auto *session : this->sessions)
     {
-        tree.appendChild(session->serialize(), nullptr);
+        tree.appendChild(session->serialize());
     }
 
     for (const auto *resource : this->resources)
     {
-        tree.appendChild(resource->serialize(), nullptr);
+        tree.appendChild(resource->serialize());
     }
 
     return tree;
 }
 
-void UserProfile::deserialize(const ValueTree &tree)
+void UserProfile::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization::User;
-    const auto root = tree.hasType(Profile::userProfile) ?
-        tree : tree.getChildWithName(Profile::userProfile);
+    const auto root = data.hasType(Profile::userProfile) ?
+        data : data.getChildWithName(Profile::userProfile);
 
     if (!root.isValid()) { return; }
 
@@ -414,7 +414,7 @@ void UserProfile::deserialize(const ValueTree &tree)
         this->avatar = ImageFileFormat::loadFrom(block.getData(), block.getSize());
     }
 
-    forEachValueTreeChildWithType(root, child, RecentProjects::recentProject)
+    forEachChildWithType(root, child, RecentProjects::recentProject)
     {
         RecentProjectInfo::Ptr p(new RecentProjectInfo());
         p->deserialize(child);
@@ -424,7 +424,7 @@ void UserProfile::deserialize(const ValueTree &tree)
         }
     }
     
-    forEachValueTreeChildWithType(root, child, Sessions::session)
+    forEachChildWithType(root, child, Sessions::session)
     {
         UserSessionInfo::Ptr s(new UserSessionInfo());
         s->deserialize(child);
@@ -432,7 +432,7 @@ void UserProfile::deserialize(const ValueTree &tree)
         this->sessions.addSorted(kSessionsSort, s.get());
     }
 
-    forEachValueTreeChildWithType(root, child, Configurations::resource)
+    forEachChildWithType(root, child, Configurations::resource)
     {
         SyncedConfigurationInfo::Ptr s(new SyncedConfigurationInfo());
         s->deserialize(child);

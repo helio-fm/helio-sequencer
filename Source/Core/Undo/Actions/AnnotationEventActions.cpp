@@ -58,18 +58,18 @@ int AnnotationEventInsertAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-ValueTree AnnotationEventInsertAction::serialize() const
+SerializedData AnnotationEventInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::annotationEventInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->event.serialize(), nullptr);
+    SerializedData tree(Serialization::Undo::annotationEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->event.serialize());
     return tree;
 }
 
-void AnnotationEventInsertAction::deserialize(const ValueTree &tree)
+void AnnotationEventInsertAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->event.deserialize(tree.getChild(0));
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(data.getChild(0));
 }
 
 void AnnotationEventInsertAction::reset()
@@ -115,18 +115,18 @@ int AnnotationEventRemoveAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-ValueTree AnnotationEventRemoveAction::serialize() const
+SerializedData AnnotationEventRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::annotationEventRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->event.serialize(), nullptr);
+    SerializedData tree(Serialization::Undo::annotationEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->event.serialize());
     return tree;
 }
 
-void AnnotationEventRemoveAction::deserialize(const ValueTree &tree)
+void AnnotationEventRemoveAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->event.deserialize(tree.getChild(0));
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(data.getChild(0));
 }
 
 void AnnotationEventRemoveAction::reset()
@@ -198,28 +198,28 @@ UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextA
     return nullptr;
 }
 
-ValueTree AnnotationEventChangeAction::serialize() const
+SerializedData AnnotationEventChangeAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::annotationEventChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::annotationEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    ValueTree annotationBeforeChild(Serialization::Undo::annotationBefore);
-    annotationBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
-    tree.appendChild(annotationBeforeChild, nullptr);
+    SerializedData annotationBeforeChild(Serialization::Undo::annotationBefore);
+    annotationBeforeChild.appendChild(this->eventBefore.serialize());
+    tree.appendChild(annotationBeforeChild);
     
-    ValueTree annotationAfterChild(Serialization::Undo::annotationAfter);
-    annotationAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
-    tree.appendChild(annotationAfterChild, nullptr);
+    SerializedData annotationAfterChild(Serialization::Undo::annotationAfter);
+    annotationAfterChild.appendChild(this->eventAfter.serialize());
+    tree.appendChild(annotationAfterChild);
     
     return tree;
 }
 
-void AnnotationEventChangeAction::deserialize(const ValueTree &tree)
+void AnnotationEventChangeAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    const auto annotationBeforeChild = tree.getChildWithName(Serialization::Undo::annotationBefore);
-    const auto annotationAfterChild = tree.getChildWithName(Serialization::Undo::annotationAfter);
+    const auto annotationBeforeChild = data.getChildWithName(Serialization::Undo::annotationBefore);
+    const auto annotationAfterChild = data.getChildWithName(Serialization::Undo::annotationAfter);
     
     this->eventBefore.deserialize(annotationBeforeChild.getChild(0));
     this->eventAfter.deserialize(annotationAfterChild.getChild(0));
@@ -271,25 +271,25 @@ int AnnotationEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(AnnotationEvent) * this->annotations.size());
 }
 
-ValueTree AnnotationEventsGroupInsertAction::serialize() const
+SerializedData AnnotationEventsGroupInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::annotationEventsGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::annotationEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        tree.appendChild(this->annotations.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(this->annotations.getUnchecked(i).serialize());
     }
     
     return tree;
 }
 
-void AnnotationEventsGroupInsertAction::deserialize(const ValueTree &tree)
+void AnnotationEventsGroupInsertAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    for (const auto &params : tree)
+    for (const auto &params : data)
     {
         AnnotationEvent ae;
         ae.deserialize(params);
@@ -342,25 +342,25 @@ int AnnotationEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(AnnotationEvent) * this->annotations.size());
 }
 
-ValueTree AnnotationEventsGroupRemoveAction::serialize() const
+SerializedData AnnotationEventsGroupRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::annotationEventsGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::annotationEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        tree.appendChild(this->annotations.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(this->annotations.getUnchecked(i).serialize());
     }
     
     return tree;
 }
 
-void AnnotationEventsGroupRemoveAction::deserialize(const ValueTree &tree)
+void AnnotationEventsGroupRemoveAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    for (const auto &params : tree)
+    for (const auto &params : data)
     {
         AnnotationEvent ae;
         ae.deserialize(params);
@@ -450,37 +450,37 @@ UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction 
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree AnnotationEventsGroupChangeAction::serialize() const
+SerializedData AnnotationEventsGroupChangeAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::annotationEventsGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::annotationEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
-    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
+    SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
+    SerializedData groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
     }
     
-    tree.appendChild(groupBeforeChild, nullptr);
-    tree.appendChild(groupAfterChild, nullptr);
+    tree.appendChild(groupBeforeChild);
+    tree.appendChild(groupAfterChild);
     
     return tree;
 }
 
-void AnnotationEventsGroupChangeAction::deserialize(const ValueTree &tree)
+void AnnotationEventsGroupChangeAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
-    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
     
     for (const auto &params : groupBeforeChild)
     {

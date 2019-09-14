@@ -32,10 +32,10 @@ namespace VCS
 
         static bool checkIfDeltaIsPatternType(const Delta *delta);
 
-        static ValueTree mergeClipsAdded(const ValueTree &state, const ValueTree &changes);
-        static ValueTree mergeClipsRemoved(const ValueTree &state, const ValueTree &changes);
-        static ValueTree mergeClipsChanged(const ValueTree &state, const ValueTree &changes);
+        static SerializedData mergeClipsAdded(const SerializedData &state, const SerializedData &changes);
+        static SerializedData mergeClipsRemoved(const SerializedData &state, const SerializedData &changes);
+        static SerializedData mergeClipsChanged(const SerializedData &state, const SerializedData &changes);
 
-        static Array<DeltaDiff> createClipsDiffs(const ValueTree &state, const ValueTree &changes);
+        static Array<DeltaDiff> createClipsDiffs(const SerializedData &state, const SerializedData &changes);
     };
 } // namespace VCS

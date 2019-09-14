@@ -109,7 +109,7 @@ public:
 
     virtual BaseResource::Ptr createResource() const = 0;
 
-    void updateBaseResource(const ValueTree &resource);
+    void updateBaseResource(const SerializedData &resource);
     void updateUserResource(const BaseResource::Ptr resource);
 
 protected:
@@ -124,9 +124,8 @@ protected:
     Resources userResources;
 
     // customized Serializable:
-    virtual ValueTree serializeResources(const Resources &resources);
-    virtual void deserializeResources(const ValueTree &tree,
-        Resources &outResources) = 0;
+    virtual SerializedData serializeResources(const Resources &resources);
+    virtual void deserializeResources(const SerializedData &tree, Resources &outResources) = 0;
     virtual void reset();
 
 private: 

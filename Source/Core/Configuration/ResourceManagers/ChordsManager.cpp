@@ -46,14 +46,14 @@ const BaseResource &ChordsManager::getResourceComparator() const
     return this->chordsComparator;
 }
 
-void ChordsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
+void ChordsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::chords) ?
         tree : tree.getChildWithName(Serialization::Resources::chords);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, chordNode, Serialization::Midi::chord)
+    forEachChildWithType(root, chordNode, Serialization::Midi::chord)
     {
         Chord::Ptr chord(new Chord());
         chord->deserialize(chordNode);

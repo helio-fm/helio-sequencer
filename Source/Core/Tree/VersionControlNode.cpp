@@ -219,34 +219,34 @@ void VersionControlNode::cloneProject()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree VersionControlNode::serialize() const
+SerializedData VersionControlNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeNode);
-    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
+    SerializedData tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type);
 
     if (this->vcs != nullptr)
     {
-        tree.appendChild(this->vcs->serialize(), nullptr);
+        tree.appendChild(this->vcs->serialize());
     }
 
     TreeNodeSerializer::serializeChildren(*this, tree);
     return tree;
 }
 
-void VersionControlNode::deserialize(const ValueTree &tree)
+void VersionControlNode::deserialize(const SerializedData &data)
 {
     this->reset();
 
     if (this->vcs != nullptr)
     {
-        forEachValueTreeChildWithType(tree, e, Serialization::Core::versionControl)
+        forEachChildWithType(data, e, Serialization::Core::versionControl)
         {
             this->vcs->deserialize(e);
         }
     }
 
     // Proceed with basic properties and children
-    TreeNode::deserialize(tree);
+    TreeNode::deserialize(data);
 }
 
 void VersionControlNode::reset()

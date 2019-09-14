@@ -52,7 +52,7 @@ public:
     String getVCSName() const override;
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    ValueTree getDeltaData(int deltaIndex) const override;
+    SerializedData getDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
         
@@ -80,21 +80,21 @@ public:
     //===------------------------------------------------------------------===//
 
     void reset() override;
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
-    ValueTree serializeAnnotationsDelta() const;
-    void resetAnnotationsDelta(const ValueTree &state);
+    SerializedData serializeAnnotationsDelta() const;
+    void resetAnnotationsDelta(const SerializedData &state);
 
-    ValueTree serializeTimeSignaturesDelta() const;
-    void resetTimeSignaturesDelta(const ValueTree &state);
+    SerializedData serializeTimeSignaturesDelta() const;
+    void resetTimeSignaturesDelta(const SerializedData &state);
     
-    ValueTree serializeKeySignaturesDelta() const;
-    void resetKeySignaturesDelta(const ValueTree &state);
+    SerializedData serializeKeySignaturesDelta() const;
+    void resetKeySignaturesDelta(const SerializedData &state);
 
 private:
 

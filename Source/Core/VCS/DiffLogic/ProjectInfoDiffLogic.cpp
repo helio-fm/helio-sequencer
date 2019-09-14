@@ -24,15 +24,15 @@
 namespace VCS
 {
 
-static ValueTree mergeLicense(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes);
-static ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes);
+static SerializedData mergeLicense(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeFullName(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeAuthor(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeDescription(const SerializedData &state, const SerializedData &changes);
 
-static DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes);
-static DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createLicenseDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createFullNameDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createAuthorDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createDescriptionDiff(const SerializedData &state, const SerializedData &changes);
 
 ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
@@ -57,7 +57,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
         const Delta *myDelta = this->target.getDelta(i);
 
         const auto myDeltaData(this->target.getDeltaData(i));
-        ValueTree stateDeltaData;
+        SerializedData stateDeltaData;
 
         bool deltaFoundInState = false;
         bool dataHasChanged = false;
@@ -128,25 +128,25 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
                 if (targetDelta->hasType(ProjectInfoDeltas::projectLicense))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeLicense(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeLicense(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectTitle))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeFullName(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeFullName(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectAuthor))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeAuthor(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeAuthor(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectDescription))
                 {
                     UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    ValueTree diffDeltaData = mergeDescription(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeDescription(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
@@ -166,27 +166,27 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 // Diffs
 //===----------------------------------------------------------------------===//
 
-ValueTree mergeLicense(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeLicense(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeFullName(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeAuthor(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes)
+SerializedData mergeDescription(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
 
-DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createLicenseDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -195,7 +195,7 @@ DeltaDiff createLicenseDiff(const ValueTree &state, const ValueTree &changes)
     return res;
 }
 
-DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createFullNameDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -204,7 +204,7 @@ DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes)
     return res;
 }
 
-DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createAuthorDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
@@ -213,7 +213,7 @@ DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes)
     return res;
 }
 
-DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes)
+DeltaDiff createDescriptionDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
     using namespace Serialization::VCS;

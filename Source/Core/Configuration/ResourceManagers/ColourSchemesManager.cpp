@@ -48,14 +48,14 @@ void ColourSchemesManager::setCurrent(const ColourScheme::Ptr scheme)
     App::Config().save(scheme.get(), Serialization::Config::activeColourScheme);
 }
 
-void ColourSchemesManager::deserializeResources(const ValueTree &tree, Resources &outResources)
+void ColourSchemesManager::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::colourSchemes) ?
         tree : tree.getChildWithName(Serialization::Resources::colourSchemes);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, schemeNode, Serialization::UI::Colours::scheme)
+    forEachChildWithType(root, schemeNode, Serialization::UI::Colours::scheme)
     {
         ColourScheme::Ptr scheme(new ColourScheme());
         scheme->deserialize(schemeNode);

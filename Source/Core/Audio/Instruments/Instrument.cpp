@@ -418,52 +418,52 @@ void Instrument::reset()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Instrument::serialize() const
+SerializedData Instrument::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Audio::instrument);
-    tree.setProperty(Audio::instrumentId, this->instrumentId.toString(), nullptr);
-    tree.setProperty(Audio::instrumentName, this->instrumentName, nullptr);
+    SerializedData tree(Audio::instrument);
+    tree.setProperty(Audio::instrumentId, this->instrumentId.toString());
+    tree.setProperty(Audio::instrumentName, this->instrumentName);
 
     const int numNodes = this->processorGraph->getNumNodes();
     for (int i = 0; i < numNodes; ++i)
     {
-        tree.appendChild(this->serializeNode(this->processorGraph->getNode(i)), nullptr);
+        tree.appendChild(this->serializeNode(this->processorGraph->getNode(i)));
     }
 
     for (const auto &c : this->getConnections())
     {
-        ValueTree e(Audio::connection);
-        e.setProperty(Audio::sourceNodeId, static_cast<int>(c.source.nodeID.uid), nullptr);
-        e.setProperty(Audio::sourceChannel, c.source.channelIndex, nullptr);
-        e.setProperty(Audio::destinationNodeId, static_cast<int>(c.destination.nodeID.uid), nullptr);
-        e.setProperty(Audio::destinationChannel, c.destination.channelIndex, nullptr);
-        tree.appendChild(e, nullptr);
+        SerializedData e(Audio::connection);
+        e.setProperty(Audio::sourceNodeId, static_cast<int>(c.source.nodeID.uid));
+        e.setProperty(Audio::sourceChannel, c.source.channelIndex);
+        e.setProperty(Audio::destinationNodeId, static_cast<int>(c.destination.nodeID.uid));
+        e.setProperty(Audio::destinationChannel, c.destination.channelIndex);
+        tree.appendChild(e);
     }
 
     return tree;
 }
 
-ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
+SerializedData Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
 {
     if (auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
         using namespace Serialization;
 
-        ValueTree tree(Audio::node);
-        tree.setProperty(Audio::nodeId, static_cast<int>(node->nodeID.uid), nullptr);
-        tree.setProperty(Audio::nodeHash, node->properties[Audio::nodeHash].toString(), nullptr);
-        tree.setProperty(UI::positionX, node->properties[UI::positionX].toString(), nullptr);
-        tree.setProperty(UI::positionY, node->properties[UI::positionY].toString(), nullptr);
+        SerializedData tree(Audio::node);
+        tree.setProperty(Audio::nodeId, static_cast<int>(node->nodeID.uid));
+        tree.setProperty(Audio::nodeHash, node->properties[Audio::nodeHash].toString());
+        tree.setProperty(UI::positionX, node->properties[UI::positionX].toString());
+        tree.setProperty(UI::positionY, node->properties[UI::positionY].toString());
 
         SerializablePluginDescription pd;
         plugin->fillInPluginDescription(pd);
 
-        tree.appendChild(pd.serialize(), nullptr);
+        tree.appendChild(pd.serialize());
 
         MemoryBlock m;
         node->getProcessor()->getStateInformation(m);
-        tree.setProperty(Serialization::Audio::pluginState, m.toBase64Encoding(), nullptr);
+        tree.setProperty(Serialization::Audio::pluginState, m.toBase64Encoding());
 
         return tree;
     }
@@ -471,13 +471,13 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
     return {};
 }
 
-void Instrument::deserialize(const ValueTree &tree)
+void Instrument::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
 
-    const auto root = tree.hasType(Audio::instrument) ?
-        tree : tree.getChildWithName(Audio::instrument);
+    const auto root = data.hasType(Audio::instrument) ?
+        data : data.getChildWithName(Audio::instrument);
 
     if (!root.isValid() || root.getNumChildren() == 0) { return; }
 
@@ -498,7 +498,7 @@ void Instrument::deserialize(const ValueTree &tree)
     
     Array<ConnectionDescription> connectionDescriptions;
     
-    forEachValueTreeChildWithType(root, e, Audio::connection)
+    forEachChildWithType(root, e, Audio::connection)
     {
         const uint32 sourceNodeId = static_cast<int>(e.getProperty(Audio::sourceNodeId));
         const uint32 destinationNodeId = static_cast<int>(e.getProperty(Audio::destinationNodeId));
@@ -510,9 +510,9 @@ void Instrument::deserialize(const ValueTree &tree)
         });
     }
 
-    Array<ValueTree> nodesToDeserialize;
+    Array<SerializedData> nodesToDeserialize;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Audio::node)
+    forEachChildWithType(root, e, Serialization::Audio::node)
     {
         nodesToDeserialize.add(e);
     }
@@ -532,7 +532,8 @@ void Instrument::deserialize(const ValueTree &tree)
     });
 }
 
-void Instrument::deserializeNodesAsync(Array<ValueTree> nodesToDeserialize, DeserializeNodesCallback allDoneCallback)
+void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
+    DeserializeNodesCallback allDoneCallback)
 {
     using namespace Serialization;
     if (nodesToDeserialize.isEmpty())

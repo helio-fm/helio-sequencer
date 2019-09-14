@@ -59,35 +59,35 @@ bool Delta::hasType(const Identifier &id) const noexcept
     return (this->type == id);
 }
 
-ValueTree Delta::serialize() const
+SerializedData Delta::serialize() const
 {
-    ValueTree tree(Serialization::VCS::delta);
-    //tree.setProperty(Serialization::VCS::deltaTypeId, this->type.toString(), nullptr);
+    SerializedData tree(Serialization::VCS::delta);
+    //tree.setProperty(Serialization::VCS::deltaTypeId, this->type.toString());
     
     if (this->description.stringToTranslate.isNotEmpty())
     {
-        tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate, nullptr);
+        tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate);
     }
 
     if (this->description.stringParameter.isNotEmpty())
     {
-        tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter, nullptr);
+        tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter);
     }
 
     if (this->description.intParameter != DeltaDescription::defaultNumChanges)
     {
-        tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter), nullptr);
+        tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter));
     }
 
     return tree;
 }
 
-void Delta::deserialize(const ValueTree &tree)
+void Delta::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const auto root = tree.hasType(Serialization::VCS::delta) ?
-        tree : tree.getChildWithName(Serialization::VCS::delta);
+    const auto root = data.hasType(Serialization::VCS::delta) ?
+        data : data.getChildWithName(Serialization::VCS::delta);
 
     if (!root.isValid()) { return; }
 

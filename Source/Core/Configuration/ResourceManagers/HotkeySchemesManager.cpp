@@ -54,14 +54,14 @@ void HotkeySchemesManager::setCurrent(const HotkeyScheme::Ptr scheme)
     App::Config().save(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
 }
 
-void HotkeySchemesManager::deserializeResources(const ValueTree &tree, Resources &outResources)
+void HotkeySchemesManager::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::hotkeySchemes) ?
         tree : tree.getChildWithName(Serialization::Resources::hotkeySchemes);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, schemeNode, Serialization::UI::Hotkeys::scheme)
+    forEachChildWithType(root, schemeNode, Serialization::UI::Hotkeys::scheme)
     {
         HotkeyScheme::Ptr hs(new HotkeyScheme());
         hs->deserialize(schemeNode);

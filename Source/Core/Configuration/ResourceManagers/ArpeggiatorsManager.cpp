@@ -25,14 +25,14 @@
 ArpeggiatorsManager::ArpeggiatorsManager() :
     ResourceManager(Serialization::Resources::arpeggiators) {}
 
-void ArpeggiatorsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
+void ArpeggiatorsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::arpeggiators) ?
         tree : tree.getChildWithName(Serialization::Resources::arpeggiators);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
+    forEachChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
     {
         Arpeggiator::Ptr arp(new Arpeggiator());
         arp->deserialize(arpNode);

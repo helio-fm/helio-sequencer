@@ -373,15 +373,15 @@ void Workspace::importProject(const String &filePattern)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-static void addAllActiveItemIds(TreeNodeBase *item, ValueTree &parent)
+static void addAllActiveItemIds(TreeNodeBase *item, SerializedData &parent)
 {
     if (auto *treeItem = dynamic_cast<TreeNode *>(item))
     {
         if (treeItem->isSelected())
         {
-            ValueTree child(Serialization::Core::selectedTreeNode);
-            child.setProperty(Serialization::Core::treeNodeId, item->getNodeIdentifier(), nullptr);
-            parent.appendChild(child, nullptr);
+            SerializedData child(Serialization::Core::selectedTreeNode);
+            child.setProperty(Serialization::Core::treeNodeId, item->getNodeIdentifier());
+            parent.appendChild(child);
         }
         
         for (int i = 0; i < item->getNumChildren(); ++i)
@@ -419,36 +419,36 @@ void Workspace::selectTreeNodeWithId(const String &id)
     selectActiveSubItemWithId(this->treeRoot.get(), id);
 }
 
-ValueTree Workspace::serialize() const
+SerializedData Workspace::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Core::workspace);
+    SerializedData tree(Core::workspace);
 
     // TODO serialize window size and position
 
-    tree.appendChild(this->userProfile.serialize(), nullptr);
-    tree.appendChild(this->audioCore->serialize(), nullptr);
-    tree.appendChild(this->pluginManager->serialize(), nullptr);
+    tree.appendChild(this->userProfile.serialize());
+    tree.appendChild(this->audioCore->serialize());
+    tree.appendChild(this->pluginManager->serialize());
 
-    ValueTree treeRootNode(Core::treeRoot);
-    treeRootNode.appendChild(this->treeRoot->serialize(), nullptr);
-    tree.appendChild(treeRootNode, nullptr);
+    SerializedData treeRootNode(Core::treeRoot);
+    treeRootNode.appendChild(this->treeRoot->serialize());
+    tree.appendChild(treeRootNode);
     
     // TODO serialize tree openness state?
-    ValueTree treeStateNode(Core::treeState);
+    SerializedData treeStateNode(Core::treeState);
     addAllActiveItemIds(this->treeRoot.get(), treeStateNode);
-    tree.appendChild(treeStateNode, nullptr);
+    tree.appendChild(treeStateNode);
     
     return tree;
 }
 
-void Workspace::deserialize(const ValueTree &tree)
+void Workspace::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
     
-    auto root = tree.hasType(Core::workspace) ?
-        tree : tree.getChildWithName(Core::workspace);
+    auto root = data.hasType(Core::workspace) ?
+        data : data.getChildWithName(Core::workspace);
     
     if (!root.isValid())
     {
@@ -469,7 +469,7 @@ void Workspace::deserialize(const ValueTree &tree)
     const auto treeStateNode = root.getChildWithName(Core::treeState);
     if (treeStateNode.isValid())
     {
-        forEachValueTreeChildWithType(treeStateNode, e, Core::selectedTreeNode)
+        forEachChildWithType(treeStateNode, e, Core::selectedTreeNode)
         {
             const String id = e.getProperty(Core::treeNodeId);
             foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot.get(), id));

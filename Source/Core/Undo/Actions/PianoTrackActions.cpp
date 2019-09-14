@@ -32,7 +32,7 @@ PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
 
 PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
     WeakReference<TreeNode> parentTreeItem,
-    ValueTree targetSerializedState,
+    SerializedData targetSerializedState,
     const String &xPath) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
@@ -70,20 +70,20 @@ int PianoTrackInsertAction::getSizeInUnits()
     return this->trackName.length();
 }
 
-ValueTree PianoTrackInsertAction::serialize() const
+SerializedData PianoTrackInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::pianoTrackInsertAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->trackState.createCopy(), nullptr);
+    SerializedData tree(Serialization::Undo::pianoTrackInsertAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->trackState.createCopy());
     return tree;
 }
 
-void PianoTrackInsertAction::deserialize(const ValueTree &tree)
+void PianoTrackInsertAction::deserialize(const SerializedData &data)
 {
-    this->trackName = tree.getProperty(Serialization::Undo::xPath);
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->trackState = tree.getChild(0).createCopy();
+    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->trackState = data.getChild(0).createCopy();
 }
 
 void PianoTrackInsertAction::reset()
@@ -149,20 +149,20 @@ int PianoTrackRemoveAction::getSizeInUnits()
     return 1;
 }
 
-ValueTree PianoTrackRemoveAction::serialize() const
+SerializedData PianoTrackRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::pianoTrackRemoveAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->serializedTreeItem.createCopy(), nullptr);
+    SerializedData tree(Serialization::Undo::pianoTrackRemoveAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->serializedTreeItem.createCopy());
     return tree;
 }
 
-void PianoTrackRemoveAction::deserialize(const ValueTree &tree)
+void PianoTrackRemoveAction::deserialize(const SerializedData &data)
 {
-    this->trackName = tree.getProperty(Serialization::Undo::xPath);
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->serializedTreeItem = tree.getChild(0).createCopy();
+    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->serializedTreeItem = data.getChild(0).createCopy();
 }
 
 void PianoTrackRemoveAction::reset()

@@ -23,7 +23,7 @@ class AuthSessionDto final : public ApiModel
 {
 public:
 
-    AuthSessionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    AuthSessionDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     String getSessionId() const noexcept { return DTO_PROPERTY(AuthSession::id); }
     String getSecret() const noexcept { return DTO_PROPERTY(AuthSession::secret); }

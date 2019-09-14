@@ -788,20 +788,20 @@ void Transport::broadcastStop()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Transport::serialize() const
+SerializedData Transport::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Audio::transport);
-    tree.setProperty(Audio::transportSeekPosition, this->getSeekPosition(), nullptr);
+    SerializedData tree(Audio::transport);
+    tree.setProperty(Audio::transportSeekPosition, this->getSeekPosition());
     return tree;
 }
 
-void Transport::deserialize(const ValueTree &tree)
+void Transport::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    const auto root = tree.hasType(Audio::transport) ?
-        tree : tree.getChildWithName(Audio::transport);
+    const auto root = data.hasType(Audio::transport) ?
+        data : data.getChildWithName(Audio::transport);
     const float seek = root.getProperty(Audio::transportSeekPosition, 0.f);
     this->seekToPosition(seek);
 }

@@ -196,7 +196,7 @@ AutomationEvent AutomationEvent::withCurvature(float newCurvature) const noexcep
     return ae;
 }
 
-AutomationEvent AutomationEvent::withParameters(const ValueTree &parameters) const noexcept
+AutomationEvent AutomationEvent::withParameters(const SerializedData &parameters) const noexcept
 {
     AutomationEvent ae(*this);
     ae.deserialize(parameters);
@@ -254,25 +254,25 @@ AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatV
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree AutomationEvent::serialize() const noexcept
+SerializedData AutomationEvent::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Midi::automationEvent);
-    tree.setProperty(Midi::id, this->id, nullptr);
-    tree.setProperty(Midi::value, this->controllerValue, nullptr);
-    tree.setProperty(Midi::curve, this->curvature, nullptr);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
+    SerializedData tree(Midi::automationEvent);
+    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::value, this->controllerValue);
+    tree.setProperty(Midi::curve, this->curvature);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
     return tree;
 }
 
-void AutomationEvent::deserialize(const ValueTree &tree) noexcept
+void AutomationEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->controllerValue = float(tree.getProperty(Midi::value));
-    this->curvature = float(tree.getProperty(Midi::curve, AUTOEVENT_DEFAULT_CURVATURE));
-    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = tree.getProperty(Midi::id);
+    this->controllerValue = float(data.getProperty(Midi::value));
+    this->curvature = float(data.getProperty(Midi::curve, AUTOEVENT_DEFAULT_CURVATURE));
+    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->id = data.getProperty(Midi::id);
 }
 
 void AutomationEvent::reset() noexcept {}

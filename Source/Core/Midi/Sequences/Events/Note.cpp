@@ -165,7 +165,7 @@ Note Note::withTuplet(Tuplet tuplet) const noexcept
     return other;
 }
 
-Note Note::withParameters(const ValueTree &parameters) const noexcept
+Note Note::withParameters(const SerializedData &parameters) const noexcept
 {
     Note n(*this);
     n.deserialize(parameters);
@@ -200,33 +200,33 @@ Note::Tuplet Note::getTuplet() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Note::serialize() const noexcept
+SerializedData Note::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Midi::note);
-    tree.setProperty(Midi::id, this->id, nullptr);
-    tree.setProperty(Midi::key, this->key, nullptr);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    SerializedData tree(Midi::note);
+    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::key, this->key);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
+    tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT));
+    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY));
     if (this->tuplet > 1)
     {
-        tree.setProperty(Midi::tuplet, this->tuplet, nullptr);
+        tree.setProperty(Midi::tuplet, this->tuplet);
     }
     return tree;
 }
 
-void Note::deserialize(const ValueTree &tree) noexcept
+void Note::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->id = tree.getProperty(Midi::id);
-    this->key = tree.getProperty(Midi::key);
-    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->length = float(tree.getProperty(Midi::length)) / TICKS_PER_BEAT;
-    const auto vol = float(tree.getProperty(Midi::volume)) / VELOCITY_SAVE_ACCURACY;
+    this->id = data.getProperty(Midi::id);
+    this->key = data.getProperty(Midi::key);
+    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->length = float(data.getProperty(Midi::length)) / TICKS_PER_BEAT;
+    const auto vol = float(data.getProperty(Midi::volume)) / VELOCITY_SAVE_ACCURACY;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
-    this->tuplet = Tuplet(int(tree.getProperty(Midi::tuplet, 1)));
+    this->tuplet = Tuplet(int(data.getProperty(Midi::tuplet, 1)));
 }
 
 void Note::reset() noexcept {}

@@ -114,7 +114,7 @@ BaseConfigSyncThread *ResourceSyncService::prepareResourceRequestThread()
 {
     auto *thread = this->getNewThreadFor<BaseConfigSyncThread>();
 
-    thread->onRequestResourceOk = [this](const Identifier &resourceType, const ValueTree &resource)
+    thread->onRequestResourceOk = [this](const Identifier &resourceType, const SerializedData &resource)
     {
         if (App::Config().getAllResources().contains(resourceType))
         {

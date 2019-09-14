@@ -23,18 +23,20 @@ class Workspace;
 class MainWindow;
 class MainLayout;
 
+#include "Serializable.h"
+
 class Clipboard final
 {
 public:
 
     Clipboard() = default;
-    void copy(const ValueTree &data, bool mirrorToSystemClipboard = false);
-    const ValueTree &getData() const noexcept;
+    void copy(const SerializedData &data, bool mirrorToSystemClipboard = false);
+    const SerializedData &getData() const noexcept;
 
 private:
 
     String getCurrentContentAsString() const;
-    ValueTree clipboard;
+    SerializedData clipboard;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Clipboard)
     JUCE_PREVENT_HEAP_ALLOCATION

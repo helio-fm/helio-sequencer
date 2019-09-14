@@ -40,7 +40,7 @@ public:
     AnnotationEvent withBeat(float newBeat) const noexcept;
     AnnotationEvent withDescription(const String &newDescription) const noexcept;
     AnnotationEvent withColour(const Colour &newColour) const noexcept;
-    AnnotationEvent withParameters(const ValueTree &parameters) const noexcept;
+    AnnotationEvent withParameters(const SerializedData &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -53,8 +53,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const noexcept override;
-    void deserialize(const ValueTree &tree) noexcept override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() noexcept override;
 
     //===------------------------------------------------------------------===//

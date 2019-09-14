@@ -207,7 +207,7 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree ProjectTimeline::getDeltaData(int deltaIndex) const
+SerializedData ProjectTimeline::getDeltaData(int deltaIndex) const
 {
     using namespace Serialization::VCS;
     if (this->deltas[deltaIndex]->hasType(ProjectTimelineDeltas::annotationsAdded))
@@ -321,34 +321,34 @@ void ProjectTimeline::reset()
     this->timeSignaturesSequence->reset();
 }
 
-ValueTree ProjectTimeline::serialize() const
+SerializedData ProjectTimeline::serialize() const
 {
-    ValueTree tree(this->vcsDiffLogic->getType());
+    SerializedData tree(this->vcsDiffLogic->getType());
 
     this->serializeVCSUuid(tree);
 
     tree.setProperty(Serialization::Core::annotationsTrackId,
-        this->annotationsTrackId, nullptr);
+        this->annotationsTrackId);
 
     tree.setProperty(Serialization::Core::keySignaturesTrackId,
-        this->keySignaturesTrackId, nullptr);
+        this->keySignaturesTrackId);
 
     tree.setProperty(Serialization::Core::timeSignaturesTrackId,
-        this->timeSignaturesTrackId, nullptr);
+        this->timeSignaturesTrackId);
 
-    tree.appendChild(this->annotationsSequence->serialize(), nullptr);
-    tree.appendChild(this->keySignaturesSequence->serialize(), nullptr);
-    tree.appendChild(this->timeSignaturesSequence->serialize(), nullptr);
+    tree.appendChild(this->annotationsSequence->serialize());
+    tree.appendChild(this->keySignaturesSequence->serialize());
+    tree.appendChild(this->timeSignaturesSequence->serialize());
 
     return tree;
 }
 
-void ProjectTimeline::deserialize(const ValueTree &tree)
+void ProjectTimeline::deserialize(const SerializedData &data)
 {
     this->reset();
     
-    const auto root = tree.hasType(this->vcsDiffLogic->getType()) ?
-        tree : tree.getChildWithName(this->vcsDiffLogic->getType());
+    const auto root = data.hasType(this->vcsDiffLogic->getType()) ?
+        data : data.getChildWithName(this->vcsDiffLogic->getType());
     
     if (!root.isValid())
     {
@@ -369,17 +369,17 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
         root.getProperty(Serialization::Core::timeSignaturesTrackId,
             this->timeSignaturesTrackId);
 
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::annotations)
+    forEachChildWithType(root, e, Serialization::Midi::annotations)
     {
         this->annotationsSequence->deserialize(e);
     }
 
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::keySignatures)
+    forEachChildWithType(root, e, Serialization::Midi::keySignatures)
     {
         this->keySignaturesSequence->deserialize(e);
     }
 
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::timeSignatures)
+    forEachChildWithType(root, e, Serialization::Midi::timeSignatures)
     {
         this->timeSignaturesSequence->deserialize(e);
     }
@@ -395,25 +395,25 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
 // Deltas
 //===----------------------------------------------------------------------===//
 
-ValueTree ProjectTimeline::serializeAnnotationsDelta() const
+SerializedData ProjectTimeline::serializeAnnotationsDelta() const
 {
-    ValueTree tree(Serialization::VCS::ProjectTimelineDeltas::annotationsAdded);
+    SerializedData tree(Serialization::VCS::ProjectTimelineDeltas::annotationsAdded);
 
     for (int i = 0; i < this->annotationsSequence->size(); ++i)
     {
         const MidiEvent *event = this->annotationsSequence->getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        tree.appendChild(event->serialize());
     }
 
     return tree;
 }
 
-void ProjectTimeline::resetAnnotationsDelta(const ValueTree &state)
+void ProjectTimeline::resetAnnotationsDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::annotationsAdded));
     this->annotationsSequence->reset();
 
-    forEachValueTreeChildWithType(state, e, Serialization::Midi::annotation)
+    forEachChildWithType(state, e, Serialization::Midi::annotation)
     {
         this->annotationsSequence->checkoutEvent<AnnotationEvent>(e);
     }
@@ -421,25 +421,25 @@ void ProjectTimeline::resetAnnotationsDelta(const ValueTree &state)
     this->annotationsSequence->updateBeatRange(false);
 }
 
-ValueTree ProjectTimeline::serializeTimeSignaturesDelta() const
+SerializedData ProjectTimeline::serializeTimeSignaturesDelta() const
 {
-    ValueTree tree(Serialization::VCS::ProjectTimelineDeltas::timeSignaturesAdded);
+    SerializedData tree(Serialization::VCS::ProjectTimelineDeltas::timeSignaturesAdded);
 
     for (int i = 0; i < this->timeSignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->timeSignaturesSequence->getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        tree.appendChild(event->serialize());
     }
     
     return tree;
 }
 
-void ProjectTimeline::resetTimeSignaturesDelta(const ValueTree &state)
+void ProjectTimeline::resetTimeSignaturesDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::timeSignaturesAdded));
     this->timeSignaturesSequence->reset();
     
-    forEachValueTreeChildWithType(state, e, Serialization::Midi::timeSignature)
+    forEachChildWithType(state, e, Serialization::Midi::timeSignature)
     {
         this->timeSignaturesSequence->checkoutEvent<TimeSignatureEvent>(e);
     }
@@ -447,25 +447,25 @@ void ProjectTimeline::resetTimeSignaturesDelta(const ValueTree &state)
     this->timeSignaturesSequence->updateBeatRange(false);
 }
 
-ValueTree ProjectTimeline::serializeKeySignaturesDelta() const
+SerializedData ProjectTimeline::serializeKeySignaturesDelta() const
 {
-    ValueTree tree(Serialization::VCS::ProjectTimelineDeltas::keySignaturesAdded);
+    SerializedData tree(Serialization::VCS::ProjectTimelineDeltas::keySignaturesAdded);
 
     for (int i = 0; i < this->keySignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->keySignaturesSequence->getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        tree.appendChild(event->serialize());
     }
 
     return tree;
 }
 
-void ProjectTimeline::resetKeySignaturesDelta(const ValueTree &state)
+void ProjectTimeline::resetKeySignaturesDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::keySignaturesAdded));
     this->keySignaturesSequence->reset();
 
-    forEachValueTreeChildWithType(state, e, Serialization::Midi::keySignature)
+    forEachChildWithType(state, e, Serialization::Midi::keySignature)
     {
         this->keySignaturesSequence->checkoutEvent<KeySignatureEvent>(e);
     }

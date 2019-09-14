@@ -61,20 +61,20 @@ int MidiTrackRenameAction::getSizeInUnits()
     return this->xPathBefore.length() + this->xPathAfter.length();
 }
 
-ValueTree MidiTrackRenameAction::serialize() const
+SerializedData MidiTrackRenameAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::midiTrackRenameAction);
-    tree.setProperty(Serialization::Undo::xPathBefore, this->xPathBefore, nullptr);
-    tree.setProperty(Serialization::Undo::xPathAfter, this->xPathAfter, nullptr);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::midiTrackRenameAction);
+    tree.setProperty(Serialization::Undo::xPathBefore, this->xPathBefore);
+    tree.setProperty(Serialization::Undo::xPathAfter, this->xPathAfter);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     return tree;
 }
 
-void MidiTrackRenameAction::deserialize(const ValueTree &tree)
+void MidiTrackRenameAction::deserialize(const SerializedData &data)
 {
-    this->xPathBefore = tree.getProperty(Serialization::Undo::xPathBefore);
-    this->xPathAfter = tree.getProperty(Serialization::Undo::xPathAfter);
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->xPathBefore = data.getProperty(Serialization::Undo::xPathBefore);
+    this->xPathAfter = data.getProperty(Serialization::Undo::xPathAfter);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackRenameAction::reset()
@@ -124,20 +124,20 @@ int MidiTrackChangeColourAction::getSizeInUnits()
     return sizeof(this->colourBefore) + sizeof(this->colourAfter);
 }
 
-ValueTree MidiTrackChangeColourAction::serialize() const
+SerializedData MidiTrackChangeColourAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::midiTrackChangeColourAction);
-    tree.setProperty(Serialization::Undo::colourBefore, this->colourBefore.toString(), nullptr);
-    tree.setProperty(Serialization::Undo::colourAfter, this->colourAfter.toString(), nullptr);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::midiTrackChangeColourAction);
+    tree.setProperty(Serialization::Undo::colourBefore, this->colourBefore.toString());
+    tree.setProperty(Serialization::Undo::colourAfter, this->colourAfter.toString());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     return tree;
 }
 
-void MidiTrackChangeColourAction::deserialize(const ValueTree &tree)
+void MidiTrackChangeColourAction::deserialize(const SerializedData &data)
 {
-    this->colourBefore = Colour::fromString(tree.getProperty(Serialization::Undo::colourBefore).toString());
-    this->colourAfter = Colour::fromString(tree.getProperty(Serialization::Undo::colourAfter).toString());
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->colourBefore = Colour::fromString(data.getProperty(Serialization::Undo::colourBefore).toString());
+    this->colourAfter = Colour::fromString(data.getProperty(Serialization::Undo::colourAfter).toString());
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackChangeColourAction::reset()
@@ -185,20 +185,20 @@ int MidiTrackChangeInstrumentAction::getSizeInUnits()
     return this->instrumentIdAfter.length() + this->instrumentIdBefore.length();
 }
 
-ValueTree MidiTrackChangeInstrumentAction::serialize() const
+SerializedData MidiTrackChangeInstrumentAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::midiTrackChangeInstrumentAction);
-    tree.setProperty(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore, nullptr);
-    tree.setProperty(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter, nullptr);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::midiTrackChangeInstrumentAction);
+    tree.setProperty(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore);
+    tree.setProperty(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     return tree;
 }
 
-void MidiTrackChangeInstrumentAction::deserialize(const ValueTree &tree)
+void MidiTrackChangeInstrumentAction::deserialize(const SerializedData &data)
 {
-    this->instrumentIdBefore = tree.getProperty(Serialization::Undo::instrumentIdBefore);
-    this->instrumentIdAfter = tree.getProperty(Serialization::Undo::instrumentIdAfter);
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->instrumentIdBefore = data.getProperty(Serialization::Undo::instrumentIdBefore);
+    this->instrumentIdAfter = data.getProperty(Serialization::Undo::instrumentIdAfter);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackChangeInstrumentAction::reset()

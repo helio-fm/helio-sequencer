@@ -874,21 +874,21 @@ void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree PatternRoll::serialize() const
+SerializedData PatternRoll::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(UI::patternRoll);
+    SerializedData tree(UI::patternRoll);
 
-    tree.setProperty(UI::beatWidth, roundf(this->beatWidth), nullptr);
+    tree.setProperty(UI::beatWidth, roundf(this->beatWidth));
 
     tree.setProperty(UI::startBeat,
-        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX())), nullptr);
+        roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX())));
 
     tree.setProperty(UI::endBeat,
         roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX() +
-            this->getViewport().getViewWidth())), nullptr);
+            this->getViewport().getViewWidth())));
 
-    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);
+    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
 
     // m?
     //tree.setProperty(UI::selection, this->getLassoSelection().serialize(), nullptr);
@@ -896,14 +896,14 @@ ValueTree PatternRoll::serialize() const
     return tree;
 }
 
-void PatternRoll::deserialize(const ValueTree &tree)
+void PatternRoll::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
 
     const auto root =
-        tree.hasType(UI::patternRoll) ?
-        tree : tree.getChildWithName(UI::patternRoll);
+        data.hasType(UI::patternRoll) ?
+        data : data.getChildWithName(UI::patternRoll);
 
     if (!root.isValid())
     {

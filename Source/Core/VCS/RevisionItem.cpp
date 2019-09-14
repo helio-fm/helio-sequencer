@@ -37,7 +37,7 @@ RevisionItem::RevisionItem(Type type, TrackedItem *targetToCopy) :
         {
             const auto targetDelta = targetToCopy->getDelta(i);
             this->deltas.add(targetDelta->createCopy());
-            ValueTree data(targetToCopy->getDeltaData(i));
+            SerializedData data(targetToCopy->getDeltaData(i));
             this->deltasData.add(data);
             //jassert(!data.getParent().isValid());
         }
@@ -81,7 +81,7 @@ Delta *RevisionItem::getDelta(int index) const noexcept
     return this->deltas[index];
 }
 
-ValueTree RevisionItem::getDeltaData(int deltaIndex) const noexcept
+SerializedData RevisionItem::getDeltaData(int deltaIndex) const noexcept
 {
     return this->deltasData[deltaIndex];
 }
@@ -100,38 +100,38 @@ DiffLogic *RevisionItem::getDiffLogic() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree RevisionItem::serialize() const
+SerializedData RevisionItem::serialize() const
 {
-    ValueTree tree(Serialization::VCS::revisionItem);
+    SerializedData tree(Serialization::VCS::revisionItem);
 
     this->serializeVCSUuid(tree);
 
-    tree.setProperty(Serialization::VCS::revisionItemType, int(this->getType()), nullptr);
-    tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName(), nullptr);
-    tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString(), nullptr);
+    tree.setProperty(Serialization::VCS::revisionItemType, int(this->getType()));
+    tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName());
+    tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString());
 
     for (int i = 0; i < this->deltas.size(); ++i)
     {
         const auto *delta = this->deltas.getUnchecked(i);
-        ValueTree deltaNode(delta->serialize());
-        const ValueTree deltaData(this->getDeltaData(i));
+        SerializedData deltaNode(delta->serialize());
+        const SerializedData deltaData(this->getDeltaData(i));
 
-        // sometimes we need to create copy since value trees cannot be shared between two parents
+        // sometimes we need to create copy since serialized data cannot be shared between two parents
         // but Snapshot seems to share revision items on checkout; need to fix this someday:
-        deltaNode.appendChild(deltaData.getParent().isValid() ? deltaData.createCopy() : deltaData, nullptr);
-        tree.appendChild(deltaNode, nullptr);
+        deltaNode.appendChild(deltaData.getParent().isValid() ? deltaData.createCopy() : deltaData);
+        tree.appendChild(deltaNode);
     }
 
     return tree;
 }
 
-void RevisionItem::deserialize(const ValueTree &tree)
+void RevisionItem::deserialize(const SerializedData &data)
 {
     // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
     jassertfalse;
 }
 
-void RevisionItem::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup)
+void RevisionItem::deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup)
 {
     this->reset();
 

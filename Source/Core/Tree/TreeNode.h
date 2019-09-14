@@ -181,8 +181,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void reset() override;
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
 
 protected:
 

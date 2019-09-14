@@ -237,26 +237,26 @@ Function<void(const String &text)> AnnotationsSequence::getEventRenameCallback(c
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree AnnotationsSequence::serialize() const
+SerializedData AnnotationsSequence::serialize() const
 {
-    ValueTree tree(Serialization::Midi::annotations);
+    SerializedData tree(Serialization::Midi::annotations);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        tree.appendChild(event->serialize());
     }
 
     return tree;
 }
 
-void AnnotationsSequence::deserialize(const ValueTree &tree)
+void AnnotationsSequence::deserialize(const SerializedData &data)
 {
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Midi::annotations) ?
-        tree : tree.getChildWithName(Serialization::Midi::annotations);
+        data.hasType(Serialization::Midi::annotations) ?
+        data : data.getChildWithName(Serialization::Midi::annotations);
 
     if (!root.isValid())
     {
@@ -266,7 +266,7 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0.f;
     float firstBeat = 0.f;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::annotation)
+    forEachChildWithType(root, e, Serialization::Midi::annotation)
     {
         AnnotationEvent *annotation = new AnnotationEvent(this);
         annotation->deserialize(e);

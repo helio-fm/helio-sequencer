@@ -273,24 +273,24 @@ void TreeNode::reset()
     this->deleteAllChildren();
 }
 
-ValueTree TreeNode::serialize() const
+SerializedData TreeNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeNode);
-    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
-    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
+    SerializedData tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name);
     TreeNodeSerializer::serializeChildren(*this, tree);
     return tree;
 }
 
-void TreeNode::deserialize(const ValueTree &tree)
+void TreeNode::deserialize(const SerializedData &data)
 {
     // Do not reset here, subclasses may rely
     // on this method in their deserialization
     //this->reset();
 
-    this->name = tree.getProperty(Serialization::Core::treeNodeName);
+    this->name = data.getProperty(Serialization::Core::treeNodeName);
 
-    TreeNodeSerializer::deserializeChildren(*this, tree);
+    TreeNodeSerializer::deserializeChildren(*this, data);
 }
 
 bool TreeNode::isSelectedOrHasSelectedChild() const

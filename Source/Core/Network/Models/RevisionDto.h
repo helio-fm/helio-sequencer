@@ -24,13 +24,13 @@ class RevisionDto final : public ApiModel
 public:
 
     RevisionDto() noexcept : ApiModel({}) {}
-    RevisionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    RevisionDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     String getId() const noexcept { return DTO_PROPERTY(Revisions::id); }
     String getMessage() const noexcept { return DTO_PROPERTY(Revisions::message); }
     String getParentId() const noexcept { return DTO_PROPERTY(Revisions::parentId); }
     int64 getTimestamp() const noexcept { return DTO_PROPERTY(Revisions::timestamp); }
-    ValueTree getData() const noexcept { return DTO_CHILD(Revisions::data); }
+    SerializedData getData() const noexcept { return DTO_CHILD(Revisions::data); }
 
     JUCE_LEAK_DETECTOR(RevisionDto)
 };

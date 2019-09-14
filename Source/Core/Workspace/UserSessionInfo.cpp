@@ -63,26 +63,26 @@ int UserSessionInfo::compareElements(UserSessionInfo *first, UserSessionInfo *se
     return int(first->updatedAt.toMilliseconds() - second->updatedAt.toMilliseconds());
 }
 
-ValueTree UserSessionInfo::serialize() const
+SerializedData UserSessionInfo::serialize() const
 {
     using namespace Serialization::User;
-    ValueTree root(Sessions::session);
+    SerializedData root(Sessions::session);
 
-    root.setProperty(Sessions::deviceId, this->deviceId, nullptr);
-    root.setProperty(Sessions::platformId, this->platformId, nullptr);
-    root.setProperty(Sessions::createdAt, this->createdAt.toMilliseconds(), nullptr);
-    root.setProperty(Sessions::updatedAt, this->updatedAt.toMilliseconds(), nullptr);
+    root.setProperty(Sessions::deviceId, this->deviceId);
+    root.setProperty(Sessions::platformId, this->platformId);
+    root.setProperty(Sessions::createdAt, this->createdAt.toMilliseconds());
+    root.setProperty(Sessions::updatedAt, this->updatedAt.toMilliseconds());
 
     return root;
 }
 
-void UserSessionInfo::deserialize(const ValueTree &tree)
+void UserSessionInfo::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization::User;
 
-    const auto root = tree.hasType(Sessions::session) ?
-        tree : tree.getChildWithName(Sessions::session);
+    const auto root = data.hasType(Sessions::session) ?
+        data : data.getChildWithName(Sessions::session);
 
     if (!root.isValid()) { return; }
 

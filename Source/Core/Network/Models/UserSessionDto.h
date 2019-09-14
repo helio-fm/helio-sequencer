@@ -23,7 +23,7 @@ class UserSessionDto final : public ApiModel
 {
 public:
 
-    UserSessionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    UserSessionDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     String getDeviceId() const noexcept { return DTO_PROPERTY(Sessions::deviceId); }
     String getPlatformId() const noexcept { return DTO_PROPERTY(Sessions::platformId); }

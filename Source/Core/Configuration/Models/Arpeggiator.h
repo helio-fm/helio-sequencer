@@ -83,8 +83,8 @@ public:
         // Beat is relative to sequence start (i.e. first one == 0)
         float beat;
 
-        ValueTree serialize() const override;
-        void deserialize(const ValueTree &tree) override;
+        SerializedData serialize() const override;
+        void deserialize(const SerializedData &data) override;
         void reset() override;
 
         static int compareElements(const Key &first, const Key &second) noexcept;
@@ -117,8 +117,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//

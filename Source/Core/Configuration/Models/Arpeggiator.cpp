@@ -355,31 +355,31 @@ Identifier Arpeggiator::getResourceType() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Arpeggiator::serialize() const
+SerializedData Arpeggiator::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Arps::arpeggiator);
+    SerializedData tree(Arps::arpeggiator);
 
-    tree.setProperty(Arps::name, this->name, nullptr);
-    tree.setProperty(Arps::type, this->type.toString(), nullptr);
+    tree.setProperty(Arps::name, this->name);
+    tree.setProperty(Arps::type, this->type.toString());
 
-    ValueTree seq(Arps::sequence);
+    SerializedData seq(Arps::sequence);
     for (int i = 0; i < this->keys.size(); ++i)
     {
-        seq.appendChild(this->keys.getUnchecked(i).serialize(), nullptr);
+        seq.appendChild(this->keys.getUnchecked(i).serialize());
     }
 
-    tree.appendChild(seq, nullptr);
+    tree.appendChild(seq);
 
     return tree;
 }
 
-void Arpeggiator::deserialize(const ValueTree &tree)
+void Arpeggiator::deserialize(const SerializedData &data)
 {
     using namespace Serialization;
 
-    const auto root = tree.hasType(Arps::arpeggiator) ?
-        tree : tree.getChildWithName(Arps::arpeggiator);
+    const auto root = data.hasType(Arps::arpeggiator) ?
+        data : data.getChildWithName(Arps::arpeggiator);
 
     if (!root.isValid()) { return; }
 
@@ -390,7 +390,7 @@ void Arpeggiator::deserialize(const ValueTree &tree)
     this->mapper = createMapperOfType(this->type);
 
     const auto sequence = root.getChildWithName(Arps::sequence);
-    forEachValueTreeChildWithType(sequence, keyNode, Arps::key)
+    forEachChildWithType(sequence, keyNode, Arps::key)
     {
         Arpeggiator::Key key;
         key.deserialize(keyNode);
@@ -404,26 +404,26 @@ void Arpeggiator::reset()
     this->keys.clearQuick();
 }
 
-ValueTree Arpeggiator::Key::serialize() const
+SerializedData Arpeggiator::Key::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Arps::key);
-    tree.setProperty(Arps::Keys::key, this->key, nullptr);
-    tree.setProperty(Arps::Keys::period, this->period, nullptr);
-    tree.setProperty(Arps::Keys::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Arps::Keys::length, int(this->length * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Arps::Keys::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    SerializedData tree(Arps::key);
+    tree.setProperty(Arps::Keys::key, this->key);
+    tree.setProperty(Arps::Keys::period, this->period);
+    tree.setProperty(Arps::Keys::timestamp, int(this->beat * TICKS_PER_BEAT));
+    tree.setProperty(Arps::Keys::length, int(this->length * TICKS_PER_BEAT));
+    tree.setProperty(Arps::Keys::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY));
     return tree;
 }
 
-void Arpeggiator::Key::deserialize(const ValueTree &tree)
+void Arpeggiator::Key::deserialize(const SerializedData &data)
 {
     using namespace Serialization;
-    this->key = tree.getProperty(Arps::Keys::key);
-    this->period = tree.getProperty(Arps::Keys::period);
-    this->beat = float(tree.getProperty(Arps::Keys::timestamp)) / TICKS_PER_BEAT;
-    this->length = float(tree.getProperty(Arps::Keys::length)) / TICKS_PER_BEAT;
-    const auto vol = float(tree.getProperty(Arps::Keys::volume)) / VELOCITY_SAVE_ACCURACY;
+    this->key = data.getProperty(Arps::Keys::key);
+    this->period = data.getProperty(Arps::Keys::period);
+    this->beat = float(data.getProperty(Arps::Keys::timestamp)) / TICKS_PER_BEAT;
+    this->length = float(data.getProperty(Arps::Keys::length)) / TICKS_PER_BEAT;
+    const auto vol = float(data.getProperty(Arps::Keys::volume)) / VELOCITY_SAVE_ACCURACY;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
 }
 

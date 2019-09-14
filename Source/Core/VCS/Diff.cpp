@@ -49,7 +49,7 @@ void Diff::applyDelta(DeltaDiff &&deltaDiff)
     this->deltasData.add(deltaDiff.deltaData);
 }
 
-void Diff::applyDelta(Delta *newDelta, ValueTree data)
+void Diff::applyDelta(Delta *newDelta, SerializedData data)
 {
     this->deltas.add(newDelta);
     this->deltasData.add(data);
@@ -75,7 +75,7 @@ Delta *Diff::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree Diff::getDeltaData(int deltaIndex) const
+SerializedData Diff::getDeltaData(int deltaIndex) const
 {
     return this->deltasData[deltaIndex];
 }

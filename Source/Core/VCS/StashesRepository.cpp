@@ -89,30 +89,30 @@ void StashesRepository::resetQuickStash()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree StashesRepository::serialize() const
+SerializedData StashesRepository::serialize() const
 {
-    ValueTree tree(Serialization::VCS::stashesRepository);
+    SerializedData tree(Serialization::VCS::stashesRepository);
     
-    ValueTree userStashesXml(Serialization::VCS::userStashes);
-    tree.appendChild(userStashesXml, nullptr);
+    SerializedData userStashesXml(Serialization::VCS::userStashes);
+    tree.appendChild(userStashesXml);
     
-    userStashesXml.appendChild(this->userStashes->serialize(), nullptr);
+    userStashesXml.appendChild(this->userStashes->serialize());
 
-    ValueTree quickStashXml(Serialization::VCS::quickStash);
-    tree.appendChild(quickStashXml, nullptr);
+    SerializedData quickStashXml(Serialization::VCS::quickStash);
+    tree.appendChild(quickStashXml);
 
-    quickStashXml.appendChild(this->quickStash->serialize(), nullptr);
+    quickStashXml.appendChild(this->quickStash->serialize());
     
     return tree;
 }
 
-void StashesRepository::deserialize(const ValueTree &tree)
+void StashesRepository::deserialize(const SerializedData &data)
 {
     // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
     jassertfalse;
 }
 
-void StashesRepository::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup)
+void StashesRepository::deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup)
 {
     this->reset();
 

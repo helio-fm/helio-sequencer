@@ -223,15 +223,15 @@ Identifier Scale::getResourceType() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Scale::serialize() const
+SerializedData Scale::serialize() const
 {
-    ValueTree tree(Serialization::Midi::scale);
-    tree.setProperty(Serialization::Midi::scaleName, this->name, nullptr);
-    tree.setProperty(Serialization::Midi::scalePeriod, this->basePeriod, nullptr);
+    SerializedData tree(Serialization::Midi::scale);
+    tree.setProperty(Serialization::Midi::scaleName, this->name);
+    tree.setProperty(Serialization::Midi::scalePeriod, this->basePeriod);
 
     int prevKey = 0;
     String intervals;
-    for (auto key : this->keys)
+    for (const auto &key : this->keys)
     {
         if (key > 0)
         {
@@ -241,15 +241,15 @@ ValueTree Scale::serialize() const
     }
 
     intervals += String(this->getBasePeriod() - prevKey);
-    tree.setProperty(Serialization::Midi::scaleIntervals, intervals, nullptr);
+    tree.setProperty(Serialization::Midi::scaleIntervals, intervals);
 
     return tree;
 }
 
-void Scale::deserialize(const ValueTree &tree)
+void Scale::deserialize(const SerializedData &data)
 {
-    const auto root = tree.hasType(Serialization::Midi::scale) ?
-        tree : tree.getChildWithName(Serialization::Midi::scale);
+    const auto root = data.hasType(Serialization::Midi::scale) ?
+        data : data.getChildWithName(Serialization::Midi::scale);
 
     if (!root.isValid()) { return; }
 

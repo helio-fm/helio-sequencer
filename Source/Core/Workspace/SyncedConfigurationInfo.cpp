@@ -24,15 +24,15 @@ SyncedConfigurationInfo::SyncedConfigurationInfo(const UserResourceDto &remote) 
     hash(remote.getHash()),
     updatedAt(remote.getUpdateTime()) {}
 
-ValueTree SyncedConfigurationInfo::serialize() const
+SerializedData SyncedConfigurationInfo::serialize() const
 {
     using namespace Serialization::User;
-    ValueTree root(Configurations::resource);
+    SerializedData root(Configurations::resource);
 
-    root.setProperty(Configurations::type, this->type.toString(), nullptr);
-    root.setProperty(Configurations::name, this->name, nullptr);
-    root.setProperty(Configurations::hash, this->hash, nullptr);
-    root.setProperty(Configurations::updatedAt, this->updatedAt.toMilliseconds(), nullptr);
+    root.setProperty(Configurations::type, this->type.toString());
+    root.setProperty(Configurations::name, this->name);
+    root.setProperty(Configurations::hash, this->hash);
+    root.setProperty(Configurations::updatedAt, this->updatedAt.toMilliseconds());
 
     return root;
 }
@@ -47,13 +47,13 @@ String SyncedConfigurationInfo::getName() const noexcept
     return this->name;
 }
 
-void SyncedConfigurationInfo::deserialize(const ValueTree &tree)
+void SyncedConfigurationInfo::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization::User;
 
-    const auto root = tree.hasType(Configurations::resource) ?
-        tree : tree.getChildWithName(Configurations::resource);
+    const auto root = data.hasType(Configurations::resource) ?
+        data : data.getChildWithName(Configurations::resource);
 
     if (!root.isValid()) { return; }
 

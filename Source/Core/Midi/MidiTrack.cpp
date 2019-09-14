@@ -31,17 +31,17 @@ int MidiTrack::compareElements(const MidiTrack *const first, const MidiTrack *co
     return first->getTrackName().compareNatural(second->getTrackName());
 }
 
-void MidiTrack::serializeTrackProperties(ValueTree &tree) const
+void MidiTrack::serializeTrackProperties(SerializedData &tree) const
 {
     using namespace Serialization;
-    tree.setProperty(Core::trackId, this->getTrackId(), nullptr);
-    tree.setProperty(Core::trackColour, this->getTrackColour().toString(), nullptr);
-    tree.setProperty(Core::trackChannel, this->getTrackChannel(), nullptr);
-    tree.setProperty(Core::trackInstrumentId, this->getTrackInstrumentId(), nullptr);
-    tree.setProperty(Core::trackControllerNumber, this->getTrackControllerNumber(), nullptr);
+    tree.setProperty(Core::trackId, this->getTrackId());
+    tree.setProperty(Core::trackColour, this->getTrackColour().toString());
+    tree.setProperty(Core::trackChannel, this->getTrackChannel());
+    tree.setProperty(Core::trackInstrumentId, this->getTrackInstrumentId());
+    tree.setProperty(Core::trackControllerNumber, this->getTrackControllerNumber());
 }
 
-void MidiTrack::deserializeTrackProperties(const ValueTree &tree)
+void MidiTrack::deserializeTrackProperties(const SerializedData &tree)
 {
     using namespace Serialization;
 

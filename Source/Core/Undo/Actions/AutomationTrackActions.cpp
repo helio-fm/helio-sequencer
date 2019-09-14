@@ -31,7 +31,7 @@ AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source
 
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
     WeakReference<TreeNode> parentTreeItem,
-    ValueTree targetSerializedState,
+    SerializedData targetSerializedState,
     const String &xPath) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
@@ -52,7 +52,7 @@ bool AutomationTrackInsertAction::perform()
 
 bool AutomationTrackInsertAction::undo()
 {
-    if (AutomationTrackNode *treeItem =
+    if (auto *treeItem =
         this->source.findTrackById<AutomationTrackNode>(this->trackId))
     {
         // here the item state should be the same as when it was created
@@ -68,20 +68,20 @@ int AutomationTrackInsertAction::getSizeInUnits()
     return this->trackName.length();
 }
 
-ValueTree AutomationTrackInsertAction::serialize() const
+SerializedData AutomationTrackInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::automationTrackInsertAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->trackState.createCopy(), nullptr);
+    SerializedData tree(Serialization::Undo::automationTrackInsertAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->trackState.createCopy());
     return tree;
 }
 
-void AutomationTrackInsertAction::deserialize(const ValueTree &tree)
+void AutomationTrackInsertAction::deserialize(const SerializedData &data)
 {
-    this->trackName = tree.getProperty(Serialization::Undo::xPath);
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->trackState = tree.getChild(0).createCopy();
+    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->trackState = data.getChild(0).createCopy();
 }
 
 void AutomationTrackInsertAction::reset()
@@ -144,20 +144,20 @@ int AutomationTrackRemoveAction::getSizeInUnits()
     return 1;
 }
 
-ValueTree AutomationTrackRemoveAction::serialize() const
+SerializedData AutomationTrackRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::automationTrackRemoveAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->serializedTreeItem.createCopy(), nullptr);
+    SerializedData tree(Serialization::Undo::automationTrackRemoveAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->serializedTreeItem.createCopy());
     return tree;
 }
 
-void AutomationTrackRemoveAction::deserialize(const ValueTree &tree)
+void AutomationTrackRemoveAction::deserialize(const SerializedData &data)
 {
-    this->trackName = tree.getProperty(Serialization::Undo::xPath);
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->serializedTreeItem = tree.getChild(0).createCopy();
+    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->serializedTreeItem = data.getChild(0).createCopy();
 }
 
 void AutomationTrackRemoveAction::reset()

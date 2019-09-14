@@ -264,10 +264,10 @@ UniquePointer<Component> RootNode::createMenu()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void RootNode::deserialize(const ValueTree &tree)
+void RootNode::deserialize(const SerializedData &data)
 {
-    const auto root = tree.hasType(Serialization::Core::treeNode) ?
-        tree : tree.getChildWithName(Serialization::Core::treeNode);
+    const auto root = data.hasType(Serialization::Core::treeNode) ?
+        data : data.getChildWithName(Serialization::Core::treeNode);
 
     if (root.isValid())
     {

@@ -294,33 +294,33 @@ float PianoSequence::getLastBeat() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree PianoSequence::serialize() const
+SerializedData PianoSequence::serialize() const
 {
-    ValueTree tree(Serialization::Midi::track);
+    SerializedData tree(Serialization::Midi::track);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
-        const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr); // faster than addChildElement
+        const auto *event = this->midiEvents.getUnchecked(i);
+        tree.appendChild(event->serialize());
     }
     
     return tree;
 }
 
-void PianoSequence::deserialize(const ValueTree &tree)
+void PianoSequence::deserialize(const SerializedData &data)
 {
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Midi::track) ?
-        tree : tree.getChildWithName(Serialization::Midi::track);
+        data.hasType(Serialization::Midi::track) ?
+        data : data.getChildWithName(Serialization::Midi::track);
 
     if (!root.isValid())
     {
         return;
     }
 
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::note)
+    forEachChildWithType(root, e, Serialization::Midi::note)
     {
         auto *note = new Note(this);
         note->deserialize(e);

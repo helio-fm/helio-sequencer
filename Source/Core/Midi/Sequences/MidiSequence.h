@@ -78,7 +78,7 @@ public:
     }
 
     template<typename T>
-    void checkoutEvent(const ValueTree &parameters)
+    void checkoutEvent(const SerializedData &parameters)
     {
         static T empty;
         UniquePointer<T> event(new T(this, empty));

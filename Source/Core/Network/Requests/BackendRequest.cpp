@@ -59,7 +59,7 @@ var BackendRequest::Response::getProperty(const Identifier &name) const noexcept
     return this->body.getProperty(name);
 }
 
-ValueTree BackendRequest::Response::getChild(const Identifier &name) const noexcept
+SerializedData BackendRequest::Response::getChild(const Identifier &name) const noexcept
 {
     return this->body.getChildWithName(name);
 }
@@ -69,7 +69,7 @@ const Array<String> &BackendRequest::Response::getErrors() const noexcept
     return this->errors;
 }
 
-const ValueTree BackendRequest::Response::getBody() const noexcept
+const SerializedData BackendRequest::Response::getBody() const noexcept
 {
     return this->body;
 }
@@ -125,7 +125,7 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
         DBG("<< Received " << response.statusCode << " " // << responseBody);
             << responseBody.substring(0, 128) << (responseBody.length() > 128 ? ".." : ""));
 
-        ValueTree parsedResponse;
+        SerializedData parsedResponse;
         response.receipt = this->serializer.loadFromString(responseBody, parsedResponse);
         if (response.receipt.failed() || !parsedResponse.isValid())
         {
@@ -156,12 +156,12 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
     }
 }
 
-BackendRequest::Response BackendRequest::put(const ValueTree &payload) const
+BackendRequest::Response BackendRequest::put(const SerializedData &payload) const
 {
     return this->doRequest(payload, "PUT");
 }
 
-BackendRequest::Response BackendRequest::post(const ValueTree &payload) const
+BackendRequest::Response BackendRequest::post(const SerializedData &payload) const
 {
     return this->doRequest(payload, "POST");
 }
@@ -198,7 +198,7 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
     return response;
 }
 
-BackendRequest::Response BackendRequest::doRequest(const ValueTree &payload, const String &verb) const
+BackendRequest::Response BackendRequest::doRequest(const SerializedData &payload, const String &verb) const
 {
     Response response;
     UniquePointer<InputStream> stream;

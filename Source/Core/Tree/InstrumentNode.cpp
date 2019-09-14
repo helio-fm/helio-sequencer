@@ -171,20 +171,20 @@ Function<void(const String &text)> InstrumentNode::getRenameCallback()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree InstrumentNode::serialize() const
+SerializedData InstrumentNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeNode);
-    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
-    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
-    tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash(), nullptr);
+    SerializedData tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name);
+    tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash());
     return tree;
 }
 
-void InstrumentNode::deserialize(const ValueTree &tree)
+void InstrumentNode::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const String id = tree.getProperty(Serialization::Audio::instrumentId);
+    const String id = data.getProperty(Serialization::Audio::instrumentId);
     this->instrument = this->audioCore->findInstrumentById(id);
 
     if (this->instrument == nullptr ||
@@ -197,7 +197,7 @@ void InstrumentNode::deserialize(const ValueTree &tree)
     this->initInstrumentEditor();
 
     // Proceed with basic properties and children
-    TreeNode::deserialize(tree);
+    TreeNode::deserialize(data);
 
     this->updateChildrenEditors();
 }

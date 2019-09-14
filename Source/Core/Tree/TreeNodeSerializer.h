@@ -23,6 +23,6 @@ class TreeNodeSerializer
 {
 public:
 
-    static void serializeChildren(const TreeNode &parentItem, ValueTree &parent);
-    static void deserializeChildren(TreeNode &parentItem, const ValueTree &parent);
+    static void serializeChildren(const TreeNode &parentItem, SerializedData &parent);
+    static void deserializeChildren(TreeNode &parentItem, const SerializedData &parent);
 };

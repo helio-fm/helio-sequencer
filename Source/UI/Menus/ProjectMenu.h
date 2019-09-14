@@ -44,9 +44,9 @@ private:
     void showNewAutomationMenu(AnimationType animationType);
     void showControllersMenuForInstrument(const WeakReference<Instrument> instrument);
     
-    ValueTree createPianoTrackTempate(const String &name,
+    SerializedData createPianoTrackTempate(const String &name,
         const String &instrumentId, String &outTrackId) const;
-    ValueTree createAutoTrackTempate(const String &name, int controllerNumber,
+    SerializedData createAutoTrackTempate(const String &name, int controllerNumber,
         const String &instrumentId = "") const;
 
 };

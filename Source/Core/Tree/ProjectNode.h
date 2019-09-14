@@ -117,8 +117,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//
@@ -211,8 +211,8 @@ private:
 private:
 
     void initialize();
-    ValueTree save() const;
-    void load(const ValueTree &tree);
+    SerializedData save() const;
+    void load(const SerializedData &tree);
 
 private:
 

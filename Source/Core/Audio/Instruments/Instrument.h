@@ -127,8 +127,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     /* The special channel index used to refer to a filter's midi channel.*/
@@ -160,10 +160,10 @@ private:
     Instrument::AudioCallback audioCallback;
     UniquePointer<AudioProcessorGraph> processorGraph;
 
-    ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;
+    SerializedData serializeNode(AudioProcessorGraph::Node::Ptr node) const;
 
     using DeserializeNodesCallback = Function<void()>;
-    void deserializeNodesAsync(Array<ValueTree> nodesToDeserialize, DeserializeNodesCallback f);
+    void deserializeNodesAsync(Array<SerializedData> nodesToDeserialize, DeserializeNodesCallback f);
 
 private:
 

@@ -54,9 +54,9 @@ private:
 
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
-        ValueTree session(ApiKeys::session);
-        session.setProperty(ApiKeys::deviceId, App::getDeviceId(), nullptr);
-        session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName(), nullptr);
+        SerializedData session(ApiKeys::session);
+        session.setProperty(ApiKeys::deviceId, App::getDeviceId());
+        session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName());
 
         const BackendRequest request(ApiRoutes::tokenUpdate);
         this->response = request.post(session);

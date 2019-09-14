@@ -46,7 +46,7 @@ public:
     TimeSignatureEvent withBeat(float newBeat) const noexcept;
     TimeSignatureEvent withNumerator(const int newNumerator) const noexcept;
     TimeSignatureEvent withDenominator(const int newDenominator) const noexcept;
-    TimeSignatureEvent withParameters(const ValueTree &parameters) const noexcept;
+    TimeSignatureEvent withParameters(const SerializedData &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -60,8 +60,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const noexcept override;
-    void deserialize(const ValueTree &tree) noexcept override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() noexcept override;
 
     //===------------------------------------------------------------------===//

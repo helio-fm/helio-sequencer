@@ -56,7 +56,7 @@ public:
     int getTrackControllerNumber() const noexcept;
 
     Clip copyWithNewId(Pattern *newOwner = nullptr) const;
-    Clip withParameters(const ValueTree &tree) const;
+    Clip withParameters(const SerializedData &tree) const;
     Clip withBeat(float absPosition) const;
     Clip withDeltaBeat(float deltaPosition) const;
     Clip withKey(int absKey) const;
@@ -70,8 +70,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//

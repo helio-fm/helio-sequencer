@@ -48,8 +48,8 @@ public:
     String getRedoDescription() const;
     bool redo();
     
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
     
     template<typename T>
@@ -79,8 +79,8 @@ private:
         bool undo() const;
         int getTotalSize() const;
 
-        ValueTree serialize() const;
-        void deserialize(const ValueTree &tree);
+        SerializedData serialize() const;
+        void deserialize(const SerializedData &data);
         void reset();
 
         UndoAction *createUndoActionsByTagName(const Identifier &tagName);

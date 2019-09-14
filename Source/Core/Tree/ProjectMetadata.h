@@ -52,7 +52,7 @@ public:
     String getVCSName() const override;
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    ValueTree getDeltaData(int deltaIndex) const override;
+    SerializedData getDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
 
@@ -60,23 +60,23 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
-    ValueTree serializeLicenseDelta() const;
-    ValueTree serializeFullNameDelta() const;
-    ValueTree serializeAuthorDelta() const;
-    ValueTree serializeDescriptionDelta() const;
+    SerializedData serializeLicenseDelta() const;
+    SerializedData serializeFullNameDelta() const;
+    SerializedData serializeAuthorDelta() const;
+    SerializedData serializeDescriptionDelta() const;
 
-    void resetLicenseDelta(const ValueTree &state);
-    void resetFullNameDelta(const ValueTree &state);
-    void resetAuthorDelta(const ValueTree &state);
-    void resetDescriptionDelta(const ValueTree &state);
+    void resetLicenseDelta(const SerializedData &state);
+    void resetFullNameDelta(const SerializedData &state);
+    void resetAuthorDelta(const SerializedData &state);
+    void resetDescriptionDelta(const SerializedData &state);
 
 private:
 

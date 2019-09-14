@@ -31,7 +31,7 @@ ResourceManager::~ResourceManager()
     this->reset();
 }
 
-void ResourceManager::updateBaseResource(const ValueTree &resource)
+void ResourceManager::updateBaseResource(const SerializedData &resource)
 {
     DBG("Updating downloaded resource file for " + this->resourceType.toString());
 
@@ -95,13 +95,13 @@ const BaseResource &ResourceManager::getResourceComparator() const
 }
 
 
-ValueTree ResourceManager::serializeResources(const Resources &resources)
+SerializedData ResourceManager::serializeResources(const Resources &resources)
 {
-    ValueTree tree(this->resourceType);
+    SerializedData tree(this->resourceType);
 
     for (const auto &resource : resources)
     {
-        tree.appendChild(resource.second->serialize(), nullptr);
+        tree.appendChild(resource.second->serialize());
     }
 
     return tree;

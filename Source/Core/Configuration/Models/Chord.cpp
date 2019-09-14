@@ -89,10 +89,11 @@ const Array<Chord::Key> &Chord::getScaleKeys() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Chord::serialize() const
+SerializedData Chord::serialize() const
 {
-    ValueTree tree(Serialization::Midi::chord);
-    tree.setProperty(Serialization::Midi::chordName, this->name, nullptr);
+    using namespace Serialization;
+    SerializedData tree(Midi::chord);
+    tree.setProperty(Midi::chordName, this->name);
 
     String keysString;
     for (auto &key : this->scaleKeys)
@@ -100,21 +101,22 @@ ValueTree Chord::serialize() const
         keysString += key.getStringValue() + " ";
     }
 
-    tree.setProperty(Serialization::Midi::chordScaleKeys, keysString.trim(), nullptr);
+    tree.setProperty(Midi::chordScaleKeys, keysString.trim());
     return tree;
 }
 
-void Chord::deserialize(const ValueTree &tree)
+void Chord::deserialize(const SerializedData &data)
 {
-    const auto root = tree.hasType(Serialization::Midi::chord) ?
-        tree : tree.getChildWithName(Serialization::Midi::chord);
+    using namespace Serialization;
+    const auto root = data.hasType(Midi::chord) ?
+        data : data.getChildWithName(Midi::chord);
 
     if (!root.isValid()) { return; }
 
     this->reset();
 
-    this->name = root.getProperty(Serialization::Midi::chordName, this->name);
-    const String keysString = root.getProperty(Serialization::Midi::chordScaleKeys);
+    this->name = root.getProperty(Midi::chordName, this->name);
+    const String keysString = root.getProperty(Midi::chordScaleKeys);
 
     StringArray tokens;
     tokens.addTokens(keysString, true);

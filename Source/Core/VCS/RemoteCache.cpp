@@ -60,35 +60,35 @@ bool RemoteCache::isOutdated() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree RemoteCache::serialize() const
+SerializedData RemoteCache::serialize() const
 {
-    ValueTree tree(Serialization::VCS::remoteCache);
+    SerializedData tree(Serialization::VCS::remoteCache);
 
-    tree.setProperty(Serialization::VCS::remoteCacheSyncTime, this->lastSyncTime.toMilliseconds(), nullptr);
+    tree.setProperty(Serialization::VCS::remoteCacheSyncTime, this->lastSyncTime.toMilliseconds());
 
     for (const auto &child : this->fetchCache)
     {
-        ValueTree revNode(Serialization::VCS::remoteRevision);
-        revNode.setProperty(Serialization::VCS::remoteRevisionId, child.first, nullptr);
-        revNode.setProperty(Serialization::VCS::remoteRevisionTimeStamp, child.second, nullptr);
-        tree.appendChild(revNode, nullptr);
+        SerializedData revNode(Serialization::VCS::remoteRevision);
+        revNode.setProperty(Serialization::VCS::remoteRevisionId, child.first);
+        revNode.setProperty(Serialization::VCS::remoteRevisionTimeStamp, child.second);
+        tree.appendChild(revNode);
     }
 
     return tree;
 }
 
-void RemoteCache::deserialize(const ValueTree &tree)
+void RemoteCache::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const auto root = tree.hasType(Serialization::VCS::remoteCache) ?
-        tree : tree.getChildWithName(Serialization::VCS::remoteCache);
+    const auto root = data.hasType(Serialization::VCS::remoteCache) ?
+        data : data.getChildWithName(Serialization::VCS::remoteCache);
 
     if (!root.isValid()) { return; }
 
     this->lastSyncTime = Time(root.getProperty(Serialization::VCS::remoteCacheSyncTime));
 
-    forEachValueTreeChildWithType(root, e, Serialization::VCS::remoteRevision)
+    forEachChildWithType(root, e, Serialization::VCS::remoteRevision)
     {
         const String revisionId = e.getProperty(Serialization::VCS::remoteRevisionId);
         const int64 revisionTimestamp = e.getProperty(Serialization::VCS::remoteRevisionTimeStamp);

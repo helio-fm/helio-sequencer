@@ -219,12 +219,12 @@ String Clipboard::getCurrentContentAsString() const
     return {};
 }
 
-const ValueTree &Clipboard::getData() const noexcept
+const SerializedData &Clipboard::getData() const noexcept
 {
     return this->clipboard;
 }
 
-void Clipboard::copy(const ValueTree &data, bool mirrorToSystemClipboard /*= false*/)
+void Clipboard::copy(const SerializedData &data, bool mirrorToSystemClipboard /*= false*/)
 {
     this->clipboard = data;
 
@@ -738,12 +738,12 @@ void App::checkPlugin(const String &markerFile)
             // let host know if we haven't crashed at the moment
             if (typesFound.size() != 0)
             {
-                ValueTree typesNode(Serialization::Core::instrumentsList);
+                SerializedData typesNode(Serialization::Core::instrumentsList);
 
                 for (const auto *description : typesFound)
                 {
                     const SerializablePluginDescription sd(*description);
-                    typesNode.appendChild(sd.serialize(), nullptr);
+                    typesNode.appendChild(sd.serialize());
                 }
 
                 DocumentHelpers::save<XmlSerializer>(tempFile, typesNode);

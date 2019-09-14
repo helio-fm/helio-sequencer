@@ -109,7 +109,7 @@ KeySignatureEvent KeySignatureEvent::withScale(Scale::Ptr scale) const noexcept
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withParameters(const ValueTree &parameters) const noexcept
+KeySignatureEvent KeySignatureEvent::withParameters(const SerializedData &parameters) const noexcept
 {
     KeySignatureEvent e(*this);
     e.deserialize(parameters);
@@ -141,27 +141,27 @@ const Scale::Ptr KeySignatureEvent::getScale() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree KeySignatureEvent::serialize() const noexcept
+SerializedData KeySignatureEvent::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Midi::keySignature);
-    tree.setProperty(Midi::id, this->id, nullptr);
-    tree.setProperty(Midi::key, this->rootKey, nullptr);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.appendChild(this->scale->serialize(), nullptr);
+    SerializedData tree(Midi::keySignature);
+    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::key, this->rootKey);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
+    tree.appendChild(this->scale->serialize());
     return tree;
 }
 
-void KeySignatureEvent::deserialize(const ValueTree &tree) noexcept
+void KeySignatureEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->rootKey = tree.getProperty(Midi::key, 0);
-    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = tree.getProperty(Midi::id);
+    this->rootKey = data.getProperty(Midi::key, 0);
+    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->id = data.getProperty(Midi::id);
 
     this->scale = new Scale();
-    this->scale->deserialize(tree);
+    this->scale->deserialize(data);
 }
 
 void KeySignatureEvent::reset() noexcept

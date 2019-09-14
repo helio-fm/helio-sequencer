@@ -23,7 +23,7 @@ class AppVersionDto final : public ApiModel
 {
 public:
 
-    AppVersionDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    AppVersionDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     String getArchitecture() const noexcept { return DTO_PROPERTY(Versions::architecture); }
     String getBranch() const noexcept { return DTO_PROPERTY(Versions::branch); }

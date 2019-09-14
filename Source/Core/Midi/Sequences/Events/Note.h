@@ -55,7 +55,7 @@ public:
     Note withDeltaLength(float deltaLength) const noexcept;
     Note withVelocity(float newVelocity) const noexcept;
     Note withTuplet(Tuplet tuplet) const noexcept;
-    Note withParameters(const ValueTree &parameters) const noexcept;
+    Note withParameters(const SerializedData &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -70,8 +70,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const noexcept override;
-    void deserialize(const ValueTree &tree) noexcept override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() noexcept override;
 
     //===------------------------------------------------------------------===//

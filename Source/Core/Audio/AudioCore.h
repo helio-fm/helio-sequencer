@@ -111,8 +111,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//
@@ -169,8 +169,8 @@ private:
     void addInstrumentToDevice(Instrument *instrument);
     void removeInstrumentFromDevice(Instrument *instrument);
 
-    ValueTree serializeDeviceManager() const;
-    void deserializeDeviceManager(const ValueTree &tree);
+    SerializedData serializeDeviceManager() const;
+    void deserializeDeviceManager(const SerializedData &tree);
 
     OwnedArray<Instrument> instruments;
     UniquePointer<AudioMonitor> audioMonitor;

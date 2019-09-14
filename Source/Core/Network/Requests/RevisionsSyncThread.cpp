@@ -91,9 +91,9 @@ void RevisionsSyncThread::run()
         {
             // Put the project:
             const BackendRequest createProjectRequest(projectRoute);
-            ValueTree payload(ApiKeys::Projects::project);
+            SerializedData payload(ApiKeys::Projects::project);
             // head reference will be put later when all revisions are pushed
-            payload.setProperty(ApiKeys::Projects::title, this->projectName, nullptr);
+            payload.setProperty(ApiKeys::Projects::title, this->projectName);
             this->response = createProjectRequest.put(payload);
             if (!this->response.is2xx())
             {
@@ -216,10 +216,10 @@ void RevisionsSyncThread::run()
 
     // finally, update project head ref
     const BackendRequest createProjectRequest(projectRoute);
-    ValueTree payload(ApiKeys::Projects::project);
+    SerializedData payload(ApiKeys::Projects::project);
     // head reference will be put later when all revisions are pushed
-    payload.setProperty(ApiKeys::Projects::title, this->projectName, nullptr);
-    payload.setProperty(ApiKeys::Projects::head, this->vcs->getHead().getHeadingRevision()->getUuid(), nullptr);
+    payload.setProperty(ApiKeys::Projects::title, this->projectName);
+    payload.setProperty(ApiKeys::Projects::head, this->vcs->getHead().getHeadingRevision()->getUuid());
     this->response = createProjectRequest.put(payload);
     if (!this->response.is2xx())
     {
@@ -241,15 +241,15 @@ void RevisionsSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
             .replace(":projectId", this->projectId)
             .replace(":revisionId", root->getUuid()));
 
-        ValueTree payload(ApiKeys::Revisions::revision);
-        payload.setProperty(ApiKeys::Revisions::message, root->getMessage(), nullptr);
-        payload.setProperty(ApiKeys::Revisions::timestamp, String(root->getTimeStamp()), nullptr);
+        SerializedData payload(ApiKeys::Revisions::revision);
+        payload.setProperty(ApiKeys::Revisions::message, root->getMessage());
+        payload.setProperty(ApiKeys::Revisions::timestamp, String(root->getTimeStamp()));
         payload.setProperty(ApiKeys::Revisions::parentId,
-            (root->getParent() ? var(root->getParent()->getUuid()) : var()), nullptr);
+            (root->getParent() ? var(root->getParent()->getUuid()) : var()));
 
-        ValueTree data(ApiKeys::Revisions::data);
-        data.addChild(root->serializeDeltas(), 0, nullptr);
-        payload.addChild(data, 0, nullptr);
+        SerializedData data(ApiKeys::Revisions::data);
+        data.appendChild(root->serializeDeltas());
+        payload.appendChild(data);
 
         const BackendRequest revisionRequest(revisionRoute);
         this->response = revisionRequest.put(payload);

@@ -25,8 +25,8 @@ public:
     explicit SerializablePluginDescription(const PluginDescription &other);
     explicit SerializablePluginDescription(const PluginDescription *other);
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     bool isValid() const;

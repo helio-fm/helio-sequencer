@@ -24,12 +24,12 @@
 namespace VCS
 {
 
-void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
+void deserializePatternChanges(const SerializedData &state, const SerializedData &changes,
     Array<Clip> &stateClips, Array<Clip> &changesClips)
 {
     if (state.isValid())
     {
-        forEachValueTreeChildWithType(state, e, Serialization::Midi::clip)
+        forEachChildWithType(state, e, Serialization::Midi::clip)
         {
             Clip clip;
             clip.deserialize(e);
@@ -39,7 +39,7 @@ void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
 
     if (changes.isValid())
     {
-        forEachValueTreeChildWithType(changes, e, Serialization::Midi::clip)
+        forEachChildWithType(changes, e, Serialization::Midi::clip)
         {
             Clip clip;
             clip.deserialize(e);
@@ -48,13 +48,13 @@ void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
     }
 }
 
-ValueTree serializePattern(Array<Clip> changes, const Identifier &tag)
+SerializedData serializePattern(Array<Clip> changes, const Identifier &tag)
 {
-    ValueTree tree(tag);
+    SerializedData tree(tag);
 
     for (int i = 0; i < changes.size(); ++i)
     {
-        tree.appendChild(changes.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(changes.getUnchecked(i).serialize());
     }
 
     return tree;
@@ -77,7 +77,7 @@ bool PatternDiffHelpers::checkIfDeltaIsPatternType(const Delta *d)
         d->hasType(PatternDeltas::clipsChanged));
 }
 
-ValueTree PatternDiffHelpers::mergeClipsAdded(const ValueTree &state, const ValueTree &changes)
+SerializedData PatternDiffHelpers::mergeClipsAdded(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -109,7 +109,7 @@ ValueTree PatternDiffHelpers::mergeClipsAdded(const ValueTree &state, const Valu
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-ValueTree PatternDiffHelpers::mergeClipsRemoved(const ValueTree &state, const ValueTree &changes)
+SerializedData PatternDiffHelpers::mergeClipsRemoved(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -139,7 +139,7 @@ ValueTree PatternDiffHelpers::mergeClipsRemoved(const ValueTree &state, const Va
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-ValueTree PatternDiffHelpers::mergeClipsChanged(const ValueTree &state, const ValueTree &changes)
+SerializedData PatternDiffHelpers::mergeClipsChanged(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 
@@ -173,7 +173,7 @@ ValueTree PatternDiffHelpers::mergeClipsChanged(const ValueTree &state, const Va
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const ValueTree &state, const ValueTree &changes)
+Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const SerializedData &state, const SerializedData &changes)
 {
     using namespace Serialization::VCS;
 

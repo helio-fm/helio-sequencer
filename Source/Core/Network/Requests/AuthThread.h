@@ -59,12 +59,12 @@ private:
         namespace ApiRoutes = Routes::Api;
 
         // Construct payload object:
-        ValueTree initSession(ApiKeys::AuthSession::session);
-        initSession.setProperty(ApiKeys::AuthSession::provider, this->provider, nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::appName, "Helio", nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::appVersion, App::getAppReadableVersion(), nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::appPlatform, SystemStats::getOperatingSystemName(), nullptr);
-        initSession.setProperty(ApiKeys::AuthSession::deviceId, App::getDeviceId(), nullptr);
+        SerializedData initSession(ApiKeys::AuthSession::session);
+        initSession.setProperty(ApiKeys::AuthSession::provider, this->provider);
+        initSession.setProperty(ApiKeys::AuthSession::appName, "Helio");
+        initSession.setProperty(ApiKeys::AuthSession::appVersion, App::getAppReadableVersion());
+        initSession.setProperty(ApiKeys::AuthSession::appPlatform, SystemStats::getOperatingSystemName());
+        initSession.setProperty(ApiKeys::AuthSession::deviceId, App::getDeviceId());
 
         const BackendRequest initWebAuthRequest(ApiRoutes::initWebAuth);
         this->response = initWebAuthRequest.post(initSession);
@@ -85,9 +85,9 @@ private:
         const AuthSessionDto authSession(this->response.getBody());
         const BackendRequest checkWebAuthRequest(ApiRoutes::finaliseWebAuth);
 
-        ValueTree finaliseSession(ApiKeys::AuthSession::session);
-        finaliseSession.setProperty(ApiKeys::AuthSession::id, authSession.getSessionId(), nullptr);
-        finaliseSession.setProperty(ApiKeys::AuthSession::secret, authSession.getSecret(), nullptr);
+        SerializedData finaliseSession(ApiKeys::AuthSession::session);
+        finaliseSession.setProperty(ApiKeys::AuthSession::id, authSession.getSessionId());
+        finaliseSession.setProperty(ApiKeys::AuthSession::secret, authSession.getSecret());
 
         // 204 response clearly indicates that a valid session exists,
         // and it hasn't failed, but still there's no token available:

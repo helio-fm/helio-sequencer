@@ -24,7 +24,7 @@ class ProjectDto final : public ApiModel
 {
 public:
 
-    ProjectDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    ProjectDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     String getId() const noexcept { return DTO_PROPERTY(Projects::id); }
     String getTitle() const noexcept { return DTO_PROPERTY(Projects::title); }

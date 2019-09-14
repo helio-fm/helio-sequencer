@@ -39,8 +39,8 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
     
 private:
@@ -71,8 +71,8 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
 private:
@@ -103,8 +103,8 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
 private:

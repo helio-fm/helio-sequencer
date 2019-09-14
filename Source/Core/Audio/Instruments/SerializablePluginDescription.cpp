@@ -23,40 +23,40 @@ SerializablePluginDescription::SerializablePluginDescription() {}
 SerializablePluginDescription::SerializablePluginDescription(const PluginDescription &other) :
     PluginDescription(other) {}
 
-ValueTree SerializablePluginDescription::serialize() const
+SerializedData SerializablePluginDescription::serialize() const
 {
     using namespace Serialization;
 
-    ValueTree tree(Audio::plugin);
-    tree.setProperty(Audio::pluginName, this->name, nullptr);
+    SerializedData tree(Audio::plugin);
+    tree.setProperty(Audio::pluginName, this->name);
 
     if (this->descriptiveName != this->name)
     {
-        tree.setProperty(Audio::pluginDescription, this->descriptiveName, nullptr);
+        tree.setProperty(Audio::pluginDescription, this->descriptiveName);
     }
 
-    tree.setProperty(Audio::pluginFormat, this->pluginFormatName, nullptr);
-    tree.setProperty(Audio::pluginCategory, this->category, nullptr);
-    tree.setProperty(Audio::pluginManufacturer, this->manufacturerName, nullptr);
-    tree.setProperty(Audio::pluginVersion, this->version, nullptr);
-    tree.setProperty(Audio::pluginFile, this->fileOrIdentifier, nullptr);
-    tree.setProperty(Audio::pluginFileModTime, String::toHexString(this->lastFileModTime.toMilliseconds()), nullptr);
-    tree.setProperty(Audio::pluginId, String::toHexString(this->uid), nullptr);
-    tree.setProperty(Audio::pluginIsInstrument, this->isInstrument, nullptr);
-    tree.setProperty(Audio::pluginNumInputs, this->numInputChannels, nullptr);
-    tree.setProperty(Audio::pluginNumOutputs, this->numOutputChannels, nullptr);
+    tree.setProperty(Audio::pluginFormat, this->pluginFormatName);
+    tree.setProperty(Audio::pluginCategory, this->category);
+    tree.setProperty(Audio::pluginManufacturer, this->manufacturerName);
+    tree.setProperty(Audio::pluginVersion, this->version);
+    tree.setProperty(Audio::pluginFile, this->fileOrIdentifier);
+    tree.setProperty(Audio::pluginFileModTime, String::toHexString(this->lastFileModTime.toMilliseconds()));
+    tree.setProperty(Audio::pluginId, String::toHexString(this->uid));
+    tree.setProperty(Audio::pluginIsInstrument, this->isInstrument);
+    tree.setProperty(Audio::pluginNumInputs, this->numInputChannels);
+    tree.setProperty(Audio::pluginNumOutputs, this->numOutputChannels);
 
     return tree;
 }
 
-void SerializablePluginDescription::deserialize(const ValueTree &tree)
+void SerializablePluginDescription::deserialize(const SerializedData &data)
 {
     using namespace Serialization;
 
     this->reset();
 
-    const auto root = tree.hasType(Audio::plugin) ?
-        tree : tree.getChildWithName(Audio::plugin);
+    const auto root = data.hasType(Audio::plugin) ?
+        data : data.getChildWithName(Audio::plugin);
 
     if (root.isValid())
     {

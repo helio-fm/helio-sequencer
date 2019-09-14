@@ -25,14 +25,14 @@
 ScriptsManager::ScriptsManager() :
     ResourceManager(Serialization::Resources::scripts) {}
 
-void ScriptsManager::deserializeResources(const ValueTree &tree, Resources &outResources)
+void ScriptsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::scripts) ?
         tree : tree.getChildWithName(Serialization::Resources::scripts);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, scriptNode, Serialization::Scripts::script)
+    forEachChildWithType(root, scriptNode, Serialization::Scripts::script)
     {
         Script::Ptr script(new Script());
         script->deserialize(scriptNode);

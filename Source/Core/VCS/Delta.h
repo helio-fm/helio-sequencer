@@ -106,8 +106,8 @@ namespace VCS
         // Serializable
         //===--------------------------------------------------------------===//
 
-        ValueTree serialize() const override;
-        void deserialize(const ValueTree &tree) override;
+        SerializedData serialize() const override;
+        void deserialize(const SerializedData &data) override;
         void reset() override;
 
     private:
@@ -121,10 +121,10 @@ namespace VCS
     struct DeltaDiff final
     {
         UniquePointer<Delta> delta;
-        ValueTree deltaData;
+        SerializedData deltaData;
     };
 
     // A temporary workaround, see the comment in VersionControl::deserialize()
-    typedef FlatHashMap<String, ValueTree, StringHash> DeltaDataLookup;
+    typedef FlatHashMap<String, SerializedData, StringHash> DeltaDataLookup;
 
 } // namespace VCS

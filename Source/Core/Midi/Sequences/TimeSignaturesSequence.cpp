@@ -241,27 +241,27 @@ Function<void(const String &text)> TimeSignaturesSequence::getEventChangeCallbac
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree TimeSignaturesSequence::serialize() const
+SerializedData TimeSignaturesSequence::serialize() const
 {
-    ValueTree tree(Serialization::Midi::timeSignatures);
+    SerializedData tree(Serialization::Midi::timeSignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr); // faster than addChildElement
+        tree.appendChild(event->serialize());
     }
 
     return tree;
 }
 
-void TimeSignaturesSequence::deserialize(const ValueTree &tree)
+void TimeSignaturesSequence::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
 
     const auto root =
-        tree.hasType(Serialization::Midi::timeSignatures) ?
-        tree : tree.getChildWithName(Serialization::Midi::timeSignatures);
+        data.hasType(Serialization::Midi::timeSignatures) ?
+        data : data.getChildWithName(Serialization::Midi::timeSignatures);
 
     if (!root.isValid())
     {
@@ -271,7 +271,7 @@ void TimeSignaturesSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::timeSignature)
+    forEachChildWithType(root, e, Serialization::Midi::timeSignature)
     {
         TimeSignatureEvent *signature = new TimeSignatureEvent(this);
         signature->deserialize(e);

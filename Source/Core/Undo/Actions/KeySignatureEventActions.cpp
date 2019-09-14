@@ -58,18 +58,18 @@ int KeySignatureEventInsertAction::getSizeInUnits()
     return sizeof(KeySignatureEvent);
 }
 
-ValueTree KeySignatureEventInsertAction::serialize() const
+SerializedData KeySignatureEventInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::keySignatureEventInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->event.serialize(), nullptr);
+    SerializedData tree(Serialization::Undo::keySignatureEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->event.serialize());
     return tree;
 }
 
-void KeySignatureEventInsertAction::deserialize(const ValueTree &tree)
+void KeySignatureEventInsertAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->event.deserialize(tree.getChild(0));
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(data.getChild(0));
 }
 
 void KeySignatureEventInsertAction::reset()
@@ -115,18 +115,18 @@ int KeySignatureEventRemoveAction::getSizeInUnits()
     return sizeof(KeySignatureEvent);
 }
 
-ValueTree KeySignatureEventRemoveAction::serialize() const
+SerializedData KeySignatureEventRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::keySignatureEventRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->event.serialize(), nullptr);
+    SerializedData tree(Serialization::Undo::keySignatureEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->event.serialize());
     return tree;
 }
 
-void KeySignatureEventRemoveAction::deserialize(const ValueTree &tree)
+void KeySignatureEventRemoveAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->event.deserialize(tree.getChild(0));
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(data.getChild(0));
 }
 
 void KeySignatureEventRemoveAction::reset()
@@ -198,28 +198,28 @@ UndoAction *KeySignatureEventChangeAction::createCoalescedAction(UndoAction *nex
     return nullptr;
 }
 
-ValueTree KeySignatureEventChangeAction::serialize() const
+SerializedData KeySignatureEventChangeAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::keySignatureEventChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::keySignatureEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    ValueTree keySignatureBeforeChild(Serialization::Undo::keySignatureBefore);
-    keySignatureBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
-    tree.appendChild(keySignatureBeforeChild, nullptr);
+    SerializedData keySignatureBeforeChild(Serialization::Undo::keySignatureBefore);
+    keySignatureBeforeChild.appendChild(this->eventBefore.serialize());
+    tree.appendChild(keySignatureBeforeChild);
     
-    ValueTree keySignatureAfterChild(Serialization::Undo::keySignatureAfter);
-    keySignatureAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
-    tree.appendChild(keySignatureAfterChild, nullptr);
+    SerializedData keySignatureAfterChild(Serialization::Undo::keySignatureAfter);
+    keySignatureAfterChild.appendChild(this->eventAfter.serialize());
+    tree.appendChild(keySignatureAfterChild);
     
     return tree;
 }
 
-void KeySignatureEventChangeAction::deserialize(const ValueTree &tree)
+void KeySignatureEventChangeAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    const auto keySignatureBeforeChild = tree.getChildWithName(Serialization::Undo::keySignatureBefore);
-    const auto keySignatureAfterChild = tree.getChildWithName(Serialization::Undo::keySignatureAfter);
+    const auto keySignatureBeforeChild = data.getChildWithName(Serialization::Undo::keySignatureBefore);
+    const auto keySignatureAfterChild = data.getChildWithName(Serialization::Undo::keySignatureAfter);
     
     this->eventBefore.deserialize(keySignatureBeforeChild.getChild(0));
     this->eventAfter.deserialize(keySignatureAfterChild.getChild(0));
@@ -271,25 +271,25 @@ int KeySignatureEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(KeySignatureEvent) * this->signatures.size());
 }
 
-ValueTree KeySignatureEventsGroupInsertAction::serialize() const
+SerializedData KeySignatureEventsGroupInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::keySignatureEventsGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::keySignatureEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(this->signatures.getUnchecked(i).serialize());
     }
     
     return tree;
 }
 
-void KeySignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
+void KeySignatureEventsGroupInsertAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    for (const auto &params : tree)
+    for (const auto &params : data)
     {
         KeySignatureEvent ae;
         ae.deserialize(params);
@@ -342,25 +342,25 @@ int KeySignatureEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(KeySignatureEvent) * this->signatures.size());
 }
 
-ValueTree KeySignatureEventsGroupRemoveAction::serialize() const
+SerializedData KeySignatureEventsGroupRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::keySignatureEventsGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::keySignatureEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(this->signatures.getUnchecked(i).serialize());
     }
     
     return tree;
 }
 
-void KeySignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
+void KeySignatureEventsGroupRemoveAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    for (const auto &params : tree)
+    for (const auto &params : data)
     {
         KeySignatureEvent ae;
         ae.deserialize(params);
@@ -449,37 +449,37 @@ UndoAction *KeySignatureEventsGroupChangeAction::createCoalescedAction(UndoActio
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree KeySignatureEventsGroupChangeAction::serialize() const
+SerializedData KeySignatureEventsGroupChangeAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::keySignatureEventsGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::keySignatureEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
-    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
+    SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
+    SerializedData groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
     }
     
-    tree.appendChild(groupBeforeChild, nullptr);
-    tree.appendChild(groupAfterChild, nullptr);
+    tree.appendChild(groupBeforeChild);
+    tree.appendChild(groupAfterChild);
     
     return tree;
 }
 
-void KeySignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)
+void KeySignatureEventsGroupChangeAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
     
-    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
-    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
     
     for (const auto &params : groupBeforeChild)
     {

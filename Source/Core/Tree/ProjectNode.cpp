@@ -214,7 +214,7 @@ void ProjectNode::safeRename(const String &newName, bool sendNotifications)
 
 void ProjectNode::recreatePage()
 {
-    ValueTree layoutState(Serialization::UI::sequencer);
+    SerializedData layoutState(Serialization::UI::sequencer);
     if (this->sequencerLayout || this->projectPage)
     {
         layoutState = this->sequencerLayout->serialize();
@@ -422,21 +422,21 @@ StringArray ProjectNode::getAllTrackNames() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree ProjectNode::serialize() const
+SerializedData ProjectNode::serialize() const
 {
     this->getDocument()->save();
 
-    ValueTree tree(Serialization::Core::treeNode);
-    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
-    tree.setProperty(Serialization::Core::filePath, this->getDocument()->getFullPath(), nullptr);
+    SerializedData tree(Serialization::Core::treeNode);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type);
+    tree.setProperty(Serialization::Core::filePath, this->getDocument()->getFullPath());
     return tree;
 }
 
-void ProjectNode::deserialize(const ValueTree &tree)
+void ProjectNode::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const File fullPathFile = File(tree.getProperty(Serialization::Core::filePath));
+    const File fullPathFile = File(data.getProperty(Serialization::Core::filePath));
     const File relativePathFile = DocumentHelpers::getDocumentSlot(fullPathFile.getFileName());
     
     if (!fullPathFile.existsAsFile() && !relativePathFile.existsAsFile())
@@ -458,25 +458,25 @@ void ProjectNode::reset()
     TreeNode::reset();
 }
 
-ValueTree ProjectNode::save() const
+SerializedData ProjectNode::save() const
 {
-    ValueTree tree(Serialization::Core::project);
+    SerializedData tree(Serialization::Core::project);
 
-    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
-    tree.setProperty(Serialization::Core::projectId, this->id, nullptr);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name);
+    tree.setProperty(Serialization::Core::projectId, this->id);
 
-    tree.appendChild(this->metadata->serialize(), nullptr);
-    tree.appendChild(this->timeline->serialize(), nullptr);
-    tree.appendChild(this->undoStack->serialize(), nullptr);
-    tree.appendChild(this->transport->serialize(), nullptr);
-    tree.appendChild(this->sequencerLayout->serialize(), nullptr);
+    tree.appendChild(this->metadata->serialize());
+    tree.appendChild(this->timeline->serialize());
+    tree.appendChild(this->undoStack->serialize());
+    tree.appendChild(this->transport->serialize());
+    tree.appendChild(this->sequencerLayout->serialize());
 
     TreeNodeSerializer::serializeChildren(*this, tree);
 
     return tree;
 }
 
-void ProjectNode::load(const ValueTree &tree)
+void ProjectNode::load(const SerializedData &tree)
 {
     this->reset();
 
@@ -775,7 +775,7 @@ bool ProjectNode::onDocumentLoad(File &file)
 {
     if (file.existsAsFile())
     {
-        const ValueTree tree(DocumentHelpers::load(file));
+        const auto tree = DocumentHelpers::load(file);
         if (tree.isValid())
         {
             this->load(tree);

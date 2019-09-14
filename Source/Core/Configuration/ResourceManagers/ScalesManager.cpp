@@ -59,14 +59,14 @@ const BaseResource &ScalesManager::getResourceComparator() const
 // should be displayed at the top of the list with the following order.
 #define NUM_ORDERED_SCALES 17
 
-void ScalesManager::deserializeResources(const ValueTree &tree, Resources &outResources)
+void ScalesManager::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::scales) ?
         tree : tree.getChildWithName(Serialization::Resources::scales);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, scaleNode, Serialization::Midi::scale)
+    forEachChildWithType(root, scaleNode, Serialization::Midi::scale)
     {
         Scale::Ptr scale(new Scale());
         scale->deserialize(scaleNode);

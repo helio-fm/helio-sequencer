@@ -171,41 +171,41 @@ int RecentProjectInfo::compareElements(RecentProjectInfo *first, RecentProjectIn
     return int(secondLocalTime - firstLocalTime);
 }
 
-ValueTree RecentProjectInfo::serialize() const
+SerializedData RecentProjectInfo::serialize() const
 {
     using namespace Serialization::User;
-    ValueTree root(RecentProjects::recentProject);
+    SerializedData root(RecentProjects::recentProject);
 
-    root.setProperty(RecentProjects::projectId, this->projectId, nullptr);
+    root.setProperty(RecentProjects::projectId, this->projectId);
 
     if (this->local != nullptr)
     {
-        ValueTree localRoot(RecentProjects::localProjectInfo);
-        localRoot.setProperty(RecentProjects::path, this->local->path.getFullPathName(), nullptr);
-        localRoot.setProperty(RecentProjects::title, this->local->title, nullptr);
-        localRoot.setProperty(RecentProjects::updatedAt, this->local->lastModifiedMs, nullptr);
-        root.appendChild(localRoot, nullptr);
+        SerializedData localRoot(RecentProjects::localProjectInfo);
+        localRoot.setProperty(RecentProjects::path, this->local->path.getFullPathName());
+        localRoot.setProperty(RecentProjects::title, this->local->title);
+        localRoot.setProperty(RecentProjects::updatedAt, this->local->lastModifiedMs);
+        root.appendChild(localRoot);
     }
 
     if (this->remote != nullptr)
     {
-        ValueTree remoteRoot(RecentProjects::remoteProjectInfo);
-        remoteRoot.setProperty(RecentProjects::path, this->remote->alias, nullptr);
-        remoteRoot.setProperty(RecentProjects::title, this->remote->title, nullptr);
-        remoteRoot.setProperty(RecentProjects::updatedAt, this->remote->lastModifiedMs, nullptr);
-        root.appendChild(remoteRoot, nullptr);
+        SerializedData remoteRoot(RecentProjects::remoteProjectInfo);
+        remoteRoot.setProperty(RecentProjects::path, this->remote->alias);
+        remoteRoot.setProperty(RecentProjects::title, this->remote->title);
+        remoteRoot.setProperty(RecentProjects::updatedAt, this->remote->lastModifiedMs);
+        root.appendChild(remoteRoot);
     }
 
     return root;
 }
 
-void RecentProjectInfo::deserialize(const ValueTree &tree)
+void RecentProjectInfo::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization::User;
 
-    const auto root = tree.hasType(RecentProjects::recentProject) ?
-        tree : tree.getChildWithName(RecentProjects::recentProject);
+    const auto root = data.hasType(RecentProjects::recentProject) ?
+        data : data.getChildWithName(RecentProjects::recentProject);
 
     if (!root.isValid()) { return; }
 

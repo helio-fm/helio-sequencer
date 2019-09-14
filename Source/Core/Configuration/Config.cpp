@@ -65,7 +65,7 @@ void Config::initResources()
     {
         InterProcessLock::ScopedLockType fLock(this->fileLock);
 
-        const ValueTree doc(DocumentHelpers::load<XmlSerializer>(this->propertiesFile));
+        const auto doc = DocumentHelpers::load<XmlSerializer>(this->propertiesFile);
         if (doc.isValid() && doc.hasType(Serialization::Core::globalConfig))
         {
             this->children.clear();
@@ -74,7 +74,7 @@ void Config::initResources()
             for (int i = 0; i < doc.getNumProperties(); ++i)
             {
                 const auto key(doc.getPropertyName(i));
-                this->properties[key] = doc[key];
+                this->properties[key] = doc.getProperty(key);
             }
 
             for (int i = 0; i < doc.getNumChildren(); ++i)
@@ -97,8 +97,8 @@ void Config::save(const Serializable *serializable, const Identifier &key)
 {
     this->usedKeys.emplace(key);
 
-    ValueTree root(key);
-    root.appendChild(serializable->serialize(), nullptr);
+    SerializedData root(key);
+    root.appendChild(serializable->serialize());
 
     this->children[key] = root;
     this->onConfigChanged();
@@ -158,12 +158,12 @@ bool Config::saveIfNeeded()
     }
 
     // make sure only the used properties are saved
-    ValueTree cleanedUpConfig(Serialization::Core::globalConfig);
+    SerializedData cleanedUpConfig(Serialization::Core::globalConfig);
     for (const auto &i : this->properties)
     {
         if (this->usedKeys.contains(i.first))
         {
-            cleanedUpConfig.setProperty(i.first, i.second, nullptr);
+            cleanedUpConfig.setProperty(i.first, i.second);
         }
     }
 
@@ -171,7 +171,7 @@ bool Config::saveIfNeeded()
     {
         if (this->usedKeys.contains(i.first))
         {
-            cleanedUpConfig.appendChild(i.second, nullptr);
+            cleanedUpConfig.appendChild(i.second);
         }
     }
 

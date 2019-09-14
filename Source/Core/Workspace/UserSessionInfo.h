@@ -42,8 +42,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    virtual ValueTree serialize() const override;
-    virtual void deserialize(const ValueTree &tree) override;
+    virtual SerializedData serialize() const override;
+    virtual void deserialize(const SerializedData &data) override;
     virtual void reset() override;
 
 private:

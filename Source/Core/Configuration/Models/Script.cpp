@@ -61,23 +61,23 @@ Identifier Script::getResourceType() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Script::serialize() const
+SerializedData Script::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Scripts::script);
+    SerializedData tree(Scripts::script);
 
-    tree.setProperty(Scripts::name, this->name, nullptr);
-    tree.setProperty(Scripts::type, this->type.toString(), nullptr);
+    tree.setProperty(Scripts::name, this->name);
+    tree.setProperty(Scripts::type, this->type.toString());
 
     return tree;
 }
 
-void Script::deserialize(const ValueTree &tree)
+void Script::deserialize(const SerializedData &data)
 {
     using namespace Serialization;
 
-    const auto root = tree.hasType(Scripts::script) ?
-        tree : tree.getChildWithName(Scripts::script);
+    const auto root = data.hasType(Scripts::script) ?
+        data : data.getChildWithName(Scripts::script);
 
     if (!root.isValid()) { return; }
 

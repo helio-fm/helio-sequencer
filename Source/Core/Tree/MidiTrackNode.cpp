@@ -80,20 +80,20 @@ String MidiTrackNode::getVCSName() const
     return this->getXPath();
 }
 
-ValueTree MidiTrackNode::serializeClipsDelta() const
+SerializedData MidiTrackNode::serializeClipsDelta() const
 {
-    ValueTree tree(Serialization::VCS::PatternDeltas::clipsAdded);
+    SerializedData tree(Serialization::VCS::PatternDeltas::clipsAdded);
 
     for (int i = 0; i < this->getPattern()->size(); ++i)
     {
         const auto clip = this->getPattern()->getUnchecked(i);
-        tree.appendChild(clip->serialize(), nullptr);
+        tree.appendChild(clip->serialize());
     }
 
     return tree;
 }
 
-void MidiTrackNode::resetClipsDelta(const ValueTree &state)
+void MidiTrackNode::resetClipsDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::PatternDeltas::clipsAdded));
 
@@ -101,7 +101,7 @@ void MidiTrackNode::resetClipsDelta(const ValueTree &state)
     this->getPattern()->reset();
 
     Pattern *pattern = this->getPattern();
-    forEachValueTreeChildWithType(state, e, Serialization::Midi::clip)
+    forEachChildWithType(state, e, Serialization::Midi::clip)
     {
         Clip c(pattern);
         c.deserialize(e);

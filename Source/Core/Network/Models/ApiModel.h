@@ -24,13 +24,13 @@ class ApiModel : public Serializable
 {
 public:
 
-    ApiModel(const ValueTree &tree) noexcept : data(tree) {}
+    ApiModel(const SerializedData &tree) noexcept : data(tree) {}
 
     template<typename T>
     Array<T> getChildren(const Identifier &id) const
     {
         Array<T> result;
-        forEachValueTreeChildWithType(this->data, child, id)
+        forEachChildWithType(this->data, child, id)
         {
             result.add({ child });
         }
@@ -42,14 +42,14 @@ public:
         return this->data.isValid();
     }
 
-    ValueTree serialize() const override
+    SerializedData serialize() const override
     {
         return this->data;
     }
 
-    void deserialize(const ValueTree &tree) override
+    void deserialize(const SerializedData &data) override
     {
-        this->data = tree;
+        this->data = data;
     }
 
     void reset() override
@@ -59,7 +59,7 @@ public:
 
 protected:
 
-    ValueTree data;
+    SerializedData data;
 };
 
 #define DTO_PROPERTY(x) this->data.getProperty(Serialization::Api::V1::x)

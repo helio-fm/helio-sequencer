@@ -46,7 +46,7 @@ public:
     AutomationEvent withInvertedControllerValue() const noexcept;
     AutomationEvent withParameters(float newBeat, float newControllerValue) const noexcept;
     AutomationEvent withCurvature(float newCurvature) const noexcept;
-    AutomationEvent withParameters(const ValueTree &parameters) const noexcept;
+    AutomationEvent withParameters(const SerializedData &parameters) const noexcept;
     
     //===------------------------------------------------------------------===//
     // Accessors
@@ -70,8 +70,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const noexcept override;
-    void deserialize(const ValueTree &tree) noexcept override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() noexcept override;
 
     //===------------------------------------------------------------------===//

@@ -57,18 +57,18 @@ int ClipInsertAction::getSizeInUnits()
     return sizeof(Clip);
 }
 
-ValueTree ClipInsertAction::serialize() const
+SerializedData ClipInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::clipInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->clip.serialize(), nullptr);
+    SerializedData tree(Serialization::Undo::clipInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->clip.serialize());
     return tree;
 }
 
-void ClipInsertAction::deserialize(const ValueTree &tree)
+void ClipInsertAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->clip.deserialize(tree.getChild(0));
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->clip.deserialize(data.getChild(0));
 }
 
 void ClipInsertAction::reset()
@@ -112,18 +112,18 @@ int ClipRemoveAction::getSizeInUnits()
     return sizeof(Clip);
 }
 
-ValueTree ClipRemoveAction::serialize() const
+SerializedData ClipRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::clipRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
-    tree.appendChild(this->clip.serialize(), nullptr);
+    SerializedData tree(Serialization::Undo::clipRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.appendChild(this->clip.serialize());
     return tree;
 }
 
-void ClipRemoveAction::deserialize(const ValueTree &tree)
+void ClipRemoveAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
-    this->clip.deserialize(tree.getChild(0));
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+    this->clip.deserialize(data.getChild(0));
 }
 
 void ClipRemoveAction::reset()
@@ -194,28 +194,28 @@ UndoAction *ClipChangeAction::createCoalescedAction(UndoAction *nextAction)
     return nullptr;
 }
 
-ValueTree ClipChangeAction::serialize() const
+SerializedData ClipChangeAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::clipChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::clipChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
-    ValueTree instanceBeforeChild(Serialization::Undo::instanceBefore);
-    instanceBeforeChild.appendChild(this->clipBefore.serialize(), nullptr);
-    tree.appendChild(instanceBeforeChild, nullptr);
+    SerializedData instanceBeforeChild(Serialization::Undo::instanceBefore);
+    instanceBeforeChild.appendChild(this->clipBefore.serialize());
+    tree.appendChild(instanceBeforeChild);
 
-    ValueTree instanceAfterChild(Serialization::Undo::instanceAfter);
-    instanceAfterChild.appendChild(this->clipAfter.serialize(), nullptr);
-    tree.appendChild(instanceAfterChild, nullptr);
+    SerializedData instanceAfterChild(Serialization::Undo::instanceAfter);
+    instanceAfterChild.appendChild(this->clipAfter.serialize());
+    tree.appendChild(instanceAfterChild);
 
     return tree;
 }
 
-void ClipChangeAction::deserialize(const ValueTree &tree)
+void ClipChangeAction::deserialize(const SerializedData &data)
 {
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
 
-    auto instanceBeforeChild = tree.getChildWithName(Serialization::Undo::instanceBefore);
-    auto instanceAfterChild = tree.getChildWithName(Serialization::Undo::instanceAfter);
+    auto instanceBeforeChild = data.getChildWithName(Serialization::Undo::instanceBefore);
+    auto instanceAfterChild = data.getChildWithName(Serialization::Undo::instanceAfter);
 
     this->clipBefore.deserialize(instanceBeforeChild.getChild(0));
     this->clipAfter.deserialize(instanceAfterChild.getChild(0));
@@ -265,25 +265,25 @@ int ClipsGroupInsertAction::getSizeInUnits()
     return (sizeof(Clip) * this->clips.size());
 }
 
-ValueTree ClipsGroupInsertAction::serialize() const
+SerializedData ClipsGroupInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::clipsGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::clipsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
-        tree.appendChild(this->clips.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(this->clips.getUnchecked(i).serialize());
     }
 
     return tree;
 }
 
-void ClipsGroupInsertAction::deserialize(const ValueTree &tree)
+void ClipsGroupInsertAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
 
-    for (const auto &props : tree)
+    for (const auto &props : data)
     {
         Clip n;
         n.deserialize(props);
@@ -334,25 +334,25 @@ int ClipsGroupRemoveAction::getSizeInUnits()
     return (sizeof(Clip) * this->clips.size());
 }
 
-ValueTree ClipsGroupRemoveAction::serialize() const
+SerializedData ClipsGroupRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::clipsGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::clipsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
-        tree.appendChild(this->clips.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(this->clips.getUnchecked(i).serialize());
     }
 
     return tree;
 }
 
-void ClipsGroupRemoveAction::deserialize(const ValueTree &tree)
+void ClipsGroupRemoveAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
 
-    for (const auto &props : tree)
+    for (const auto &props : data)
     {
         Clip n;
         n.deserialize(props);
@@ -439,38 +439,38 @@ UndoAction *ClipsGroupChangeAction::createCoalescedAction(UndoAction *nextAction
     return nullptr;
 }
 
-ValueTree ClipsGroupChangeAction::serialize() const
+SerializedData ClipsGroupChangeAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::clipsGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    SerializedData tree(Serialization::Undo::clipsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
-    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
-    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
+    SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
+    SerializedData groupAfterChild(Serialization::Undo::groupAfter);
 
     for (int i = 0; i < this->clipsBefore.size(); ++i)
     {
-        groupBeforeChild.appendChild(this->clipsBefore.getUnchecked(i).serialize(), nullptr);
+        groupBeforeChild.appendChild(this->clipsBefore.getUnchecked(i).serialize());
     }
 
     for (int i = 0; i < this->clipsAfter.size(); ++i)
     {
-        groupAfterChild.appendChild(this->clipsAfter.getUnchecked(i).serialize(), nullptr);
+        groupAfterChild.appendChild(this->clipsAfter.getUnchecked(i).serialize());
     }
 
-    tree.appendChild(groupBeforeChild, nullptr);
-    tree.appendChild(groupAfterChild, nullptr);
+    tree.appendChild(groupBeforeChild);
+    tree.appendChild(groupAfterChild);
 
     return tree;
 }
 
-void ClipsGroupChangeAction::deserialize(const ValueTree &tree)
+void ClipsGroupChangeAction::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
 
-    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
-    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
 
     for (const auto &props : groupBeforeChild)
     {

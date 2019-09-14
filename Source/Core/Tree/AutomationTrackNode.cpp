@@ -86,7 +86,7 @@ VCS::Delta *AutomationTrackNode::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree AutomationTrackNode::getDeltaData(int deltaIndex) const
+SerializedData AutomationTrackNode::getDeltaData(int deltaIndex) const
 {
     using namespace Serialization::VCS;
     if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackPath))
@@ -163,44 +163,44 @@ void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree AutomationTrackNode::serialize() const
+SerializedData AutomationTrackNode::serialize() const
 {
-    ValueTree tree(Serialization::Core::treeNode);
+    SerializedData tree(Serialization::Core::treeNode);
 
     this->serializeVCSUuid(tree);
 
-    tree.setProperty(Serialization::Core::treeNodeType, this->type, nullptr);
-    tree.setProperty(Serialization::Core::treeNodeName, this->name, nullptr);
+    tree.setProperty(Serialization::Core::treeNodeType, this->type);
+    tree.setProperty(Serialization::Core::treeNodeName, this->name);
 
     this->serializeTrackProperties(tree);
 
-    tree.appendChild(this->sequence->serialize(), nullptr);
-    tree.appendChild(this->pattern->serialize(), nullptr);
+    tree.appendChild(this->sequence->serialize());
+    tree.appendChild(this->pattern->serialize());
 
     TreeNodeSerializer::serializeChildren(*this, tree);
 
     return tree;
 }
 
-void AutomationTrackNode::deserialize(const ValueTree &tree)
+void AutomationTrackNode::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    this->deserializeVCSUuid(tree);
-    this->deserializeTrackProperties(tree);
+    this->deserializeVCSUuid(data);
+    this->deserializeTrackProperties(data);
 
-    forEachValueTreeChildWithType(tree, e, Serialization::Midi::automation)
+    forEachChildWithType(data, e, Serialization::Midi::automation)
     {
         this->sequence->deserialize(e);
     }
 
-    forEachValueTreeChildWithType(tree, e, Serialization::Midi::pattern)
+    forEachChildWithType(data, e, Serialization::Midi::pattern)
     {
         this->pattern->deserialize(e);
     }
 
     // Proceed with basic properties and children
-    TreeNode::deserialize(tree);
+    TreeNode::deserialize(data);
 }
 
 
@@ -210,60 +210,60 @@ void AutomationTrackNode::deserialize(const ValueTree &tree)
 
 // TODO move this in MidiTrackNode
 
-ValueTree AutomationTrackNode::serializePathDelta() const
+SerializedData AutomationTrackNode::serializePathDelta() const
 {
     using namespace Serialization::VCS;
-    ValueTree tree(MidiTrackDeltas::trackPath);
-    tree.setProperty(delta, this->getTrackName(), nullptr);
+    SerializedData tree(MidiTrackDeltas::trackPath);
+    tree.setProperty(delta, this->getTrackName());
     return tree;
 }
 
-ValueTree AutomationTrackNode::serializeColourDelta() const
+SerializedData AutomationTrackNode::serializeColourDelta() const
 {
     using namespace Serialization::VCS;
-    ValueTree tree(MidiTrackDeltas::trackColour);
-    tree.setProperty(delta, this->getTrackColour().toString(), nullptr);
+    SerializedData tree(MidiTrackDeltas::trackColour);
+    tree.setProperty(delta, this->getTrackColour().toString());
     return tree;
 }
 
-ValueTree AutomationTrackNode::serializeInstrumentDelta() const
+SerializedData AutomationTrackNode::serializeInstrumentDelta() const
 {
     using namespace Serialization::VCS;
-    ValueTree tree(MidiTrackDeltas::trackInstrument);
-    tree.setProperty(delta, this->getTrackInstrumentId(), nullptr);
+    SerializedData tree(MidiTrackDeltas::trackInstrument);
+    tree.setProperty(delta, this->getTrackInstrumentId());
     return tree;
 }
 
-ValueTree AutomationTrackNode::serializeControllerDelta() const
+SerializedData AutomationTrackNode::serializeControllerDelta() const
 {
     using namespace Serialization::VCS;
-    ValueTree tree(MidiTrackDeltas::trackController);
-    tree.setProperty(delta, this->getTrackControllerNumber(), nullptr);
+    SerializedData tree(MidiTrackDeltas::trackController);
+    tree.setProperty(delta, this->getTrackControllerNumber());
     return tree;
 }
 
-ValueTree AutomationTrackNode::serializeEventsDelta() const
+SerializedData AutomationTrackNode::serializeEventsDelta() const
 {
-    ValueTree tree(Serialization::VCS::AutoSequenceDeltas::eventsAdded);
+    SerializedData tree(Serialization::VCS::AutoSequenceDeltas::eventsAdded);
 
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
         const MidiEvent *event = this->getSequence()->getUnchecked(i);
-        tree.appendChild(event->serialize(), nullptr);
+        tree.appendChild(event->serialize());
     }
 
     return tree;
 }
 
 
-void AutomationTrackNode::resetPathDelta(const ValueTree &state)
+void AutomationTrackNode::resetPathDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path, false);
 }
 
-void AutomationTrackNode::resetColourDelta(const ValueTree &state)
+void AutomationTrackNode::resetColourDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
     const String &colourString(state.getProperty(Serialization::VCS::delta));
@@ -275,26 +275,26 @@ void AutomationTrackNode::resetColourDelta(const ValueTree &state)
     }
 }
 
-void AutomationTrackNode::resetInstrumentDelta(const ValueTree &state)
+void AutomationTrackNode::resetInstrumentDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
     const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 
-void AutomationTrackNode::resetControllerDelta(const ValueTree &state)
+void AutomationTrackNode::resetControllerDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackController));
     const int ccNumber(state.getProperty(Serialization::VCS::delta));
     this->setTrackControllerNumber(ccNumber, false);
 }
 
-void AutomationTrackNode::resetEventsDelta(const ValueTree &state)
+void AutomationTrackNode::resetEventsDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::AutoSequenceDeltas::eventsAdded));
     this->getSequence()->reset();
 
-    forEachValueTreeChildWithType(state, e, Serialization::Midi::automationEvent)
+    forEachChildWithType(state, e, Serialization::Midi::automationEvent)
     {
         this->getSequence()->checkoutEvent<AutomationEvent>(e);
     }

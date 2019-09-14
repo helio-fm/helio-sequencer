@@ -23,14 +23,14 @@ class UserResourceDto final : public ApiModel
 {
 public:
 
-    UserResourceDto(const ValueTree &tree) noexcept : ApiModel(tree) {}
+    UserResourceDto(const SerializedData &tree) noexcept : ApiModel(tree) {}
 
     String getType() const noexcept { return DTO_PROPERTY(Resources::type); }
     String getName() const noexcept { return DTO_PROPERTY(Resources::name); }
     String getHash() const noexcept { return DTO_PROPERTY(Resources::hash); }
     Time getUpdateTime() const noexcept { return Time(DTO_PROPERTY(Resources::updatedAt)); }
 
-    ValueTree getData() const noexcept { return DTO_CHILD(Resources::data); }
+    SerializedData getData() const noexcept { return DTO_CHILD(Resources::data); }
 
     JUCE_LEAK_DETECTOR(UserResourceDto)
 };

@@ -98,7 +98,7 @@ TimeSignatureEvent TimeSignatureEvent::withDenominator(const int newDenominator)
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withParameters(const ValueTree &parameters) const noexcept
+TimeSignatureEvent TimeSignatureEvent::withParameters(const SerializedData &parameters) const noexcept
 {
     TimeSignatureEvent e(*this);
     e.deserialize(parameters);
@@ -137,25 +137,25 @@ String TimeSignatureEvent::toString() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree TimeSignatureEvent::serialize() const noexcept
+SerializedData TimeSignatureEvent::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Midi::timeSignature);
-    tree.setProperty(Midi::id, this->id, nullptr);
-    tree.setProperty(Midi::numerator, this->numerator, nullptr);
-    tree.setProperty(Midi::denominator, this->denominator, nullptr);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
+    SerializedData tree(Midi::timeSignature);
+    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::numerator, this->numerator);
+    tree.setProperty(Midi::denominator, this->denominator);
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
     return tree;
 }
 
-void TimeSignatureEvent::deserialize(const ValueTree &tree) noexcept
+void TimeSignatureEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->numerator = tree.getProperty(Midi::numerator, TIME_SIGNATURE_DEFAULT_NUMERATOR);
-    this->denominator = tree.getProperty(Midi::denominator, TIME_SIGNATURE_DEFAULT_DENOMINATOR);
-    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = tree.getProperty(Midi::id);
+    this->numerator = data.getProperty(Midi::numerator, TIME_SIGNATURE_DEFAULT_NUMERATOR);
+    this->denominator = data.getProperty(Midi::denominator, TIME_SIGNATURE_DEFAULT_DENOMINATOR);
+    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->id = data.getProperty(Midi::id);
 }
 
 void TimeSignatureEvent::reset() noexcept {}

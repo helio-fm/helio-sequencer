@@ -240,7 +240,7 @@ void PluginScanner::run()
                             const auto tree(DocumentHelpers::load<XmlSerializer>(tempFile));
                             if (tree.isValid())
                             {
-                                forEachValueTreeChildWithType(tree, e, Serialization::Audio::plugin)
+                                forEachChildWithType(tree, e, Serialization::Audio::plugin)
                                 {
                                     SerializablePluginDescription pluginDescription;
                                     pluginDescription.deserialize(e);
@@ -366,25 +366,25 @@ void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree PluginScanner::serialize() const
+SerializedData PluginScanner::serialize() const
 {
-    ValueTree tree(Serialization::Audio::pluginsList);
+    SerializedData tree(Serialization::Audio::pluginsList);
 
     for (const auto &type : this->getPlugins())
     {
         const SerializablePluginDescription pd(type);
-        tree.appendChild(pd.serialize(), nullptr);
+        tree.appendChild(pd.serialize());
     }
 
     return tree;
 }
 
-void PluginScanner::deserialize(const ValueTree &tree)
+void PluginScanner::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const auto root = tree.hasType(Serialization::Audio::pluginsList) ?
-        tree : tree.getChildWithName(Serialization::Audio::pluginsList);
+    const auto root = data.hasType(Serialization::Audio::pluginsList) ?
+        data : data.getChildWithName(Serialization::Audio::pluginsList);
 
     if (!root.isValid()) { return; }
     

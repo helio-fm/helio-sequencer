@@ -59,7 +59,7 @@ public:
 
     void replaceHistory(const VCS::Revision::Ptr root);
     void appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId);
-    VCS::Revision::Ptr updateShallowRevisionData(const String &id, const ValueTree &data);
+    VCS::Revision::Ptr updateShallowRevisionData(const String &id, const SerializedData &data);
 
     bool resetChanges(SparseSet<int> selectedItems);
     bool resetAllChanges();
@@ -95,8 +95,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//

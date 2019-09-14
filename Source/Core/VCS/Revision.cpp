@@ -121,19 +121,19 @@ WeakReference<Revision> Revision::getParent() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Revision::serializeDeltas() const
+SerializedData Revision::serializeDeltas() const
 {
-    ValueTree tree(Serialization::VCS::revision);
+    SerializedData tree(Serialization::VCS::revision);
 
     for (const auto *revItem : this->deltas)
     {
-        tree.appendChild(revItem->serialize(), nullptr);
+        tree.appendChild(revItem->serialize());
     }
 
     return tree;
 }
 
-void Revision::deserializeDeltas(ValueTree data)
+void Revision::deserializeDeltas(SerializedData data)
 {
     jassert(this->isShallowCopy());
 
@@ -145,7 +145,7 @@ void Revision::deserializeDeltas(ValueTree data)
 
     this->deltas.clearQuick();
 
-    forEachValueTreeChildWithType(root, e, Serialization::VCS::revisionItem)
+    forEachChildWithType(root, e, Serialization::VCS::revisionItem)
     {
         RevisionItem::Ptr item(new RevisionItem(RevisionItem::Type::Undefined, nullptr));
         item->deserialize(e, {});
@@ -153,34 +153,34 @@ void Revision::deserializeDeltas(ValueTree data)
     }
 }
 
-ValueTree Revision::serialize() const
+SerializedData Revision::serialize() const
 {
-    ValueTree tree(Serialization::VCS::revision);
+    SerializedData tree(Serialization::VCS::revision);
 
-    tree.setProperty(Serialization::VCS::commitId, this->id, nullptr);
-    tree.setProperty(Serialization::VCS::commitMessage, this->message, nullptr);
-    tree.setProperty(Serialization::VCS::commitTimeStamp, this->timestamp, nullptr);
+    tree.setProperty(Serialization::VCS::commitId, this->id);
+    tree.setProperty(Serialization::VCS::commitMessage, this->message);
+    tree.setProperty(Serialization::VCS::commitTimeStamp, this->timestamp);
 
     for (const auto *revItem : this->deltas)
     {
-        tree.appendChild(revItem->serialize(), nullptr);
+        tree.appendChild(revItem->serialize());
     }
 
     for (const auto *child : this->children)
     {
-        tree.appendChild(child->serialize(), nullptr);
+        tree.appendChild(child->serialize());
     }
 
     return tree;
 }
 
-void Revision::deserialize(const ValueTree &tree)
+void Revision::deserialize(const SerializedData &data)
 {
     // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
     jassertfalse;
 }
 
-void Revision::deserialize(const ValueTree &tree, const DeltaDataLookup &dataLookup)
+void Revision::deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup)
 {
     this->reset();
 

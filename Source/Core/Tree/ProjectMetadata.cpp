@@ -113,7 +113,7 @@ VCS::Delta *ProjectMetadata::getDelta(int index) const
     return this->deltas[index];
 }
 
-ValueTree ProjectMetadata::getDeltaData(int deltaIndex) const
+SerializedData ProjectMetadata::getDeltaData(int deltaIndex) const
 {
     using namespace Serialization::VCS;
 
@@ -175,30 +175,30 @@ void ProjectMetadata::resetStateTo(const TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree ProjectMetadata::serialize() const
+SerializedData ProjectMetadata::serialize() const
 {
     using namespace Serialization::VCS;
 
-    ValueTree tree(Serialization::Core::projectInfo);
+    SerializedData tree(Serialization::Core::projectInfo);
 
     this->serializeVCSUuid(tree);
 
-    tree.setProperty(Serialization::Core::projectTimeStamp, String(this->initTimestamp), nullptr);
-    tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense(), nullptr);
-    tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor(), nullptr);
-    tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription(), nullptr);
+    tree.setProperty(Serialization::Core::projectTimeStamp, String(this->initTimestamp));
+    tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense());
+    tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor());
+    tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription());
 
     return tree;
 }
 
-void ProjectMetadata::deserialize(const ValueTree &tree)
+void ProjectMetadata::deserialize(const SerializedData &data)
 {
     using namespace Serialization::VCS;
 
     this->reset();
 
-    const auto root = tree.hasType(Serialization::Core::projectInfo) ?
-        tree : tree.getChildWithName(Serialization::Core::projectInfo);
+    const auto root = data.hasType(Serialization::Core::projectInfo) ?
+        data : data.getChildWithName(Serialization::Core::projectInfo);
 
     if (!root.isValid()) { return; }
 
@@ -225,35 +225,35 @@ void ProjectMetadata::reset()
 // Deltas
 //===----------------------------------------------------------------------===//
 
-ValueTree ProjectMetadata::serializeLicenseDelta() const
+SerializedData ProjectMetadata::serializeLicenseDelta() const
 {
-    ValueTree tree(Serialization::VCS::ProjectInfoDeltas::projectLicense);
-    tree.setProperty(Serialization::VCS::delta, this->getLicense(), nullptr);
+    SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectLicense);
+    tree.setProperty(Serialization::VCS::delta, this->getLicense());
     return tree;
 }
 
-ValueTree ProjectMetadata::serializeFullNameDelta() const
+SerializedData ProjectMetadata::serializeFullNameDelta() const
 {
-    ValueTree tree(Serialization::VCS::ProjectInfoDeltas::projectTitle);
-    tree.setProperty(Serialization::VCS::delta, this->getFullName(), nullptr);
+    SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectTitle);
+    tree.setProperty(Serialization::VCS::delta, this->getFullName());
     return tree;
 }
 
-ValueTree ProjectMetadata::serializeAuthorDelta() const
+SerializedData ProjectMetadata::serializeAuthorDelta() const
 {
-    ValueTree tree(Serialization::VCS::ProjectInfoDeltas::projectAuthor);
-    tree.setProperty(Serialization::VCS::delta, this->getAuthor(), nullptr);
+    SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectAuthor);
+    tree.setProperty(Serialization::VCS::delta, this->getAuthor());
     return tree;
 }
 
-ValueTree ProjectMetadata::serializeDescriptionDelta() const
+SerializedData ProjectMetadata::serializeDescriptionDelta() const
 {
-    ValueTree tree(Serialization::VCS::ProjectInfoDeltas::projectDescription);
-    tree.setProperty(Serialization::VCS::delta, this->getDescription(), nullptr);
+    SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectDescription);
+    tree.setProperty(Serialization::VCS::delta, this->getDescription());
     return tree;
 }
 
-void ProjectMetadata::resetLicenseDelta(const ValueTree &state)
+void ProjectMetadata::resetLicenseDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::ProjectInfoDeltas::projectLicense));
     const String &licenseDelta = state.getProperty(Serialization::VCS::delta);
@@ -263,7 +263,7 @@ void ProjectMetadata::resetLicenseDelta(const ValueTree &state)
     }
 }
 
-void ProjectMetadata::resetFullNameDelta(const ValueTree &state)
+void ProjectMetadata::resetFullNameDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::ProjectInfoDeltas::projectTitle));
     const String &nameDelta = state.getProperty(Serialization::VCS::delta);
@@ -273,7 +273,7 @@ void ProjectMetadata::resetFullNameDelta(const ValueTree &state)
     }
 }
 
-void ProjectMetadata::resetAuthorDelta(const ValueTree &state)
+void ProjectMetadata::resetAuthorDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::ProjectInfoDeltas::projectAuthor));
     const String &authorDelta = state.getProperty(Serialization::VCS::delta);
@@ -283,7 +283,7 @@ void ProjectMetadata::resetAuthorDelta(const ValueTree &state)
     }
 }
 
-void ProjectMetadata::resetDescriptionDelta(const ValueTree &state)
+void ProjectMetadata::resetDescriptionDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::ProjectInfoDeltas::projectDescription));
     const String &descriptionDelta = state.getProperty(Serialization::VCS::delta);

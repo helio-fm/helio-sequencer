@@ -37,18 +37,18 @@ public:
         bool is200() const noexcept;
         bool is(int code) const noexcept;
 
-        // ValueTree wrappers
+        // SerializedData wrappers
         bool hasProperty(const Identifier &name) const noexcept;
         var getProperty(const Identifier &name) const noexcept;
-        ValueTree getChild(const Identifier &name) const noexcept;
+        SerializedData getChild(const Identifier &name) const noexcept;
 
         const Array<String> &getErrors() const noexcept;
-        const ValueTree getBody() const noexcept;
+        const SerializedData getBody() const noexcept;
         const String getRedirect() const noexcept;
 
     private:
 
-        ValueTree body;
+        SerializedData body;
 
         // optional detailed errors descriptions
         Array<String> errors;
@@ -61,8 +61,8 @@ public:
     };
 
     Response get() const;
-    Response post(const ValueTree &payload) const;
-    Response put(const ValueTree &payload) const;
+    Response post(const SerializedData &payload) const;
+    Response put(const SerializedData &payload) const;
     Response del() const;
 
 private:
@@ -71,7 +71,7 @@ private:
     JsonSerializer serializer;
 
     Response doRequest(const String &verb) const;
-    Response doRequest(const ValueTree &payload, const String &verb) const;
+    Response doRequest(const SerializedData &payload, const String &verb) const;
     void processResponse(Response &response, InputStream *const stream) const;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BackendRequest)

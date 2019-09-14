@@ -78,7 +78,7 @@ AnnotationEvent AnnotationEvent::withColour(const Colour &newColour) const noexc
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::withParameters(const ValueTree &parameters) const noexcept
+AnnotationEvent AnnotationEvent::withParameters(const SerializedData &parameters) const noexcept
 {
     AnnotationEvent ae(*this);
     ae.deserialize(parameters);
@@ -112,25 +112,25 @@ Colour AnnotationEvent::getTrackColour() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree AnnotationEvent::serialize() const noexcept
+SerializedData AnnotationEvent::serialize() const
 {
     using namespace Serialization;
-    ValueTree tree(Midi::annotation);
-    tree.setProperty(Midi::id, this->id, nullptr);
-    tree.setProperty(Midi::text, this->description, nullptr);
-    tree.setProperty(Midi::colour, this->colour.toString(), nullptr);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT), nullptr);
+    SerializedData tree(Midi::annotation);
+    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::text, this->description);
+    tree.setProperty(Midi::colour, this->colour.toString());
+    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
     return tree;
 }
 
-void AnnotationEvent::deserialize(const ValueTree &tree) noexcept
+void AnnotationEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->description = tree.getProperty(Midi::text);
-    this->colour = Colour::fromString(tree.getProperty(Midi::colour).toString());
-    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = tree.getProperty(Midi::id);
+    this->description = data.getProperty(Midi::text);
+    this->colour = Colour::fromString(data.getProperty(Midi::colour).toString());
+    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->id = data.getProperty(Midi::id);
 }
 
 void AnnotationEvent::reset() noexcept {}

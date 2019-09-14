@@ -91,10 +91,10 @@ void UserConfigSyncThread::run()
                 .replace(":resourceType", resource->getResourceType())
                 .replace(":resourceId", URL::addEscapeChars(resource->getResourceId(), false)));
 
-            ValueTree payload(ApiKeys::Resources::resource);
-            ValueTree data(ApiKeys::Resources::data);
-            data.appendChild(resource->serialize(), nullptr);
-            payload.appendChild(data, nullptr);
+            SerializedData payload(ApiKeys::Resources::resource);
+            SerializedData data(ApiKeys::Resources::data);
+            data.appendChild(resource->serialize());
+            payload.appendChild(data);
 
             const BackendRequest syncRequest(configurationRoute);
             this->response = syncRequest.put(payload);

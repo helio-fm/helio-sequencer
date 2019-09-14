@@ -74,23 +74,23 @@ int UndoStack::ActionSet::getTotalSize() const
     return total;
 }
     
-ValueTree UndoStack::ActionSet::serialize() const
+SerializedData UndoStack::ActionSet::serialize() const
 {
-    ValueTree tree(Serialization::Undo::transaction);
+    SerializedData tree(Serialization::Undo::transaction);
 
     for (int i = 0; i < this->actions.size(); ++i)
     {
-        tree.appendChild(this->actions.getUnchecked(i)->serialize(), nullptr);
+        tree.appendChild(this->actions.getUnchecked(i)->serialize());
     }
         
     return tree;
 }
     
-void UndoStack::ActionSet::deserialize(const ValueTree &tree)
+void UndoStack::ActionSet::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    for (const auto &childAction : tree)
+    for (const auto &childAction : data)
     {
         if (auto *action = createUndoActionsByTagName(childAction.getType()))
         {
@@ -411,9 +411,9 @@ int UndoStack::getNumActionsInCurrentTransaction() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree UndoStack::serialize() const
+SerializedData UndoStack::serialize() const
 {
-    ValueTree tree(Serialization::Undo::undoStack);
+    SerializedData tree(Serialization::Undo::undoStack);
     
     int currentIndex = (this->nextIndex - 1);
     int numStoredTransactions = 0;
@@ -423,7 +423,7 @@ ValueTree UndoStack::serialize() const
     {
         if (ActionSet *action = this->transactions[currentIndex])
         {
-            tree.addChild(action->serialize(), 0, nullptr);
+            tree.addChild(action->serialize(), 0);
         }
         
         --currentIndex;
@@ -433,10 +433,10 @@ ValueTree UndoStack::serialize() const
     return tree;
 }
 
-void UndoStack::deserialize(const ValueTree &tree)
+void UndoStack::deserialize(const SerializedData &data)
 {
-    const auto root = tree.hasType(Serialization::Undo::undoStack) ?
-        tree : tree.getChildWithName(Serialization::Undo::undoStack);
+    const auto root = data.hasType(Serialization::Undo::undoStack) ?
+        data : data.getChildWithName(Serialization::Undo::undoStack);
     
     if (!root.isValid())
     { return; }

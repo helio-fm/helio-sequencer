@@ -30,7 +30,7 @@ public:
         this->stopThread(1000);
     }
     
-    Function<void(const Identifier &resourceType, const ValueTree &resource)> onRequestResourceOk;
+    Function<void(const Identifier &resourceType, const SerializedData &resource)> onRequestResourceOk;
     Function<void(const Identifier &resourceType, const Array<String> &errors)> onRequestResourceFailed;
     
     void requestResource(const Identifier &resourceType, uint32 delayMs)
