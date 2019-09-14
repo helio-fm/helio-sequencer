@@ -17,17 +17,14 @@
 
 #pragma once
 
-namespace juce
-{
-    class ValueTree;
-}
+#include "SerializedData.h"
 
 class Serializable
 {
 public:
     
     virtual ~Serializable() {}
-    virtual juce::ValueTree serialize() const = 0;
-    virtual void deserialize(const juce::ValueTree &tree) = 0;
+    virtual SerializedData serialize() const = 0;
+    virtual void deserialize(const SerializedData &data) = 0;
     virtual void reset() = 0;
 };
