@@ -46,7 +46,7 @@ void TreeNodeSerializer::deserializeChildren(TreeNode &parentItem, const Seriali
 
     forEachChildWithType(parent, e, Core::treeNode)
     {
-        const Identifier type = e.getProperty(Core::treeNodeType);
+        const auto type = Identifier(e.getProperty(Core::treeNodeType));
 
         TreeNode *child = nullptr;
 
