@@ -21,7 +21,7 @@
 
 namespace VCS
 {
-    class RevisionItem :
+    class RevisionItem final :
         public TrackedItem,
         public Serializable,
         public ReferenceCountedObject
@@ -59,7 +59,6 @@ namespace VCS
 
         SerializedData serialize() const override;
         void deserialize(const SerializedData &data) override;
-        void deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup);
         void reset() override;
 
         using Ptr = ReferenceCountedObjectPtr<RevisionItem>;
@@ -74,6 +73,5 @@ namespace VCS
         String description;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionItem);
-
     };
 }  // namespace VCS

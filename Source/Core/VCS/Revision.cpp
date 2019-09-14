@@ -148,7 +148,7 @@ void Revision::deserializeDeltas(SerializedData data)
     forEachChildWithType(root, e, Serialization::VCS::revisionItem)
     {
         RevisionItem::Ptr item(new RevisionItem(RevisionItem::Type::Undefined, nullptr));
-        item->deserialize(e, {});
+        item->deserialize(e);
         this->addItem(item);
     }
 }
@@ -176,17 +176,11 @@ SerializedData Revision::serialize() const
 
 void Revision::deserialize(const SerializedData &data)
 {
-    // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
-    jassertfalse;
-}
-
-void Revision::deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup)
-{
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::VCS::revision) ?
-        tree : tree.getChildWithName(Serialization::VCS::revision);
+        data.hasType(Serialization::VCS::revision) ?
+        data : data.getChildWithName(Serialization::VCS::revision);
 
     if (!root.isValid()) { return; }
 
@@ -199,13 +193,13 @@ void Revision::deserialize(const SerializedData &tree, const DeltaDataLookup &da
         if (e.hasType(Serialization::VCS::revision))
         {
             Revision::Ptr child(new Revision());
-            child->deserialize(e, dataLookup);
+            child->deserialize(e);
             this->addChild(child);
         }
         else if (e.hasType(Serialization::VCS::revisionItem))
         {
             RevisionItem::Ptr item(new RevisionItem(RevisionItem::Type::Undefined, nullptr));
-            item->deserialize(e, dataLookup);
+            item->deserialize(e);
             this->addItem(item);
         }
     }

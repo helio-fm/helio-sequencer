@@ -108,29 +108,23 @@ SerializedData StashesRepository::serialize() const
 
 void StashesRepository::deserialize(const SerializedData &data)
 {
-    // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
-    jassertfalse;
-}
-
-void StashesRepository::deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup)
-{
     this->reset();
 
-    const auto root = tree.hasType(Serialization::VCS::stashesRepository) ?
-        tree : tree.getChildWithName(Serialization::VCS::stashesRepository);
+    const auto root = data.hasType(Serialization::VCS::stashesRepository) ?
+        data : data.getChildWithName(Serialization::VCS::stashesRepository);
 
     if (!root.isValid()) { return; }
 
     const auto userStashesParams = root.getChildWithName(Serialization::VCS::userStashes);
     if (userStashesParams.isValid())
     {
-        this->userStashes->deserialize(userStashesParams, dataLookup);
+        this->userStashes->deserialize(userStashesParams);
     }
 
     const auto quickStashParams = root.getChildWithName(Serialization::VCS::quickStash);
     if (quickStashParams.isValid())
     {
-        this->quickStash->deserialize(quickStashParams, dataLookup);
+        this->quickStash->deserialize(quickStashParams);
     }
 }
 

@@ -123,8 +123,4 @@ namespace VCS
         UniquePointer<Delta> delta;
         SerializedData deltaData;
     };
-
-    // A temporary workaround, see the comment in VersionControl::deserialize()
-    typedef FlatHashMap<String, SerializedData, StringHash> DeltaDataLookup;
-
 } // namespace VCS

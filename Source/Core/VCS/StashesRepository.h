@@ -46,7 +46,6 @@ namespace VCS
 
         SerializedData serialize() const override;
         void deserialize(const SerializedData &data) override;
-        void deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup);
         void reset() override;
 
         using Ptr = ReferenceCountedObjectPtr<StashesRepository>;

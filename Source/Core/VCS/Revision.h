@@ -72,7 +72,6 @@ namespace VCS
 
         SerializedData serialize() const;
         void deserialize(const SerializedData &data);
-        void deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup);
         void reset();
 
     private:

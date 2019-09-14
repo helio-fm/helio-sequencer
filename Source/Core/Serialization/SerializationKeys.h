@@ -421,10 +421,6 @@ namespace Serialization
         static const Identifier quickStash = "quickStash";
         static const Identifier quickStashId = "quickStashId";
 
-        static const Identifier pack = "deltaPack";
-        static const Identifier packItem = "record";
-        static const Identifier packItemDeltaId = "deltaId";
-
         static const Identifier remoteCache = "remoteCache";
         static const Identifier remoteCacheSyncTime = "lastSync";
         static const Identifier remoteRevision = "revision";
@@ -434,7 +430,6 @@ namespace Serialization
         static const Identifier revision = "revision";
         static const Identifier head = "head";
         static const Identifier snapshot = "snapshot";
-        static const Identifier snapshotData = "snapshotData";
         static const Identifier headRevisionId = "headRevisionId";
         static const Identifier commitMessage = "message";
         static const Identifier commitTimeStamp = "date";

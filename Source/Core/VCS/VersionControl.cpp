@@ -403,42 +403,9 @@ void VersionControl::deserialize(const SerializedData &data)
 
     const String headId = root.getProperty(Serialization::VCS::headRevisionId);
     DBG("Head ID is " + headId);
-
-    VCS::DeltaDataLookup deltaDataLookup;
-    const auto packNode = root.hasType(Serialization::VCS::pack) ?
-        root : root.getChildWithName(Serialization::VCS::pack);
-
-    if (packNode.isValid())
-    {
-        /*
-            This block is another kind of hack to support legacy file format.
-
-            First, VCS had a Pack class, which was designed to manage all weighty
-            deltas data and flush it on disk by the chance to keep memory free,
-            and then only load these chunks when they are needed (e.g. on the checkout).
-
-            Eventually it brought much more problems than benefits,
-            so I ripped it off, but deltas data still have to be put in place
-            manually, when reading the old file format (because of this,
-            we call the overloaded deserialize/2 function). All these hacks
-            are meant to be removed in a year or two once the next version is released.
-
-            Conclusion: premature optimization considered harmful.
-        */
-
-        forEachChildWithType(packNode, e, Serialization::VCS::packItem)
-        {
-            const auto deltaId = e.getProperty(Serialization::VCS::packItemDeltaId);
-            jassert(e.getNumChildren() == 1);
-            const auto deltaData(e.getChild(0));
-            jassert(deltaData.isValid());
-            deltaDataLookup[deltaId] = deltaData;
-        }
-    }
-
-    this->rootRevision->deserialize(root, deltaDataLookup);
-    this->stashes->deserialize(root, deltaDataLookup);
-
+    
+    this->rootRevision->deserialize(root);
+    this->stashes->deserialize(root);
     this->remoteCache.deserialize(root);
 
     {

@@ -127,16 +127,10 @@ SerializedData RevisionItem::serialize() const
 
 void RevisionItem::deserialize(const SerializedData &data)
 {
-    // Use deserialize/2 workaround (see the comment in VersionControl.cpp)
-    jassertfalse;
-}
-
-void RevisionItem::deserialize(const SerializedData &tree, const DeltaDataLookup &dataLookup)
-{
     this->reset();
 
-    const auto root = tree.hasType(Serialization::VCS::revisionItem) ?
-        tree : tree.getChildWithName(Serialization::VCS::revisionItem);
+    const auto root = data.hasType(Serialization::VCS::revisionItem) ?
+        data : data.getChildWithName(Serialization::VCS::revisionItem);
 
     if (!root.isValid()) { return; }
 
@@ -157,21 +151,10 @@ void RevisionItem::deserialize(const SerializedData &tree, const DeltaDataLookup
         UniquePointer<Delta> delta(new Delta({}, {}));
         delta->deserialize(e);
 
-        // either we already have saved data, or the lookup table is provided:
-        jassert((e.getNumChildren() == 0 && dataLookup.size() > 0) || (e.getNumChildren() == 1 && dataLookup.size() == 0));
-
+        jassert(e.getNumChildren() == 1);
         if (e.getNumChildren() == 1)
         {
             this->deltasData.add(e.getChild(0));
-        }
-        else
-        {
-            const String deltaId = e.getProperty(Serialization::VCS::deltaId);
-            if (dataLookup.contains(deltaId))
-            {
-                const auto data = dataLookup.at(deltaId);
-                this->deltasData.add(data);
-            }
         }
 
         this->deltas.add(delta.release());
