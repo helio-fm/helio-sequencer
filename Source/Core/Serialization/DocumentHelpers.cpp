@@ -189,11 +189,9 @@ static const Array<Serializer *> getSerializersForHeader(const String &header)
 
 SerializedData DocumentHelpers::load(const File &file)
 {
-    SerializedData result;
-
     if (!file.existsAsFile())
     {
-        return result;
+        return {};
     }
 
     const String extension(file.getFileExtension());
@@ -202,9 +200,7 @@ SerializedData DocumentHelpers::load(const File &file)
     // if exactly one serializer reports to support target file extension, then use that one
     if (onesThatSupportExtension.size() == 1)
     {
-        SerializedData tree;
-        onesThatSupportExtension.getFirst()->loadFromFile(file, tree);
-        return tree;
+        return onesThatSupportExtension.getFirst()->loadFromFile(file);
     }
 
     // if none of more that one of serializers support that extension, try to check file header
@@ -224,9 +220,7 @@ SerializedData DocumentHelpers::load(const File &file)
     const auto onesThatSupportHeader(getSerializersForHeader(header.toUTF8()));
     if (!onesThatSupportHeader.isEmpty())
     {
-        SerializedData tree;
-        onesThatSupportHeader.getFirst()->loadFromFile(file, tree);
-        return tree;
+        return onesThatSupportHeader.getFirst()->loadFromFile(file);
     }
 
     // Default to binary serialization
@@ -235,20 +229,16 @@ SerializedData DocumentHelpers::load(const File &file)
 
 SerializedData DocumentHelpers::load(const String &string)
 {
-    SerializedData result;
     const String header(string.substring(0, 8));
 
     const auto onesThatSupportHeader(getSerializersForHeader(header));
     if (!onesThatSupportHeader.isEmpty())
     {
-        SerializedData tree;
-        onesThatSupportHeader.getFirst()->loadFromString(string, tree);
-        return tree;
+        return onesThatSupportHeader.getFirst()->loadFromString(string);
     }
 
     // Default to XML serialization
     return DocumentHelpers::load<XmlSerializer>(string);
-
 }
 
 static File createTempFileForSaving(const File &parentDirectory, String name, const String& suffix)

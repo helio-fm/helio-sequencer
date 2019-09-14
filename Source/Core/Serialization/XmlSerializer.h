@@ -24,10 +24,10 @@ class XmlSerializer final : public Serializer
 public:
 
     Result saveToFile(File file, const SerializedData &tree) const override;
-    Result loadFromFile(const File &file, SerializedData &tree) const override;
+    SerializedData loadFromFile(const File &file) const override;
 
     Result saveToString(String &string, const SerializedData &tree) const override;
-    Result loadFromString(const String &string, SerializedData &tree) const override;
+    SerializedData loadFromString(const String &string) const override;
 
     bool supportsFileWithExtension(const String &extension) const override;
     bool supportsFileWithHeader(const String &header) const override;

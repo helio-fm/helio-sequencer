@@ -59,7 +59,7 @@ private:
         const BackendRequest request(ApiRoutes::updatesInfo);
         this->response = request.get();
 
-        if (!this->response.isValid() || !this->response.is2xx())
+        if (!this->response.hasValidBody() || !this->response.is2xx())
         {
             callbackOnMessageThread(UpdatesCheckThread, onUpdatesCheckFailed, self->response.getErrors());
             return;

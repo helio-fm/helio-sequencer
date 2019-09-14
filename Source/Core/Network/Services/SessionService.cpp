@@ -44,7 +44,7 @@ public:
                 }
 
                 static const JsonSerializer decoder;
-                decoder.loadFromString(block.toString(), this->jwt);
+                this->jwt = decoder.loadFromString(block.toString());
             }
         }
     }

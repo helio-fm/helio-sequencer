@@ -29,10 +29,8 @@ public:
     template<typename T>
     static SerializedData read(const String &data)
     {
-        T serializer;
-        SerializedData tree;
-        serializer.loadFromString(data, tree);
-        return tree;
+        static T serializer;
+        return serializer.loadFromString(data);
     }
 
     // This tries to auto-detect a serializer type for a given file
@@ -43,16 +41,14 @@ public:
     template<typename T>
     static SerializedData load(const File &file)
     {
-        T serializer;
-        SerializedData tree;
-        serializer.loadFromFile(file, tree);
-        return tree;
+        static T serializer;
+        return serializer.loadFromFile(file);
     }
 
     template<typename T>
     static bool save(const File &file, const SerializedData &tree)
     {
-        T serializer;
+        static T serializer;
         TempDocument tempDoc(file);
         if (serializer.saveToFile(tempDoc.getFile(), tree).wasOk())
         {
@@ -65,7 +61,7 @@ public:
     template<typename T>
     static bool save(const File &file, const Serializable &serializable)
     {
-        T serializer;
+        static T serializer;
         TempDocument tempDoc(file);
         const auto treeNode(serializable.serialize());
         if (serializer.saveToFile(tempDoc.getFile(), treeNode).wasOk())

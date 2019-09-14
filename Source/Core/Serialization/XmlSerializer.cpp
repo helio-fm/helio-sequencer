@@ -41,17 +41,16 @@ Result XmlSerializer::saveToFile(File file, const SerializedData &tree) const
     return Result::fail({});
 }
 
-Result XmlSerializer::loadFromFile(const File &file, SerializedData &tree) const
+SerializedData XmlSerializer::loadFromFile(const File &file) const
 {
     XmlDocument document(file);
     UniquePointer<XmlElement> xml(document.getDocumentElement());
     if (xml != nullptr)
     {
-        tree = SerializedData::readFromXml(*xml);
-        return Result::ok();
+        return SerializedData::readFromXml(*xml);
     }
 
-    return Result::fail("Failed to parse xml data");
+    return {};
 }
 
 Result XmlSerializer::saveToString(String &string, const SerializedData &tree) const
@@ -66,12 +65,11 @@ Result XmlSerializer::saveToString(String &string, const SerializedData &tree) c
     return Result::fail({});
 }
 
-Result XmlSerializer::loadFromString(const String &string, SerializedData &tree) const
+SerializedData XmlSerializer::loadFromString(const String &string) const
 {
     XmlDocument document(string);
     UniquePointer<XmlElement> xml(document.getDocumentElement());
-    tree = SerializedData::readFromXml(*xml);
-    return Result::ok();
+    return SerializedData::readFromXml(*xml);
 }
 
 bool XmlSerializer::supportsFileWithExtension(const String &extension) const

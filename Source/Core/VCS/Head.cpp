@@ -464,12 +464,15 @@ void Head::deserialize(const SerializedData &data)
     // A temporary workaround, see the comment in VersionControl::deserialize()
     DeltaDataLookup deltaDataLookup;
     const auto snapshotDataNode = root.getChildWithName(Serialization::VCS::snapshotData);
-    forEachChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
+    if (snapshotDataNode.isValid())
     {
-        const String deltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
-        const auto deltaData = dataElement.getChild(0);
-        jassert(deltaData.isValid());
-        deltaDataLookup[deltaId] = deltaData;
+        forEachChildWithType(snapshotDataNode, dataElement, Serialization::VCS::packItem)
+        {
+            const String deltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
+            const auto deltaData = dataElement.getChild(0);
+            jassert(deltaData.isValid());
+            deltaDataLookup[deltaId] = deltaData;
+        }
     }
 
     forEachChildWithType(snapshotNode, stateElement, Serialization::VCS::revisionItem)

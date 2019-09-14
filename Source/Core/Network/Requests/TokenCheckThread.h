@@ -54,8 +54,7 @@ private:
         const BackendRequest request(ApiRoutes::tokenCheck);
         this->response = request.get();
 
-        if (!this->response.isValid() ||
-            !this->response.is2xx())
+        if (!this->response.is2xx())
         {
             callbackOnMessageThread(TokenCheckThread, onTokenCheckFailed, self->response.getErrors());
             return;

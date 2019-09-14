@@ -36,7 +36,7 @@ Result BinarySerializer::saveToFile(File file, const SerializedData &tree) const
     return Result::fail("Failed to save");
 }
 
-Result BinarySerializer::loadFromFile(const File &file, SerializedData &tree) const
+SerializedData BinarySerializer::loadFromFile(const File &file) const
 {
     // here's the thing: reading from FileInputStream is slow asfuck (at least, on Windows);
     // adding BufferedInputStream bufferedStream(fileStream) - kinda helps, but:
@@ -52,12 +52,11 @@ Result BinarySerializer::loadFromFile(const File &file, SerializedData &tree) co
         const auto magicNumber = static_cast<uint64>(inputStream.readInt64());
         if (magicNumber == kHelioHeaderV2)
         {
-            tree = SerializedData::readFromStream(inputStream);
-            return Result::ok();
+            return SerializedData::readFromStream(inputStream);
         }
     }
 
-    return Result::fail("Failed to load");
+    return {};
 }
 
 Result BinarySerializer::saveToString(String &string, const SerializedData &tree) const
@@ -69,15 +68,14 @@ Result BinarySerializer::saveToString(String &string, const SerializedData &tree
     return Result::ok();
 }
 
-Result BinarySerializer::loadFromString(const String &string, SerializedData &tree) const
+SerializedData BinarySerializer::loadFromString(const String &string) const
 {
     if (string.isNotEmpty())
     {
-        tree = SerializedData::readFromData(string.toUTF8(), string.getNumBytesAsUTF8());
-        return Result::ok();
+        return SerializedData::readFromData(string.toUTF8(), string.getNumBytesAsUTF8());
     }
 
-    return Result::fail("Failed to load");
+    return {};
 }
 
 bool BinarySerializer::supportsFileWithExtension(const String &extension) const

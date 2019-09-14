@@ -29,13 +29,10 @@ public:
     {
         Response();
 
-        // Was able to connect and parse correct response
-        bool isValid() const noexcept;
-
-        // Status code check
         bool is2xx() const noexcept;
         bool is200() const noexcept;
         bool is(int code) const noexcept;
+        bool hasValidBody() const noexcept;
 
         // SerializedData wrappers
         bool hasProperty(const Identifier &name) const noexcept;
@@ -53,8 +50,7 @@ public:
         // optional detailed errors descriptions
         Array<String> errors;
 
-        int statusCode;
-        Result receipt;
+        int statusCode = 0;
         StringPairArray headers;
 
         friend class BackendRequest;

@@ -69,7 +69,7 @@ private:
         const BackendRequest initWebAuthRequest(ApiRoutes::initWebAuth);
         this->response = initWebAuthRequest.post(initSession);
 
-        if (!this->response.isValid() ||
+        if (!this->response.hasValidBody() ||
             !this->response.is(201))
         {
             DBG("Failed to init web auth: " + this->response.getErrors().getFirst());
@@ -110,7 +110,7 @@ private:
             this->response = checkWebAuthRequest.post(finaliseSession);
         } while (this->response.is(noContent) && numAttempts++ < maxAttempts);
 
-        if (!this->response.isValid() ||
+        if (!this->response.hasValidBody() ||
             !this->response.is200() ||
             !this->response.hasProperty(ApiKeys::AuthSession::token))
         {

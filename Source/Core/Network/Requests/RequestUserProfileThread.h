@@ -57,7 +57,7 @@ private:
         const BackendRequest request(ApiRoutes::userProfile);
         this->response = request.get();
 
-        if (!this->response.isValid() || !this->response.is200())
+        if (!this->response.hasValidBody() || !this->response.is200())
         {
             callbackOnMessageThread(RequestUserProfileThread, onRequestProfileFailed, self->response.getErrors());
         }

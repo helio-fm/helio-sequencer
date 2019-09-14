@@ -27,10 +27,10 @@ public:
     virtual ~Serializer() {}
 
     virtual Result saveToFile(File file, const SerializedData &tree) const = 0;
-    virtual Result loadFromFile(const File &file, SerializedData &tree) const = 0;
+    virtual SerializedData loadFromFile(const File &file) const = 0;
 
     virtual Result saveToString(String &string, const SerializedData &tree) const = 0;
-    virtual Result loadFromString(const String &string, SerializedData &tree) const = 0;
+    virtual SerializedData loadFromString(const String &string) const = 0;
 
     virtual bool supportsFileWithExtension(const String &extension) const = 0;
     virtual bool supportsFileWithHeader(const String &header) const = 0;

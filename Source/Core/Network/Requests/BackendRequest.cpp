@@ -25,13 +25,11 @@
 #define CONNECTION_TIMEOUT_MS (0)
 #define NUM_CONNECT_ATTEMPTS (3)
 
-BackendRequest::Response::Response() :
-    statusCode(0),
-    receipt(Result::fail({})) {}
+BackendRequest::Response::Response() {}
 
-bool BackendRequest::Response::isValid() const noexcept
+bool BackendRequest::Response::hasValidBody() const noexcept
 {
-    return this->receipt.wasOk() && this->statusCode != 500;
+    return this->body.isValid();
 }
 
 bool BackendRequest::Response::is2xx() const noexcept
@@ -125,24 +123,21 @@ void BackendRequest::processResponse(BackendRequest::Response &response, InputSt
         DBG("<< Received " << response.statusCode << " " // << responseBody);
             << responseBody.substring(0, 128) << (responseBody.length() > 128 ? ".." : ""));
 
-        SerializedData parsedResponse;
-        response.receipt = this->serializer.loadFromString(responseBody, parsedResponse);
-        if (response.receipt.failed() || !parsedResponse.isValid())
+        response.body = this->serializer.loadFromString(responseBody);
+        if (!response.body.isValid())
         {
             response.errors.add(TRANS(I18n::Common::networkError));
             return;
         }
 
-        response.body = parsedResponse;
-
         // Try to parse errors
         if (response.statusCode < 200 || response.statusCode >= 400)
         {
             using namespace Serialization;
-            for (int i = 0; i < parsedResponse.getNumProperties(); ++i)
+            for (int i = 0; i < response.body.getNumProperties(); ++i)
             {
-                const auto key = parsedResponse.getPropertyName(i);
-                const auto value = parsedResponse.getProperty(key).toString();
+                const auto key = response.body.getPropertyName(i);
+                const auto value = response.body.getProperty(key).toString();
                 if (key == Api::V1::status || key == Api::V1::message)
                 {
                     response.errors.add(value);

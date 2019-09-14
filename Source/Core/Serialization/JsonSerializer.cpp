@@ -642,18 +642,17 @@ Result JsonSerializer::saveToFile(File file, const SerializedData &tree) const
     return Result::fail("Failed to save");
 }
 
-Result JsonSerializer::loadFromFile(const File &file, SerializedData &tree) const
+SerializedData JsonSerializer::loadFromFile(const File &file) const
 {
     const String text(file.loadFileAsString());
     SerializedData root(fakeRoot);
     const auto result = JsonParser::parseObjectOrArray(text.getCharPointer(), root);
     if (result.wasOk())
     {
-        tree = root.getChild(0);
-        return result;
+        return root.getChild(0);
     }
 
-    return Result::fail("Failed to load JSON");
+    return {};
 }
 
 Result JsonSerializer::saveToString(String &string, const SerializedData &tree) const
@@ -664,7 +663,7 @@ Result JsonSerializer::saveToString(String &string, const SerializedData &tree) 
     return Result::ok();
 }
 
-Result JsonSerializer::loadFromString(const String &string, SerializedData &tree) const
+SerializedData JsonSerializer::loadFromString(const String &string) const
 {
     SerializedData root(fakeRoot);
     const auto result = JsonParser::parseObjectOrArray(string.getCharPointer(), root);
@@ -673,18 +672,16 @@ Result JsonSerializer::loadFromString(const String &string, SerializedData &tree
         if (root.getNumChildren() == 1 && root.getNumProperties() == 0)
         {
             // expected behaviour in most cases:
-            tree = root.getChild(0);
+            return root.getChild(0);
         }
         else
         {
             // but it might be just a regular json we need to parse:
-            tree = root;
+            return root;
         }
-
-        return result;
     }
 
-    return Result::fail("Failed to load JSON");
+    return {};
 }
 
 bool JsonSerializer::supportsFileWithExtension(const String &extension) const

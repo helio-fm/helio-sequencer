@@ -61,7 +61,7 @@ private:
         const BackendRequest request(ApiRoutes::tokenUpdate);
         this->response = request.post(session);
 
-        if (!this->response.isValid() ||
+        if (!this->response.hasValidBody() ||
             !this->response.is2xx() ||
             !this->response.hasProperty(ApiKeys::token))
         {

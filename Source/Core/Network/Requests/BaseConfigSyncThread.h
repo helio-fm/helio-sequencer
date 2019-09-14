@@ -55,7 +55,7 @@ private:
         const BackendRequest request(uri);
         this->response = request.get();
 
-        if (!this->response.isValid() || !this->response.is2xx())
+        if (!this->response.hasValidBody() || !this->response.is2xx())
         {
             callbackOnMessageThread(BaseConfigSyncThread, onRequestResourceFailed,
                 self->resourceType, self->response.getErrors());

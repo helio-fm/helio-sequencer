@@ -136,13 +136,15 @@ void ResourceManager::reloadResources()
     else
     {
         const String builtInResource(this->getBuiltInResourceString());
-        const auto tree(DocumentHelpers::load(builtInResource));
-        jassert(builtInResource.isEmpty() || tree.isValid());
-        if (tree.isValid())
+        if (builtInResource.isNotEmpty())
         {
-            DBG("Loading built-in resource for " + this->resourceType.toString());
-            this->deserializeResources(tree, this->baseResources);
-            shouldBroadcastChange = true;
+            const auto tree(DocumentHelpers::load(builtInResource));
+            if (tree.isValid())
+            {
+                DBG("Loading built-in resource for " + this->resourceType.toString());
+                this->deserializeResources(tree, this->baseResources);
+                shouldBroadcastChange = true;
+            }
         }
     }
 

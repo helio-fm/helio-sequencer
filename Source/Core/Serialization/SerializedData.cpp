@@ -178,12 +178,9 @@ public:
 SerializedData::SerializedData() noexcept {}
 
 SerializedData::SerializedData(const Identifier &type) :
-    data(new SerializedData::SharedData(type))
-{
-    jassert(type.toString().isNotEmpty());
-}
+    data(new SerializedData::SharedData(type)) {}
 
-SerializedData::SerializedData(SharedData::Ptr obj) noexcept  : data(std::move(obj)) {}
+SerializedData::SerializedData(SharedData::Ptr obj) noexcept : data(std::move(obj)) {}
 SerializedData::SerializedData(SharedData &obj) noexcept : data(obj) {}
 
 SerializedData::SerializedData(const SerializedData &other) noexcept :
@@ -228,12 +225,8 @@ bool SerializedData::isValid() const noexcept
 
 SerializedData SerializedData::createCopy() const
 {
-    if (this->data != nullptr)
-    {
-        return SerializedData(*new SharedData(*this->data));
-    }
-
-    return {};
+    jassert(this->data != nullptr);
+    return SerializedData(*new SharedData(*this->data));
 }
 
 bool SerializedData::hasType(const Identifier &typeName) const noexcept
@@ -243,49 +236,38 @@ bool SerializedData::hasType(const Identifier &typeName) const noexcept
 
 Identifier SerializedData::getType() const noexcept
 {
-    return this->data != nullptr ? this->data->type : Identifier();
+    jassert(this->data != nullptr);
+    return this->data->type;
 }
 
 SerializedData SerializedData::getParent() const noexcept
 {
-    if (this->data != nullptr)
+    jassert(this->data != nullptr);
+    if (auto *p = this->data->parent)
     {
-        if (auto *p = this->data->parent)
-        {
-            return SerializedData(*p);
-        }
+        return SerializedData(*p);
     }
 
     return {};
 }
 
-static const var &getNullVarRef() noexcept
-{
-    static var nullVar;
-    return nullVar;
-}
-
 const var &SerializedData::getProperty(const Identifier &name) const noexcept
 {
-    return this->data == nullptr ? getNullVarRef() : this->data->properties[name];
+    jassert(this->data != nullptr);
+    return this->data->properties[name];
 }
 
 var SerializedData::getProperty(const Identifier &name, const var &defaultValue) const
 {
-    return this->data == nullptr ? defaultValue
-        : this->data->properties.getWithDefault(name, defaultValue);
+    jassert(this->data != nullptr);
+    return this->data->properties.getWithDefault(name, defaultValue);
 }
 
 SerializedData &SerializedData::setProperty(const Identifier &name, const var &newValue)
 {
-    jassert(name.toString().isNotEmpty()); // Must have a valid property name!
-    jassert(this->data != nullptr); // Trying to add a property to a null ValueTree will fail!
-
-    if (this->data != nullptr)
-    {
-        this->data->properties.set(name, newValue);
-    }
-
+    jassert(this->data != nullptr);
+    jassert(name.toString().isNotEmpty());
+    this->data->properties.set(name, newValue);
     return *this;
 }
 
@@ -301,8 +283,8 @@ int SerializedData::getNumProperties() const noexcept
 
 Identifier SerializedData::getPropertyName(int index) const noexcept
 {
-    return this->data == nullptr ? Identifier()
-        : this->data->properties.getName(index);
+    jassert(this->data != nullptr);
+    return this->data->properties.getName(index);
 }
 
 int SerializedData::getNumChildren() const noexcept
@@ -312,15 +294,31 @@ int SerializedData::getNumChildren() const noexcept
 
 SerializedData SerializedData::getChild(int index) const
 {
-    if (this->data != nullptr)
+    jassert(this->data != nullptr);
+    if (auto *c = this->data->children.getObjectPointer(index))
     {
-        if (auto *c = this->data->children.getObjectPointer(index))
-        {
-            return SerializedData(*c);
-        }
+        return SerializedData(*c);
     }
 
     return {};
+}
+
+SerializedData SerializedData::getChildWithName(const Identifier &type) const
+{
+    jassert(this->data != nullptr);
+    return this->data->getChildWithName(type);
+}
+
+void SerializedData::addChild(const SerializedData &child, int index)
+{
+    jassert(this->data != nullptr);
+    this->data->addChild(child.data.get(), index);
+}
+
+void SerializedData::appendChild(const SerializedData &child)
+{
+    jassert(this->data != nullptr);
+    this->data->appendChild(child.data.get());
 }
 
 SerializedData::Iterator::Iterator(const SerializedData &v, bool isEnd)
@@ -344,7 +342,7 @@ bool SerializedData::Iterator::operator!= (const Iterator &other) const
 
 SerializedData SerializedData::Iterator::operator*() const
 {
-    return SerializedData(SharedData::Ptr(*static_cast<SharedData**> (internal)));
+    return SerializedData(SharedData::Ptr(*static_cast<SharedData**>(internal)));
 }
 
 SerializedData::Iterator SerializedData::begin() const noexcept
@@ -355,31 +353,6 @@ SerializedData::Iterator SerializedData::begin() const noexcept
 SerializedData::Iterator SerializedData::end() const noexcept
 {
     return Iterator(*this, true);
-}
-
-SerializedData SerializedData::getChildWithName(const Identifier &type) const
-{
-    return this->data != nullptr ? this->data->getChildWithName(type) : SerializedData();
-}
-
-void SerializedData::addChild(const SerializedData &child, int index)
-{
-    jassert(this->data != nullptr);
-
-    if (this->data != nullptr)
-    {
-        this->data->addChild(child.data.get(), index);
-    }
-}
-
-void SerializedData::appendChild(const SerializedData &child)
-{
-    jassert(this->data != nullptr);
-
-    if (this->data != nullptr)
-    {
-        this->data->appendChild(child.data.get());
-    }
 }
 
 UniquePointer<XmlElement> SerializedData::writeToXml() const
