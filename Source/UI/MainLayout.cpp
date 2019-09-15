@@ -28,6 +28,7 @@
 #include "GenericTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
+#include "Console.h"
 #include "MidiTrackNode.h"
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
@@ -354,6 +355,9 @@ void MainLayout::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ShowNextPage:
         App::Workspace().navigateForwardIfPossible();
+        break;
+    case CommandIDs::ShowConsole:
+        App::showModalComponent(makeUnique<Console>());
         break;
     default:
         break;

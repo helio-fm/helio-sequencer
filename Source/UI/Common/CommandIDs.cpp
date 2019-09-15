@@ -192,6 +192,7 @@ int CommandIDs::getIdForName(const String &command)
         CASE_FOR(PatternsGroupByColour)
         CASE_FOR(PatternsGroupByInstrument)
         CASE_FOR(PatternsGroupById)
+        CASE_FOR(ShowConsole)
         default:
             return 0;
     };

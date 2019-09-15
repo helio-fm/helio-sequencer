@@ -236,7 +236,9 @@ namespace CommandIDs
         PatternsGroupByInstrument       = 0x4102,
         PatternsGroupById               = 0x4103,
 
-        YourNextCommandId               = 0x4200
+        ShowConsole                     = 0x4200,
+
+        YourNextCommandId               = 0x4300
     };
 
     int getIdForName(const String &command);

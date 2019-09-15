@@ -27,6 +27,10 @@
         // ------------------------------------
         // Main layout hotkeys
 
+        { "receiver": "MainLayout", "command": "ShowConsole", "key": "`" },
+        { "receiver": "MainLayout", "command": "ShowConsole", "key": "Control + P" },
+        { "receiver": "MainLayout", "command": "ShowConsole", "key": "Command + P" },
+
         { "receiver": "MainLayout", "command": "ShowRootPage", "key": "Home" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
