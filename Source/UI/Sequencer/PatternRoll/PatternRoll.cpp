@@ -606,7 +606,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             }
 
             auto *trackNode = this->project.findTrackById<MidiTrackNode>(trackId);
-            App::Layout().showModalDialog(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
+            App::showModalComponent(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
     case CommandIDs::DeleteClips:

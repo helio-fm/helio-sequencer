@@ -185,11 +185,6 @@ void MainLayout::hideTooltipIfAny()
     this->tooltipContainer->showWithComponent(nullptr);
 }
 
-void MainLayout::showModalDialog(UniquePointer<Component> target)
-{
-    App::showModalComponent(std::move(target));
-}
-
 // a hack!
 Rectangle<int> MainLayout::getPageBounds() const
 {

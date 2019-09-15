@@ -25,7 +25,6 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "KeySignatureDialog.h"
-#include "MainLayout.h"
 #include "KeySignatureLargeComponent.h"
 #include "KeySignatureSmallComponent.h"
 #include "RescalePreviewTool.h"
@@ -336,7 +335,7 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
 
     if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)
     {
-        App::Layout().showModalDialog(KeySignatureDialog::editingDialog(*this,
+        App::showModalComponent(KeySignatureDialog::editingDialog(*this,
             this->project.getTransport(), ksc->getEvent()));
     }
 }

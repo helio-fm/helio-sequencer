@@ -47,11 +47,11 @@ public:
         this->stopTimer();
     }
     
-    void paint (Graphics& g) override
+    void paint(Graphics &g) override
     {
         // We need to go deeper.
-        if (DrawableComposite *group =
-                dynamic_cast<DrawableComposite *>(this->indicatorShape->getChildComponent(0)->getChildComponent(0)))
+        auto *shapePiece = this->indicatorShape->getChildComponent(0)->getChildComponent(0);
+        if (auto *group = dynamic_cast<DrawableComposite *>(shapePiece))
         {
             Rectangle<float> allArea(group->getContentArea());
             AffineTransform fitTransform = RectanglePlacement(RectanglePlacement::onlyReduceInSize)

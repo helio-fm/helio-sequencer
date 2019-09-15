@@ -948,7 +948,7 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::RenameTrack:
         if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
         {
-            App::Layout().showModalDialog(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
+            App::showModalComponent(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
     case CommandIDs::CopyEvents:
@@ -988,7 +988,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                     &this->project, trackTemplate, input));
             };
 
-            App::Layout().showModalDialog(std::move(inputDialog));
+            App::showModalComponent(std::move(inputDialog));
         }
         break;
     case CommandIDs::BeatShiftLeft:
@@ -1058,7 +1058,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                     App::Config().getArpeggiators()->updateUserResource(arp);
                 };
 
-                App::Layout().showModalDialog(std::move(newArpDialog));
+                App::showModalComponent(std::move(newArpDialog));
             }
         }
         break;

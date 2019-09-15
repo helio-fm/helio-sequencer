@@ -67,8 +67,6 @@ public:
         TooltipType type = TooltipType::Simple,
         int timeoutMs = 15000);
 
-    void showModalDialog(UniquePointer<Component> target);
-
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//

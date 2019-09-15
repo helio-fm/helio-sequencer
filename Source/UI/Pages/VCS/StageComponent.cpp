@@ -22,17 +22,15 @@
 #include "StageComponent.h"
 
 //[MiscUserDefs]
-#include "MainLayout.h"
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 #include "ModalDialogConfirmation.h"
 #include "ModalDialogInput.h"
 #include "ProgressIndicator.h"
-
+#include "MainLayout.h"
 #include "VersionControlStageSelectionMenu.h"
 #include "RevisionItemComponent.h"
 #include "Head.h"
-
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 
@@ -370,7 +368,7 @@ void StageComponent::commitSelected()
         this->lastCommitMessage = input;
     };
 
-    App::Layout().showModalDialog(std::move(dialog));
+    App::showModalComponent(std::move(dialog));
 }
 
 void StageComponent::resetSelected()
@@ -388,7 +386,7 @@ void StageComponent::resetSelected()
         this->vcs.resetChanges(this->changesList->getSelectedRows());
     };
 
-    App::Layout().showModalDialog(std::move(dialog));
+    App::showModalComponent(std::move(dialog));
 }
 
 //[/MiscUserCode]

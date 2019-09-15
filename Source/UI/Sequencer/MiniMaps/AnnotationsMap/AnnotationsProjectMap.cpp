@@ -25,7 +25,6 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "AnnotationDialog.h"
-#include "MainLayout.h"
 #include "AnnotationLargeComponent.h"
 #include "AnnotationSmallComponent.h"
 
@@ -309,7 +308,7 @@ void AnnotationsProjectMap::showContextMenuFor(AnnotationComponent *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        App::Layout().showModalDialog(AnnotationDialog::editingDialog(*this, nc->getEvent()));
+        App::showModalComponent(AnnotationDialog::editingDialog(*this, nc->getEvent()));
     }
 }
 

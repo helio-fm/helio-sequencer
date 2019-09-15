@@ -30,7 +30,6 @@
 #include "CommandIDs.h"
 #include "ComponentIDs.h"
 #include "Icons.h"
-
 #include "MainLayout.h"
 #include "ModalDialogConfirmation.h"
 #include "VersionControlHistorySelectionMenu.h"
@@ -111,7 +110,7 @@ void HistoryComponent::handleCommandMessage (int commandId)
             {
                 this->vcs.checkout(this->revisionTree->getSelectedRevision());
             };
-            App::Layout().showModalDialog(std::move(confirmationDialog));
+            App::showModalComponent(std::move(confirmationDialog));
         }
         else
         {
