@@ -28,7 +28,7 @@
 #include "GenericTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
-#include "Console.h"
+#include "CommandPalette.h"
 #include "MidiTrackNode.h"
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
@@ -352,12 +352,12 @@ void MainLayout::handleCommandMessage(int commandId)
         App::Workspace().navigateForwardIfPossible();
         break;
     case CommandIDs::CommandPalette:
-        App::showModalComponent(makeUnique<Console>());
+        App::showModalComponent(makeUnique<CommandPalette>());
         break;
     case CommandIDs::CommandPaletteWithMode:
         App::Config().setProperty(Serialization::Config::lastSearch,
             String::charToString(this->hotkeyScheme->getLastKeyPress().getTextCharacter()));
-        App::showModalComponent(makeUnique<Console>());
+        App::showModalComponent(makeUnique<CommandPalette>());
         break;
     default:
         break;

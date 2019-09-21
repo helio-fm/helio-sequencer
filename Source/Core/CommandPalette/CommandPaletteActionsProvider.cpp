@@ -16,17 +16,17 @@
 */
 
 #include "Common.h"
-#include "ConsoleActionsProvider.h"
+#include "CommandPaletteActionsProvider.h"
 
-struct ConsoleActionSortByMatch final
+struct CommandPaletteActionSortByMatch final
 {
-    static int compareElements(const ConsoleAction::Ptr first, const ConsoleAction::Ptr second)
+    static int compareElements(const CommandPaletteAction::Ptr first, const CommandPaletteAction::Ptr second)
     {
         return int(second->getMatchScore() - first->getMatchScore());
     }
 };
 
-void ConsoleAction::setMatch(int score, const uint8 *matches)
+void CommandPaletteAction::setMatch(int score, const uint8 *matches)
 {
     this->matchScore = score;
 
@@ -88,7 +88,7 @@ static bool fuzzyMatch(String::CharPointerType pattern, String::CharPointerType 
     return fuzzyMatch(pattern, str, outScore, str, nullptr, matches, 0, recursionCount);
 }
 
-void ConsoleActionsProvider::updateFilter(const String &pattern, bool skipPrefix)
+void CommandPaletteActionsProvider::updateFilter(const String &pattern, bool skipPrefix)
 {
     this->filteredActions.clearQuick();
 
@@ -110,11 +110,11 @@ void ConsoleActionsProvider::updateFilter(const String &pattern, bool skipPrefix
         }
     }
 
-    static ConsoleActionSortByMatch comparator;
+    static CommandPaletteActionSortByMatch comparator;
     this->filteredActions.sort(comparator);
 }
 
-void ConsoleActionsProvider::clearFilter()
+void CommandPaletteActionsProvider::clearFilter()
 {
     this->filteredActions.clearQuick();
     this->filteredActions.addArray(this->getActions());

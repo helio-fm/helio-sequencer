@@ -17,40 +17,21 @@
 
 #pragma once
 
-#include "ConsoleActionsProvider.h"
+#include "CommandPaletteActionsProvider.h"
 
-class ConsoleHelp final : public ConsoleActionsProvider
+class CommandPaletteProjectsList final : public CommandPaletteActionsProvider
 {
 public:
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '?';
+        return prefix == '/';
     }
 
 protected:
 
-    const Actions &getActions() const override
-    {
-        if (this->help.isEmpty())
-        {
-            for (const auto &tmp : this->temp)
-            {
-                this->help.add(new ConsoleAction(tmp));
-            }
-        }
+    const Actions &getActions() const override;
 
-        return this->help;
-    }
+    mutable Actions projects;
 
-    mutable Actions help;
-    
-    StringArray temp =
-    {
-        "/ projects list",
-        "@ timeline events",
-        "# chords list",
-        "$ chord inline constructor",
-        "! version control"
-    };
 };

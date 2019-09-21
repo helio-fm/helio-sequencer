@@ -19,7 +19,7 @@
 #include "Common.h"
 //[/Headers]
 
-#include "Console.h"
+#include "CommandPalette.h"
 
 //[MiscUserDefs]
 #include "CommandIDs.h"
@@ -27,11 +27,11 @@
 
 #include "Headline.h"
 #include "Config.h"
-#include "ConsoleHelp.h"
-#include "ConsoleProjectsList.h"
+#include "CommandPaletteHelp.h"
+#include "CommandPaletteProjectsList.h"
 //[/MiscUserDefs]
 
-Console::Console()
+CommandPalette::CommandPalette()
 {
     this->shadowDn.reset(new ShadowDownwards(ShadowType::Normal));
     this->addAndMakeVisible(shadowDn.get());
@@ -41,7 +41,7 @@ Console::Console()
     this->addAndMakeVisible(shadowL.get());
     this->shadowR.reset(new ShadowRightwards(ShadowType::Normal));
     this->addAndMakeVisible(shadowR.get());
-    this->textEditor.reset(new ConsoleTextEditor());
+    this->textEditor.reset(new CommandPaletteTextEditor());
     this->addAndMakeVisible(textEditor.get());
 
     this->actionsList.reset(new ListBox());
@@ -56,8 +56,8 @@ Console::Console()
 
     // fill action providers
     // set default provider (which exactly?)
-    this->actionsProviders.add(new ConsoleHelp());
-    this->actionsProviders.add(new ConsoleProjectsList());
+    this->actionsProviders.add(new CommandPaletteHelp());
+    this->actionsProviders.add(new CommandPaletteProjectsList());
     this->defaultActionsProvider = this->actionsProviders.getFirst();
     this->currentActionsProvider = this->defaultActionsProvider;
 
@@ -89,7 +89,7 @@ Console::Console()
     //[/Constructor]
 }
 
-Console::~Console()
+CommandPalette::~CommandPalette()
 {
     //[Destructor_pre]
     this->textEditor->removeListener(this);
@@ -106,7 +106,7 @@ Console::~Console()
     //[/Destructor]
 }
 
-void Console::paint (Graphics& g)
+void CommandPalette::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -115,7 +115,7 @@ void Console::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void Console::resized()
+void CommandPalette::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -130,14 +130,14 @@ void Console::resized()
     //[/UserResized]
 }
 
-void Console::parentHierarchyChanged()
+void CommandPalette::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
-void Console::handleCommandMessage (int commandId)
+void CommandPalette::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
@@ -147,7 +147,7 @@ void Console::handleCommandMessage (int commandId)
     //[/UserCode_handleCommandMessage]
 }
 
-bool Console::keyPressed (const KeyPress& key)
+bool CommandPalette::keyPressed (const KeyPress& key)
 {
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
@@ -170,7 +170,7 @@ bool Console::keyPressed (const KeyPress& key)
     //[/UserCode_keyPressed]
 }
 
-void Console::inputAttemptWhenModal()
+void CommandPalette::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
@@ -184,12 +184,12 @@ void Console::inputAttemptWhenModal()
 // ListBoxModel
 //===----------------------------------------------------------------------===//
 
-int Console::getNumRows()
+int CommandPalette::getNumRows()
 {
     return this->currentActionsProvider->getFilteredActions().size();
 }
 
-void Console::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected)
+void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected)
 {
     jassert(this->currentActionsProvider != nullptr);
 
@@ -218,22 +218,22 @@ void Console::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool ro
     glyphs.justifyGlyphs(0, glyphs.getNumGlyphs(),
         (margin * 2), margin, float(w), float(h - (margin * 2)),
         Justification::centredLeft);
-    
+
     glyphs.draw(g);
 }
 
-void Console::selectedRowsChanged(int lastRowSelected)
+void CommandPalette::selectedRowsChanged(int lastRowSelected)
 {
     // so what?
 }
 
-void Console::listBoxItemClicked(int row, const MouseEvent &)
+void CommandPalette::listBoxItemClicked(int row, const MouseEvent &)
 {
     // apply and dismiss? or just highlight?
     //
 }
 
-void Console::moveRowSelectionBy(int offset)
+void CommandPalette::moveRowSelectionBy(int offset)
 {
     if (this->getNumRows() > 0)
     {
@@ -247,7 +247,7 @@ void Console::moveRowSelectionBy(int offset)
 // TextEditor::Listener
 //===----------------------------------------------------------------------===//
 
-void Console::textEditorTextChanged(TextEditor &ed)
+void CommandPalette::textEditorTextChanged(TextEditor &ed)
 {
     if (ed.getText().isNotEmpty())
     {
@@ -291,7 +291,7 @@ void Console::textEditorTextChanged(TextEditor &ed)
     App::Config().setProperty(Serialization::Config::lastSearch, ed.getText());
 }
 
-void Console::textEditorReturnKeyPressed(TextEditor &)
+void CommandPalette::textEditorReturnKeyPressed(TextEditor &)
 {
     // todo apply selected action
 
@@ -302,12 +302,12 @@ void Console::textEditorReturnKeyPressed(TextEditor &)
     this->dismiss();
 }
 
-void Console::textEditorEscapeKeyPressed(TextEditor &)
+void CommandPalette::textEditorEscapeKeyPressed(TextEditor &)
 {
     this->cancelAndDismiss();
 }
 
-void Console::textEditorFocusLost(TextEditor&)
+void CommandPalette::textEditorFocusLost(TextEditor&)
 {
     //const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
     if (this->textEditor->getText().isNotEmpty()
@@ -322,13 +322,13 @@ void Console::textEditorFocusLost(TextEditor&)
     }
 }
 
-void Console::dismiss()
+void CommandPalette::dismiss()
 {
     this->fadeOut();
     delete this;
 }
 
-void Console::fadeOut()
+void CommandPalette::fadeOut()
 {
     const int fadeoutTime = 200;
     auto &animator = Desktop::getInstance().getAnimator();
@@ -342,19 +342,19 @@ void Console::fadeOut()
     }
 }
 
-void Console::updatePosition()
+void CommandPalette::updatePosition()
 {
     this->setTopLeftPosition(this->getParentWidth() / 2 - this->getWidth() / 2, HEADLINE_HEIGHT + 1);
 }
 
-void Console::cancelAndDismiss()
+void CommandPalette::cancelAndDismiss()
 {
     // todo cancel
     this->dismiss();
 }
 
 
-bool ConsoleTextEditor::keyPressed(const KeyPress &key)
+bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
 {
     static const juce_wchar tildaKey = '`';
     if (key.isKeyCode(tildaKey))
@@ -375,7 +375,7 @@ bool ConsoleTextEditor::keyPressed(const KeyPress &key)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="Console" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="CommandPalette" template="../../Template"
                  componentName="" parentClasses="public Component, public TextEditor::Listener, public ListBoxModel"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="620"
@@ -401,7 +401,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0Rr 0 12 -44M" posRelativeH="2362db9f8826e90f"
              sourceFile="../Themes/ShadowRightwards.cpp" constructorParams="ShadowType::Normal"/>
   <GENERICCOMPONENT name="" id="3abf9d1982e1c63b" memberName="textEditor" virtualName=""
-                    explicitFocusOrder="0" pos="18 6 36M 32" class="ConsoleTextEditor"
+                    explicitFocusOrder="0" pos="18 6 36M 32" class="CommandPaletteTextEditor"
                     params=""/>
   <GENERICCOMPONENT name="" id="2362db9f8826e90f" memberName="actionsList" virtualName=""
                     explicitFocusOrder="0" pos="0 -4R 0M 114" posRelativeX="3abf9d1982e1c63b"

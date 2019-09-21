@@ -18,9 +18,9 @@
 #pragma once
 
 //[Headers]
-#include "ConsoleActionsProvider.h"
+#include "CommandPaletteActionsProvider.h"
 
-class ConsoleTextEditor final : public TextEditor
+class CommandPaletteTextEditor final : public TextEditor
 {
 public:
     bool keyPressed(const KeyPress &key) override;
@@ -32,14 +32,14 @@ public:
 #include "../Themes/ShadowLeftwards.h"
 #include "../Themes/ShadowRightwards.h"
 
-class Console final : public Component,
-                      public TextEditor::Listener,
-                      public ListBoxModel
+class CommandPalette final : public Component,
+                             public TextEditor::Listener,
+                             public ListBoxModel
 {
 public:
 
-    Console();
-    ~Console();
+    CommandPalette();
+    ~CommandPalette();
 
     //[UserMethods]
     //[/UserMethods]
@@ -80,9 +80,9 @@ private:
     void fadeOut();
     void updatePosition();
 
-    OwnedArray<ConsoleActionsProvider> actionsProviders;
-    WeakReference<ConsoleActionsProvider> currentActionsProvider;
-    WeakReference<ConsoleActionsProvider> defaultActionsProvider;
+    OwnedArray<CommandPaletteActionsProvider> actionsProviders;
+    WeakReference<CommandPaletteActionsProvider> currentActionsProvider;
+    WeakReference<CommandPaletteActionsProvider> defaultActionsProvider;
 
     //[/UserVariables]
 
@@ -90,10 +90,10 @@ private:
     UniquePointer<PanelBackgroundC> bg;
     UniquePointer<ShadowLeftwards> shadowL;
     UniquePointer<ShadowRightwards> shadowR;
-    UniquePointer<ConsoleTextEditor> textEditor;
+    UniquePointer<CommandPaletteTextEditor> textEditor;
     UniquePointer<ListBox> actionsList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Console)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CommandPalette)
 };
 
 

@@ -17,17 +17,17 @@
 
 #pragma once
 
-class ConsoleAction final : public ReferenceCountedObject
+class CommandPaletteAction final : public ReferenceCountedObject
 {
 public:
 
-    using Ptr = ReferenceCountedObjectPtr<ConsoleAction>;
+    using Ptr = ReferenceCountedObjectPtr<CommandPaletteAction>;
 
-    ConsoleAction() = default;
-    ConsoleAction(String text) :
+    CommandPaletteAction() = default;
+    CommandPaletteAction(String text) :
         name(std::move(text)) {}
 
-    virtual ~ConsoleAction() {};
+    virtual ~CommandPaletteAction() {};
 
     const String &getName() const noexcept
     {
@@ -53,20 +53,20 @@ private:
     GlyphArrangement highlightedMatch;
     int matchScore;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConsoleAction)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandPaletteAction)
 };
 
-class ConsoleActionsProvider
+class CommandPaletteActionsProvider
 {
 public:
 
-    ConsoleActionsProvider() = default;
-    virtual ~ConsoleActionsProvider() {};
+    CommandPaletteActionsProvider() = default;
+    virtual ~CommandPaletteActionsProvider() {};
 
     using Prefix = juce_wchar;
     virtual bool usesPrefix(const Prefix prefix) const = 0;
 
-    using Actions = ReferenceCountedArray<ConsoleAction>;
+    using Actions = ReferenceCountedArray<CommandPaletteAction>;
     const Actions &getFilteredActions() const
     {
         return this->filteredActions;
@@ -83,6 +83,6 @@ private:
 
     Actions filteredActions;
 
-    JUCE_DECLARE_WEAK_REFERENCEABLE(ConsoleActionsProvider)
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConsoleActionsProvider)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(CommandPaletteActionsProvider)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandPaletteActionsProvider)
 };

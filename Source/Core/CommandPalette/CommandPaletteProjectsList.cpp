@@ -16,18 +16,18 @@
 */
 
 #include "Common.h"
-#include "ConsoleProjectsList.h"
+#include "CommandPaletteProjectsList.h"
 #include "Workspace.h"
 #include "UserProfile.h"
 
-const ConsoleActionsProvider::Actions &ConsoleProjectsList::getActions() const
+const CommandPaletteActionsProvider::Actions &CommandPaletteProjectsList::getActions() const
 {
     this->projects.clearQuick();
 
     // todo detect changes, don't rebuild it all the time
     for (const auto *project : App::Workspace().getUserProfile().getProjects())
     {
-        this->projects.add(new ConsoleAction(project->getTitle()));
+        this->projects.add(new CommandPaletteAction(project->getTitle()));
     }
 
     return this->projects;
