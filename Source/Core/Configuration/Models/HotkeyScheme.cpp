@@ -49,6 +49,7 @@ bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
         {
             if (this->sendHotkeyCommand(key, keyPressReceiver, messageReceiver))
             {
+                this->lastKeyPress = keyPress;
                 return true;
             }
         }

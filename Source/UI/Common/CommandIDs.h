@@ -236,7 +236,8 @@ namespace CommandIDs
         PatternsGroupByInstrument       = 0x4102,
         PatternsGroupById               = 0x4103,
 
-        ShowConsole                     = 0x4200,
+        CommandPalette                  = 0x4200,
+        CommandPaletteWithMode          = 0x4201,
 
         YourNextCommandId               = 0x4300
     };

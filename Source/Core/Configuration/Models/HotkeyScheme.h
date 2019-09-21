@@ -38,6 +38,11 @@ public:
 
     String findHotkeyDescription(int commandId) const noexcept;
 
+    KeyPress getLastKeyPress() const noexcept
+    {
+        return this->lastKeyPress;
+    }
+
     bool dispatchKeyPress(KeyPress keyPress,
         WeakReference<Component> keyPressReceiver,
         WeakReference<Component> messageReceiverParent);
@@ -67,6 +72,8 @@ public:
 private:
 
     String name;
+    KeyPress lastKeyPress;
+
     Array<Hotkey> keyPresses;
     Array<Hotkey> keyDowns;
     Array<Hotkey> keyUps;

@@ -23,8 +23,10 @@
 
 //[MiscUserDefs]
 #include "CommandIDs.h"
-#include "Headline.h"
+#include "SerializationKeys.h"
 
+#include "Headline.h"
+#include "Config.h"
 #include "ConsoleHelp.h"
 #include "ConsoleProjectsList.h"
 //[/MiscUserDefs]
@@ -49,7 +51,8 @@ Console::Console()
     //[UserPreSize]
 
     // todo get last edited text
-    const String lastText = "";
+    const String lastText =
+        App::Config().getProperty(Serialization::Config::lastSearch);
 
     // fill action providers
     // set default provider (which exactly?)
@@ -283,11 +286,19 @@ void Console::textEditorTextChanged(TextEditor &ed)
 
     // force repaint, sometimes it doesn't update underlined matches:
     this->actionsList->repaint();
+
+    // todo only save at exit?
+    App::Config().setProperty(Serialization::Config::lastSearch, ed.getText());
 }
 
 void Console::textEditorReturnKeyPressed(TextEditor &)
 {
     // todo apply selected action
+
+    // since the command was applied, clear the remembered search
+    // ?
+    App::Config().setProperty(Serialization::Config::lastSearch, "");
+
     this->dismiss();
 }
 

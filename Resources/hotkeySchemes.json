@@ -27,9 +27,19 @@
         // ------------------------------------
         // Main layout hotkeys
 
-        { "receiver": "MainLayout", "command": "ShowConsole", "key": "`" },
-        { "receiver": "MainLayout", "command": "ShowConsole", "key": "Control + P" },
-        { "receiver": "MainLayout", "command": "ShowConsole", "key": "Command + P" },
+        // Command Palette aka Spotlight Search aka Goto Anything:
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "`" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Control + P" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Command + P" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Control + G" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Command + G" },
+
+        // Quick access to all command palette modes (/, !, @, #, $):
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "/" },
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 1" },
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 2" },
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 3" },
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 4" },
 
         { "receiver": "MainLayout", "command": "ShowRootPage", "key": "Home" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Command + Cursor Left" },

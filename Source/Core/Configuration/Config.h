@@ -31,7 +31,7 @@ class Config final : private Timer
 {
 public:
 
-    explicit Config(int timeoutToSaveMs = 10000);
+    explicit Config(int timeoutToSaveMs = 30000);
     ~Config() override;
 
     void initResources();

@@ -351,7 +351,12 @@ void MainLayout::handleCommandMessage(int commandId)
     case CommandIDs::ShowNextPage:
         App::Workspace().navigateForwardIfPossible();
         break;
-    case CommandIDs::ShowConsole:
+    case CommandIDs::CommandPalette:
+        App::showModalComponent(makeUnique<Console>());
+        break;
+    case CommandIDs::CommandPaletteWithMode:
+        App::Config().setProperty(Serialization::Config::lastSearch,
+            String::charToString(this->hotkeyScheme->getLastKeyPress().getTextCharacter()));
         App::showModalComponent(makeUnique<Console>());
         break;
     default:

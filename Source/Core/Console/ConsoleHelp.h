@@ -47,8 +47,10 @@ protected:
     
     StringArray temp =
     {
-        "? == help",
-        "/ == projects list",
-        "todo"
+        "/ projects list",
+        "@ timeline events",
+        "# chords list",
+        "$ chord inline constructor",
+        "! version control"
     };
 };
