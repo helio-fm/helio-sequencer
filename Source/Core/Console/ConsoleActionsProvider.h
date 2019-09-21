@@ -41,9 +41,16 @@ public:
 
     void setMatch(int score, const uint8 *matches);
 
+    const GlyphArrangement &getGlyphArrangement() const noexcept
+    {
+        return this->highlightedMatch;
+    }
+
 private:
 
     String name;
+
+    GlyphArrangement highlightedMatch;
     int matchScore;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConsoleAction)

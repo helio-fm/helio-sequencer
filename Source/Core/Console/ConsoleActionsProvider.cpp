@@ -28,7 +28,44 @@ struct ConsoleActionSortByMatch final
 
 void ConsoleAction::setMatch(int score, const uint8 *matches)
 {
-    // todo
+    this->matchScore = score;
+
+    this->highlightedMatch.clear();
+    static const Font fontNormal(21, Font::plain);
+    static const Font fontMatch(21, Font::underlined);
+
+    Array<int> newGlyphs;
+    Array<float> xOffsets;
+
+    // assuming that underlined font will have pretty much the same glyph positions as normal:
+    fontNormal.getGlyphPositions(this->name, newGlyphs, xOffsets);
+    auto textLen = newGlyphs.size();
+
+    auto t = this->name.getCharPointer();
+
+    const float xOffset = 0.f;
+    const float yOffset = 0.f;
+
+    for (int i = 0, nextMatch = 0; i < textLen; ++i)
+    {
+        const auto nextX = xOffsets.getUnchecked(i + 1);
+        const auto thisX = xOffsets.getUnchecked(i);
+        const bool isWhitespace = t.isWhitespace();
+
+        bool isMatchGlyph = false;
+        if (matches != nullptr && matches[nextMatch] == i)
+        {
+            isMatchGlyph = true;
+            nextMatch++;
+            jassert(nextMatch < 32);
+        }
+
+        this->highlightedMatch.addGlyph(PositionedGlyph(isMatchGlyph ? fontMatch : fontNormal,
+            t.getAndAdvance(),
+            newGlyphs.getUnchecked(i),
+            xOffset + thisX, yOffset,
+            nextX - thisX, isWhitespace));
+    }
 }
 
 // Actions filtering makes use of Sublime-like fuzzy matcher,

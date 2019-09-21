@@ -59,7 +59,7 @@ Console::Console()
     this->currentActionsProvider = this->defaultActionsProvider;
 
     this->actionsList->setRowHeight(28);
-    this->actionsList->setMouseMoveSelectsRows(true);
+    //this->actionsList->setMouseMoveSelectsRows(true); // fucks up keyboard select :(
     this->actionsList->getViewport()->setScrollBarThickness(2);
     this->actionsList->setModel(this);
 
@@ -204,14 +204,19 @@ void Console::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool ro
         return;
     }
 
-    const auto &text = this->currentActionsProvider->getFilteredActions().getReference(rowNumber);
+    const auto action = this->currentActionsProvider->getFilteredActions().getUnchecked(rowNumber);
 
     g.setFont(21);
-    const int margin = h / 12;
+    const float margin = float(h / 12.f);
 
-    g.setColour(findDefaultColour(ListBox::textColourId));
-    g.drawText(text, (margin * 2), margin,
-        w, h - (margin * 2), Justification::centredLeft, false);
+    g.setColour(findDefaultColour(ListBox::textColourId).withMultipliedAlpha(0.85f));
+
+    auto glyphs = action->getGlyphArrangement();
+    glyphs.justifyGlyphs(0, glyphs.getNumGlyphs(),
+        (margin * 2), margin, float(w), float(h - (margin * 2)),
+        Justification::centredLeft);
+    
+    glyphs.draw(g);
 }
 
 void Console::selectedRowsChanged(int lastRowSelected)
@@ -221,7 +226,8 @@ void Console::selectedRowsChanged(int lastRowSelected)
 
 void Console::listBoxItemClicked(int row, const MouseEvent &)
 {
-    // apply and dismiss
+    // apply and dismiss? or just highlight?
+    //
 }
 
 void Console::moveRowSelectionBy(int offset)
@@ -234,43 +240,49 @@ void Console::moveRowSelectionBy(int offset)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // TextEditor::Listener
 //===----------------------------------------------------------------------===//
 
 void Console::textEditorTextChanged(TextEditor &ed)
 {
-    DBG("textEditorTextChanged");
-
-    // todo
-    // select actions provider based on text
-    // apply filter to selected provider
-    bool skipPrefix = false;
     if (ed.getText().isNotEmpty())
     {
+        bool foundValidPrefix = false;
         const auto firstChar = ed.getText()[0];
         for (auto *provider : this->actionsProviders)
         {
             if (provider->usesPrefix(firstChar))
             {
-                skipPrefix = true;
+                foundValidPrefix = true;
                 this->currentActionsProvider = provider;
                 break;
             }
+        }
+
+        if (foundValidPrefix && ed.getText().length() == 1)
+        {
+            this->currentActionsProvider->clearFilter();
+        }
+        else
+        {
+            this->currentActionsProvider->updateFilter(ed.getText(), foundValidPrefix);
         }
     }
     else
     {
         this->currentActionsProvider = this->defaultActionsProvider;
+        this->currentActionsProvider->clearFilter();
     }
 
-    this->currentActionsProvider->updateFilter(ed.getText(), skipPrefix);
     this->actionsList->updateContent();
     if (this->getNumRows() > 0)
     {
         this->actionsList->selectRow(0);
     }
+
+    // force repaint, sometimes it doesn't update underlined matches:
+    this->actionsList->repaint();
 }
 
 void Console::textEditorReturnKeyPressed(TextEditor &)
