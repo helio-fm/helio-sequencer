@@ -23,34 +23,18 @@
 class ConsoleTextEditor final : public TextEditor
 {
 public:
-    bool keyPressed(const KeyPress &key) override
-    {
-        static const juce_wchar tildaKey = '`';
-        if (key.isKeyCode(tildaKey))
-        {
-            this->newTransaction();
-            this->escapePressed();
-            return true;
-        }
-
-        return TextEditor::keyPressed(key);
-    }
-
-    void paint(Graphics &g) override
-    {
-        getLookAndFeel().fillTextEditorBackground(g, getWidth(), getHeight(), *this);
-        getLookAndFeel().drawTextEditorOutline(g, getWidth(), getHeight(), *this);
-    }
+    bool keyPressed(const KeyPress &key) override;
 };
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
 #include "../Themes/ShadowDownwards.h"
+#include "../Themes/PanelBackgroundC.h"
 #include "../Themes/ShadowLeftwards.h"
 #include "../Themes/ShadowRightwards.h"
 
 class Console final : public Component,
-                      public TextEditor::Listener
+                      public TextEditor::Listener,
+                      public ListBoxModel
 {
 public:
 
@@ -72,20 +56,38 @@ private:
 
     //[UserVariables]
 
+    //===------------------------------------------------------------------===//
+    // TextEditor::Listener
+    //===------------------------------------------------------------------===//
+
     void textEditorTextChanged(TextEditor &) override;
     void textEditorReturnKeyPressed(TextEditor &) override;
     void textEditorEscapeKeyPressed(TextEditor &) override;
     void textEditorFocusLost(TextEditor &) override;
+
+    //===------------------------------------------------------------------===//
+    // ListBoxModel
+    //===------------------------------------------------------------------===//
+
+    int getNumRows() override;
+    void paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected) override;
+    void selectedRowsChanged(int lastRowSelected) override;
+    void listBoxItemClicked(int row, const MouseEvent &) override;
+    void moveRowSelectionBy(int offset);
 
     void cancelAndDismiss();
     void dismiss();
     void fadeOut();
     void updatePosition();
 
+    OwnedArray<ConsoleActionsProvider> actionsProviders;
+    WeakReference<ConsoleActionsProvider> currentActionsProvider;
+    WeakReference<ConsoleActionsProvider> defaultActionsProvider;
+
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundB> bg;
     UniquePointer<ShadowDownwards> shadowDn;
+    UniquePointer<PanelBackgroundC> bg;
     UniquePointer<ShadowLeftwards> shadowL;
     UniquePointer<ShadowRightwards> shadowR;
     UniquePointer<ConsoleTextEditor> textEditor;

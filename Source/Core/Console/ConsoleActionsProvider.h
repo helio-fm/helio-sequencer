@@ -17,12 +17,34 @@
 
 #pragma once
 
-class ConsoleAction
+class ConsoleAction final : public ReferenceCountedObject
 {
 public:
 
+    using Ptr = ReferenceCountedObjectPtr<ConsoleAction>;
+
+    ConsoleAction() = default;
+    ConsoleAction(String text) :
+        name(std::move(text)) {}
+
+    virtual ~ConsoleAction() {};
+
+    const String &getName() const noexcept
+    {
+        return this->name;
+    }
+
+    int getMatchScore() const noexcept
+    {
+        return this->matchScore;
+    }
+
+    void setMatch(int score, const uint8 *matches);
 
 private:
+
+    String name;
+    int matchScore;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConsoleAction)
 };
@@ -34,9 +56,26 @@ public:
     ConsoleActionsProvider() = default;
     virtual ~ConsoleActionsProvider() {};
 
-    virtual Array<ConsoleAction> findActions(const String &input) = 0;
+    using Prefix = juce_wchar;
+    virtual bool usesPrefix(const Prefix prefix) const = 0;
+
+    using Actions = ReferenceCountedArray<ConsoleAction>;
+    const Actions &getFilteredActions() const
+    {
+        return this->filteredActions;
+    }
+
+    void updateFilter(const String &pattern, bool skipPrefix);
+    void clearFilter();
+
+protected:
+
+    virtual const Actions &getActions() const = 0;
 
 private:
 
+    Actions filteredActions;
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE(ConsoleActionsProvider)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConsoleActionsProvider)
 };

@@ -24,14 +24,17 @@
 //[MiscUserDefs]
 #include "CommandIDs.h"
 #include "Headline.h"
+
+#include "ConsoleHelp.h"
+#include "ConsoleProjectsList.h"
 //[/MiscUserDefs]
 
 Console::Console()
 {
-    this->bg.reset(new PanelBackgroundB());
-    this->addAndMakeVisible(bg.get());
     this->shadowDn.reset(new ShadowDownwards(ShadowType::Normal));
     this->addAndMakeVisible(shadowDn.get());
+    this->bg.reset(new PanelBackgroundC());
+    this->addAndMakeVisible(bg.get());
     this->shadowL.reset(new ShadowLeftwards(ShadowType::Normal));
     this->addAndMakeVisible(shadowL.get());
     this->shadowR.reset(new ShadowRightwards(ShadowType::Normal));
@@ -44,6 +47,22 @@ Console::Console()
 
 
     //[UserPreSize]
+
+    // todo get last edited text
+    const String lastText = "";
+
+    // fill action providers
+    // set default provider (which exactly?)
+    this->actionsProviders.add(new ConsoleHelp());
+    this->actionsProviders.add(new ConsoleProjectsList());
+    this->defaultActionsProvider = this->actionsProviders.getFirst();
+    this->currentActionsProvider = this->defaultActionsProvider;
+
+    this->actionsList->setRowHeight(28);
+    this->actionsList->setMouseMoveSelectsRows(true);
+    this->actionsList->getViewport()->setScrollBarThickness(2);
+    this->actionsList->setModel(this);
+
     this->textEditor->setReturnKeyStartsNewLine(false);
     this->textEditor->setPopupMenuEnabled(false);
     this->textEditor->setScrollbarsShown(false);
@@ -53,9 +72,15 @@ Console::Console()
     this->textEditor->setFont(21.f);
 
     this->textEditor->addListener(this);
+    this->textEditor->setText(lastText, true);
+    if (lastText.isEmpty())
+    {
+        // a hack to explicitly update the list on start, even if empty:
+        this->textEditorTextChanged(*this->textEditor);
+    }
     //[/UserPreSize]
 
-    this->setSize(500, 400);
+    this->setSize(620, 400);
 
     //[Constructor]
     //[/Constructor]
@@ -67,8 +92,8 @@ Console::~Console()
     this->textEditor->removeListener(this);
     //[/Destructor_pre]
 
-    bg = nullptr;
     shadowDn = nullptr;
+    bg = nullptr;
     shadowL = nullptr;
     shadowR = nullptr;
     textEditor = nullptr;
@@ -92,12 +117,12 @@ void Console::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    bg->setBounds(8, 0, getWidth() - 16, 200);
-    shadowDn->setBounds(8 + 0, 0 + 200, (getWidth() - 16) - 0, 8);
-    shadowL->setBounds(0, 0, 8, 160 - -40);
-    shadowR->setBounds(getWidth() - 8, 0, 8, 160 - -40);
-    textEditor->setBounds(12, 4, getWidth() - 24, 32);
-    actionsList->setBounds(12 + 0, 4 + 32, (getWidth() - 24) - 0, 160);
+    shadowDn->setBounds(12 + 0, 0 + 160, (getWidth() - 24) - 0, 8);
+    bg->setBounds(12, 0, getWidth() - 24, 160);
+    shadowL->setBounds(0, 0, 12, 114 - -44);
+    shadowR->setBounds(getWidth() - 12, 0, 12, 114 - -44);
+    textEditor->setBounds(18, 6, getWidth() - 36, 32);
+    actionsList->setBounds(18 + 0, 6 + 32 - -4, (getWidth() - 36) - 0, 114);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -127,6 +152,16 @@ bool Console::keyPressed (const KeyPress& key)
         this->cancelAndDismiss();
         return true;
     }
+    else if (key.isKeyCode(KeyPress::downKey))
+    {
+        this->moveRowSelectionBy(1);
+        return true;
+    }
+    else if (key.isKeyCode(KeyPress::upKey))
+    {
+        this->moveRowSelectionBy(-1);
+        return true;
+    }
 
     return false;
     //[/UserCode_keyPressed]
@@ -142,18 +177,109 @@ void Console::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-void Console::textEditorTextChanged(TextEditor &ed)
-{
+//===----------------------------------------------------------------------===//
+// ListBoxModel
+//===----------------------------------------------------------------------===//
 
-    // todo
+int Console::getNumRows()
+{
+    return this->currentActionsProvider->getFilteredActions().size();
 }
 
-void Console::textEditorReturnKeyPressed(TextEditor &ed)
+void Console::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected)
 {
+    jassert(this->currentActionsProvider != nullptr);
+
+    if (rowIsSelected)
+    {
+        g.fillAll(Colours::white.withAlpha(0.05f));
+    }
+    else if (rowNumber % 2)
+    {
+        g.fillAll(Colours::black.withAlpha(0.05f));
+    }
+
+    if (rowNumber >= this->currentActionsProvider->getFilteredActions().size())
+    {
+        return;
+    }
+
+    const auto &text = this->currentActionsProvider->getFilteredActions().getReference(rowNumber);
+
+    g.setFont(21);
+    const int margin = h / 12;
+
+    g.setColour(findDefaultColour(ListBox::textColourId));
+    g.drawText(text, (margin * 2), margin,
+        w, h - (margin * 2), Justification::centredLeft, false);
+}
+
+void Console::selectedRowsChanged(int lastRowSelected)
+{
+    // so what?
+}
+
+void Console::listBoxItemClicked(int row, const MouseEvent &)
+{
+    // apply and dismiss
+}
+
+void Console::moveRowSelectionBy(int offset)
+{
+    if (this->getNumRows() > 0)
+    {
+        const auto selectedRow = this->actionsList->getSelectedRow(0);
+        const auto newSelectedRow = jlimit(0, this->getNumRows() - 1, selectedRow + offset);
+        this->actionsList->selectRow(newSelectedRow);
+    }
+}
+
+
+//===----------------------------------------------------------------------===//
+// TextEditor::Listener
+//===----------------------------------------------------------------------===//
+
+void Console::textEditorTextChanged(TextEditor &ed)
+{
+    DBG("textEditorTextChanged");
+
+    // todo
+    // select actions provider based on text
+    // apply filter to selected provider
+    bool skipPrefix = false;
+    if (ed.getText().isNotEmpty())
+    {
+        const auto firstChar = ed.getText()[0];
+        for (auto *provider : this->actionsProviders)
+        {
+            if (provider->usesPrefix(firstChar))
+            {
+                skipPrefix = true;
+                this->currentActionsProvider = provider;
+                break;
+            }
+        }
+    }
+    else
+    {
+        this->currentActionsProvider = this->defaultActionsProvider;
+    }
+
+    this->currentActionsProvider->updateFilter(ed.getText(), skipPrefix);
+    this->actionsList->updateContent();
+    if (this->getNumRows() > 0)
+    {
+        this->actionsList->selectRow(0);
+    }
+}
+
+void Console::textEditorReturnKeyPressed(TextEditor &)
+{
+    // todo apply selected action
     this->dismiss();
 }
 
-void Console::textEditorEscapeKeyPressed(TextEditor&)
+void Console::textEditorEscapeKeyPressed(TextEditor &)
 {
     this->cancelAndDismiss();
 }
@@ -204,6 +330,22 @@ void Console::cancelAndDismiss()
     this->dismiss();
 }
 
+
+bool ConsoleTextEditor::keyPressed(const KeyPress &key)
+{
+    static const juce_wchar tildaKey = '`';
+    if (key.isKeyCode(tildaKey))
+    {
+        this->escapePressed();
+        return true;
+    }
+    else if (key.isKeyCode(KeyPress::downKey) || key.isKeyCode(KeyPress::upKey))
+    {
+        return false;
+    }
+
+    return TextEditor::keyPressed(key);
+}
 //[/MiscUserCode]
 
 #if 0
@@ -211,9 +353,9 @@ void Console::cancelAndDismiss()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="Console" template="../../Template"
-                 componentName="" parentClasses="public Component, public TextEditor::Listener"
+                 componentName="" parentClasses="public Component, public TextEditor::Listener, public ListBoxModel"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="500"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="620"
                  initialHeight="400">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
@@ -222,24 +364,24 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
-  <JUCERCOMP name="" id="80e2df40dfc6307e" memberName="bg" virtualName=""
-             explicitFocusOrder="0" pos="8 0 16M 200" sourceFile="../Themes/PanelBackgroundB.cpp"
-             constructorParams=""/>
   <JUCERCOMP name="" id="5d11a023e4905d74" memberName="shadowDn" virtualName=""
              explicitFocusOrder="0" pos="0 0R 0M 8" posRelativeX="80e2df40dfc6307e"
              posRelativeY="80e2df40dfc6307e" posRelativeW="80e2df40dfc6307e"
              sourceFile="../Themes/ShadowDownwards.cpp" constructorParams="ShadowType::Normal"/>
+  <JUCERCOMP name="" id="80e2df40dfc6307e" memberName="bg" virtualName=""
+             explicitFocusOrder="0" pos="12 0 24M 160" sourceFile="../Themes/PanelBackgroundC.cpp"
+             constructorParams=""/>
   <JUCERCOMP name="" id="72514a37e5bc1299" memberName="shadowL" virtualName=""
-             explicitFocusOrder="0" pos="0 0 8 -40M" posRelativeH="2362db9f8826e90f"
+             explicitFocusOrder="0" pos="0 0 12 -44M" posRelativeH="2362db9f8826e90f"
              sourceFile="../Themes/ShadowLeftwards.cpp" constructorParams="ShadowType::Normal"/>
   <JUCERCOMP name="" id="3cd9e82f6261eff1" memberName="shadowR" virtualName=""
-             explicitFocusOrder="0" pos="0Rr 0 8 -40M" posRelativeH="2362db9f8826e90f"
+             explicitFocusOrder="0" pos="0Rr 0 12 -44M" posRelativeH="2362db9f8826e90f"
              sourceFile="../Themes/ShadowRightwards.cpp" constructorParams="ShadowType::Normal"/>
   <GENERICCOMPONENT name="" id="3abf9d1982e1c63b" memberName="textEditor" virtualName=""
-                    explicitFocusOrder="0" pos="12 4 24M 32" class="ConsoleTextEditor"
+                    explicitFocusOrder="0" pos="18 6 36M 32" class="ConsoleTextEditor"
                     params=""/>
   <GENERICCOMPONENT name="" id="2362db9f8826e90f" memberName="actionsList" virtualName=""
-                    explicitFocusOrder="0" pos="0 0R 0M 160" posRelativeX="3abf9d1982e1c63b"
+                    explicitFocusOrder="0" pos="0 -4R 0M 114" posRelativeX="3abf9d1982e1c63b"
                     posRelativeY="3abf9d1982e1c63b" posRelativeW="3abf9d1982e1c63b"
                     class="ListBox" params=""/>
 </JUCER_COMPONENT>

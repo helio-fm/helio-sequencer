@@ -256,8 +256,15 @@
           <FILE id="Qp21xL" name="Config.h" compile="0" resource="0" file="../../Source/Core/Configuration/Config.h"/>
         </GROUP>
         <GROUP id="{8CA92FD3-E483-6598-05E0-FD37B0C59010}" name="Console">
+          <FILE id="ioyBKx" name="ConsoleActionsProvider.cpp" compile="1" resource="0"
+                file="../../Source/Core/Console/ConsoleActionsProvider.cpp"/>
           <FILE id="HZwQw8" name="ConsoleActionsProvider.h" compile="0" resource="0"
                 file="../../Source/Core/Console/ConsoleActionsProvider.h"/>
+          <FILE id="QUi7rZ" name="ConsoleHelp.h" compile="0" resource="0" file="../../Source/Core/Console/ConsoleHelp.h"/>
+          <FILE id="bccgCH" name="ConsoleProjectsList.cpp" compile="1" resource="0"
+                file="../../Source/Core/Console/ConsoleProjectsList.cpp"/>
+          <FILE id="eaRAsU" name="ConsoleProjectsList.h" compile="0" resource="0"
+                file="../../Source/Core/Console/ConsoleProjectsList.h"/>
         </GROUP>
         <GROUP id="{93B0AF7A-BC73-2049-CF6B-76592F77C01F}" name="Midi">
           <GROUP id="{5A19293F-FDB1-F5B4-F808-E06A0B919C46}" name="Patterns">
