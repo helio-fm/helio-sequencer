@@ -121,16 +121,16 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
 void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)
 {
     g.setColour(ed.findColour(TextEditor::backgroundColourId));
-    g.fillRect(0, 0, w, h);
-}
-
-void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
-{
+    g.fillRect(1, 1, w - 2, h - 2);
     g.setColour(ed.findColour(TextEditor::outlineColourId));
     g.drawVerticalLine(0, 1.f, h - 1.f);
     g.drawVerticalLine(w - 1, 1.f, h - 1.f);
     g.drawHorizontalLine(0, 1.f, w - 1.f);
     g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
+}
+
+void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
+{
 }
 
 //===----------------------------------------------------------------------===//
@@ -781,11 +781,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     // TextEditor
     this->setColour(TextEditor::textColourId, s->getTextColour());
+    this->setColour(TextEditor::backgroundColourId, s->getPrimaryGradientColourA().darker(0.055f));
+    this->setColour(TextEditor::outlineColourId, s->getPanelBorderColour().withAlpha(0.075f));
     this->setColour(TextEditor::highlightedTextColourId, s->getTextColour());
-    this->setColour(TextEditor::outlineColourId, s->getPanelBorderColour().withAlpha(0.1f));
     this->setColour(TextEditor::focusedOutlineColourId, s->getTextColour().contrasting().withAlpha(0.2f));
     this->setColour(TextEditor::shadowColourId, s->getPrimaryGradientColourA().darker(0.05f));
-    this->setColour(TextEditor::backgroundColourId, s->getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, s->getTextColour().contrasting().withAlpha(0.25f));
     this->setColour(CaretComponent::caretColourId, s->getTextColour().withAlpha(0.35f));
 
