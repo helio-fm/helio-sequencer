@@ -79,6 +79,8 @@ private:
     void listBoxItemClicked(int row, const MouseEvent &) override;
     void moveRowSelectionBy(int offset);
 
+    void applySelectedCommand();
+
     void cancelAndDismiss();
     void dismiss();
     void fadeOut();

@@ -49,7 +49,6 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteCommonActions::getAc
 static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Component *target)
 {
     //DBG("Building command palette actions for " + target->getComponentID());
-
     CommandPaletteActionsProvider::Actions actions;
     FlatHashSet<Identifier, IdentifierHash> duplicateLookup;
 

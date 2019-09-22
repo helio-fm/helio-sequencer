@@ -25,7 +25,6 @@ public:
     using Ptr = ReferenceCountedObjectPtr<CommandPaletteAction>;
 
     CommandPaletteAction() = default;
-    explicit CommandPaletteAction(String text) : name(text) {} // temporary
     CommandPaletteAction(String text, Callback callback);
     CommandPaletteAction(String text, String hint,
         Colour colour, Callback callback, float order);

@@ -26,7 +26,7 @@ class CommandPaletteProjectsList final :
 {
 public:
 
-    CommandPaletteProjectsList(Workspace &workspace);
+    explicit CommandPaletteProjectsList(Workspace &workspace);
     ~CommandPaletteProjectsList() override;
 
     bool usesPrefix(const Prefix prefix) const noexcept override

@@ -272,11 +272,11 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool 
     {
         if (projectToSwitchTo)
         {
-            projectToSwitchTo->showPage();
+            projectToSwitchTo->setSelected();
         }
         else
         {
-            this->treeRoot->showPage();
+            this->treeRoot->setSelected();
         }
     }
 }
@@ -284,6 +284,19 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool 
 Array<ProjectNode *> Workspace::getLoadedProjects() const
 {
     return this->treeRoot->findChildrenOfType<ProjectNode>();
+}
+
+bool Workspace::hasLoadedProject(const RecentProjectInfo::Ptr file) const
+{
+    for (const auto *loadedProject : this->getLoadedProjects())
+    {
+        if (loadedProject->getId() == file->getProjectId())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Workspace::stopPlaybackForAllProjects()

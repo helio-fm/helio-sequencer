@@ -17,6 +17,8 @@
 
 #include "Common.h"
 #include "CommandPaletteProjectsList.h"
+#include "ProjectNode.h"
+#include "PianoTrackNode.h"
 #include "UserProfile.h"
 
 CommandPaletteProjectsList::CommandPaletteProjectsList(Workspace &workspace) :
@@ -46,23 +48,40 @@ void CommandPaletteProjectsList::reloadProjects()
     this->projects.clearQuick();
 
     // todo first items == create new, open, import midi
-    for (const auto *project : this->workspace.getUserProfile().getProjects())
+    for (auto *projectInfo : this->workspace.getUserProfile().getProjects())
     {
-        // todo subtitle description
-        // todo handle lambda
-        this->projects.add(new CommandPaletteAction(project->getTitle()));
+        const bool isLoaded = this->workspace.hasLoadedProject(projectInfo);
+        const CommandPaletteAction::Callback action = [this, projectInfo](TextEditor &ed)
+        {
+            for (auto *loadedProject : this->workspace.getLoadedProjects())
+            {
+                if (loadedProject->getId() == projectInfo->getProjectId())
+                {
+                    // switch to it, don't unload:
+                    //this->workspace.unloadProject(projectInfo->getProjectId(), false, false);
+
+                    if (!loadedProject->selectChildOfType<PianoTrackNode>())
+                    {
+                        loadedProject->setSelected();
+                    }
+
+                    return true;
+                }
+            }
+
+            if (!this->workspace.loadRecentProject(projectInfo))
+            {
+                this->workspace.getUserProfile().deleteProjectLocally(projectInfo->getProjectId());
+            }
+
+            return true;
+        };
+
+        const auto defaultColor = findDefaultColour(Label::textColourId);
+        const auto sinceLastOpened = Time::getCurrentTime() - projectInfo->getUpdatedAt();
+        this->projects.add(new CommandPaletteAction(projectInfo->getTitle(),
+            App::getHumanReadableDate(projectInfo->getUpdatedAt()),
+            isLoaded ? defaultColor : defaultColor.contrasting(),
+            action, float(sinceLastOpened.inSeconds())));
     }
 }
-
-//void CommandPaletteProjectsList::loadFile(RecentProjectInfo::Ptr project)
-//{
-//    if (!this->workspace->loadRecentProject(project))
-//    {
-//        this->workspace->getUserProfile().deleteProjectLocally(project->getProjectId());
-//    }
-//}
-//
-//void CommandPaletteProjectsList::unloadFile(RecentProjectInfo::Ptr project)
-//{
-//    this->workspace->unloadProject(project->getProjectId(), false, false);
-//}

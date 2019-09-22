@@ -60,6 +60,7 @@ public:
     void createEmptyProject();
     bool loadRecentProject(RecentProjectInfo::Ptr file);
     Array<ProjectNode *> getLoadedProjects() const;
+    bool hasLoadedProject(const RecentProjectInfo::Ptr file) const;
     void unloadProject(const String &id, bool deleteLocally, bool deleteRemotely);
 
     //===------------------------------------------------------------------===//

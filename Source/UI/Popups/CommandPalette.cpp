@@ -258,7 +258,7 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
     const float margin = float(h / 12.f);
 
     const auto colour = findDefaultColour(ListBox::textColourId)
-        .interpolatedWith(action->getColor(), 0.25f);
+        .interpolatedWith(action->getColor(), 0.35f);
 
     // main text
     g.setColour(colour);
@@ -285,8 +285,8 @@ void CommandPalette::selectedRowsChanged(int lastRowSelected)
 
 void CommandPalette::listBoxItemClicked(int row, const MouseEvent &)
 {
-    // apply and dismiss? or just highlight?
-    //
+    this->actionsList->selectRow(row);
+    this->applySelectedCommand();
 }
 
 void CommandPalette::moveRowSelectionBy(int offset)
@@ -349,33 +349,7 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
 
 void CommandPalette::textEditorReturnKeyPressed(TextEditor &ed)
 {
-    // since the command was applied, clear the remembered search
-    // ?
-
-    const auto rowNumber = this->actionsList->getSelectedRow(0);
-    if (rowNumber < 0 || rowNumber >= this->currentActionsProvider->getFilteredActions().size())
-    {
-        return;
-    }
-
-    const auto action = this->currentActionsProvider->getFilteredActions().getUnchecked(rowNumber);
-    const auto callback = action->getCallback();
-    if (callback != nullptr)
-    {
-        const BailOutChecker checker(this);
-        const bool shouldDismiss = callback(ed);
-
-        if (checker.shouldBailOut())
-        {
-            return;
-        }
-
-        if (shouldDismiss)
-        {
-            App::Config().setProperty(Serialization::Config::lastSearch, "");
-            this->dismiss();
-        }
-    }
+    this->applySelectedCommand();
 }
 
 void CommandPalette::textEditorEscapeKeyPressed(TextEditor &)
@@ -429,7 +403,6 @@ void CommandPalette::cancelAndDismiss()
     this->dismiss();
 }
 
-
 bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
 {
     // if escape or ~, just pass the keypress up
@@ -445,6 +418,35 @@ bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
 
     return TextEditor::keyPressed(key);
 }
+
+void CommandPalette::applySelectedCommand()
+{
+    const auto rowNumber = this->actionsList->getSelectedRow(0);
+    if (rowNumber < 0 || rowNumber >= this->currentActionsProvider->getFilteredActions().size())
+    {
+        return;
+    }
+
+    const auto action = this->currentActionsProvider->getFilteredActions().getUnchecked(rowNumber);
+    const auto callback = action->getCallback();
+    if (callback != nullptr)
+    {
+        const BailOutChecker checker(this);
+        const bool shouldDismiss = callback(*this->textEditor);
+
+        if (checker.shouldBailOut())
+        {
+            return;
+        }
+
+        if (shouldDismiss)
+        {
+            App::Config().setProperty(Serialization::Config::lastSearch, "");
+            this->dismiss();
+        }
+    }
+}
+
 //[/MiscUserCode]
 
 #if 0
