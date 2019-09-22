@@ -21,16 +21,20 @@ class AudioCore;
 class ProjectNode;
 class RootNode;
 class PluginScanner;
+class CommandPaletteProjectsList;
 
 #include "DocumentOwner.h"
 #include "UserProfile.h"
 #include "NavigationHistory.h"
+#include "CommandPaletteModel.h"
 
-class Workspace final : private Serializable
+class Workspace final :
+    public CommandPaletteModel,
+    private Serializable
 {
 public:
     
-    Workspace() = default;
+    Workspace();
     ~Workspace() override;
 
     void init();
@@ -67,6 +71,12 @@ public:
     void importProject(const String &filePattern);
 
     //===------------------------------------------------------------------===//
+    // Command Palette
+    //===------------------------------------------------------------------===//
+
+    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
+
+    //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
     
@@ -85,6 +95,8 @@ private:
     
     UniquePointer<RootNode> treeRoot;
     NavigationHistory navigationHistory;
+
+    UniquePointer<CommandPaletteProjectsList> consoleProjectsList;
 
     void failedDeserializationFallback();
 

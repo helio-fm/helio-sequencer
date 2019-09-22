@@ -30,6 +30,8 @@ class TrackMap;
 class Transport;
 class ProjectMetadata;
 class ProjectTimeline;
+class CommandPaletteTimelineEvents;
+class CommandPaletteVersionControl;
 class UndoStack;
 class Pattern;
 class MidiTrack;
@@ -43,6 +45,7 @@ class Clip;
 #include "HybridRollEditMode.h"
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"
+#include "CommandPaletteModel.h"
 
 #define PROJECT_DEFAULT_NUM_BEATS 32
 
@@ -50,6 +53,7 @@ class ProjectNode final :
     public TreeNode,
     public DocumentOwner,
     public MidiTrackSource,
+    public CommandPaletteModel,
     public VCS::TrackedItemsSource,  // vcs stuff
     public ChangeListener // subscribed to VersionControl
 {
@@ -166,6 +170,12 @@ public:
     void onResetState() override;
 
     //===------------------------------------------------------------------===//
+    // Command Palette
+    //===------------------------------------------------------------------===//
+
+    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
+
+    //===------------------------------------------------------------------===//
     // ChangeListener
     //===------------------------------------------------------------------===//
 
@@ -200,13 +210,18 @@ private:
 
     UniquePointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
+
     ListenerList<ProjectListener> changeListeners;
     UniquePointer<ProjectPage> projectPage;
     ReadWriteLock tracksListLock;
+
     UniquePointer<ProjectMetadata> metadata;
     UniquePointer<ProjectTimeline> timeline;
 
     WeakReference<TreeNode> lastShownTrack;
+
+    UniquePointer<CommandPaletteVersionControl> consoleVcsEvents;
+    UniquePointer<CommandPaletteTimelineEvents> consoleTimelineEvents;
 
 private:
 

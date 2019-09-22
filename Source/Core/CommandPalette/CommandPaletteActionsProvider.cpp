@@ -32,31 +32,41 @@ struct CommandPaletteActionSortByMatch final
     }
 };
 
+CommandPaletteAction::CommandPaletteAction(String text, Callback callback) :
+    name(std::move(text)),
+    callback(callback) {}
+
+CommandPaletteAction::CommandPaletteAction(String text, String hint, Colour colour, Callback callback, float order) :
+    name(std::move(text)),
+    hint(std::move(hint)),
+    colour(std::move(colour)),
+    callback(callback),
+    order(order) {}
+
 void CommandPaletteAction::setMatch(int score, const uint8 *matches)
 {
     this->matchScore = score;
-
     this->highlightedMatch.clear();
+
     static const Font fontNormal(21, Font::plain);
     static const Font fontMatch(21, Font::underlined);
 
-    Array<int> newGlyphs;
-    Array<float> xOffsets;
+    static Array<int> newGlyphs;
+    static Array<float> xOffsets;
+    newGlyphs.clearQuick();
+    xOffsets.clearQuick();
 
     // assuming that underlined font will have pretty much the same glyph positions as normal:
     fontNormal.getGlyphPositions(this->name, newGlyphs, xOffsets);
-    auto textLen = newGlyphs.size();
-
-    auto t = this->name.getCharPointer();
 
     const float xOffset = 0.f;
     const float yOffset = 0.f;
+    auto t = this->name.getCharPointer();
 
-    for (int i = 0, nextMatch = 0; i < textLen; ++i)
+    for (int i = 0, nextMatch = 0; i < newGlyphs.size(); ++i)
     {
         const auto nextX = xOffsets.getUnchecked(i + 1);
         const auto thisX = xOffsets.getUnchecked(i);
-        const bool isWhitespace = t.isWhitespace();
 
         bool isMatchGlyph = false;
         if (matches != nullptr && matches[nextMatch] == i)
@@ -70,7 +80,7 @@ void CommandPaletteAction::setMatch(int score, const uint8 *matches)
             t.getAndAdvance(),
             newGlyphs.getUnchecked(i),
             xOffset + thisX, yOffset,
-            nextX - thisX, isWhitespace));
+            nextX - thisX, t.isWhitespace()));
     }
 }
 
@@ -92,6 +102,16 @@ const String &CommandPaletteAction::getName() const noexcept
 float CommandPaletteAction::getOrder() const noexcept
 {
     return this->order;
+}
+
+const String &CommandPaletteAction::getHint() const noexcept
+{
+    return this->hint;
+}
+
+const Colour &CommandPaletteAction::getColor() const noexcept
+{
+    return this->colour;
 }
 
 // Actions filtering makes use of Sublime-like fuzzy matcher,

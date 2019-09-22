@@ -32,6 +32,9 @@
 #include "ProjectNode.h"
 #include "RootNode.h"
 #include "Dashboard.h"
+#include "CommandPaletteProjectsList.h"
+
+Workspace::Workspace() {}
 
 Workspace::~Workspace()
 {
@@ -42,10 +45,12 @@ void Workspace::init()
 {
     if (! this->wasInitialized)
     {
-        this->audioCore.reset(new AudioCore());
-        this->pluginManager.reset(new PluginScanner());
-        this->treeRoot.reset(new RootNode("Workspace"));
-        
+        this->audioCore = makeUnique<AudioCore>();
+        this->pluginManager = makeUnique<PluginScanner>();
+        this->treeRoot = makeUnique<RootNode>("Workspace");
+
+        this->consoleProjectsList = makeUnique<CommandPaletteProjectsList>(*this);
+
         if (! this->autoload())
         {
             DBG("Workspace autoload failed, creating the empty workspace");
@@ -75,6 +80,8 @@ void Workspace::shutdown()
         {
             delete this->getLoadedProjects().getFirst();
         }
+
+        this->consoleProjectsList = nullptr;
 
         this->treeRoot = nullptr;
         this->pluginManager = nullptr;
@@ -370,6 +377,15 @@ void Workspace::importProject(const String &filePattern)
 }
 
 //===----------------------------------------------------------------------===//
+// Command Palette
+//===----------------------------------------------------------------------===//
+
+Array<CommandPaletteActionsProvider *> Workspace::getCommandPaletteActionProviders() const
+{
+    return { this->consoleProjectsList.get() };
+}
+
+//===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
@@ -481,11 +497,15 @@ void Workspace::deserialize(const SerializedData &data)
     // If no instruments root item is found for whatever reason
     // (i.e. malformed tree), make sure to add one:
     if (nullptr == this->treeRoot->findChildOfType<OrchestraPitNode>())
-    { this->treeRoot->addChildNode(new OrchestraPitNode(), 0); }
+    {
+        this->treeRoot->addChildNode(new OrchestraPitNode(), 0);
+    }
     
     // The same hack for settings root:
     if (nullptr == this->treeRoot->findChildOfType<SettingsNode>())
-    { this->treeRoot->addChildNode(new SettingsNode(), 0); }
+    {
+        this->treeRoot->addChildNode(new SettingsNode(), 0);
+    }
 
     if (! foundActiveNode)
     {

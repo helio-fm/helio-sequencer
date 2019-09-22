@@ -25,10 +25,14 @@ public:
     using Ptr = ReferenceCountedObjectPtr<CommandPaletteAction>;
 
     CommandPaletteAction() = default;
-    CommandPaletteAction(String text) :
-        name(std::move(text)) {}
+    explicit CommandPaletteAction(String text) : name(text) {} // temporary
+    CommandPaletteAction(String text, Callback callback);
+    CommandPaletteAction(String text, String hint,
+        Colour colour, Callback callback, float order);
 
     const String &getName() const noexcept;
+    const String &getHint() const noexcept;
+    const Colour &getColor() const noexcept;
 
     void setMatch(int score, const uint8 *matches);
     int getMatchScore() const noexcept;
@@ -39,7 +43,7 @@ private:
 
     String name;
     String hint;
-    Colour colour;
+    Colour colour = Colours::grey;
     Callback callback;
 
     int commandId = 0;

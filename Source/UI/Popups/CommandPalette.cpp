@@ -27,13 +27,16 @@
 
 #include "Headline.h"
 #include "Config.h"
-#include "CommandPaletteCommonActions.h"
-#include "CommandPaletteProjectsList.h"
+
+#include "Workspace.h"
+#include "MainLayout.h"
+#include "ProjectNode.h"
+#include "PianoRoll.h"
 
 static const juce_wchar kTildaKey = '`';
 //[/MiscUserDefs]
 
-CommandPalette::CommandPalette()
+CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
 {
     this->shadowDn.reset(new ShadowDownwards(ShadowType::Normal));
     this->addAndMakeVisible(shadowDn.get());
@@ -53,27 +56,28 @@ CommandPalette::CommandPalette()
     //[UserPreSize]
     const auto lastText = App::Config().getProperty(Serialization::Config::lastSearch);
 
-    // todo reference counted array instead
-    this->actionsProviders.add(new CommandPaletteCommonActions());
-    this->actionsProviders.add(new CommandPaletteProjectsList(App::Workspace()));
-    //this->actionsProviders.addArray(App::Workspace().getCommandPaletteActionProviders());
+    // some help and hotkey commands list (depending on the current page):
+    this->actionsProviders.addArray(App::Layout().getCommandPaletteActionProviders());
 
-    // if opened in a project sub-node:
-    this->actionsProviders.add(new CommandPaletteTimelineEvents());
-    this->actionsProviders.add(new CommandPaletteVersionControl());
-    //if (projectNode != nullptr)
-    //{
-    //    this->actionsProviders.addArray(projectNode->getCommandPaletteActionProviders());
-    //}
+    // projects list
+    this->actionsProviders.addArray(App::Workspace().getCommandPaletteActionProviders());
 
-    // if also opened in a piano roll:
-    this->actionsProviders.add(new CommandPaletteChordsList(App::Workspace()));
-    this->actionsProviders.add(new CommandPaletteChordConstructor(App::Workspace()));
-    //if (pianoRoll != nullptr)
-    //{
-    //    this->actionsProviders.addArray(pianoRoll->getCommandPaletteActionProviders());
-    //}
+    // timeline events and version control, if opened in a project sub-node:
+    if (project != nullptr)
+    {
+        this->actionsProviders.addArray(project->getCommandPaletteActionProviders());
+    }
 
+    // chord tools, if also opened in a piano roll:
+    if (auto *pianoRoll = dynamic_cast<PianoRoll *>(roll))
+    {
+        if (pianoRoll->isShowing())
+        {
+            this->actionsProviders.addArray(pianoRoll->getCommandPaletteActionProviders());
+        }
+    }
+
+    jassert(!this->actionsProviders.isEmpty());
 
     this->defaultActionsProvider = this->actionsProviders.getFirst();
     this->currentActionsProvider = this->defaultActionsProvider;

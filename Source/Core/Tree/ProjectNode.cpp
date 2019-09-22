@@ -50,6 +50,9 @@
 #include "ProjectPage.h"
 #include "ProjectMenu.h"
 
+#include "CommandPaletteTimelineEvents.h"
+#include "CommandPaletteVersionControl.h"
+
 #include "HelioTheme.h"
 #include "SequencerLayout.h"
 #include "MainLayout.h"
@@ -102,6 +105,9 @@ void ProjectNode::initialize()
 
     this->transport->seekToPosition(0.0);
 
+    this->consoleVcsEvents = makeUnique<CommandPaletteVersionControl>(*this);
+    this->consoleTimelineEvents = makeUnique<CommandPaletteTimelineEvents>(*this);
+
     this->recreatePage();
 }
 
@@ -112,7 +118,7 @@ ProjectNode::~ProjectNode()
     this->transport->stopPlayback();
     this->transport->stopRender();
 
-    // remember as the recent file
+    // remember as a recent file
     App::Workspace().getUserProfile().onProjectUnloaded(this->getId());
 
     this->projectPage = nullptr;
@@ -980,12 +986,21 @@ void ProjectNode::onResetState()
 }
 
 //===----------------------------------------------------------------------===//
+// Command Palette
+//===----------------------------------------------------------------------===//
+
+Array<CommandPaletteActionsProvider *> ProjectNode::getCommandPaletteActionProviders() const
+{
+    return { this->consoleVcsEvents.get(), this->consoleTimelineEvents.get() };
+}
+
+//===----------------------------------------------------------------------===//
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
 void ProjectNode::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (VersionControl *vcs = dynamic_cast<VersionControl *>(source))
+    if (auto *vcs = dynamic_cast<VersionControl *>(source))
     {
         DocumentOwner::sendChangeMessage();
         // still not sure if it's really needed after commit:

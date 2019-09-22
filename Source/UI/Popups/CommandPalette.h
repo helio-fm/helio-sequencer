@@ -18,7 +18,11 @@
 #pragma once
 
 //[Headers]
+class ProjectNode;
+class HybridRoll;
+
 #include "CommandPaletteActionsProvider.h"
+#include "CommandPaletteModel.h"
 
 class CommandPaletteTextEditor final : public TextEditor
 {
@@ -38,7 +42,7 @@ class CommandPalette final : public Component,
 {
 public:
 
-    CommandPalette();
+    CommandPalette(ProjectNode *project, HybridRoll *roll);
     ~CommandPalette();
 
     //[UserMethods]
@@ -80,7 +84,7 @@ private:
     void fadeOut();
     void updatePosition();
 
-    OwnedArray<CommandPaletteActionsProvider> actionsProviders;
+    Array<WeakReference<CommandPaletteActionsProvider>> actionsProviders;
     WeakReference<CommandPaletteActionsProvider> currentActionsProvider;
     WeakReference<CommandPaletteActionsProvider> defaultActionsProvider;
 

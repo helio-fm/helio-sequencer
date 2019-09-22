@@ -17,16 +17,20 @@
 
 #pragma once
 
+class CommandPaletteCommonActions;
 class HeadlineItemDataSource;
 class TransientTreeItem;
 class TooltipContainer;
 class TreeNode;
 class Headline;
 
+#include "CommandPaletteModel.h"
 #include "ComponentFader.h"
 #include "HotkeyScheme.h"
 
-class MainLayout final : public Component
+class MainLayout final :
+    public Component,
+    public CommandPaletteModel
 {
 public:
 
@@ -79,6 +83,12 @@ public:
     void modifierKeysChanged(const ModifierKeys &modifiers) override;
     void handleCommandMessage(int commandId) override;
 
+    //===------------------------------------------------------------------===//
+    // Command Palette
+    //===------------------------------------------------------------------===//
+
+    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
+
 private:
 
     ComponentFader fader;
@@ -90,6 +100,9 @@ private:
     SafePointer<Component> currentContent;
 
     HotkeyScheme::Ptr hotkeyScheme;
-    
+    Array<Component *> visibleCommandReceiversCache;
+
+    UniquePointer<CommandPaletteCommonActions> consoleCommonActions;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainLayout)
 };

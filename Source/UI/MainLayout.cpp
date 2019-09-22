@@ -313,6 +313,22 @@ static ProjectNode *findParentProjectOfSelectedNode()
     return nullptr;
 }
 
+static void emitCommandPalette()
+{
+    HybridRoll *activeRoll = nullptr;
+    auto *project = findParentProjectOfSelectedNode();
+    if (project)
+    {
+        auto *activeNode = App::Workspace().getTreeRoot()->findActiveNode();
+        if (nullptr != dynamic_cast<PianoTrackNode *>(activeNode))
+        {
+            activeRoll = project->getLastFocusedRoll();
+        }
+    }
+
+    App::showModalComponent(makeUnique<CommandPalette>(project, activeRoll));
+}
+
 void MainLayout::handleCommandMessage(int commandId)
 {
     switch (commandId)
@@ -352,13 +368,15 @@ void MainLayout::handleCommandMessage(int commandId)
         App::Workspace().navigateForwardIfPossible();
         break;
     case CommandIDs::CommandPalette:
-        App::showModalComponent(makeUnique<CommandPalette>());
+        emitCommandPalette();
         break;
     case CommandIDs::CommandPaletteWithMode:
-        App::Config().setProperty(Serialization::Config::lastSearch,
-            String::charToString(this->hotkeyScheme->getLastKeyPress().getTextCharacter()));
-        App::showModalComponent(makeUnique<CommandPalette>());
+    {
+        const auto modeKey = this->hotkeyScheme->getLastKeyPress().getTextCharacter();
+        App::Config().setProperty(Serialization::Config::lastSearch, String::charToString(modeKey));
+        emitCommandPalette();
         break;
+    }
     default:
         break;
     }
