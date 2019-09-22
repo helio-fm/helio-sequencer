@@ -612,7 +612,6 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::DeleteClips:
         PatternOperations::deleteSelection(this->getLassoSelection(), this->project);
         break;
-    case CommandIDs::EditClip:
     case CommandIDs::ZoomEntireClip:
         if (this->selection.getNumSelected() > 0)
         {

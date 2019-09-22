@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "HotkeyScheme.h"
-#include "CommandIDs.h"
 #include "SerializationKeys.h"
 #include "ResourceCache.h"
 
@@ -127,10 +126,12 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
         if (keyPressReceiver != nullptr &&
             keyPressReceiver->getComponentID() == key.componentId)
         {
+            // main layout itself
             receiver = keyPressReceiver;
         }
         else if (messageReceiver != nullptr)
         {
+            // child of the showing page
             receiver = findMessageReceiver(messageReceiver, key.componentId);
         }
 
@@ -239,6 +240,16 @@ String HotkeyScheme::getResourceId() const noexcept
 Identifier HotkeyScheme::getResourceType() const noexcept
 {
     return Serialization::Resources::hotkeySchemes;
+}
+
+KeyPress HotkeyScheme::getLastKeyPress() const noexcept
+{
+    return this->lastKeyPress;
+}
+
+const Array<HotkeyScheme::Hotkey> &HotkeyScheme::getKeyPresses() const noexcept
+{
+    return this->keyPresses;
 }
 
 bool operator==(const HotkeyScheme &l, const HotkeyScheme &r)

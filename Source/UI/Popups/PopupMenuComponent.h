@@ -30,25 +30,12 @@ public:
     void dismissAsCancelled()
     {
         App::Layout().hideTooltipIfAny();
-        
-        if (this->targetComponent)
-        {
-            this->targetComponent->postCommandMessage(CommandIDs::PopupMenuDismissedAsCancel);
-        }
-
         this->exitModalState(0); // don't consume mouse click
-        //this->postCommandMessage(CommandIDs::PopupMenuDismiss);
     }
 
     void dismissAsDone()
     {
         App::Layout().hideTooltipIfAny();
-
-        if (this->targetComponent)
-        {
-            this->targetComponent->postCommandMessage(CommandIDs::PopupMenuDismissedAsDone);
-        }
-
         this->postCommandMessage(CommandIDs::PopupMenuDismiss);
     }
 

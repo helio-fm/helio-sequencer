@@ -18,6 +18,7 @@
 #pragma once
 
 #include "BaseResource.h"
+#include "CommandIDs.h"
 
 class HotkeyScheme final : public BaseResource
 {
@@ -33,15 +34,14 @@ public:
     public:
         KeyPress keyPress;
         String componentId;
-        int commandId;
+        CommandIDs::Id commandId;
     };
 
     String findHotkeyDescription(int commandId) const noexcept;
 
-    KeyPress getLastKeyPress() const noexcept
-    {
-        return this->lastKeyPress;
-    }
+    // To be used by command palette:
+    const Array<Hotkey> &getKeyPresses() const noexcept;
+    KeyPress getLastKeyPress() const noexcept;
 
     bool dispatchKeyPress(KeyPress keyPress,
         WeakReference<Component> keyPressReceiver,
