@@ -44,8 +44,8 @@ spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}
 # "The notary service generates a ticket for the top-level file ... as well as each nested file", so let's pass the disk image
 NOTARIZATION_RESPONSE=$(xcrun altool --notarize-app -t osx -f /tmp/${RELEASE_FILENAME}.dmg --primary-bundle-id "fm.helio" -u ${OSX_ITC_USERNAME} -p ${OSX_ITC_APP_PASSWORD} --output-format xml)
 REQUEST_UUID=$(xmllint --xpath "/plist/dict[key='notarization-upload']/dict/key[.='RequestUUID']/following-sibling::string[1]/text()" - <<<"$NOTARIZATION_RESPONSE")
-echo "Notarization started with request uuid:"
-echo ${REQUEST_UUID}
+echo "Notarization started with request uuid: ${REQUEST_UUID}"
+sleep 10s
 
 for i in {0..40} # 20 mins should be enough I guess
 do
@@ -56,6 +56,9 @@ do
         sleep 30s
     elif [[ ${NOTARIZATION_STATUS} == "success" ]]; then
         echo "Notarization done"
+        # Staple and verify
+        xcrun stapler staple /tmp/${RELEASE_FILENAME}.dmg
+        spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}.dmg
         break
     else
         echo "Notarization fault (core dumped)"
@@ -65,11 +68,7 @@ do
     fi
 done
 
-if [[ ${NOTARIZATION_STATUS} == "success" ]]; then
-    # Staple and verify
-    xcrun stapler staple /tmp/${RELEASE_FILENAME}.dmg
-    spctl -a -v /tmp/${RELEASE_FILENAME}.dmg
-else
+if [[ ${NOTARIZATION_STATUS} != "success" ]]; then
     # It should be "less than an hour", Apple says, but looks like this time we're stuck
     echo "Ah fuck :("
     # Don't fail here though, it's better to ship the unstapled disk image, at least
