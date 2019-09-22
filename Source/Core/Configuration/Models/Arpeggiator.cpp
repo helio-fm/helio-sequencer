@@ -319,7 +319,7 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
         chordRoot, chord.getUnchecked(0).getKey());
 
     static Random rng; // add -1, 0 or 1 scale offset randomly:
-    const int randomScaleOffset = lround((rng.nextFloat() * randomness * 2.f) - 1.f);
+    const auto randomScaleOffset = int((rng.nextFloat() * randomness * 2.f) - 1.f);
 
     const auto newNoteKey =
         this->mapper->mapArpKeyIntoChord(arpKeyOrReversed,
