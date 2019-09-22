@@ -573,12 +573,23 @@ void App::initialise(const String &commandLine)
         const bool shouldUseNativeTitleBar = true;
 #else
         const auto enabledState = Serialization::Config::enabledState.toString();
-
         const auto opeGlState = this->config->getProperty(Serialization::Config::openGLState);
+        const auto nativeTitleBarState = this->config->getProperty(Serialization::Config::nativeTitleBar);
+
         const bool shouldEnableOpenGL = opeGlState.isEmpty() || opeGlState == enabledState;
 
-        const auto titleBarState = this->config->getProperty(Serialization::Config::nativeTitleBar);
-        const bool shouldUseNativeTitleBar = titleBarState == enabledState;
+#   if JUCE_MAC
+        // On macOS, always use native bar and disable that check box in the settings
+        const bool shouldUseNativeTitleBar = true;
+#   elif JUCE_LINUX
+        // On Linux, allow switching modes, but use native title bar by default
+        // (custom one is still usable but can cause issues with various window managers)
+        const bool shouldUseNativeTitleBar = nativeTitleBarState.isEmpty() || nativeTitleBarState == enabledState;
+#   else
+        // On Windows, allow switching modes, and use custom title bar by default
+        const bool shouldUseNativeTitleBar = nativeTitleBarState == enabledState;
+#   endif
+
 #endif
 
         this->window.reset(new MainWindow());
