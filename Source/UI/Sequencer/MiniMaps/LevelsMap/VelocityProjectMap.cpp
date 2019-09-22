@@ -858,6 +858,7 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
         const Clip *clip = track->getPattern()->getUnchecked(i);
+        const bool editable = this->activeClip == *clip;
 
         auto *sequenceMap = new SequenceMap();
         this->patternMap[*clip] = UniquePointer<SequenceMap>(sequenceMap);
@@ -872,6 +873,7 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
                 (*sequenceMap)[*note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
                 this->applyNoteBounds(noteComponent);
+                noteComponent->setEditable(editable);
             }
         }
     }

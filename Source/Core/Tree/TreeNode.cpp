@@ -101,6 +101,11 @@ void TreeNodeBase::setSelected(NotificationType shouldNotify /*= sendNotificatio
     }
 }
 
+void TreeNodeBase::sendSelectionNotification()
+{
+    this->nodeSelectionChanged(this->selected);
+}
+
 TreeNodeBase *TreeNodeBase::getTopLevelNode() noexcept
 {
     return this->parent == nullptr ?
@@ -194,22 +199,24 @@ bool TreeNode::deleteNode(TreeNode *nodeToDelete, bool sendNotifications)
         parent->sendChangeMessage();
     }
 
+    const auto notificationType = sendNotifications ? sendNotification : dontSendNotification;
+
     if (shouldRefocus)
     {
         if (parent != nullptr)
         {
             if (auto *sibling = parent->findChildOfType<MidiTrackNode>())
             {
-                sibling->setSelected();
+                sibling->setSelected(notificationType);
             }
             else
             {
-                parent->setSelected();
+                parent->setSelected(notificationType);
             }
         }
         else if (root != nullptr)
         {
-            root->setSelected();
+            root->setSelected(notificationType);
         }
     }
 

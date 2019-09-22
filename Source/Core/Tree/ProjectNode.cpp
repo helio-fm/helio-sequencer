@@ -983,6 +983,9 @@ void ProjectNode::onResetState()
 {
     this->broadcastReloadProjectContent();
     this->broadcastChangeProjectBeatRange();
+    // during vcs operations, notifications are not sent, including tree selection changes,
+    // which happen, when something is deleted, so we need to do it afterwards:
+    this->getRootNode()->findActiveNode()->sendSelectionNotification();
 }
 
 //===----------------------------------------------------------------------===//
