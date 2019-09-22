@@ -74,6 +74,12 @@
         { "receiver": "VersionControlStage", "command": "VersionControlCommitSelected", "key": "Control + S" },
         { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Backspace" },
         { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Delete" },
+        { "receiver": "VersionControlStage", "command": "VersionControlCommitAll", "key": "Control + Shift + S" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetAll", "key": "Shift + Backspace" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetAll", "key": "Shift + Delete" },
+        { "receiver": "VersionControlStage", "command": "VersionControlSyncAll", "key": "F5" },
+        //{ "receiver": "VersionControlHistory", "command": "VersionControlPushSelected", "key": "?" },
+        //{ "receiver": "VersionControlHistory", "command": "VersionControlPullSelected", "key": "?" },
 
         // ------------------------------------
         // Piano roll's specific
