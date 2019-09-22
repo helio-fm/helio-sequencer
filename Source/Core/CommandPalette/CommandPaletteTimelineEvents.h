@@ -17,34 +17,28 @@
 
 #pragma once
 
-#include "Workspace.h"
+#include "ProjectNode.h"
 #include "CommandPaletteActionsProvider.h"
 
-class CommandPaletteProjectsList final :
-    public CommandPaletteActionsProvider,
-    public ChangeListener
+class CommandPaletteTimelineEvents final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteProjectsList(Workspace &workspace);
-    ~CommandPaletteProjectsList() override;
+    CommandPaletteTimelineEvents(const ProjectNode &project);
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '/';
+        return prefix == '@';
     }
-
-    void changeListenerCallback(ChangeBroadcaster *source) override;
 
 protected:
 
     const Actions &getActions() const override;
 
-    void reloadProjects();
-    Actions projects;
+    Actions timelineEvents;
 
 private:
-
-    Workspace &workspace;
+    
+    const ProjectNode &project;
 
 };

@@ -22,7 +22,13 @@ struct CommandPaletteActionSortByMatch final
 {
     static int compareElements(const CommandPaletteAction::Ptr first, const CommandPaletteAction::Ptr second)
     {
-        return int(second->getMatchScore() - first->getMatchScore());
+        // first, descending sort by match:
+        const auto matchResult = int(second->getMatchScore() - first->getMatchScore());
+
+        const float orderDiff = first->getOrder() - second->getOrder();
+        const int orderResult = (orderDiff > 0.f) - (orderDiff < 0.f);
+
+        return matchResult == 0 ? orderResult : matchResult;
     }
 };
 
@@ -66,6 +72,26 @@ void CommandPaletteAction::setMatch(int score, const uint8 *matches)
             xOffset + thisX, yOffset,
             nextX - thisX, isWhitespace));
     }
+}
+
+int CommandPaletteAction::getMatchScore() const noexcept
+{
+    return this->matchScore;
+}
+
+const GlyphArrangement &CommandPaletteAction::getGlyphArrangement() const noexcept
+{
+    return this->highlightedMatch;
+}
+
+const String &CommandPaletteAction::getName() const noexcept
+{
+    return this->name;
+}
+
+float CommandPaletteAction::getOrder() const noexcept
+{
+    return this->order;
 }
 
 // Actions filtering makes use of Sublime-like fuzzy matcher,
@@ -123,7 +149,8 @@ void CommandPaletteActionsProvider::clearFilter()
         action->setMatch(0, nullptr);
     }
 
-    // how to sort?
+    static CommandPaletteActionSortByMatch comparator;
+    this->filteredActions.sort(comparator);
 }
 
 static bool fuzzyMatch(String::CharPointerType pattern, String::CharPointerType str, int &outScore,

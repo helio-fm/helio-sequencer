@@ -17,34 +17,26 @@
 
 #pragma once
 
-#include "Workspace.h"
 #include "CommandPaletteActionsProvider.h"
 
-class CommandPaletteProjectsList final :
-    public CommandPaletteActionsProvider,
-    public ChangeListener
+class CommandPaletteChordConstructor final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteProjectsList(Workspace &workspace);
-    ~CommandPaletteProjectsList() override;
+    CommandPaletteChordConstructor() {}
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '/';
+        return prefix == '$';
     }
 
-    void changeListenerCallback(ChangeBroadcaster *source) override;
+    // todo dynamic list of suggestions?
+    void updateFilter(const String &pattern, bool skipPrefix) override;
+    void clearFilter() override;
 
 protected:
 
+    // todo dynamic list of suggestions
     const Actions &getActions() const override;
-
-    void reloadProjects();
-    Actions projects;
-
-private:
-
-    Workspace &workspace;
-
+    
 };

@@ -17,34 +17,23 @@
 
 #pragma once
 
-#include "Workspace.h"
 #include "CommandPaletteActionsProvider.h"
 
-class CommandPaletteProjectsList final :
-    public CommandPaletteActionsProvider,
-    public ChangeListener
+class CommandPaletteChordsList final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteProjectsList(Workspace &workspace);
-    ~CommandPaletteProjectsList() override;
+    CommandPaletteChordsList() {}
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '/';
+        return prefix == '#';
     }
-
-    void changeListenerCallback(ChangeBroadcaster *source) override;
 
 protected:
 
     const Actions &getActions() const override;
 
-    void reloadProjects();
-    Actions projects;
-
-private:
-
-    Workspace &workspace;
+    Actions chords;
 
 };

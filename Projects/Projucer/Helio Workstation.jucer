@@ -260,12 +260,28 @@
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteActionsProvider.cpp"/>
           <FILE id="HZwQw8" name="CommandPaletteActionsProvider.h" compile="0"
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteActionsProvider.h"/>
-          <FILE id="QUi7rZ" name="CommandPaletteHelp.h" compile="0" resource="0"
-                file="../../Source/Core/CommandPalette/CommandPaletteHelp.h"/>
+          <FILE id="QUi7rZ" name="CommandPaletteCommonActions.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteCommonActions.h"/>
+          <FILE id="DG0aza" name="CommandPaletteChordConstructor.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteChordConstructor.cpp"/>
+          <FILE id="Ne02DZ" name="CommandPaletteChordConstructor.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteChordConstructor.h"/>
+          <FILE id="lpcLE2" name="CommandPaletteChordsList.cpp" compile="1" resource="0"
+                file="../../Source/Core/CommandPalette/CommandPaletteChordsList.cpp"/>
+          <FILE id="XlI2wJ" name="CommandPaletteChordsList.h" compile="0" resource="0"
+                file="../../Source/Core/CommandPalette/CommandPaletteChordsList.h"/>
           <FILE id="bccgCH" name="CommandPaletteProjectsList.cpp" compile="1"
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteProjectsList.cpp"/>
           <FILE id="eaRAsU" name="CommandPaletteProjectsList.h" compile="0" resource="0"
                 file="../../Source/Core/CommandPalette/CommandPaletteProjectsList.h"/>
+          <FILE id="hIK3J7" name="CommandPaletteTimelineEvents.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.cpp"/>
+          <FILE id="Nenzvj" name="CommandPaletteTimelineEvents.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.h"/>
+          <FILE id="PEblh9" name="CommandPaletteVersionControl.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteVersionControl.cpp"/>
+          <FILE id="KJgcgW" name="CommandPaletteVersionControl.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteVersionControl.h"/>
         </GROUP>
         <GROUP id="{93B0AF7A-BC73-2049-CF6B-76592F77C01F}" name="Midi">
           <GROUP id="{5A19293F-FDB1-F5B4-F808-E06A0B919C46}" name="Patterns">

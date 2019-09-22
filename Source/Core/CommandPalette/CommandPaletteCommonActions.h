@@ -17,34 +17,42 @@
 
 #pragma once
 
-#include "Workspace.h"
 #include "CommandPaletteActionsProvider.h"
 
-class CommandPaletteProjectsList final :
-    public CommandPaletteActionsProvider,
-    public ChangeListener
+class CommandPaletteCommonActions final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteProjectsList(Workspace &workspace);
-    ~CommandPaletteProjectsList() override;
-
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '/';
+        return prefix == '?';
     }
-
-    void changeListenerCallback(ChangeBroadcaster *source) override;
 
 protected:
 
-    const Actions &getActions() const override;
+    const Actions &getActions() const override
+    {
+        if (this->help.isEmpty())
+        {
+            for (const auto &tmp : this->temp)
+            {
+                this->help.add(new CommandPaletteAction(tmp));
+            }
+        }
 
-    void reloadProjects();
-    Actions projects;
+        return this->help;
+    }
 
-private:
-
-    Workspace &workspace;
-
+    mutable Actions help;
+    
+    StringArray temp =
+    {
+        "/ projects list",
+        // if opened in a project sub-node:
+        "! version control",
+        "@ timeline events",
+        // if also opened in a piano roll:
+        "# chords list",
+        "$ chord inline constructor"
+    };
 };

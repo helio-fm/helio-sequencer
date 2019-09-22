@@ -21,37 +21,39 @@ class CommandPaletteAction final : public ReferenceCountedObject
 {
 public:
 
+    using Callback = Function<void()>;
     using Ptr = ReferenceCountedObjectPtr<CommandPaletteAction>;
 
     CommandPaletteAction() = default;
     CommandPaletteAction(String text) :
         name(std::move(text)) {}
 
-    virtual ~CommandPaletteAction() {};
-
-    const String &getName() const noexcept
-    {
-        return this->name;
-    }
-
-    int getMatchScore() const noexcept
-    {
-        return this->matchScore;
-    }
+    const String &getName() const noexcept;
 
     void setMatch(int score, const uint8 *matches);
-
-    const GlyphArrangement &getGlyphArrangement() const noexcept
-    {
-        return this->highlightedMatch;
-    }
+    int getMatchScore() const noexcept;
+    float getOrder() const noexcept;
+    const GlyphArrangement &getGlyphArrangement() const noexcept;
 
 private:
 
     String name;
+    String hint;
+    Colour colour;
+    Callback callback;
+
+    int commandId = 0;
+    bool shouldClosePalette = true;
 
     GlyphArrangement highlightedMatch;
-    int matchScore;
+    int matchScore = 0;
+
+    // actions will be sorted by match, as user is entering the search text,
+    // but we may also need ordering for the full list or items with the same match;
+    // the context for this variable should be defined by action provider,
+    // for example, timeline events will be ordered by position at the timeline
+    // (see CommandPaletteActionSortByMatch)
+    float order = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandPaletteAction)
 };
@@ -72,8 +74,8 @@ public:
         return this->filteredActions;
     }
 
-    void updateFilter(const String &pattern, bool skipPrefix);
-    void clearFilter();
+    virtual void updateFilter(const String &pattern, bool skipPrefix);
+    virtual void clearFilter();
 
 protected:
 

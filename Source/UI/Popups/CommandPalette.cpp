@@ -27,8 +27,10 @@
 
 #include "Headline.h"
 #include "Config.h"
-#include "CommandPaletteHelp.h"
+#include "CommandPaletteCommonActions.h"
 #include "CommandPaletteProjectsList.h"
+
+static const juce_wchar kTildaKey = '`';
 //[/MiscUserDefs]
 
 CommandPalette::CommandPalette()
@@ -49,15 +51,30 @@ CommandPalette::CommandPalette()
 
 
     //[UserPreSize]
+    const auto lastText = App::Config().getProperty(Serialization::Config::lastSearch);
 
-    // todo get last edited text
-    const String lastText =
-        App::Config().getProperty(Serialization::Config::lastSearch);
+    // todo reference counted array instead
+    this->actionsProviders.add(new CommandPaletteCommonActions());
+    this->actionsProviders.add(new CommandPaletteProjectsList(App::Workspace()));
+    //this->actionsProviders.addArray(App::Workspace().getCommandPaletteActionProviders());
 
-    // fill action providers
-    // set default provider (which exactly?)
-    this->actionsProviders.add(new CommandPaletteHelp());
-    this->actionsProviders.add(new CommandPaletteProjectsList());
+    // if opened in a project sub-node:
+    this->actionsProviders.add(new CommandPaletteTimelineEvents());
+    this->actionsProviders.add(new CommandPaletteVersionControl());
+    //if (projectNode != nullptr)
+    //{
+    //    this->actionsProviders.addArray(projectNode->getCommandPaletteActionProviders());
+    //}
+
+    // if also opened in a piano roll:
+    this->actionsProviders.add(new CommandPaletteChordsList(App::Workspace()));
+    this->actionsProviders.add(new CommandPaletteChordConstructor(App::Workspace()));
+    //if (pianoRoll != nullptr)
+    //{
+    //    this->actionsProviders.addArray(pianoRoll->getCommandPaletteActionProviders());
+    //}
+
+
     this->defaultActionsProvider = this->actionsProviders.getFirst();
     this->currentActionsProvider = this->defaultActionsProvider;
 
@@ -151,6 +168,20 @@ bool CommandPalette::keyPressed (const KeyPress& key)
 {
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
+    {
+        // todo test
+        // if escape, palette will first erase the text, if any, and then close?
+        if (this->textEditor->isEmpty())
+        {
+            this->cancelAndDismiss();
+        }
+        else
+        {
+            this->textEditor->setText({});
+        }
+        return true;
+    }
+    else if (key.isKeyCode(kTildaKey))
     {
         this->cancelAndDismiss();
         return true;
@@ -356,13 +387,11 @@ void CommandPalette::cancelAndDismiss()
 
 bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
 {
-    static const juce_wchar tildaKey = '`';
-    if (key.isKeyCode(tildaKey))
-    {
-        this->escapePressed();
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::downKey) || key.isKeyCode(KeyPress::upKey))
+    // if escape or ~, just pass the keypress up
+    if (key.isKeyCode(kTildaKey) ||
+        key.isKeyCode(KeyPress::escapeKey) ||
+        key.isKeyCode(KeyPress::downKey) ||
+        key.isKeyCode(KeyPress::upKey))
     {
         return false;
     }

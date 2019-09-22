@@ -17,18 +17,50 @@
 
 #include "Common.h"
 #include "CommandPaletteProjectsList.h"
-#include "Workspace.h"
 #include "UserProfile.h"
+
+CommandPaletteProjectsList::CommandPaletteProjectsList(Workspace &workspace) :
+    workspace(workspace)
+{
+    this->reloadProjects();
+    this->workspace.getUserProfile().addChangeListener(this);
+}
+
+CommandPaletteProjectsList::~CommandPaletteProjectsList()
+{
+    this->workspace.getUserProfile().removeChangeListener(this);
+}
 
 const CommandPaletteActionsProvider::Actions &CommandPaletteProjectsList::getActions() const
 {
+    return this->projects;
+}
+
+void CommandPaletteProjectsList::changeListenerCallback(ChangeBroadcaster *source)
+{
+    this->reloadProjects();
+}
+
+void CommandPaletteProjectsList::reloadProjects()
+{
     this->projects.clearQuick();
 
-    // todo detect changes, don't rebuild it all the time
-    for (const auto *project : App::Workspace().getUserProfile().getProjects())
+    // todo first items == create new, open, import midi
+    for (const auto *project : this->workspace.getUserProfile().getProjects())
     {
         this->projects.add(new CommandPaletteAction(project->getTitle()));
     }
-
-    return this->projects;
 }
+
+//void CommandPaletteProjectsList::loadFile(RecentProjectInfo::Ptr project)
+//{
+//    if (!this->workspace->loadRecentProject(project))
+//    {
+//        this->workspace->getUserProfile().deleteProjectLocally(project->getProjectId());
+//    }
+//}
+//
+//void CommandPaletteProjectsList::unloadFile(RecentProjectInfo::Ptr project)
+//{
+//    this->workspace->unloadProject(project->getProjectId(), false, false);
+//}

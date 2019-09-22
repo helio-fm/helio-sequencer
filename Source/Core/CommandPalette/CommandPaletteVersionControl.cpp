@@ -15,36 +15,4 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
-#include "Workspace.h"
-#include "CommandPaletteActionsProvider.h"
-
-class CommandPaletteProjectsList final :
-    public CommandPaletteActionsProvider,
-    public ChangeListener
-{
-public:
-
-    CommandPaletteProjectsList(Workspace &workspace);
-    ~CommandPaletteProjectsList() override;
-
-    bool usesPrefix(const Prefix prefix) const noexcept override
-    {
-        return prefix == '/';
-    }
-
-    void changeListenerCallback(ChangeBroadcaster *source) override;
-
-protected:
-
-    const Actions &getActions() const override;
-
-    void reloadProjects();
-    Actions projects;
-
-private:
-
-    Workspace &workspace;
-
-};
+#include "CommandPaletteVersionControl.h"

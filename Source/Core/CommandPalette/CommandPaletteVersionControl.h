@@ -17,40 +17,29 @@
 
 #pragma once
 
+#include "VersionControl.h"
 #include "CommandPaletteActionsProvider.h"
 
-class CommandPaletteHelp final : public CommandPaletteActionsProvider
+class CommandPaletteVersionControl final : public CommandPaletteActionsProvider
 {
 public:
 
+    CommandPaletteVersionControl(VersionControl &vcs) :
+        vcs(vcs) {}
+
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '?';
+        return prefix == '!';
     }
 
 protected:
 
-    const Actions &getActions() const override
-    {
-        if (this->help.isEmpty())
-        {
-            for (const auto &tmp : this->temp)
-            {
-                this->help.add(new CommandPaletteAction(tmp));
-            }
-        }
+    const Actions &getActions() const override;
 
-        return this->help;
-    }
+    Actions projects;
 
-    mutable Actions help;
-    
-    StringArray temp =
-    {
-        "/ projects list",
-        "@ timeline events",
-        "# chords list",
-        "$ chord inline constructor",
-        "! version control"
-    };
+private:
+
+    VersionControl &vcs;
+
 };
