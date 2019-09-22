@@ -35,7 +35,7 @@ protected:
 
     const Actions &getActions() const override;
 
-    Actions timelineEvents;
+    mutable Actions timelineEvents;
 
 private:
     

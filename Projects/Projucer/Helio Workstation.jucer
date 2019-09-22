@@ -256,10 +256,14 @@
           <FILE id="Qp21xL" name="Config.h" compile="0" resource="0" file="../../Source/Core/Configuration/Config.h"/>
         </GROUP>
         <GROUP id="{8CA92FD3-E483-6598-05E0-FD37B0C59010}" name="CommandPalette">
+          <FILE id="PfHm4M" name="CommandPaletteModel.h" compile="0" resource="0"
+                file="../../Source/Core/CommandPalette/CommandPaletteModel.h"/>
           <FILE id="ioyBKx" name="CommandPaletteActionsProvider.cpp" compile="1"
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteActionsProvider.cpp"/>
           <FILE id="HZwQw8" name="CommandPaletteActionsProvider.h" compile="0"
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteActionsProvider.h"/>
+          <FILE id="ywekDI" name="CommandPaletteCommonActions.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteCommonActions.cpp"/>
           <FILE id="QUi7rZ" name="CommandPaletteCommonActions.h" compile="0"
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteCommonActions.h"/>
           <FILE id="DG0aza" name="CommandPaletteChordConstructor.cpp" compile="1"

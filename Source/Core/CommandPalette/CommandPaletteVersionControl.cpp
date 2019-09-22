@@ -15,4 +15,11 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Common.h"
 #include "CommandPaletteVersionControl.h"
+
+const CommandPaletteActionsProvider::Actions &CommandPaletteVersionControl::getActions() const
+{
+    // todo
+    return this->actions;
+}

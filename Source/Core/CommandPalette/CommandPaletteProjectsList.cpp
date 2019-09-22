@@ -48,6 +48,8 @@ void CommandPaletteProjectsList::reloadProjects()
     // todo first items == create new, open, import midi
     for (const auto *project : this->workspace.getUserProfile().getProjects())
     {
+        // todo subtitle description
+        // todo handle lambda
         this->projects.add(new CommandPaletteAction(project->getTitle()));
     }
 }

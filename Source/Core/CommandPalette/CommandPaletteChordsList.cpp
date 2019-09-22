@@ -17,3 +17,9 @@
 
 #include "Common.h"
 #include "CommandPaletteChordsList.h"
+
+const CommandPaletteActionsProvider::Actions &CommandPaletteChordsList::getActions() const
+{
+    // todo
+    return this->chords;
+}

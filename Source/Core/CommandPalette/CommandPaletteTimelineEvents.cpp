@@ -27,41 +27,110 @@
 #include "KeySignatureEvent.h"
 
 CommandPaletteTimelineEvents::CommandPaletteTimelineEvents(const ProjectNode &project) :
-    project(project)
+    project(project) {}
+
+const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getActions() const
 {
+    // TODO rebuild flag
+    if (!this->timelineEvents.isEmpty())
+    {
+        return this->timelineEvents;
+    }
+
     double outTimeMs = 0.0;
     double outTempo = 0.0;
 
     const auto *timeline = this->project.getTimeline();
-    const auto *annotationsSequence = timeline->getAnnotations()->getSequence();
 
+    const auto *annotationsSequence = timeline->getAnnotations()->getSequence();
     for (int i = 0; i < annotationsSequence->size(); ++i)
     {
-        if (auto *annotation = dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
+        const auto *annotation = dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i));
+        jassert(annotation != nullptr);
+
+        const auto *roll = this->project.getLastFocusedRoll();
+        jassert(roll != nullptr);
+
+        const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
+        this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
+        const auto action = [this, i](TextEditor &ed)
         {
-            const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
-            this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
-            const auto action = [this, i]()
-            {
-                const auto *timeline = this->project.getTimeline();
-                const auto *annotations = timeline->getAnnotations()->getSequence();
-                if (auto roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
-                {
-                    if (auto *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
-                    {
-                        const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                        this->project.getTransport().seekToPosition(seekPosition);
-                        roll->scrollToSeekPosition();
-                    }
-                }
-            };
+            auto *roll = this->project.getLastFocusedRoll();
+            const auto *timeline = this->project.getTimeline();
+            const auto *annotations = timeline->getAnnotations()->getSequence();
+            const auto *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i));
+            jassert(annotation != nullptr);
 
-            this->timelineEvents.add(new CommandPaletteAction(annotation->getDescription(),
-                Transport::getTimeString(outTimeMs),
-                annotation->getTrackColour(),
-                action));
-        }
+            const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
+            this->project.getTransport().seekToPosition(seekPosition);
+            roll->scrollToSeekPosition();
+            return true;
+        };
 
-        //
+        this->timelineEvents.add(new CommandPaletteAction(annotation->getDescription(),
+            Transport::getTimeString(outTimeMs), annotation->getTrackColour(),
+            action, float(outTimeMs)));
     }
+
+    const auto *ksSequence = timeline->getKeySignatures()->getSequence();
+    for (int i = 0; i < ksSequence->size(); ++i)
+    {
+        const auto *event = dynamic_cast<KeySignatureEvent *>(ksSequence->getUnchecked(i));
+        jassert(event != nullptr);
+
+        const auto *roll = this->project.getLastFocusedRoll();
+        jassert(roll != nullptr);
+
+        const double seekPos = roll->getTransportPositionByBeat(event->getBeat());
+        this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
+        const auto action = [this, i](TextEditor &ed)
+        {
+            auto *roll = this->project.getLastFocusedRoll();
+            const auto *timeline = this->project.getTimeline();
+            const auto *ksSequence = timeline->getKeySignatures()->getSequence();
+            const auto *event = dynamic_cast<KeySignatureEvent *>(ksSequence->getUnchecked(i));
+            jassert(event != nullptr);
+
+            const double seekPosition = roll->getTransportPositionByBeat(event->getBeat());
+            this->project.getTransport().seekToPosition(seekPosition);
+            roll->scrollToSeekPosition();
+            return true;
+        };
+
+        this->timelineEvents.add(new CommandPaletteAction(event->toString(),
+            Transport::getTimeString(outTimeMs), event->getTrackColour(),
+            action, float(outTimeMs)));
+    }
+
+    const auto *tsSequence = timeline->getTimeSignatures()->getSequence();
+    for (int i = 0; i < tsSequence->size(); ++i)
+    {
+        const auto *event = dynamic_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(i));
+        jassert(event != nullptr);
+
+        const auto *roll = this->project.getLastFocusedRoll();
+        jassert(roll != nullptr);
+
+        const double seekPos = roll->getTransportPositionByBeat(event->getBeat());
+        this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
+        const auto action = [this, i](TextEditor &ed)
+        {
+            auto *roll = this->project.getLastFocusedRoll();
+            const auto *timeline = this->project.getTimeline();
+            const auto *tsSequence = timeline->getTimeSignatures()->getSequence();
+            const auto *event = dynamic_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(i));
+            jassert(event != nullptr);
+
+            const double seekPosition = roll->getTransportPositionByBeat(event->getBeat());
+            this->project.getTransport().seekToPosition(seekPosition);
+            roll->scrollToSeekPosition();
+            return true;
+        };
+
+        this->timelineEvents.add(new CommandPaletteAction(event->toString(),
+            Transport::getTimeString(outTimeMs), event->getTrackColour(),
+            action, float(outTimeMs)));
+    }
+
+    return this->timelineEvents;
 }

@@ -34,6 +34,6 @@ protected:
 
     const Actions &getActions() const override;
 
-    Actions chords;
+    mutable Actions chords;
 
 };

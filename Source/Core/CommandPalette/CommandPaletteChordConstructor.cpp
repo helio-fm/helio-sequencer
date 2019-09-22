@@ -17,3 +17,9 @@
 
 #include "Common.h"
 #include "CommandPaletteChordConstructor.h"
+
+const CommandPaletteActionsProvider::Actions &CommandPaletteChordConstructor::getActions() const
+{
+    // todo
+    return this->actions;
+}

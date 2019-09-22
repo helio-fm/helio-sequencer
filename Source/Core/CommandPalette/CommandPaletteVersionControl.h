@@ -17,15 +17,15 @@
 
 #pragma once
 
-#include "VersionControl.h"
+#include "ProjectNode.h"
 #include "CommandPaletteActionsProvider.h"
 
 class CommandPaletteVersionControl final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteVersionControl(VersionControl &vcs) :
-        vcs(vcs) {}
+    CommandPaletteVersionControl(ProjectNode &project) :
+        project(project) {}
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
@@ -36,10 +36,10 @@ protected:
 
     const Actions &getActions() const override;
 
-    Actions projects;
+    Actions actions;
 
 private:
 
-    VersionControl &vcs;
+    ProjectNode &project;
 
 };
