@@ -994,6 +994,8 @@ void ProjectNode::onResetState()
 
 Array<CommandPaletteActionsProvider *> ProjectNode::getCommandPaletteActionProviders() const
 {
+    // only add timeline if roll is showing?
+    // this->getLastFocusedRoll()->isShowing()
     return { this->consoleVcsEvents.get(), this->consoleTimelineEvents.get() };
 }
 

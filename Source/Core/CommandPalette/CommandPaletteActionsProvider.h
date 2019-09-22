@@ -21,7 +21,7 @@ class CommandPaletteAction final : public ReferenceCountedObject
 {
 public:
 
-    using Callback = Function<void()>;
+    using Callback = Function<bool(TextEditor &ed)>;
     using Ptr = ReferenceCountedObjectPtr<CommandPaletteAction>;
 
     CommandPaletteAction() = default;
@@ -33,6 +33,7 @@ public:
     const String &getName() const noexcept;
     const String &getHint() const noexcept;
     const Colour &getColor() const noexcept;
+    const Callback getCallback() const noexcept;
 
     void setMatch(int score, const uint8 *matches);
     int getMatchScore() const noexcept;

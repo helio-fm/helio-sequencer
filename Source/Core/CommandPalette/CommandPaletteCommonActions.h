@@ -23,36 +23,22 @@ class CommandPaletteCommonActions final : public CommandPaletteActionsProvider
 {
 public:
 
+    CommandPaletteCommonActions();
+
+    void setActiveCommandReceivers(const Array<Component *> &receivers);
+
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '?';
+        return (this->helpAndCommands.size() == this->help.size()) ? prefix == '?' : false;
     }
 
 protected:
 
-    const Actions &getActions() const override
-    {
-        if (this->help.isEmpty())
-        {
-            for (const auto &tmp : this->temp)
-            {
-                this->help.add(new CommandPaletteAction(tmp));
-            }
-        }
+    const Actions &getActions() const override;
 
-        return this->help;
-    }
+    Actions help;
+    Actions helpAndCommands;
 
-    mutable Actions help;
-    
-    StringArray temp =
-    {
-        "/ projects list",
-        // if opened in a project sub-node:
-        "! version control",
-        "@ timeline events",
-        // if also opened in a piano roll:
-        "# chords list",
-        "$ chord inline constructor"
-    };
+    FlatHashMap<String, Actions, StringHash> commandsCache;
+
 };

@@ -42,6 +42,7 @@
 #include "Workspace.h"
 #include "Config.h"
 #include "ColourSchemesManager.h"
+#include "CommandPaletteCommonActions.h"
 
 MainLayout::MainLayout() :
     currentContent(nullptr)
@@ -56,10 +57,10 @@ MainLayout::MainLayout() :
     this->setWantsKeyboardFocus(true);
     this->setFocusContainer(true);
 
-    this->tooltipContainer.reset(new TooltipContainer());
+    this->tooltipContainer = makeUnique<TooltipContainer>();
     this->addChildComponent(this->tooltipContainer.get());
 
-    this->headline.reset(new Headline());
+    this->headline = makeUnique<Headline>();
 
     if (App::isUsingNativeTitleBar())
     {
@@ -73,6 +74,8 @@ MainLayout::MainLayout() :
     // TODO make it able for user to select a scheme in settings page
     this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
 
+    this->consoleCommonActions = makeUnique<CommandPaletteCommonActions>();
+
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
         this->show();
@@ -80,7 +83,7 @@ MainLayout::MainLayout() :
     else
     {
 #if HELIO_DESKTOP
-        this->initScreen.reset(new InitScreen());
+        this->initScreen = makeUnique<InitScreen>();
         this->addAndMakeVisible(this->initScreen.get());
 #endif
     }
@@ -89,6 +92,7 @@ MainLayout::MainLayout() :
 MainLayout::~MainLayout()
 {
     this->removeAllChildren();
+    this->consoleCommonActions = nullptr;
     this->hotkeyScheme = nullptr;
     this->headline = nullptr;
 }
@@ -114,6 +118,29 @@ void MainLayout::restoreLastOpenedPage()
 //===----------------------------------------------------------------------===//
 // Pages
 //===----------------------------------------------------------------------===//
+
+static void findVisibleCommandReceivers(Component *root, Array<Component *> &outArray)
+{
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    if (root->isEnabled() && root->isShowing() &&
+        root->getComponentID().isNotEmpty())
+    {
+        outArray.add(root);
+    }
+
+    // avoid iterating children of complex components like piano roll
+    if (root->getNumChildComponents() < 16)
+    {
+        for (const auto child : root->getChildren())
+        {
+            findVisibleCommandReceivers(child, outArray);
+        }
+    }
+}
 
 bool MainLayout::isShowingPage(Component *page) const noexcept
 {
@@ -147,6 +174,11 @@ void MainLayout::showPage(Component *page, TreeNode *source)
 
     this->currentContent->setExplicitFocusOrder(1);
     this->currentContent->toFront(false);
+
+    // fill up console commands for visible command targets
+    this->visibleCommandReceiversCache.clearQuick();
+    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceiversCache);
+    this->consoleCommonActions->setActiveCommandReceivers(this->visibleCommandReceiversCache);
 }
 
 void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)
@@ -404,5 +436,21 @@ static void broadcastMessage(Component *root, int commandId)
 void MainLayout::broadcastCommandMessage(int commandId)
 {
     this->postCommandMessage(commandId);
-    broadcastMessage(this->currentContent.getComponent(), commandId);
+
+    this->visibleCommandReceiversCache.clearQuick();
+    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceiversCache);
+
+    for (auto *receiver : this->visibleCommandReceiversCache)
+    {
+        receiver->postCommandMessage(commandId);
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Command Palette
+//===----------------------------------------------------------------------===//
+
+Array<CommandPaletteActionsProvider *> MainLayout::getCommandPaletteActionProviders() const
+{
+    return { this->consoleCommonActions.get() };
 }

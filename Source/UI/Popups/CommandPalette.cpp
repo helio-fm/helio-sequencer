@@ -141,12 +141,12 @@ void CommandPalette::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    shadowDn->setBounds(12 + 0, 0 + 160, (getWidth() - 24) - 0, 8);
-    bg->setBounds(12, 0, getWidth() - 24, 160);
-    shadowL->setBounds(0, 0, 12, 114 - -44);
-    shadowR->setBounds(getWidth() - 12, 0, 12, 114 - -44);
+    shadowDn->setBounds(12 + 0, 0 + 224, (getWidth() - 24) - 0, 8);
+    bg->setBounds(12, 0, getWidth() - 24, 224);
+    shadowL->setBounds(0, 0, 12, 174 - -44);
+    shadowR->setBounds(getWidth() - 12, 0, 12, 174 - -44);
     textEditor->setBounds(18, 6, getWidth() - 36, 32);
-    actionsList->setBounds(18 + 0, 6 + 32 - -4, (getWidth() - 36) - 0, 114);
+    actionsList->setBounds(18 + 0, 6 + 32 - -4, (getWidth() - 36) - 0, 174);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -200,6 +200,16 @@ bool CommandPalette::keyPressed (const KeyPress& key)
         this->moveRowSelectionBy(-1);
         return true;
     }
+    else if (key.isKeyCode(KeyPress::pageDownKey))
+    {
+        this->moveRowSelectionBy(10); // fixme - not a hardcoded page size pls!
+        return true;
+    }
+    else if (key.isKeyCode(KeyPress::pageUpKey))
+    {
+        this->moveRowSelectionBy(-10); // fixme - not a hardcoded page size pls!
+        return true;
+    }
 
     return false;
     //[/UserCode_keyPressed]
@@ -247,14 +257,25 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
     g.setFont(21);
     const float margin = float(h / 12.f);
 
-    g.setColour(findDefaultColour(ListBox::textColourId).withMultipliedAlpha(0.85f));
+    const auto colour = findDefaultColour(ListBox::textColourId)
+        .interpolatedWith(action->getColor(), 0.25f);
+
+    // main text
+    g.setColour(colour);
 
     auto glyphs = action->getGlyphArrangement();
     glyphs.justifyGlyphs(0, glyphs.getNumGlyphs(),
-        (margin * 2), margin, float(w), float(h - (margin * 2)),
+        (margin * 2), 0.f, float(w), float(h),
         Justification::centredLeft);
 
     glyphs.draw(g);
+
+    // hint text
+    g.setColour(colour.withMultipliedAlpha(0.75f));
+
+    g.drawFittedText(action->getHint(),
+        0, 0, w - int(margin * 2), h,
+        Justification::centredRight, 1);
 }
 
 void CommandPalette::selectedRowsChanged(int lastRowSelected)
@@ -288,7 +309,7 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
     {
         bool foundValidPrefix = false;
         const auto firstChar = ed.getText()[0];
-        for (auto *provider : this->actionsProviders)
+        for (auto provider : this->actionsProviders)
         {
             if (provider->usesPrefix(firstChar))
             {
@@ -326,15 +347,35 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
     App::Config().setProperty(Serialization::Config::lastSearch, ed.getText());
 }
 
-void CommandPalette::textEditorReturnKeyPressed(TextEditor &)
+void CommandPalette::textEditorReturnKeyPressed(TextEditor &ed)
 {
-    // todo apply selected action
-
     // since the command was applied, clear the remembered search
     // ?
-    App::Config().setProperty(Serialization::Config::lastSearch, "");
 
-    this->dismiss();
+    const auto rowNumber = this->actionsList->getSelectedRow(0);
+    if (rowNumber < 0 || rowNumber >= this->currentActionsProvider->getFilteredActions().size())
+    {
+        return;
+    }
+
+    const auto action = this->currentActionsProvider->getFilteredActions().getUnchecked(rowNumber);
+    const auto callback = action->getCallback();
+    if (callback != nullptr)
+    {
+        const BailOutChecker checker(this);
+        const bool shouldDismiss = callback(ed);
+
+        if (checker.shouldBailOut())
+        {
+            return;
+        }
+
+        if (shouldDismiss)
+        {
+            App::Config().setProperty(Serialization::Config::lastSearch, "");
+            this->dismiss();
+        }
+    }
 }
 
 void CommandPalette::textEditorEscapeKeyPressed(TextEditor &)
@@ -395,7 +436,9 @@ bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
     if (key.isKeyCode(kTildaKey) ||
         key.isKeyCode(KeyPress::escapeKey) ||
         key.isKeyCode(KeyPress::downKey) ||
-        key.isKeyCode(KeyPress::upKey))
+        key.isKeyCode(KeyPress::upKey) ||
+        key.isKeyCode(KeyPress::pageDownKey) ||
+        key.isKeyCode(KeyPress::pageUpKey))
     {
         return false;
     }
@@ -410,9 +453,9 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="CommandPalette" template="../../Template"
                  componentName="" parentClasses="public Component, public TextEditor::Listener, public ListBoxModel"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="620"
-                 initialHeight="400">
+                 constructorParams="ProjectNode *project, HybridRoll *roll" variableInitialisers=""
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="620" initialHeight="400">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
     <METHOD name="inputAttemptWhenModal()"/>
@@ -425,7 +468,7 @@ BEGIN_JUCER_METADATA
              posRelativeY="80e2df40dfc6307e" posRelativeW="80e2df40dfc6307e"
              sourceFile="../Themes/ShadowDownwards.cpp" constructorParams="ShadowType::Normal"/>
   <JUCERCOMP name="" id="80e2df40dfc6307e" memberName="bg" virtualName=""
-             explicitFocusOrder="0" pos="12 0 24M 160" sourceFile="../Themes/PanelBackgroundC.cpp"
+             explicitFocusOrder="0" pos="12 0 24M 224" sourceFile="../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="72514a37e5bc1299" memberName="shadowL" virtualName=""
              explicitFocusOrder="0" pos="0 0 12 -44M" posRelativeH="2362db9f8826e90f"
@@ -437,7 +480,7 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="18 6 36M 32" class="CommandPaletteTextEditor"
                     params=""/>
   <GENERICCOMPONENT name="" id="2362db9f8826e90f" memberName="actionsList" virtualName=""
-                    explicitFocusOrder="0" pos="0 -4R 0M 114" posRelativeX="3abf9d1982e1c63b"
+                    explicitFocusOrder="0" pos="0 -4R 0M 174" posRelativeX="3abf9d1982e1c63b"
                     posRelativeY="3abf9d1982e1c63b" posRelativeW="3abf9d1982e1c63b"
                     class="ListBox" params=""/>
 </JUCER_COMPONENT>

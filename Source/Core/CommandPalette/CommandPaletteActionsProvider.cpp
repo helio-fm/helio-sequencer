@@ -114,6 +114,11 @@ const Colour &CommandPaletteAction::getColor() const noexcept
     return this->colour;
 }
 
+const CommandPaletteAction::Callback CommandPaletteAction::getCallback() const noexcept
+{
+    return this->callback;
+}
+
 // Actions filtering makes use of Sublime-like fuzzy matcher,
 // taken from this public domain library by Forrest Smith,
 // adapted for JUCE String class for the sake of Unicode support:
