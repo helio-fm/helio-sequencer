@@ -43,7 +43,9 @@ SerializedData Translation::serialize() const
 
 void Translation::deserialize(const SerializedData &data)
 {
-    this->reset();
+    // never reset here: translations are to be extended
+    // this->reset();
+
     using namespace Serialization;
 
     const auto root = data.hasType(Translations::locale) ?
