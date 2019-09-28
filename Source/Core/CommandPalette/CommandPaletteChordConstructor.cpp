@@ -1060,8 +1060,9 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
     // next are all suggestions
 
     this->actions.clearQuick();
-    this->actions.add(new CommandPaletteAction(chordAsString, "insert",
-        Colours::grey, [chordAsString](TextEditor &ed) { ed.setText("$" + chordAsString); return false; }, -10.f));
+    this->actions.add(CommandPaletteAction::action(chordAsString, "insert", -10.f)->
+        withCallback([chordAsString](TextEditor &ed) { ed.setText("$" + chordAsString); return false; })->
+        unfiltered());
 
     CommandPaletteActionsProvider::updateFilter(pattern, skipPrefix);
 }

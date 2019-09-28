@@ -24,15 +24,16 @@ public:
     using Callback = Function<bool(TextEditor &ed)>;
     using Ptr = ReferenceCountedObjectPtr<CommandPaletteAction>;
 
-    CommandPaletteAction() = default;
-    CommandPaletteAction(String text, Callback callback);
-    CommandPaletteAction(String text, String hint,
-        Colour colour, Callback callback, float order);
+    static CommandPaletteAction::Ptr action(String text, String hint, float order);
+    CommandPaletteAction::Ptr withCallback(Callback callback);
+    CommandPaletteAction::Ptr withColour(const Colour &colour);
+    CommandPaletteAction::Ptr unfiltered();
 
     const String &getName() const noexcept;
     const String &getHint() const noexcept;
     const Colour &getColor() const noexcept;
     const Callback getCallback() const noexcept;
+    const bool isUnfiltered() const noexcept;
 
     void setMatch(int score, const uint8 *matches);
     int getMatchScore() const noexcept;
@@ -41,6 +42,9 @@ public:
 
 private:
 
+    CommandPaletteAction() = delete;
+    CommandPaletteAction(String text, String hint, float order);
+
     String name;
     String hint;
     Colour colour = Colours::grey;
@@ -48,6 +52,7 @@ private:
 
     int commandId = 0;
     bool shouldClosePalette = true;
+    bool required = false;
 
     GlyphArrangement highlightedMatch;
     int matchScore = 0;

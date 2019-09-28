@@ -32,15 +32,36 @@ struct CommandPaletteActionSortByMatch final
     }
 };
 
-CommandPaletteAction::CommandPaletteAction(String text, Callback callback) :
-    name(std::move(text)),
-    callback(callback) {}
+CommandPaletteAction::Ptr CommandPaletteAction::action(String text, String hint, float order)
+{
+    return CommandPaletteAction::Ptr(new CommandPaletteAction(std::move(text), std::move(hint), order));
+}
 
-CommandPaletteAction::CommandPaletteAction(String text, String hint, Colour colour, Callback callback, float order) :
+CommandPaletteAction::Ptr CommandPaletteAction::withCallback(Callback callback)
+{
+    CommandPaletteAction::Ptr action(this);
+    action->callback = callback;
+    return action;
+}
+
+CommandPaletteAction::Ptr CommandPaletteAction::withColour(const Colour &colour)
+{
+    CommandPaletteAction::Ptr action(this);
+    action->colour = colour;
+    return action;
+}
+
+CommandPaletteAction::Ptr CommandPaletteAction::unfiltered()
+{
+    CommandPaletteAction::Ptr action(this);
+    action->required = true;
+    action->setMatch(0, nullptr);
+    return action;
+}
+
+CommandPaletteAction::CommandPaletteAction(String text, String hint, float order) :
     name(std::move(text)),
     hint(std::move(hint)),
-    colour(std::move(colour)),
-    callback(callback),
     order(order) {}
 
 void CommandPaletteAction::setMatch(int score, const uint8 *matches)
@@ -119,6 +140,11 @@ const CommandPaletteAction::Callback CommandPaletteAction::getCallback() const n
     return this->callback;
 }
 
+const bool CommandPaletteAction::isUnfiltered() const noexcept
+{
+    return this->required;
+}
+
 // Actions filtering makes use of Sublime-like fuzzy matcher,
 // taken from this public domain library by Forrest Smith,
 // adapted for JUCE String class for the sake of Unicode support:
@@ -151,13 +177,20 @@ void CommandPaletteActionsProvider::updateFilter(const String &pattern, bool ski
 
     for (const auto &action : this->getActions())
     {
-        int outScore = 0;
-        uint8 matches[FUZZY_MAX_MATCHES] = {};
-        const auto match = fuzzyMatch(patternPtr, action->getName().getCharPointer(), outScore, matches);
-        if (match)
+        if (action->isUnfiltered())
         {
-            action->setMatch(outScore, matches);
             this->filteredActions.add(action);
+        }
+        else
+        {
+            int outScore = 0;
+            uint8 matches[FUZZY_MAX_MATCHES] = {};
+            const auto match = fuzzyMatch(patternPtr, action->getName().getCharPointer(), outScore, matches);
+            if (match)
+            {
+                action->setMatch(outScore, matches);
+                this->filteredActions.add(action);
+            }
         }
     }
 

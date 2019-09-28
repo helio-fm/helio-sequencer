@@ -25,20 +25,20 @@
 
 CommandPaletteCommonActions::CommandPaletteCommonActions()
 {
-    this->help.add(new CommandPaletteAction(TRANS(I18n::CommandPalette::projects), "/",
-        Colours::grey, [](TextEditor &ed) { ed.setText("/"); return false; }, -10.f));
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::projects), "/", -10.f)->
+        withCallback([](TextEditor &ed) { ed.setText("/"); return false; }));
 
-    this->help.add(new CommandPaletteAction(TRANS(I18n::CommandPalette::vcs), "!",
-        Colours::grey, [](TextEditor &ed) { ed.setText("!"); return false; }, -9.f));
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::vcs), "!", -9.f)->
+        withCallback([](TextEditor &ed) { ed.setText("!"); return false; }));
 
-    this->help.add(new CommandPaletteAction(TRANS(I18n::CommandPalette::timeline), "@",
-        Colours::grey, [](TextEditor &ed) { ed.setText("@"); return false; }, -8.f));
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::timeline), "@", -8.f)->
+        withCallback([](TextEditor &ed) { ed.setText("@"); return false; }));
 
-    this->help.add(new CommandPaletteAction(TRANS(I18n::CommandPalette::chordsList), "#",
-        Colours::grey, [](TextEditor &ed) { ed.setText("#"); return false; }, -7.f));
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::chordsList), "#", -7.f)->
+        withCallback([](TextEditor &ed) { ed.setText("#"); return false; }));
 
-    this->help.add(new CommandPaletteAction(TRANS(I18n::CommandPalette::chordBuilder), "$",
-        Colours::grey, [](TextEditor &ed) { ed.setText("$"); return false; }, -6.f));
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::chordBuilder), "$", -6.f)->
+        withCallback([](TextEditor &ed) { ed.setText("$"); return false; }));
 }
 
 const CommandPaletteActionsProvider::Actions &CommandPaletteCommonActions::getActions() const
@@ -69,8 +69,8 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
             if (!duplicateLookup.contains(i18nKey))
             {
                 duplicateLookup.insert(i18nKey);
-                actions.add(new CommandPaletteAction(TRANS(i18nKey),
-                    keyPress.keyPress.getTextDescription(), Colours::grey, action, 0.f));
+                actions.add(CommandPaletteAction::action(TRANS(i18nKey),
+                    keyPress.keyPress.getTextDescription(), 0.f)->withCallback(action));
             }
         }
     }

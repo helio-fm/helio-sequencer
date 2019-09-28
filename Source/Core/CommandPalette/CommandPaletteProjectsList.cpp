@@ -79,9 +79,9 @@ void CommandPaletteProjectsList::reloadProjects()
 
         const auto defaultColor = findDefaultColour(Label::textColourId);
         const auto sinceLastOpened = Time::getCurrentTime() - projectInfo->getUpdatedAt();
-        this->projects.add(new CommandPaletteAction(projectInfo->getTitle(),
-            App::getHumanReadableDate(projectInfo->getUpdatedAt()),
-            isLoaded ? defaultColor : defaultColor.contrasting(),
-            action, float(sinceLastOpened.inSeconds())));
+        this->projects.add(CommandPaletteAction::action(projectInfo->getTitle(),
+            App::getHumanReadableDate(projectInfo->getUpdatedAt()), float(sinceLastOpened.inSeconds()))->
+            withColour(isLoaded ? defaultColor : defaultColor.contrasting())->
+            withCallback(action));
     }
 }

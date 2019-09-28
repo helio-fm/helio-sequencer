@@ -67,9 +67,10 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             return true;
         };
 
-        this->timelineEvents.add(new CommandPaletteAction(annotation->getDescription(),
-            Transport::getTimeString(outTimeMs), annotation->getTrackColour(),
-            action, float(outTimeMs)));
+        this->timelineEvents.add(CommandPaletteAction::action(annotation->getDescription(),
+            Transport::getTimeString(outTimeMs), float(outTimeMs))->
+            withColour(annotation->getTrackColour())->
+            withCallback(action));
     }
 
     const auto *ksSequence = timeline->getKeySignatures()->getSequence();
@@ -97,9 +98,10 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             return true;
         };
 
-        this->timelineEvents.add(new CommandPaletteAction(event->toString(),
-            Transport::getTimeString(outTimeMs), event->getTrackColour(),
-            action, float(outTimeMs)));
+        this->timelineEvents.add(CommandPaletteAction::action(event->toString(),
+            Transport::getTimeString(outTimeMs), float(outTimeMs))->
+            withColour(event->getTrackColour())->
+            withCallback(action));
     }
 
     const auto *tsSequence = timeline->getTimeSignatures()->getSequence();
@@ -127,9 +129,10 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             return true;
         };
 
-        this->timelineEvents.add(new CommandPaletteAction(event->toString(),
-            Transport::getTimeString(outTimeMs), event->getTrackColour(),
-            action, float(outTimeMs)));
+        this->timelineEvents.add(CommandPaletteAction::action(event->toString(),
+            Transport::getTimeString(outTimeMs), float(outTimeMs))->
+            withColour(event->getTrackColour())->
+            withCallback(action));
     }
 
     return this->timelineEvents;
