@@ -23,7 +23,11 @@
 #include "SuccessTooltip.h"
 
 // Try to update resources and versions info after:
-#define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
+#if DEBUG
+#   define UPDATE_INFO_TIMEOUT_MS (1000 * 100)
+#else
+#   define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
+#endif
 
 ResourceSyncService::ResourceSyncService() :
     synchronizer(this->prepareSyncThread())
