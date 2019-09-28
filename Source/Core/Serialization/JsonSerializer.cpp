@@ -63,7 +63,9 @@ struct JsonParser final
             auto c = t.getAndAdvance();
 
             if (c == quoteChar)
+            {
                 break;
+            }
 
             if (c == '\\')
             {
