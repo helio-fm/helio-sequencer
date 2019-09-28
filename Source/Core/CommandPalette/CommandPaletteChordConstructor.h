@@ -19,25 +19,29 @@
 
 #include "CommandPaletteActionsProvider.h"
 
+class ChordCompiler;
+
 class CommandPaletteChordConstructor final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteChordConstructor() {}
+    CommandPaletteChordConstructor();
+    ~CommandPaletteChordConstructor() override;
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
         return prefix == '$';
     }
 
-    // todo dynamic list of suggestions?
-    //void updateFilter(const String &pattern, bool skipPrefix) override;
-    //void clearFilter() override;
+    void updateFilter(const String &pattern, bool skipPrefix) override;
+    void clearFilter() override;
 
 protected:
 
     // todo dynamic list of suggestions
     const Actions &getActions() const override;
-    
     mutable Actions actions;
+
+    const UniquePointer<ChordCompiler> chordCompiler;
+
 };

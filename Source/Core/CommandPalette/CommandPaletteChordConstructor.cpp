@@ -372,7 +372,6 @@ struct Expression
 {
     enum class Type : int8
     {
-        Invalid,
         RootKey,
         ChordQuality,
         Addition,
@@ -382,54 +381,228 @@ struct Expression
         BassNote
     };
 
-    Expression() = default;
+    Expression() = delete;
     explicit Expression(Type type) : type(type) {}
     virtual ~Expression() {}
 
-    const Type type = Type::Invalid;
+    virtual void fillDescription(String &out) const = 0;
+    virtual bool isValid() const = 0;
 
-    bool isValid() const noexcept
+    static juce_wchar keyToLetter(int8 key)
     {
-        return this->type != Type::Invalid;
+        switch (key)
+        {
+        case 0: return 'C';
+        case 1: return 'D';
+        case 2: return 'E';
+        case 3: return 'F';
+        case 4: return 'G';
+        case 5: return 'A';
+        case 6: return 'B';
+        default: return 0;
+        }
     }
+
+    const Type type;
 };
 
 struct RootKeyExpression final : Expression
 {
-    explicit RootKeyExpression(NoteToken note) : Expression(Expression::Type::RootKey) {}
-    RootKeyExpression(NoteToken note, SignToken sign) : Expression(Expression::Type::RootKey) {}
+    explicit RootKeyExpression(const NoteToken *note) :
+        Expression(Expression::Type::RootKey), key(note->noteNumber), sharp(false), flat(false) {}
 
-    int absouleChromaticKey = 0;
+    RootKeyExpression(const NoteToken *note, const SignToken *sign) :
+        Expression(Expression::Type::RootKey), key(note->noteNumber), sharp(sign->isSharp), flat(!sign->isSharp) {}
+
+    bool isValid() const override
+    {
+        return (this->key >= 0 && this->key <= 6) && !(this->sharp && this->flat);
+    }
+
+    void fillDescription(String &out) const override
+    {
+        out << keyToLetter(this->key);
+
+        if (this->sharp)
+        {
+            out << "#";
+        }
+        else if (this->flat)
+        {
+            out << "b";
+        }
+    }
+
+    const int8 key;
+    const bool sharp;
+    const bool flat;
 };
 
 struct ChordQualityExpression final : Expression
 {
-    ChordQualityExpression(KeywordToken keyword, NumberToken number) : Expression(Expression::Type::ChordQuality) {}
-};
+    ChordQualityExpression() : Expression(Expression::Type::ChordQuality),
+        interval(3), third(Third::Major), fifth(Fifth::Perfect) {}
 
-struct AdditionExpression final : Expression
-{
-    AdditionExpression(NumberToken number) : Expression(Expression::Type::Addition) {}
-};
+    explicit ChordQualityExpression(const NumberToken *number) : Expression(Expression::Type::ChordQuality),
+        interval(number->number), third(Third::Major), fifth(Fifth::Perfect) {}
 
-struct InversionExpression final : Expression
-{
-    InversionExpression(NumberToken number) : Expression(Expression::Type::Inversion) {}
-};
+    explicit ChordQualityExpression(const KeywordToken *keyword) :
+        Expression(Expression::Type::ChordQuality), interval(3)
+    {
+        this->initFromKeyword(keyword);
+    }
 
-struct SuspensionExpression final : Expression
-{
-    SuspensionExpression(NumberToken number) : Expression(Expression::Type::Suspension) {}
-};
+    ChordQualityExpression(const KeywordToken *keyword, const NumberToken *number) :
+        Expression(Expression::Type::ChordQuality), interval(number->number)
+    {
+        this->initFromKeyword(keyword);
+    }
 
-struct KeyAlterationExpression final : Expression
-{
-    KeyAlterationExpression(NumberToken number, SignToken sign) : Expression(Expression::Type::KeyAlteration) {}
+    void initFromKeyword(const KeywordToken *keyword)
+    {
+        this->third = keyword->keyword == KeywordToken::Type::Minor ? Third::Minor :
+            (keyword->keyword == KeywordToken::Type::Major ? Third::Major : Third::Default);
+        this->fifth = keyword->keyword == KeywordToken::Type::Augmented ? Fifth::Augmented :
+            (keyword->keyword == KeywordToken::Type::Diminished ? Fifth::Diminished : Fifth::Perfect);
+    }
+
+    enum class Third : int8
+    {
+        Default,
+        Major,
+        Minor
+    };
+
+    enum class Fifth : int8
+    {
+        Perfect,
+        Augmented,
+        Diminished
+    };
+
+    bool isValid() const override
+    {
+        // what's the upper limit for the interval?
+        return (this->interval >= 0 && this->interval <= 32);
+    }
+
+    void fillDescription(String &out) const override
+    {
+        switch (this->third)
+        {
+        case Third::Major: out << "M"; break;
+        case Third::Minor: out << "m"; break;
+        default: break;
+        }
+
+        if (this->interval != 3)
+        {
+            out << int(this->interval);
+        }
+
+        switch (this->fifth)
+        {
+        case Fifth::Augmented: out << " aug"; break;
+        case Fifth::Diminished: out << " dim"; break;
+        default: break;
+        }
+    }
+
+    int8 interval;
+    Third third;
+    Fifth fifth;
 };
 
 struct BassNoteExpression final : Expression
 {
-    BassNoteExpression(NoteToken bassNote) : Expression(Expression::Type::BassNote) {}
+    explicit BassNoteExpression(const NoteToken *bassNote) :
+        Expression(Expression::Type::BassNote), key(bassNote->noteNumber) {}
+
+    bool isValid() const override
+    {
+        return (this->key >= 0 && this->key <= 6);
+    }
+
+    void fillDescription(String &out) const override
+    {
+        out << "/" << keyToLetter(this->key);
+    }
+
+    const int8 key;
+};
+
+struct AdditionExpression final : Expression
+{
+    explicit AdditionExpression(const NumberToken *number) :
+        Expression(Expression::Type::Addition), addedKey(number->number) {}
+
+    bool isValid() const override
+    {
+        // what's the upper limit for the added key?
+        return (this->addedKey > 0 && this->addedKey <= 32);
+    }
+
+    void fillDescription(String &out) const override
+    {
+        out << " add" << (int)this->addedKey;
+    }
+
+    const int8 addedKey;
+};
+
+struct InversionExpression final : Expression
+{
+    explicit InversionExpression(const NumberToken *number) :
+        Expression(Expression::Type::Inversion), inversion(number->number) {}
+
+    bool isValid() const override
+    {
+        return (this->inversion != 0 && this->inversion >= -7 && this->inversion <= 7);
+    }
+
+    void fillDescription(String &out) const override
+    {
+        out << " inv" << (int)this->inversion;
+    }
+
+    const int8 inversion;
+};
+
+struct SuspensionExpression final : Expression
+{
+    explicit SuspensionExpression(const NumberToken *number) :
+        Expression(Expression::Type::Suspension), suspension(number->number) {}
+
+    bool isValid() const override
+    {
+        return (this->suspension > 0 && this->suspension <= 32);
+    }
+
+    void fillDescription(String &out) const override
+    {
+        out << " sus" << (int)this->suspension;
+    }
+
+    const int8 suspension;
+};
+
+struct KeyAlterationExpression final : Expression
+{
+    KeyAlterationExpression(const SignToken *sign, const NumberToken *number) :
+        Expression(Expression::Type::KeyAlteration), key(number->number), sharp(sign->isSharp) {}
+
+    bool isValid() const override
+    {
+        return (this->key >= 0 && this->key <= 32);
+    }
+
+    void fillDescription(String &out) const override
+    {
+        out << " " << (this->sharp ? "#" : "b") << (int)this->key;
+    }
+
+    const int8 key;
+    const bool sharp; // if false, means flat
 };
 
 class Parser final
@@ -443,16 +616,9 @@ public:
         OwnedArray<Expression> expressions;
 
         int idx = 0;
-        for (;;)
+        while (idx < this->tokens.size())
         {
-            if (idx >= this->tokens.size())
-            {
-                break;
-            }
-
-            auto expr = this->parseExpression(idx);
-
-            if (expr != nullptr && expr->isValid())
+            if (auto expr = this->parseExpression(idx))
             {
                 expressions.add(expr.release());
             }
@@ -463,14 +629,45 @@ public:
 
 private:
 
-    UniquePointer<Expression> parseExpression(int &idx) const
+    UniquePointer<Expression> parseExpression(int &t) const
     {
-        // todo
+        const auto *token = this->tokens.getUnchecked(t);
+        const auto *nextToken = this->tokens[t + 1];
 
-        switch (this->tokens.getUnchecked(idx)->type)
+        switch (token->type)
         {
         case Token::Type::Note:
+            return parseRootKey(t);
 
+        case Token::Type::Number:
+            return parseChordQuality(t);
+
+        case Token::Type::Keyword:
+            return parseKeywords(t);
+
+        case Token::Type::Sign:
+            if (nextToken != nullptr && nextToken->type == Token::Type::Number)
+            {
+                t += 2;
+                const auto *signToken = static_cast<const SignToken *>(token);
+                const auto *numberToken = static_cast<const NumberToken *>(nextToken);
+                return makeUnique<KeyAlterationExpression>(signToken, numberToken);
+            }
+            break;
+
+        case Token::Type::Slash:
+            if (nextToken != nullptr && nextToken->type == Token::Type::Note)
+            {
+                t += 2;
+                const auto *noteToken = static_cast<const NoteToken *>(nextToken);
+                return makeUnique<BassNoteExpression>(noteToken);
+            }
+            else if (nextToken != nullptr && nextToken->type == Token::Type::Number)
+            {
+                t += 2;
+                const auto *numberToken = static_cast<const NumberToken *>(nextToken);
+                return makeUnique<AdditionExpression>(numberToken);
+            }
             break;
 
         default:
@@ -478,8 +675,114 @@ private:
             break;
         }
 
+        t++;
         return {};
     };
+
+    UniquePointer<Expression> parseRootKey(int &t) const
+    {
+        const auto *token = static_cast<NoteToken *>(this->tokens.getUnchecked(t));
+        const auto *nextToken = this->tokens[t + 1];
+
+        if (nextToken != nullptr && nextToken->type == Token::Type::Sign)
+        {
+            t += 2;
+            const auto *signToken = static_cast<const SignToken *>(nextToken);
+            return makeUnique<RootKeyExpression>(token, signToken);
+        }
+
+        t++;
+        return makeUnique<RootKeyExpression>(token);
+    }
+
+    UniquePointer<Expression> parseKeywords(int &t) const
+    {
+        const auto *token = static_cast<KeywordToken *>(this->tokens.getUnchecked(t));
+        const auto *nextToken = this->tokens[t + 1];
+
+        switch (token->keyword)
+        {
+        case KeywordToken::Type::Added:
+            if (nextToken != nullptr && nextToken->type == Token::Type::Number)
+            {
+                t += 2;
+                const auto *numberToken = static_cast<const NumberToken *>(nextToken);
+                return makeUnique<AdditionExpression>(numberToken);
+            }
+            break;
+
+        case KeywordToken::Type::Inverted:
+            if (nextToken != nullptr && nextToken->type == Token::Type::Number)
+            {
+                t += 2;
+                const auto *numberToken = static_cast<const NumberToken *>(nextToken);
+                return makeUnique<InversionExpression>(numberToken);
+            }
+            break;
+
+        case KeywordToken::Type::Suspeneded:
+            if (nextToken != nullptr && nextToken->type == Token::Type::Number)
+            {
+                t += 2;
+                const auto *numberToken = static_cast<const NumberToken *>(nextToken);
+                return makeUnique<SuspensionExpression>(numberToken);
+            }
+            break;
+
+        case KeywordToken::Type::Major:
+        case KeywordToken::Type::Minor:
+        case KeywordToken::Type::Augmented:
+        case KeywordToken::Type::Diminished:
+            return parseChordQuality(t);
+
+        default:
+            jassertfalse;
+            break;
+        }
+
+        t++;
+        return {};
+    }
+
+    UniquePointer<Expression> parseChordQuality(int &t) const
+    {
+        const auto *token = this->tokens.getUnchecked(t);
+        const auto *nextToken = this->tokens[t + 1];
+
+        if (token->type == Token::Type::Keyword)
+        {
+            const auto *keywordToken = static_cast<KeywordToken *>(this->tokens.getUnchecked(t));
+            if (nextToken != nullptr && nextToken->type == Token::Type::Number)
+            {
+                t += 2;
+                const auto *numberToken = static_cast<const NumberToken *>(nextToken);
+                return makeUnique<ChordQualityExpression>(keywordToken, numberToken);
+            }
+
+            t++;
+            return makeUnique<ChordQualityExpression>(keywordToken);
+        }
+        else if (token->type == Token::Type::Number)
+        {
+            const auto *numberToken = static_cast<NumberToken *>(this->tokens.getUnchecked(t));
+            if (nextToken != nullptr && nextToken->type == Token::Type::Keyword)
+            {
+                t += 2;
+                const auto *keywordToken = static_cast<const KeywordToken *>(nextToken);
+                return makeUnique<ChordQualityExpression>(keywordToken, numberToken);
+            }
+
+            t++;
+            return makeUnique<ChordQualityExpression>(numberToken);
+        }
+        else
+        {
+            jassertfalse;
+        }
+
+        t++;
+        return {};
+    }
 
     const OwnedArray<Token> tokens;
 };
@@ -492,11 +795,11 @@ struct ChordDescription final
 {
     UniquePointer<RootKeyExpression> rootKey;
     UniquePointer<ChordQualityExpression> chordQuality;
-    UniquePointer<AdditionExpression> addition;
-    UniquePointer<InversionExpression> inversion;
+    UniquePointer<BassNoteExpression> bassNote;
     UniquePointer<SuspensionExpression> suspension;
     UniquePointer<KeyAlterationExpression> keyAlteration;
-    UniquePointer<BassNoteExpression> bassNote;
+    UniquePointer<AdditionExpression> addition;
+    UniquePointer<InversionExpression> inversion;
 
     // todo equals operator
 };
@@ -507,50 +810,269 @@ public:
 
     explicit CleanupPass(OwnedArray<Expression> expressions) : expressions(std::move(expressions)) {}
 
-    ChordDescription getChordDescription() const
+    ChordDescription getChord()
     {
         ChordDescription description;
 
-        // todo while
-        //this->expressions.removeAndReturn()
+        while (!this->expressions.isEmpty())
+        {
+            const auto *e = this->expressions.getFirst();
+            switch (e->type)
+            {
+            case Expression::Type::RootKey:
+                if (description.rootKey == nullptr)
+                {
+                    description.rootKey = this->removeAndReturnFirstAs<RootKeyExpression>();
+                }
+                else
+                {
+                    DBG("Duplicate root key expression");
+                    this->expressions.remove(0);
+                }
+                break;
+
+            case Expression::Type::ChordQuality:
+                if (description.chordQuality == nullptr)
+                {
+                    description.chordQuality = this->removeAndReturnFirstAs<ChordQualityExpression>();
+                }
+                else
+                {
+                    DBG("Duplicate chord quality expression");
+                    auto newExpr = this->removeAndReturnFirstAs<ChordQualityExpression>();
+
+                    // refine the existing rule:
+                    if (description.chordQuality->third == ChordQualityExpression::Third::Default &&
+                        newExpr->third != ChordQualityExpression::Third::Default)
+                    {
+                        description.chordQuality->third = newExpr->third;
+                    }
+
+                    if (description.chordQuality->fifth == ChordQualityExpression::Fifth::Perfect &&
+                        newExpr->fifth != ChordQualityExpression::Fifth::Perfect)
+                    {
+                        description.chordQuality->fifth = newExpr->fifth;
+                    }
+
+                    if (description.chordQuality->interval == 3 && newExpr->interval != 3)
+                    {
+                        description.chordQuality->interval = newExpr->interval;
+                    }
+                }
+                break;
+
+            case Expression::Type::Addition:
+                if (description.addition == nullptr)
+                {
+                    description.addition = this->removeAndReturnFirstAs<AdditionExpression>();
+                }
+                else
+                {
+                    DBG("Duplicate addition expression");
+                    this->expressions.remove(0);
+                }
+                break;
+
+            case Expression::Type::Inversion:
+                if (description.inversion == nullptr)
+                {
+                    description.inversion = this->removeAndReturnFirstAs<InversionExpression>();
+                }
+                else
+                {
+                    DBG("Duplicate inversion expression");
+                    this->expressions.remove(0);
+                }
+                break;
+
+            case Expression::Type::Suspension:
+                if (description.suspension == nullptr)
+                {
+                    description.suspension = this->removeAndReturnFirstAs<SuspensionExpression>();
+                }
+                else
+                {
+                    DBG("Duplicate inversion expression");
+                    this->expressions.remove(0);
+                }
+                break;
+
+            case Expression::Type::KeyAlteration:
+                if (description.keyAlteration == nullptr)
+                {
+                    description.keyAlteration = this->removeAndReturnFirstAs<KeyAlterationExpression>();
+                }
+                else
+                {
+                    DBG("Duplicate key alteration expression");
+                    this->expressions.remove(0);
+                }
+                break;
+
+            case Expression::Type::BassNote:
+                if (description.bassNote == nullptr)
+                {
+                    description.bassNote = this->removeAndReturnFirstAs<BassNoteExpression>();
+                }
+                else
+                {
+                    DBG("Duplicate bass note expression");
+                    this->expressions.remove(0);
+                }
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        // apply defaults
+
+        if (description.rootKey != nullptr && description.chordQuality == nullptr)
+        {
+            description.chordQuality = makeUnique<ChordQualityExpression>();
+        }
+
+        //if (description.chordQuality != nullptr &&
+        //    description.chordQuality->third == ChordQualityExpression::Third::Default)
+        //{
+        //    description.chordQuality->third = ChordQualityExpression::Third::Major;
+        //}
+
+        // if interval == 5, make third = default
 
         return description;
     }
 
 private:
 
-    const OwnedArray<Expression> expressions;
+    template<typename T>
+    UniquePointer<T> removeAndReturnFirstAs()
+    {
+        return UniquePointer<T>(static_cast<T *>(this->expressions.removeAndReturn(0)));
+    }
+
+    OwnedArray<Expression> expressions;
 };
+
+}
 
 //===----------------------------------------------------------------------===//
 // Chord and helpers
 //===----------------------------------------------------------------------===//
 
-class Generator final
+class ChordCompiler final
 {
 public:
 
-    Generator() = default;
+    ChordCompiler() = default;
 
-    void parse(const String &input)
+    void parse(String::CharPointerType input)
     {
-        this->description = CleanupPass(Parser(Lexer(input).getTokens()).getExpressions()).getChordDescription();
+        using namespace ChordParsing;
+        this->chord = CleanupPass(Parser(Lexer(input).getTokens()).getExpressions()).getChord();
+    }
 
+    bool isValid() const noexcept
+    {
+        return this->chord.rootKey != nullptr && this->chord.chordQuality != nullptr &&
+            this->chord.rootKey->isValid() && this->chord.chordQuality->isValid();
+    }
+
+    String getChordAsString() const
+    {
+        String result;
+
+        if (this->chord.rootKey != nullptr && this->chord.rootKey->isValid())
+        {
+            this->chord.rootKey->fillDescription(result);
+        }
+
+        if (this->chord.chordQuality != nullptr && this->chord.chordQuality->isValid())
+        {
+            this->chord.chordQuality->fillDescription(result);
+        }
+
+        if (this->chord.bassNote != nullptr && this->chord.bassNote->isValid())
+        {
+            this->chord.bassNote->fillDescription(result);
+        }
+
+        if (this->chord.suspension != nullptr && this->chord.suspension->isValid())
+        {
+            this->chord.suspension->fillDescription(result);
+        }
+
+        if (this->chord.keyAlteration != nullptr && this->chord.keyAlteration->isValid())
+        {
+            this->chord.keyAlteration->fillDescription(result);
+        }
+
+        if (this->chord.addition != nullptr && this->chord.addition->isValid())
+        {
+            this->chord.addition->fillDescription(result);
+        }
+
+        if (this->chord.inversion != nullptr && this->chord.inversion->isValid())
+        {
+            this->chord.inversion->fillDescription(result);
+        }
+
+        return result;
+    }
+
+    StringArray getSuggestions() const
+    {
+        //
     }
 
 private:
 
-    ChordDescription description;
+    ChordParsing::ChordDescription chord;
     StringArray lastChords;
 
 };
 
+//===----------------------------------------------------------------------===//
+// CommandPaletteChordConstructor
+//===----------------------------------------------------------------------===//
+
+CommandPaletteChordConstructor::CommandPaletteChordConstructor() :
+    chordCompiler(makeUnique<ChordCompiler>()) {}
+
+CommandPaletteChordConstructor::~CommandPaletteChordConstructor() {}
+
+void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool skipPrefix)
+{
+    auto inputPtr = pattern.getCharPointer();
+    if (skipPrefix)
+    {
+        inputPtr.getAndAdvance();
+    }
+
+    this->chordCompiler->parse(inputPtr);
+    const auto chordAsString = this->chordCompiler->getChordAsString();
+    DBG(chordAsString);
+
+    // todo fill suggestions
+
+    // 1st suggestion is the parsed chord
+    // next are all suggestions
+
+    this->actions.clearQuick();
+    this->actions.add(new CommandPaletteAction(chordAsString, "insert",
+        Colours::grey, [chordAsString](TextEditor &ed) { ed.setText("$" + chordAsString); return false; }, -10.f));
+
+    CommandPaletteActionsProvider::updateFilter(pattern, skipPrefix);
 }
 
-
+void CommandPaletteChordConstructor::clearFilter()
+{
+    // todo
+    CommandPaletteActionsProvider::clearFilter();
+}
 
 const CommandPaletteActionsProvider::Actions &CommandPaletteChordConstructor::getActions() const
 {
-    // todo
     return this->actions;
 }
