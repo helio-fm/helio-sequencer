@@ -85,6 +85,11 @@ struct IdentifierHash
 // Various helpers
 //===----------------------------------------------------------------------===//
 
+// The reason for these (and above) aliases to exist is that I hate
+// that stl::influenced<eye_bleeding, unspeakably_ugly> _code_style;
+// if anyone reading this is considering contributing, please please
+// please write in a cleaner, C#-like, pidgin C++, thank you so much.
+
 template <typename T>
 using UniquePointer = std::unique_ptr<T>;
 
