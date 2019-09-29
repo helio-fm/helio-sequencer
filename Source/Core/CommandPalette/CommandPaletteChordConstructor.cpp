@@ -310,43 +310,41 @@ private:
 
             case 'm':
             {
-                if (!CharacterFunctions::isLetter(*t2))
-                {
-                    t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
-                }
-
-                auto t3 = t2;
-                if (t2.getAndAdvance() == 'i' && t2.getAndAdvance() == 'n')
-                {
-                    t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
-                }
-                else if (t3.getAndAdvance() == 'a' && t3.getAndAdvance() == 'j')
+                auto t3 = t2, t4 = t2;
+                if (t3.getAndAdvance() == 'i' && t3.getAndAdvance() == 'n')
                 {
                     t = t3;
+                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
+                }
+                else if (t4.getAndAdvance() == 'a' && t4.getAndAdvance() == 'j')
+                {
+                    t = t4;
                     return makeUnique<KeywordToken>(KeywordToken::Type::Major);
+                }
+                else
+                {
+                    t = t2;
+                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
                 }
                 break;
             }
 
             case 'M':
             {
-                if (!CharacterFunctions::isLetter(*t2))
-                {
-                    t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Major);
-                }
-
-                auto t3 = t2;
-                if (t2.getAndAdvance() == 'i' && t2.getAndAdvance() == 'n')
-                {
-                    t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
-                }
-                else if (t3.getAndAdvance() == 'a' && t3.getAndAdvance() == 'j')
+                auto t3 = t2, t4 = t2;
+                if (t3.getAndAdvance() == 'i' && t3.getAndAdvance() == 'n')
                 {
                     t = t3;
+                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
+                }
+                else if (t4.getAndAdvance() == 'a' && t4.getAndAdvance() == 'j')
+                {
+                    t = t4;
+                    return makeUnique<KeywordToken>(KeywordToken::Type::Major);
+                }
+                else
+                {
+                    t = t2;
                     return makeUnique<KeywordToken>(KeywordToken::Type::Major);
                 }
                 break;
@@ -440,13 +438,13 @@ struct RootKeyExpression final : Expression
 
 struct ChordQualityExpression final : Expression
 {
-    ChordQualityExpression() : Expression(Expression::Type::ChordQuality), interval(3) {}
+    ChordQualityExpression() : Expression(Expression::Type::ChordQuality) {}
 
     explicit ChordQualityExpression(const NumberToken *number) :
         Expression(Expression::Type::ChordQuality), interval(number->number) {}
 
     explicit ChordQualityExpression(const KeywordToken *keyword) :
-        Expression(Expression::Type::ChordQuality), interval(3)
+        Expression(Expression::Type::ChordQuality)
     {
         this->initFromKeyword(keyword);
     }
@@ -459,14 +457,20 @@ struct ChordQualityExpression final : Expression
 
     void initFromKeyword(const KeywordToken *keyword)
     {
-        this->third = keyword->keyword == KeywordToken::Type::Minor ? Third::Minor :
-            (keyword->keyword == KeywordToken::Type::Major ? Third::Major : Third::Default);
+        this->third = (this->interval == 5) ? Third::None : 
+            (keyword->keyword == KeywordToken::Type::Minor ? Third::Minor :
+            (keyword->keyword == KeywordToken::Type::Major ? Third::Major : Third::Default));
+
         this->fifth = keyword->keyword == KeywordToken::Type::Augmented ? Fifth::Augmented :
             (keyword->keyword == KeywordToken::Type::Diminished ? Fifth::Diminished : Fifth::Perfect);
+
+        this->seventh = (this->interval < 7) ? Seventh::None :
+            (keyword->keyword == KeywordToken::Type::Minor ? Seventh::Minor : Seventh::Major);
     }
 
     enum class Third : int8
     {
+        None,
         Default,
         Major,
         Minor
@@ -477,6 +481,13 @@ struct ChordQualityExpression final : Expression
         Perfect,
         Augmented,
         Diminished
+    };
+
+    enum class Seventh : int8
+    {
+        None,
+        Major,
+        Minor
     };
 
     bool isValid() const override
@@ -496,6 +507,12 @@ struct ChordQualityExpression final : Expression
 
         if (this->interval != 3)
         {
+            if (this->third == Third::Minor &&
+                this->seventh == Seventh::Major)
+            {
+                out << "M"; // should be like mM7
+            }
+
             out << int(this->interval);
         }
 
@@ -507,9 +524,10 @@ struct ChordQualityExpression final : Expression
         }
     }
 
-    int8 interval;
-    Third third;
-    Fifth fifth;
+    int8 interval = 3;
+    Third third = Third::Default;
+    Fifth fifth = Fifth::Perfect;
+    Seventh seventh = Seventh::None;
 };
 
 struct BassNoteExpression final : Expression
@@ -793,9 +811,19 @@ private:
             const auto *numberToken = static_cast<NumberToken *>(this->tokens.getUnchecked(t));
             if (nextToken != nullptr && nextToken->type == Token::Type::Keyword)
             {
-                t += 2;
+                // keyword after a number is a weird case, but let's support it as well
                 const auto *keywordToken = static_cast<const KeywordToken *>(nextToken);
-                return makeUnique<ChordQualityExpression>(keywordToken, numberToken);
+                switch (keywordToken->keyword)
+                {
+                case KeywordToken::Type::Major:
+                case KeywordToken::Type::Minor:
+                case KeywordToken::Type::Augmented:
+                case KeywordToken::Type::Diminished:
+                    t += 2;
+                    return makeUnique<ChordQualityExpression>(keywordToken, numberToken);
+                default:
+                    break;
+                }
             }
 
             t++;
@@ -864,10 +892,20 @@ public:
                 }
                 else
                 {
-                    DBG("Duplicate chord quality expression");
                     auto newExpr = this->removeAndReturnFirstAs<ChordQualityExpression>();
 
-                    // refine the existing rule:
+                    if (description.chordQuality->third == ChordQualityExpression::Third::Minor &&
+                        description.chordQuality->interval == 3 &&
+                        newExpr->third == ChordQualityExpression::Third::Major &&
+                        newExpr->interval == 7)
+                    {
+                        // this case is actually a minmaj7 chord, parsed as two separate expressions, lets merge them
+                        description.chordQuality->seventh = ChordQualityExpression::Seventh::Major;
+                        description.chordQuality->interval = 7;
+                        break;
+                    }
+
+                    // update defaults for the existing rule, if needed:
                     if (description.chordQuality->third == ChordQualityExpression::Third::Default &&
                         newExpr->third != ChordQualityExpression::Third::Default)
                     {
