@@ -54,7 +54,15 @@ private:
     {
         namespace ApiRoutes = Routes::Api;
 
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
+        const auto targetTime = Time::getMillisecondCounter() + this->delay;
+        while (Time::getMillisecondCounter() < targetTime)
+        {
+            Thread::sleep(100);
+            if (this->threadShouldExit())
+            {
+                return;
+            }
+        }
 
         const BackendRequest request(ApiRoutes::updatesInfo);
         this->response = request.get();
