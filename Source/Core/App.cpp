@@ -433,16 +433,14 @@ void App::recreateLayout()
 
 void App::showModalComponent(UniquePointer<Component> target)
 {
-    // showing a dialog when another one is still present is kinda suspicious
-    //jassert(Component::getCurrentlyModalComponent() == nullptr);
-
     App::dismissAllModalComponents();
 
     auto *window = static_cast<App *>(getInstance())->window.get();
     window->addChildComponent(target.get());
 
+    target->setAlpha(0.f);
     Desktop::getInstance().getAnimator().animateComponent(target.get(),
-        target->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
+        target->getBounds(), 1.f, 100, false, 0.0, 1.0);
 
     target->toFront(false);
     target->enterModalState(true, nullptr, true);

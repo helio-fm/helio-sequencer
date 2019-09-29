@@ -26,7 +26,6 @@
 
 FadingDialog::FadingDialog()
 {
-    this->setAlpha(0.f);
     this->setAlwaysOnTop(true);
     this->toFront(true);
 }
