@@ -80,6 +80,7 @@ private:
     void moveRowSelectionBy(int offset);
 
     void applySelectedCommand();
+    int getHeightToFitActions() const;
 
     void cancelAndDismiss();
     void dismiss();

@@ -34,6 +34,9 @@
 #include "PianoRoll.h"
 
 static const juce_wchar kTildaKey = '`';
+
+#define COMMAND_PALETTE_ROW_HEIGHT (28)
+
 //[/MiscUserDefs]
 
 CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
@@ -54,7 +57,6 @@ CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
 
 
     //[UserPreSize]
-    const auto lastText = App::Config().getProperty(Serialization::Config::lastSearch);
 
     // some help and hotkey commands list (depending on the current page):
     this->actionsProviders.addArray(App::Layout().getCommandPaletteActionProviders());
@@ -82,7 +84,7 @@ CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
     this->defaultActionsProvider = this->actionsProviders.getFirst();
     this->currentActionsProvider = this->defaultActionsProvider;
 
-    this->actionsList->setRowHeight(28);
+    this->actionsList->setRowHeight(COMMAND_PALETTE_ROW_HEIGHT);
     //this->actionsList->setMouseMoveSelectsRows(true); // fucks up keyboard select :(
     this->actionsList->getViewport()->setScrollBarThickness(2);
     this->actionsList->setModel(this);
@@ -96,17 +98,18 @@ CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
     this->textEditor->setFont(21.f);
 
     this->textEditor->addListener(this);
-    this->textEditor->setText(lastText, true);
-    if (lastText.isEmpty())
-    {
-        // a hack to explicitly update the list on start, even if empty:
-        this->textEditorTextChanged(*this->textEditor);
-    }
+
     //[/UserPreSize]
 
-    this->setSize(620, 400);
+    this->setSize(620, 100);
 
     //[Constructor]
+
+    const auto lastText = App::Config().getProperty(Serialization::Config::lastSearch);
+    this->textEditor->setText(lastText, false);
+
+    // a hack to explicitly, and synchronously, update the list on start, even if the text is empty:
+    this->textEditorTextChanged(*this->textEditor);
     //[/Constructor]
 }
 
@@ -141,12 +144,12 @@ void CommandPalette::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    shadowDn->setBounds(12 + 0, 0 + 224, (getWidth() - 24) - 0, 8);
-    bg->setBounds(12, 0, getWidth() - 24, 224);
-    shadowL->setBounds(0, 0, 12, 174 - -44);
-    shadowR->setBounds(getWidth() - 12, 0, 12, 174 - -44);
+    shadowDn->setBounds(12 + 0, 0 + (getHeight() - 8), (getWidth() - 24) - 0, 8);
+    bg->setBounds(12, 0, getWidth() - 24, getHeight() - 8);
+    shadowL->setBounds(0, 0, 12, ((getHeight() - 8) - 48) - -44);
+    shadowR->setBounds(getWidth() - 12, 0, 12, ((getHeight() - 8) - 48) - -44);
     textEditor->setBounds(18, 6, getWidth() - 36, 32);
-    actionsList->setBounds(18 + 0, 6 + 32 - -4, (getWidth() - 36) - 0, 174);
+    actionsList->setBounds(18 + 0, 6 + 32 - -4, (getWidth() - 36) - 0, (getHeight() - 8) - 48);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -340,6 +343,8 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
         this->actionsList->selectRow(0);
     }
 
+    this->setSize(this->getWidth(), this->getHeightToFitActions());
+
     // force repaint, sometimes it doesn't update underlined matches:
     this->actionsList->repaint();
 
@@ -447,6 +452,14 @@ void CommandPalette::applySelectedCommand()
     }
 }
 
+int CommandPalette::getHeightToFitActions() const
+{
+    const auto numRows = this->currentActionsProvider->getFilteredActions().size();
+    const auto margin = this->getHeight() - this->actionsList->getHeight();
+    const auto maxRows = (App::Layout().getHeight() / 3) / COMMAND_PALETTE_ROW_HEIGHT;
+    return jlimit(4, maxRows, numRows) * COMMAND_PALETTE_ROW_HEIGHT + margin;
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -457,7 +470,7 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component, public TextEditor::Listener, public ListBoxModel"
                  constructorParams="ProjectNode *project, HybridRoll *roll" variableInitialisers=""
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="620" initialHeight="400">
+                 fixedSize="1" initialWidth="620" initialHeight="100">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
     <METHOD name="inputAttemptWhenModal()"/>
@@ -470,7 +483,7 @@ BEGIN_JUCER_METADATA
              posRelativeY="80e2df40dfc6307e" posRelativeW="80e2df40dfc6307e"
              sourceFile="../Themes/ShadowDownwards.cpp" constructorParams="ShadowType::Normal"/>
   <JUCERCOMP name="" id="80e2df40dfc6307e" memberName="bg" virtualName=""
-             explicitFocusOrder="0" pos="12 0 24M 224" sourceFile="../Themes/PanelBackgroundC.cpp"
+             explicitFocusOrder="0" pos="12 0 24M 8M" sourceFile="../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="72514a37e5bc1299" memberName="shadowL" virtualName=""
              explicitFocusOrder="0" pos="0 0 12 -44M" posRelativeH="2362db9f8826e90f"
@@ -482,9 +495,9 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="18 6 36M 32" class="CommandPaletteTextEditor"
                     params=""/>
   <GENERICCOMPONENT name="" id="2362db9f8826e90f" memberName="actionsList" virtualName=""
-                    explicitFocusOrder="0" pos="0 -4R 0M 174" posRelativeX="3abf9d1982e1c63b"
+                    explicitFocusOrder="0" pos="0 -4R 0M 48M" posRelativeX="3abf9d1982e1c63b"
                     posRelativeY="3abf9d1982e1c63b" posRelativeW="3abf9d1982e1c63b"
-                    class="ListBox" params=""/>
+                    posRelativeH="80e2df40dfc6307e" class="ListBox" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
