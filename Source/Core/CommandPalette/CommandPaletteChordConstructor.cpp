@@ -1027,10 +1027,13 @@ public:
     ChordCompiler()
     {
         this->initSuggestions(this->rootKeySuggestions,
-            "A", "Ab", "A#", "B", "Bb", "C", "C#", "D", "Db", "D#", "E", "Eb", "F", "F#", "G", "Gb", "G#");
+            "Ab", "A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#");
 
         this->initSuggestions(this->chordQualitySuggestions,
-            "min", "maj", "aug", "dim", "6", "7", "9", "11");
+            "min", "maj", "aug", "dim", "6", "7", "9", "11", "m7", "M7", "mM7");
+
+        this->initSuggestions(this->alterationSuggestions,
+            "#5", "b5");
 
         this->initSuggestions(this->suspensionSuggestions,
             "sus 2", "sus 4");
@@ -1041,6 +1044,8 @@ public:
         this->initSuggestions(this->inversionSuggestions,
             "inv -3", "inv -2", "inv -1", "inv 1", "inv 2", "inv 3");
 
+        this->initSuggestions(this->bassNoteSuggestions,
+            "/Ab", "/A", "/A#", "/Bb", "/B", "/C", "/C#", "/Db", "/D", "/D#", "/Eb", "/E", "/F", "/F#", "/Gb", "/G", "/G#");
     }
 
     void parse(const String &input)
@@ -1115,6 +1120,11 @@ public:
             actions.addArray(this->chordQualitySuggestions);
             return;
         }
+        else if (this->chord.chordQuality->fifth == ChordParsing::ChordQualityExpression::Fifth::Perfect &&
+            (this->chord.keyAlteration == nullptr || !this->chord.keyAlteration->isValid()))
+        {
+            actions.addArray(this->alterationSuggestions);
+        }
 
         if (this->chord.suspension == nullptr || !this->chord.suspension->isValid())
         {
@@ -1130,6 +1140,11 @@ public:
         {
             actions.addArray(this->additionSuggestions);
         }
+
+        if (this->chord.bassNote == nullptr || !this->chord.bassNote->isValid())
+        {
+            actions.addArray(this->bassNoteSuggestions);
+        }
     }
 
 private:
@@ -1142,6 +1157,8 @@ private:
     CommandPaletteActionsProvider::Actions suspensionSuggestions;
     CommandPaletteActionsProvider::Actions inversionSuggestions;
     CommandPaletteActionsProvider::Actions additionSuggestions;
+    CommandPaletteActionsProvider::Actions bassNoteSuggestions;
+    CommandPaletteActionsProvider::Actions alterationSuggestions;
 
     template <typename... OtherElements>
     void initSuggestions(CommandPaletteActionsProvider::Actions &array, const String &firstElement, OtherElements... otherElements)
