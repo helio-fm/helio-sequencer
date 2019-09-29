@@ -19,11 +19,12 @@
 #include "CommandPaletteChordConstructor.h"
 
 /*
-    Reference:
+    This tool attempts to parse chord symbols, as described in:
     https://en.wikipedia.org/wiki/Chord_names_and_symbols_(popular_music)#Rules_to_decode_chord_names_and_symbols
 
-    What I'm going to do here is somewhat similar to what compilers are doing:
-        source -> tokens -> internal representation -> passes -> generation
+    To approach that, I'm going to do something similar to what compilers are doing
+    (inspired by this awesome guide, by the way: https://github.com/jamiebuilds/the-super-tiny-compiler):
+    user input -> tokens -> internal representation -> passes -> generation
 
     Step 1 is lexical analysis, operating on string, returning list of tokens of these types:
         note: e.g. B or F (upper case)
@@ -34,27 +35,25 @@
         (any unknown characters are skipped)
 
     Step 2 is syntactic analysis, operating on list of tokens, returning list of expressions:
-        root key: note token + optional sign  - e.g. Bb or E#, or just B or E
+        root key: note token + optional sign - e.g. Bb or E#, or just B or E
         chord quality: either a keyword, one of [major, minor, augmented, diminished], or a number, or both: e.g. 11, M7, aug 9
         bass note: slash token + note token
         key alteration: sign + number - e.g. b5, #11
-        addition: add keyword + number, or slash token + number - e.g. add 13 or /9
+        addition: add keyword + optional sign + number, or slash token + optional sign + number - e.g. add b13 or /9 or /#11
         inversion: inv keyword + number - e.g. inv -3
         suspension: sus keyword + number - e.g. sus2
 
-    Step 3 is a cleanup pass, operating on list of expressions, returning chord description:
+    Step 3 is a cleanup pass, operating on list of expressions, returning mostly valid chord description:
         remove duplicates, if any
-        add defaults and apply specific rules:
-            when the fifth interval is diminished, the third must be minor
-            todo
+        remove expressions that don't make any sense, like are contradictory to existing context
+        refine existing expressions: for example, chord quality might have been parsed as several expressions
 
-    Step 4 is chord generation, operating on cleaned up chord description
-        isValid() - checks if missing required expressions
-            1 root key must be present, others are not required
-        toString()
-        provides suggestions
-        remembers last valid expressions
-        indicates if the expression has changed with the new input
+    Step 4 is chord generation, operating on chord description and providing these methods:
+        isValid - checks if missing required expressions: root key must be present, others are not required
+        toString - turns parsed description back into symbols (to be suggested to user as a cleaned up string)
+        fillSuggestions - provides suggestions list, dependent on current rules
+        hasChanges - indicates if the expression has changed with the new input
+        generate - generates new chord, or returns the last one, if the description hasn't changed
 */
 
 namespace ChordParsing
@@ -990,15 +989,23 @@ public:
             }
         }
 
-        // apply defaults
+        if (description.chordQuality != nullptr &&
+            description.chordQuality->interval == 5 &&
+            description.chordQuality->third != ChordQualityExpression::Third::None)
+        {
+            DBG("Found power chord conflicting with min/maj rule, removing third");
+            description.chordQuality->third = ChordQualityExpression::Third::None;
+        }
 
-        //if (description.chordQuality != nullptr &&
-        //    description.chordQuality->third == ChordQualityExpression::Third::Default)
-        //{
-        //    description.chordQuality->third = ChordQualityExpression::Third::Major;
-        //}
-
-        // if interval == 5, make third = default
+        if (description.chordQuality != nullptr &&
+            description.keyAlteration != nullptr &&
+            description.keyAlteration->key == 5 &&
+            (description.chordQuality->fifth == ChordQualityExpression::Fifth::Augmented ||
+                description.chordQuality->fifth == ChordQualityExpression::Fifth::Diminished))
+        {
+            DBG("Fifth alteration makes no sense on aug/dim chords, removing");
+            description.keyAlteration = nullptr;
+        }
 
         return description;
     }
