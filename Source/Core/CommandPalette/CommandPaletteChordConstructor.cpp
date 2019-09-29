@@ -409,7 +409,7 @@ struct Expression
 struct RootKeyExpression final : Expression
 {
     explicit RootKeyExpression(const NoteToken *note) :
-        Expression(Expression::Type::RootKey), key(note->noteNumber), sharp(false), flat(false) {}
+        Expression(Expression::Type::RootKey), key(note->noteNumber) {}
 
     RootKeyExpression(const NoteToken *note, const SignToken *sign) :
         Expression(Expression::Type::RootKey), key(note->noteNumber), sharp(sign->isSharp), flat(!sign->isSharp) {}
@@ -434,17 +434,16 @@ struct RootKeyExpression final : Expression
     }
 
     const int8 key;
-    const bool sharp;
-    const bool flat;
+    const bool sharp = false;
+    const bool flat = false;
 };
 
 struct ChordQualityExpression final : Expression
 {
-    ChordQualityExpression() : Expression(Expression::Type::ChordQuality),
-        interval(3), third(Third::Major), fifth(Fifth::Perfect) {}
+    ChordQualityExpression() : Expression(Expression::Type::ChordQuality), interval(3) {}
 
-    explicit ChordQualityExpression(const NumberToken *number) : Expression(Expression::Type::ChordQuality),
-        interval(number->number), third(Third::Major), fifth(Fifth::Perfect) {}
+    explicit ChordQualityExpression(const NumberToken *number) :
+        Expression(Expression::Type::ChordQuality), interval(number->number) {}
 
     explicit ChordQualityExpression(const KeywordToken *keyword) :
         Expression(Expression::Type::ChordQuality), interval(3)
@@ -536,18 +535,34 @@ struct AdditionExpression final : Expression
     explicit AdditionExpression(const NumberToken *number) :
         Expression(Expression::Type::Addition), addedKey(number->number) {}
 
+    AdditionExpression(const SignToken *sign, const NumberToken *number) :
+        Expression(Expression::Type::Addition), addedKey(number->number), sharp(sign->isSharp), flat(!sign->isSharp) {}
+
     bool isValid() const override
     {
         // what's the upper limit for the added key?
-        return (this->addedKey > 0 && this->addedKey <= 32);
+        return (this->addedKey > 0 && this->addedKey <= 32) && !(this->sharp && this->flat);
     }
 
     void fillDescription(String &out) const override
     {
-        out << " add" << (int)this->addedKey;
+        out << " add";
+        
+        if (this->sharp)
+        {
+            out << "#";
+        }
+        else if (this->flat)
+        {
+            out << "b";
+        }
+
+        out << (int)this->addedKey;
     }
 
     const int8 addedKey;
+    const bool sharp = false;
+    const bool flat = false;
 };
 
 struct InversionExpression final : Expression
@@ -708,6 +723,17 @@ private:
                 t += 2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
                 return makeUnique<AdditionExpression>(numberToken);
+            }
+            else if (nextToken != nullptr && nextToken->type == Token::Type::Sign)
+            {
+                const auto *thirdToken = this->tokens[t + 2];
+                if (thirdToken != nullptr && thirdToken->type == Token::Type::Number)
+                {
+                    t += 3;
+                    const auto *signToken = static_cast<const SignToken *>(nextToken);
+                    const auto *numberToken = static_cast<const NumberToken *>(thirdToken);
+                    return makeUnique<AdditionExpression>(signToken, numberToken);
+                }
             }
             break;
 
@@ -969,13 +995,14 @@ public:
             "min", "maj", "aug", "dim", "6", "7", "9", "11");
 
         this->initSuggestions(this->suspensionSuggestions,
-            "sus2", "sus4");
+            "sus 2", "sus 4");
 
         this->initSuggestions(this->additionSuggestions,
-            "add9", "add11", "add13");
+            "add 9", "add b9", "add #9", "add b11", "add 11", "add #11", "add b13", "add 13", "add #13");
 
         this->initSuggestions(this->inversionSuggestions,
-            "inv-3", "inv-2", "inv-1", "inv1", "inv2", "inv3");
+            "inv -3", "inv -2", "inv -1", "inv 1", "inv 2", "inv 3");
+
     }
 
     void parse(const String &input)
