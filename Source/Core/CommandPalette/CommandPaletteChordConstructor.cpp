@@ -928,11 +928,6 @@ public:
 
         // apply defaults
 
-        if (description.rootKey != nullptr && description.chordQuality == nullptr)
-        {
-            description.chordQuality = makeUnique<ChordQualityExpression>();
-        }
-
         //if (description.chordQuality != nullptr &&
         //    description.chordQuality->third == ChordQualityExpression::Third::Default)
         //{
@@ -965,7 +960,29 @@ class ChordCompiler final
 {
 public:
 
-    ChordCompiler() = default;
+    ChordCompiler()
+    {
+        this->initSuggestions(this->rootKeySuggestions,
+            "A", "Ab", "A#", "B", "Bb", "C", "C#", "D", "Db", "D#", "E", "Eb", "F", "F#", "G", "Gb", "G#");
+
+        this->initSuggestions(this->chordQualitySuggestions,
+            "min", "maj", "aug", "dim", "6", "7", "9", "11");
+
+        this->initSuggestions(this->suspensionSuggestions,
+            "sus2", "sus4");
+
+        this->initSuggestions(this->additionSuggestions,
+            "add9", "add11", "add13");
+
+        this->initSuggestions(this->inversionSuggestions,
+            "inv-3", "inv-2", "inv-1", "inv1", "inv2", "inv3");
+    }
+
+    void parse(const String &input)
+    {
+        using namespace ChordParsing;
+        this->chord = CleanupPass(Parser(Lexer(input.getCharPointer()).getTokens()).getExpressions()).getChord();
+    }
 
     void parse(String::CharPointerType input)
     {
@@ -975,8 +992,7 @@ public:
 
     bool isValid() const noexcept
     {
-        return this->chord.rootKey != nullptr && this->chord.chordQuality != nullptr &&
-            this->chord.rootKey->isValid() && this->chord.chordQuality->isValid();
+        return this->chord.rootKey != nullptr && this->chord.rootKey->isValid();
     }
 
     String getChordAsString() const
@@ -1021,9 +1037,34 @@ public:
         return result;
     }
 
-    StringArray getSuggestions() const
+    void fillSuggestions(CommandPaletteActionsProvider::Actions &actions) const
     {
-        //
+        if (this->chord.rootKey == nullptr || !this->chord.rootKey->isValid())
+        {
+            actions.addArray(this->rootKeySuggestions);
+            return;
+        }
+
+        if (this->chord.chordQuality == nullptr || !this->chord.chordQuality->isValid())
+        {
+            actions.addArray(this->chordQualitySuggestions);
+            return;
+        }
+
+        if (this->chord.suspension == nullptr || !this->chord.suspension->isValid())
+        {
+            actions.addArray(this->suspensionSuggestions);
+        }
+
+        if (this->chord.inversion == nullptr || !this->chord.inversion->isValid())
+        {
+            actions.addArray(this->inversionSuggestions);
+        }
+
+        if (this->chord.addition == nullptr || !this->chord.addition->isValid())
+        {
+            actions.addArray(this->additionSuggestions);
+        }
     }
 
 private:
@@ -1031,6 +1072,34 @@ private:
     ChordParsing::ChordDescription chord;
     StringArray lastChords;
 
+    CommandPaletteActionsProvider::Actions rootKeySuggestions;
+    CommandPaletteActionsProvider::Actions chordQualitySuggestions;
+    CommandPaletteActionsProvider::Actions suspensionSuggestions;
+    CommandPaletteActionsProvider::Actions inversionSuggestions;
+    CommandPaletteActionsProvider::Actions additionSuggestions;
+
+    template <typename... OtherElements>
+    void initSuggestions(CommandPaletteActionsProvider::Actions &array, const String &firstElement, OtherElements... otherElements)
+    {
+        array.add(this->createSuggeation(firstElement));
+        this->initSuggestions(array, otherElements...);
+    }
+
+    void initSuggestions(CommandPaletteActionsProvider::Actions &array, const String &firstElement)
+    {
+        array.add(this->createSuggeation(firstElement));
+    }
+
+    CommandPaletteAction::Ptr createSuggeation(String text)
+    {
+        return CommandPaletteAction::action(text, "suggestion", 0.f)->unfiltered()->
+            withCallback([this, text](TextEditor &ed)
+        {
+            this->parse(ed.getText() + " " + text);
+            ed.setText("$" + this->getChordAsString());
+            return false;
+        });
+    }
 };
 
 //===----------------------------------------------------------------------===//
@@ -1054,22 +1123,24 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
     const auto chordAsString = this->chordCompiler->getChordAsString();
     DBG(chordAsString);
 
-    // todo fill suggestions
-
-    // 1st suggestion is the parsed chord
-    // next are all suggestions
-
     this->actions.clearQuick();
-    this->actions.add(CommandPaletteAction::action(chordAsString, "insert", -10.f)->
-        withCallback([chordAsString](TextEditor &ed) { ed.setText("$" + chordAsString); return false; })->
-        unfiltered());
+    if (this->chordCompiler->isValid())
+    {
+        this->actions.add(CommandPaletteAction::action(chordAsString, "preview", -10.f)->
+            withCallback([chordAsString](TextEditor &ed) { ed.setText("$" + chordAsString); return false; })->
+            unfiltered());
+    }
+
+    this->chordCompiler->fillSuggestions(this->actions);
 
     CommandPaletteActionsProvider::updateFilter(pattern, skipPrefix);
 }
 
 void CommandPaletteChordConstructor::clearFilter()
 {
-    // todo
+    this->chordCompiler->parse("");
+    this->actions.clearQuick();
+    this->chordCompiler->fillSuggestions(this->actions);
     CommandPaletteActionsProvider::clearFilter();
 }
 
