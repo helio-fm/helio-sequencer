@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "CommandPaletteChordConstructor.h"
+#include "Scale.h"
 
 /*
     This tool attempts to parse chord symbols, as described in:
@@ -62,6 +63,8 @@ namespace ChordParsing
 //===----------------------------------------------------------------------===//
 // Tokens
 //===----------------------------------------------------------------------===//
+
+#pragma region tokens
 
 struct Token
 {
@@ -119,6 +122,8 @@ struct NumberToken final : Token
     explicit NumberToken(int8 number) : Token(Token::Type::Number), number(number) {}
     const int8 number;
 };
+
+#pragma endregion tokens
 
 class Lexer final
 {
@@ -365,6 +370,8 @@ private:
 // Expressions
 //===----------------------------------------------------------------------===//
 
+#pragma region expressions
+
 struct Expression
 {
     enum class Type : int8
@@ -607,7 +614,7 @@ struct SuspensionExpression final : Expression
 
     bool isValid() const override
     {
-        return (this->suspension > 0 && this->suspension <= 32);
+        return (this->suspension == 2 || this->suspension == 4);
     }
 
     void fillDescription(String &out) const override
@@ -636,6 +643,8 @@ struct KeyAlterationExpression final : Expression
     const int8 key;
     const bool sharp; // if false, means flat
 };
+
+#pragma endregion expressions
 
 class Parser final
 {
@@ -853,8 +862,6 @@ struct ChordDescription final
     UniquePointer<KeyAlterationExpression> keyAlteration;
     UniquePointer<AdditionExpression> addition;
     UniquePointer<InversionExpression> inversion;
-
-    // todo equals operator
 };
 
 class CleanupPass final
@@ -1007,6 +1014,29 @@ public:
             description.keyAlteration = nullptr;
         }
 
+        if (description.suspension != nullptr &&
+            (description.suspension->suspension == 2 || description.suspension->suspension == 4))
+        {
+            if (description.chordQuality != nullptr && description.chordQuality->interval == 5)
+            {
+                DBG("Suspended 2 or 4 make no sense on power chords, removing");
+                description.suspension = nullptr;
+            }
+            else if (description.chordQuality != nullptr && description.chordQuality->third != ChordQualityExpression::Third::None)
+            {
+                DBG("Removing third, because of having suspended 2 or 4");
+                description.chordQuality->third = ChordQualityExpression::Third::None;
+            }
+        }
+
+        if (description.addition != nullptr &&
+            description.chordQuality != nullptr &&
+            description.addition->addedKey >= description.chordQuality->interval)
+        {
+            DBG("Addition doesn't make sense when less or equal to chord quality interval, removing");
+            description.addition = nullptr;
+        }
+
         return description;
     }
 
@@ -1026,6 +1056,52 @@ private:
 //===----------------------------------------------------------------------===//
 // Chord and helpers
 //===----------------------------------------------------------------------===//
+
+enum class KeyInfo : int8
+{
+    None,
+    Default,
+    Flat,
+    Sharp
+};
+
+struct RenderedChord final
+{
+    RenderedChord()
+    {
+        this->reset();
+    }
+    
+    void reset()
+    {
+        this->keys.clearQuick();
+        this->keys.add(KeyInfo::Default);
+
+        // todo what is the max chord size??
+        for (int i = 0; i < 32; ++i)
+        {
+            this->keys.add(KeyInfo::None);
+        }
+    }
+
+    bool operator ==(const RenderedChord &other) const
+    {
+        return this->keys == other.keys;
+    }
+
+    KeyInfo &operator[] (int index)
+    {
+        if (index < this->keys.size())
+        {
+            return this->keys.getReference(index);
+        }
+
+        return this->noKey;
+    }
+
+    Array<KeyInfo> keys;
+    KeyInfo noKey = KeyInfo::None;
+};
 
 class ChordCompiler final
 {
@@ -1070,6 +1146,146 @@ public:
     bool isValid() const noexcept
     {
         return this->chord.rootKey != nullptr && this->chord.rootKey->isValid();
+    }
+
+
+    bool generate(Array<int> &outResult)
+    {
+        using namespace ChordParsing;
+
+        if (!this->isValid())
+        {
+            return false;
+        }
+        
+        // todo if chords are equal, also return false
+
+        const auto *quality = (this->chord.chordQuality != nullptr && this->chord.chordQuality->isValid()) ?
+            this->chord.chordQuality.get() : this->qualityFallback.get();
+
+        const auto scaleToUse = quality->third == ChordQualityExpression::Third::Minor ? this->minor : this->major;
+
+        const auto tonic = scaleToUse->getChromaticKey(this->chord.rootKey->key,
+            this->chord.rootKey->sharp ? 1 : (this->chord.rootKey->flat ? -1 : 0), false);
+
+        jassert(tonic >= 0);
+
+        RenderedChord chord;
+
+        switch (quality->third)
+        {
+        case ChordQualityExpression::Third::Default:
+        case ChordQualityExpression::Third::Major:
+        case ChordQualityExpression::Third::Minor:
+            chord[3] = KeyInfo::Default; // defined by scale
+            break;
+        case ChordQualityExpression::Third::None:
+        default:
+            break;
+        }
+
+        switch (quality->fifth)
+        {
+        case ChordQualityExpression::Fifth::Perfect:
+            chord[5] = KeyInfo::Default;
+            break;
+        case ChordQualityExpression::Fifth::Augmented:
+            chord[5] = KeyInfo::Sharp;
+            break;
+        case ChordQualityExpression::Fifth::Diminished:
+            chord[5] = KeyInfo::Flat;
+            break;
+        default:
+            break;
+        }
+
+        if (quality->interval >= 7)
+        {
+            chord[7] = KeyInfo::Default;
+        }
+
+        if (quality->interval >= 9)
+        {
+            chord[9] = KeyInfo::Default;
+        }
+
+        if (quality->interval >= 11)
+        {
+            chord[11] = KeyInfo::Default;
+        }
+
+        if (quality->interval == 13)
+        {
+            chord[13] = KeyInfo::Default;
+        }
+
+        // hacks to handle dom 7 and min maj 7
+        if (quality->third == ChordQualityExpression::Third::Minor &&
+            quality->seventh == ChordQualityExpression::Seventh::Major)
+        {
+            chord[7] = KeyInfo::Sharp;
+        }
+        else if (quality->third == ChordQualityExpression::Third::Major &&
+            quality->seventh == ChordQualityExpression::Seventh::Minor)
+        {
+            chord[7] = KeyInfo::Flat;
+        }
+
+        // todo handle other intervals? 6, 2?
+
+        const auto *sus = this->chord.suspension.get();
+        if (sus != nullptr && sus->isValid())
+        {
+            chord[3] = KeyInfo::None;
+            chord[sus->suspension] = KeyInfo::Default;
+        }
+        
+        const auto *add = this->chord.addition.get();
+        if (add != nullptr && add->isValid())
+        {
+            chord[add->addedKey] = add->flat ? KeyInfo::Flat :
+                (add->sharp ? KeyInfo::Sharp : KeyInfo::Default);
+        }
+
+        const auto *alt = this->chord.keyAlteration.get();
+        if (alt != nullptr && alt->isValid())
+        {
+            chord[alt->key] = alt->sharp ? KeyInfo::Sharp : KeyInfo::Flat;
+        }
+
+        outResult.clearQuick();
+        outResult.add(tonic);
+        for (int i = 1; i < chord.keys.size(); ++i)
+        {
+            const auto &key = chord[i];
+            if (key != KeyInfo::None)
+            {
+                const auto chromaticKey = scaleToUse->getChromaticKey(i - 1,
+                    key == KeyInfo::Sharp ? 1 : (key == KeyInfo::Flat ? -1 : 0), false);
+                outResult.add(tonic + chromaticKey);
+            }
+        }
+
+        const auto *bass = this->chord.bassNote.get();
+        if (bass != nullptr && bass->isValid())
+        {
+            // todo
+            //outResult.set(0, bassNote);
+        }
+
+        const auto *inv = this->chord.inversion.get();
+        if (inv != nullptr && inv->isValid())
+        {
+            // todo
+            if (inv->inversion > 0)
+            {
+            }
+            else
+            {
+            }
+        }
+
+        return true;
     }
 
     String getChordAsString() const
@@ -1127,15 +1343,15 @@ public:
             actions.addArray(this->chordQualitySuggestions);
             return;
         }
-        else if (this->chord.chordQuality->fifth == ChordParsing::ChordQualityExpression::Fifth::Perfect &&
-            (this->chord.keyAlteration == nullptr || !this->chord.keyAlteration->isValid()))
-        {
-            actions.addArray(this->alterationSuggestions);
-        }
 
         if (this->chord.suspension == nullptr || !this->chord.suspension->isValid())
         {
             actions.addArray(this->suspensionSuggestions);
+        }
+
+        if (this->chord.addition == nullptr || !this->chord.addition->isValid())
+        {
+            actions.addArray(this->additionSuggestions);
         }
 
         if (this->chord.inversion == nullptr || !this->chord.inversion->isValid())
@@ -1143,9 +1359,11 @@ public:
             actions.addArray(this->inversionSuggestions);
         }
 
-        if (this->chord.addition == nullptr || !this->chord.addition->isValid())
+        if ((this->chord.keyAlteration == nullptr || !this->chord.keyAlteration->isValid()) &&
+            this->chord.chordQuality->fifth == ChordParsing::ChordQualityExpression::Fifth::Perfect)
         {
-            actions.addArray(this->additionSuggestions);
+            jassert(this->chord.chordQuality != nullptr); // should never happen, see the check above
+            actions.addArray(this->alterationSuggestions);
         }
 
         if (this->chord.bassNote == nullptr || !this->chord.bassNote->isValid())
@@ -1156,8 +1374,14 @@ public:
 
 private:
 
+    // fixme naming?
     ChordParsing::ChordDescription chord;
-    StringArray lastChords;
+    RenderedChord render;
+    StringArray lastChords; // ??
+
+    const Scale::Ptr major = Scale::getNaturalMajorScale();
+    const Scale::Ptr minor = Scale::getNaturalMinorScale();
+    const UniquePointer<ChordParsing::ChordQualityExpression> qualityFallback = makeUnique<ChordParsing::ChordQualityExpression>();
 
     CommandPaletteActionsProvider::Actions rootKeySuggestions;
     CommandPaletteActionsProvider::Actions chordQualitySuggestions;
@@ -1184,6 +1408,7 @@ private:
         return CommandPaletteAction::action(text, "suggestion", 0.f)->unfiltered()->
             withCallback([this, text](TextEditor &ed)
         {
+            // not just append a piece of text, but also turn in into a valid description:
             this->parse(ed.getText() + " " + text);
             ed.setText("$" + this->getChordAsString());
             return false;
@@ -1210,7 +1435,6 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
 
     this->chordCompiler->parse(inputPtr);
     const auto chordAsString = this->chordCompiler->getChordAsString();
-    DBG(chordAsString);
 
     this->actions.clearQuick();
     if (this->chordCompiler->isValid())
