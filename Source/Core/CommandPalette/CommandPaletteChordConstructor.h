@@ -19,13 +19,14 @@
 
 #include "CommandPaletteActionsProvider.h"
 
+class PianoRoll;
 class ChordCompiler;
 
 class CommandPaletteChordConstructor final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteChordConstructor();
+    CommandPaletteChordConstructor(PianoRoll &roll);
     ~CommandPaletteChordConstructor() override;
 
     bool usesPrefix(const Prefix prefix) const noexcept override
@@ -38,10 +39,17 @@ public:
 
 protected:
 
-    // todo dynamic list of suggestions
     const Actions &getActions() const override;
     mutable Actions actions;
 
+private:
+
     const UniquePointer<ChordCompiler> chordCompiler;
+
+    PianoRoll &roll;
+    Array<int> chord;
+
+    bool hasMadeChanges = false;
+    void undoIfNeeded();
 
 };

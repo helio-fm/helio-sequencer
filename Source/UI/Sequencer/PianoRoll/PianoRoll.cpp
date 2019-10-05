@@ -104,7 +104,7 @@ PianoRoll::PianoRoll(ProjectNode &parentProject,
     this->addChildComponent(this->draggingHelper.get());
 
     this->consoleChordsList = makeUnique<CommandPaletteChordsList>();
-    this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>();
+    this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
 
     this->reloadRollContent();
     this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);

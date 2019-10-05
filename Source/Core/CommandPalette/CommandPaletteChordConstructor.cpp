@@ -19,6 +19,11 @@
 #include "CommandPaletteChordConstructor.h"
 #include "Scale.h"
 
+#include "PianoRoll.h"
+#include "MidiTrack.h"
+#include "PianoSequence.h"
+#include "Note.h"
+
 /*
     This tool attempts to parse chord symbols, as described in:
     https://en.wikipedia.org/wiki/Chord_names_and_symbols_(popular_music)#Rules_to_decode_chord_names_and_symbols
@@ -33,16 +38,18 @@
         slash: just / used to override bass note or add keys
         number: a number which can be negative, e.g. for negative inversion
         keyword: aug (also '+'), dim, sus, add, inv, min (also 'm'), maj (also 'M'), might be lower case or start with capital
+        space: 1 or more spaces, this token is only needed to avoid confusion when parsing expressions, e.g. "C/Ab 11" != "C/A b11"
         (any unknown characters are skipped)
 
     Step 2 is syntactic analysis, operating on list of tokens, returning list of expressions:
         root key: note token + optional sign - e.g. Bb or E#, or just B or E
         chord quality: either a keyword, one of [major, minor, augmented, diminished], or a number, or both: e.g. 11, M7, aug 9
-        bass note: slash token + note token
+        bass note: slash token + note token + optional sign, e.g. /Eb
         key alteration: sign + number - e.g. b5, #11
         addition: add keyword + optional sign + number, or slash token + optional sign + number - e.g. add b13 or /9 or /#11
         inversion: inv keyword + number - e.g. inv -3
         suspension: sus keyword + number - e.g. sus2
+        (any invalid expressions are skipped)
 
     Step 3 is a cleanup pass, operating on list of expressions, returning mostly valid chord description:
         remove duplicates, if any
@@ -73,6 +80,7 @@ struct Token
         Note,
         Sign,
         Slash,
+        Space,
         Keyword,
         Number
     };
@@ -98,7 +106,12 @@ struct SignToken final : Token
 
 struct SlashToken final : Token
 {
-    explicit SlashToken() : Token(Token::Type::Slash) {}
+    SlashToken() : Token(Token::Type::Slash) {}
+};
+
+struct SpaceToken final : Token
+{
+    SpaceToken() : Token(Token::Type::Space) {}
 };
 
 struct KeywordToken final : Token
@@ -150,7 +163,6 @@ private:
 
     static UniquePointer<Token> parseToken(String::CharPointerType &t)
     {
-        t = t.findEndOfWhitespace();
         auto t2 = t;
 
         switch (t2.getAndAdvance())
@@ -158,6 +170,10 @@ private:
         case '/':
             t = t2;
             return makeUnique<SlashToken>();
+
+        case ' ':
+            t = t2.findEndOfWhitespace();
+            return makeUnique<SpaceToken>();
 
         case '+':
             t = t2;
@@ -389,8 +405,14 @@ struct Expression
     explicit Expression(Type type) : type(type) {}
     virtual ~Expression() {}
 
-    virtual void fillDescription(String &out) const = 0;
     virtual bool isValid() const = 0;
+    virtual void fillDescription(String &out) const = 0;
+    String toString() const
+    {
+        String desc;
+        this->fillDescription(desc);
+        return desc;
+    }
 
     static juce_wchar keyToLetter(int8 key)
     {
@@ -541,17 +563,31 @@ struct BassNoteExpression final : Expression
     explicit BassNoteExpression(const NoteToken *bassNote) :
         Expression(Expression::Type::BassNote), key(bassNote->noteNumber) {}
 
+    BassNoteExpression(const NoteToken *bassNote, const SignToken *sign) :
+        Expression(Expression::Type::BassNote), key(bassNote->noteNumber), sharp(sign->isSharp), flat(!sign->isSharp) {}
+
     bool isValid() const override
     {
-        return (this->key >= 0 && this->key <= 6);
+        return (this->key >= 0 && this->key <= 6) && !(this->sharp && this->flat);
     }
 
     void fillDescription(String &out) const override
     {
         out << "/" << keyToLetter(this->key);
+
+        if (this->sharp)
+        {
+            out << "#";
+        }
+        else if (this->flat)
+        {
+            out << "b";
+        }
     }
 
     const int8 key;
+    const bool sharp = false;
+    const bool flat = false;
 };
 
 struct AdditionExpression final : Expression
@@ -661,7 +697,14 @@ public:
         {
             if (auto expr = this->parseExpression(idx))
             {
-                expressions.add(expr.release());
+                if (expr->isValid())
+                {
+                    expressions.add(expr.release());
+                }
+                else
+                {
+                    DBG("Expression " + expr->toString() + " is invalid, skipping");
+                }
             }
         }
 
@@ -699,8 +742,17 @@ private:
         case Token::Type::Slash:
             if (nextToken != nullptr && nextToken->type == Token::Type::Note)
             {
-                t += 2;
                 const auto *noteToken = static_cast<const NoteToken *>(nextToken);
+                const auto *thirdToken = this->tokens[t + 2];
+
+                if (thirdToken != nullptr && thirdToken->type == Token::Type::Sign)
+                {
+                    t += 3;
+                    const auto *signToken = static_cast<const SignToken *>(thirdToken);
+                    return makeUnique<BassNoteExpression>(noteToken, signToken);
+                }
+
+                t += 2;
                 return makeUnique<BassNoteExpression>(noteToken);
             }
             else if (nextToken != nullptr && nextToken->type == Token::Type::Number)
@@ -711,8 +763,8 @@ private:
             }
             break;
 
+        case Token::Type::Space:
         default:
-            jassertfalse;
             break;
         }
 
@@ -738,24 +790,31 @@ private:
 
     UniquePointer<Expression> parseKeywords(int &t) const
     {
+        auto t2 = t;
         const auto *token = static_cast<KeywordToken *>(this->tokens.getUnchecked(t));
-        const auto *nextToken = this->tokens[t + 1];
+        const auto *nextToken = this->tokens[++t2];
+
+        // keyword expressions are allowed to have a space before a number, e.g. inv -2
+        if (nextToken != nullptr && nextToken->type == Token::Type::Space)
+        {
+            nextToken = this->tokens[++t2];
+        }
 
         switch (token->keyword)
         {
         case KeywordToken::Type::Added:
             if (nextToken != nullptr && nextToken->type == Token::Type::Number)
             {
-                t += 2;
+                t = ++t2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
                 return makeUnique<AdditionExpression>(numberToken);
             }
             else if (nextToken != nullptr && nextToken->type == Token::Type::Sign)
             {
-                const auto *thirdToken = this->tokens[t + 2];
+                const auto *thirdToken = this->tokens[++t2];
                 if (thirdToken != nullptr && thirdToken->type == Token::Type::Number)
                 {
-                    t += 3;
+                    t = ++t2;
                     const auto *signToken = static_cast<const SignToken *>(nextToken);
                     const auto *numberToken = static_cast<const NumberToken *>(thirdToken);
                     return makeUnique<AdditionExpression>(signToken, numberToken);
@@ -766,7 +825,7 @@ private:
         case KeywordToken::Type::Inverted:
             if (nextToken != nullptr && nextToken->type == Token::Type::Number)
             {
-                t += 2;
+                t = ++t2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
                 return makeUnique<InversionExpression>(numberToken);
             }
@@ -775,7 +834,7 @@ private:
         case KeywordToken::Type::Suspeneded:
             if (nextToken != nullptr && nextToken->type == Token::Type::Number)
             {
-                t += 2;
+                t = ++t2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
                 return makeUnique<SuspensionExpression>(numberToken);
             }
@@ -1031,10 +1090,20 @@ public:
 
         if (description.addition != nullptr &&
             description.chordQuality != nullptr &&
-            description.addition->addedKey >= description.chordQuality->interval)
+            description.addition->addedKey <= description.chordQuality->interval)
         {
             DBG("Addition doesn't make sense when less or equal to chord quality interval, removing");
             description.addition = nullptr;
+        }
+
+        if (description.rootKey != nullptr &&
+            description.bassNote != nullptr &&
+            (description.bassNote->key == description.rootKey->key &&
+                description.bassNote->flat == description.rootKey->flat &&
+                description.bassNote->sharp == description.rootKey->sharp))
+        {
+            DBG("Bass note override makes no sense when it equals the root key, removing");
+            description.bassNote = nullptr;
         }
 
         return description;
@@ -1112,8 +1181,11 @@ public:
         this->initSuggestions(this->rootKeySuggestions,
             "Ab", "A", "A#", "Bb", "B", "C", "C#", "Db", "D", "D#", "Eb", "E", "F", "F#", "Gb", "G", "G#");
 
+        this->initSuggestions(this->scaleSuggestions,
+            "min", "maj", "m7", "M7", "mM7");
+
         this->initSuggestions(this->chordQualitySuggestions,
-            "min", "maj", "aug", "dim", "6", "7", "9", "11", "m7", "M7", "mM7");
+            "aug", "dim", "6", "7", "9", "11");
 
         this->initSuggestions(this->alterationSuggestions,
             "#5", "b5");
@@ -1145,11 +1217,10 @@ public:
 
     bool isValid() const noexcept
     {
-        return this->chord.rootKey != nullptr && this->chord.rootKey->isValid();
+        return this->chord.rootKey != nullptr;
     }
 
-
-    bool generate(Array<int> &outResult)
+    bool generate(Array<int> &outResult) const
     {
         using namespace ChordParsing;
 
@@ -1157,10 +1228,8 @@ public:
         {
             return false;
         }
-        
-        // todo if chords are equal, also return false
 
-        const auto *quality = (this->chord.chordQuality != nullptr && this->chord.chordQuality->isValid()) ?
+        const auto *quality = (this->chord.chordQuality != nullptr) ?
             this->chord.chordQuality.get() : this->qualityFallback.get();
 
         const auto scaleToUse = quality->third == ChordQualityExpression::Third::Minor ? this->minor : this->major;
@@ -1177,7 +1246,7 @@ public:
         case ChordQualityExpression::Third::Default:
         case ChordQualityExpression::Third::Major:
         case ChordQualityExpression::Third::Minor:
-            chord[3] = KeyInfo::Default; // defined by scale
+            chord[3] = KeyInfo::Default; // set by scale
             break;
         case ChordQualityExpression::Third::None:
         default:
@@ -1234,22 +1303,25 @@ public:
         // todo handle other intervals? 6, 2?
 
         const auto *sus = this->chord.suspension.get();
-        if (sus != nullptr && sus->isValid())
+        if (sus != nullptr)
         {
+            jassert(sus->isValid());
             chord[3] = KeyInfo::None;
             chord[sus->suspension] = KeyInfo::Default;
         }
         
         const auto *add = this->chord.addition.get();
-        if (add != nullptr && add->isValid())
+        if (add != nullptr)
         {
+            jassert(add->isValid());
             chord[add->addedKey] = add->flat ? KeyInfo::Flat :
                 (add->sharp ? KeyInfo::Sharp : KeyInfo::Default);
         }
 
         const auto *alt = this->chord.keyAlteration.get();
-        if (alt != nullptr && alt->isValid())
+        if (alt != nullptr)
         {
+            jassert(alt->isValid());
             chord[alt->key] = alt->sharp ? KeyInfo::Sharp : KeyInfo::Flat;
         }
 
@@ -1266,63 +1338,86 @@ public:
             }
         }
 
+        const auto basePeriod = scaleToUse->getBasePeriod();
+
         const auto *bass = this->chord.bassNote.get();
-        if (bass != nullptr && bass->isValid())
+        if (bass != nullptr)
         {
-            // todo
-            //outResult.set(0, bassNote);
+            jassert(bass->isValid());
+            const auto bassNote = scaleToUse->getChromaticKey(bass->key,
+                bass->sharp ? 1 : (bass->flat ? -1 : 0), false);
+
+            // remove existing notes colliding with bass, if any
+            // and replace the tonic with bass, just octave lower:
+            outResult.removeAllInstancesOf(bassNote);
+            outResult.set(0, bassNote - basePeriod);
         }
 
         const auto *inv = this->chord.inversion.get();
-        if (inv != nullptr && inv->isValid())
+        if (inv != nullptr)
         {
-            // todo
-            if (inv->inversion > 0)
+            jassert(inv->isValid());
+            auto i = inv->inversion;
+            while (i != 0)
             {
-            }
-            else
-            {
-            }
+                if (inv->inversion > 0)
+                {
+                    auto inverted = outResult[0] + basePeriod;
+                    outResult.remove(0);
+                    outResult.add(inverted);
+                    i--;
+                }
+                else
+                {
+                    auto inverted = outResult.getLast() - basePeriod;
+                    outResult.removeLast();
+                    outResult.insert(0, inverted);
+                    i++;
+                }
+            };
         }
 
-        return true;
+        const bool hasChanges = this->lastResult == outResult;
+        this->lastResult = outResult;
+
+        return hasChanges;
     }
 
     String getChordAsString() const
     {
         String result;
 
-        if (this->chord.rootKey != nullptr && this->chord.rootKey->isValid())
+        if (this->chord.rootKey != nullptr)
         {
             this->chord.rootKey->fillDescription(result);
         }
 
-        if (this->chord.chordQuality != nullptr && this->chord.chordQuality->isValid())
+        if (this->chord.chordQuality != nullptr)
         {
             this->chord.chordQuality->fillDescription(result);
         }
 
-        if (this->chord.bassNote != nullptr && this->chord.bassNote->isValid())
+        if (this->chord.bassNote != nullptr)
         {
             this->chord.bassNote->fillDescription(result);
         }
 
-        if (this->chord.suspension != nullptr && this->chord.suspension->isValid())
+        if (this->chord.suspension != nullptr)
         {
             this->chord.suspension->fillDescription(result);
         }
 
-        if (this->chord.keyAlteration != nullptr && this->chord.keyAlteration->isValid())
+        if (this->chord.keyAlteration != nullptr)
         {
             this->chord.keyAlteration->fillDescription(result);
         }
 
-        if (this->chord.addition != nullptr && this->chord.addition->isValid())
+        if (this->chord.addition != nullptr)
         {
             this->chord.addition->fillDescription(result);
         }
 
-        if (this->chord.inversion != nullptr && this->chord.inversion->isValid())
+        if (this->chord.inversion != nullptr)
         {
             this->chord.inversion->fillDescription(result);
         }
@@ -1332,41 +1427,49 @@ public:
 
     void fillSuggestions(CommandPaletteActionsProvider::Actions &actions) const
     {
-        if (this->chord.rootKey == nullptr || !this->chord.rootKey->isValid())
+        // todo be more smart
+
+        if (this->chord.rootKey == nullptr)
         {
             actions.addArray(this->rootKeySuggestions);
             return;
         }
 
-        if (this->chord.chordQuality == nullptr || !this->chord.chordQuality->isValid())
+        if (this->chord.chordQuality == nullptr)
         {
+            if (this->chord.suspension == nullptr)
+            {
+                actions.addArray(this->scaleSuggestions);
+            }
+
             actions.addArray(this->chordQualitySuggestions);
             return;
         }
 
-        if (this->chord.suspension == nullptr || !this->chord.suspension->isValid())
+        if (this->chord.suspension == nullptr)
         {
             actions.addArray(this->suspensionSuggestions);
         }
 
-        if (this->chord.addition == nullptr || !this->chord.addition->isValid())
+        if (this->chord.addition == nullptr)
         {
             actions.addArray(this->additionSuggestions);
         }
 
-        if (this->chord.inversion == nullptr || !this->chord.inversion->isValid())
+        if (this->chord.inversion == nullptr)
         {
             actions.addArray(this->inversionSuggestions);
         }
 
-        if ((this->chord.keyAlteration == nullptr || !this->chord.keyAlteration->isValid()) &&
+        if (this->chord.keyAlteration == nullptr &&
+            this->chord.chordQuality != nullptr &&
             this->chord.chordQuality->fifth == ChordParsing::ChordQualityExpression::Fifth::Perfect)
         {
             jassert(this->chord.chordQuality != nullptr); // should never happen, see the check above
             actions.addArray(this->alterationSuggestions);
         }
 
-        if (this->chord.bassNote == nullptr || !this->chord.bassNote->isValid())
+        if (this->chord.bassNote == nullptr)
         {
             actions.addArray(this->bassNoteSuggestions);
         }
@@ -1376,8 +1479,7 @@ private:
 
     // fixme naming?
     ChordParsing::ChordDescription chord;
-    RenderedChord render;
-    StringArray lastChords; // ??
+    mutable Array<int> lastResult;
 
     const Scale::Ptr major = Scale::getNaturalMajorScale();
     const Scale::Ptr minor = Scale::getNaturalMinorScale();
@@ -1385,6 +1487,7 @@ private:
 
     CommandPaletteActionsProvider::Actions rootKeySuggestions;
     CommandPaletteActionsProvider::Actions chordQualitySuggestions;
+    CommandPaletteActionsProvider::Actions scaleSuggestions;
     CommandPaletteActionsProvider::Actions suspensionSuggestions;
     CommandPaletteActionsProvider::Actions inversionSuggestions;
     CommandPaletteActionsProvider::Actions additionSuggestions;
@@ -1420,8 +1523,9 @@ private:
 // CommandPaletteChordConstructor
 //===----------------------------------------------------------------------===//
 
-CommandPaletteChordConstructor::CommandPaletteChordConstructor() :
-    chordCompiler(makeUnique<ChordCompiler>()) {}
+CommandPaletteChordConstructor::CommandPaletteChordConstructor(PianoRoll &roll) :
+    chordCompiler(makeUnique<ChordCompiler>()),
+    roll(roll) {}
 
 CommandPaletteChordConstructor::~CommandPaletteChordConstructor() {}
 
@@ -1439,9 +1543,23 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
     this->actions.clearQuick();
     if (this->chordCompiler->isValid())
     {
+        const bool hasNewChord = this->chordCompiler->generate(this->chord);
+        if (hasNewChord)
+        {
+            this->undoIfNeeded();
+            const auto track = this->roll.getActiveTrack();
+            // re-generate notes in roll and make some noise
+            // focus on chord if not focused yet?
+        }
+
         this->actions.add(CommandPaletteAction::action(chordAsString, "preview", -10.f)->
             withCallback([chordAsString](TextEditor &ed) { ed.setText("$" + chordAsString); return false; })->
             unfiltered());
+    }
+    else
+    {
+        // clear chord in piano roll, stop all sound
+        this->undoIfNeeded();
     }
 
     this->chordCompiler->fillSuggestions(this->actions);
@@ -1460,4 +1578,13 @@ void CommandPaletteChordConstructor::clearFilter()
 const CommandPaletteActionsProvider::Actions &CommandPaletteChordConstructor::getActions() const
 {
     return this->actions;
+}
+
+void CommandPaletteChordConstructor::undoIfNeeded()
+{
+    if (this->hasMadeChanges)
+    {
+        this->roll.getActiveTrack()->getSequence()->undoCurrentTransactionOnly();
+        this->hasMadeChanges = false;
+    }
 }

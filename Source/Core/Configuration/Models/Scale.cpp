@@ -61,7 +61,9 @@ Scale::Ptr Scale::getChromaticScale()
 }
 
 inline static Array<int> getNaturalMinorKeys()
-{ return { 0, 2, 3, 5, 7, 8, 10 }; }
+{
+    return { 0, 2, 3, 5, 7, 8, 10 };
+}
 
 Scale::Ptr Scale::getNaturalMinorScale()
 {
@@ -72,7 +74,9 @@ Scale::Ptr Scale::getNaturalMinorScale()
 }
 
 inline static Array<int> getNaturalMajorKeys()
-{ return { 0, 2, 4, 5, 7, 9, 11 }; }
+{
+    return { 0, 2, 4, 5, 7, 9, 11 };
+}
 
 Scale::Ptr Scale::getNaturalMajorScale()
 {
