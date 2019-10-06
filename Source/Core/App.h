@@ -124,5 +124,23 @@ private:
 
     App::RunMode runMode;
     
+    class CustomFontLookAndFeel : public LookAndFeel_V4 {
+        public:
+        CustomFontLookAndFeel() {
+            LookAndFeel::setDefaultLookAndFeel(this);
+        }
+
+        static const Font getCustomFont() {
+            static auto typeface = Typeface::createSystemTypefaceFor(BinaryData::SourceHanSansCN-Normal_ttf, BinaryData::SourceHanSansCN-Normal_ttf);
+            return Font(typeface);
+        }
+
+        Typeface::Ptr getTypefaceForFont(const Font &f) override {
+            return getCustomFont().getTypeface();
+        }
+        
+        private:
+    } customLookAndFeel;
+    
     void handleAsyncUpdate() override;
 };

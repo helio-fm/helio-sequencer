@@ -8,6 +8,9 @@
 
 namespace BinaryData
 {
+    extern const char*   SourceHanSansCNNormal_ttf;
+    const int            SourceHanSansCNNormal_ttfSize = 8173832;
+
     extern const char*   C2v9_flac;
     const int            C2v9_flacSize = 102140;
 
@@ -315,7 +318,7 @@ namespace BinaryData
     const int            translations_jsonSize = 158811;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 102;
+    const int namedResourceListSize = 103;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

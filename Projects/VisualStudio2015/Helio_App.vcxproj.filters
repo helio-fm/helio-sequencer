@@ -2,6 +2,9 @@
 
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Helio\Resources\Font">
+      <UniqueIdentifier>{A34F863C-6F4E-6DFC-0891-7186591FCA45}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Resources\Samples">
       <UniqueIdentifier>{F44E5A42-5F63-EDB4-3295-9D3A72C1FEBA}</UniqueIdentifier>
     </Filter>
@@ -335,9 +338,6 @@
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk">
       <UniqueIdentifier>{874C5D0C-6D29-68EE-38BB-26200B56BC89}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\vestige">
-      <UniqueIdentifier>{E6B89200-4384-2D8B-12D0-884F3BE7A017}</UniqueIdentifier>
-    </Filter>
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK">
       <UniqueIdentifier>{86BAA7A7-DC50-35B6-910B-932AEAF257F2}</UniqueIdentifier>
     </Filter>
@@ -575,8 +575,8 @@
     <Filter Include="JUCE Modules">
       <UniqueIdentifier>{FE955B6B-68AC-AA07-70D8-2413F6DB65C8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated Code">
-      <UniqueIdentifier>{A8F34650-2205-477E-C891-FB5C99876C4A}</UniqueIdentifier>
+    <Filter Include="JUCE Library Code">
+      <UniqueIdentifier>{7ED5A90E-41AF-A1EF-659B-37CEEAB9BA61}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3242,43 +3242,43 @@
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData2.cpp">
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_basics.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_devices.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_formats.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_processors.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_core.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_data_structures.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_events.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_graphics.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_gui_basics.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_gui_extra.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_opengl.cpp">
-      <Filter>Generated Code</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\UnityBuild.cpp">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4473,7 +4473,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\utilities\juce_SmoothedValue.h">
       <Filter>JUCE Modules\juce_audio_basics\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_audio_basics\juce_audio_basics.h">
       <Filter>JUCE Modules\juce_audio_basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\audio_io\juce_AudioDeviceManager.h">
@@ -4506,7 +4506,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\sources\juce_AudioTransportSource.h">
       <Filter>JUCE Modules\juce_audio_devices\sources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_audio_devices\juce_audio_devices.h">
       <Filter>JUCE Modules\juce_audio_devices</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\flac\libFLAC\include\private\all.h">
@@ -4800,7 +4800,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\sampler\juce_Sampler.h">
       <Filter>JUCE Modules\juce_audio_formats\sampler</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_audio_formats\juce_audio_formats.h">
       <Filter>JUCE Modules\juce_audio_formats</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format\juce_AudioPluginFormat.h">
@@ -5001,9 +5001,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\vestige\vestige.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\vestige</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClInclude>
@@ -5085,7 +5082,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\utilities\juce_RangedAudioParameter.h">
       <Filter>JUCE Modules\juce_audio_processors\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_audio_processors\juce_audio_processors.h">
       <Filter>JUCE Modules\juce_audio_processors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_AbstractFifo.h">
@@ -5496,7 +5493,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\zip\juce_ZipFile.h">
       <Filter>JUCE Modules\juce_core\zip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\juce_core.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_core\juce_core.h">
       <Filter>JUCE Modules\juce_core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h">
@@ -5526,7 +5523,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueWithDefault.h">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_data_structures\juce_data_structures.h">
       <Filter>JUCE Modules\juce_data_structures</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_events\broadcasters\juce_ActionBroadcaster.h">
@@ -5601,7 +5598,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_events\timers\juce_Timer.h">
       <Filter>JUCE Modules\juce_events\timers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_events\juce_events.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_events\juce_events.h">
       <Filter>JUCE Modules\juce_events</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\colour\juce_Colour.h">
@@ -5778,7 +5775,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\placement\juce_RectanglePlacement.h">
       <Filter>JUCE Modules\juce_graphics\placement</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_graphics\juce_graphics.h">
       <Filter>JUCE Modules\juce_graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\application\juce_Application.h">
@@ -6198,7 +6195,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\windows\juce_TopLevelWindow.h">
       <Filter>JUCE Modules\juce_gui_basics\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_gui_basics\juce_gui_basics.h">
       <Filter>JUCE Modules\juce_gui_basics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\code_editor\juce_CodeDocument.h">
@@ -6282,7 +6279,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\native\juce_mac_CarbonViewWrapperComponent.h">
       <Filter>JUCE Modules\juce_gui_extra\native</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_gui_extra\juce_gui_extra.h">
       <Filter>JUCE Modules\juce_gui_extra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_opengl\geometry\juce_Draggable3DOrientation.h">
@@ -6348,20 +6345,23 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_opengl\utils\juce_OpenGLAppComponent.h">
       <Filter>JUCE Modules\juce_opengl\utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.h">
+    <ClInclude Include="..\..\..\..\SDK\JUCE\modules\juce_opengl\juce_opengl.h">
       <Filter>JUCE Modules\juce_opengl</Filter>
     </ClInclude>
     <ClInclude Include="..\Projucer\JuceLibraryCode\AppConfig.h">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClInclude>
     <ClInclude Include="..\Projucer\JuceLibraryCode\BinaryData.h">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClInclude>
     <ClInclude Include="..\Projucer\JuceLibraryCode\JuceHeader.h">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Resources\Font\SourceHanSansCN-Normal.ttf">
+      <Filter>Helio\Resources\Font</Filter>
+    </None>
     <None Include="..\..\Resources\Samples\C2v9.flac">
       <Filter>Helio\Resources\Samples</Filter>
     </None>
@@ -6708,12 +6708,12 @@
       <Filter>JUCE Modules\juce_graphics\image_formats\pnglib</Filter>
     </None>
     <None Include=".\icon.ico">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc">
-      <Filter>Generated Code</Filter>
+      <Filter>JUCE Library Code</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

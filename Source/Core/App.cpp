@@ -562,6 +562,10 @@ void App::initialise(const String &commandLine)
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
     
         this->workspace.reset(new class Workspace());
+        
+        // Use built in font
+        Typeface::Ptr getTypefaceForFont(const Font &f);
+        LookAndFeel::setDefaultLookAndFeel(&customLookAndFeel);
 
 #if JUCE_ANDROID
         // OpenGL seems to be the only sensible option on Android:

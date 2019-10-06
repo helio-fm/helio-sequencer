@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="2.3" bundleIdentifier="fm.helio"
-              includeBinaryInAppConfig="1" jucerVersion="5.4.3" companyWebsite="https://helio.fm"
+              includeBinaryInAppConfig="1" jucerVersion="5.4.4" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
               cppLanguageStandard="11" usePrecompiledHeaders="0" precompiledHeaderFileName=""
@@ -10,6 +10,10 @@
               projectLineFeed="&#10;">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
+      <GROUP id="{3130E4A0-549F-3846-529D-00689FAE5BCD}" name="Font">
+        <FILE id="YbEpjG" name="SourceHanSansCN-Normal.ttf" compile="0" resource="1"
+              file="../../Resources/Font/SourceHanSansCN-Normal.ttf"/>
+      </GROUP>
       <GROUP id="{566A42BA-3539-AB6F-C7F2-BD3408E4047E}" name="Samples">
         <FILE id="oFLIK5" name="C2v9.flac" compile="0" resource="1" file="../../Resources/Samples/C2v9.flac"/>
         <FILE id="bR4aWr" name="C3v9.flac" compile="0" resource="1" file="../../Resources/Samples/C3v9.flac"/>
