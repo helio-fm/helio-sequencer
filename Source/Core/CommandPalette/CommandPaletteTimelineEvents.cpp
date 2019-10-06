@@ -26,33 +26,38 @@
 #include "TimeSignatureEvent.h"
 #include "KeySignatureEvent.h"
 
-CommandPaletteTimelineEvents::CommandPaletteTimelineEvents(const ProjectNode &project) :
+#include "PianoTrackNode.h"
+#include "PianoSequence.h"
+#include "Pattern.h"
+#include "Clip.h"
+
+CommandPaletteTimelineEvents::CommandPaletteTimelineEvents(ProjectNode &project) :
     project(project) {}
 
 const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getActions() const
 {
-    // TODO rebuild flag
+    // TODO cache timeline and track commands, add rebuild flag
     if (!this->timelineEvents.isEmpty())
     {
         return this->timelineEvents;
     }
 
-    double outTimeMs = 0.0;
     double outTempo = 0.0;
+    double outStartTimeMs = 0.0;
+    double outEndTimeMs = 0.0;
 
     const auto *timeline = this->project.getTimeline();
-
+    const auto *roll = this->project.getLastFocusedRoll();
+    jassert(roll != nullptr);
+    
     const auto *annotationsSequence = timeline->getAnnotations()->getSequence();
     for (int i = 0; i < annotationsSequence->size(); ++i)
     {
         const auto *annotation = dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i));
         jassert(annotation != nullptr);
 
-        const auto *roll = this->project.getLastFocusedRoll();
-        jassert(roll != nullptr);
-
         const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
-        this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
+        this->project.getTransport().calcTimeAndTempoAt(seekPos, outStartTimeMs, outTempo);
         const auto action = [this, i](TextEditor &ed)
         {
             auto *roll = this->project.getLastFocusedRoll();
@@ -68,7 +73,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
         };
 
         this->timelineEvents.add(CommandPaletteAction::action(annotation->getDescription(),
-            Transport::getTimeString(outTimeMs), float(outTimeMs))->
+            Transport::getTimeString(outStartTimeMs), float(outStartTimeMs))->
             withColour(annotation->getTrackColour())->
             withCallback(action));
     }
@@ -79,11 +84,8 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
         const auto *event = dynamic_cast<KeySignatureEvent *>(ksSequence->getUnchecked(i));
         jassert(event != nullptr);
 
-        const auto *roll = this->project.getLastFocusedRoll();
-        jassert(roll != nullptr);
-
         const double seekPos = roll->getTransportPositionByBeat(event->getBeat());
-        this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
+        this->project.getTransport().calcTimeAndTempoAt(seekPos, outStartTimeMs, outTempo);
         const auto action = [this, i](TextEditor &ed)
         {
             auto *roll = this->project.getLastFocusedRoll();
@@ -99,7 +101,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
         };
 
         this->timelineEvents.add(CommandPaletteAction::action(event->toString(),
-            Transport::getTimeString(outTimeMs), float(outTimeMs))->
+            Transport::getTimeString(outStartTimeMs), float(outStartTimeMs))->
             withColour(event->getTrackColour())->
             withCallback(action));
     }
@@ -110,11 +112,8 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
         const auto *event = dynamic_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(i));
         jassert(event != nullptr);
 
-        const auto *roll = this->project.getLastFocusedRoll();
-        jassert(roll != nullptr);
-
         const double seekPos = roll->getTransportPositionByBeat(event->getBeat());
-        this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
+        this->project.getTransport().calcTimeAndTempoAt(seekPos, outStartTimeMs, outTempo);
         const auto action = [this, i](TextEditor &ed)
         {
             auto *roll = this->project.getLastFocusedRoll();
@@ -130,9 +129,37 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
         };
 
         this->timelineEvents.add(CommandPaletteAction::action(event->toString(),
-            Transport::getTimeString(outTimeMs), float(outTimeMs))->
+            Transport::getTimeString(outStartTimeMs), float(outStartTimeMs))->
             withColour(event->getTrackColour())->
             withCallback(action));
+    }
+
+    for (auto *pianoTrackNode : this->project.findChildrenOfType<PianoTrackNode>())
+    {
+        const auto *sequence = pianoTrackNode->getSequence();
+        for (const auto *clip : pianoTrackNode->getPattern()->getClips())
+        {
+            const double seekStart = roll->getTransportPositionByBeat(sequence->getFirstBeat() + clip->getBeat());
+            const double seekEnd = roll->getTransportPositionByBeat(sequence->getLastBeat() + clip->getBeat());
+
+            this->project.getTransport().calcTimeAndTempoAt(seekStart, outStartTimeMs, outTempo);
+            this->project.getTransport().calcTimeAndTempoAt(seekEnd, outEndTimeMs, outTempo);
+
+            const auto timeString = Transport::getTimeString(outStartTimeMs) + " - " + Transport::getTimeString(outEndTimeMs);
+
+            const auto action = [this, pianoTrackNode, clip](TextEditor &ed)
+            {
+                this->project.setEditableScope(pianoTrackNode, *clip, true);
+                return true;
+            };
+
+            // all clips are to be listed at the bottom, thus + 10000 sec offset:
+            static const float orderOffset = 10000000.f;
+            this->timelineEvents.add(CommandPaletteAction::action(pianoTrackNode->getTrackName(),
+                timeString, float(outStartTimeMs + orderOffset))->
+                withColour(pianoTrackNode->getTrackColour())->
+                withCallback(action));
+        }
     }
 
     return this->timelineEvents;

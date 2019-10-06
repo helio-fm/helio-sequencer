@@ -24,7 +24,7 @@ class CommandPaletteTimelineEvents final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteTimelineEvents(const ProjectNode &project);
+    CommandPaletteTimelineEvents(ProjectNode &project);
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
@@ -34,11 +34,10 @@ public:
 protected:
 
     const Actions &getActions() const override;
-
     mutable Actions timelineEvents;
 
 private:
     
-    const ProjectNode &project;
+    ProjectNode &project;
 
 };
