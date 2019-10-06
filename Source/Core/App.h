@@ -131,7 +131,7 @@ private:
         }
 
         static const Font getCustomFont() {
-            static auto typeface = Typeface::createSystemTypefaceFor(BinaryData::SourceHanSansCN-Normal_ttf, BinaryData::SourceHanSansCN-Normal_ttf);
+            static auto typeface = Typeface::createSystemTypefaceFor(BinaryData::SourceHanSansCN-Normal_ttf, BinaryData::SourceHanSansCN-Normal_ttfSize);
             return Font(typeface);
         }
 
