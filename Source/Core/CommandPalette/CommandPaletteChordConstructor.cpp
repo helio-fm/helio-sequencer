@@ -1237,8 +1237,6 @@ public:
         const auto tonic = scaleToUse->getChromaticKey(this->chord.rootKey->key,
             this->chord.rootKey->sharp ? 1 : (this->chord.rootKey->flat ? -1 : 0), false);
 
-        jassert(tonic >= 0);
-
         RenderedChord chord;
 
         switch (quality->third)
@@ -1348,9 +1346,8 @@ public:
                 bass->sharp ? 1 : (bass->flat ? -1 : 0), false);
 
             // remove existing notes colliding with bass, if any
-            // and replace the tonic with bass, just octave lower:
             outResult.removeAllInstancesOf(bassNote);
-            outResult.set(0, bassNote - basePeriod);
+            outResult.insert(0, bassNote - basePeriod);
         }
 
         const auto *inv = this->chord.inversion.get();
@@ -1377,7 +1374,7 @@ public:
             };
         }
 
-        const bool hasChanges = this->lastResult == outResult;
+        const bool hasChanges = this->lastResult != outResult;
         this->lastResult = outResult;
 
         return hasChanges;
@@ -1523,6 +1520,9 @@ private:
 // CommandPaletteChordConstructor
 //===----------------------------------------------------------------------===//
 
+#define CHORD_COMPILER_NOTE_LENGTH      (4)
+#define CHORD_COMPILER_NOTE_VELOCITY    (0.35f)
+
 CommandPaletteChordConstructor::CommandPaletteChordConstructor(PianoRoll &roll) :
     chordCompiler(makeUnique<ChordCompiler>()),
     roll(roll) {}
@@ -1543,22 +1543,16 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
     this->actions.clearQuick();
     if (this->chordCompiler->isValid())
     {
-        const bool hasNewChord = this->chordCompiler->generate(this->chord);
-        if (hasNewChord)
-        {
-            this->undoIfNeeded();
-            const auto track = this->roll.getActiveTrack();
-            // re-generate notes in roll and make some noise
-            // focus on chord if not focused yet?
-        }
-
         this->actions.add(CommandPaletteAction::action(chordAsString, "preview", -10.f)->
-            withCallback([chordAsString](TextEditor &ed) { ed.setText("$" + chordAsString); return false; })->
-            unfiltered());
+            unfiltered()->withCallback([this, chordAsString](TextEditor &ed)
+        {
+            this->previewIfNeeded();
+            ed.setText("$" + chordAsString);
+            return false;
+        }));
     }
     else
     {
-        // clear chord in piano roll, stop all sound
         this->undoIfNeeded();
     }
 
@@ -1569,9 +1563,11 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
 
 void CommandPaletteChordConstructor::clearFilter()
 {
-    this->chordCompiler->parse("");
     this->actions.clearQuick();
+    this->chordCompiler->parse("");
     this->chordCompiler->fillSuggestions(this->actions);
+    this->undoIfNeeded();
+
     CommandPaletteActionsProvider::clearFilter();
 }
 
@@ -1584,7 +1580,57 @@ void CommandPaletteChordConstructor::undoIfNeeded()
 {
     if (this->hasMadeChanges)
     {
-        this->roll.getActiveTrack()->getSequence()->undoCurrentTransactionOnly();
+        auto *sequence = this->roll.getActiveTrack()->getSequence();
+        this->roll.getTransport().stopSound(sequence->getTrackId());
+        sequence->undoCurrentTransactionOnly();
         this->hasMadeChanges = false;
+    }
+}
+
+void CommandPaletteChordConstructor::previewIfNeeded()
+{
+    const bool hasNewChord = this->chordCompiler->generate(this->chord);
+    if (hasNewChord)
+    {
+        this->undoIfNeeded();
+
+        if (auto *pianoSequence =
+            dynamic_cast<PianoSequence *>(this->roll.getActiveTrack()->getSequence()))
+        {
+            // todo test if clip offsets work right
+
+            const auto seek = this->roll.getTransport().getSeekPosition();
+            const auto clipKey = this->roll.getActiveClip().getKey();
+            const auto clipBeat = this->roll.getActiveClip().getBeat();
+            const auto targetBeat = this->roll.getBeatByTransportPosition(seek) - clipBeat;
+
+            int minKey = 128;
+            int maxKey = 0;
+
+            for (const auto &relativeKey : this->chord)
+            {
+                const auto key = jlimit(0, 128, MIDDLE_C + relativeKey);
+
+                minKey = jmin(minKey, key);
+                maxKey = jmax(maxKey, key);
+
+                const Note note(pianoSequence, key,
+                    targetBeat, CHORD_COMPILER_NOTE_LENGTH, CHORD_COMPILER_NOTE_VELOCITY);
+
+                pianoSequence->insert(note, true);
+                this->hasMadeChanges = true;
+
+                this->roll.getTransport().previewMidiMessage(pianoSequence->getTrackId(),
+                    MidiMessage::noteOn(note.getTrackChannel(),
+                        key + clipKey, CHORD_COMPILER_NOTE_VELOCITY));
+            }
+
+            // focus on the chord - looks kinda weird?
+            // should instead focus on playhead position on start?
+            //static const int keyMargin = 6;
+            //static const float beatMargin = 4.f;
+            //this->roll.zoomToArea(clipKey + minKey - keyMargin, clipKey + maxKey + keyMargin,
+            //    targetBeat - beatMargin, targetBeat + CHORD_COMPILER_NOTE_LENGTH + beatMargin);
+        }
     }
 }

@@ -34,6 +34,7 @@
 #define CHORD_BUILDER_LABEL_SIZE       (32)
 #define CHORD_BUILDER_FONT_SIZE        (16)
 #define CHORD_BUILDER_NOTE_LENGTH      (4)
+#define CHORD_BUILDER_NOTE_VELOCITY    (0.35f)
 
 static Label *createPopupButtonLabel(const String &text)
 {
@@ -242,8 +243,6 @@ void ChordPreviewTool::onPopupButtonEndDragging(PopupButton *button)
     }
 }
 
-static const float kChordPreviewDefaultNoteVelocity = 0.35f;
-
 Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
 {
     for (const auto &chord : this->defaultChords)
@@ -294,10 +293,10 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             const auto inScaleKey = scaleFnOffset + chordKey.getInScaleKey();
             const auto finalRootOffset = periodOffset + this->root - this->clip.getKey();
             const int key = jlimit(0, 128, finalRootOffset + this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
-            const Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, kChordPreviewDefaultNoteVelocity);
+            const Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
             this->sequence->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
-                key + this->clip.getKey(), kChordPreviewDefaultNoteVelocity));
+                key + this->clip.getKey(), CHORD_BUILDER_NOTE_VELOCITY));
         }
 
         this->hasMadeChanges = true;
@@ -320,13 +319,13 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     
     const int key = jlimit(0, 128, this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
-        CHORD_BUILDER_NOTE_LENGTH, kChordPreviewDefaultNoteVelocity);
+        CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
 
     this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
     {
         this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
-            key + this->clip.getKey(), kChordPreviewDefaultNoteVelocity));
+            key + this->clip.getKey(), CHORD_BUILDER_NOTE_VELOCITY));
     }
 
     this->hasMadeChanges = true;

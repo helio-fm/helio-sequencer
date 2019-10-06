@@ -51,5 +51,6 @@ private:
 
     bool hasMadeChanges = false;
     void undoIfNeeded();
+    void previewIfNeeded();
 
 };
