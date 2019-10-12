@@ -25,20 +25,16 @@
 
 CommandPaletteCommonActions::CommandPaletteCommonActions()
 {
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::projects), "/", -10.f)->
-        withCallback([](TextEditor &ed) { ed.setText("/"); return false; }));
+    // todo lookup existing providers?
 
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::vcs), "!", -9.f)->
-        withCallback([](TextEditor &ed) { ed.setText("!"); return false; }));
-
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::timeline), "@", -8.f)->
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::timeline), "@", -3.f)->
         withCallback([](TextEditor &ed) { ed.setText("@"); return false; }));
 
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::chordsList), "#", -7.f)->
-        withCallback([](TextEditor &ed) { ed.setText("#"); return false; }));
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::chordBuilder), "!", -2.f)->
+        withCallback([](TextEditor &ed) { ed.setText("!"); return false; }));
 
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::chordBuilder), "$", -6.f)->
-        withCallback([](TextEditor &ed) { ed.setText("$"); return false; }));
+    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::projects), "/", -1.f)->
+        withCallback([](TextEditor &ed) { ed.setText("/"); return false; }));
 }
 
 const CommandPaletteActionsProvider::Actions &CommandPaletteCommonActions::getActions() const

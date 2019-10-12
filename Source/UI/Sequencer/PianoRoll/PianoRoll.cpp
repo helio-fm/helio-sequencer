@@ -52,7 +52,6 @@
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
 #include "CommandPaletteChordConstructor.h"
-#include "CommandPaletteChordsList.h"
 #include "LassoListeners.h"
 #include "UndoStack.h"
 #include "Workspace.h"
@@ -103,7 +102,6 @@ PianoRoll::PianoRoll(ProjectNode &parentProject,
     this->draggingHelper.reset(new HelperRectangleHorizontal());
     this->addChildComponent(this->draggingHelper.get());
 
-    this->consoleChordsList = makeUnique<CommandPaletteChordsList>();
     this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
 
     this->reloadRollContent();
@@ -1412,7 +1410,7 @@ void PianoRoll::updateChildrenPositions()
 
 Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProviders() const
 {
-    return { this->consoleChordConstructor.get(), this->consoleChordsList.get() };
+    return { this->consoleChordConstructor.get() };
 }
 
 //===----------------------------------------------------------------------===//

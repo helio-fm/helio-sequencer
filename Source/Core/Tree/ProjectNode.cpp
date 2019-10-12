@@ -51,7 +51,6 @@
 #include "ProjectMenu.h"
 
 #include "CommandPaletteTimelineEvents.h"
-#include "CommandPaletteVersionControl.h"
 
 #include "HelioTheme.h"
 #include "SequencerLayout.h"
@@ -105,7 +104,6 @@ void ProjectNode::initialize()
 
     this->transport->seekToPosition(0.0);
 
-    this->consoleVcsEvents = makeUnique<CommandPaletteVersionControl>(*this);
     this->consoleTimelineEvents = makeUnique<CommandPaletteTimelineEvents>(*this);
 
     this->recreatePage();
@@ -994,9 +992,12 @@ void ProjectNode::onResetState()
 
 Array<CommandPaletteActionsProvider *> ProjectNode::getCommandPaletteActionProviders() const
 {
-    // only add timeline if roll is showing?
-    // this->getLastFocusedRoll()->isShowing()
-    return { this->consoleVcsEvents.get(), this->consoleTimelineEvents.get() };
+    if (this->getLastFocusedRoll()->isShowing())
+    {
+        return { this->consoleTimelineEvents.get() };
+    }
+
+    return {};
 }
 
 //===----------------------------------------------------------------------===//

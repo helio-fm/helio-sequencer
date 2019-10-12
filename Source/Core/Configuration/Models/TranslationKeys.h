@@ -321,9 +321,7 @@ namespace I18n
     namespace CommandPalette
     {
         static const Identifier projects = "console::projects";
-        static const Identifier vcs = "console::vcs";
         static const Identifier timeline = "console::timeline";
-        static const Identifier chordsList = "console::chords";
         static const Identifier chordBuilder = "console::chordbuilder";
     }
 } // namespace Translations

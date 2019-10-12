@@ -1510,7 +1510,7 @@ private:
         {
             // not just append a piece of text, but also turn in into a valid description:
             this->parse(ed.getText() + " " + text);
-            ed.setText("$" + this->getChordAsString());
+            ed.setText("!" + this->getChordAsString());
             return false;
         });
     }
@@ -1547,7 +1547,7 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
             unfiltered()->withCallback([this, chordAsString](TextEditor &ed)
         {
             this->previewIfNeeded();
-            ed.setText("$" + chordAsString);
+            ed.setText("!" + chordAsString);
             return false;
         }));
     }

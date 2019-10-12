@@ -31,7 +31,7 @@ public:
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
-        return prefix == '$';
+        return prefix == '!';
     }
 
     void updateFilter(const String &pattern, bool skipPrefix) override;

@@ -32,7 +32,6 @@ class NoteComponent;
 class PianoRollCellHighlighter;
 class PianoRollSelectionMenuManager;
 class CommandPaletteChordConstructor;
-class CommandPaletteChordsList;
 class HelperRectangle;
 class KnifeToolHelper;
 class Scale;
@@ -275,7 +274,6 @@ private:
 
     UniquePointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
-    UniquePointer<CommandPaletteChordsList> consoleChordsList;
     UniquePointer<CommandPaletteChordConstructor> consoleChordConstructor;
 
     using SequenceMap = FlatHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash>;

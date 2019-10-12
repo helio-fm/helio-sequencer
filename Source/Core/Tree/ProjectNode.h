@@ -31,7 +31,6 @@ class Transport;
 class ProjectMetadata;
 class ProjectTimeline;
 class CommandPaletteTimelineEvents;
-class CommandPaletteVersionControl;
 class UndoStack;
 class Pattern;
 class MidiTrack;
@@ -220,7 +219,6 @@ private:
 
     WeakReference<TreeNode> lastShownTrack;
 
-    UniquePointer<CommandPaletteVersionControl> consoleVcsEvents;
     UniquePointer<CommandPaletteTimelineEvents> consoleTimelineEvents;
 
 private:
