@@ -697,7 +697,7 @@ void Transport::recacheIfNeeded()
     }
 }
 
-ProjectSequences Transport::getPlaybackCache()
+ProjectSequences &Transport::getPlaybackCache()
 {
     const SpinLock::ScopedLockType l(this->sequencesLock);
     return this->playbackCache;

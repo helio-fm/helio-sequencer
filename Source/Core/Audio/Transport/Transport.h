@@ -156,7 +156,7 @@ private:
 
 private:
 
-    ProjectSequences getPlaybackCache();
+    ProjectSequences &getPlaybackCache();
     void recacheIfNeeded();
     
     SpinLock sequencesLock;

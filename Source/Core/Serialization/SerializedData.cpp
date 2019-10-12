@@ -384,11 +384,32 @@ void SerializedData::writeToStream(OutputStream &output) const
     SharedData::writeObjectToStream(output, this->data.get());
 }
 
+inline static Identifier readIdentifier(InputStream &input)
+{
+    // avoid re-allocating a buffer *every* time we read an object or property type
+    // (using JUCE's readString() on deserialization sucks really hard);
+    // also preallocated size of 32 should be enough for all identifiers I ever use,
+    // and for all string values var::readFromStream() will be called, but far less frequently 
+    static MemoryOutputStream buffer(32);
+    buffer.reset();
+
+    for (;;)
+    {
+        auto c = input.readByte();
+        buffer.writeByte(c);
+
+        if (c == 0)
+        {
+            return buffer.toUTF8();
+        }
+    }
+}
+
 SerializedData SerializedData::readFromStream(InputStream &input)
 {
-    const auto type = input.readString();
+    const auto type = readIdentifier(input);
 
-    if (type.isEmpty())
+    if (!type.isValid())
     {
         return {};
     }
@@ -399,11 +420,11 @@ SerializedData SerializedData::readFromStream(InputStream &input)
 
     for (int i = 0; i < numProps; ++i)
     {
-        const auto name = input.readString();
+        const auto propertyType = readIdentifier(input);
 
-        if (name.isNotEmpty())
+        if (propertyType.isValid())
         {
-            v.data->properties.set(name, var::readFromStream(input));
+            v.data->properties.set(propertyType, var::readFromStream(input));
         }
         else
         {

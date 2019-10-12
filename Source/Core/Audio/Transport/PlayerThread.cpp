@@ -48,7 +48,7 @@ void PlayerThread::startPlayback(double start, double end,
 
 void PlayerThread::run()
 {
-    ProjectSequences sequences = this->transport.getPlaybackCache();
+    auto &sequences = this->transport.getPlaybackCache();
     Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
     
     double nextEventTimeDelta = 0.0;

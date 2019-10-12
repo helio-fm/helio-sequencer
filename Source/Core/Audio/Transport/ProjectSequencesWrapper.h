@@ -60,11 +60,7 @@ private:
 
 public:
     
-    ProjectSequences() {}
-    
-    ProjectSequences(const ProjectSequences &other) :
-    sequences(other.sequences),
-    uniqueInstruments(other.uniqueInstruments) {}
+    ProjectSequences() = default;
     
     inline Array<Instrument *> getUniqueInstruments() const noexcept
     {
@@ -85,14 +81,14 @@ public:
     inline void clear()
     {
         const SpinLock::ScopedLockType lock(this->sequencesLock);
-        this->uniqueInstruments.clear();
-        this->sequences.clear();
+        this->uniqueInstruments.clearQuick();
+        this->sequences.clearQuick();
     }
     
     inline bool isEmpty() const
     {
         const SpinLock::ScopedLockType lock(this->sequencesLock);
-        return (this->sequences.size() == 0);
+        return this->sequences.isEmpty();
     }
     
     double getSampleRate() const
@@ -111,7 +107,9 @@ public:
     int getNumOutputChannels() const
     {
         if (this->isEmpty())
-        { return 0; }
+        {
+            return 0;
+        }
 
         const SpinLock::ScopedLockType lock(this->sequencesLock);
 
@@ -153,9 +151,8 @@ public:
     {
         const SpinLock::ScopedLockType lock(this->sequencesLock);
         
-        for (int i = 0; i < this->sequences.size(); ++i)
+        for (auto *wrapper : this->sequences)
         {
-            const auto wrapper = this->sequences.getUnchecked(i);
             wrapper->currentIndex = this->getNextIndexAtTime(wrapper->midiMessages, (position - DBL_MIN));
         }
     }
@@ -164,9 +161,9 @@ public:
     {
         const SpinLock::ScopedLockType lock(this->sequencesLock);
 
-        for (int i = 0; i < this->sequences.size(); ++i)
+        for (auto *wrapper : this->sequences)
         {
-            this->sequences.getUnchecked(i)->currentIndex = 0;
+            wrapper->currentIndex = 0;
         }
     }
     
@@ -179,10 +176,10 @@ public:
 
         for (int i = 0; i < this->sequences.size(); ++i)
         {
-            const auto wrapper = this->sequences.getUnchecked(i);
+            const auto *wrapper = this->sequences.getObjectPointer(i);
             if (wrapper->currentIndex < wrapper->midiMessages.getNumEvents())
             {
-                MidiMessage &message = wrapper->midiMessages.getEventPointer(wrapper->currentIndex)->message;
+                const auto &message = wrapper->midiMessages.getEventPointer(wrapper->currentIndex)->message;
 
                 if (message.getTimeStamp() < minTimeStamp)
                 {
@@ -197,10 +194,10 @@ public:
             return false;
         }
 
-        const auto foundWrapper = this->sequences.getUnchecked(targetSequenceIndex);
-        MidiMessage &foundMessage = foundWrapper->midiMessages.getEventPointer(foundWrapper->currentIndex)->message;
+        auto *foundWrapper = this->sequences.getObjectPointer(targetSequenceIndex);
+        auto &foundMessage = foundWrapper->midiMessages.getEventPointer(foundWrapper->currentIndex)->message;
         foundWrapper->currentIndex++;
-                
+
         target.message = foundMessage;
         target.listener = foundWrapper->listener;
         target.instrument = foundWrapper->instrument;
@@ -227,6 +224,6 @@ private:
 
     SpinLock instrumentsLock;
     SpinLock sequencesLock;
-    
-    JUCE_LEAK_DETECTOR(ProjectSequences)
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectSequences)
 };
