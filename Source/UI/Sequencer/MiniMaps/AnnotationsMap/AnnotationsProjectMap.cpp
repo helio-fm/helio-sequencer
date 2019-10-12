@@ -31,10 +31,6 @@
 AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
-    projectFirstBeat(0.f),
-    projectLastBeat(16.f), // non zero!
-    rollFirstBeat(0.f),
-    rollLastBeat(16.f),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -50,7 +46,6 @@ AnnotationsProjectMap::~AnnotationsProjectMap()
 {
     this->project.removeListener(this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component

@@ -929,8 +929,9 @@ void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
 
 void HybridRoll::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
 {
-    if (this->projectFirstBeat == newFirstBeat &&
-        this->projectLastBeat == newLastBeat)
+    jassert(this->projectFirstBeat != newFirstBeat || this->projectLastBeat != newLastBeat);
+
+    if (this->projectFirstBeat == newFirstBeat && this->projectLastBeat == newLastBeat)
     {
         return;
     }

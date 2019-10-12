@@ -46,8 +46,6 @@ class Clip;
 #include "MidiTrackSource.h"
 #include "CommandPaletteModel.h"
 
-#define PROJECT_DEFAULT_NUM_BEATS 32
-
 class ProjectNode final :
     public TreeNode,
     public DocumentOwner,

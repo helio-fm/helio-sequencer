@@ -121,6 +121,8 @@ inline float roundf(float x)
 // Defines the maximum available resolution
 #define TICKS_PER_BEAT 16
 
+#define PROJECT_DEFAULT_NUM_BEATS 32
+
 #define VELOCITY_SAVE_ACCURACY 1024.f
 
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
