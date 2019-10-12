@@ -89,6 +89,7 @@ public:
     void dispatchPostRemoveClip(Pattern *const pattern) override;
 
     void dispatchChangeTrackProperties() override;
+    void dispatchChangeTrackBeatRange() override;
     void dispatchChangeProjectBeatRange() override;
 
     ProjectNode *getProject() const noexcept override;

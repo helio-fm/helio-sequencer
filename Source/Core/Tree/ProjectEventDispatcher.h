@@ -46,7 +46,9 @@ public:
 
     // Sent on lightweight changes like mute/unmute, instrument change
     virtual void dispatchChangeTrackProperties() = 0;
-    // Needed for project to calculate and send the total beat range
+    virtual void dispatchChangeTrackBeatRange() = 0;
+
+    // Needed for project to calculate and send the total beat range when it changes
     virtual void dispatchChangeProjectBeatRange() = 0;
 
     virtual ProjectNode *getProject() const noexcept { return nullptr; }

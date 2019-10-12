@@ -86,8 +86,6 @@ ProjectNode::ProjectNode(const File &existingFile) :
 
 void ProjectNode::initialize()
 {
-    this->isTracksCacheOutdated = true;
-
     this->undoStack = makeUnique<UndoStack>(*this);
     this->autosaver = makeUnique<Autosaver>(*this);
 
@@ -711,6 +709,12 @@ void ProjectNode::broadcastChangeTrackProperties(MidiTrack *const track)
     this->sendChangeMessage();
 }
 
+void ProjectNode::broadcastChangeTrackBeatRange(MidiTrack *const track)
+{
+    this->changeListeners.call(&ProjectListener::onChangeTrackBeatRange, track);
+    this->sendChangeMessage();
+}
+
 void ProjectNode::broadcastAddClip(const Clip &clip)
 {
     this->changeListeners.call(&ProjectListener::onAddClip, clip);
@@ -744,18 +748,24 @@ void ProjectNode::broadcastChangeProjectInfo(const ProjectMetadata *info)
 Point<float> ProjectNode::broadcastChangeProjectBeatRange()
 {
     const auto beatRange = this->getProjectRangeInBeats();
-    const float firstBeat = beatRange.getX();
-    const float lastBeat = beatRange.getY();
     
-    // changeListeners.call iterates listeners list in REVERSE order
-    // so that transport updates playhead position later then others,
-    // so that resizing roll will make playhead glitch;
-    // as a hack, just force transport to update its playhead position before all others
-    this->transport->onChangeProjectBeatRange(firstBeat, lastBeat);
-    this->changeListeners.callExcluding(this->transport.get(),
-        &ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
+    if (this->firstBeatCache != beatRange.getX() ||
+        this->lastBeatCache != beatRange.getY())
+    {
+        this->firstBeatCache = beatRange.getX();
+        this->lastBeatCache = beatRange.getY();
 
-    this->sendChangeMessage();
+        // changeListeners.call iterates listeners list in REVERSE order
+        // so that transport updates playhead position later then others,
+        // so that resizing roll will make playhead glitch;
+        // as a hack, just force transport to update its playhead position before all others
+        this->transport->onChangeProjectBeatRange(this->firstBeatCache, this->lastBeatCache);
+        this->changeListeners.callExcluding(this->transport.get(),
+            &ProjectListener::onChangeProjectBeatRange, this->firstBeatCache, this->lastBeatCache);
+
+        this->sendChangeMessage();
+    }
+
     return beatRange;
 }
 

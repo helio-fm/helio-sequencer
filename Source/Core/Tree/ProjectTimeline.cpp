@@ -291,6 +291,11 @@ void ProjectTimeline::dispatchChangeTrackProperties()
     jassertfalse; // should never be called
 }
 
+void ProjectTimeline::dispatchChangeTrackBeatRange()
+{
+    jassertfalse; // should never be called
+}
+
 void ProjectTimeline::dispatchChangeProjectBeatRange()
 {
     this->project.broadcastChangeProjectBeatRange();

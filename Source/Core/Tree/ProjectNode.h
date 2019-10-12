@@ -142,6 +142,7 @@ public:
     void broadcastAddTrack(MidiTrack *const track);
     void broadcastRemoveTrack(MidiTrack *const track);
     void broadcastChangeTrackProperties(MidiTrack *const track);
+    void broadcastChangeTrackBeatRange(MidiTrack *const track);
 
     void broadcastAddClip(const Clip &clip);
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
@@ -234,7 +235,10 @@ private:
 
     UniquePointer<UndoStack> undoStack;
 
-    mutable bool isTracksCacheOutdated;
+    mutable float firstBeatCache = 0.f;
+    mutable float lastBeatCache = PROJECT_DEFAULT_NUM_BEATS;
+
+    mutable bool isTracksCacheOutdated = true;
     mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
     void rebuildTracksRefsCacheIfNeeded() const;
 

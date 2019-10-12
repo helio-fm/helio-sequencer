@@ -44,8 +44,12 @@ public:
     virtual void onAddTrack(MidiTrack *const track) = 0;
     virtual void onRemoveTrack(MidiTrack *const track) = 0;
     virtual void onChangeTrackProperties(MidiTrack *const track) = 0;
+    virtual void onChangeTrackBeatRange(MidiTrack *const track) {}
 
     virtual void onChangeProjectInfo(const ProjectMetadata *info) {}
+
+    // This will also be called when any track beat range changes (sounds weird, I know)
+    // need to introduce onChangePatternBeatRange() and onChangeTrackBeatRange() instead;
     virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;
 
     // Any editor should restrict editing to a single clip of one track at time.
