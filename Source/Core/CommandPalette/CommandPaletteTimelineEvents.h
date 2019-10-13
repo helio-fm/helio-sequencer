@@ -20,21 +20,55 @@
 #include "ProjectNode.h"
 #include "CommandPaletteActionsProvider.h"
 
-class CommandPaletteTimelineEvents final : public CommandPaletteActionsProvider
+class CommandPaletteTimelineEvents final :
+    public CommandPaletteActionsProvider,
+    public ProjectListener
 {
 public:
 
     CommandPaletteTimelineEvents(ProjectNode &project);
+    ~CommandPaletteTimelineEvents() override;
 
     bool usesPrefix(const Prefix prefix) const noexcept override
     {
         return prefix == '@';
     }
 
+    //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+
+    void onAddClip(const Clip &clip) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void onRemoveClip(const Clip &clip) override;
+
+    void onAddTrack(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onChangeTrackBeatRange(MidiTrack *const track) override;
+
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+
 protected:
 
     const Actions &getActions() const override;
-    mutable Actions timelineEvents;
+
+    mutable Actions keySignatureActionsCache;
+    mutable Actions timeSignatureActionsCache;
+    mutable Actions annotationActionsCache;
+    mutable Actions clipActionsCache;
+    mutable Actions allActions;
+
+    mutable bool keySignatureActionsOutdated = true;
+    mutable bool timeSignatureActionsOutdated = true;
+    mutable bool annotationActionsOutdated = true;
+    mutable bool clipActionsOutdated = true;
 
 private:
     
