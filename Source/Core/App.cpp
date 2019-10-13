@@ -75,13 +75,13 @@ public:
         Desktop::getInstance().setKioskModeComponent(this);
 #endif
 
+        this->createLayoutComponent();
+        this->setVisible(true);
+
         if (enableOpenGl)
         {
             this->attachOpenGLContext();
         }
-
-        this->createLayoutComponent();
-        this->setVisible(true);
 
 #if JUCE_IOS
         Desktop::getInstance().setKioskModeComponent(this);
@@ -176,7 +176,8 @@ private:
         const bool hasResizableCorner = !useNativeTitleBar;
         this->setResizable(true, hasResizableCorner);
         this->setUsingNativeTitleBar(useNativeTitleBar);
-        if (this->resizableCorner != nullptr) {
+        if (this->resizableCorner != nullptr)
+        {
             this->resizableCorner->setRepaintsOnMouseActivity(false);
             this->resizableCorner->setPaintingIsUnclipped(true);
             this->resizableCorner->setBufferedToImage(true);
