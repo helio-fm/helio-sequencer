@@ -81,8 +81,8 @@ private:
 
     void applySelectedCommand();
     int getHeightToFitActions() const;
+    int getNumVisibleRows() const noexcept;
 
-    void cancelAndDismiss();
     void dismiss();
     void fadeOut();
     void updatePosition();

@@ -25,8 +25,6 @@
 
 CommandPaletteCommonActions::CommandPaletteCommonActions()
 {
-    // todo lookup existing providers?
-
     this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::timeline), "@", -3.f)->
         withCallback([](TextEditor &ed) { ed.setText("@"); return false; }));
 

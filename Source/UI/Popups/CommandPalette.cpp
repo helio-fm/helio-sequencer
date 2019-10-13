@@ -166,7 +166,7 @@ void CommandPalette::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
-        this->cancelAndDismiss();
+        this->dismiss();
     }
     //[/UserCode_handleCommandMessage]
 }
@@ -176,11 +176,10 @@ bool CommandPalette::keyPressed (const KeyPress& key)
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
     {
-        // todo test
-        // if escape, palette will first erase the text, if any, and then close?
+        // on escape keypress first try to erase the text, if any:
         if (this->textEditor->isEmpty())
         {
-            this->cancelAndDismiss();
+            this->dismiss();
         }
         else
         {
@@ -190,7 +189,7 @@ bool CommandPalette::keyPressed (const KeyPress& key)
     }
     else if (key.isKeyCode(kTildaKey))
     {
-        this->cancelAndDismiss();
+        this->dismiss();
         return true;
     }
     else if (key.isKeyCode(KeyPress::downKey))
@@ -205,12 +204,12 @@ bool CommandPalette::keyPressed (const KeyPress& key)
     }
     else if (key.isKeyCode(KeyPress::pageDownKey))
     {
-        this->moveRowSelectionBy(10); // fixme - not a hardcoded page size pls!
+        this->moveRowSelectionBy(this->getNumVisibleRows());
         return true;
     }
     else if (key.isKeyCode(KeyPress::pageUpKey))
     {
-        this->moveRowSelectionBy(-10); // fixme - not a hardcoded page size pls!
+        this->moveRowSelectionBy(-this->getNumVisibleRows());
         return true;
     }
 
@@ -345,7 +344,7 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
 
     this->setSize(this->getWidth(), this->getHeightToFitActions());
 
-    // force repaint, sometimes it doesn't update underlined matches:
+    // force repaint, sometimes it doesn't update the underlined matches:
     this->actionsList->repaint();
 
     // todo only save at exit?
@@ -359,15 +358,12 @@ void CommandPalette::textEditorReturnKeyPressed(TextEditor &ed)
 
 void CommandPalette::textEditorEscapeKeyPressed(TextEditor &)
 {
-    this->cancelAndDismiss();
+    this->dismiss();
 }
 
-void CommandPalette::textEditorFocusLost(TextEditor&)
+void CommandPalette::textEditorFocusLost(TextEditor &)
 {
-    //const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
-    if (this->textEditor->getText().isNotEmpty()
-        //&& focusedComponent != this->okButton.get()
-        )
+    if (this->textEditor->getText().isNotEmpty())
     {
         this->dismiss();
     }
@@ -400,12 +396,6 @@ void CommandPalette::fadeOut()
 void CommandPalette::updatePosition()
 {
     this->setTopLeftPosition(this->getParentWidth() / 2 - this->getWidth() / 2, HEADLINE_HEIGHT + 1);
-}
-
-void CommandPalette::cancelAndDismiss()
-{
-    // todo cancel
-    this->dismiss();
 }
 
 bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
@@ -458,6 +448,11 @@ int CommandPalette::getHeightToFitActions() const
     const auto margin = this->getHeight() - this->actionsList->getHeight();
     const auto maxRows = (App::Layout().getHeight() / 3) / COMMAND_PALETTE_ROW_HEIGHT;
     return jlimit(4, maxRows, numRows) * COMMAND_PALETTE_ROW_HEIGHT + margin;
+}
+
+int CommandPalette::getNumVisibleRows() const noexcept
+{
+    return this->actionsList->getHeight() / COMMAND_PALETTE_ROW_HEIGHT;
 }
 
 //[/MiscUserCode]
