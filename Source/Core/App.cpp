@@ -553,24 +553,48 @@ void App::initialise(const String &commandLine)
         this->config.reset(new class Config());
         this->config->initResources();
 
+#if JUCE_UNIT_TESTS
+
+        // for unit tests, we want the app and config/resources initialized
+        // (we don't need a window, workspace and network services though)
+        UnitTestRunner runner;
+
+        // we don't want to run JUCE's unit tests, just the ones in our category:
+        runner.runTestsInCategory(UnitTestCategories::helio,
+            Random::getSystemRandom().nextInt64());
+
+        for (int i = 0; i < runner.getNumResults(); ++i)
+        {
+            if (runner.getResult(i)->failures > 0)
+            {
+                throw new std::exception();
+            }
+        }
+
+        this->quit();
+
+#else
+
+        // if this is not a unit test runner, proceed as normal:
+
         UniquePointer<HelioTheme> helioTheme(new HelioTheme());
         helioTheme->initResources();
         helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
 
         this->theme.reset(helioTheme.release());
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
-    
+
         this->workspace.reset(new class Workspace());
 
-#if JUCE_ANDROID
+#   if JUCE_ANDROID
         // OpenGL seems to be the only sensible option on Android:
         const bool shouldEnableOpenGL = true;
         const bool shouldUseNativeTitleBar = true;
-#elif JUCE_IOS
+#   elif JUCE_IOS
         // CoreGraphics renderer is faster anyway:
         const bool shouldEnableOpenGL = false;
         const bool shouldUseNativeTitleBar = true;
-#else
+#   else
         const auto enabledState = Serialization::Config::enabledState.toString();
 
         const auto opeGlState = this->config->getProperty(Serialization::Config::openGLState);
@@ -578,7 +602,7 @@ void App::initialise(const String &commandLine)
 
         const auto titleBarState = this->config->getProperty(Serialization::Config::nativeTitleBar);
         const bool shouldUseNativeTitleBar = titleBarState == enabledState;
-#endif
+#   endif
 
         this->window.reset(new MainWindow());
         this->window->init(shouldEnableOpenGL, shouldUseNativeTitleBar);
@@ -588,10 +612,14 @@ void App::initialise(const String &commandLine)
         // see the comment in changeListenerCallback
         //this->config->getTranslations()->addChangeListener(this);
         
-        // Desktop versions will be initialised by InitScreen component.
-#if HELIO_MOBILE
+#   if HELIO_MOBILE
+
+        // desktop versions will be initialised by InitScreen component.
         App::Workspace().init();
         App::Layout().show();
+
+#   endif
+
 #endif
     }
     else if (this->runMode == App::PLUGIN_CHECK)
@@ -612,9 +640,12 @@ void App::shutdown()
         this->window = nullptr;
 
         this->network = nullptr;
-
-        this->workspace->shutdown();
-        this->workspace = nullptr;
+        
+        if (this->workspace != nullptr)
+        {
+            this->workspace->shutdown();
+            this->workspace = nullptr;
+        }
 
         this->theme = nullptr;
         this->config = nullptr;
@@ -773,37 +804,4 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
 // Main
 //===----------------------------------------------------------------------===//
 
-#if JUCE_UNIT_TESTS
-
-class ConsoleUnitTestRunner final : public UnitTestRunner
-{
-    void logMessage(const String &message) override
-    {
-        Logger::outputDebugString(message);
-    }
-};
-
-extern "C" JUCE_MAIN_FUNCTION
-{
-    ConsoleUnitTestRunner runner;
-
-    // we don't want to run JUCE unit tests, just ours:
-    runner.runTestsInCategory(UnitTestCategories::helio,
-        Random::getSystemRandom().nextInt64());
-
-    for (int i = 0; i < runner.getNumResults(); ++i)
-    {
-        if (runner.getResult(i)->failures > 0)
-        {
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
-#else
-
 START_JUCE_APPLICATION(App)
-
-#endif

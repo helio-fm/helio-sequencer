@@ -1663,6 +1663,7 @@ public:
         // todo
 
         beginTest("Chords generation");
+        expectEquals(1, 2);
         // todo
     }
 };
