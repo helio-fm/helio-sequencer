@@ -553,6 +553,13 @@ void App::initialise(const String &commandLine)
         this->config.reset(new class Config());
         this->config->initResources();
 
+        UniquePointer<HelioTheme> helioTheme(new HelioTheme());
+        helioTheme->initResources();
+        helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
+
+        this->theme.reset(helioTheme.release());
+        LookAndFeel::setDefaultLookAndFeel(this->theme.get());
+
 #if JUCE_UNIT_TESTS
 
         // for unit tests, we want the app and config/resources initialized
@@ -573,16 +580,12 @@ void App::initialise(const String &commandLine)
 
         this->quit();
 
+        // a hack to allow messages get cleaned up to avoid leaks:
+        MessageManager::getInstance()->runDispatchLoopUntil(50);
+
 #else
 
         // if this is not a unit test runner, proceed as normal:
-
-        UniquePointer<HelioTheme> helioTheme(new HelioTheme());
-        helioTheme->initResources();
-        helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
-
-        this->theme.reset(helioTheme.release());
-        LookAndFeel::setDefaultLookAndFeel(this->theme.get());
 
         this->workspace.reset(new class Workspace());
 
