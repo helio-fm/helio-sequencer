@@ -769,4 +769,41 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
     //this->recreateLayout();
 }
 
+//===----------------------------------------------------------------------===//
+// Main
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+class ConsoleUnitTestRunner final : public UnitTestRunner
+{
+    void logMessage(const String &message) override
+    {
+        Logger::outputDebugString(message);
+    }
+};
+
+extern "C" JUCE_MAIN_FUNCTION
+{
+    ConsoleUnitTestRunner runner;
+
+    // we don't want to run JUCE unit tests, just ours:
+    runner.runTestsInCategory(UnitTestCategories::helio,
+        Random::getSystemRandom().nextInt64());
+
+    for (int i = 0; i < runner.getNumResults(); ++i)
+    {
+        if (runner.getResult(i)->failures > 0)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+#else
+
 START_JUCE_APPLICATION(App)
+
+#endif

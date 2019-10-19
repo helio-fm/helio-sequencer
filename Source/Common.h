@@ -154,6 +154,17 @@ inline constexpr uint32 constexprHash(const char *const str, const uint32 value 
     return (str[0] == '\0') ? value : constexprHash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a32prime);
 }
 
+#if JUCE_UNIT_TESTS
+namespace juce
+{
+    namespace UnitTestCategories
+    {
+        // declare an additional category for all our tests 
+        static const String helio { "Helio" };
+    }
+}
+#endif
+
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//

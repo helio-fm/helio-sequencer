@@ -1480,7 +1480,8 @@ private:
 
     const Scale::Ptr major = Scale::getNaturalMajorScale();
     const Scale::Ptr minor = Scale::getNaturalMinorScale();
-    const UniquePointer<ChordParsing::ChordQualityExpression> qualityFallback = makeUnique<ChordParsing::ChordQualityExpression>();
+    const UniquePointer<ChordParsing::ChordQualityExpression> qualityFallback =
+        makeUnique<ChordParsing::ChordQualityExpression>();
 
     CommandPaletteActionsProvider::Actions rootKeySuggestions;
     CommandPaletteActionsProvider::Actions chordQualitySuggestions;
@@ -1492,7 +1493,8 @@ private:
     CommandPaletteActionsProvider::Actions alterationSuggestions;
 
     template <typename... OtherElements>
-    void initSuggestions(CommandPaletteActionsProvider::Actions &array, const String &firstElement, OtherElements... otherElements)
+    void initSuggestions(CommandPaletteActionsProvider::Actions &array,
+        const String &firstElement, OtherElements... otherElements)
     {
         array.add(this->createSuggeation(firstElement));
         this->initSuggestions(array, otherElements...);
@@ -1634,3 +1636,37 @@ void CommandPaletteChordConstructor::previewIfNeeded()
         }
     }
 }
+
+
+//===----------------------------------------------------------------------===//
+// Tests
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+class ChordCompilerTests final : public UnitTest
+{
+public:
+    ChordCompilerTests() : UnitTest("Chord compiler tests", UnitTestCategories::helio) {}
+
+    void runTest() override
+    {
+        ChordCompiler compiler;
+
+        Array<int> chord;
+        CommandPaletteActionsProvider::Actions actions;
+
+        beginTest("Parsing and validation");
+        // todo
+
+        beginTest("Suggestions");
+        // todo
+
+        beginTest("Chords generation");
+        // todo
+    }
+};
+
+static ChordCompilerTests chordCompilerTests;
+
+#endif
