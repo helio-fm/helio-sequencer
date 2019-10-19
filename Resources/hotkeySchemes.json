@@ -34,12 +34,10 @@
         { "receiver": "MainLayout", "command": "CommandPalette", "key": "Control + G" },
         { "receiver": "MainLayout", "command": "CommandPalette", "key": "Command + G" },
 
-        // Quick access to all command palette modes (/, !, @, #, $):
+        // Quick access to command palette modes (/, !, @):
         { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "/" },
         { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 1" },
         { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 2" },
-        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 3" },
-        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 4" },
 
         { "receiver": "MainLayout", "command": "ShowRootPage", "key": "Home" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Command + Cursor Left" },

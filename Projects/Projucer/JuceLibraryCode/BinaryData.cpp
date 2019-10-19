@@ -12099,6 +12099,18 @@ static const unsigned char temp_binary_data_99[] =
 "        // ------------------------------------\n"
 "        // Main layout hotkeys\n"
 "\n"
+"        // Command Palette aka Spotlight Search aka Goto Anything:\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPalette\", \"key\": \"`\" },\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPalette\", \"key\": \"Control + P\" },\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPalette\", \"key\": \"Command + P\" },\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPalette\", \"key\": \"Control + G\" },\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPalette\", \"key\": \"Command + G\" },\n"
+"\n"
+"        // Quick access to command palette modes (/, !, @):\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPaletteWithMode\", \"key\": \"/\" },\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 1\" },\n"
+"        { \"receiver\": \"MainLayout\", \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 2\" },\n"
+"\n"
 "        { \"receiver\": \"MainLayout\", \"command\": \"ShowRootPage\", \"key\": \"Home\" },\n"
 "        { \"receiver\": \"MainLayout\", \"command\": \"ShowPreviousPage\", \"key\": \"Command + Cursor Left\" },\n"
 "        { \"receiver\": \"MainLayout\", \"command\": \"ShowPreviousPage\", \"key\": \"Control + Cursor Left\" },\n"
@@ -12132,6 +12144,12 @@ static const unsigned char temp_binary_data_99[] =
 "        { \"receiver\": \"VersionControlStage\", \"command\": \"VersionControlCommitSelected\", \"key\": \"Control + S\" },\n"
 "        { \"receiver\": \"VersionControlStage\", \"command\": \"VersionControlResetSelected\", \"key\": \"Backspace\" },\n"
 "        { \"receiver\": \"VersionControlStage\", \"command\": \"VersionControlResetSelected\", \"key\": \"Delete\" },\n"
+"        { \"receiver\": \"VersionControlStage\", \"command\": \"VersionControlCommitAll\", \"key\": \"Control + Shift + S\" },\n"
+"        { \"receiver\": \"VersionControlStage\", \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Backspace\" },\n"
+"        { \"receiver\": \"VersionControlStage\", \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Delete\" },\n"
+"        { \"receiver\": \"VersionControlStage\", \"command\": \"VersionControlSyncAll\", \"key\": \"F5\" },\n"
+"        //{ \"receiver\": \"VersionControlHistory\", \"command\": \"VersionControlPushSelected\", \"key\": \"?\" },\n"
+"        //{ \"receiver\": \"VersionControlHistory\", \"command\": \"VersionControlPullSelected\", \"key\": \"?\" },\n"
 "\n"
 "        // ------------------------------------\n"
 "        // Piano roll's specific\n"
@@ -14809,7 +14827,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 15518; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 16999; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3513; return scales_json;
         case 0xf8655f25:  numBytes = 158811; return translations_json;
         default: break;

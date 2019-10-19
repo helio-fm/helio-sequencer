@@ -622,6 +622,13 @@
 			path = ../../Source/Core/Workspace/RecentProjectInfo.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		162BAF175F12BF2EB754F55B = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPalette.h;
+			path = ../../Source/UI/Popups/CommandPalette.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		1675AFE7FF165469FFB2BC43 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -1497,6 +1504,13 @@
 			path = ../../Resources/Icons/stretchLeft.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		3B1B5C657AE6C1CEC368D8CD = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandPaletteCommonActions.cpp;
+			path = ../../Source/Core/CommandPalette/CommandPaletteCommonActions.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		3B4394424BA31D6732F531AC = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1705,6 +1719,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = TrackedItem.h;
 			path = ../../Source/Core/VCS/TrackedItem.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		4382EAF4F2D870AF82E94951 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandPaletteActionsProvider.cpp;
+			path = ../../Source/Core/CommandPalette/CommandPaletteActionsProvider.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		439E24625B8D17EAD0859856 = {
@@ -2104,6 +2125,13 @@
 			lastKnownFileType = file.svg;
 			name = volume.svg;
 			path = ../../Resources/Icons/volume.svg;
+			sourceTree = "SOURCE_ROOT";
+		};
+		54F89872070129EFD8663211 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPaletteTimelineEvents.h;
+			path = ../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		559B95E248FAA5BCFCCDA1FD = {
@@ -2596,6 +2624,13 @@
 			path = ../../Source/Core/VCS/Diff.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		6E23BD2DC51159088DAA72DE = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandPaletteTimelineEvents.cpp;
+			path = ../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		6E8240BD097F42C29EF6E848 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -2713,6 +2748,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = SequencerSidebarRight.cpp;
 			path = ../../Source/UI/Sequencer/Sidebars/SequencerSidebarRight.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		72FE6333BB3CC616E34D0D29 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandPaletteChordConstructor.cpp;
+			path = ../../Source/Core/CommandPalette/CommandPaletteChordConstructor.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7320F2DA76039762ED764BDA = {
@@ -3030,6 +3072,13 @@
 			path = ../../Source/UI/Popups/ChordPreviewTool.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		81B7A84085F384406DA80623 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandPalette.cpp;
+			path = ../../Source/UI/Popups/CommandPalette.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		81D36278F0028B0649509527 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3049,6 +3098,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PopupMenuComponent.h;
 			path = ../../Source/UI/Popups/PopupMenuComponent.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		82CDD136587B74E7384A2691 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandPaletteProjectsList.cpp;
+			path = ../../Source/Core/CommandPalette/CommandPaletteProjectsList.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		837D0D544F28E207D32C8997 = {
@@ -3483,6 +3539,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = SeparatorHorizontal.h;
 			path = ../../Source/UI/Themes/SeparatorHorizontal.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		94F48656E66BE393F6C3C4AA = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPaletteProjectsList.h;
+			path = ../../Source/Core/CommandPalette/CommandPaletteProjectsList.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		95409C31DDE8245FD494CD85 = {
@@ -4920,6 +4983,13 @@
 			path = ../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		DBC6F9AC5940C0C92D3A3DA5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPaletteChordConstructor.h;
+			path = ../../Source/Core/CommandPalette/CommandPaletteChordConstructor.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		DC652073B48E01E79421C4D2 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5200,6 +5270,13 @@
 			path = ../../Source/Core/Midi/Patterns/Clip.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		E6E052F0B1323369628EC2FB = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPaletteCommonActions.h;
+			path = ../../Source/Core/CommandPalette/CommandPaletteCommonActions.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		E718A85B50D9B343F7621098 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5338,6 +5415,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PatternRollSelectionMenu.h;
 			path = ../../Source/UI/Menus/SelectionMenus/PatternRollSelectionMenu.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		F00C7C43FE21295363839CF4 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPaletteModel.h;
+			path = ../../Source/Core/CommandPalette/CommandPaletteModel.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		F01FCFE9265AFDEEE3C4B7FD = {
@@ -5485,6 +5569,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = AutomationSequence.cpp;
 			path = ../../Source/Core/Midi/Sequences/AutomationSequence.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		F4DB0F7FDE088076C0BA89AF = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPaletteActionsProvider.h;
+			path = ../../Source/Core/CommandPalette/CommandPaletteActionsProvider.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		F518C6C068D3598777DBA99D = {
@@ -5957,6 +6048,24 @@
 			name = Configuration;
 			sourceTree = "<group>";
 		};
+		FB419B8BCF67613DFF9AA73E = {
+			isa = PBXGroup;
+			children = (
+				F00C7C43FE21295363839CF4,
+				4382EAF4F2D870AF82E94951,
+				F4DB0F7FDE088076C0BA89AF,
+				3B1B5C657AE6C1CEC368D8CD,
+				E6E052F0B1323369628EC2FB,
+				72FE6333BB3CC616E34D0D29,
+				DBC6F9AC5940C0C92D3A3DA5,
+				82CDD136587B74E7384A2691,
+				94F48656E66BE393F6C3C4AA,
+				6E23BD2DC51159088DAA72DE,
+				54F89872070129EFD8663211,
+			);
+			name = CommandPalette;
+			sourceTree = "<group>";
+		};
 		2FCDEC922FFB91C90E0B8040 = {
 			isa = PBXGroup;
 			children = (
@@ -6262,6 +6371,7 @@
 			children = (
 				05B1A71F08B3DD80858AA0CD,
 				A19D84E3B701411F9C0A109B,
+				FB419B8BCF67613DFF9AA73E,
 				565343188A28FFC332B24DB8,
 				0CE852AB148814B7C53B663F,
 				2B9976C1EA8C1E239FD743D9,
@@ -6621,6 +6731,8 @@
 		1A1008B7C7EE6F8181F5FE64 = {
 			isa = PBXGroup;
 			children = (
+				81B7A84085F384406DA80623,
+				162BAF175F12BF2EB754F55B,
 				AF4EC575A8540902A970BCE4,
 				C36B4468750C498E2B98FFC4,
 				DCCDA89550EE7B83B7560DD1,
@@ -7119,6 +7231,7 @@
 					"../../Source/Core/Configuration",
 					"../../Source/Core/Configuration/Models",
 					"../../Source/Core/Configuration/ResourceManagers",
+					"../../Source/Core/CommandPalette",
 					"../../Source/Core/Midi",
 					"../../Source/Core/Midi/Patterns",
 					"../../Source/Core/Midi/Sequences",
@@ -7236,6 +7349,7 @@
 					"../../Source/Core/Configuration",
 					"../../Source/Core/Configuration/Models",
 					"../../Source/Core/Configuration/ResourceManagers",
+					"../../Source/Core/CommandPalette",
 					"../../Source/Core/Midi",
 					"../../Source/Core/Midi/Patterns",
 					"../../Source/Core/Midi/Sequences",
