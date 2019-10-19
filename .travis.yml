@@ -13,25 +13,19 @@ branches:
     - master
     - develop
     - /^\d+\.?\d+\.?\d*$/
-    - feature/the-console
 
 stages:
   - test
   - deploy
 
 addons_shortcuts:
-  addons_clang7: &clang7
-    ssh_known_hosts: helio.fm
-    apt:
-      packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  addons_gcc6: &gcc6
-    apt:
-      sources: [ 'ubuntu-toolchain-r-test' ]
-      packages: [ 'g++-6', 'gcc-6', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
-  # TODO test building with -static-libstdc++ or -static-libgcc on older systems
   addons_gcc4: &gcc4
     apt:
       packages: [ 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+  addons_clang7: &clang7
+    apt:
+      packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+    ssh_known_hosts: helio.fm
   addons_deploy: &deploy
     ssh_known_hosts: helio.fm
 
@@ -43,12 +37,6 @@ jobs:
       dist: trusty
       addons: *gcc4
       env: PLATFORM=linux CONFIG=Tests DISPLAY=localhost:1.0 CFLAGS=-fno-pie
-    - name: "gcc 6, debug build x64"
-      stage: test
-      os: linux
-      dist: trusty
-      addons: *gcc6
-      env: PLATFORM=linux CC=gcc-6 CXX=g++-6 CONFIG=Tests DISPLAY=localhost:1.0 CFLAGS=-fno-pie
     - name: "clang 7, release build x64"
       stage: deploy
       os: linux
@@ -98,7 +86,7 @@ script:
   - if [[ "${PLATFORM}" == "linux" ]]; then
       xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
       if [[ "${TRAVIS_BUILD_STAGE_NAME}" == "Test" ]]; then
-        xvfb-run -a bash -c 'Projects/LinuxMakefile/build/Helio';
+        xvfb-run -a Projects/LinuxMakefile/build/Helio;
       fi
     fi
   - if [[ "${PLATFORM}" == "android" ]]; then
