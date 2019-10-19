@@ -13,6 +13,11 @@ branches:
     - master
     - develop
     - /^\d+\.?\d+\.?\d*$/
+    - feature/the-console
+
+stages:
+  - test
+  - deploy
 
 addons_shortcuts:
   addons_clang7: &clang7
@@ -30,42 +35,48 @@ addons_shortcuts:
   addons_deploy: &deploy
     ssh_known_hosts: helio.fm
 
-matrix:
+jobs:
   include:
     - name: "gcc 4, debug build x64"
+      stage: test
       os: linux
       dist: trusty
       addons: *gcc4
-      env: PLATFORM=linux CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-fno-pie
+      env: PLATFORM=linux CONFIG=Tests DISPLAY=localhost:1.0 CFLAGS=-fno-pie
     - name: "gcc 6, debug build x64"
+      stage: test
       os: linux
       dist: trusty
       addons: *gcc6
-      env: PLATFORM=linux CC=gcc-6 CXX=g++-6 CONFIG=Debug DISPLAY=localhost:1.0 CFLAGS=-fno-pie
-    - name: "clang 7, release build x64, deploy"
+      env: PLATFORM=linux CC=gcc-6 CXX=g++-6 CONFIG=Tests DISPLAY=localhost:1.0 CFLAGS=-fno-pie
+    - name: "clang 7, release build x64"
+      stage: deploy
       os: linux
       dist: xenial
       addons: *clang7
-      env: DEPLOY=true PLATFORM=linux CC=clang CXX=clang++ CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
-    - name: "xcode 10.1 mac, release and deploy"
+      env: PLATFORM=linux CC=clang CXX=clang++ CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+    - name: "xcode 10.1 mac, release build"
+      stage: deploy
       os: osx
       osx_image: xcode10.1
       xcode_sdk: macosx10.14
       addons: *deploy
-      env: DEPLOY=true PLATFORM=osx
-    - name: "xcode 10.1 ios, release and deploy"
+      env: PLATFORM=osx
+    - name: "xcode 10.1 ios, release build"
+      stage: deploy
       os: osx
       osx_image: xcode10.1
       xcode_sdk: iphoneos
       addons: *deploy
-      env: DEPLOY=true PLATFORM=ios
-    - name: "android 21, release and deploy"
+      env: PLATFORM=ios
+    - name: "android 21, release build"
+      stage: deploy
       os: linux
       dist: trusty
       language: android
       jdk: oraclejdk8
       addons: *deploy
-      env: DEPLOY=true PLATFORM=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
+      env: PLATFORM=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
       android:
         components:
           - tools
@@ -85,16 +96,19 @@ before_script:
 
 script:
   - if [[ "${PLATFORM}" == "linux" ]]; then
-    xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
+      xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
+      if [[ "${TRAVIS_BUILD_STAGE_NAME}" == "Test" ]]; then
+        xvfb-run -a bash -c 'Projects/LinuxMakefile/build/Helio';
+      fi
     fi
   - if [[ "${PLATFORM}" == "android" ]]; then
-    cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
+      cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
     fi
   - if [[ "${PLATFORM}" == "osx" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
-    xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
+      xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
   - if [[ "${PLATFORM}" == "ios" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
-    xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
+      xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
 
 before_deploy:
@@ -110,4 +124,4 @@ deploy:
   on:
     all_branches: true
     repo: helio-fm/helio-workstation
-    condition: ${DEPLOY} = true
+    condition: ${TRAVIS_BUILD_STAGE_NAME} = "Deploy"
