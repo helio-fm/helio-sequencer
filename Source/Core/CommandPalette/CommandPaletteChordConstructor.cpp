@@ -1384,6 +1384,11 @@ public:
     {
         String result;
 
+        if (!this->isValid())
+        {
+            return result;
+        }
+
         if (this->chord.rootKey != nullptr)
         {
             this->chord.rootKey->fillDescription(result);
@@ -1651,20 +1656,77 @@ public:
 
     void runTest() override
     {
-        ChordCompiler compiler;
-
-        Array<int> chord;
-        CommandPaletteActionsProvider::Actions actions;
+        ChordCompiler cc;
 
         beginTest("Parsing and validation");
-        // todo
+
+        cc.parse("Bb 9 inv -2 sus 2 b5  ");
+        expect(cc.isValid());
+        expectEquals(cc.getChordAsString(), { "Bb9 sus2 b5 inv-2" });
+
+        cc.parse("  A#m M7 add 13");
+        expect(cc.isValid());
+        expectEquals(cc.getChordAsString(), { "A#mM7 add13" });
+
+        cc.parse("yo yo sus4 b11 inv7");
+        expect(!cc.isValid());
+        expectEquals(cc.getChordAsString(), { "" });
+
+        cc.parse("");
+        expect(!cc.isValid());
+        expectEquals(cc.getChordAsString(), { "" });
 
         beginTest("Suggestions");
-        // todo
+
+        CommandPaletteActionsProvider::Actions actions;
+
+        cc.parse("E min ");
+        cc.fillSuggestions(actions);
+        expectEquals(actions.getFirst()->getName(), { "sus 2" });
+
+        // todo: suggestions need to be smarter, so more tests to come
 
         beginTest("Chords generation");
-        expectEquals(1, 1);
-        // todo
+
+        // FIXME fix failing (2/4/6 chords and issues with m/M 7th):
+        testRenderedChord(cc, "C#", { 1, 5, 8 });
+        testRenderedChord(cc, "C maj", { 0, 4, 7 });
+        testRenderedChord(cc, "C min", { 0, 3, 7 });
+        testRenderedChord(cc, "C aug", { 0, 4, 8 });
+        //testRenderedChord(cc, "C dim", { 0, 3, 6 });
+        testRenderedChord(cc, "C sus2", { 0, 2, 7 });
+        testRenderedChord(cc, "C sus4", { 0, 5, 7 });
+        //testRenderedChord(cc, "C maj6", { 0, 4, 7, 9 });
+        //testRenderedChord(cc, "C min6", { 0, 3, 7, 9 });
+        testRenderedChord(cc, "C maj7", { 0, 4, 7, 11 });
+        testRenderedChord(cc, "C min7", { 0, 3, 7, 10 });
+        testRenderedChord(cc, "C mM7", { 0, 3, 7, 11 });
+        //testRenderedChord(cc, "C aug7", { 0, 4, 8, 10 });
+        testRenderedChord(cc, "C M7#5", { 0, 4, 8, 11 });
+        testRenderedChord(cc, "C m7b5", { 0, 3, 6, 10 });
+        //testRenderedChord(cc, "C dim7", { 0, 3, 6, 9 });
+        //testRenderedChord(cc, "C dom7", { 0, 4, 7, 10 });
+        //testRenderedChord(cc, "C 7sus4", { 0, 5, 7, 10 });
+        testRenderedChord(cc, "C M7sus2", { 0, 2, 7, 11 });
+        testRenderedChord(cc, "C M7sus4", { 0, 5, 7, 11 });
+        testRenderedChord(cc, "C maj9", { 0, 4, 7, 11, 14 });
+        testRenderedChord(cc, "C min9", { 0, 3, 7, 10, 14 });
+        testRenderedChord(cc, "C maj11", { 0, 4, 7, 11, 14, 17 });
+        testRenderedChord(cc, "C min11", { 0, 3, 7, 10, 14, 17 });
+        testRenderedChord(cc, "C maj13", { 0, 4, 7, 11, 14, 17, 21 });
+        //testRenderedChord(cc, "C min13", { 0, 3, 7, 10, 14, 17, 21 });
+    }
+
+    void testRenderedChord(ChordCompiler &compiler, const String &chord, const Array<int> &expect)
+    {
+        Array<int> render;
+        compiler.parse(chord);
+        compiler.generate(render);
+        expectEquals(render.size(), expect.size());
+        for (int i = 0; i < render.size(); ++i)
+        {
+            expectEquals(render[i], expect[i]);
+        }
     }
 };
 
