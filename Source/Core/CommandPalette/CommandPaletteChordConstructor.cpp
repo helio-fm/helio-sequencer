@@ -37,7 +37,7 @@
         sign: # or b (lower case)
         slash: just / used to override bass note or add keys
         number: a number which can be negative, e.g. for negative inversion
-        keyword: aug (also '+'), dim, sus, add, inv, min (also 'm'), maj (also 'M'), might be lower case or start with capital
+        keyword: aug (also '+'), dim, sus, add, inv, min (also 'm'), maj (also 'M'), dom, might be lower case or start with capital
         space: 1 or more spaces, this token is only needed to avoid confusion when parsing expressions, e.g. "C/Ab 11" != "C/A b11"
         (any unknown characters are skipped)
 
@@ -122,6 +122,7 @@ struct KeywordToken final : Token
         Inverted,
         Augmented,
         Diminished,
+        Dominant,
         Suspeneded,
         Major,
         Minor
@@ -320,13 +321,21 @@ private:
                 }
                 break;
 
-            case 'd': case 'D': // "dim"
+            case 'd': case 'D': // "dim", "dom"
+            {
+                auto t3 = t2;
                 if (t2.getAndAdvance() == 'i' && t2.getAndAdvance() == 'm')
                 {
                     t = t2;
                     return makeUnique<KeywordToken>(KeywordToken::Type::Diminished);
                 }
+                else if (t3.getAndAdvance() == 'o' && t3.getAndAdvance() == 'm')
+                {
+                    t = t3;
+                    return makeUnique<KeywordToken>(KeywordToken::Type::Dominant);
+                }
                 break;
+            }
 
             case 'm':
             {
@@ -485,37 +494,50 @@ struct ChordQualityExpression final : Expression
 
     void initFromKeyword(const KeywordToken *keyword)
     {
-        this->third = (this->interval == 5) ? Third::None : 
-            (keyword->keyword == KeywordToken::Type::Minor ? Third::Minor :
-            (keyword->keyword == KeywordToken::Type::Major ? Third::Major : Third::Default));
-
-        this->fifth = keyword->keyword == KeywordToken::Type::Augmented ? Fifth::Augmented :
-            (keyword->keyword == KeywordToken::Type::Diminished ? Fifth::Diminished : Fifth::Perfect);
-
-        this->seventh = (this->interval < 7) ? Seventh::None :
-            (keyword->keyword == KeywordToken::Type::Minor ? Seventh::Minor : Seventh::Major);
+        switch (keyword->keyword)
+        {
+        case KeywordToken::Type::Minor:
+            this->chordQuality = Quality::Minor;
+            this->intervalQuality = this->chordQuality;
+            break;
+        case KeywordToken::Type::Major:
+            this->chordQuality = Quality::Major;
+            this->intervalQuality = this->chordQuality;
+            break;
+        case KeywordToken::Type::Augmented:
+            this->chordQuality = Quality::Major;
+            this->intervalQuality = Quality::Augmented;
+            break;
+        case KeywordToken::Type::Diminished:
+            this->chordQuality = Quality::Minor;
+            this->intervalQuality = Quality::Diminished;
+            break;
+        case KeywordToken::Type::Dominant:
+            this->chordQuality = Quality::Major;
+            this->intervalQuality = Quality::Minor;
+            break;
+        default:
+            jassertfalse;
+            break;
+        }
     }
 
-    enum class Third : int8
+    void updateIntervalQuality(ChordQualityExpression *newExpr)
     {
-        None,
-        Default,
-        Major,
-        Minor
-    };
+        // update interval quality, if it wasn't specified
+        if (this->interval == 3 && newExpr->interval != 3)
+        {
+            this->interval = newExpr->interval;
+            this->intervalQuality = newExpr->intervalQuality;
+        }
+    }
 
-    enum class Fifth : int8
+    enum class Quality : int8
     {
-        Perfect,
+        Major,
+        Minor,
         Augmented,
         Diminished
-    };
-
-    enum class Seventh : int8
-    {
-        None,
-        Major,
-        Minor
     };
 
     bool isValid() const override
@@ -526,36 +548,42 @@ struct ChordQualityExpression final : Expression
 
     void fillDescription(String &out) const override
     {
-        switch (this->third)
+        const bool hasDefaultQuality = 
+            this->chordQuality == Quality::Major && this->intervalQuality == Quality::Major;
+
+        // skip the default implied chord quality
+        if (!hasDefaultQuality)
         {
-        case Third::Major: out << "M"; break;
-        case Third::Minor: out << "m"; break;
-        default: break;
+            fillQualityDescription(out, this->chordQuality);
         }
 
         if (this->interval != 3)
         {
-            if (this->third == Third::Minor &&
-                this->seventh == Seventh::Major)
+            if (this->chordQuality != this->intervalQuality)
             {
-                out << "M"; // should be like mM7
+                out << " ";
+                fillQualityDescription(out, this->intervalQuality);
             }
 
             out << int(this->interval);
         }
+    }
 
-        switch (this->fifth)
+    void fillQualityDescription(String &out, Quality q) const
+    {
+        switch (q)
         {
-        case Fifth::Augmented: out << " aug"; break;
-        case Fifth::Diminished: out << " dim"; break;
+        case Quality::Major: out << "M"; break;
+        case Quality::Minor: out << "m"; break;
+        case Quality::Augmented: out << "aug"; break;
+        case Quality::Diminished: out << "dim"; break;
         default: break;
         }
     }
 
+    Quality chordQuality = Quality::Major;
+    Quality intervalQuality = Quality::Major;
     int8 interval = 3;
-    Third third = Third::Default;
-    Fifth fifth = Fifth::Perfect;
-    Seventh seventh = Seventh::None;
 };
 
 struct BassNoteExpression final : Expression
@@ -844,6 +872,7 @@ private:
         case KeywordToken::Type::Minor:
         case KeywordToken::Type::Augmented:
         case KeywordToken::Type::Diminished:
+        case KeywordToken::Type::Dominant:
             return parseChordQuality(t);
 
         default:
@@ -958,35 +987,7 @@ public:
                 else
                 {
                     auto newExpr = this->removeAndReturnFirstAs<ChordQualityExpression>();
-
-                    if (description.chordQuality->third == ChordQualityExpression::Third::Minor &&
-                        description.chordQuality->interval == 3 &&
-                        newExpr->third == ChordQualityExpression::Third::Major &&
-                        newExpr->interval == 7)
-                    {
-                        // this case is actually a minmaj7 chord, parsed as two separate expressions, lets merge them
-                        description.chordQuality->seventh = ChordQualityExpression::Seventh::Major;
-                        description.chordQuality->interval = 7;
-                        break;
-                    }
-
-                    // update defaults for the existing rule, if needed:
-                    if (description.chordQuality->third == ChordQualityExpression::Third::Default &&
-                        newExpr->third != ChordQualityExpression::Third::Default)
-                    {
-                        description.chordQuality->third = newExpr->third;
-                    }
-
-                    if (description.chordQuality->fifth == ChordQualityExpression::Fifth::Perfect &&
-                        newExpr->fifth != ChordQualityExpression::Fifth::Perfect)
-                    {
-                        description.chordQuality->fifth = newExpr->fifth;
-                    }
-
-                    if (description.chordQuality->interval == 3 && newExpr->interval != 3)
-                    {
-                        description.chordQuality->interval = newExpr->interval;
-                    }
+                    description.chordQuality->updateIntervalQuality(newExpr.get());
                 }
                 break;
 
@@ -1055,19 +1056,26 @@ public:
             }
         }
 
+        // todo more specific rules for the plain interval number exceptions:
         if (description.chordQuality != nullptr &&
-            description.chordQuality->interval == 5 &&
-            description.chordQuality->third != ChordQualityExpression::Third::None)
+            description.chordQuality->chordQuality == ChordQualityExpression::Quality::Major &&
+            description.chordQuality->intervalQuality == ChordQualityExpression::Quality::Major)
         {
-            DBG("Found power chord conflicting with min/maj rule, removing third");
-            description.chordQuality->third = ChordQualityExpression::Third::None;
+            if (description.chordQuality->interval % 2 == 0)
+            {
+                // a major added tone chord 
+            }
+            else
+            {
+                // a dominant chord
+            }
         }
 
         if (description.chordQuality != nullptr &&
             description.keyAlteration != nullptr &&
             description.keyAlteration->key == 5 &&
-            (description.chordQuality->fifth == ChordQualityExpression::Fifth::Augmented ||
-                description.chordQuality->fifth == ChordQualityExpression::Fifth::Diminished))
+            (description.chordQuality->intervalQuality == ChordQualityExpression::Quality::Augmented ||
+                description.chordQuality->intervalQuality == ChordQualityExpression::Quality::Diminished))
         {
             DBG("Fifth alteration makes no sense on aug/dim chords, removing");
             description.keyAlteration = nullptr;
@@ -1080,11 +1088,6 @@ public:
             {
                 DBG("Suspended 2 or 4 make no sense on power chords, removing");
                 description.suspension = nullptr;
-            }
-            else if (description.chordQuality != nullptr && description.chordQuality->third != ChordQualityExpression::Third::None)
-            {
-                DBG("Removing third, because of having suspended 2 or 4");
-                description.chordQuality->third = ChordQualityExpression::Third::None;
             }
         }
 
@@ -1232,74 +1235,61 @@ public:
         const auto *quality = (this->chord.chordQuality != nullptr) ?
             this->chord.chordQuality.get() : this->qualityFallback.get();
 
-        const auto scaleToUse = quality->third == ChordQualityExpression::Third::Minor ? this->minor : this->major;
+        const auto scaleToUse = quality->chordQuality == ChordQualityExpression::Quality::Minor ? this->minor : this->major;
 
         const auto tonic = scaleToUse->getChromaticKey(this->chord.rootKey->key,
             this->chord.rootKey->sharp ? 1 : (this->chord.rootKey->flat ? -1 : 0), false);
 
         RenderedChord chord;
 
-        switch (quality->third)
+        // add triad, if not a power chord:
+        if (quality->interval != 5)
         {
-        case ChordQualityExpression::Third::Default:
-        case ChordQualityExpression::Third::Major:
-        case ChordQualityExpression::Third::Minor:
             chord[3] = KeyInfo::Default; // set by scale
-            break;
-        case ChordQualityExpression::Third::None:
-        default:
-            break;
         }
 
-        switch (quality->fifth)
+        // fifth is always present:
+        switch (quality->intervalQuality)
         {
-        case ChordQualityExpression::Fifth::Perfect:
-            chord[5] = KeyInfo::Default;
-            break;
-        case ChordQualityExpression::Fifth::Augmented:
+        case ChordQualityExpression::Quality::Augmented:
             chord[5] = KeyInfo::Sharp;
             break;
-        case ChordQualityExpression::Fifth::Diminished:
+        case ChordQualityExpression::Quality::Diminished:
             chord[5] = KeyInfo::Flat;
             break;
         default:
+            chord[5] = KeyInfo::Default;
             break;
         }
 
+        const auto keyFor = [](const ChordQualityExpression *quality)
+        {
+            // if the interval quality is the same as the chord quality, it's up to scale to decide
+            return (quality->intervalQuality == quality->chordQuality) ? KeyInfo::Default :
+                ((quality->intervalQuality == ChordQualityExpression::Quality::Minor ||
+                    quality->intervalQuality == ChordQualityExpression::Quality::Diminished) ? KeyInfo::Flat : KeyInfo::Sharp);
+        };
+
         if (quality->interval >= 7)
         {
-            chord[7] = KeyInfo::Default;
+            chord[7] = keyFor(quality);
         }
 
         if (quality->interval >= 9)
         {
-            chord[9] = KeyInfo::Default;
+            chord[9] = keyFor(quality);
         }
 
         if (quality->interval >= 11)
         {
-            chord[11] = KeyInfo::Default;
+            chord[11] = keyFor(quality);
         }
 
         if (quality->interval == 13)
         {
-            chord[13] = KeyInfo::Default;
+            chord[13] = keyFor(quality);
         }
-
-        // hacks to handle dom 7 and min maj 7
-        if (quality->third == ChordQualityExpression::Third::Minor &&
-            quality->seventh == ChordQualityExpression::Seventh::Major)
-        {
-            chord[7] = KeyInfo::Sharp;
-        }
-        else if (quality->third == ChordQualityExpression::Third::Major &&
-            quality->seventh == ChordQualityExpression::Seventh::Minor)
-        {
-            chord[7] = KeyInfo::Flat;
-        }
-
-        // todo handle other intervals? 6, 2?
-
+        
         const auto *sus = this->chord.suspension.get();
         if (sus != nullptr)
         {
@@ -1461,14 +1451,6 @@ public:
         if (this->chord.inversion == nullptr)
         {
             actions.addArray(this->inversionSuggestions);
-        }
-
-        if (this->chord.keyAlteration == nullptr &&
-            this->chord.chordQuality != nullptr &&
-            this->chord.chordQuality->fifth == ChordParsing::ChordQualityExpression::Fifth::Perfect)
-        {
-            jassert(this->chord.chordQuality != nullptr); // should never happen, see the check above
-            actions.addArray(this->alterationSuggestions);
         }
 
         if (this->chord.bassNote == nullptr)
@@ -1660,13 +1642,13 @@ public:
 
         beginTest("Parsing and validation");
 
-        cc.parse("Bb 9 inv -2 sus 2 b5  ");
+        cc.parse("Bb maj 9 inv -2 sus 2 b5  ");
         expect(cc.isValid());
         expectEquals(cc.getChordAsString(), { "Bb9 sus2 b5 inv-2" });
 
-        cc.parse("  A#m M7 add 13");
+        cc.parse("  A#mM7 add 13");
         expect(cc.isValid());
-        expectEquals(cc.getChordAsString(), { "A#mM7 add13" });
+        expectEquals(cc.getChordAsString(), { "A#m M7 add13" });
 
         cc.parse("yo yo sus4 b11 inv7");
         expect(!cc.isValid());
@@ -1693,7 +1675,7 @@ public:
         testRenderedChord(cc, "C maj", { 0, 4, 7 });
         testRenderedChord(cc, "C min", { 0, 3, 7 });
         testRenderedChord(cc, "C aug", { 0, 4, 8 });
-        //testRenderedChord(cc, "C dim", { 0, 3, 6 });
+        testRenderedChord(cc, "C dim", { 0, 3, 6 });
         testRenderedChord(cc, "C sus2", { 0, 2, 7 });
         testRenderedChord(cc, "C sus4", { 0, 5, 7 });
         //testRenderedChord(cc, "C maj6", { 0, 4, 7, 9 });
@@ -1704,9 +1686,9 @@ public:
         //testRenderedChord(cc, "C aug7", { 0, 4, 8, 10 });
         testRenderedChord(cc, "C M7#5", { 0, 4, 8, 11 });
         testRenderedChord(cc, "C m7b5", { 0, 3, 6, 10 });
-        //testRenderedChord(cc, "C dim7", { 0, 3, 6, 9 });
-        //testRenderedChord(cc, "C dom7", { 0, 4, 7, 10 });
-        //testRenderedChord(cc, "C 7sus4", { 0, 5, 7, 10 });
+        testRenderedChord(cc, "C dim7", { 0, 3, 6, 9 });
+        testRenderedChord(cc, "C dom7", { 0, 4, 7, 10 });
+        //testRenderedChord(cc, "C 7sus4", { 0, 5, 7, 10 }); // 10 -> 11
         testRenderedChord(cc, "C M7sus2", { 0, 2, 7, 11 });
         testRenderedChord(cc, "C M7sus4", { 0, 5, 7, 11 });
         testRenderedChord(cc, "C maj9", { 0, 4, 7, 11, 14 });
@@ -1714,7 +1696,7 @@ public:
         testRenderedChord(cc, "C maj11", { 0, 4, 7, 11, 14, 17 });
         testRenderedChord(cc, "C min11", { 0, 3, 7, 10, 14, 17 });
         testRenderedChord(cc, "C maj13", { 0, 4, 7, 11, 14, 17, 21 });
-        //testRenderedChord(cc, "C min13", { 0, 3, 7, 10, 14, 17, 21 });
+        //testRenderedChord(cc, "C min13", { 0, 3, 7, 10, 14, 17, 21 }); // 21 -> 20
     }
 
     void testRenderedChord(ChordCompiler &compiler, const String &chord, const Array<int> &expect)
