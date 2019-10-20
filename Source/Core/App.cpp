@@ -562,6 +562,8 @@ void App::initialise(const String &commandLine)
 
 #if JUCE_UNIT_TESTS
 
+        DBG("===");
+
         // for unit tests, we want the app and config/resources initialized
         // (we don't need a window, workspace and network services though)
         UnitTestRunner runner;
@@ -582,6 +584,8 @@ void App::initialise(const String &commandLine)
 
         // a hack to allow messages get cleaned up to avoid leaks:
         MessageManager::getInstance()->runDispatchLoopUntil(50);
+
+        DBG("===");
 
 #else
 
@@ -638,10 +642,9 @@ void App::shutdown()
     {
         //this->config->getTranslations()->removeChangeListener(this);
 
-        DBG("App::shutdown");
+        DBG("Shutting down");
 
         this->window = nullptr;
-
         this->network = nullptr;
         
         if (this->workspace != nullptr)

@@ -135,13 +135,12 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(builtInResource));
         if (tree.isValid())
         {
-            DBG("Loading built-in resource for " + this->resourceType.toString());
             this->deserializeResources(tree, this->baseResources);
             shouldBroadcastChange = true;
         }
-    }
 
-    DBG("Loaded built-in resources in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+        DBG("Loaded built-in " + this->resourceType.toString() + " in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+    }
 
 #if DEBUG
     startTime = Time::getMillisecondCounter();
@@ -154,13 +153,12 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(downloadedResource));
         if (tree.isValid())
         {
-            DBG("Found downloaded resource file for " + this->resourceType.toString());
             this->deserializeResources(tree, this->baseResources);
             shouldBroadcastChange = true;
         }
-    }
 
-    DBG("Loaded extended resources in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+        DBG("Loaded extended " + this->resourceType.toString() + " in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+    }
 
 #if DEBUG
     startTime = Time::getMillisecondCounter();
@@ -174,13 +172,12 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(usersResource));
         if (tree.isValid())
         {
-            DBG("Found users resource file for " + this->resourceType.toString());
             this->deserializeResources(tree, this->userResources);
             shouldBroadcastChange = true;
         }
-    }
 
-    DBG("Loaded user resources in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+        DBG("Loaded user's " + this->resourceType.toString() + " in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+    }
 
     if (shouldBroadcastChange)
     {

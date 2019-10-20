@@ -81,8 +81,8 @@ private:
 
     ResourceManagerLookup resources;
 
-    bool needsSaving;
-    int saveTimeout;
+    bool needsSaving = false;
+    int saveTimeout = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Config)
 };

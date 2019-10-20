@@ -70,4 +70,5 @@ public:
 
     void dispatchChangeTrackProperties() noexcept override {}
     void dispatchChangeProjectBeatRange() noexcept override {}
+    void dispatchChangeTrackBeatRange() noexcept override {}
 };
