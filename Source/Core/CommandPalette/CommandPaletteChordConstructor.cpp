@@ -498,21 +498,18 @@ struct ChordQualityExpression final : Expression
         {
         case KeywordToken::Type::Minor:
             this->chordQuality = Quality::Minor;
-            this->intervalQuality = this->chordQuality;
             break;
         case KeywordToken::Type::Major:
             this->chordQuality = Quality::Major;
-            this->intervalQuality = this->chordQuality;
             break;
         case KeywordToken::Type::Augmented:
-            this->chordQuality = Quality::Major;
             this->intervalQuality = Quality::Augmented;
             break;
         case KeywordToken::Type::Diminished:
-            this->chordQuality = Quality::Minor;
+            this->chordQuality = Quality::Minor; // another exception
             this->intervalQuality = Quality::Diminished;
             break;
-        case KeywordToken::Type::Dominant:
+        case KeywordToken::Type::Dominant: // basically, a shorthand for mM
             this->chordQuality = Quality::Major;
             this->intervalQuality = Quality::Minor;
             break;
@@ -528,12 +525,15 @@ struct ChordQualityExpression final : Expression
         if (this->interval == 3 && newExpr->interval != 3)
         {
             this->interval = newExpr->interval;
-            this->intervalQuality = newExpr->intervalQuality;
+            this->intervalQuality =
+                (newExpr->intervalQuality == Quality::Implied) ?
+                newExpr->chordQuality : newExpr->intervalQuality;
         }
     }
 
     enum class Quality : int8
     {
+        Implied,
         Major,
         Minor,
         Augmented,
@@ -548,18 +548,16 @@ struct ChordQualityExpression final : Expression
 
     void fillDescription(String &out) const override
     {
-        const bool hasDefaultQuality = 
-            this->chordQuality == Quality::Major && this->intervalQuality == Quality::Major;
-
         // skip the default implied chord quality
-        if (!hasDefaultQuality)
+        if (this->chordQuality != Quality::Implied)
         {
             fillQualityDescription(out, this->chordQuality);
         }
 
         if (this->interval != 3)
         {
-            if (this->chordQuality != this->intervalQuality)
+            if (this->intervalQuality != Quality::Implied &&
+                this->intervalQuality != this->chordQuality)
             {
                 out << " ";
                 fillQualityDescription(out, this->intervalQuality);
@@ -573,6 +571,7 @@ struct ChordQualityExpression final : Expression
     {
         switch (q)
         {
+        case Quality::Implied:
         case Quality::Major: out << "M"; break;
         case Quality::Minor: out << "m"; break;
         case Quality::Augmented: out << "aug"; break;
@@ -581,8 +580,8 @@ struct ChordQualityExpression final : Expression
         }
     }
 
-    Quality chordQuality = Quality::Major;
-    Quality intervalQuality = Quality::Major;
+    Quality chordQuality = Quality::Implied;
+    Quality intervalQuality = Quality::Implied;
     int8 interval = 3;
 };
 
@@ -1242,6 +1241,43 @@ public:
 
         RenderedChord chord;
 
+        const auto getKey = [scaleToUse, this](const ChordQualityExpression *quality, int targetInterval)
+        {
+            if (targetInterval == 5)
+            {
+                return (quality->intervalQuality == ChordQualityExpression::Quality::Augmented ? KeyInfo::Sharp :
+                    quality->intervalQuality == ChordQualityExpression::Quality::Diminished ? KeyInfo::Flat : KeyInfo::Default);
+            }
+
+            // handle other exceptions (pretty much fucked up tbh):
+            if (quality->chordQuality == ChordQualityExpression::Quality::Implied ||
+                quality->intervalQuality == ChordQualityExpression::Quality::Implied)
+            {
+                if ((targetInterval == 6 || targetInterval == 13) && scaleToUse == this->minor)
+                {
+                    return KeyInfo::Sharp;
+                }
+
+                if ((targetInterval == 7) && scaleToUse != this->minor &&
+                    quality->chordQuality == ChordQualityExpression::Quality::Implied)
+                {
+                    return KeyInfo::Flat;
+                }
+            }
+            
+            // if the interval quality is the same as the chord quality, it's up to scale to decide:
+            if (quality->intervalQuality != quality->chordQuality)
+            {
+                const bool minOrDim = (quality->intervalQuality == ChordQualityExpression::Quality::Minor ||
+                    quality->intervalQuality == ChordQualityExpression::Quality::Diminished);
+
+                const bool maj = (quality->intervalQuality == ChordQualityExpression::Quality::Major);
+                return minOrDim ? KeyInfo::Flat : (maj ? KeyInfo::Sharp : KeyInfo::Default);
+            }
+
+            return KeyInfo::Default;
+        };
+
         // add triad, if not a power chord:
         if (quality->interval != 5)
         {
@@ -1249,45 +1285,13 @@ public:
         }
 
         // fifth is always present:
-        switch (quality->intervalQuality)
-        {
-        case ChordQualityExpression::Quality::Augmented:
-            chord[5] = KeyInfo::Sharp;
-            break;
-        case ChordQualityExpression::Quality::Diminished:
-            chord[5] = KeyInfo::Flat;
-            break;
-        default:
-            chord[5] = KeyInfo::Default;
-            break;
-        }
+        chord[5] = getKey(quality, 5);
 
-        const auto keyFor = [](const ChordQualityExpression *quality)
+        // fill the remaining keys:
+        const auto keyToStartFrom = (quality->interval % 2 == 0) ? 6 : 7;
+        for (int i = keyToStartFrom; i <= quality->interval; i += 2)
         {
-            // if the interval quality is the same as the chord quality, it's up to scale to decide
-            return (quality->intervalQuality == quality->chordQuality) ? KeyInfo::Default :
-                ((quality->intervalQuality == ChordQualityExpression::Quality::Minor ||
-                    quality->intervalQuality == ChordQualityExpression::Quality::Diminished) ? KeyInfo::Flat : KeyInfo::Sharp);
-        };
-
-        if (quality->interval >= 7)
-        {
-            chord[7] = keyFor(quality);
-        }
-
-        if (quality->interval >= 9)
-        {
-            chord[9] = keyFor(quality);
-        }
-
-        if (quality->interval >= 11)
-        {
-            chord[11] = keyFor(quality);
-        }
-
-        if (quality->interval == 13)
-        {
-            chord[13] = keyFor(quality);
+            chord[i] = getKey(quality, i);
         }
         
         const auto *sus = this->chord.suspension.get();
@@ -1642,7 +1646,7 @@ public:
 
         beginTest("Parsing and validation");
 
-        cc.parse("Bb maj 9 inv -2 sus 2 b5  ");
+        cc.parse("Bb 9 inv -2 sus 2 b5  ");
         expect(cc.isValid());
         expectEquals(cc.getChordAsString(), { "Bb9 sus2 b5 inv-2" });
 
@@ -1668,27 +1672,28 @@ public:
 
         // todo: suggestions need to be smarter, so more tests to come
 
-        beginTest("Chords generation");
+        beginTest("Chords generation, basic rules");
 
-        // FIXME fix failing (2/4/6 chords and issues with m/M 7th):
-        testRenderedChord(cc, "C#", { 1, 5, 8 });
+        testRenderedChord(cc, "C#5", { 1, 8 });
         testRenderedChord(cc, "C maj", { 0, 4, 7 });
         testRenderedChord(cc, "C min", { 0, 3, 7 });
         testRenderedChord(cc, "C aug", { 0, 4, 8 });
         testRenderedChord(cc, "C dim", { 0, 3, 6 });
         testRenderedChord(cc, "C sus2", { 0, 2, 7 });
         testRenderedChord(cc, "C sus4", { 0, 5, 7 });
-        //testRenderedChord(cc, "C maj6", { 0, 4, 7, 9 });
-        //testRenderedChord(cc, "C min6", { 0, 3, 7, 9 });
+        testRenderedChord(cc, "C maj6", { 0, 4, 7, 9 });
+        testRenderedChord(cc, "C min6", { 0, 3, 7, 9 });
         testRenderedChord(cc, "C maj7", { 0, 4, 7, 11 });
         testRenderedChord(cc, "C min7", { 0, 3, 7, 10 });
         testRenderedChord(cc, "C mM7", { 0, 3, 7, 11 });
-        //testRenderedChord(cc, "C aug7", { 0, 4, 8, 10 });
+        testRenderedChord(cc, "C min maj7", { 0, 3, 7, 11 });
+        testRenderedChord(cc, "C Mm7", { 0, 4, 7, 10 });
+        testRenderedChord(cc, "C aug7", { 0, 4, 8, 10 });
         testRenderedChord(cc, "C M7#5", { 0, 4, 8, 11 });
         testRenderedChord(cc, "C m7b5", { 0, 3, 6, 10 });
         testRenderedChord(cc, "C dim7", { 0, 3, 6, 9 });
         testRenderedChord(cc, "C dom7", { 0, 4, 7, 10 });
-        //testRenderedChord(cc, "C 7sus4", { 0, 5, 7, 10 }); // 10 -> 11
+        testRenderedChord(cc, "C 7sus4", { 0, 5, 7, 10 });
         testRenderedChord(cc, "C M7sus2", { 0, 2, 7, 11 });
         testRenderedChord(cc, "C M7sus4", { 0, 5, 7, 11 });
         testRenderedChord(cc, "C maj9", { 0, 4, 7, 11, 14 });
@@ -1696,7 +1701,10 @@ public:
         testRenderedChord(cc, "C maj11", { 0, 4, 7, 11, 14, 17 });
         testRenderedChord(cc, "C min11", { 0, 3, 7, 10, 14, 17 });
         testRenderedChord(cc, "C maj13", { 0, 4, 7, 11, 14, 17, 21 });
-        //testRenderedChord(cc, "C min13", { 0, 3, 7, 10, 14, 17, 21 }); // 21 -> 20
+        testRenderedChord(cc, "C min13", { 0, 3, 7, 10, 14, 17, 21 });
+
+        beginTest("Chords generation, complex expressions");
+        // todo test against some more sophisticated examples
     }
 
     void testRenderedChord(ChordCompiler &compiler, const String &chord, const Array<int> &expect)
