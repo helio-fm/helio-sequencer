@@ -5,7 +5,7 @@ branches:
   - develop
   - /^\d+\.?\d+\.?\d*$/
 skip_tags: false
-image: Visual Studio 2019 Preview
+image: Visual Studio 2019
 platform: x64
 clone_depth: 1
 environment:
@@ -36,8 +36,8 @@ cache: ThirdParty\ASIO
 # A hack
 build: off
 test_script:
-- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat" && ECHO "x64 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release64;Platform=x64
-- call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat" && ECHO "x32 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release32;Platform=Win32
+- call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x64 && ECHO "x64 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release64;Platform=x64
+- call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86 && ECHO "x32 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release32;Platform=Win32
 - if /I "%APPVEYOR_REPO_TAG%" == "false" set APPVEYOR_REPO_TAG_NAME=dev
 deploy_script:
 # Sign and deploy 64-bit portable version
@@ -51,7 +51,7 @@ deploy_script:
 - 7z a portable-x32.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_32_bit%"
 - C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/portable-x32.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x32.zip"
 # Create installer containing both signed versions, sign installer and deploy
-- set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
+- set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 6"
 - iscc "%APPVEYOR_BUILD_FOLDER%\Projects\Deployment\Windows\setup.iss"
 - ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_installer"
 - ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_installer"
