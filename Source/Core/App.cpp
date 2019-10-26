@@ -57,7 +57,15 @@ public:
         //this->setResizeLimits(568, 320, 8192, 8192); // phone size test
         this->setResizeLimits(1024, 650, 8192, 8192); // production
 
-        this->setUseNativeTitleBar(useNativeTitleBar);
+        const bool hasResizableCorner = !useNativeTitleBar;
+        this->setResizable(true, hasResizableCorner);
+        this->setUsingNativeTitleBar(useNativeTitleBar);
+        if (this->resizableCorner != nullptr)
+        {
+            this->resizableCorner->setRepaintsOnMouseActivity(false);
+            this->resizableCorner->setPaintingIsUnclipped(true);
+            this->resizableCorner->setBufferedToImage(true);
+        }
         
         this->setBounds(int(0.1f * this->getParentWidth()),
             int(0.1f * this->getParentHeight()),
@@ -169,18 +177,6 @@ private:
         // this->setContentOwned(new ScaledComponentProxy(this->layout), false);
         this->setContentNonOwned(this->layout.get(), false);
         this->layout->restoreLastOpenedPage();
-    }
-
-    void setUseNativeTitleBar(bool useNativeTitleBar)
-    {
-        const bool hasResizableCorner = !useNativeTitleBar;
-        this->setResizable(true, hasResizableCorner);
-        this->setUsingNativeTitleBar(useNativeTitleBar);
-        if (this->resizableCorner != nullptr) {
-            this->resizableCorner->setRepaintsOnMouseActivity(false);
-            this->resizableCorner->setPaintingIsUnclipped(true);
-            this->resizableCorner->setBufferedToImage(true);
-        }
     }
 
     void setTitleComponent(WeakReference<Component> component)
@@ -499,25 +495,42 @@ bool App::isUsingNativeTitleBar()
 #endif
 }
 
-void App::setUsingNativeTitleBar(bool shouldUseNative)
+void App::setUsingNativeTitleBar(bool shouldUseNativeTitleBar)
 {
 #if JUCE_WINDOWS || JUCE_LINUX
-    if (isUsingNativeTitleBar() == shouldUseNative)
+    if (App::isUsingNativeTitleBar() == shouldUseNativeTitleBar)
     {
         return;
     }
 
-    auto *window = static_cast<App *>(getInstance())->window.get();
-    auto *config = static_cast<App *>(getInstance())->config.get();
-
-    config->setProperty(Serialization::Config::nativeTitleBar,
-        shouldUseNative ?
+    App::Config().setProperty(Serialization::Config::nativeTitleBar,
+        shouldUseNativeTitleBar ?
         Serialization::Config::enabledState.toString() :
         Serialization::Config::disabledState.toString());
 
-    window->dismissLayoutComponent();
-    window->setUseNativeTitleBar(shouldUseNative);
-    window->createLayoutComponent();
+#   if JUCE_WINDOWS
+
+    // just re-creating a window helps to avoid glitches:
+    const bool hasOpenGl = App::isOpenGLRendererEnabled();
+    auto *self = static_cast<App *>(getInstance());
+    self->window.reset(new MainWindow());
+    self->window->init(hasOpenGl, shouldUseNativeTitleBar);
+
+#   elif JUCE_LINUX
+
+    // on Linux, however, it's not that simple, as always:
+    // on some builds and some systems re-creating a window,
+    // or simply removing it from the desktop and adding it back
+    // will (or will not, depending on your luck) segfault in XLockDisplay,
+    // which is given an invalid display pointer, which wasn't initialized
+    // properly by XOpenDisplay, apparently because-f-you-that's-why;
+    // the stacktrace lead me to this comment in juce_linux_X11.cpp:134 -
+    // "on some systems XOpenDisplay will occasionally fail". great.
+
+    App::Layout().showTooltip(TRANS(I18n::Settings::restartRequired),
+        MainLayout::TooltipType::Simple, 5000);
+
+#   endif
 
 #else
     jassertfalse; // should never hit that
@@ -560,7 +573,7 @@ void App::initialise(const String &commandLine)
 
         this->theme.reset(helioTheme.release());
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
-    
+
         this->workspace.reset(new class Workspace());
 
 #if JUCE_ANDROID

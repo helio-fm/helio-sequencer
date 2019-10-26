@@ -284,6 +284,7 @@ namespace I18n
         static const Identifier rendererNative = "settings::renderer::native";
         static const Identifier rendererOpengl = "settings::renderer::opengl";
         static const Identifier sync = "settings::sync";
+        static const Identifier restartRequired = "settings::restart";
         static const Identifier ui = "settings::ui";
         static const Identifier uiFont = "settings::ui::font";
         static const Identifier nativeTitleBar = "settings::ui::nativebar";
