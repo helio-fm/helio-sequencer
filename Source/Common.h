@@ -85,6 +85,11 @@ struct IdentifierHash
 // Various helpers
 //===----------------------------------------------------------------------===//
 
+// The reason for these (and above) aliases to exist is that I hate
+// that stl::influenced<eye_bleeding, unspeakably_ugly> _code_style;
+// if anyone reading this is considering contributing, please please
+// please write in a cleaner, C#-like, pidgin C++, thank you so much.
+
 template <typename T>
 using UniquePointer = std::unique_ptr<T>;
 
@@ -116,6 +121,8 @@ inline float roundf(float x)
 // Defines the maximum available resolution
 #define TICKS_PER_BEAT 16
 
+#define PROJECT_DEFAULT_NUM_BEATS 32
+
 #define VELOCITY_SAVE_ACCURACY 1024.f
 
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
@@ -146,6 +153,17 @@ inline constexpr uint32 constexprHash(const char *const str, const uint32 value 
 {
     return (str[0] == '\0') ? value : constexprHash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a32prime);
 }
+
+#if JUCE_UNIT_TESTS
+namespace juce
+{
+    namespace UnitTestCategories
+    {
+        // declare an additional category for all our tests 
+        static const String helio { "Helio" };
+    }
+}
+#endif
 
 //===----------------------------------------------------------------------===//
 // Internationalization

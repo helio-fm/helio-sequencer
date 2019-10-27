@@ -28,7 +28,6 @@
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
 #include "TimeSignatureDialog.h"
-#include "MainLayout.h"
 #include "TimeSignatureLargeComponent.h"
 #include "TimeSignatureSmallComponent.h"
 
@@ -338,7 +337,7 @@ void TimeSignaturesProjectMap::showContextMenuFor(TimeSignatureComponent *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        App::Layout().showModalDialog(TimeSignatureDialog::editingDialog(*this, nc->getEvent()));
+        App::showModalComponent(TimeSignatureDialog::editingDialog(*this, nc->getEvent()));
     }
 }
 

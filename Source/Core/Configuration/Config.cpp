@@ -23,17 +23,16 @@
 
 Config::Config(int timeoutToSaveMs) :
     fileLock("Config Lock"),
-    needsSaving(false),
     saveTimeout(timeoutToSaveMs),
     propertiesFile(DocumentHelpers::getConfigSlot("settings.helio"))
 {
-    this->translationsManager.reset(new TranslationsManager());
-    this->arpeggiatorsManager.reset(new ArpeggiatorsManager());
-    this->colourSchemesManager.reset(new ColourSchemesManager());
-    this->hotkeySchemesManager.reset(new HotkeySchemesManager());
-    this->scriptsManager.reset(new ScriptsManager());
-    this->scalesManager.reset(new ScalesManager());
-    this->chordsManager.reset(new ChordsManager());
+    this->translationsManager = makeUnique<TranslationsManager>();
+    this->arpeggiatorsManager = makeUnique<ArpeggiatorsManager>();
+    this->colourSchemesManager = makeUnique<ColourSchemesManager>();
+    this->hotkeySchemesManager = makeUnique<HotkeySchemesManager>();
+    this->scriptsManager = makeUnique<ScriptsManager>();
+    this->scalesManager = makeUnique<ScalesManager>();
+    this->chordsManager = makeUnique<ChordsManager>();
 
     using namespace Serialization::Resources;
     this->resources[translations] = this->translationsManager.get();
@@ -56,6 +55,7 @@ Config::~Config()
     this->colourSchemesManager = nullptr;
     this->arpeggiatorsManager = nullptr;
     this->translationsManager = nullptr;
+
     this->resources.clear();
 }
 
@@ -145,6 +145,11 @@ bool Config::containsProperty(const Identifier &key) const noexcept
 
 bool Config::saveIfNeeded()
 {
+    if (!this->needsSaving)
+    {
+        return false;
+    }
+
     if (this->propertiesFile.getFullPathName().isEmpty())
     {
         return false;
@@ -177,7 +182,7 @@ bool Config::saveIfNeeded()
 
     if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, cleanedUpConfig))
     {
-        needsSaving = false;
+        this->needsSaving = false;
         DBG("Config saved: " + this->propertiesFile.getFullPathName());
         return true;
     }

@@ -26,7 +26,6 @@
 #include "VersionControlNode.h"
 #include "PatternEditorNode.h"
 #include "AutomationSequence.h"
-#include "MainLayout.h"
 #include "AudioCore.h"
 #include "Instrument.h"
 #include "PianoSequence.h"
@@ -38,6 +37,7 @@
 #include "AutomationTrackActions.h"
 #include "Pattern.h"
 #include "UndoStack.h"
+#include "MainLayout.h"
 #include "Workspace.h"
 #include "CommandIDs.h"
 
@@ -100,10 +100,10 @@ void ProjectMenu::handleCommandMessage(int commandId)
                     }
                 };
 
-                App::Layout().showModalDialog(std::move(inputDialog));
+                App::showModalComponent(std::move(inputDialog));
             };
 
-            App::Layout().showModalDialog(std::move(confirmationDialog));
+            App::showModalComponent(std::move(confirmationDialog));
             return;
         }
     }
@@ -220,7 +220,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
                     }
                 };
 
-                App::Layout().showModalDialog(std::move(inputDialog));
+                App::showModalComponent(std::move(inputDialog));
             }));
     }
 

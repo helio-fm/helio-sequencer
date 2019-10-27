@@ -203,6 +203,7 @@ void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
     
     if (shouldNotifyIfChanged)
     {
+        this->eventDispatcher.dispatchChangeTrackBeatRange();
         this->eventDispatcher.dispatchChangeProjectBeatRange();
     }
 }

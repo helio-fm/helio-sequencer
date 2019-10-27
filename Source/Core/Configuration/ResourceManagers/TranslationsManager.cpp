@@ -101,6 +101,11 @@ void TranslationsManager::loadLocaleWithId(const String &localeId)
 
 String TranslationsManager::translate(const String &text)
 {
+    if (text.isEmpty())
+    {
+        return {};
+    }
+
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
     const auto foundCurrentSingular = this->currentTranslation->singulars.find(text);
@@ -130,6 +135,11 @@ String TranslationsManager::translate(const String &text)
 
 String TranslationsManager::translate(const String &baseLiteral, int64 targetNumber)
 {
+    if (baseLiteral.isEmpty())
+    {
+        return {};
+    }
+
     using namespace Serialization;
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
@@ -172,11 +182,19 @@ void TranslationsManager::deserializeResources(const SerializedData &tree, Resou
 
     const String selectedLocaleId = this->getSelectedLocaleId();
 
-    // First, fill up the available translations
     forEachChildWithType(root, translationRoot, Serialization::Translations::locale)
     {
-        Translation::Ptr translation(new Translation());
+        // if the existing translation for locale id is found,
+        // just extend it, otherwise some new keys may be missing:
+        const auto translationId = translationRoot.getProperty(Serialization::Translations::id).toString().toLowerCase();
+        const auto existingTranslation = outResources.find(translationId);
+
+        Translation::Ptr translation(existingTranslation != outResources.end() ?
+            static_cast<Translation *>(existingTranslation->second.get()) : new Translation());
+
+        //DBG(translationId + "/" + translation->getResourceId());
         translation->deserialize(translationRoot);
+
         outResources[translation->getResourceId()] = translation;
 
         if (translation->id == selectedLocaleId)
@@ -213,7 +231,6 @@ void TranslationsManager::reset()
 
 String TranslationsManager::getSelectedLocaleId() const
 {
-   
     if (App::Config().containsProperty(Serialization::Config::currentLocale))
     {
         return App::Config().getProperty(Serialization::Config::currentLocale, fallbackTranslationId);

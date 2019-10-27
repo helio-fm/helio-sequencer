@@ -370,6 +370,14 @@ void MidiTrackNode::dispatchChangeTrackProperties()
     }
 }
 
+void MidiTrackNode::dispatchChangeTrackBeatRange()
+{
+    if (this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastChangeTrackBeatRange(this);
+    }
+}
+
 void MidiTrackNode::dispatchChangeProjectBeatRange()
 {
     if (this->lastFoundParent != nullptr)

@@ -44,6 +44,9 @@ public:
 
     bool isSelected() const noexcept;
     void setSelected(NotificationType shouldNotify = sendNotification);
+    // late notify, if called setSelected(doneSendNotification) earlier
+    // used in version control operations, which don't send notifications
+    void sendSelectionNotification();
 
 protected:
 
@@ -147,8 +150,7 @@ public:
             return activeNodes.getFirst();
         }
         
-        // this should never happen normally
-        return nullptr;
+        return const_cast<TreeNode *>(this); // root
     }
 
     inline TreeNode *getRootNode() noexcept

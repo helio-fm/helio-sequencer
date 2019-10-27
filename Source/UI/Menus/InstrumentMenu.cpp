@@ -21,7 +21,6 @@
 #include "Instrument.h"
 #include "ModalDialogInput.h"
 #include "PluginScanner.h"
-#include "MainLayout.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
@@ -53,7 +52,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         {
             auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
             dialog->onOk = this->instrumentNode.getRenameCallback();
-            App::Layout().showModalDialog(std::move(dialog));
+            App::showModalComponent(std::move(dialog));
         }));
 
     // TODO:

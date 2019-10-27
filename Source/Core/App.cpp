@@ -83,13 +83,13 @@ public:
         Desktop::getInstance().setKioskModeComponent(this);
 #endif
 
+        this->createLayoutComponent();
+        this->setVisible(true);
+
         if (enableOpenGl)
         {
             this->attachOpenGLContext();
         }
-
-        this->createLayoutComponent();
-        this->setVisible(true);
 
 #if JUCE_IOS
         Desktop::getInstance().setKioskModeComponent(this);
@@ -429,16 +429,14 @@ void App::recreateLayout()
 
 void App::showModalComponent(UniquePointer<Component> target)
 {
-    // showing a dialog when another one is still present is kinda suspicious
-    //jassert(Component::getCurrentlyModalComponent() == nullptr);
-
     App::dismissAllModalComponents();
 
     auto *window = static_cast<App *>(getInstance())->window.get();
     window->addChildComponent(target.get());
 
+    target->setAlpha(0.f);
     Desktop::getInstance().getAnimator().animateComponent(target.get(),
-        target->getBounds(), 1.f, LONG_FADE_TIME, false, 0.0, 0.0);
+        target->getBounds(), 1.f, 100, false, 0.0, 1.0);
 
     target->toFront(false);
     target->enterModalState(true, nullptr, true);
@@ -574,17 +572,48 @@ void App::initialise(const String &commandLine)
         this->theme.reset(helioTheme.release());
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
 
+#if JUCE_UNIT_TESTS
+
+        DBG("===");
+
+        // for unit tests, we want the app and config/resources initialized
+        // (we don't need a window, workspace and network services though)
+        UnitTestRunner runner;
+
+        // we don't want to run JUCE's unit tests, just the ones in our category:
+        runner.runTestsInCategory(UnitTestCategories::helio,
+            Random::getSystemRandom().nextInt64());
+
+        for (int i = 0; i < runner.getNumResults(); ++i)
+        {
+            if (runner.getResult(i)->failures > 0)
+            {
+                throw new std::exception();
+            }
+        }
+
+        this->quit();
+
+        // a hack to allow messages get cleaned up to avoid leaks:
+        MessageManager::getInstance()->runDispatchLoopUntil(50);
+
+        DBG("===");
+
+#else
+
+        // if this is not a unit test runner, proceed as normal:
+
         this->workspace.reset(new class Workspace());
 
-#if JUCE_ANDROID
+#   if JUCE_ANDROID
         // OpenGL seems to be the only sensible option on Android:
         const bool shouldEnableOpenGL = true;
         const bool shouldUseNativeTitleBar = true;
-#elif JUCE_IOS
+#   elif JUCE_IOS
         // CoreGraphics renderer is faster anyway:
         const bool shouldEnableOpenGL = false;
         const bool shouldUseNativeTitleBar = true;
-#else
+#   else
         const auto enabledState = Serialization::Config::enabledState.toString();
         const auto opeGlState = this->config->getProperty(Serialization::Config::openGLState);
         const auto nativeTitleBarState = this->config->getProperty(Serialization::Config::nativeTitleBar);
@@ -613,10 +642,14 @@ void App::initialise(const String &commandLine)
         // see the comment in changeListenerCallback
         //this->config->getTranslations()->addChangeListener(this);
         
-        // Desktop versions will be initialised by InitScreen component.
-#if HELIO_MOBILE
+#   if HELIO_MOBILE
+
+        // desktop versions will be initialised by InitScreen component.
         App::Workspace().init();
         App::Layout().show();
+
+#   endif
+
 #endif
     }
     else if (this->runMode == App::PLUGIN_CHECK)
@@ -632,14 +665,16 @@ void App::shutdown()
     {
         //this->config->getTranslations()->removeChangeListener(this);
 
-        DBG("App::shutdown");
+        DBG("Shutting down");
 
         this->window = nullptr;
-
         this->network = nullptr;
-
-        this->workspace->shutdown();
-        this->workspace = nullptr;
+        
+        if (this->workspace != nullptr)
+        {
+            this->workspace->shutdown();
+            this->workspace = nullptr;
+        }
 
         this->theme = nullptr;
         this->config = nullptr;
@@ -793,5 +828,9 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
     //DBG("Reloading translations");
     //this->recreateLayout();
 }
+
+//===----------------------------------------------------------------------===//
+// Main
+//===----------------------------------------------------------------------===//
 
 START_JUCE_APPLICATION(App)

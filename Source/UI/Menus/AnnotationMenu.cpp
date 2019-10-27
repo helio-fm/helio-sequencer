@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "AnnotationMenu.h"
 #include "ProjectNode.h"
-#include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
 #include "AnnotationEvent.h"
@@ -42,7 +41,7 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
             auto *sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
             auto inputDialog = ModalDialogInput::Presets::renameAnnotation(this->annotation.getDescription());
             inputDialog->onOk = sequence->getEventRenameCallback(this->annotation);
-            App::Layout().showModalDialog(std::move(inputDialog));
+            App::showModalComponent(std::move(inputDialog));
         }));
     
     const StringPairArray colours(MenuPanel::getColoursList());

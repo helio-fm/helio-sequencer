@@ -280,8 +280,8 @@ Image Icons::findByName(Icons::Id id, int maxSize)
         return prerenderedVectors[iconKey];
     }
     
-    const Colour iconBaseColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::fill));
-    const Colour iconShadeColour(LookAndFeel::getDefaultLookAndFeel().findColour(ColourIDs::Icons::shadow));
+    const Colour iconBaseColour(findDefaultColour(ColourIDs::Icons::fill));
+    const Colour iconShadeColour(findDefaultColour(ColourIDs::Icons::shadow));
     const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
     prerenderedVectors[iconKey] = prerenderedImage;
 

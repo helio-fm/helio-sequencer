@@ -31,7 +31,6 @@
 #include "Config.h"
 #include "HelioTheme.h"
 #include "Workspace.h"
-#include "MainLayout.h"
 //[/MiscUserDefs]
 
 UserInterfaceSettings::UserInterfaceSettings()
@@ -179,7 +178,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
                 this->updateButtons();
             };
 
-            App::Layout().showModalDialog(std::move(dialog));
+            App::showModalComponent(std::move(dialog));
         }
         //[/UserButtonCode_openGLRendererButton]
     }

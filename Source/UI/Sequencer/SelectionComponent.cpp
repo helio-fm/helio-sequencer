@@ -51,24 +51,24 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
         this->updateBounds();
         this->setVisible(true);
 
-        Array<SelectableComponent *> itemsInLasso;
-        this->source->findLassoItemsInArea(itemsInLasso, getBounds());
+        this->itemsInLasso.clearQuick();
+        this->source->findLassoItemsInArea(this->itemsInLasso, getBounds());
 
         if (e.mods.isShiftDown())
         {
-            itemsInLasso.removeValuesIn(originalSelection);
-            itemsInLasso.addArray(originalSelection);
+            this->itemsInLasso.removeValuesIn(this->originalSelection);
+            this->itemsInLasso.addArray(this->originalSelection);
         }
         else if (e.mods.isAltDown())
         {
-            Array<SelectableComponent *> originalMinusNew(originalSelection);
-            originalMinusNew.removeValuesIn(itemsInLasso);
+            Array<SelectableComponent *> originalMinusNew(this->originalSelection);
+            originalMinusNew.removeValuesIn(this->itemsInLasso);
 
-            itemsInLasso.removeValuesIn(originalSelection);
-            itemsInLasso.addArray(originalMinusNew);
+            this->itemsInLasso.removeValuesIn(this->originalSelection);
+            this->itemsInLasso.addArray(originalMinusNew);
         }
 
-        this->source->getLassoSelection() = Lasso(itemsInLasso);
+        this->source->getLassoSelection() = Lasso(this->itemsInLasso);
     }
 }
 

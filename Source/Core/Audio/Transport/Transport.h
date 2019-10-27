@@ -156,12 +156,12 @@ private:
 
 private:
 
-    ProjectSequences getPlaybackCache();
+    ProjectSequences &getPlaybackCache();
     void recacheIfNeeded();
     
     SpinLock sequencesLock;
     ProjectSequences playbackCache;
-    bool sequencesAreOutdated;
+    bool sequencesAreOutdated = true;
     
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
@@ -198,14 +198,14 @@ private:
 
 private:
 
-    Atomic<double> seekPosition;
-    Atomic<double> totalTime;
+    Atomic<double> seekPosition = 0.0;
+    Atomic<double> totalTime = (500.0 * 8.0);
     
-    Atomic<double> trackStartMs;
-    Atomic<double> trackEndMs;
+    Atomic<double> trackStartMs = 0.0;
+    Atomic<double> trackEndMs = 0.0;
     
-    Atomic<float> projectFirstBeat;
-    Atomic<float> projectLastBeat;
+    Atomic<float> projectFirstBeat = 0.f;
+    Atomic<float> projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
 
     ListenerList<TransportListener> transportListeners;
 

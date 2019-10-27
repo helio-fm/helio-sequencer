@@ -482,7 +482,8 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
-            itemsFound.addIfNotAlreadyThere(component);
+            jassert(!itemsFound.contains(component));
+            itemsFound.add(component);
         }
     }
 }
@@ -606,13 +607,12 @@ void PatternRoll::handleCommandMessage(int commandId)
             }
 
             auto *trackNode = this->project.findTrackById<MidiTrackNode>(trackId);
-            App::Layout().showModalDialog(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
+            App::showModalComponent(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
     case CommandIDs::DeleteClips:
         PatternOperations::deleteSelection(this->getLassoSelection(), this->project);
         break;
-    case CommandIDs::EditClip:
     case CommandIDs::ZoomEntireClip:
         if (this->selection.getNumSelected() > 0)
         {

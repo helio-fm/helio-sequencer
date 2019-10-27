@@ -35,6 +35,9 @@
     <Filter Include="Helio\Source\Core\Configuration">
       <UniqueIdentifier>{F530793D-2149-3E27-AAAD-D8A31335FC1C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\Core\CommandPalette">
+      <UniqueIdentifier>{69AC414B-3060-6800-DFA1-F194771F02DA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\Core\Midi\Patterns">
       <UniqueIdentifier>{E57020CF-CB11-064B-25F9-27049F1CCEC0}</UniqueIdentifier>
     </Filter>
@@ -670,6 +673,21 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Config.cpp">
       <Filter>Helio\Source\Core\Configuration</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteActionsProvider.cpp">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteCommonActions.cpp">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.cpp">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.cpp">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteTimelineEvents.cpp">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\Patterns\Clip.cpp">
       <Filter>Helio\Source\Core\Midi\Patterns</Filter>
     </ClCompile>
@@ -1203,6 +1221,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Popups\CommandPalette.cpp">
+      <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\NotesTuningPanel.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
@@ -3390,6 +3411,24 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Config.h">
       <Filter>Helio\Source\Core\Configuration</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteModel.h">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteActionsProvider.h">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteCommonActions.h">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.h">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.h">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteTimelineEvents.h">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Patterns\Clip.h">
       <Filter>Helio\Source\Core\Midi\Patterns</Filter>
     </ClInclude>
@@ -4061,6 +4100,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h">
       <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\CommandPalette.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\NotesTuningPanel.h">
       <Filter>Helio\Source\UI\Popups</Filter>

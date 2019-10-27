@@ -36,17 +36,10 @@
 
 Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     orchestra(orchestraPit),
-    sleepTimer(sleepTimer),
-    seekPosition(0.0),
-    trackStartMs(0.0),
-    trackEndMs(0.0),
-    sequencesAreOutdated(true),
-    totalTime(500.0 * 8.0),
-    projectFirstBeat(0.f),
-    projectLastBeat(PROJECT_DEFAULT_NUM_BEATS)
+    sleepTimer(sleepTimer)
 {
-    this->player.reset(new PlayerThreadPool(*this));
-    this->renderer.reset(new RendererThread(*this));
+    this->player = makeUnique<PlayerThreadPool>(*this);
+    this->renderer = makeUnique<RendererThread>(*this);
     this->orchestra.addOrchestraListener(this);
 }
 
@@ -697,7 +690,7 @@ void Transport::recacheIfNeeded()
     }
 }
 
-ProjectSequences Transport::getPlaybackCache()
+ProjectSequences &Transport::getPlaybackCache()
 {
     const SpinLock::ScopedLockType l(this->sequencesLock);
     return this->playbackCache;

@@ -25,7 +25,6 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "KeySignatureDialog.h"
-#include "MainLayout.h"
 #include "KeySignatureLargeComponent.h"
 #include "KeySignatureSmallComponent.h"
 #include "RescalePreviewTool.h"
@@ -34,10 +33,6 @@
 KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
-    projectFirstBeat(0.f),
-    projectLastBeat(16.f), // non zero!
-    rollFirstBeat(0.f),
-    rollLastBeat(16.f),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -336,7 +331,7 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
 
     if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)
     {
-        App::Layout().showModalDialog(KeySignatureDialog::editingDialog(*this,
+        App::showModalComponent(KeySignatureDialog::editingDialog(*this,
             this->project.getTransport(), ksc->getEvent()));
     }
 }

@@ -6,7 +6,7 @@
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
               cppLanguageStandard="11" usePrecompiledHeaders="0" precompiledHeaderFileName=""
               precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko"
-              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/LevelsMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
+              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/CommandPalette&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Scripting&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/LevelsMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
               projectLineFeed="&#10;">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
@@ -254,6 +254,30 @@
           </GROUP>
           <FILE id="Cw6lgG" name="Config.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Config.cpp"/>
           <FILE id="Qp21xL" name="Config.h" compile="0" resource="0" file="../../Source/Core/Configuration/Config.h"/>
+        </GROUP>
+        <GROUP id="{8CA92FD3-E483-6598-05E0-FD37B0C59010}" name="CommandPalette">
+          <FILE id="PfHm4M" name="CommandPaletteModel.h" compile="0" resource="0"
+                file="../../Source/Core/CommandPalette/CommandPaletteModel.h"/>
+          <FILE id="ioyBKx" name="CommandPaletteActionsProvider.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteActionsProvider.cpp"/>
+          <FILE id="HZwQw8" name="CommandPaletteActionsProvider.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteActionsProvider.h"/>
+          <FILE id="ywekDI" name="CommandPaletteCommonActions.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteCommonActions.cpp"/>
+          <FILE id="QUi7rZ" name="CommandPaletteCommonActions.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteCommonActions.h"/>
+          <FILE id="DG0aza" name="CommandPaletteChordConstructor.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteChordConstructor.cpp"/>
+          <FILE id="Ne02DZ" name="CommandPaletteChordConstructor.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteChordConstructor.h"/>
+          <FILE id="bccgCH" name="CommandPaletteProjectsList.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteProjectsList.cpp"/>
+          <FILE id="eaRAsU" name="CommandPaletteProjectsList.h" compile="0" resource="0"
+                file="../../Source/Core/CommandPalette/CommandPaletteProjectsList.h"/>
+          <FILE id="hIK3J7" name="CommandPaletteTimelineEvents.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.cpp"/>
+          <FILE id="Nenzvj" name="CommandPaletteTimelineEvents.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.h"/>
         </GROUP>
         <GROUP id="{93B0AF7A-BC73-2049-CF6B-76592F77C01F}" name="Midi">
           <GROUP id="{5A19293F-FDB1-F5B4-F808-E06A0B919C46}" name="Patterns">
@@ -1012,6 +1036,10 @@
           </GROUP>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
+          <FILE id="YZ1PXq" name="CommandPalette.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/CommandPalette.cpp"/>
+          <FILE id="YqAyWG" name="CommandPalette.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/CommandPalette.h"/>
           <FILE id="lFusFF" name="NotesTuningPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/NotesTuningPanel.cpp"/>
           <FILE id="JUhuYZ" name="NotesTuningPanel.h" compile="0" resource="0"
@@ -1455,6 +1483,10 @@
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        warningsAreErrors="1"/>
+        <CONFIGURATION name="Tests" winWarningLevel="4" generateManifest="1" isDebug="1"
+                       optimisation="1" targetName="Helio" enableIncrementalLinking="1"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       warningsAreErrors="1" defines="JUCE_UNIT_TESTS=1"/>
         <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
                        isDebug="0" optimisation="4" targetName="Helio" useRuntimeLibDLL="0"
                        enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
@@ -1546,6 +1578,8 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="Helio"/>
+        <CONFIGURATION name="Tests" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
+                       targetName="Helio" defines="JUCE_UNIT_TESTS=1"/>
         <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
                        targetName="Helio" linuxArchitecture="-m32" linkTimeOptimisation="0"/>
         <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"

@@ -120,17 +120,17 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
 
 void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)
 {
-    g.setColour(ed.findColour(TextEditor::backgroundColourId));
-    g.fillRect(0, 0, w, h);
-}
-
-void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
-{
-    g.setColour(ed.findColour(TextEditor::outlineColourId));
+    g.setColour(findDefaultColour(TextEditor::backgroundColourId));
+    g.fillRect(1, 1, w - 2, h - 2);
+    g.setColour(findDefaultColour(TextEditor::outlineColourId));
     g.drawVerticalLine(0, 1.f, h - 1.f);
     g.drawVerticalLine(w - 1, 1.f, h - 1.f);
     g.drawHorizontalLine(0, 1.f, w - 1.f);
     g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
+}
+
+void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
+{
 }
 
 //===----------------------------------------------------------------------===//
@@ -149,10 +149,10 @@ void HelioTheme::drawLasso(Graphics &g, Component &lassoComp)
     const float dashLength = 7.f;
 #endif
 
-    g.setColour(lassoComp.findColour(ColourIDs::SelectionComponent::fill));
+    g.setColour(findDefaultColour(ColourIDs::SelectionComponent::fill));
     g.fillRoundedRectangle(lassoComp.getLocalBounds().toFloat(), cornersRound);
     
-    g.setColour(lassoComp.findColour(ColourIDs::SelectionComponent::outline));
+    g.setColour(findDefaultColour(ColourIDs::SelectionComponent::outline));
 
     const Rectangle<float> r(0.5f, 0.5f,
         float(lassoComp.getLocalBounds().getWidth()) - 1.0f,
@@ -219,6 +219,8 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         const int maxLines = int(float(label.getHeight()) / font.getHeight());
 
         const float alpha = 0.5f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 12.f) / 2.f;
+
+        // using label.findColour, not findDefaultColour, as it is actually overridden in some places:
         const Colour colour = label.findColour(Label::textColourId).withMultipliedAlpha(alpha);
 
 #if SMOOTH_RENDERED_FONT
@@ -281,7 +283,7 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
 {
     Font font(getTextButtonFont(button, button.getHeight()));
     g.setFont(font);
-    g.setColour(button.findColour(TextButton::buttonColourId).contrasting()
+    g.setColour(findDefaultColour(TextButton::buttonColourId).contrasting()
         .withMultipliedAlpha(button.isEnabled() ? 0.85f : 0.5f));
 
     const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
@@ -292,7 +294,7 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     const int leftIndent = fontHeight;
     const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
 
-    g.setColour(button.findColour(TextButton::textColourOnId).withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+    g.setColour(findDefaultColour(TextButton::textColourOnId).withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
 
     g.drawFittedText(button.getButtonText(),
         leftIndent,
@@ -376,7 +378,7 @@ void HelioTheme::drawTableHeaderBackground(Graphics &g, TableHeaderComponent &he
 void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header, const String &columnName,
     int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags)
 {
-    auto highlightColour = header.findColour(TableHeaderComponent::highlightColourId);
+    auto highlightColour = findDefaultColour(TableHeaderComponent::highlightColourId);
 
     if (isMouseDown)
     {
@@ -390,7 +392,7 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header
     Rectangle<int> area(width, height);
     area.reduce(4, 0);
 
-    g.setColour(header.findColour(TableHeaderComponent::textColourId));
+    g.setColour(findDefaultColour(TableHeaderComponent::textColourId));
     if ((columnFlags & (TableHeaderComponent::sortedForwards | TableHeaderComponent::sortedBackwards)) != 0)
     {
         Path sortArrow;
@@ -440,7 +442,7 @@ void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
         }
     }
 
-    Colour thumbCol(scrollbar.findColour(ScrollBar::thumbColourId, true));
+    Colour thumbCol(findDefaultColour(ScrollBar::thumbColourId));
 
     if (isMouseOver || isMouseDown)
     { thumbCol = thumbCol.withMultipliedAlpha(0.5f); }
@@ -461,8 +463,8 @@ void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
 void HelioTheme::drawRotarySlider(Graphics &g, int x, int y, int width, int height,
     float sliderPos, float rotaryStartAngle, float rotaryEndAngle, Slider &slider)
 {
-    const auto fill = slider.findColour(Slider::rotarySliderFillColourId);
-    const auto outline = slider.findColour(Slider::rotarySliderOutlineColourId);
+    const auto fill = findDefaultColour(Slider::rotarySliderFillColourId);
+    const auto outline = findDefaultColour(Slider::rotarySliderOutlineColourId);
     
     const auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
     const auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
@@ -781,11 +783,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     // TextEditor
     this->setColour(TextEditor::textColourId, s->getTextColour());
+    this->setColour(TextEditor::backgroundColourId, s->getPrimaryGradientColourA().darker(0.055f));
+    this->setColour(TextEditor::outlineColourId, s->getPanelBorderColour().withAlpha(0.075f));
     this->setColour(TextEditor::highlightedTextColourId, s->getTextColour());
-    this->setColour(TextEditor::outlineColourId, s->getPanelBorderColour().withAlpha(0.1f));
     this->setColour(TextEditor::focusedOutlineColourId, s->getTextColour().contrasting().withAlpha(0.2f));
     this->setColour(TextEditor::shadowColourId, s->getPrimaryGradientColourA().darker(0.05f));
-    this->setColour(TextEditor::backgroundColourId, s->getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, s->getTextColour().contrasting().withAlpha(0.25f));
     this->setColour(CaretComponent::caretColourId, s->getTextColour().withAlpha(0.35f));
 

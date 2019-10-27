@@ -24,7 +24,7 @@
 class HybridRoll;
 class ProjectNode;
 
-class KeySignaturesProjectMap :
+class KeySignaturesProjectMap final :
     public Component,
     public ProjectListener
 {
@@ -89,18 +89,18 @@ private:
     
 private:
 
-    float projectFirstBeat;
-    float projectLastBeat;
+    float projectFirstBeat = 0.f;
+    float projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
 
-    float rollFirstBeat;
-    float rollLastBeat;
+    float rollFirstBeat = 0.f;
+    float rollLastBeat = PROJECT_DEFAULT_NUM_BEATS;
     
     HybridRoll &roll;
     ProjectNode &project;
         
     ComponentAnimator animator;
 
-    Type type;
+    const Type type;
     KeySignatureComponent *createComponent(const KeySignatureEvent &keySignature);
 
     OwnedArray<KeySignatureComponent> keySignatureComponents;

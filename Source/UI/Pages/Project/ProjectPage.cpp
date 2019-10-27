@@ -431,7 +431,7 @@ void ProjectPage::onTotalTimeChanged(double totalTimeMs) noexcept
     this->totalTimeMs = totalTimeMs;
 }
 
-void ProjectPage::changeListenerCallback(ChangeBroadcaster* source)
+void ProjectPage::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->updateContent();
 }

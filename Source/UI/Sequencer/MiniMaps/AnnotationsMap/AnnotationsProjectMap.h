@@ -24,7 +24,7 @@ class HybridRoll;
 class ProjectNode;
 class AnnotationComponent;
 
-class AnnotationsProjectMap :
+class AnnotationsProjectMap final :
     public Component,
     public ProjectListener
 {
@@ -90,18 +90,18 @@ private:
     
 private:
     
-    float projectFirstBeat;
-    float projectLastBeat;
+    float projectFirstBeat = 0.f;
+    float projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
 
-    float rollFirstBeat;
-    float rollLastBeat;
+    float rollFirstBeat = 0.f;
+    float rollLastBeat = PROJECT_DEFAULT_NUM_BEATS;
     
     HybridRoll &roll;
     ProjectNode &project;
     
     ComponentAnimator animator;
 
-    Type type;
+    const Type type;
     AnnotationComponent *createComponent(const AnnotationEvent &event);
 
     OwnedArray<AnnotationComponent> annotationComponents;

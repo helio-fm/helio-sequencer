@@ -55,7 +55,7 @@ bool AudioCore::canSleepNow() noexcept
 
 void AudioCore::sleepNow()
 {
-    Logger::writeToLog("Audio core sleeps");
+    DBG("Audio core sleeps");
     this->disconnectAllAudioCallbacks();
 }
 
@@ -73,7 +73,7 @@ void AudioCore::disconnectAllAudioCallbacks()
         // Audio monitor is especially CPU-hungry, as it does FFT all the time:
         this->deviceManager.removeAudioCallback(this->audioMonitor.get());
 
-        for (auto instrument : this->instruments)
+        for (auto *instrument : this->instruments)
         {
             this->removeInstrumentFromDevice(instrument);
         }
@@ -84,7 +84,7 @@ void AudioCore::reconnectAllAudioCallbacks()
 {
     if (this->isMuted.get())
     {
-        for (auto instrument : this->instruments)
+        for (auto *instrument : this->instruments)
         {
             this->addInstrumentToDevice(instrument);
         }
@@ -167,7 +167,7 @@ Instrument *AudioCore::findInstrumentById(const String &id) const
     // check by ids
     for (int i = 0; i < this->instruments.size(); ++i)
     {
-        Instrument *instrument = this->instruments.getUnchecked(i);
+        auto *instrument = this->instruments.getUnchecked(i);
 
         if (id.contains(instrument->getInstrumentId()))
         {
@@ -178,7 +178,7 @@ Instrument *AudioCore::findInstrumentById(const String &id) const
     // check by hashes
     for (int i = 0; i < this->instruments.size(); ++i)
     {
-        Instrument *instrument = this->instruments.getUnchecked(i);
+        auto *instrument = this->instruments.getUnchecked(i);
 
         if (id.contains(instrument->getInstrumentHash()))
         {
@@ -219,18 +219,18 @@ void AudioCore::autodetectDeviceSetup()
 
     if (!deviceType || !device)
     {
-        const OwnedArray<AudioIODeviceType> &types =
-            this->deviceManager.getAvailableDeviceTypes();
+        const auto &types = this->deviceManager.getAvailableDeviceTypes();
+        if (types.size() > 0)
+        {
+            auto *type = types.getFirst();
+            this->deviceManager.setCurrentAudioDeviceType(type->getTypeName(), true);
 
-        AudioIODeviceType *const type = types[0];
+            type->scanForDevices();
 
-        this->deviceManager.setCurrentAudioDeviceType(type->getTypeName(), true);
-
-        type->scanForDevices();
-
-        AudioDeviceManager::AudioDeviceSetup deviceSetup;
-        this->deviceManager.getAudioDeviceSetup(deviceSetup);
-        this->deviceManager.setAudioDeviceSetup(deviceSetup, true);
+            AudioDeviceManager::AudioDeviceSetup deviceSetup;
+            this->deviceManager.getAudioDeviceSetup(deviceSetup);
+            this->deviceManager.setAudioDeviceSetup(deviceSetup, true);
+        }
     }
 }
 
@@ -393,19 +393,17 @@ SerializedData AudioCore::serialize() const
     // serializes all settings and instruments (with their graphs)
     // deviceManager's graph is not serialized but managed dynamically
 
-    SerializedData tree(Audio::audioCore);
     SerializedData orchestra(Audio::orchestra);
     for (int i = 0; i < this->instruments.size(); ++i)
     {
-        Instrument *instrument = this->instruments.getUnchecked(i);
+        auto *instrument = this->instruments.getUnchecked(i);
         orchestra.appendChild(instrument->serialize());
     }
 
-    tree.appendChild(orchestra);
-
-    const auto deviceState(this->serializeDeviceManager());
-    tree.appendChild(deviceState);
-    return tree;
+    SerializedData root(Audio::audioCore);
+    root.appendChild(orchestra);
+    root.appendChild(this->serializeDeviceManager());
+    return root;
 }
 
 void AudioCore::deserialize(const SerializedData &data)

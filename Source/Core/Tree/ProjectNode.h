@@ -30,6 +30,7 @@ class TrackMap;
 class Transport;
 class ProjectMetadata;
 class ProjectTimeline;
+class CommandPaletteTimelineEvents;
 class UndoStack;
 class Pattern;
 class MidiTrack;
@@ -43,13 +44,13 @@ class Clip;
 #include "HybridRollEditMode.h"
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"
-
-#define PROJECT_DEFAULT_NUM_BEATS 32
+#include "CommandPaletteModel.h"
 
 class ProjectNode final :
     public TreeNode,
     public DocumentOwner,
     public MidiTrackSource,
+    public CommandPaletteModel,
     public VCS::TrackedItemsSource,  // vcs stuff
     public ChangeListener // subscribed to VersionControl
 {
@@ -141,6 +142,7 @@ public:
     void broadcastAddTrack(MidiTrack *const track);
     void broadcastRemoveTrack(MidiTrack *const track);
     void broadcastChangeTrackProperties(MidiTrack *const track);
+    void broadcastChangeTrackBeatRange(MidiTrack *const track);
 
     void broadcastAddClip(const Clip &clip);
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
@@ -164,6 +166,12 @@ public:
         const Uuid &id, const VCS::TrackedItem &newState) override;
     bool deleteTrackedItem(VCS::TrackedItem *item) override;
     void onResetState() override;
+
+    //===------------------------------------------------------------------===//
+    // Command Palette
+    //===------------------------------------------------------------------===//
+
+    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
 
     //===------------------------------------------------------------------===//
     // ChangeListener
@@ -200,13 +208,17 @@ private:
 
     UniquePointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
+
     ListenerList<ProjectListener> changeListeners;
     UniquePointer<ProjectPage> projectPage;
     ReadWriteLock tracksListLock;
+
     UniquePointer<ProjectMetadata> metadata;
     UniquePointer<ProjectTimeline> timeline;
 
     WeakReference<TreeNode> lastShownTrack;
+
+    UniquePointer<CommandPaletteTimelineEvents> consoleTimelineEvents;
 
 private:
 
@@ -223,7 +235,10 @@ private:
 
     UniquePointer<UndoStack> undoStack;
 
-    mutable bool isTracksCacheOutdated;
+    mutable float firstBeatCache = 0.f;
+    mutable float lastBeatCache = PROJECT_DEFAULT_NUM_BEATS;
+
+    mutable bool isTracksCacheOutdated = true;
     mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
     void rebuildTracksRefsCacheIfNeeded() const;
 

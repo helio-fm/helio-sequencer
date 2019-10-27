@@ -26,7 +26,7 @@ class TrackStartIndicator;
 class TrackEndIndicator;
 class TimeSignatureComponent;
 
-class TimeSignaturesProjectMap :
+class TimeSignaturesProjectMap final :
     public Component,
     public ProjectListener
 {
@@ -94,10 +94,10 @@ private:
 private:
     
     float projectFirstBeat = 0.f;
-    float projectLastBeat = 16.f; // not zero!
+    float projectLastBeat = PROJECT_DEFAULT_NUM_BEATS; // not zero!
 
     float rollFirstBeat = 0.f;
-    float rollLastBeat = 16.f;
+    float rollLastBeat = PROJECT_DEFAULT_NUM_BEATS;
     
     HybridRoll &roll;
     ProjectNode &project;
@@ -107,7 +107,7 @@ private:
     
     ComponentAnimator animator;
 
-    Type type;
+    const Type type;
     TimeSignatureComponent *createComponent(const TimeSignatureEvent &event);
 
     OwnedArray<TimeSignatureComponent> timeSignatureComponents;

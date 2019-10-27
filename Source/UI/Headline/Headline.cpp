@@ -111,7 +111,12 @@ void Headline::handleAsyncUpdate()
         {
             // An item inserted or removed, need to re-sync the whole chain:
             TreeNode *lastItem = static_cast<TreeNode *>(this->chain.getLast()->getDataSource().get());
-            jassert(lastItem != nullptr);
+            if (lastItem == nullptr)
+            {
+                jassertfalse;
+                break;
+            }
+
             posX = this->rebuildChain(lastItem);
             if (hasSelectionItem)
             {

@@ -121,34 +121,50 @@ void ResourceManager::reloadResources()
     this->baseResources.clear();
     this->userResources.clear();
 
-    // First, get base config (downloaded, or built-in)
+    // load both built-in and downloaded resource:
+    // downloaded extends and overrides built-in one,
+    // user's config extends and overrides the previous step
+
+#if DEBUG
+    auto startTime = Time::getMillisecondCounter();
+#endif
+
+    const String builtInResource(this->getBuiltInResourceString());
+    if (builtInResource.isNotEmpty())
+    {
+        const auto tree(DocumentHelpers::load(builtInResource));
+        if (tree.isValid())
+        {
+            this->deserializeResources(tree, this->baseResources);
+            shouldBroadcastChange = true;
+        }
+
+        DBG("Loaded built-in " + this->resourceType.toString() + " in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+    }
+
+#if DEBUG
+    startTime = Time::getMillisecondCounter();
+#endif
+
+    // Try to extend built-in config with downloaded one
     const File downloadedResource(this->getDownloadedResourceFile());
     if (downloadedResource.existsAsFile())
     {
         const auto tree(DocumentHelpers::load(downloadedResource));
         if (tree.isValid())
         {
-            DBG("Found downloaded resource file for " + this->resourceType.toString());
             this->deserializeResources(tree, this->baseResources);
             shouldBroadcastChange = true;
         }
-    }
-    else
-    {
-        const String builtInResource(this->getBuiltInResourceString());
-        if (builtInResource.isNotEmpty())
-        {
-            const auto tree(DocumentHelpers::load(builtInResource));
-            if (tree.isValid())
-            {
-                DBG("Loading built-in resource for " + this->resourceType.toString());
-                this->deserializeResources(tree, this->baseResources);
-                shouldBroadcastChange = true;
-            }
-        }
+
+        DBG("Loaded extended " + this->resourceType.toString() + " in " + String(Time::getMillisecondCounter() - startTime) + " ms");
     }
 
-    // Try to override base config with user's settings
+#if DEBUG
+    startTime = Time::getMillisecondCounter();
+#endif
+
+    // Try to extend base config with user's settings
     const File usersResource(this->getUsersResourceFile());
 
     if (usersResource.existsAsFile())
@@ -156,10 +172,11 @@ void ResourceManager::reloadResources()
         const auto tree(DocumentHelpers::load(usersResource));
         if (tree.isValid())
         {
-            DBG("Found users resource file for " + this->resourceType.toString());
             this->deserializeResources(tree, this->userResources);
             shouldBroadcastChange = true;
         }
+
+        DBG("Loaded user's " + this->resourceType.toString() + " in " + String(Time::getMillisecondCounter() - startTime) + " ms");
     }
 
     if (shouldBroadcastChange)

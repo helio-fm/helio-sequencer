@@ -41,7 +41,6 @@
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "Origami.h"
-#include "MainLayout.h"
 
 #include "Transport.h"
 #include "IconComponent.h"
@@ -59,6 +58,7 @@
 #include "TimeSignatureDialog.h"
 #include "KeySignatureDialog.h"
 
+#include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"
@@ -929,8 +929,9 @@ void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
 
 void HybridRoll::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
 {
-    if (this->projectFirstBeat == newFirstBeat &&
-        this->projectLastBeat == newLastBeat)
+    jassert(this->projectFirstBeat != newFirstBeat || this->projectLastBeat != newLastBeat);
+
+    if (this->projectFirstBeat == newFirstBeat && this->projectLastBeat == newLastBeat)
     {
         return;
     }
@@ -1190,7 +1191,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::Layout().showModalDialog(AnnotationDialog::addingDialog(*this, sequence, targetBeat));
+            App::showModalComponent(AnnotationDialog::addingDialog(*this, sequence, targetBeat));
         }
         break;
     case CommandIDs::AddTimeSignature:
@@ -1198,7 +1199,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::Layout().showModalDialog(TimeSignatureDialog::addingDialog(*this, sequence, targetBeat));
+            App::showModalComponent(TimeSignatureDialog::addingDialog(*this, sequence, targetBeat));
         }
         break;
     case CommandIDs::AddKeySignature:
@@ -1206,7 +1207,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::Layout().showModalDialog(KeySignatureDialog::addingDialog(*this,
+            App::showModalComponent(KeySignatureDialog::addingDialog(*this,
                 this->getTransport(), sequence, targetBeat));
         }
         break;

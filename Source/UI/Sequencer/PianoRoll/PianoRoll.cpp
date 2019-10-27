@@ -51,6 +51,7 @@
 #include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
+#include "CommandPaletteChordConstructor.h"
 #include "LassoListeners.h"
 #include "UndoStack.h"
 #include "Workspace.h"
@@ -101,9 +102,13 @@ PianoRoll::PianoRoll(ProjectNode &parentProject,
     this->draggingHelper.reset(new HelperRectangleHorizontal());
     this->addChildComponent(this->draggingHelper.get());
 
+    this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
+
     this->reloadRollContent();
     this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
 }
+
+PianoRoll::~PianoRoll() {}
 
 void PianoRoll::reloadRollContent()
 {
@@ -807,22 +812,23 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
 {
     forEachEventComponent(this->patternMap, e)
     {
-        const auto component = e.second.get();
+        auto *component = e.second.get();
         component->setSelected(false);
     }
 
-    for (const auto component : this->selection)
+    for (auto *component : this->selection)
     {
         component->setSelected(true);
     }
     
     forEachEventComponent(this->patternMap, e)
     {
-        const auto component = e.second.get();
+        auto *component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
             component->setSelected(true);
-            itemsFound.addIfNotAlreadyThere(component);
+            jassert(!itemsFound.contains(component));
+            itemsFound.add(component);
         }
     }
 }
@@ -948,7 +954,7 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::RenameTrack:
         if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
         {
-            App::Layout().showModalDialog(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
+            App::showModalComponent(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
     case CommandIDs::CopyEvents:
@@ -988,7 +994,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                     &this->project, trackTemplate, input));
             };
 
-            App::Layout().showModalDialog(std::move(inputDialog));
+            App::showModalComponent(std::move(inputDialog));
         }
         break;
     case CommandIDs::BeatShiftLeft:
@@ -1058,7 +1064,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                     App::Config().getArpeggiators()->updateUserResource(arp);
                 };
 
-                App::Layout().showModalDialog(std::move(newArpDialog));
+                App::showModalComponent(std::move(newArpDialog));
             }
         }
         break;
@@ -1399,6 +1405,14 @@ void PianoRoll::updateChildrenPositions()
     HybridRoll::updateChildrenPositions();
 }
 
+//===----------------------------------------------------------------------===//
+// Command Palette
+//===----------------------------------------------------------------------===//
+
+Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProviders() const
+{
+    return { this->consoleChordConstructor.get() };
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable

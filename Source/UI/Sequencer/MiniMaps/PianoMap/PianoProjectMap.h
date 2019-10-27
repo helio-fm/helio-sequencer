@@ -69,10 +69,10 @@ private:
     void loadTrack(const MidiTrack *const track);
 
     float projectFirstBeat = 0.f;
-    float projectLastBeat = 0.f;
+    float projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
 
     float rollFirstBeat = 0.f;
-    float rollLastBeat = 0.f;
+    float rollLastBeat = PROJECT_DEFAULT_NUM_BEATS;
 
     float componentHeight = 1.f;
 

@@ -197,8 +197,8 @@ namespace I18n
             static const Identifier vcsPull = "menu::selection::vcs::pull";
             static const Identifier vcsPush = "menu::selection::vcs::push";
             static const Identifier vcsReset = "menu::selection::vcs::reset";
-            static const Identifier vcsSelectall = "menu::selection::vcs::selectall";
-            static const Identifier vcsSelectnone = "menu::selection::vcs::selectnone";
+            static const Identifier vcsSelectAll = "menu::selection::vcs::selectall";
+            static const Identifier vcsSelectNone = "menu::selection::vcs::selectnone";
             static const Identifier vcsStage = "menu::selection::vcs::stage";
             static const Identifier vcsStash = "menu::selection::vcs::stash";
         }
@@ -220,6 +220,8 @@ namespace I18n
         static const Identifier tuplet7 = "menu::tuplet::7";
         static const Identifier tuplet8 = "menu::tuplet::8";
         static const Identifier tuplet9 = "menu::tuplet::9";
+        static const Identifier muteToggle = "menu::mute::toggle";
+        static const Identifier soloToggle = "menu::solo::toggle";
         static const Identifier mute = "menu::mute";
         static const Identifier solo = "menu::solo";
         static const Identifier unmute = "menu::unmute";
@@ -227,6 +229,8 @@ namespace I18n
 
         static const Identifier vcsChangesHide = "menu::vcs::changes::hide";
         static const Identifier vcsChangesShow = "menu::vcs::changes::show";
+        static const Identifier vcsChangesToggle = "menu::vcs::changes::toggle";
+
         static const Identifier vcsCommitAll = "menu::vcs::commitall";
         static const Identifier vcsResetAll = "menu::vcs::resetall";
         static const Identifier vcsStash = "menu::vcs::stash";
@@ -313,5 +317,12 @@ namespace I18n
         static const Identifier warningCannotRevert = "vcs::warning::cannotrevert";
         static const Identifier projectMetadata = "vcs::items::projectinfo";
         static const Identifier projectTimeline = "vcs::items::timeline";
+    }
+
+    namespace CommandPalette
+    {
+        static const Identifier projects = "console::projects";
+        static const Identifier timeline = "console::timeline";
+        static const Identifier chordBuilder = "console::chordbuilder";
     }
 } // namespace Translations

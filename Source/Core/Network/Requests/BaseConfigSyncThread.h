@@ -49,7 +49,15 @@ private:
     
     void run() override
     {
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
+        const auto targetTime = Time::getMillisecondCounter() + this->delay;
+        while (Time::getMillisecondCounter() < targetTime)
+        {
+            Thread::sleep(100);
+            if (this->threadShouldExit())
+            {
+                return;
+            }
+        }
 
         const String uri = Routes::Api::baseResource.replace(":resourceType", this->resourceType);
         const BackendRequest request(uri);

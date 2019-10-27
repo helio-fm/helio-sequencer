@@ -50,6 +50,8 @@
 #include "ProjectPage.h"
 #include "ProjectMenu.h"
 
+#include "CommandPaletteTimelineEvents.h"
+
 #include "HelioTheme.h"
 #include "SequencerLayout.h"
 #include "MainLayout.h"
@@ -84,8 +86,6 @@ ProjectNode::ProjectNode(const File &existingFile) :
 
 void ProjectNode::initialize()
 {
-    this->isTracksCacheOutdated = true;
-
     this->undoStack = makeUnique<UndoStack>(*this);
     this->autosaver = makeUnique<Autosaver>(*this);
 
@@ -102,6 +102,8 @@ void ProjectNode::initialize()
 
     this->transport->seekToPosition(0.0);
 
+    this->consoleTimelineEvents = makeUnique<CommandPaletteTimelineEvents>(*this);
+
     this->recreatePage();
 }
 
@@ -112,7 +114,7 @@ ProjectNode::~ProjectNode()
     this->transport->stopPlayback();
     this->transport->stopRender();
 
-    // remember as the recent file
+    // remember as a recent file
     App::Workspace().getUserProfile().onProjectUnloaded(this->getId());
 
     this->projectPage = nullptr;
@@ -707,6 +709,12 @@ void ProjectNode::broadcastChangeTrackProperties(MidiTrack *const track)
     this->sendChangeMessage();
 }
 
+void ProjectNode::broadcastChangeTrackBeatRange(MidiTrack *const track)
+{
+    this->changeListeners.call(&ProjectListener::onChangeTrackBeatRange, track);
+    this->sendChangeMessage();
+}
+
 void ProjectNode::broadcastAddClip(const Clip &clip)
 {
     this->changeListeners.call(&ProjectListener::onAddClip, clip);
@@ -740,18 +748,24 @@ void ProjectNode::broadcastChangeProjectInfo(const ProjectMetadata *info)
 Point<float> ProjectNode::broadcastChangeProjectBeatRange()
 {
     const auto beatRange = this->getProjectRangeInBeats();
-    const float firstBeat = beatRange.getX();
-    const float lastBeat = beatRange.getY();
     
-    // changeListeners.call iterates listeners list in REVERSE order
-    // so that transport updates playhead position later then others,
-    // so that resizing roll will make playhead glitch;
-    // as a hack, just force transport to update its playhead position before all others
-    this->transport->onChangeProjectBeatRange(firstBeat, lastBeat);
-    this->changeListeners.callExcluding(this->transport.get(),
-        &ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
+    if (this->firstBeatCache != beatRange.getX() ||
+        this->lastBeatCache != beatRange.getY())
+    {
+        this->firstBeatCache = beatRange.getX();
+        this->lastBeatCache = beatRange.getY();
 
-    this->sendChangeMessage();
+        // changeListeners.call iterates listeners list in REVERSE order
+        // so that transport updates playhead position later then others,
+        // so that resizing roll will make playhead glitch;
+        // as a hack, just force transport to update its playhead position before all others
+        this->transport->onChangeProjectBeatRange(this->firstBeatCache, this->lastBeatCache);
+        this->changeListeners.callExcluding(this->transport.get(),
+            &ProjectListener::onChangeProjectBeatRange, this->firstBeatCache, this->lastBeatCache);
+
+        this->sendChangeMessage();
+    }
+
     return beatRange;
 }
 
@@ -977,6 +991,23 @@ void ProjectNode::onResetState()
 {
     this->broadcastReloadProjectContent();
     this->broadcastChangeProjectBeatRange();
+    // during vcs operations, notifications are not sent, including tree selection changes,
+    // which happen, when something is deleted, so we need to do it afterwards:
+    this->getRootNode()->findActiveNode()->sendSelectionNotification();
+}
+
+//===----------------------------------------------------------------------===//
+// Command Palette
+//===----------------------------------------------------------------------===//
+
+Array<CommandPaletteActionsProvider *> ProjectNode::getCommandPaletteActionProviders() const
+{
+    if (this->getLastFocusedRoll()->isShowing())
+    {
+        return { this->consoleTimelineEvents.get() };
+    }
+
+    return {};
 }
 
 //===----------------------------------------------------------------------===//
@@ -985,7 +1016,7 @@ void ProjectNode::onResetState()
 
 void ProjectNode::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (VersionControl *vcs = dynamic_cast<VersionControl *>(source))
+    if (auto *vcs = dynamic_cast<VersionControl *>(source))
     {
         DocumentOwner::sendChangeMessage();
         // still not sure if it's really needed after commit:

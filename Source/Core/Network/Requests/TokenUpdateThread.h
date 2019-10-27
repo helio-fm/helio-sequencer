@@ -52,7 +52,15 @@ private:
         namespace ApiKeys = Serialization::Api::V1;
         namespace ApiRoutes = Routes::Api;
 
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
+        const auto targetTime = Time::getMillisecondCounter() + this->delay;
+        while (Time::getMillisecondCounter() < targetTime)
+        {
+            Thread::sleep(100);
+            if (this->threadShouldExit())
+            {
+                return;
+            }
+        }
 
         SerializedData session(ApiKeys::session);
         session.setProperty(ApiKeys::deviceId, App::getDeviceId());

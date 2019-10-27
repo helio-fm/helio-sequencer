@@ -40,7 +40,6 @@
 #include "RenderDialog.h"
 #include "SuccessTooltip.h"
 #include "Workspace.h"
-#include "MainLayout.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 #include "ComponentIDs.h"
@@ -578,10 +577,10 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
 
     if (fc.browseForFileToSave(true))
     {
-        App::Layout().showModalDialog(makeUnique<RenderDialog>(this->project, fc.getResult(), extension));
+        App::showModalComponent(makeUnique<RenderDialog>(this->project, fc.getResult(), extension));
     }
 #else
-    App::Layout().showModalDialog(makeUnique<RenderDialog>(this->project, initialPath.getChildFile(safeRenderName), extension));
+    App::showModalComponent(makeUnique<RenderDialog>(this->project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     }
 

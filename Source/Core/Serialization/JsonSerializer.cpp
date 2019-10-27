@@ -56,14 +56,17 @@ struct JsonParser final
 
     static Result parseString(const juce_wchar quoteChar, String::CharPointerType &t, String &result)
     {
-        MemoryOutputStream buffer(256);
+        static MemoryOutputStream buffer(256);
+        buffer.reset();
 
         for (;;)
         {
             auto c = t.getAndAdvance();
 
             if (c == quoteChar)
+            {
                 break;
+            }
 
             if (c == '\\')
             {

@@ -39,11 +39,11 @@ VersionControlStageSelectionMenu::VersionControlStageSelectionMenu()
 
     cmds.add(MenuItem::item(Icons::selectAll,
         CommandIDs::VersionControlSelectAll,
-        TRANS(I18n::Menu::Selection::vcsSelectall)));
+        TRANS(I18n::Menu::Selection::vcsSelectAll)));
 
     cmds.add(MenuItem::item(Icons::selectNone,
         CommandIDs::VersionControlSelectNone,
-        TRANS(I18n::Menu::Selection::vcsSelectnone))->closesMenu());
+        TRANS(I18n::Menu::Selection::vcsSelectNone))->closesMenu());
 
     this->updateContent(cmds, MenuPanel::SlideRight);
 }

@@ -19,45 +19,28 @@
 
 namespace CommandIDs
 {
-    enum UI
+    enum Id
     {
+        None                            = 0x0000,
+
         Back                            = 0x0001,
         Cancel                          = 0x0002,
         Browse                          = 0x0003,
         IconButtonPressed               = 0x0004,
         MenuButtonPressed               = 0x0005,
-        RootTreeItemPressed             = 0x0006,
         HideDialog                      = 0x0007,
         HideCallout                     = 0x0008,
         DismissModalDialogAsync         = 0x0009,
 
-        // TimeSignatureCommandPanel
-        ChangeTimeSignature             = 0x0010,
-        ChangeTimeSignatureConfirmed    = 0x0011,
-        DeleteTimeSignature             = 0x0012,
-
-        // AnnotationCommandPanel
-        RenameAnnotation                = 0x0020,
-        RenameAnnotationConfirmed       = 0x0021,
-        SetAnnotationColour             = 0x0022, // more ids reserved for colours
-        DeleteAnnotation                = 0x0100,
-
         // AnnotationsCommandPanel
         AddAnnotation                   = 0x0101,
-        AddAnnotationConfirmed          = 0x0102,
         AddTimeSignature                = 0x0103,
-        AddTimeSignatureConfirmed       = 0x0104,
         AddKeySignature                 = 0x0105,
-        AddKeySignatureConfirmed        = 0x0106,
         JumpToAnnotation                = 0x0107, // more ids reserved for annotations
 
         CreateArpeggiatorFromSelection  = 0x0200,
 
         InitWorkspace                   = 0x0500,
-
-        RenameInstrument                = 0x0501,
-        UpdateInstrument                = 0x0502,
-        DeleteInstrument                = 0x0503,
 
         ScanAllPlugins                  = 0x0504,
         ScanPluginsFolder               = 0x0505,
@@ -88,7 +71,6 @@ namespace CommandIDs
         CopyClips                       = 0x1612,
         CutClips                        = 0x1613,
         PasteClips                      = 0x1614,
-        EditClip                        = 0x1615,
 
         ClipTransposeUp                 = 0x1620,
         ClipTransposeDown               = 0x1621,
@@ -109,60 +91,24 @@ namespace CommandIDs
         TimelineJumpPrevious            = 0x2001,
 
         ShowAnnotations                 = 0x2010,
-        ResetPreviewChanges              = 0x2011,
-        ApplyOpenGLRenderer             = 0x2012,
+        ResetPreviewChanges             = 0x2011,
 
         TransportStartPlayback          = 0x2013,
         TransportPausePlayback          = 0x2014,
 
         PopupMenuDismiss                = 0x2015,
-        PopupMenuDismissedAsDone        = 0x2016,
-        PopupMenuDismissedAsCancel      = 0x2017,
-
-        // TreePanel
-        SelectRootItemPanel             = 0x2018,
-        DeselectRootItemPanel           = 0x2019,
-        UpdateRootItemPanel             = 0x201a,
-
-        // WorkspaceMenu
-        LoginLogout                     = 0x2020,
-        OpenProject                     = 0x2021,
-        CreateNewProject                = 0x2022,
 
         // ProjectMenu
         RenderToFLAC                    = 0x2030,
         RenderToWAV                     = 0x2031,
 
-        AddItemsMenu                    = 0x2040,
-        AddItemsMenuBack                = 0x2041,
-
-        AddMidiTrack                    = 0x2042,
-        AddMidiTrackConfirmed           = 0x2043,
-        AddAutomationTrack              = 0x2044,
-
         ImportMidi                      = 0x2050,
         ExportMidi                      = 0x2051,
 
-        UnloadProject                   = 0x2060,
         DeleteProject                   = 0x2061,
-        DeleteProjectConfirmed1         = 0x2062,
-        DeleteProjectConfirmed2         = 0x2063,
 
         ProjectTransposeUp              = 0x2070,
         ProjectTransposeDown            = 0x2071,
-        ProjectRemoveOverlaps           = 0x2072,
-
-        ProjectPatternEditor            = 0x2080,
-        ProjectLinearEditor             = 0x2081,
-        ProjectVersionsEditor           = 0x2082,
-
-        ProjectMainMenu                 = 0x2090,
-        ProjectRenderMenu               = 0x2091,
-        ProjectBatchMenu                = 0x2092,
-        ProjectBatchMenuBack            = 0x2093,
-
-        AddTempoController              = 0x2100,
-        BatchChangeInstrument           = 0x2110,
 
         SelectFunction                  = 0x2120, // more ids reserved for sub-items
         SelectScale                     = 0x2200, // more ids reserved for sub-items
@@ -236,9 +182,13 @@ namespace CommandIDs
         PatternsGroupByInstrument       = 0x4102,
         PatternsGroupById               = 0x4103,
 
-        YourNextCommandId               = 0x4200
+        CommandPalette                  = 0x4200,
+        CommandPaletteWithMode          = 0x4201,
+
+        YourNextCommandId               = 0x4300
     };
 
-    int getIdForName(const String &command);
+    CommandIDs::Id getIdForName(const String &command);
+    Identifier getTranslationKeyFor(CommandIDs::Id id);
 
 } // namespace CommandIDs

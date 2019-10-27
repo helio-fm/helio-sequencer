@@ -25,17 +25,12 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "AnnotationDialog.h"
-#include "MainLayout.h"
 #include "AnnotationLargeComponent.h"
 #include "AnnotationSmallComponent.h"
 
 AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
-    projectFirstBeat(0.f),
-    projectLastBeat(16.f), // non zero!
-    rollFirstBeat(0.f),
-    rollLastBeat(16.f),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -51,7 +46,6 @@ AnnotationsProjectMap::~AnnotationsProjectMap()
 {
     this->project.removeListener(this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -309,7 +303,7 @@ void AnnotationsProjectMap::showContextMenuFor(AnnotationComponent *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        App::Layout().showModalDialog(AnnotationDialog::editingDialog(*this, nc->getEvent()));
+        App::showModalComponent(AnnotationDialog::editingDialog(*this, nc->getEvent()));
     }
 }
 

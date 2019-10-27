@@ -27,6 +27,18 @@
         // ------------------------------------
         // Main layout hotkeys
 
+        // Command Palette aka Spotlight Search aka Goto Anything:
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "`" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Control + P" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Command + P" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Control + G" },
+        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Command + G" },
+
+        // Quick access to command palette modes (/, !, @):
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "/" },
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 1" },
+        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 2" },
+
         { "receiver": "MainLayout", "command": "ShowRootPage", "key": "Home" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
         { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
@@ -60,6 +72,12 @@
         { "receiver": "VersionControlStage", "command": "VersionControlCommitSelected", "key": "Control + S" },
         { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Backspace" },
         { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Delete" },
+        { "receiver": "VersionControlStage", "command": "VersionControlCommitAll", "key": "Control + Shift + S" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetAll", "key": "Shift + Backspace" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetAll", "key": "Shift + Delete" },
+        { "receiver": "VersionControlStage", "command": "VersionControlSyncAll", "key": "F5" },
+        //{ "receiver": "VersionControlHistory", "command": "VersionControlPushSelected", "key": "?" },
+        //{ "receiver": "VersionControlHistory", "command": "VersionControlPullSelected", "key": "?" },
 
         // ------------------------------------
         // Piano roll's specific

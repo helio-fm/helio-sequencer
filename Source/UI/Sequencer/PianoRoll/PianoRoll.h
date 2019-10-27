@@ -31,10 +31,12 @@ class MidiSequence;
 class NoteComponent;
 class PianoRollCellHighlighter;
 class PianoRollSelectionMenuManager;
+class CommandPaletteChordConstructor;
 class HelperRectangle;
 class KnifeToolHelper;
 class Scale;
 
+#include "CommandPaletteModel.h"
 #include "HybridRoll.h"
 #include "HelioTheme.h"
 #include "NoteResizerLeft.h"
@@ -42,13 +44,17 @@ class Scale;
 #include "Note.h"
 #include "Clip.h"
 
-class PianoRoll final : public HybridRoll
+class PianoRoll final :
+    public HybridRoll,
+    public CommandPaletteModel
 {
 public:
 
     PianoRoll(ProjectNode &parentProject,
         Viewport &viewportRef,
         WeakReference<AudioMonitor> clippingDetector);
+
+    ~PianoRoll() override;
 
     WeakReference<MidiTrack> getActiveTrack() const noexcept;
     const Clip &getActiveClip() const noexcept;
@@ -164,6 +170,12 @@ public:
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
     //===------------------------------------------------------------------===//
+    // Command Palette
+    //===------------------------------------------------------------------===//
+
+    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
+
+    //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
@@ -262,6 +274,8 @@ private:
 
     UniquePointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
+    UniquePointer<CommandPaletteChordConstructor> consoleChordConstructor;
+
     using SequenceMap = FlatHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
