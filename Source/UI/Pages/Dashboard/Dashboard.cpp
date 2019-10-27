@@ -78,7 +78,7 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
 
 
     //[UserPreSize]
-    this->patreonButton.reset(new HyperlinkButton(TRANS("Support the project"),
+    this->patreonButton.reset(new HyperlinkButton(TRANS(I18n::Common::supportProject),
         URL("https://www.patreon.com/peterrudenko")));
     this->addAndMakeVisible(this->patreonButton.get());
     this->patreonButton->setColour(HyperlinkButton::textColourId,

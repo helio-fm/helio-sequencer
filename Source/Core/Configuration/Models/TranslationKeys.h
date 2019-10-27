@@ -44,8 +44,9 @@ namespace I18n
     {
         static const Identifier conjunction = "common::and";
         static const Identifier yesterday = "common::yesterday";
-        static const Identifier networkError = "network error";
+        static const Identifier supportProject = "common::support";
         static const Identifier updateProceed = "update::proceed";
+        static const Identifier networkError = "common::networkerror";
     }
 
     namespace Defaults
