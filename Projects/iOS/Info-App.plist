@@ -51,9 +51,9 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleShortVersionString</key>
-    <string>2.3</string>
+    <string>2.4</string>
     <key>CFBundleVersion</key>
-    <string>2.3</string>
+    <string>2.4</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>UIRequiresFullScreen</key>
