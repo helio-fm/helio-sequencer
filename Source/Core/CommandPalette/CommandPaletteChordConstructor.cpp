@@ -509,7 +509,7 @@ struct ChordQualityExpression final : Expression
             this->chordQuality = Quality::Minor; // another exception
             this->intervalQuality = Quality::Diminished;
             break;
-        case KeywordToken::Type::Dominant: // basically, a shorthand for mM
+        case KeywordToken::Type::Dominant: // basically, a shorthand for Mm
             this->chordQuality = Quality::Major;
             this->intervalQuality = Quality::Minor;
             break;
@@ -1307,7 +1307,7 @@ public:
         {
             jassert(add->isValid());
             chord[add->addedKey] = add->flat ? KeyInfo::Flat :
-                (add->sharp ? KeyInfo::Sharp : KeyInfo::Default);
+                (add->sharp ? KeyInfo::Sharp : getKey(quality, add->addedKey));
         }
 
         const auto *alt = this->chord.keyAlteration.get();
@@ -1677,10 +1677,6 @@ public:
         testRenderedChord(cc, "C#5", { 1, 8 });
         testRenderedChord(cc, "C maj", { 0, 4, 7 });
         testRenderedChord(cc, "C min", { 0, 3, 7 });
-        testRenderedChord(cc, "C aug", { 0, 4, 8 });
-        testRenderedChord(cc, "C dim", { 0, 3, 6 });
-        testRenderedChord(cc, "C sus2", { 0, 2, 7 });
-        testRenderedChord(cc, "C sus4", { 0, 5, 7 });
         testRenderedChord(cc, "C maj6", { 0, 4, 7, 9 });
         testRenderedChord(cc, "C min6", { 0, 3, 7, 9 });
         testRenderedChord(cc, "C maj7", { 0, 4, 7, 11 });
@@ -1688,14 +1684,7 @@ public:
         testRenderedChord(cc, "C mM7", { 0, 3, 7, 11 });
         testRenderedChord(cc, "C min maj7", { 0, 3, 7, 11 });
         testRenderedChord(cc, "C Mm7", { 0, 4, 7, 10 });
-        testRenderedChord(cc, "C aug7", { 0, 4, 8, 10 });
-        testRenderedChord(cc, "C M7#5", { 0, 4, 8, 11 });
-        testRenderedChord(cc, "C m7b5", { 0, 3, 6, 10 });
-        testRenderedChord(cc, "C dim7", { 0, 3, 6, 9 });
         testRenderedChord(cc, "C dom7", { 0, 4, 7, 10 });
-        testRenderedChord(cc, "C 7sus4", { 0, 5, 7, 10 });
-        testRenderedChord(cc, "C M7sus2", { 0, 2, 7, 11 });
-        testRenderedChord(cc, "C M7sus4", { 0, 5, 7, 11 });
         testRenderedChord(cc, "C maj9", { 0, 4, 7, 11, 14 });
         testRenderedChord(cc, "C min9", { 0, 3, 7, 10, 14 });
         testRenderedChord(cc, "C maj11", { 0, 4, 7, 11, 14, 17 });
@@ -1703,8 +1692,44 @@ public:
         testRenderedChord(cc, "C maj13", { 0, 4, 7, 11, 14, 17, 21 });
         testRenderedChord(cc, "C min13", { 0, 3, 7, 10, 14, 17, 21 });
 
-        beginTest("Chords generation, complex expressions");
-        // todo test against some more sophisticated examples
+        beginTest("Chords generation, augmented and diminished");
+
+        testRenderedChord(cc, "C aug", { 0, 4, 8 });
+        testRenderedChord(cc, "C dim", { 0, 3, 6 });
+        testRenderedChord(cc, "C aug7", { 0, 4, 8, 10 });
+        testRenderedChord(cc, "C dim7", { 0, 3, 6, 9 });
+
+        beginTest("Chords generation, key alterations");
+
+        testRenderedChord(cc, "C M7#5", { 0, 4, 8, 11 });
+        testRenderedChord(cc, "C m7b5", { 0, 3, 6, 10 });
+
+        beginTest("Chords generation, suspensions");
+
+        testRenderedChord(cc, "C sus2", { 0, 2, 7 });
+        testRenderedChord(cc, "C sus4", { 0, 5, 7 });
+        testRenderedChord(cc, "C M7sus2", { 0, 2, 7, 11 });
+        testRenderedChord(cc, "C M7sus4", { 0, 5, 7, 11 });
+        testRenderedChord(cc, "C 7sus4", { 0, 5, 7, 10 });
+
+        beginTest("Chords generation, additions");
+
+        testRenderedChord(cc, "Cm6/9", { 0, 3, 7, 9, 14 });
+        testRenderedChord(cc, "Cm7add #11", { 0, 3, 7, 10, 18 });
+        testRenderedChord(cc, "CM9/13", { 0, 4, 7, 11, 14, 21 });
+        testRenderedChord(cc, "Cm9 add13", { 0, 3, 7, 10, 14, 21 });
+
+        beginTest("Chords generation, inversions");
+
+        testRenderedChord(cc, "C maj inv 2", { 7, 12, 16 });
+        testRenderedChord(cc, "C min inv -3", { -12, -9, -5 });
+
+        beginTest("Chords generation, bass notes");
+
+        testRenderedChord(cc, "Cm6/9 /E", { -9, 0, 7, 9, 14 });
+        testRenderedChord(cc, "C mM7 /G", { -5, 0, 3, 11 });
+
+
     }
 
     void testRenderedChord(ChordCompiler &compiler, const String &chord, const Array<int> &expect)
