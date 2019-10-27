@@ -324,5 +324,8 @@ namespace I18n
         static const Identifier projects = "console::projects";
         static const Identifier timeline = "console::timeline";
         static const Identifier chordBuilder = "console::chordbuilder";
+
+        static const Identifier chordSuggestion = "chord::suggestion";
+        static const Identifier chordGenerate = "chord::compile";
     }
 } // namespace Translations

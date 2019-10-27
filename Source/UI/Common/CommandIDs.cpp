@@ -165,12 +165,16 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
     };
 }
 
+// this is only used for command palette:
+// only the commands with translations are displayed
 Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
 {
     switch (id)
     {
-        TRANS_KEY(Back, Menu::back)
-        TRANS_KEY(Cancel, Menu::cancel)
+        TRANS_NONE(Back)
+        TRANS_NONE(Cancel)
+        //TRANS_KEY(Back, Menu::back)
+        //TRANS_KEY(Cancel, Menu::cancel)
         TRANS_NONE(Browse)
         TRANS_NONE(IconButtonPressed)
         TRANS_NONE(MenuButtonPressed)
@@ -181,7 +185,8 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_KEY(AddTimeSignature, Menu::timeSignatureAdd)
         TRANS_KEY(AddKeySignature, Menu::keySignatureAdd)
         TRANS_NONE(JumpToAnnotation)
-        TRANS_KEY(CreateArpeggiatorFromSelection, Menu::arpeggiatorsCreate)
+        TRANS_NONE(CreateArpeggiatorFromSelection)
+        //TRANS_KEY(CreateArpeggiatorFromSelection, Menu::arpeggiatorsCreate)
         TRANS_NONE(InitWorkspace)
         TRANS_KEY(ScanAllPlugins, Menu::instrumentsReload)
         TRANS_KEY(ScanPluginsFolder, Menu::instrumentsScanFolder)

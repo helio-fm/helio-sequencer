@@ -81,17 +81,9 @@
 PianoRoll::PianoRoll(ProjectNode &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector),
-    activeTrack(nullptr),
-    activeClip(),
-    numRows(128),
-    rowHeight(PIANOROLL_MIN_ROW_HEIGHT),
-    newNoteDragging(nullptr),
-    addNewNoteMode(false),
-    newNoteVolume(0.25f),
-    defaultHighlighting() // default pattern (black and white keys)
+    HybridRoll(parentProject, viewportRef, clippingDetector)
 {
-    this->defaultHighlighting.reset(new HighlightingScheme(0, Scale::getNaturalMajorScale()));
+    this->defaultHighlighting = makeUnique<HighlightingScheme>(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
 
     this->selectedNotesMenuManager.reset(new PianoRollSelectionMenuManager(&this->selection, this->project));
@@ -373,6 +365,19 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
     const float yPosition = float(this->getYPositionByKey(key));
 
     return { x, yPosition + 1.f, w, float(this->rowHeight - 1) };
+}
+
+bool PianoRoll::isNoteVisible(int key, float beat, float length) const
+{
+    const auto view = this->viewport.getViewArea().toFloat();
+    const auto firstViewportBeat = this->getBeatByXPosition(view.getX());
+    const auto lastViewportBeat = this->getBeatByXPosition(view.getRight());
+    const auto firstViewportKey = int(this->getHeight() - view.getBottom()) / this->getRowHeight();
+    const auto lastViewportKey = int(this->getHeight() - view.getY()) / this->getRowHeight();
+
+    return (key > firstViewportKey && key < lastViewportKey) &&
+        ((beat > firstViewportBeat && beat < lastViewportBeat) ||
+            (beat + length > firstViewportBeat && beat + length < lastViewportBeat));
 }
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const

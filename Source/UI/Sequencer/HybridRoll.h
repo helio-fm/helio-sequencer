@@ -72,8 +72,8 @@ class HybridRoll :
     public ProjectListener,
     public LassoSource<SelectableComponent *>,
     protected ChangeListener, // listens to HybridRollEditMode,
-    protected TransportListener,
-    protected AsyncUpdater, // for async scrolling on transport listener events
+    protected TransportListener, // for positioning the playhead component and auto-scrolling
+    protected AsyncUpdater, // coalesce multiple transport events ^^ into a single async view change
     protected HighResolutionTimer, // for smooth scrolling to seek position
     protected Playhead::Listener, // for smooth scrolling to seek position
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components

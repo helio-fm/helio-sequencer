@@ -1498,8 +1498,8 @@ private:
 
     CommandPaletteAction::Ptr createSuggeation(String text)
     {
-        return CommandPaletteAction::action(text, "suggestion", 0.f)->unfiltered()->
-            withCallback([this, text](TextEditor &ed)
+        return CommandPaletteAction::action(text, TRANS(I18n::CommandPalette::chordSuggestion), 0.f)->
+            unfiltered()->withCallback([this, text](TextEditor &ed)
         {
             // not just append a piece of text, but also turn in into a valid description:
             this->parse(ed.getText() + " " + text);
@@ -1536,7 +1536,7 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
     this->actions.clearQuick();
     if (this->chordCompiler->isValid())
     {
-        this->actions.add(CommandPaletteAction::action(chordAsString, "preview", -10.f)->
+        this->actions.add(CommandPaletteAction::action(chordAsString, TRANS(I18n::CommandPalette::chordGenerate), -10.f)->
             unfiltered()->withCallback([this, chordAsString](TextEditor &ed)
         {
             this->previewIfNeeded();
@@ -1557,7 +1557,7 @@ void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool sk
 void CommandPaletteChordConstructor::clearFilter()
 {
     this->actions.clearQuick();
-    this->chordCompiler->parse("");
+    this->chordCompiler->parse({});
     this->chordCompiler->fillSuggestions(this->actions);
     this->undoIfNeeded();
 
@@ -1590,8 +1590,6 @@ void CommandPaletteChordConstructor::previewIfNeeded()
         if (auto *pianoSequence =
             dynamic_cast<PianoSequence *>(this->roll.getActiveTrack()->getSequence()))
         {
-            // todo test if clip offsets work right
-
             const auto seek = this->roll.getTransport().getSeekPosition();
             const auto clipKey = this->roll.getActiveClip().getKey();
             const auto clipBeat = this->roll.getActiveClip().getBeat();
@@ -1600,6 +1598,8 @@ void CommandPaletteChordConstructor::previewIfNeeded()
             int minKey = 128;
             int maxKey = 0;
 
+            bool atLeastOneNoteShowsInViewport = false;
+
             for (const auto &relativeKey : this->chord)
             {
                 const auto key = jlimit(0, 128, MIDDLE_C + relativeKey);
@@ -1607,23 +1607,28 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                 minKey = jmin(minKey, key);
                 maxKey = jmax(maxKey, key);
 
-                const Note note(pianoSequence, key,
-                    targetBeat, CHORD_COMPILER_NOTE_LENGTH, CHORD_COMPILER_NOTE_VELOCITY);
+                const Note note(pianoSequence, key, targetBeat,
+                    CHORD_COMPILER_NOTE_LENGTH, CHORD_COMPILER_NOTE_VELOCITY);
 
                 pianoSequence->insert(note, true);
                 this->hasMadeChanges = true;
+
+                atLeastOneNoteShowsInViewport = atLeastOneNoteShowsInViewport ||
+                    this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat, CHORD_COMPILER_NOTE_LENGTH);
 
                 this->roll.getTransport().previewMidiMessage(pianoSequence->getTrackId(),
                     MidiMessage::noteOn(note.getTrackChannel(),
                         key + clipKey, CHORD_COMPILER_NOTE_VELOCITY));
             }
 
-            // focus on the chord - looks kinda weird?
-            // should instead focus on playhead position on start?
-            //static const int keyMargin = 6;
-            //static const float beatMargin = 4.f;
-            //this->roll.zoomToArea(clipKey + minKey - keyMargin, clipKey + maxKey + keyMargin,
-            //    targetBeat - beatMargin, targetBeat + CHORD_COMPILER_NOTE_LENGTH + beatMargin);
+            if (!atLeastOneNoteShowsInViewport)
+            {
+                static const int keyMarginTop = 8; // leave some space for the command palette
+                static const int keyMarginBottom = 2;
+                static const float beatMargin = 2.f;
+                this->roll.zoomToArea(clipKey + minKey - keyMarginBottom, clipKey + maxKey + keyMarginTop,
+                    clipBeat + targetBeat - beatMargin, clipBeat + targetBeat + CHORD_COMPILER_NOTE_LENGTH + beatMargin);
+            }
         }
     }
 }
@@ -1728,8 +1733,6 @@ public:
 
         testRenderedChord(cc, "Cm6/9 /E", { -9, 0, 7, 9, 14 });
         testRenderedChord(cc, "C mM7 /G", { -5, 0, 3, 11 });
-
-
     }
 
     void testRenderedChord(ChordCompiler &compiler, const String &chord, const Array<int> &expect)

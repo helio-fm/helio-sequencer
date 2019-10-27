@@ -61,13 +61,6 @@ public:
 
     void setDefaultNoteVolume(float volume) noexcept;
 
-    void setRowHeight(int newRowHeight);
-    inline int getRowHeight() const noexcept
-    { return this->rowHeight; }
-
-    inline int getNumRows() const noexcept
-    { return this->numRows; }
-
     //===------------------------------------------------------------------===//
     // HybridRoll
     //===------------------------------------------------------------------===//
@@ -101,8 +94,7 @@ public:
     void addNote(int key, float beat, float length, float velocity);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(int key, float beat, float length) const;
-
-    int getYPositionByKey(int targetKey) const;
+    bool isNoteVisible(int key, float beat, float length) const;
 
     // Note that beat is returned relative to active clip's beat offset:
     void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const;
@@ -185,7 +177,7 @@ public:
     
 private:
 
-    WeakReference<MidiTrack> activeTrack;
+    WeakReference<MidiTrack> activeTrack = nullptr;
     Clip activeClip;
 
     void updateActiveRangeIndicator() const;
@@ -200,18 +192,25 @@ private:
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void insertNewNoteAt(const MouseEvent &e);
+    int getYPositionByKey(int targetKey) const;
 
     UniquePointer<KnifeToolHelper> knifeToolHelper;
     void startCuttingEvents(const MouseEvent &e);
     void continueCuttingEvents(const MouseEvent &e);
     void endCuttingEventsIfNeeded();
 
-    NoteComponent *newNoteDragging;
-    bool addNewNoteMode;
-    float newNoteVolume;
+    NoteComponent *newNoteDragging = nullptr;
+    bool addNewNoteMode = false;
+    float newNoteVolume = 0.25f;
 
-    int numRows;
-    int rowHeight;
+    const int numRows = 128;
+    int rowHeight = PIANOROLL_MIN_ROW_HEIGHT;
+
+    void setRowHeight(int newRowHeight);
+    inline int getRowHeight() const noexcept
+    {
+        return this->rowHeight;
+    }
 
 private:
 

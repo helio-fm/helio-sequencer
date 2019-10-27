@@ -280,13 +280,11 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
         Justification::centredRight, 1);
 }
 
-void CommandPalette::selectedRowsChanged(int lastRowSelected)
-{
-    // so what?
-}
+void CommandPalette::selectedRowsChanged(int lastRowSelected) {}
 
 void CommandPalette::listBoxItemClicked(int row, const MouseEvent &)
 {
+    // too fast? switch this to double click?
     this->actionsList->selectRow(row);
     this->applySelectedCommand();
 }
@@ -363,14 +361,8 @@ void CommandPalette::textEditorEscapeKeyPressed(TextEditor &)
 
 void CommandPalette::textEditorFocusLost(TextEditor &)
 {
-    if (this->textEditor->getText().isNotEmpty())
-    {
-        this->dismiss();
-    }
-    else
-    {
-        this->textEditor->grabKeyboardFocus();
-    }
+    // prevents close on mouse click:
+    this->textEditor->grabKeyboardFocus();
 }
 
 void CommandPalette::dismiss()
