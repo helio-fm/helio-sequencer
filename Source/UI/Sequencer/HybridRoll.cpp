@@ -488,6 +488,7 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
     this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
 
     this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
+    this->updateChildrenPositions();
 }
 
 void HybridRoll::zoomAbsolute(const Point<float> &zoom)
