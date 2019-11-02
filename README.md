@@ -15,8 +15,8 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 
 ||Linux|Windows|macOS|iOS|Android|
 |---|---|---|---|---|---|
-|master|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/5)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/6)](https://travis-ci.org/helio-fm/helio-workstation)|
-|develop|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/5)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/6)](https://travis-ci.org/helio-fm/helio-workstation)|
+|master|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/2)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/5)](https://travis-ci.org/helio-fm/helio-workstation)|
+|develop|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/2)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/5)](https://travis-ci.org/helio-fm/helio-workstation)|
 
 ### Basic build instructions
 
@@ -31,6 +31,10 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 * Windows: [ci.helio.fm/helio-dev-x64.zip](https://ci.helio.fm/helio-dev-x64.zip)
 * macOS: [ci.helio.fm/helio-dev.dmg](https://ci.helio.fm/helio-dev.dmg)
 * Linux: [ci.helio.fm/helio-dev-x64.tar.gz](https://ci.helio.fm/helio-dev-x64.tar.gz)
+
+### Packaging Status
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/helio-workstation.svg?header=helio-workstation)](https://repology.org/project/helio-workstation/versions)  
 
 
 ## Links
