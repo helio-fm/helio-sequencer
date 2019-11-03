@@ -46,6 +46,7 @@ class TimelineWarningMarker;
 #include "ProjectListener.h"
 #include "Lasso.h"
 #include "HybridRollEditMode.h"
+#include "UserInterfaceFlags.h"
 #include "AudioMonitor.h"
 
 #if HELIO_MOBILE
@@ -71,6 +72,7 @@ class HybridRoll :
     public MultiTouchListener,
     public ProjectListener,
     public LassoSource<SelectableComponent *>,
+    protected UserInterfaceFlags::Listener, // global UI options
     protected ChangeListener, // listens to HybridRollEditMode,
     protected TransportListener, // for positioning the playhead component and auto-scrolling
     protected AsyncUpdater, // coalesce multiple transport events ^^ into a single async view change

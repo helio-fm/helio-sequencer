@@ -362,7 +362,7 @@ String App::getAppReadableVersion()
     return v;
 }
 
-bool datesMatchByDay(const Time &date1, const Time &date2)
+static bool datesMatchByDay(const Time &date1, const Time &date2)
 {
     return (date1.getYear() == date2.getYear() &&
             date1.getDayOfYear() == date2.getDayOfYear());
@@ -455,83 +455,17 @@ void App::dismissAllModalComponents()
     }
 }
 
-void App::setOpenGLRendererEnabled(bool shouldBeEnabled)
-{
-    if (isOpenGLRendererEnabled() == shouldBeEnabled)
-    {
-        return;
-    }
-
-    auto *window = static_cast<App *>(getInstance())->window.get();
-    auto *config = static_cast<App *>(getInstance())->config.get();
-
-    if (shouldBeEnabled)
-    {
-        window->attachOpenGLContext();
-        config->setProperty(Serialization::Config::openGLState,
-            Serialization::Config::enabledState.toString());
-    }
-    else
-    {
-        window->detachOpenGLContextIfAny();
-        config->setProperty(Serialization::Config::openGLState,
-            Serialization::Config::disabledState.toString());
-    }
-}
-
 bool App::isOpenGLRendererEnabled() noexcept
 {
     return static_cast<App *>(getInstance())->window->openGLContext != nullptr;
 }
 
-bool App::isUsingNativeTitleBar()
+bool App::isUsingNativeTitleBar() noexcept
 {
 #if JUCE_WINDOWS || JUCE_LINUX
     return static_cast<App *>(getInstance())->window->isUsingNativeTitleBar();
 #else
     return true;
-#endif
-}
-
-void App::setUsingNativeTitleBar(bool shouldUseNativeTitleBar)
-{
-#if JUCE_WINDOWS || JUCE_LINUX
-    if (App::isUsingNativeTitleBar() == shouldUseNativeTitleBar)
-    {
-        return;
-    }
-
-    App::Config().setProperty(Serialization::Config::nativeTitleBar,
-        shouldUseNativeTitleBar ?
-        Serialization::Config::enabledState.toString() :
-        Serialization::Config::disabledState.toString());
-
-#   if JUCE_WINDOWS
-
-    // just re-creating a window helps to avoid glitches:
-    const bool hasOpenGl = App::isOpenGLRendererEnabled();
-    auto *self = static_cast<App *>(getInstance());
-    self->window.reset(new MainWindow());
-    self->window->init(hasOpenGl, shouldUseNativeTitleBar);
-
-#   elif JUCE_LINUX
-
-    // on Linux, however, it's not that simple, as always:
-    // on some builds and some systems re-creating a window,
-    // or simply removing it from the desktop and adding it back
-    // will (or will not, depending on your luck) segfault in XLockDisplay,
-    // which is given an invalid display pointer, which wasn't initialized
-    // properly by XOpenDisplay, apparently because-f-you-that's-why;
-    // the stacktrace lead me to this comment in juce_linux_X11.cpp:134 -
-    // "on some systems XOpenDisplay will occasionally fail". great.
-
-    App::Layout().showTooltip(TRANS(I18n::Settings::restartRequired),
-        MainLayout::TooltipType::Simple, 5000);
-
-#   endif
-
-#else
-    jassertfalse; // should never hit that
 #endif
 }
 
@@ -604,43 +538,28 @@ void App::initialise(const String &commandLine)
         // if this is not a unit test runner, proceed as normal:
 
         this->workspace.reset(new class Workspace());
+        
+        bool shouldEnableOpenGL = this->config->getUiFlags()->isOpenGlRendererEnabled();
+        bool shouldUseNativeTitleBar = this->config->getUiFlags()->isNativeTitleBarEnabled();
 
-#   if JUCE_ANDROID
-        // OpenGL seems to be the only sensible option on Android:
-        const bool shouldEnableOpenGL = true;
-        const bool shouldUseNativeTitleBar = true;
-#   elif JUCE_IOS
-        // CoreGraphics renderer is faster anyway:
-        const bool shouldEnableOpenGL = false;
-        const bool shouldUseNativeTitleBar = true;
-#   else
-        const auto enabledState = Serialization::Config::enabledState.toString();
-        const auto opeGlState = this->config->getProperty(Serialization::Config::openGLState);
-        const auto nativeTitleBarState = this->config->getProperty(Serialization::Config::nativeTitleBar);
+        // TODO: get rid of these config->getProperty in future versions,
+        // for now just check if new flags settings are present and if not, load legacy keys:
+        if (!this->config->containsProperty(Serialization::Config::activeUiFlags))
+        {
+            const auto enabledState = Serialization::Config::enabledState.toString();
+            const auto legacyOpeGlStateFlag = this->config->getProperty(Serialization::Config::openGLState);
+            const auto legacyTitleBarStateFlag = this->config->getProperty(Serialization::Config::nativeTitleBar);
 
-        const bool shouldEnableOpenGL = opeGlState.isEmpty() || opeGlState == enabledState;
-
-#   if JUCE_MAC
-        // On macOS, always use native bar and disable that check box in the settings
-        const bool shouldUseNativeTitleBar = true;
-#   elif JUCE_LINUX
-        // On Linux, allow switching modes, but use native title bar by default
-        // (custom one is still usable but can cause issues with various window managers)
-        const bool shouldUseNativeTitleBar = nativeTitleBarState.isEmpty() || nativeTitleBarState == enabledState;
-#   else
-        // On Windows, allow switching modes, and use custom title bar by default
-        const bool shouldUseNativeTitleBar = nativeTitleBarState == enabledState;
-#   endif
-
-#endif
+            shouldEnableOpenGL = legacyOpeGlStateFlag.isNotEmpty() ? legacyOpeGlStateFlag == enabledState : shouldEnableOpenGL;
+            shouldUseNativeTitleBar = legacyTitleBarStateFlag.isNotEmpty() ? legacyTitleBarStateFlag == enabledState : shouldUseNativeTitleBar;
+        }
 
         this->window.reset(new MainWindow());
         this->window->init(shouldEnableOpenGL, shouldUseNativeTitleBar);
 
         this->network.reset(new class Network(*this->workspace.get()));
 
-        // see the comment in changeListenerCallback
-        //this->config->getTranslations()->addChangeListener(this);
+        this->config->getUiFlags()->addListener(this);
         
 #   if HELIO_MOBILE
 
@@ -663,7 +582,7 @@ void App::shutdown()
 {
     if (this->runMode == App::NORMAL)
     {
-        //this->config->getTranslations()->removeChangeListener(this);
+        this->config->getUiFlags()->removeListener(this);
 
         DBG("Shutting down");
 
@@ -716,12 +635,7 @@ bool App::moreThanOneInstanceAllowed()
 void App::anotherInstanceStarted(const String &commandLine)
 {
     // This will get called if the user launches another copy of the app
-    
-    //this->window->toFront(true);
-    Logger::outputDebugString("Another instance started: " + commandLine);
-
-    //const Component *focused = Component::getCurrentlyFocusedComponent();
-    //Logger::outputDebugString(focused ? focused->getName() : "");
+    DBG("Another instance started: " + commandLine);
 }
 
 void App::systemRequestedQuit()
@@ -817,16 +731,67 @@ void App::checkPlugin(const String &markerFile)
 
 void App::handleAsyncUpdate()
 {
-    this->quit();
+    JUCEApplication::quit();
 }
 
-void App::changeListenerCallback(ChangeBroadcaster *source)
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void App::onOpenGlRendererFlagChanged(bool shouldBeEnabled)
 {
-    // after some testing I find this behaviour not great at all, i.e. unpredictable and glitchy
-    // maybe instead this should start a timer and check if there are no modal components and
-    // no user activity for some time - and then recreate the layout:
-    //DBG("Reloading translations");
-    //this->recreateLayout();
+    if (App::isOpenGLRendererEnabled() == shouldBeEnabled)
+    {
+        return;
+    }
+
+    auto *window = static_cast<App *>(getInstance())->window.get();
+
+    if (shouldBeEnabled)
+    {
+        window->attachOpenGLContext();
+    }
+    else
+    {
+        window->detachOpenGLContextIfAny();
+    }
+}
+
+void App::onNativeTitleBarFlagChanged(bool shouldUseNativeTitleBar)
+{
+#if JUCE_WINDOWS || JUCE_LINUX
+    if (App::isUsingNativeTitleBar() == shouldUseNativeTitleBar)
+    {
+        return;
+    }
+
+#   if JUCE_WINDOWS
+
+    // just re-creating a window helps to avoid glitches:
+    const bool hasOpenGl = App::isOpenGLRendererEnabled();
+    auto *self = static_cast<App *>(getInstance());
+    self->window.reset(new MainWindow());
+    self->window->init(hasOpenGl, shouldUseNativeTitleBar);
+
+#   elif JUCE_LINUX
+
+    // on Linux, however, it's not that simple, as always:
+    // on some builds and some systems re-creating a window,
+    // or simply removing it from the desktop and adding it back
+    // will (or will not, depending on your luck) segfault in XLockDisplay,
+    // which is given an invalid display pointer, which wasn't initialized
+    // properly by XOpenDisplay, apparently because-f-you-that's-why;
+    // the stacktrace lead me to this comment in juce_linux_X11.cpp:134 -
+    // "on some systems XOpenDisplay will occasionally fail". great.
+
+    App::Layout().showTooltip(TRANS(I18n::Settings::restartRequired),
+        MainLayout::TooltipType::Simple, 5000);
+
+#   endif
+
+#else
+    jassertfalse; // should never hit that
+#endif
 }
 
 //===----------------------------------------------------------------------===//

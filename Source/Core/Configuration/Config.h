@@ -26,6 +26,7 @@ class Serializable;
 #include "ScriptsManager.h"
 #include "ScalesManager.h"
 #include "ChordsManager.h"
+#include "UserInterfaceFlags.h"
 
 class Config final : private Timer
 {
@@ -52,6 +53,8 @@ public:
     HotkeySchemesManager *getHotkeySchemes() const noexcept;
 
     ResourceManagerLookup &getAllResources() noexcept;
+
+    UserInterfaceFlags *getUiFlags() const noexcept;
 
 private:
 
@@ -80,6 +83,8 @@ private:
     UniquePointer<ChordsManager> chordsManager;
 
     ResourceManagerLookup resources;
+
+    UniquePointer<UserInterfaceFlags> uiFlags;
 
     bool needsSaving = false;
     int saveTimeout = 0;

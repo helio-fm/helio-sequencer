@@ -254,6 +254,10 @@
           </GROUP>
           <FILE id="Cw6lgG" name="Config.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Config.cpp"/>
           <FILE id="Qp21xL" name="Config.h" compile="0" resource="0" file="../../Source/Core/Configuration/Config.h"/>
+          <FILE id="v4cfur" name="UserInterfaceFlags.cpp" compile="1" resource="0"
+                file="../../Source/Core/Configuration/UserInterfaceFlags.cpp"/>
+          <FILE id="o1i9Zg" name="UserInterfaceFlags.h" compile="0" resource="0"
+                file="../../Source/Core/Configuration/UserInterfaceFlags.h"/>
         </GROUP>
         <GROUP id="{8CA92FD3-E483-6598-05E0-FD37B0C59010}" name="CommandPalette">
           <FILE id="PfHm4M" name="CommandPaletteModel.h" compile="0" resource="0"

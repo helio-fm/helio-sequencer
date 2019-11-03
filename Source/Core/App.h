@@ -24,6 +24,7 @@ class MainWindow;
 class MainLayout;
 
 #include "Serializable.h"
+#include "UserInterfaceFlags.h"
 
 class Clipboard final
 {
@@ -42,9 +43,10 @@ private:
     JUCE_PREVENT_HEAP_ALLOCATION
 };
 
-class App final : public JUCEApplication,
-                  private AsyncUpdater,
-                  private ChangeListener
+class App final :
+    public JUCEApplication,
+    private UserInterfaceFlags::Listener,
+    private AsyncUpdater
 {
 public:
 
@@ -72,13 +74,9 @@ public:
     static String translate(const String &plural, int64 number);
 
     static void recreateLayout();
- 
-    static bool isUsingNativeTitleBar();
-    static void setUsingNativeTitleBar(bool shouldUseNative);
-    static void setTitleBarComponent(WeakReference<Component> titleComponent);
-
     static bool isOpenGLRendererEnabled() noexcept;
-    static void setOpenGLRendererEnabled(bool shouldBeEnabled);
+    static bool isUsingNativeTitleBar() noexcept;
+    static void setTitleBarComponent(WeakReference<Component> titleComponent);
 
     static void showModalComponent(UniquePointer<Component> target);
     static void dismissAllModalComponents();
@@ -112,9 +110,17 @@ private:
     UniquePointer<class Network> network;
 
 private:
-    
+
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onOpenGlRendererFlagChanged(bool enabled) override;
+    void onNativeTitleBarFlagChanged(bool enabled) override;
+
+private:
+
     void checkPlugin(const String &markerFile);
-    void changeListenerCallback(ChangeBroadcaster *source) override;
 
     enum RunMode
     {

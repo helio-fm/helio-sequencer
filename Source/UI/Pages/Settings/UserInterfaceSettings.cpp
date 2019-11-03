@@ -169,7 +169,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
 
             dialog->onOk = [this]()
             {
-                App::setOpenGLRendererEnabled(true);
+                App::Config().getUiFlags()->setOpenGlRendererEnabled(true);
                 this->updateButtons();
             };
 
@@ -185,7 +185,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == defaultRendererButton.get())
     {
         //[UserButtonCode_defaultRendererButton] -- add your button handler code here..
-        App::setOpenGLRendererEnabled(false);
+        App::Config().getUiFlags()->setOpenGlRendererEnabled(false);
         this->updateButtons();
         //[/UserButtonCode_defaultRendererButton]
     }
@@ -193,7 +193,7 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
     {
         //[UserButtonCode_nativeTitleBarButton] -- add your button handler code here..
         // Will reload the layout:
-        App::setUsingNativeTitleBar(this->nativeTitleBarButton->getToggleState());
+        App::Config().getUiFlags()->setNativeTitleBarEnabled(this->nativeTitleBarButton->getToggleState());
         //[/UserButtonCode_nativeTitleBarButton]
     }
 

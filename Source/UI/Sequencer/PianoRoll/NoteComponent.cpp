@@ -419,7 +419,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     }
     else if (this->state == State::Dragging)
     {
-        this->getRoll().showHelpers();
+        this->getRoll().showDragHelpers();
 
         int deltaKey = 0;
         float deltaBeat = 0.f;
@@ -462,7 +462,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 }
             }
 
-            this->getRoll().moveHelpers(deltaBeat, deltaKey);
+            this->getRoll().moveDragHelpers(deltaBeat, deltaKey);
             
             if (shouldSendMidi)
             {
@@ -569,7 +569,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     }
     else if (this->state == State::Dragging)
     {
-        this->getRoll().hideHelpers();
+        this->getRoll().hideDragHelpers();
         this->setFloatBounds(this->getRoll().getEventBounds(this));
         
         for (int i = 0; i < selection.getNumSelected(); i++)

@@ -201,7 +201,7 @@ void PianoRoll::selectAll()
         auto *childComponent = e.second.get();
         if (childComponent->belongsTo(this->activeTrack, activeClip))
         {
-            this->selection.addToSelection(childComponent);
+            this->selectEvent(childComponent, false);
         }
     }
 }
@@ -402,18 +402,18 @@ int PianoRoll::getYPositionByKey(int targetKey) const
 // Drag helpers
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::showHelpers()
+void PianoRoll::showDragHelpers()
 {
     if (!this->draggingHelper->isVisible())
     {
         this->selection.needsToCalculateSelectionBounds();
-        this->moveHelpers(0.f, 0);
+        this->moveDragHelpers(0.f, 0);
         this->draggingHelper->setAlpha(1.f);
         this->draggingHelper->setVisible(true);
     }
 }
 
-void PianoRoll::hideHelpers()
+void PianoRoll::hideDragHelpers()
 {
     if (this->draggingHelper->isVisible())
     {
@@ -421,7 +421,7 @@ void PianoRoll::hideHelpers()
     }
 }
 
-void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
+void PianoRoll::moveDragHelpers(const float deltaBeat, const int deltaKey)
 {
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
     const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + this->firstBeat, 1.f);
@@ -443,9 +443,9 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 {
     if (oldEvent.isTypeOf(MidiEvent::Type::Note))
     {
-        const Note &note = static_cast<const Note &>(oldEvent);
-        const Note &newNote = static_cast<const Note &>(newEvent);
-        const auto track = newEvent.getSequence()->getTrack();
+        const auto &note = static_cast<const Note &>(oldEvent);
+        const auto &newNote = static_cast<const Note &>(newEvent);
+        const auto *track = newEvent.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -466,8 +466,8 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     }
     else if (oldEvent.isTypeOf(MidiEvent::Type::KeySignature))
     {
-        const KeySignatureEvent &oldKey = static_cast<const KeySignatureEvent &>(oldEvent);
-        const KeySignatureEvent &newKey = static_cast<const KeySignatureEvent &>(newEvent);
+        const auto &oldKey = static_cast<const KeySignatureEvent &>(oldEvent);
+        const auto &newKey = static_cast<const KeySignatureEvent &>(newEvent);
         if (oldKey.getRootKey() != newKey.getRootKey() ||
             !oldKey.getScale()->isEquivalentTo(newKey.getScale()))
         {
@@ -513,7 +513,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             // arpeggiators preview cannot work without that:
             if (isActive && !isCurrentlyDraggingNote)
             {
-                this->selection.addToSelection(component);
+                this->selectEvent(component, false);
             }
 
             if (this->addNewNoteMode && isActive)
@@ -539,7 +539,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
-        this->hideHelpers();
+        this->hideDragHelpers();
         this->hideAllGhostNotes(); // Avoids crash
 
         const Note &note = static_cast<const Note &>(event);
@@ -687,7 +687,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
 {
     this->selection.deselectAll();
 
-    this->hideHelpers();
+    this->hideDragHelpers();
     this->hideAllGhostNotes(); // Avoids crash
 
     for (int i = 0; i < track->getSequence()->size(); ++i)
@@ -695,7 +695,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
         const auto *event = track->getSequence()->getUnchecked(i);
         if (event->isTypeOf(MidiEvent::Type::KeySignature))
         {
-            const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
+            const auto &key = static_cast<const KeySignatureEvent &>(*event);
             this->removeBackgroundCacheFor(key);
         }
     }
@@ -807,7 +807,7 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
             (component->getNote().getBeat() + component->getClip().getBeat()) >= startBeat &&
             (component->getNote().getBeat() + component->getClip().getBeat()) < endBeat)
         {
-            this->selection.addToSelection(component);
+            this->selectEvent(component, false);
         }
     }
 }
@@ -1046,9 +1046,13 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleSoloClips:
         PatternOperations::toggleSoloClip(this->activeClip);
         break;
+        // fixme: these toggle settings should be persisted in a config
+        // and both roll and sidebar(s) should listen to the config changes?
     case CommandIDs::ToggleScalesHighlighting:
-        this->scaleHighlightingEnabled = !this->scaleHighlightingEnabled;
-        this->repaint();
+        App::Config().getUiFlags()->setScalesHighlightingEnabled(!this->scalesHighlightingEnabled);
+        break;
+    case CommandIDs::ToggleNoteNameGuides:
+        App::Config().getUiFlags()->setNoteNameGuidesEnabled(!this->noteNameGuidesEnabled);
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         if (this->selection.getNumSelected() >= 2)
@@ -1192,7 +1196,7 @@ void PianoRoll::paint(Graphics &g)
     const int y = this->viewport.getViewPositionY();
     const int h = this->viewport.getViewHeight();
 
-    for (int nextKeyIdx = 0; this->scaleHighlightingEnabled && nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
+    for (int nextKeyIdx = 0; this->scalesHighlightingEnabled && nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
     {
         const auto *key = static_cast<KeySignatureEvent *>(keysSequence->getUnchecked(nextKeyIdx));
         const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
@@ -1685,4 +1689,21 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
     default:
         break;
     }
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void PianoRoll::onScalesHighlightingFlagChanged(bool enabled)
+{
+    this->scalesHighlightingEnabled = enabled;
+    this->repaint();
+}
+
+void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
+{
+    this->noteNameGuidesEnabled = enabled;
+    // todo update guides
+    this->repaint();
 }
