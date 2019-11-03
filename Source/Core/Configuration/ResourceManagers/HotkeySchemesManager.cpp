@@ -29,7 +29,9 @@ HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
 {
     if (App::Config().containsProperty(Serialization::Config::activeHotkeyScheme))
     {
-        App::Config().load(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
+        HotkeyScheme::Ptr hs(new HotkeyScheme());
+        App::Config().load(hs.get(), Serialization::Config::activeHotkeyScheme);
+        return hs;
     }
 
     if (const auto firstScheme = this->getAll().getFirst())

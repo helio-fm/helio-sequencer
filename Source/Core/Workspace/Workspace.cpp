@@ -328,18 +328,8 @@ bool Workspace::autoload()
         App::Config().load(this, Serialization::Config::activeWorkspace);
         return true;
     }
-    else
-    {
-        // Try loading a legacy workspace file, if found one:
-        const auto legacyFile(DocumentHelpers::getDocumentSlot("Workspace.helio"));
-        if (legacyFile.existsAsFile())
-        {
-            const auto legacyState = DocumentHelpers::load(legacyFile);
-            this->deserialize(legacyState);
-            return true;
-        }
-    }
 
+    jassertfalse;
     return false;
 }
 
@@ -490,9 +480,10 @@ void Workspace::deserialize(const SerializedData &data)
     this->audioCore->deserialize(root);
     this->pluginManager->deserialize(root);
 
-    auto treeRootNodeLegacy = root.getChildWithName(Core::treeNode);
-    auto treeRootNode = root.getChildWithName(Core::treeRoot);
-    this->treeRoot->deserialize(treeRootNode.isValid() ? treeRootNode : treeRootNodeLegacy);
+    const auto treeRootNode = root.getChildWithName(Core::treeRoot);
+    jassert(treeRootNode.isValid());
+
+    this->treeRoot->deserialize(treeRootNode);
     
     bool foundActiveNode = false;
     const auto treeStateNode = root.getChildWithName(Core::treeState);
