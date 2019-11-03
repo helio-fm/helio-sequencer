@@ -37,6 +37,7 @@
 #include "TimeSignatureMenu.h"
 #include "SequencerOperations.h"
 #include "NotesTuningPanel.h"
+#include "MenuPanel.h"
 #include "MainLayout.h"
 #include "SequencerLayout.h"
 #include "Workspace.h"
@@ -117,13 +118,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->setSize(48, 640);
 
     //[Constructor]
-    for (int i = 0; i < this->getNumChildComponents(); ++i)
-    {
-        Component *c = this->getChildComponent(i);
-        c->setFocusContainer(false);
-        c->setWantsKeyboardFocus(false);
-        c->setMouseClickGrabsKeyboardFocus(false);
-    }
+    MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 
     this->setSize(SEQUENCER_SIDEBAR_WIDTH, 640);
 

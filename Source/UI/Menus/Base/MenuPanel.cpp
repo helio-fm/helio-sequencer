@@ -37,11 +37,7 @@ MenuPanel::MenuPanel() :
     this->listBox.reset(new ListBox());
     this->addAndMakeVisible(this->listBox.get());
 
-    for (int i = 0; i < this->getNumChildComponents(); ++i)
-    {
-        Component *c = this->getChildComponent(i);
-        c->setMouseClickGrabsKeyboardFocus(false);
-    }
+    MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 }
 
 void MenuPanel::resized()

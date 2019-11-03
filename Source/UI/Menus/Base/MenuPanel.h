@@ -25,6 +25,22 @@
 #   define COMMAND_PANEL_BUTTON_HEIGHT (40)
 #endif
 
+class MenuPanelUtils final
+{
+public:
+
+    static void disableKeyboardFocusForAllChildren(Component *panel)
+    {
+        for (int i = 0; i < panel->getNumChildComponents(); ++i)
+        {
+            Component *c = panel->getChildComponent(i);
+            c->setFocusContainer(false);
+            c->setWantsKeyboardFocus(false);
+            c->setMouseClickGrabsKeyboardFocus(false);
+        }
+    }
+};
+
 class MenuPanel : public Component, private ListBoxModel
 {
 public:

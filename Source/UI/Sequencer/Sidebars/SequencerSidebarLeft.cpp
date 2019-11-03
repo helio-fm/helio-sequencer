@@ -31,6 +31,7 @@
 #include "SpectrogramAudioMonitorComponent.h"
 #include "ModeIndicatorComponent.h"
 #include "MenuItemComponent.h"
+#include "MenuPanel.h"
 #include "ProjectNode.h"
 #include "HelioTheme.h"
 #include "IconComponent.h"
@@ -100,6 +101,7 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->setSize(48, 640);
 
     //[Constructor]
+    MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
     //[/Constructor]
 }
 
