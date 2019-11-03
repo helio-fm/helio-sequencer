@@ -263,6 +263,8 @@ private:
     int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
     friend class ThemeSettingsItem; // to be able to call renderRowsPattern
     
+    bool scaleHighlightingEnabled = true;
+
 private:
     
     OwnedArray<NoteComponent> ghostNotes;

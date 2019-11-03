@@ -221,8 +221,6 @@ namespace I18n
         static const Identifier tuplet7 = "menu::tuplet::7";
         static const Identifier tuplet8 = "menu::tuplet::8";
         static const Identifier tuplet9 = "menu::tuplet::9";
-        static const Identifier muteToggle = "menu::mute::toggle";
-        static const Identifier soloToggle = "menu::solo::toggle";
         static const Identifier mute = "menu::mute";
         static const Identifier solo = "menu::solo";
         static const Identifier unmute = "menu::unmute";
@@ -328,5 +326,11 @@ namespace I18n
 
         static const Identifier chordSuggestion = "chord::suggestion";
         static const Identifier chordGenerate = "chord::compile";
+
+        static const Identifier toggleMute = "toggle::mute";
+        static const Identifier toggleSolo = "toggle::solo";
+
+        static const Identifier toggleScalesHighlighting = "toggle::scaleshl";
+        static const Identifier toggleNoteNameGuides = "toggle::noteguides";
     }
 } // namespace Translations

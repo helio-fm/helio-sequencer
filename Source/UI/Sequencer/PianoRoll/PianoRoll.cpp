@@ -78,20 +78,19 @@
         for (const auto &child : (*_c.second.get()))
 
 
-PianoRoll::PianoRoll(ProjectNode &parentProject,
-    Viewport &viewportRef,
-    WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector)
+PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<AudioMonitor> clippingDetector) :
+    HybridRoll(project, viewport, clippingDetector)
 {
+    this->setComponentID(ComponentIDs::pianoRollId);
+
     this->defaultHighlighting = makeUnique<HighlightingScheme>(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
 
-    this->selectedNotesMenuManager.reset(new PianoRollSelectionMenuManager(&this->selection, this->project));
+    this->selectedNotesMenuManager = makeUnique<PianoRollSelectionMenuManager>(&this->selection, this->project);
 
-    this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
 
-    this->draggingHelper.reset(new HelperRectangleHorizontal());
+    this->draggingHelper = makeUnique<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
 
     this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
@@ -1047,6 +1046,10 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleSoloClips:
         PatternOperations::toggleSoloClip(this->activeClip);
         break;
+    case CommandIDs::ToggleScalesHighlighting:
+        this->scaleHighlightingEnabled = !this->scaleHighlightingEnabled;
+        this->repaint();
+        break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         if (this->selection.getNumSelected() >= 2)
         {
@@ -1189,7 +1192,7 @@ void PianoRoll::paint(Graphics &g)
     const int y = this->viewport.getViewPositionY();
     const int h = this->viewport.getViewHeight();
 
-    for (int nextKeyIdx = 0; nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
+    for (int nextKeyIdx = 0; this->scaleHighlightingEnabled && nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
     {
         const auto *key = static_cast<KeySignatureEvent *>(keysSequence->getUnchecked(nextKeyIdx));
         const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);

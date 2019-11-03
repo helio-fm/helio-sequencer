@@ -32,7 +32,6 @@ namespace CommandIDs
         HideCallout                     = 0x0008,
         DismissModalDialogAsync         = 0x0009,
 
-        // AnnotationsCommandPanel
         AddAnnotation                   = 0x0101,
         AddTimeSignature                = 0x0103,
         AddKeySignature                 = 0x0105,
@@ -61,7 +60,6 @@ namespace CommandIDs
         Tuplet8                         = 0x1507,
         Tuplet9                         = 0x1508,
 
-        // MidiRollCommandPanel
         DeleteEvents                    = 0x1601,
         CopyEvents                      = 0x1602,
         CutEvents                       = 0x1603,
@@ -79,6 +77,8 @@ namespace CommandIDs
 
         ToggleMuteClips                 = 0x1630,
         ToggleSoloClips                 = 0x1631,
+        ToggleScalesHighlighting        = 0x1632,
+        ToggleNoteNameGuides            = 0x1633,
 
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,
@@ -98,7 +98,6 @@ namespace CommandIDs
 
         PopupMenuDismiss                = 0x2015,
 
-        // ProjectMenu
         RenderToFLAC                    = 0x2030,
         RenderToWAV                     = 0x2031,
 

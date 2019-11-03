@@ -185,6 +185,10 @@
         { "receiver": "PianoRoll", "command": "ShowScalePanel", "key": "S" },
         { "receiver": "PianoRoll", "command": "ShowChordPanel", "key": "C" },
 
+        // Other toggles
+        { "receiver": "PianoRoll", "command": "ToggleScalesHighlighting", "key": "H" },
+        { "receiver": "PianoRoll", "command": "ToggleNoteNameGuides", "key": "G" },
+
         // ------------------------------------
         // Pattern roll's specific
 
