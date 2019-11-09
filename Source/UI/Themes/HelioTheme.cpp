@@ -218,8 +218,8 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         // Try to guess the right max number of lines depending on label height and font height:
         const int maxLines = int(float(label.getHeight()) / font.getHeight());
 
-        // slight alpha 0.5 .. 1 for fonts of size 12 .. 20 (todo remove that?)
-        const float alpha = 0.5f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 12.f) / 2.f;
+        // slight alpha 0.75 .. 1 for fonts of size 12 .. 20 (todo remove that?)
+        const float alpha = 0.75f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 12.f) / 4.f;
 
         // using label.findColour, not findDefaultColour, as it is actually overridden in some places:
         const Colour colour = label.findColour(Label::textColourId).withMultipliedAlpha(alpha);
@@ -868,6 +868,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::trackHeaderBorder, Colours::white.withAlpha(0.075f));
     this->setColour(ColourIDs::Roll::noteFill, s->getTextColour().interpolatedWith(Colours::white, 0.5f));
+    this->setColour(ColourIDs::Roll::noteNameFill, s->getBlackKeyColour().darker(0.35f).withAlpha(0.9f));
+    this->setColour(ColourIDs::Roll::noteNameBorder, s->getTextColour().withAlpha(0.5f));
+    this->setColour(ColourIDs::Roll::noteNameShadow, s->getTextColour().withAlpha(0.2f));
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));

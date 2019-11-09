@@ -99,14 +99,19 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
     this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
 
+    this->reloadRollContent();
+
+    // todo move this into a separate component,
+    // which subscribes on lasso selection changes,
+    // and displays guides for the selected notes:
     for (int i = 0; i < 128; ++i)
     {
         auto *guide = new NoteNameGuide(i);
         this->noteNameGuides.add(guide);
         this->addChildComponent(guide);
     }
+    this->updateNoteNameGuides();
 
-    this->reloadRollContent();
     this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
 }
 
@@ -1727,11 +1732,10 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
 
 void PianoRoll::updateNoteNameGuides()
 {
-    // todo
-
     for (auto *c : this->noteNameGuides)
     {
-        c->setVisible(false);
+        c->toFront(false);
+        c->setVisible(this->noteNameGuidesEnabled ? c->isRootKey() : false);
     }
 }
 
@@ -1749,11 +1753,7 @@ void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
 {
     this->noteNameGuidesEnabled = enabled;
 
-    for (auto *c : this->noteNameGuides)
-    {
-        c->setVisible(enabled ? c->isRootKey() : false);
-    }
-
+    this->updateNoteNameGuides();
     this->updateChildrenBounds();
     this->repaint();
 }

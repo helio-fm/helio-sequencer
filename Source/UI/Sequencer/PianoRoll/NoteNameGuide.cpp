@@ -27,12 +27,15 @@
 //[/MiscUserDefs]
 
 NoteNameGuide::NoteNameGuide(int noteNumber)
-    : noteNumber(noteNumber)
+    : noteNumber(noteNumber),
+      fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),
+      borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),
+      shadowColour(findDefaultColour(ColourIDs::Roll::noteNameShadow))
 {
     this->noteNameLabel.reset(new Label(String(),
-                                         TRANS("C#")));
+                                         String()));
     this->addAndMakeVisible(noteNameLabel.get());
-    this->noteNameLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->noteNameLabel->setFont(Font (16.00f, Font::plain));
     noteNameLabel->setJustificationType(Justification::centredLeft);
     noteNameLabel->setEditable(false, false, false);
 
@@ -67,6 +70,7 @@ NoteNameGuide::~NoteNameGuide()
 void NoteNameGuide::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
     {
@@ -97,7 +101,17 @@ void NoteNameGuide::paint (Graphics& g)
     }
 
     //[UserPaint] Add your own custom painting code here..
-    //g.fillRect(0, 1, 3, this->getHeight() - 1);
+#endif
+
+    g.setColour(this->shadowColour);
+    g.fillPath(this->internalPath1);
+
+    g.setColour(this->fillColour);
+    g.fillPath(this->internalPath2);
+
+    g.setColour(this->borderColour);
+    g.fillRect(0, 1, 2, this->getHeight() - 1);
+
     //[/UserPaint]
 }
 
@@ -106,7 +120,7 @@ void NoteNameGuide::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    noteNameLabel->setBounds(2, (getHeight() / 2) - (21 / 2), 40, 21);
+    noteNameLabel->setBounds(1, (getHeight() / 2) - (21 / 2), 40, 21);
     internalPath1.clear();
     internalPath1.startNewSubPath (3.0f, 1.0f);
     internalPath1.lineTo (27.0f, 1.0f);
@@ -135,16 +149,16 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="NoteNameGuide" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="int noteNumber"
-                 variableInitialisers="noteNumber(noteNumber)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="48" initialHeight="32">
+                 variableInitialisers="noteNumber(noteNumber),&#10;fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),&#10;borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),&#10;shadowColour(findDefaultColour(ColourIDs::Roll::noteNameShadow))"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="48" initialHeight="32">
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill="solid: 44ffffff" hasStroke="0" nonZeroWinding="1">s 3 1 l 27 1 l 37 0R l 3 0R x</PATH>
     <PATH pos="0 0 100 100" fill="solid: c1000000" hasStroke="0" nonZeroWinding="1">s 0 1 l 26 1 l 36 0R l 0 0R x</PATH>
     <RECT pos="0 1 2 1M" fill="solid: 88ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="bfd24d0a91476b7" memberName="noteNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="2 0.5Cc 40 21" labelText="C#" editableSingleClick="0"
+         explicitFocusOrder="0" pos="1 0.5Cc 40 21" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

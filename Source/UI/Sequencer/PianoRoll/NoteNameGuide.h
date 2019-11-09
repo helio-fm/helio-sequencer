@@ -49,6 +49,10 @@ private:
 
     //[UserVariables]
     const int noteNumber;
+
+    const Colour fillColour;
+    const Colour borderColour;
+    const Colour shadowColour;
     //[/UserVariables]
 
     UniquePointer<Label> noteNameLabel;
