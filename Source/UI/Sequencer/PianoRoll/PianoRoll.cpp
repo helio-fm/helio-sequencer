@@ -33,6 +33,7 @@
 #include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
+#include "NoteNameGuide.h"
 #include "HelperRectangle.h"
 #include "HybridRollHeader.h"
 #include "KnifeToolHelper.h"
@@ -94,6 +95,16 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->addChildComponent(this->draggingHelper.get());
 
     this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
+
+    this->noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
+    this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
+
+    for (int i = 0; i < 128; ++i)
+    {
+        auto *guide = new NoteNameGuide(i);
+        this->noteNameGuides.add(guide);
+        this->addChildComponent(guide);
+    }
 
     this->reloadRollContent();
     this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
@@ -324,7 +335,7 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     jassert(minKey >= 0);
     jassert(maxKey >= minKey);
 
-    const int margin = 2;
+    const int margin = 2; // hardcoded margins suck
     const float numKeysToFit = float(maxKey - minKey + margin);
     const float heightToFit = float(this->viewport.getViewHeight());
     this->setRowHeight(int(heightToFit / numKeysToFit));
@@ -1397,6 +1408,16 @@ void PianoRoll::updateChildrenBounds()
     }
 #endif
 
+    if (this->noteNameGuidesEnabled)
+    {
+        for (auto *c : this->noteNameGuides)
+        {
+            c->setBounds(this->viewport.getViewPositionX(),
+                this->getYPositionByKey(c->getNoteNumber()),
+                c->getWidth(), this->getRowHeight());
+        }
+    }
+
     HybridRoll::updateChildrenBounds();
 }
 
@@ -1413,6 +1434,15 @@ void PianoRoll::updateChildrenPositions()
         this->noteResizerRight->updateTopPosition();
     }
 #endif
+
+    if (this->noteNameGuidesEnabled)
+    {
+        for (auto *c : this->noteNameGuides)
+        {
+            c->setTopLeftPosition(this->viewport.getViewPositionX(),
+                this->getYPositionByKey(c->getNoteNumber()));
+        }
+    }
 
     HybridRoll::updateChildrenPositions();
 }
@@ -1692,6 +1722,20 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
 }
 
 //===----------------------------------------------------------------------===//
+// Note name guides
+//===----------------------------------------------------------------------===//
+
+void PianoRoll::updateNoteNameGuides()
+{
+    // todo
+
+    for (auto *c : this->noteNameGuides)
+    {
+        c->setVisible(false);
+    }
+}
+
+//===----------------------------------------------------------------------===//
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
@@ -1704,6 +1748,12 @@ void PianoRoll::onScalesHighlightingFlagChanged(bool enabled)
 void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
 {
     this->noteNameGuidesEnabled = enabled;
-    // todo update guides
+
+    for (auto *c : this->noteNameGuides)
+    {
+        c->setVisible(enabled ? c->isRootKey() : false);
+    }
+
+    this->updateChildrenBounds();
     this->repaint();
 }

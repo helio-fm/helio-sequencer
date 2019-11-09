@@ -218,6 +218,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         // Try to guess the right max number of lines depending on label height and font height:
         const int maxLines = int(float(label.getHeight()) / font.getHeight());
 
+        // slight alpha 0.5 .. 1 for fonts of size 12 .. 20 (todo remove that?)
         const float alpha = 0.5f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 12.f) / 2.f;
 
         // using label.findColour, not findDefaultColour, as it is actually overridden in some places:
@@ -242,6 +243,10 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
             1.0);
 
         glyphs.createPath(textPath);
+
+        // todo play with outlines for some cached labels?
+        //g.setColour(findDefaultColour(Label::outlineColourId));
+        //g.strokePath(textPath, PathStrokeType(2.0f));
 
         g.setColour(colour);
         g.fillPath(textPath);

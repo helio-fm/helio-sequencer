@@ -34,6 +34,7 @@ class PianoRollSelectionMenuManager;
 class CommandPaletteChordConstructor;
 class HelperRectangle;
 class KnifeToolHelper;
+class NoteNameGuide;
 class Scale;
 
 #include "CommandPaletteModel.h"
@@ -271,6 +272,12 @@ private:
     friend class ThemeSettingsItem; // to be able to call renderRowsPattern
     
     bool scalesHighlightingEnabled = true;
+
+private:
+
+    void updateNoteNameGuides();
+    OwnedArray<NoteNameGuide> noteNameGuides;
+    bool noteNameGuidesEnabled = false;
 
 private:
     

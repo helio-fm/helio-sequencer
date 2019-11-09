@@ -1211,6 +1211,9 @@
             <FILE id="nkGHj5" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp"/>
             <FILE id="o50CGJ" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.h"/>
+            <FILE id="qCskLq" name="NoteNameGuide.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteNameGuide.cpp"/>
+            <FILE id="cNnEKg" name="NoteNameGuide.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteNameGuide.h"/>
             <FILE id="yO3CxI" name="NoteResizerLeft.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.cpp"/>
             <FILE id="ZWUEkO" name="NoteResizerLeft.h" compile="0" resource="0"
