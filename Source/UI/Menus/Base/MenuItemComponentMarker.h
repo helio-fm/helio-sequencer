@@ -33,13 +33,15 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void parentHierarchyChanged() override;
-    void parentSizeChanged() override;
 
 
 private:
 
     //[UserVariables]
+    int x = 0;
+    int y = 0;
+    int w = 0;
+    int h = 0;
     //[/UserVariables]
 
 

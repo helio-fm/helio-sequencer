@@ -336,6 +336,18 @@ void MenuItemComponent::resized()
     submenuMarker->setBounds(getWidth() - 4 - 20, (getHeight() / 2) - (20 / 2), 20, 20);
     //[UserResized] Add your own custom resize handling here..
 
+    if (this->toggleMarker != nullptr)
+    {
+        // this one might be still animating, and may screw up the bounds if not updated:
+        if (this->toggleMarker->getLocalBounds() != this->getLocalBounds() &&
+            this->animator.isAnimating(this->toggleMarker.get()))
+        {
+            this->animator.animateComponent(this->toggleMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
+        }
+
+        this->toggleMarker->setBounds(this->getLocalBounds());
+    }
+
     if (!this->icon.isValid() && this->description->image.isValid())
     {
         this->icon = this->description->image;
@@ -500,11 +512,14 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
 
     if (desc->isToggled && !this->description->isToggled)
     {
-        this->toggleMarker.reset(new MenuItemComponentMarker());
+        this->toggleMarker = makeUnique<MenuItemComponentMarker>();
+        this->toggleMarker->setBounds(this->getLocalBounds());
+
 #if ! HAS_OPENGL_BUG
         this->toggleMarker->setAlpha(0.f);
-        this->animator.animateComponent(this->toggleMarker.get(), this->getLocalBounds(), 1.f, 200, false, 0.0, 0.0);
+        this->animator.animateComponent(this->toggleMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
 #endif
+
         this->addAndMakeVisible(this->toggleMarker.get());
     }
     else if (!desc->isToggled && (this->toggleMarker != nullptr))
