@@ -98,9 +98,9 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
 
-    this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setRowHeight(SEQUENCER_SIDEBAR_ROW_HEIGHT);
+    this->listBox->setModel(this);
 
     // This one doesn't change too frequently:
     //this->totalTime->setBufferedToImage(true);

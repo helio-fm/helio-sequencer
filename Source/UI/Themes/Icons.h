@@ -116,6 +116,8 @@ public:
         pageDown,
         timelineNext,
         timelinePrevious,
+        paint,
+        tag,
 
         menu,
         submenu,
