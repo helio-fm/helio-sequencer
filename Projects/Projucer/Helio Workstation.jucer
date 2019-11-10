@@ -427,7 +427,6 @@
           <FILE id="hRViZu" name="DocumentHelpers.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/DocumentHelpers.h"/>
           <FILE id="NeGEM2" name="DocumentOwner.h" compile="0" resource="0" file="../../Source/Core/Serialization/DocumentOwner.h"/>
-          <FILE id="L4Vl4B" name="ResourceCache.h" compile="0" resource="0" file="../../Source/Core/Serialization/ResourceCache.h"/>
           <FILE id="nw4n10" name="Serializable.h" compile="0" resource="0" file="../../Source/Core/Serialization/Serializable.h"/>
           <FILE id="EGpzhA" name="SerializationKeys.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/SerializationKeys.h"/>
