@@ -33,7 +33,7 @@
 #include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
-#include "NoteNameGuide.h"
+#include "NoteNameGuidesBar.h"
 #include "HelperRectangle.h"
 #include "HybridRollHeader.h"
 #include "KnifeToolHelper.h"
@@ -96,21 +96,14 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 
     this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
 
-    this->noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
-    this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
-
     this->reloadRollContent();
 
-    // todo move this into a separate component,
-    // which subscribes on lasso selection changes,
-    // and displays guides for the selected notes:
-    for (int i = 0; i < 128; ++i)
-    {
-        auto *guide = new NoteNameGuide(i);
-        this->noteNameGuides.add(guide);
-        this->addChildComponent(guide);
-    }
-    this->updateNoteNameGuides();
+    this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
+    const bool noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
+
+    this->noteNameGuides = makeUnique<NoteNameGuidesBar>(*this);
+    this->addChildComponent(this->noteNameGuides.get());
+    this->noteNameGuides->setVisible(noteNameGuidesEnabled);
 
     this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
 }
@@ -479,6 +472,13 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
                 this->triggerBatchRepaintFor(component);
             }
         }
+
+        // FIXME someday please: this is a kind of a really nasty hack,
+        // and instead the guides bar should subscribe on project changes on its own,
+        // and keep track of selected notes and change visible note guides positions,
+        // BUT I'm too lazy, and this is also way less code and should work a bit faster,
+        // so here we go. Yet this particular line is a piece of shit:
+        this->noteNameGuides->syncWithSelection(&this->selection);
     }
     else if (oldEvent.isTypeOf(MidiEvent::Type::KeySignature))
     {
@@ -803,6 +803,8 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
     {
         this->repaint(this->viewport.getViewArea());
     }
+
+    this->noteNameGuides->toFront(false);
 }
 
 //===----------------------------------------------------------------------===//
@@ -1068,7 +1070,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         App::Config().getUiFlags()->setScalesHighlightingEnabled(!this->scalesHighlightingEnabled);
         break;
     case CommandIDs::ToggleNoteNameGuides:
-        App::Config().getUiFlags()->setNoteNameGuidesEnabled(!this->noteNameGuidesEnabled);
+        App::Config().getUiFlags()->setNoteNameGuidesEnabled(!this->noteNameGuides->isVisible());
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         if (this->selection.getNumSelected() >= 2)
@@ -1413,14 +1415,9 @@ void PianoRoll::updateChildrenBounds()
     }
 #endif
 
-    if (this->noteNameGuidesEnabled)
+    if (this->noteNameGuides->isVisible())
     {
-        for (auto *c : this->noteNameGuides)
-        {
-            c->setBounds(this->viewport.getViewPositionX(),
-                this->getYPositionByKey(c->getNoteNumber()),
-                c->getWidth(), this->getRowHeight());
-        }
+        this->noteNameGuides->updateBounds();
     }
 
     HybridRoll::updateChildrenBounds();
@@ -1440,13 +1437,9 @@ void PianoRoll::updateChildrenPositions()
     }
 #endif
 
-    if (this->noteNameGuidesEnabled)
+    if (this->noteNameGuides->isVisible())
     {
-        for (auto *c : this->noteNameGuides)
-        {
-            c->setTopLeftPosition(this->viewport.getViewPositionX(),
-                this->getYPositionByKey(c->getNoteNumber()));
-        }
+        this->noteNameGuides->updatePosition();
     }
 
     HybridRoll::updateChildrenPositions();
@@ -1727,19 +1720,6 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
 }
 
 //===----------------------------------------------------------------------===//
-// Note name guides
-//===----------------------------------------------------------------------===//
-
-void PianoRoll::updateNoteNameGuides()
-{
-    for (auto *c : this->noteNameGuides)
-    {
-        c->toFront(false);
-        c->setVisible(this->noteNameGuidesEnabled ? c->isRootKey() : false);
-    }
-}
-
-//===----------------------------------------------------------------------===//
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
@@ -1751,9 +1731,8 @@ void PianoRoll::onScalesHighlightingFlagChanged(bool enabled)
 
 void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
 {
-    this->noteNameGuidesEnabled = enabled;
-
-    this->updateNoteNameGuides();
+    this->noteNameGuides->setVisible(enabled);
+    this->noteNameGuides->toFront(false);
     this->updateChildrenBounds();
     this->repaint();
 }

@@ -50,7 +50,7 @@ NoteNameGuide::NoteNameGuide(int noteNumber)
     this->noteNameLabel->setText(MidiMessage::getMidiNoteName(noteNumber, true, true, 3), dontSendNotification);
     //[/UserPreSize]
 
-    this->setSize(48, 32);
+    this->setSize(34, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -120,18 +120,18 @@ void NoteNameGuide::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    noteNameLabel->setBounds(1, (getHeight() / 2) - (21 / 2), 40, 21);
+    noteNameLabel->setBounds(1, (getHeight() / 2) - (21 / 2), 38, 21);
     internalPath1.clear();
     internalPath1.startNewSubPath (3.0f, 1.0f);
-    internalPath1.lineTo (27.0f, 1.0f);
-    internalPath1.lineTo (37.0f, static_cast<float> (getHeight()));
+    internalPath1.lineTo (29.0f, 1.0f);
+    internalPath1.lineTo (33.0f, static_cast<float> (getHeight()));
     internalPath1.lineTo (3.0f, static_cast<float> (getHeight()));
     internalPath1.closeSubPath();
 
     internalPath2.clear();
     internalPath2.startNewSubPath (0.0f, 1.0f);
-    internalPath2.lineTo (26.0f, 1.0f);
-    internalPath2.lineTo (36.0f, static_cast<float> (getHeight()));
+    internalPath2.lineTo (28.0f, 1.0f);
+    internalPath2.lineTo (32.0f, static_cast<float> (getHeight()));
     internalPath2.lineTo (0.0f, static_cast<float> (getHeight()));
     internalPath2.closeSubPath();
 
@@ -151,14 +151,14 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component" constructorParams="int noteNumber"
                  variableInitialisers="noteNumber(noteNumber),&#10;fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),&#10;borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),&#10;shadowColour(findDefaultColour(ColourIDs::Roll::noteNameShadow))"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="48" initialHeight="32">
+                 fixedSize="1" initialWidth="34" initialHeight="32">
   <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: 44ffffff" hasStroke="0" nonZeroWinding="1">s 3 1 l 27 1 l 37 0R l 3 0R x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: c1000000" hasStroke="0" nonZeroWinding="1">s 0 1 l 26 1 l 36 0R l 0 0R x</PATH>
+    <PATH pos="0 0 100 100" fill="solid: 44ffffff" hasStroke="0" nonZeroWinding="1">s 3 1 l 29 1 l 33 0R l 3 0R x</PATH>
+    <PATH pos="0 0 100 100" fill="solid: c1000000" hasStroke="0" nonZeroWinding="1">s 0 1 l 28 1 l 32 0R l 0 0R x</PATH>
     <RECT pos="0 1 2 1M" fill="solid: 88ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="bfd24d0a91476b7" memberName="noteNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="1 0.5Cc 40 21" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="1 0.5Cc 38 21" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

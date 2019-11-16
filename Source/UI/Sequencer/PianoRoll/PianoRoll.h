@@ -34,7 +34,7 @@ class PianoRollSelectionMenuManager;
 class CommandPaletteChordConstructor;
 class HelperRectangle;
 class KnifeToolHelper;
-class NoteNameGuide;
+class NoteNameGuidesBar;
 class Scale;
 
 #include "CommandPaletteModel.h"
@@ -275,9 +275,8 @@ private:
 
 private:
 
-    void updateNoteNameGuides();
-    OwnedArray<NoteNameGuide> noteNameGuides;
-    bool noteNameGuidesEnabled = false;
+    friend class NoteNameGuidesBar;
+    UniquePointer<NoteNameGuidesBar> noteNameGuides;
 
 private:
     

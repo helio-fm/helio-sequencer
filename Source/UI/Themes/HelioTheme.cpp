@@ -863,14 +863,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::snapLine, s->getBarColour().withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::headerFill, s->getPrimaryGradientColourB().darker(0.025f));
     this->setColour(ColourIDs::Roll::headerSnaps, s->getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.37f));
-    this->setColour(ColourIDs::Roll::playhead, s->getLassoBorderColour().withAlpha(0.6f));
+    this->setColour(ColourIDs::Roll::playhead, s->getLassoBorderColour().withAlpha(0.65f));
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::trackHeaderBorder, Colours::white.withAlpha(0.075f));
     this->setColour(ColourIDs::Roll::noteFill, s->getTextColour().interpolatedWith(Colours::white, 0.5f));
     this->setColour(ColourIDs::Roll::noteNameFill, s->getBlackKeyColour().darker(0.35f).withAlpha(0.9f));
     this->setColour(ColourIDs::Roll::noteNameBorder, s->getTextColour().withAlpha(0.5f));
-    this->setColour(ColourIDs::Roll::noteNameShadow, s->getTextColour().withAlpha(0.2f));
+    this->setColour(ColourIDs::Roll::noteNameShadow, s->getTextColour().withAlpha(0.25f));
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
