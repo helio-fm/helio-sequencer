@@ -50,7 +50,7 @@ StageComponent::StageComponent(VersionControl &versionControl)
     this->titleLabel.reset(new Label(String(),
                                       TRANS(I18n::VCS::stageCaption)));
     this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->titleLabel->setFont(Font (21.00f, Font::plain));
     titleLabel->setJustificationType(Justification::centred);
     titleLabel->setEditable(false, false, false);
 

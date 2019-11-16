@@ -31,7 +31,7 @@ UserProfileComponent::UserProfileComponent()
     this->nameLabel.reset(new Label(String(),
                                      String()));
     this->addAndMakeVisible(nameLabel.get());
-    this->nameLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->nameLabel->setFont(Font (18.00f, Font::plain));
     nameLabel->setJustificationType(Justification::centredLeft);
     nameLabel->setEditable(false, false, false);
 

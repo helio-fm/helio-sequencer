@@ -37,7 +37,7 @@ UpdatesInfoComponent::UpdatesInfoComponent()
     this->label.reset(new Label(String(),
                                  TRANS(I18n::Common::updateProceed)));
     this->addAndMakeVisible(label.get());
-    this->label->setFont(Font (17.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->label->setFont(Font (17.00f, Font::plain));
     label->setJustificationType(Justification::centredBottom);
     label->setEditable(false, false, false);
 

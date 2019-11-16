@@ -74,14 +74,14 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->totalTime.reset(new Label(String(),
                                      String()));
     this->addAndMakeVisible(totalTime.get());
-    this->totalTime->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->totalTime->setFont(Font (14.00f, Font::plain));
     totalTime->setJustificationType(Justification::centred);
     totalTime->setEditable(false, false, false);
 
     this->currentTime.reset(new Label(String(),
                                        String()));
     this->addAndMakeVisible(currentTime.get());
-    this->currentTime->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->currentTime->setFont(Font (16.00f, Font::plain));
     currentTime->setJustificationType(Justification::centred);
     currentTime->setEditable(false, false, false);
 

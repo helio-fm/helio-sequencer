@@ -57,7 +57,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->projectTitleEditor.reset(new Label(String(),
                                               String()));
     this->addAndMakeVisible(projectTitleEditor.get());
-    this->projectTitleEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->projectTitleEditor->setFont(Font (37.00f, Font::plain));
     projectTitleEditor->setJustificationType(Justification::topLeft);
     projectTitleEditor->setEditable(true, true, false);
     this->projectTitleEditor->addListener(this);
@@ -65,14 +65,14 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->projectTitleLabel.reset(new Label(String(),
                                              String()));
     this->addAndMakeVisible(projectTitleLabel.get());
-    this->projectTitleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->projectTitleLabel->setFont(Font (21.00f, Font::plain));
     projectTitleLabel->setJustificationType(Justification::topRight);
     projectTitleLabel->setEditable(false, false, false);
 
     this->authorEditor.reset(new Label(String(),
                                         String()));
     this->addAndMakeVisible(authorEditor.get());
-    this->authorEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->authorEditor->setFont(Font (37.00f, Font::plain));
     authorEditor->setJustificationType(Justification::topLeft);
     authorEditor->setEditable(true, true, false);
     this->authorEditor->addListener(this);
@@ -80,14 +80,14 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->authorLabel.reset(new Label(String(),
                                        String()));
     this->addAndMakeVisible(authorLabel.get());
-    this->authorLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->authorLabel->setFont(Font (21.00f, Font::plain));
     authorLabel->setJustificationType(Justification::topRight);
     authorLabel->setEditable(false, false, false);
 
     this->descriptionEditor.reset(new Label(String(),
                                              String()));
     this->addAndMakeVisible(descriptionEditor.get());
-    this->descriptionEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->descriptionEditor->setFont(Font (37.00f, Font::plain));
     descriptionEditor->setJustificationType(Justification::topLeft);
     descriptionEditor->setEditable(true, true, false);
     this->descriptionEditor->addListener(this);
@@ -95,77 +95,77 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->descriptionLabel.reset(new Label(String(),
                                             String()));
     this->addAndMakeVisible(descriptionLabel.get());
-    this->descriptionLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->descriptionLabel->setFont(Font (21.00f, Font::plain));
     descriptionLabel->setJustificationType(Justification::topRight);
     descriptionLabel->setEditable(false, false, false);
 
     this->locationLabel.reset(new Label(String(),
                                          String()));
     this->addAndMakeVisible(locationLabel.get());
-    this->locationLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->locationLabel->setFont(Font (16.00f, Font::plain));
     locationLabel->setJustificationType(Justification::topRight);
     locationLabel->setEditable(false, false, true);
 
     this->locationText.reset(new Label(String(),
                                         String()));
     this->addAndMakeVisible(locationText.get());
-    this->locationText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->locationText->setFont(Font (16.00f, Font::plain));
     locationText->setJustificationType(Justification::topLeft);
     locationText->setEditable(false, false, true);
 
     this->contentStatsLabel.reset(new Label(String(),
                                              String()));
     this->addAndMakeVisible(contentStatsLabel.get());
-    this->contentStatsLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->contentStatsLabel->setFont(Font (16.00f, Font::plain));
     contentStatsLabel->setJustificationType(Justification::topRight);
     contentStatsLabel->setEditable(false, false, true);
 
     this->contentStatsText.reset(new Label(String(),
                                             String()));
     this->addAndMakeVisible(contentStatsText.get());
-    this->contentStatsText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->contentStatsText->setFont(Font (16.00f, Font::plain));
     contentStatsText->setJustificationType(Justification::topLeft);
     contentStatsText->setEditable(false, false, true);
 
     this->vcsStatsLabel.reset(new Label(String(),
                                          String()));
     this->addAndMakeVisible(vcsStatsLabel.get());
-    this->vcsStatsLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->vcsStatsLabel->setFont(Font (16.00f, Font::plain));
     vcsStatsLabel->setJustificationType(Justification::topRight);
     vcsStatsLabel->setEditable(false, false, true);
 
     this->vcsStatsText.reset(new Label(String(),
                                         String()));
     this->addAndMakeVisible(vcsStatsText.get());
-    this->vcsStatsText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->vcsStatsText->setFont(Font (16.00f, Font::plain));
     vcsStatsText->setJustificationType(Justification::topLeft);
     vcsStatsText->setEditable(false, false, true);
 
     this->startTimeLabel.reset(new Label(String(),
                                           String()));
     this->addAndMakeVisible(startTimeLabel.get());
-    this->startTimeLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->startTimeLabel->setFont(Font (16.00f, Font::plain));
     startTimeLabel->setJustificationType(Justification::topRight);
     startTimeLabel->setEditable(false, false, true);
 
     this->startTimeText.reset(new Label(String(),
                                          String()));
     this->addAndMakeVisible(startTimeText.get());
-    this->startTimeText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->startTimeText->setFont(Font (16.00f, Font::plain));
     startTimeText->setJustificationType(Justification::topLeft);
     startTimeText->setEditable(false, false, true);
 
     this->lengthLabel.reset(new Label(String(),
                                        String()));
     this->addAndMakeVisible(lengthLabel.get());
-    this->lengthLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->lengthLabel->setFont(Font (16.00f, Font::plain));
     lengthLabel->setJustificationType(Justification::topRight);
     lengthLabel->setEditable(false, false, true);
 
     this->lengthText.reset(new Label(String(),
                                       String()));
     this->addAndMakeVisible(lengthText.get());
-    this->lengthText->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->lengthText->setFont(Font (16.00f, Font::plain));
     lengthText->setJustificationType(Justification::topLeft);
     lengthText->setEditable(false, false, true);
 
@@ -180,14 +180,14 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->licenseLabel.reset(new Label(String(),
                                         String()));
     this->addAndMakeVisible(licenseLabel.get());
-    this->licenseLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->licenseLabel->setFont(Font (21.00f, Font::plain));
     licenseLabel->setJustificationType(Justification::topRight);
     licenseLabel->setEditable(false, false, true);
 
     this->licenseEditor.reset(new Label(String(),
                                          String()));
     this->addAndMakeVisible(licenseEditor.get());
-    this->licenseEditor->setFont(Font (37.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->licenseEditor->setFont(Font (37.00f, Font::plain));
     licenseEditor->setJustificationType(Justification::topLeft);
     licenseEditor->setEditable(true, true, false);
     this->licenseEditor->addListener(this);

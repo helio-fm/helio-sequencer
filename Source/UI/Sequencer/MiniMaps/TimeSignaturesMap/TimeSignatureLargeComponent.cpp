@@ -39,7 +39,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->numeratorLabel.reset(new Label(String(),
                                           String()));
     this->addAndMakeVisible(numeratorLabel.get());
-    this->numeratorLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->numeratorLabel->setFont(Font (18.00f, Font::plain));
     numeratorLabel->setJustificationType(Justification::centredLeft);
     numeratorLabel->setEditable(false, false, false);
 
@@ -48,7 +48,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->denominatorLabel.reset(new Label(String(),
                                             String()));
     this->addAndMakeVisible(denominatorLabel.get());
-    this->denominatorLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->denominatorLabel->setFont(Font (18.00f, Font::plain));
     denominatorLabel->setJustificationType(Justification::centredLeft);
     denominatorLabel->setEditable(false, false, false);
 

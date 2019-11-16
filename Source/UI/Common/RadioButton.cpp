@@ -67,7 +67,7 @@ RadioButton::RadioButton(const String &text, Colour c, RadioButtonListener *list
     this->label.reset(new Label(String(),
                                  String()));
     this->addAndMakeVisible(label.get());
-    this->label->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->label->setFont(Font (18.00f, Font::plain));
     label->setJustificationType(Justification::centred);
     label->setEditable(false, false, false);
 

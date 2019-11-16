@@ -228,14 +228,14 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
     this->subLabel.reset(new Label(String(),
                                     String()));
     this->addAndMakeVisible(subLabel.get());
-    this->subLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->subLabel->setFont(Font (21.00f, Font::plain));
     subLabel->setJustificationType(Justification::centredRight);
     subLabel->setEditable(false, false, false);
 
     this->textLabel.reset(new Label(String(),
                                      String()));
     this->addAndMakeVisible(textLabel.get());
-    this->textLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->textLabel->setFont(Font (21.00f, Font::plain));
     textLabel->setJustificationType(Justification::centredLeft);
     textLabel->setEditable(false, false, false);
 

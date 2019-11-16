@@ -34,14 +34,14 @@ TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox)
     this->localeLabel.reset(new Label(String(),
                                        String()));
     this->addAndMakeVisible(localeLabel.get());
-    this->localeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->localeLabel->setFont(Font (21.00f, Font::plain));
     localeLabel->setJustificationType(Justification::centredLeft);
     localeLabel->setEditable(false, false, false);
 
     this->idLabel.reset(new Label(String(),
                                    String()));
     this->addAndMakeVisible(idLabel.get());
-    this->idLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->idLabel->setFont(Font (21.00f, Font::plain));
     idLabel->setJustificationType(Justification::centredRight);
     idLabel->setEditable(false, false, false);
 

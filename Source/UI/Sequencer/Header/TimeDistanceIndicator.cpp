@@ -30,7 +30,7 @@ TimeDistanceIndicator::TimeDistanceIndicator()
     this->timeLabel.reset(new Label(String(),
                                      String()));
     this->addAndMakeVisible(timeLabel.get());
-    this->timeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->timeLabel->setFont(Font (21.00f, Font::plain));
     timeLabel->setJustificationType(Justification::centred);
     timeLabel->setEditable(false, false, false);
 

@@ -32,7 +32,7 @@ KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesProjectMap &
     this->signatureLabel.reset(new Label(String(),
                                           String()));
     this->addAndMakeVisible(signatureLabel.get());
-    this->signatureLabel->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->signatureLabel->setFont(Font (14.00f, Font::plain));
     signatureLabel->setJustificationType(Justification::centredLeft);
     signatureLabel->setEditable(false, false, false);
 

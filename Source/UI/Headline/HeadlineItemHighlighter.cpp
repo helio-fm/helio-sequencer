@@ -33,7 +33,7 @@ HeadlineItemHighlighter::HeadlineItemHighlighter(WeakReference<HeadlineItemDataS
     this->titleLabel.reset(new Label(String(),
                                       String()));
     this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->titleLabel->setFont(Font (18.00f, Font::plain));
     titleLabel->setJustificationType(Justification::centredLeft);
     titleLabel->setEditable(false, false, false);
 

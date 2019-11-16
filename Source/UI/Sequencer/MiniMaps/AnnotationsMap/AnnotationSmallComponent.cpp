@@ -34,7 +34,7 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap &parent
     this->annotationLabel.reset(new Label(String(),
                                            String()));
     this->addAndMakeVisible(annotationLabel.get());
-    this->annotationLabel->setFont(Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->annotationLabel->setFont(Font (12.00f, Font::plain));
     annotationLabel->setJustificationType(Justification::centredLeft);
     annotationLabel->setEditable(false, false, false);
 

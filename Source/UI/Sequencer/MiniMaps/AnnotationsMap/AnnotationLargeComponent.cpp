@@ -71,7 +71,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.setFont (Font (16.00f, Font::plain));
         g.drawText (text, x, y, width, height,
                     Justification::centredLeft, true);
     }

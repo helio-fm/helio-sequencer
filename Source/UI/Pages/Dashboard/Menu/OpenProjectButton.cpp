@@ -35,7 +35,7 @@ OpenProjectButton::OpenProjectButton()
     this->openProjectLabel.reset(new Label(String(),
                                             TRANS(I18n::Menu::workspaceProjectOpen)));
     this->addAndMakeVisible(openProjectLabel.get());
-    this->openProjectLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->openProjectLabel->setFont(Font (18.00f, Font::plain));
     openProjectLabel->setJustificationType(Justification::centredLeft);
     openProjectLabel->setEditable(false, false, false);
 
