@@ -291,9 +291,13 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
         for (const auto &chordKey : chord->getScaleKeys())
         {
             const auto inScaleKey = scaleFnOffset + chordKey.getInScaleKey();
-            const auto finalRootOffset = periodOffset + this->root - this->clip.getKey();
-            const int key = jlimit(0, 128, finalRootOffset + this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
-            const Note note(this->sequence.get(), key, this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
+            const auto finalRootOffset = periodOffset + this->root;
+            const int key = jlimit(0, 128, finalRootOffset +
+                this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
+
+            const Note note(this->sequence.get(), key,
+                this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
+
             this->sequence->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
                 key + this->clip.getKey(), CHORD_BUILDER_NOTE_VELOCITY));
