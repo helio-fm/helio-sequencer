@@ -593,6 +593,13 @@
 			path = ../../Source/UI/Popups/PopupButton.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		1487F8A45C3333EAAC32EB9D = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.svg;
+			name = tag.svg;
+			path = ../../Resources/Icons/tag.svg;
+			sourceTree = "SOURCE_ROOT";
+		};
 		14B77969B98D5967EDEC52FB = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -1412,6 +1419,13 @@
 			path = ../../Source/UI/Pages/Settings/SyncSettingsItem.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		3809A36D90902A9273435747 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = NoteNameGuidesBar.h;
+			path = ../../Source/UI/Sequencer/PianoRoll/NoteNameGuidesBar.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		382996763328611DFAF4CA4A = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -1907,6 +1921,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = CutPointMark.h;
 			path = ../../Source/UI/Sequencer/Helpers/CutPointMark.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		4C9D91B54D2117EF95AF9F9B = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = UserInterfaceFlags.cpp;
+			path = ../../Source/Core/Configuration/UserInterfaceFlags.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		4CB4193955D65B4696E93440 = {
@@ -2644,6 +2665,13 @@
 			path = ../../Source/Core/Network/Models/AuthSessionDto.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		6F085F7134ECBFD7F473FBD2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UserInterfaceFlags.h;
+			path = ../../Source/Core/Configuration/UserInterfaceFlags.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		6F0AA28913D0FB1EBA8573D9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -2887,6 +2915,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = BackendRequest.cpp;
 			path = ../../Source/Core/Network/Requests/BackendRequest.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		7C784F14A816C5D73546FF5C = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = NoteNameGuidesBar.cpp;
+			path = ../../Source/UI/Sequencer/PianoRoll/NoteNameGuidesBar.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		7C802E23EA11E9485FEE4463 = {
@@ -3666,13 +3701,6 @@
 			path = ../../Source/Core/Midi/Sequences/Events/AutomationEvent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		9BC4947AA737FCCA8F48DC32 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ResourceCache.h;
-			path = ../../Source/Core/Serialization/ResourceCache.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		9BCD653A822231B2ACDE833F = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3918,6 +3946,13 @@
 			path = "../../ThirdParty/JUCE/modules/juce_gui_basics";
 			sourceTree = "SOURCE_ROOT";
 		};
+		A99324E45072F2524CF0CCAC = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = NoteNameGuide.cpp;
+			path = ../../Source/UI/Sequencer/PianoRoll/NoteNameGuide.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		A9F877910D9E419147CDB608 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3930,6 +3965,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = PanelBackgroundC.cpp;
 			path = ../../Source/UI/Themes/PanelBackgroundC.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		AA3A0D0BC6BD316898B1A6CE = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = NoteNameGuide.h;
+			path = ../../Source/UI/Sequencer/PianoRoll/NoteNameGuide.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		AAD9462C6D53C62127E8295B = {
@@ -5633,6 +5675,13 @@
 			path = ../../Resources/Icons/local.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		F91C8DFB4DC445BA20315BE3 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.svg;
+			name = paint.svg;
+			path = ../../Resources/Icons/paint.svg;
+			sourceTree = "SOURCE_ROOT";
+		};
 		F9CE211DEEE1E9F878A2D024 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5836,6 +5885,7 @@
 				7320F2DA76039762ED764BDA,
 				95409C31DDE8245FD494CD85,
 				AF5B9D3AA339A5C55251E164,
+				F91C8DFB4DC445BA20315BE3,
 				C3F0F6FA0ECF6EB4DAD589AF,
 				AF30E0C21EDB351EA71A892C,
 				44F7CB213970E0330D5288C6,
@@ -5864,6 +5914,7 @@
 				6E8240BD097F42C29EF6E848,
 				B5D2E725780A502D80365193,
 				C5537DF96DC3B26DC771E190,
+				1487F8A45C3333EAAC32EB9D,
 				8E7E3506C82E656F0F8652E0,
 				5DD8150F11BD610045A26615,
 				6B48E3B924CE29815DE0C148,
@@ -6022,6 +6073,8 @@
 				AEADD488F627830AFB606FA6,
 				7E4D8D88F04CA7CC8312361B,
 				AD5B34FA5B6A3A46994CB01C,
+				4C9D91B54D2117EF95AF9F9B,
+				6F085F7134ECBFD7F473FBD2,
 			);
 			name = Configuration;
 			sourceTree = "<group>";
@@ -6184,7 +6237,6 @@
 				D686D53A144CB643496CFEC7,
 				B488F0177C2A263D348666ED,
 				1BEBBF53DFFC88A738C02FD8,
-				9BC4947AA737FCCA8F48DC32,
 				A797173F1F4C165290FA4E1E,
 				AC92C2151D0DEC9448D88839,
 				37B8948AEF397A704A256C54,
@@ -6852,6 +6904,10 @@
 			children = (
 				220F852BD955D68095E99674,
 				AF75EE47FEFC2A343CFC147B,
+				A99324E45072F2524CF0CCAC,
+				AA3A0D0BC6BD316898B1A6CE,
+				7C784F14A816C5D73546FF5C,
+				3809A36D90902A9273435747,
 				F308BBBCEBFCA75701C6766A,
 				4904543A8478B7797EBCCA3D,
 				C3E0B73861D00982E28C63D0,

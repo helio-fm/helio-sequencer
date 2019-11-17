@@ -673,6 +673,9 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Config.cpp">
       <Filter>Helio\Source\Core\Configuration</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\UserInterfaceFlags.cpp">
+      <Filter>Helio\Source\Core\Configuration</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteActionsProvider.cpp">
       <Filter>Helio\Source\Core\CommandPalette</Filter>
     </ClCompile>
@@ -1337,6 +1340,12 @@
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuide.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuidesBar.cpp">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.cpp">
@@ -3411,6 +3420,9 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Config.h">
       <Filter>Helio\Source\Core\Configuration</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\UserInterfaceFlags.h">
+      <Filter>Helio\Source\Core\Configuration</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteModel.h">
       <Filter>Helio\Source\Core\CommandPalette</Filter>
     </ClInclude>
@@ -3568,9 +3580,6 @@
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\DocumentOwner.h">
-      <Filter>Helio\Source\Core\Serialization</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Serialization\ResourceCache.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\Serializable.h">
@@ -4231,6 +4240,12 @@
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuide.h">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuidesBar.h">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.h">
@@ -6563,6 +6578,9 @@
     <None Include="..\..\Resources\Icons\pageUp.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\paint.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\paste.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -6645,6 +6663,9 @@
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\success.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\tag.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\timelineNext.svg">
