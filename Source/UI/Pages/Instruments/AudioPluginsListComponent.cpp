@@ -62,7 +62,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->titleLabel.reset(new Label(String(),
                                       String()));
     this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->titleLabel->setFont(Font (21.00f, Font::plain));
     titleLabel->setJustificationType(Justification::centred);
     titleLabel->setEditable(false, false, false);
 

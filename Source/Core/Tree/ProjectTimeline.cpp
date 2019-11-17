@@ -293,13 +293,12 @@ void ProjectTimeline::dispatchChangeTrackProperties()
 
 void ProjectTimeline::dispatchChangeTrackBeatRange()
 {
-    jassertfalse; // should never be called
+    this->project.broadcastChangeProjectBeatRange();
 }
 
 void ProjectTimeline::dispatchChangeProjectBeatRange()
 {
     this->project.broadcastChangeProjectBeatRange();
-
 }
 
 // Timeline sequences are the case where there are no patterns and clips

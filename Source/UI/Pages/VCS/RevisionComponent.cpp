@@ -47,14 +47,14 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
     this->revisionDescription.reset(new Label(String(),
                                                String()));
     this->addAndMakeVisible(revisionDescription.get());
-    this->revisionDescription->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->revisionDescription->setFont(Font (18.00f, Font::plain));
     revisionDescription->setJustificationType(Justification::centred);
     revisionDescription->setEditable(false, false, false);
 
     this->revisionDate.reset(new Label(String(),
                                         String()));
     this->addAndMakeVisible(revisionDate.get());
-    this->revisionDate->setFont(Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->revisionDate->setFont(Font (12.00f, Font::plain));
     revisionDate->setJustificationType(Justification::centred);
     revisionDate->setEditable(false, false, false);
 

@@ -78,14 +78,14 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
     this->itemLabel.reset(new Label(String(),
                                      String()));
     this->addAndMakeVisible(itemLabel.get());
-    this->itemLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->itemLabel->setFont(Font (18.00f, Font::plain));
     itemLabel->setJustificationType(Justification::centredLeft);
     itemLabel->setEditable(false, false, false);
 
     this->deltasLabel.reset(new Label(String(),
                                        String()));
     this->addAndMakeVisible(deltasLabel.get());
-    this->deltasLabel->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->deltasLabel->setFont(Font (16.00f, Font::plain));
     deltasLabel->setJustificationType(Justification::topLeft);
     deltasLabel->setEditable(false, false, false);
 

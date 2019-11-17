@@ -34,6 +34,7 @@ class PianoRollSelectionMenuManager;
 class CommandPaletteChordConstructor;
 class HelperRectangle;
 class KnifeToolHelper;
+class NoteNameGuidesBar;
 class Scale;
 
 #include "CommandPaletteModel.h"
@@ -104,9 +105,9 @@ public:
     // Drag helpers
     //===------------------------------------------------------------------===//
 
-    void showHelpers();
-    void hideHelpers();
-    void moveHelpers(const float deltaBeat, const int deltaKey);
+    void showDragHelpers();
+    void hideDragHelpers();
+    void moveDragHelpers(const float deltaBeat, const int deltaKey);
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -128,6 +129,13 @@ public:
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewEditableScope(MidiTrack *const track,
         const Clip &clip, bool shouldFocus) override;
+
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onScalesHighlightingFlagChanged(bool enabled) override;
+    void onNoteNameGuidesFlagChanged(bool enabled) override;
 
     //===------------------------------------------------------------------===//
     // LassoSource
@@ -263,6 +271,13 @@ private:
     int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
     friend class ThemeSettingsItem; // to be able to call renderRowsPattern
     
+    bool scalesHighlightingEnabled = true;
+
+private:
+
+    friend class NoteNameGuidesBar;
+    UniquePointer<NoteNameGuidesBar> noteNameGuides;
+
 private:
     
     OwnedArray<NoteComponent> ghostNotes;

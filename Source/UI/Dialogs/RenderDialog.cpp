@@ -46,7 +46,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->filenameEditor.reset(new Label(String(),
                                           String()));
     this->addAndMakeVisible(filenameEditor.get());
-    this->filenameEditor->setFont(Font (28.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->filenameEditor->setFont(Font (28.00f, Font::plain));
     filenameEditor->setJustificationType(Justification::topLeft);
     filenameEditor->setEditable(true, true, false);
     this->filenameEditor->addListener(this);
@@ -54,7 +54,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->filenameLabel.reset(new Label(String(),
                                          String()));
     this->addAndMakeVisible(filenameLabel.get());
-    this->filenameLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->filenameLabel->setFont(Font (21.00f, Font::plain));
     filenameLabel->setJustificationType(Justification::centredLeft);
     filenameLabel->setEditable(false, false, false);
 
@@ -79,7 +79,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->pathEditor.reset(new Label(String(),
                                       String()));
     this->addAndMakeVisible(pathEditor.get());
-    this->pathEditor->setFont(Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->pathEditor->setFont(Font (16.00f, Font::plain));
     pathEditor->setJustificationType(Justification::centredLeft);
     pathEditor->setEditable(false, false, false);
 

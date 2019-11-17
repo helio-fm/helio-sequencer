@@ -45,7 +45,7 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     this->revisionTreeLabel.reset(new Label(String(),
                                              TRANS(I18n::VCS::historyCaption)));
     this->addAndMakeVisible(revisionTreeLabel.get());
-    this->revisionTreeLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->revisionTreeLabel->setFont(Font (21.00f, Font::plain));
     revisionTreeLabel->setJustificationType(Justification::centred);
     revisionTreeLabel->setEditable(false, false, false);
 

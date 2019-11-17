@@ -39,7 +39,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message, co
     this->messageLabel.reset(new Label(String(),
                                         String()));
     this->addAndMakeVisible(messageLabel.get());
-    this->messageLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->messageLabel->setFont(Font (21.00f, Font::plain));
     messageLabel->setJustificationType(Justification::centred);
     messageLabel->setEditable(false, false, false);
 

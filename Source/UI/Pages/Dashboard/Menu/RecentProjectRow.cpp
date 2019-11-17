@@ -53,14 +53,14 @@ RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox
     this->titleLabel.reset(new Label(String(),
                                       String()));
     this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->titleLabel->setFont(Font (18.00f, Font::plain));
     titleLabel->setJustificationType(Justification::centredRight);
     titleLabel->setEditable(false, false, false);
 
     this->dateLabel.reset(new Label(String(),
                                      String()));
     this->addAndMakeVisible(dateLabel.get());
-    this->dateLabel->setFont(Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->dateLabel->setFont(Font (12.00f, Font::plain));
     dateLabel->setJustificationType(Justification::centredRight);
     dateLabel->setEditable(false, false, false);
 

@@ -177,6 +177,7 @@ namespace Serialization
         static const Identifier activeWorkspace = "activeWorkspace";
         static const Identifier activeColourScheme = "activeColourScheme";
         static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
+        static const Identifier activeUiFlags = "activeUiFlags";
         static const Identifier currentLocale = "currentLocale";
 
         static const Identifier lastShownPageId = "lastShownPageId";
@@ -185,6 +186,7 @@ namespace Serialization
         static const Identifier lastUsedFont = "lastUsedFont";
         static const Identifier lastSearch = "lastSearch";
 
+        // obsolete, to be removed in future versions (moved to global ui flags):
         static const Identifier nativeTitleBar = "nativeTitleBar";
         static const Identifier openGLState = "openGL";
         static const Identifier enabledState = "enabled";
@@ -219,6 +221,15 @@ namespace Serialization
 
         static const Identifier positionX = "positionX";
         static const Identifier positionY = "positionY";
+
+        namespace Flags
+        {
+            static const Identifier uiFlags = "uiFlags";
+            static const Identifier nativeTitleBar = "nativeTitleBar";
+            static const Identifier openGlRenderer = "openGlRenderer";
+            static const Identifier noteNameGuides = "noteNameGuides";
+            static const Identifier scalesHighlighting = "scalesHighlighting";
+        }
 
         namespace Hotkeys
         {

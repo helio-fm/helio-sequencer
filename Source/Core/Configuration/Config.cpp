@@ -42,6 +42,8 @@ Config::Config(int timeoutToSaveMs) :
     this->resources[scripts] = this->scriptsManager.get();
     this->resources[scales] = this->scalesManager.get();
     this->resources[chords] = this->chordsManager.get();
+
+    this->uiFlags = makeUnique<UserInterfaceFlags>();
 }
 
 Config::~Config()
@@ -87,10 +89,12 @@ void Config::initResources()
         }
     }
 
-    for (auto manager : this->resources)
+    for (auto &manager : this->resources)
     {
         manager.second->reloadResources();
     }
+
+    this->load(this->uiFlags.get(), Serialization::Config::activeUiFlags);
 }
 
 void Config::save(const Serializable *serializable, const Identifier &key)
@@ -248,4 +252,9 @@ ColourSchemesManager *Config::getColourSchemes() const noexcept
 HotkeySchemesManager *Config::getHotkeySchemes() const noexcept
 {
     return this->hotkeySchemesManager.get();
+}
+
+UserInterfaceFlags *Config::getUiFlags() const noexcept
+{
+    return this->uiFlags.get();
 }

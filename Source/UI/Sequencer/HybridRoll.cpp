@@ -62,6 +62,7 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"
+#include "Config.h"
 
 #include "SerializationKeys.h"
 #include "ColourIDs.h"
@@ -161,10 +162,14 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     {
         this->clippingDetector->addClippingListener(this);
     }
+
+    App::Config().getUiFlags()->addListener(this);
 }
 
 HybridRoll::~HybridRoll()
 {
+    App::Config().getUiFlags()->removeListener(this);
+
     if (this->clippingDetector != nullptr)
     {
         this->clippingDetector->removeClippingListener(this);
@@ -479,7 +484,9 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
     jassert(minBeat >= this->getFirstBeat());
     jassert(maxBeat <= this->getLastBeat());
 
-    const float margin = 4.f;
+    this->stopFollowingPlayhead();
+
+    const float margin = 4.f; // hardcoded margins suck
     const float widthToFit = float(this->viewport.getViewWidth());
     const float numBeatsToFit = maxBeat - minBeat + margin;
     this->setBeatWidth(widthToFit / numBeatsToFit);

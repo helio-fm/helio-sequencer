@@ -33,6 +33,7 @@
 #include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
+#include "NoteNameGuidesBar.h"
 #include "HelperRectangle.h"
 #include "HybridRollHeader.h"
 #include "KnifeToolHelper.h"
@@ -78,25 +79,32 @@
         for (const auto &child : (*_c.second.get()))
 
 
-PianoRoll::PianoRoll(ProjectNode &parentProject,
-    Viewport &viewportRef,
-    WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector)
+PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<AudioMonitor> clippingDetector) :
+    HybridRoll(project, viewport, clippingDetector)
 {
+    this->setComponentID(ComponentIDs::pianoRollId);
+
     this->defaultHighlighting = makeUnique<HighlightingScheme>(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
 
-    this->selectedNotesMenuManager.reset(new PianoRollSelectionMenuManager(&this->selection, this->project));
+    this->selectedNotesMenuManager = makeUnique<PianoRollSelectionMenuManager>(&this->selection, this->project);
 
-    this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
 
-    this->draggingHelper.reset(new HelperRectangleHorizontal());
+    this->draggingHelper = makeUnique<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
 
     this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
 
     this->reloadRollContent();
+
+    this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
+    const bool noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
+
+    this->noteNameGuides = makeUnique<NoteNameGuidesBar>(*this);
+    this->addChildComponent(this->noteNameGuides.get());
+    this->noteNameGuides->setVisible(noteNameGuidesEnabled);
+
     this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
 }
 
@@ -202,7 +210,7 @@ void PianoRoll::selectAll()
         auto *childComponent = e.second.get();
         if (childComponent->belongsTo(this->activeTrack, activeClip))
         {
-            this->selection.addToSelection(childComponent);
+            this->selectEvent(childComponent, false);
         }
     }
 }
@@ -325,7 +333,7 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     jassert(minKey >= 0);
     jassert(maxKey >= minKey);
 
-    const int margin = 2;
+    const int margin = 2; // hardcoded margins suck
     const float numKeysToFit = float(maxKey - minKey + margin);
     const float heightToFit = float(this->viewport.getViewHeight());
     this->setRowHeight(int(heightToFit / numKeysToFit));
@@ -403,18 +411,18 @@ int PianoRoll::getYPositionByKey(int targetKey) const
 // Drag helpers
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::showHelpers()
+void PianoRoll::showDragHelpers()
 {
     if (!this->draggingHelper->isVisible())
     {
         this->selection.needsToCalculateSelectionBounds();
-        this->moveHelpers(0.f, 0);
+        this->moveDragHelpers(0.f, 0);
         this->draggingHelper->setAlpha(1.f);
         this->draggingHelper->setVisible(true);
     }
 }
 
-void PianoRoll::hideHelpers()
+void PianoRoll::hideDragHelpers()
 {
     if (this->draggingHelper->isVisible())
     {
@@ -422,7 +430,7 @@ void PianoRoll::hideHelpers()
     }
 }
 
-void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
+void PianoRoll::moveDragHelpers(const float deltaBeat, const int deltaKey)
 {
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
     const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + this->firstBeat, 1.f);
@@ -444,9 +452,9 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 {
     if (oldEvent.isTypeOf(MidiEvent::Type::Note))
     {
-        const Note &note = static_cast<const Note &>(oldEvent);
-        const Note &newNote = static_cast<const Note &>(newEvent);
-        const auto track = newEvent.getSequence()->getTrack();
+        const auto &note = static_cast<const Note &>(oldEvent);
+        const auto &newNote = static_cast<const Note &>(newEvent);
+        const auto *track = newEvent.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -464,11 +472,18 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
                 this->triggerBatchRepaintFor(component);
             }
         }
+
+        // FIXME someday please: this is a kind of a really nasty hack,
+        // and instead the guides bar should subscribe on project changes on its own,
+        // and keep track of selected notes and change visible note guides positions,
+        // BUT I'm too lazy, and this is also way less code and should work a bit faster,
+        // so here we go. Yet this particular line is a piece of shit:
+        this->noteNameGuides->syncWithSelection(&this->selection);
     }
     else if (oldEvent.isTypeOf(MidiEvent::Type::KeySignature))
     {
-        const KeySignatureEvent &oldKey = static_cast<const KeySignatureEvent &>(oldEvent);
-        const KeySignatureEvent &newKey = static_cast<const KeySignatureEvent &>(newEvent);
+        const auto &oldKey = static_cast<const KeySignatureEvent &>(oldEvent);
+        const auto &newKey = static_cast<const KeySignatureEvent &>(newEvent);
         if (oldKey.getRootKey() != newKey.getRootKey() ||
             !oldKey.getScale()->isEquivalentTo(newKey.getScale()))
         {
@@ -514,7 +529,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             // arpeggiators preview cannot work without that:
             if (isActive && !isCurrentlyDraggingNote)
             {
-                this->selection.addToSelection(component);
+                this->selectEvent(component, false);
             }
 
             if (this->addNewNoteMode && isActive)
@@ -540,7 +555,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
-        this->hideHelpers();
+        this->hideDragHelpers();
         this->hideAllGhostNotes(); // Avoids crash
 
         const Note &note = static_cast<const Note &>(event);
@@ -688,7 +703,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
 {
     this->selection.deselectAll();
 
-    this->hideHelpers();
+    this->hideDragHelpers();
     this->hideAllGhostNotes(); // Avoids crash
 
     for (int i = 0; i < track->getSequence()->size(); ++i)
@@ -696,7 +711,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
         const auto *event = track->getSequence()->getUnchecked(i);
         if (event->isTypeOf(MidiEvent::Type::KeySignature))
         {
-            const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
+            const auto &key = static_cast<const KeySignatureEvent &>(*event);
             this->removeBackgroundCacheFor(key);
         }
     }
@@ -788,6 +803,8 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
     {
         this->repaint(this->viewport.getViewArea());
     }
+
+    this->noteNameGuides->toFront(false);
 }
 
 //===----------------------------------------------------------------------===//
@@ -808,7 +825,7 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
             (component->getNote().getBeat() + component->getClip().getBeat()) >= startBeat &&
             (component->getNote().getBeat() + component->getClip().getBeat()) < endBeat)
         {
-            this->selection.addToSelection(component);
+            this->selectEvent(component, false);
         }
     }
 }
@@ -1047,6 +1064,14 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleSoloClips:
         PatternOperations::toggleSoloClip(this->activeClip);
         break;
+        // fixme: these toggle settings should be persisted in a config
+        // and both roll and sidebar(s) should listen to the config changes?
+    case CommandIDs::ToggleScalesHighlighting:
+        App::Config().getUiFlags()->setScalesHighlightingEnabled(!this->scalesHighlightingEnabled);
+        break;
+    case CommandIDs::ToggleNoteNameGuides:
+        App::Config().getUiFlags()->setNoteNameGuidesEnabled(!this->noteNameGuides->isVisible());
+        break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         if (this->selection.getNumSelected() >= 2)
         {
@@ -1189,7 +1214,7 @@ void PianoRoll::paint(Graphics &g)
     const int y = this->viewport.getViewPositionY();
     const int h = this->viewport.getViewHeight();
 
-    for (int nextKeyIdx = 0; nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
+    for (int nextKeyIdx = 0; this->scalesHighlightingEnabled && nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
     {
         const auto *key = static_cast<KeySignatureEvent *>(keysSequence->getUnchecked(nextKeyIdx));
         const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
@@ -1390,6 +1415,11 @@ void PianoRoll::updateChildrenBounds()
     }
 #endif
 
+    if (this->noteNameGuides->isVisible())
+    {
+        this->noteNameGuides->updateBounds();
+    }
+
     HybridRoll::updateChildrenBounds();
 }
 
@@ -1406,6 +1436,11 @@ void PianoRoll::updateChildrenPositions()
         this->noteResizerRight->updateTopPosition();
     }
 #endif
+
+    if (this->noteNameGuides->isVisible())
+    {
+        this->noteNameGuides->updatePosition();
+    }
 
     HybridRoll::updateChildrenPositions();
 }
@@ -1682,4 +1717,22 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
     default:
         break;
     }
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void PianoRoll::onScalesHighlightingFlagChanged(bool enabled)
+{
+    this->scalesHighlightingEnabled = enabled;
+    this->repaint();
+}
+
+void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
+{
+    this->noteNameGuides->setVisible(enabled);
+    this->noteNameGuides->toFront(false);
+    this->updateChildrenBounds();
+    this->repaint();
 }

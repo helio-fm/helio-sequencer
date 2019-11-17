@@ -31,7 +31,7 @@ FineTuningValueIndicator::FineTuningValueIndicator(float initialValue, String su
     this->valueLabel.reset(new Label(String(),
                                       String()));
     this->addAndMakeVisible(valueLabel.get());
-    this->valueLabel->setFont(Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->valueLabel->setFont(Font (14.00f, Font::plain));
     valueLabel->setJustificationType(Justification::centred);
     valueLabel->setEditable(false, false, false);
 

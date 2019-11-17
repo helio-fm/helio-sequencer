@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Scale.h"
 #include "SerializationKeys.h"
-#include "ResourceCache.h"
 
 Scale::Scale() noexcept :
     basePeriod(CHROMATIC_SCALE_SIZE) {}

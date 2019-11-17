@@ -37,7 +37,7 @@ LoginButton::LoginButton()
     this->ctaLabel.reset(new Label(String(),
                                     TRANS(I18n::Dialog::authGithub)));
     this->addAndMakeVisible(ctaLabel.get());
-    this->ctaLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->ctaLabel->setFont(Font (18.00f, Font::plain));
     ctaLabel->setJustificationType(Justification::centredLeft);
     ctaLabel->setEditable(false, false, false);
 

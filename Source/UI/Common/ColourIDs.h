@@ -49,6 +49,9 @@ namespace ColourIDs
         static const int trackHeaderFill        = 0x2000113;
         static const int trackHeaderBorder      = 0x2000114;
         static const int noteFill               = 0x2000115;
+        static const int noteNameFill           = 0x2000116;
+        static const int noteNameBorder         = 0x2000117;
+        static const int noteNameShadow         = 0x2000118;
     }
 
     namespace Callout

@@ -21,14 +21,24 @@
 //[/Headers]
 
 
-class MenuItemComponentMarker final : public Component
+class NoteNameGuide final : public Component
 {
 public:
 
-    MenuItemComponentMarker();
-    ~MenuItemComponentMarker();
+    NoteNameGuide(int noteNumber);
+    ~NoteNameGuide();
 
     //[UserMethods]
+    inline int getNoteNumber() const noexcept
+    {
+        return this->noteNumber;
+    }
+
+    inline bool isRootKey() const noexcept
+    {
+        // fixme hard-coded period:
+        return this->noteNumber % 12 == 0;
+    }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -38,12 +48,18 @@ public:
 private:
 
     //[UserVariables]
-    int x = 0;
-    int y = 0;
-    int w = 0;
-    int h = 0;
+    const int noteNumber;
+
+    const Colour fillColour;
+    const Colour borderColour;
+    const Colour shadowColour;
     //[/UserVariables]
 
+    UniquePointer<Label> noteNameLabel;
+    Path internalPath1;
+    Path internalPath2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuItemComponentMarker)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoteNameGuide)
 };
+
+

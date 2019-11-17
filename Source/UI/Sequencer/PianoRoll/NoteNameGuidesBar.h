@@ -17,33 +17,27 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
+class PianoRoll;
+class NoteNameGuide;
+class Lasso;
 
-
-class MenuItemComponentMarker final : public Component
+class NoteNameGuidesBar final : public Component, private ChangeListener
 {
 public:
 
-    MenuItemComponentMarker();
-    ~MenuItemComponentMarker();
-
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
+    NoteNameGuidesBar(PianoRoll &roll);
+    ~NoteNameGuidesBar();
+    
+    void updatePosition();
+    void updateBounds();
+    void syncWithSelection(const Lasso *selection);
 
 private:
 
-    //[UserVariables]
-    int x = 0;
-    int y = 0;
-    int w = 0;
-    int h = 0;
-    //[/UserVariables]
+    PianoRoll &roll;
+    OwnedArray<NoteNameGuide> guides;
 
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuItemComponentMarker)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoteNameGuidesBar)
 };

@@ -30,6 +30,7 @@ MenuItemComponentMarker::MenuItemComponentMarker()
     //[UserPreSize]
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(64, 64);
@@ -51,6 +52,7 @@ MenuItemComponentMarker::~MenuItemComponentMarker()
 void MenuItemComponentMarker::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+    if (this->getWidth() > 64)
     //[/UserPrePaint]
 
     {
@@ -64,33 +66,31 @@ void MenuItemComponentMarker::paint (Graphics& g)
     }
 
     //[UserPaint] Add your own custom painting code here..
+    else
+    {
+        g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.125f));
+        g.fillRect(x, y - 1, w, 1);
+        g.fillRect(x, y + h, w, 1);
+        g.fillRect(x - 1, y, 1, h);
+        g.fillRect(x + w, y, 1, h);
+    }
     //[/UserPaint]
 }
 
 void MenuItemComponentMarker::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    const int minSize = jmin(this->getWidth(), this->getHeight());
+    const auto squareMarker = Rectangle<int>(0, 0, minSize, minSize)
+        .reduced(5).withCentre(this->getLocalBounds().getCentre());
+    this->x = squareMarker.getX();
+    this->y = squareMarker.getY();
+    this->w = squareMarker.getWidth();
+    this->h = squareMarker.getHeight();
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
-}
-
-void MenuItemComponentMarker::parentHierarchyChanged()
-{
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
-    if (this->getParentComponent() != nullptr)
-    {
-        this->setBounds(this->getParentComponent()->getLocalBounds());
-    }
-    //[/UserCode_parentHierarchyChanged]
-}
-
-void MenuItemComponentMarker::parentSizeChanged()
-{
-    //[UserCode_parentSizeChanged] -- Add your code here...
-    this->setBounds(this->getParentComponent()->getLocalBounds());
-    //[/UserCode_parentSizeChanged]
 }
 
 
@@ -106,10 +106,6 @@ BEGIN_JUCER_METADATA
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="64"
                  initialHeight="64">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="parentSizeChanged()"/>
-  </METHODS>
   <BACKGROUND backgroundColour="0">
     <RECT pos="0 0 0M 0M" fill="solid: bffffff" hasStroke="0"/>
   </BACKGROUND>
@@ -118,3 +114,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

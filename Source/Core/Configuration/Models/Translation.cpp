@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Translation.h"
 #include "SerializationKeys.h"
-#include "ResourceCache.h"
 
 String Translation::getName() const noexcept
 {

@@ -46,7 +46,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->currentNameLabel.reset(new Label(String(),
                                             String()));
     this->addAndMakeVisible(currentNameLabel.get());
-    this->currentNameLabel->setFont(Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->currentNameLabel->setFont(Font (21.00f, Font::plain));
     currentNameLabel->setJustificationType(Justification::centredLeft);
     currentNameLabel->setEditable(false, false, false);
 

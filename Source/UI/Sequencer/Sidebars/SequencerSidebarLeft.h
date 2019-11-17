@@ -28,6 +28,7 @@ class AudioMonitor;
 
 #include "ComponentFader.h"
 #include "ModeIndicatorComponent.h"
+#include "UserInterfaceFlags.h"
 #include "MenuPanel.h"
 //[/Headers]
 
@@ -37,6 +38,7 @@ class AudioMonitor;
 #include "../../Themes/SeparatorHorizontal.h"
 
 class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
+                                   protected UserInterfaceFlags::Listener,
                                    protected ListBoxModel
 {
 public:
@@ -70,17 +72,26 @@ private:
     UniquePointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
 
     //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onScalesHighlightingFlagChanged(bool enabled) override;
+    void onNoteNameGuidesFlagChanged(bool enabled) override;
+    bool scalesHighlightingEnabled = true;
+    bool noteNameGuidesEnabled = false;
+
+    //===------------------------------------------------------------------===//
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
-    enum MenuMode
+    enum class MenuMode : int8
     {
         None,
         PianoRollTools,
         PatternRollTools
     };
 
-    MenuMode menuMode = None;
+    MenuMode menuMode = MenuMode::None;
     MenuPanel::Menu menu;
     void recreateMenu();
 

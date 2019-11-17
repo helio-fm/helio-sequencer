@@ -146,6 +146,8 @@ void Icons::initBuiltInImages()
     setIconForKey(pageDown);
     setIconForKey(timelineNext);
     setIconForKey(timelinePrevious);
+    setIconForKey(paint);
+    setIconForKey(tag);
 
     setIconForKey(menu);
     setIconForKey(submenu);

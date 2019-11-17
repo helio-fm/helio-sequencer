@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "HotkeyScheme.h"
 #include "SerializationKeys.h"
-#include "ResourceCache.h"
 
 HotkeyScheme::HotkeyScheme(const HotkeyScheme &other)
 {

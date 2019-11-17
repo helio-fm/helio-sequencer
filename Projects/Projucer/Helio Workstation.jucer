@@ -71,6 +71,7 @@
               file="../../Resources/Icons/orchestraPit.svg"/>
         <FILE id="kQgJ4h" name="pageDown.svg" compile="0" resource="1" file="../../Resources/Icons/pageDown.svg"/>
         <FILE id="EfbAt9" name="pageUp.svg" compile="0" resource="1" file="../../Resources/Icons/pageUp.svg"/>
+        <FILE id="GLwMk5" name="paint.svg" compile="0" resource="1" file="../../Resources/Icons/paint.svg"/>
         <FILE id="VDY34K" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
         <FILE id="kykHC8" name="patterns.svg" compile="0" resource="1" file="../../Resources/Icons/patterns.svg"/>
         <FILE id="cC5z70" name="pause.svg" compile="0" resource="1" file="../../Resources/Icons/pause.svg"/>
@@ -102,6 +103,7 @@
               file="../../Resources/Icons/stretchRight.svg"/>
         <FILE id="WGyFGT" name="submenu.svg" compile="0" resource="1" file="../../Resources/Icons/submenu.svg"/>
         <FILE id="iXez1E" name="success.svg" compile="0" resource="1" file="../../Resources/Icons/success.svg"/>
+        <FILE id="Q7JAXC" name="tag.svg" compile="0" resource="1" file="../../Resources/Icons/tag.svg"/>
         <FILE id="xSJsDX" name="timelineNext.svg" compile="0" resource="1"
               file="../../Resources/Icons/timelineNext.svg"/>
         <FILE id="h32iIk" name="timelinePrevious.svg" compile="0" resource="1"
@@ -254,6 +256,10 @@
           </GROUP>
           <FILE id="Cw6lgG" name="Config.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Config.cpp"/>
           <FILE id="Qp21xL" name="Config.h" compile="0" resource="0" file="../../Source/Core/Configuration/Config.h"/>
+          <FILE id="v4cfur" name="UserInterfaceFlags.cpp" compile="1" resource="0"
+                file="../../Source/Core/Configuration/UserInterfaceFlags.cpp"/>
+          <FILE id="o1i9Zg" name="UserInterfaceFlags.h" compile="0" resource="0"
+                file="../../Source/Core/Configuration/UserInterfaceFlags.h"/>
         </GROUP>
         <GROUP id="{8CA92FD3-E483-6598-05E0-FD37B0C59010}" name="CommandPalette">
           <FILE id="PfHm4M" name="CommandPaletteModel.h" compile="0" resource="0"
@@ -421,7 +427,6 @@
           <FILE id="hRViZu" name="DocumentHelpers.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/DocumentHelpers.h"/>
           <FILE id="NeGEM2" name="DocumentOwner.h" compile="0" resource="0" file="../../Source/Core/Serialization/DocumentOwner.h"/>
-          <FILE id="L4Vl4B" name="ResourceCache.h" compile="0" resource="0" file="../../Source/Core/Serialization/ResourceCache.h"/>
           <FILE id="nw4n10" name="Serializable.h" compile="0" resource="0" file="../../Source/Core/Serialization/Serializable.h"/>
           <FILE id="EGpzhA" name="SerializationKeys.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/SerializationKeys.h"/>
@@ -1207,6 +1212,13 @@
             <FILE id="nkGHj5" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp"/>
             <FILE id="o50CGJ" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.h"/>
+            <FILE id="qCskLq" name="NoteNameGuide.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteNameGuide.cpp"/>
+            <FILE id="cNnEKg" name="NoteNameGuide.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteNameGuide.h"/>
+            <FILE id="BP5Gyx" name="NoteNameGuidesBar.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteNameGuidesBar.cpp"/>
+            <FILE id="n5dymU" name="NoteNameGuidesBar.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteNameGuidesBar.h"/>
             <FILE id="yO3CxI" name="NoteResizerLeft.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.cpp"/>
             <FILE id="ZWUEkO" name="NoteResizerLeft.h" compile="0" resource="0"

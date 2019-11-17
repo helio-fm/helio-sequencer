@@ -39,6 +39,7 @@
 #include "AudioCore.h"
 #include "ColourIDs.h"
 #include "CommandIDs.h"
+#include "Config.h"
 
 static inline constexpr int getAudioMonitorHeight()
 {
@@ -79,17 +80,20 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
 
+    this->noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
+    this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
+
     this->recreateMenu();
-    this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setRowHeight(SEQUENCER_SIDEBAR_ROW_HEIGHT);
+    this->listBox->setModel(this);
 
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
 
-    this->genericMonitor.reset(new GenericAudioMonitorComponent(nullptr));
-    this->waveformMonitor.reset(new WaveformAudioMonitorComponent(nullptr));
-    this->spectrogramMonitor.reset(new SpectrogramAudioMonitorComponent(nullptr));
+    this->genericMonitor = makeUnique<GenericAudioMonitorComponent>(nullptr);
+    this->waveformMonitor = makeUnique<WaveformAudioMonitorComponent>(nullptr);
+    this->spectrogramMonitor = makeUnique<SpectrogramAudioMonitorComponent>(nullptr);
 
     this->addChildComponent(this->genericMonitor.get());
     this->addChildComponent(this->waveformMonitor.get());
@@ -102,12 +106,16 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
 
     //[Constructor]
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
+
+    App::Config().getUiFlags()->addListener(this);
     //[/Constructor]
 }
 
 SequencerSidebarLeft::~SequencerSidebarLeft()
 {
     //[Destructor_pre]
+    App::Config().getUiFlags()->removeListener(this);
+
     this->spectrogramMonitor = nullptr;
     this->waveformMonitor = nullptr;
     this->genericMonitor = nullptr;
@@ -213,9 +221,9 @@ void SequencerSidebarLeft::setLinearMode()
     this->buttonFader.fadeIn(this->switchPatternModeButton.get(), 200);
     this->buttonFader.fadeOut(this->switchLinearModeButton.get(), 200);
 
-    if (this->menuMode != PianoRollTools)
+    if (this->menuMode != MenuMode::PianoRollTools)
     {
-        this->menuMode = PianoRollTools;
+        this->menuMode = MenuMode::PianoRollTools;
         this->recreateMenu();
         this->listBox->updateContent();
     }
@@ -227,12 +235,30 @@ void SequencerSidebarLeft::setPatternMode()
     this->buttonFader.fadeIn(this->switchLinearModeButton.get(), 200);
     this->buttonFader.fadeOut(this->switchPatternModeButton.get(), 200);
 
-    if (this->menuMode != PatternRollTools)
+    if (this->menuMode != MenuMode::PatternRollTools)
     {
-        this->menuMode = PatternRollTools;
+        this->menuMode = MenuMode::PatternRollTools;
         this->recreateMenu();
         this->listBox->updateContent();
     }
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void SequencerSidebarLeft::onScalesHighlightingFlagChanged(bool enabled)
+{
+    this->scalesHighlightingEnabled = enabled;
+    this->recreateMenu();
+    this->listBox->updateContent();
+}
+
+void SequencerSidebarLeft::onNoteNameGuidesFlagChanged(bool enabled)
+{
+    this->noteNameGuidesEnabled = enabled;
+    this->recreateMenu();
+    this->listBox->updateContent();
 }
 
 //===----------------------------------------------------------------------===//
@@ -241,7 +267,7 @@ void SequencerSidebarLeft::setPatternMode()
 
 void SequencerSidebarLeft::recreateMenu()
 {
-    this->menu.clear();
+    this->menu.clearQuick();
     this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
     this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
     this->menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip));
@@ -257,9 +283,11 @@ void SequencerSidebarLeft::recreateMenu()
 
     // TODO add some controls to switch focus between tracks?
 
-    if (this->menuMode == PianoRollTools)
+    if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel));
+        this->menu.add(MenuItem::item(Icons::paint, CommandIDs::ToggleScalesHighlighting)->toggled(this->scalesHighlightingEnabled));
+        this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->toggled(this->noteNameGuidesEnabled));
     }
 }
 
@@ -303,7 +331,7 @@ int SequencerSidebarLeft::getNumRows()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="SequencerSidebarLeft" template="../../../Template"
-                 componentName="" parentClasses="public ModeIndicatorOwnerComponent, protected ListBoxModel"
+                 componentName="" parentClasses="public ModeIndicatorOwnerComponent, protected UserInterfaceFlags::Listener, protected ListBoxModel"
                  constructorParams="ProjectNode &amp;project" variableInitialisers="project(project)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="48" initialHeight="640">

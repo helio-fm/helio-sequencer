@@ -82,7 +82,7 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox)
     this->schemeNameLabel.reset(new Label(String(),
                                            String()));
     this->addAndMakeVisible(schemeNameLabel.get());
-    this->schemeNameLabel->setFont(Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    this->schemeNameLabel->setFont(Font (18.00f, Font::plain));
     schemeNameLabel->setJustificationType(Justification::centredLeft);
     schemeNameLabel->setEditable(false, false, false);
 

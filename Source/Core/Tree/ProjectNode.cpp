@@ -222,10 +222,16 @@ void ProjectNode::recreatePage()
         layoutState = this->sequencerLayout->serialize();
     }
     
-    this->sequencerLayout.reset(new SequencerLayout(*this));
-    this->projectPage.reset(new ProjectPage(*this));
+    this->sequencerLayout = makeUnique<SequencerLayout>(*this);
+    this->projectPage = makeUnique<ProjectPage>(*this);
 
-    this->broadcastChangeProjectBeatRange(); // let rolls update view ranges
+    // reset caches and let rolls update view ranges:
+    // (fixme the below is quite a common piece of code)
+    this->firstBeatCache = 0;
+    this->lastBeatCache = PROJECT_DEFAULT_NUM_BEATS;
+    const auto range = this->broadcastChangeProjectBeatRange();
+    this->broadcastChangeViewBeatRange(range.getX(), range.getY());
+
     this->sequencerLayout->deserialize(layoutState);
 }
 
