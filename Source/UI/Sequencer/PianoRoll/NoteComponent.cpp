@@ -66,8 +66,14 @@ void NoteComponent::updateColours()
 
     this->colour = this->getNote().getTrackColour()
         .interpolatedWith(base, ghost ? 0.35f : 0.5f)
-        .brighter(this->selectedState ? 0.95f : (ghost ? 0.55f : 0.f))
+        .brighter(this->selectedState ? 0.95f : 0.f)
         .withAlpha(this->selectedState ? 1.f : (ghost ? 0.3f : .95f));
+
+    if (ghost)
+    {
+        this->colour = HelioTheme::getCurrentTheme().isDark() ?
+            this->colour.brighter(0.55f) : this->colour.darker(0.45f);
+    }
 
     this->colourLighter = this->colour.brighter(0.125f).withMultipliedAlpha(1.45f);
     this->colourDarker = this->colour.darker(0.175f).withMultipliedAlpha(1.45f);

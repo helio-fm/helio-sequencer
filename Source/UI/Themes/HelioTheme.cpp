@@ -894,6 +894,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::VersionControl::outline, s->getTextColour().withAlpha(0.3f));
     this->setColour(ColourIDs::VersionControl::highlight, s->getTextColour().withAlpha(0.02f));
 
+    // bright text probably means dark theme:
+    this->isDarkTheme = s->getTextColour().getPerceivedBrightness() > 0.5f;
+
     // Update pre-rendered caches:
     this->bgCacheA = {};
     this->bgCacheB = {};

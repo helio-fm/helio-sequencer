@@ -143,6 +143,11 @@ public:
     inline Image &getBgCacheC() noexcept { return this->bgCacheC; }
     inline const Image &getBgCacheC() const noexcept { return this->bgCacheC; }
 
+    inline bool isDark() const noexcept
+    {
+        return this->isDarkTheme;
+    }
+
 protected:
     
     const Image backgroundNoise;
@@ -154,6 +159,8 @@ protected:
     Image bgCacheA;
     Image bgCacheB;
     Image bgCacheC;
+
+    bool isDarkTheme = false;
 
     JUCE_LEAK_DETECTOR(HelioTheme);
 
