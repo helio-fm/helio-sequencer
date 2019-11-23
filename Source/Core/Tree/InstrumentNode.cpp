@@ -206,7 +206,7 @@ void InstrumentNode::initInstrumentEditor()
 {
     if (this->instrumentEditor == nullptr)
     {
-        this->instrumentEditor.reset(new InstrumentEditor(this->instrument, this->audioCore));
+        this->instrumentEditor = makeUnique<InstrumentEditor>(this->instrument, this->audioCore);
         this->instrumentEditor->updateComponents();
     }
 }

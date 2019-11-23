@@ -64,8 +64,8 @@ AudioMonitor::AudioMonitor() :
     spectrumSize(AUDIO_MONITOR_SPECTRUM_SIZE),
     sampleRate(AUDIO_MONITOR_NUM_CHANNELS)
 {
-    this->asyncClippingWarning.reset(new ClippingWarningAsyncCallback(*this));
-    this->asyncOversaturationWarning.reset(new OversaturationWarningAsyncCallback(*this));
+    this->asyncClippingWarning = makeUnique<ClippingWarningAsyncCallback>(*this);
+    this->asyncOversaturationWarning = makeUnique<OversaturationWarningAsyncCallback>(*this);
 }
 
 //===----------------------------------------------------------------------===//

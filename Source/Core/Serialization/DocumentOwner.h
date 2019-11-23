@@ -25,12 +25,12 @@ public:
 
     DocumentOwner(const String &name, const String &extension)
     {
-        this->document.reset(new Document(*this, name, extension));
+        this->document = makeUnique<Document>(*this, name, extension);
     }
 
     DocumentOwner(const File &existingFile)
     {
-        this->document.reset(new Document(*this, existingFile));
+        this->document = makeUnique<Document>(*this, existingFile);
     }
 
     Document *getDocument() const noexcept

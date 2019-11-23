@@ -29,7 +29,7 @@ Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &na
     instrumentName(name),
     instrumentId()
 {
-    this->processorGraph.reset(new AudioProcessorGraph());
+    this->processorGraph = makeUnique<AudioProcessorGraph>();
     this->audioCallback.setProcessor(this->processorGraph.get());
 }
 

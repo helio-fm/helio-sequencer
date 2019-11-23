@@ -148,7 +148,7 @@ private:
     void attachOpenGLContext()
     {
         DBG("Attaching OpenGL context.");
-        this->openGLContext.reset(new OpenGLContext());
+        this->openGLContext = makeUnique<OpenGLContext>();
         this->openGLContext->setPixelFormat(OpenGLPixelFormat(8, 8, 0, 0));
         this->openGLContext->setMultisamplingEnabled(false);
         this->openGLContext->attachTo(*this);
@@ -172,7 +172,7 @@ private:
 
     void createLayoutComponent()
     {
-        this->layout.reset(new MainLayout());
+        this->layout = makeUnique<MainLayout>();
         // optionally, in future:
         // this->setContentOwned(new ScaledComponentProxy(this->layout), false);
         this->setContentNonOwned(this->layout.get(), false);
@@ -496,10 +496,10 @@ void App::initialise(const String &commandLine)
         const auto album = Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise;
         Desktop::getInstance().setOrientationsEnabled(album);
         
-        this->config.reset(new class Config());
+        this->config = makeUnique<class Config>();
         this->config->initResources();
 
-        UniquePointer<HelioTheme> helioTheme(new HelioTheme());
+        auto helioTheme = makeUnique<HelioTheme>();
         helioTheme->initResources();
         helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
 
@@ -537,7 +537,7 @@ void App::initialise(const String &commandLine)
 
         // if this is not a unit test runner, proceed as normal:
 
-        this->workspace.reset(new class Workspace());
+        this->workspace = makeUnique<class Workspace>();
         
         bool shouldEnableOpenGL = this->config->getUiFlags()->isOpenGlRendererEnabled();
         bool shouldUseNativeTitleBar = this->config->getUiFlags()->isNativeTitleBarEnabled();
@@ -547,17 +547,21 @@ void App::initialise(const String &commandLine)
         if (!this->config->containsProperty(Serialization::Config::activeUiFlags))
         {
             const auto enabledState = Serialization::Config::enabledState.toString();
-            const auto legacyOpeGlStateFlag = this->config->getProperty(Serialization::Config::openGLState);
+            const auto legacyOpenGlStateFlag = this->config->getProperty(Serialization::Config::openGLState);
             const auto legacyTitleBarStateFlag = this->config->getProperty(Serialization::Config::nativeTitleBar);
 
-            shouldEnableOpenGL = legacyOpeGlStateFlag.isNotEmpty() ? legacyOpeGlStateFlag == enabledState : shouldEnableOpenGL;
+            shouldEnableOpenGL = legacyOpenGlStateFlag.isNotEmpty() ? legacyOpenGlStateFlag == enabledState : shouldEnableOpenGL;
             shouldUseNativeTitleBar = legacyTitleBarStateFlag.isNotEmpty() ? legacyTitleBarStateFlag == enabledState : shouldUseNativeTitleBar;
+
+            // make sure to save the fetched flags
+            this->config->getUiFlags()->setOpenGlRendererEnabled(shouldEnableOpenGL);
+            this->config->getUiFlags()->setNativeTitleBarEnabled(shouldUseNativeTitleBar);
         }
 
-        this->window.reset(new MainWindow());
+        this->window = makeUnique<MainWindow>();
         this->window->init(shouldEnableOpenGL, shouldUseNativeTitleBar);
 
-        this->network.reset(new class Network(*this->workspace.get()));
+        this->network = makeUnique<class Network>(*this->workspace.get());
 
         this->config->getUiFlags()->addListener(this);
         
@@ -770,7 +774,7 @@ void App::onNativeTitleBarFlagChanged(bool shouldUseNativeTitleBar)
     // just re-creating a window helps to avoid glitches:
     const bool hasOpenGl = App::isOpenGLRendererEnabled();
     auto *self = static_cast<App *>(getInstance());
-    self->window.reset(new MainWindow());
+    self->window = makeUnique<MainWindow>();
     self->window->init(hasOpenGl, shouldUseNativeTitleBar);
 
 #   elif JUCE_LINUX

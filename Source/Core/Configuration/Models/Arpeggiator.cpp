@@ -183,18 +183,18 @@ static UniquePointer<Arpeggiator::Mapper> createMapperOfType(const Identifier &i
 
     if (id == Types::simpleTriadic)      
     {
-        return UniquePointer<Arpeggiator::Mapper>(new SimpleTriadicArpMapper());
+        return makeUnique<SimpleTriadicArpMapper>();
     }
     else if (id == Types::pentatonic)
     {
-        return UniquePointer<Arpeggiator::Mapper>(new PentatonicArpMapper());
+        return makeUnique<PentatonicArpMapper>();
     }
     else if (id == Types::diatonic)
     {
-        return UniquePointer<Arpeggiator::Mapper>(new DiatonicArpMapper());
+        return makeUnique<DiatonicArpMapper>();
     }
     
-    return UniquePointer<Arpeggiator::Mapper>(new FallbackArpMapper());
+    return makeUnique<FallbackArpMapper>();
 }
 
 Arpeggiator &Arpeggiator::operator=(const Arpeggiator &other)

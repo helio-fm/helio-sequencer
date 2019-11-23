@@ -51,7 +51,7 @@ void OrchestraPitNode::showPage()
 
 void OrchestraPitNode::recreatePage()
 {
-    this->instrumentsPage.reset(new OrchestraPitPage(App::Workspace().getPluginManager(), *this));
+    this->instrumentsPage = makeUnique<OrchestraPitPage>(App::Workspace().getPluginManager(), *this);
 }
 
 //===----------------------------------------------------------------------===//

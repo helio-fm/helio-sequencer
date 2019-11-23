@@ -67,7 +67,7 @@ void RootNode::showPage()
 
 void RootNode::recreatePage()
 {
-    this->dashboard.reset(new Dashboard(App::Layout()));
+    this->dashboard = makeUnique<Dashboard>(App::Layout());
 }
 
 //===----------------------------------------------------------------------===//

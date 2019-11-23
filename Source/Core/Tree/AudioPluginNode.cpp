@@ -105,7 +105,7 @@ void AudioPluginNode::showPage()
             // while its size and position that is managed by audioPluginEditor
             if (auto *window = PluginWindow::getWindowFor(f, false, true))
             {
-                this->audioPluginEditor.reset(new AudioPluginEditorPage(window));
+                this->audioPluginEditor = makeUnique<AudioPluginEditorPage>(window);
             }
         }
         else
@@ -118,7 +118,7 @@ void AudioPluginNode::showPage()
                 ui->setName(plugin->getName());
             }
 
-            this->audioPluginEditor.reset(new AudioPluginEditorPage(ui));
+            this->audioPluginEditor = makeUnique<AudioPluginEditorPage>(ui);
         }
 
         // Something went wrong

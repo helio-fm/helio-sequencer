@@ -34,7 +34,7 @@ void AudioCore::initAudioFormats(AudioPluginFormatManager &formatManager)
 
 AudioCore::AudioCore()
 {
-    this->audioMonitor.reset(new AudioMonitor());
+    this->audioMonitor = makeUnique<AudioMonitor>();
     this->deviceManager.addAudioCallback(this->audioMonitor.get());
     AudioCore::initAudioFormats(this->formatManager);
 }
