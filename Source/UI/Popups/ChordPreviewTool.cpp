@@ -260,7 +260,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 {
     if (!chord->isValid()) { return; }
 
-    const auto period = this->targetKey / this->scale->getBasePeriod();
+    const auto period = (this->targetKey - this->root) / this->scale->getBasePeriod();
     const auto periodOffset = period * this->scale->getBasePeriod();
     const auto targetKeyOffset = (this->targetKey + this->clip.getKey()) % this->scale->getBasePeriod();
     const auto chromaticFnOffset = (targetKeyOffset - this->root);
