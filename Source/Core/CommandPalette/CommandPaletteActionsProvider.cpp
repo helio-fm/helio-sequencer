@@ -97,11 +97,12 @@ void CommandPaletteAction::setMatch(int score, const uint8 *matches)
             jassert(nextMatch < 32);
         }
 
+        const bool isWhitespace = t.isWhitespace();
+        const auto character = t.getAndAdvance();
         this->highlightedMatch.addGlyph(PositionedGlyph(isMatchGlyph ? fontMatch : fontNormal,
-            t.getAndAdvance(),
-            newGlyphs.getUnchecked(i),
-            xOffset + thisX, yOffset,
-            nextX - thisX, t.isWhitespace()));
+            character, newGlyphs.getUnchecked(i),
+            xOffset + thisX, yOffset, nextX - thisX,
+            isWhitespace));
     }
 }
 
