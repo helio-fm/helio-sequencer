@@ -237,7 +237,7 @@ void Transport::stopPlayback()
     }
 }
 
-void Transport::toggleStatStopPlayback()
+void Transport::toggleStartStopPlayback()
 {
     this->isPlaying() ? this->stopPlayback() : this->startPlayback();
 }
@@ -650,6 +650,7 @@ void Transport::recacheIfNeeded()
 {
     if (this->sequencesAreOutdated)
     {
+        jassert(!this->isPlaying());
         this->playbackCache.clear();
         static Clip noTransform;
         const double offset = -this->trackStartMs.get();

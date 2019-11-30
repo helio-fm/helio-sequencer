@@ -44,6 +44,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
             closesMenu()->
             withAction([this, settings]()
             {
+                this->workspace.stopPlaybackForAllProjects();
                 settings->setSelected();
             }));
     }
@@ -55,6 +56,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
             closesMenu()->
             withAction([this, instruments]()
             {
+                this->workspace.stopPlaybackForAllProjects();
                 instruments->setSelected();
             }));
     }
@@ -69,6 +71,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
             closesMenu()->
             withAction([this, project]()
             {
+                this->workspace.stopPlaybackForAllProjects();
                 project->selectChildOfType<PianoTrackNode>();
             }));
     }

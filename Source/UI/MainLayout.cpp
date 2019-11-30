@@ -347,18 +347,20 @@ static ProjectNode *findParentProjectOfSelectedNode()
 
 static void emitCommandPalette()
 {
-    HybridRoll *activeRoll = nullptr;
     auto *project = findParentProjectOfSelectedNode();
-    if (project)
+    if (project != nullptr)
     {
+        project->getTransport().stopPlayback();
         auto *activeNode = App::Workspace().getTreeRoot()->findActiveNode();
         if (nullptr != dynamic_cast<PianoTrackNode *>(activeNode))
         {
-            activeRoll = project->getLastFocusedRoll();
+            auto *activeRoll = project->getLastFocusedRoll();
+            App::showModalComponent(makeUnique<CommandPalette>(project, activeRoll));
+            return;
         }
     }
 
-    App::showModalComponent(makeUnique<CommandPalette>(project, activeRoll));
+    jassertfalse;
 }
 
 void MainLayout::handleCommandMessage(int commandId)

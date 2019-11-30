@@ -63,7 +63,7 @@ public:
 
     bool isPlaying() const;
     void stopPlayback();
-    void toggleStatStopPlayback();
+    void toggleStartStopPlayback();
 
     void startRender(const String &filename);
     bool isRendering() const;

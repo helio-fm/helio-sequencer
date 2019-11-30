@@ -119,7 +119,7 @@ private:
     }
 
     Transport &transport;
-    int minPoolSize;
+    const int minPoolSize;
 
     OwnedArray<PlayerThread> players;
     PlayerThread *currentPlayer;

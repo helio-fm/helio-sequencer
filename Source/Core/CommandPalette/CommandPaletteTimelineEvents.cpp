@@ -78,6 +78,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 const auto *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i));
                 jassert(annotation != nullptr);
 
+                jassert(!this->project.getTransport().isPlaying());
                 const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
                 this->project.getTransport().seekToPosition(seekPosition);
                 roll->scrollToSeekPosition();
@@ -113,6 +114,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 const auto *event = dynamic_cast<KeySignatureEvent *>(ksSequence->getUnchecked(i));
                 jassert(event != nullptr);
 
+                jassert(!this->project.getTransport().isPlaying());
                 const double seekPosition = roll->getTransportPositionByBeat(event->getBeat());
                 this->project.getTransport().seekToPosition(seekPosition);
                 roll->scrollToSeekPosition();
@@ -148,6 +150,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 const auto *event = dynamic_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(i));
                 jassert(event != nullptr);
 
+                jassert(!this->project.getTransport().isPlaying());
                 const double seekPosition = roll->getTransportPositionByBeat(event->getBeat());
                 this->project.getTransport().seekToPosition(seekPosition);
                 roll->scrollToSeekPosition();

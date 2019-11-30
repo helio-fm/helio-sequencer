@@ -1160,7 +1160,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
             if (noDraggingWasDone && notTooMuchTimeSpent)
             {
-                this->project.getTransport().toggleStatStopPlayback();
+                this->project.getTransport().toggleStartStopPlayback();
             }
             this->setSpaceDraggingMode(false);
         }
