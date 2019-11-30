@@ -416,7 +416,7 @@ void MainLayout::handleCommandMessage(int commandId)
     }
 }
 
-static void broadcastMessage(Component *root, int commandId)
+static inline void broadcastMessage(Component *root, int commandId)
 {
     if (root == nullptr)
     {

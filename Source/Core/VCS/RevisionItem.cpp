@@ -118,8 +118,11 @@ SerializedData RevisionItem::serialize() const
 
         // sometimes we need to create copy since serialized data cannot be shared between two parents
         // but Snapshot seems to share revision items on checkout; need to fix this someday:
-        deltaNode.appendChild(deltaData.getParent().isValid() ? deltaData.createCopy() : deltaData);
-        tree.appendChild(deltaNode);
+        if (deltaData.isValid())
+        {
+            deltaNode.appendChild(deltaData.getParent().isValid() ? deltaData.createCopy() : deltaData);
+            tree.appendChild(deltaNode);
+        }
     }
 
     return tree;
