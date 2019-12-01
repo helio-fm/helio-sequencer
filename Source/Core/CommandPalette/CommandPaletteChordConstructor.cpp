@@ -565,6 +565,12 @@ struct ChordQualityExpression final : Expression
 
             out << int(this->interval);
         }
+        else if (this->intervalQuality == Quality::Augmented ||
+            this->intervalQuality == Quality::Diminished)
+        {
+            out << " ";
+            fillQualityDescription(out, this->intervalQuality);
+        }
     }
 
     void fillQualityDescription(String &out, Quality q) const
@@ -1658,6 +1664,10 @@ public:
         cc.parse("  A#mM7 add 13");
         expect(cc.isValid());
         expectEquals(cc.getChordAsString(), { "A#m M7 add13" });
+
+        cc.parse(" C# aug ");
+        expect(cc.isValid());
+        expectEquals(cc.getChordAsString(), { "C# aug" });
 
         cc.parse("yo yo sus4 b11 inv7");
         expect(!cc.isValid());
