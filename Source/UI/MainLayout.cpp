@@ -347,20 +347,21 @@ static ProjectNode *findParentProjectOfSelectedNode()
 
 static void emitCommandPalette()
 {
-    auto *project = findParentProjectOfSelectedNode();
-    if (project != nullptr)
+    if (auto *project = findParentProjectOfSelectedNode())
     {
         project->getTransport().stopPlayback();
+
+        HybridRoll *activeRoll = nullptr;
         auto *activeNode = App::Workspace().getTreeRoot()->findActiveNode();
         if (nullptr != dynamic_cast<PianoTrackNode *>(activeNode))
         {
-            auto *activeRoll = project->getLastFocusedRoll();
-            App::showModalComponent(makeUnique<CommandPalette>(project, activeRoll));
-            return;
+            activeRoll = project->getLastFocusedRoll();
         }
-    }
 
-    jassertfalse;
+        // activeRoll is ok to be null
+        // (project is too, but there'll be no useful content shown):
+        App::showModalComponent(makeUnique<CommandPalette>(project, activeRoll));
+    }
 }
 
 void MainLayout::handleCommandMessage(int commandId)
