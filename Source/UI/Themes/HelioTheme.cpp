@@ -712,31 +712,31 @@ void HelioTheme::initResources()
 
     DBG("Fonts search done in " + String(Time::getMillisecondCounter() - startTime) + " ms");
 
-    const Font *noto = nullptr;
-    const StringArray notoNames = {"Noto Sans", "Noto Sans UI"};
+    const StringArray preferredFontNames = { "Noto Sans", "Noto Sans UI", "Source Han Sans" };
+    const Font *preferredFont = nullptr;
 
-    const Font *notoCJK = nullptr;
-    const String notoCJKName = "Noto Sans CJK";
+    const String perfectlyFineFontName = "Noto Sans CJK";
+    const Font *perfectlyFineFont = nullptr;
 
     for (const auto &systemFont : systemFonts)
     {
-        if (notoNames.contains(systemFont.getTypeface()->getName()))
+        if (preferredFontNames.contains(systemFont.getTypeface()->getName()))
         {
-            noto = &systemFont;
+            preferredFont = &systemFont;
         }
-        else if (systemFont.getTypeface()->getName().startsWithIgnoreCase(notoCJKName))
+        else if (systemFont.getTypeface()->getName().startsWithIgnoreCase(perfectlyFineFontName))
         {
-            notoCJK = &systemFont;
+            perfectlyFineFont = &systemFont;
         }
     }
 
-    if (notoCJK != nullptr)
+    if (perfectlyFineFont != nullptr)
     {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*notoCJK);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*perfectlyFineFont);
     }
-    else if (noto != nullptr)
+    else if (preferredFont != nullptr)
     {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*noto);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*preferredFont);
     }
     else
     {
