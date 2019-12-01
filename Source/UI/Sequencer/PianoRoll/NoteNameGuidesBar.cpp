@@ -28,7 +28,7 @@ NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll) :
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
 
-    this->setSize(34, 32);
+    this->setSize(36, 32);
 
     for (int i = 0; i < 128; ++i)
     {
