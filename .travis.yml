@@ -36,27 +36,27 @@ jobs:
       os: linux
       dist: xenial
       addons: *gcc5
-      env: PLATFORM=linux CONFIG=Tests DISPLAY=localhost:1.0 CFLAGS=-fno-pie
+      env: BUILD_TYPE=linux CONFIG=Tests DISPLAY=localhost:1.0 CFLAGS=-fno-pie
     - name: "clang 7, release build x64"
       stage: deploy
       os: linux
       dist: xenial
       addons: *clang7
-      env: PLATFORM=linux CC=clang CXX=clang++ CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+      env: BUILD_TYPE=linux CC=clang CXX=clang++ CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
     - name: "xcode 10.1 mac, release build"
       stage: deploy
       os: osx
       osx_image: xcode10.1
       xcode_sdk: macosx10.14
       addons: *deploy
-      env: PLATFORM=osx
+      env: BUILD_TYPE=osx
     - name: "xcode 10.1 ios, release build"
       stage: deploy
       os: osx
       osx_image: xcode10.1
       xcode_sdk: iphoneos
       addons: *deploy
-      env: PLATFORM=ios
+      env: BUILD_TYPE=ios
     - name: "android 21, release build"
       stage: deploy
       os: linux
@@ -64,7 +64,7 @@ jobs:
       language: android
       jdk: oraclejdk8
       addons: *deploy
-      env: PLATFORM=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
+      env: BUILD_TYPE=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
       android:
         components:
           - tools
@@ -78,25 +78,37 @@ jobs:
         directories:
          - $HOME/.gradle/caches/
          - $HOME/.gradle/wrapper/
+    - name: "docs"
+      stage: deploy
+      os: linux
+      dist: trusty
+      language: rust
+      rust: stable
+      cache: cargo
+      addons: *deploy
+      env: BUILD_TYPE=docs
 
 before_script:
-  - bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-${PLATFORM}.sh
+  - bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/setup-${BUILD_TYPE}.sh
 
 script:
-  - if [[ "${PLATFORM}" == "linux" ]]; then
+  - if [[ "${BUILD_TYPE}" == "linux" ]]; then
       xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
       if [[ "${TRAVIS_BUILD_STAGE_NAME}" == "Test" ]]; then
         xvfb-run -a Projects/LinuxMakefile/build/Helio;
       fi
     fi
-  - if [[ "${PLATFORM}" == "android" ]]; then
+  - if [[ "${BUILD_TYPE}" == "android" ]]; then
       cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
     fi
-  - if [[ "${PLATFORM}" == "osx" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
+  - if [[ "${BUILD_TYPE}" == "osx" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
       xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
-  - if [[ "${PLATFORM}" == "ios" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
+  - if [[ "${BUILD_TYPE}" == "ios" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
       xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
+    fi
+  - if [[ "${BUILD_TYPE}" == "docs" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
+      mdbook build Docs && mdbook test Docs;
     fi
 
 before_deploy:
@@ -108,7 +120,7 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${PLATFORM}.sh
+  script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${BUILD_TYPE}.sh
   on:
     all_branches: true
     repo: helio-fm/helio-workstation
