@@ -1,0 +1,10 @@
+[book]
+authors = ["Peter Rudenko"]
+language = "en"
+multilingual = false
+src = "."
+title = "Helio 101"
+
+[output.html]
+default-theme = "navy"
+curly-quotes = true
