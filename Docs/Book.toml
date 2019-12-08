@@ -1,9 +1,10 @@
 [book]
-authors = ["Peter Rudenko"]
-language = "en"
-multilingual = false
-src = "."
 title = "Helio 101"
+description = "todo todo todo todo todo"
+authors = ["Peter Rudenko"]
+multilingual = false
+language = "en"
+src = "."
 
 [output.html]
 default-theme = "navy"
