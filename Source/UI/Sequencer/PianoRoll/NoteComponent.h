@@ -134,7 +134,7 @@ private:
     void startDragging(bool sendMidiMessage);
     bool getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey);
     Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept;
-    void endDragging(bool sendMidiMessage = true);
+    void endDragging(bool sendStopSoundMessage = true);
 
     void startDraggingResizing(bool sendMidiMessage);
     bool getDraggingResizingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const;

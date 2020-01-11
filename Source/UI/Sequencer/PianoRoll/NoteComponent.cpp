@@ -316,6 +316,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 const auto *nc = selection.getItemAs<NoteComponent>(i);
                 groupBefore.add(nc->getNote());
                 groupAfter.add(nc->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi));
+                this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
 
             getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
@@ -340,6 +341,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 const auto *nc = selection.getItemAs<NoteComponent>(i);
                 groupBefore.add(nc->getNote());
                 groupAfter.add(nc->continueResizingRight(deltaLength));
+                this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
                 
             getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
@@ -364,8 +366,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 const auto *nc = selection.getItemAs<NoteComponent>(i);
                 groupBefore.add(nc->getNote());
                 groupAfter.add(nc->continueResizingLeft(deltaLength));
+                this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
-                
+
             getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
@@ -726,9 +729,9 @@ Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMid
     return this->getNote().withKeyBeat(newKey, newBeat);
 }
 
-void NoteComponent::endDragging(bool sendMidiMessage)
+void NoteComponent::endDragging(bool sendStopSoundMessage)
 {
-    if (sendMidiMessage)
+    if (sendStopSoundMessage)
     {
         this->stopSound();
     }
@@ -753,12 +756,18 @@ MouseCursor NoteComponent::startEditingNewNote(const MouseEvent &e)
     // we'll be dragging both key and beat; if not, we'll be dragging key + length:
     if (e.mods.isAnyModifierKeyDown())
     {
+        // normally this would have been be set by mouseDown:
+        this->dragger.startDraggingComponent(this, e);
         this->startDragging(sendMidi);
     }
     else
     {
         this->startDraggingResizing(sendMidi);
     }
+
+    // normally this would have been be set by mouseDown,
+    // but this note was created by the roll:
+    this->clickOffset.setXY(e.x, e.y);
 
     // hack warning: this note is supposed to be created by roll in two actions,
     // (1) adding one, and (2) dragging it afterwards, so two checkpoints would happen,

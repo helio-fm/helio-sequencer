@@ -63,8 +63,6 @@
 #include "Config.h"
 #include "Icons.h"
 
-#define DEFAULT_NOTE_LENGTH 0.5f
-
 #define forEachEventOfGivenTrack(map, child, track) \
     for (const auto &_c : map) \
         if (_c.first.getPattern()->getTrack() == track) \
@@ -190,6 +188,12 @@ const Clip &PianoRoll::getActiveClip() const noexcept { return this->activeClip;
 void PianoRoll::setDefaultNoteVolume(float volume) noexcept
 {
     this->newNoteVolume = volume;
+}
+
+void PianoRoll::setDefaultNoteLength(float length) noexcept
+{
+    // no less than 0.25f, as it can become pretty much unusable:
+    this->newNoteLength = jmax(0.25f, length);
 }
 
 void PianoRoll::setRowHeight(int newRowHeight)
@@ -902,7 +906,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->newNoteDragging)
+    if (this->newNoteDragging != nullptr)
     {
         if (this->newNoteDragging->isInEditMode())
         {
@@ -910,8 +914,9 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         }
         else
         {
-            const auto editongCursor = this->newNoteDragging->startEditingNewNote(e);
-            this->setMouseCursor(editongCursor);
+            const auto noteEvent = e.getEventRelativeTo(this->newNoteDragging);
+            const auto editingCursor = this->newNoteDragging->startEditingNewNote(noteEvent);
+            this->setMouseCursor(editingCursor);
         }
     }
     else if (this->isKnifeToolEvent(e))
@@ -932,8 +937,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
     // Dismiss newNoteDragging, if needed
     if (this->newNoteDragging != nullptr)
     {
-
-        this->newNoteDragging->endDraggingResizing();
+        this->newNoteDragging->mouseUp(e.getEventRelativeTo(this->newNoteDragging));
         this->setMouseCursor(this->project.getEditMode().getCursor());
         this->newNoteDragging = nullptr;
     }
@@ -1262,8 +1266,8 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     // and in onAddMidiEvent/1 callback we store that pointer,
     // so that the new note can be dragged, or resized, or whatever
     this->addNewNoteMode = true;
-    activeSequence->insert(Note(activeSequence,
-        draggingRow, draggingColumn, DEFAULT_NOTE_LENGTH, this->newNoteVolume), true);
+    activeSequence->insert(Note(activeSequence, draggingRow, draggingColumn,
+        this->newNoteLength, this->newNoteVolume), true);
 }
 
 void PianoRoll::startCuttingEvents(const MouseEvent &e)

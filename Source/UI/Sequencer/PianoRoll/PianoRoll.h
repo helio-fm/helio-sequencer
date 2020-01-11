@@ -17,6 +17,9 @@
 
 #pragma once
 
+#define PIANOROLL_DEFAULT_NOTE_LENGTH 0.5f
+#define PIANOROLL_DEFAULT_NOTE_VOLUME 0.25f
+
 #if HELIO_DESKTOP
 #   define PIANOROLL_HAS_NOTE_RESIZERS 0
 #   define PIANOROLL_MIN_ROW_HEIGHT (7)
@@ -61,6 +64,7 @@ public:
     const Clip &getActiveClip() const noexcept;
 
     void setDefaultNoteVolume(float volume) noexcept;
+    void setDefaultNoteLength(float length) noexcept;
 
     //===------------------------------------------------------------------===//
     // HybridRoll
@@ -208,7 +212,8 @@ private:
 
     NoteComponent *newNoteDragging = nullptr;
     bool addNewNoteMode = false;
-    float newNoteVolume = 0.25f;
+    float newNoteVolume = PIANOROLL_DEFAULT_NOTE_VOLUME;
+    float newNoteLength = PIANOROLL_DEFAULT_NOTE_LENGTH;
 
     const int numRows = 128;
     int rowHeight = PIANOROLL_MIN_ROW_HEIGHT;
