@@ -31,11 +31,12 @@ public:
     NoteComponent(PianoRoll &gridRef, const Note &note,
         const Clip &clip, bool ghostMode = false) noexcept;
 
+    // todo need clearer names for these mode and corresponding methods:
     enum class State : uint8
     {
         None,
-        Initializing,       // changes length & key
         Dragging,           // changes beat & key
+        DraggingResizing,   // changes length & key
         ResizingRight,      // changes length
         ResizingLeft,       // changes beat & length
         GroupScalingRight,  
@@ -128,11 +129,17 @@ private:
     bool belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept;
     void switchActiveSegmentToSelected(bool zoomToScope) const;
 
-    bool isInitializing() const;
-    void startInitializing();
-    bool getInitializingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const;
-    Note continueInitializing(float deltaLength, int deltaKey, bool sendMidi) const noexcept;
-    void endInitializing();
+    MouseCursor startEditingNewNote(const MouseEvent &e);
+
+    void startDragging(bool sendMidiMessage);
+    bool getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey);
+    Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept;
+    void endDragging(bool sendMidiMessage = true);
+
+    void startDraggingResizing(bool sendMidiMessage);
+    bool getDraggingResizingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const;
+    Note continueDraggingResizing(float deltaLength, int deltaKey, bool sendMidi) const noexcept;
+    void endDraggingResizing();
 
     void startResizingRight(bool sendMidiMessage);
     bool getResizingRightDelta(const MouseEvent &e, float &deltaLength) const;
@@ -161,16 +168,12 @@ private:
     Note continueGroupScalingLeft(float absScaleFactor) const noexcept;
     void endGroupScalingLeft();
     
-    void startDragging(bool sendMidiMessage);
-    bool getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey);
-    Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept;
-    void endDragging(bool sendMidiMessage = true);
-    
     bool canResize() const noexcept;
 
 private:
 
-    State state;
+    State state = State::None;
+    bool isInEditMode() const;
 
     Colour colour;
     Colour colourLighter;
@@ -182,7 +185,7 @@ private:
     friend class NoteResizerRight;
     friend struct SequencerOperations;
 
-    bool firstChangeDone;
+    bool firstChangeDone = false;
     void checkpointIfNeeded();
 
     bool shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const;

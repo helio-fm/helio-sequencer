@@ -63,7 +63,7 @@
 #include "Config.h"
 #include "Icons.h"
 
-#define DEFAULT_NOTE_LENGTH 0.25f
+#define DEFAULT_NOTE_LENGTH 0.5f
 
 #define forEachEventOfGivenTrack(map, child, track) \
     for (const auto &_c : map) \
@@ -347,14 +347,6 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
 //===----------------------------------------------------------------------===//
 // Note management
 //===----------------------------------------------------------------------===//
-
-void PianoRoll::addNote(int key, float beat, float length, float velocity)
-{
-    auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
-    activeSequence->checkpoint();
-    Note note(activeSequence, key, beat, length, velocity);
-    activeSequence->insert(note, true);
-}
 
 Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
@@ -912,14 +904,14 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
 
     if (this->newNoteDragging)
     {
-        if (this->newNoteDragging->isInitializing())
+        if (this->newNoteDragging->isInEditMode())
         {
             this->newNoteDragging->mouseDrag(e.getEventRelativeTo(this->newNoteDragging));
         }
         else
         {
-            this->newNoteDragging->startInitializing();
-            this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
+            const auto editongCursor = this->newNoteDragging->startEditingNewNote(e);
+            this->setMouseCursor(editongCursor);
         }
     }
     else if (this->isKnifeToolEvent(e))
@@ -941,7 +933,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
     if (this->newNoteDragging != nullptr)
     {
 
-        this->newNoteDragging->endInitializing();
+        this->newNoteDragging->endDraggingResizing();
         this->setMouseCursor(this->project.getEditMode().getCursor());
         this->newNoteDragging = nullptr;
     }
@@ -1261,8 +1253,17 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     int draggingRow = 0;
     float draggingColumn = 0.f;
     this->getRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn);
+
+    auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
+    activeSequence->checkpoint();
+
+    // thing is, we can't have a pointer to this note's component,
+    // since it is not created yet at this point; so we set a flag,
+    // and in onAddMidiEvent/1 callback we store that pointer,
+    // so that the new note can be dragged, or resized, or whatever
     this->addNewNoteMode = true;
-    this->addNote(draggingRow, draggingColumn, DEFAULT_NOTE_LENGTH, this->newNoteVolume);
+    activeSequence->insert(Note(activeSequence,
+        draggingRow, draggingColumn, DEFAULT_NOTE_LENGTH, this->newNoteVolume), true);
 }
 
 void PianoRoll::startCuttingEvents(const MouseEvent &e)

@@ -40,9 +40,7 @@ static PianoSequence *getPianoSequence(const Lasso &selection)
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) noexcept :
     MidiEventComponent(editor, ghostMode),
     note(event),
-    clip(clip),
-    state(State::None),
-    firstChangeDone(false)
+    clip(clip)
 {
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
@@ -290,11 +288,11 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     
     const auto &selection = this->roll.getLassoSelection();
 
-    if (this->state == State::Initializing)
+    if (this->state == State::DraggingResizing)
     {
         int deltaKey = 0;
         float deltaLength = 0.f;
-        const bool eventChanged = this->getInitializingDelta(e, deltaLength, deltaKey);
+        const bool eventChanged = this->getDraggingResizingDelta(e, deltaLength, deltaKey);
 
 #if HELIO_MOBILE
         const bool shouldSendMidi = false;
@@ -317,7 +315,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             {
                 const auto *nc = selection.getItemAs<NoteComponent>(i);
                 groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueInitializing(deltaLength, deltaKey, shouldSendMidi));
+                groupAfter.add(nc->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi));
             }
 
             getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
@@ -533,12 +531,12 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     
     const Lasso &selection = this->roll.getLassoSelection();
 
-    if (this->state == State::Initializing)
+    if (this->state == State::DraggingResizing)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
             auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            nc->endInitializing();
+            nc->endDraggingResizing();
         }
     }
     else if (this->state == State::ResizingRight)
@@ -742,28 +740,58 @@ void NoteComponent::endDragging(bool sendMidiMessage)
 // Creating note mode
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::isInitializing() const
+MouseCursor NoteComponent::startEditingNewNote(const MouseEvent &e)
 {
-    return this->state == State::Initializing;
+    jassert (!this->isInEditMode());
+
+    // always send midi in this mode:
+    const bool sendMidi = true;
+
+    // the default mode is editing key+length, which I think is more convenient,
+    // yet some folks might have muscle memory for a more widespread behavior,
+    // which is just dragging the newly created note, so if any modifier key was down,
+    // we'll be dragging both key and beat; if not, we'll be dragging key + length:
+    if (e.mods.isAnyModifierKeyDown())
+    {
+        this->startDragging(sendMidi);
+    }
+    else
+    {
+        this->startDraggingResizing(sendMidi);
+    }
+
+    // hack warning: this note is supposed to be created by roll in two actions,
+    // (1) adding one, and (2) dragging it afterwards, so two checkpoints would happen,
+    // which we don't want (adding a note should appear as a single transaction to the user):
+    this->firstChangeDone = true;
+
+    return (this->state == State::DraggingResizing) ?
+        MouseCursor::LeftRightResizeCursor : MouseCursor::NormalCursor;
 }
 
-void NoteComponent::startInitializing()
-{
-    // warning: note is supposed to be created by roll in two actions,
-    // adding one and resizing it afterwards, so two checkpoints would happen
-    // if we set this->firstChangeDone = false here, which we don't want
-    // (adding a note should appear to user as a single transaction).
-    this->firstChangeDone = true;
-    // ^ thus, set no checkpoint is needed
+//===----------------------------------------------------------------------===//
+// Dragging + resizing (the default creating note mode)
+//===----------------------------------------------------------------------===//
 
-    this->state = State::Initializing;
+bool NoteComponent::isInEditMode() const
+{
+    return this->state != State::None;
+}
+
+void NoteComponent::startDraggingResizing(bool sendMidiMessage)
+{
+    this->firstChangeDone = false;
+    this->state = State::DraggingResizing;
     this->anchor = this->getNote();
 
     // always send midi in this mode:
-    this->sendNoteOn(this->getKey(), this->getVelocity());
+    if (sendMidiMessage)
+    {
+        this->sendNoteOn(this->getKey(), this->getVelocity());
+    }
 }
 
-bool NoteComponent::getInitializingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const
+bool NoteComponent::getDraggingResizingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const
 {
     int newKey = -1;
     float newBeat = -1;
@@ -782,7 +810,7 @@ bool NoteComponent::getInitializingDelta(const MouseEvent &e, float &deltaLength
     return (keyChanged || lengthChanged);
 }
 
-Note NoteComponent::continueInitializing(float deltaLength, int deltaKey, bool sendMidi) const noexcept
+Note NoteComponent::continueDraggingResizing(float deltaLength, int deltaKey, bool sendMidi) const noexcept
 {
     const int newKey = this->anchor.getKey() + deltaKey;
     const float newLength = this->anchor.getLength() + deltaLength;
@@ -795,7 +823,7 @@ Note NoteComponent::continueInitializing(float deltaLength, int deltaKey, bool s
     return this->getNote().withKeyLength(newKey, newLength);
 }
 
-void NoteComponent::endInitializing()
+void NoteComponent::endDraggingResizing()
 {
     this->stopSound();
     this->state = State::None;

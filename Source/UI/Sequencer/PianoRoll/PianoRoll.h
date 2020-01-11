@@ -92,7 +92,6 @@ public:
     // Note management
     //===------------------------------------------------------------------===//
 
-    void addNote(int key, float beat, float length, float velocity);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(int key, float beat, float length) const;
     bool isNoteVisible(int key, float beat, float length) const;
