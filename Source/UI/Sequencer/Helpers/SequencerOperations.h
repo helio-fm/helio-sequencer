@@ -85,7 +85,10 @@ struct SequencerOperations final
 
     static void shiftBeatRelative(Lasso &selection, float deltaBeat,
         bool shouldCheckpoint = true);
-    
+
+    static void shiftLengthRelative(Lasso &selection, float deltaLength,
+        bool shouldCheckpoint = true);
+
     static void invertChord(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);
 

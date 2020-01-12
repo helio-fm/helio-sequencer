@@ -1679,15 +1679,51 @@ void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, b
             groupAfter.add(newNote);
         }
         
-        if (groupBefore.size() > 0)
+        if (groupBefore.size() > 0 && !didCheckpoint)
         {
-            if (! didCheckpoint)
-            {
-                pianoLayer->checkpoint(transactionId);
-                didCheckpoint = true;
-            }
+            pianoLayer->checkpoint(transactionId);
+            didCheckpoint = true;
         }
         
+        pianoLayer->changeGroup(groupBefore, groupAfter, true);
+    }
+}
+
+void SequencerOperations::shiftLengthRelative(Lasso &selection, float deltaLength, bool shouldCheckpoint)
+{
+    if (selection.getNumSelected() == 0 || deltaLength == 0.f) { return; }
+
+    auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
+    const auto operationId = deltaLength > 0 ? CommandIDs::LengthIncrease : CommandIDs::LengthDecrease;
+    const auto &transactionId = selection.generateTransactionId(operationId);
+    const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
+
+    for (const auto &s : selection.getGroupedSelections())
+    {
+        const auto trackSelection(s.second);
+        PianoSequence *pianoLayer = getPianoSequence(trackSelection);
+        jassert(pianoLayer);
+
+        const int numSelected = trackSelection->size();
+        PianoChangeGroup groupBefore, groupAfter;
+
+        for (int i = 0; i < numSelected; ++i)
+        {
+            auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+            groupBefore.add(nc->getNote());
+
+            Note newNote(nc->getNote().withDeltaLength(deltaLength));
+            groupAfter.add(newNote);
+        }
+
+        if (groupBefore.size() > 0 && !didCheckpoint)
+        {
+            pianoLayer->checkpoint(transactionId);
+            didCheckpoint = true;
+        }
+
         pianoLayer->changeGroup(groupBefore, groupAfter, true);
     }
 }

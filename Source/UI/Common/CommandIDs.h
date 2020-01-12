@@ -142,8 +142,8 @@ namespace CommandIDs
 
         BeatShiftLeft                   = 0x4020,
         BeatShiftRight                  = 0x4021,
-        BarShiftLeft                    = 0x4022,
-        BarShiftRight                   = 0x4023,
+        LengthIncrease                  = 0x4022,
+        LengthDecrease                  = 0x4023,
         KeyShiftUp                      = 0x4024,
         KeyShiftDown                    = 0x4025,
         OctaveShiftUp                   = 0x4026,

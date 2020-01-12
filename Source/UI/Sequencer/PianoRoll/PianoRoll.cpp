@@ -1021,11 +1021,11 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::BeatShiftRight:
         SequencerOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
         break;
-    case CommandIDs::BarShiftLeft:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -1.f);
+    case CommandIDs::LengthIncrease:
+        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
         break;
-    case CommandIDs::BarShiftRight:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
+    case CommandIDs::LengthDecrease:
+        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
         break;
     case CommandIDs::KeyShiftUp:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), 1, true, &this->getTransport());
