@@ -1016,16 +1016,16 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::BeatShiftLeft:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
+        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::BeatShiftRight:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
+        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::LengthIncrease:
-        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
+        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::LengthDecrease:
-        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
+        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::KeyShiftUp:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), 1, true, &this->getTransport());

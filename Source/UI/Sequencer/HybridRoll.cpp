@@ -657,6 +657,30 @@ void HybridRoll::setBeatWidth(const float newBeatWidth)
     this->updateBounds();
 }
 
+float HybridRoll::getMinVisibleBeatForCurrentZoomLevel() const
+{
+    // min visible beat should start from 1/16, which is the max roll resolution
+    // pow-of-2     beat width   min note length
+    // 4            16           ...
+    // 5            32           1
+    // 6            64           1/2
+    // 7            128          1/4
+    // 8            256          1/8
+    // 9            512          1/16
+    // 10           1024         ...
+
+    // note that computeVisibleBeatLines also uses (nearestPowTwo - 5.f) to set density,
+    // so that the minimum visible beat is now consistent with visible snaps;
+    // probably these calculations should be refactored and put in one place:
+    const float nearestPowOfTwo = ceilf(log(this->beatWidth) / log(2.f));
+    const float minBeat = 1.f / powf(2.f, jlimit(0.f, 4.f, nearestPowOfTwo - 5.f));
+
+    jassert(minBeat <= 1.f);
+    jassert(minBeat >= 1.f / TICKS_PER_BEAT);
+
+    return minBeat;
+}
+
 #define MIN_BAR_WIDTH 14
 #define MIN_BEAT_WIDTH 8
 

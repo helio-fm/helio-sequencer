@@ -633,10 +633,10 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::tuneClips(this->getLassoSelection(), -0.1f);
         break;
     case CommandIDs::BeatShiftLeft:
-        PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::BeatShiftRight:
-        PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
+        PatternOperations::shiftBeatRelative(this->getLassoSelection(), this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::ToggleMuteClips:
         PatternOperations::toggleMuteClips(this->getLassoSelection());

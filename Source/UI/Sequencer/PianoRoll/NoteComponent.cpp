@@ -819,31 +819,6 @@ bool NoteComponent::getDraggingResizingDelta(const MouseEvent &e, float &deltaLe
     return (keyChanged || lengthChanged);
 }
 
-inline float getMinLengthForZoomLevel(float beatWidth)
-{
-    // min length should be from 1/16 (which is the max roll resolution), up to 1:
-    // pow-of-2     beat width   min note length
-    // 4            16           ...
-    // 5            32           1
-    // 6            64           1/2
-    // 7            128          1/4
-    // 8            256          1/8
-    // 9            512          1/16
-    // 10           1024         ...
-
-    // note that snaps also use (nearestPowTwo - 5.f) to define snap density
-    // (see HybridRoll::computeVisibleBeatLines),
-    // so that the minimum note length is now consistent with visible snaps;
-    // probably these calculations should be refactored and put in one place:
-    const float nearestPowOfTwo = ceilf(log(beatWidth) / log(2.f));
-    const float minLength = 1.f / powf(2.f, jlimit(0.f, 4.f, nearestPowOfTwo - 5.f));
-
-    jassert(minLength <= 1.f);
-    jassert(minLength >= 1.f / TICKS_PER_BEAT);
-
-    return minLength;
-}
-
 Note NoteComponent::continueDraggingResizing(float deltaLength, int deltaKey, bool sendMidi) const noexcept
 {
     const int newKey = this->anchor.getKey() + deltaKey;
@@ -851,7 +826,7 @@ Note NoteComponent::continueDraggingResizing(float deltaLength, int deltaKey, bo
     // the minimal length should depend on the current zoom level:
     // when zoomed closer, we need to be able to edit shorter lengths,
     // when zoomed away, the length snaps should be convenient == proportionally larger
-    const float minLength = getMinLengthForZoomLevel(this->roll.getBeatWidth());
+    const float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();
     const float newLength = jmax(this->anchor.getLength() + deltaLength, minLength);
 
     if (sendMidi)
@@ -904,7 +879,7 @@ bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLengt
 Note NoteComponent::continueResizingRight(float deltaLength) const noexcept
 {
     // the minimal length should depend on the current zoom level:
-    const float minLength = getMinLengthForZoomLevel(this->roll.getBeatWidth());
+    const float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();
     const float newLength = jmax(this->anchor.getLength() + deltaLength, minLength);
     return this->getNote().withLength(newLength);
 }
@@ -949,7 +924,7 @@ bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength
 Note NoteComponent::continueResizingLeft(float deltaLength) const noexcept
 {
     // the minimal length should depend on the current zoom level:
-    const float minLength = getMinLengthForZoomLevel(this->roll.getBeatWidth());
+    const float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();
     const float newLength = jmax(this->anchor.getLength() + deltaLength, minLength);
     const float newBeat = this->anchor.getBeat() + this->anchor.getLength() - newLength;
     return this->getNote().withBeat(newBeat).withLength(newLength);

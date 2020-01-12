@@ -197,6 +197,8 @@ public:
     virtual void setBeatWidth(const float newBeatWidth);
     inline float getBeatWidth() const noexcept { return this->beatWidth; }
 
+    float getMinVisibleBeatForCurrentZoomLevel() const;
+
     inline const Array<float> &getVisibleBars() const noexcept  { return this->visibleBars; }
     inline const Array<float> &getVisibleBeats() const noexcept { return this->visibleBeats; }
     inline const Array<float> &getVisibleSnaps() const noexcept { return this->visibleSnaps; }
