@@ -632,13 +632,9 @@
       <GROUP id="{A07E2735-B226-A3C9-CC16-ED6079B86FEB}" name="UI">
         <GROUP id="{079417AE-DCB0-E5C9-4E06-B34561861CD5}" name="Common">
           <GROUP id="{5E8A26F1-C376-367D-69DE-DAB9337D727A}" name="AudioMonitors">
-            <FILE id="Mg3tPt" name="GenericAudioMonitorComponent.cpp" compile="1"
-                  resource="0" file="../../Source/UI/Common/AudioMonitors/GenericAudioMonitorComponent.cpp"/>
-            <FILE id="I3juEI" name="GenericAudioMonitorComponent.h" compile="0"
-                  resource="0" file="../../Source/UI/Common/AudioMonitors/GenericAudioMonitorComponent.h"/>
-            <FILE id="i3NnWB" name="SpectrogramAudioMonitorComponent.cpp" compile="1"
+            <FILE id="Mg3tPt" name="SpectrogramAudioMonitorComponent.cpp" compile="1"
                   resource="0" file="../../Source/UI/Common/AudioMonitors/SpectrogramAudioMonitorComponent.cpp"/>
-            <FILE id="FOsk97" name="SpectrogramAudioMonitorComponent.h" compile="0"
+            <FILE id="I3juEI" name="SpectrogramAudioMonitorComponent.h" compile="0"
                   resource="0" file="../../Source/UI/Common/AudioMonitors/SpectrogramAudioMonitorComponent.h"/>
             <FILE id="iqjS16" name="WaveformAudioMonitorComponent.cpp" compile="1"
                   resource="0" file="../../Source/UI/Common/AudioMonitors/WaveformAudioMonitorComponent.cpp"/>

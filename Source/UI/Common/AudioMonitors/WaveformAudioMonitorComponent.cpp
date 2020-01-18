@@ -26,10 +26,9 @@
 #define WAVEFORM_METER_MINDB (-69.0f)
 
 WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
-    Thread("Volume Component"),
+    Thread("WaveformAudioMonitor"),
     colour(findDefaultColour(ColourIDs::AudioMonitor::foreground)),
-    audioMonitor(targetAnalyzer),
-    skewTime(0)
+    audioMonitor(targetAnalyzer)
 {
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
@@ -78,7 +77,10 @@ void WaveformAudioMonitorComponent::run()
         this->lRmsBuffer[i] = this->audioMonitor->getRootMeanSquare(0);
         this->rRmsBuffer[i] = this->audioMonitor->getRootMeanSquare(1);
 
-        this->triggerAsyncUpdate();
+        if (this->isVisible())
+        {
+            this->triggerAsyncUpdate();
+        }
 
         const double a = Time::getMillisecondCounterHiRes();
         this->skewTime = int(a - b);

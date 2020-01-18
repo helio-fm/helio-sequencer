@@ -494,9 +494,6 @@
     <ClCompile Include="..\..\Source\Core\App.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2901,7 +2898,6 @@
     <ClInclude Include="..\..\Source\Core\Workspace\UserProfile.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\Workspace.h"/>
     <ClInclude Include="..\..\Source\Core\App.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\WaveformAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\Origami.h"/>

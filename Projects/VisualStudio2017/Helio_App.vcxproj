@@ -327,7 +327,6 @@
     <ClCompile Include="..\..\Source\Core\Workspace\UserProfile.cpp"/>
     <ClCompile Include="..\..\Source\Core\Workspace\Workspace.cpp"/>
     <ClCompile Include="..\..\Source\Core\App.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\WaveformAudioMonitorComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\Origami\Origami.cpp"/>
@@ -2390,7 +2389,6 @@
     <ClInclude Include="..\..\Source\Core\Workspace\UserProfile.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\Workspace.h"/>
     <ClInclude Include="..\..\Source\Core\App.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\WaveformAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\Origami.h"/>

@@ -124,7 +124,6 @@
 #include "../../Source/Core/Workspace/UserProfile.cpp"
 #include "../../Source/Core/Workspace/Workspace.cpp"
 #include "../../Source/Core/App.cpp"
-#include "../../Source/UI/Common/AudioMonitors/GenericAudioMonitorComponent.cpp"
 #include "../../Source/UI/Common/AudioMonitors/SpectrogramAudioMonitorComponent.cpp"
 #include "../../Source/UI/Common/AudioMonitors/WaveformAudioMonitorComponent.cpp"
 #include "../../Source/UI/Common/Origami/Origami.cpp"

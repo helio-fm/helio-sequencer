@@ -55,7 +55,7 @@ private:
     Atomic<float> lRmsBuffer[WAVEFORM_METER_BUFFER_SIZE];
     Atomic<float> rRmsBuffer[WAVEFORM_METER_BUFFER_SIZE];
 
-    int skewTime;
+    int skewTime = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformAudioMonitorComponent)
 

@@ -26,7 +26,6 @@
 #include "SequencerLayout.h"
 #include "TreeNode.h"
 #include "SerializationKeys.h"
-#include "GenericAudioMonitorComponent.h"
 #include "WaveformAudioMonitorComponent.h"
 #include "SpectrogramAudioMonitorComponent.h"
 #include "ModeIndicatorComponent.h"
@@ -62,7 +61,7 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->modeIndicatorSelector.reset(new ModeIndicatorTrigger());
     this->addAndMakeVisible(modeIndicatorSelector.get());
 
-    this->modeIndicator.reset(new ModeIndicatorComponent(3));
+    this->modeIndicator.reset(new ModeIndicatorComponent(2));
     this->addAndMakeVisible(modeIndicator.get());
 
     this->switchPatternModeButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)));
@@ -91,15 +90,14 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
 
-    this->genericMonitor = makeUnique<GenericAudioMonitorComponent>(nullptr);
+    // todo save the default monitor option in global UI flags
     this->waveformMonitor = makeUnique<WaveformAudioMonitorComponent>(nullptr);
     this->spectrogramMonitor = makeUnique<SpectrogramAudioMonitorComponent>(nullptr);
 
-    this->addChildComponent(this->genericMonitor.get());
     this->addChildComponent(this->waveformMonitor.get());
     this->addChildComponent(this->spectrogramMonitor.get());
 
-    this->genericMonitor->setVisible(true);
+    this->waveformMonitor->setVisible(true);
     //[/UserPreSize]
 
     this->setSize(48, 640);
@@ -118,7 +116,6 @@ SequencerSidebarLeft::~SequencerSidebarLeft()
 
     this->spectrogramMonitor = nullptr;
     this->waveformMonitor = nullptr;
-    this->genericMonitor = nullptr;
 
     //tree->setRootItem(nullptr);
     //[/Destructor_pre]
@@ -154,13 +151,11 @@ void SequencerSidebarLeft::paint (Graphics& g)
 void SequencerSidebarLeft::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    this->genericMonitor->setSize(this->getWidth(), getAudioMonitorHeight());
-    this->waveformMonitor->setSize(this->getWidth(), getAudioMonitorHeight());
-    this->spectrogramMonitor->setSize(this->getWidth(), getAudioMonitorHeight());
+    this->waveformMonitor->setBounds(0, this->getHeight() - getAudioMonitorHeight(),
+        this->getWidth(), getAudioMonitorHeight());
 
-    this->genericMonitor->setTopLeftPosition(0, this->getHeight() - getAudioMonitorHeight());
-    this->waveformMonitor->setTopLeftPosition(0, this->getHeight() - getAudioMonitorHeight());
-    this->spectrogramMonitor->setTopLeftPosition(0, this->getHeight() - getAudioMonitorHeight());
+    this->spectrogramMonitor->setBounds(0, this->getHeight() - getAudioMonitorHeight(),
+        this->getWidth(), getAudioMonitorHeight());
     //[/UserPreResize]
 
     shadow->setBounds(0, getHeight() - 71 - 6, getWidth() - 0, 6);
@@ -182,7 +177,6 @@ void SequencerSidebarLeft::setAudioMonitor(AudioMonitor *audioMonitor)
 {
     this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);
     this->waveformMonitor->setTargetAnalyzer(audioMonitor);
-    this->genericMonitor->setTargetAnalyzer(audioMonitor);
 }
 
 void SequencerSidebarLeft::handleChangeMode()
@@ -190,12 +184,9 @@ void SequencerSidebarLeft::handleChangeMode()
     switch (this->modeIndicator->scrollToNextMode())
     {
     case 0:
-        this->switchMonitorsAnimated(this->spectrogramMonitor.get(), this->genericMonitor.get());
+        this->switchMonitorsAnimated(this->spectrogramMonitor.get(), this->waveformMonitor.get());
         break;
     case 1:
-        this->switchMonitorsAnimated(this->genericMonitor.get(), this->waveformMonitor.get());
-        break;
-    case 2:
         this->switchMonitorsAnimated(this->waveformMonitor.get(), this->spectrogramMonitor.get());
         break;
     default:
@@ -353,7 +344,7 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <GENERICCOMPONENT name="" id="4b6240e11495d88b" memberName="modeIndicator" virtualName=""
                     explicitFocusOrder="0" pos="0 4Rr 0M 5" class="ModeIndicatorComponent"
-                    params="3"/>
+                    params="2"/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="switchPatternModeButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)"/>

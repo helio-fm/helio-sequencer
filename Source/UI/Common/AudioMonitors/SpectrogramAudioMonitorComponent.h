@@ -17,44 +17,63 @@
 
 #pragma once
 
-class AudioMonitor;
+#include "AudioMonitor.h"
 
-#include "SequencerLayout.h"
-
-#define SPECTROGRAM_BUFFER_SIZE (SEQUENCER_SIDEBAR_WIDTH / 2)
-#define SPECTROGRAM_NUM_BANDS (50)
+#define GENERIC_METER_NUM_BANDS 11
 
 class SpectrogramAudioMonitorComponent final :
     public Component, private Thread, private AsyncUpdater
 {
 public:
 
-    explicit SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer);
+    explicit SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> monitor);
     ~SpectrogramAudioMonitorComponent() override;
-
-    void setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer);
-
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-
+    
+    void setTargetAnalyzer(WeakReference<AudioMonitor> monitor);
+        
+    void resized() override;
     void paint(Graphics &g) override;
 
 private:
+    
+    class SpectrumBand final
+    {
+    public:
+        
+        SpectrumBand();
+        void reset();
+        inline void processSignal(float v, float h, uint32 timeNow);
+        
+        float value;
+        float valueDecay;
+        uint32 valueDecayStart;
 
+        float peak;
+        float peakDecay;
+        float peakDecayColour;
+        uint32 peakDecayStart;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumBand);
+    };
+    
+private:
+    
     void run() override;
     void handleAsyncUpdate() override;
     
     const Colour colour;
 
     WeakReference<AudioMonitor> audioMonitor;
+    OwnedArray<SpectrumBand> bands;
+
+    UniquePointer<SpectrumBand> lPeakBand;
+    UniquePointer<SpectrumBand> rPeakBand;
+
+    Atomic<float> values[GENERIC_METER_NUM_BANDS];
+    Atomic<float> lPeak;
+    Atomic<float> rPeak;
+
+    int skewTime = 0;
     
-    Atomic<float> peakBuffer[SPECTROGRAM_BUFFER_SIZE];
-    Atomic<float> spectrum[SPECTROGRAM_BUFFER_SIZE][SPECTROGRAM_NUM_BANDS];
-
-    Atomic<int> head;
-    int skewTime;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrogramAudioMonitorComponent)
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrogramAudioMonitorComponent);
 };

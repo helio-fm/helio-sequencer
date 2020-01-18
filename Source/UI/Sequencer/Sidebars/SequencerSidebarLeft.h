@@ -18,7 +18,6 @@
 #pragma once
 
 //[Headers]
-class GenericAudioMonitorComponent;
 class WaveformAudioMonitorComponent;
 class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
@@ -67,7 +66,6 @@ private:
     ComponentAnimator animator;
     void switchMonitorsAnimated(Component *oldOne, Component *newOne);
 
-    UniquePointer<GenericAudioMonitorComponent> genericMonitor;
     UniquePointer<WaveformAudioMonitorComponent> waveformMonitor;
     UniquePointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
 

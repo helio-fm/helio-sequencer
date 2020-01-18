@@ -931,9 +931,6 @@
     <ClCompile Include="..\..\Source\Core\App.cpp">
       <Filter>Helio\Source\Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.cpp">
-      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.cpp">
       <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClCompile>
@@ -3764,9 +3761,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\App.h">
       <Filter>Helio\Source\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.h">
-      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.h">
       <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>

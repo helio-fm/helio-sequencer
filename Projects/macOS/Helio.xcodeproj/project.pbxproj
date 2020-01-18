@@ -2119,13 +2119,6 @@
 			path = ../../Source/UI/Common/MenuButton.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		54AD4568DA8DB9B2A11FDCAD = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = GenericAudioMonitorComponent.h;
-			path = ../../Source/UI/Common/AudioMonitors/GenericAudioMonitorComponent.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		54DFBC5F9A390D72598FB531 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -5486,13 +5479,6 @@
 			path = ../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		F1FDCC0480D63915717633EE = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = GenericAudioMonitorComponent.cpp;
-			path = ../../Source/UI/Common/AudioMonitors/GenericAudioMonitorComponent.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		F21EB9F5E3BBD96FF967D919 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -6418,8 +6404,6 @@
 		A107143C6394215BF4A34FBE = {
 			isa = PBXGroup;
 			children = (
-				F1FDCC0480D63915717633EE,
-				54AD4568DA8DB9B2A11FDCAD,
 				A21D2F5AD27A47B7121EAB1A,
 				8C02F18E5B3C188138F2F9E8,
 				3E7191FFB38935DD0335D27E,
