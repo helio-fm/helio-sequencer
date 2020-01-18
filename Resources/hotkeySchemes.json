@@ -101,8 +101,12 @@
         { "receiver": "PianoRoll", "command": "CutEvents", "key": "Control + X" },
         { "receiver": "PianoRoll", "command": "CutEvents", "key": "Shift + Delete" },
 
-        // Cut to new track
-        { "receiver": "PianoRoll", "command": "NewTrackFromSelection", "key": "+" },
+        // Cut selection to the new track
+        { "receiver": "PianoRoll", "command": "NewTrackFromSelection", "key": "Control + Shift + X" },
+        { "receiver": "PianoRoll", "command": "NewTrackFromSelection", "key": "Command + Shift + X" },
+
+        // Duplicate track
+        { "receiver": "PianoRoll", "command": "DuplicateTrack", "key": "+" },
 
         // Delete
         { "receiver": "PianoRoll", "command": "DeleteEvents", "key": "X" },
@@ -200,26 +204,13 @@
         { "receiver": "PatternRoll", "command": "Redo", "key": "Command + Y" },
         { "receiver": "PatternRoll", "command": "Redo", "key": "Control + Y" },
 
-        // Copy
-        { "receiver": "PatternRoll", "command": "CopyClips", "key": "Command + C" },
-        { "receiver": "PatternRoll", "command": "CopyClips", "key": "Control + C" },
-        { "receiver": "PatternRoll", "command": "CopyClips", "key": "Command + Insert" },
-        { "receiver": "PatternRoll", "command": "CopyClips", "key": "Control + Insert" },
-
-        // Cut
-        { "receiver": "PatternRoll", "command": "CutClips", "key": "Command + X" },
-        { "receiver": "PatternRoll", "command": "CutClips", "key": "Control + X" },
-        { "receiver": "PatternRoll", "command": "CutClips", "key": "Shift + Delete" },
-
-        // Delete
+        // Delete clips
         { "receiver": "PatternRoll", "command": "DeleteClips", "key": "X" },
         { "receiver": "PatternRoll", "command": "DeleteClips", "key": "Delete" },
         { "receiver": "PatternRoll", "command": "DeleteClips", "key": "Backspace" },
 
-        // Paste
-        { "receiver": "PatternRoll", "command": "PasteClips", "key": "Command + V" },
-        { "receiver": "PatternRoll", "command": "PasteClips", "key": "Control + V" },
-        { "receiver": "PatternRoll", "command": "PasteClips", "key": "Shift + Insert" },
+        // Duplicate track
+        { "receiver": "PatternRoll", "command": "DuplicateTrack", "key": "+" },
 
         // Playback control
         { "receiver": "PatternRoll", "command": "TransportPausePlayback", "key": "Escape" },

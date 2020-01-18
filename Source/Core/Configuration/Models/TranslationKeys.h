@@ -211,6 +211,7 @@ namespace I18n
         static const Identifier trackChangeInstrument = "menu::track::change::instrument";
         static const Identifier trackDelete = "menu::track::delete";
         static const Identifier trackRename = "menu::track::rename";
+        static const Identifier trackDuplicate = "menu::track::duplicate";
         static const Identifier trackSelectall = "menu::track::selectall";
         static const Identifier tuplet1 = "menu::tuplet::1";
         static const Identifier tuplet2 = "menu::tuplet::2";

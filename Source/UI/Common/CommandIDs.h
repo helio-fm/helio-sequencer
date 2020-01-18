@@ -49,6 +49,7 @@ namespace CommandIDs
         SelectAllEvents                 = 0x1002,
         SelectAllClips                  = 0x1003,
         NewTrackFromSelection           = 0x1004,
+        DuplicateTrack                  = 0x1005,
 
         Tuplet1                         = 0x1500,
         Tuplet2                         = 0x1501,
