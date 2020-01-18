@@ -2379,6 +2379,13 @@
 			path = ../../Source/Core/Audio/AudioCore.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		617761CA23B28352AD72BE99 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UndoActionIDs.h;
+			path = ../../Source/Core/Undo/UndoActionIDs.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		61F0F5481B6FC0DDA7DAAD87 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -6332,6 +6339,7 @@
 			isa = PBXGroup;
 			children = (
 				495D4D22594A77FC9972C0BF,
+				617761CA23B28352AD72BE99,
 				F7B5FD13BD39A67CFC20FDA4,
 				382A9FB571125C41BF79129C,
 			);

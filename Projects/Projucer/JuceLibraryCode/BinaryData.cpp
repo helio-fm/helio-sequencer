@@ -12187,8 +12187,12 @@ static const unsigned char temp_binary_data_101[] =
 "        { \"receiver\": \"PianoRoll\", \"command\": \"CutEvents\", \"key\": \"Control + X\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"CutEvents\", \"key\": \"Shift + Delete\" },\n"
 "\n"
-"        // Cut to new track\n"
-"        { \"receiver\": \"PianoRoll\", \"command\": \"NewTrackFromSelection\", \"key\": \"+\" },\n"
+"        // Cut selection to the new track\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"NewTrackFromSelection\", \"key\": \"Control + Shift + X\" },\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"NewTrackFromSelection\", \"key\": \"Command + Shift + X\" },\n"
+"\n"
+"        // Duplicate track\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"DuplicateTrack\", \"key\": \"+\" },\n"
 "\n"
 "        // Delete\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"DeleteEvents\", \"key\": \"X\" },\n"
@@ -12286,26 +12290,13 @@ static const unsigned char temp_binary_data_101[] =
 "        { \"receiver\": \"PatternRoll\", \"command\": \"Redo\", \"key\": \"Command + Y\" },\n"
 "        { \"receiver\": \"PatternRoll\", \"command\": \"Redo\", \"key\": \"Control + Y\" },\n"
 "\n"
-"        // Copy\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"CopyClips\", \"key\": \"Command + C\" },\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"CopyClips\", \"key\": \"Control + C\" },\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"CopyClips\", \"key\": \"Command + Insert\" },\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"CopyClips\", \"key\": \"Control + Insert\" },\n"
-"\n"
-"        // Cut\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"CutClips\", \"key\": \"Command + X\" },\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"CutClips\", \"key\": \"Control + X\" },\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"CutClips\", \"key\": \"Shift + Delete\" },\n"
-"\n"
-"        // Delete\n"
+"        // Delete clips\n"
 "        { \"receiver\": \"PatternRoll\", \"command\": \"DeleteClips\", \"key\": \"X\" },\n"
 "        { \"receiver\": \"PatternRoll\", \"command\": \"DeleteClips\", \"key\": \"Delete\" },\n"
 "        { \"receiver\": \"PatternRoll\", \"command\": \"DeleteClips\", \"key\": \"Backspace\" },\n"
 "\n"
-"        // Paste\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"PasteClips\", \"key\": \"Command + V\" },\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"PasteClips\", \"key\": \"Control + V\" },\n"
-"        { \"receiver\": \"PatternRoll\", \"command\": \"PasteClips\", \"key\": \"Shift + Insert\" },\n"
+"        // Duplicate track\n"
+"        { \"receiver\": \"PatternRoll\", \"command\": \"DuplicateTrack\", \"key\": \"+\" },\n"
 "\n"
 "        // Playback control\n"
 "        { \"receiver\": \"PatternRoll\", \"command\": \"TransportPausePlayback\", \"key\": \"Escape\" },\n"
@@ -14606,7 +14597,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 17200; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 16638; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3513; return scales_json;
         case 0xf8655f25:  numBytes = 142055; return translations_json;
         default: break;

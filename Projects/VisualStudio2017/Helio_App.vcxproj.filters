@@ -3687,6 +3687,9 @@
     <ClInclude Include="..\..\Source\Core\Undo\Actions\UndoAction.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Undo\UndoActionIDs.h">
+      <Filter>Helio\Source\Core\Undo</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Undo\UndoStack.h">
       <Filter>Helio\Source\Core\Undo</Filter>
     </ClInclude>

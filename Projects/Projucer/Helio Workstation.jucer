@@ -549,6 +549,7 @@
                   file="../../Source/Core/Undo/Actions/TimeSignatureEventActions.h"/>
             <FILE id="j3wR8r" name="UndoAction.h" compile="0" resource="0" file="../../Source/Core/Undo/Actions/UndoAction.h"/>
           </GROUP>
+          <FILE id="HICkn5" name="UndoActionIDs.h" compile="0" resource="0" file="../../Source/Core/Undo/UndoActionIDs.h"/>
           <FILE id="PMFht6" name="UndoStack.cpp" compile="1" resource="0" file="../../Source/Core/Undo/UndoStack.cpp"/>
           <FILE id="FqJPuI" name="UndoStack.h" compile="0" resource="0" file="../../Source/Core/Undo/UndoStack.h"/>
         </GROUP>

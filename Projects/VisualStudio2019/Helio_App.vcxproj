@@ -2873,6 +2873,7 @@
     <ClInclude Include="..\..\Source\Core\Undo\Actions\PianoTrackActions.h"/>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h"/>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\UndoAction.h"/>
+    <ClInclude Include="..\..\Source\Core\Undo\UndoActionIDs.h"/>
     <ClInclude Include="..\..\Source\Core\Undo\UndoStack.h"/>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\AutomationTrackDiffLogic.h"/>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\DiffLogic.h"/>
