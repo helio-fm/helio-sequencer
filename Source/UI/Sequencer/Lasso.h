@@ -19,6 +19,7 @@
 
 #include "SelectableComponent.h"
 #include "MidiSequence.h"
+#include "UndoActionIDs.h"
 
 class SelectionProxyArray final : public Array<SelectableComponent *>, public ReferenceCountedObject
 {
@@ -69,9 +70,9 @@ public:
     // and some transform operations here will use that id, combined with operation id
     // to identify the transaction and see if the last one was exactly of the same type and target,
     // and checkpoint could be skipped.
-    String generateTransactionId(int commandId) const
+    UndoActionId generateLassoTransactionId(int actionId) const
     {
-        return String(commandId) + String(this->getId());
+        return (actionId * UndoActionIDs::MaxUndoActionId) + this->getId();
     }
     
     // Grouped selections are selected events, split by track,

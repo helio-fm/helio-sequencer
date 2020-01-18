@@ -57,14 +57,14 @@ void MidiSequence::sort()
 // Undoing
 //===----------------------------------------------------------------------===//
 
-String MidiSequence::getLastUndoDescription() const
+UndoActionId MidiSequence::getLastUndoActionId() const
 {
-    return this->getUndoStack()->getUndoDescription();
+    return this->getUndoStack()->getUndoActionId();
 }
 
-void MidiSequence::checkpoint(const String &transactionName) noexcept
+void MidiSequence::checkpoint(UndoActionId id) noexcept
 {
-    this->getUndoStack()->beginNewTransaction(transactionName);
+    this->getUndoStack()->beginNewTransaction(id);
 }
 
 void MidiSequence::undo()

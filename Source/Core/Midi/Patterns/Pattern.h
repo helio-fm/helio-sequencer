@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Clip.h"
+#include "UndoActionIDs.h"
 
 class ProjectEventDispatcher;
 class ProjectNode;
@@ -43,8 +44,8 @@ public:
     // Undoing
     //===------------------------------------------------------------------===//
 
-    String getLastUndoDescription() const;
-    void checkpoint(const String &transactionName = {});
+    UndoActionId getLastUndoActionId() const;
+    void checkpoint(UndoActionId id = 0);
     void undo();
     void redo();
 

@@ -17,31 +17,34 @@
 
 #pragma once
 
-class MidiTrackSource;
+using UndoActionId = int64;
 
-class UndoAction : public Serializable
+namespace UndoActionIDs
 {
-public:
-
-    explicit UndoAction(MidiTrackSource &trackSource) noexcept : source(trackSource) {}
-    ~UndoAction() override {}
-
-    virtual bool perform() = 0;
-    virtual bool undo() = 0;
-
-    virtual int getSizeInUnits()
+    enum Id
     {
-        return 10;
-    }
+        None = 0x0000,
 
-    virtual UndoAction *createCoalescedAction(UndoAction* nextAction)
-    {
-        (void) nextAction;
-        return nullptr;
-    }
-    
-protected:
-    
-    MidiTrackSource &source;
+        KeyShiftUp = 0x0001,
+        KeyShiftDown = 0x0002,
 
-};
+        BeatShiftRight = 0x0003,
+        BeatShiftLeft = 0x0004,
+
+        LengthIncrease = 0x0005,
+        LengthDecrease = 0x0006,
+
+        ClipTransposeUp = 0x0010,
+        ClipTransposeDown = 0x0011,
+
+        ClipVolumeUp = 0x0012,
+        ClipVolumeDown = 0x0013,
+
+        AddNewTrack = 0x0020,
+
+        // ...
+
+        MaxUndoActionId = 0x0100
+    };
+    
+} // namespace UndoActionIDs

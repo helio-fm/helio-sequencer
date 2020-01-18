@@ -33,11 +33,11 @@
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
-UndoStack::ActionSet::ActionSet(ProjectNode &project, const String &transactionName) :
+UndoStack::Transaction::Transaction(ProjectNode &project, UndoActionId transactionId) :
     project(project),
-    name(transactionName) {}
+    id(transactionId) {}
     
-bool UndoStack::ActionSet::perform() const
+bool UndoStack::Transaction::perform() const
 {
     for (int i = 0; i < this->actions.size(); ++i)
     {
@@ -50,7 +50,7 @@ bool UndoStack::ActionSet::perform() const
     return true;
 }
     
-bool UndoStack::ActionSet::undo() const
+bool UndoStack::Transaction::undo() const
 {
     for (int i = this->actions.size(); --i >= 0;)
     {
@@ -63,7 +63,7 @@ bool UndoStack::ActionSet::undo() const
     return true;
 }
     
-int UndoStack::ActionSet::getTotalSize() const
+int UndoStack::Transaction::getTotalSize() const
 {
     int total = 0;
     for (int i = this->actions.size(); --i >= 0;)
@@ -74,7 +74,7 @@ int UndoStack::ActionSet::getTotalSize() const
     return total;
 }
     
-SerializedData UndoStack::ActionSet::serialize() const
+SerializedData UndoStack::Transaction::serialize() const
 {
     SerializedData tree(Serialization::Undo::transaction);
 
@@ -86,13 +86,13 @@ SerializedData UndoStack::ActionSet::serialize() const
     return tree;
 }
     
-void UndoStack::ActionSet::deserialize(const SerializedData &data)
+void UndoStack::Transaction::deserialize(const SerializedData &data)
 {
     this->reset();
 
     for (const auto &childAction : data)
     {
-        if (auto *action = createUndoActionsByTagName(childAction.getType()))
+        if (auto *action = createUndoActionByTag(childAction.getType()))
         {
             action->deserialize(childAction);
             this->actions.add(action);
@@ -100,12 +100,12 @@ void UndoStack::ActionSet::deserialize(const SerializedData &data)
     }
 }
     
-void UndoStack::ActionSet::reset()
+void UndoStack::Transaction::reset()
 {
     this->actions.clear();
 }
 
-UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &tagName)
+UndoAction *UndoStack::Transaction::createUndoActionByTag(const Identifier &tagName) const
 {
     using namespace Serialization;
 
@@ -161,10 +161,6 @@ UndoStack::UndoStack(ProjectNode &parentProject,
     int maxNumberOfUnitsToKeep,
     int minimumTransactions) :
     project(parentProject),
-    totalUnitsStored(0),
-    nextIndex(0),
-    newTransaction(true),
-    reentrancyCheck(false),
     maxNumUnitsToKeep(maxNumberOfUnitsToKeep),
     minimumTransactionsToKeep(minimumTransactions) {}
 
@@ -176,13 +172,13 @@ void UndoStack::clearUndoHistory()
     this->sendChangeMessage();
 }
 
-bool UndoStack::perform(UndoAction *const newAction, const String &actionName)
+bool UndoStack::perform(UndoAction *const newAction, UndoActionId transactionId)
 {
     if (this->perform(newAction))
     {
-        if (actionName.isNotEmpty())
+        if (transactionId != 0)
         {
-            this->setCurrentTransactionName(actionName);
+            this->setCurrentUndoActionId(transactionId);
         }
         
         return true;
@@ -206,9 +202,9 @@ bool UndoStack::perform(UndoAction *const newAction)
 
         if (action->perform())
         {
-            ActionSet *actionSet = this->getCurrentSet();
+            auto *actionSet = this->getCurrentSet();
             
-            if (actionSet != nullptr && !this->newTransaction)
+            if (actionSet != nullptr && !this->hasNewEmptyTransaction)
             {
                 for (signed int i = (actionSet->actions.size() - 1); i >= 0; --i)
                 {
@@ -226,14 +222,14 @@ bool UndoStack::perform(UndoAction *const newAction)
             }
             else
             {
-                actionSet = new ActionSet(this->project, newTransactionName);
-                transactions.insert(nextIndex, actionSet);
+                actionSet = new Transaction(this->project, this->newUndoActionId);
+                this->transactions.insert(nextIndex, actionSet);
                 ++nextIndex;
             }
             
             this->totalUnitsStored += action->getSizeInUnits();
             actionSet->actions.add(action.release());
-            this->newTransaction = false;
+            this->hasNewEmptyTransaction = false;
             
             this->clearFutureTransactions();
             this->sendChangeMessage();
@@ -268,35 +264,35 @@ void UndoStack::clearFutureTransactions()
 
 void UndoStack::beginNewTransaction() noexcept
 {
-    this->beginNewTransaction({});
+    this->beginNewTransaction(UndoActionIDs::None);
 }
 
-void UndoStack::beginNewTransaction(const String &actionName) noexcept
+void UndoStack::beginNewTransaction(UndoActionId transactionId) noexcept
 {
-    this->newTransaction = true;
-    this->newTransactionName = actionName;
+    this->hasNewEmptyTransaction = true;
+    this->newUndoActionId = transactionId;
 }
 
-void UndoStack::setCurrentTransactionName(const String &newName) noexcept
+void UndoStack::setCurrentUndoActionId(UndoActionId transactionId) noexcept
 {
-    if (this->newTransaction)
+    if (this->hasNewEmptyTransaction)
     {
-        this->newTransactionName = newName;
+        this->newUndoActionId = transactionId;
     }
     else if (auto *action = this->getCurrentSet())
     {
-        action->name = newName;
+        action->id = transactionId;
     }
 }
 
-UndoStack::ActionSet *UndoStack::getCurrentSet() const noexcept
+UndoStack::Transaction *UndoStack::getCurrentSet() const noexcept
 {
-    return this->transactions[nextIndex - 1];
+    return this->transactions[this->nextIndex - 1];
 }
 
-UndoStack::ActionSet *UndoStack::getNextSet() const noexcept
+UndoStack::Transaction *UndoStack::getNextSet() const noexcept
 {
-    return this->transactions[nextIndex];
+    return this->transactions[this->nextIndex];
 }
 
 bool UndoStack::canUndo() const noexcept
@@ -355,34 +351,34 @@ bool UndoStack::redo()
     return false;
 }
 
-String UndoStack::getUndoDescription() const
+UndoActionId UndoStack::getUndoActionId() const
 {
     if (const auto *s = this->getCurrentSet())
     {
-        return s->name;
+        return s->id;
     }
     
-    return {};
+    return 0;
 }
 
-String UndoStack::getRedoDescription() const
+UndoActionId UndoStack::getRedoActionId() const
 {
     if (const auto *s = this->getNextSet())
     {
-        return s->name;
+        return s->id;
     }
     
-    return {};
+    return 0;
 }
 
 bool UndoStack::undoCurrentTransactionOnly()
 {
-    return this->newTransaction ? false : this->undo();
+    return this->hasNewEmptyTransaction ? false : this->undo();
 }
 
 void UndoStack::getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const
 {
-    if (!this->newTransaction)
+    if (!this->hasNewEmptyTransaction)
     {
         if (const auto *s = this->getCurrentSet())
         {
@@ -396,7 +392,7 @@ void UndoStack::getActionsInCurrentTransaction(Array<const UndoAction *> &action
 
 int UndoStack::getNumActionsInCurrentTransaction() const
 {
-    if (!this->newTransaction)
+    if (!this->hasNewEmptyTransaction)
     {
         if (const auto *s = this->getCurrentSet())
         {
@@ -421,7 +417,7 @@ SerializedData UndoStack::serialize() const
     while (currentIndex >= 0 &&
            numStoredTransactions < MAX_TRANSACTIONS_TO_STORE)
     {
-        if (ActionSet *action = this->transactions[currentIndex])
+        if (Transaction *action = this->transactions[currentIndex])
         {
             tree.addChild(action->serialize(), 0);
         }
@@ -445,7 +441,7 @@ void UndoStack::deserialize(const SerializedData &data)
     
     for (const auto &childTransaction : root)
     {
-        auto *actionSet = new ActionSet(this->project, {});
+        auto *actionSet = new Transaction(this->project, {});
         actionSet->deserialize(childTransaction);
         this->transactions.insert(this->nextIndex, actionSet);
         ++this->nextIndex;

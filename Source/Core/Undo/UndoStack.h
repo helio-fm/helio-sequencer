@@ -20,6 +20,7 @@
 class ProjectNode;
 
 #include "UndoAction.h"
+#include "UndoActionIDs.h"
 
 class UndoStack final : public ChangeBroadcaster, public Serializable
 {
@@ -32,20 +33,19 @@ public:
     void clearUndoHistory();
 
     bool perform(UndoAction *action);
-    bool perform(UndoAction *action, const String &actionName);
+    bool perform(UndoAction *action, UndoActionId transactionId);
     
     void beginNewTransaction() noexcept;
-    void beginNewTransaction(const String &actionName) noexcept;
-    void setCurrentTransactionName(const String &newName) noexcept;
+    void beginNewTransaction(UndoActionId transactionId) noexcept;
     
     bool canUndo() const noexcept;
-    String getUndoDescription() const;
+    UndoActionId getUndoActionId() const;
     
     bool undo();
     bool undoCurrentTransactionOnly();
     
     bool canRedo() const noexcept;
-    String getRedoDescription() const;
+    UndoActionId getRedoActionId() const;
     bool redo();
     
     SerializedData serialize() const override;
@@ -71,9 +71,9 @@ private:
 
     ProjectNode &project;
     
-    struct ActionSet final : public Serializable
+    struct Transaction final : public Serializable
     {
-        ActionSet(ProjectNode &project, const String &transactionName);
+        Transaction(ProjectNode &project, UndoActionId transactionId = 0);
 
         bool perform() const;
         bool undo() const;
@@ -83,25 +83,30 @@ private:
         void deserialize(const SerializedData &data);
         void reset();
 
-        UndoAction *createUndoActionsByTagName(const Identifier &tagName);
+        UndoAction *createUndoActionByTag(const Identifier &tagName) const;
 
         OwnedArray<UndoAction> actions;
-        String name;
+        UndoActionId id;
 
         ProjectNode &project;
     };
     
-    OwnedArray<ActionSet> transactions;
-    String newTransactionName;
+    void setCurrentUndoActionId(UndoActionId transactionId) noexcept;
+    OwnedArray<Transaction> transactions;
+    UndoActionId newUndoActionId;
     
-    int totalUnitsStored, maxNumUnitsToKeep, minimumTransactionsToKeep, nextIndex;
-    bool newTransaction, reentrancyCheck;
+    int totalUnitsStored = 0;
+    int maxNumUnitsToKeep = 0;
+    int minimumTransactionsToKeep = 0;
+    int nextIndex = 0;
+    bool hasNewEmptyTransaction = true;
+    bool reentrancyCheck = false;
     
-    ActionSet *getCurrentSet() const noexcept;
-    ActionSet *getNextSet() const noexcept;
+    Transaction *getCurrentSet() const noexcept;
+    Transaction *getNextSet() const noexcept;
 
     template<typename T>
-    bool transactionHas(ActionSet *s) const
+    bool transactionHas(Transaction *s) const
     {
         if (s != nullptr)
         {

@@ -20,6 +20,7 @@
 #include "Clip.h"
 #include "MidiEvent.h"
 #include "ProjectEventDispatcher.h"
+#include "UndoActionIDs.h"
 
 class ProjectNode;
 class MidiTrack;
@@ -36,8 +37,8 @@ public:
     // Undoing
     //===------------------------------------------------------------------===//
 
-    String getLastUndoDescription() const;
-    void checkpoint(const String &transactionName = {}) noexcept;
+    UndoActionId getLastUndoActionId() const;
+    void checkpoint(UndoActionId id = 0) noexcept;
     void undo();
     void undoCurrentTransactionOnly();
     void redo();

@@ -118,14 +118,14 @@ bool Pattern::hasSoloClips() const noexcept
 // Undoing // TODO move this to project interface
 //===----------------------------------------------------------------------===//
 
-String Pattern::getLastUndoDescription() const
+UndoActionId Pattern::getLastUndoActionId() const
 {
-    return this->getUndoStack()->getUndoDescription();
+    return this->getUndoStack()->getUndoActionId();
 }
 
-void Pattern::checkpoint(const String &transactionName)
+void Pattern::checkpoint(UndoActionId id)
 {
-    this->getUndoStack()->beginNewTransaction(transactionName);
+    this->getUndoStack()->beginNewTransaction(id);
 }
 
 void Pattern::undo()

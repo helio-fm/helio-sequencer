@@ -35,7 +35,7 @@
 #include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "Transport.h"
-#include "CommandIDs.h"
+#include "UndoActionIDs.h"
 
 // a big FIXME:
 // most of this code assumes every track has its own undo stack;
@@ -1606,9 +1606,9 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
     if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
 
     auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
-    const auto operationId = deltaKey > 0 ? CommandIDs::KeyShiftUp : CommandIDs::KeyShiftDown;
-    const auto &transactionId = selection.generateTransactionId(operationId);
-    const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
+    const auto operationId = deltaKey > 0 ? UndoActionIDs::KeyShiftUp : UndoActionIDs::KeyShiftDown;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = sequence->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
     
@@ -1655,9 +1655,9 @@ void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, b
     if (selection.getNumSelected() == 0 || deltaBeat == 0) { return; }
 
     auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
-    const auto operationId = deltaBeat > 0 ? CommandIDs::BeatShiftRight : CommandIDs::BeatShiftLeft;
-    const auto &transactionId = selection.generateTransactionId(operationId);
-    const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
+    const auto operationId = deltaBeat > 0 ? UndoActionIDs::BeatShiftRight : UndoActionIDs::BeatShiftLeft;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = sequence->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
@@ -1694,9 +1694,9 @@ void SequencerOperations::shiftLengthRelative(Lasso &selection, float deltaLengt
     if (selection.getNumSelected() == 0 || deltaLength == 0.f) { return; }
 
     auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
-    const auto operationId = deltaLength > 0 ? CommandIDs::LengthIncrease : CommandIDs::LengthDecrease;
-    const auto &transactionId = selection.generateTransactionId(operationId);
-    const bool repeatsLastAction = sequence->getLastUndoDescription() == transactionId;
+    const auto operationId = deltaLength > 0 ? UndoActionIDs::LengthIncrease : UndoActionIDs::LengthDecrease;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = sequence->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 

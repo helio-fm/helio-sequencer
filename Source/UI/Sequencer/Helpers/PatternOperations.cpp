@@ -31,7 +31,7 @@
 #include "Pattern.h"
 #include "Lasso.h"
 #include "SerializationKeys.h"
-#include "CommandIDs.h"
+#include "UndoActionIDs.h"
 
 static Pattern *getPattern(SelectionProxyArray::Ptr selection)
 {
@@ -107,9 +107,9 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
     if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
-    const auto operationId = deltaKey > 0 ? CommandIDs::ClipTransposeUp : CommandIDs::ClipTransposeDown;
-    const auto &transactionId = selection.generateTransactionId(operationId);
-    const bool repeatsLastAction = pattern->getLastUndoDescription() == transactionId;
+    const auto operationId = deltaKey > 0 ? UndoActionIDs::ClipTransposeUp : UndoActionIDs::ClipTransposeDown;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = pattern->getLastUndoActionId() == transactionId;
 
     if (shouldCheckpoint && !repeatsLastAction)
     {
@@ -128,9 +128,9 @@ void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, b
     if (selection.getNumSelected() == 0 || deltaVelocity == 0.f) { return; }
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
-    const auto operationId = deltaVelocity > 0 ? CommandIDs::ClipVolumeUp : CommandIDs::ClipVolumeDown;
-    const auto &transactionId = selection.generateTransactionId(operationId);
-    const bool repeatsLastAction = pattern->getLastUndoDescription() == transactionId;
+    const auto operationId = deltaVelocity > 0 ? UndoActionIDs::ClipVolumeUp : UndoActionIDs::ClipVolumeDown;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = pattern->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
@@ -156,9 +156,9 @@ void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, boo
     if (selection.getNumSelected() == 0 || deltaBeat == 0) { return; }
 
     auto *firstPattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
-    const auto operationId = deltaBeat > 0 ? CommandIDs::BeatShiftRight : CommandIDs::BeatShiftLeft;
-    const auto &transactionId = selection.generateTransactionId(operationId);
-    const bool repeatsLastAction = firstPattern->getLastUndoDescription() == transactionId;
+    const auto operationId = deltaBeat > 0 ? UndoActionIDs::BeatShiftRight : UndoActionIDs::BeatShiftLeft;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = firstPattern->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 

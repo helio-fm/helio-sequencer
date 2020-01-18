@@ -308,7 +308,7 @@ UndoStack *ProjectNode::getUndoStack() const noexcept
 
 void ProjectNode::checkpoint()
 {
-    this->getUndoStack()->beginNewTransaction({});
+    this->getUndoStack()->beginNewTransaction(0);
 }
 
 void ProjectNode::undo()
