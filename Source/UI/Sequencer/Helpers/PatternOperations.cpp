@@ -191,44 +191,13 @@ void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, boo
     }
 }
 
-static String generateNextNameForNewTrack(const String &name, const StringArray &allNames)
-{
-    StringArray tokens;
-    tokens.addTokens(name, true);
-    if (tokens.isEmpty())
-    {
-        jassertfalse;
-        return name;
-    }
-
-    const int last = tokens.size() - 1;
-    auto suffix = tokens.getReference(last).getLargeIntValue();
-    if (suffix > 0)
-    {
-        tokens.remove(last); // suffix already exists
-    }
-    else
-    {
-        suffix = 1; // no suffix, will start from 2
-    }
-
-    String newName;
-    do 
-    {
-        suffix++;
-        newName = tokens.joinIntoString(" ") + " " + String(suffix);
-    } while (allNames.contains(newName));
-
-    return newName;
-}
-
 void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
     float relativeCutBeat, bool shouldRenameNewTrack, bool shouldCheckpoint)
 {
     MidiTrack *track = clip.getPattern()->getTrack();
 
     const String newName = shouldRenameNewTrack ?
-        generateNextNameForNewTrack(track->getTrackName(), project.getAllTrackNames()) :
+        SequencerOperations::generateNextNameForNewTrack(track->getTrackName(), project.getAllTrackNames()) :
         track->getTrackName();
 
     const float cutBeat = relativeCutBeat - clip.getBeat();

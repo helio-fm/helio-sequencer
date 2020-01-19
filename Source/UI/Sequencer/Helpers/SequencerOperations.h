@@ -115,6 +115,11 @@ struct SequencerOperations final
 
     // Creates new tracks from events of existing tracks
     static UniquePointer<MidiTrackNode> createPianoTrack(const Lasso &selection);
+    static UniquePointer<MidiTrackNode> createPianoTrack(const PianoSequence *source, const Clip &clip);
     static UniquePointer<MidiTrackNode> createPianoTrack(const Array<Note> &events, const Pattern *pattern);
+    static UniquePointer<MidiTrackNode> createPianoTrack(const Array<Note> &events, const Array<Clip> &clips);
     static UniquePointer<MidiTrackNode> createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern);
+
+    static String generateNextNameForNewTrack(const String &name, const StringArray &allNames);
+
 };

@@ -23,9 +23,10 @@
 
 Clip::Clip() : pattern(nullptr) {}
 
-Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
+Clip::Clip(WeakReference<Pattern> owner, float beatVal, int key) :
     pattern(owner),
-    beat(roundBeat(beatVal))
+    beat(roundBeat(beatVal)),
+    key(key)
 {
     id = this->createId();
     this->updateCaches();

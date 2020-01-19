@@ -58,6 +58,7 @@
 #include "Workspace.h"
 #include "MainLayout.h"
 #include "HelioTheme.h"
+#include "UndoActionIDs.h"
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
 #include "Config.h"
@@ -1000,21 +1001,50 @@ void PianoRoll::handleCommandMessage(int commandId)
         return;
     }
     case CommandIDs::NewTrackFromSelection:
+        // TODO move this code in a separate method, like,
+        // whatever(MidiTrackNode *trackPreset)
         if (this->getLassoSelection().getNumSelected() > 0)
         {
-            const auto track = SequencerOperations::createPianoTrack(this->getLassoSelection());
-            const auto trackTemplate = track->serialize();
-            auto inputDialog = ModalDialogInput::Presets::newTrack();
-            inputDialog->onOk = [trackTemplate, this](const String &input)
+            const auto trackPreset = SequencerOperations::createPianoTrack(this->getLassoSelection());
+            const auto trackTemplate = trackPreset->serialize();
+            const auto trackId = trackPreset->getTrackId();
+
+            const auto activeTrackName = this->activeTrack->getTrackName();
+            const auto newName = SequencerOperations::generateNextNameForNewTrack(activeTrackName,
+                this->project.getAllTrackNames());
+
+            this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
+
+            SequencerOperations::deleteSelection(this->getLassoSelection(), true);
+            this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
+                &this->project, trackTemplate, newName));
+
+            auto *newlyAddedTrack = this->project.findTrackById<MidiTrackNode>(trackId);
+
+            // fixme "rename" button
+            auto dialog = makeUnique<TrackPropertiesDialog>(this->project, newlyAddedTrack);
+
+            dialog->onCancel = [this]()
             {
-                SequencerOperations::deleteSelection(this->getLassoSelection(), true);
-                this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
-                    &this->project, trackTemplate, input));
+                this->project.getUndoStack()->undoCurrentTransactionOnly();
             };
 
-            App::showModalComponent(std::move(inputDialog));
+            dialog->onOk = [this]()
+            {
+                this->project.getUndoStack()->mergeTransactionsUpTo(UndoActionIDs::AddNewTrack);
+            };
+
+            App::showModalComponent(std::move(dialog));
         }
         break;
+    case CommandIDs::DuplicateTrack:
+    {
+        // the same as above, just using different preset:
+        //const auto *cloneSource = static_cast<PianoSequence *>(this->activeTrack->getSequence());
+        //const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
+        // and different caption for the dialog
+    }
+    break;
     case CommandIDs::BeatShiftLeft:
         SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());
         break;

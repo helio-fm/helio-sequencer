@@ -32,7 +32,7 @@ public:
 
     Clip();
     Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy);
-    explicit Clip(WeakReference<Pattern> owner, float beatVal = 0.f);
+    explicit Clip(WeakReference<Pattern> owner, float beatVal = 0.f, int key = 0);
 
     Clip(const Clip &other) noexcept = default;
     Clip &operator= (const Clip &other) = default;

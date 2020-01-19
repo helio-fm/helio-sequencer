@@ -163,17 +163,15 @@ void TrackPropertiesDialog::buttonClicked(Button* buttonThatWasClicked)
     if (buttonThatWasClicked == cancelButton.get())
     {
         //[UserButtonCode_cancelButton] -- add your button handler code here..
-        this->cancelChangesIfAny();
-        this->dismiss();
+        this->doCancel();
+        return;
         //[/UserButtonCode_cancelButton]
     }
     else if (buttonThatWasClicked == okButton.get())
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
-        if (textEditor->getText().isNotEmpty())
-        {
-            this->dismiss();
-        }
+        this->doOk();
+        return;
         //[/UserButtonCode_okButton]
     }
 
@@ -311,6 +309,48 @@ void TrackPropertiesDialog::timerCallback()
         this->stopTimer();
     }
 }
+
+void TrackPropertiesDialog::doCancel()
+{
+    this->cancelChangesIfAny();
+
+    if (this->onCancel != nullptr)
+    {
+        BailOutChecker checker(this);
+
+        this->onCancel();
+
+        if (checker.shouldBailOut())
+        {
+            jassertfalse; // not expected
+            return;
+        }
+    }
+
+    this->dismiss();
+}
+
+void TrackPropertiesDialog::doOk()
+{
+    if (textEditor->getText().isNotEmpty())
+    {
+        if (this->onOk != nullptr)
+        {
+            BailOutChecker checker(this);
+
+            this->onOk();
+
+            if (checker.shouldBailOut())
+            {
+                jassertfalse; // not expected
+                return;
+            }
+        }
+
+        this->dismiss();
+    }
+}
+
 //[/MiscUserCode]
 
 #if 0

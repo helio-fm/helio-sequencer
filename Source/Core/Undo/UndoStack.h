@@ -64,6 +64,12 @@ public:
         return this->transactionHas<T>(this->getNextSet());
     }
 
+    // for multi-step interactive actions which might involve >1 checkpoints
+    void mergeTransactionsUpTo(UndoActionId transactionId)
+    {
+        // todo
+    }
+
 private:
     
     void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;

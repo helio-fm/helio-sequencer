@@ -43,6 +43,9 @@ public:
     ~TrackPropertiesDialog();
 
     //[UserMethods]
+    Function<void()> onOk;
+    Function<void()> onCancel;
+
     void onColourButtonClicked(ColourButton *button) override;
     //[/UserMethods]
 
@@ -82,6 +85,9 @@ private:
     void applyChangesIfAny();
     void cancelChangesIfAny();
     bool hasChanges() const;
+
+    void doCancel();
+    void doOk();
 
     //[/UserVariables]
 

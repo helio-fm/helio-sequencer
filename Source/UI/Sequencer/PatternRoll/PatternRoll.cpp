@@ -610,6 +610,16 @@ void PatternRoll::handleCommandMessage(int commandId)
             App::showModalComponent(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
+    case CommandIDs::DuplicateTrack:
+        if (this->getLassoSelection().getNumSelected() == 1)
+        {
+            // TODO
+            // checkpoint
+            // add track
+            // create TrackPropertiesDialog
+            // on cancel, undo the transaction
+        }
+        break;
     case CommandIDs::DeleteClips:
         PatternOperations::deleteSelection(this->getLassoSelection(), this->project);
         break;

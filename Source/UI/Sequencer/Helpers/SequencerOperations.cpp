@@ -2100,49 +2100,58 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &
 {
     if (selection.getNumSelected() == 0) { return {}; }
 
-    const auto *track = selection.getFirstAs<NoteComponent>()->getNote().getSequence()->getTrack();
-    const auto &instrumentId = track->getTrackInstrumentId();
-    const auto &colour = track->getTrackColour();
-
-    UniquePointer<MidiTrackNode> newItem(new PianoTrackNode({}));
-
-    const Clip clip(track->getPattern());
-    track->getPattern()->insert(clip, false);
-
-    newItem->setTrackColour(colour, false);
-    newItem->setTrackInstrumentId(instrumentId, false);
-
-    PianoChangeGroup copiedContent;
-    auto *sequence = static_cast<PianoSequence *>(newItem->getSequence());
+    Array<Note> events;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
-        copiedContent.add(note.copyWithNewId(sequence));
+        events.add(selection.getItemAs<NoteComponent>(i)->getNote());
     }
 
-    sequence->reset();
-    sequence->insertGroup(copiedContent, false);
+    const auto &clip = selection.getFirstAs<NoteComponent>()->getClip();
 
-    return newItem;
+    return createPianoTrack(events, { clip });
 }
 
-UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *clips)
+UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const PianoSequence *source, const Clip &clip)
 {
-    if (events.size() == 0)
+    Array<Note> events;
+    for (int i = 0; i < source->size(); ++i)
     {
-        return {};
+        const auto *note = static_cast<Note *>(source->getUnchecked(i));
+        events.add(*note);
     }
+
+    return createPianoTrack(events, { clip });
+}
+
+UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *pattern)
+{
+    if (events.size() == 0) { return {}; }
+
+    Array<Clip> clips;
+    for (const auto *clip : pattern->getClips())
+    {
+        clips.add(*clip);
+    }
+
+    return createPianoTrack(events, clips);
+}
+
+UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Array<Clip> &clips)
+{
+    if (events.size() == 0) { return {}; }
 
     const auto *track = events.getReference(0).getSequence()->getTrack();
     const auto &instrumentId = track->getTrackInstrumentId();
     const auto &colour = track->getTrackColour();
 
-    UniquePointer<MidiTrackNode> newItem(new PianoTrackNode({}));
-    newItem->setTrackColour(colour, false);
-    newItem->setTrackInstrumentId(instrumentId, false);
+    UniquePointer<MidiTrackNode> newNode(new PianoTrackNode({}));
+    newNode->setTrackColour(colour, false);
+    newNode->setTrackInstrumentId(instrumentId, false);
+
+    auto *pattern = newNode->getPattern();
+    auto *sequence = static_cast<PianoSequence *>(newNode->getSequence());
 
     PianoChangeGroup copiedContent;
-    auto *sequence = static_cast<PianoSequence *>(newItem->getSequence());
     for (const auto &note : events)
     {
         copiedContent.add(note.copyWithNewId(sequence));
@@ -2151,16 +2160,17 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     sequence->insertGroup(copiedContent, false);
 
     Array<Clip> copiedClips;
-    auto *pattern = newItem->getPattern();
-    for (const auto *clip : clips->getClips())
+    for (const auto &clip : clips)
     {
-        copiedClips.add(clip->copyWithNewId(pattern));
+        copiedClips.add(clip.copyWithNewId(pattern));
     }
+
     pattern->reset();
     pattern->insertGroup(copiedClips, false);
 
-    return newItem;
+    return newNode;
 }
+
 
 UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *clips)
 {
@@ -2195,4 +2205,35 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     pattern->insertGroup(copiedClips, false);
 
     return newItem;
+}
+
+String SequencerOperations::generateNextNameForNewTrack(const String &name, const StringArray &allNames)
+{
+    StringArray tokens;
+    tokens.addTokens(name, true);
+    if (tokens.isEmpty())
+    {
+        jassertfalse;
+        return name;
+    }
+
+    const int last = tokens.size() - 1;
+    auto suffix = tokens.getReference(last).getLargeIntValue();
+    if (suffix > 0)
+    {
+        tokens.remove(last); // suffix already exists
+    }
+    else
+    {
+        suffix = 1; // no suffix, will start from 2
+    }
+
+    String newName;
+    do
+    {
+        suffix++;
+        newName = tokens.joinIntoString(" ") + " " + String(suffix);
+    } while (allNames.contains(newName));
+
+    return newName;
 }
