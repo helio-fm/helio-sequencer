@@ -73,15 +73,13 @@ void PatternRollSelectionMenu::initDefaultMenu()
 
     menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleSoloClips, soloAction)->closesMenu());
 
-    menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips,
-        TRANS(I18n::Menu::Selection::clipsCopy))->closesMenu());
+    const auto canDuplicate = this->lasso->getNumSelected() == 1;
 
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutClips,
-        TRANS(I18n::Menu::Selection::clipsCut))->closesMenu());
+    menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
+        TRANS(I18n::Menu::trackDuplicate))->disabledIf(!canDuplicate)->closesMenu());
 
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
         TRANS(I18n::Menu::Selection::clipsDelete))->closesMenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }
-

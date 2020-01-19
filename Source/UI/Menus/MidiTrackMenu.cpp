@@ -66,7 +66,10 @@ void MidiTrackMenu::initDefaultMenu()
     
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->closesMenu());
-        
+
+    menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
+        TRANS(I18n::Menu::trackDuplicate))->closesMenu());
+
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
     this->updateContent(menu, MenuPanel::SlideRight);
 }
