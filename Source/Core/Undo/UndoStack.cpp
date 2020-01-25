@@ -224,7 +224,7 @@ bool UndoStack::perform(UndoAction *const newAction)
             {
                 actionSet = new Transaction(this->project, this->newUndoActionId);
                 this->transactions.insert(nextIndex, actionSet);
-                ++nextIndex;
+                ++this->nextIndex;
             }
             
             this->totalUnitsStored += action->getSizeInUnits();
@@ -451,4 +451,52 @@ void UndoStack::deserialize(const SerializedData &data)
 void UndoStack::reset()
 {
     this->clearUndoHistory();
+}
+
+bool UndoStack::mergeTransactionsUpTo(UndoActionId transactionId)
+{
+    // make sure the transaction with that id exists
+    int targetActionIndex = -1;
+    for (int i = this->nextIndex; i --> 0 ;)
+    {
+        const auto *t = this->transactions[i];
+        if (t != nullptr && t->id == transactionId)
+        {
+            targetActionIndex = i;
+            break;
+        }
+    }
+
+    auto *targetTransaction = this->transactions[targetActionIndex];
+
+    if (targetTransaction == nullptr)
+    {
+        jassertfalse;
+        return false;
+    }
+
+    // also bail out without assertion if there's nothing to merge
+    if (targetActionIndex == (this->nextIndex - 1))
+    {
+        DBG("Found 1 transaction for the merge, skipping");
+        return false;
+    }
+
+    DBG("Merging " + String(this->nextIndex - targetActionIndex) + " transactions");
+
+    for (int i = targetActionIndex + 1; i < this->nextIndex;)
+    {
+        if (auto *t = this->transactions[i])
+        {
+            // hack warning: manually moving owned objects
+            // from one owned array to another to avoid copying:
+            targetTransaction->actions.addArray(t->actions);
+            t->actions.clear(false);
+        }
+
+        this->transactions.remove(i, true);
+        this->nextIndex--;
+    }
+
+    return true;
 }

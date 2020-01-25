@@ -55,20 +55,17 @@ public:
     template<typename T>
     bool undoHas() const
     {
-        return this->transactionHas<T>(this->getCurrentSet());
+        return UndoStack::transactionHas<T>(this->getCurrentSet());
     }
 
     template<typename T>
     bool redoHas() const
     {
-        return this->transactionHas<T>(this->getNextSet());
+        return UndoStack::transactionHas<T>(this->getNextSet());
     }
 
     // for multi-step interactive actions which might involve >1 checkpoints
-    void mergeTransactionsUpTo(UndoActionId transactionId)
-    {
-        // todo
-    }
+    bool mergeTransactionsUpTo(UndoActionId transactionId);
 
 private:
     
@@ -79,7 +76,8 @@ private:
     
     struct Transaction final : public Serializable
     {
-        Transaction(ProjectNode &project, UndoActionId transactionId = 0);
+        explicit Transaction(ProjectNode &project,
+            UndoActionId transactionId = UndoActionIDs::None);
 
         bool perform() const;
         bool undo() const;
@@ -112,9 +110,9 @@ private:
     Transaction *getNextSet() const noexcept;
 
     template<typename T>
-    bool transactionHas(Transaction *s) const
+    inline static bool transactionHas(Transaction *s)
     {
-        if (s != nullptr)
+        if (s != nullptr) // might be an empty set
         {
             for (int i = 0; i < s->actions.size(); ++i)
             {
