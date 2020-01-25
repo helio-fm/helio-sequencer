@@ -293,18 +293,23 @@ void SequencerSidebarRight::recreateMenu()
         {
             this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel));
         }
+
         //this->menu.add(MenuItem::item(Icons::script, CommandIDs::RunScriptTransform));
 
         this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
         this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
+    }
+
+#if HELIO_MOBILE
+    if (this->menuMode == PianoRollTools)
+    {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents));
     }
     else if (this->menuMode == PatternRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips));
-        this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteClips));
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips));
     }
+#endif
 
     this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
     this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
