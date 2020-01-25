@@ -113,22 +113,25 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     }
     
     const float midH = float(this->getHeight()) / 2.f;
+    constexpr int w = WAVEFORM_METER_BUFFER_SIZE;
 
     g.setColour(this->colour.withAlpha(0.2f));
 
-    for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
+    for (int i = 0; i < w - 1; ++i)
     {
-        const float peakL = waveformIecLevel(this->lPeakBuffer[i].get()) * midH;
-        const float peakR = waveformIecLevel(this->rPeakBuffer[i].get()) * midH;
+        const float fancyFade = (i == 0 || i == (w - 2)) ? 0.75f : ((i == 1 || i == (w - 3)) ? 0.9f : 1.f);
+        const float peakL = waveformIecLevel(this->lPeakBuffer[i].get()) * midH * fancyFade;
+        const float peakR = waveformIecLevel(this->rPeakBuffer[i].get()) * midH * fancyFade;
         g.fillRect(1.f + (i * 2.f), midH - peakL, 1.f, peakR + peakL);
     }
 
     g.setColour(this->colour.withAlpha(0.25f));
 
-    for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
+    for (int i = 0; i < w; ++i)
     {
-        const float rmsL = waveformIecLevel(this->lRmsBuffer[i].get()) * midH;
-        const float rmsR = waveformIecLevel(this->rRmsBuffer[i].get()) * midH;
+        const float fancyFade = (i == 0 || i == (w - 1)) ? 0.85f : ((i == 1 || i == (w - 2)) ? 0.95f : 1.f);
+        const float rmsL = waveformIecLevel(this->lRmsBuffer[i].get()) * midH * fancyFade;
+        const float rmsR = waveformIecLevel(this->rRmsBuffer[i].get()) * midH * fancyFade;
         g.fillRect(i * 2.f, midH - rmsL, 1.f, rmsR + rmsL);
     }
 }
