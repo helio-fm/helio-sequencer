@@ -161,6 +161,8 @@ public:
 
 private:
 
+    friend class VelocityProjectMap;
+
     VelocityProjectMap *getParentMap() const
     {
         jassert(this->getParentComponent());
@@ -436,7 +438,7 @@ void VelocityProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
-            if (const auto component = sequenceMap[note].release())
+            if (auto *component = sequenceMap[note].release())
             {
                 sequenceMap.erase(note);
                 sequenceMap[newNote] = UniquePointer<VelocityMapNoteComponent>(component);
@@ -520,7 +522,8 @@ void VelocityProjectMap::onAddClip(const Clip &clip)
 
     for (const auto &e : *referenceMap)
     {
-        const auto &note = e.first;
+        // reference the same note as neighbor components:
+        const auto &note = e.second.get()->note;
         auto *noteComponent = new VelocityMapNoteComponent(note, clip);
         (*sequenceMap)[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
         this->addAndMakeVisible(noteComponent);
