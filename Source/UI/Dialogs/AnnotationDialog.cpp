@@ -146,6 +146,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
 
     this->separatorH->setAlphaMultiplier(2.5f);
+    this->messageLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(450, 220);

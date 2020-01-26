@@ -25,6 +25,8 @@ public:
     ~FadingDialog() override;
 
     void parentHierarchyChanged() override;
+    void mouseDown(const MouseEvent &e);
+    void mouseDrag(const MouseEvent &e);
 
 protected:
     
@@ -35,6 +37,9 @@ private:
 
     void fadeOut();
     SafePointer<Component> background;
+
+    ComponentDragger dragger;
+    UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FadingDialog)
 };

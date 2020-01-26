@@ -56,6 +56,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
     this->separatorH->setAlphaMultiplier(2.5f);
+    this->messageLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(410, 180);

@@ -430,6 +430,24 @@ Rectangle<int> ProjectMapScroller::getMapBounds() const noexcept
 // Additional horizontal dragger
 //===----------------------------------------------------------------------===//
 
+class HorizontalDragHelperConstrainer final : public ComponentBoundsConstrainer
+{
+public:
+
+    explicit HorizontalDragHelperConstrainer(ProjectMapScroller &scrollerRef) :
+        scroller(scrollerRef) {}
+
+    void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override
+    {
+        ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
+        this->scroller.horizontalDragByUser(&component, bounds);
+    }
+
+private:
+
+    ProjectMapScroller &scroller;
+};
+
 ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScroller &scrollerRef) :
     colour(findDefaultColour(ColourIDs::TrackScroller::scrollerFill)),
     scroller(scrollerRef)
@@ -439,7 +457,7 @@ ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScrolle
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toBack();
 
-    this->moveConstrainer.reset(new MoveConstrainer(this->scroller));
+    this->moveConstrainer = makeUnique<HorizontalDragHelperConstrainer>(this->scroller);
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 }
@@ -458,11 +476,4 @@ void ProjectMapScroller::HorizontalDragHelper::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());
-}
-
-void ProjectMapScroller::HorizontalDragHelper::MoveConstrainer::
-    applyBoundsToComponent(Component &component, Rectangle<int> bounds)
-{
-    ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-    this->scroller.horizontalDragByUser(&component, bounds);
 }

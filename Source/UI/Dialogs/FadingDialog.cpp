@@ -20,14 +20,33 @@
 #include "DialogBackground.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
+#include "Headline.h"
 
 #define DIALOG_HAS_BACKGROUND 1
 //#define DIALOG_HAS_BACKGROUND 0
+
+class DialogDragConstrainer final : public ComponentBoundsConstrainer
+{
+public:
+
+    void checkBounds(Rectangle<int>& bounds,
+        const Rectangle<int>& previousBounds,
+        const Rectangle<int>& limits,
+        bool, bool, bool, bool) override
+    {
+        const auto constrain = App::Layout().getPageBounds()
+            .translated(0, HEADLINE_HEIGHT).reduced(2);
+
+        bounds = bounds.constrainedWithin(constrain);
+    }
+};
 
 FadingDialog::FadingDialog()
 {
     this->setAlwaysOnTop(true);
     this->toFront(true);
+
+    this->moveConstrainer = makeUnique<DialogDragConstrainer>();
 }
 
 FadingDialog::~FadingDialog()
@@ -49,6 +68,16 @@ void FadingDialog::parentHierarchyChanged()
         App::Layout().addAndMakeVisible(this->background);
     }
 #endif
+}
+
+void FadingDialog::mouseDown(const MouseEvent &e)
+{
+    this->dragger.startDraggingComponent(this, e);
+}
+
+void FadingDialog::mouseDrag(const MouseEvent &e)
+{
+    this->dragger.dragComponent(this, e, this->moveConstrainer.get());
 }
 
 void FadingDialog::dismiss()

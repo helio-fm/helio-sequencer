@@ -78,6 +78,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message, co
     this->textEditor->addListener(this);
 
     this->separatorH->setAlphaMultiplier(2.5f);
+    this->messageLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(450, 165);

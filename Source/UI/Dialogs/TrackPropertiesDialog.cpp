@@ -86,6 +86,7 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
     this->separatorH->setAlphaMultiplier(2.5f);
+    this->messageLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(450, 220);

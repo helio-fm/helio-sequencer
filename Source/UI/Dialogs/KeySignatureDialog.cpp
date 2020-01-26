@@ -87,7 +87,6 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     //[UserPreSize]
     this->transport.stopPlayback();
 
-    this->separatorH->setAlphaMultiplier(2.5f);
     this->scaleNameEditor->addListener(this);
     this->scaleNameEditor->setFont(21.f);
 
@@ -123,6 +122,9 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->okButton->setButtonText(TRANS(I18n::Dialog::keySignatureEditApply));
         this->removeEventButton->setButtonText(TRANS(I18n::Dialog::keySignatureEditDelete));
     }
+
+    this->separatorH->setAlphaMultiplier(2.5f);
+    this->messageLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(460, 260);

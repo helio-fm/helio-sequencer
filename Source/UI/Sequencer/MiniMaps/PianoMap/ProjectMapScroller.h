@@ -96,15 +96,6 @@ public:
         void mouseDrag(const MouseEvent &e) override;
         void paint(Graphics &g) override;
         
-        class MoveConstrainer final : public ComponentBoundsConstrainer
-        {
-        public:
-            explicit MoveConstrainer(ProjectMapScroller &scrollerRef) : scroller(scrollerRef) {}
-            void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
-        private:
-            ProjectMapScroller &scroller;
-        };
-        
     private:
         
         Colour colour;
@@ -116,9 +107,8 @@ public:
 protected:
 
     void horizontalDragByUser(Component *component, const Rectangle<int> &bounds);
-    
-    friend class HorizontalDragHelper;
-    
+    friend class HorizontalDragHelperConstrainer;
+
 private:
     
     void handleAsyncUpdate() override;
