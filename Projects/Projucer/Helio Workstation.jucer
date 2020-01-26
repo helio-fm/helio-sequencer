@@ -1491,7 +1491,7 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" isDebug="1"
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       warningsAreErrors="1"/>
+                       warningsAreErrors="1" winArchitecture="Win32"/>
         <CONFIGURATION name="Tests" winWarningLevel="4" generateManifest="1" isDebug="1"
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
