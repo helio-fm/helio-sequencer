@@ -18,6 +18,7 @@
 #pragma once
 
 class MidiSequence;
+class MidiTrackNode;
 class SelectionComponent;
 class LongTapController;
 class SmartDragController;
@@ -314,10 +315,14 @@ protected:
     // These two methods are supposed to layout non-midi-event children
     virtual void updateChildrenBounds();
     virtual void updateChildrenPositions();
+
     virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
 
     virtual float findNextAnchorBeat(float beat) const;
     virtual float findPreviousAnchorBeat(float beat) const;
+
+    void addTrackInteractively(MidiTrackNode *preset, UndoActionId whereToRollback, bool refocus,
+        const String &defaultTrackName, const String &dialogTitle, const String &dialogOk);
 
     float getFloorBeatSnapByXPosition(int x) const;
     inline float getBeatByXPosition(float x) const

@@ -24,7 +24,6 @@
 #include "AutomationSequence.h"
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
-#include "PianoTrackActions.h"
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
 #include "VersionControlNode.h"
@@ -58,7 +57,6 @@
 #include "Workspace.h"
 #include "MainLayout.h"
 #include "HelioTheme.h"
-#include "UndoActionIDs.h"
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
 #include "Config.h"
@@ -456,7 +454,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
-            if (const auto component = sequenceMap[note].release())
+            if (auto *component = sequenceMap[note].release())
             {
                 // Pass ownership to another key:
                 sequenceMap.erase(note);
@@ -498,7 +496,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        const auto track = note.getSequence()->getTrack();
+        const auto *track = note.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -556,7 +554,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
         this->hideAllGhostNotes(); // Avoids crash
 
         const Note &note = static_cast<const Note &>(event);
-        const auto track = note.getSequence()->getTrack();
+        const auto *track = note.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -1001,48 +999,27 @@ void PianoRoll::handleCommandMessage(int commandId)
         return;
     }
     case CommandIDs::NewTrackFromSelection:
-        // TODO move this code in a separate method, like,
-        // whatever(MidiTrackNode *trackPreset)
         if (this->getLassoSelection().getNumSelected() > 0)
         {
-            const auto trackPreset = SequencerOperations::createPianoTrack(this->getLassoSelection());
-            const auto trackTemplate = trackPreset->serialize();
-            const auto trackId = trackPreset->getTrackId();
-
-            const auto activeTrackName = this->activeTrack->getTrackName();
-            const auto newName = SequencerOperations::generateNextNameForNewTrack(activeTrackName,
-                this->project.getAllTrackNames());
-
             this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
+            const auto trackPreset = SequencerOperations::createPianoTrack(this->getLassoSelection());
+            
+            // false == we already have the correct checkpoint
+            SequencerOperations::deleteSelection(this->getLassoSelection(), false);
 
-            SequencerOperations::deleteSelection(this->getLassoSelection(), true);
-            this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
-                &this->project, trackTemplate, newName));
-
-            auto *newlyAddedTrack = this->project.findTrackById<MidiTrackNode>(trackId);
-
-            // fixme "rename" button
-            auto dialog = makeUnique<TrackPropertiesDialog>(this->project, newlyAddedTrack);
-
-            dialog->onCancel = [this]()
-            {
-                this->project.getUndoStack()->undoCurrentTransactionOnly();
-            };
-
-            dialog->onOk = [this]()
-            {
-                this->project.getUndoStack()->mergeTransactionsUpTo(UndoActionIDs::AddNewTrack);
-            };
-
-            App::showModalComponent(std::move(dialog));
+            this->addTrackInteractively(trackPreset.get(),
+                UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
+                TRANS(I18n::Menu::Selection::notesToTrack), TRANS(I18n::Dialog::addTrackProceed));
         }
         break;
     case CommandIDs::DuplicateTrack:
     {
-        // the same as above, just using different preset:
-        //const auto *cloneSource = static_cast<PianoSequence *>(this->activeTrack->getSequence());
-        //const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
-        // and different caption for the dialog
+        this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
+        const auto *cloneSource = static_cast<PianoSequence *>(this->activeTrack->getSequence());
+        const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
+        this->addTrackInteractively(trackPreset.get(),
+            UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
+            TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::addTrackProceed));
     }
     break;
     case CommandIDs::BeatShiftLeft:
@@ -1090,8 +1067,6 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleSoloClips:
         PatternOperations::toggleSoloClip(this->activeClip);
         break;
-        // fixme: these toggle settings should be persisted in a config
-        // and both roll and sidebar(s) should listen to the config changes?
     case CommandIDs::ToggleScalesHighlighting:
         App::Config().getUiFlags()->setScalesHighlightingEnabled(!this->scalesHighlightingEnabled);
         break;

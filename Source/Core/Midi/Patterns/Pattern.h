@@ -122,8 +122,8 @@ protected:
 
     void clearQuick();
 
-    float lastEndBeat;
-    float lastStartBeat;
+    float lastEndBeat = 0.f;
+    float lastStartBeat = 0.f;
 
     ProjectNode *getProject() const noexcept;
     UndoStack *getUndoStack() const noexcept;

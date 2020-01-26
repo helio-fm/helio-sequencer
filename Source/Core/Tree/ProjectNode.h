@@ -19,7 +19,6 @@
 
 class Autosaver;
 class Document;
-class Project;
 class ProjectListener;
 class SequencerLayout;
 class HybridRoll;

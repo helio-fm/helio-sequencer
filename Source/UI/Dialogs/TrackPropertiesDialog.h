@@ -39,7 +39,7 @@ class TrackPropertiesDialog final : public FadingDialog,
 {
 public:
 
-    TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track);
+    TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track, const String &title = "", const String &confirmation = "");
     ~TrackPropertiesDialog();
 
     //[UserMethods]

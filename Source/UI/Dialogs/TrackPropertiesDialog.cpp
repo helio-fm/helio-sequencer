@@ -28,7 +28,7 @@
 #include "MidiTrackActions.h"
 //[/MiscUserDefs]
 
-TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track)
+TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track, const String &title, const String &confirmation)
     : project(project),
       track(track)
 {
@@ -81,8 +81,8 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference
     this->colourSwatches->setSelectedColour(this->originalColour);
     this->textEditor->setText(this->originalName, dontSendNotification);
 
-    this->messageLabel->setText(TRANS(I18n::Dialog::renameTrackCaption), dontSendNotification);
-    this->okButton->setButtonText(TRANS(I18n::Dialog::renameTrackProceed));
+    this->messageLabel->setText(title.isNotEmpty() ? title : TRANS(I18n::Dialog::renameTrackCaption), dontSendNotification);
+    this->okButton->setButtonText(confirmation.isNotEmpty() ? confirmation : TRANS(I18n::Dialog::renameTrackProceed));
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
     this->separatorH->setAlphaMultiplier(2.5f);
@@ -359,7 +359,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TrackPropertiesDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ColourButtonListener, private Timer"
-                 constructorParams="ProjectNode &amp;project, WeakReference&lt;MidiTrack&gt; track"
+                 constructorParams="ProjectNode &amp;project, WeakReference&lt;MidiTrack&gt; track, const String &amp;title = &quot;&quot;, const String &amp;confirmation = &quot;&quot;"
                  variableInitialisers="project(project),&#10;track(track)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="450" initialHeight="220">

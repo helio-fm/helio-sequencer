@@ -20,32 +20,39 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"
-#include "HybridRollHeader.h"
+
 #include "Pattern.h"
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
 #include "VersionControlNode.h"
 #include "PatternEditorNode.h"
-#include "ProjectTimeline.h"
-#include "ClipComponent.h"
+
+#include "LassoListeners.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
-#include "HelioTheme.h"
 #include "SelectionComponent.h"
-#include "HybridRollEditMode.h"
-#include "SerializationKeys.h"
+#include "HybridRollHeader.h"
+#include "CutPointMark.h"
+
 #include "ModalDialogInput.h"
 #include "TrackPropertiesDialog.h"
+
+#include "UndoStack.h"
 #include "PatternOperations.h"
-#include "SerializationKeys.h"
+#include "SequencerOperations.h"
+
+#include "ProjectTimeline.h"
 #include "PianoSequence.h"
-#include "PianoClipComponent.h"
 #include "AutomationSequence.h"
+#include "ClipComponent.h"
+#include "PianoClipComponent.h"
 #include "AutomationCurveClipComponent.h"
 #include "AutomationStepsClipComponent.h"
 #include "DummyClipComponent.h"
-#include "LassoListeners.h"
-#include "CutPointMark.h"
+
+#include "HelioTheme.h"
+#include "HybridRollEditMode.h"
+#include "SerializationKeys.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
@@ -613,11 +620,20 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::DuplicateTrack:
         if (this->getLassoSelection().getNumSelected() == 1)
         {
-            // TODO
-            // checkpoint
-            // add track
-            // create TrackPropertiesDialog
-            // on cancel, undo the transaction
+            const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
+            // it could be either an automation track or a piano track:
+            if (auto *clonedTrack = this->project.findTrackById<PianoTrackNode>(clip.getTrackId()))
+            {
+                this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
+
+                const auto *cloneSource = static_cast<PianoSequence *>(clonedTrack->getSequence());
+                const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, clip);
+
+                this->addTrackInteractively(trackPreset.get(),
+                    UndoActionIDs::AddNewTrack, false, clonedTrack->getTrackName(),
+                    TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::addTrackProceed));
+            }
+            // TODO cloning automations here
         }
         break;
     case CommandIDs::DeleteClips:
@@ -630,6 +646,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
         }
         break;
+        // todo ClipOctaveUp
     case CommandIDs::ClipTransposeUp:
         PatternOperations::transposeClips(this->getLassoSelection(), 1);
         break;

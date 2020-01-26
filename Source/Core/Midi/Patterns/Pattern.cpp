@@ -43,9 +43,7 @@ struct ClipIdGenerator final
 Pattern::Pattern(MidiTrack &parentTrack,
     ProjectEventDispatcher &dispatcher) :
     track(parentTrack),
-    eventDispatcher(dispatcher),
-    lastStartBeat(0.f),
-    lastEndBeat(0.f) {}
+    eventDispatcher(dispatcher) {}
 
 //===----------------------------------------------------------------------===//
 // Accessors
