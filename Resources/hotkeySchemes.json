@@ -252,10 +252,10 @@
         { "receiver": "PatternRoll", "command": "ClipVolumeDown", "key": "-" },
         { "receiver": "PatternRoll", "command": "ClipTransposeUp", "key": "Cursor Up" },
         { "receiver": "PatternRoll", "command": "ClipTransposeDown", "key": "Cursor Down" },
+        { "receiver": "PatternRoll", "command": "ClipTransposeOctaveUp", "key": "Shift + Cursor Up" },
+        { "receiver": "PatternRoll", "command": "ClipTransposeOctaveDown", "key": "Shift + Cursor Down" },
         { "receiver": "PatternRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
-        { "receiver": "PatternRoll", "command": "BeatShiftRight", "key": "Cursor Right" },
-        { "receiver": "PatternRoll", "command": "BarShiftLeft", "key": "Shift + Cursor Left" },
-        { "receiver": "PatternRoll", "command": "BarShiftRight", "key": "Shift + Cursor Right" }
+        { "receiver": "PatternRoll", "command": "BeatShiftRight", "key": "Cursor Right" }
       ],
       "keyDown": [
         { "receiver": "PianoRoll", "command": "StartDragViewport", "key": "Spacebar" },

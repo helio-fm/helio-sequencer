@@ -73,8 +73,10 @@ namespace CommandIDs
 
         ClipTransposeUp                 = 0x1620,
         ClipTransposeDown               = 0x1621,
-        ClipVolumeUp                    = 0x1622,
-        ClipVolumeDown                  = 0x1623,
+        ClipTransposeOctaveUp           = 0x1622,
+        ClipTransposeOctaveDown         = 0x1623,
+        ClipVolumeUp                    = 0x1624,
+        ClipVolumeDown                  = 0x1625,
 
         ToggleMuteClips                 = 0x1630,
         ToggleSoloClips                 = 0x1631,
