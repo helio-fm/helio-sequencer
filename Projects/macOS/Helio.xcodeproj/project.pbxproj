@@ -9,6 +9,10 @@
 			isa = PBXBuildFile;
 			fileRef = E2C1A2859123A25065D73061;
 		};
+		B0043DC9DFE8F3019068C94D = {
+			isa = PBXBuildFile;
+			fileRef = E9ECBA5CEF566B37E593C3C2;
+		};
 		773CB76B77533A3777FAE04F = {
 			isa = PBXBuildFile;
 			fileRef = DEB83F8018B1D3CDE2EFCA44;
@@ -16,10 +20,6 @@
 		FE1498208A23EE4115106D27 = {
 			isa = PBXBuildFile;
 			fileRef = 646F8C2256B4A823DAAB603E;
-		};
-		B0043DC9DFE8F3019068C94D = {
-			isa = PBXBuildFile;
-			fileRef = E9ECBA5CEF566B37E593C3C2;
 		};
 		59C483E240B94020716FE870 = {
 			isa = PBXBuildFile;
@@ -4730,6 +4730,13 @@
 			path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationLargeComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		CF2C3A0E2B45E894742157AF = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			name = App.entitlements;
+			path = App.entitlements;
+			sourceTree = "SOURCE_ROOT";
+		};
 		CF47CEEE37E5DE880C371587 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -7167,9 +7174,9 @@
 		07114C3C789E9CD9AFD0BF4F = {
 			isa = PBXGroup;
 			children = (
+				E9ECBA5CEF566B37E593C3C2,
 				DEB83F8018B1D3CDE2EFCA44,
 				646F8C2256B4A823DAAB603E,
-				E9ECBA5CEF566B37E593C3C2,
 				60B90DB463761E48C8C7872E,
 				1D631DBF64D8C87590F30817,
 				61F0F5481B6FC0DDA7DAAD87,
@@ -7210,12 +7217,14 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_ENTITLEMENTS = "App.entitlements";
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = "Manual";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = EQL633LLC8;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -7323,6 +7332,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_ENTITLEMENTS = "App.entitlements";
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = "Manual";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -7330,6 +7340,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				DEVELOPMENT_TEAM = EQL633LLC8;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = s;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -7477,6 +7488,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Helio";
+				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
 			};
@@ -7522,6 +7534,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PRODUCT_NAME = "Helio";
+				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wreorder";
 				ZERO_LINK = NO;
 			};
@@ -7582,9 +7595,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0043DC9DFE8F3019068C94D,
 				773CB76B77533A3777FAE04F,
 				FE1498208A23EE4115106D27,
-				B0043DC9DFE8F3019068C94D,
 				59C483E240B94020716FE870,
 				F0E5832C7D98C3175D347C00,
 				A236C4B36AB5D27B60E71572,
@@ -7615,7 +7628,7 @@
 		08DB4A16C7B3991E0F547761 = {
 			isa = PBXProject;
 			buildConfigurationList = CBBEDDA3CEDC22AE3C172D11;
-			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 1; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = C26CB8AD40490BB25FE36466;
