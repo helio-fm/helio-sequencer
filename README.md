@@ -8,7 +8,7 @@ Most of the DAW interfaces often seem [overcomplicated](http://mashable.com/2015
 
 Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
 
-It aims to be a modern music creation software, featuring linear-based sequencer with a clean interface, high-performance C++ core, integrated version control providing intelligent synchronization between devices, saved undo history, translations to many languages and more.
+It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control for synchronizing project between devices, translations to many languages, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists.
 
 
 ## Building
@@ -24,7 +24,7 @@ It aims to be a modern music creation software, featuring linear-based sequencer
  * Install dependencies:
    * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
    * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.
- * Pick the right project for your OS from `Projects` directory and build.
+ * Pick the right project for your OS from the `Projects` directory and build.
 
 ### Development builds
 
@@ -56,35 +56,28 @@ Helio is still a work in progress with many essential features missing, and ther
 * Implement new features: some guys were asking me if I have any tasks for them to start working on. But, as a sole unpaid developer with limited amount of time and interest, I'm not planning/decomposing stories or organising the board, instead I only work on the parts that are fun and important for me at the moment. If you feel like contributing and don't know where to start, my suggestion is that you do the same: find a missing feature or behavior you're lacking the most, and make the app a little more convinient for yourself. Anyway, feel free to ask questions and create incomplete PR's to get intermediate feedback.
 
 
-## Contributors
-
-This project exists thanks to all the people who contribute. 
-<a href="https://github.com/helio-fm/helio-workstation/graphs/contributors"><img src="https://opencollective.com/helio-workstation/contributors.svg?width=890&button=false" /></a>
-
-
-### Translation and proofreading, in alphabetical order
-
-Afrikaans - Jacques Viviers  
-Brazilian Portuguese - Dario Silva  
-Chinese - Bowen Sun  
-Italian - Claudio Stano  
-Japanese - Kotone Itaya  
-Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
-Polish - Dawid Bugajski  
-
-
-## Donations
+## Support the project
 
 * [Become a backer on Patreon](https://www.patreon.com/peterrudenko)
 * [Become a backer on OpenCollective](https://opencollective.com/helio-workstation#sponsor)
+* [DigitalOcean referral link](https://m.do.co/c/eff5010788f0)
 
 
 ## License
 
-GNU GPL v3, see ``LICENSE`` for more information.
+GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-workstation/graphs/contributors), see ``LICENSE`` for more information.
 
 Icons taken from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
 Built-in piano samples are the part of [Salamander Grand Piano](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm, distributed under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
-All Helio logos and translations are distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/) as well.
+All Helio logos and translations are distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+
+### Translation and proofreading credits
+
+Afrikaans - Jacques Viviers  
+Chinese - Bowen Sun  
+Italian - Claudio Stano, Riccardo Cariboni  
+Japanese - Kotone Itaya  
+Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
+Polish - Dawid Bugajski  
