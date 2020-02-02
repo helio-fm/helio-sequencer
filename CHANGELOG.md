@@ -4,6 +4,14 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 2.5
+ - This is mostly a bugfix release: addressed some UX inconveniences and fixed a stupid crash
+ - Added hotkeys for tweaking lengths of selected notes; also adding a note with a modifier key inserts a new note in a dragging mode
+ - Made all hotkey-based beat/length-shift actions depend on the current zoom level
+ - Implemented duplicating tracks in an interactive manner
+ - Made all dialogs draggable
+ - Enabled hardened runtime for macOS builds
+
 ## Version 2.4
  - Added the command palette aka goto anything, toggled by ~ hotkey: the default mode is used for quick access to commands for the current context, the '/' mode is used for quick access to projects list, '@' mode to go to any timeline event or focus on any clip, and '!' mode to construct chords from the text description (still experimental)
  - Added an option to display note names for a visual cue, toggled by the default hotkey 'g' (for 'guides')
