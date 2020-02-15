@@ -91,8 +91,8 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)));
     this->addAndMakeVisible(annotationsButton.get());
 
-    this->playButton.reset(new PlayButton(nullptr));
-    this->addAndMakeVisible(playButton.get());
+    this->transportControl.reset(new TransportControlComponent(nullptr));
+    this->addAndMakeVisible(transportControl.get());
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -142,7 +142,7 @@ SequencerSidebarRight::~SequencerSidebarRight()
     currentTime = nullptr;
     headShadow = nullptr;
     annotationsButton = nullptr;
-    playButton = nullptr;
+    transportControl = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -175,7 +175,7 @@ void SequencerSidebarRight::resized()
     currentTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
     headShadow->setBounds(0, 40, getWidth() - 0, 6);
     annotationsButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    playButton->setBounds((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
+    transportControl->setBounds((getWidth() / 2) - (48 / 2), getHeight() - 70, 48, 70);
     //[UserResized] Add your own custom resize handling here..
     // a hack for themes changing
     this->listBox->updateContent();
@@ -196,7 +196,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         const ProjectTimeline *timeline = this->project.getTimeline();
         const double seekPosition = this->project.getTransport().getSeekPosition();
 
-        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+        if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
             const double numBeats = double(roll->getNumBeats());
             const double seekThreshold = (1.0 / numBeats) / 10.0;
@@ -219,8 +219,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
 
             for (int i = 0; i < timeSignaturesSequence->size(); ++i)
             {
-                if (TimeSignatureEvent *ts =
-                    dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
+                if (auto *ts = dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
                 {
                     const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
                     if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
@@ -284,6 +283,8 @@ void SequencerSidebarRight::recreateMenu()
 #endif
 
     this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggled(scissorsMode));
+
+    //this->menu.add(MenuItem::item(Icons::record, CommandIDs::ToggleRecording)->toggled(transportIsPaused));
 
     if (this->menuMode == PianoRollTools)
     {
@@ -404,7 +405,7 @@ void SequencerSidebarRight::onPlay()
     this->startTimer(100);
 #endif
 
-    this->playButton->setPlaying(true);
+    this->transportControl->setPlaying(true);
 }
 
 void SequencerSidebarRight::onStop()
@@ -413,7 +414,7 @@ void SequencerSidebarRight::onStop()
     this->stopTimer();
 #endif
 
-    this->playButton->setPlaying(false);
+    this->transportControl->setPlaying(false);
 }
 
 //===----------------------------------------------------------------------===//
@@ -509,11 +510,14 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)"/>
-  <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
+  <JUCERCOMP name="" id="bb2e14336f795a57" memberName="transportControl" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 0Rr 48 70" sourceFile="../../Common/TransportControlComponent.cpp"
              constructorParams="nullptr"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

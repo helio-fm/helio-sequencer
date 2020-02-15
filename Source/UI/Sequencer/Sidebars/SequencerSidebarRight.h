@@ -28,7 +28,7 @@ class ProjectNode;
 #include "../../Themes/ShadowUpwards.h"
 #include "../../Themes/SeparatorHorizontal.h"
 #include "../../Themes/ShadowDownwards.h"
-#include "../../Common/PlayButton.h"
+#include "../../Common/TransportControlComponent.h"
 
 class SequencerSidebarRight final : public Component,
                                     protected TransportListener,
@@ -86,7 +86,7 @@ private:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-    Component *refreshComponentForRow(int, bool,  Component *) override;
+    Component *refreshComponentForRow(int, bool, Component *) override;
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
     //===------------------------------------------------------------------===//
@@ -128,7 +128,9 @@ private:
     UniquePointer<Label> currentTime;
     UniquePointer<ShadowDownwards> headShadow;
     UniquePointer<MenuItemComponent> annotationsButton;
-    UniquePointer<PlayButton> playButton;
+    UniquePointer<TransportControlComponent> transportControl;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)
 };
+
+

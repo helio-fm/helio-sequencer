@@ -718,6 +718,10 @@
           <FILE id="XuVuyC" name="SpectralLogo.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/SpectralLogo.cpp"/>
           <FILE id="c1jtLI" name="SpectralLogo.h" compile="0" resource="0" file="../../Source/UI/Common/SpectralLogo.h"/>
+          <FILE id="lrOLoW" name="TransportControlComponent.cpp" compile="1"
+                resource="0" file="../../Source/UI/Common/TransportControlComponent.cpp"/>
+          <FILE id="BWaZbL" name="TransportControlComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Common/TransportControlComponent.h"/>
           <FILE id="C7fvvc" name="ViewportFitProxyComponent.cpp" compile="1"
                 resource="0" file="../../Source/UI/Common/ViewportFitProxyComponent.cpp"/>
           <FILE id="zidg8Y" name="ViewportFitProxyComponent.h" compile="0" resource="0"
