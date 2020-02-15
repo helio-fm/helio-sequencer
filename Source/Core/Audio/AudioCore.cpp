@@ -142,13 +142,11 @@ void AudioCore::removeInstrument(Instrument *instrument)
 void AudioCore::addInstrumentToDevice(Instrument *instrument)
 {
     this->deviceManager.addAudioCallback(&instrument->getProcessorPlayer());
-    this->deviceManager.addMidiInputCallback({}, &instrument->getProcessorPlayer().getMidiMessageCollector());
 }
 
 void AudioCore::removeInstrumentFromDevice(Instrument *instrument)
 {
     this->deviceManager.removeAudioCallback(&instrument->getProcessorPlayer());
-    this->deviceManager.removeMidiInputCallback({}, &instrument->getProcessorPlayer().getMidiMessageCollector());
 }
 
 //===----------------------------------------------------------------------===//
