@@ -71,6 +71,8 @@ public:
 
         play,
         pause,
+        stop,
+        record,
 
         undo,
         redo,

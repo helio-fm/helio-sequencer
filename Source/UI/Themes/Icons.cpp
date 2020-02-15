@@ -42,7 +42,7 @@ struct BuiltInImageData final
 
     BuiltInImageData(const String &name)
     {
-        const String assumedFileName = getIconFileName(name) + "_svg";
+        const auto assumedFileName = getIconFileName(name) + "_svg";
         this->data = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), this->numBytes);
     }
     
@@ -54,7 +54,7 @@ struct BuiltInImageData final
     }
     
     const void *data;
-    int numBytes;
+    int numBytes = 0;
 };
 
 static FlatHashMap<Icons::Id, BuiltInImageData> builtInImages;
@@ -101,6 +101,8 @@ void Icons::initBuiltInImages()
 
     setIconForKey(play);
     setIconForKey(pause);
+    setIconForKey(stop);
+    setIconForKey(record);
 
     setIconForKey(undo);
     setIconForKey(redo);

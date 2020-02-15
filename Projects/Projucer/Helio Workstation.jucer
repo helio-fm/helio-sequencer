@@ -83,6 +83,7 @@
         <FILE id="BTqAe2" name="project.svg" compile="0" resource="1" file="../../Resources/Icons/project.svg"/>
         <FILE id="xx8PZK" name="pull.svg" compile="0" resource="1" file="../../Resources/Icons/pull.svg"/>
         <FILE id="epmE4m" name="push.svg" compile="0" resource="1" file="../../Resources/Icons/push.svg"/>
+        <FILE id="e5DELk" name="record.svg" compile="0" resource="1" file="../../Resources/Icons/record.svg"/>
         <FILE id="dLcDjT" name="redo.svg" compile="0" resource="1" file="../../Resources/Icons/redo.svg"/>
         <FILE id="jh8DJ1" name="refactor.svg" compile="0" resource="1" file="../../Resources/Icons/refactor.svg"/>
         <FILE id="eyUVjN" name="remote.svg" compile="0" resource="1" file="../../Resources/Icons/remote.svg"/>
@@ -98,6 +99,7 @@
         <FILE id="M4yCpT" name="selectAll.svg" compile="0" resource="1" file="../../Resources/Icons/selectAll.svg"/>
         <FILE id="GM5TrL" name="selectNone.svg" compile="0" resource="1" file="../../Resources/Icons/selectNone.svg"/>
         <FILE id="D6EOW7" name="settings.svg" compile="0" resource="1" file="../../Resources/Icons/settings.svg"/>
+        <FILE id="z6XXzu" name="stop.svg" compile="0" resource="1" file="../../Resources/Icons/stop.svg"/>
         <FILE id="M4E2VZ" name="stretchLeft.svg" compile="0" resource="1" file="../../Resources/Icons/stretchLeft.svg"/>
         <FILE id="BGvTna" name="stretchRight.svg" compile="0" resource="1"
               file="../../Resources/Icons/stretchRight.svg"/>
