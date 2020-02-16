@@ -23,7 +23,7 @@ class MovementListener;
 
 #include "TransportListener.h"
 
-class Playhead :
+class Playhead final :
     public Component,
     public TransportListener,
     private AsyncUpdater,
@@ -35,7 +35,7 @@ public:
     {
     public:
         virtual ~Listener() {}
-        virtual void onPlayheadMoved(int indicatorX) = 0;
+        virtual void onPlayheadMoved(int playheadX) = 0;
     };
 
     Playhead(HybridRoll &parentRoll,
@@ -69,7 +69,7 @@ protected:
     HybridRoll &roll;
     Transport &transport;
 
-    int playheadWidth;
+    const int playheadWidth;
 
 private:
 
@@ -82,10 +82,9 @@ private:
 
     void parentChanged();
 
-    SpinLock anchorsLock;
-    double timerStartTime;
-    double timerStartPosition;
-    double msPerQuarterNote;
+    Atomic<double> timerStartPosition = 0.0;
+    Atomic<double> timerStartTime = 0.0;
+    Atomic<double> msPerQuarterNote = 1.0;
 
 private:
 
@@ -94,15 +93,15 @@ private:
     //===------------------------------------------------------------------===//
 
     void handleAsyncUpdate() override;
-
     void updatePosition(double position);
 
-    Colour mainColour;
-    Colour shadeColour;
+    Colour currentColour;
+    const Colour shadeColour;
+    const Colour playbackColour;
+    const Colour recordingColour;
 
-    SpinLock lastCorrectPositionLock;
-    double lastCorrectPosition;
+    Atomic<double> lastCorrectPosition = 0.0;
 
-    Listener *listener;
+    Listener *listener = nullptr;
 
 };
