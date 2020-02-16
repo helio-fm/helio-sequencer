@@ -44,7 +44,7 @@ public:
     explicit SequencerLayout(ProjectNode &parentProject);
     ~SequencerLayout() override;
 
-    static constexpr int getPianoMapHeight() { return 72; }
+    static constexpr int getPianoMapHeight() { return 80; }
     static constexpr int getLevelsMapHeight() { return 128; }
 
     void showPatternEditor();

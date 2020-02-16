@@ -18,12 +18,14 @@
 #pragma once
 
 //[Headers]
+class TransportControlPlayBg;
+class TransportControlRecordBg;
+
 #include "IconComponent.h"
-#include "HighlightedComponent.h"
 //[/Headers]
 
 
-class TransportControlComponent final : public HighlightedComponent
+class TransportControlComponent final : public Component
 {
 public:
 
@@ -43,17 +45,19 @@ private:
 
     //[UserVariables]
 
-    Component *createHighlighterComponent() override;
-
     ComponentAnimator animator;
-
     WeakReference<Component> eventReceiver;
-    bool playing;
+
+    bool playing = false;
+    bool recording = false;
 
     //[/UserVariables]
 
+    UniquePointer<TransportControlRecordBg> recordBg;
+    UniquePointer<TransportControlPlayBg> playBg;
     UniquePointer<IconComponent> playIcon;
-    UniquePointer<IconComponent> pauseIcon;
+    UniquePointer<IconComponent> stopIcon;
+    UniquePointer<IconComponent> recordIcon;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TransportControlComponent)
 };

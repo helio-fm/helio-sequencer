@@ -115,7 +115,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
 
     //[/UserPreSize]
 
-    this->setSize(48, 640);
+    this->setSize(44, 640);
 
     //[Constructor]
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
@@ -167,15 +167,15 @@ void SequencerSidebarRight::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    listBox->setBounds(0, 41, getWidth() - 0, getHeight() - 113);
+    listBox->setBounds(0, 41, getWidth() - 0, getHeight() - 121);
     headLine->setBounds(0, 39, getWidth() - 0, 2);
-    shadow->setBounds(0, getHeight() - 71 - 6, getWidth() - 0, 6);
-    separator->setBounds(0, getHeight() - 70 - 2, getWidth() - 0, 2);
+    shadow->setBounds(0, getHeight() - 79 - 6, getWidth() - 0, 6);
+    separator->setBounds(0, getHeight() - 78 - 2, getWidth() - 0, 2);
     totalTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 9 - 18, 72, 18);
     currentTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
     headShadow->setBounds(0, 40, getWidth() - 0, 6);
     annotationsButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    transportControl->setBounds((getWidth() / 2) - (48 / 2), getHeight() - 70, 48, 70);
+    transportControl->setBounds(0, getHeight() - 78, getWidth() - 0, 78);
     //[UserResized] Add your own custom resize handling here..
     // a hack for themes changing
     this->listBox->updateContent();
@@ -480,21 +480,21 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component, protected TransportListener, protected AsyncUpdater, protected ListBoxModel, protected ChangeListener, protected Timer"
                  constructorParams="ProjectNode &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="48" initialHeight="640">
+                 fixedSize="1" initialWidth="44" initialHeight="640">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
-                    explicitFocusOrder="0" pos="0 41 0M 113M" class="ListBox" params=""/>
+                    explicitFocusOrder="0" pos="0 41 0M 121M" class="ListBox" params=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
              explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
+             explicitFocusOrder="0" pos="0 79Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
              constructorParams="Light"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="0 78Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
          explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="" editableSingleClick="0"
@@ -511,7 +511,7 @@ BEGIN_JUCER_METADATA
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="transportControl" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 0Rr 48 70" sourceFile="../../Common/TransportControlComponent.cpp"
+             explicitFocusOrder="0" pos="0 0Rr 0M 78" sourceFile="../../Common/TransportControlComponent.cpp"
              constructorParams="nullptr"/>
 </JUCER_COMPONENT>
 
