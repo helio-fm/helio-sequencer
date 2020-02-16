@@ -55,7 +55,7 @@ private:
 
     ProjectNode &project;
     MidiKeyboardState state;
-    Atomic<double> totalTimeMs;
+    Atomic<double> totalTimeMs = 0.0;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
@@ -67,6 +67,7 @@ private:
     void onTempoChanged(double msPerQuarter) noexcept override {}
     void onTotalTimeChanged(double timeMs) noexcept override;
     void onPlay() noexcept override {}
+    void onRecord() noexcept override {}
     void onStop() noexcept override {}
 
     //[/UserVariables]

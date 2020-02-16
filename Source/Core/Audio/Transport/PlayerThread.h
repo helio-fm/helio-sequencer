@@ -29,14 +29,26 @@ public:
     void startPlayback(double start, double end, bool shouldLoop,
         bool shouldBroadcastTransportEvents = true);
 
+    void setRecordMidi(bool shouldRecord)
+    {
+        // todo something useful
+        this->recordMidiMode = shouldRecord;
+    }
+
+    bool isRecordingMidi() const
+    {
+        return this->recordMidiMode;
+    }
+
 private:
 
     void run() override;
 
     Transport &transport;
 
-    bool broadcastMode = false;
     bool loopedMode = false;
+    bool broadcastMode = false;
+    bool recordMidiMode = false;
 
     double absStartPosition = 0.0;
     double absEndPosition = 1.0;

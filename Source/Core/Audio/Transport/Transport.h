@@ -65,6 +65,10 @@ public:
     void stopPlayback();
     void toggleStartStopPlayback();
 
+    void startRecording();
+    bool isRecording() const;
+    void stopRecording();
+
     void startRender(const String &filename);
     bool isRendering() const;
     void stopRender();
@@ -139,6 +143,7 @@ protected:
     void broadcastTempoChanged(const double newTempo);
     void broadcastTotalTimeChanged(const double timeMs);
     void broadcastPlay();
+    void broadcastRecord();
     void broadcastStop();
     void broadcastSeek(const double newPosition,
         const double currentTimeMs, const double totalTimeMs);

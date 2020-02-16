@@ -387,8 +387,6 @@ void SequencerSidebarRight::onSeek(double absolutePosition,double currentTimeMs,
 #endif
 }
 
-void SequencerSidebarRight::onTempoChanged(double msPerQuarter) {}
-
 void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
 {
 #if TOOLS_SIDEBAR_SHOWS_TIME
@@ -405,7 +403,12 @@ void SequencerSidebarRight::onPlay()
     this->startTimer(100);
 #endif
 
-    this->transportControl->setPlaying(true);
+    this->transportControl->showPlayingMode(true);
+}
+
+void SequencerSidebarRight::onRecord()
+{
+    this->transportControl->showRecordingMode(true);
 }
 
 void SequencerSidebarRight::onStop()
@@ -414,7 +417,8 @@ void SequencerSidebarRight::onStop()
     this->stopTimer();
 #endif
 
-    this->transportControl->setPlaying(false);
+    this->transportControl->showPlayingMode(false);
+    this->transportControl->showRecordingMode(false);
 }
 
 //===----------------------------------------------------------------------===//

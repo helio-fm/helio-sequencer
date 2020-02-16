@@ -27,6 +27,7 @@ public:
     virtual void onTempoChanged(double msPerQuarter) = 0;
     virtual void onTotalTimeChanged(double timeMs) = 0;
     virtual void onPlay() = 0;
+    virtual void onRecord() = 0;
     virtual void onStop() = 0;
 
 };

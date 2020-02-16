@@ -231,7 +231,7 @@ void TransportControlComponent::mouseDown (const MouseEvent& e)
 
 //[MiscUserCode]
 
-void TransportControlComponent::setPlaying(bool isPlaying)
+void TransportControlComponent::showPlayingMode(bool isPlaying)
 {
     this->playing = isPlaying;
 
@@ -247,6 +247,11 @@ void TransportControlComponent::setPlaying(bool isPlaying)
         this->animator.fadeIn(this->playIcon.get(), 150);
         this->animator.fadeOut(this->stopIcon.get(), 150);
     }
+}
+
+void TransportControlComponent::showRecordingMode(bool isRecording)
+{
+    // todo
 }
 
 //[/MiscUserCode]

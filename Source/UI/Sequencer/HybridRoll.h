@@ -285,9 +285,10 @@ protected:
     //===------------------------------------------------------------------===//
     
     void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
-    void onTempoChanged(double msPerQuarter) override;
-    void onTotalTimeChanged(double timeMs) override;
+    void onTempoChanged(double msPerQuarter) override {}
+    void onTotalTimeChanged(double timeMs) override {}
     void onPlay() override;
+    void onRecord() override;
     void onStop() override;
 
     Atomic<double> lastTransportPosition = 0.0; // modified from a player thread

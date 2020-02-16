@@ -195,6 +195,10 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
     this->player->startPlayback(false);
 }
 
+//===----------------------------------------------------------------------===//
+// Playback control
+//===----------------------------------------------------------------------===//
+
 void Transport::startPlayback()
 {
     this->sleepTimer.setAwake();
@@ -246,6 +250,37 @@ bool Transport::isPlaying() const
 {
     return this->player->isPlaying();
 }
+
+//===----------------------------------------------------------------------===//
+// Recording MIDI
+//===----------------------------------------------------------------------===//
+
+void Transport::startRecording()
+{
+    if (!this->player->isPlaying())
+    {
+        this->sleepTimer.setAwake();
+        this->recacheIfNeeded();
+    }
+
+    this->player->startRecording();
+    this->broadcastRecord();
+}
+
+bool Transport::isRecording() const
+{
+    return this->player->isRecording();
+}
+
+void Transport::stopRecording()
+{
+    // all the same as for stopPlayback
+    this->stopPlayback();
+}
+
+//===----------------------------------------------------------------------===//
+// Rendering
+//===----------------------------------------------------------------------===//
 
 void Transport::startRender(const String &fileName)
 {
@@ -771,6 +806,11 @@ void Transport::broadcastTotalTimeChanged(const double timeMs)
 void Transport::broadcastPlay()
 {
     this->transportListeners.call(&TransportListener::onPlay);
+}
+
+void Transport::broadcastRecord()
+{
+    this->transportListeners.call(&TransportListener::onRecord);
 }
 
 void Transport::broadcastStop()

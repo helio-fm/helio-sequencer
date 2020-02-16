@@ -33,7 +33,8 @@ public:
     ~TransportControlComponent();
 
     //[UserMethods]
-    void setPlaying(bool isPlaying);
+    void showPlayingMode(bool isPlaying);
+    void showRecordingMode(bool isRecording);
     //[/UserMethods]
 
     void paint (Graphics& g) override;

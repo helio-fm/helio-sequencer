@@ -1387,17 +1387,21 @@ void HybridRoll::onSeek(double absolutePosition, double, double)
     this->lastTransportPosition = absolutePosition;
 }
 
-void HybridRoll::onTempoChanged(double msPerQuarter) {}
-void HybridRoll::onTotalTimeChanged(double timeMs) {}
-
 void HybridRoll::onPlay()
 {
     this->resetAllClippingIndicators();
     this->resetAllOversaturationIndicators();
 }
 
+void HybridRoll::onRecord()
+{
+    // todo show recording indicator
+}
+
 void HybridRoll::onStop()
 {
+    // todo hide recording indicator
+
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     // todo sync screen back to playhead?
     this->stopFollowingPlayhead();

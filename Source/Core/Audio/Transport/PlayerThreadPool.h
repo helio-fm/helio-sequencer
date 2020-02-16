@@ -68,6 +68,8 @@ public:
 
     void stopPlayback()
     {
+        this->currentPlayer->setRecordMidi(false);
+
         if (this->currentPlayer->isThreadRunning())
         {
             // Just signal player to stop:
@@ -79,6 +81,18 @@ public:
     bool isPlaying() const
     {
         return (this->currentPlayer->isThreadRunning() &&
+            !this->currentPlayer->threadShouldExit());
+    }
+
+    void startRecording()
+    {
+        // fixme
+        this->currentPlayer->setRecordMidi(true);
+    }
+
+    bool isRecording() const
+    {
+        return (this->currentPlayer->isRecordingMidi() &&
             !this->currentPlayer->threadShouldExit());
     }
 
