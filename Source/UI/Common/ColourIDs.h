@@ -60,6 +60,13 @@ namespace ColourIDs
         static const int noteNameShadow         = 0x2000133;
     }
 
+    namespace Recording
+    {
+        static const int rollMarker             = 0x2000150;
+        static const int buttonHighlight        = 0x2000151;
+        static const int buttonRecord           = 0x2000152;
+    }
+
     namespace Callout
     {
         static const int fill                   = 0x2000200;
@@ -117,7 +124,7 @@ namespace ColourIDs
     {
         static const int fill                   = 0x2001000;
     }
-    
+
     namespace TrackScroller
     {
         static const int borderLineDark         = 0x2001200;

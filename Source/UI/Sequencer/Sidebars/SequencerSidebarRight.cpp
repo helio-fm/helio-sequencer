@@ -175,7 +175,7 @@ void SequencerSidebarRight::resized()
     currentTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
     headShadow->setBounds(0, 40, getWidth() - 0, 6);
     annotationsButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    transportControl->setBounds(0, getHeight() - 78, getWidth() - 0, 78);
+    transportControl->setBounds(0, getHeight() - 79, getWidth() - 0, 79);
     //[UserResized] Add your own custom resize handling here..
     // a hack for themes changing
     this->listBox->updateContent();
@@ -515,7 +515,7 @@ BEGIN_JUCER_METADATA
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="transportControl" virtualName=""
-             explicitFocusOrder="0" pos="0 0Rr 0M 78" sourceFile="../../Common/TransportControlComponent.cpp"
+             explicitFocusOrder="0" pos="0 0Rr 0M 79" sourceFile="../../Common/TransportControlComponent.cpp"
              constructorParams="nullptr"/>
 </JUCER_COMPONENT>
 

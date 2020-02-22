@@ -31,6 +31,7 @@ class AutomationStepsSequenceMap;
 class Transport;
 class HybridRollListener;
 class TimelineWarningMarker;
+class TimelineRecordingMarker;
 
 #include "ComponentFader.h"
 #include "AnnotationsProjectMap.h"
@@ -296,6 +297,8 @@ protected:
     double playheadOffset = 0.0;
     bool shouldFollowPlayhead = false;
     
+    UniquePointer<TimelineRecordingMarker> recordingMarker;
+
     //===------------------------------------------------------------------===//
     // AsyncUpdater
     //===------------------------------------------------------------------===//
@@ -387,7 +390,7 @@ protected:
     UniquePointer<KeySignaturesProjectMap> keySignaturesTrack;
 
     UniquePointer<SelectionComponent> lassoComponent;
-    
+
 protected:
     
     Array<float> visibleBars;

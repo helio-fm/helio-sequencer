@@ -1393,14 +1393,38 @@ void HybridRoll::onPlay()
     this->resetAllOversaturationIndicators();
 }
 
+class TimelineRecordingMarker final : public Component
+{
+public:
+
+    TimelineRecordingMarker() : fill(findDefaultColour(ColourIDs::Recording::rollMarker))
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fill);
+        g.fillRect(0, 0, this->getWidth(), 1);
+        g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
+        g.fillRect(0, 0, 1, this->getHeight());
+        g.fillRect(this->getWidth() - 1, 0, 1, this->getHeight());
+    }
+
+    const Colour fill;
+};
+
 void HybridRoll::onRecord()
 {
-    // todo show recording indicator
+    this->recordingMarker = makeUnique<TimelineRecordingMarker>();
+    this->updateChildrenBounds();
 }
 
 void HybridRoll::onStop()
 {
-    // todo hide recording indicator
+    this->recordingMarker = nullptr;
 
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     // todo sync screen back to playhead?
@@ -1691,17 +1715,17 @@ void HybridRoll::updateChildrenBounds()
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->headerShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, HYBRID_ROLL_HEADER_SHADOW_SIZE);
 
-    if (this->annotationsTrack)
+    if (this->annotationsTrack != nullptr)
     {
         this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->keySignaturesTrack)
+    if (this->keySignaturesTrack != nullptr)
     {
         this->keySignaturesTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->timeSignaturesTrack)
+    if (this->timeSignaturesTrack != nullptr)
     {
         this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
     }
@@ -1716,6 +1740,11 @@ void HybridRoll::updateChildrenBounds()
     if (this->lassoComponent->isDragging())
     {
         this->lassoComponent->updateBounds();
+    }
+
+    if (this->recordingMarker != nullptr)
+    {
+        this->recordingMarker->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, viewHeight);
     }
 
     this->broadcastRollResized();
@@ -1734,17 +1763,17 @@ void HybridRoll::updateChildrenPositions()
     this->header->setTopLeftPosition(0, viewY);
     this->headerShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
 
-    if (this->annotationsTrack)
+    if (this->annotationsTrack != nullptr)
     {
         this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->keySignaturesTrack)
+    if (this->keySignaturesTrack != nullptr)
     {
         this->keySignaturesTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->timeSignaturesTrack)
+    if (this->timeSignaturesTrack != nullptr)
     {
         this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     }
@@ -1753,6 +1782,11 @@ void HybridRoll::updateChildrenPositions()
     {
         Component *const trackMap = this->trackMaps.getUnchecked(i);
         trackMap->setTopLeftPosition(0, viewY + viewHeight - trackMap->getHeight());
+    }
+
+    if (this->recordingMarker != nullptr)
+    {
+        this->recordingMarker->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
     this->broadcastRollMoved();

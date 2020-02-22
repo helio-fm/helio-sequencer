@@ -866,14 +866,17 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().withAlpha(0.65f));
-    this->setColour(ColourIDs::Roll::playheadRecording, s->getLassoBorderColour().interpolatedWith(Colours::indianred, 0.5f).withAlpha(0.75f));
-
+    this->setColour(ColourIDs::Roll::playheadRecording, s->getLassoBorderColour().interpolatedWith(Colours::red, 0.5f).withAlpha(0.75f));
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::trackHeaderBorder, Colours::white.withAlpha(0.075f));
     this->setColour(ColourIDs::Roll::noteFill, s->getTextColour().interpolatedWith(Colours::white, 0.5f));
     this->setColour(ColourIDs::Roll::noteNameFill, s->getBlackKeyColour().darker(0.4f).withAlpha(0.95f));
     this->setColour(ColourIDs::Roll::noteNameBorder, s->getTextColour().withAlpha(0.5f));
     this->setColour(ColourIDs::Roll::noteNameShadow, s->getTextColour().withAlpha(0.25f));
+
+    this->setColour(ColourIDs::Recording::rollMarker, s->getTextColour().interpolatedWith(Colours::red, 0.75f).withAlpha(0.75f));
+    this->setColour(ColourIDs::Recording::buttonHighlight, Colours::red.withAlpha(0.3f));
+    this->setColour(ColourIDs::Recording::buttonRecord, Colours::red.withAlpha(0.6f));
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));

@@ -38,13 +38,16 @@ public:
         this->setPaintingIsUnclipped(true);
     }
 
+    inline float getTiltStart() const noexcept { return 28.f; }
+    inline float getTiltEnd() const noexcept { return 35.f; }
+
     void resized() override
     {
         this->path.clear();
         this->path.startNewSubPath(0.0f, 0.0f);
-        this->path.lineTo(static_cast<float> (getWidth()), 0.0f);
-        this->path.lineTo(static_cast<float> (getWidth()), 30.0f);
-        this->path.lineTo(0.0f, 36.0f);
+        this->path.lineTo(float(this->getWidth()), 0.0f);
+        this->path.lineTo(float(this->getWidth()), this->getTiltStart());
+        this->path.lineTo(0.0f, this->getTiltEnd());
         this->path.closeSubPath();
     }
 
@@ -59,18 +62,30 @@ public:
         g.fillPath(this->path, {});
 
         g.setColour(Colours::black.withAlpha(0.1f));
-        g.drawLine(0.f, 35.f, float(this->getWidth()), 29.f);
+        g.drawLine(0.f, this->getTiltEnd(), float(this->getWidth()), this->getTiltStart());
     }
 
     void mouseEnter(const MouseEvent &e) override
     {
-        this->fillColour = Colours::mediumvioletred.withAlpha(0.3f);
+        this->fillColour = findDefaultColour(ColourIDs::Recording::buttonHighlight);
         this->repaint();
     }
 
     void mouseExit(const MouseEvent &e) override
     {
         this->fillColour = Colours::transparentBlack;
+        this->repaint();
+    }
+
+    void mouseDown(const MouseEvent &e)
+    {
+        this->fillColour = findDefaultColour(ColourIDs::Recording::buttonRecord);
+        this->repaint();
+    }
+
+    void mouseUp(const MouseEvent &e)
+    {
+        this->fillColour = findDefaultColour(ColourIDs::Recording::buttonHighlight);
         this->repaint();
     }
 
@@ -92,13 +107,23 @@ public:
         this->setPaintingIsUnclipped(true);
     }
 
+    inline float getTiltStart() const noexcept
+    {
+        return float(this->getHeight() - 43);
+    }
+
+    inline float getTiltEnd() const noexcept
+    {
+        return float(this->getHeight() - 50);
+    }
+
     void resized() override
     {
         this->path.clear();
-        this->path.startNewSubPath(0.0f, static_cast<float> (getHeight() - 42));
-        this->path.lineTo(static_cast<float> (getWidth()), static_cast<float> (getHeight() - 48));
-        this->path.lineTo(static_cast<float> (getWidth()), static_cast<float> (getHeight()));
-        this->path.lineTo(0.0f, static_cast<float> (getHeight()));
+        this->path.startNewSubPath(0.0f, this->getTiltStart());
+        this->path.lineTo(float(this->getWidth()), this->getTiltEnd());
+        this->path.lineTo(float(this->getWidth()), float(this->getHeight()));
+        this->path.lineTo(0.0f, float(this->getHeight()));
         this->path.closeSubPath();
     }
 
@@ -111,7 +136,7 @@ public:
     {
         g.setColour(this->fillColour);
         g.fillPath(this->path, {});
-        g.drawLine(0.f, float(this->getHeight() - 42), float(this->getWidth()), float(this->getHeight() - 48));
+        g.drawLine(0.f, this->getTiltStart(), float(this->getWidth()), this->getTiltEnd());
     }
 
     void mouseEnter(const MouseEvent &e) override
@@ -122,7 +147,19 @@ public:
 
     void mouseExit(const MouseEvent &e) override
     {
-        this->fillColour = Colour(0x0cffffff);
+        this->fillColour = Colour(0x0dffffff);
+        this->repaint();
+    }
+
+    void mouseDown(const MouseEvent &e)
+    {
+        this->fillColour = Colour(0x30ffffff);
+        this->repaint();
+    }
+
+    void mouseUp(const MouseEvent &e)
+    {
+        this->fillColour = Colour(0x20ffffff);
         this->repaint();
     }
 
@@ -166,7 +203,7 @@ TransportControlComponent::TransportControlComponent(WeakReference<Component> ev
     this->setOpaque(false);
     //[/UserPreSize]
 
-    this->setSize(44, 78);
+    this->setSize(44, 79);
 
     //[Constructor]
     //[/Constructor]
@@ -201,10 +238,10 @@ void TransportControlComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    recordBg->setBounds(0, 0, getWidth() - 0, 36);
-    playBg->setBounds(0, getHeight() - 48, getWidth() - 0, 48);
-    playIcon->setBounds((getWidth() / 2) + 2 - (24 / 2), (getHeight() / 2) + 16 - (24 / 2), 24, 24);
-    stopIcon->setBounds((getWidth() / 2) - (22 / 2), (getHeight() / 2) + 16 - (22 / 2), 22, 22);
+    recordBg->setBounds(0, 0, getWidth() - 0, 35);
+    playBg->setBounds(0, getHeight() - 50, getWidth() - 0, 50);
+    playIcon->setBounds((getWidth() / 2) + 2 - (24 / 2), (getHeight() / 2) + 15 - (24 / 2), 24, 24);
+    stopIcon->setBounds((getWidth() / 2) - (22 / 2), (getHeight() / 2) + 15 - (22 / 2), 22, 22);
     recordIcon->setBounds((getWidth() / 2) - (18 / 2), 7, 18, 18);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -214,8 +251,8 @@ void TransportControlComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     const auto command = this->playing ?
-        CommandIDs::TransportPausePlayback :
-        CommandIDs::TransportStartPlayback;
+        CommandIDs::TransportStop :
+        CommandIDs::TransportPlaybackStart;
 
     if (this->eventReceiver != nullptr)
     {
@@ -265,7 +302,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="WeakReference&lt;Component&gt; eventReceiver"
                  variableInitialisers="eventReceiver(eventReceiver)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="44" initialHeight="78">
+                 initialWidth="44" initialHeight="79">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
   </METHODS>
@@ -274,16 +311,16 @@ BEGIN_JUCER_METADATA
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="0" nonZeroWinding="1">s 0 42R l 0R 48R l 0R 0R l 0 0R x</PATH>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="49831a57350a131d" memberName="recordBg" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 36" class="TransportControlRecordBg"
+                    explicitFocusOrder="0" pos="0 0 0M 35" class="TransportControlRecordBg"
                     params=""/>
   <GENERICCOMPONENT name="" id="e71c47548b70a0b4" memberName="playBg" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 0M 48" class="TransportControlPlayBg"
+                    explicitFocusOrder="0" pos="0 0Rr 0M 50" class="TransportControlPlayBg"
                     params=""/>
   <GENERICCOMPONENT name="" id="1a8a31abbc0f3c4e" memberName="playIcon" virtualName=""
-                    explicitFocusOrder="0" pos="2Cc 16Cc 24 24" class="IconComponent"
+                    explicitFocusOrder="0" pos="2Cc 15Cc 24 24" class="IconComponent"
                     params="Icons::play"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="stopIcon" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 16Cc 22 22" class="IconComponent"
+                    explicitFocusOrder="0" pos="0Cc 15Cc 22 22" class="IconComponent"
                     params="Icons::stop"/>
   <GENERICCOMPONENT name="" id="554d8489a0447eda" memberName="recordIcon" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 7 18 18" class="IconComponent"
