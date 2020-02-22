@@ -271,7 +271,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
     {
         this->cancelAndDisappear();
     }
-    else if (commandId == CommandIDs::TransportStartPlayback)
+    else if (commandId == CommandIDs::TransportPlaybackStart)
     {
         // Play scale forward and backward
         auto scaleKeys = this->scale->getUpScale();
@@ -299,7 +299,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         this->transport.probeSequence(s);
         //this->playButton->setPlaying(true);
     }
-    else if (commandId == CommandIDs::TransportPausePlayback)
+    else if (commandId == CommandIDs::TransportStop)
     {
         this->transport.stopPlayback();
         //this->playButton->setPlaying(false);

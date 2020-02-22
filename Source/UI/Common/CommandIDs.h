@@ -96,10 +96,12 @@ namespace CommandIDs
         ShowAnnotations                 = 0x2010,
         ResetPreviewChanges             = 0x2011,
 
-        TransportStartPlayback          = 0x2013,
-        TransportPausePlayback          = 0x2014,
+        TransportRecordingAwait         = 0x2015,
+        TransportRecordingStart         = 0x2016,
+        TransportPlaybackStart          = 0x2017,
+        TransportStop                   = 0x2018,
 
-        PopupMenuDismiss                = 0x2015,
+        PopupMenuDismiss                = 0x2020,
 
         RenderToFLAC                    = 0x2030,
         RenderToWAV                     = 0x2031,

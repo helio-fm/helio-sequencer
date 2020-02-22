@@ -1194,7 +1194,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             this->setSpaceDraggingMode(false);
         }
         break;
-    case CommandIDs::TransportStartPlayback:
+    case CommandIDs::TransportPlaybackStart:
         if (!this->project.getTransport().isPlaying())
         {
             this->stopFollowingPlayhead();
@@ -1202,7 +1202,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         }
         this->startFollowingPlayhead();
         break;
-    case CommandIDs::TransportPausePlayback:
+    case CommandIDs::TransportStop:
         if (this->project.getTransport().isPlaying())
         {
             this->project.getTransport().stopPlayback();

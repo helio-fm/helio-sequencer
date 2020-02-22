@@ -118,9 +118,13 @@
         { "receiver": "PianoRoll", "command": "PasteEvents", "key": "Control + V" },
         { "receiver": "PianoRoll", "command": "PasteEvents", "key": "Shift + Insert" },
 
-        // Playback control
-        { "receiver": "PianoRoll", "command": "TransportPausePlayback", "key": "Escape" },
-        { "receiver": "PianoRoll", "command": "TransportStartPlayback", "key": "Return" },
+        // Playback/record control
+        { "receiver": "PianoRoll", "command": "TransportPlaybackStart", "key": "Return" },
+        { "receiver": "PianoRoll", "command": "TransportRecordingStart", "key": "Shift + Return" },
+        { "receiver": "PianoRoll", "command": "TransportRecordingAwait", "key": "Control + Return" },
+        { "receiver": "PianoRoll", "command": "TransportRecordingAwait", "key": "Command + Return" },
+        { "receiver": "PianoRoll", "command": "TransportRecordingAwait", "key": "Alt + Return" },
+        { "receiver": "PianoRoll", "command": "TransportStop", "key": "Escape" },
 
         // Navigation
         { "receiver": "PianoRoll", "command": "ZoomIn", "key": "Z" },
@@ -213,8 +217,12 @@
         { "receiver": "PatternRoll", "command": "DuplicateTrack", "key": "+" },
 
         // Playback control
-        { "receiver": "PatternRoll", "command": "TransportPausePlayback", "key": "Escape" },
-        { "receiver": "PatternRoll", "command": "TransportStartPlayback", "key": "Return" },
+        { "receiver": "PatternRoll", "command": "TransportPlaybackStart", "key": "Return" },
+        { "receiver": "PatternRoll", "command": "TransportRecordingStart", "key": "Shift + Return" },
+        { "receiver": "PatternRoll", "command": "TransportRecordingAwait", "key": "Control + Return" },
+        { "receiver": "PatternRoll", "command": "TransportRecordingAwait", "key": "Command + Return" },
+        { "receiver": "PatternRoll", "command": "TransportRecordingAwait", "key": "Alt + Return" },
+        { "receiver": "PatternRoll", "command": "TransportStop", "key": "Escape" },
 
         // Navigation
         { "receiver": "PatternRoll", "command": "ZoomIn", "key": "Z" },
