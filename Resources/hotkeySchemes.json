@@ -1,278 +1,291 @@
 {
   "hotkeySchemes": {
+    "hotkeyScheme": { "name": "Default", "group": [
 
-    /*
-      Hotkey scheme supports 3 types of nodes: "keyPress", "keyDown" and "keyUp".
-      Each has 3 attributes:
-        - "receiver" attribute, which is a component id.
-              Only a child of a currently visible page will recieve events.
-        - "command" attribute (see CommandIDs.h for available commands)
-        - "key" attribute, which is case-insensitive textual combination
-              of keys (letters or specific) and modifiers (if any).
-              Modifier names: "alt", "shift", "control", "command".
-              Non-letter hotkey names:
-                  "spacebar", "return",
-                  "escape", "backspace",
-                  "cursor left", "cursor right", "cursor up", "cursor down",
-                  "page up", "page down",
-                  "home", "end",
-                  "delete", "insert",
-                  "tab", "play", "stop", "fast forward", "rewind".
-    */
+    // Hotkeys are grouped by "receiver" attribute, which is a component id,
+    // and by keypress type, which is one of "keyPress", "keyDown" and "keyUp".
+    // Each record contains "command" attribute (see CommandIDs.h for available commands),
+    // and "key" attribute, which is case-insensitive textual combination of keys
+    // (letters or specific) and modifiers (if any).
+    // Modifier names are: "alt", "shift", "control", "command".
+    // Non-letter hotkey names are: "spacebar", "return", "escape", "backspace",
+    // "cursor left", "cursor right", "cursor up", "cursor down",
+    // "page up", "page down", "home", "end", "delete", "insert",
+    // "tab", "play", "stop", "fast forward", "rewind".
 
-    "hotkeyScheme": {
-      "name": "Default",
+    // ANCHOR: MainLayout
+    {
+      "receiver": "MainLayout",
       "keyPress": [
 
-        // ------------------------------------
-        // Main layout hotkeys
-
         // Command Palette aka Spotlight Search aka Goto Anything:
-        { "receiver": "MainLayout", "command": "CommandPalette", "key": "`" },
-        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Control + P" },
-        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Command + P" },
-        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Control + G" },
-        { "receiver": "MainLayout", "command": "CommandPalette", "key": "Command + G" },
+        { "command": "CommandPalette", "key": "`" },
+        { "command": "CommandPalette", "key": "Control + P" },
+        { "command": "CommandPalette", "key": "Command + P" },
+        { "command": "CommandPalette", "key": "Control + G" },
+        { "command": "CommandPalette", "key": "Command + G" },
 
         // Quick access to command palette modes (/, !, @):
-        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "/" },
-        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 1" },
-        { "receiver": "MainLayout", "command": "CommandPaletteWithMode", "key": "Shift + 2" },
+        { "command": "CommandPaletteWithMode", "key": "/" },
+        { "command": "CommandPaletteWithMode", "key": "Shift + 1" },
+        { "command": "CommandPaletteWithMode", "key": "Shift + 2" },
 
-        { "receiver": "MainLayout", "command": "ShowRootPage", "key": "Home" },
-        { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
-        { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
-        { "receiver": "MainLayout", "command": "ShowPreviousPage", "key": "Alt + Cursor Left" },
-        { "receiver": "MainLayout", "command": "ShowNextPage", "key": "Command + Cursor Right" },
-        { "receiver": "MainLayout", "command": "ShowNextPage", "key": "Control + Cursor Right" },
-        { "receiver": "MainLayout", "command": "ShowNextPage", "key": "Alt + Cursor Right" },
-        { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Command + 1" },
-        { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Control + 1" },
-        { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Command + 2" },
-        { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Control + 2" },
-        { "receiver": "MainLayout", "command": "SwitchToVersioningMode", "key": "Command + 3" },
-        { "receiver": "MainLayout", "command": "SwitchToVersioningMode", "key": "Control + 3" },
-        { "receiver": "MainLayout", "command": "SwitchToEditMode", "key": "Page Up" },
-        { "receiver": "MainLayout", "command": "SwitchToArrangeMode", "key": "Page Down" },
+        { "command": "ShowRootPage", "key": "Home" },
+        { "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
+        { "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
+        { "command": "ShowPreviousPage", "key": "Alt + Cursor Left" },
+        { "command": "ShowNextPage", "key": "Command + Cursor Right" },
+        { "command": "ShowNextPage", "key": "Control + Cursor Right" },
+        { "command": "ShowNextPage", "key": "Alt + Cursor Right" },
+        { "command": "SwitchToEditMode", "key": "Command + 1" },
+        { "command": "SwitchToEditMode", "key": "Control + 1" },
+        { "command": "SwitchToArrangeMode", "key": "Command + 2" },
+        { "command": "SwitchToArrangeMode", "key": "Control + 2" },
+        { "command": "SwitchToVersioningMode", "key": "Command + 3" },
+        { "command": "SwitchToVersioningMode", "key": "Control + 3" },
+        { "command": "SwitchToEditMode", "key": "Page Up" },
+        { "command": "SwitchToArrangeMode", "key": "Page Down" }
+      ]
+    },
+    {
+      "receiver": "SequencerLayout",
+      "keyPress": [
+        { "command": "SwitchBetweenRolls", "key": "Tab" },
+        { "command": "ExportMidi", "key": "Control + E" },
+        { "command": "ExportMidi", "key": "Command + E" },
+        { "command": "RenderToWAV", "key": "Control + R" },
+        { "command": "RenderToWAV", "key": "Command + R" },
+        { "command": "RenderToFLAC", "key": "Control + Shift + R" },
+        { "command": "RenderToFLAC", "key": "Command + Shift + R" }
+      ]
+    },
+    {
+      "receiver": "VersionControlStage",
+      "keyPress": [
+        { "command": "VersionControlSelectAll", "key": "Control + A" },
+        { "command": "VersionControlSelectNone", "key": "Escape" },
+        { "command": "VersionControlCommitSelected", "key": "Control + S" },
+        { "command": "VersionControlResetSelected", "key": "Backspace" },
+        { "command": "VersionControlResetSelected", "key": "Delete" },
+        { "command": "VersionControlCommitAll", "key": "Control + Shift + S" },
+        { "command": "VersionControlResetAll", "key": "Shift + Backspace" },
+        { "command": "VersionControlResetAll", "key": "Shift + Delete" },
 
-        { "receiver": "SequencerLayout", "command": "SwitchBetweenRolls", "key": "Tab" },
-        { "receiver": "SequencerLayout", "command": "ExportMidi", "key": "Control + E" },
-        { "receiver": "SequencerLayout", "command": "ExportMidi", "key": "Command + E" },
-        { "receiver": "SequencerLayout", "command": "RenderToWAV", "key": "Control + R" },
-        { "receiver": "SequencerLayout", "command": "RenderToWAV", "key": "Command + R" },
-        { "receiver": "SequencerLayout", "command": "RenderToFLAC", "key": "Control + Shift + R" },
-        { "receiver": "SequencerLayout", "command": "RenderToFLAC", "key": "Command + Shift + R" },
+        // Sync all revisions - only works when logged in
+        { "command": "VersionControlSyncAll", "key": "F5" },
 
-        // ------------------------------------
-        // Version control page
-
-        { "receiver": "VersionControlStage", "command": "VersionControlToggleQuickStash", "key": "Tab" },
-        { "receiver": "VersionControlStage", "command": "VersionControlSelectAll", "key": "Control + A" },
-        { "receiver": "VersionControlStage", "command": "VersionControlSelectNone", "key": "Escape" },
-        { "receiver": "VersionControlStage", "command": "VersionControlCommitSelected", "key": "Control + S" },
-        { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Backspace" },
-        { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Delete" },
-        { "receiver": "VersionControlStage", "command": "VersionControlCommitAll", "key": "Control + Shift + S" },
-        { "receiver": "VersionControlStage", "command": "VersionControlResetAll", "key": "Shift + Backspace" },
-        { "receiver": "VersionControlStage", "command": "VersionControlResetAll", "key": "Shift + Delete" },
-        { "receiver": "VersionControlStage", "command": "VersionControlSyncAll", "key": "F5" },
-        //{ "receiver": "VersionControlHistory", "command": "VersionControlPushSelected", "key": "?" },
-        //{ "receiver": "VersionControlHistory", "command": "VersionControlPullSelected", "key": "?" },
-
-        // ------------------------------------
-        // Piano roll's specific
+        // Stash all changes or apply stashed changes
+        { "command": "VersionControlToggleQuickStash", "key": "Tab" }
+      ]
+    },
+    /*{
+      "receiver": "VersionControlHistory",
+      "keyPress": [
+        { "command": "VersionControlPushSelected", "key": "?" },
+        { "command": "VersionControlPullSelected", "key": "?" },
+      ]
+    },*/
+    {
+      "receiver": "PianoRoll",
+      "keyPress": [
 
         // Undo/redo:
-        { "receiver": "PianoRoll", "command": "Undo", "key": "Command + Z" },
-        { "receiver": "PianoRoll", "command": "Undo", "key": "Control + Z" },
-        { "receiver": "PianoRoll", "command": "Redo", "key": "Command + Shift + Z" },
-        { "receiver": "PianoRoll", "command": "Redo", "key": "Control + Shift + Z" },
-        { "receiver": "PianoRoll", "command": "Redo", "key": "Command + Y" },
-        { "receiver": "PianoRoll", "command": "Redo", "key": "Control + Y" },
+        { "command": "Undo", "key": "Command + Z" },
+        { "command": "Undo", "key": "Control + Z" },
+        { "command": "Redo", "key": "Command + Shift + Z" },
+        { "command": "Redo", "key": "Control + Shift + Z" },
+        { "command": "Redo", "key": "Command + Y" },
+        { "command": "Redo", "key": "Control + Y" },
 
         // Copy
-        { "receiver": "PianoRoll", "command": "CopyEvents", "key": "Command + C" },
-        { "receiver": "PianoRoll", "command": "CopyEvents", "key": "Control + C" },
-        { "receiver": "PianoRoll", "command": "CopyEvents", "key": "Command + Insert" },
-        { "receiver": "PianoRoll", "command": "CopyEvents", "key": "Control + Insert" },
+        { "command": "CopyEvents", "key": "Command + C" },
+        { "command": "CopyEvents", "key": "Control + C" },
+        { "command": "CopyEvents", "key": "Command + Insert" },
+        { "command": "CopyEvents", "key": "Control + Insert" },
 
         // Cut
-        { "receiver": "PianoRoll", "command": "CutEvents", "key": "Command + X" },
-        { "receiver": "PianoRoll", "command": "CutEvents", "key": "Control + X" },
-        { "receiver": "PianoRoll", "command": "CutEvents", "key": "Shift + Delete" },
+        { "command": "CutEvents", "key": "Command + X" },
+        { "command": "CutEvents", "key": "Control + X" },
+        { "command": "CutEvents", "key": "Shift + Delete" },
 
         // Cut selection to the new track
-        { "receiver": "PianoRoll", "command": "NewTrackFromSelection", "key": "Control + Shift + X" },
-        { "receiver": "PianoRoll", "command": "NewTrackFromSelection", "key": "Command + Shift + X" },
+        { "command": "NewTrackFromSelection", "key": "Control + Shift + X" },
+        { "command": "NewTrackFromSelection", "key": "Command + Shift + X" },
 
         // Duplicate track
-        { "receiver": "PianoRoll", "command": "DuplicateTrack", "key": "+" },
+        { "command": "DuplicateTrack", "key": "+" },
 
         // Delete
-        { "receiver": "PianoRoll", "command": "DeleteEvents", "key": "X" },
-        { "receiver": "PianoRoll", "command": "DeleteEvents", "key": "Delete" },
-        { "receiver": "PianoRoll", "command": "DeleteEvents", "key": "Backspace" },
+        { "command": "DeleteEvents", "key": "X" },
+        { "command": "DeleteEvents", "key": "Delete" },
+        { "command": "DeleteEvents", "key": "Backspace" },
 
         // Paste
-        { "receiver": "PianoRoll", "command": "PasteEvents", "key": "Command + V" },
-        { "receiver": "PianoRoll", "command": "PasteEvents", "key": "Control + V" },
-        { "receiver": "PianoRoll", "command": "PasteEvents", "key": "Shift + Insert" },
+        { "command": "PasteEvents", "key": "Command + V" },
+        { "command": "PasteEvents", "key": "Control + V" },
+        { "command": "PasteEvents", "key": "Shift + Insert" },
 
         // Playback/record control
-        { "receiver": "PianoRoll", "command": "TransportPlaybackStart", "key": "Return" },
-        { "receiver": "PianoRoll", "command": "TransportRecordingStart", "key": "Shift + Return" },
-        { "receiver": "PianoRoll", "command": "TransportRecordingAwait", "key": "Control + Return" },
-        { "receiver": "PianoRoll", "command": "TransportRecordingAwait", "key": "Command + Return" },
-        { "receiver": "PianoRoll", "command": "TransportRecordingAwait", "key": "Alt + Return" },
-        { "receiver": "PianoRoll", "command": "TransportStop", "key": "Escape" },
+        { "command": "TransportPlaybackStart", "key": "Return" },
+        { "command": "TransportRecordingStart", "key": "Shift + Return" },
+        { "command": "TransportRecordingAwait", "key": "Control + Return" },
+        { "command": "TransportRecordingAwait", "key": "Command + Return" },
+        { "command": "TransportRecordingAwait", "key": "Alt + Return" },
+        { "command": "TransportStop", "key": "Escape" },
 
         // Navigation
-        { "receiver": "PianoRoll", "command": "ZoomIn", "key": "Z" },
-        { "receiver": "PianoRoll", "command": "ZoomOut", "key": "Shift + Z" },
-        { "receiver": "PianoRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
-        { "receiver": "PianoRoll", "command": "ZoomEntireClip", "key": "Control + Tab" },
-        { "receiver": "PianoRoll", "command": "TimelineJumpNext", "key": "." },
-        { "receiver": "PianoRoll", "command": "TimelineJumpPrevious", "key": "," },
+        { "command": "ZoomIn", "key": "Z" },
+        { "command": "ZoomOut", "key": "Shift + Z" },
+        { "command": "ZoomEntireClip", "key": "Command + Tab" },
+        { "command": "ZoomEntireClip", "key": "Control + Tab" },
+        { "command": "TimelineJumpNext", "key": "." },
+        { "command": "TimelineJumpPrevious", "key": "," },
 
         // Selection
-        { "receiver": "PianoRoll", "command": "SelectAllEvents", "key": "Command + A" },
-        { "receiver": "PianoRoll", "command": "SelectAllEvents", "key": "Control + A" },
+        { "command": "SelectAllEvents", "key": "Command + A" },
+        { "command": "SelectAllEvents", "key": "Control + A" },
 
         // Edit selection
-        { "receiver": "PianoRoll", "command": "ToggleMuteClips", "key": "M" },
-        { "receiver": "PianoRoll", "command": "ToggleSoloClips", "key": "S" },
-        { "receiver": "PianoRoll", "command": "RenameTrack", "key": "F2" },
-        { "receiver": "PianoRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
-        { "receiver": "PianoRoll", "command": "BeatShiftRight", "key": "Cursor Right" },
-        { "receiver": "PianoRoll", "command": "LengthDecrease", "key": "Shift + Cursor Left" },
-        { "receiver": "PianoRoll", "command": "LengthIncrease", "key": "Shift + Cursor Right" },
-        { "receiver": "PianoRoll", "command": "KeyShiftUp", "key": "Cursor Up" },
-        { "receiver": "PianoRoll", "command": "KeyShiftDown", "key": "Cursor Down" },
-        { "receiver": "PianoRoll", "command": "OctaveShiftUp", "key": "Shift + Cursor Up" },
-        { "receiver": "PianoRoll", "command": "OctaveShiftDown", "key": "Shift + Cursor Down" },
+        { "command": "ToggleMuteClips", "key": "M" },
+        { "command": "ToggleSoloClips", "key": "S" },
+        { "command": "RenameTrack", "key": "F2" },
+        { "command": "BeatShiftLeft", "key": "Cursor Left" },
+        { "command": "BeatShiftRight", "key": "Cursor Right" },
+        { "command": "LengthDecrease", "key": "Shift + Cursor Left" },
+        { "command": "LengthIncrease", "key": "Shift + Cursor Right" },
+        { "command": "KeyShiftUp", "key": "Cursor Up" },
+        { "command": "KeyShiftDown", "key": "Cursor Down" },
+        { "command": "OctaveShiftUp", "key": "Shift + Cursor Up" },
+        { "command": "OctaveShiftDown", "key": "Shift + Cursor Down" },
 
         // Refactor selection
-        { "receiver": "PianoRoll", "command": "Retrograde", "key": "Alt + R" },
-        { "receiver": "PianoRoll", "command": "MelodicInversion", "key": "Alt + I" },
-        { "receiver": "PianoRoll", "command": "CleanupOverlaps", "key": "Alt + O" },
-        { "receiver": "PianoRoll", "command": "TweakVolumeRandom", "key": "Alt + V" },
-        { "receiver": "PianoRoll", "command": "TweakVolumeFadeOut", "key": "Alt + F" },
-        { "receiver": "PianoRoll", "command": "InvertChordUp", "key": "Alt + Cursor Up" },
-        { "receiver": "PianoRoll", "command": "InvertChordUp", "key": "Command + Cursor Up" },
-        { "receiver": "PianoRoll", "command": "InvertChordUp", "key": "Control + Cursor Up" },
-        { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Alt + Cursor Down" },
-        { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Command + Cursor Down" },
-        { "receiver": "PianoRoll", "command": "InvertChordDown", "key": "Control + Cursor Down" },
+        { "command": "Retrograde", "key": "Alt + R" },
+        { "command": "MelodicInversion", "key": "Alt + I" },
+        { "command": "CleanupOverlaps", "key": "Alt + O" },
+        { "command": "TweakVolumeRandom", "key": "Alt + V" },
+        { "command": "TweakVolumeFadeOut", "key": "Alt + F" },
+        { "command": "InvertChordUp", "key": "Alt + Cursor Up" },
+        { "command": "InvertChordUp", "key": "Command + Cursor Up" },
+        { "command": "InvertChordUp", "key": "Control + Cursor Up" },
+        { "command": "InvertChordDown", "key": "Alt + Cursor Down" },
+        { "command": "InvertChordDown", "key": "Command + Cursor Down" },
+        { "command": "InvertChordDown", "key": "Control + Cursor Down" },
 
         // Multiplets
-        { "receiver": "PianoRoll", "command": "Tuplet1", "key": "Alt + 1" },
-        { "receiver": "PianoRoll", "command": "Tuplet2", "key": "Alt + 2" },
-        { "receiver": "PianoRoll", "command": "Tuplet3", "key": "Alt + 3" },
-        { "receiver": "PianoRoll", "command": "Tuplet4", "key": "Alt + 4" },
-        { "receiver": "PianoRoll", "command": "Tuplet5", "key": "Alt + 5" },
-        { "receiver": "PianoRoll", "command": "Tuplet6", "key": "Alt + 6" },
-        { "receiver": "PianoRoll", "command": "Tuplet7", "key": "Alt + 7" },
-        { "receiver": "PianoRoll", "command": "Tuplet8", "key": "Alt + 8" },
-        { "receiver": "PianoRoll", "command": "Tuplet9", "key": "Alt + 9" },
+        { "command": "Tuplet1", "key": "Alt + 1" },
+        { "command": "Tuplet2", "key": "Alt + 2" },
+        { "command": "Tuplet3", "key": "Alt + 3" },
+        { "command": "Tuplet4", "key": "Alt + 4" },
+        { "command": "Tuplet5", "key": "Alt + 5" },
+        { "command": "Tuplet6", "key": "Alt + 6" },
+        { "command": "Tuplet7", "key": "Alt + 7" },
+        { "command": "Tuplet8", "key": "Alt + 8" },
+        { "command": "Tuplet9", "key": "Alt + 9" },
 
         // Edit modes
-        { "receiver": "PianoRoll", "command": "EditModeDefault", "key": "1" },
-        { "receiver": "PianoRoll", "command": "EditModeDraw", "key": "2" },
-        { "receiver": "PianoRoll", "command": "EditModePan", "key": "3" },
-        { "receiver": "PianoRoll", "command": "EditModeKnife", "key": "4" },
-        { "receiver": "PianoRoll", "command": "EditModeEraser", "key": "5" },
+        { "command": "EditModeDefault", "key": "1" },
+        { "command": "EditModeDraw", "key": "2" },
+        { "command": "EditModePan", "key": "3" },
+        { "command": "EditModeKnife", "key": "4" },
+        { "command": "EditModeEraser", "key": "5" },
 
         // Version control
-        { "receiver": "PianoRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
+        { "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Panels
-        { "receiver": "PianoRoll", "command": "ShowVolumePanel", "key": "V" },
-        { "receiver": "PianoRoll", "command": "ShowArpeggiatorsPanel", "key": "A" },
-        { "receiver": "PianoRoll", "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },
-        { "receiver": "PianoRoll", "command": "ShowRescalePanel", "key": "R" },
-        { "receiver": "PianoRoll", "command": "ShowScalePanel", "key": "S" },
-        { "receiver": "PianoRoll", "command": "ShowChordPanel", "key": "C" },
+        { "command": "ShowVolumePanel", "key": "V" },
+        { "command": "ShowArpeggiatorsPanel", "key": "A" },
+        { "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },
+        { "command": "ShowRescalePanel", "key": "R" },
+        { "command": "ShowScalePanel", "key": "S" },
+        { "command": "ShowChordPanel", "key": "C" },
 
         // Other toggles
-        { "receiver": "PianoRoll", "command": "ToggleScalesHighlighting", "key": "H" },
-        { "receiver": "PianoRoll", "command": "ToggleNoteNameGuides", "key": "G" },
-
-        // ------------------------------------
-        // Pattern roll's specific
-
-        // Undo/redo
-        { "receiver": "PatternRoll", "command": "Undo", "key": "Command + Z" },
-        { "receiver": "PatternRoll", "command": "Undo", "key": "Control + Z" },
-        { "receiver": "PatternRoll", "command": "Redo", "key": "Command + Shift + Z" },
-        { "receiver": "PatternRoll", "command": "Redo", "key": "Control + Shift + Z" },
-        { "receiver": "PatternRoll", "command": "Redo", "key": "Command + Y" },
-        { "receiver": "PatternRoll", "command": "Redo", "key": "Control + Y" },
-
-        // Delete clips
-        { "receiver": "PatternRoll", "command": "DeleteClips", "key": "X" },
-        { "receiver": "PatternRoll", "command": "DeleteClips", "key": "Delete" },
-        { "receiver": "PatternRoll", "command": "DeleteClips", "key": "Backspace" },
-
-        // Duplicate track
-        { "receiver": "PatternRoll", "command": "DuplicateTrack", "key": "+" },
-
-        // Playback control
-        { "receiver": "PatternRoll", "command": "TransportPlaybackStart", "key": "Return" },
-        { "receiver": "PatternRoll", "command": "TransportRecordingStart", "key": "Shift + Return" },
-        { "receiver": "PatternRoll", "command": "TransportRecordingAwait", "key": "Control + Return" },
-        { "receiver": "PatternRoll", "command": "TransportRecordingAwait", "key": "Command + Return" },
-        { "receiver": "PatternRoll", "command": "TransportRecordingAwait", "key": "Alt + Return" },
-        { "receiver": "PatternRoll", "command": "TransportStop", "key": "Escape" },
-
-        // Navigation
-        { "receiver": "PatternRoll", "command": "ZoomIn", "key": "Z" },
-        { "receiver": "PatternRoll", "command": "ZoomOut", "key": "Shift + Z" },
-        { "receiver": "PatternRoll", "command": "ZoomEntireClip", "key": "Command + Tab" },
-        { "receiver": "PatternRoll", "command": "ZoomEntireClip", "key": "Control + Tab" },
-        { "receiver": "PatternRoll", "command": "TimelineJumpNext", "key": "." },
-        { "receiver": "PatternRoll", "command": "TimelineJumpPrevious", "key": "," },
-
-        // Selection
-        { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Command + A" },
-        { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Control + A" },
-
-        // Edit modes
-        { "receiver": "PatternRoll", "command": "EditModeDefault", "key": "1" },
-        { "receiver": "PatternRoll", "command": "EditModeDraw", "key": "2" },
-        { "receiver": "PatternRoll", "command": "EditModePan", "key": "3" },
-        { "receiver": "PatternRoll", "command": "EditModeKnife", "key": "4" },
-        { "receiver": "PatternRoll", "command": "EditModeEraser", "key": "5" },
-
-        // Grouping
-        { "receiver": "PatternRoll", "command": "PatternsGroupByName", "key": "Q" },
-        { "receiver": "PatternRoll", "command": "PatternsGroupByColour", "key": "W" },
-        { "receiver": "PatternRoll", "command": "PatternsGroupByInstrument", "key": "E" },
-        { "receiver": "PatternRoll", "command": "PatternsGroupById", "key": "R" },
-
-        // Version control
-        { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
-
-        // Edit selection
-        { "receiver": "PatternRoll", "command": "ToggleMuteClips", "key": "M" },
-        { "receiver": "PatternRoll", "command": "ToggleSoloClips", "key": "S" },
-        { "receiver": "PatternRoll", "command": "RenameTrack", "key": "F2" },
-        { "receiver": "PatternRoll", "command": "ClipVolumeUp", "key": "+" },
-        { "receiver": "PatternRoll", "command": "ClipVolumeDown", "key": "-" },
-        { "receiver": "PatternRoll", "command": "ClipTransposeUp", "key": "Cursor Up" },
-        { "receiver": "PatternRoll", "command": "ClipTransposeDown", "key": "Cursor Down" },
-        { "receiver": "PatternRoll", "command": "ClipTransposeOctaveUp", "key": "Shift + Cursor Up" },
-        { "receiver": "PatternRoll", "command": "ClipTransposeOctaveDown", "key": "Shift + Cursor Down" },
-        { "receiver": "PatternRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
-        { "receiver": "PatternRoll", "command": "BeatShiftRight", "key": "Cursor Right" }
+        { "command": "ToggleScalesHighlighting", "key": "H" },
+        { "command": "ToggleNoteNameGuides", "key": "G" }
       ],
       "keyDown": [
-        { "receiver": "PianoRoll", "command": "StartDragViewport", "key": "Spacebar" },
-        { "receiver": "PatternRoll", "command": "StartDragViewport", "key": "Spacebar" }
+        { "command": "StartDragViewport", "key": "Spacebar" }
       ],
       "keyUp": [
-        { "receiver": "PianoRoll", "command": "EndDragViewport", "key": "Spacebar" },
-        { "receiver": "PatternRoll", "command": "EndDragViewport", "key": "Spacebar" }
+        { "command": "EndDragViewport", "key": "Spacebar" }
+      ]
+    },
+    {
+      "receiver": "PatternRoll",
+      "keyPress": [
+
+        // Undo/redo
+        { "command": "Undo", "key": "Command + Z" },
+        { "command": "Undo", "key": "Control + Z" },
+        { "command": "Redo", "key": "Command + Shift + Z" },
+        { "command": "Redo", "key": "Control + Shift + Z" },
+        { "command": "Redo", "key": "Command + Y" },
+        { "command": "Redo", "key": "Control + Y" },
+
+        // Delete clips
+        { "command": "DeleteClips", "key": "X" },
+        { "command": "DeleteClips", "key": "Delete" },
+        { "command": "DeleteClips", "key": "Backspace" },
+
+        // Duplicate track
+        { "command": "DuplicateTrack", "key": "+" },
+
+        // Playback control
+        { "command": "TransportPlaybackStart", "key": "Return" },
+        { "command": "TransportRecordingStart", "key": "Shift + Return" },
+        { "command": "TransportRecordingAwait", "key": "Control + Return" },
+        { "command": "TransportRecordingAwait", "key": "Command + Return" },
+        { "command": "TransportRecordingAwait", "key": "Alt + Return" },
+        { "command": "TransportStop", "key": "Escape" },
+
+        // Navigation
+        { "command": "ZoomIn", "key": "Z" },
+        { "command": "ZoomOut", "key": "Shift + Z" },
+        { "command": "ZoomEntireClip", "key": "Command + Tab" },
+        { "command": "ZoomEntireClip", "key": "Control + Tab" },
+        { "command": "TimelineJumpNext", "key": "." },
+        { "command": "TimelineJumpPrevious", "key": "," },
+
+        // Selection
+        { "command": "SelectAllClips", "key": "Command + A" },
+        { "command": "SelectAllClips", "key": "Control + A" },
+
+        // Edit modes
+        { "command": "EditModeDefault", "key": "1" },
+        { "command": "EditModeDraw", "key": "2" },
+        { "command": "EditModePan", "key": "3" },
+        { "command": "EditModeKnife", "key": "4" },
+        { "command": "EditModeEraser", "key": "5" },
+
+        // Grouping
+        { "command": "PatternsGroupByName", "key": "Q" },
+        { "command": "PatternsGroupByColour", "key": "W" },
+        { "command": "PatternsGroupByInstrument", "key": "E" },
+        { "command": "PatternsGroupById", "key": "R" },
+
+        // Version control
+        { "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
+
+        // Edit selection
+        { "command": "ToggleMuteClips", "key": "M" },
+        { "command": "ToggleSoloClips", "key": "S" },
+        { "command": "RenameTrack", "key": "F2" },
+        { "command": "ClipVolumeUp", "key": "+" },
+        { "command": "ClipVolumeDown", "key": "-" },
+        { "command": "ClipTransposeUp", "key": "Cursor Up" },
+        { "command": "ClipTransposeDown", "key": "Cursor Down" },
+        { "command": "ClipTransposeOctaveUp", "key": "Shift + Cursor Up" },
+        { "command": "ClipTransposeOctaveDown", "key": "Shift + Cursor Down" },
+        { "command": "BeatShiftLeft", "key": "Cursor Left" },
+        { "command": "BeatShiftRight", "key": "Cursor Right" }
+      ],
+      "keyDown": [
+        { "command": "StartDragViewport", "key": "Spacebar" }
+      ],
+      "keyUp": [
+        { "command": "EndDragViewport", "key": "Spacebar" }
       ]
     }
-  }
-}
+  ]}
+}}
