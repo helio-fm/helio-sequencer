@@ -161,46 +161,75 @@ SerializedData HotkeyScheme::serialize() const
     return tree;
 }
 
-static inline HotkeyScheme::Hotkey createHotkey(const SerializedData &e)
+static inline HotkeyScheme::Hotkey createHotkey(const SerializedData &e, const String &receiver = "")
 {
     HotkeyScheme::Hotkey key;
-    auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
-    auto receiver = e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver);
+
     auto command = e.getProperty(Serialization::UI::Hotkeys::hotkeyCommand);
+    auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
+
     key.keyPress = KeyPress::createFromDescription(keyPressDesc);
     key.commandId = CommandIDs::getIdForName(command);
-    key.componentId = receiver;
+    key.componentId = receiver.isNotEmpty() ? receiver :
+        e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver);
+
     return key;
 }
 
 void HotkeyScheme::deserialize(const SerializedData &data)
 {
+    using namespace Serialization::UI;
+
     this->reset();
 
     const auto root =
-        data.hasType(Serialization::UI::Hotkeys::scheme) ?
-        data : data.getChildWithName(Serialization::UI::Hotkeys::scheme);
+        data.hasType(Hotkeys::scheme) ?
+        data : data.getChildWithName(Hotkeys::scheme);
 
     if (!root.isValid())
     {
         return;
     }
 
-    this->name = root.getProperty(Serialization::UI::Hotkeys::schemeName);
+    this->name = root.getProperty(Hotkeys::schemeName);
 
-    forEachChildWithType(root, e, Serialization::UI::Hotkeys::keyPress)
+    // plain format:
+
+    forEachChildWithType(root, e, Hotkeys::keyPress)
     {
         this->keyPresses.add(createHotkey(e));
     }
 
-    forEachChildWithType(root, e, Serialization::UI::Hotkeys::keyDown)
+    forEachChildWithType(root, e, Hotkeys::keyDown)
     {
         this->keyDowns.add(createHotkey(e));
     }
 
-    forEachChildWithType(root, e, Serialization::UI::Hotkeys::keyUp)
+    forEachChildWithType(root, e, Hotkeys::keyUp)
     {
         this->keyUps.add(createHotkey(e));
+    }
+
+    // grouped format:
+
+    forEachChildWithType(root, group, Hotkeys::group)
+    {
+        const auto receiver = group.getProperty(Hotkeys::hotkeyReceiver);
+
+        forEachChildWithType(group, e, Hotkeys::keyPress)
+        {
+            this->keyPresses.add(createHotkey(e, receiver));
+        }
+
+        forEachChildWithType(group, e, Hotkeys::keyDown)
+        {
+            this->keyDowns.add(createHotkey(e, receiver));
+        }
+
+        forEachChildWithType(group, e, Hotkeys::keyUp)
+        {
+            this->keyUps.add(createHotkey(e, receiver));
+        }
     }
 }
 

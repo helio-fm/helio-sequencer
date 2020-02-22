@@ -241,6 +241,7 @@ namespace Serialization
             static const Identifier hotkeyDescription = "key";
             static const Identifier hotkeyReceiver = "receiver";
             static const Identifier hotkeyCommand = "command";
+            static const Identifier group = "group";
         }
 
         namespace Colours
