@@ -204,10 +204,7 @@ private:
 private:
 
     Atomic<double> seekPosition = 0.0;
-    Atomic<double> totalTime = (500.0 * 8.0);
-    
-    Atomic<double> trackStartMs = 0.0;
-    Atomic<double> trackEndMs = 0.0;
+    Atomic<double> totalTime = PROJECT_DEFAULT_NUM_BEATS;
     
     Atomic<float> projectFirstBeat = 0.f;
     Atomic<float> projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;

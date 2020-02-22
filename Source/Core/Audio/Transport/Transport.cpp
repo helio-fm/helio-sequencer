@@ -598,9 +598,10 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     //  2. compute (seekBeat - newFirstBeat) / (newLastBeat - newFirstBeat)
     //
     
-    this->trackStartMs = double(firstBeat);
-    this->trackEndMs = double(lastBeat);
-    this->setTotalTime(this->trackEndMs.get() - this->trackStartMs.get());
+    this->projectFirstBeat = firstBeat;
+    this->projectLastBeat = lastBeat;
+
+    this->setTotalTime(lastBeat - firstBeat);
     
     // real track total time changed
     double tempo = 0.0;
@@ -610,8 +611,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     
     // seek also changed
     this->seekToPosition(newSeekPosition);
-    this->projectFirstBeat = firstBeat;
-    this->projectLastBeat = lastBeat;
 }
 
 
@@ -688,7 +687,7 @@ void Transport::recacheIfNeeded()
         jassert(!this->isPlaying());
         this->playbackCache.clear();
         static Clip noTransform;
-        const double offset = -this->trackStartMs.get();
+        const double offset = -this->projectFirstBeat.get();
 
         // Find solo clips, if any
         bool hasSoloClips = false;
