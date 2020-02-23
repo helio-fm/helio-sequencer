@@ -274,8 +274,14 @@ bool Transport::isRecording() const
 
 void Transport::stopRecording()
 {
-    // all the same as for stopPlayback
-    this->stopPlayback();
+    if (this->player->isRecording())
+    {
+        this->player->stopPlayback();
+        this->allNotesControllersAndSoundOff();
+        this->seekToPosition(this->getSeekPosition());
+        this->broadcastStop();
+        this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+    }
 }
 
 //===----------------------------------------------------------------------===//

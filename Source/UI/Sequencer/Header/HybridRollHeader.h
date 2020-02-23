@@ -31,8 +31,10 @@ public:
     HybridRollHeader(Transport &transport, HybridRoll &roll, Viewport &viewport);
     
     void setSoundProbeMode(bool shouldProbeOnClick);
-    void updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
+
     void showPopupMenu();
+    void showRecordingMode(bool showRecordingMarker);
+    void updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -50,8 +52,9 @@ public:
 
 protected:
     
-    bool soundProbeMode;
-    
+    Atomic<bool> soundProbeMode = false;
+    Atomic<bool> recordingMode = false;
+
     Transport &transport;
     HybridRoll &roll;
     Viewport &viewport;
@@ -63,6 +66,9 @@ protected:
     Colour snapColour;
     Colour bevelLightColour;
     Colour bevelDarkColour;
+    Colour recordingColour;
+
+    void updateColours();
 
     UniquePointer<ClipRangeIndicator> clipRangeIndicator;
     UniquePointer<SoundProbeIndicator> playingIndicator;

@@ -27,15 +27,119 @@
 #include "ColourIDs.h"
 #include "CommandIDs.h"
 
-class TransportControlRecordBg final : public Component
+class TransportControlButton : public Component, private Timer
 {
 public:
 
-    TransportControlRecordBg()
+    TransportControlButton(TransportControlComponent &owner) : owner(owner)
     {
         this->setOpaque(false);
         this->setWantsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
+    }
+
+    bool hitTest(int x, int y) override
+    {
+        return this->path.contains(float(x), float(y));
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->currentColour);
+        g.fillPath(this->path, {});
+    }
+
+    void mouseEnter(const MouseEvent &e) override
+    {
+        if (this->state != State::Active)
+        {
+            this->setHighlighted();
+        }
+    }
+
+    void mouseExit(const MouseEvent &e) override
+    {
+        if (this->state != State::Active)
+        {
+            this->setInactive();
+        }
+    }
+
+    void setInactive()
+    {
+        this->state = State::Inactive;
+        this->targetColour = this->inactiveColour;
+        this->startTimerHz(60);
+    }
+
+    void setHighlighted()
+    {
+        this->state = State::Highlighted;
+        this->targetColour = this->highlightColour;
+        this->startTimerHz(60);
+    }
+
+    void setActive()
+    {
+        this->state = State::Active;
+        this->targetColour = this->activeColour;
+        this->startTimerHz(60);
+    }
+
+protected:
+
+    Path path;
+
+    Colour inactiveColour;
+    Colour highlightColour;
+    Colour activeColour;
+
+    Colour currentColour;
+
+    TransportControlComponent &owner;
+
+private:
+
+    enum class State : uint8
+    {
+        Inactive,
+        Highlighted,
+        Active
+    };
+
+    State state = State::Inactive;
+    Colour targetColour;
+
+    void timerCallback() override
+    {
+        const auto newColour = this->currentColour.interpolatedWith(this->targetColour, 0.3f);
+        //DBG(this->currentColour.toDisplayString(true));
+
+        if (this->currentColour == newColour)
+        {
+            //DBG("--- stop timer");
+            this->stopTimer();
+        }
+        else
+        {
+            this->currentColour = newColour;
+            this->repaint();
+        }
+    }
+};
+
+class TransportControlRecordBg final : public TransportControlButton
+{
+public:
+
+    TransportControlRecordBg(TransportControlComponent &owner) :
+        TransportControlButton(owner)
+    {
+        this->inactiveColour = findDefaultColour(ColourIDs::TransportControl::recordInactive);
+        this->highlightColour = findDefaultColour(ColourIDs::TransportControl::recordHighlight);
+        this->activeColour = findDefaultColour(ColourIDs::TransportControl::recordActive);
+        this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark);
+        this->currentColour = this->inactiveColour;
     }
 
     inline float getTiltStart() const noexcept { return 28.f; }
@@ -51,60 +155,34 @@ public:
         this->path.closeSubPath();
     }
 
-    bool hitTest(int x, int y) override
-    {
-        return this->path.contains(float(x), float(y));
-    }
-
     void paint(Graphics &g) override
     {
-        g.setColour(this->fillColour);
-        g.fillPath(this->path, {});
-
-        g.setColour(Colours::black.withAlpha(0.1f));
+        TransportControlButton::paint(g);
+        g.setColour(this->lineColour);
         g.drawLine(0.f, this->getTiltEnd(), float(this->getWidth()), this->getTiltStart());
-    }
-
-    void mouseEnter(const MouseEvent &e) override
-    {
-        this->fillColour = findDefaultColour(ColourIDs::Recording::buttonHighlight);
-        this->repaint();
-    }
-
-    void mouseExit(const MouseEvent &e) override
-    {
-        this->fillColour = Colours::transparentBlack;
-        this->repaint();
     }
 
     void mouseDown(const MouseEvent &e)
     {
-        this->fillColour = findDefaultColour(ColourIDs::Recording::buttonRecord);
-        this->repaint();
+        TransportControlButton::mouseDown(e);
+        this->owner.recordButtonPressed();
     }
 
-    void mouseUp(const MouseEvent &e)
-    {
-        this->fillColour = findDefaultColour(ColourIDs::Recording::buttonHighlight);
-        this->repaint();
-    }
-
-private:
-
-    Path path;
-    Colour fillColour = Colours::transparentBlack;
-
+    Colour lineColour;
 };
 
-class TransportControlPlayBg final : public Component
+class TransportControlPlayBg final : public TransportControlButton
 {
 public:
 
-    TransportControlPlayBg()
+    TransportControlPlayBg(TransportControlComponent &owner) :
+        TransportControlButton(owner)
     {
-        this->setOpaque(false);
-        this->setWantsKeyboardFocus(false);
-        this->setPaintingIsUnclipped(true);
+        this->inactiveColour = findDefaultColour(ColourIDs::TransportControl::playInactive);
+        this->highlightColour = findDefaultColour(ColourIDs::TransportControl::playHighlight);
+        this->activeColour = findDefaultColour(ColourIDs::TransportControl::playActive);
+        this->lineColour = findDefaultColour(ColourIDs::Common::borderLineLight);
+        this->currentColour = this->inactiveColour;
     }
 
     inline float getTiltStart() const noexcept
@@ -127,47 +205,20 @@ public:
         this->path.closeSubPath();
     }
 
-    bool hitTest(int x, int y) override
-    {
-        return this->path.contains(float(x), float(y));
-    }
-
     void paint(Graphics &g) override
     {
-        g.setColour(this->fillColour);
-        g.fillPath(this->path, {});
+        TransportControlButton::paint(g);
+        g.setColour(this->lineColour);
         g.drawLine(0.f, this->getTiltStart(), float(this->getWidth()), this->getTiltEnd());
-    }
-
-    void mouseEnter(const MouseEvent &e) override
-    {
-        this->fillColour = Colour(0x20ffffff);
-        this->repaint();
-    }
-
-    void mouseExit(const MouseEvent &e) override
-    {
-        this->fillColour = Colour(0x0dffffff);
-        this->repaint();
     }
 
     void mouseDown(const MouseEvent &e)
     {
-        this->fillColour = Colour(0x30ffffff);
-        this->repaint();
+        TransportControlButton::mouseDown(e);
+        this->owner.playButtonPressed();
     }
 
-    void mouseUp(const MouseEvent &e)
-    {
-        this->fillColour = Colour(0x20ffffff);
-        this->repaint();
-    }
-
-private:
-
-    Path path;
-    Colour fillColour = Colour(0x0cffffff);
-
+    Colour lineColour;
 };
 
 
@@ -176,10 +227,10 @@ private:
 TransportControlComponent::TransportControlComponent(WeakReference<Component> eventReceiver)
     : eventReceiver(eventReceiver)
 {
-    this->recordBg.reset(new TransportControlRecordBg());
+    this->recordBg.reset(new TransportControlRecordBg(*this));
     this->addAndMakeVisible(recordBg.get());
 
-    this->playBg.reset(new TransportControlPlayBg());
+    this->playBg.reset(new TransportControlPlayBg(*this));
     this->addAndMakeVisible(playBg.get());
 
     this->playIcon.reset(new IconComponent(Icons::play));
@@ -250,18 +301,6 @@ void TransportControlComponent::resized()
 void TransportControlComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    const auto command = this->playing ?
-        CommandIDs::TransportStop :
-        CommandIDs::TransportPlaybackStart;
-
-    if (this->eventReceiver != nullptr)
-    {
-        this->eventReceiver->postCommandMessage(command);
-    }
-    else
-    {
-        App::Layout().broadcastCommandMessage(command);
-    }
     //[/UserCode_mouseDown]
 }
 
@@ -270,9 +309,9 @@ void TransportControlComponent::mouseDown (const MouseEvent& e)
 
 void TransportControlComponent::showPlayingMode(bool isPlaying)
 {
-    this->playing = isPlaying;
+    this->isPlaying = isPlaying;
 
-    if (this->playing)
+    if (this->isPlaying.get())
     {
         MessageManagerLock lock;
         this->animator.fadeIn(this->stopIcon.get(), 100);
@@ -284,11 +323,60 @@ void TransportControlComponent::showPlayingMode(bool isPlaying)
         this->animator.fadeIn(this->playIcon.get(), 150);
         this->animator.fadeOut(this->stopIcon.get(), 150);
     }
+
+    if (isPlaying)
+    {
+        this->playBg->setActive();
+    }
+    else
+    {
+        this->playBg->setInactive();
+    }
 }
 
 void TransportControlComponent::showRecordingMode(bool isRecording)
 {
-    // todo
+    this->isRecording = isRecording;
+    if (isRecording)
+    {
+        this->recordBg->setActive();
+    }
+    else
+    {
+        this->recordBg->setInactive();
+    }
+}
+
+void TransportControlComponent::playButtonPressed()
+{
+    const auto command = this->isPlaying.get() ?
+        CommandIDs::TransportStop :
+        CommandIDs::TransportPlaybackStart;
+
+    if (this->eventReceiver != nullptr)
+    {
+        this->eventReceiver->postCommandMessage(command);
+    }
+    else
+    {
+        App::Layout().broadcastCommandMessage(command);
+    }
+}
+
+void TransportControlComponent::recordButtonPressed()
+{
+    const auto command = this->isRecording.get() ?
+        CommandIDs::TransportStop :
+        CommandIDs::TransportRecordingAwait;
+
+    if (this->eventReceiver != nullptr)
+    {
+        this->eventReceiver->postCommandMessage(command);
+    }
+    else
+    {
+        App::Layout().broadcastCommandMessage(command);
+    }
 }
 
 //[/MiscUserCode]
@@ -312,10 +400,10 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="49831a57350a131d" memberName="recordBg" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 35" class="TransportControlRecordBg"
-                    params=""/>
+                    params="*this"/>
   <GENERICCOMPONENT name="" id="e71c47548b70a0b4" memberName="playBg" virtualName=""
                     explicitFocusOrder="0" pos="0 0Rr 0M 50" class="TransportControlPlayBg"
-                    params=""/>
+                    params="*this"/>
   <GENERICCOMPONENT name="" id="1a8a31abbc0f3c4e" memberName="playIcon" virtualName=""
                     explicitFocusOrder="0" pos="2Cc 15Cc 24 24" class="IconComponent"
                     params="Icons::play"/>

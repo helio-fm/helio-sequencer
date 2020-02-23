@@ -46,6 +46,7 @@ namespace ColourIDs
 
         static const int headerFill             = 0x2000109;
         static const int headerSnaps            = 0x2000110;
+        static const int headerRecording        = 0x2000122;
 
         static const int playheadPlayback       = 0x2000111;
         static const int playheadRecording      = 0x2000112;
@@ -60,11 +61,15 @@ namespace ColourIDs
         static const int noteNameShadow         = 0x2000133;
     }
 
-    namespace Recording
+    namespace TransportControl
     {
-        static const int rollMarker             = 0x2000150;
-        static const int buttonHighlight        = 0x2000151;
-        static const int buttonRecord           = 0x2000152;
+        static const int recordInactive         = 0x2000150;
+        static const int recordHighlight        = 0x2000151;
+        static const int recordActive           = 0x2000152;
+
+        static const int playInactive           = 0x2000160;
+        static const int playHighlight          = 0x2000161;
+        static const int playActive             = 0x2000162;
     }
 
     namespace Callout

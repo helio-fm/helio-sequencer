@@ -92,8 +92,7 @@ public:
 
     bool isRecording() const
     {
-        return (this->currentPlayer->isRecordingMidi() &&
-            !this->currentPlayer->threadShouldExit());
+        return this->currentPlayer->isRecordingMidi();
     }
 
 private:

@@ -49,8 +49,14 @@ private:
     ComponentAnimator animator;
     WeakReference<Component> eventReceiver;
 
-    bool playing = false;
-    bool recording = false;
+    Atomic<bool> isPlaying = false;
+    Atomic<bool> isRecording = false;
+
+    friend class TransportControlRecordBg;
+    friend class TransportControlPlayBg;
+
+    void playButtonPressed();
+    void recordButtonPressed();
 
     //[/UserVariables]
 

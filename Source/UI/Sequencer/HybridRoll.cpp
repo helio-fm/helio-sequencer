@@ -1158,7 +1158,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse(0.75f);
         break;
     case CommandIDs::TimelineJumpNext:
-        if (!this->project.getTransport().isPlaying())
+        if (!this->getTransport().isPlaying())
         {
             this->stopFollowingPlayhead();
             const auto beat = this->findNextAnchorBeat(this->getSeekBeat());
@@ -1168,7 +1168,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::TimelineJumpPrevious:
-        if (!this->project.getTransport().isPlaying())
+        if (!this->getTransport().isPlaying())
         {
             this->stopFollowingPlayhead();
             const auto beat = this->findPreviousAnchorBeat(this->getSeekBeat());
@@ -1189,29 +1189,47 @@ void HybridRoll::handleCommandMessage(int commandId)
             const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
             if (noDraggingWasDone && notTooMuchTimeSpent)
             {
-                this->project.getTransport().toggleStartStopPlayback();
+                this->getTransport().toggleStartStopPlayback();
             }
             this->setSpaceDraggingMode(false);
         }
         break;
-    case CommandIDs::TransportPlaybackStart:
-        if (!this->project.getTransport().isPlaying())
+    case CommandIDs::TransportRecordingAwait:
+        if (this->getTransport().isRecording())
         {
-            this->stopFollowingPlayhead();
-            this->project.getTransport().startPlayback();
+            this->getTransport().stopRecording();
+        }
+        else
+        {
+            this->getTransport().startRecording();
+        }
+        break;
+    case CommandIDs::TransportRecordingStart:
+        this->stopFollowingPlayhead();
+        this->getTransport().startRecording();
+        if (!this->getTransport().isPlaying())
+        {
+            this->getTransport().startPlayback();
+        }
+        this->startFollowingPlayhead();
+        break;
+    case CommandIDs::TransportPlaybackStart:
+        this->stopFollowingPlayhead();
+        if (!this->getTransport().isPlaying())
+        {
+            this->getTransport().startPlayback();
         }
         this->startFollowingPlayhead();
         break;
     case CommandIDs::TransportStop:
-        if (this->project.getTransport().isPlaying())
-        {
-            this->project.getTransport().stopPlayback();
-        }
-        else
+        if (!this->getTransport().isPlaying())
         {
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
         }
+
+        this->getTransport().stopPlayback();
+        this->getTransport().stopRecording();
 
         this->getTransport().stopSound();
         break;
@@ -1318,7 +1336,7 @@ void HybridRoll::onPlayheadMoved(int playheadX)
 
 void HybridRoll::onClippingWarning()
 {
-    if (! this->project.getTransport().isPlaying())
+    if (! this->getTransport().isPlaying())
     {
         return;
     }
@@ -1349,7 +1367,7 @@ void HybridRoll::resetAllClippingIndicators()
 
 void HybridRoll::onOversaturationWarning()
 {
-    if (! this->project.getTransport().isPlaying())
+    if (! this->getTransport().isPlaying())
     {
         return;
     }
@@ -1393,38 +1411,14 @@ void HybridRoll::onPlay()
     this->resetAllOversaturationIndicators();
 }
 
-class TimelineRecordingMarker final : public Component
-{
-public:
-
-    TimelineRecordingMarker() : fill(findDefaultColour(ColourIDs::Recording::rollMarker))
-    {
-        this->setPaintingIsUnclipped(true);
-        this->setWantsKeyboardFocus(false);
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(this->fill);
-        g.fillRect(0, 0, this->getWidth(), 1);
-        g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
-        g.fillRect(0, 0, 1, this->getHeight());
-        g.fillRect(this->getWidth() - 1, 0, 1, this->getHeight());
-    }
-
-    const Colour fill;
-};
-
 void HybridRoll::onRecord()
 {
-    this->recordingMarker = makeUnique<TimelineRecordingMarker>();
-    this->updateChildrenBounds();
+    this->header->showRecordingMode(true);
 }
 
 void HybridRoll::onStop()
 {
-    this->recordingMarker = nullptr;
+    this->header->showRecordingMode(false);
 
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     // todo sync screen back to playhead?
@@ -1742,11 +1736,6 @@ void HybridRoll::updateChildrenBounds()
         this->lassoComponent->updateBounds();
     }
 
-    if (this->recordingMarker != nullptr)
-    {
-        this->recordingMarker->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, viewHeight);
-    }
-
     this->broadcastRollResized();
 
     HYBRID_ROLL_BULK_REPAINT_END
@@ -1782,11 +1771,6 @@ void HybridRoll::updateChildrenPositions()
     {
         Component *const trackMap = this->trackMaps.getUnchecked(i);
         trackMap->setTopLeftPosition(0, viewY + viewHeight - trackMap->getHeight());
-    }
-
-    if (this->recordingMarker != nullptr)
-    {
-        this->recordingMarker->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
     this->broadcastRollMoved();
