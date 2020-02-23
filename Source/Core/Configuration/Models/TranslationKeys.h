@@ -281,6 +281,8 @@ namespace I18n
         static const Identifier audioDevice = "settings::audio::device";
         static const Identifier audioDriver = "settings::audio::driver";
         static const Identifier audioSampleRate = "settings::audio::samplerate";
+        static const Identifier midiRecord = "settings::midi::record";
+        static const Identifier midiAllDevices = "settings::midi::all";
         static const Identifier languageHelp = "settings::language::help";
         static const Identifier rendererCoreGraphics = "settings::renderer::coregraphics";
         static const Identifier rendererDefault = "settings::renderer::default";

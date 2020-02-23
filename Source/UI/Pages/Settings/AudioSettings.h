@@ -46,15 +46,18 @@ private:
     void applyDevice(AudioDeviceManager &deviceManager, const String &deviceName);
     void applySampleRate(AudioDeviceManager &deviceManager, double sampleRate);
     void applyBufferSize(AudioDeviceManager &deviceManager, int bufferSize);
+    void applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceName);
 
     void syncDeviceTypesList(AudioDeviceManager &deviceManager);
     void syncDevicesList(AudioDeviceManager &deviceManager);
     void syncSampleRatesList(AudioDeviceManager &deviceManager);
     void syncBufferSizesList(AudioDeviceManager &deviceManager);
+    void syncMidiInputsList(AudioDeviceManager &deviceManager);
 
     AudioCore &audioCore;
     //[/UserVariables]
 
+    UniquePointer<MobileComboBox::Primer> midiInputsComboPrimer;
     UniquePointer<MobileComboBox::Primer> sampleRateComboPrimer;
     UniquePointer<MobileComboBox::Primer> bufferSizeComboPrimer;
     UniquePointer<MobileComboBox::Primer> deviceTypeComboPrimer;
@@ -63,6 +66,9 @@ private:
     UniquePointer<TextEditor> deviceEditor;
     UniquePointer<TextEditor> sampleRateEditor;
     UniquePointer<TextEditor> bufferSizeEditor;
+    UniquePointer<TextEditor> midiInputEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSettings)
 };
+
+

@@ -119,23 +119,25 @@ namespace CommandIDs
         SelectTimeSignature             = 0x2300, // more ids reserved for sub-items
         SelectVersion                   = 0x2400, // more ids reserved for sub-items
 
-        SwitchBetweenRolls              = 0x3300,
-        SwitchToEditMode                = 0x3301,
-        SwitchToArrangeMode             = 0x3302,
-        SwitchToVersioningMode          = 0x3303,
-        ShowPreviousPage                = 0x3304,
-        ShowNextPage                    = 0x3305,
-        ShowRootPage                    = 0x3306,
-        ToggleShowHideCombo             = 0x3307,
+        SwitchBetweenRolls              = 0x2500,
+        SwitchToEditMode                = 0x2501,
+        SwitchToArrangeMode             = 0x2502,
+        SwitchToVersioningMode          = 0x2503,
+        ShowPreviousPage                = 0x2504,
+        ShowNextPage                    = 0x2505,
+        ShowRootPage                    = 0x2506,
+        ToggleShowHideCombo             = 0x2507,
 
-        StartDragViewport               = 0x3310,
-        EndDragViewport                 = 0x3311,
+        StartDragViewport               = 0x2510,
+        EndDragViewport                 = 0x2511,
 
-        SelectAudioDeviceType           = 0x3400,
-        SelectAudioDevice               = 0x3500,
-        SelectSampleRate                = 0x3600,
-        SelectBufferSize                = 0x3700, // more ids reserved for sub-items
-        SelectFont                      = 0x3800, // more ids reserved for sub-items
+        SelectAudioDeviceType           = 0x3000,
+        SelectAudioDevice               = 0x3100,
+        SelectSampleRate                = 0x3200,
+        SelectBufferSize                = 0x3300, // more ids reserved for sub-items
+        SelectAllMidiInputDevices       = 0x3400,
+        SelectMidiInputDevice           = 0x3401, // more ids reserved for sub-items
+        SelectFont                      = 0x3500, // more ids reserved for sub-items
 
         EditModeDefault                 = 0x4000,
         EditModeDraw                    = 0x4001,
