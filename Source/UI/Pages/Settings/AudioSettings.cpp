@@ -173,10 +173,10 @@ void AudioSettings::resized()
     //[/UserResized]
 }
 
-void AudioSettings::visibilityChanged()
+void AudioSettings::parentHierarchyChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
-    if (this->isVisible())
+    if (this->isShowing())
     {
         AudioDeviceManager &deviceManager = this->audioCore.getDevice();
 

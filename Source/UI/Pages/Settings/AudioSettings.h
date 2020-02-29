@@ -35,7 +35,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void visibilityChanged() override;
+    void parentHierarchyChanged() override;
     void handleCommandMessage (int commandId) override;
 
 
