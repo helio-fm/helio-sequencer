@@ -232,17 +232,11 @@ void AudioSettings::handleCommandMessage (int commandId)
         }
     }
 
-    if (commandId == CommandIDs::SelectAllMidiInputDevices)
-    {
-        this->applyMidiInput(deviceManager, {});
-        return;
-    }
-
     const auto &midiDevices = MidiInput::getAvailableDevices();
     const int miniInputDeviceIndex = commandId - CommandIDs::SelectMidiInputDevice;
     if (miniInputDeviceIndex >= 0 && miniInputDeviceIndex < midiDevices.size())
     {
-        this->applyMidiInput(deviceManager, midiDevices[miniInputDeviceIndex].name);
+        this->applyMidiInput(deviceManager, midiDevices[miniInputDeviceIndex].identifier);
         return;
     }
 
@@ -267,6 +261,7 @@ void AudioSettings::applyDeviceType(AudioDeviceManager &deviceManager, const Str
     this->syncDevicesList(deviceManager);
     this->syncSampleRatesList(deviceManager);
     this->syncBufferSizesList(deviceManager);
+    this->syncMidiInputsList(deviceManager);
 }
 
 void AudioSettings::applyDevice(AudioDeviceManager &deviceManager, const String &deviceName)
@@ -280,6 +275,7 @@ void AudioSettings::applyDevice(AudioDeviceManager &deviceManager, const String 
     this->syncDevicesList(deviceManager);
     this->syncSampleRatesList(deviceManager);
     this->syncBufferSizesList(deviceManager);
+    this->syncMidiInputsList(deviceManager);
 }
 
 void AudioSettings::applySampleRate(AudioDeviceManager &deviceManager, double sampleRate)
@@ -304,15 +300,16 @@ void AudioSettings::applyBufferSize(AudioDeviceManager &deviceManager, int buffe
     this->syncBufferSizesList(deviceManager);
 }
 
-void AudioSettings::applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceName)
+void AudioSettings::applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceId)
 {
+    this->audioCore.setActiveMidiInputPlayer({}, true);
+
     const auto &devices = MidiInput::getAvailableDevices();
 
     for (int i = 0; i < devices.size(); ++i)
     {
-        // empty deviceName means record from all enabled
-        const bool isEnabled = deviceName.isEmpty() || devices[i].name.equalsIgnoreCase(deviceName);
-        deviceManager.setMidiInputDeviceEnabled(devices[i].name, isEnabled);
+        const bool shouldBeEnabled = devices[i].identifier == deviceId;
+        deviceManager.setMidiInputDeviceEnabled(devices[i].identifier, shouldBeEnabled);
     }
 
     this->syncMidiInputsList(deviceManager);
@@ -421,11 +418,12 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
     this->bufferSizeComboPrimer->updateMenu(menu);
 }
 
-static bool areAllMidiInputsSelected(AudioDeviceManager &deviceManager, const Array<MidiDeviceInfo> &devices)
+static bool areNoMidiInputsSelected(AudioDeviceManager &deviceManager,
+    const Array<MidiDeviceInfo> &devices)
 {
     for (int i = 0; i < devices.size(); ++i)
     {
-        if (!deviceManager.isMidiInputDeviceEnabled(devices[i].name))
+        if (deviceManager.isMidiInputDeviceEnabled(devices[i].identifier))
         {
             return false;
         }
@@ -435,11 +433,12 @@ static bool areAllMidiInputsSelected(AudioDeviceManager &deviceManager, const Ar
 }
 
 // gets the first one, but the caller assumes either all are selected, or just one of them is selected
-static String getFirstSelectedMidiInputDevice(AudioDeviceManager &deviceManager, const Array<MidiDeviceInfo> &devices)
+static String getFirstSelectedMidiInputDevice(AudioDeviceManager &deviceManager,
+    const Array<MidiDeviceInfo> &devices)
 {
     for (int i = 0; i < devices.size(); ++i)
     {
-        if (deviceManager.isMidiInputDeviceEnabled(devices[i].name))
+        if (deviceManager.isMidiInputDeviceEnabled(devices[i].identifier))
         {
             return devices[i].name;
         }
@@ -453,22 +452,18 @@ void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
     MenuPanel::Menu menu;
     const auto &devices = MidiInput::getAvailableDevices();
 
-    const bool allInputsSelected = areAllMidiInputsSelected(deviceManager, devices);
-    menu.add(MenuItem::item(allInputsSelected ? Icons::apply : Icons::empty,
-        CommandIDs::SelectAllMidiInputDevices, TRANS(I18n::Settings::midiAllDevices)));
-
     for (int i = 0; i < devices.size(); ++i)
     {
-        const auto deviceName = devices[i].name;
-        const bool isSelected = deviceManager.isMidiInputDeviceEnabled(deviceName);
-        menu.add(MenuItem::item((isSelected && !allInputsSelected) ? Icons::apply : Icons::empty,
-            CommandIDs::SelectAudioDevice + i, deviceName));
+        const bool isEnabled = deviceManager.isMidiInputDeviceEnabled(devices[i].identifier);
+        menu.add(MenuItem::item(isEnabled ? Icons::apply : Icons::empty,
+            CommandIDs::SelectMidiInputDevice + i, devices[i].name));
     }
 
-    const auto selectedDeviceName = allInputsSelected ?
-        TRANS(I18n::Settings::midiAllDevices) : getFirstSelectedMidiInputDevice(deviceManager, devices);
+    const auto selectedDeviceName = areNoMidiInputsSelected(deviceManager, devices) ?
+        "-" : getFirstSelectedMidiInputDevice(deviceManager, devices);
 
-    this->midiInputEditor->setText(TRANS(I18n::Settings::midiRecord) + ": " + selectedDeviceName, dontSendNotification);
+    this->midiInputEditor->setText(TRANS(I18n::Settings::midiRecord) +
+        ": " + selectedDeviceName, dontSendNotification);
 
     this->midiInputsComboPrimer->updateMenu(menu);
 }

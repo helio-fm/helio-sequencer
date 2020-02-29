@@ -135,8 +135,7 @@ namespace CommandIDs
         SelectAudioDevice               = 0x3100,
         SelectSampleRate                = 0x3200,
         SelectBufferSize                = 0x3300, // more ids reserved for sub-items
-        SelectAllMidiInputDevices       = 0x3400,
-        SelectMidiInputDevice           = 0x3401, // more ids reserved for sub-items
+        SelectMidiInputDevice           = 0x3400, // more ids reserved for sub-items
         SelectFont                      = 0x3500, // more ids reserved for sub-items
 
         EditModeDefault                 = 0x4000,

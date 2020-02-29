@@ -46,7 +46,7 @@ private:
     void applyDevice(AudioDeviceManager &deviceManager, const String &deviceName);
     void applySampleRate(AudioDeviceManager &deviceManager, double sampleRate);
     void applyBufferSize(AudioDeviceManager &deviceManager, int bufferSize);
-    void applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceName);
+    void applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceId);
 
     void syncDeviceTypesList(AudioDeviceManager &deviceManager);
     void syncDevicesList(AudioDeviceManager &deviceManager);
