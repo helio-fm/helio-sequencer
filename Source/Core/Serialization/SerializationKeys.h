@@ -154,9 +154,8 @@ namespace Serialization
         static const Identifier pluginNumInputs = "numInputs";
         static const Identifier pluginNumOutputs = "numOutputs";
 
-        static const Identifier midiInput = "midiInput";
-        static const Identifier midiInputName = "name";
-        static const Identifier defaultMidiOutput = "defaultMidiOutput";
+        static const Identifier midiInputName = "midiInputName";
+        static const Identifier midiInputId = "midiInputId";
 
         static const Identifier pluginsList = "plugins";
         static const Identifier audioCore = "audioCore";
