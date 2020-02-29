@@ -256,6 +256,9 @@ void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
         // so that roll's scope is updated twice :(
         this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
             activeTrack, activeClip, shouldFocusToArea);
+
+        const auto instrumentId = activeTrack->getTrackInstrumentId();
+        App::Workspace().getAudioCore().setActiveMidiInputPlayer(instrumentId, true);
     }
 }
 

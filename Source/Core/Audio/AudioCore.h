@@ -68,7 +68,7 @@ private:
     }
 };
 
-class AudioCore :
+class AudioCore final :
     public Serializable,
     public ChangeBroadcaster,
     public OrchestraPit,
@@ -88,6 +88,8 @@ public:
     void removeInstrument(Instrument *instrument);
     void addInstrument(const PluginDescription &pluginDescription,
         const String &name, Instrument::InitializationCallback callback);
+
+    void setActiveMidiInputPlayer(const String &instrumentId, bool removeOthers);
 
     //===------------------------------------------------------------------===//
     // OrchestraPit
@@ -166,14 +168,18 @@ private:
     void disconnectAllAudioCallbacks();
     void reconnectAllAudioCallbacks();
 
-    void addInstrumentToDevice(Instrument *instrument);
-    void removeInstrumentFromDevice(Instrument *instrument);
+    void addInstrumentToMidiDevice(Instrument *instrument);
+    void addInstrumentToAudioDevice(Instrument *instrument);
+    void removeInstrumentFromMidiDevice(Instrument *instrument);
+    void removeInstrumentFromAudioDevice(Instrument *instrument);
 
     SerializedData serializeDeviceManager() const;
     void deserializeDeviceManager(const SerializedData &tree);
 
     OwnedArray<Instrument> instruments;
     UniquePointer<AudioMonitor> audioMonitor;
+
+    String lastActiveMidiPlayerId;
 
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;

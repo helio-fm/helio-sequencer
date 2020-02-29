@@ -75,7 +75,7 @@ void AudioCore::disconnectAllAudioCallbacks()
 
         for (auto *instrument : this->instruments)
         {
-            this->removeInstrumentFromDevice(instrument);
+            this->removeInstrumentFromAudioDevice(instrument);
         }
     }
 }
@@ -86,7 +86,7 @@ void AudioCore::reconnectAllAudioCallbacks()
     {
         for (auto *instrument : this->instruments)
         {
-            this->addInstrumentToDevice(instrument);
+            this->addInstrumentToAudioDevice(instrument);
         }
 
         this->deviceManager.addAudioCallback(this->audioMonitor.get());
@@ -118,7 +118,7 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
     const String &name, Instrument::InitializationCallback callback)
 {
     auto *instrument = this->instruments.add(new Instrument(formatManager, name));
-    this->addInstrumentToDevice(instrument);
+    this->addInstrumentToAudioDevice(instrument);
     instrument->initializeFrom(pluginDescription,
         [this, callback](Instrument *instrument)
         {
@@ -133,20 +133,59 @@ void AudioCore::removeInstrument(Instrument *instrument)
 {
     this->broadcastInstrumentRemoved(instrument);
 
-    this->removeInstrumentFromDevice(instrument);
+    this->removeInstrumentFromAudioDevice(instrument);
+    this->removeInstrumentFromMidiDevice(instrument);
+
     this->instruments.removeObject(instrument, true);
 
     this->broadcastInstrumentRemovedPostAction();
 }
 
-void AudioCore::addInstrumentToDevice(Instrument *instrument)
+void AudioCore::addInstrumentToMidiDevice(Instrument *instrument)
+{
+    this->deviceManager.addMidiInputDeviceCallback({},
+        &instrument->getProcessorPlayer().getMidiMessageCollector());
+}
+
+void AudioCore::addInstrumentToAudioDevice(Instrument *instrument)
 {
     this->deviceManager.addAudioCallback(&instrument->getProcessorPlayer());
 }
 
-void AudioCore::removeInstrumentFromDevice(Instrument *instrument)
+void AudioCore::removeInstrumentFromMidiDevice(Instrument *instrument)
+{
+    this->deviceManager.removeMidiInputDeviceCallback({},
+        &instrument->getProcessorPlayer().getMidiMessageCollector());
+}
+
+void AudioCore::removeInstrumentFromAudioDevice(Instrument *instrument)
 {
     this->deviceManager.removeAudioCallback(&instrument->getProcessorPlayer());
+}
+
+void AudioCore::setActiveMidiInputPlayer(const String &instrumentId, bool shouldRemoveOthers)
+{
+    if (this->lastActiveMidiPlayerId == instrumentId)
+    {
+        //DBG("Skip setActiveMidiInputPlayer for " + instrumentId);
+        return;
+    }
+
+    for (auto *instrument : this->instruments)
+    {
+        if (instrumentId.startsWith(instrument->getInstrumentId()))
+        {
+            //DBG("addInstrumentToMidiDevice for " + instrumentId);
+            this->addInstrumentToMidiDevice(instrument);
+        }
+        else if (shouldRemoveOthers)
+        {
+            //DBG("removeInstrumentFromMidiDevice for " + instrument->getInstrumentId());
+            this->removeInstrumentFromMidiDevice(instrument);
+        }
+    }
+
+    this->lastActiveMidiPlayerId = instrumentId;
 }
 
 //===----------------------------------------------------------------------===//
@@ -427,14 +466,14 @@ void AudioCore::deserialize(const SerializedData &data)
     {
         for (const auto &instrumentNode : orchestra)
         {
-            UniquePointer<Instrument> instrument(new Instrument(this->formatManager, {}));
+            auto instrument = makeUnique<Instrument>(this->formatManager, "");
             // it's important to add audio processor to device
             // before actually creating nodes and connections:
-            this->addInstrumentToDevice(instrument.get());
+            this->addInstrumentToAudioDevice(instrument.get());
             instrument->deserialize(instrumentNode);
             if (!instrument->isValid())
             {
-                this->removeInstrumentFromDevice(instrument.get());
+                this->removeInstrumentFromAudioDevice(instrument.get());
             }
             else
             {
@@ -451,7 +490,7 @@ void AudioCore::deserialize(const SerializedData &data)
 
 void AudioCore::reset()
 {
-    while (this->instruments.size() > 0)
+    while (!this->instruments.isEmpty())
     {
         this->removeInstrument(this->instruments[0]);
     }
