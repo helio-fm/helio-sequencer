@@ -103,7 +103,8 @@ public:
     // Setup
     //===------------------------------------------------------------------===//
 
-    void autodetectDeviceSetup();
+    bool autodetectAudioDeviceSetup();
+    bool autodetectMidiDeviceSetup();
 
     AudioDeviceManager &getDevice() noexcept;
     AudioPluginFormatManager &getFormatManager() noexcept;

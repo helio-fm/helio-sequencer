@@ -241,7 +241,7 @@ void AudioCore::initDefaultInstrument()
 // Setup
 //===----------------------------------------------------------------------===//
 
-void AudioCore::autodetectDeviceSetup()
+bool AudioCore::autodetectAudioDeviceSetup()
 {
     DBG("AudioCore::autodetectDeviceSetup");
     
@@ -267,8 +267,44 @@ void AudioCore::autodetectDeviceSetup()
             AudioDeviceManager::AudioDeviceSetup deviceSetup;
             this->deviceManager.getAudioDeviceSetup(deviceSetup);
             this->deviceManager.setAudioDeviceSetup(deviceSetup, true);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+bool AudioCore::autodetectMidiDeviceSetup()
+{
+    DBG("AudioCore::autodetectMidiDeviceSetup");
+    
+    int numEnabledDevices = 0;
+    const auto allDevices = MidiInput::getAvailableDevices();
+    for (const auto &midiInput : allDevices)
+    {
+        if (this->deviceManager.isMidiInputDeviceEnabled(midiInput.identifier))
+        {
+            numEnabledDevices++;
         }
     }
+
+    if (numEnabledDevices == 1)
+    {
+        return true;
+    }
+
+    // nothing is enabled, but there's only one device, so let's just enable it
+    if (numEnabledDevices == 0 && allDevices.size() == 1)
+    {
+        DBG("Found the single available MIDI input, enabling");
+        this->deviceManager.setMidiInputDeviceEnabled(allDevices.getFirst().identifier, true);
+        return true;
+    }
+
+    return false;
 }
 
 SerializedData AudioCore::serializeDeviceManager() const
@@ -332,7 +368,8 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
 
     if (!root.isValid())
     {
-        this->autodetectDeviceSetup();
+        this->autodetectAudioDeviceSetup();
+        this->autodetectMidiDeviceSetup();
         return;
     }
 
@@ -445,7 +482,8 @@ void AudioCore::deserialize(const SerializedData &data)
 
     if (!root.isValid())
     {
-        this->autodetectDeviceSetup();
+        this->autodetectAudioDeviceSetup();
+        this->autodetectMidiDeviceSetup();
         return;
     }
 
