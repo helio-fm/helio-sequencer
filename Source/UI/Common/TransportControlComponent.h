@@ -22,6 +22,7 @@ class TransportControlPlayBg;
 class TransportControlRecordBg;
 
 #include "IconComponent.h"
+#include "CommandIDs.h"
 //[/Headers]
 
 
@@ -57,6 +58,7 @@ private:
 
     void playButtonPressed();
     void recordButtonPressed();
+    void broadcastCommandMessage(CommandIDs::Id command);
 
     //[/UserVariables]
 

@@ -22,10 +22,15 @@
 #include "TransportControlComponent.h"
 
 //[MiscUserDefs]
+#include "Workspace.h"
+#include "AudioCore.h"
+
 #include "MainLayout.h"
 #include "HelioTheme.h"
+
+#include "MenuPanel.h"
+#include "HelioCallout.h"
 #include "ColourIDs.h"
-#include "CommandIDs.h"
 
 class TransportControlButton : public Component, private Timer
 {
@@ -349,26 +354,57 @@ void TransportControlComponent::showRecordingMode(bool isRecording)
 
 void TransportControlComponent::playButtonPressed()
 {
-    const auto command = this->isPlaying.get() ?
+    this->broadcastCommandMessage(this->isPlaying.get() ?
         CommandIDs::TransportStop :
-        CommandIDs::TransportPlaybackStart;
-
-    if (this->eventReceiver != nullptr)
-    {
-        this->eventReceiver->postCommandMessage(command);
-    }
-    else
-    {
-        App::Layout().broadcastCommandMessage(command);
-    }
+        CommandIDs::TransportPlaybackStart);
 }
 
 void TransportControlComponent::recordButtonPressed()
 {
-    const auto command = this->isRecording.get() ?
-        CommandIDs::TransportStop :
-        CommandIDs::TransportRecordingAwait;
+    if (this->isRecording.get())
+    {
+        this->broadcastCommandMessage(CommandIDs::TransportStop);
+        return;
+    }
 
+    const bool canRecord = App::Workspace().getAudioCore().autodetectMidiDeviceSetup();
+    if (canRecord)
+    {
+        this->broadcastCommandMessage(CommandIDs::TransportRecordingAwait);
+        return;
+    }
+   
+    const auto allDevices = MidiInput::getAvailableDevices();
+
+    // todo someday: if no devices available, blink
+    //if (allDevices.isEmpty())
+    //{
+    //}
+
+    // if more than 1 devices available, provide a choice
+    MenuPanel::Menu menu;
+    auto panel = makeUnique<MenuPanel>();
+
+    for (const auto &midiInput : allDevices)
+    {
+        menu.add(MenuItem::item(Icons::piano, midiInput.name)->
+            closesMenu()->
+            withAction([this, midiInput]()
+        {
+            App::Workspace().getAudioCore().getDevice()
+                .setMidiInputDeviceEnabled(midiInput.identifier, true);
+
+            this->recordButtonPressed();
+        }));
+    }
+
+    panel->updateContent(menu, MenuPanel::SlideLeft, true);
+
+    HelioCallout::emit(panel.release(), this->recordBg.get());
+}
+
+void TransportControlComponent::broadcastCommandMessage(CommandIDs::Id command)
+{
     if (this->eventReceiver != nullptr)
     {
         this->eventReceiver->postCommandMessage(command);
