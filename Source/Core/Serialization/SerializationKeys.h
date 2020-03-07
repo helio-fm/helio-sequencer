@@ -135,7 +135,7 @@ namespace Serialization
         static const Identifier connection = "connection";
 
         static const Identifier transport = "transport";
-        static const Identifier transportSeekPosition = "seekPosition";
+        static const Identifier transportSeekBeat = "seekBeat";
 
         static const Identifier audioPlugin = "pluginSettings";
 

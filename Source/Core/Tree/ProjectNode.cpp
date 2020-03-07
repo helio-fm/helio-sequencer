@@ -100,11 +100,11 @@ void ProjectNode::initialize()
     this->timeline = makeUnique<ProjectTimeline>(*this, "Project Timeline");
     this->vcsItems.add(this->timeline.get());
 
-    this->transport->seekToPosition(0.0);
-
     this->consoleTimelineEvents = makeUnique<CommandPaletteTimelineEvents>(*this);
 
     this->recreatePage();
+
+    this->transport->seekToBeat(this->firstBeatCache);
 }
 
 ProjectNode::~ProjectNode()
@@ -461,7 +461,7 @@ void ProjectNode::deserialize(const SerializedData &data)
 
 void ProjectNode::reset()
 {
-    this->transport->seekToPosition(0.f);
+    this->transport->seekToBeat(this->firstBeatCache);
     this->vcsItems.clear();
     this->vcsItems.add(this->metadata.get());
     this->vcsItems.add(this->timeline.get());

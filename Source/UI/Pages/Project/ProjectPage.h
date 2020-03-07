@@ -63,7 +63,7 @@ private:
     // TransportListener
     //===----------------------------------------------------------------------===//
 
-    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) noexcept override;
+    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) noexcept override {}
     void onTotalTimeChanged(double timeMs) noexcept override;
     void onPlay() noexcept override {}

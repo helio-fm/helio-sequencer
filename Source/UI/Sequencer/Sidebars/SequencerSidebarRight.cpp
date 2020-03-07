@@ -194,12 +194,11 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         const TimeSignatureEvent *selectedTimeSignature = nullptr;
 
         const ProjectTimeline *timeline = this->project.getTimeline();
-        const double seekPosition = this->project.getTransport().getSeekPosition();
+        const auto seekBeat = this->project.getTransport().getSeekBeat();
 
         if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
-            const double numBeats = double(roll->getNumBeats());
-            const double seekThreshold = (1.0 / numBeats) / 10.0;
+            static const double seekThreshold = 0.001f;
             const auto annotationsSequence = timeline->getAnnotations()->getSequence();
             const auto timeSignaturesSequence = timeline->getTimeSignatures()->getSequence();
 
@@ -208,8 +207,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
                 if (AnnotationEvent *annotation =
                     dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
                 {
-                    const double annotationSeekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                    if (fabs(annotationSeekPosition - seekPosition) < seekThreshold)
+                    if (fabs(annotation->getBeat() - seekBeat) < seekThreshold)
                     {
                         selectedAnnotation = annotation;
                         break;
@@ -221,8 +219,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
             {
                 if (auto *ts = dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
                 {
-                    const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
-                    if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
+                    if (fabs(ts->getBeat() - seekBeat) < seekThreshold)
                     {
                         selectedTimeSignature = ts;
                         break;
@@ -378,7 +375,7 @@ void SequencerSidebarRight::handleAsyncUpdate()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void SequencerSidebarRight::onSeek(double absolutePosition,double currentTimeMs, double totalTimeMs)
+void SequencerSidebarRight::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
 {
 #if TOOLS_SIDEBAR_SHOWS_TIME
     this->lastSeekTime = currentTimeMs;

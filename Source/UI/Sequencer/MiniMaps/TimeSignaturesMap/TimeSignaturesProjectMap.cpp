@@ -295,16 +295,14 @@ void TimeSignaturesProjectMap::onTimeSignatureTapped(TimeSignatureComponent *nc)
     const TimeSignatureEvent *timeSignatureUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
     const auto timeSignatures = timeline->getTimeSignatures()->getSequence();
-    const double seekPosition = this->project.getTransport().getSeekPosition();
+    const auto seekBeat = this->project.getTransport().getSeekBeat();
 
     for (int i = 0; i < timeSignatures->size(); ++i)
     {
         if (TimeSignatureEvent *timeSignature =
             dynamic_cast<TimeSignatureEvent *>(timeSignatures->getUnchecked(i)))
         {
-            const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
-            
-            if (fabs(timeSignature->getBeat() - seekBeat) < 0.1)
+            if (fabs(timeSignature->getBeat() - seekBeat) < 0.001f)
             {
                 timeSignatureUnderSeekCursor = timeSignature;
                 break;
@@ -312,7 +310,7 @@ void TimeSignaturesProjectMap::onTimeSignatureTapped(TimeSignatureComponent *nc)
         }
     }
 
-    const double newSeekPosition = this->roll.getTransportPositionByBeat(nc->getBeat());
+    const auto newSeekBeat = nc->getBeat();
     const bool wasPlaying = this->project.getTransport().isPlaying();
 
     if (wasPlaying)
@@ -320,7 +318,7 @@ void TimeSignaturesProjectMap::onTimeSignatureTapped(TimeSignatureComponent *nc)
         this->project.getTransport().stopPlayback();
     }
 
-    this->project.getTransport().seekToPosition(newSeekPosition);
+    this->project.getTransport().seekToBeat(newSeekBeat);
 
     //if (wasPlaying)
     //{

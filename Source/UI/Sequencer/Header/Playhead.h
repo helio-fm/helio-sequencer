@@ -49,7 +49,7 @@ public:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) override;
     void onTotalTimeChanged(double timeMs) override {}
     void onPlay() override;
@@ -69,7 +69,7 @@ protected:
     HybridRoll &roll;
     Transport &transport;
 
-    const int playheadWidth;
+    const int playheadWidth = 1;
 
 private:
 
@@ -82,7 +82,7 @@ private:
 
     void parentChanged();
 
-    Atomic<double> timerStartPosition = 0.0;
+    Atomic<float> timerStartPosition = 0.f;
     Atomic<double> timerStartTime = 0.0;
     Atomic<double> msPerQuarterNote = 1.0;
 
@@ -96,11 +96,12 @@ private:
     void updatePosition(double position);
 
     Colour currentColour;
+
     const Colour shadeColour;
     const Colour playbackColour;
     const Colour recordingColour;
 
-    Atomic<double> lastCorrectPosition = 0.0;
+    Atomic<float> lastCorrectPosition = 0.f;
 
     Listener *listener = nullptr;
 

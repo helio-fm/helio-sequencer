@@ -51,11 +51,12 @@ public:
             this->currentPlayer = findNextFreePlayer();
         }
 
-        this->currentPlayer->startPlayback(this->transport.getSeekPosition(), 1.0,
+        this->currentPlayer->startPlayback(this->transport.getSeekBeat() - this->transport.getProjectFirstBeat(),
+            this->transport.getProjectLastBeat() - this->transport.getProjectFirstBeat(),
             false, shouldBroadcastTransportEvents);
     }
 
-    void startPlayback(double start, double end, bool loopedMode, bool shouldBroadcast = true)
+    void startPlayback(float start, float end, bool loopedMode, bool shouldBroadcast = true)
     {
         if (this->currentPlayer->isThreadRunning())
         {

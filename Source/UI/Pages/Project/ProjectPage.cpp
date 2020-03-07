@@ -421,7 +421,7 @@ void ProjectPage::updateContent()
     }
 }
 
-void ProjectPage::onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) noexcept
+void ProjectPage::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
 {
     this->totalTimeMs = totalTimeMs;
 }

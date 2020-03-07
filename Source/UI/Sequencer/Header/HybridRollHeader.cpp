@@ -32,7 +32,6 @@
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
-#define HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS 1
 #define HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
 #define MIN_TIME_DISTANCE_INDICATOR_SIZE (40)
 
@@ -125,16 +124,10 @@ double HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
 
 double HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
 {
-    const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
-    
-#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
+    const auto parentEvent = e.getEventRelativeTo(&this->roll);
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(parentEvent.x);
     const int roundX = this->roll.getXPositionByBeat(roundBeat);
     const double absX = double(roundX) / double(this->roll.getWidth());
-#else
-    const double absX = this->getUnalignedAnchorForEvent(e);
-#endif
-    
     return absX;
 }
 
@@ -150,8 +143,8 @@ void HybridRollHeader::updateTimeDistanceIndicator()
     const double anchor1 = this->pointingIndicator->getAnchor();
     const double anchor2 = this->playingIndicator->getAnchor();
     
-    const double seek1 = this->roll.getTransportPositionByXPosition(this->pointingIndicator->getX(), this->getWidth());
-    const double seek2 = this->roll.getTransportPositionByXPosition(this->playingIndicator->getX(), this->getWidth());
+    const auto seek1 = this->roll.getBeatByXPosition(float(this->pointingIndicator->getX()));
+    const auto seek2 = this->roll.getBeatByXPosition(float(this->playingIndicator->getX()));
 
     this->timeDistanceIndicator->setAnchoredBetween(anchor1, anchor2);
     
@@ -161,8 +154,8 @@ void HybridRollHeader::updateTimeDistanceIndicator()
     double outTempo2 = 0.0;
     
     // todo don't rebuild sequences here
-    this->transport.calcTimeAndTempoAt(seek1, outTimeMs1, outTempo1);
-    this->transport.calcTimeAndTempoAt(seek2, outTimeMs2, outTempo2);
+    this->transport.findTimeAndTempoAt(seek1, outTimeMs1, outTempo1);
+    this->transport.findTimeAndTempoAt(seek2, outTimeMs2, outTempo2);
     
     const double timeDelta = fabs(outTimeMs2 - outTimeMs1);
     const String timeDeltaText = Transport::getTimeString(timeDelta);
@@ -187,14 +180,8 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
     {
         // todo if playing, dont probe anything?
         
-#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x);
-        const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
-#else
-        const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
-#endif
-        
-        this->transport.probeSoundAt(transportPosition, nullptr);
+        this->transport.probeSoundAtBeat(roundBeat, nullptr);
         
         this->playingIndicator.reset(new SoundProbeIndicator());
         this->roll.addAndMakeVisible(this->playingIndicator.get());
@@ -202,14 +189,9 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
     }
     else
     {
-#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
         const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-        const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
-#else
-        const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
-#endif
-        
+       
         const bool shouldStartSelection = (e.mods.isAltDown() ||
                                            e.mods.isCommandDown() ||
                                            e.mods.isCtrlDown() ||
@@ -243,7 +225,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         {
             this->transport.stopPlayback();
             this->roll.cancelPendingUpdate(); // why is it here?
-            this->transport.seekToPosition(transportPosition);
+            this->transport.seekToBeat(roundBeat);
         }
     }
 }
@@ -317,16 +299,10 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
         {
             //if (! this->transport.isPlaying())
             {
-#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
                 const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-                const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
-#else
-                const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
-#endif
-                
                 this->transport.stopPlayback();
                 this->roll.cancelPendingUpdate();
-                this->transport.seekToPosition(transportPosition);
+                this->transport.seekToBeat(roundBeat);
             }
         }
     }
@@ -350,15 +326,10 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
     }
     else
     {
-#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-        const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
-#else
-        const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
-#endif
         
         this->transport.stopPlayback();
-        this->transport.seekToPosition(transportPosition);
+        this->transport.seekToBeat(roundBeat);
         
         if (e.mods.isRightButtonDown())
         {
@@ -408,15 +379,10 @@ void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
     // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
     //this->showPopupMenu();
 
-#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-    const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
-#else
-    const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
-#endif
 
     this->transport.stopPlayback();
-    this->transport.seekToPosition(transportPosition);
+    this->transport.seekToBeat(roundBeat);
     this->transport.startPlayback();
 }
 

@@ -26,8 +26,8 @@ public:
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-    void startPlayback(double start, double end, bool shouldLoop,
-        bool shouldBroadcastTransportEvents = true);
+    void startPlayback(float relStartBeat, float relEndBeat,
+        bool shouldLoop, bool shouldBroadcastTransportEvents = true);
 
     void setRecordMidi(bool shouldRecord)
     {
@@ -37,7 +37,7 @@ public:
 
     bool isRecordingMidi() const
     {
-        return this->recordMidiMode;
+        return this->recordMidiMode.get();
     }
 
 private:
@@ -48,10 +48,13 @@ private:
 
     bool loopedMode = false;
     bool broadcastMode = false;
-    bool recordMidiMode = false;
 
-    double absStartPosition = 0.0;
-    double absEndPosition = 1.0;
+    Atomic<bool> recordMidiMode = false;
+
+    Atomic<float> startBeat = 0.f;
+    Atomic<float> endBeat = 1.f;
+
+    MidiMessageCollector recordingBuffer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };

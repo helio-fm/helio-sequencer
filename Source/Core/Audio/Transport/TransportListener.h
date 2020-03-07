@@ -17,17 +17,23 @@
 
 #pragma once
 
+// Expect that any data in these methods could come
+// from a separate thread (PlayerThread most likely)
+
 class TransportListener
 {
 public:
     
     virtual ~TransportListener() {}
 
-    virtual void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) = 0;
+    virtual void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) = 0;
     virtual void onTempoChanged(double msPerQuarter) = 0;
     virtual void onTotalTimeChanged(double timeMs) = 0;
+
     virtual void onPlay() = 0;
     virtual void onRecord() = 0;
     virtual void onStop() = 0;
+
+    virtual void onMidiMessageArrived(const MidiMessage &message) {}
 
 };

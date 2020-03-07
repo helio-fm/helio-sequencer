@@ -215,9 +215,7 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
     {
         const auto firstBeat = this->roll.getLassoStartBeat();
         const auto lastBeat = this->roll.getLassoEndBeat();
-        const auto fragmentStart = this->roll.getTransportPositionByBeat(firstBeat);
-        const auto fragmentEnd = this->roll.getTransportPositionByBeat(lastBeat);
-        transport.startPlaybackFragment(fragmentStart - 0.001, fragmentEnd);
+        transport.startPlaybackFragment(firstBeat - 0.001f, lastBeat);
     }
 }
 

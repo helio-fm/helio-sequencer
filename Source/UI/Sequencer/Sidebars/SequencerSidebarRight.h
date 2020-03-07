@@ -111,7 +111,7 @@ private:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) override {}
     void onTotalTimeChanged(double timeMs) override;
     void onPlay() override;

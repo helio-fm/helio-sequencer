@@ -99,7 +99,6 @@ public:
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
-    float getSeekBeat() const;
     void scrollToSeekPosition();
     float getPositionForNewTimelineEvent() const;
     void insertAnnotationWithinScreen(const String &annotation);
@@ -179,14 +178,9 @@ public:
     //===------------------------------------------------------------------===//
     // Misc
     //===------------------------------------------------------------------===//
-    
-    int getXPositionByTransportPosition(double absPosition, double canvasWidth) const;
-    double getTransportPositionByXPosition(int xPosition, double canvasWidth) const;
-
-    double getTransportPositionByBeat(float targetBeat) const;
-    float getBeatByTransportPosition(double absSeekPosition) const;
 
     int getXPositionByBeat(float targetBeat) const;
+    int getPlayheadPositionByBeat(double targetBeat, double parentWidth) const;
     float getRoundBeatSnapByXPosition(int x) const;
 
     inline float getLastBeat() const noexcept { return this->lastBeat; }
@@ -284,14 +278,14 @@ protected:
     // TransportListener
     //===------------------------------------------------------------------===//
     
-    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) override {}
     void onTotalTimeChanged(double timeMs) override {}
     void onPlay() override;
     void onRecord() override;
     void onStop() override;
 
-    Atomic<double> lastTransportPosition = 0.0; // modified from a player thread
+    Atomic<float> lastTransportBeat = 0.f; // modified from the player thread
 
     double playheadOffset = 0.0;
     bool shouldFollowPlayhead = false;

@@ -55,22 +55,20 @@ class ProjectSequences final
 {
 private:
     
-    Array<Instrument *> uniqueInstruments;
-    ReferenceCountedArray<CachedMidiSequence> sequences;
+    Array<Instrument *, CriticalSection> uniqueInstruments;
+    ReferenceCountedArray<CachedMidiSequence, CriticalSection> sequences;
 
 public:
     
     ProjectSequences() = default;
     
-    inline Array<Instrument *> getUniqueInstruments() const noexcept
+    inline Array<Instrument *, CriticalSection> getUniqueInstruments() const noexcept
     {
-        const SpinLock::ScopedLockType lock(this->instrumentsLock);
         return this->uniqueInstruments;
     }
     
     void addWrapper(CachedMidiSequence::Ptr newWrapper) noexcept
     {
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
         if (newWrapper->midiMessages.getNumEvents() > 0)
         {
             this->uniqueInstruments.addIfNotAlreadyThere(newWrapper->instrument);
@@ -80,14 +78,12 @@ public:
     
     inline void clear()
     {
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
         this->uniqueInstruments.clearQuick();
         this->sequences.clearQuick();
     }
     
     inline bool isEmpty() const
     {
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
         return this->sequences.isEmpty();
     }
     
@@ -97,8 +93,6 @@ public:
         {
             return 0.0;
         }
-
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
 
         // TODO: something more reasonable?
         return this->sequences[0]->instrument->getProcessorGraph()->getSampleRate();
@@ -111,8 +105,6 @@ public:
             return 0;
         }
 
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
-
         // TODO: something more reasonable?
         return this->sequences[0]->instrument->getProcessorGraph()->getTotalNumOutputChannels();
     }
@@ -124,16 +116,12 @@ public:
             return 0;
         }
 
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
-
         // TODO: something more reasonable?
         return this->sequences[0]->instrument->getProcessorGraph()->getTotalNumInputChannels();
     }
 
     ReferenceCountedArray<CachedMidiSequence> getAllFor(const MidiSequence *midiTrack)
     {
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
-
         ReferenceCountedArray<CachedMidiSequence> result;
         for (int i = 0; i < this->sequences.size(); ++i)
         {
@@ -149,8 +137,6 @@ public:
 
     void seekToTime(double position)
     {
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
-        
         for (auto *wrapper : this->sequences)
         {
             wrapper->currentIndex = this->getNextIndexAtTime(wrapper->midiMessages, (position - DBL_MIN));
@@ -159,8 +145,6 @@ public:
     
     void seekToZeroIndexes()
     {
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
-
         for (auto *wrapper : this->sequences)
         {
             wrapper->currentIndex = 0;
@@ -169,8 +153,6 @@ public:
     
     bool getNextMessage(CachedMidiMessage &target)
     {
-        const SpinLock::ScopedLockType lock(this->sequencesLock);
-
         double minTimeStamp = DBL_MAX;
         int targetSequenceIndex = -1;
 
@@ -221,9 +203,6 @@ private:
         
         return i;
     }
-
-    SpinLock instrumentsLock;
-    SpinLock sequencesLock;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectSequences)
 };

@@ -30,8 +30,7 @@
 #include "CommandIDs.h"
 
 template<typename T>
-const T *findSelectedEventOfType(MidiSequence *const sequence, HybridRoll *const roll,
-    double seekPosition, double seekThreshold)
+const T *findSelectedEventOfType(MidiSequence *const sequence, HybridRoll *const roll, float seekBeat)
 {
     const T *selectedEvent = nullptr;
 
@@ -39,8 +38,7 @@ const T *findSelectedEventOfType(MidiSequence *const sequence, HybridRoll *const
     {
         if (T *event = dynamic_cast<T *>(sequence->getUnchecked(i)))
         {
-            const double eventSeekPosition = roll->getTransportPositionByBeat(event->getBeat());
-            if (fabs(eventSeekPosition - seekPosition) < seekThreshold)
+            if (fabs(event->getBeat() - seekBeat) < 0.001f)
             {
                 selectedEvent = event;
                 break;
@@ -59,16 +57,15 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
     const TimeSignatureEvent *selectedTimeSignature = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
 
-    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+    if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
-        const double seekPosition = this->project.getTransport().getSeekPosition();
-        const double seekThreshold = (1.0 / double(roll->getNumBeats())) / 10.0;
+        const auto seekBeat = this->project.getTransport().getSeekBeat();
         const auto annotationsSequence = timeline->getAnnotations()->getSequence();
         const auto keySignaturesSequence = timeline->getKeySignatures()->getSequence();
         const auto timeSignaturesSequence = timeline->getTimeSignatures()->getSequence();
-        selectedAnnotation = findSelectedEventOfType<AnnotationEvent>(annotationsSequence, roll, seekPosition, seekThreshold);
-        selectedKeySignature = findSelectedEventOfType<KeySignatureEvent>(keySignaturesSequence, roll, seekPosition, seekThreshold);
-        selectedTimeSignature = findSelectedEventOfType<TimeSignatureEvent>(timeSignaturesSequence, roll, seekPosition, seekThreshold);
+        selectedAnnotation = findSelectedEventOfType<AnnotationEvent>(annotationsSequence, roll, seekBeat);
+        selectedKeySignature = findSelectedEventOfType<KeySignatureEvent>(keySignaturesSequence, roll, seekBeat);
+        selectedTimeSignature = findSelectedEventOfType<TimeSignatureEvent>(timeSignaturesSequence, roll, seekBeat);
     }
 
     MenuPanel::Menu menu;
@@ -120,8 +117,7 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
                         {
                             if (auto annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
                             {
-                                const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                                this->project.getTransport().seekToPosition(seekPosition);
+                                this->project.getTransport().seekToBeat(annotation->getBeat());
                                 roll->scrollToSeekPosition();
                             }
                         }

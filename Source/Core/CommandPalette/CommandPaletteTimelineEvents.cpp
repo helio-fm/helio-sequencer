@@ -68,8 +68,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto *annotation = dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i));
             jassert(annotation != nullptr);
 
-            const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
-            this->project.getTransport().calcTimeAndTempoAt(seekPos, outStartTimeMs, outTempo);
+            this->project.getTransport().findTimeAndTempoAt(annotation->getBeat(), outStartTimeMs, outTempo);
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
@@ -79,8 +78,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 jassert(annotation != nullptr);
 
                 jassert(!this->project.getTransport().isPlaying());
-                const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                this->project.getTransport().seekToPosition(seekPosition);
+                this->project.getTransport().seekToBeat(annotation->getBeat());
                 roll->scrollToSeekPosition();
                 return true;
             };
@@ -104,8 +102,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto *event = dynamic_cast<KeySignatureEvent *>(ksSequence->getUnchecked(i));
             jassert(event != nullptr);
 
-            const double seekPos = roll->getTransportPositionByBeat(event->getBeat());
-            this->project.getTransport().calcTimeAndTempoAt(seekPos, outStartTimeMs, outTempo);
+            this->project.getTransport().findTimeAndTempoAt(event->getBeat(), outStartTimeMs, outTempo);
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
@@ -115,8 +112,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 jassert(event != nullptr);
 
                 jassert(!this->project.getTransport().isPlaying());
-                const double seekPosition = roll->getTransportPositionByBeat(event->getBeat());
-                this->project.getTransport().seekToPosition(seekPosition);
+                this->project.getTransport().seekToBeat(event->getBeat());
                 roll->scrollToSeekPosition();
                 return true;
             };
@@ -140,8 +136,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto *event = dynamic_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(i));
             jassert(event != nullptr);
 
-            const double seekPos = roll->getTransportPositionByBeat(event->getBeat());
-            this->project.getTransport().calcTimeAndTempoAt(seekPos, outStartTimeMs, outTempo);
+            this->project.getTransport().findTimeAndTempoAt(event->getBeat(), outStartTimeMs, outTempo);
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
@@ -151,8 +146,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 jassert(event != nullptr);
 
                 jassert(!this->project.getTransport().isPlaying());
-                const double seekPosition = roll->getTransportPositionByBeat(event->getBeat());
-                this->project.getTransport().seekToPosition(seekPosition);
+                this->project.getTransport().seekToBeat(event->getBeat());
                 roll->scrollToSeekPosition();
                 return true;
             };
@@ -175,11 +169,11 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto *sequence = pianoTrackNode->getSequence();
             for (const auto *clip : pianoTrackNode->getPattern()->getClips())
             {
-                const double seekStart = roll->getTransportPositionByBeat(sequence->getFirstBeat() + clip->getBeat());
-                const double seekEnd = roll->getTransportPositionByBeat(sequence->getLastBeat() + clip->getBeat());
+                const auto seekStart = sequence->getFirstBeat() + clip->getBeat();
+                const auto seekEnd = sequence->getLastBeat() + clip->getBeat();
 
-                this->project.getTransport().calcTimeAndTempoAt(seekStart, outStartTimeMs, outTempo);
-                this->project.getTransport().calcTimeAndTempoAt(seekEnd, outEndTimeMs, outTempo);
+                this->project.getTransport().findTimeAndTempoAt(seekStart, outStartTimeMs, outTempo);
+                this->project.getTransport().findTimeAndTempoAt(seekEnd, outEndTimeMs, outTempo);
 
                 const auto timeString = Transport::getTimeString(outStartTimeMs) + " - " + Transport::getTimeString(outEndTimeMs);
 

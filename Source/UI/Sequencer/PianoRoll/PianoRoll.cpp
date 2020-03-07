@@ -984,8 +984,8 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::PasteEvents:
     {
         this->deselectAll();
-        const auto playheadPos = this->project.getTransport().getSeekPosition();
-        const float playheadBeat = this->getBeatByTransportPosition(playheadPos) - this->activeClip.getBeat();
+        const auto playheadPos = this->project.getTransport().getSeekBeat();
+        const float playheadBeat = playheadPos - this->activeClip.getBeat();
         SequencerOperations::pasteFromClipboard(App::Clipboard(), this->project, this->getActiveTrack(), playheadBeat);
     }
         break;
