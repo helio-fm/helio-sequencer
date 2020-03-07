@@ -184,8 +184,7 @@ void Playhead::parentChanged()
 
 void Playhead::updatePosition(double position)
 {
-    // fixme: make smooth movement which depends on parent width
-    const int &newX = this->roll.getPlayheadPositionByBeat(position, float(this->getParentWidth()));
+    const int newX = this->roll.getPlayheadPositionByBeat(position, float(this->getParentWidth()));
     this->setTopLeftPosition(newX, 0);
 
     if (this->listener != nullptr)
@@ -196,9 +195,8 @@ void Playhead::updatePosition(double position)
 
 void Playhead::tick()
 {
-    // fixme smooth movement
     const double timeOffsetMs = Time::getMillisecondCounterHiRes() - this->timerStartTime.get();
-    const double positionOffset = (timeOffsetMs / this->transport.getTotalTime()) / this->msPerQuarterNote.get();
+    const double positionOffset = timeOffsetMs / this->msPerQuarterNote.get();
     const double estimatedPosition = this->timerStartPosition.get() + positionOffset;
     this->updatePosition(estimatedPosition);
 }

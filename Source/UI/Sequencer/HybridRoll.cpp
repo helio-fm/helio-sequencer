@@ -558,7 +558,8 @@ float HybridRoll::getZoomFactorY() const noexcept
 
 int HybridRoll::getPlayheadPositionByBeat(double targetBeat, double parentWidth) const
 {
-    return int((targetBeat - this->firstBeat) * this->beatWidth);
+    const double widthRatio = parentWidth / double(this->getWidth());
+    return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
 }
 
 int HybridRoll::getXPositionByBeat(float targetBeat) const
