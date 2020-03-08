@@ -183,6 +183,9 @@
                   file="../../Source/Core/Audio/Monitoring/SpectrumAnalyzer.h"/>
           </GROUP>
           <GROUP id="{2FD3FB40-23EF-A822-3FB0-5CFBB940E2F2}" name="Transport">
+            <FILE id="OMVh1Q" name="MidiRecorder.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/Transport/MidiRecorder.cpp"/>
+            <FILE id="CEftLx" name="MidiRecorder.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/MidiRecorder.h"/>
             <FILE id="GH5xm4" name="PlayerThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/Transport/PlayerThread.cpp"/>
             <FILE id="Q7DJnB" name="PlayerThread.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/PlayerThread.h"/>

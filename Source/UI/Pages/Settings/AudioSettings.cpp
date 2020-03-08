@@ -175,7 +175,7 @@ void AudioSettings::resized()
 
 void AudioSettings::parentHierarchyChanged()
 {
-    //[UserCode_visibilityChanged] -- Add your code here...
+    //[UserCode_parentHierarchyChanged] -- Add your code here...
     if (this->isShowing())
     {
         AudioDeviceManager &deviceManager = this->audioCore.getDevice();
@@ -186,7 +186,7 @@ void AudioSettings::parentHierarchyChanged()
         this->syncBufferSizesList(deviceManager);
         this->syncMidiInputsList(deviceManager);
     }
-    //[/UserCode_visibilityChanged]
+    //[/UserCode_parentHierarchyChanged]
 }
 
 void AudioSettings::handleCommandMessage (int commandId)
@@ -480,8 +480,8 @@ BEGIN_JUCER_METADATA
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="550"
                  initialHeight="244">
   <METHODS>
-    <METHOD name="visibilityChanged()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
+    <METHOD name="parentHierarchyChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="ff000000"/>
   <GENERICCOMPONENT name="" id="1d879d8f521cf625" memberName="midiInputsComboPrimer"
