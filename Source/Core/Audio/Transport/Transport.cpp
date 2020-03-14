@@ -493,7 +493,10 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 {
     // todo stop playback only if the event is in future
     // and getTrackControllerNumber == 0 (not an automation)
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
     updateLengthAndTimeIfNeeded((&newEvent));
     this->sequencesAreOutdated = true;
 }
@@ -502,7 +505,10 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
 {
     // todo stop playback only if the event is in future
     // and getTrackControllerNumber == 0 (not an automation)
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
     updateLengthAndTimeIfNeeded((&event));
     this->sequencesAreOutdated = true;
 }
@@ -795,11 +801,6 @@ void Transport::broadcastTempoChanged(double newTempo)
 void Transport::broadcastTotalTimeChanged(double timeMs)
 {
     this->transportListeners.call(&TransportListener::onTotalTimeChanged, timeMs);
-}
-
-void Transport::broadcastMidiMessageArrived(const MidiMessage &message)
-{
-    this->transportListeners.call(&TransportListener::onMidiMessageArrived, message);
 }
 
 void Transport::broadcastPlay()

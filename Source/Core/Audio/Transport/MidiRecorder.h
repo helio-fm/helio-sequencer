@@ -17,43 +17,89 @@
 
 #pragma once
 
-class MidiTrack;
+class Transport;
 class UndoStack;
+class MidiTrack;
+class PianoSequence;
 
 #include "Clip.h"
+#include "Note.h"
 #include "TransportListener.h"
 
-class MidiRecorder final : public TransportListener, private AsyncUpdater
+class MidiRecorder final : public MidiInputCallback,
+                           public TransportListener,
+                           private AsyncUpdater,
+                           private Timer
 {
 public:
 
-    explicit MidiRecorder(UndoStack &undoStack);
+    MidiRecorder(WeakReference<Transport> transport,
+        WeakReference<UndoStack> undoStack);
+
+    ~MidiRecorder() override;
 
     void setSelectedScope(WeakReference<MidiTrack> track, const Clip &clip);
 
-protected:
+private:
 
-    void onTempoChanged(double) noexcept {}
+    //===------------------------------------------------------------------===//
+    // MidiInputCallback
+    //===------------------------------------------------------------------===//
+
+    void handleIncomingMidiMessage(MidiInput *source,
+        const MidiMessage &message) override;
+
+    //===------------------------------------------------------------------===//
+    // TransportListener
+    //===------------------------------------------------------------------===//
+
+    void onTempoChanged(double) noexcept;
     void onTotalTimeChanged(double) noexcept {}
-    void onSeek(float, double, double) noexcept {}
-    void onPlay() noexcept {}
-    
+    void onSeek(float, double, double) noexcept;
+    void onPlay() noexcept;
     void onRecord();
-    
     void onStop();
 
-    void onMidiMessageArrived(const MidiMessage &message) override;
-
-private:
+    //===------------------------------------------------------------------===//
+    // AsyncUpdater
+    //===------------------------------------------------------------------===//
 
     void handleAsyncUpdate() override;
 
-    UndoStack &undoStack;
+    //===------------------------------------------------------------------===//
+    // Timer
+    //===------------------------------------------------------------------===//
+
+    void timerCallback() override;
+
+private:
+
+    WeakReference<Transport> transport;
+    WeakReference<UndoStack> undoStack;
 
     Clip activeClip;
     WeakReference<MidiTrack> activeTrack;
+    PianoSequence *getPianoSequence() const;
 
-    Array<MidiMessage, CriticalSection> buffer;
+    Array<MidiMessage, CriticalSection> noteOnsBuffer;
+    Array<MidiMessage, CriticalSection> noteOffsBuffer;
+    Array<MidiMessage> unhandledNoteOffs;
+
+    FlatHashMap<int, Note> holdingNotes;
+    void startHoldingNote(MidiMessage message);
+    void updateLengthsOfHoldingNotes() const;
+    void finaliseAllHoldingNotes();
+    bool finaliseHoldingNote(int key);
+
+    double getEstimatedPosition() const;
+
+    Atomic<float> lastCorrectPosition = 0.f;
+    Atomic<double> lastUpdateTime = 0.0;
+    Atomic<double> msPerQuarterNote = 1.0;
+
+    Atomic<bool> isPlaying = false;
+    Atomic<bool> isRecording = false;
+    Atomic<bool> shouldCheckpoint = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiRecorder)
 };

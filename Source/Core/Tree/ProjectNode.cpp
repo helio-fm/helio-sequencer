@@ -43,6 +43,7 @@
 #include "TrackedItem.h"
 #include "HybridRoll.h"
 #include "UndoStack.h"
+#include "MidiRecorder.h"
 
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
@@ -94,6 +95,9 @@ void ProjectNode::initialize()
     this->transport = makeUnique<Transport>(orchestra, audioCoreSleepTimer);
     this->addListener(this->transport.get());
 
+    this->midiRecorder = makeUnique<MidiRecorder>(
+        this->transport.get(), this->undoStack.get());
+
     this->metadata = makeUnique<ProjectMetadata>(*this);
     this->vcsItems.add(this->metadata.get());
 
@@ -124,6 +128,8 @@ ProjectNode::~ProjectNode()
 
     this->timeline = nullptr;
     this->metadata = nullptr;
+
+    this->midiRecorder = nullptr;
 
     this->removeListener(this->transport.get());
     this->transport = nullptr;
@@ -259,6 +265,8 @@ void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
 
         const auto instrumentId = activeTrack->getTrackInstrumentId();
         App::Workspace().getAudioCore().setActiveMidiInputPlayer(instrumentId, true);
+
+        this->midiRecorder->setSelectedScope(activeTrack, activeClip);
     }
 }
 

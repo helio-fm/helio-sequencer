@@ -128,5 +128,6 @@ private:
 
     void clearFutureTransactions();
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UndoStack)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(UndoStack)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UndoStack)
 };

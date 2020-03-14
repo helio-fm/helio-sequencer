@@ -26,7 +26,7 @@ class MidiEvent;
 class ProjectPage;
 class Origami;
 class TrackMap;
-class Transport;
+class MidiRecorder;
 class ProjectMetadata;
 class ProjectTimeline;
 class CommandPaletteTimelineEvents;
@@ -204,6 +204,7 @@ private:
 
     UniquePointer<Autosaver> autosaver;
     UniquePointer<Transport> transport;
+    UniquePointer<MidiRecorder> midiRecorder;
 
     UniquePointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;

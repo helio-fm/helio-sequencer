@@ -34,6 +34,4 @@ public:
     virtual void onRecord() = 0;
     virtual void onStop() = 0;
 
-    virtual void onMidiMessageArrived(const MidiMessage &message) {}
-
 };

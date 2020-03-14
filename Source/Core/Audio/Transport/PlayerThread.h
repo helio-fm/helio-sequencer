@@ -54,7 +54,5 @@ private:
     Atomic<float> startBeat = 0.f;
     Atomic<float> endBeat = 1.f;
 
-    MidiMessageCollector recordingBuffer;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };
