@@ -55,8 +55,6 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
     double outEndTimeMs = 0.0;
 
     const auto *timeline = this->project.getTimeline();
-    const auto *roll = this->project.getLastFocusedRoll();
-    jassert(roll != nullptr);
     
     if (this->annotationActionsOutdated)
     {
@@ -72,6 +70,8 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
+                jassert(roll != nullptr);
+
                 const auto *timeline = this->project.getTimeline();
                 const auto *annotations = timeline->getAnnotations()->getSequence();
                 const auto *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i));
@@ -106,6 +106,8 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
+                jassert(roll != nullptr);
+
                 const auto *timeline = this->project.getTimeline();
                 const auto *ksSequence = timeline->getKeySignatures()->getSequence();
                 const auto *event = dynamic_cast<KeySignatureEvent *>(ksSequence->getUnchecked(i));
@@ -140,6 +142,8 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
+                jassert(roll != nullptr);
+
                 const auto *timeline = this->project.getTimeline();
                 const auto *tsSequence = timeline->getTimeSignatures()->getSequence();
                 const auto *event = dynamic_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(i));

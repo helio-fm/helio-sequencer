@@ -85,6 +85,11 @@ public:
             (l.pattern != nullptr && l.pattern == r.pattern && l.id == r.id));
     }
 
+    friend inline bool operator!=(const Clip &l, const Clip &r)
+    {
+        return !(l == r);
+    }
+
     static int compareElements(const Clip &first, const Clip &second);
     static int compareElements(const Clip *const first, const Clip *const second);
 

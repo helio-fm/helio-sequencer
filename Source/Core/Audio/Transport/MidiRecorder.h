@@ -38,7 +38,7 @@ public:
 
     ~MidiRecorder() override;
 
-    void setSelectedScope(WeakReference<MidiTrack> track, const Clip &clip);
+    void setTargetScope(WeakReference<MidiTrack> track, const Clip &clip);
 
 private:
 

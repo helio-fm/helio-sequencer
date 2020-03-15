@@ -49,7 +49,7 @@ MidiRecorder::~MidiRecorder()
     this->transport->removeTransportListener(this);
 }
 
-void MidiRecorder::setSelectedScope(WeakReference<MidiTrack> track, const Clip &clip)
+void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track, const Clip &clip)
 {
     if (this->activeTrack != track || this->activeClip != clip)
     {
@@ -113,21 +113,18 @@ void MidiRecorder::onStop()
 {
     if (this->isRecording.get())
     {
+        this->stopTimer();
+
         auto &device = App::Workspace().getAudioCore().getDevice();
         device.removeMidiInputDeviceCallback({}, this);
 
         this->isRecording = false;
-    }
 
-    // fixme handle buffers?
-    jassert(this->noteOnsBuffer.isEmpty());
-    jassert(this->noteOffsBuffer.isEmpty());
+        // fixme handle buffers?
+        jassert(this->noteOnsBuffer.isEmpty());
+        jassert(this->noteOffsBuffer.isEmpty());
 
-    this->stopTimer();
-
-    if (this->activeTrack != nullptr)
-    {
-        this->finaliseAllHoldingNotes();
+        this->holdingNotes.clear();
     }
 
     this->isPlaying = false;
@@ -171,9 +168,7 @@ void MidiRecorder::handleAsyncUpdate()
         //this->activeTrack = track;
         //this->activeClip = clip;
     }
-
-    //
-
+    
     // handle note offs and fill unhandledNoteOffs
     while (!this->noteOffsBuffer.isEmpty())
     {
@@ -198,7 +193,7 @@ void MidiRecorder::handleAsyncUpdate()
     for (const auto &i : this->unhandledNoteOffs)
     {
         const bool wasHandled = this->finaliseHoldingNote(i.getNoteNumber());
-        jassert(wasHandled);
+        //jassert(wasHandled);
     }
 
     this->unhandledNoteOffs.clearQuick();
@@ -211,16 +206,28 @@ void MidiRecorder::handleAsyncUpdate()
     }
 }
 
+struct SortMidiMessagesByTimestamp final
+{
+    static int compareElements(const MidiMessage &first, const MidiMessage &second)
+    {
+        return int(first.getTimeStamp() - second.getTimeStamp());
+    }
+};
+
+static SortMidiMessagesByTimestamp tsSort;
+
 // called from the high-priority system thread:
 void MidiRecorder::handleIncomingMidiMessage(MidiInput *, const MidiMessage &message)
 {
     if (message.isNoteOn())
     {
-        this->noteOnsBuffer.add(message.withTimeStamp(this->getEstimatedPosition()));
+        this->noteOnsBuffer.addSorted(tsSort,
+            message.withTimeStamp(this->getEstimatedPosition()));
     }
     else if (message.isNoteOff())
     {
-        this->noteOffsBuffer.add(message.withTimeStamp(this->getEstimatedPosition()));
+        this->noteOffsBuffer.addSorted(tsSort,
+            message.withTimeStamp(this->getEstimatedPosition()));
     }
 
     this->triggerAsyncUpdate();
@@ -260,10 +267,15 @@ void MidiRecorder::startHoldingNote(MidiMessage message)
     jassert(this->activeTrack != nullptr);
 
     const auto key = message.getNoteNumber();
-    jassert(!this->holdingNotes.contains(key));
+    
+    if (this->holdingNotes.contains(key))
+    {
+        DBG("Found weird note-on/note-off order");
+        this->finaliseHoldingNote(key);
+    }
 
     const Note noteParams(this->activeTrack->getSequence(),
-        key,
+        key - this->activeClip.getKey(),
         roundBeat(float(message.getTimeStamp()) - this->activeClip.getBeat()),
         STARTING_NOTE_LENGTH,
         message.getVelocity() / 128.f);

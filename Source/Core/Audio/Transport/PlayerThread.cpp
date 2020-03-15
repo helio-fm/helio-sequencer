@@ -212,10 +212,7 @@ void PlayerThread::run()
                 sendHoldingNotesOffAndMidiStop();
                 return;
             }
-
-            //this->recordingBuffer.removeNextBlockOfMessages()
-            //this->transport.broadcastMidiMessageArrived()
-
+            
             // TODO! if recording, continue playing after the project's end
             // totalTime may and will change on any event inserted
 

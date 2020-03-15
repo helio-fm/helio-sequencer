@@ -248,6 +248,14 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
     App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
+void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip &clip)
+{
+    const auto instrumentId = track->getTrackInstrumentId();
+    App::Workspace().getAudioCore().setActiveMidiInputPlayer(instrumentId, true);
+
+    this->midiRecorder->setTargetScope(track, clip);
+}
+
 void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
     const Clip &activeClip, bool shouldFocusToArea)
 {
@@ -263,10 +271,7 @@ void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
         this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
             activeTrack, activeClip, shouldFocusToArea);
 
-        const auto instrumentId = activeTrack->getTrackInstrumentId();
-        App::Workspace().getAudioCore().setActiveMidiInputPlayer(instrumentId, true);
-
-        this->midiRecorder->setSelectedScope(activeTrack, activeClip);
+        this->setMidiRecordingTarget(activeTrack, activeClip);
     }
 }
 
