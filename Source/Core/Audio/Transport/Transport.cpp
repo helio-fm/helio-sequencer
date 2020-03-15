@@ -805,17 +805,32 @@ void Transport::broadcastTotalTimeChanged(double timeMs)
 
 void Transport::broadcastPlay()
 {
-    this->transportListeners.call(&TransportListener::onPlay);
+    MessageManagerLock mml(Thread::getCurrentThread());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onPlay);
+    }
 }
 
 void Transport::broadcastRecord()
 {
-    this->transportListeners.call(&TransportListener::onRecord);
+    MessageManagerLock mml(Thread::getCurrentThread());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onRecord);
+    }
 }
 
 void Transport::broadcastStop()
 {
-    this->transportListeners.call(&TransportListener::onStop);
+    MessageManagerLock mml(Thread::getCurrentThread());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onStop);
+    }
 }
 
 //===----------------------------------------------------------------------===//
