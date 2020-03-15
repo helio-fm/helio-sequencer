@@ -276,6 +276,12 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
 {
     jassert(this->activeTrack != nullptr);
 
+    if (this->holdingNotes.size() == 0)
+    {
+        //DBG("Skip 1");
+        return;
+    }
+
     const auto currentBeat =
         float(this->getEstimatedPosition() - this->activeClip.getBeat());
 
@@ -284,8 +290,14 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
 
     for (const auto i : this->holdingNotes)
     {
-        groupBefore.add(i.second);
         const auto newLength = roundBeat(currentBeat - i.second.getBeat());
+        if (i.second.getLength() == newLength)
+        {
+            //DBG("Skip 2");
+            return;
+        }
+
+        groupBefore.add(i.second);
         groupAfter.add(i.second.withLength(newLength));
     }
 

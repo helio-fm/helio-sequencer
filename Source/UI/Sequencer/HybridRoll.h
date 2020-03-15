@@ -206,7 +206,6 @@ public:
     
     void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
-    bool isFollowingPlayhead() const noexcept;
     void startFollowingPlayhead();
     void stopFollowingPlayhead();
     
@@ -287,7 +286,7 @@ protected:
 
     Atomic<float> lastTransportBeat = 0.f; // modified from the player thread
 
-    double playheadOffset = 0.0;
+    Atomic<double> playheadOffset = 0.0;
     bool shouldFollowPlayhead = false;
 
     //===------------------------------------------------------------------===//
