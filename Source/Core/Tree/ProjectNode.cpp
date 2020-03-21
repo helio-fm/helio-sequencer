@@ -135,6 +135,7 @@ ProjectNode::~ProjectNode()
     this->transport = nullptr;
 
     this->autosaver = nullptr;
+    this->undoStack = nullptr;
 }
 
 String ProjectNode::getId() const noexcept

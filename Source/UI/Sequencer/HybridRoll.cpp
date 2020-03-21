@@ -1127,7 +1127,8 @@ void HybridRoll::handleCommandMessage(int commandId)
         {
             this->stopFollowingPlayhead();
             const auto newSeek = this->findNextAnchorBeat(this->getTransport().getSeekBeat());
-            this->getTransport().seekToBeat(newSeek);
+            const auto newSeekSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, newSeek);
+            this->getTransport().seekToBeat(newSeekSafe);
             this->scrollToSeekPosition();
         }
         break;
@@ -1136,7 +1137,8 @@ void HybridRoll::handleCommandMessage(int commandId)
         {
             this->stopFollowingPlayhead();
             const auto newSeek = this->findPreviousAnchorBeat(this->getTransport().getSeekBeat());
-            this->getTransport().seekToBeat(newSeek);
+            const auto newSeekSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, newSeek);
+            this->getTransport().seekToBeat(newSeekSafe);
             this->scrollToSeekPosition();
         }
         break;

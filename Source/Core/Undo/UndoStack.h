@@ -93,6 +93,8 @@ private:
         UndoActionId id;
 
         ProjectNode &project;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Transaction)
     };
     
     void setCurrentUndoActionId(UndoActionId transactionId) noexcept;

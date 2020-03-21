@@ -93,6 +93,9 @@ void Playhead::onPlay()
     this->timerStartTime = Time::getMillisecondCounterHiRes();
     this->timerStartPosition = this->lastCorrectPosition;
 
+    // avoids a weird glitch I have no time to investigate:
+    this->updatePosition(this->lastCorrectPosition.get());
+
     this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
 }
 
