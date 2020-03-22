@@ -74,6 +74,14 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
         this->updateContent(this->createTupletsPanel(), MenuPanel::SlideLeft);
     }));
 
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS(I18n::Menu::Selection::notesQuantizeTo))->
+        withSubmenu()->
+        withAction([this]()
+    {
+        this->updateContent(this->createQuantizationPanel(), MenuPanel::SlideLeft);
+    }));
+
     return menu;
 }
 
@@ -149,6 +157,33 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
                 this->harmonicContextScale, scales[i], true);
         }));
     }
+
+    return menu;
+}
+
+MenuPanel::Menu PianoRollSelectionMenu::createQuantizationPanel()
+{
+    MenuPanel::Menu menu;
+
+    using namespace I18n::Menu;
+
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
+    }));
+
+#define EVENTS_QUANTIZE_ITEM(cmd) \
+    MenuItem::item(Icons::ellipsis, cmd, \
+        CommandIDs::getTranslationKeyFor(cmd).toString())->closesMenu()
+
+    menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_1));
+    menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_2));
+    menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_4));
+    menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_8));
+    menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_16));
+    menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_32));
+
+#undef EVENTS_QUANTIZE_ITEM
 
     return menu;
 }

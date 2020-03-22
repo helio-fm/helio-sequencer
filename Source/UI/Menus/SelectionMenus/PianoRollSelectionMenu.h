@@ -39,6 +39,7 @@ private:
     Scale::Ptr harmonicContextScale = nullptr;
 
     MenuPanel::Menu createDefaultPanel();
+    MenuPanel::Menu createQuantizationPanel();
     MenuPanel::Menu createRefactoringPanel();
     MenuPanel::Menu createTupletsPanel();
     MenuPanel::Menu createScalesPanel();

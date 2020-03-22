@@ -29,7 +29,8 @@ public:
     
 private:
 
-    void initDefaultMenu();
+    MenuPanel::Menu createDefaultMenu();
+    MenuPanel::Menu createQuantizationMenu();
 
     WeakReference<Lasso> lasso;
 
