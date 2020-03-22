@@ -1860,9 +1860,167 @@ void SequencerOperations::applyTuplets(Lasso &selection, Note::Tuplet tuplet, bo
     sequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::quantize(const Lasso &selection, float bar, bool shouldCheckpoint /*= true*/)
+static inline void doQuantize(float &startBeat, float &length, float bar)
 {
-    // todo
+    // todo for the future:
+    // align with the time signature events
+
+    jassert(bar != 0.f);
+    const float q = bar / float(BEATS_PER_BAR);
+    const auto endBeat = startBeat + length;
+
+    startBeat = roundf(startBeat * q) / q;
+    const auto endBeatRound = roundf(endBeat * q) / q;
+
+    // make sure the returned length is not too short:
+    const auto minQuantizedBeat = (1.f / bar) * float(BEATS_PER_BAR);
+    length = jmax(minQuantizedBeat, endBeatRound - startBeat);
+}
+
+bool SequencerOperations::quantize(const Lasso &selection, float bar, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return false;
+    }
+
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence);
+
+    PianoChangeGroup removals;
+    PianoChangeGroup groupBefore, groupAfter;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *nc = selection.getItemAs<NoteComponent>(i);
+        float startBeat = nc->getBeat();
+        float length = nc->getLength();
+
+        doQuantize(startBeat, length, bar);
+
+        if (startBeat == nc->getBeat() && length == nc->getLength())
+        {
+            continue;
+        }
+
+        bool duplicateFound = false;
+        for (const auto &other : groupAfter)
+        {
+            if (nc->getKey() == other.getKey() &&
+                startBeat == other.getBeat() &&
+                length == other.getLength())
+            {
+                duplicateFound = true;
+                break;
+            }
+        }
+
+        if (duplicateFound)
+        {
+            removals.add(nc->getNote());
+            continue;
+        }
+
+        groupBefore.add(nc->getNote());
+        groupAfter.add(nc->getNote().withBeat(startBeat).withLength(length));
+    }
+
+    if (groupBefore.isEmpty() && removals.isEmpty())
+    {
+        return false;
+    }
+
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    if (!groupBefore.isEmpty())
+    {
+        sequence->changeGroup(groupBefore, groupAfter, true);
+    }
+
+    if (!removals.isEmpty())
+    {
+        sequence->removeGroup(removals, true);
+    }
+
+    sequence->changeGroup(groupBefore, groupAfter, true);
+    return true;
+}
+
+bool SequencerOperations::quantize(WeakReference<MidiTrack> track,
+    float bar, bool shouldCheckpoint /*= true*/)
+{
+    if (track->getSequence()->size() == 0)
+    {
+        return false;
+    }
+
+    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
+    if (sequence == nullptr)
+    {
+        return false;
+    }
+
+    
+    PianoChangeGroup removals;
+    PianoChangeGroup groupBefore, groupAfter;
+    for (int i = 0; i < sequence->size(); ++i)
+    {
+        auto *note = static_cast<Note *>(sequence->getUnchecked(i));
+        float startBeat = note->getBeat();
+        float length = note->getLength();
+
+        doQuantize(startBeat, length, bar);
+
+        if (startBeat == note->getBeat() && length == note->getLength())
+        {
+            continue;
+        }
+
+        bool duplicateFound = false;
+        for (const auto &other : groupAfter)
+        {
+            if (note->getKey() == other.getKey() &&
+                startBeat == other.getBeat() &&
+                length == other.getLength())
+            {
+                duplicateFound = true;
+                break;
+            }
+        }
+
+        if (duplicateFound)
+        {
+            removals.add(*note);
+            continue;
+        }
+
+        groupBefore.add(*note);
+        groupAfter.add(note->withBeat(startBeat).withLength(length));
+    }
+
+    if (groupBefore.isEmpty() && removals.isEmpty())
+    {
+        return false;
+    }
+
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    if (!groupBefore.isEmpty())
+    {
+        sequence->changeGroup(groupBefore, groupAfter, true);
+    }
+
+    if (!removals.isEmpty())
+    {
+        sequence->removeGroup(removals, true);
+    }
+
+    return true;
 }
 
 int SequencerOperations::findAbsoluteRootKey(const Scale::Ptr scale,

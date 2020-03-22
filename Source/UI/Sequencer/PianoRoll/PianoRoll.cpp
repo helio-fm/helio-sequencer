@@ -1165,22 +1165,28 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::applyTuplets(this->getLassoSelection(), 9);
         break;
     case CommandIDs::QuantizeTo1_1:
-        SequencerOperations::quantize(this->getLassoSelection(), 1);
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 1.f);
         break;
     case CommandIDs::QuantizeTo1_2:
-        SequencerOperations::quantize(this->getLassoSelection(), 1 / 2);
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 2.f);
         break;
     case CommandIDs::QuantizeTo1_4:
-        SequencerOperations::quantize(this->getLassoSelection(), 1 / 4);
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 4.f);
         break;
     case CommandIDs::QuantizeTo1_8:
-        SequencerOperations::quantize(this->getLassoSelection(), 1 / 8);
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 8.f);
         break;
     case CommandIDs::QuantizeTo1_16:
-        SequencerOperations::quantize(this->getLassoSelection(), 1 / 16);
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 16.f);
         break;
     case CommandIDs::QuantizeTo1_32:
-        SequencerOperations::quantize(this->getLassoSelection(), 1 / 32);
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 32.f);
         break;
     default:
         break;

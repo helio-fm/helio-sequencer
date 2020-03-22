@@ -33,6 +33,17 @@ CommandPaletteCommonActions::CommandPaletteCommonActions()
 
     this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::projects), "/", -1.f)->
         withCallback([](TextEditor &ed) { ed.setText("/"); return false; }));
+
+    // some thoughts for the future:
+
+    // # for quantization actions? with q as a hotkey?
+
+    // and ctrl + g calling go to == @
+
+    // time divisions as another action list? * for the mode key?
+
+    // add in the menu: time divisions, quantize to, go to, insert chord,
+    // all showing the command palette; and remove submenus?
 }
 
 const CommandPaletteActionsProvider::Actions &CommandPaletteCommonActions::getActions() const

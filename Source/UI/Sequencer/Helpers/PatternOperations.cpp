@@ -436,5 +436,27 @@ void PatternOperations::toggleSoloClip(const Clip &clip, bool shouldCheckpoint /
 void PatternOperations::quantize(const Lasso &selection,
     float bar, bool shouldCheckpoint /*= true*/)
 {
-    // todo
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    FlatHashSet<String, StringHash> processedTracks;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        auto *track = clip.getPattern()->getTrack();
+        if (processedTracks.contains(track->getTrackId()))
+        {
+            continue;
+        }
+
+        const auto hasMadeChanges = SequencerOperations::quantize(track, bar, !didCheckpoint);
+        didCheckpoint = didCheckpoint || hasMadeChanges;
+
+        processedTracks.insert(track->getTrackId());
+    }
 }
