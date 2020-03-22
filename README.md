@@ -47,13 +47,15 @@ It aims to be a modern music creation software, featuring linear-based/pattern-b
 
 ## Contributing
 
-Helio is still a work in progress with many essential features missing, and there are several ways you could help:
+Helio is still a work in progress, and there are several ways you could help:
 
 * [Proofread and improve the translation](https://helio.fm/translations) for your native language.
 
-* Your ideas are welcome: friendly and lightweight UI is the main development priority in this project, and if you have a vision on how to improve user experience in music composing, feel free to share it.
+* Maintain a package for your favourite Linux distro - highly appreciated, please see the list of available and missing packages [here](https://repology.org/project/helio-workstation/versions).
 
-* Implement new features: some guys were asking me if I have any tasks for them to start working on. But, as a sole unpaid developer with limited amount of time and interest, I'm not planning/decomposing stories or organising the board, instead I only work on the parts that are fun and important for me at the moment. If you feel like contributing and don't know where to start, my suggestion is that you do the same: find a missing feature or behavior you're lacking the most, and make the app a little more convinient for yourself. Anyway, feel free to ask questions and create incomplete PR's to get intermediate feedback.
+* Your thoughts on any usability improvements are welcome: friendly and lightweight UI is the main development priority in this project, so feel free to help me identify the main friction points.
+
+* Implement new features: some guys were asking me if I have any tasks for them to start working on, but, as a sole unpaid developer with limited amount of time and interest, I'm not planning stories or organising the board, instead I only work on the parts that are fun and important for me at the moment. If you don't know where to start, my suggestion is that you do the same: find a missing feature or behavior you're lacking the most, and make the app a little more convinient for yourself. Anyway, feel free to ask questions and create incomplete PR's to get intermediate feedback.
 
 
 ## Support the project
