@@ -93,6 +93,7 @@ void Icons::initBuiltInImages()
     setIconForKey(list);
     setIconForKey(ellipsis);
     setIconForKey(progressIndicator);
+    setIconForKey(console);
 
     setIconForKey(browse);
     setIconForKey(apply);

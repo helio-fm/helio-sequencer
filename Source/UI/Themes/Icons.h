@@ -63,6 +63,7 @@ public:
         list,
         ellipsis,
         progressIndicator,
+        console,
 
         browse,
         apply,

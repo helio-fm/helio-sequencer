@@ -23,10 +23,12 @@
 
 //[MiscUserDefs]
 #include "HeadlineItem.h"
-#include "IconComponent.h"
+#include "IconButton.h"
 #include "HelioTheme.h"
+#include "Icons.h"
 #include "ColourIDs.h"
 #include "SequencerLayout.h"
+#include "MainLayout.h"
 
 #define HEADLINE_ITEMS_OVERLAP (16)
 #define HEADLINE_ROOT_X SEQUENCER_SIDEBAR_WIDTH
@@ -36,11 +38,15 @@ Headline::Headline()
 {
     this->navPanel.reset(new HeadlineNavigationPanel());
     this->addAndMakeVisible(navPanel.get());
+    this->consoleButton.reset(new IconButton(Icons::findByName(Icons::console, 20), CommandIDs::CommandPalette));
+    this->addAndMakeVisible(consoleButton.get());
+
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
     this->setOpaque(App::isUsingNativeTitleBar());
+    this->consoleButton->setVisible(App::isUsingNativeTitleBar());
     //[/UserPreSize]
 
     this->setSize(600, 34);
@@ -56,6 +62,7 @@ Headline::~Headline()
     //[/Destructor_pre]
 
     navPanel = nullptr;
+    consoleButton = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -87,8 +94,16 @@ void Headline::resized()
     //[/UserPreResize]
 
     navPanel->setBounds(0, 0, 60, getHeight() - 0);
+    consoleButton->setBounds(getWidth() - 45, (getHeight() / 2) - ((getHeight() - 2) / 2), 45, getHeight() - 2);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
+}
+
+void Headline::handleCommandMessage (int commandId)
+{
+    //[UserCode_handleCommandMessage] -- Add your code here...
+    App::Layout().broadcastCommandMessage(commandId);
+    //[/UserCode_handleCommandMessage]
 }
 
 
@@ -301,12 +316,21 @@ BEGIN_JUCER_METADATA
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
                  initialHeight="34">
+  <METHODS>
+    <METHOD name="handleCommandMessage (int commandId)"/>
+  </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="666c39451424e53c" memberName="navPanel" virtualName=""
              explicitFocusOrder="0" pos="0 0 60 0M" sourceFile="HeadlineNavigationPanel.cpp"
              constructorParams=""/>
+  <GENERICCOMPONENT name="" id="292b9635259e430" memberName="consoleButton" virtualName=""
+                    explicitFocusOrder="0" pos="0Rr 0Cc 45 2M" class="IconButton"
+                    params="Icons::findByName(Icons::console, 20), CommandIDs::CommandPalette"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+
