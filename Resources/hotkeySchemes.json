@@ -37,11 +37,8 @@
         { "command": "ShowNextPage", "key": "Control + Cursor Right" },
         { "command": "ShowNextPage", "key": "Alt + Cursor Right" },
         { "command": "SwitchToEditMode", "key": "Command + 1" },
-        { "command": "SwitchToEditMode", "key": "Control + 1" },
         { "command": "SwitchToArrangeMode", "key": "Command + 2" },
-        { "command": "SwitchToArrangeMode", "key": "Control + 2" },
         { "command": "SwitchToVersioningMode", "key": "Command + 3" },
-        { "command": "SwitchToVersioningMode", "key": "Control + 3" },
         { "command": "SwitchToEditMode", "key": "Page Up" },
         { "command": "SwitchToArrangeMode", "key": "Page Down" }
       ]
@@ -181,6 +178,14 @@
         { "command": "Tuplet8", "key": "Alt + 8" },
         { "command": "Tuplet9", "key": "Alt + 9" },
 
+        // Quantization
+        { "command": "QuantizeTo1_1", "key": "Control + 1" },
+        { "command": "QuantizeTo1_2", "key": "Control + 2" },
+        { "command": "QuantizeTo1_4", "key": "Control + 3" },
+        { "command": "QuantizeTo1_8", "key": "Control + 4" },
+        { "command": "QuantizeTo1_16", "key": "Control + 5" },
+        { "command": "QuantizeTo1_32", "key": "Control + 6" },
+
         // Edit modes
         { "command": "EditModeDefault", "key": "1" },
         { "command": "EditModeDraw", "key": "2" },
@@ -249,6 +254,14 @@
         // Selection
         { "command": "SelectAllClips", "key": "Command + A" },
         { "command": "SelectAllClips", "key": "Control + A" },
+
+        // Quantization
+        { "command": "QuantizeTo1_1", "key": "Control + 1" },
+        { "command": "QuantizeTo1_2", "key": "Control + 2" },
+        { "command": "QuantizeTo1_4", "key": "Control + 3" },
+        { "command": "QuantizeTo1_8", "key": "Control + 4" },
+        { "command": "QuantizeTo1_16", "key": "Control + 5" },
+        { "command": "QuantizeTo1_32", "key": "Control + 6" },
 
         // Edit modes
         { "command": "EditModeDefault", "key": "1" },
