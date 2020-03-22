@@ -1164,6 +1164,24 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::Tuplet9:
         SequencerOperations::applyTuplets(this->getLassoSelection(), 9);
         break;
+    case CommandIDs::QuantizeTo1_1:
+        SequencerOperations::quantize(this->getLassoSelection(), 1);
+        break;
+    case CommandIDs::QuantizeTo1_2:
+        SequencerOperations::quantize(this->getLassoSelection(), 1 / 2);
+        break;
+    case CommandIDs::QuantizeTo1_4:
+        SequencerOperations::quantize(this->getLassoSelection(), 1 / 4);
+        break;
+    case CommandIDs::QuantizeTo1_8:
+        SequencerOperations::quantize(this->getLassoSelection(), 1 / 8);
+        break;
+    case CommandIDs::QuantizeTo1_16:
+        SequencerOperations::quantize(this->getLassoSelection(), 1 / 16);
+        break;
+    case CommandIDs::QuantizeTo1_32:
+        SequencerOperations::quantize(this->getLassoSelection(), 1 / 32);
+        break;
     default:
         break;
     }

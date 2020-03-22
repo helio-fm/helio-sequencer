@@ -432,3 +432,9 @@ void PatternOperations::toggleSoloClip(const Clip &clip, bool shouldCheckpoint /
 
     pattern->change(clip, clip.withSolo(!clip.isSoloed()), true);
 }
+
+void PatternOperations::quantize(const Lasso &selection,
+    float bar, bool shouldCheckpoint /*= true*/)
+{
+    // todo
+}

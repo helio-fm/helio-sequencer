@@ -23,14 +23,6 @@
     case constexprHash(#x): \
     return x; \
 
-#define TRANS_KEY(x, y) \
-    case x: \
-    return I18n::y; \
-
-#define TRANS_NONE(x) \
-    case x: \
-    return {}; \
-
 CommandIDs::Id CommandIDs::getIdForName(const String &command)
 {
     switch (constexprHash(command.toRawUTF8()))
@@ -66,6 +58,12 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(Tuplet7)
         CASE_FOR(Tuplet8)
         CASE_FOR(Tuplet9)
+        CASE_FOR(QuantizeTo1_1)
+        CASE_FOR(QuantizeTo1_2)
+        CASE_FOR(QuantizeTo1_4)
+        CASE_FOR(QuantizeTo1_8)
+        CASE_FOR(QuantizeTo1_16)
+        CASE_FOR(QuantizeTo1_32)
         CASE_FOR(DeleteEvents)
         CASE_FOR(CopyEvents)
         CASE_FOR(CutEvents)
@@ -173,10 +171,20 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
     };
 }
 
+#define TRANS_KEY(x, y) \
+    case x: \
+    return y; \
+
+#define TRANS_NONE(x) \
+    case x: \
+    return {}; \
+
 // this is only used for command palette:
 // only the commands with translations are displayed
 Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
 {
+    using namespace I18n;
+
     switch (id)
     {
         TRANS_NONE(Back)
@@ -213,6 +221,12 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_KEY(Tuplet7, Menu::tuplet7)
         TRANS_KEY(Tuplet8, Menu::tuplet8)
         TRANS_KEY(Tuplet9, Menu::tuplet9)
+        TRANS_KEY(QuantizeTo1_1, Menu::Selection::notesQuantizeTo + " 1/1")
+        TRANS_KEY(QuantizeTo1_2, Menu::Selection::notesQuantizeTo + " 1/2")
+        TRANS_KEY(QuantizeTo1_4, Menu::Selection::notesQuantizeTo + " 1/4")
+        TRANS_KEY(QuantizeTo1_8, Menu::Selection::notesQuantizeTo + " 1/8")
+        TRANS_KEY(QuantizeTo1_16, Menu::Selection::notesQuantizeTo + " 1/16")
+        TRANS_KEY(QuantizeTo1_32, Menu::Selection::notesQuantizeTo + " 1/32")
         TRANS_KEY(DeleteEvents, Menu::Selection::notesDelete)
         TRANS_KEY(CopyEvents, Menu::Selection::notesCopy)
         TRANS_KEY(CutEvents, Menu::Selection::notesCut)

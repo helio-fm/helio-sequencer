@@ -61,6 +61,13 @@ namespace CommandIDs
         Tuplet8                         = 0x1507,
         Tuplet9                         = 0x1508,
 
+        QuantizeTo1_1                   = 0x1510,
+        QuantizeTo1_2                   = 0x1511,
+        QuantizeTo1_4                   = 0x1512,
+        QuantizeTo1_8                   = 0x1513,
+        QuantizeTo1_16                  = 0x1514,
+        QuantizeTo1_32                  = 0x1515,
+
         DeleteEvents                    = 0x1601,
         CopyEvents                      = 0x1602,
         CutEvents                       = 0x1603,

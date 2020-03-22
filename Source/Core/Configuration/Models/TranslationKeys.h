@@ -180,6 +180,7 @@ namespace I18n
             static const Identifier notesCut = "menu::selection::notes::cut";
             static const Identifier notesDelete = "menu::selection::notes::delete";
             static const Identifier notesDivisions = "menu::selection::notes::divisions";
+            static const Identifier notesQuantizeTo = "menu::selection::notes::quantize";
             static const Identifier notesRefactor = "menu::selection::notes::refactor";
             static const Identifier notesRescale = "menu::selection::notes::rescale";
             static const Identifier notesToTrack = "menu::selection::notes::totrack";

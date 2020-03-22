@@ -705,6 +705,24 @@ void PatternRoll::handleCommandMessage(int commandId)
         this->updateRollSize();
         this->resized();
         break;
+    case CommandIDs::QuantizeTo1_1:
+        PatternOperations::quantize(this->getLassoSelection(), 1);
+        break;
+    case CommandIDs::QuantizeTo1_2:
+        PatternOperations::quantize(this->getLassoSelection(), 1 / 2);
+        break;
+    case CommandIDs::QuantizeTo1_4:
+        PatternOperations::quantize(this->getLassoSelection(), 1 / 4);
+        break;
+    case CommandIDs::QuantizeTo1_8:
+        PatternOperations::quantize(this->getLassoSelection(), 1 / 8);
+        break;
+    case CommandIDs::QuantizeTo1_16:
+        PatternOperations::quantize(this->getLassoSelection(), 1 / 16);
+        break;
+    case CommandIDs::QuantizeTo1_32:
+        PatternOperations::quantize(this->getLassoSelection(), 1 / 32);
+        break;
     default:
         break;
     }

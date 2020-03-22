@@ -97,6 +97,7 @@ struct SequencerOperations final
     static void melodicInversion(Lasso &selection, bool shouldCheckpoint = true);
 
     static void applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint = true);
+    static void quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
 
     static int findAbsoluteRootKey(const Scale::Ptr scale,
         Note::Key relativeRoot, Note::Key keyToFindPeriodFor);

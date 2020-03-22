@@ -1860,6 +1860,11 @@ void SequencerOperations::applyTuplets(Lasso &selection, Note::Tuplet tuplet, bo
     sequence->changeGroup(groupBefore, groupAfter, true);
 }
 
+void SequencerOperations::quantize(const Lasso &selection, float bar, bool shouldCheckpoint /*= true*/)
+{
+    // todo
+}
+
 int SequencerOperations::findAbsoluteRootKey(const Scale::Ptr scale,
     Note::Key relativeRoot, Note::Key keyToFindPeriodFor)
 {
