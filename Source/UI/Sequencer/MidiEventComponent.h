@@ -17,10 +17,10 @@
 
 #pragma once
 
-class MidiEvent;
 class MidiSequence;
 class HybridRoll;
 
+#include "MidiEvent.h"
 #include "FloatBoundsComponent.h"
 #include "SelectableComponent.h"
 
@@ -37,7 +37,7 @@ public:
     void setGhostMode();
 
     virtual float getBeat() const noexcept = 0;
-    virtual const String &getId() const noexcept = 0;
+    virtual const MidiEvent::Id getId() const noexcept = 0;
     virtual void updateColours() = 0;
 
     //===------------------------------------------------------------------===//

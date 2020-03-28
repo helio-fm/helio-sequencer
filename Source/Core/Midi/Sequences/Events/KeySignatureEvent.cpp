@@ -145,7 +145,7 @@ SerializedData KeySignatureEvent::serialize() const
 {
     using namespace Serialization;
     SerializedData tree(Midi::keySignature);
-    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::key, this->rootKey);
     tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
     tree.appendChild(this->scale->serialize());
@@ -158,7 +158,7 @@ void KeySignatureEvent::deserialize(const SerializedData &data)
     using namespace Serialization;
     this->rootKey = data.getProperty(Midi::key, 0);
     this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = data.getProperty(Midi::id);
+    this->id = unpackId(data.getProperty(Midi::id));
 
     this->scale = new Scale();
     this->scale->deserialize(data);

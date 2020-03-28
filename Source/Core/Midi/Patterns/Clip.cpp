@@ -69,7 +69,7 @@ float Clip::getVelocity() const noexcept
     return this->velocity;
 }
 
-const String &Clip::getId() const noexcept
+const Clip::Id Clip::getId() const noexcept
 {
     return this->id;
 }
@@ -81,7 +81,7 @@ const String &Clip::getKeyString() const noexcept
 
 bool Clip::isValid() const noexcept
 {
-    return this->pattern != nullptr && this->id.isNotEmpty();
+    return this->pattern != nullptr && this->id != 0;
 }
 
 bool Clip::isMuted() const noexcept
@@ -210,7 +210,7 @@ SerializedData Clip::serialize() const
     tree.setProperty(Midi::key, this->key);
     tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
     tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY));
-    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::id, packId(this->id));
 
     if (this->mute)
     {
@@ -230,7 +230,7 @@ void Clip::deserialize(const SerializedData &data)
     using namespace Serialization;
     this->key = data.getProperty(Midi::key, 0);
     this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = data.getProperty(Midi::id, this->id);
+    this->id = unpackId(data.getProperty(Midi::id, this->id));
     const auto vol = float(data.getProperty(Midi::volume, VELOCITY_SAVE_ACCURACY)) / VELOCITY_SAVE_ACCURACY;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
     this->mute = bool(data.getProperty(Midi::mute, 0));
@@ -258,7 +258,7 @@ int Clip::compareElements(const Clip &first, const Clip &second)
     const int diffResult = (diff > 0.f) - (diff < 0.f);
     if (diffResult != 0) { return diffResult; }
 
-    return first.id.compare(second.id);
+    return first.id - second.id;
 }
 
 int Clip::compareElements(const Clip *const first, const Clip *const second)
@@ -301,4 +301,27 @@ void Clip::updateCaches() const
     {
         this->keyString = {};
     }
+}
+
+String Clip::packId(Id id)
+{
+    const char c1 = static_cast<char>(id >> (0 * CHAR_BIT));
+    const char c2 = static_cast<char>(id >> (1 * CHAR_BIT));
+    const char c3 = static_cast<char>(id >> (2 * CHAR_BIT));
+    const char c4 = static_cast<char>(id >> (3 * CHAR_BIT));
+
+    String s;
+    s = s + c1 + c2 + c3 + c4;
+    return s;
+}
+
+Clip::Id Clip::unpackId(const String &str)
+{
+    Clip::Id id = 0;
+    const auto *ptr = str.getCharPointer().getAddress();
+    for (int i = 0; i < jmin(4, str.length()); ++i)
+    {
+        id |= ptr[i] << (i * CHAR_BIT);
+    }
+    return id;
 }

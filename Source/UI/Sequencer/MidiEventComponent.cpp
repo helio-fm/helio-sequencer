@@ -118,5 +118,5 @@ int MidiEventComponent::compareElements(MidiEventComponent *first, MidiEventComp
     if (first == second) { return 0; }
     const float diff = first->getBeat() - second->getBeat();
     const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return (diffResult != 0) ? diffResult : (first->getId().compare(second->getId()));
+    return (diffResult != 0) ? diffResult : (first->getId() - second->getId());
 }

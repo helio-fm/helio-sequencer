@@ -141,7 +141,7 @@ SerializedData TimeSignatureEvent::serialize() const
 {
     using namespace Serialization;
     SerializedData tree(Midi::timeSignature);
-    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::numerator, this->numerator);
     tree.setProperty(Midi::denominator, this->denominator);
     tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
@@ -155,7 +155,7 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
     this->numerator = data.getProperty(Midi::numerator, TIME_SIGNATURE_DEFAULT_NUMERATOR);
     this->denominator = data.getProperty(Midi::denominator, TIME_SIGNATURE_DEFAULT_DENOMINATOR);
     this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->id = data.getProperty(Midi::id);
+    this->id = unpackId(data.getProperty(Midi::id));
 }
 
 void TimeSignatureEvent::reset() noexcept {}

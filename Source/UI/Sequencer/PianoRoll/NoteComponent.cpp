@@ -104,11 +104,6 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
 // MidiEventComponent
 //===----------------------------------------------------------------------===//
 
-void NoteComponent::setSelected(bool selected)
-{
-    MidiEventComponent::setSelected(selected);
-}
-
 const String &NoteComponent::getSelectionGroupId() const noexcept
 {
     return this->note.getSequence()->getTrackId();

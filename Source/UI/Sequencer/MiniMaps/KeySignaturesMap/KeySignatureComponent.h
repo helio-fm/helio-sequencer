@@ -52,7 +52,7 @@ public:
         const int diffResult = (diff > 0.f) - (diff < 0.f);
         if (diffResult != 0) { return diffResult; }
 
-        return first->event.getId().compare(second->event.getId());
+        return first->event.getId() - second->event.getId();
     }
 
 protected:

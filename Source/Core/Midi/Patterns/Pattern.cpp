@@ -26,15 +26,16 @@
 
 struct ClipIdGenerator final
 {
-    static String generateId(uint8 length = 2)
+    static Clip::Id generateId(int length = 2)
     {
-        String id;
+        jassert(length <= 4);
+        Clip::Id id = 0;
         static Random r;
         r.setSeedRandomly();
         static const char idChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        for (size_t i = 0; i < length; ++i)
+        for (int i = 0; i < length; ++i)
         {
-            id += idChars[r.nextInt(62)];
+            id |= idChars[r.nextInt(62)] << (i * CHAR_BIT);
         }
         return id;
     }
@@ -445,17 +446,17 @@ void Pattern::reset()
     this->usedClipIds.clear();
 }
 
-String Pattern::createUniqueClipId() const noexcept
+Clip::Id Pattern::createUniqueClipId() const noexcept
 {
-    uint8 length = 2;
-    String clipId = ClipIdGenerator::generateId(length);
+    int length = 2;
+    auto clipId = ClipIdGenerator::generateId(length);
     while (this->usedClipIds.contains(clipId))
     {
-        length++;
+        length = jmin(4, length + 1);
         clipId = ClipIdGenerator::generateId(length);
     }
     
-    this->usedClipIds.insert({clipId});
+    this->usedClipIds.insert(clipId);
     return clipId;
 }
 
@@ -472,3 +473,51 @@ int Pattern::hashCode() const noexcept
 {
     return this->getTrackId().hashCode();
 }
+
+//===----------------------------------------------------------------------===//
+// Tests
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+class LegacyClipFormatSupportTests final : public UnitTest
+{
+public:
+    LegacyClipFormatSupportTests() : UnitTest("Legacy clip id format support tests", UnitTestCategories::helio) {}
+
+    void runTest() override
+    {
+        beginTest("Legacy clip id serialization");
+
+        const auto id2 = ClipIdGenerator::generateId(2);
+        const auto id3 = ClipIdGenerator::generateId(3);
+        const auto id4 = ClipIdGenerator::generateId(4);
+
+        const auto p2 = Clip::packId(id2);
+        expectEquals(p2.length(), 2);
+
+        const auto p3 = Clip::packId(id3);
+        expectEquals(p3.length(), 3);
+
+        const auto p4 = Clip::packId(id4);
+        expectEquals(p4.length(), 4);
+
+        const auto u2 = Clip::unpackId(p2);
+        expectEquals(id2, u2);
+
+        const auto u3 = Clip::unpackId(p3);
+        expectEquals(id3, u3);
+
+        const auto u4 = Clip::unpackId(p4);
+        expectEquals(id4, u4);
+
+        const String s = "xZ0";
+        const auto u = Clip::unpackId(s);
+        const auto p = Clip::packId(u);
+        expectEquals(p, s);
+    }
+};
+
+static LegacyClipFormatSupportTests legacyClipFormatSupportTests;
+
+#endif

@@ -62,9 +62,8 @@ public:
     // MidiEventComponent
     //===------------------------------------------------------------------===//
 
-    void setSelected(bool selected) override;
     const String &getSelectionGroupId() const noexcept override;
-    const String &getId() const noexcept override { return this->note.getId(); }
+    const MidiEvent::Id getId() const noexcept override { return this->note.getId(); }
     float getBeat() const noexcept override { return this->note.getBeat(); }
 
     //===------------------------------------------------------------------===//

@@ -108,7 +108,7 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
-    String createUniqueClipId() const noexcept;
+    Clip::Id createUniqueClipId() const noexcept;
     const String &getTrackId() const noexcept;
 
     friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
@@ -129,7 +129,7 @@ protected:
     UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<Clip> clips;
-    mutable FlatHashSet<Clip::Id, StringHash> usedClipIds;
+    mutable FlatHashSet<Clip::Id> usedClipIds;
 
 private:
     

@@ -2096,7 +2096,7 @@ bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, f
         // find events in between (only consider events of one clip!),
         // skipping clips of the same track if already processed any other:
 
-        FlatHashSet<MidiEvent::Id, StringHash> usedClips;
+        FlatHashSet<MidiEvent::Id> usedClips;
 
         for (int i = 0; i < sequence->size(); ++i)
         {

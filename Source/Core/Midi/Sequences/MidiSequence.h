@@ -135,7 +135,7 @@ public:
 
     void updateBeatRange(bool shouldNotifyIfChanged);
 
-    String createUniqueEventId() const noexcept;
+    MidiEvent::Id createUniqueEventId() const noexcept;
     const String &getTrackId() const noexcept;
     int getChannel() const noexcept;
 
@@ -158,7 +158,7 @@ protected:
     UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<MidiEvent> midiEvents;
-    mutable FlatHashSet<MidiEvent::Id, StringHash> usedEventIds;
+    mutable FlatHashSet<MidiEvent::Id> usedEventIds;
     
 private:
 
