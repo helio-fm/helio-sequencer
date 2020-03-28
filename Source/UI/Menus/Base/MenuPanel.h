@@ -63,8 +63,6 @@ public:
         AnimationType animationType = SlideDown,
         bool adjustsWidth = true,
         Component *customFooter = nullptr);
-
-    static StringPairArray getColoursList();
     
     void resized() override;
     void handleCommandMessage (int commandId) override;

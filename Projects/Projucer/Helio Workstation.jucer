@@ -37,6 +37,7 @@
         <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
         <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
         <FILE id="ja4Raa" name="commit.svg" compile="0" resource="1" file="../../Resources/Icons/commit.svg"/>
+        <FILE id="rciWnk" name="console.svg" compile="0" resource="1" file="../../Resources/Icons/console.svg"/>
         <FILE id="ZZhM5X" name="copy.svg" compile="0" resource="1" file="../../Resources/Icons/copy.svg"/>
         <FILE id="XRkUwL" name="create.svg" compile="0" resource="1" file="../../Resources/Icons/create.svg"/>
         <FILE id="FGsAM4" name="cropTool.svg" compile="0" resource="1" file="../../Resources/Icons/cropTool.svg"/>
@@ -671,6 +672,7 @@
           <FILE id="OeoOMp" name="ColourSwatches.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ColourSwatches.h"/>
           <FILE id="DRQef0" name="CommandIDs.cpp" compile="1" resource="0" file="../../Source/UI/Common/CommandIDs.cpp"/>
+          <FILE id="MMm6PE" name="ColourIDs.cpp" compile="1" resource="0" file="../../Source/UI/Common/ColourIDs.cpp"/>
           <FILE id="RbTNhz" name="ColourIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ColourIDs.h"/>
           <FILE id="JpyU5z" name="CommandIDs.h" compile="0" resource="0" file="../../Source/UI/Common/CommandIDs.h"/>
           <FILE id="ldEAFp" name="ComponentIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ComponentIDs.h"/>

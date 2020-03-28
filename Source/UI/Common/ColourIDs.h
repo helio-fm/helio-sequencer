@@ -19,6 +19,8 @@
 
 namespace ColourIDs
 {
+    StringPairArray getColoursList();
+
     // JUCE internal colour id's all look like 0x1xxxxxx;
     // so we start from 0x2000000 to make sure id's do not overlap.
 

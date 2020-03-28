@@ -26,6 +26,7 @@
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 
 AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent &targetAnnotation) :
     project(parentProject),
@@ -44,7 +45,7 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
             App::showModalComponent(std::move(inputDialog));
         }));
     
-    const StringPairArray colours(MenuPanel::getColoursList());
+    const StringPairArray colours(ColourIDs::getColoursList());
     
     for (int i = 0; i < colours.getAllKeys().size(); ++i)
     {

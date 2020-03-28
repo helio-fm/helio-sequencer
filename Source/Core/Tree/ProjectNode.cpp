@@ -59,6 +59,7 @@
 #include "Workspace.h"
 
 #include "SerializationKeys.h"
+#include "ColourIDs.h"
 #include "Config.h"
 #include "Icons.h"
 
@@ -557,7 +558,7 @@ void ProjectNode::importMidi(const File &file)
     }
 
     Random r;
-    const auto colours = MenuPanel::getColoursList().getAllValues();
+    const auto colours = ColourIDs::getColoursList().getAllValues();
     const auto timeFormat = tempFile.getTimeFormat();
 
     this->timeline->reset();

@@ -17,11 +17,11 @@
 
 #include "Common.h"
 #include "ColourSwatches.h"
-#include "MenuPanel.h"
+#include "ColourIDs.h"
 
 ColourSwatches::ColourSwatches()
 {
-    const StringPairArray colours(MenuPanel::getColoursList());
+    const StringPairArray colours(ColourIDs::getColoursList());
     for (const auto &c : colours.getAllValues())
     {
         const Colour colour(Colour::fromString(c));
