@@ -26,7 +26,7 @@ class ProgressIndicator final : public Component, private Timer
 {
 public:
 
-    ProgressIndicator() : indicatorDegree(0)
+    ProgressIndicator()
     {
         this->setInterceptsMouseClicks(false, false);
         this->indicatorShape = Icons::getDrawableByName(Icons::progressIndicator);
@@ -49,12 +49,11 @@ public:
     
     void paint(Graphics &g) override
     {
-        // We need to go deeper.
-        auto *shapePiece = this->indicatorShape->getChildComponent(0)->getChildComponent(0);
+        auto *shapePiece = this->indicatorShape->getChildComponent(0);
         if (auto *group = dynamic_cast<DrawableComposite *>(shapePiece))
         {
             Rectangle<float> allArea(group->getContentArea());
-            AffineTransform fitTransform = RectanglePlacement(RectanglePlacement::onlyReduceInSize)
+            auto fitTransform = RectanglePlacement(RectanglePlacement::onlyReduceInSize)
                     .getTransformToFit(allArea, this->getLocalBounds().toFloat());
 
             const float radius = 10;
@@ -65,9 +64,9 @@ public:
 
             for (int i = 0; i < numSegments; ++i)
             {
-                Component *child = group->getChildComponent(i);
+                auto *child = group->getChildComponent(i);
 
-                if (DrawableComposite *dc = dynamic_cast<DrawableComposite *>(child))
+                if (auto *dc = dynamic_cast<DrawableComposite *>(child))
                 {
                     const float oneSegment = (360.f / numSegments);
                     const float currentPartRadian = (i * oneSegment) * (MathConstants<float>::pi / 180.f);
@@ -79,7 +78,7 @@ public:
                     const Rectangle<float> drawableBounds(dc->getDrawableBounds());
                     const Rectangle<float> subArea(dc->getContentArea());
 
-                    if (DrawablePath *dp = dynamic_cast<DrawablePath *>(dc->getChildComponent(0)))
+                    if (auto *dp = dynamic_cast<DrawablePath *>(dc->getChildComponent(0)))
                     {
                         Path p(dp->getPath());
                         AffineTransform a(RectanglePlacement(RectanglePlacement::onlyReduceInSize).
@@ -102,7 +101,7 @@ private:
         this->repaint();
     }
 
-    int indicatorDegree;
+    int indicatorDegree = 0;
 
     UniquePointer<Drawable> indicatorShape;
 
