@@ -25,17 +25,14 @@
 #include "MidiSequence.h"
 
 DummyClipComponent::DummyClipComponent(HybridRoll &editor, Clip clip) :
-    ClipComponent(editor, clip)
-{
-    //
-}
+    ClipComponent(editor, clip) {}
 
 void DummyClipComponent::paint(Graphics &g)
 {
     const Colour myColour(Colours::white
         //.interpolatedWith(this->layer->getColour(), 0.5f)
-        .withAlpha(this->ghostMode ? 0.2f : 0.95f)
-        .darker(this->selectedState ? 0.5f : 0.f));
+        .withAlpha(this->flags.isGhost ? 0.2f : 0.95f)
+        .darker(this->flags.isSelected ? 0.5f : 0.f));
 
     g.setColour(myColour);
     g.fillRoundedRectangle(this->floatLocalBounds, 2.f);

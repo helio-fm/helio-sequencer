@@ -24,6 +24,7 @@
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
+#include "PatternRoll.h"
 
 PianoClipComponent::PianoClipComponent(ProjectNode &project, MidiSequence *sequence,
     HybridRoll &roll, const Clip &clip) :
@@ -184,4 +185,10 @@ void PianoClipComponent::reloadTrackMap()
             }
         }
     }
+}
+
+void PianoClipComponent::showRecordingMode()
+{
+    this->flags.isRecordingTarget = true;
+    this->roll.triggerBatchRepaintFor(this);
 }

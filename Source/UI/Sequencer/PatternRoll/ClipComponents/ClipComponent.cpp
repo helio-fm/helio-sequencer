@@ -21,8 +21,9 @@
 #include "MidiEvent.h"
 #include "PatternRoll.h"
 #include "Pattern.h"
-#include "CommandIDs.h"
 #include "PatternOperations.h"
+#include "CommandIDs.h"
+#include "ColourIDs.h"
 
 static Pattern *getSelectionPattern(SelectionProxyArray::Ptr selection)
 {
@@ -61,8 +62,8 @@ void ClipComponent::updateColours()
     this->fillColour = Colours::black.withAlpha(0.25f);
     this->headBrightColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
-        .withAlpha(this->ghostMode ? 0.2f : 0.7f)
-        .brighter(this->selectedState ? 0.25f : 0.f);
+        .withAlpha(this->flags.isGhost ? 0.2f : 0.7f)
+        .brighter(this->flags.isSelected ? 0.25f : 0.f);
     this->headDarkColour = this->headBrightColour.withAlpha(0.25f);
     this->eventColour = this->getClip().getTrackColour()
         .interpolatedWith(Colours::white, .35f)
@@ -269,9 +270,11 @@ void ClipComponent::paint(Graphics &g)
     g.fillRect(1.f, 0.f, w - 2.f, h);
 
     const Rectangle<int> textBounds(4, 5, this->getWidth() - 8, this->getHeight() - 7);
-    g.setColour(this->headBrightColour);
-    
-    if (this->selectedState)
+
+    g.setColour(this->flags.isRecordingTarget ? 
+        findDefaultColour(ColourIDs::Roll::headerRecording) : this->headBrightColour);
+
+    if (this->flags.isSelected)
     {
         g.fillRect(1.f, 1.f, w - 2.f, 3.f);
         g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);

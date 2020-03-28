@@ -59,13 +59,13 @@ PianoRoll &NoteComponent::getRoll() const noexcept
 
 void NoteComponent::updateColours()
 {
-    const bool ghost = this->ghostMode || !this->activeState;
+    const bool ghost = this->flags.isGhost || !this->flags.isActive;
     const auto base = findDefaultColour(ColourIDs::Roll::noteFill);
 
     this->colour = this->getNote().getTrackColour()
         .interpolatedWith(base, ghost ? 0.35f : 0.5f)
-        .brighter(this->selectedState ? 0.95f : 0.f)
-        .withAlpha(this->selectedState ? 1.f : (ghost ? 0.3f : .95f));
+        .brighter(this->flags.isSelected ? 0.95f : 0.f)
+        .withAlpha(this->flags.isSelected ? 1.f : (ghost ? 0.3f : .95f));
 
     if (ghost)
     {

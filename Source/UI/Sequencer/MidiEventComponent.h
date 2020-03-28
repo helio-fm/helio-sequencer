@@ -59,11 +59,21 @@ protected:
     HybridRoll &roll;
     ComponentDragger dragger;
 
-    bool selectedState;
-    bool activeState;
-    float anchorBeat;
+    struct MidiEventComponentFlags
+    {
+        bool isSelected : 1;
+        bool isActive : 1;
+        bool isGhost : 1;
+        bool isRecordingTarget : 1;
+    };
 
-    bool ghostMode;
+    union
+    {
+        uint8 componentFlags = 0;
+        MidiEventComponentFlags flags;
+    };
+
+    float anchorBeat = 0.f;
 
     // сдвиг мыши от нуля компонента во время клика.
     // если его не учитывать, то ноты двигаются неестественно
