@@ -492,7 +492,9 @@ void SequencerLayout::showPatternEditor()
 
     this->rollToolsSidebar->setPatternMode();
     this->rollNavSidebar->setPatternMode();
-    this->patternRoll->deselectAll();
+
+    // sync pattern roll selection with piano roll edit scope:
+    this->patternRoll->selectClip(this->pianoRoll->getActiveClip());
     this->pianoRoll->deselectAll();
 }
 
@@ -505,7 +507,8 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
 
     this->rollToolsSidebar->setLinearMode();
     this->rollNavSidebar->setLinearMode();
-    this->patternRoll->deselectAll();
+
+    //this->patternRoll->selectClip(this->pianoRoll->getActiveClip());
     this->pianoRoll->deselectAll();
 
     const Clip &activeClip = this->pianoRoll->getActiveClip();

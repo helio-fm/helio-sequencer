@@ -34,7 +34,7 @@ public:
 
     ~PianoClipComponent() override;
 
-    void showRecordingMode();
+    void setShowRecordingMode(bool isRecording);
 
     //===------------------------------------------------------------------===//
     // Component

@@ -38,6 +38,7 @@ public:
         WeakReference<AudioMonitor> clippingDetector);
 
     void selectAll() override;
+    void selectClip(const Clip &clip);
     int getNumRows() const noexcept;
 
     //===------------------------------------------------------------------===//
@@ -122,6 +123,13 @@ public:
     };
 
 protected:
+
+    //===------------------------------------------------------------------===//
+    // TransportListener
+    //===------------------------------------------------------------------===//
+
+    void onRecord() override;
+    void onStop() override;
 
     //===------------------------------------------------------------------===//
     // HybridRoll

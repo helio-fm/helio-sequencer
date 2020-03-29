@@ -210,6 +210,45 @@ void PatternRoll::reloadRowsGrouping()
     }
 }
 
+//===----------------------------------------------------------------------===//
+// TransportListener
+//===----------------------------------------------------------------------===//
+
+void PatternRoll::onRecord()
+{
+    // mark the first piano component as recording clip:
+    PianoClipComponent *singleSelectedTarget = nullptr;
+    if (this->selection.getNumSelected() == 1)
+    {
+        auto *cc = this->selection.getFirstAs<ClipComponent>();
+        singleSelectedTarget = dynamic_cast<PianoClipComponent *>(cc);
+    }
+
+    if (singleSelectedTarget != nullptr)
+    {
+        singleSelectedTarget->setShowRecordingMode(true);
+    }
+    else
+    {
+        this->deselectAll();
+    }
+
+    HybridRoll::onRecord();
+}
+
+void PatternRoll::onStop()
+{
+    for (int i = 0; i < this->selection.getNumSelected(); ++i)
+    {
+        auto *cc = this->selection.getFirstAs<ClipComponent>();
+        if (auto *pianoClip = dynamic_cast<PianoClipComponent *>(cc))
+        {
+            pianoClip->setShowRecordingMode(false);
+        }
+    }
+
+    HybridRoll::onStop();
+}
 
 //===----------------------------------------------------------------------===//
 // HybridRoll
@@ -321,7 +360,7 @@ float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
 
 void PatternRoll::onAddTrack(MidiTrack *const track)
 {
-    if (Pattern *pattern = track->getPattern())
+    if (auto *pattern = track->getPattern())
     {
         this->tracks.add(track);
         updateTrackRowPosition(this->rows, this->groupMode, track);
@@ -333,6 +372,11 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
             {
                 this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
                 this->addAndMakeVisible(clipComponent);
+
+                if (this->isEnabled())
+                {
+                    this->selectEvent(clipComponent, true);
+                }
             }
         }
     }
@@ -493,6 +537,15 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);
         }
+    }
+}
+
+void PatternRoll::selectClip(const Clip &clip)
+{
+    auto it = this->clipComponents.find(clip);
+    if (it != this->clipComponents.end())
+    {
+        this->selectEvent(it->second.get(), true);
     }
 }
 

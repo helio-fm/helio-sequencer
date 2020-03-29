@@ -187,8 +187,9 @@ void PianoClipComponent::reloadTrackMap()
     }
 }
 
-void PianoClipComponent::showRecordingMode()
+void PianoClipComponent::setShowRecordingMode(bool isRecording)
 {
-    this->flags.isRecordingTarget = true;
+    this->flags.isRecordingTarget = isRecording;
+    this->updateColours();
     this->roll.triggerBatchRepaintFor(this);
 }

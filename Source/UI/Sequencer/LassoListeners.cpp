@@ -27,6 +27,7 @@
 #include "PianoClipComponent.h"
 #include "Clip.h"
 #include "Pattern.h"
+#include "PatternRoll.h"
 
 //===----------------------------------------------------------------------===//
 // Base class
@@ -194,7 +195,6 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
     // bail out as early as possible
     if (selection->getNumSelected() != 1)
     {
-        // todo clear recording target?
         this->project.setMidiRecordingTarget(nullptr, {});
         return;
     }
@@ -208,7 +208,7 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
     {
         if (this->project.getTransport().isRecording())
         {
-            pc->showRecordingMode();
+            pc->setShowRecordingMode(true);
         }
 
         auto *track = cc->getClip().getPattern()->getTrack();
