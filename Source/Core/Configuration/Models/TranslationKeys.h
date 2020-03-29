@@ -223,6 +223,12 @@ namespace I18n
         static const Identifier tuplet7 = "menu::tuplet::7";
         static const Identifier tuplet8 = "menu::tuplet::8";
         static const Identifier tuplet9 = "menu::tuplet::9";
+        static const Identifier quantizeTo1_1 = "menu::quantize::1";
+        static const Identifier quantizeTo1_2 = "menu::quantize::2";
+        static const Identifier quantizeTo1_4 = "menu::quantize::4";
+        static const Identifier quantizeTo1_8 = "menu::quantize::8";
+        static const Identifier quantizeTo1_16 = "menu::quantize::16";
+        static const Identifier quantizeTo1_32 = "menu::quantize::32";
         static const Identifier mute = "menu::mute";
         static const Identifier solo = "menu::solo";
         static const Identifier unmute = "menu::unmute";
