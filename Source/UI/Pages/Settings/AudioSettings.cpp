@@ -302,7 +302,7 @@ void AudioSettings::applyBufferSize(AudioDeviceManager &deviceManager, int buffe
 
 void AudioSettings::applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceId)
 {
-    this->audioCore.setActiveMidiInputPlayer({}, true);
+    this->audioCore.setActiveMidiPlayer({}, true);
 
     const auto &devices = MidiInput::getAvailableDevices();
 
@@ -460,7 +460,8 @@ void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
     }
 
     const auto selectedDeviceName = areNoMidiInputsSelected(deviceManager, devices) ?
-        "-" : getFirstSelectedMidiInputDevice(deviceManager, devices);
+        TRANS(I18n::Settings::midiNoInputDevices) :
+        getFirstSelectedMidiInputDevice(deviceManager, devices);
 
     this->midiInputEditor->setText(TRANS(I18n::Settings::midiRecord) +
         ": " + selectedDeviceName, dontSendNotification);

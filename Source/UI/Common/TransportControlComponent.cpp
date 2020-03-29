@@ -367,19 +367,20 @@ void TransportControlComponent::recordButtonPressed()
         return;
     }
 
+    // canRecord == we have 1 available and enabled device
     const bool canRecord = App::Workspace().getAudioCore().autodetectMidiDeviceSetup();
     if (canRecord)
     {
         this->broadcastCommandMessage(CommandIDs::TransportRecordingAwait);
         return;
     }
-   
-    const auto allDevices = MidiInput::getAvailableDevices();
 
-    // todo someday: if no devices available, blink
-    //if (allDevices.isEmpty())
-    //{
-    //}
+    const auto allDevices = MidiInput::getAvailableDevices();
+    if (allDevices.isEmpty())
+    {
+        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoInputDevices), MainLayout::TooltipType::Failure);
+        return;
+    }
 
     // if more than 1 devices available, provide a choice
     MenuPanel::Menu menu;

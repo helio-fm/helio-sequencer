@@ -175,7 +175,12 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
 void PluginScanner::run()
 {
     WaitableEvent::wait();
-    
+
+    if (this->threadShouldExit())
+    {
+        return;
+    }
+
     AudioPluginFormatManager formatManager;
     AudioCore::initAudioFormats(formatManager);
     
@@ -330,7 +335,7 @@ FileSearchPath PluginScanner::getTypicalFolders()
     systemFolders.add(File::getSpecialLocation(File::userMusicDirectory));
 
     // здесь создаем все комбинации системных папок с возможными подпапками
-    for (auto && systemFolder : systemFolders)
+    for (auto &systemFolder : systemFolders)
     {
         // здесь проходим по первому уровню системных папок и ищем еще и в них
         Array<File> subPaths;
@@ -350,7 +355,7 @@ FileSearchPath PluginScanner::getTypicalFolders()
 void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders,
         const File &currentSystemFolder, FileSearchPath &foldersOut)
 {
-    for (const auto & possibleSubfolder : possibleSubfolders)
+    for (const auto &possibleSubfolder : possibleSubfolders)
     {
         File f(currentSystemFolder.getChildFile(possibleSubfolder));
 

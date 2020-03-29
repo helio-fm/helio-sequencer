@@ -220,7 +220,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         const auto child = this->chain[i];
         const auto finalPos = child->getBounds().withX(fadePositionX - child->getWidth());
         this->animator.cancelAnimation(child, false);
-        this->animator.animateComponent(child, finalPos, startingAlpha, 200, true, 0.f, 1.f);
+        this->animator.animateComponent(child, finalPos, startingAlpha, 100, true, 0.f, 1.f);
         this->chain.remove(i, true);
     }
 
@@ -237,7 +237,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         child->toBack();
         const auto finalPos = child->getBounds().withX(lastPosX - HEADLINE_ITEMS_OVERLAP);
         lastPosX += child->getWidth() - HEADLINE_ITEMS_OVERLAP;
-        this->animator.animateComponent(child, finalPos, 1.f, 300, false, 1.f, 0.f);
+        this->animator.animateComponent(child, finalPos, 1.f, 150, false, 1.f, 0.f);
     }
 
     this->navPanel->toFront(false);

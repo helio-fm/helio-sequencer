@@ -163,11 +163,11 @@ void AudioCore::removeInstrumentFromAudioDevice(Instrument *instrument)
     this->deviceManager.removeAudioCallback(&instrument->getProcessorPlayer());
 }
 
-void AudioCore::setActiveMidiInputPlayer(const String &instrumentId, bool shouldRemoveOthers)
+void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool shouldRemoveOthers)
 {
     if (this->lastActiveMidiPlayerId == instrumentId)
     {
-        //DBG("Skip setActiveMidiInputPlayer for " + instrumentId);
+        //DBG("Skip setActiveMidiPlayer for " + instrumentId);
         return;
     }
 

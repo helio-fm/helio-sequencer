@@ -32,7 +32,7 @@
 #include "PlayerThreadPool.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
-#define SOUND_SLEEP_DELAY_MS (10000)
+#define SOUND_SLEEP_DELAY_MS (60000)
 
 Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     orchestra(orchestraPit),
@@ -553,7 +553,10 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     if (!linksCache.contains(trackId) ||
         this->linksCache[trackId]->getInstrumentId() != track->getTrackInstrumentId())
     {
-        this->stopPlayback();
+        if (!this->isRecording())
+        {
+            this->stopPlayback();
+        }
         this->sequencesAreOutdated = true;
         this->updateLinkForTrack(track);
     }
@@ -691,6 +694,8 @@ void Transport::recacheIfNeeded() const
 {
     if (this->sequencesAreOutdated)
     {
+        DBG("Transport::recache");
+
         jassert(!this->isPlaying());
         this->playbackCache.clear();
         static Clip noTransform;

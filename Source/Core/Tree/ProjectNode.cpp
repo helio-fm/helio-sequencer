@@ -255,7 +255,7 @@ void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip &cli
     if (track != nullptr)
     {
         instrumentId = track->getTrackInstrumentId();
-        App::Workspace().getAudioCore().setActiveMidiInputPlayer(instrumentId, true);
+        App::Workspace().getAudioCore().setActiveMidiPlayer(instrumentId, true);
     }
 
     this->midiRecorder->setTargetScope(track, clip, instrumentId);
@@ -334,19 +334,12 @@ void ProjectNode::checkpoint()
 
 void ProjectNode::undo()
 {
-    if (this->getUndoStack()->canUndo())
-    {
-        this->checkpoint();
-        this->getUndoStack()->undo();
-    }
+    this->getUndoStack()->undo();
 }
 
 void ProjectNode::redo()
 {
-    if (this->getUndoStack()->canRedo())
-    {
-        this->getUndoStack()->redo();
-    }
+    this->getUndoStack()->redo();
 }
 
 void ProjectNode::clearUndoHistory()
