@@ -118,7 +118,8 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
     WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
 {
-    this->selectedClipsMenuManager.reset(new PatternRollSelectionMenuManager(&this->selection));
+    this->selectionListeners.add(new PatternRollSelectionMenuManager(&this->selection));
+    this->selectionListeners.add(new PatternRollRecordingTargetController(&this->selection, parentProject));
 
     this->setComponentID(ComponentIDs::patternRollId);
 

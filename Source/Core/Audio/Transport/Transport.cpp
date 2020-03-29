@@ -523,7 +523,10 @@ void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 
 void Transport::onAddClip(const Clip &clip)
 {
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
     updateLengthAndTimeIfNeeded((&clip));
     this->sequencesAreOutdated = true;
 }
@@ -574,7 +577,10 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 
 void Transport::onAddTrack(MidiTrack *const track)
 {
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
     
     this->sequencesAreOutdated = true;
     this->tracksCache.addIfNotAlreadyThere(track);

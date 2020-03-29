@@ -96,8 +96,7 @@ void ProjectNode::initialize()
     this->transport = makeUnique<Transport>(orchestra, audioCoreSleepTimer);
     this->addListener(this->transport.get());
 
-    this->midiRecorder = makeUnique<MidiRecorder>(
-        this->transport.get(), this->undoStack.get());
+    this->midiRecorder = makeUnique<MidiRecorder>(*this);
 
     this->metadata = makeUnique<ProjectMetadata>(*this);
     this->vcsItems.add(this->metadata.get());
@@ -252,10 +251,14 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
 
 void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip &clip)
 {
-    const auto instrumentId = track->getTrackInstrumentId();
-    App::Workspace().getAudioCore().setActiveMidiInputPlayer(instrumentId, true);
+    String instrumentId;
+    if (track != nullptr)
+    {
+        instrumentId = track->getTrackInstrumentId();
+        App::Workspace().getAudioCore().setActiveMidiInputPlayer(instrumentId, true);
+    }
 
-    this->midiRecorder->setTargetScope(track, clip);
+    this->midiRecorder->setTargetScope(track, clip, instrumentId);
 }
 
 void ProjectNode::setEditableScope(MidiTrack *const activeTrack,

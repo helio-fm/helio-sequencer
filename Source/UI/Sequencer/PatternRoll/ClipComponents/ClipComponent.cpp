@@ -59,12 +59,18 @@ PatternRoll &ClipComponent::getRoll() const noexcept
 void ClipComponent::updateColours()
 {
     jassert(this->clip.isValid());
-    this->fillColour = Colours::black.withAlpha(0.25f);
+
+    this->fillColour = this->flags.isRecordingTarget ?
+        Colours::black.interpolatedWith(findDefaultColour(ColourIDs::Roll::headerRecording), 0.5f) :
+        Colours::black.withAlpha(0.25f);
+
     this->headBrightColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
         .withAlpha(this->flags.isGhost ? 0.2f : 0.7f)
         .brighter(this->flags.isSelected ? 0.25f : 0.f);
+
     this->headDarkColour = this->headBrightColour.withAlpha(0.25f);
+
     this->eventColour = this->getClip().getTrackColour()
         .interpolatedWith(Colours::white, .35f)
         .withAlpha(.15f + 0.5f * this->clip.getVelocity());
@@ -271,8 +277,7 @@ void ClipComponent::paint(Graphics &g)
 
     const Rectangle<int> textBounds(4, 5, this->getWidth() - 8, this->getHeight() - 7);
 
-    g.setColour(this->flags.isRecordingTarget ? 
-        findDefaultColour(ColourIDs::Roll::headerRecording) : this->headBrightColour);
+    g.setColour(this->headBrightColour);
 
     if (this->flags.isSelected)
     {
@@ -284,7 +289,7 @@ void ClipComponent::paint(Graphics &g)
         g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
             textBounds, Justification::bottomLeft, false);
     }
-
+    
     if (this->clip.getKey() != 0)
     {
         g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);

@@ -22,7 +22,6 @@
 
 class CutPointMark;
 class ClipComponent;
-class PatternRollSelectionMenuManager;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
@@ -165,7 +164,7 @@ private:
 
     OwnedArray<ClipComponent> ghostClips;
 
-    UniquePointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
+    OwnedArray<ChangeListener> selectionListeners;
 
     using ClipComponentsMap = FlatHashMap<Clip, UniquePointer<ClipComponent>, ClipHash>;
     ClipComponentsMap clipComponents;

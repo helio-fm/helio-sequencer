@@ -18,43 +18,55 @@
 #include "Common.h"
 #include "MidiRecorder.h"
 
-#include "UndoStack.h"
+#include "ProjectNode.h"
+#include "Pattern.h"
 #include "MidiTrack.h"
+#include "PianoTrackNode.h"
 #include "PianoSequence.h"
 #include "Transport.h"
+
+#include "PatternRoll.h"
+#include "SequencerOperations.h"
+#include "PianoTrackActions.h"
+#include "UndoStack.h"
 
 #include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
+#include "ColourIDs.h"
 
 // todo show some hints on where to expect new notes?
 // in pattern mode, highlight the selected clip in red?
 
+// todo for the future: handle pedal and more automation events
+
 // no need for updating too often, I guess:
 #define MIDI_RECORDER_UPDATE_TIME_HZ 15
 
-MidiRecorder::MidiRecorder(WeakReference<Transport> transport,
-    WeakReference<UndoStack> undoStack) :
-    transport(transport),
-    undoStack(undoStack)
+MidiRecorder::MidiRecorder(ProjectNode &project) :
+    project(project)
 {
     this->lastUpdateTime = Time::getMillisecondCounterHiRes();
-    this->lastCorrectPosition = this->transport->getSeekBeat();
+    this->lastCorrectPosition = this->getTransport().getSeekBeat();
 
-    this->transport->addTransportListener(this);
+    this->getTransport().addTransportListener(this);
 }
 
 MidiRecorder::~MidiRecorder()
 {
-    this->transport->removeTransportListener(this);
+    this->getTransport().removeTransportListener(this);
 }
 
-void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track, const Clip &clip)
+void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track,
+    const Clip &clip, const String &instrumentId)
 {
+    if (instrumentId.isNotEmpty())
+    {
+        this->lastValidInsrtumentId = instrumentId;
+    }
+
     if (this->activeTrack != track || this->activeClip != clip)
     {
-        jassert(dynamic_cast<PianoSequence *>(track->getSequence()));
-
         if (this->activeTrack != nullptr)
         {
             this->finaliseAllHoldingNotes();
@@ -131,6 +143,25 @@ void MidiRecorder::onStop()
     this->lastUpdateTime = 0.0;
 }
 
+static SerializedData createPianoTrackTempate(const String &name,
+    float startBeat, const String &instrumentId, String &outTrackId)
+{
+    auto newNode = makeUnique<PianoTrackNode>(name);
+
+    // We need to have at least one clip on the pattern:
+    const Clip clip(newNode->getPattern(), startBeat, 0);
+    newNode->getPattern()->insert(clip, false);
+
+    Random r;
+    const auto colours = ColourIDs::getColoursList().getAllValues();
+    const int ci = r.nextInt(colours.size());
+    newNode->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false);
+
+    outTrackId = newNode->getTrackId();
+    return newNode->serialize();
+}
+
 // called from the message thread, so we can insert new midi events
 // (note that the track selection may change during recording);
 // the main recording logic goes here:
@@ -152,21 +183,40 @@ void MidiRecorder::handleAsyncUpdate()
     if (this->shouldCheckpoint.get())
     {
         jassert(this->holdingNotes.size() == 0);
-        this->undoStack->beginNewTransaction();
+        this->project.checkpoint();
         this->shouldCheckpoint = false;
     }
-
-    const auto currentBeat = this->getEstimatedPosition();
 
     // if something is selected (can be both rolls), simply insert messages,
     // if nothing is selected (pattern roll), first create a new track and select it
     // if multiple tracks are selected (also pattern roll) - same as ^
     if (this->activeTrack == nullptr)
     {
-        // todo create one
+        const auto newName =
+            SequencerOperations::generateNextNameForNewTrack("Recording",
+                this->project.getAllTrackNames());
 
-        //this->activeTrack = track;
-        //this->activeClip = clip;
+        // lastValidInsrtumentId may be empty at this point:
+        if (this->lastValidInsrtumentId.isEmpty())
+        {
+            auto instruments = App::Workspace().getAudioCore().getInstruments();
+            if (!instruments.isEmpty())
+            {
+                this->lastValidInsrtumentId = instruments.getFirst()->getIdAndHash();
+            }
+        }
+
+        String outTrackId;
+        const auto trackTemplate = createPianoTrackTempate(newName,
+            this->lastCorrectPosition.get(), this->lastValidInsrtumentId, outTrackId);
+
+        this->project.getUndoStack()->perform(
+            new PianoTrackInsertAction(this->project,
+                &this->project, trackTemplate, newName));
+
+        this->activeTrack = this->project.findTrackById<MidiTrackNode>(outTrackId);
+        this->activeClip = *this->activeTrack->getPattern()->getUnchecked(0);
+        this->shouldCheckpoint = false;
     }
     
     // handle note offs and fill unhandledNoteOffs
@@ -202,7 +252,7 @@ void MidiRecorder::handleAsyncUpdate()
     // yet have received some midi events
     if (!this->isPlaying.get())
     {
-        this->transport->startPlayback();
+        this->getTransport().startPlayback();
     }
 }
 
@@ -345,4 +395,9 @@ bool MidiRecorder::finaliseHoldingNote(int key)
 PianoSequence *MidiRecorder::getPianoSequence() const
 {
     return static_cast<PianoSequence *>(this->activeTrack->getSequence());
+}
+
+Transport &MidiRecorder::getTransport() const noexcept
+{
+    return this->project.getTransport();
 }

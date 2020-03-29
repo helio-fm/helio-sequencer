@@ -17,10 +17,10 @@
 
 #pragma once
 
-class Transport;
-class UndoStack;
 class MidiTrack;
 class PianoSequence;
+class ProjectNode;
+class Transport;
 
 #include "Clip.h"
 #include "Note.h"
@@ -33,12 +33,12 @@ class MidiRecorder final : public MidiInputCallback,
 {
 public:
 
-    MidiRecorder(WeakReference<Transport> transport,
-        WeakReference<UndoStack> undoStack);
+    explicit MidiRecorder(ProjectNode &project);
 
     ~MidiRecorder() override;
 
-    void setTargetScope(WeakReference<MidiTrack> track, const Clip &clip);
+    void setTargetScope(WeakReference<MidiTrack> track,
+        const Clip &clip, const String &instrumentId);
 
 private:
 
@@ -74,11 +74,13 @@ private:
 
 private:
 
-    WeakReference<Transport> transport;
-    WeakReference<UndoStack> undoStack;
+    ProjectNode &project;
+    Transport &getTransport() const noexcept;
 
     Clip activeClip;
     WeakReference<MidiTrack> activeTrack;
+    String lastValidInsrtumentId;
+
     PianoSequence *getPianoSequence() const;
 
     Array<MidiMessage, CriticalSection> noteOnsBuffer;
