@@ -121,6 +121,9 @@ inline float roundf(float x)
 // Defines the maximum available resolution
 #define TICKS_PER_BEAT 16
 
+// Milliseconds per quarter note, default 120 BPM
+#define DEFAULT_MS_PER_QN 500
+
 #define PROJECT_DEFAULT_NUM_BEATS 32
 
 #define VELOCITY_SAVE_ACCURACY 1024.f

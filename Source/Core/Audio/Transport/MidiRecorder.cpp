@@ -141,6 +141,7 @@ void MidiRecorder::onStop()
 
     this->isPlaying = false;
     this->lastUpdateTime = 0.0;
+    this->msPerQuarterNote = DEFAULT_MS_PER_QN;
 }
 
 static SerializedData createPianoTrackTempate(const String &name,
@@ -172,6 +173,13 @@ void MidiRecorder::handleAsyncUpdate()
     {
         // nothing to do
         return;
+    }
+
+    // a neat helper: start playback, if still not playing,
+    // yet have received some midi events
+    if (!this->isPlaying.get())
+    {
+        this->getTransport().startPlayback();
     }
 
     // if no track is selected, must checkpoint anyway
@@ -247,13 +255,6 @@ void MidiRecorder::handleAsyncUpdate()
     }
 
     this->unhandledNoteOffs.clearQuick();
-
-    // a neat helper: start playback, if still not playing,
-    // yet have received some midi events
-    if (!this->isPlaying.get())
-    {
-        this->getTransport().startPlayback();
-    }
 }
 
 struct SortMidiMessagesByTimestamp final

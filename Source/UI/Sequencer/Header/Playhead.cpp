@@ -24,9 +24,6 @@
 
 #define PLAYHEAD_PADDING 2
 
-//#define PLAYHEAD_UPDATE_TIME_MS (1000 / 50)
-#define PLAYHEAD_UPDATE_TIME_MS 7
-
 Playhead::Playhead(HybridRoll &parentRoll,
     Transport &owner,
     Playhead::Listener *movementListener /*= nullptr*/,
@@ -58,7 +55,6 @@ Playhead::~Playhead()
     this->transport.removeTransportListener(this);
 }
 
-
 //===----------------------------------------------------------------------===//
 // TransportListener
 //===----------------------------------------------------------------------===//
@@ -73,7 +69,6 @@ void Playhead::onSeek(float beatPosition, double currentTimeMs, double totalTime
     {
         this->timerStartTime = Time::getMillisecondCounterHiRes();
         this->timerStartPosition = this->lastCorrectPosition;
-        //this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
     }
 }
 
@@ -92,11 +87,7 @@ void Playhead::onPlay()
 {
     this->timerStartTime = Time::getMillisecondCounterHiRes();
     this->timerStartPosition = this->lastCorrectPosition;
-
-    // avoids a weird glitch I have no time to investigate:
-    this->updatePosition(this->lastCorrectPosition.get());
-
-    this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
+    this->startTimerHz(60);
 }
 
 void Playhead::onRecord()
@@ -114,8 +105,8 @@ void Playhead::onStop()
 
     this->timerStartTime = 0.0;
     this->timerStartPosition = 0.0;
+    this->msPerQuarterNote = DEFAULT_MS_PER_QN;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Timer
@@ -125,7 +116,6 @@ void Playhead::timerCallback()
 {
     this->triggerAsyncUpdate();
 }
-
 
 //===----------------------------------------------------------------------===//
 // AsyncUpdater
@@ -142,7 +132,6 @@ void Playhead::handleAsyncUpdate()
         this->updatePosition(this->lastCorrectPosition.get());
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component

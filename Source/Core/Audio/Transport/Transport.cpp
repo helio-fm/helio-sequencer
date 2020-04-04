@@ -634,7 +634,7 @@ void Transport::findTimeAndTempoAt(float beat, double &outTimeMs, double &outTem
     const auto targetRelativeBeat = beat - this->projectFirstBeat.get();
     
     outTimeMs = 0.0;
-    outTempo = 500.0; // default 120 BPM
+    outTempo = DEFAULT_MS_PER_QN;
     
     double prevTimestamp = 0.0;
     double nextEventTimeDelta = 0.0;
@@ -683,7 +683,7 @@ MidiMessage Transport::findFirstTempoEvent()
     }
     
     // return default 120 bpm (== 500 ms per quarter note)
-    return MidiMessage::tempoMetaEvent(500 * 1000);
+    return MidiMessage::tempoMetaEvent(DEFAULT_MS_PER_QN * 1000);
 }
 
 //===----------------------------------------------------------------------===//

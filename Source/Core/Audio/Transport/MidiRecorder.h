@@ -97,7 +97,7 @@ private:
 
     Atomic<float> lastCorrectPosition = 0.f;
     Atomic<double> lastUpdateTime = 0.0;
-    Atomic<double> msPerQuarterNote = 1.0;
+    Atomic<double> msPerQuarterNote = DEFAULT_MS_PER_QN;
 
     Atomic<bool> isPlaying = false;
     Atomic<bool> isRecording = false;
