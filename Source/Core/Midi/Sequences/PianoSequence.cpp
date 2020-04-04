@@ -266,7 +266,7 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
 // Accessors
 //===----------------------------------------------------------------------===//
 
-float PianoSequence::getLastBeat() const noexcept
+float PianoSequence::findLastBeat() const noexcept
 {
     float lastBeat = -FLT_MAX;
     if (this->midiEvents.size() == 0)
@@ -280,7 +280,7 @@ float PianoSequence::getLastBeat() const noexcept
     // so here we have to iterate through a number of last events
     // to guess where the sequence really ends, with still no guarantee
     // we'll end up with right event (not sure how to fix it at the moment):
-    const int checkStart = jmax(0, this->midiEvents.size() - 5);
+    const int checkStart = jmax(0, this->midiEvents.size() - 20);
     for (int i = checkStart; i < this->midiEvents.size(); ++i)
     {
         const auto *n = static_cast<const Note *>(this->midiEvents.getUnchecked(i));

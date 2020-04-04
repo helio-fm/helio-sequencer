@@ -49,14 +49,7 @@ public:
     bool insertGroup(Array<Note> &notes, bool undoable);
     bool removeGroup(Array<Note> &notes, bool undoable);
     bool changeGroup(Array<Note> &eventsBefore,
-        Array<Note> &eventsAfter,
-        bool undoable);
-
-    //===------------------------------------------------------------------===//
-    // Accessors
-    //===------------------------------------------------------------------===//
-    
-    float getLastBeat() const noexcept override;
+        Array<Note> &eventsAfter, bool undoable);
     
     //===------------------------------------------------------------------===//
     // Serializable
@@ -67,6 +60,8 @@ public:
     void reset() override;
 
 private:
+
+    float findLastBeat() const noexcept override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoSequence);
     JUCE_DECLARE_WEAK_REFERENCEABLE(PianoSequence);

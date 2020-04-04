@@ -42,9 +42,7 @@ struct EventIdGenerator final
 MidiSequence::MidiSequence(MidiTrack &parentTrack,
     ProjectEventDispatcher &dispatcher) noexcept :
     track(parentTrack),
-    eventDispatcher(dispatcher),
-    lastStartBeat(0.f),
-    lastEndBeat(0.f) {}
+    eventDispatcher(dispatcher) {}
 
 void MidiSequence::sort()
 {
@@ -142,7 +140,7 @@ float MidiSequence::midiTicksToBeats(double ticks, int timeFormat) noexcept
 // Accessors
 //===----------------------------------------------------------------------===//
 
-float MidiSequence::getFirstBeat() const noexcept
+float MidiSequence::findFirstBeat() const noexcept
 {
     if (this->midiEvents.size() == 0)
     {
@@ -152,7 +150,7 @@ float MidiSequence::getFirstBeat() const noexcept
     return this->midiEvents.getFirst()->getBeat();
 }
 
-float MidiSequence::getLastBeat() const noexcept
+float MidiSequence::findLastBeat() const noexcept
 {
     if (this->midiEvents.size() == 0)
     {
@@ -193,14 +191,16 @@ UndoStack *MidiSequence::getUndoStack() const noexcept
 
 void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
 {
-    if (this->lastStartBeat == this->getFirstBeat() &&
-        this->lastEndBeat == this->getLastBeat())
+    const auto newStart = this->findFirstBeat();
+    const auto newEnd = this->findLastBeat();
+
+    if (this->sequenceStartBeat == newStart && this->sequenceEndBeat == newEnd)
     {
         return;
     }
     
-    this->lastStartBeat = this->getFirstBeat();
-    this->lastEndBeat = this->getLastBeat();
+    this->sequenceStartBeat = newStart;
+    this->sequenceEndBeat = newEnd;
     
     if (shouldNotifyIfChanged)
     {
