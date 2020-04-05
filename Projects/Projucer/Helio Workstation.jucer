@@ -192,8 +192,6 @@
             <FILE id="Q7DJnB" name="PlayerThread.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/PlayerThread.h"/>
             <FILE id="hQoXTL" name="PlayerThreadPool.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/Transport/PlayerThreadPool.h"/>
-            <FILE id="TikoqY" name="ProjectSequencesWrapper.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/Transport/ProjectSequencesWrapper.h"/>
             <FILE id="MxQSLU" name="RendererThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/Transport/RendererThread.cpp"/>
             <FILE id="qHMFej" name="RendererThread.h" compile="0" resource="0"
@@ -202,6 +200,8 @@
             <FILE id="k7oPSt" name="Transport.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/Transport.h"/>
             <FILE id="JViiXj" name="TransportListener.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/Transport/TransportListener.h"/>
+            <FILE id="TikoqY" name="TransportPlaybackCache.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/Transport/TransportPlaybackCache.h"/>
           </GROUP>
           <FILE id="eGzL40" name="AudioCore.cpp" compile="1" resource="0" file="../../Source/Core/Audio/AudioCore.cpp"/>
           <FILE id="vlOPNw" name="AudioCore.h" compile="0" resource="0" file="../../Source/Core/Audio/AudioCore.h"/>

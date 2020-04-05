@@ -51,7 +51,7 @@ struct CachedMidiMessage final : public ReferenceCountedObject
     using Ptr = ReferenceCountedObjectPtr<CachedMidiMessage>;
 };
 
-class ProjectSequences final
+class TransportPlaybackCache final
 {
 private:
     
@@ -60,8 +60,9 @@ private:
 
 public:
     
-    ProjectSequences() = default;
-    
+    TransportPlaybackCache() = default;
+    TransportPlaybackCache(const TransportPlaybackCache &other) = default;
+
     inline Array<Instrument *, CriticalSection> getUniqueInstruments() const noexcept
     {
         return this->uniqueInstruments;
@@ -177,6 +178,8 @@ public:
         }
 
         auto *foundWrapper = this->sequences.getObjectPointer(targetSequenceIndex);
+        jassert(foundWrapper->currentIndex < foundWrapper->midiMessages.getNumEvents());
+
         auto &foundMessage = foundWrapper->midiMessages.getEventPointer(foundWrapper->currentIndex)->message;
         foundWrapper->currentIndex++;
 
@@ -204,5 +207,5 @@ private:
         return i;
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectSequences)
+    JUCE_LEAK_DETECTOR(TransportPlaybackCache)
 };

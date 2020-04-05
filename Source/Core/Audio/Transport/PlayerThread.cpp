@@ -48,7 +48,7 @@ void PlayerThread::startPlayback(float relStartBeat, float relEndBeat,
 
 void PlayerThread::run()
 {
-    auto &sequences = this->transport.getPlaybackCache();
+    auto sequences = this->transport.getPlaybackCache();
 
     Array<Instrument *> uniqueInstruments;
     uniqueInstruments.addArray(sequences.getUniqueInstruments());

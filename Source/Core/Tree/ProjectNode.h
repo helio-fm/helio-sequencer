@@ -39,7 +39,6 @@ class Clip;
 #include "DocumentOwner.h"
 #include "Transport.h"
 #include "TrackedItemsSource.h"
-#include "ProjectSequencesWrapper.h"
 #include "HybridRollEditMode.h"
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"

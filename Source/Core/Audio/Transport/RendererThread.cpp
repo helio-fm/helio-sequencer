@@ -42,7 +42,7 @@ float RendererThread::getPercentsComplete() const
 void RendererThread::startRecording(const File &file)
 {
     this->transport.recacheIfNeeded();
-    const auto &sequencesCache = this->transport.getPlaybackCache();
+    const auto sequencesCache = this->transport.getPlaybackCache();
     
     if (sequencesCache.isEmpty())
     {
@@ -124,7 +124,7 @@ void RendererThread::run()
 {
     // step 0. init.
     this->transport.recacheIfNeeded();
-    auto &sequences = this->transport.getPlaybackCache();
+    auto sequences = this->transport.getPlaybackCache();
     const int bufferSize = 512;
 
     // assuming that number of channels and sample rate is equal for all instruments

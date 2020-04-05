@@ -51,9 +51,10 @@ public:
             this->currentPlayer = findNextFreePlayer();
         }
 
-        this->currentPlayer->startPlayback(this->transport.getSeekBeat() - this->transport.getProjectFirstBeat(),
-            this->transport.getProjectLastBeat() - this->transport.getProjectFirstBeat(),
-            false, shouldBroadcastTransportEvents);
+        const auto start = this->transport.getSeekBeat() - this->transport.getProjectFirstBeat();
+        const auto end = this->transport.getProjectLastBeat() - this->transport.getProjectFirstBeat();
+
+        this->currentPlayer->startPlayback(start, end, false, shouldBroadcastTransportEvents);
     }
 
     void startPlayback(float start, float end, bool loopedMode, bool shouldBroadcast = true)
@@ -69,8 +70,6 @@ public:
 
     void stopPlayback()
     {
-        this->currentPlayer->setRecordMidi(false);
-
         if (this->currentPlayer->isThreadRunning())
         {
             // Just signal player to stop:
@@ -83,17 +82,6 @@ public:
     {
         return (this->currentPlayer->isThreadRunning() &&
             !this->currentPlayer->threadShouldExit());
-    }
-
-    void startRecording()
-    {
-        // fixme
-        this->currentPlayer->setRecordMidi(true);
-    }
-
-    bool isRecording() const
-    {
-        return this->currentPlayer->isRecordingMidi();
     }
 
 private:

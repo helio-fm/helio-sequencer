@@ -24,7 +24,7 @@ class PlayerThreadPool;
 class RendererThread;
 
 #include "TransportListener.h"
-#include "ProjectSequencesWrapper.h"
+#include "TransportPlaybackCache.h"
 #include "ProjectListener.h"
 #include "OrchestraListener.h"
 #include "Instrument.h"
@@ -171,11 +171,11 @@ private:
 
 private:
 
-    ProjectSequences &getPlaybackCache();
+    TransportPlaybackCache getPlaybackCache();
     void recacheIfNeeded() const;
     
-    mutable ProjectSequences playbackCache;
-    mutable bool sequencesAreOutdated = true;
+    mutable TransportPlaybackCache playbackCache;
+    mutable Atomic<bool> sequencesAreOutdated = true;
     
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
@@ -217,6 +217,9 @@ private:
     
     Atomic<float> projectFirstBeat = 0.f;
     Atomic<float> projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
+
+    // just a flag, all logic resides in MidiRecorder class:
+    Atomic<bool> midiRecordingMode = false;
 
     ListenerList<TransportListener> transportListeners;
 

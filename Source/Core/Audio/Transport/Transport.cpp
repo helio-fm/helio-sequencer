@@ -208,6 +208,9 @@ void Transport::startPlayback()
         this->allNotesControllersAndSoundOff();
     }
     
+    // todo:
+    // let listeners know about the tempo before the playback starts?
+
     this->player->startPlayback();
     this->broadcastPlay();
 }
@@ -261,24 +264,25 @@ void Transport::startRecording()
         this->recacheIfNeeded();
     }
 
-    this->player->startRecording();
+    this->midiRecordingMode = true;
     this->broadcastRecord();
 }
 
 bool Transport::isRecording() const
 {
-    return this->player->isRecording();
+    return this->midiRecordingMode.get();
 }
 
 void Transport::stopRecording()
 {
-    if (this->player->isRecording())
+    if (this->isRecording())
     {
         this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
         this->seekToBeat(this->getSeekBeat());
         this->broadcastStop();
         this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+        this->midiRecordingMode = false;
     }
 }
 
@@ -491,24 +495,24 @@ void Transport::instrumentRemovedPostAction()
 
 void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    // todo stop playback only if the event is in future
-    // and getTrackControllerNumber == 0 (not an automation)
+    // relying on isRecording() sucks,
+    // but I don't see any easy workaround at the moment:
     if (!this->isRecording())
     {
         this->stopPlayback();
     }
+
     updateLengthAndTimeIfNeeded((&newEvent));
     this->sequencesAreOutdated = true;
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
 {
-    // todo stop playback only if the event is in future
-    // and getTrackControllerNumber == 0 (not an automation)
     if (!this->isRecording())
     {
         this->stopPlayback();
     }
+
     updateLengthAndTimeIfNeeded((&event));
     this->sequencesAreOutdated = true;
 }
@@ -527,6 +531,7 @@ void Transport::onAddClip(const Clip &clip)
     {
         this->stopPlayback();
     }
+
     updateLengthAndTimeIfNeeded((&clip));
     this->sequencesAreOutdated = true;
 }
@@ -557,6 +562,7 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
         {
             this->stopPlayback();
         }
+
         this->sequencesAreOutdated = true;
         this->updateLinkForTrack(track);
     }
@@ -601,7 +607,10 @@ void Transport::onRemoveTrack(MidiTrack *const track)
 
 void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
 
     const auto newBeatRange = (lastBeat - firstBeat); // may also be 0
     const auto newSeekPosition = ((newBeatRange == 0.f) ? 0.f : ((this->seekBeat.get() - firstBeat) / newBeatRange));
@@ -620,7 +629,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     // seek also changed
     this->seekToBeat(newSeekPosition);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Real track length calc
@@ -692,11 +700,10 @@ MidiMessage Transport::findFirstTempoEvent()
 
 void Transport::recacheIfNeeded() const
 {
-    if (this->sequencesAreOutdated)
+    if (this->sequencesAreOutdated.get())
     {
         DBG("Transport::recache");
 
-        jassert(!this->isPlaying());
         this->playbackCache.clear();
         static Clip noTransform;
         const double offset = -this->projectFirstBeat.get();
@@ -737,7 +744,7 @@ void Transport::recacheIfNeeded() const
     }
 }
 
-ProjectSequences &Transport::getPlaybackCache()
+TransportPlaybackCache Transport::getPlaybackCache()
 {
     return this->playbackCache;
 }
