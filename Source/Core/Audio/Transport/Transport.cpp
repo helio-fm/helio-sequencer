@@ -174,7 +174,7 @@ void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitTo
 void Transport::probeSequence(const MidiMessageSequence &sequence)
 {
     this->playbackCache.clear();
-    this->sequencesAreOutdated = true; // will update on the next playback
+    this->sequencesAreOutdated = false; // temporary
 
     // using the last instrument (TODO something more clever in the future)
     auto *instrument = this->orchestra.getInstruments().getLast();
@@ -190,7 +190,8 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
         this->allNotesControllersAndSoundOff();
     }
 
-    this->player->startPlayback(false);
+    this->player->startPlayback(true);
+    this->sequencesAreOutdated = true; // will update on the next playback
 }
 
 //===----------------------------------------------------------------------===//
@@ -207,9 +208,6 @@ void Transport::startPlayback()
         this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
     }
-    
-    // todo:
-    // let listeners know about the tempo before the playback starts?
 
     this->player->startPlayback();
     this->broadcastPlay();
@@ -225,7 +223,7 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
         this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
     }
-        
+
     this->player->startPlayback(startBeat, endBeat, looped);
     this->broadcastPlay();
 }

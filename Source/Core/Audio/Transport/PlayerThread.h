@@ -27,32 +27,23 @@ public:
     ~PlayerThread() override;
 
     void startPlayback(float relStartBeat, float relEndBeat,
-        bool shouldLoop, bool shouldBroadcastTransportEvents = true);
-
-    void setRecordMidi(bool shouldRecord)
-    {
-        // todo something useful
-        this->recordMidiMode = shouldRecord;
-    }
-
-    bool isRecordingMidi() const
-    {
-        return this->recordMidiMode.get();
-    }
+        double startTempo, double currentTime, double totalTime,
+        bool loopMode, bool silentMode = false);
 
 private:
 
     void run() override;
 
     Transport &transport;
-
-    bool loopedMode = false;
-    bool broadcastMode = false;
-
-    Atomic<bool> recordMidiMode = false;
+    bool loopMode = false;
+    bool silentMode = false;
 
     Atomic<float> startBeat = 0.f;
     Atomic<float> endBeat = 1.f;
+
+    Atomic<double> totalTimeMs = 0.0;
+    Atomic<double> currentTimeMs = 0.0;
+    Atomic<double> msPerQuarterNote = 0.0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };

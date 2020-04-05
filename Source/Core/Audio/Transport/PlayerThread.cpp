@@ -37,12 +37,19 @@ PlayerThread::~PlayerThread()
 //===----------------------------------------------------------------------===//
 
 void PlayerThread::startPlayback(float relStartBeat, float relEndBeat,
-    bool shouldLoop, bool shouldBroadcastTransportEvents)
+    double startTempo, double currentTime, double totalTime,
+    bool loopMode, bool silentMode)
 {
-    this->broadcastMode = shouldBroadcastTransportEvents;
-    this->loopedMode = shouldLoop;
     this->startBeat = relStartBeat;
     this->endBeat = relEndBeat;
+
+    this->msPerQuarterNote = startTempo;
+    this->currentTimeMs = currentTime;
+    this->totalTimeMs = totalTime;
+
+    this->loopMode = loopMode;
+    this->silentMode = silentMode;
+
     this->startThread(10);
 }
 
@@ -55,26 +62,12 @@ void PlayerThread::run()
     
     double nextEventTimeDelta = 0.0;
     
-    double totalTimeMs = 0.0;
-    double tempoAtTheEndOfTrack = 0.0;
-    this->transport.findTimeAndTempoAt(this->transport.getProjectLastBeat(), totalTimeMs, tempoAtTheEndOfTrack);
-    
-    double currentTimeMs = 0.0;
-    double msPerQuarter = 0.0;
-    this->transport.findTimeAndTempoAt(this->startBeat.get(), currentTimeMs, msPerQuarter);
-    
-    if (this->broadcastMode)
-    {
-        this->transport.broadcastTempoChanged(msPerQuarter);
-    }
-    
-    const double totalTime = this->transport.getTotalTime();
-    
     sequences.seekToTime(this->startBeat.get());
     auto prevTimeStamp = this->startBeat.get();
-    if (this->broadcastMode)
+    if (!this->silentMode)
     {
-        this->transport.broadcastSeek(prevTimeStamp, currentTimeMs, totalTimeMs);
+        this->transport.broadcastSeek(prevTimeStamp,
+            this->currentTimeMs.get(), this->totalTimeMs.get());
     }
 
     // This hack is here to keep track of still playing events
@@ -138,7 +131,7 @@ void PlayerThread::run()
         // Handle playback from the last event to the end of track:
         if (!sequences.getNextMessage(wrapper))
         {
-            nextEventTimeDelta = msPerQuarter * (this->endBeat.get() - prevTimeStamp);
+            nextEventTimeDelta = this->msPerQuarterNote.get() * (this->endBeat.get() - prevTimeStamp);
             const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
 
             // Give thread a chance to exit by checking at least once a, say, second
@@ -155,13 +148,14 @@ void PlayerThread::run()
 
             Time::waitForMillisecondCounter(targetTime);
 
-            if (this->loopedMode)
+            if (this->loopMode)
             {
                 sequences.seekToTime(this->startBeat.get());
                 prevTimeStamp = this->startBeat.get();
-                if (this->broadcastMode)
+                if (!this->silentMode)
                 {
-                    this->transport.broadcastSeek(prevTimeStamp, currentTimeMs, totalTimeMs);
+                    this->transport.broadcastSeek(prevTimeStamp,
+                        this->currentTimeMs.get(), this->totalTimeMs.get());
                 }
                 continue;
             }
@@ -170,7 +164,7 @@ void PlayerThread::run()
                 sendHoldingNotesOffAndMidiStop();
                 this->transport.allNotesControllersAndSoundOff();
 
-                if (this->broadcastMode)
+                if (!this->silentMode)
                 {
                     this->transport.seekToBeat(this->transport.getSeekBeat());
                     this->transport.broadcastStop();
@@ -180,14 +174,14 @@ void PlayerThread::run()
         }
 
         const bool shouldRewind =
-            (this->loopedMode &&
+            (this->loopMode &&
             (wrapper.message.getTimeStamp() > this->endBeat.get()));
 
         const float nextEventTimeStamp =
             float(shouldRewind ? this->endBeat.get() : wrapper.message.getTimeStamp());
 
-        nextEventTimeDelta = msPerQuarter * (nextEventTimeStamp - prevTimeStamp);
-        currentTimeMs += nextEventTimeDelta;
+        nextEventTimeDelta = this->msPerQuarterNote.get() * (nextEventTimeStamp - prevTimeStamp);
+        this->currentTimeMs = this->currentTimeMs.get() + nextEventTimeDelta;
         prevTimeStamp = nextEventTimeStamp;
 
         // Zero-delay check (we're playing a chord or so)
@@ -216,9 +210,10 @@ void PlayerThread::run()
             // TODO! if recording, continue playing after the project's end
             // totalTime may and will change on any event inserted
 
-            if (this->broadcastMode)
+            if (!this->silentMode)
             {
-                this->transport.broadcastSeek(prevTimeStamp, currentTimeMs, totalTimeMs);
+                this->transport.broadcastSeek(prevTimeStamp,
+                    this->currentTimeMs.get(), this->totalTimeMs.get());
             }
         }
         
@@ -226,9 +221,10 @@ void PlayerThread::run()
         {
             sequences.seekToTime(this->startBeat.get());
             prevTimeStamp = this->startBeat.get();
-            if (this->broadcastMode)
+            if (!this->silentMode)
             {
-                this->transport.broadcastSeek(prevTimeStamp, currentTimeMs, totalTimeMs);
+                this->transport.broadcastSeek(prevTimeStamp,
+                    this->currentTimeMs.get(), this->totalTimeMs.get());
             }
         }
         else
@@ -240,11 +236,11 @@ void PlayerThread::run()
             // Master tempo event is sent to everybody
             if (wrapper.message.isTempoMetaEvent())
             {
-                msPerQuarter = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
+                this->msPerQuarterNote = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
 
-                if (this->broadcastMode)
+                if (!this->silentMode)
                 {
-                    this->transport.broadcastTempoChanged(msPerQuarter);
+                    this->transport.broadcastTempoChanged(this->msPerQuarterNote.get());
                 }
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
