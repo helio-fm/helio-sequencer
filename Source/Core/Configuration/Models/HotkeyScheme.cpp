@@ -171,7 +171,7 @@ static inline HotkeyScheme::Hotkey createHotkey(const SerializedData &e, const S
     key.keyPress = KeyPress::createFromDescription(keyPressDesc);
     key.commandId = CommandIDs::getIdForName(command);
     key.componentId = receiver.isNotEmpty() ? receiver :
-        e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver);
+        e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver).toString();
 
     return key;
 }

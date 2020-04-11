@@ -84,7 +84,7 @@ private:
     void onSeek(float, double, double) override {}
     void onTempoChanged(double) override {}
     void onTotalTimeChanged(double) override {}
-
+    void onRecord() override {}
     void onPlay() override;
     void onStop() override;
 
