@@ -100,7 +100,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
             {
                 const auto firstBeat = this->roll->getLassoStartBeat();
                 const auto lastBeat = this->roll->getLassoEndBeat();
-                transport.startPlaybackFragment(firstBeat - 0.001f, lastBeat);
+                transport.startPlaybackFragment(firstBeat - 0.001f, lastBeat, true);
             }
         }));
     }

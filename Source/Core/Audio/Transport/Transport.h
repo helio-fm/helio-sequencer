@@ -59,7 +59,7 @@ public:
     void probeSequence(const MidiMessageSequence &sequence);
 
     void startPlayback();
-    void startPlaybackFragment(float startBeat, float endBeat, bool looped = false);
+    void startPlaybackFragment(float startBeat, float endBeat, bool looped);
 
     bool isPlaying() const;
     void stopPlayback();

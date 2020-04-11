@@ -1195,7 +1195,6 @@ void HybridRoll::handleCommandMessage(int commandId)
 
         this->getTransport().stopPlayback();
         this->getTransport().stopRecording();
-
         this->getTransport().stopSound();
         break;
     case CommandIDs::VersionControlToggleQuickStash:

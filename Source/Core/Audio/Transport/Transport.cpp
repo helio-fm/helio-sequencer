@@ -209,7 +209,7 @@ void Transport::startPlayback()
         this->allNotesControllersAndSoundOff();
     }
 
-    this->player->startPlayback();
+    this->player->startPlayback(false);
     this->broadcastPlay();
 }
 
@@ -224,7 +224,7 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
         this->allNotesControllersAndSoundOff();
     }
 
-    this->player->startPlayback(startBeat, endBeat, looped);
+    this->player->startPlayback(startBeat, endBeat, looped, false);
     this->broadcastPlay();
 }
 
@@ -232,11 +232,11 @@ void Transport::stopPlayback()
 {
     if (this->player->isPlaying())
     {
-        this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
         this->seekToBeat(this->getSeekBeat());
         this->broadcastStop();
         this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+        this->player->stopPlayback(); // after broadcastStop so that MM can be locked
     }
 }
 
@@ -275,11 +275,7 @@ void Transport::stopRecording()
 {
     if (this->isRecording())
     {
-        this->player->stopPlayback();
-        this->allNotesControllersAndSoundOff();
-        this->seekToBeat(this->getSeekBeat());
-        this->broadcastStop();
-        this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+        this->stopPlayback(); // if playing
         this->midiRecordingMode = false;
     }
 }
@@ -624,8 +620,11 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     this->findTimeAndTempoAt(lastBeat, realLengthMs, tempo);
     this->broadcastTotalTimeChanged(realLengthMs);
     
-    // seek also changed
-    this->seekToBeat(newSeekPosition);
+    // seek has also changed
+    if (!this->isRecording())
+    {
+        this->seekToBeat(newSeekPosition);
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -700,8 +699,7 @@ void Transport::recacheIfNeeded() const
 {
     if (this->sequencesAreOutdated.get())
     {
-        DBG("Transport::recache");
-
+        //DBG("Transport::recache");
         this->playbackCache.clear();
         static Clip noTransform;
         const double offset = -this->projectFirstBeat.get();
@@ -822,6 +820,7 @@ void Transport::broadcastTotalTimeChanged(double timeMs)
 void Transport::broadcastPlay()
 {
     MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
 
     if (mml.lockWasGained())
     {
@@ -832,6 +831,7 @@ void Transport::broadcastPlay()
 void Transport::broadcastRecord()
 {
     MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
 
     if (mml.lockWasGained())
     {
@@ -842,6 +842,7 @@ void Transport::broadcastRecord()
 void Transport::broadcastStop()
 {
     MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
 
     if (mml.lockWasGained())
     {

@@ -142,7 +142,7 @@ void PlayerThread::run()
                 if (this->threadShouldExit())
                 {
                     sendHoldingNotesOffAndMidiStop();
-                    return;
+                    return; // the transport have already stopped
                 }
             }
 
@@ -161,14 +161,26 @@ void PlayerThread::run()
             }
             else
             {
+                while (this->transport.isRecording() && !this->threadShouldExit())
+                {
+                    Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                }
+
                 sendHoldingNotesOffAndMidiStop();
+
+                if (this->threadShouldExit())
+                {
+                    return; // the transport have already stopped
+                }
+
                 this->transport.allNotesControllersAndSoundOff();
 
                 if (!this->silentMode)
                 {
-                    this->transport.seekToBeat(this->transport.getSeekBeat());
-                    this->transport.broadcastStop();
+                    this->transport.stopRecording();
+                    this->transport.stopPlayback();
                 }
+
                 return;
             }
         }

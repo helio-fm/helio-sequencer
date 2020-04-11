@@ -43,14 +43,14 @@ public:
         }
     }
 
-    void startPlayback(bool silentMode = false)
+    void startPlayback(bool silentMode)
     {
         const auto start = this->transport.getSeekBeat() - this->transport.getProjectFirstBeat();
         const auto end = this->transport.getProjectLastBeat() - this->transport.getProjectFirstBeat();
         this->startPlayback(start, end, false, silentMode);
     }
 
-    void startPlayback(float start, float end, bool loopedMode, bool silentMode = false)
+    void startPlayback(float start, float end, bool loopedMode, bool silentMode)
     {
         if (this->currentPlayer->isThreadRunning())
         {
