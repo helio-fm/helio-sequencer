@@ -12,6 +12,7 @@ branches:
   only:
     - master
     - develop
+    - feature/record-midi
     - /^\d+\.?\d+\.?\d*$/
 
 stages:
