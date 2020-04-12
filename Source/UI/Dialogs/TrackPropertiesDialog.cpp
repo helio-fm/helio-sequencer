@@ -199,8 +199,7 @@ void TrackPropertiesDialog::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
-        this->cancelChangesIfAny();
-        this->dismiss();
+        this->doCancel();
     }
     //[/UserCode_handleCommandMessage]
 }
@@ -280,8 +279,7 @@ void TrackPropertiesDialog::textEditorReturnKeyPressed(TextEditor &ed)
 
 void TrackPropertiesDialog::textEditorEscapeKeyPressed(TextEditor&)
 {
-    this->cancelChangesIfAny();
-    this->dismiss();
+    this->doCancel();
 }
 
 void TrackPropertiesDialog::textEditorFocusLost(TextEditor&)
@@ -293,7 +291,7 @@ void TrackPropertiesDialog::textEditorFocusLost(TextEditor&)
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->cancelButton.get())
     {
-        this->dismiss();
+        this->doOk();
     }
     else
     {
