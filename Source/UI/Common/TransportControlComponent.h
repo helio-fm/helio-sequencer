@@ -36,6 +36,8 @@ public:
     //[UserMethods]
     void showPlayingMode(bool isPlaying);
     void showRecordingMode(bool isRecording);
+    void showRecordingError();
+    void showRecordingMenu(const Array<MidiDeviceInfo> &devices);
     //[/UserMethods]
 
     void paint (Graphics& g) override;

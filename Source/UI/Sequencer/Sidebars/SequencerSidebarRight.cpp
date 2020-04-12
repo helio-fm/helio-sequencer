@@ -408,6 +408,27 @@ void SequencerSidebarRight::onRecord()
     this->transportControl->showRecordingMode(true);
 }
 
+void SequencerSidebarRight::onRecordFailed(const Array<MidiDeviceInfo> &devices)
+{
+    jassert(devices.size() != 1);
+
+    if (!this->isShowing()) // shouldn't happen, but just in case it does
+    {
+        jassertfalse;
+        return;
+    }
+
+    if (devices.isEmpty())
+    {
+        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoInputDevices));
+        this->transportControl->showRecordingError();
+    }
+    else
+    {
+        this->transportControl->showRecordingMenu(devices);
+    }
+}
+
 void SequencerSidebarRight::onStop()
 {
 #if TOOLS_SIDEBAR_SHOWS_TIME

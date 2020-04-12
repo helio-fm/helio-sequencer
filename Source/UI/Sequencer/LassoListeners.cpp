@@ -201,8 +201,6 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
 
     // if the single piano clip is selected,
     // set it as the recording target, and mark it with red color
-    // otherwise set nullptr
-    
     auto *cc = selection->getFirstAs<ClipComponent>();
     if (auto *pc = dynamic_cast<PianoClipComponent *>(cc))
     {

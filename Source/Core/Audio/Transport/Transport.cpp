@@ -262,8 +262,16 @@ void Transport::startRecording()
         this->recacheIfNeeded();
     }
 
-    this->midiRecordingMode = true;
-    this->broadcastRecord();
+    // canRecord == we have exactly 1 device available and enabled
+    const bool canRecord = App::Workspace().getAudioCore().autodetectMidiDeviceSetup();
+    if (canRecord)
+    {
+        this->midiRecordingMode = true;
+        this->broadcastRecord();
+    }
+
+    const auto allDevices = MidiInput::getAvailableDevices();
+    this->broadcastRecordFailed(allDevices);
 }
 
 bool Transport::isRecording() const
@@ -836,6 +844,17 @@ void Transport::broadcastRecord()
     if (mml.lockWasGained())
     {
         this->transportListeners.call(&TransportListener::onRecord);
+    }
+}
+
+void Transport::broadcastRecordFailed(const Array<MidiDeviceInfo> &devices)
+{
+    MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onRecordFailed, devices);
     }
 }
 

@@ -250,7 +250,8 @@ public:
         this->blinks++;
         this->state = !this->state;
 
-        if (this->blinks > 4)
+        constexpr auto numBlinks = 3;
+        if (this->blinks > numBlinks * 2)
         {
             this->blinks = 0;
             this->state = false;
@@ -400,45 +401,21 @@ void TransportControlComponent::showRecordingMode(bool isRecording)
     }
 }
 
-void TransportControlComponent::playButtonPressed()
+void TransportControlComponent::showRecordingError()
 {
-    this->broadcastCommandMessage(this->isPlaying.get() ?
-        CommandIDs::TransportStop :
-        CommandIDs::TransportPlaybackStart);
+    this->recordBg->setActive(); // the initial "blink"
+    this->recordButtonBlinkAnimator->startTimer(100);
 }
 
-void TransportControlComponent::recordButtonPressed()
+void TransportControlComponent::showRecordingMenu(const Array<MidiDeviceInfo> &devices)
 {
-    if (this->isRecording.get())
-    {
-        this->broadcastCommandMessage(CommandIDs::TransportStop);
-        return;
-    }
-    
-    // canRecord == we have 1 available and enabled device
-    const bool canRecord = App::Workspace().getAudioCore().autodetectMidiDeviceSetup();
-    if (canRecord)
-    {
-        this->broadcastCommandMessage(CommandIDs::TransportRecordingAwait);
-        return;
-    }
-
-    // fixme: move this logic into transport
-    // add smth like a callback onRecoringFailed(Array<MidiDeviceInfo> &devices)
-
-    const auto allDevices = MidiInput::getAvailableDevices();
-    if (allDevices.isEmpty())
-    {
-        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoInputDevices));
-        this->recordButtonBlinkAnimator->startTimer(100);
-        return;
-    }
+    jassert(devices.size() > 1);
 
     // if more than 1 devices available, provide a choice
     MenuPanel::Menu menu;
     auto panel = makeUnique<MenuPanel>();
 
-    for (const auto &midiInput : allDevices)
+    for (const auto &midiInput : devices)
     {
         menu.add(MenuItem::item(Icons::piano, midiInput.name)->
             closesMenu()->
@@ -454,6 +431,22 @@ void TransportControlComponent::recordButtonPressed()
     panel->updateContent(menu, MenuPanel::SlideLeft, true);
 
     HelioCallout::emit(panel.release(), this->recordBg.get());
+}
+
+// button callbacks:
+
+void TransportControlComponent::playButtonPressed()
+{
+    this->broadcastCommandMessage(this->isPlaying.get() ?
+        CommandIDs::TransportStop :
+        CommandIDs::TransportPlaybackStart);
+}
+
+void TransportControlComponent::recordButtonPressed()
+{
+    this->broadcastCommandMessage(this->isRecording.get() ?
+        CommandIDs::TransportStop :
+        CommandIDs::TransportRecordingAwait);
 }
 
 void TransportControlComponent::broadcastCommandMessage(CommandIDs::Id command)

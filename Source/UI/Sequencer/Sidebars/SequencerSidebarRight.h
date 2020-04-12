@@ -115,8 +115,9 @@ private:
     void onTempoChanged(double msPerQuarter) override {}
     void onTotalTimeChanged(double timeMs) override;
     void onPlay() override;
-    void onRecord() override;
     void onStop() override;
+    void onRecord() override;
+    void onRecordFailed(const Array<MidiDeviceInfo> &devices) override;
 
     //[/UserVariables]
 

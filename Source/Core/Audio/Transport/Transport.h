@@ -141,8 +141,9 @@ protected:
     void setSeekBeat(float beatPosition);
 
     void broadcastPlay();
-    void broadcastRecord();
     void broadcastStop();
+    void broadcastRecord();
+    void broadcastRecordFailed(const Array<MidiDeviceInfo> &devices);
     void broadcastTempoChanged(double newTempo);
     void broadcastTotalTimeChanged(double timeMs);
     void broadcastSeek(float newBeat, double currentTimeMs, double totalTimeMs);

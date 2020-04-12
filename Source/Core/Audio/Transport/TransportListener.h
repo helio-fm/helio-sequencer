@@ -31,7 +31,8 @@ public:
 
     // these ones will be called with message manager locked
     virtual void onPlay() = 0;
-    virtual void onRecord() = 0;
     virtual void onStop() = 0;
+    virtual void onRecord() = 0;
+    virtual void onRecordFailed(const Array<MidiDeviceInfo> &devices) {}
 
 };
