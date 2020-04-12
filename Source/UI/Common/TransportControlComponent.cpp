@@ -131,6 +131,9 @@ private:
             this->repaint();
         }
     }
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE(TransportControlButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControlButton)
 };
 
 class TransportControlRecordBg final : public TransportControlButton
@@ -226,6 +229,43 @@ public:
     Colour lineColour;
 };
 
+class RecordButtonBlinkAnimator final : public Timer
+{
+public:
+
+    explicit RecordButtonBlinkAnimator(WeakReference<TransportControlButton> button) :
+        button(button) {}
+
+    void timerCallback() override
+    {
+        if (this->state)
+        {
+            this->button->setActive();
+        }
+        else
+        {
+            this->button->setInactive();
+        }
+
+        this->blinks++;
+        this->state = !this->state;
+
+        if (this->blinks > 4)
+        {
+            this->blinks = 0;
+            this->state = false;
+            this->stopTimer();
+        }
+    }
+
+private:
+
+    int blinks = 0;
+    bool state = false;
+    WeakReference<TransportControlButton> button;
+
+};
+
 
 //[/MiscUserDefs]
 
@@ -262,12 +302,14 @@ TransportControlComponent::TransportControlComponent(WeakReference<Component> ev
     this->setSize(44, 79);
 
     //[Constructor]
+    this->recordButtonBlinkAnimator = makeUnique<RecordButtonBlinkAnimator>(this->recordBg.get());
     //[/Constructor]
 }
 
 TransportControlComponent::~TransportControlComponent()
 {
     //[Destructor_pre]
+    this->recordButtonBlinkAnimator = nullptr;
     //[/Destructor_pre]
 
     recordBg = nullptr;
@@ -341,6 +383,12 @@ void TransportControlComponent::showPlayingMode(bool isPlaying)
 
 void TransportControlComponent::showRecordingMode(bool isRecording)
 {
+    // stop the animation if any
+    if (this->recordButtonBlinkAnimator->isTimerRunning())
+    {
+        this->recordButtonBlinkAnimator->stopTimer();
+    }
+
     this->isRecording = isRecording;
     if (isRecording)
     {
@@ -366,7 +414,7 @@ void TransportControlComponent::recordButtonPressed()
         this->broadcastCommandMessage(CommandIDs::TransportStop);
         return;
     }
-
+    
     // canRecord == we have 1 available and enabled device
     const bool canRecord = App::Workspace().getAudioCore().autodetectMidiDeviceSetup();
     if (canRecord)
@@ -375,10 +423,14 @@ void TransportControlComponent::recordButtonPressed()
         return;
     }
 
+    // fixme: move this logic into transport
+    // add smth like a callback onRecoringFailed(Array<MidiDeviceInfo> &devices)
+
     const auto allDevices = MidiInput::getAvailableDevices();
     if (allDevices.isEmpty())
     {
-        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoInputDevices), MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoInputDevices));
+        this->recordButtonBlinkAnimator->startTimer(100);
         return;
     }
 

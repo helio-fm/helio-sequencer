@@ -48,6 +48,8 @@ private:
     //[UserVariables]
 
     ComponentAnimator animator;
+    UniquePointer<Timer> recordButtonBlinkAnimator;
+
     WeakReference<Component> eventReceiver;
 
     Atomic<bool> isPlaying = false;
