@@ -713,10 +713,10 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::transposeClips(this->getLassoSelection(), -12);
         break;
     case CommandIDs::ClipVolumeUp:
-        PatternOperations::tuneClips(this->getLassoSelection(), 0.1f);
+        PatternOperations::tuneClips(this->getLassoSelection(), 1.f / 32.f);
         break;
     case CommandIDs::ClipVolumeDown:
-        PatternOperations::tuneClips(this->getLassoSelection(), -0.1f);
+        PatternOperations::tuneClips(this->getLassoSelection(), -1.f / 32.f);
         break;
     case CommandIDs::BeatShiftLeft:
         PatternOperations::shiftBeatRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());

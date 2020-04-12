@@ -157,6 +157,13 @@ Note Note::withVelocity(float newVelocity) const noexcept
     return other;
 }
 
+Note Note::withDeltaVelocity(float deltaVelocity) const noexcept
+{
+    Note other(*this);
+    other.velocity = jlimit(0.f, 1.f, this->velocity + deltaVelocity);
+    return other;
+}
+
 Note Note::withTuplet(Tuplet tuplet) const noexcept
 {
     Note other(*this);

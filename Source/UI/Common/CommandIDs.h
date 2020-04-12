@@ -167,8 +167,10 @@ namespace CommandIDs
         InvertChordDown                 = 0x4032,
         MelodicInversion                = 0x4033,
         Retrograde                      = 0x4034,
-        TweakVolumeRandom               = 0x4035,
-        TweakVolumeFadeOut              = 0x4036,
+        NotesVolumeRandom               = 0x4035,
+        NotesVolumeFadeOut              = 0x4036,
+        NotesVolumeUp                   = 0x4037,
+        NotesVolumeDown                 = 0x4038,
 
         ShowArpeggiatorsPanel           = 0x4040,
         ShowVolumePanel                 = 0x4041,

@@ -219,9 +219,6 @@ void PlayerThread::run()
                 return;
             }
             
-            // TODO! if recording, continue playing after the project's end
-            // totalTime may and will change on any event inserted
-
             if (!this->silentMode)
             {
                 this->transport.broadcastSeek(prevTimeStamp,

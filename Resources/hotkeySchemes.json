@@ -109,7 +109,7 @@
         { "command": "NewTrackFromSelection", "key": "Command + Shift + X" },
 
         // Duplicate track
-        { "command": "DuplicateTrack", "key": "+" },
+        { "command": "DuplicateTrack", "key": "F5" },
 
         // Delete
         { "command": "DeleteEvents", "key": "X" },
@@ -126,7 +126,7 @@
         { "command": "TransportRecordingStart", "key": "Shift + Return" },
         { "command": "TransportRecordingAwait", "key": "Control + Return" },
         { "command": "TransportRecordingAwait", "key": "Command + Return" },
-        { "command": "TransportRecordingAwait", "key": "Alt + Return" },
+        { "command": "TransportRecordingAwait", "key": "F12" },
         { "command": "TransportStop", "key": "Escape" },
 
         // Navigation
@@ -158,8 +158,10 @@
         { "command": "Retrograde", "key": "Alt + R" },
         { "command": "MelodicInversion", "key": "Alt + I" },
         { "command": "CleanupOverlaps", "key": "Alt + O" },
-        { "command": "TweakVolumeRandom", "key": "Alt + V" },
-        { "command": "TweakVolumeFadeOut", "key": "Alt + F" },
+        { "command": "NotesVolumeUp", "key": "+" },
+        { "command": "NotesVolumeDown", "key": "-" },
+        { "command": "NotesVolumeRandom", "key": "Alt + +" },
+        { "command": "NotesVolumeFadeOut", "key": "Alt + -" },
         { "command": "InvertChordUp", "key": "Alt + Cursor Up" },
         { "command": "InvertChordUp", "key": "Command + Cursor Up" },
         { "command": "InvertChordUp", "key": "Control + Cursor Up" },
@@ -233,14 +235,14 @@
         { "command": "DeleteClips", "key": "Backspace" },
 
         // Duplicate track
-        { "command": "DuplicateTrack", "key": "+" },
+        { "command": "DuplicateTrack", "key": "F5" },
 
         // Playback control
         { "command": "TransportPlaybackStart", "key": "Return" },
         { "command": "TransportRecordingStart", "key": "Shift + Return" },
         { "command": "TransportRecordingAwait", "key": "Control + Return" },
         { "command": "TransportRecordingAwait", "key": "Command + Return" },
-        { "command": "TransportRecordingAwait", "key": "Alt + Return" },
+        { "command": "TransportRecordingAwait", "key": "F12" },
         { "command": "TransportStop", "key": "Escape" },
 
         // Navigation

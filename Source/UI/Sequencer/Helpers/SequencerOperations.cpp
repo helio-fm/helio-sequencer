@@ -1276,6 +1276,37 @@ void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool sho
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
 }
 
+void SequencerOperations::tuneVolume(Lasso &selection, float delta, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0 || delta == 0.f)
+    {
+        return;
+    }
+
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence);
+
+    const auto operationId = (delta > 0.f) ? UndoActionIDs::NotesVolumeUp : UndoActionIDs::NotesVolumeDown;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastOperation = sequence->getLastUndoActionId() == transactionId;
+
+    if (shouldCheckpoint && !repeatsLastOperation)
+    {
+        sequence->checkpoint(transactionId);
+    }
+
+    PianoChangeGroup groupBefore, groupAfter;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        auto *nc = selection.getItemAs<NoteComponent>(i);
+        groupBefore.add(nc->getNote());
+        groupAfter.add(nc->getNote().withDeltaVelocity(delta));
+    }
+
+    sequence->changeGroup(groupBefore, groupAfter, true);
+}
+
 void SequencerOperations::startTuning(Lasso &selection)
 {
     if (selection.getNumSelected() == 0)

@@ -165,8 +165,8 @@ static inline HotkeyScheme::Hotkey createHotkey(const SerializedData &e, const S
 {
     HotkeyScheme::Hotkey key;
 
-    auto command = e.getProperty(Serialization::UI::Hotkeys::hotkeyCommand);
-    auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
+    const auto command = e.getProperty(Serialization::UI::Hotkeys::hotkeyCommand);
+    const auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
 
     key.keyPress = KeyPress::createFromDescription(keyPressDesc);
     key.commandId = CommandIDs::getIdForName(command);

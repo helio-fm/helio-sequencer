@@ -54,6 +54,7 @@ public:
     Note withLength(float newLength) const noexcept;
     Note withDeltaLength(float deltaLength) const noexcept;
     Note withVelocity(float newVelocity) const noexcept;
+    Note withDeltaVelocity(float deltaVelocity) const noexcept;
     Note withTuplet(Tuplet tuplet) const noexcept;
     Note withParameters(const SerializedData &parameters) const noexcept;
 

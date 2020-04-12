@@ -40,6 +40,9 @@ namespace UndoActionIDs
         ClipVolumeUp = 0x0012,
         ClipVolumeDown = 0x0013,
 
+        NotesVolumeUp = 0x0014,
+        NotesVolumeDown = 0x0015,
+
         AddNewTrack = 0x0020,
 
         // ...
