@@ -3,12 +3,12 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-SET(BINARY_NAME "juce_jni")
+set(BINARY_NAME "juce_jni")
 
 add_library("cpufeatures" STATIC "${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c")
 set_source_files_properties("${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c" PROPERTIES COMPILE_FLAGS "-Wno-sign-conversion -Wno-gnu-statement-expression")
 
-add_definitions("-DJUCE_ANDROID=1" "-DJUCE_ANDROID_API_VERSION=21" "-DJUCE_ANDROID_GL_ES_VERSION_3_0=1" "-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=2.5" "-DJUCE_APP_VERSION_HEX=0x20500")
+add_definitions("-DJUCE_ANDROID=1" "-DJUCE_ANDROID_API_VERSION=21" "-DJUCE_ANDROID_GL_ES_VERSION_3_0=1" "-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.0" "-DJUCE_APP_VERSION_HEX=0x30000")
 
 include_directories( AFTER
     "../../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"
@@ -19,8 +19,8 @@ include_directories( AFTER
 
 enable_language(ASM)
 
-IF(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
-    add_definitions("-DDEBUG=1" "-D_DEBUG=1")
+if(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
+    add_definitions("-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.0" "-DJUCE_APP_VERSION_HEX=0x30000" "-DDEBUG=1" "-D_DEBUG=1")
     include_directories( AFTER
         "../../Projucer/JuceLibraryCode"
         "../../../ThirdParty/JUCE/modules"
@@ -89,8 +89,8 @@ IF(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
         "../../../Source/UI/Themes"
     )
 
-ELSEIF(JUCE_BUILD_CONFIGURATION MATCHES "RELEASE")
-    add_definitions("-DNDEBUG=1")
+elseif(JUCE_BUILD_CONFIGURATION MATCHES "RELEASE")
+    add_definitions("-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.0" "-DJUCE_APP_VERSION_HEX=0x30000" "-DNDEBUG=1")
     include_directories( AFTER
         "../../Projucer/JuceLibraryCode"
         "../../../ThirdParty/JUCE/modules"
@@ -159,9 +159,9 @@ ELSEIF(JUCE_BUILD_CONFIGURATION MATCHES "RELEASE")
         "../../../Source/UI/Themes"
     )
 
-ELSE(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
-    MESSAGE( FATAL_ERROR "No matching build-configuration found." )
-ENDIF(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
+else()
+    message( FATAL_ERROR "No matching build-configuration found." )
+endif()
 
 add_library( ${BINARY_NAME}
 
@@ -188,6 +188,16 @@ add_library( ${BINARY_NAME}
 set_source_files_properties("../../Projucer/JuceLibraryCode/AppConfig.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../Projucer/JuceLibraryCode/BinaryData.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../Projucer/JuceLibraryCode/JuceHeader.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+
+target_compile_options( ${BINARY_NAME} PRIVATE "-fsigned-char" "-Wno-unused-command-line-argument" )
+
+if( JUCE_BUILD_CONFIGURATION MATCHES "DEBUG" )
+    target_compile_options( ${BINARY_NAME} PRIVATE)
+endif()
+
+if( JUCE_BUILD_CONFIGURATION MATCHES "RELEASE" )
+    target_compile_options( ${BINARY_NAME} PRIVATE)
+endif()
 
 find_library(log "log")
 find_library(android "android")

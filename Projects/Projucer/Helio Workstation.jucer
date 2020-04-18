@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="2.5" bundleIdentifier="fm.helio"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.0" bundleIdentifier="fm.helio"
               includeBinaryInAppConfig="1" jucerVersion="5.4.7" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
@@ -1465,11 +1465,12 @@
                   UIStatusBarHidden="1" smallIcon="DQTpOG" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0"
                   customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;"
-                  iosScreenOrientation="landscape" customXcodeResourceFolders=""
-                  customXcassetsFolder="../../Resources/iOS/Images.xcassets" iosDevelopmentTeamID="EQL633LLC8"
-                  userNotes="" extraLinkerFlags="" externalLibraries="" extraFrameworks=""
-                  iosDeviceFamily="1,2" iPadScreenOrientation="landscape" useHeaderMap="0"
-                  bundleIdentifier="fm.helio.mobile" unityBuild="1">
+                  iosScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
+                  customXcodeResourceFolders="" customXcassetsFolder="../../Resources/iOS/Images.xcassets"
+                  iosDevelopmentTeamID="EQL633LLC8" userNotes="" extraLinkerFlags=""
+                  externalLibraries="" extraFrameworks="" iosDeviceFamily="1,2"
+                  iPadScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
+                  useHeaderMap="0" bundleIdentifier="fm.helio.mobile" unityBuild="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
