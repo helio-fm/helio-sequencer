@@ -455,10 +455,6 @@ void NotesTuningPanel::endTuning()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void NotesTuningPanel::onTempoChanged(double) {}
-void NotesTuningPanel::onTotalTimeChanged(double) {}
-void NotesTuningPanel::onSeek(double, double, double) {}
-
 void NotesTuningPanel::onPlay()
 {
     this->playButton->setPlaying(true);

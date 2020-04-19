@@ -43,27 +43,35 @@ public:
         }
     }
 
-    void startPlayback(bool shouldBroadcastTransportEvents = true)
+    void startPlayback(bool silentMode)
     {
-        if (this->currentPlayer->isThreadRunning())
-        {
-            this->currentPlayer->signalThreadShouldExit();
-            this->currentPlayer = findNextFreePlayer();
-        }
-
-        this->currentPlayer->startPlayback(this->transport.getSeekPosition(), 1.0,
-            false, shouldBroadcastTransportEvents);
+        const auto start = this->transport.getSeekBeat() - this->transport.getProjectFirstBeat();
+        const auto end = this->transport.getProjectLastBeat() - this->transport.getProjectFirstBeat();
+        this->startPlayback(start, end, false, silentMode);
     }
 
-    void startPlayback(double start, double end, bool loopedMode, bool shouldBroadcast = true)
+    void startPlayback(float start, float end, bool loopedMode, bool silentMode)
     {
         if (this->currentPlayer->isThreadRunning())
         {
             this->currentPlayer->signalThreadShouldExit();
-            this->currentPlayer = findNextFreePlayer();
+            this->currentPlayer = this->findNextFreePlayer();
         }
 
-        this->currentPlayer->startPlayback(start, end, loopedMode, shouldBroadcast);
+        double totalTimeMs = 0.0;
+        double _tempoAtTheEnd = 0.0;
+        this->transport.findTimeAndTempoAt(this->transport.getProjectLastBeat(), totalTimeMs, _tempoAtTheEnd);
+
+        double currentTimeMs = 0.0;
+        double msPerQuarter = 0.0;
+        this->transport.findTimeAndTempoAt(this->transport.getSeekBeat(), currentTimeMs, msPerQuarter);
+
+        // let listeners know about the tempo before the playback starts
+        this->transport.broadcastTempoChanged(msPerQuarter);
+
+        this->currentPlayer->startPlayback(start, end,
+            msPerQuarter, currentTimeMs, totalTimeMs,
+            loopedMode, silentMode);
     }
 
     void stopPlayback()

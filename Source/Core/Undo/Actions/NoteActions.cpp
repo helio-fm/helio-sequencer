@@ -79,6 +79,29 @@ void NoteInsertAction::reset()
     this->trackId.clear();
 }
 
+// a way to make note insertions a bit smarter;
+// two single note inserts will coalesce into a grouped insert,
+// and the grouped insert action will coalesce with the following
+// single insert as well, so that several single insert actions
+// will always end up being coalesced into one grouped insert action:
+UndoAction *NoteInsertAction::createCoalescedAction(UndoAction *nextAction)
+{
+    if (auto *nextChanger = dynamic_cast<NoteInsertAction *>(nextAction))
+    {
+        if (nextChanger->trackId != this->trackId)
+        {
+            return nullptr;
+        }
+
+        //DBG("NoteInsertAction ++");
+        return new NotesGroupInsertAction(this->source,
+            this->trackId, this->note, nextChanger->note);
+    }
+
+    (void)nextAction;
+    return nullptr;
+}
+
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
@@ -179,22 +202,17 @@ int NoteChangeAction::getSizeInUnits()
 
 UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<NoteChangeAction *>(nextAction))
     {
-        if (NoteChangeAction *nextChanger =
-            dynamic_cast<NoteChangeAction *>(nextAction))
-        {
-            // checking id's here is necessary to keep group changes ok
-            const bool idsAreEqual =
-                (this->noteBefore.getId() == nextChanger->noteAfter.getId() &&
-                    this->trackId == nextChanger->trackId);
+        const bool idsAreEqual =
+            (this->noteBefore.getId() == nextChanger->noteAfter.getId() &&
+                this->trackId == nextChanger->trackId);
             
-            if (idsAreEqual)
-            {
-                return new NoteChangeAction(this->source,
-                    this->trackId, this->noteBefore, nextChanger->noteAfter);
-            }
+        if (idsAreEqual)
+        {
+            //DBG("NoteChangeAction ++");
+            return new NoteChangeAction(this->source,
+                this->trackId, this->noteBefore, nextChanger->noteAfter);
         }
     }
     
@@ -246,6 +264,14 @@ NotesGroupInsertAction::NotesGroupInsertAction(MidiTrackSource &source,
     trackId(trackId)
 {
     this->notes.swapWith(target);
+}
+
+NotesGroupInsertAction::NotesGroupInsertAction(MidiTrackSource &source,
+    const String &trackId, Note &action1Note, Note &action2Note) noexcept :
+    UndoAction(source),
+    trackId(trackId)
+{
+    this->notes.add(action1Note, action2Note);
 }
 
 bool NotesGroupInsertAction::perform()
@@ -305,6 +331,37 @@ void NotesGroupInsertAction::reset()
 {
     this->notes.clear();
     this->trackId.clear();
+}
+
+UndoAction *NotesGroupInsertAction::createCoalescedAction(UndoAction *nextAction)
+{
+    if (auto *nextGroup = dynamic_cast<NotesGroupInsertAction *>(nextAction))
+    {
+        if (nextGroup->trackId != this->trackId)
+        {
+            return nullptr;
+        }
+
+        //DBG("NotesGroupInsertAction ++");
+        this->notes.addArray(nextGroup->notes);
+        return new NotesGroupInsertAction(this->source,
+            this->trackId, this->notes);
+    }
+    else if (auto *nextChanger = dynamic_cast<NoteInsertAction *>(nextAction))
+    {
+        if (nextChanger->trackId != this->trackId)
+        {
+            return nullptr;
+        }
+
+        //DBG("NotesGroupInsertAction + NoteInsertAction");
+        this->notes.add(nextChanger->note);
+        return new NotesGroupInsertAction(this->source,
+            this->trackId, this->notes);
+    }
+
+    (void)nextAction;
+    return nullptr;
 }
 
 //===----------------------------------------------------------------------===//
@@ -421,34 +478,30 @@ int NotesGroupChangeAction::getSizeInUnits()
 
 UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<NotesGroupChangeAction *>(nextAction))
     {
-        if (NotesGroupChangeAction *nextChanger =
-            dynamic_cast<NotesGroupChangeAction *>(nextAction))
+        if (nextChanger->trackId != this->trackId)
         {
-            if (nextChanger->trackId != this->trackId)
-            {
-                return nullptr;
-            }
-            
-            if (this->notesBefore.size() != nextChanger->notesAfter.size())
-            {
-                return nullptr;
-            }
-            
-            for (int i = 0; i < this->notesBefore.size(); ++i)
-            {
-                if (this->notesBefore.getUnchecked(i).getId() !=
-                    nextChanger->notesAfter.getUnchecked(i).getId())
-                {
-                    return nullptr;
-                }
-            }
-            
-            return new NotesGroupChangeAction(this->source,
-                this->trackId, this->notesBefore, nextChanger->notesAfter);
+            return nullptr;
         }
+            
+        if (this->notesBefore.size() != nextChanger->notesAfter.size())
+        {
+            return nullptr;
+        }
+            
+        for (int i = 0; i < this->notesBefore.size(); ++i)
+        {
+            if (this->notesBefore.getUnchecked(i).getId() !=
+                nextChanger->notesAfter.getUnchecked(i).getId())
+            {
+                return nullptr;
+            }
+        }
+            
+        //DBG("NotesGroupChangeAction ++");
+        return new NotesGroupChangeAction(this->source,
+            this->trackId, this->notesBefore, nextChanger->notesAfter);
     }
 
     (void) nextAction;

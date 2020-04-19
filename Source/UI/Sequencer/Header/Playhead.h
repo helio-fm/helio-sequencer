@@ -23,7 +23,7 @@ class MovementListener;
 
 #include "TransportListener.h"
 
-class Playhead :
+class Playhead final :
     public Component,
     public TransportListener,
     private AsyncUpdater,
@@ -35,7 +35,7 @@ public:
     {
     public:
         virtual ~Listener() {}
-        virtual void onPlayheadMoved(int indicatorX) = 0;
+        virtual void onPlayheadMoved(int playheadX) = 0;
     };
 
     Playhead(HybridRoll &parentRoll,
@@ -45,15 +45,15 @@ public:
 
     ~Playhead() override;
 
-
     //===------------------------------------------------------------------===//
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) override;
-    void onTotalTimeChanged(double timeMs) override;
+    void onTotalTimeChanged(double timeMs) override {}
     void onPlay() override;
+    void onRecord() override;
     void onStop() override;
 
     //===------------------------------------------------------------------===//
@@ -69,7 +69,7 @@ protected:
     HybridRoll &roll;
     Transport &transport;
 
-    int playheadWidth;
+    const int playheadWidth = 1;
 
 private:
 
@@ -82,10 +82,9 @@ private:
 
     void parentChanged();
 
-    SpinLock anchorsLock;
-    double timerStartTime;
-    double timerStartPosition;
-    double msPerQuarterNote;
+    Atomic<float> timerStartPosition = 0.f;
+    Atomic<double> timerStartTime = 0.0;
+    Atomic<double> msPerQuarterNote = DEFAULT_MS_PER_QN;
 
 private:
 
@@ -94,15 +93,16 @@ private:
     //===------------------------------------------------------------------===//
 
     void handleAsyncUpdate() override;
-
     void updatePosition(double position);
 
-    Colour mainColour;
-    Colour shadeColour;
+    Colour currentColour;
 
-    SpinLock lastCorrectPositionLock;
-    double lastCorrectPosition;
+    const Colour shadeColour;
+    const Colour playbackColour;
+    const Colour recordingColour;
 
-    Listener *listener;
+    Atomic<float> lastCorrectPosition = 0.f;
+
+    Listener *listener = nullptr;
 
 };

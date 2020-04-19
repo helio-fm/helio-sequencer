@@ -36,7 +36,7 @@ MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, Type type, float beatVal
 
 bool MidiEvent::isValid() const noexcept
 {
-    return this->sequence != nullptr && this->id.isNotEmpty();
+    return this->sequence != nullptr && this->id != 0;
 }
 
 MidiSequence *MidiEvent::getSequence() const noexcept
@@ -63,7 +63,7 @@ Colour MidiEvent::getTrackColour() const noexcept
     return this->sequence->getTrack()->getTrackColour();
 }
 
-const MidiEvent::Id &MidiEvent::getId() const noexcept
+const MidiEvent::Id MidiEvent::getId() const noexcept
 {
     return this->id;
 }
@@ -81,7 +81,7 @@ int MidiEvent::compareElements(const MidiEvent *const first, const MidiEvent *co
     const int diffResult = (diff > 0.f) - (diff < 0.f);
     if (diffResult != 0) { return diffResult; }
 
-    return first->getId().compare(second->getId());
+    return first->getId() - second->getId();
 }
 
 MidiEvent::Id MidiEvent::createId() const noexcept
@@ -92,4 +92,27 @@ MidiEvent::Id MidiEvent::createId() const noexcept
     }
 
     return {};
+}
+
+String MidiEvent::packId(Id id)
+{
+    const char c1 = static_cast<char>(id >> (0 * CHAR_BIT));
+    const char c2 = static_cast<char>(id >> (1 * CHAR_BIT));
+    const char c3 = static_cast<char>(id >> (2 * CHAR_BIT));
+    const char c4 = static_cast<char>(id >> (3 * CHAR_BIT));
+
+    String s;
+    s = s + c1 + c2 +c3 + c4;
+    return s;
+}
+
+MidiEvent::Id MidiEvent::unpackId(const String &str)
+{
+    MidiEvent::Id id = 0;
+    const auto *ptr = str.getCharPointer().getAddress();
+    for (int i = 0; i < jmin(4, str.length()); ++i)
+    {
+        id |= ptr[i] << (i * CHAR_BIT);
+    }
+    return id;
 }

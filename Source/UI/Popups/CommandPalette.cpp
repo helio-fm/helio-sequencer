@@ -387,7 +387,8 @@ void CommandPalette::fadeOut()
 
 void CommandPalette::updatePosition()
 {
-    this->setTopLeftPosition(this->getParentWidth() / 2 - this->getWidth() / 2, HEADLINE_HEIGHT + 1);
+    const auto top = App::isUsingNativeTitleBar() ? HEADLINE_HEIGHT : HEADLINE_HEIGHT + 1;
+    this->setTopLeftPosition(this->getParentWidth() / 2 - this->getWidth() / 2, top);
 }
 
 bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)

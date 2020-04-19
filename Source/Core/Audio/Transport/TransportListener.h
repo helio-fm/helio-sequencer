@@ -23,10 +23,16 @@ public:
     
     virtual ~TransportListener() {}
 
-    virtual void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) = 0;
+    // expect that any data in these three methods could come
+    // from a separate thread (PlayerThread most likely)
+    virtual void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) = 0;
     virtual void onTempoChanged(double msPerQuarter) = 0;
     virtual void onTotalTimeChanged(double timeMs) = 0;
+
+    // these ones will be called with message manager locked
     virtual void onPlay() = 0;
     virtual void onStop() = 0;
+    virtual void onRecord() = 0;
+    virtual void onRecordFailed(const Array<MidiDeviceInfo> &devices) {}
 
 };

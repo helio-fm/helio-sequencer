@@ -75,7 +75,7 @@ void AudioCore::disconnectAllAudioCallbacks()
 
         for (auto *instrument : this->instruments)
         {
-            this->removeInstrumentFromDevice(instrument);
+            this->removeInstrumentFromAudioDevice(instrument);
         }
     }
 }
@@ -86,7 +86,7 @@ void AudioCore::reconnectAllAudioCallbacks()
     {
         for (auto *instrument : this->instruments)
         {
-            this->addInstrumentToDevice(instrument);
+            this->addInstrumentToAudioDevice(instrument);
         }
 
         this->deviceManager.addAudioCallback(this->audioMonitor.get());
@@ -118,7 +118,7 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
     const String &name, Instrument::InitializationCallback callback)
 {
     auto *instrument = this->instruments.add(new Instrument(formatManager, name));
-    this->addInstrumentToDevice(instrument);
+    this->addInstrumentToAudioDevice(instrument);
     instrument->initializeFrom(pluginDescription,
         [this, callback](Instrument *instrument)
         {
@@ -133,22 +133,59 @@ void AudioCore::removeInstrument(Instrument *instrument)
 {
     this->broadcastInstrumentRemoved(instrument);
 
-    this->removeInstrumentFromDevice(instrument);
+    this->removeInstrumentFromAudioDevice(instrument);
+    this->removeInstrumentFromMidiDevice(instrument);
+
     this->instruments.removeObject(instrument, true);
 
     this->broadcastInstrumentRemovedPostAction();
 }
 
-void AudioCore::addInstrumentToDevice(Instrument *instrument)
+void AudioCore::addInstrumentToMidiDevice(Instrument *instrument)
 {
-    this->deviceManager.addAudioCallback(&instrument->getProcessorPlayer());
-    this->deviceManager.addMidiInputCallback({}, &instrument->getProcessorPlayer().getMidiMessageCollector());
+    this->deviceManager.addMidiInputDeviceCallback({},
+        &instrument->getProcessorPlayer().getMidiMessageCollector());
 }
 
-void AudioCore::removeInstrumentFromDevice(Instrument *instrument)
+void AudioCore::addInstrumentToAudioDevice(Instrument *instrument)
+{
+    this->deviceManager.addAudioCallback(&instrument->getProcessorPlayer());
+}
+
+void AudioCore::removeInstrumentFromMidiDevice(Instrument *instrument)
+{
+    this->deviceManager.removeMidiInputDeviceCallback({},
+        &instrument->getProcessorPlayer().getMidiMessageCollector());
+}
+
+void AudioCore::removeInstrumentFromAudioDevice(Instrument *instrument)
 {
     this->deviceManager.removeAudioCallback(&instrument->getProcessorPlayer());
-    this->deviceManager.removeMidiInputCallback({}, &instrument->getProcessorPlayer().getMidiMessageCollector());
+}
+
+void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool shouldRemoveOthers)
+{
+    if (this->lastActiveMidiPlayerId == instrumentId)
+    {
+        //DBG("Skip setActiveMidiPlayer for " + instrumentId);
+        return;
+    }
+
+    for (auto *instrument : this->instruments)
+    {
+        if (instrumentId.startsWith(instrument->getInstrumentId()))
+        {
+            //DBG("addInstrumentToMidiDevice for " + instrumentId);
+            this->addInstrumentToMidiDevice(instrument);
+        }
+        else if (shouldRemoveOthers)
+        {
+            //DBG("removeInstrumentFromMidiDevice for " + instrument->getInstrumentId());
+            this->removeInstrumentFromMidiDevice(instrument);
+        }
+    }
+
+    this->lastActiveMidiPlayerId = instrumentId;
 }
 
 //===----------------------------------------------------------------------===//
@@ -204,9 +241,9 @@ void AudioCore::initDefaultInstrument()
 // Setup
 //===----------------------------------------------------------------------===//
 
-void AudioCore::autodetectDeviceSetup()
+bool AudioCore::autodetectAudioDeviceSetup()
 {
-    DBG("AudioCore::autodetectDeviceSetup");
+    //DBG("AudioCore::autodetectDeviceSetup");
     
     // requesting 0 inputs and only 2 outputs because of freaking alsa
     this->deviceManager.initialise(0, 2, nullptr, true);
@@ -230,8 +267,44 @@ void AudioCore::autodetectDeviceSetup()
             AudioDeviceManager::AudioDeviceSetup deviceSetup;
             this->deviceManager.getAudioDeviceSetup(deviceSetup);
             this->deviceManager.setAudioDeviceSetup(deviceSetup, true);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+bool AudioCore::autodetectMidiDeviceSetup()
+{
+    //DBG("AudioCore::autodetectMidiDeviceSetup");
+
+    int numEnabledDevices = 0;
+    const auto allDevices = MidiInput::getAvailableDevices();
+    for (const auto &midiInput : allDevices)
+    {
+        if (this->deviceManager.isMidiInputDeviceEnabled(midiInput.identifier))
+        {
+            numEnabledDevices++;
         }
     }
+
+    if (numEnabledDevices == 1)
+    {
+        return true;
+    }
+
+    // nothing is enabled, but there's only one device, so let's just enable it
+    if (numEnabledDevices == 0 && allDevices.size() == 1)
+    {
+        DBG("Found the single available MIDI input, enabling");
+        this->deviceManager.setMidiInputDeviceEnabled(allDevices.getFirst().identifier, true);
+        return true;
+    }
+
+    return false;
 }
 
 SerializedData AudioCore::serializeDeviceManager() const
@@ -272,38 +345,17 @@ SerializedData AudioCore::serializeDeviceManager() const
         }
     }
 
-    const StringArray availableMidiDevices(MidiInput::getDevices());
-    for (const auto &midiInputName : availableMidiDevices)
+    for (const auto &midiInput : MidiInput::getAvailableDevices())
     {
-        if (this->deviceManager.isMidiInputEnabled(midiInputName))
+        if (this->deviceManager.isMidiInputDeviceEnabled(midiInput.identifier))
         {
-            SerializedData midiInputNode(Audio::midiInput);
-            midiInputNode.setProperty(Audio::midiInputName, midiInputName);
-            tree.appendChild(midiInputNode);
+            tree.setProperty(Audio::midiInputName, midiInput.name);
+            tree.setProperty(Audio::midiInputId, midiInput.identifier);
+            // assume single selection here:
+            break;
         }
     }
-
-    // Add any midi devices that have been enabled before, but which aren't currently
-    // open because the device has been disconnected:
-    if (!this->customMidiInputs.isEmpty())
-    {
-        for (const auto &midiInputName : this->customMidiInputs)
-        {
-            if (!availableMidiDevices.contains(midiInputName, true))
-            {
-                SerializedData midiInputNode(Audio::midiInput);
-                midiInputNode.setProperty(Audio::midiInputName, midiInputName);
-                tree.appendChild(midiInputNode);
-            }
-        }
-    }
-
-    const String defaultMidiOutput(this->deviceManager.getDefaultMidiOutputName());
-    if (defaultMidiOutput.isNotEmpty())
-    {
-        tree.setProperty(Audio::defaultMidiOutput, defaultMidiOutput);
-    }
-
+    
     return tree;
 }
 
@@ -316,14 +368,14 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
 
     if (!root.isValid())
     {
-        this->autodetectDeviceSetup();
+        this->autodetectAudioDeviceSetup();
+        this->autodetectMidiDeviceSetup();
         return;
     }
 
     // A hack: this will call scanDevicesIfNeeded():
     const auto &availableDeviceTypes = this->deviceManager.getAvailableDeviceTypes();
 
-    String error;
     AudioDeviceManager::AudioDeviceSetup setup;
     setup.inputDeviceName = root.getProperty(Audio::audioInputDeviceName);
     setup.outputDeviceName = root.getProperty(Audio::audioOutputDeviceName);
@@ -350,7 +402,7 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
     setup.bufferSize = root.getProperty(Audio::audioDeviceBufferSize, setup.bufferSize);
     setup.sampleRate = root.getProperty(Audio::audioDeviceRate, setup.sampleRate);
 
-    const var defaultTwoChannels("11");
+    const static var defaultTwoChannels("11");
     const String inputChannels = root.getProperty(Audio::audioDeviceInputChannels, defaultTwoChannels);
     const String outputChannels = root.getProperty(Audio::audioDeviceOutputChannels, defaultTwoChannels);
     setup.inputChannels.parseString(inputChannels, 2);
@@ -359,27 +411,39 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
     setup.useDefaultInputChannels = !root.hasProperty(Audio::audioDeviceInputChannels);
     setup.useDefaultOutputChannels = !root.hasProperty(Audio::audioDeviceOutputChannels);
 
-    error = this->deviceManager.setAudioDeviceSetup(setup, true);
+    const auto initError = this->deviceManager.setAudioDeviceSetup(setup, true);
 
-    this->customMidiInputs.clearQuick();
-    forEachChildWithType(root, c, Audio::midiInput)
+    const auto midiInputId = root.getProperty(Audio::midiInputId).toString();
+    const auto midiInputName = root.getProperty(Audio::midiInputName).toString();
+
+    // first, try to match by device id; if failed, search by name
+    bool hasFoundMidiInById = false;
+    const auto &allMidiInputs = MidiInput::getAvailableDevices();
+
+    if (midiInputId.isNotEmpty())
     {
-        this->customMidiInputs.add(c.getProperty(Audio::midiInputName));
+        for (const auto &midiIn : allMidiInputs)
+        {
+            const auto shouldEnable = midiIn.identifier == midiInputId;
+            this->deviceManager.setMidiInputDeviceEnabled(midiIn.identifier, shouldEnable);
+            hasFoundMidiInById = hasFoundMidiInById || shouldEnable;
+        }
     }
 
-    const StringArray allMidiIns(MidiInput::getDevices());
-    for (const auto &midiIn : allMidiIns)
+    if (!hasFoundMidiInById && midiInputName.isNotEmpty())
     {
-        this->deviceManager.setMidiInputEnabled(midiIn,
-            this->customMidiInputs.contains(midiIn));
+        for (const auto &midiIn : allMidiInputs)
+        {
+            const auto shouldEnable = midiIn.name == midiInputName;
+            this->deviceManager.setMidiInputDeviceEnabled(midiIn.identifier, shouldEnable);
+        }
     }
 
-    if (error.isNotEmpty())
+    if (initError.isNotEmpty())
     {
-        error = this->deviceManager.initialise(0, 2, nullptr, false);
+        // try use some default settings instead
+        this->deviceManager.initialise(0, 2, nullptr, false);
     }
-
-    this->deviceManager.setDefaultMidiOutput(root.getProperty(Audio::defaultMidiOutput));
 }
 
 //===----------------------------------------------------------------------===//
@@ -418,7 +482,8 @@ void AudioCore::deserialize(const SerializedData &data)
 
     if (!root.isValid())
     {
-        this->autodetectDeviceSetup();
+        this->autodetectAudioDeviceSetup();
+        this->autodetectMidiDeviceSetup();
         return;
     }
 
@@ -429,14 +494,14 @@ void AudioCore::deserialize(const SerializedData &data)
     {
         for (const auto &instrumentNode : orchestra)
         {
-            UniquePointer<Instrument> instrument(new Instrument(this->formatManager, {}));
+            auto instrument = makeUnique<Instrument>(this->formatManager, "");
             // it's important to add audio processor to device
             // before actually creating nodes and connections:
-            this->addInstrumentToDevice(instrument.get());
+            this->addInstrumentToAudioDevice(instrument.get());
             instrument->deserialize(instrumentNode);
             if (!instrument->isValid())
             {
-                this->removeInstrumentFromDevice(instrument.get());
+                this->removeInstrumentFromAudioDevice(instrument.get());
             }
             else
             {
@@ -453,7 +518,7 @@ void AudioCore::deserialize(const SerializedData &data)
 
 void AudioCore::reset()
 {
-    while (this->instruments.size() > 0)
+    while (!this->instruments.isEmpty())
     {
         this->removeInstrument(this->instruments[0]);
     }

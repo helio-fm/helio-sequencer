@@ -21,7 +21,9 @@
 #include "MidiSequence.h"
 #include "UndoActionIDs.h"
 
-class SelectionProxyArray final : public Array<SelectableComponent *>, public ReferenceCountedObject
+class SelectionProxyArray final :
+    public Array<SelectableComponent *>,
+    public ReferenceCountedObject
 {
 public:
 

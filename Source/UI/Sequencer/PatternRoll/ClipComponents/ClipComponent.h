@@ -30,7 +30,7 @@ public:
 
     ClipComponent(HybridRoll &editor, const Clip &clip);
 
-    enum State
+    enum class State : uint8
     {
         None,
         Dragging,
@@ -52,10 +52,9 @@ public:
     // MidiEventComponent
     //===------------------------------------------------------------------===//
 
-    void setSelected(bool selected) override;
     const String &getSelectionGroupId() const noexcept override;
     float getBeat() const noexcept override;
-    const String &getId() const noexcept override;
+    const MidiEvent::Id getId() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -90,11 +89,11 @@ protected:
 
     friend class PatternRoll;
 
-    bool firstChangeDone;
+    bool firstChangeDone = false;
     void checkpointIfNeeded();
     void setNoCheckpointNeededForNextAction();
 
-    State state;
+    State state = State::None;
 
     Colour headBrightColour;
     Colour headDarkColour;

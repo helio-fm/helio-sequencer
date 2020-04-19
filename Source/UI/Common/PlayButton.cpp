@@ -118,8 +118,8 @@ void PlayButton::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     const auto command = this->playing ?
-        CommandIDs::TransportPausePlayback :
-        CommandIDs::TransportStartPlayback;
+        CommandIDs::TransportStop :
+        CommandIDs::TransportPlaybackStart;
 
     if (this->eventReceiver != nullptr)
     {

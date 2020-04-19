@@ -21,8 +21,9 @@
 #include "MidiEvent.h"
 #include "PatternRoll.h"
 #include "Pattern.h"
-#include "CommandIDs.h"
 #include "PatternOperations.h"
+#include "CommandIDs.h"
+#include "ColourIDs.h"
 
 static Pattern *getSelectionPattern(SelectionProxyArray::Ptr selection)
 {
@@ -33,9 +34,7 @@ static Pattern *getSelectionPattern(SelectionProxyArray::Ptr selection)
 ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
     MidiEventComponent(editor),
     clip(clip),
-    anchor(clip),
-    firstChangeDone(false),
-    state(None)
+    anchor(clip)
 {
     jassert(clip.isValid());
     this->updateColours();
@@ -60,12 +59,18 @@ PatternRoll &ClipComponent::getRoll() const noexcept
 void ClipComponent::updateColours()
 {
     jassert(this->clip.isValid());
-    this->fillColour = Colours::black.withAlpha(0.25f);
+
+    this->fillColour = this->flags.isRecordingTarget ?
+        Colours::black.interpolatedWith(findDefaultColour(ColourIDs::Roll::headerRecording), 0.5f) :
+        Colours::black.withAlpha(0.25f);
+
     this->headBrightColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
-        .withAlpha(this->ghostMode ? 0.2f : 0.7f)
-        .brighter(this->selectedState ? 0.25f : 0.f);
+        .withAlpha(this->flags.isGhost ? 0.2f : 0.7f)
+        .brighter(this->flags.isSelected ? 0.25f : 0.f);
+
     this->headDarkColour = this->headBrightColour.withAlpha(0.25f);
+
     this->eventColour = this->getClip().getTrackColour()
         .interpolatedWith(Colours::white, .35f)
         .withAlpha(.15f + 0.5f * this->clip.getVelocity());
@@ -74,11 +79,6 @@ void ClipComponent::updateColours()
 //===----------------------------------------------------------------------===//
 // MidiEventComponent
 //===----------------------------------------------------------------------===//
-
-void ClipComponent::setSelected(bool selected)
-{
-    MidiEventComponent::setSelected(selected);
-}
 
 float ClipComponent::getBeat() const noexcept
 {
@@ -90,7 +90,7 @@ const String &ClipComponent::getSelectionGroupId() const noexcept
     return this->clip.getPattern()->getTrackId();
 }
 
-const String &ClipComponent::getId() const noexcept
+const MidiEvent::Id ClipComponent::getId() const noexcept
 {
     return this->clip.getId();
 }
@@ -165,7 +165,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
 
     const auto &selection = this->roll.getLassoSelection();
 
-    if (this->state == Dragging)
+    if (this->state == State::Dragging)
     {
         float deltaBeat = 0.f;
         const bool eventChanged = this->getDraggingDelta(e, deltaBeat);
@@ -206,7 +206,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
             }
         }
     }
-    else if (this->state == Tuning)
+    else if (this->state == State::Tuning)
     {
         this->checkpointIfNeeded();
 
@@ -244,17 +244,17 @@ void ClipComponent::mouseUp(const MouseEvent &e)
 
     Lasso &selection = this->roll.getLassoSelection();
 
-    if (this->state == Dragging)
+    if (this->state == State::Dragging)
     {
         this->setFloatBounds(this->getRoll().getEventBounds(this));
 
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            auto cc = static_cast<ClipComponent *>(selection.getSelectedItem(i));
+            auto *cc = static_cast<ClipComponent *>(selection.getSelectedItem(i));
             cc->endDragging();
         }
     }
-    else if (this->state == Tuning)
+    else if (this->state == State::Tuning)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -276,9 +276,10 @@ void ClipComponent::paint(Graphics &g)
     g.fillRect(1.f, 0.f, w - 2.f, h);
 
     const Rectangle<int> textBounds(4, 5, this->getWidth() - 8, this->getHeight() - 7);
+
     g.setColour(this->headBrightColour);
-    
-    if (this->selectedState)
+
+    if (this->flags.isSelected)
     {
         g.fillRect(1.f, 1.f, w - 2.f, 3.f);
         g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);
@@ -288,7 +289,7 @@ void ClipComponent::paint(Graphics &g)
         g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
             textBounds, Justification::bottomLeft, false);
     }
-
+    
     if (this->clip.getKey() != 0)
     {
         g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);
@@ -321,7 +322,7 @@ int ClipComponent::compareElements(ClipComponent *first, ClipComponent *second)
     if (first == second) { return 0; }
     const float diff = first->getBeat() - second->getBeat();
     const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return (diffResult != 0) ? diffResult : (first->clip.getId().compare(second->clip.getId()));
+    return (diffResult != 0) ? diffResult : (first->clip.getId() - second->clip.getId());
 }
 
 void ClipComponent::checkpointIfNeeded()
@@ -345,13 +346,13 @@ void ClipComponent::setNoCheckpointNeededForNextAction()
 void ClipComponent::startDragging()
 {
     this->firstChangeDone = false;
-    this->state = Dragging;
+    this->state = State::Dragging;
     this->anchor = this->getClip();
 }
 
 bool ClipComponent::isDragging() const noexcept
 {
-    return this->state == Dragging;
+    return this->state == State::Dragging;
 }
 
 bool ClipComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat)
@@ -372,7 +373,7 @@ Clip ClipComponent::continueDragging(float deltaBeat)
 
 void ClipComponent::endDragging()
 {
-    this->state = None;
+    this->state = State::None;
 }
 
 //===----------------------------------------------------------------------===//
@@ -382,7 +383,7 @@ void ClipComponent::endDragging()
 void ClipComponent::startTuning()
 {
     this->firstChangeDone = false;
-    this->state = Tuning;
+    this->state = State::Tuning;
     this->anchor = this->getClip();
 }
 
@@ -399,6 +400,6 @@ Clip ClipComponent::continueTuning(const MouseEvent &e) const noexcept
 
 void ClipComponent::endTuning()
 {
-    this->state = None;
+    this->state = State::None;
     this->roll.triggerBatchRepaintFor(this);
 }

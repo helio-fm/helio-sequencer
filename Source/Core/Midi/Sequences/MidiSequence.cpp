@@ -24,15 +24,16 @@
 
 struct EventIdGenerator final
 {
-    static String generateId(uint8 length = 2)
+    static MidiEvent::Id generateId(int length = 2)
     {
-        String id;
+        jassert(length <= 4);
+        MidiEvent::Id id = 0;
         static Random r;
         r.setSeedRandomly();
         static const char idChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        for (size_t i = 0; i < length; ++i)
+        for (int i = 0; i < length; ++i)
         {
-            id += idChars[r.nextInt(62)];
+            id |= idChars[r.nextInt(62)] << (i * CHAR_BIT);
         }
         return id;
     }
@@ -41,9 +42,7 @@ struct EventIdGenerator final
 MidiSequence::MidiSequence(MidiTrack &parentTrack,
     ProjectEventDispatcher &dispatcher) noexcept :
     track(parentTrack),
-    eventDispatcher(dispatcher),
-    lastStartBeat(0.f),
-    lastEndBeat(0.f) {}
+    eventDispatcher(dispatcher) {}
 
 void MidiSequence::sort()
 {
@@ -141,7 +140,7 @@ float MidiSequence::midiTicksToBeats(double ticks, int timeFormat) noexcept
 // Accessors
 //===----------------------------------------------------------------------===//
 
-float MidiSequence::getFirstBeat() const noexcept
+float MidiSequence::findFirstBeat() const noexcept
 {
     if (this->midiEvents.size() == 0)
     {
@@ -151,7 +150,7 @@ float MidiSequence::getFirstBeat() const noexcept
     return this->midiEvents.getFirst()->getBeat();
 }
 
-float MidiSequence::getLastBeat() const noexcept
+float MidiSequence::findLastBeat() const noexcept
 {
     if (this->midiEvents.size() == 0)
     {
@@ -192,14 +191,16 @@ UndoStack *MidiSequence::getUndoStack() const noexcept
 
 void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
 {
-    if (this->lastStartBeat == this->getFirstBeat() &&
-        this->lastEndBeat == this->getLastBeat())
+    const auto newStart = this->findFirstBeat();
+    const auto newEnd = this->findLastBeat();
+
+    if (this->sequenceStartBeat == newStart && this->sequenceEndBeat == newEnd)
     {
         return;
     }
     
-    this->lastStartBeat = this->getFirstBeat();
-    this->lastEndBeat = this->getLastBeat();
+    this->sequenceStartBeat = newStart;
+    this->sequenceEndBeat = newEnd;
     
     if (shouldNotifyIfChanged)
     {
@@ -208,17 +209,17 @@ void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
     }
 }
 
-String MidiSequence::createUniqueEventId() const noexcept
+MidiEvent::Id MidiSequence::createUniqueEventId() const noexcept
 {
-    uint8 length = 2;
-    String eventId = EventIdGenerator::generateId(length);
+    int length = 2;
+    auto eventId = EventIdGenerator::generateId(length);
     while (this->usedEventIds.contains(eventId))
     {
-        length++;
+        length = jmin(4, length + 1);
         eventId = EventIdGenerator::generateId(length);
     }
     
-    this->usedEventIds.insert({eventId});
+    this->usedEventIds.insert(eventId);
     return eventId;
 }
 
@@ -236,7 +237,50 @@ int MidiSequence::getChannel() const noexcept
     return this->track.getTrackChannel();
 }
 
-//void MidiSequence::sendMidiMessage(const MidiMessage &message)
-//{
-//    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
-//}
+//===----------------------------------------------------------------------===//
+// Tests
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+class LegacyEventFormatSupportTests final : public UnitTest
+{
+public:
+    LegacyEventFormatSupportTests() : UnitTest("Legacy note id format support tests", UnitTestCategories::helio) {}
+
+    void runTest() override
+    {
+        beginTest("Legacy note id serialization");
+
+        const auto id2 = EventIdGenerator::generateId(2);
+        const auto id3 = EventIdGenerator::generateId(3);
+        const auto id4 = EventIdGenerator::generateId(4);
+
+        const auto p2 = MidiEvent::packId(id2);
+        expectEquals(p2.length(), 2);
+
+        const auto p3 = MidiEvent::packId(id3);
+        expectEquals(p3.length(), 3);
+
+        const auto p4 = MidiEvent::packId(id4);
+        expectEquals(p4.length(), 4);
+
+        const auto u2 = MidiEvent::unpackId(p2);
+        expectEquals(id2, u2);
+
+        const auto u3 = MidiEvent::unpackId(p3);
+        expectEquals(id3, u3);
+
+        const auto u4 = MidiEvent::unpackId(p4);
+        expectEquals(id4, u4);
+
+        const String s = "aA0";
+        const auto u = MidiEvent::unpackId(s);
+        const auto p = MidiEvent::packId(u);
+        expectEquals(p, s);
+    }
+};
+
+static LegacyEventFormatSupportTests legacyFormatSupportTests;
+
+#endif

@@ -261,15 +261,13 @@ void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *nc)
     const AnnotationEvent *annotationUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
     const auto annotations = timeline->getAnnotations()->getSequence();
-    const double seekPosition = this->project.getTransport().getSeekPosition();
+    const auto seekBeat = this->project.getTransport().getSeekBeat();
 
     for (int i = 0; i < annotations->size(); ++i)
     {
         if (auto *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
         {
-            const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
-            
-            if (fabs(annotation->getBeat() - seekBeat) < 0.1)
+            if (fabs(annotation->getBeat() - seekBeat) < 0.001f)
             {
                 annotationUnderSeekCursor = annotation;
                 break;
@@ -277,7 +275,7 @@ void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *nc)
         }
     }
 
-    const double newSeekPosition = this->roll.getTransportPositionByBeat(nc->getBeat());
+    const auto newSeekBeat = nc->getBeat();
     const bool wasPlaying = this->project.getTransport().isPlaying();
 
     if (wasPlaying)
@@ -285,7 +283,7 @@ void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *nc)
         this->project.getTransport().stopPlayback();
     }
 
-    this->project.getTransport().seekToPosition(newSeekPosition);
+    this->project.getTransport().seekToBeat(newSeekBeat);
 
     //if (wasPlaying)
     //{

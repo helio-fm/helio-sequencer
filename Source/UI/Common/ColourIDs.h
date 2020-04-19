@@ -19,6 +19,8 @@
 
 namespace ColourIDs
 {
+    StringPairArray getColoursList();
+
     // JUCE internal colour id's all look like 0x1xxxxxx;
     // so we start from 0x2000000 to make sure id's do not overlap.
 
@@ -37,21 +39,39 @@ namespace ColourIDs
         static const int blackKeyAlt            = 0x2000101;
         static const int whiteKey               = 0x2000102;
         static const int whiteKeyAlt            = 0x2000103;
+
         static const int rowLine                = 0x2000104;
         static const int barLine                = 0x2000105;
         static const int barLineBevel           = 0x2000106;
         static const int beatLine               = 0x2000107;
         static const int snapLine               = 0x2000108;
+
         static const int headerFill             = 0x2000109;
         static const int headerSnaps            = 0x2000110;
-        static const int playhead               = 0x2000111;
-        static const int playheadShade          = 0x2000112;
-        static const int trackHeaderFill        = 0x2000113;
-        static const int trackHeaderBorder      = 0x2000114;
-        static const int noteFill               = 0x2000115;
-        static const int noteNameFill           = 0x2000116;
-        static const int noteNameBorder         = 0x2000117;
-        static const int noteNameShadow         = 0x2000118;
+        static const int headerRecording        = 0x2000122;
+
+        static const int playheadPlayback       = 0x2000111;
+        static const int playheadRecording      = 0x2000112;
+        static const int playheadShade          = 0x2000113;
+
+        static const int trackHeaderFill        = 0x2000120;
+        static const int trackHeaderBorder      = 0x2000121;
+
+        static const int noteFill               = 0x2000130;
+        static const int noteNameFill           = 0x2000131;
+        static const int noteNameBorder         = 0x2000132;
+        static const int noteNameShadow         = 0x2000133;
+    }
+
+    namespace TransportControl
+    {
+        static const int recordInactive         = 0x2000150;
+        static const int recordHighlight        = 0x2000151;
+        static const int recordActive           = 0x2000152;
+
+        static const int playInactive           = 0x2000160;
+        static const int playHighlight          = 0x2000161;
+        static const int playActive             = 0x2000162;
     }
 
     namespace Callout
@@ -111,7 +131,7 @@ namespace ColourIDs
     {
         static const int fill                   = 0x2001000;
     }
-    
+
     namespace TrackScroller
     {
         static const int borderLineDark         = 0x2001200;

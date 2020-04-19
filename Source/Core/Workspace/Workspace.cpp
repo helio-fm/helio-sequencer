@@ -335,7 +335,8 @@ bool Workspace::autoload()
 
 void Workspace::failedDeserializationFallback()
 {
-    this->getAudioCore().autodetectDeviceSetup();
+    this->getAudioCore().autodetectAudioDeviceSetup();
+    this->getAudioCore().autodetectMidiDeviceSetup();
     this->getAudioCore().initDefaultInstrument();
 
     TreeNode *settings = new SettingsNode();

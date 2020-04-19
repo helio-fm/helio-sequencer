@@ -206,17 +206,13 @@ bool UndoStack::perform(UndoAction *const newAction)
             
             if (actionSet != nullptr && !this->hasNewEmptyTransaction)
             {
-                for (signed int i = (actionSet->actions.size() - 1); i >= 0; --i)
+                if (auto *lastAction = actionSet->actions.getLast())
                 {
-                    if (auto *lastAction = actionSet->actions[i])
+                    if (auto *coalescedAction = lastAction->createCoalescedAction(action.get()))
                     {
-                        if (auto *coalescedAction = lastAction->createCoalescedAction(action.get()))
-                        {
-                            action.reset(coalescedAction);
-                            this->totalUnitsStored -= lastAction->getSizeInUnits();
-                            actionSet->actions.remove(i);
-                            break;
-                        }
+                        action.reset(coalescedAction);
+                        this->totalUnitsStored -= lastAction->getSizeInUnits();
+                        actionSet->actions.removeLast();
                     }
                 }
             }
@@ -224,11 +220,11 @@ bool UndoStack::perform(UndoAction *const newAction)
             {
                 actionSet = new Transaction(this->project, this->newUndoActionId);
                 this->transactions.insert(nextIndex, actionSet);
-                ++this->nextIndex;
+                this->nextIndex++;
             }
             
             this->totalUnitsStored += action->getSizeInUnits();
-            actionSet->actions.add(action.release());
+            actionSet->actions.add(std::move(action));
             this->hasNewEmptyTransaction = false;
             
             this->clearFutureTransactions();

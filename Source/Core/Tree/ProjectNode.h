@@ -26,7 +26,7 @@ class MidiEvent;
 class ProjectPage;
 class Origami;
 class TrackMap;
-class Transport;
+class MidiRecorder;
 class ProjectMetadata;
 class ProjectTimeline;
 class CommandPaletteTimelineEvents;
@@ -39,7 +39,6 @@ class Clip;
 #include "DocumentOwner.h"
 #include "Transport.h"
 #include "TrackedItemsSource.h"
-#include "ProjectSequencesWrapper.h"
 #include "HybridRollEditMode.h"
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"
@@ -84,6 +83,7 @@ public:
     void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
     WeakReference<TreeNode> getLastShownTrack() const noexcept;
 
+    void setMidiRecordingTarget(MidiTrack *const track, const Clip &clip);
     void setEditableScope(MidiTrack *const activeTrack,
         const Clip &activeClip, bool shouldFocusToArea = false);
 
@@ -204,6 +204,7 @@ private:
 
     UniquePointer<Autosaver> autosaver;
     UniquePointer<Transport> transport;
+    UniquePointer<MidiRecorder> midiRecorder;
 
     UniquePointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;

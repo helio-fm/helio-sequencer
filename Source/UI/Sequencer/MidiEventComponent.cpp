@@ -24,31 +24,32 @@
 MidiEventComponent::MidiEventComponent(HybridRoll &editor, bool isGhost) noexcept :
     roll(editor),
     dragger(),
-    selectedState(false),
-    activeState(true),
-    anchorBeat(0),
-    ghostMode(isGhost),
     clickOffset(0, 0)    
 {
+    this->flags.isActive = true;
+    this->flags.isSelected = false;
+    this->flags.isRecordingTarget = false;
+    this->flags.isGhost = isGhost;
+
     this->setWantsKeyboardFocus(false);
 }
 
 bool MidiEventComponent::isActive() const noexcept
 {
-    return this->activeState;
+    return this->flags.isActive;
 }
 
 void MidiEventComponent::setActive(bool val, bool force)
 {
-    if (!force && this->activeState == val)
+    if (!force && this->flags.isActive == val)
     {
         return;
     }
 
-    this->activeState = val;
+    this->flags.isActive = val;
     this->updateColours();
 
-    if (this->activeState)
+    if (this->flags.isActive)
     {
         this->toFront(false);
     }
@@ -56,7 +57,7 @@ void MidiEventComponent::setActive(bool val, bool force)
 
 void MidiEventComponent::setGhostMode()
 {
-    this->ghostMode = true;
+    this->flags.isGhost = true;
     this->updateColours();
     this->repaint();
 }
@@ -96,9 +97,10 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
 
 void MidiEventComponent::setSelected(bool selected)
 {
-    if (this->selectedState != selected)
+    if (this->flags.isSelected != selected)
     {
-        this->selectedState = selected;
+        this->flags.isSelected = selected;
+        this->flags.isRecordingTarget &= selected;
         this->updateColours();
         this->roll.triggerBatchRepaintFor(this);
     }
@@ -106,7 +108,7 @@ void MidiEventComponent::setSelected(bool selected)
 
 bool MidiEventComponent::isSelected() const noexcept
 {
-    return this->selectedState;
+    return this->flags.isSelected;
 }
 
 //===----------------------------------------------------------------------===//
@@ -118,5 +120,5 @@ int MidiEventComponent::compareElements(MidiEventComponent *first, MidiEventComp
     if (first == second) { return 0; }
     const float diff = first->getBeat() - second->getBeat();
     const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return (diffResult != 0) ? diffResult : (first->getId().compare(second->getId()));
+    return (diffResult != 0) ? diffResult : (first->getId() - second->getId());
 }

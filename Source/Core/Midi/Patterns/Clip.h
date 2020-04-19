@@ -28,7 +28,7 @@ class Clip final : public Serializable
 {
 public:
 
-    using Id = String;
+    using Id = int32;
 
     Clip();
     Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy);
@@ -44,7 +44,7 @@ public:
     int getKey() const noexcept;
     float getBeat() const noexcept;
     float getVelocity() const noexcept;
-    const String &getId() const noexcept;
+    const Id getId() const noexcept;
     const String &getKeyString() const noexcept;
     
     bool isMuted() const noexcept;
@@ -85,6 +85,11 @@ public:
             (l.pattern != nullptr && l.pattern == r.pattern && l.id == r.id));
     }
 
+    friend inline bool operator!=(const Clip &l, const Clip &r)
+    {
+        return !(l == r);
+    }
+
     static int compareElements(const Clip &first, const Clip &second);
     static int compareElements(const Clip *const first, const Clip *const second);
 
@@ -101,13 +106,16 @@ private:
     bool mute = false;
     bool solo = false;
 
-    String id;
+    Id id = 0;
     Id createId() const noexcept;
+    static String packId(Id id);
+    static Id unpackId(const String &str);
 
     mutable String keyString;
     void updateCaches() const;
 
     friend struct ClipHash;
+    friend class LegacyClipFormatSupportTests;
 
     JUCE_LEAK_DETECTOR(Clip);
 };
@@ -116,9 +124,6 @@ struct ClipHash
 {
     inline HashCode operator()(const Clip &key) const noexcept
     {
-        // Note: see the comment for MidiEventHash in MidiEvent.h
-        const auto *ptr = key.id.getCharPointer().getAddress();
-        return 64 * static_cast<HashCode>(ptr[0]) + static_cast<HashCode>(ptr[1]);
-        //return static_cast<HashCode>(key.beat) + static_cast<HashCode>(key.getId().hashCode());
+        return key.id;
     }
 };

@@ -57,9 +57,12 @@ public:
         {
             this->getParentComponent()->postCommandMessage(this->commandId);
         }
+
+        // workaround for a weird mouseExit bug in JUCE:
+        HighlightedComponent::mouseExit(e);
     }
-    
-    // Silence useless VC C4250 warnings:
+
+    // Silence the useless VC C4250 warnings:
 
     void resized() override
     { IconComponent::resized(); }

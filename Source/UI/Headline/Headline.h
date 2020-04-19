@@ -21,6 +21,7 @@
 #include "TreeNode.h"
 #include "NavigationHistory.h"
 
+class IconButton;
 class HeadlineItem;
 class HeadlineItemDataSource;
 
@@ -50,6 +51,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void handleCommandMessage (int commandId) override;
 
 
 private:
@@ -75,6 +77,9 @@ private:
     //[/UserVariables]
 
     UniquePointer<HeadlineNavigationPanel> navPanel;
+    UniquePointer<IconButton> consoleButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Headline)
 };
+
+

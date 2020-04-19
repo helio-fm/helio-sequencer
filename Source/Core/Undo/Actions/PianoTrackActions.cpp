@@ -54,8 +54,7 @@ bool PianoTrackInsertAction::perform()
 
 bool PianoTrackInsertAction::undo()
 {
-    if (PianoTrackNode *treeItem =
-        this->source.findTrackById<PianoTrackNode>(this->trackId))
+    if (auto *treeItem = this->source.findTrackById<PianoTrackNode>(this->trackId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again

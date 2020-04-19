@@ -180,6 +180,7 @@ namespace I18n
             static const Identifier notesCut = "menu::selection::notes::cut";
             static const Identifier notesDelete = "menu::selection::notes::delete";
             static const Identifier notesDivisions = "menu::selection::notes::divisions";
+            static const Identifier notesQuantizeTo = "menu::selection::notes::quantize";
             static const Identifier notesRefactor = "menu::selection::notes::refactor";
             static const Identifier notesRescale = "menu::selection::notes::rescale";
             static const Identifier notesToTrack = "menu::selection::notes::totrack";
@@ -222,6 +223,12 @@ namespace I18n
         static const Identifier tuplet7 = "menu::tuplet::7";
         static const Identifier tuplet8 = "menu::tuplet::8";
         static const Identifier tuplet9 = "menu::tuplet::9";
+        static const Identifier quantizeTo1_1 = "menu::quantize::1";
+        static const Identifier quantizeTo1_2 = "menu::quantize::2";
+        static const Identifier quantizeTo1_4 = "menu::quantize::4";
+        static const Identifier quantizeTo1_8 = "menu::quantize::8";
+        static const Identifier quantizeTo1_16 = "menu::quantize::16";
+        static const Identifier quantizeTo1_32 = "menu::quantize::32";
         static const Identifier mute = "menu::mute";
         static const Identifier solo = "menu::solo";
         static const Identifier unmute = "menu::unmute";
@@ -281,6 +288,8 @@ namespace I18n
         static const Identifier audioDevice = "settings::audio::device";
         static const Identifier audioDriver = "settings::audio::driver";
         static const Identifier audioSampleRate = "settings::audio::samplerate";
+        static const Identifier midiRecord = "settings::midi::record";
+        static const Identifier midiNoInputDevices = "settings::midi::nodevices";
         static const Identifier languageHelp = "settings::language::help";
         static const Identifier rendererCoreGraphics = "settings::renderer::coregraphics";
         static const Identifier rendererDefault = "settings::renderer::default";

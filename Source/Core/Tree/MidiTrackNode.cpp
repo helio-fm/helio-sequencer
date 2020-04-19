@@ -161,6 +161,7 @@ void MidiTrackNode::setTrackColour(const Colour &val, bool sendNotifications)
     }
 }
 
+// contains both instrument id and hash concatenated
 String MidiTrackNode::getTrackInstrumentId() const noexcept
 {
     return this->instrumentId;

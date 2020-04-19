@@ -36,45 +36,38 @@ PlayerThread::~PlayerThread()
 // Thread
 //===----------------------------------------------------------------------===//
 
-void PlayerThread::startPlayback(double start, double end,
-    bool shouldLoop, bool shouldBroadcastTransportEvents)
+void PlayerThread::startPlayback(float relStartBeat, float relEndBeat,
+    double startTempo, double currentTime, double totalTime,
+    bool loopMode, bool silentMode)
 {
-    this->broadcastMode = shouldBroadcastTransportEvents;
-    this->loopedMode = shouldLoop;
-    this->absStartPosition = jlimit(0.0, 1.0, start);
-    this->absEndPosition = jlimit(0.0, 1.0, end);
+    this->startBeat = relStartBeat;
+    this->endBeat = relEndBeat;
+
+    this->msPerQuarterNote = startTempo;
+    this->currentTimeMs = currentTime;
+    this->totalTimeMs = totalTime;
+
+    this->loopMode = loopMode;
+    this->silentMode = silentMode;
+
     this->startThread(10);
 }
 
 void PlayerThread::run()
 {
-    auto &sequences = this->transport.getPlaybackCache();
-    Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
+    auto sequences = this->transport.getPlaybackCache();
+
+    Array<Instrument *> uniqueInstruments;
+    uniqueInstruments.addArray(sequences.getUniqueInstruments());
     
     double nextEventTimeDelta = 0.0;
     
-    double totalTimeMs = 0.0;
-    double tempoAtTheEndOfTrack = 0.0;
-    this->transport.calcTimeAndTempoAt(1.0, totalTimeMs, tempoAtTheEndOfTrack);
-    
-    double currentTimeMs = 0.0;
-    double msPerQuarter = 0.0;
-    this->transport.calcTimeAndTempoAt(this->absStartPosition, currentTimeMs, msPerQuarter);
-    
-    if (this->broadcastMode)
+    sequences.seekToTime(this->startBeat.get());
+    auto prevTimeStamp = this->startBeat.get();
+    if (!this->silentMode)
     {
-        this->transport.broadcastTempoChanged(msPerQuarter);
-    }
-    
-    const double totalTime = this->transport.getTotalTime();
-    const double startPositionInTime = this->absStartPosition * totalTime;
-    const double endPositionInTime = this->absEndPosition * totalTime;
-    
-    sequences.seekToTime(startPositionInTime);
-    double prevTimeStamp = startPositionInTime;
-    if (this->broadcastMode)
-    {
-        this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+        this->transport.broadcastSeek(prevTimeStamp,
+            this->currentTimeMs.get(), this->totalTimeMs.get());
     }
 
     // This hack is here to keep track of still playing events
@@ -138,7 +131,7 @@ void PlayerThread::run()
         // Handle playback from the last event to the end of track:
         if (!sequences.getNextMessage(wrapper))
         {
-            nextEventTimeDelta = msPerQuarter * (endPositionInTime - prevTimeStamp);
+            nextEventTimeDelta = this->msPerQuarterNote.get() * (this->endBeat.get() - prevTimeStamp);
             const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
 
             // Give thread a chance to exit by checking at least once a, say, second
@@ -149,45 +142,58 @@ void PlayerThread::run()
                 if (this->threadShouldExit())
                 {
                     sendHoldingNotesOffAndMidiStop();
-                    return;
+                    return; // the transport have already stopped
                 }
             }
 
             Time::waitForMillisecondCounter(targetTime);
 
-            if (this->loopedMode)
+            if (this->loopMode)
             {
-                sequences.seekToTime(startPositionInTime);
-                prevTimeStamp = startPositionInTime;
-                if (this->broadcastMode)
+                sequences.seekToTime(this->startBeat.get());
+                prevTimeStamp = this->startBeat.get();
+                if (!this->silentMode)
                 {
-                    this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+                    this->transport.broadcastSeek(prevTimeStamp,
+                        this->currentTimeMs.get(), this->totalTimeMs.get());
                 }
                 continue;
             }
             else
             {
+                while (this->transport.isRecording() && !this->threadShouldExit())
+                {
+                    Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                }
+
                 sendHoldingNotesOffAndMidiStop();
+
+                if (this->threadShouldExit())
+                {
+                    return; // the transport have already stopped
+                }
+
                 this->transport.allNotesControllersAndSoundOff();
 
-                if (this->broadcastMode)
+                if (!this->silentMode)
                 {
-                    this->transport.seekToPosition(this->transport.getSeekPosition());
-                    this->transport.broadcastStop();
+                    this->transport.stopRecording();
+                    this->transport.stopPlayback();
                 }
+
                 return;
             }
         }
 
         const bool shouldRewind =
-            (this->loopedMode &&
-            (wrapper.message.getTimeStamp() > endPositionInTime));
+            (this->loopMode &&
+            (wrapper.message.getTimeStamp() > this->endBeat.get()));
 
-        const double nextEventTimeStamp =
-            shouldRewind ? endPositionInTime : wrapper.message.getTimeStamp();
+        const float nextEventTimeStamp =
+            float(shouldRewind ? this->endBeat.get() : wrapper.message.getTimeStamp());
 
-        nextEventTimeDelta = msPerQuarter * (nextEventTimeStamp - prevTimeStamp);
-        currentTimeMs += nextEventTimeDelta;
+        nextEventTimeDelta = this->msPerQuarterNote.get() * (nextEventTimeStamp - prevTimeStamp);
+        this->currentTimeMs = this->currentTimeMs.get() + nextEventTimeDelta;
         prevTimeStamp = nextEventTimeStamp;
 
         // Zero-delay check (we're playing a chord or so)
@@ -212,20 +218,22 @@ void PlayerThread::run()
                 sendHoldingNotesOffAndMidiStop();
                 return;
             }
-
-            if (this->broadcastMode)
+            
+            if (!this->silentMode)
             {
-                this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+                this->transport.broadcastSeek(prevTimeStamp,
+                    this->currentTimeMs.get(), this->totalTimeMs.get());
             }
         }
         
         if (shouldRewind)
         {
-            sequences.seekToTime(startPositionInTime);
-            prevTimeStamp = startPositionInTime;
-            if (this->broadcastMode)
+            sequences.seekToTime(this->startBeat.get());
+            prevTimeStamp = this->startBeat.get();
+            if (!this->silentMode)
             {
-                this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+                this->transport.broadcastSeek(prevTimeStamp,
+                    this->currentTimeMs.get(), this->totalTimeMs.get());
             }
         }
         else
@@ -237,11 +245,11 @@ void PlayerThread::run()
             // Master tempo event is sent to everybody
             if (wrapper.message.isTempoMetaEvent())
             {
-                msPerQuarter = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
+                this->msPerQuarterNote = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
 
-                if (this->broadcastMode)
+                if (!this->silentMode)
                 {
-                    this->transport.broadcastTempoChanged(msPerQuarter);
+                    this->transport.broadcastTempoChanged(this->msPerQuarterNote.get());
                 }
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test

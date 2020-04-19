@@ -100,8 +100,8 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    virtual float getFirstBeat() const noexcept;
-    virtual float getLastBeat() const noexcept;
+    float getFirstBeat() const noexcept { return this->sequenceStartBeat; }
+    float getLastBeat() const noexcept { return this->sequenceEndBeat; }
     float getLengthInBeats() const noexcept;
     MidiTrack *getTrack() const noexcept;
 
@@ -133,9 +133,9 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
-    void updateBeatRange(bool shouldNotifyIfChanged);
+    virtual void updateBeatRange(bool shouldNotifyIfChanged);
 
-    String createUniqueEventId() const noexcept;
+    MidiEvent::Id createUniqueEventId() const noexcept;
     const String &getTrackId() const noexcept;
     int getChannel() const noexcept;
 
@@ -148,17 +148,20 @@ private:
 
     MidiTrack &track;
 
+    float sequenceEndBeat = 0.f;
+    float sequenceStartBeat = 0.f;
+
 protected:
 
-    float lastEndBeat;
-    float lastStartBeat;
+    virtual float findFirstBeat() const noexcept;
+    virtual float findLastBeat() const noexcept;
 
     ProjectEventDispatcher &eventDispatcher;
     ProjectNode *getProject() const noexcept;
     UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<MidiEvent> midiEvents;
-    mutable FlatHashSet<MidiEvent::Id, StringHash> usedEventIds;
+    mutable FlatHashSet<MidiEvent::Id> usedEventIds;
     
 private:
 

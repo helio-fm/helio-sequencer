@@ -64,30 +64,6 @@ void MenuPanel::handleCommandMessage (int commandId)
     }
 }
 
-// Hardcoded for now
-StringPairArray MenuPanel::getColoursList()
-{
-    StringPairArray c;
-    //c.set(TRANS(I18n::Colours::none),           Colours::transparentWhite.toString());
-    //c.set(TRANS(I18n::Colours::black),          Colours::black.toString());
-    c.set(TRANS(I18n::Colours::white),          Colours::white.toString());
-    c.set(TRANS(I18n::Colours::red),            Colours::red.toString());
-    c.set(TRANS(I18n::Colours::crimson),        Colours::crimson.toString());
-    c.set(TRANS(I18n::Colours::deepPink),       Colours::deeppink.toString());
-    c.set(TRANS(I18n::Colours::darkViolet),     Colours::darkviolet.toString());
-    c.set(TRANS(I18n::Colours::blueViolet),     Colours::blueviolet.toString());
-    c.set(TRANS(I18n::Colours::blue),           Colours::blue.toString());
-    c.set(TRANS(I18n::Colours::royalBlue),      Colours::royalblue.toString());
-    c.set(TRANS(I18n::Colours::springGreen),    Colours::springgreen.toString());
-    c.set(TRANS(I18n::Colours::lime),           Colours::lime.toString());
-    c.set(TRANS(I18n::Colours::greenYellow),    Colours::greenyellow.toString());
-    c.set(TRANS(I18n::Colours::gold),           Colours::gold.toString());
-    c.set(TRANS(I18n::Colours::darkOrange),     Colours::darkorange.toString());
-    c.set(TRANS(I18n::Colours::tomato),         Colours::tomato.toString());
-    c.set(TRANS(I18n::Colours::orangeRed),      Colours::orangered.toString());
-    return c;
-}
-
 #define ANIM_TIME_MS 175
 #define TOPLEVEL_HEIGHT_MARGINS 170
 

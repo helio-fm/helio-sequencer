@@ -32,7 +32,7 @@
 #include "PlayerThreadPool.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
-#define SOUND_SLEEP_DELAY_MS (10000)
+#define SOUND_SLEEP_DELAY_MS (60000)
 
 Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     orchestra(orchestraPit),
@@ -102,22 +102,22 @@ float Transport::getControllerValueByTempo(double secondsPerQuarterNote) noexcep
 // Accessors
 //===----------------------------------------------------------------------===//
 
-double Transport::getSeekPosition() const noexcept
+float Transport::getSeekBeat() const noexcept
 {
-    return this->seekPosition.get();
+    return this->seekBeat.get();
 }
 
-void Transport::setSeekPosition(const double absPosition)
+void Transport::setSeekBeat(float beatPosition)
 {
-    this->seekPosition = absPosition;
+    this->seekBeat = beatPosition;
 }
 
-double Transport::getTotalTime() const noexcept
+float Transport::getTotalTime() const noexcept
 {
     return this->totalTime.get();
 }
 
-void Transport::setTotalTime(const double val)
+void Transport::setTotalTime(float val)
 {
     this->totalTime = val;
 }
@@ -126,24 +126,24 @@ void Transport::setTotalTime(const double val)
 // Transport
 //===----------------------------------------------------------------------===//
 
-void Transport::seekToPosition(double absPosition)
+void Transport::seekToBeat(float beatPosition)
 {
     double timeMs = 0.0;
     double realLengthMs = 0.0;
     double tempo = 0.0;
-    this->calcTimeAndTempoAt(absPosition, timeMs, tempo);
-    this->calcTimeAndTempoAt(1.0, realLengthMs, tempo);
+    this->findTimeAndTempoAt(this->projectFirstBeat.get(), timeMs, tempo);
+    this->findTimeAndTempoAt(this->projectLastBeat.get(), realLengthMs, tempo);
     
-    this->setSeekPosition(absPosition);
-    this->broadcastSeek(absPosition, timeMs, realLengthMs);
+    this->setSeekBeat(beatPosition);
+    this->broadcastSeek(beatPosition - this->projectFirstBeat.get(), timeMs, realLengthMs);
 }
 
-void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitToLayer)
+void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitToLayer)
 {
     this->sleepTimer.setAwake();
     this->recacheIfNeeded();
     
-    const double targetFlatTime = this->getTotalTime() * absTrackPosition;
+    const auto targetRelBeat = beatPosition - this->projectFirstBeat.get();
     const auto sequencesToProbe(this->playbackCache.getAllFor(limitToLayer));
     
     for (const auto &seq : sequencesToProbe)
@@ -157,7 +157,7 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
                 const double noteOn(noteOnHolder->message.getTimeStamp());
                 const double noteOff(noteOffHolder->message.getTimeStamp());
                 
-                if (noteOn <= targetFlatTime && noteOff > targetFlatTime)
+                if (noteOn <= targetRelBeat && noteOff > targetRelBeat)
                 {
                     MidiMessage messageTimestampedAsNow(noteOnHolder->message);
                     messageTimestampedAsNow.setTimeStamp(TIME_NOW);
@@ -174,15 +174,13 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
 void Transport::probeSequence(const MidiMessageSequence &sequence)
 {
     this->playbackCache.clear();
-    this->sequencesAreOutdated = true; // will update on the next playback
-
-    const double startPositionInTime = this->getSeekPosition() * this->getTotalTime();
+    this->sequencesAreOutdated = false; // temporary
 
     // using the last instrument (TODO something more clever in the future)
     auto *instrument = this->orchestra.getInstruments().getLast();
     auto cached = CachedMidiSequence::createFrom(instrument);
     cached->midiMessages = MidiMessageSequence(sequence);
-    cached->midiMessages.addTimeToMessages(startPositionInTime);
+    cached->midiMessages.addTimeToMessages(this->getSeekBeat());
 
     this->playbackCache.addWrapper(cached);
 
@@ -192,8 +190,13 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
         this->allNotesControllersAndSoundOff();
     }
 
-    this->player->startPlayback(false);
+    this->player->startPlayback(true);
+    this->sequencesAreOutdated = true; // will update on the next playback
 }
+
+//===----------------------------------------------------------------------===//
+// Playback control
+//===----------------------------------------------------------------------===//
 
 void Transport::startPlayback()
 {
@@ -205,12 +208,12 @@ void Transport::startPlayback()
         this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
     }
-    
-    this->player->startPlayback();
+
+    this->player->startPlayback(false);
     this->broadcastPlay();
 }
 
-void Transport::startPlaybackFragment(double absLoopStart, double absLoopEnd, bool looped)
+void Transport::startPlaybackFragment(float startBeat, float endBeat, bool looped)
 {
     this->sleepTimer.setAwake();
     this->recacheIfNeeded();
@@ -220,8 +223,8 @@ void Transport::startPlaybackFragment(double absLoopStart, double absLoopEnd, bo
         this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
     }
-        
-    this->player->startPlayback(absLoopStart, absLoopEnd, looped);
+
+    this->player->startPlayback(startBeat, endBeat, looped, false);
     this->broadcastPlay();
 }
 
@@ -229,11 +232,11 @@ void Transport::stopPlayback()
 {
     if (this->player->isPlaying())
     {
-        this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
-        this->seekToPosition(this->getSeekPosition());
+        this->seekToBeat(this->getSeekBeat());
         this->broadcastStop();
         this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+        this->player->stopPlayback(); // after broadcastStop so that MM can be locked
     }
 }
 
@@ -246,6 +249,49 @@ bool Transport::isPlaying() const
 {
     return this->player->isPlaying();
 }
+
+//===----------------------------------------------------------------------===//
+// Recording MIDI
+//===----------------------------------------------------------------------===//
+
+void Transport::startRecording()
+{
+    if (!this->player->isPlaying())
+    {
+        this->sleepTimer.setAwake();
+        this->recacheIfNeeded();
+    }
+
+    // canRecord == we have exactly 1 device available and enabled
+    const bool canRecord = App::Workspace().getAudioCore().autodetectMidiDeviceSetup();
+    if (canRecord)
+    {
+        this->midiRecordingMode = true;
+        this->broadcastRecord();
+        return;
+    }
+
+    const auto allDevices = MidiInput::getAvailableDevices();
+    this->broadcastRecordFailed(allDevices);
+}
+
+bool Transport::isRecording() const
+{
+    return this->midiRecordingMode.get();
+}
+
+void Transport::stopRecording()
+{
+    if (this->isRecording())
+    {
+        this->stopPlayback(); // if playing
+        this->midiRecordingMode = false;
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Rendering
+//===----------------------------------------------------------------------===//
 
 void Transport::startRender(const String &fileName)
 {
@@ -447,23 +493,29 @@ void Transport::instrumentRemovedPostAction()
 #define updateLengthAndTimeIfNeeded(event) \
     if (event->getTrackControllerNumber() == MidiTrack::tempoController) \
     { \
-        this->seekToPosition(this->getSeekPosition()); \
+        this->seekToBeat(this->getSeekBeat()); \
     }
 
 void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    // todo stop playback only if the event is in future
-    // and getTrackControllerNumber == 0 (not an automation)
-    this->stopPlayback();
+    // relying on isRecording() sucks,
+    // but I don't see any easy workaround at the moment:
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
+
     updateLengthAndTimeIfNeeded((&newEvent));
     this->sequencesAreOutdated = true;
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
 {
-    // todo stop playback only if the event is in future
-    // and getTrackControllerNumber == 0 (not an automation)
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
+
     updateLengthAndTimeIfNeeded((&event));
     this->sequencesAreOutdated = true;
 }
@@ -478,7 +530,11 @@ void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 
 void Transport::onAddClip(const Clip &clip)
 {
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
+
     updateLengthAndTimeIfNeeded((&clip));
     this->sequencesAreOutdated = true;
 }
@@ -505,7 +561,11 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     if (!linksCache.contains(trackId) ||
         this->linksCache[trackId]->getInstrumentId() != track->getTrackInstrumentId())
     {
-        this->stopPlayback();
+        if (!this->isRecording())
+        {
+            this->stopPlayback();
+        }
+
         this->sequencesAreOutdated = true;
         this->updateLinkForTrack(track);
     }
@@ -529,7 +589,10 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 
 void Transport::onAddTrack(MidiTrack *const track)
 {
-    this->stopPlayback();
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
     
     this->sequencesAreOutdated = true;
     this->tracksCache.addIfNotAlreadyThere(track);
@@ -547,53 +610,45 @@ void Transport::onRemoveTrack(MidiTrack *const track)
 
 void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
-    this->stopPlayback();
-    
-    const double seekBeat = double(this->projectFirstBeat.get()) +
-        double(this->projectLastBeat.get() - this->projectFirstBeat.get()) * this->seekPosition.get(); // may be 0
+    if (!this->isRecording())
+    {
+        this->stopPlayback();
+    }
 
-    const double newBeatRange = (lastBeat - firstBeat); // may also be 0
-    const double newSeekPosition = ((newBeatRange == 0.0) ? 0.0 : ((seekBeat - firstBeat) / newBeatRange));
+    const auto newBeatRange = (lastBeat - firstBeat); // may also be 0
+    const auto newSeekPosition = ((newBeatRange == 0.f) ? 0.f : ((this->seekBeat.get() - firstBeat) / newBeatRange));
     
-    //
-    //          |----------- 0.7 ----|
-    // |--------+----------- 0.5 ----+---------------|
-    //
-    //  1. compute seek position as beat
-    //  2. compute (seekBeat - newFirstBeat) / (newLastBeat - newFirstBeat)
-    //
-    
-    this->trackStartMs = double(firstBeat);
-    this->trackEndMs = double(lastBeat);
-    this->setTotalTime(this->trackEndMs.get() - this->trackStartMs.get());
+    this->projectFirstBeat = firstBeat;
+    this->projectLastBeat = lastBeat;
+
+    this->setTotalTime(lastBeat - firstBeat);
     
     // real track total time changed
     double tempo = 0.0;
     double realLengthMs = 0.0;
-    this->calcTimeAndTempoAt(1.0, realLengthMs, tempo);
+    this->findTimeAndTempoAt(lastBeat, realLengthMs, tempo);
     this->broadcastTotalTimeChanged(realLengthMs);
     
-    // seek also changed
-    this->seekToPosition(newSeekPosition);
-    this->projectFirstBeat = firstBeat;
-    this->projectLastBeat = lastBeat;
+    // seek has also changed
+    if (!this->isRecording())
+    {
+        this->seekToBeat(newSeekPosition);
+    }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Real track length calc
 //===----------------------------------------------------------------------===//
 
-void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
-                                   double &outTimeMs, double &outTempo)
+void Transport::findTimeAndTempoAt(float beat, double &outTimeMs, double &outTempo) const
 {
     this->recacheIfNeeded();
     this->playbackCache.seekToZeroIndexes();
     
-    const double targetTime = targetAbsPosition * this->getTotalTime();
+    const auto targetRelativeBeat = beat - this->projectFirstBeat.get();
     
     outTimeMs = 0.0;
-    outTempo = 500.0; // default 120 BPM
+    outTempo = DEFAULT_MS_PER_QN;
     
     double prevTimestamp = 0.0;
     double nextEventTimeDelta = 0.0;
@@ -603,10 +658,13 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     
     while (this->playbackCache.getNextMessage(cached))
     {
-        const double nextAbsPosition = cached.message.getTimeStamp() / this->getTotalTime();
+        const auto nextPosition = cached.message.getTimeStamp();
         
         // first tempo event sets the tempo all the way before it
-        if (nextAbsPosition > targetAbsPosition && foundFirstTempoEvent) { break; }
+        if (nextPosition > targetRelativeBeat && foundFirstTempoEvent)
+        {
+            break;
+        }
         
         nextEventTimeDelta = outTempo * (cached.message.getTimeStamp() - prevTimestamp);
         outTimeMs += nextEventTimeDelta;
@@ -619,7 +677,7 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
         }
     }
     
-    nextEventTimeDelta = outTempo * (targetTime - prevTimestamp);
+    nextEventTimeDelta = outTempo * (targetRelativeBeat - prevTimestamp);
     outTimeMs += nextEventTimeDelta;
 }
 
@@ -639,21 +697,21 @@ MidiMessage Transport::findFirstTempoEvent()
     }
     
     // return default 120 bpm (== 500 ms per quarter note)
-    return MidiMessage::tempoMetaEvent(500 * 1000);
+    return MidiMessage::tempoMetaEvent(DEFAULT_MS_PER_QN * 1000);
 }
 
 //===----------------------------------------------------------------------===//
 // Playback cache management
 //===----------------------------------------------------------------------===//
 
-void Transport::recacheIfNeeded()
+void Transport::recacheIfNeeded() const
 {
-    if (this->sequencesAreOutdated)
+    if (this->sequencesAreOutdated.get())
     {
-        jassert(!this->isPlaying());
+        //DBG("Transport::recache");
         this->playbackCache.clear();
         static Clip noTransform;
-        const double offset = -this->trackStartMs.get();
+        const double offset = -this->projectFirstBeat.get();
 
         // Find solo clips, if any
         bool hasSoloClips = false;
@@ -691,9 +749,8 @@ void Transport::recacheIfNeeded()
     }
 }
 
-ProjectSequences &Transport::getPlaybackCache()
+TransportPlaybackCache Transport::getPlaybackCache()
 {
-    const SpinLock::ScopedLockType l(this->sequencesLock);
     return this->playbackCache;
 }
 
@@ -751,31 +808,66 @@ void Transport::removeTransportListener(TransportListener *listener)
     this->transportListeners.remove(listener);
 }
 
-void Transport::broadcastSeek(const double newPosition,
-    const double currentTimeMs, const double totalTimeMs)
+void Transport::broadcastSeek(float relativeBeat,
+    double currentTimeMs, double totalTimeMs)
 {
+    // relativeBeat is relative to the project's first beat
     this->transportListeners.call(&TransportListener::onSeek,
-        newPosition, currentTimeMs, totalTimeMs);
+        relativeBeat + this->projectFirstBeat.get(), currentTimeMs, totalTimeMs);
 }
 
-void Transport::broadcastTempoChanged(const double newTempo)
+void Transport::broadcastTempoChanged(double newTempo)
 {
     this->transportListeners.call(&TransportListener::onTempoChanged, newTempo);
 }
 
-void Transport::broadcastTotalTimeChanged(const double timeMs)
+void Transport::broadcastTotalTimeChanged(double timeMs)
 {
     this->transportListeners.call(&TransportListener::onTotalTimeChanged, timeMs);
 }
 
 void Transport::broadcastPlay()
 {
-    this->transportListeners.call(&TransportListener::onPlay);
+    MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onPlay);
+    }
+}
+
+void Transport::broadcastRecord()
+{
+    MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onRecord);
+    }
+}
+
+void Transport::broadcastRecordFailed(const Array<MidiDeviceInfo> &devices)
+{
+    MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onRecordFailed, devices);
+    }
 }
 
 void Transport::broadcastStop()
 {
-    this->transportListeners.call(&TransportListener::onStop);
+    MessageManagerLock mml(Thread::getCurrentThread());
+    jassert(mml.lockWasGained());
+
+    if (mml.lockWasGained())
+    {
+        this->transportListeners.call(&TransportListener::onStop);
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -786,18 +878,20 @@ SerializedData Transport::serialize() const
 {
     using namespace Serialization;
     SerializedData tree(Audio::transport);
-    tree.setProperty(Audio::transportSeekPosition, this->getSeekPosition());
+    tree.setProperty(Audio::transportSeekBeat, this->getSeekBeat());
     return tree;
 }
 
 void Transport::deserialize(const SerializedData &data)
 {
     this->reset();
+
     using namespace Serialization;
     const auto root = data.hasType(Audio::transport) ?
         data : data.getChildWithName(Audio::transport);
-    const float seek = root.getProperty(Audio::transportSeekPosition, 0.f);
-    this->seekToPosition(seek);
+
+    const float seek = root.getProperty(Audio::transportSeekBeat, 0.f);
+    this->seekToBeat(seek);
 }
 
 void Transport::reset() {}

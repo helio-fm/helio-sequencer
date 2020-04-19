@@ -182,11 +182,11 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
     do
     {
         DBG(">> " << verb << " " << this->apiEndpoint);
-        stream.reset(url.createInputStream(false,
+        stream = url.createInputStream(false,
             nullptr, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
-            5, verb));
+            5, verb);
     } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
 
     processResponse(response, stream.get());
@@ -213,11 +213,11 @@ BackendRequest::Response BackendRequest::doRequest(const SerializedData &payload
         DBG(">> " << verb << " " << this->apiEndpoint << " " 
             << jsonPayload.substring(0, 128) + (jsonPayload.length() > 128 ? ".." : ""));
 
-        stream.reset(url.createInputStream(true,
+        stream = url.createInputStream(true,
             nullptr, (void *)(this),
             getHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode,
-            5, verb));
+            5, verb);
     } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
 
     processResponse(response, stream.get());

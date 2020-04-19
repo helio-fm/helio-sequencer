@@ -17,10 +17,10 @@
 
 #pragma once
 
-class MidiEvent;
 class MidiSequence;
 class HybridRoll;
 
+#include "MidiEvent.h"
 #include "FloatBoundsComponent.h"
 #include "SelectableComponent.h"
 
@@ -37,7 +37,7 @@ public:
     void setGhostMode();
 
     virtual float getBeat() const noexcept = 0;
-    virtual const String &getId() const noexcept = 0;
+    virtual const MidiEvent::Id getId() const noexcept = 0;
     virtual void updateColours() = 0;
 
     //===------------------------------------------------------------------===//
@@ -59,11 +59,21 @@ protected:
     HybridRoll &roll;
     ComponentDragger dragger;
 
-    bool selectedState;
-    bool activeState;
-    float anchorBeat;
+    struct MidiEventComponentFlags
+    {
+        bool isSelected : 1;
+        bool isActive : 1;
+        bool isGhost : 1;
+        bool isRecordingTarget : 1;
+    };
 
-    bool ghostMode;
+    union
+    {
+        uint8 componentFlags = 0;
+        MidiEventComponentFlags flags;
+    };
+
+    float anchorBeat = 0.f;
 
     // сдвиг мыши от нуля компонента во время клика.
     // если его не учитывать, то ноты двигаются неестественно

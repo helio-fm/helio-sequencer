@@ -55,5 +55,22 @@ public:
 class PatternRollSelectionMenuManager final : public SelectionMenuManager
 {
 public:
-    PatternRollSelectionMenuManager(WeakReference<Lasso> lasso);
+    explicit PatternRollSelectionMenuManager(WeakReference<Lasso> lasso);
+};
+
+class PatternRollRecordingTargetController final : public ChangeListener
+{
+public:
+
+    PatternRollRecordingTargetController(WeakReference<Lasso> lasso, ProjectNode &project);
+    ~PatternRollRecordingTargetController() override;
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+
+private:
+
+    WeakReference<Lasso> lasso;
+    ProjectNode &project;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollRecordingTargetController);
 };

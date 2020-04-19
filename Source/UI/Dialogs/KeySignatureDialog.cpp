@@ -271,7 +271,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
     {
         this->cancelAndDisappear();
     }
-    else if (commandId == CommandIDs::TransportStartPlayback)
+    else if (commandId == CommandIDs::TransportPlaybackStart)
     {
         // Play scale forward and backward
         auto scaleKeys = this->scale->getUpScale();
@@ -283,12 +283,12 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         {
             const int key = MIDDLE_C + this->key + scaleKeys.getUnchecked(i);
 
-            MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
+            MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 0.5f));
             const double startTime = double(i) * timeFactor;
             eventNoteOn.setTimeStamp(startTime);
 
             MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
-            const double endTime = double(i + 0.5) * timeFactor;
+            const double endTime = (double(i) + timeFactor * 0.95) * timeFactor;
             eventNoteOff.setTimeStamp(endTime);
 
             s.addEvent(eventNoteOn);
@@ -297,18 +297,19 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
 
         s.updateMatchedPairs();
         this->transport.probeSequence(s);
-        //this->playButton->setPlaying(true);
+        this->playButton->setPlaying(true);
     }
-    else if (commandId == CommandIDs::TransportPausePlayback)
+    else if (commandId == CommandIDs::TransportStop)
     {
         this->transport.stopPlayback();
-        //this->playButton->setPlaying(false);
+        this->playButton->setPlaying(false);
     }
     else
     {
         const int scaleIndex = commandId - CommandIDs::SelectScale;
         if (scaleIndex >= 0 && scaleIndex < this->defaultScales.size())
         {
+            this->playButton->setPlaying(false);
             this->scale = this->defaultScales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
             this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);

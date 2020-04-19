@@ -1596,10 +1596,9 @@ void CommandPaletteChordConstructor::previewIfNeeded()
         if (auto *pianoSequence =
             dynamic_cast<PianoSequence *>(this->roll.getActiveTrack()->getSequence()))
         {
-            const auto seek = this->roll.getTransport().getSeekPosition();
             const auto clipKey = this->roll.getActiveClip().getKey();
             const auto clipBeat = this->roll.getActiveClip().getBeat();
-            const auto targetBeat = this->roll.getBeatByTransportPosition(seek) - clipBeat;
+            const auto targetBeat = this->roll.getTransport().getSeekBeat() - clipBeat;
 
             int minKey = 128;
             int maxKey = 0;

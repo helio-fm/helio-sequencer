@@ -305,29 +305,27 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
     const KeySignatureEvent *keySignatureUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
     const auto keySignatures = timeline->getKeySignatures()->getSequence();
-    const double seekPosition = this->project.getTransport().getSeekPosition();
+    const auto seekBeat = this->project.getTransport().getSeekBeat();
 
     for (int i = 0; i < keySignatures->size(); ++i)
     {
-        const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
         auto *keySignature = static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
 
-        if (fabs(keySignature->getBeat() - seekBeat) < 0.1f)
+        if (fabs(keySignature->getBeat() - seekBeat) < 0.001f)
         {
             keySignatureUnderSeekCursor = keySignature;
             break;
         }
     }
 
-    const double newSeekPosition = this->roll.getTransportPositionByBeat(ksc->getBeat());
+    const auto newSeekBeat = ksc->getBeat();
     const bool wasPlaying = this->project.getTransport().isPlaying();
-
     if (wasPlaying)
     {
         this->project.getTransport().stopPlayback();
     }
 
-    this->project.getTransport().seekToPosition(newSeekPosition);
+    this->project.getTransport().seekToBeat(newSeekBeat);
 
     if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)
     {

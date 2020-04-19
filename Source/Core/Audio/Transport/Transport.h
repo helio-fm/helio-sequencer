@@ -24,7 +24,7 @@ class PlayerThreadPool;
 class RendererThread;
 
 #include "TransportListener.h"
-#include "ProjectSequencesWrapper.h"
+#include "TransportPlaybackCache.h"
 #include "ProjectListener.h"
 #include "OrchestraListener.h"
 #include "Instrument.h"
@@ -49,21 +49,25 @@ public:
     // Transport
     //===------------------------------------------------------------------===//
     
-    double getSeekPosition() const noexcept;
-    double getTotalTime() const noexcept;
-    void seekToPosition(double absPosition);
+    float getSeekBeat() const noexcept;
+    float getTotalTime() const noexcept;
+    void seekToBeat(float beatPosition);
     
-    void probeSoundAt(double absTrackPosition, 
+    void probeSoundAtBeat(float beatPosition,
         const MidiSequence *limitToLayer = nullptr);
     
     void probeSequence(const MidiMessageSequence &sequence);
 
     void startPlayback();
-    void startPlaybackFragment(double absStart, double absEnd, bool looped = false);
+    void startPlaybackFragment(float startBeat, float endBeat, bool looped);
 
     bool isPlaying() const;
     void stopPlayback();
     void toggleStartStopPlayback();
+
+    void startRecording();
+    bool isRecording() const;
+    void stopRecording();
 
     void startRender(const String &filename);
     bool isRendering() const;
@@ -71,8 +75,8 @@ public:
     
     float getRenderingPercentsComplete() const;
     
-    void calcTimeAndTempoAt(const double absPosition,
-        double &outTimeMs, double &outTempo);
+    void findTimeAndTempoAt(float beatPosition,
+        double &outTimeMs, double &outTempo) const;
 
     MidiMessage findFirstTempoEvent();
 
@@ -133,15 +137,16 @@ public:
 
 protected:
 
-    void setTotalTime(const double val);
-    void setSeekPosition(const double absPosition);
+    void setTotalTime(float val);
+    void setSeekBeat(float beatPosition);
 
-    void broadcastTempoChanged(const double newTempo);
-    void broadcastTotalTimeChanged(const double timeMs);
     void broadcastPlay();
     void broadcastStop();
-    void broadcastSeek(const double newPosition,
-        const double currentTimeMs, const double totalTimeMs);
+    void broadcastRecord();
+    void broadcastRecordFailed(const Array<MidiDeviceInfo> &devices);
+    void broadcastTempoChanged(double newTempo);
+    void broadcastTotalTimeChanged(double timeMs);
+    void broadcastSeek(float newBeat, double currentTimeMs, double totalTimeMs);
 
 private:
     
@@ -151,17 +156,27 @@ private:
     UniquePointer<PlayerThreadPool> player;
     UniquePointer<RendererThread> renderer;
 
-    friend class RendererThread;
     friend class PlayerThread;
+    friend class PlayerThreadPool;
+    friend class RendererThread;
+
+    float getProjectFirstBeat() const noexcept
+    {
+        return this->projectFirstBeat.get();
+    }
+
+    float getProjectLastBeat() const noexcept
+    {
+        return this->projectLastBeat.get();
+    }
 
 private:
 
-    ProjectSequences &getPlaybackCache();
-    void recacheIfNeeded();
+    TransportPlaybackCache getPlaybackCache();
+    void recacheIfNeeded() const;
     
-    SpinLock sequencesLock;
-    ProjectSequences playbackCache;
-    bool sequencesAreOutdated = true;
+    mutable TransportPlaybackCache playbackCache;
+    mutable Atomic<bool> sequencesAreOutdated = true;
     
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
@@ -174,11 +189,11 @@ private:
 
     /*
         The purpose of this class is to help with previewing messages on the fly in piano roll.
-        Will simply send messages to queue after a delay, and cancels all pending messages when
+        Will simply send messages to queue after a delay, and cancel all pending messages when
         someone calls allNotesControllersAndSoundOff(); that delay is needed because some plugins
         (e.g. Kontakt in my case) are often processing play/stop messages out of order, which is weird -
         note the word `queue` in addMessageToQueue() method name - but it still happens in some cases,
-        for example, when a user drags some notes around quickly. Said that, for whatever reason,
+        for example, when the user drags some notes around quickly. Said that, for whatever reason,
         JUCE's message collector cannot be relied upon, and this hack is used instead.
     */
     class MidiMessageDelayedPreview final : private Timer
@@ -198,16 +213,17 @@ private:
 
 private:
 
-    Atomic<double> seekPosition = 0.0;
-    Atomic<double> totalTime = PROJECT_DEFAULT_NUM_BEATS;
-    
-    Atomic<double> trackStartMs = 0.0;
-    Atomic<double> trackEndMs = 0.0;
+    Atomic<float> seekBeat = 0.0;
+    Atomic<float> totalTime = PROJECT_DEFAULT_NUM_BEATS;
     
     Atomic<float> projectFirstBeat = 0.f;
     Atomic<float> projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
 
+    // just a flag, all logic resides in MidiRecorder class:
+    Atomic<bool> midiRecordingMode = false;
+
     ListenerList<TransportListener> transportListeners;
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Transport)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Transport)
 };

@@ -28,7 +28,7 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
 {
     if (lasso->getNumSelected() > 0)
     {
-        this->initDefaultMenu();
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }
 }
 
@@ -45,7 +45,7 @@ static bool canRenamePatternSelection(WeakReference<Lasso> lasso)
     return true;
 }
 
-void PatternRollSelectionMenu::initDefaultMenu()
+MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
@@ -68,10 +68,16 @@ void PatternRollSelectionMenu::initDefaultMenu()
     const auto soloAction = PatternOperations::lassoContainsSoloedClip(*this->lasso) ?
         TRANS(I18n::Menu::unsolo) : TRANS(I18n::Menu::solo);
 
-    // TODO icons
     menu.add(MenuItem::item(Icons::mute, CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
-
     menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleSoloClips, soloAction)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS(I18n::Menu::Selection::notesQuantizeTo))->
+        withSubmenu()->
+        withAction([this]()
+    {
+        this->updateContent(this->createQuantizationMenu(), MenuPanel::SlideLeft);
+    }));
 
     const auto canDuplicate = this->lasso->getNumSelected() == 1;
 
@@ -81,5 +87,32 @@ void PatternRollSelectionMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
         TRANS(I18n::Menu::Selection::clipsDelete))->closesMenu());
 
-    this->updateContent(menu, MenuPanel::SlideRight);
+    return menu;
+}
+
+MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
+{
+    MenuPanel::Menu menu;
+
+    using namespace I18n::Menu;
+
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    }));
+
+#define CLIP_QUANTIZE_ITEM(cmd) \
+    MenuItem::item(Icons::ellipsis, cmd, \
+        CommandIDs::getTranslationKeyFor(cmd).toString())->closesMenu()
+
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_1));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_2));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_4));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_8));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_16));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_32));
+
+#undef CLIP_QUANTIZE_ITEM
+
+    return menu;
 }

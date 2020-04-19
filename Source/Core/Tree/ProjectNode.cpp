@@ -43,6 +43,7 @@
 #include "TrackedItem.h"
 #include "HybridRoll.h"
 #include "UndoStack.h"
+#include "MidiRecorder.h"
 
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
@@ -58,6 +59,7 @@
 #include "Workspace.h"
 
 #include "SerializationKeys.h"
+#include "ColourIDs.h"
 #include "Config.h"
 #include "Icons.h"
 
@@ -94,17 +96,19 @@ void ProjectNode::initialize()
     this->transport = makeUnique<Transport>(orchestra, audioCoreSleepTimer);
     this->addListener(this->transport.get());
 
+    this->midiRecorder = makeUnique<MidiRecorder>(*this);
+
     this->metadata = makeUnique<ProjectMetadata>(*this);
     this->vcsItems.add(this->metadata.get());
 
     this->timeline = makeUnique<ProjectTimeline>(*this, "Project Timeline");
     this->vcsItems.add(this->timeline.get());
 
-    this->transport->seekToPosition(0.0);
-
     this->consoleTimelineEvents = makeUnique<CommandPaletteTimelineEvents>(*this);
 
     this->recreatePage();
+
+    this->transport->seekToBeat(this->firstBeatCache);
 }
 
 ProjectNode::~ProjectNode()
@@ -125,10 +129,13 @@ ProjectNode::~ProjectNode()
     this->timeline = nullptr;
     this->metadata = nullptr;
 
+    this->midiRecorder = nullptr;
+
     this->removeListener(this->transport.get());
     this->transport = nullptr;
 
     this->autosaver = nullptr;
+    this->undoStack = nullptr;
 }
 
 String ProjectNode::getId() const noexcept
@@ -242,6 +249,18 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
     App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
+void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip &clip)
+{
+    String instrumentId;
+    if (track != nullptr)
+    {
+        instrumentId = track->getTrackInstrumentId();
+        App::Workspace().getAudioCore().setActiveMidiPlayer(instrumentId, true);
+    }
+
+    this->midiRecorder->setTargetScope(track, clip, instrumentId);
+}
+
 void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
     const Clip &activeClip, bool shouldFocusToArea)
 {
@@ -256,6 +275,8 @@ void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
         // so that roll's scope is updated twice :(
         this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
             activeTrack, activeClip, shouldFocusToArea);
+
+        this->setMidiRecordingTarget(activeTrack, activeClip);
     }
 }
 
@@ -313,19 +334,12 @@ void ProjectNode::checkpoint()
 
 void ProjectNode::undo()
 {
-    if (this->getUndoStack()->canUndo())
-    {
-        this->checkpoint();
-        this->getUndoStack()->undo();
-    }
+    this->getUndoStack()->undo();
 }
 
 void ProjectNode::redo()
 {
-    if (this->getUndoStack()->canRedo())
-    {
-        this->getUndoStack()->redo();
-    }
+    this->getUndoStack()->redo();
 }
 
 void ProjectNode::clearUndoHistory()
@@ -458,7 +472,7 @@ void ProjectNode::deserialize(const SerializedData &data)
 
 void ProjectNode::reset()
 {
-    this->transport->seekToPosition(0.f);
+    this->transport->seekToBeat(this->firstBeatCache);
     this->vcsItems.clear();
     this->vcsItems.add(this->metadata.get());
     this->vcsItems.add(this->timeline.get());
@@ -540,7 +554,7 @@ void ProjectNode::importMidi(const File &file)
     }
 
     Random r;
-    const auto colours = MenuPanel::getColoursList().getAllValues();
+    const auto colours = ColourIDs::getColoursList().getAllValues();
     const auto timeFormat = tempFile.getTimeFormat();
 
     this->timeline->reset();

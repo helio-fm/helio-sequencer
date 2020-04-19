@@ -26,20 +26,24 @@ public:
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-    void startPlayback(double start, double end, bool shouldLoop,
-        bool shouldBroadcastTransportEvents = true);
+    void startPlayback(float relStartBeat, float relEndBeat,
+        double startTempo, double currentTime, double totalTime,
+        bool loopMode, bool silentMode = false);
 
 private:
 
     void run() override;
 
     Transport &transport;
+    bool loopMode = false;
+    bool silentMode = false;
 
-    bool broadcastMode = false;
-    bool loopedMode = false;
+    Atomic<float> startBeat = 0.f;
+    Atomic<float> endBeat = 1.f;
 
-    double absStartPosition = 0.0;
-    double absEndPosition = 1.0;
+    Atomic<double> totalTimeMs = 0.0;
+    Atomic<double> currentTimeMs = 0.0;
+    Atomic<double> msPerQuarterNote = 0.0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };

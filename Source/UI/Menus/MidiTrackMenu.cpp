@@ -19,8 +19,6 @@
 #include "MidiTrackMenu.h"
 #include "MidiTrackNode.h"
 #include "PianoTrackNode.h"
-#include "Icons.h"
-#include "CommandIDs.h"
 
 #include "MainLayout.h"
 #include "AudioCore.h"
@@ -38,6 +36,10 @@
 #include "AutomationTrackActions.h"
 #include "UndoStack.h"
 #include "Workspace.h"
+
+#include "CommandIDs.h"
+#include "ColourIDs.h"
+#include "Icons.h"
 
 MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
     trackNode(node)
@@ -82,7 +84,7 @@ void MidiTrackMenu::initColorSelectionMenu()
         this->initDefaultMenu();
     }));
     
-    const StringPairArray colours(MenuPanel::getColoursList());
+    const StringPairArray colours(ColourIDs::getColoursList());
     for (int i = 0; i < colours.getAllKeys().size(); ++i)
     {
         const String name(colours.getAllKeys()[i]);

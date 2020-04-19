@@ -157,6 +157,13 @@ Note Note::withVelocity(float newVelocity) const noexcept
     return other;
 }
 
+Note Note::withDeltaVelocity(float deltaVelocity) const noexcept
+{
+    Note other(*this);
+    other.velocity = jlimit(0.f, 1.f, this->velocity + deltaVelocity);
+    return other;
+}
+
 Note Note::withTuplet(Tuplet tuplet) const noexcept
 {
     Note other(*this);
@@ -204,7 +211,7 @@ SerializedData Note::serialize() const
 {
     using namespace Serialization;
     SerializedData tree(Midi::note);
-    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::key, this->key);
     tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
     tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT));
@@ -220,7 +227,7 @@ void Note::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->id = data.getProperty(Midi::id);
+    this->id = unpackId(data.getProperty(Midi::id));
     this->key = data.getProperty(Midi::key);
     this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->length = float(data.getProperty(Midi::length)) / TICKS_PER_BEAT;
@@ -257,5 +264,5 @@ int Note::compareElements(const Note *const first, const Note *const second) noe
     const int keyResult = (keyDiff > 0) - (keyDiff < 0);
     if (keyResult != 0) { return keyResult; }
 
-    return first->getId().compare(second->getId());
+    return first->getId() - second->getId();
 }

@@ -67,22 +67,22 @@ bool InternalPluginFormat::fileMightContainThisPluginType(const String &fileOrId
 void InternalPluginFormat::createPluginInstance(const PluginDescription &desc,
     double initialSampleRate, int initialBufferSize, PluginCreationCallback callback)
 {
-    if (desc.uid == this->audioOutDesc.uid || desc.name == this->audioOutDesc.name)
+    if (desc.uid == this->audioOutDesc.uid || desc.name.equalsIgnoreCase(this->audioOutDesc.name))
     {
         callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), {});
         return;
     }
-    if (desc.uid == this->audioInDesc.uid || desc.name == this->audioInDesc.name)
+    if (desc.uid == this->audioInDesc.uid || desc.name.equalsIgnoreCase(this->audioInDesc.name))
     {
         callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode), {});
         return;
     }
-    if (desc.uid == this->midiInDesc.uid || desc.name == this->midiInDesc.name)
+    if (desc.uid == this->midiInDesc.uid || desc.name.equalsIgnoreCase(this->midiInDesc.name))
     {
         callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode), {});
         return;
     }
-    else if (desc.uid == this->midiOutDesc.uid || desc.name == this->midiOutDesc.name)
+    else if (desc.uid == this->midiOutDesc.uid || desc.name.equalsIgnoreCase(this->midiOutDesc.name))
     {
         callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
         return;
@@ -97,16 +97,12 @@ const PluginDescription *InternalPluginFormat::getDescriptionFor(const InternalF
     {
     case audioInputFilter:
         return &this->audioInDesc;
-
     case audioOutputFilter:
         return &this->audioOutDesc;
-
     case midiInputFilter:
         return &this->midiInDesc;
-
     case midiOutputFilter:
         return &this->midiOutDesc;
-
     default:
         break;
     }

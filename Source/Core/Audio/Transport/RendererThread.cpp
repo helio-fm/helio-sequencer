@@ -42,7 +42,7 @@ float RendererThread::getPercentsComplete() const
 void RendererThread::startRecording(const File &file)
 {
     this->transport.recacheIfNeeded();
-    const auto &sequencesCache = this->transport.getPlaybackCache();
+    const auto sequencesCache = this->transport.getPlaybackCache();
     
     if (sequencesCache.isEmpty())
     {
@@ -124,7 +124,7 @@ void RendererThread::run()
 {
     // step 0. init.
     this->transport.recacheIfNeeded();
-    auto &sequences = this->transport.getPlaybackCache();
+    auto sequences = this->transport.getPlaybackCache();
     const int bufferSize = 512;
 
     // assuming that number of channels and sample rate is equal for all instruments
@@ -134,11 +134,11 @@ void RendererThread::run()
     
     double totalTimeMs = 0.0;
     double tempoAtTheEndOfTrack = 0.0;
-    this->transport.calcTimeAndTempoAt(1.0, totalTimeMs, tempoAtTheEndOfTrack);
+    this->transport.findTimeAndTempoAt(this->transport.getProjectLastBeat(), totalTimeMs, tempoAtTheEndOfTrack);
     
     double startTimeMs = 0.0;
     double msPerQuarter = 0.0;
-    this->transport.calcTimeAndTempoAt(0.0, startTimeMs, msPerQuarter);
+    this->transport.findTimeAndTempoAt(this->transport.getProjectFirstBeat(), startTimeMs, msPerQuarter);
     double secPerQuarter = msPerQuarter / 1000.0;
 
     double currentFrame = 0.0;
@@ -146,7 +146,8 @@ void RendererThread::run()
 
     // step 1. create a list of unique instruments with audio buffers for them.
     OwnedArray<RenderBuffer> subBuffers;
-    Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
+    Array<Instrument *> uniqueInstruments;
+    uniqueInstruments.addArray(sequences.getUniqueInstruments());
 
     for (int i = 0; i < uniqueInstruments.size(); ++i)
     {

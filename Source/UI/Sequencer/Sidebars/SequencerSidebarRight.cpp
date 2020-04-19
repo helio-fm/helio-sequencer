@@ -91,8 +91,8 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)));
     this->addAndMakeVisible(annotationsButton.get());
 
-    this->playButton.reset(new PlayButton(nullptr));
-    this->addAndMakeVisible(playButton.get());
+    this->transportControl.reset(new TransportControlComponent(nullptr));
+    this->addAndMakeVisible(transportControl.get());
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -115,7 +115,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
 
     //[/UserPreSize]
 
-    this->setSize(48, 640);
+    this->setSize(44, 640);
 
     //[Constructor]
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
@@ -142,7 +142,7 @@ SequencerSidebarRight::~SequencerSidebarRight()
     currentTime = nullptr;
     headShadow = nullptr;
     annotationsButton = nullptr;
-    playButton = nullptr;
+    transportControl = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -167,15 +167,15 @@ void SequencerSidebarRight::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    listBox->setBounds(0, 41, getWidth() - 0, getHeight() - 113);
+    listBox->setBounds(0, 41, getWidth() - 0, getHeight() - 121);
     headLine->setBounds(0, 39, getWidth() - 0, 2);
-    shadow->setBounds(0, getHeight() - 71 - 6, getWidth() - 0, 6);
-    separator->setBounds(0, getHeight() - 70 - 2, getWidth() - 0, 2);
+    shadow->setBounds(0, getHeight() - 79 - 6, getWidth() - 0, 6);
+    separator->setBounds(0, getHeight() - 78 - 2, getWidth() - 0, 2);
     totalTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 9 - 18, 72, 18);
     currentTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
     headShadow->setBounds(0, 40, getWidth() - 0, 6);
     annotationsButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    playButton->setBounds((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
+    transportControl->setBounds(0, getHeight() - 79, getWidth() - 0, 79);
     //[UserResized] Add your own custom resize handling here..
     // a hack for themes changing
     this->listBox->updateContent();
@@ -194,12 +194,11 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         const TimeSignatureEvent *selectedTimeSignature = nullptr;
 
         const ProjectTimeline *timeline = this->project.getTimeline();
-        const double seekPosition = this->project.getTransport().getSeekPosition();
+        const auto seekBeat = this->project.getTransport().getSeekBeat();
 
-        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+        if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
-            const double numBeats = double(roll->getNumBeats());
-            const double seekThreshold = (1.0 / numBeats) / 10.0;
+            static const double seekThreshold = 0.001f;
             const auto annotationsSequence = timeline->getAnnotations()->getSequence();
             const auto timeSignaturesSequence = timeline->getTimeSignatures()->getSequence();
 
@@ -208,8 +207,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
                 if (AnnotationEvent *annotation =
                     dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
                 {
-                    const double annotationSeekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                    if (fabs(annotationSeekPosition - seekPosition) < seekThreshold)
+                    if (fabs(annotation->getBeat() - seekBeat) < seekThreshold)
                     {
                         selectedAnnotation = annotation;
                         break;
@@ -219,11 +217,9 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
 
             for (int i = 0; i < timeSignaturesSequence->size(); ++i)
             {
-                if (TimeSignatureEvent *ts =
-                    dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
+                if (auto *ts = dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
                 {
-                    const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
-                    if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
+                    if (fabs(ts->getBeat() - seekBeat) < seekThreshold)
                     {
                         selectedTimeSignature = ts;
                         break;
@@ -284,6 +280,8 @@ void SequencerSidebarRight::recreateMenu()
 #endif
 
     this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggled(scissorsMode));
+
+    //this->menu.add(MenuItem::item(Icons::record, CommandIDs::ToggleRecording)->toggled(transportIsPaused));
 
     if (this->menuMode == PianoRollTools)
     {
@@ -377,7 +375,7 @@ void SequencerSidebarRight::handleAsyncUpdate()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void SequencerSidebarRight::onSeek(double absolutePosition,double currentTimeMs, double totalTimeMs)
+void SequencerSidebarRight::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
 {
 #if TOOLS_SIDEBAR_SHOWS_TIME
     this->lastSeekTime = currentTimeMs;
@@ -385,8 +383,6 @@ void SequencerSidebarRight::onSeek(double absolutePosition,double currentTimeMs,
     this->triggerAsyncUpdate();
 #endif
 }
-
-void SequencerSidebarRight::onTempoChanged(double msPerQuarter) {}
 
 void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
 {
@@ -404,7 +400,33 @@ void SequencerSidebarRight::onPlay()
     this->startTimer(100);
 #endif
 
-    this->playButton->setPlaying(true);
+    this->transportControl->showPlayingMode(true);
+}
+
+void SequencerSidebarRight::onRecord()
+{
+    this->transportControl->showRecordingMode(true);
+}
+
+void SequencerSidebarRight::onRecordFailed(const Array<MidiDeviceInfo> &devices)
+{
+    jassert(devices.size() != 1);
+
+    if (!this->isShowing()) // shouldn't happen, but just in case it does
+    {
+        jassertfalse;
+        return;
+    }
+
+    if (devices.isEmpty())
+    {
+        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoInputDevices));
+        this->transportControl->showRecordingError();
+    }
+    else
+    {
+        this->transportControl->showRecordingMenu(devices);
+    }
 }
 
 void SequencerSidebarRight::onStop()
@@ -413,7 +435,8 @@ void SequencerSidebarRight::onStop()
     this->stopTimer();
 #endif
 
-    this->playButton->setPlaying(false);
+    this->transportControl->showPlayingMode(false);
+    this->transportControl->showRecordingMode(false);
 }
 
 //===----------------------------------------------------------------------===//
@@ -479,21 +502,21 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component, protected TransportListener, protected AsyncUpdater, protected ListBoxModel, protected ChangeListener, protected Timer"
                  constructorParams="ProjectNode &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="48" initialHeight="640">
+                 fixedSize="1" initialWidth="44" initialHeight="640">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
-                    explicitFocusOrder="0" pos="0 41 0M 113M" class="ListBox" params=""/>
+                    explicitFocusOrder="0" pos="0 41 0M 121M" class="ListBox" params=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
              explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
+             explicitFocusOrder="0" pos="0 79Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
              constructorParams="Light"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="0 78Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
          explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="" editableSingleClick="0"
@@ -509,11 +532,14 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)"/>
-  <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
+  <JUCERCOMP name="" id="bb2e14336f795a57" memberName="transportControl" virtualName=""
+             explicitFocusOrder="0" pos="0 0Rr 0M 79" sourceFile="../../Common/TransportControlComponent.cpp"
              constructorParams="nullptr"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

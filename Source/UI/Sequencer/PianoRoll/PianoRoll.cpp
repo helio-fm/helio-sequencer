@@ -984,8 +984,8 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::PasteEvents:
     {
         this->deselectAll();
-        const auto playheadPos = this->project.getTransport().getSeekPosition();
-        const float playheadBeat = this->getBeatByTransportPosition(playheadPos) - this->activeClip.getBeat();
+        const auto playheadPos = this->project.getTransport().getSeekBeat();
+        const float playheadBeat = playheadPos - this->activeClip.getBeat();
         SequencerOperations::pasteFromClipboard(App::Clipboard(), this->project, this->getActiveTrack(), playheadBeat);
     }
         break;
@@ -1127,14 +1127,24 @@ void PianoRoll::handleCommandMessage(int commandId)
         //if (this->selection.getNumSelected() == 0) { this->selectAll(); }
         //HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
         break;
-    case CommandIDs::TweakVolumeRandom:
+    case CommandIDs::NotesVolumeRandom:
         HYBRID_ROLL_BULK_REPAINT_START
         SequencerOperations::randomizeVolume(this->getLassoSelection(), 0.1f);
         HYBRID_ROLL_BULK_REPAINT_END
         break;
-    case CommandIDs::TweakVolumeFadeOut:
+    case CommandIDs::NotesVolumeFadeOut:
         HYBRID_ROLL_BULK_REPAINT_START
         SequencerOperations::fadeOutVolume(this->getLassoSelection(), 0.35f);
+        HYBRID_ROLL_BULK_REPAINT_END
+        break;
+    case CommandIDs::NotesVolumeUp:
+        HYBRID_ROLL_BULK_REPAINT_START
+        SequencerOperations::tuneVolume(this->getLassoSelection(), 1.f / 32.f);
+        HYBRID_ROLL_BULK_REPAINT_END
+        break;
+    case CommandIDs::NotesVolumeDown:
+        HYBRID_ROLL_BULK_REPAINT_START
+        SequencerOperations::tuneVolume(this->getLassoSelection(), -1.f / 32.f);
         HYBRID_ROLL_BULK_REPAINT_END
         break;
     case CommandIDs::Tuplet1:
@@ -1163,6 +1173,30 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::Tuplet9:
         SequencerOperations::applyTuplets(this->getLassoSelection(), 9);
+        break;
+    case CommandIDs::QuantizeTo1_1:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 1.f);
+        break;
+    case CommandIDs::QuantizeTo1_2:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 2.f);
+        break;
+    case CommandIDs::QuantizeTo1_4:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 4.f);
+        break;
+    case CommandIDs::QuantizeTo1_8:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 8.f);
+        break;
+    case CommandIDs::QuantizeTo1_16:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 16.f);
+        break;
+    case CommandIDs::QuantizeTo1_32:
+        if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+        SequencerOperations::quantize(this->getLassoSelection(), 32.f);
         break;
     default:
         break;

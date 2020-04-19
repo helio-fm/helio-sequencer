@@ -24,7 +24,7 @@ class MidiEvent : public Serializable
 {
 public:
 
-    using Id = String;
+    using Id = int32;
 
     // Non-serialized field to be used instead of expensive dynamic casts:
     enum class Type : uint8 
@@ -67,7 +67,7 @@ public:
     int getTrackChannel() const noexcept;
     Colour getTrackColour() const noexcept;
 
-    const Id &getId() const noexcept;
+    const Id getId() const noexcept;
     float getBeat() const noexcept;
 
     friend inline bool operator==(const MidiEvent &l, const MidiEvent &r)
@@ -87,13 +87,16 @@ protected:
 
     WeakReference<MidiSequence> sequence;
 
-    Id id;
+    Id id = 0;
     Type type;
-    float beat;
+    float beat = 0.f;
 
     Id createId() const noexcept;
+    static String packId(MidiEvent::Id id);
+    static Id unpackId(const String &str);
 
     friend struct MidiEventHash;
+    friend class LegacyEventFormatSupportTests;
 
 };
 
@@ -101,13 +104,6 @@ struct MidiEventHash
 {
     inline HashCode operator()(const MidiEvent &key) const noexcept
     {
-        // Earlier, this function looked like this:
-        // return static_cast<HashCode>(key.beat) + static_cast<HashCode>(key.getId().hashCode());
-
-        // For speed and simplicity's sake we assume that id is not empty,
-        // and is at least of 2 characters (which it should be in all cases).
-        // There are no safety checks and all, but it should work:
-        const auto *ptr = key.id.getCharPointer().getAddress();
-        return 64 * static_cast<HashCode>(ptr[0]) + static_cast<HashCode>(ptr[1]);
+        return static_cast<HashCode>(key.id);
     }
 };

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="2.5" bundleIdentifier="fm.helio"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.0" bundleIdentifier="fm.helio"
               includeBinaryInAppConfig="1" jucerVersion="5.4.7" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
@@ -37,6 +37,7 @@
         <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
         <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
         <FILE id="ja4Raa" name="commit.svg" compile="0" resource="1" file="../../Resources/Icons/commit.svg"/>
+        <FILE id="rciWnk" name="console.svg" compile="0" resource="1" file="../../Resources/Icons/console.svg"/>
         <FILE id="ZZhM5X" name="copy.svg" compile="0" resource="1" file="../../Resources/Icons/copy.svg"/>
         <FILE id="XRkUwL" name="create.svg" compile="0" resource="1" file="../../Resources/Icons/create.svg"/>
         <FILE id="FGsAM4" name="cropTool.svg" compile="0" resource="1" file="../../Resources/Icons/cropTool.svg"/>
@@ -83,6 +84,7 @@
         <FILE id="BTqAe2" name="project.svg" compile="0" resource="1" file="../../Resources/Icons/project.svg"/>
         <FILE id="xx8PZK" name="pull.svg" compile="0" resource="1" file="../../Resources/Icons/pull.svg"/>
         <FILE id="epmE4m" name="push.svg" compile="0" resource="1" file="../../Resources/Icons/push.svg"/>
+        <FILE id="e5DELk" name="record.svg" compile="0" resource="1" file="../../Resources/Icons/record.svg"/>
         <FILE id="dLcDjT" name="redo.svg" compile="0" resource="1" file="../../Resources/Icons/redo.svg"/>
         <FILE id="jh8DJ1" name="refactor.svg" compile="0" resource="1" file="../../Resources/Icons/refactor.svg"/>
         <FILE id="eyUVjN" name="remote.svg" compile="0" resource="1" file="../../Resources/Icons/remote.svg"/>
@@ -98,6 +100,7 @@
         <FILE id="M4yCpT" name="selectAll.svg" compile="0" resource="1" file="../../Resources/Icons/selectAll.svg"/>
         <FILE id="GM5TrL" name="selectNone.svg" compile="0" resource="1" file="../../Resources/Icons/selectNone.svg"/>
         <FILE id="D6EOW7" name="settings.svg" compile="0" resource="1" file="../../Resources/Icons/settings.svg"/>
+        <FILE id="z6XXzu" name="stop.svg" compile="0" resource="1" file="../../Resources/Icons/stop.svg"/>
         <FILE id="M4E2VZ" name="stretchLeft.svg" compile="0" resource="1" file="../../Resources/Icons/stretchLeft.svg"/>
         <FILE id="BGvTna" name="stretchRight.svg" compile="0" resource="1"
               file="../../Resources/Icons/stretchRight.svg"/>
@@ -181,13 +184,14 @@
                   file="../../Source/Core/Audio/Monitoring/SpectrumAnalyzer.h"/>
           </GROUP>
           <GROUP id="{2FD3FB40-23EF-A822-3FB0-5CFBB940E2F2}" name="Transport">
+            <FILE id="OMVh1Q" name="MidiRecorder.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/Transport/MidiRecorder.cpp"/>
+            <FILE id="CEftLx" name="MidiRecorder.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/MidiRecorder.h"/>
             <FILE id="GH5xm4" name="PlayerThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/Transport/PlayerThread.cpp"/>
             <FILE id="Q7DJnB" name="PlayerThread.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/PlayerThread.h"/>
             <FILE id="hQoXTL" name="PlayerThreadPool.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/Transport/PlayerThreadPool.h"/>
-            <FILE id="TikoqY" name="ProjectSequencesWrapper.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/Transport/ProjectSequencesWrapper.h"/>
             <FILE id="MxQSLU" name="RendererThread.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/Transport/RendererThread.cpp"/>
             <FILE id="qHMFej" name="RendererThread.h" compile="0" resource="0"
@@ -196,6 +200,8 @@
             <FILE id="k7oPSt" name="Transport.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/Transport.h"/>
             <FILE id="JViiXj" name="TransportListener.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/Transport/TransportListener.h"/>
+            <FILE id="TikoqY" name="TransportPlaybackCache.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/Transport/TransportPlaybackCache.h"/>
           </GROUP>
           <FILE id="eGzL40" name="AudioCore.cpp" compile="1" resource="0" file="../../Source/Core/Audio/AudioCore.cpp"/>
           <FILE id="vlOPNw" name="AudioCore.h" compile="0" resource="0" file="../../Source/Core/Audio/AudioCore.h"/>
@@ -666,6 +672,7 @@
           <FILE id="OeoOMp" name="ColourSwatches.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ColourSwatches.h"/>
           <FILE id="DRQef0" name="CommandIDs.cpp" compile="1" resource="0" file="../../Source/UI/Common/CommandIDs.cpp"/>
+          <FILE id="MMm6PE" name="ColourIDs.cpp" compile="1" resource="0" file="../../Source/UI/Common/ColourIDs.cpp"/>
           <FILE id="RbTNhz" name="ColourIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ColourIDs.h"/>
           <FILE id="JpyU5z" name="CommandIDs.h" compile="0" resource="0" file="../../Source/UI/Common/CommandIDs.h"/>
           <FILE id="ldEAFp" name="ComponentIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ComponentIDs.h"/>
@@ -716,6 +723,10 @@
           <FILE id="XuVuyC" name="SpectralLogo.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/SpectralLogo.cpp"/>
           <FILE id="c1jtLI" name="SpectralLogo.h" compile="0" resource="0" file="../../Source/UI/Common/SpectralLogo.h"/>
+          <FILE id="lrOLoW" name="TransportControlComponent.cpp" compile="1"
+                resource="0" file="../../Source/UI/Common/TransportControlComponent.cpp"/>
+          <FILE id="BWaZbL" name="TransportControlComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Common/TransportControlComponent.h"/>
           <FILE id="C7fvvc" name="ViewportFitProxyComponent.cpp" compile="1"
                 resource="0" file="../../Source/UI/Common/ViewportFitProxyComponent.cpp"/>
           <FILE id="zidg8Y" name="ViewportFitProxyComponent.h" compile="0" resource="0"
@@ -1454,11 +1465,12 @@
                   UIStatusBarHidden="1" smallIcon="DQTpOG" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0"
                   customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;"
-                  iosScreenOrientation="landscape" customXcodeResourceFolders=""
-                  customXcassetsFolder="../../Resources/iOS/Images.xcassets" iosDevelopmentTeamID="EQL633LLC8"
-                  userNotes="" extraLinkerFlags="" externalLibraries="" extraFrameworks=""
-                  iosDeviceFamily="1,2" iPadScreenOrientation="landscape" useHeaderMap="0"
-                  bundleIdentifier="fm.helio.mobile" unityBuild="1">
+                  iosScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
+                  customXcodeResourceFolders="" customXcassetsFolder="../../Resources/iOS/Images.xcassets"
+                  iosDevelopmentTeamID="EQL633LLC8" userNotes="" extraLinkerFlags=""
+                  externalLibraries="" extraFrameworks="" iosDeviceFamily="1,2"
+                  iPadScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
+                  useHeaderMap="0" bundleIdentifier="fm.helio.mobile" unityBuild="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"

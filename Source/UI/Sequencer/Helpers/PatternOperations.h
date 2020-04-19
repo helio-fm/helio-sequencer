@@ -41,4 +41,6 @@ struct PatternOperations final
 
     static void toggleSoloClips(const Lasso &selection, bool shouldCheckpoint = true);
     static void toggleMuteClips(const Lasso &selection, bool shouldCheckpoint = true);
+
+    static void quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
 };

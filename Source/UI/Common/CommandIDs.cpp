@@ -23,14 +23,6 @@
     case constexprHash(#x): \
     return x; \
 
-#define TRANS_KEY(x, y) \
-    case x: \
-    return I18n::y; \
-
-#define TRANS_NONE(x) \
-    case x: \
-    return {}; \
-
 CommandIDs::Id CommandIDs::getIdForName(const String &command)
 {
     switch (constexprHash(command.toRawUTF8()))
@@ -66,6 +58,12 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(Tuplet7)
         CASE_FOR(Tuplet8)
         CASE_FOR(Tuplet9)
+        CASE_FOR(QuantizeTo1_1)
+        CASE_FOR(QuantizeTo1_2)
+        CASE_FOR(QuantizeTo1_4)
+        CASE_FOR(QuantizeTo1_8)
+        CASE_FOR(QuantizeTo1_16)
+        CASE_FOR(QuantizeTo1_32)
         CASE_FOR(DeleteEvents)
         CASE_FOR(CopyEvents)
         CASE_FOR(CutEvents)
@@ -93,8 +91,10 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(TimelineJumpNext)
         CASE_FOR(TimelineJumpPrevious)
         CASE_FOR(ResetPreviewChanges)
-        CASE_FOR(TransportStartPlayback)
-        CASE_FOR(TransportPausePlayback)
+        CASE_FOR(TransportRecordingAwait)
+        CASE_FOR(TransportRecordingStart)
+        CASE_FOR(TransportPlaybackStart)
+        CASE_FOR(TransportStop)
         CASE_FOR(PopupMenuDismiss)
         CASE_FOR(RenderToFLAC)
         CASE_FOR(RenderToWAV)
@@ -121,6 +121,7 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(SelectAudioDevice)
         CASE_FOR(SelectSampleRate)
         CASE_FOR(SelectBufferSize)
+        CASE_FOR(SelectMidiInputDevice)
         CASE_FOR(SelectFont)
         CASE_FOR(EditModeDefault)
         CASE_FOR(EditModeDraw)
@@ -147,8 +148,10 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(ShowRescalePanel)
         CASE_FOR(ShowScalePanel)
         CASE_FOR(ShowChordPanel)
-        CASE_FOR(TweakVolumeRandom)
-        CASE_FOR(TweakVolumeFadeOut)
+        CASE_FOR(NotesVolumeRandom)
+        CASE_FOR(NotesVolumeFadeOut)
+        CASE_FOR(NotesVolumeUp)
+        CASE_FOR(NotesVolumeDown)
         CASE_FOR(VersionControlToggleQuickStash)
         CASE_FOR(VersionControlPushSelected)
         CASE_FOR(VersionControlPullSelected)
@@ -170,10 +173,20 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
     };
 }
 
+#define TRANS_KEY(x, y) \
+    case x: \
+    return y; \
+
+#define TRANS_NONE(x) \
+    case x: \
+    return {}; \
+
 // this is only used for command palette:
 // only the commands with translations are displayed
 Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
 {
+    using namespace I18n;
+
     switch (id)
     {
         TRANS_NONE(Back)
@@ -210,6 +223,12 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_KEY(Tuplet7, Menu::tuplet7)
         TRANS_KEY(Tuplet8, Menu::tuplet8)
         TRANS_KEY(Tuplet9, Menu::tuplet9)
+        TRANS_KEY(QuantizeTo1_1, Menu::quantizeTo1_1)
+        TRANS_KEY(QuantizeTo1_2, Menu::quantizeTo1_2)
+        TRANS_KEY(QuantizeTo1_4, Menu::quantizeTo1_4)
+        TRANS_KEY(QuantizeTo1_8, Menu::quantizeTo1_8)
+        TRANS_KEY(QuantizeTo1_16, Menu::quantizeTo1_16)
+        TRANS_KEY(QuantizeTo1_32, Menu::quantizeTo1_32)
         TRANS_KEY(DeleteEvents, Menu::Selection::notesDelete)
         TRANS_KEY(CopyEvents, Menu::Selection::notesCopy)
         TRANS_KEY(CutEvents, Menu::Selection::notesCut)
@@ -237,8 +256,10 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_NONE(TimelineJumpNext)
         TRANS_NONE(TimelineJumpPrevious)
         TRANS_NONE(ResetPreviewChanges)
-        TRANS_NONE(TransportStartPlayback)
-        TRANS_NONE(TransportPausePlayback)
+        TRANS_NONE(TransportRecordingAwait) // todo translations for recording cmds?
+        TRANS_NONE(TransportRecordingStart)
+        TRANS_NONE(TransportPlaybackStart)
+        TRANS_NONE(TransportStop)
         TRANS_NONE(PopupMenuDismiss)
         TRANS_KEY(RenderToFLAC, Menu::Project::renderFlac)
         TRANS_KEY(RenderToWAV, Menu::Project::renderWav)
@@ -265,6 +286,7 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_NONE(SelectAudioDevice)
         TRANS_NONE(SelectSampleRate)
         TRANS_NONE(SelectBufferSize)
+        TRANS_NONE(SelectMidiInputDevice)
         TRANS_NONE(SelectFont)
         TRANS_NONE(EditModeDefault)
         TRANS_NONE(EditModeDraw)
@@ -291,8 +313,10 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_NONE(ShowRescalePanel)
         TRANS_NONE(ShowScalePanel)
         TRANS_NONE(ShowChordPanel)
-        TRANS_NONE(TweakVolumeRandom)
-        TRANS_NONE(TweakVolumeFadeOut)
+        TRANS_NONE(NotesVolumeRandom)
+        TRANS_NONE(NotesVolumeFadeOut)
+        TRANS_NONE(NotesVolumeUp)
+        TRANS_NONE(NotesVolumeDown)
         TRANS_KEY(VersionControlToggleQuickStash, Menu::vcsChangesToggle)
         TRANS_KEY(VersionControlPushSelected, Menu::Selection::vcsPush)
         TRANS_KEY(VersionControlPullSelected, Menu::Selection::vcsPull)

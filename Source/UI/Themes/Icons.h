@@ -63,6 +63,7 @@ public:
         list,
         ellipsis,
         progressIndicator,
+        console,
 
         browse,
         apply,
@@ -71,6 +72,8 @@ public:
 
         play,
         pause,
+        stop,
+        record,
 
         undo,
         redo,

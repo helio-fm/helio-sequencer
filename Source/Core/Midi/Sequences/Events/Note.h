@@ -38,8 +38,8 @@ public:
 
     Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept;
     explicit Note(WeakReference<MidiSequence> owner,
-         int keyVal = MIDDLE_C, float beatVal = 0.f,
-         float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
+        Key keyVal = MIDDLE_C, float beatVal = 0.f,
+        float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         double timeOffset, double timeFactor) const noexcept override;
@@ -54,6 +54,7 @@ public:
     Note withLength(float newLength) const noexcept;
     Note withDeltaLength(float deltaLength) const noexcept;
     Note withVelocity(float newVelocity) const noexcept;
+    Note withDeltaVelocity(float deltaVelocity) const noexcept;
     Note withTuplet(Tuplet tuplet) const noexcept;
     Note withParameters(const SerializedData &parameters) const noexcept;
 

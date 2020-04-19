@@ -135,7 +135,7 @@ namespace Serialization
         static const Identifier connection = "connection";
 
         static const Identifier transport = "transport";
-        static const Identifier transportSeekPosition = "seekPosition";
+        static const Identifier transportSeekBeat = "seekBeat";
 
         static const Identifier audioPlugin = "pluginSettings";
 
@@ -154,9 +154,8 @@ namespace Serialization
         static const Identifier pluginNumInputs = "numInputs";
         static const Identifier pluginNumOutputs = "numOutputs";
 
-        static const Identifier midiInput = "midiInput";
-        static const Identifier midiInputName = "name";
-        static const Identifier defaultMidiOutput = "defaultMidiOutput";
+        static const Identifier midiInputName = "midiInputName";
+        static const Identifier midiInputId = "midiInputId";
 
         static const Identifier pluginsList = "plugins";
         static const Identifier audioCore = "audioCore";
@@ -241,6 +240,7 @@ namespace Serialization
             static const Identifier hotkeyDescription = "key";
             static const Identifier hotkeyReceiver = "receiver";
             static const Identifier hotkeyCommand = "command";
+            static const Identifier group = "group";
         }
 
         namespace Colours

@@ -24,6 +24,10 @@
 #include "PatternRollSelectionMenu.h"
 #include "ProjectNode.h"
 #include "ProjectTimeline.h"
+#include "PianoClipComponent.h"
+#include "Clip.h"
+#include "Pattern.h"
+#include "PatternRoll.h"
 
 //===----------------------------------------------------------------------===//
 // Base class
@@ -154,4 +158,58 @@ PatternRollSelectionMenuManager::PatternRollSelectionMenuManager(WeakReference<L
     SelectionMenuManager(lasso, 1)
 {
     this->menu.reset(new PatternRollMenuSource(lasso));
+}
+
+//===----------------------------------------------------------------------===//
+// PatternRoll recording target logic
+//===----------------------------------------------------------------------===//
+
+PatternRollRecordingTargetController::PatternRollRecordingTargetController(
+    WeakReference<Lasso> lasso, ProjectNode &project) :
+    lasso(lasso),
+    project(project)
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->addChangeListener(this);
+    }
+}
+
+PatternRollRecordingTargetController::~PatternRollRecordingTargetController()
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->removeChangeListener(this);
+    }
+}
+
+void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcaster *source)
+{
+    //jassert(dynamic_cast<Lasso *>(source));
+    const auto *selection = static_cast<Lasso *>(source);
+
+    // bail out as early as possible
+    if (selection->getNumSelected() != 1)
+    {
+        this->project.setMidiRecordingTarget(nullptr, {});
+        return;
+    }
+
+    // if the single piano clip is selected,
+    // set it as the recording target, and mark it with red color
+    auto *cc = selection->getFirstAs<ClipComponent>();
+    if (auto *pc = dynamic_cast<PianoClipComponent *>(cc))
+    {
+        if (this->project.getTransport().isRecording())
+        {
+            pc->setShowRecordingMode(true);
+        }
+
+        auto *track = cc->getClip().getPattern()->getTrack();
+        this->project.setMidiRecordingTarget(track, cc->getClip());
+    }
 }

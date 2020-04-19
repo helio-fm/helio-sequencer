@@ -64,9 +64,12 @@ struct SequencerOperations final
         bool reversed = false, bool limitToChord = false,
         bool shouldCheckpoint = true);
 
+    // for hotkey commands:
     static void randomizeVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
     static void fadeOutVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
+    static void tuneVolume(Lasso &selection, float delta, bool shouldCheckpoint = true);
 
+    // for interactive volume changes:
     static void startTuning(Lasso &selection);
     static void changeVolumeLinear(Lasso &selection, float volumeDelta);
     static void changeVolumeMultiplied(Lasso &selection, float volumeFactor);
@@ -97,6 +100,8 @@ struct SequencerOperations final
     static void melodicInversion(Lasso &selection, bool shouldCheckpoint = true);
 
     static void applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint = true);
+    static bool quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
+    static bool quantize(WeakReference<MidiTrack> track, float bar, bool shouldCheckpoint = true);
 
     static int findAbsoluteRootKey(const Scale::Ptr scale,
         Note::Key relativeRoot, Note::Key keyToFindPeriodFor);

@@ -499,22 +499,25 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
     const int minBeatX = this->getXPositionByBeat(minBeat - (margin / 2.f));
     this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
 
-    this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
     this->updateChildrenPositions();
 }
 
 void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
+    this->stopFollowingPlayhead();
+
     const float newWidth = this->getNumBeats() * HYBRID_ROLL_MAX_BEAT_WIDTH * zoom.getX();
     const float beatsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BEAT_WIDTH);
     const float viewWidth = float(this->viewport.getViewWidth());
     const float newBeatWidth = floorf(viewWidth / beatsOnNewScreen + .5f);
+
     this->setBeatWidth(newBeatWidth);
-    this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
 }
 
 void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
+    this->stopFollowingPlayhead();
+
     const auto oldViewPosition = this->viewport.getViewPosition().toFloat();
     const auto absoluteOrigin = oldViewPosition + origin;
     const float oldWidth = float(this->getWidth());
@@ -533,8 +536,6 @@ void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &fa
     const float mouseOffsetX = float(absoluteOrigin.getX() - oldViewPosition.getX());
     const float newViewPositionX = float((absoluteOrigin.getX() * newWidth) / oldWidth) - mouseOffsetX;
     this->viewport.setViewPosition(int(newViewPositionX + 0.5f), int(oldViewPosition.getY()));
-
-    this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
 
     this->resetDraggingAnchors();
     this->updateChildrenPositions();
@@ -556,46 +557,10 @@ float HybridRoll::getZoomFactorY() const noexcept
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int HybridRoll::getXPositionByTransportPosition(double absPosition, double canvasWidth) const
+int HybridRoll::getPlayheadPositionByBeat(double targetBeat, double parentWidth) const
 {
-    const double rollLengthInBeats = this->getLastBeat() - this->getFirstBeat();
-    const double projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
-    const double firstBeatOffset = this->projectFirstBeat - this->getFirstBeat();
-
-    const double trackWidth = canvasWidth * (projectLengthInBeats / rollLengthInBeats);
-    const double trackStart = canvasWidth * (firstBeatOffset / rollLengthInBeats);
-
-    return int(floor(trackStart + absPosition * trackWidth));
-}
-
-double HybridRoll::getTransportPositionByXPosition(int xPosition, double canvasWidth) const
-{
-    const double rollLengthInBeats = (this->getLastBeat() - this->getFirstBeat());
-    const double projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-    const double firstBeatOffset = (this->projectFirstBeat - this->getFirstBeat());
-
-    const double trackWidth = canvasWidth * (projectLengthInBeats / rollLengthInBeats);
-    const double trackStart = canvasWidth * (firstBeatOffset / rollLengthInBeats);
-
-    return double((xPosition - trackStart) / trackWidth);
-}
-
-double HybridRoll::getTransportPositionByBeat(float targetBeat) const
-{
-    const auto targetBeatSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, targetBeat);
-    const double projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-    return double(targetBeatSafe - this->projectFirstBeat) / projectLengthInBeats;
-}
-
-float HybridRoll::getBeatByTransportPosition(double absSeekPosition) const
-{
-    const double projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-    return float(projectLengthInBeats * absSeekPosition) + this->projectFirstBeat;
-}
-
-float HybridRoll::getSeekBeat() const
-{
-    return this->getBeatByTransportPosition(this->getTransport().getSeekPosition());
+    const double widthRatio = parentWidth / double(this->getWidth());
+    return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
 }
 
 int HybridRoll::getXPositionByBeat(float targetBeat) const
@@ -1158,22 +1123,22 @@ void HybridRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse(0.75f);
         break;
     case CommandIDs::TimelineJumpNext:
-        if (!this->project.getTransport().isPlaying())
+        if (!this->getTransport().isPlaying())
         {
             this->stopFollowingPlayhead();
-            const auto beat = this->findNextAnchorBeat(this->getSeekBeat());
-            const auto newSeek = this->getTransportPositionByBeat(beat);
-            this->getTransport().seekToPosition(newSeek);
+            const auto newSeek = this->findNextAnchorBeat(this->getTransport().getSeekBeat());
+            const auto newSeekSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, newSeek);
+            this->getTransport().seekToBeat(newSeekSafe);
             this->scrollToSeekPosition();
         }
         break;
     case CommandIDs::TimelineJumpPrevious:
-        if (!this->project.getTransport().isPlaying())
+        if (!this->getTransport().isPlaying())
         {
             this->stopFollowingPlayhead();
-            const auto beat = this->findPreviousAnchorBeat(this->getSeekBeat());
-            const auto newSeek = this->getTransportPositionByBeat(beat);
-            this->getTransport().seekToPosition(newSeek);
+            const auto newSeek = this->findPreviousAnchorBeat(this->getTransport().getSeekBeat());
+            const auto newSeekSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, newSeek);
+            this->getTransport().seekToBeat(newSeekSafe);
             this->scrollToSeekPosition();
         }
         break;
@@ -1189,30 +1154,47 @@ void HybridRoll::handleCommandMessage(int commandId)
             const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
             if (noDraggingWasDone && notTooMuchTimeSpent)
             {
-                this->project.getTransport().toggleStartStopPlayback();
+                this->getTransport().toggleStartStopPlayback();
             }
             this->setSpaceDraggingMode(false);
         }
         break;
-    case CommandIDs::TransportStartPlayback:
-        if (!this->project.getTransport().isPlaying())
+    case CommandIDs::TransportRecordingAwait:
+        if (this->getTransport().isRecording())
         {
-            this->stopFollowingPlayhead();
-            this->project.getTransport().startPlayback();
+            this->getTransport().stopRecording();
+        }
+        else
+        {
+            this->getTransport().startRecording();
+        }
+        break;
+    case CommandIDs::TransportRecordingStart:
+        this->stopFollowingPlayhead();
+        this->getTransport().startRecording();
+        if (!this->getTransport().isPlaying())
+        {
+            this->getTransport().startPlayback();
         }
         this->startFollowingPlayhead();
         break;
-    case CommandIDs::TransportPausePlayback:
-        if (this->project.getTransport().isPlaying())
+    case CommandIDs::TransportPlaybackStart:
+        this->stopFollowingPlayhead();
+        if (!this->getTransport().isPlaying())
         {
-            this->project.getTransport().stopPlayback();
+            this->getTransport().startPlayback();
         }
-        else
+        this->startFollowingPlayhead();
+        break;
+    case CommandIDs::TransportStop:
+        if (!this->getTransport().isPlaying())
         {
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
         }
 
+        this->getTransport().stopPlayback();
+        this->getTransport().stopRecording();
         this->getTransport().stopSound();
         break;
     case CommandIDs::VersionControlToggleQuickStash:
@@ -1296,8 +1278,7 @@ void HybridRoll::paint(Graphics &g)
 
 void HybridRoll::onPlayheadMoved(int playheadX)
 {
-    if (this->shouldFollowPlayhead &&
-        !this->smoothZoomController->isZooming())
+    if (this->shouldFollowPlayhead)
     {
         const int viewHalfWidth = this->viewport.getViewWidth() / 2;
         const int viewportCentreX = this->viewport.getViewPositionX() + viewHalfWidth;
@@ -1318,12 +1299,12 @@ void HybridRoll::onPlayheadMoved(int playheadX)
 
 void HybridRoll::onClippingWarning()
 {
-    if (! this->project.getTransport().isPlaying())
+    if (! this->getTransport().isPlaying())
     {
         return;
     }
     
-    const float clippingBeat = this->getBeatByTransportPosition(this->lastTransportPosition.get());
+    const float clippingBeat = this->lastTransportBeat.get();
     
     if (this->clippingIndicators.size() > 0)
     {
@@ -1349,12 +1330,12 @@ void HybridRoll::resetAllClippingIndicators()
 
 void HybridRoll::onOversaturationWarning()
 {
-    if (! this->project.getTransport().isPlaying())
+    if (! this->getTransport().isPlaying())
     {
         return;
     }
     
-    const float warningBeat = this->getBeatByTransportPosition(this->lastTransportPosition.get());
+    const float warningBeat = this->lastTransportBeat.get();
 
     if (this->oversaturationIndicators.size() > 0)
     {
@@ -1382,13 +1363,10 @@ void HybridRoll::resetAllOversaturationIndicators()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onSeek(double absolutePosition, double, double)
+void HybridRoll::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
 {
-    this->lastTransportPosition = absolutePosition;
+    this->lastTransportBeat = beatPosition;
 }
-
-void HybridRoll::onTempoChanged(double msPerQuarter) {}
-void HybridRoll::onTotalTimeChanged(double timeMs) {}
 
 void HybridRoll::onPlay()
 {
@@ -1396,17 +1374,19 @@ void HybridRoll::onPlay()
     this->resetAllOversaturationIndicators();
 }
 
+void HybridRoll::onRecord()
+{
+    this->header->showRecordingMode(true);
+}
+
 void HybridRoll::onStop()
 {
+    this->header->showRecordingMode(false);
+
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     // todo sync screen back to playhead?
     this->stopFollowingPlayhead();
 #endif
-}
-
-bool HybridRoll::isFollowingPlayhead() const noexcept
-{
-    return this->shouldFollowPlayhead;
 }
 
 void HybridRoll::startFollowingPlayhead()
@@ -1419,7 +1399,7 @@ void HybridRoll::startFollowingPlayhead()
 
 void HybridRoll::stopFollowingPlayhead()
 {
-    if (! this->isFollowingPlayhead())
+    if (! this->shouldFollowPlayhead)
     {
         return;
     }
@@ -1436,7 +1416,7 @@ void HybridRoll::scrollToSeekPosition()
     this->startFollowingPlayhead();
     this->startTimer(7);
 #else
-    const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
+    const int playheadX = this->getXPositionByBeat(this->lastTransportBeat.get());
     this->viewport.setViewPosition(playheadX - (this->viewport.getViewWidth() / 3), this->viewport.getViewPositionY());
     this->updateChildrenBounds();
 #endif
@@ -1470,22 +1450,14 @@ void HybridRoll::handleAsyncUpdate()
     }
 
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
-    if (this->shouldFollowPlayhead && !this->smoothZoomController->isZooming())
+    if (this->isTimerRunning())
     {
-        const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
+        const int playheadX = this->getPlayheadPositionByBeat(this->lastTransportBeat.get(), double(this->getWidth()));
+        const int newX = playheadX - int(this->playheadOffset.get() * 0.75) -
+            (this->viewport.getViewWidth() / 2);
 
-        if (fabs(this->playheadOffset) > 1.0)
-        {
-            this->playheadOffset *= 0.75;
-        }
-        else
-        {
-            this->playheadOffset = 0.0;
-        }
-
-        this->viewport.setViewPosition(playheadX - int(this->playheadOffset) - (this->viewport.getViewWidth() / 2),
-            this->viewport.getViewPositionY());
-
+        this->viewport.setViewPosition(newX, this->viewport.getViewPositionY());
+        this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
         this->updateChildrenPositions();
     }
 #endif
@@ -1493,7 +1465,7 @@ void HybridRoll::handleAsyncUpdate()
 
 double HybridRoll::findPlayheadOffsetFromViewCentre() const
 {
-    const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
+    const int playheadX = this->getPlayheadPositionByBeat(this->lastTransportBeat.get(), double(this->getWidth()));
     const int viewportCentreX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2;
     return double(playheadX) - double(viewportCentreX);
 }
@@ -1510,13 +1482,9 @@ void HybridRoll::triggerBatchRepaintFor(FloatBoundsComponent *target)
 
 void HybridRoll::hiResTimerCallback()
 {
-    if (fabs(this->playheadOffset) < 0.1)
+    if (fabs(this->playheadOffset.get()) < 0.1)
     {
-        MessageManagerLock lock(Thread::getCurrentThread());
-        if (lock.lockWasGained())
-        {
-            this->stopFollowingPlayhead();
-        }
+        this->stopTimer();
     }
 
     this->triggerAsyncUpdate();
@@ -1687,17 +1655,17 @@ void HybridRoll::updateChildrenBounds()
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->headerShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, HYBRID_ROLL_HEADER_SHADOW_SIZE);
 
-    if (this->annotationsTrack)
+    if (this->annotationsTrack != nullptr)
     {
         this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->keySignaturesTrack)
+    if (this->keySignaturesTrack != nullptr)
     {
         this->keySignaturesTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->timeSignaturesTrack)
+    if (this->timeSignaturesTrack != nullptr)
     {
         this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
     }
@@ -1730,17 +1698,17 @@ void HybridRoll::updateChildrenPositions()
     this->header->setTopLeftPosition(0, viewY);
     this->headerShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
 
-    if (this->annotationsTrack)
+    if (this->annotationsTrack != nullptr)
     {
         this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->keySignaturesTrack)
+    if (this->keySignaturesTrack != nullptr)
     {
         this->keySignaturesTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->timeSignaturesTrack)
+    if (this->timeSignaturesTrack != nullptr)
     {
         this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     }

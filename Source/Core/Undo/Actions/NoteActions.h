@@ -40,7 +40,8 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+    UndoAction *createCoalescedAction(UndoAction *nextAction) override;
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -49,6 +50,8 @@ private:
 
     String trackId;
     Note note;
+
+    friend class NotesGroupInsertAction;
 
     JUCE_DECLARE_NON_COPYABLE(NoteInsertAction)
 };
@@ -126,7 +129,10 @@ public:
     
     explicit NotesGroupInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
-    
+
+    NotesGroupInsertAction(MidiTrackSource &source, const String &trackId,
+        Note &action1Note, Note &action2Note) noexcept;
+
     NotesGroupInsertAction(MidiTrackSource &source,
         const String &trackId, Array<Note> &target) noexcept;
     
@@ -134,6 +140,8 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     
+    UndoAction *createCoalescedAction(UndoAction *nextAction) override;
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
