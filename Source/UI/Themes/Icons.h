@@ -114,6 +114,7 @@ public:
         forward,
         mediaForward,
         mediaRewind,
+        reprise,
 
         pageUp,
         pageDown,
