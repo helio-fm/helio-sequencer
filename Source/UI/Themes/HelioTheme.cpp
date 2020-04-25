@@ -712,7 +712,17 @@ void HelioTheme::initResources()
 
     DBG("Fonts search done in " + String(Time::getMillisecondCounter() - startTime) + " ms");
 
-    const StringArray preferredFontNames = { "Noto Sans", "Noto Sans UI", "Source Han Sans" };
+    const auto userLanguage = SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
+    StringArray preferredFontNames = { "Noto Sans", "Noto Sans UI", "Source Han Sans" };
+    if (userLanguage == "kr")
+    {
+        preferredFontNames.add("Dotum");
+    }
+    else if (userLanguage == "zh" || userLanguage == "ja")
+    {
+        preferredFontNames.addArray({ "YeHei", "Hei", "Heiti SC" });
+    }
+
     const Font *preferredFont = nullptr;
 
     const String perfectlyFineFontName = "Noto Sans CJK";
@@ -770,6 +780,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(Slider::rotarySliderOutlineColourId, s->getTextColour().contrasting(0.9f).withMultipliedAlpha(0.5f));
     this->setColour(Slider::rotarySliderFillColourId, s->getTextColour());
     this->setColour(Slider::thumbColourId, s->getTextColour());
+    this->setColour(Slider::trackColourId, s->getTextColour().contrasting(0.8f));
 
     // Labels
     this->setColour(Label::textColourId, s->getTextColour());
