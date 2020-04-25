@@ -174,7 +174,7 @@ void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitTo
 void Transport::probeSequence(const MidiMessageSequence &sequence)
 {
     this->playbackCache.clear();
-    this->sequencesAreOutdated = false; // temporary
+    this->playbackCacheIsOutdated = false; // temporary
 
     // using the last instrument (TODO something more clever in the future)
     auto *instrument = this->orchestra.getInstruments().getLast();
@@ -191,7 +191,7 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
     }
 
     this->player->startPlayback(true);
-    this->sequencesAreOutdated = true; // will update on the next playback
+    this->playbackCacheIsOutdated = true; // will update on the next playback
 }
 
 //===----------------------------------------------------------------------===//
@@ -294,6 +294,37 @@ void Transport::stopRecording()
         {
             this->broadcastStop();
         }
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Playback loop, mostly used together with MIDI recording
+//===----------------------------------------------------------------------===//
+
+void Transport::toggleLoopPlayback(float startBeat, float endBeat)
+{
+    if (this->loopMode.get() &&
+        this->loopStartBeat.get() == startBeat &&
+        this->loopEndBeat.get() == endBeat)
+    {
+        this->disableLoopPlayback();
+        return;
+    }
+
+    this->loopMode = true;
+    this->loopStartBeat = startBeat;
+    this->loopEndBeat = endBeat;
+
+    this->broadcastLoopModeChanged(this->loopMode.get(),
+        this->loopStartBeat.get(), this->loopEndBeat.get());
+}
+
+void Transport::disableLoopPlayback()
+{
+    if (this->loopMode.get())
+    {
+        this->loopMode = false;
+        this->broadcastLoopModeChanged(false, 0.f, 0.f);
     }
 }
 
@@ -467,8 +498,8 @@ void Transport::instrumentAdded(Instrument *instrument)
 {
     this->stopPlayback();
     
-    // invalidate sequences as they use pointers to the players too
-    this->sequencesAreOutdated = true;
+    // invalidate cache as is uses pointers to the players too
+    this->playbackCacheIsOutdated = true;
 
     for (int i = 0; i < this->tracksCache.size(); ++i)
     {
@@ -485,7 +516,7 @@ void Transport::instrumentRemoved(Instrument *instrument)
 
 void Transport::instrumentRemovedPostAction()
 {
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 
     for (int i = 0; i < this->tracksCache.size(); ++i)
     {
@@ -514,7 +545,7 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     }
 
     updateLengthAndTimeIfNeeded((&newEvent));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
@@ -525,7 +556,7 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
     }
 
     updateLengthAndTimeIfNeeded((&event));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onRemoveMidiEvent(const MidiEvent &event) {}
@@ -533,7 +564,7 @@ void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
     this->stopPlayback();
     updateLengthAndTimeIfNeeded(sequence->getTrack());
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onAddClip(const Clip &clip)
@@ -544,14 +575,14 @@ void Transport::onAddClip(const Clip &clip)
     }
 
     updateLengthAndTimeIfNeeded((&clip));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
     this->stopPlayback();
     updateLengthAndTimeIfNeeded((&newClip));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onRemoveClip(const Clip &clip) {}
@@ -559,7 +590,7 @@ void Transport::onPostRemoveClip(Pattern *const pattern)
 {
     this->stopPlayback();
     updateLengthAndTimeIfNeeded(pattern->getTrack());
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onChangeTrackProperties(MidiTrack *const track)
@@ -574,14 +605,14 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
             this->stopPlayback();
         }
 
-        this->sequencesAreOutdated = true;
+        this->playbackCacheIsOutdated = true;
         this->updateLinkForTrack(track);
     }
 }
 
 void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 
     this->tracksCache.clearQuick();
     this->linksCache.clear();
@@ -602,7 +633,7 @@ void Transport::onAddTrack(MidiTrack *const track)
         this->stopPlayback();
     }
     
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
     this->tracksCache.addIfNotAlreadyThere(track);
     this->updateLinkForTrack(track);
 }
@@ -611,7 +642,7 @@ void Transport::onRemoveTrack(MidiTrack *const track)
 {
     this->stopPlayback();
     
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
     this->tracksCache.removeAllInstancesOf(track);
     this->removeLinkForTrack(track);
 }
@@ -714,7 +745,7 @@ MidiMessage Transport::findFirstTempoEvent()
 
 void Transport::recacheIfNeeded() const
 {
-    if (this->sequencesAreOutdated.get())
+    if (this->playbackCacheIsOutdated.get())
     {
         //DBG("Transport::recache");
         this->playbackCache.clear();
@@ -753,7 +784,7 @@ void Transport::recacheIfNeeded() const
             this->playbackCache.addWrapper(cached);
         }
         
-        this->sequencesAreOutdated = false;
+        this->playbackCacheIsOutdated = false;
     }
 }
 
@@ -832,6 +863,11 @@ void Transport::broadcastTempoChanged(double newTempo)
 void Transport::broadcastTotalTimeChanged(double timeMs)
 {
     this->transportListeners.call(&TransportListener::onTotalTimeChanged, timeMs);
+}
+
+void Transport::broadcastLoopModeChanged(bool hasLoop, float startBeat, float endBeat)
+{
+    this->transportListeners.call(&TransportListener::onLoopModeChanged, hasLoop, startBeat, endBeat);
 }
 
 void Transport::broadcastPlay()

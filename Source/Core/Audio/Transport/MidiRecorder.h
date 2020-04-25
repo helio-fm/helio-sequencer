@@ -55,6 +55,8 @@ private:
 
     void onTempoChanged(double) noexcept;
     void onTotalTimeChanged(double) noexcept {}
+    void onLoopModeChanged(bool, float, float) override {}
+
     void onSeek(float, double, double) noexcept;
     void onPlay() noexcept;
     void onRecord();

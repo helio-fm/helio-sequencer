@@ -342,5 +342,6 @@ namespace I18n
 
         static const Identifier toggleScalesHighlighting = "toggle::scaleshl";
         static const Identifier toggleNoteNameGuides = "toggle::noteguides";
+        static const Identifier toggleLoopOverSelection = "toggle::loopselection";
     }
 } // namespace Translations

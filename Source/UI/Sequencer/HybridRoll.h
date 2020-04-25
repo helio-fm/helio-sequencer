@@ -277,9 +277,11 @@ protected:
     // TransportListener
     //===------------------------------------------------------------------===//
     
-    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
+    void onSeek(float beat, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) override {}
     void onTotalTimeChanged(double timeMs) override {}
+    void onLoopModeChanged(bool hasLoop, float start, float end) override;
+
     void onPlay() override;
     void onRecord() override;
     void onStop() override;

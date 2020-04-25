@@ -24,7 +24,6 @@
 #include "Origami.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
-#include "PianoProjectMap.h"
 
 LevelsMapScroller::LevelsMapScroller(SafePointer<HybridRoll> roll) : roll(roll)
 {

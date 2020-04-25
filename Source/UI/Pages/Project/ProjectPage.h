@@ -66,6 +66,8 @@ private:
     void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) noexcept override {}
     void onTotalTimeChanged(double timeMs) noexcept override;
+    void onLoopModeChanged(bool hasLoop, float start, float end) override {}
+
     void onPlay() noexcept override {}
     void onRecord() noexcept override {}
     void onStop() noexcept override {}
