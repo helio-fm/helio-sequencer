@@ -284,8 +284,16 @@ void Transport::stopRecording()
 {
     if (this->isRecording())
     {
-        this->stopPlayback(); // if playing
         this->midiRecordingMode = false;
+
+        if (this->isPlaying())
+        {
+            this->stopPlayback(); // will broadcastStop
+        }
+        else
+        {
+            this->broadcastStop();
+        }
     }
 }
 
