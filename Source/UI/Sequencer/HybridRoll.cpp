@@ -1189,8 +1189,10 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::TransportStop:
         if (!this->getTransport().isPlaying())
         {
+            // escape keypress when not playing also resets some stuff:
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
+            this->getTransport().disableLoopPlayback();
         }
 
         this->getTransport().stopPlayback();
@@ -1366,6 +1368,11 @@ void HybridRoll::resetAllOversaturationIndicators()
 void HybridRoll::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
 {
     this->lastTransportBeat = beatPosition;
+}
+
+void HybridRoll::onLoopModeChanged(bool hasLoop, float start, float end)
+{
+    this->header->showLoopMode(hasLoop, start, end);
 }
 
 void HybridRoll::onPlay()

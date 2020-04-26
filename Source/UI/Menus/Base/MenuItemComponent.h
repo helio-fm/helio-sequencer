@@ -97,6 +97,8 @@ public:
     //[UserMethods]
 
     void setSelected(bool shouldBeSelected) override;
+
+    void setChecked(bool shouldBeChecked);
     void update(const MenuItem::Ptr description);
 
     Font getFont() const noexcept
@@ -125,15 +127,18 @@ private:
     SafePointer<Component> parent;
 
     UniquePointer<Component> clickMarker;
-    UniquePointer<Component> toggleMarker;
+    UniquePointer<Component> checkMarker;
 
-    Point<int> lastMouseScreenPosition;
+    Point<int> lastMouseScreenPosition { 0, 0 };
 
     ComponentAnimator animator;
 
     Component *createHighlighterComponent() override;
     void timerCallback() override;
     bool hasText() const noexcept;
+
+    void showCheckMark();
+    void hideCheckMark();
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает

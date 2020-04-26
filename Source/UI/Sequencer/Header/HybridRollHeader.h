@@ -34,6 +34,7 @@ public:
 
     void showPopupMenu();
     void showRecordingMode(bool showRecordingMarker);
+    void showLoopMode(bool hasLoop, float startBeat, float endBeat);
     void updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
     //===------------------------------------------------------------------===//
@@ -44,7 +45,6 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseMove(const MouseEvent &e) override;
-    void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
     void mouseDoubleClick(const MouseEvent &e) override;
     void paint(Graphics &g) override;
@@ -52,13 +52,17 @@ public:
 
 protected:
     
-    Atomic<bool> soundProbeMode = false;
-    Atomic<bool> recordingMode = false;
-
     Transport &transport;
     HybridRoll &roll;
     Viewport &viewport;
-    
+
+    Atomic<bool> soundProbeMode = false;
+    Atomic<bool> recordingMode = false;
+
+    Atomic<bool> loopMode = false;
+    Atomic<float> loopStartBeat = 0.f;
+    Atomic<float> loopEndBeat = PROJECT_DEFAULT_NUM_BEATS;
+
     Colour backColour;
     Colour barColour;
     Colour barShadeColour;

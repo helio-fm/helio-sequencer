@@ -730,6 +730,18 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleSoloClips:
         PatternOperations::toggleSoloClips(this->getLassoSelection());
         break;
+    case CommandIDs::ToggleLoopOverSelection:
+        if (this->selection.getNumSelected() > 0)
+        {
+            const auto startBeat = PatternOperations::findStartBeat(this->selection);
+            const auto endBeat = PatternOperations::findEndBeat(this->selection);
+            this->getTransport().toggleLoopPlayback(startBeat, endBeat);
+        }
+        else // no selection, nothing else to do but to turn the loop off:
+        {
+            this->getTransport().disableLoopPlayback();
+        }
+        break;
     case CommandIDs::PatternsGroupByName:
         this->deselectAll();
         this->groupMode = GroupByName;

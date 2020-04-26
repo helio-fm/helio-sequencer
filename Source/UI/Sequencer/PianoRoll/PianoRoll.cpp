@@ -1073,6 +1073,23 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleNoteNameGuides:
         App::Config().getUiFlags()->setNoteNameGuidesEnabled(!this->noteNameGuides->isVisible());
         break;
+    case CommandIDs::ToggleLoopOverSelection:
+        if (this->selection.getNumSelected() > 0)
+        {
+            const auto clipOffset = this->activeClip.getBeat();
+            const auto startBeat = SequencerOperations::findStartBeat(this->selection);
+            const auto endBeat = SequencerOperations::findEndBeat(this->selection);
+            this->getTransport().toggleLoopPlayback(clipOffset + startBeat, clipOffset + endBeat);
+        }
+        else
+        {
+            jassert(this->activeTrack != nullptr);
+            const auto clipOffset = this->activeClip.getBeat();
+            const auto startBeat = this->activeTrack->getSequence()->getFirstBeat();
+            const auto endBeat = this->activeTrack->getSequence()->getLastBeat();
+            this->getTransport().toggleLoopPlayback(clipOffset + startBeat, clipOffset + endBeat);
+        }
+        break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         if (this->selection.getNumSelected() >= 2)
         {

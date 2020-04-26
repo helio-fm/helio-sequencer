@@ -44,11 +44,11 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->setAlwaysOnTop(true);
     this->setPaintingIsUnclipped(true);
 
-    this->updateColours();
-
-    this->setMouseClickGrabsKeyboardFocus(false);
-    this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+
+    this->updateColours();
     this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);
 }
 
@@ -72,6 +72,14 @@ void HybridRollHeader::showRecordingMode(bool showRecordingMarker)
 {
     this->recordingMode = showRecordingMarker;
     this->updateColours();
+    this->repaint();
+}
+
+void HybridRollHeader::showLoopMode(bool hasLoop, float startBeat, float endBeat)
+{
+    this->loopMode = hasLoop;
+    this->loopStartBeat = startBeat;
+    this->loopEndBeat = endBeat;
     this->repaint();
 }
 
@@ -127,8 +135,7 @@ double HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
     const auto parentEvent = e.getEventRelativeTo(&this->roll);
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(parentEvent.x);
     const int roundX = this->roll.getXPositionByBeat(roundBeat);
-    const double absX = double(roundX) / double(this->roll.getWidth());
-    return absX;
+    return double(roundX) / double(this->roll.getWidth());
 }
 
 void HybridRollHeader::updateTimeDistanceIndicator()
@@ -339,10 +346,6 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
     }
 }
 
-void HybridRollHeader::mouseEnter(const MouseEvent &e)
-{
-}
-
 void HybridRollHeader::mouseMove(const MouseEvent &e)
 {
     if (this->pointingIndicator != nullptr)
@@ -376,14 +379,14 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
 
 void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
-    // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
-    //this->showPopupMenu();
-
+#if HELIO_MOBILE
+    this->showPopupMenu();
+#elif HELIO_DESKTOP
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-
     this->transport.stopPlayback();
     this->transport.seekToBeat(roundBeat);
     this->transport.startPlayback();
+#endif
 }
 
 void HybridRollHeader::paint(Graphics &g)
@@ -428,6 +431,46 @@ void HybridRollHeader::paint(Graphics &g)
     {
         g.setColour(this->recordingColour);
         g.fillRect(0, this->getHeight() - 4, this->getWidth(), 3);
+    }
+    else
+    {
+        g.setColour(this->barColour);
+    }
+
+    if (this->loopMode.get())
+    {
+        const int startX = this->roll.getXPositionByBeat(this->loopStartBeat.get());
+        const int endX = this->roll.getXPositionByBeat(this->loopEndBeat.get());
+
+        g.fillRect(float(startX - 1), 1.f, 3.f, float(this->getHeight() - 2));
+        g.fillRect(float(startX + 4), 1.f, 1.f, float(this->getHeight() - 2));
+
+        g.fillRect(float(endX - 1), 1.f, 3.f, float(this->getHeight() - 2));
+        g.fillRect(float(endX - 4), 1.f, 1.f, float(this->getHeight() - 2));
+
+        // todo draw ellipses instead?
+        const auto p1 = roundf(float(this->getHeight()) * 0.33f + 1.f);
+        const auto p2 = roundf(float(this->getHeight()) * 0.66f - 3.f);
+
+        g.fillRect(float(startX + 7), p1, 3.f, 3.f);
+        g.fillRect(float(startX + 7), p2, 3.f, 3.f);
+
+        g.fillRect(float(endX - 9), p1, 3.f, 3.f);
+        g.fillRect(float(endX - 9), p2, 3.f, 3.f);
+
+        // some fancy shadows
+        g.setColour(this->bevelDarkColour);
+
+        g.fillRect(float(startX + 2), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(startX + 5), 1.f, 1.f, float(this->getHeight() - 2));
+
+        g.fillRect(float(endX + 2), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(endX - 3), 1.f, 1.f, float(this->getHeight() - 2));
+
+        g.fillRect(float(startX + 10), p1, 1.f, 3.f);
+        g.fillRect(float(startX + 10), p2, 1.f, 3.f);
+        g.fillRect(float(endX - 6), p1, 1.f, 3.f);
+        g.fillRect(float(endX - 6), p2, 1.f, 3.f);
     }
 }
 

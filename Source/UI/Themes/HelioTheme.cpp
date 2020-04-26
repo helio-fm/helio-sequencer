@@ -872,9 +872,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::barLineBevel, Colours::white.withAlpha(0.015f));
     this->setColour(ColourIDs::Roll::beatLine, s->getBarColour().withAlpha(0.4f));
     this->setColour(ColourIDs::Roll::snapLine, s->getBarColour().withAlpha(0.1f));
-    this->setColour(ColourIDs::Roll::headerFill, s->getPrimaryGradientColourB().darker(0.025f));
-    this->setColour(ColourIDs::Roll::headerSnaps, s->getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.37f));
-    this->setColour(ColourIDs::Roll::headerRecording, s->getPrimaryGradientColourB().darker(0.025f).interpolatedWith(Colours::red, 0.55f));
+
+    const auto headerFill = s->getPrimaryGradientColourB().darker(0.025f);
+    this->setColour(ColourIDs::Roll::headerFill, headerFill);
+    this->setColour(ColourIDs::Roll::headerSnaps, headerFill.contrasting().interpolatedWith(headerFill, 0.63f));
+    this->setColour(ColourIDs::Roll::headerRecording, headerFill.interpolatedWith(Colours::red, 0.55f));
 
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().withAlpha(0.65f));

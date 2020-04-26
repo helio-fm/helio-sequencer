@@ -39,6 +39,47 @@ static Pattern *getPattern(SelectionProxyArray::Ptr selection)
     return firstClip.getPattern();
 }
 
+float PatternOperations::findStartBeat(const Lasso &selection)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return 0.f;
+    }
+
+    float startBeat = FLT_MAX;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *clip = selection.getItemAs<ClipComponent>(i);
+        startBeat = jmin(startBeat, clip->getBeat());
+    }
+
+    return startBeat;
+}
+
+float PatternOperations::findEndBeat(const Lasso &selection)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return 0.f;
+    }
+
+    float endBeat = -FLT_MAX;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *cc = selection.getItemAs<ClipComponent>(i);
+
+        const auto *track = cc->getClip().getPattern()->getTrack();
+        const auto sequenceLength = track->getSequence()->getLengthInBeats();
+
+        const float beatPlusLength = cc->getBeat() + sequenceLength;
+        endBeat = jmax(endBeat, beatPlusLength);
+    }
+
+    return endBeat;
+}
+
 void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0) { return; }

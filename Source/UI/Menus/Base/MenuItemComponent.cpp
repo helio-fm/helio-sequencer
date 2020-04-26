@@ -239,8 +239,6 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
 
 
     //[UserPreSize]
-    this->toggleMarker = nullptr;
-    this->lastMouseScreenPosition = { 0, 0 };
     this->subLabel->setInterceptsMouseClicks(false, false);
     this->textLabel->setInterceptsMouseClicks(false, false);
     this->subLabel->setColour(Label::textColourId, desc->colour.withMultipliedAlpha(0.5f));
@@ -331,16 +329,16 @@ void MenuItemComponent::resized()
     submenuMarker->setBounds(getWidth() - 4 - 20, (getHeight() / 2) - (20 / 2), 20, 20);
     //[UserResized] Add your own custom resize handling here..
 
-    if (this->toggleMarker != nullptr)
+    if (this->checkMarker != nullptr)
     {
         // this one might be still animating, and may screw up the bounds if not updated:
-        if (this->toggleMarker->getLocalBounds() != this->getLocalBounds() &&
-            this->animator.isAnimating(this->toggleMarker.get()))
+        if (this->checkMarker->getLocalBounds() != this->getLocalBounds() &&
+            this->animator.isAnimating(this->checkMarker.get()))
         {
-            this->animator.animateComponent(this->toggleMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
+            this->animator.animateComponent(this->checkMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
         }
 
-        this->toggleMarker->setBounds(this->getLocalBounds());
+        this->checkMarker->setBounds(this->getLocalBounds());
     }
 
     if (!this->icon.isValid() && this->description->image.isValid())
@@ -497,6 +495,25 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
     }
 }
 
+void MenuItemComponent::setChecked(bool shouldBeChecked)
+{
+    if (this->description->flags.isToggled == shouldBeChecked)
+    {
+        return;
+    }
+
+    this->description->flags.isToggled = shouldBeChecked;
+
+    if (shouldBeChecked)
+    {
+        this->showCheckMark();
+    }
+    else
+    {
+        this->hideCheckMark();
+    }
+}
+
 void MenuItemComponent::update(const MenuItem::Ptr desc)
 {
     if (this->description->commandText != desc->commandText)
@@ -507,19 +524,11 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
 
     if (desc->flags.isToggled && !this->description->flags.isToggled)
     {
-        this->toggleMarker = makeUnique<MenuItemComponentMarker>();
-        this->toggleMarker->setBounds(this->getLocalBounds());
-
-#if ! HAS_OPENGL_BUG
-        this->toggleMarker->setAlpha(0.f);
-        this->animator.animateComponent(this->toggleMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
-#endif
-
-        this->addAndMakeVisible(this->toggleMarker.get());
+        this->showCheckMark();
     }
-    else if (!desc->flags.isToggled && (this->toggleMarker != nullptr))
+    else if (!desc->flags.isToggled && (this->checkMarker != nullptr))
     {
-        this->toggleMarker = nullptr;
+        this->hideCheckMark();
     }
 
     this->textLabel->setColour(Label::textColourId,
@@ -617,6 +626,24 @@ void MenuItemComponent::doAction()
     {
         panel->dismiss();
     }
+}
+
+void MenuItemComponent::showCheckMark()
+{
+    this->checkMarker = makeUnique<MenuItemComponentMarker>();
+    this->checkMarker->setBounds(this->getLocalBounds());
+
+#if ! HAS_OPENGL_BUG
+    this->checkMarker->setAlpha(0.f);
+    this->animator.animateComponent(this->checkMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
+#endif
+
+    this->addAndMakeVisible(this->checkMarker.get());
+}
+
+void MenuItemComponent::hideCheckMark()
+{
+    this->checkMarker = nullptr;
 }
 
 //[/MiscUserCode]
