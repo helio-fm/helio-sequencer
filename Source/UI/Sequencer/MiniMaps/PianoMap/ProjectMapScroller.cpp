@@ -31,15 +31,15 @@ ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<Hybr
     transport(transportRef),
     roll(roll)
 {
-    this->setPaintingIsUnclipped(true);
     this->setOpaque(true);
+    this->setPaintingIsUnclipped(true);
 
-    this->playhead.reset(new Playhead(*this->roll, this->transport));
+    this->playhead = makeUnique<Playhead>(*this->roll, this->transport);
 
-    this->helperRectangle.reset(new HorizontalDragHelper(*this));
+    this->helperRectangle = makeUnique<HorizontalDragHelper>(*this);
     this->addAndMakeVisible(this->helperRectangle.get());
 
-    this->screenRange.reset(new ProjectMapScrollerScreen(*this));
+    this->screenRange = makeUnique<ProjectMapScrollerScreen>(*this);
     this->addAndMakeVisible(this->screenRange.get());
 }
 

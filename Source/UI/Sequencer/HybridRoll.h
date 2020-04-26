@@ -377,9 +377,9 @@ protected:
     UniquePointer<Component> headerShadow;
     UniquePointer<Playhead> playhead;
     
-    UniquePointer<AnnotationsProjectMap> annotationsTrack;
-    UniquePointer<TimeSignaturesProjectMap> timeSignaturesTrack;
-    UniquePointer<KeySignaturesProjectMap> keySignaturesTrack;
+    UniquePointer<AnnotationsProjectMap> annotationsMap;
+    UniquePointer<TimeSignaturesProjectMap> timeSignaturesMap;
+    UniquePointer<KeySignaturesProjectMap> keySignaturesMap;
 
     UniquePointer<SelectionComponent> lassoComponent;
 
