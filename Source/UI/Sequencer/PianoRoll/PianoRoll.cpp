@@ -1139,7 +1139,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->showChordTool(ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
-        this->project.switchMiniMaps();
+        App::Config().getUiFlags()->toggleVelocityMapVisibility();
         // TODO if shift is pressed:
         //if (this->selection.getNumSelected() == 0) { this->selectAll(); }
         //HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);

@@ -37,7 +37,8 @@ class Clip;
 class SequencerLayout final :
     public Component,
     public Serializable,
-    public FileDragAndDropTarget
+    public FileDragAndDropTarget,
+    public UserInterfaceFlags::Listener
 {
 public:
 
@@ -49,7 +50,6 @@ public:
 
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
-    void switchMiniMaps();
 
     HybridRoll *getRoll() const;
 
@@ -59,6 +59,12 @@ public:
 
     void filesDropped(const StringArray &filenames, int mouseX, int mouseY) override;
     bool isInterestedInFileDrag(const StringArray &files) override;
+
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onVelocityMapVisibilityFlagChanged(bool visible) override;
 
     //===------------------------------------------------------------------===//
     // Component

@@ -79,8 +79,10 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
 
-    this->noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
-    this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
+    const auto *uiFlags = App::Config().getUiFlags();
+    this->velocityMapVisible = uiFlags->isVelocityMapVisible();
+    this->noteNameGuidesEnabled = uiFlags->isNoteNameGuidesEnabled();
+    this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
 
     this->recreateMenu();
     this->listBox->setMultipleSelectionEnabled(false);
@@ -238,6 +240,13 @@ void SequencerSidebarLeft::setPatternMode()
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
+void SequencerSidebarLeft::onVelocityMapVisibilityFlagChanged(bool visible)
+{
+    this->velocityMapVisible = visible;
+    this->recreateMenu();
+    this->listBox->updateContent();
+}
+
 void SequencerSidebarLeft::onScalesHighlightingFlagChanged(bool enabled)
 {
     this->scalesHighlightingEnabled = enabled;
@@ -276,9 +285,14 @@ void SequencerSidebarLeft::recreateMenu()
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel));
-        this->menu.add(MenuItem::item(Icons::paint, CommandIDs::ToggleScalesHighlighting)->toggled(this->scalesHighlightingEnabled));
-        this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->toggled(this->noteNameGuidesEnabled));
+        this->menu.add(MenuItem::item(Icons::volume,
+            CommandIDs::ShowVolumePanel)->toggled(this->velocityMapVisible));
+
+        this->menu.add(MenuItem::item(Icons::paint,
+            CommandIDs::ToggleScalesHighlighting)->toggled(this->scalesHighlightingEnabled));
+
+        this->menu.add(MenuItem::item(Icons::tag,
+            CommandIDs::ToggleNoteNameGuides)->toggled(this->noteNameGuidesEnabled));
     }
 }
 

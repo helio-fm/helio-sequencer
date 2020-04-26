@@ -42,6 +42,7 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"
+#include "Config.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
@@ -443,10 +444,14 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->sequencerLayout->addFixedPage(this->rollToolsSidebar.get());
 
     this->addAndMakeVisible(this->sequencerLayout.get());
+
+    App::Config().getUiFlags()->addListener(this);
 }
 
 SequencerLayout::~SequencerLayout()
 {
+    App::Config().getUiFlags()->removeListener(this);
+
     this->sequencerLayout = nullptr;
     
     this->rollToolsSidebar = nullptr;
@@ -468,16 +473,6 @@ SequencerLayout::~SequencerLayout()
     this->pianoViewport = nullptr;
 }
 
-void SequencerLayout::switchMiniMaps()
-{
-    if (!this->rollContainer->canAnimate(RollsSwitchingProxy::maps))
-    {
-        return;
-    }
-
-    this->rollContainer->startMapSwitchAnimation();
-}
-
 void SequencerLayout::showPatternEditor()
 {
     if (! this->rollContainer->isPatternMode())
@@ -486,9 +481,10 @@ void SequencerLayout::showPatternEditor()
     }
 
     // Switch to piano map as levels map doesn't make sense in patterns mode
-    if (this->rollContainer->isLevelsMapMode())
+    auto *uiFlags = App::Config().getUiFlags();
+    if (uiFlags->isVelocityMapVisible())
     {
-        this->rollContainer->startMapSwitchAnimation();
+        uiFlags->setVelocityMapVisible(false);
     }
 
     this->rollToolsSidebar->setPatternMode();
@@ -639,6 +635,27 @@ void SequencerLayout::handleCommandMessage(int commandId)
     default:
         break;
     }
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void SequencerLayout::onVelocityMapVisibilityFlagChanged(bool shoudShow)
+{
+    // no way to prevent glitches on fast switching?
+    //if (!this->rollContainer->canAnimate(RollsSwitchingProxy::maps))
+    //{
+    //    return;
+    //}
+
+    const bool alreadyShowing = this->rollContainer->isLevelsMapMode();
+    if ((alreadyShowing && shoudShow) || (!alreadyShowing && !shoudShow))
+    {
+        return;
+    }
+
+    this->rollContainer->startMapSwitchAnimation();
 }
 
 //===----------------------------------------------------------------------===//

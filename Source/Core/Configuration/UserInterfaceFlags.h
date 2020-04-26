@@ -36,6 +36,7 @@ public:
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}
         virtual void onNativeTitleBarFlagChanged(bool enabled) {}
+        virtual void onVelocityMapVisibilityFlagChanged(bool visible) {}
     };
 
     //===------------------------------------------------------------------===//
@@ -62,6 +63,10 @@ public:
     bool isNativeTitleBarEnabled() const noexcept;
     void setNativeTitleBarEnabled(bool enabled);
 
+    bool isVelocityMapVisible() const noexcept;
+    void setVelocityMapVisible(bool visible);
+    void toggleVelocityMapVisibility();
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -74,6 +79,7 @@ private:
 
     bool noteNameGuides = false;
     bool scalesHighlighting = true;
+    bool velocityMapVisible = false;
 
 #if JUCE_ANDROID
     // OpenGL seems to be the only sensible option on Android:

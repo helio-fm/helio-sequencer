@@ -98,6 +98,28 @@ void UserInterfaceFlags::setNativeTitleBarEnabled(bool enabled)
     this->startTimer(UI_FLAGS_SAVE_TIMEOUT);
 }
 
+bool UserInterfaceFlags::isVelocityMapVisible() const noexcept
+{
+    return this->velocityMapVisible;
+}
+
+void UserInterfaceFlags::setVelocityMapVisible(bool visible)
+{
+    if (this->velocityMapVisible == visible)
+    {
+        return;
+    }
+
+    this->velocityMapVisible = visible;
+    this->listeners.call(&Listener::onVelocityMapVisibilityFlagChanged, this->velocityMapVisible);
+    // not saving this flag
+}
+
+void UserInterfaceFlags::toggleVelocityMapVisibility()
+{
+    this->setVelocityMapVisible(!this->velocityMapVisible);
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -132,6 +154,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->scalesHighlighting = root.getProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
+    this->velocityMapVisible = false; // not serializing that
 }
 
 void UserInterfaceFlags::reset() {}
