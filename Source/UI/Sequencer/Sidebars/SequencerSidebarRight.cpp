@@ -283,7 +283,7 @@ void SequencerSidebarRight::recreateMenu()
 
     //this->menu.add(MenuItem::item(Icons::record, CommandIDs::ToggleRecording)->toggled(transportIsPaused));
 
-    if (this->menuMode == PianoRollTools)
+    if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
 
@@ -299,11 +299,11 @@ void SequencerSidebarRight::recreateMenu()
     }
 
 #if HELIO_MOBILE
-    if (this->menuMode == PianoRollTools)
+    if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents));
     }
-    else if (this->menuMode == PatternRollTools)
+    else if (this->menuMode == MenuMode::PatternRollTools)
     {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips));
     }
@@ -474,9 +474,9 @@ void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu
 
 void SequencerSidebarRight::setLinearMode()
 {
-    if (this->menuMode != PianoRollTools)
+    if (this->menuMode != MenuMode::PianoRollTools)
     {
-        this->menuMode = PianoRollTools;
+        this->menuMode = MenuMode::PianoRollTools;
         this->recreateMenu();
         this->listBox->updateContent();
     }
@@ -484,9 +484,9 @@ void SequencerSidebarRight::setLinearMode()
 
 void SequencerSidebarRight::setPatternMode()
 {
-    if (this->menuMode != PatternRollTools)
+    if (this->menuMode != MenuMode::PatternRollTools)
     {
-        this->menuMode = PatternRollTools;
+        this->menuMode = MenuMode::PatternRollTools;
         this->recreateMenu();
         this->listBox->updateContent();
     }

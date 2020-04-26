@@ -25,7 +25,7 @@ class IconComponent;
 
 struct MenuItem final : public ReferenceCountedObject
 {
-    enum Alignment
+    enum class Alignment : uint8
     {
         Left,
         Right
@@ -35,20 +35,32 @@ struct MenuItem final : public ReferenceCountedObject
     using Ptr = ReferenceCountedObjectPtr<MenuItem>;
 
     Image image;
-    Icons::Id iconId;
     String commandText;
     String hotkeyText;
     Colour colour;
-    Alignment alignment;
-    int commandId;
-    bool isToggled;
-    bool isDisabled;
-    bool shouldCloseMenu;
-    bool hasSubmenu;
-    bool hasTimer;
-    Callback callback;
 
-    MenuItem();
+    int commandId = 0;
+    Icons::Id iconId = 0;
+
+    Alignment alignment = Alignment::Left;
+    Callback callback = nullptr;
+
+    struct MenuItemFlags
+    {
+        bool isToggled : 1;
+        bool isDisabled : 1;
+        bool shouldCloseMenu : 1;
+        bool hasSubmenu : 1;
+        bool hasTimer : 1;
+    };
+
+    union
+    {
+        uint8 menuItemFlags = 0;
+        MenuItemFlags flags;
+    };
+
+    MenuItem() = default;
     MenuItem::Ptr withAlignment(Alignment alignment);
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withSubmenuIf(bool condition);

@@ -48,11 +48,6 @@
 // MenuItem
 //===----------------------------------------------------------------------===//
 
-MenuItem::MenuItem() :
-    commandId(0), iconId(0), isToggled(false), isDisabled(false),
-    shouldCloseMenu(false), hasSubmenu(false), hasTimer(false),
-    alignment(Alignment::Left), callback(nullptr) {}
-
 MenuItem::Ptr MenuItem::empty()
 {
     MenuItem::Ptr description(new MenuItem());
@@ -77,11 +72,11 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text
     description->commandText = text;
     description->commandId = commandId;
     description->hotkeyText = findHotkeyText(commandId);
-    description->isToggled = false;
-    description->isDisabled = false;
-    description->shouldCloseMenu = false;
-    description->hasSubmenu = false;
-    description->hasTimer = false;
+    description->flags.isToggled = false;
+    description->flags.isDisabled = false;
+    description->flags.shouldCloseMenu = false;
+    description->flags.hasSubmenu = false;
+    description->flags.hasTimer = false;
     description->colour = findDefaultColour(Label::textColourId);
     return description;
 }
@@ -93,11 +88,11 @@ MenuItem::Ptr MenuItem::item(Image image, int commandId, const String &text /*= 
     description->commandText = text;
     description->commandId = commandId;
     description->hotkeyText = findHotkeyText(commandId);
-    description->isToggled = false;
-    description->isDisabled = false;
-    description->shouldCloseMenu = false;
-    description->hasSubmenu = false;
-    description->hasTimer = false;
+    description->flags.isToggled = false;
+    description->flags.isDisabled = false;
+    description->flags.shouldCloseMenu = false;
+    description->flags.hasSubmenu = false;
+    description->flags.hasTimer = false;
     description->colour = findDefaultColour(Label::textColourId);
     return description;
 }
@@ -117,8 +112,8 @@ MenuItem::Ptr MenuItem::withAlignment(Alignment alignment)
 MenuItem::Ptr MenuItem::withSubmenu()
 {
     MenuItem::Ptr description(this);
-    description->hasSubmenu = true;
-    description->hasTimer = true; // a hack
+    description->flags.hasSubmenu = true;
+    description->flags.hasTimer = true; // a hack
     return description;
 }
 
@@ -135,14 +130,14 @@ MenuItem::Ptr MenuItem::withSubmenuIf(bool condition)
 MenuItem::Ptr MenuItem::withTimer()
 {
     MenuItem::Ptr description(this);
-    description->hasTimer = true;
+    description->flags.hasTimer = true;
     return description;
 }
 
 MenuItem::Ptr MenuItem::toggled(bool shouldBeToggled)
 {
     MenuItem::Ptr description(this);
-    description->isToggled = shouldBeToggled;
+    description->flags.isToggled = shouldBeToggled;
     return description;
 }
 
@@ -156,7 +151,7 @@ MenuItem::Ptr MenuItem::colouredWith(const Colour &colour)
 MenuItem::Ptr MenuItem::disabledIf(bool condition)
 {
     MenuItem::Ptr description(this);
-    description->isDisabled = condition;
+    description->flags.isDisabled = condition;
     return description;
 }
 
@@ -171,7 +166,7 @@ MenuItem::Ptr MenuItem::closesMenu()
 {
     MenuItem::Ptr description(this);
     jassert(description->callback == nullptr);
-    description->shouldCloseMenu = true;
+    description->flags.shouldCloseMenu = true;
     return description;
 }
 
@@ -373,7 +368,7 @@ void MenuItemComponent::resized()
 void MenuItemComponent::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
-    if (this->description->hasTimer &&
+    if (this->description->flags.hasTimer &&
         e.getScreenPosition().getDistanceSquaredFrom(this->lastMouseScreenPosition) > 0 &&
         !this->isTimerRunning())
     {
@@ -414,7 +409,7 @@ void MenuItemComponent::mouseDown (const MouseEvent& e)
     }
     else
     {
-        if (!this->description->isDisabled)
+        if (!this->description->flags.isDisabled)
         {
             this->clickMarker.reset(new CommandDragHighlighter());
             this->addChildComponent(this->clickMarker.get());
@@ -510,7 +505,7 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
         this->clearHighlighterAndStopAnimations();
     }
 
-    if (desc->isToggled && !this->description->isToggled)
+    if (desc->flags.isToggled && !this->description->flags.isToggled)
     {
         this->toggleMarker = makeUnique<MenuItemComponentMarker>();
         this->toggleMarker->setBounds(this->getLocalBounds());
@@ -522,18 +517,18 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
 
         this->addAndMakeVisible(this->toggleMarker.get());
     }
-    else if (!desc->isToggled && (this->toggleMarker != nullptr))
+    else if (!desc->flags.isToggled && (this->toggleMarker != nullptr))
     {
         this->toggleMarker = nullptr;
     }
 
     this->textLabel->setColour(Label::textColourId,
-        desc->colour.withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
+        desc->colour.withMultipliedAlpha(desc->flags.isDisabled ? 0.5f : 1.f));
 
-    this->textLabel->setJustificationType(desc->alignment == MenuItem::Left ?
+    this->textLabel->setJustificationType(desc->alignment == MenuItem::Alignment::Left ?
         Justification::centredLeft : Justification::centredRight);
 
-    this->submenuMarker->setVisible(desc->hasSubmenu);
+    this->submenuMarker->setVisible(desc->flags.hasSubmenu);
     this->description = desc;
 
     if (this->hasText())
@@ -559,17 +554,17 @@ bool MenuItemComponent::hasText() const noexcept
 
 Component *MenuItemComponent::createHighlighterComponent()
 {
-    if (!this->description->isDisabled)
+    if (!this->description->flags.isDisabled)
     {
         MenuItem::Ptr desc2 = MenuItem::empty();
         desc2->image = this->description->image;
         desc2->iconId = this->description->iconId;
         desc2->commandText = this->description->commandText;
         //desc2->hotkeyText = this->description->hotkeyText;
-        desc2->hasSubmenu = this->description->hasSubmenu;
+        desc2->flags.hasSubmenu = this->description->flags.hasSubmenu;
         desc2->colour = this->description->colour;
         desc2->alignment = this->description->alignment;
-        desc2->hasTimer = false;
+        desc2->flags.hasTimer = false;
         return new MenuItemComponent(this->parent, nullptr, desc2);
     }
 
@@ -579,13 +574,13 @@ Component *MenuItemComponent::createHighlighterComponent()
 void MenuItemComponent::timerCallback()
 {
     this->stopTimer();
-    jassert(this->description->hasTimer);
+    jassert(this->description->flags.hasTimer);
     this->doAction();
 }
 
 void MenuItemComponent::doAction()
 {
-    if (this->description->isDisabled)
+    if (this->description->flags.isDisabled)
     {
         return;
     }
@@ -618,7 +613,7 @@ void MenuItemComponent::doAction()
     }
 
     auto panel = dynamic_cast<MenuPanel *>(this->parent.getComponent());
-    if (this->description->shouldCloseMenu && panel != nullptr)
+    if (this->description->flags.shouldCloseMenu && panel != nullptr)
     {
         panel->dismiss();
     }

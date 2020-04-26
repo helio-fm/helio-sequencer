@@ -67,14 +67,14 @@ private:
     Atomic<double> timerStartSeekTime;
     Atomic<double> timerStartSystemTime;
 
-    enum MenuMode
+    enum class MenuMode : int8
     {
         None,
         PianoRollTools,
         PatternRollTools
     };
 
-    MenuMode menuMode = None;
+    MenuMode menuMode = MenuMode::None;
     MenuPanel::Menu menu;
 
     void updateModeButtons();

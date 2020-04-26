@@ -62,7 +62,8 @@ public:
         for (int i = 0; i < scales.size(); ++i)
         {
             cmds.add(MenuItem::item(Icons::empty,
-                CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->withAlignment(MenuItem::Right));
+                CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->
+                withAlignment(MenuItem::Alignment::Right));
         }
         this->updateContent(cmds, MenuPanel::SlideLeft, false);
     }
