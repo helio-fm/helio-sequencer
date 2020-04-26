@@ -131,7 +131,10 @@ private:
     
     ComponentDragger helperDragger;
     UniquePointer<HelperRectangle> helperRectangle;
-    
-    bool mapShouldGetStretched = true;
+
+    const Colour borderLineDark;
+    const Colour borderLineLight;
+
+    bool mapShouldBeStretched = true;
     
 };
