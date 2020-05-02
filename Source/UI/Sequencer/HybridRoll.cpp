@@ -565,7 +565,7 @@ int HybridRoll::getPlayheadPositionByBeat(double targetBeat, double parentWidth)
 
 int HybridRoll::getXPositionByBeat(float targetBeat) const
 {
-    return int(roundf((targetBeat - this->firstBeat) * this->beatWidth));
+    return int((targetBeat - this->firstBeat) * this->beatWidth);
 }
 
 float HybridRoll::getFloorBeatSnapByXPosition(int x) const
@@ -675,7 +675,7 @@ void HybridRoll::computeVisibleBeatLines()
     const float paintStartBar = floorf(paintStartX / barWidth);
     const float paintEndBar = ceilf(paintEndX / barWidth);
 
-    // Get number of snaps depending on bar width, 
+    // Get the number of snaps depending on a bar width,
     // 2 for 64, 4 for 128, 8 for 256, etc:
     const float nearestPowTwo = ceilf(log(barWidth) / log(2.f));
     const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // use -4.f for twice as dense grid
@@ -748,7 +748,7 @@ void HybridRoll::computeVisibleBeatLines()
             }
 
             // Check if we have more time signatures to come
-            const TimeSignatureEvent *nextSignature = (nextTsIdx >= tsSequence->size()) ? nullptr :
+            const auto *nextSignature = (nextTsIdx >= tsSequence->size()) ? nullptr :
                 static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextTsIdx));
 
             // Now for the beat lines

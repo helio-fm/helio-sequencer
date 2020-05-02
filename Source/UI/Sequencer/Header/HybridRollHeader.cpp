@@ -108,7 +108,7 @@ void HybridRollHeader::updateSubrangeIndicator(const Colour &colour, float first
 {
     if (this->clipRangeIndicator == nullptr)
     {
-        this->clipRangeIndicator.reset(new ClipRangeIndicator());
+        this->clipRangeIndicator = makeUnique<ClipRangeIndicator>();
         this->addAndMakeVisible(this->clipRangeIndicator.get());
     }
 
@@ -125,7 +125,7 @@ void HybridRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, c
 
 double HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
 {
-    const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
+    const auto parentEvent = e.getEventRelativeTo(&this->roll);
     const double absX = double(parentEvent.getPosition().getX()) / double(this->roll.getWidth());
     return absX;
 }
@@ -165,7 +165,7 @@ void HybridRollHeader::updateTimeDistanceIndicator()
     this->transport.findTimeAndTempoAt(seek2, outTimeMs2, outTempo2);
     
     const double timeDelta = fabs(outTimeMs2 - outTimeMs1);
-    const String timeDeltaText = Transport::getTimeString(timeDelta);
+    const auto timeDeltaText = Transport::getTimeString(timeDelta);
     this->timeDistanceIndicator->getTimeLabel()->setText(timeDeltaText, dontSendNotification);
 }
 
@@ -190,13 +190,13 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x);
         this->transport.probeSoundAtBeat(roundBeat, nullptr);
         
-        this->playingIndicator.reset(new SoundProbeIndicator());
+        this->playingIndicator = makeUnique<SoundProbeIndicator>();
         this->roll.addAndMakeVisible(this->playingIndicator.get());
         this->updateIndicatorPosition(this->playingIndicator.get(), e);
     }
     else
     {
-        const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
+        const auto parentEvent = e.getEventRelativeTo(&this->roll);
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
        
         const bool shouldStartSelection = (e.mods.isAltDown() ||
@@ -217,9 +217,10 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
             
             this->roll.getSelectionComponent()->beginLasso({ newX, 0.f }, &this->roll);
             
-            this->selectionIndicator.reset(new HeaderSelectionIndicator());
+            this->selectionIndicator = makeUnique<HeaderSelectionIndicator>();
             this->addAndMakeVisible(this->selectionIndicator.get());
-            this->selectionIndicator->setBounds(0, this->getHeight() - this->selectionIndicator->getHeight(),
+            this->selectionIndicator->setBounds(0,
+                this->getHeight() - this->selectionIndicator->getHeight(),
                 0, this->selectionIndicator->getHeight());
             
 #if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
@@ -236,7 +237,21 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
             }
 
             this->roll.cancelPendingUpdate(); // why is it here?
+
+            // two presses on mobile will emit the timeline menu,
+            // on the desktop it is available via right click
+#if HELIO_MOBILE
+            if (this->transport.getSeekBeat() == roundBeat)
+            {
+                this->showPopupMenu();
+            }
+            else
+            {
+                this->transport.seekToBeat(roundBeat);
+            }
+#elif HELIO_DESKTOP
             this->transport.seekToBeat(roundBeat);
+#endif
         }
     }
 }
@@ -260,7 +275,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
                     
                     if (distance > MIN_TIME_DISTANCE_INDICATOR_SIZE)
                     {
-                        this->timeDistanceIndicator.reset(new TimeDistanceIndicator());
+                        this->timeDistanceIndicator = makeUnique<TimeDistanceIndicator>();
                         this->roll.addAndMakeVisible(this->timeDistanceIndicator.get());
                         this->timeDistanceIndicator->setBounds(0, this->getBottom() + 4,
                                                                0, this->timeDistanceIndicator->getHeight());
@@ -285,14 +300,14 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
     {
         if (this->roll.getSelectionComponent()->isDragging())
         {
-            const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
+            const auto parentEvent = e.getEventRelativeTo(&this->roll);
             
 #if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             const float roundBeat = this->roll.getRoundBeatSnapByXPosition(parentEvent.x);
             const int roundX = this->roll.getXPositionByBeat(roundBeat);
-            const MouseEvent parentGlobalSelection = parentEvent.withNewPosition(Point<int>(roundX - 1, this->roll.getHeight()));
+            const auto parentGlobalSelection = parentEvent.withNewPosition(Point<int>(roundX - 1, this->roll.getHeight()));
 #else
-            const MouseEvent parentGlobalSelection = parentEvent.withNewPosition(Point<int>(parentEvent.x, this->roll.getHeight()));
+            const auto parentGlobalSelection = parentEvent.withNewPosition(Point<int>(parentEvent.x, this->roll.getHeight()));
 #endif
             
             this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
@@ -349,7 +364,10 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
         if (e.mods.isRightButtonDown())
         {
             this->showPopupMenu();
-            //this->transport.startPlayback();
+        }
+        else if (e.mods.isMiddleButtonDown())
+        {
+            this->transport.startPlayback();
         }
     }
 }
@@ -365,7 +383,7 @@ void HybridRollHeader::mouseMove(const MouseEvent &e)
     {
         if (this->pointingIndicator == nullptr)
         {
-            this->pointingIndicator.reset(new SoundProbeIndicator());
+            this->pointingIndicator = makeUnique<SoundProbeIndicator>();
             this->roll.addAndMakeVisible(this->pointingIndicator.get());
             this->updateIndicatorPosition(this->pointingIndicator.get(), e);
         }
@@ -387,9 +405,7 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
 
 void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
-#if HELIO_MOBILE
-    this->showPopupMenu();
-#elif HELIO_DESKTOP
+#if HELIO_DESKTOP
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
     this->transport.stopPlaybackAndRecording();
     this->transport.seekToBeat(roundBeat);
@@ -450,35 +466,35 @@ void HybridRollHeader::paint(Graphics &g)
         const int startX = this->roll.getXPositionByBeat(this->loopStartBeat.get());
         const int endX = this->roll.getXPositionByBeat(this->loopEndBeat.get());
 
-        g.fillRect(float(startX - 1), 1.f, 3.f, float(this->getHeight() - 2));
-        g.fillRect(float(startX + 4), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(startX), 1.f, 3.f, float(this->getHeight() - 2));
+        g.fillRect(float(startX + 5), 1.f, 1.f, float(this->getHeight() - 2));
 
-        g.fillRect(float(endX - 1), 1.f, 3.f, float(this->getHeight() - 2));
-        g.fillRect(float(endX - 4), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(endX - 2), 1.f, 3.f, float(this->getHeight() - 2));
+        g.fillRect(float(endX - 5), 1.f, 1.f, float(this->getHeight() - 2));
 
         // todo draw ellipses instead?
         const auto p1 = roundf(float(this->getHeight()) * 0.33f + 1.f);
         const auto p2 = roundf(float(this->getHeight()) * 0.66f - 3.f);
 
-        g.fillRect(float(startX + 7), p1, 3.f, 3.f);
-        g.fillRect(float(startX + 7), p2, 3.f, 3.f);
+        g.fillRect(float(startX + 8), p1, 3.f, 3.f);
+        g.fillRect(float(startX + 8), p2, 3.f, 3.f);
 
-        g.fillRect(float(endX - 9), p1, 3.f, 3.f);
-        g.fillRect(float(endX - 9), p2, 3.f, 3.f);
+        g.fillRect(float(endX - 10), p1, 3.f, 3.f);
+        g.fillRect(float(endX - 10), p2, 3.f, 3.f);
 
         // some fancy shadows
         g.setColour(this->bevelDarkColour);
 
-        g.fillRect(float(startX + 2), 1.f, 1.f, float(this->getHeight() - 2));
-        g.fillRect(float(startX + 5), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(startX + 3), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(startX + 6), 1.f, 1.f, float(this->getHeight() - 2));
 
-        g.fillRect(float(endX + 2), 1.f, 1.f, float(this->getHeight() - 2));
-        g.fillRect(float(endX - 3), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(endX + 1), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(float(endX - 4), 1.f, 1.f, float(this->getHeight() - 2));
 
-        g.fillRect(float(startX + 10), p1, 1.f, 3.f);
-        g.fillRect(float(startX + 10), p2, 1.f, 3.f);
-        g.fillRect(float(endX - 6), p1, 1.f, 3.f);
-        g.fillRect(float(endX - 6), p2, 1.f, 3.f);
+        g.fillRect(float(startX + 11), p1, 1.f, 3.f);
+        g.fillRect(float(startX + 11), p2, 1.f, 3.f);
+        g.fillRect(float(endX - 7), p1, 1.f, 3.f);
+        g.fillRect(float(endX - 7), p2, 1.f, 3.f);
     }
 }
 
