@@ -45,13 +45,18 @@ public:
 
     void startPlayback(bool silentMode)
     {
-        const auto start = this->transport.getSeekBeat() - this->transport.getProjectFirstBeat();
-        const auto end = this->transport.getProjectLastBeat() - this->transport.getProjectFirstBeat();
-        this->startPlayback(start, end, false, silentMode);
+        const auto start = this->transport.getSeekBeat();
+        const auto end = this->transport.getProjectLastBeat();
+        this->startPlayback(start, start, end, false, silentMode);
     }
 
-    void startPlayback(float start, float end, bool loopedMode, bool silentMode)
+    void startPlayback(float start, float rewind, float end, bool loopMode, bool silentMode)
     {
+        const auto projectFirstBeat = this->transport.getProjectFirstBeat();
+        const auto relativeStart = start - projectFirstBeat;
+        const auto relativeRewind = rewind - projectFirstBeat;
+        const auto relativeEnd = end - projectFirstBeat;
+
         if (this->currentPlayer->isThreadRunning())
         {
             this->currentPlayer->signalThreadShouldExit();
@@ -64,14 +69,15 @@ public:
 
         double currentTimeMs = 0.0;
         double msPerQuarter = 0.0;
-        this->transport.findTimeAndTempoAt(this->transport.getSeekBeat(), currentTimeMs, msPerQuarter);
+        this->transport.findTimeAndTempoAt(start, currentTimeMs, msPerQuarter);
 
         // let listeners know about the tempo before the playback starts
         this->transport.broadcastTempoChanged(msPerQuarter);
 
-        this->currentPlayer->startPlayback(start, end,
+        this->currentPlayer->startPlayback(relativeStart,
+            relativeRewind, relativeEnd,
             msPerQuarter, currentTimeMs, totalTimeMs,
-            loopedMode, silentMode);
+            loopMode, silentMode);
     }
 
     void stopPlayback()

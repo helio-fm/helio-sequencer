@@ -26,7 +26,8 @@ public:
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-    void startPlayback(float relStartBeat, float relEndBeat,
+    void startPlayback(float relativeSeekPosition,
+        float relativeRewindBeat, float relativeEndBeat,
         double startTempo, double currentTime, double totalTime,
         bool loopMode, bool silentMode = false);
 
@@ -38,8 +39,9 @@ private:
     bool loopMode = false;
     bool silentMode = false;
 
-    Atomic<float> startBeat = 0.f;
-    Atomic<float> endBeat = 1.f;
+    Atomic<float> startBeat = 0.f; // where to start from
+    Atomic<float> rewindBeat = 0.f; // where to rewind, if looped
+    Atomic<float> endBeat = 1.f; // where to stop or rewind
 
     Atomic<double> totalTimeMs = 0.0;
     Atomic<double> currentTimeMs = 0.0;

@@ -36,12 +36,14 @@ PlayerThread::~PlayerThread()
 // Thread
 //===----------------------------------------------------------------------===//
 
-void PlayerThread::startPlayback(float relStartBeat, float relEndBeat,
+void PlayerThread::startPlayback(float relativeSeekPosition,
+    float relativeRewindBeat, float relativeEndBeat,
     double startTempo, double currentTime, double totalTime,
     bool loopMode, bool silentMode)
 {
-    this->startBeat = relStartBeat;
-    this->endBeat = relEndBeat;
+    this->startBeat = relativeSeekPosition;
+    this->rewindBeat = relativeRewindBeat;
+    this->endBeat = relativeEndBeat;
 
     this->msPerQuarterNote = startTempo;
     this->currentTimeMs = currentTime;
@@ -150,8 +152,8 @@ void PlayerThread::run()
 
             if (this->loopMode)
             {
-                sequences.seekToTime(this->startBeat.get());
-                prevTimeStamp = this->startBeat.get();
+                sequences.seekToTime(this->rewindBeat.get());
+                prevTimeStamp = this->rewindBeat.get();
                 if (!this->silentMode)
                 {
                     this->transport.broadcastSeek(prevTimeStamp,
@@ -228,8 +230,8 @@ void PlayerThread::run()
         
         if (shouldRewind)
         {
-            sequences.seekToTime(this->startBeat.get());
-            prevTimeStamp = this->startBeat.get();
+            sequences.seekToTime(this->rewindBeat.get());
+            prevTimeStamp = this->rewindBeat.get();
             if (!this->silentMode)
             {
                 this->transport.broadcastSeek(prevTimeStamp,

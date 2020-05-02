@@ -209,7 +209,20 @@ void Transport::startPlayback()
         this->allNotesControllersAndSoundOff();
     }
 
-    this->player->startPlayback(false);
+    if (this->loopMode.get())
+    {
+        const auto start = this->getSeekBeat();
+        const auto loopStart = this->loopStartBeat.get();
+        const auto end = this->loopEndBeat.get();
+
+        this->player->startPlayback((start >= end) ? loopStart : start,
+            loopStart, end, true, false);
+    }
+    else
+    {
+        this->player->startPlayback(false);
+    }
+
     this->broadcastPlay();
 }
 
@@ -224,7 +237,7 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
         this->allNotesControllersAndSoundOff();
     }
 
-    this->player->startPlayback(startBeat, endBeat, looped, false);
+    this->player->startPlayback(startBeat, startBeat, endBeat, looped, false);
     this->broadcastPlay();
 }
 
@@ -310,6 +323,8 @@ void Transport::toggleLoopPlayback(float startBeat, float endBeat)
         this->disableLoopPlayback();
         return;
     }
+
+    this->stopPlayback();
 
     this->loopMode = true;
     this->loopStartBeat = startBeat;
