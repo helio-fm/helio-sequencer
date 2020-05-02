@@ -195,7 +195,7 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
     // bail out as early as possible
     if (selection->getNumSelected() != 1)
     {
-        this->project.setMidiRecordingTarget(nullptr, {});
+        this->project.setMidiRecordingTarget(nullptr, nullptr);
         return;
     }
 
@@ -210,6 +210,6 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
         }
 
         auto *track = cc->getClip().getPattern()->getTrack();
-        this->project.setMidiRecordingTarget(track, cc->getClip());
+        this->project.setMidiRecordingTarget(track, &cc->getClip());
     }
 }

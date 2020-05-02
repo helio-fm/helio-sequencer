@@ -228,7 +228,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
             }
         }
 
-        this->project.getTransport().stopPlayback();
+        this->project.getTransport().stopPlaybackAndRecording();
 
 #if TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS
         if (selectedAnnotation != nullptr)

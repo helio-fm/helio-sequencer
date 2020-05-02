@@ -81,7 +81,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
             const auto scales = App::Config().getScales()->getAll();
             if (!scales[i]->isEquivalentTo(this->lastChosenScale))
             {
-                transport.stopPlayback();
+                transport.stopPlaybackAndRecording();
                 const bool needsCheckpoint = !this->hasMadeChanges;
                 this->undoIfNeeded();
 
@@ -94,7 +94,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
 
             if (transport.isPlaying())
             {
-                transport.stopPlayback();
+                transport.stopPlaybackAndRecording();
             }
             else
             {

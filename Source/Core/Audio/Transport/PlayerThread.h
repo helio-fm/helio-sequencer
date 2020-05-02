@@ -26,8 +26,8 @@ public:
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-    void startPlayback(float relativeSeekPosition,
-        float relativeRewindBeat, float relativeEndBeat,
+    void startPlayback(float seekPosition,
+        float rewindBeat, float endBeat,
         double startTempo, double currentTime, double totalTime,
         bool loopMode, bool silentMode = false);
 

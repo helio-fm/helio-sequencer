@@ -313,11 +313,7 @@ void TimeSignaturesProjectMap::onTimeSignatureTapped(TimeSignatureComponent *nc)
     const auto newSeekBeat = nc->getBeat();
     const bool wasPlaying = this->project.getTransport().isPlaying();
 
-    if (wasPlaying)
-    {
-        this->project.getTransport().stopPlayback();
-    }
-
+    this->project.getTransport().stopPlaybackAndRecording();
     this->project.getTransport().seekToBeat(newSeekBeat);
 
     //if (wasPlaying)

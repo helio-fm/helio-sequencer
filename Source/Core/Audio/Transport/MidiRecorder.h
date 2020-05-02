@@ -38,7 +38,7 @@ public:
     ~MidiRecorder() override;
 
     void setTargetScope(WeakReference<MidiTrack> track,
-        const Clip &clip, const String &instrumentId);
+        const Clip *clip, const String &instrumentId);
 
 private:
 
@@ -79,7 +79,7 @@ private:
     ProjectNode &project;
     Transport &getTransport() const noexcept;
 
-    Clip activeClip;
+    const Clip *activeClip = nullptr;
     WeakReference<MidiTrack> activeTrack;
     String lastValidInsrtumentId;
 

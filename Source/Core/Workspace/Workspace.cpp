@@ -303,7 +303,7 @@ void Workspace::stopPlaybackForAllProjects()
 {
     for (auto *project : this->getLoadedProjects())
     {
-        project->getTransport().stopPlayback();
+        project->getTransport().stopPlaybackAndRecording();
     }
 }
 

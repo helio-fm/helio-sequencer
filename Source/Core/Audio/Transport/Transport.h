@@ -59,6 +59,7 @@ public:
     void probeSequence(const MidiMessageSequence &sequence);
 
     void startPlayback();
+    void startPlayback(float startBeatOverride);
     void startPlaybackFragment(float startBeat, float endBeat, bool looped);
 
     bool isPlaying() const;
@@ -68,6 +69,8 @@ public:
     void startRecording();
     bool isRecording() const;
     void stopRecording();
+
+    void stopPlaybackAndRecording();
 
     void startRender(const String &filename);
     bool isRendering() const;

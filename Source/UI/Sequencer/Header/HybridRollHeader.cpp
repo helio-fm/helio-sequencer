@@ -230,7 +230,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         }
         else
         {
-            this->transport.stopPlayback();
+            this->transport.stopPlaybackAndRecording();
             this->roll.cancelPendingUpdate(); // why is it here?
             this->transport.seekToBeat(roundBeat);
         }
@@ -252,7 +252,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
                 if (this->timeDistanceIndicator == nullptr)
                 {
                     // todo rebuild sequences if not playing, do nothing if playing
-                    this->transport.stopPlayback();
+                    this->transport.stopPlaybackAndRecording();
                     
                     if (distance > MIN_TIME_DISTANCE_INDICATOR_SIZE)
                     {
@@ -307,7 +307,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
             //if (! this->transport.isPlaying())
             {
                 const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-                this->transport.stopPlayback();
+                this->transport.stopPlaybackAndRecording();
                 this->roll.cancelPendingUpdate();
                 this->transport.seekToBeat(roundBeat);
             }
@@ -335,7 +335,7 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
     {
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
         
-        this->transport.stopPlayback();
+        this->transport.stopPlaybackAndRecording();
         this->transport.seekToBeat(roundBeat);
         
         if (e.mods.isRightButtonDown())
@@ -383,7 +383,7 @@ void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
     this->showPopupMenu();
 #elif HELIO_DESKTOP
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-    this->transport.stopPlayback();
+    this->transport.stopPlaybackAndRecording();
     this->transport.seekToBeat(roundBeat);
     this->transport.startPlayback();
 #endif

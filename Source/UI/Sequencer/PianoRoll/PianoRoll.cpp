@@ -620,6 +620,10 @@ void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
     if (this->activeClip == clip)
     {
+        // the parameters of the clip have changed;
+        // keeping track of the active clip changes this way is very ugly,
+        // but refactoring to keep a weak reference instead is too bloody;
+        // please fixme someday (maybe just keep a raw pointer?)
         this->activeClip = newClip;
     }
 

@@ -58,7 +58,7 @@ MidiRecorder::~MidiRecorder()
 }
 
 void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track,
-    const Clip &clip, const String &instrumentId)
+    const Clip *clip, const String &instrumentId)
 {
     if (instrumentId.isNotEmpty())
     {
@@ -175,13 +175,6 @@ void MidiRecorder::handleAsyncUpdate()
         return;
     }
 
-    // a neat helper: start playback, if still not playing,
-    // yet have received some midi events
-    if (!this->isPlaying.get())
-    {
-        this->getTransport().startPlayback();
-    }
-
     // if no track is selected, must checkpoint anyway
     jassert(this->activeTrack != nullptr || this->shouldCheckpoint.get());
 
@@ -223,7 +216,7 @@ void MidiRecorder::handleAsyncUpdate()
                 &this->project, trackTemplate, newName));
 
         this->activeTrack = this->project.findTrackById<MidiTrackNode>(outTrackId);
-        this->activeClip = *this->activeTrack->getPattern()->getUnchecked(0);
+        this->activeClip = this->activeTrack->getPattern()->getUnchecked(0);
         this->shouldCheckpoint = false;
     }
     
@@ -255,6 +248,19 @@ void MidiRecorder::handleAsyncUpdate()
     }
 
     this->unhandledNoteOffs.clearQuick();
+
+    // a neat helper: start playback, if still not playing,
+    // yet have received some midi events;
+    // important: this goes *after* the first changes are applied,
+    // because, if the project's range is be affected by
+    // the first inserted note, it should be affected
+    // before the playback thread has started
+    if (!this->isPlaying.get())
+    {
+        // a hack for the first note not to sound twice:
+        const auto playbackStart = this->getTransport().getSeekBeat() + 1.f / float(TICKS_PER_BEAT);
+        this->getTransport().startPlayback(playbackStart);
+    }
 }
 
 struct SortMidiMessagesByTimestamp final
@@ -315,6 +321,7 @@ void MidiRecorder::timerCallback()
 
 void MidiRecorder::startHoldingNote(MidiMessage message)
 {
+    jassert(this->activeClip != nullptr);
     jassert(this->activeTrack != nullptr);
 
     const auto key = message.getNoteNumber();
@@ -326,8 +333,8 @@ void MidiRecorder::startHoldingNote(MidiMessage message)
     }
 
     const Note noteParams(this->activeTrack->getSequence(),
-        key - this->activeClip.getKey(),
-        roundBeat(float(message.getTimeStamp()) - this->activeClip.getBeat()),
+        key - this->activeClip->getKey(),
+        roundBeat(float(message.getTimeStamp()) - this->activeClip->getBeat()),
         STARTING_NOTE_LENGTH,
         message.getVelocity() / 128.f);
 
@@ -337,6 +344,7 @@ void MidiRecorder::startHoldingNote(MidiMessage message)
 
 void MidiRecorder::updateLengthsOfHoldingNotes() const
 {
+    jassert(this->activeClip != nullptr);
     jassert(this->activeTrack != nullptr);
 
     if (this->holdingNotes.size() == 0)
@@ -346,7 +354,7 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
     }
 
     const auto currentBeat =
-        float(this->getEstimatedPosition() - this->activeClip.getBeat());
+        float(this->getEstimatedPosition() - this->activeClip->getBeat());
 
     Array<Note> groupBefore;
     Array<Note> groupAfter;
@@ -369,17 +377,21 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
 
 void MidiRecorder::finaliseAllHoldingNotes()
 {
-    jassert(this->activeTrack != nullptr);
-    this->updateLengthsOfHoldingNotes();
+    if (this->activeTrack != nullptr) // a user cleared selection before hitting stop
+    {
+        this->updateLengthsOfHoldingNotes();
+    }
+
     this->holdingNotes.clear();
 }
 
 bool MidiRecorder::finaliseHoldingNote(int key)
 {
+    jassert(this->activeClip != nullptr);
     jassert(this->activeTrack != nullptr);
 
     const auto currentBeat =
-        float(this->getEstimatedPosition() - this->activeClip.getBeat());
+        float(this->getEstimatedPosition() - this->activeClip->getBeat());
 
     if (this->holdingNotes.contains(key))
     {

@@ -1192,18 +1192,21 @@ void HybridRoll::handleCommandMessage(int commandId)
             // escape keypress when not playing also resets some stuff:
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
-            this->getTransport().disableLoopPlayback();
+
+            if (!this->getTransport().isRecording())
+            {
+                this->getTransport().disableLoopPlayback();
+            }
         }
 
-        this->getTransport().stopPlayback();
-        this->getTransport().stopRecording();
+        this->getTransport().stopPlaybackAndRecording();
         this->getTransport().stopSound();
         break;
     case CommandIDs::VersionControlToggleQuickStash:
         if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
         {
             this->deselectAll(); // a couple of hacks, instead will need to improve event system
-            this->getTransport().stopPlayback(); // with a pre-reset callback or so
+            this->getTransport().stopPlaybackAndRecording(); // with a pre-reset callback or so
             vcs->toggleQuickStash();
         }
         break;

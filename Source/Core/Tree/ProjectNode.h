@@ -82,7 +82,7 @@ public:
     void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
     WeakReference<TreeNode> getLastShownTrack() const noexcept;
 
-    void setMidiRecordingTarget(MidiTrack *const track, const Clip &clip);
+    void setMidiRecordingTarget(MidiTrack *const track, const Clip *clip);
     void setEditableScope(MidiTrack *const activeTrack,
         const Clip &activeClip, bool shouldFocusToArea = false);
 

@@ -85,7 +85,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
 
 
     //[UserPreSize]
-    this->transport.stopPlayback();
+    this->transport.stopPlaybackAndRecording();
 
     this->scaleNameEditor->addListener(this);
     this->scaleNameEditor->setFont(21.f);
