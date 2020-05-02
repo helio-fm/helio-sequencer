@@ -327,7 +327,7 @@ void Transport::toggleLoopPlayback(float startBeat, float endBeat)
         return;
     }
 
-    this->stopPlayback();
+    this->stopPlaybackAndRecording();
 
     this->loopMode = true;
     this->loopStartBeat = startBeat;

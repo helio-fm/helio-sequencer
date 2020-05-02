@@ -80,6 +80,12 @@ void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track,
 
 void MidiRecorder::onSeek(float beatPosition, double, double) noexcept
 {
+    if (this->isPlaying.get() &&
+        beatPosition < this->lastCorrectPosition.get())
+    {
+        this->finaliseAllHoldingNotes();
+    }
+
     this->lastCorrectPosition = beatPosition;
     this->lastUpdateTime = Time::getMillisecondCounterHiRes();
 }

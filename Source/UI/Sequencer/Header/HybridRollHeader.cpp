@@ -230,7 +230,11 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         }
         else
         {
-            this->transport.stopPlaybackAndRecording();
+            if (!this->transport.isRecording())
+            {
+                this->transport.stopPlayback();
+            }
+
             this->roll.cancelPendingUpdate(); // why is it here?
             this->transport.seekToBeat(roundBeat);
         }
@@ -335,7 +339,11 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
     {
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
         
-        this->transport.stopPlaybackAndRecording();
+        if (!this->transport.isRecording())
+        {
+            this->transport.stopPlayback();
+        }
+
         this->transport.seekToBeat(roundBeat);
         
         if (e.mods.isRightButtonDown())
