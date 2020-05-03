@@ -200,6 +200,14 @@ void MobileComboBox::Primer::initWith(WeakReference<Component> editor,
     }
 }
 
+void MobileComboBox::Primer::initWith(WeakReference<Component> textEditor,
+    Function<MenuPanel::Menu(void)> menuInitializer,
+    Component *newCustomBackground /*= nullptr*/)
+{
+    this->menuInitializer = menuInitializer;
+    this->initWith(textEditor, MenuPanel::Menu(), newCustomBackground);
+}
+
 void MobileComboBox::Primer::updateMenu(MenuPanel::Menu menu)
 {
     this->combo->initMenu(menu);
@@ -216,6 +224,13 @@ void MobileComboBox::Primer::handleCommandMessage(int commandId)
         this->getParentComponent() != nullptr &&
         this->combo != nullptr)
     {
+        // Deferred menu initialization, if needed
+        if (this->menuInitializer != nullptr)
+        {
+            this->combo->initMenu(this->menuInitializer());
+            this->menuInitializer = nullptr;
+        }
+
         // Show combo
         this->combo->setAlpha(1.f);
         if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))

@@ -50,8 +50,15 @@ public:
     public:
         Primer();
         ~Primer() override;
+
         void handleCommandMessage(int commandId) override;
-        void initWith(WeakReference<Component> textEditor, MenuPanel::Menu menu,
+
+        void initWith(WeakReference<Component> textEditor,
+            MenuPanel::Menu menu,
+            Component *newCustomBackground = nullptr);
+
+        void initWith(WeakReference<Component> textEditor,
+            Function<MenuPanel::Menu(void)> menuInitializer,
             Component *newCustomBackground = nullptr);
 
         void updateMenu(MenuPanel::Menu menu);
@@ -61,6 +68,7 @@ public:
         UniquePointer<MobileComboBox> combo;
         UniquePointer<MobileComboBox::Trigger> comboTrigger;
         WeakReference<Component> textEditor;
+        Function<MenuPanel::Menu(void)> menuInitializer;
     };
     //[/UserMethods]
 

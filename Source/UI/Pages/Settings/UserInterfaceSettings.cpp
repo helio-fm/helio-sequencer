@@ -92,22 +92,33 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->setSize(600, 200);
 
     //[Constructor]
-    MenuPanel::Menu fontsMenu;
-    Font::findFonts(this->systemFonts);
-    const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
 
-    for (int i = 0; i < this->systemFonts.size(); ++i)
+    // fixme defer this menu initialization
+
+    const auto lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
+
+    const auto fontsMenuProvider = [this, lastUsedFontName]()
     {
-        const String &typeName = this->systemFonts.getReference(i).getTypeface()->getName();
-        const bool isSelected = typeName == lastUsedFontName;
-        fontsMenu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
-            CommandIDs::SelectFont + i, typeName));
-    }
+        MenuPanel::Menu fontsMenu;
+
+        this->systemFonts.clearQuick();
+        Font::findFonts(this->systemFonts);
+
+        for (int i = 0; i < this->systemFonts.size(); ++i)
+        {
+            const auto &typefaceName = this->systemFonts.getReference(i).getTypefaceName();
+            const bool isSelected = typefaceName == lastUsedFontName;
+            fontsMenu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
+                CommandIDs::SelectFont + i, typefaceName));
+        }
+
+        return fontsMenu;
+    };
 
     this->fontEditor->setInterceptsMouseClicks(false, true);
     this->fontEditor->setFont(18.f);
     this->fontEditor->setText(TRANS(I18n::Settings::uiFont) + ": " + lastUsedFontName);
-    this->fontComboPrimer->initWith(this->fontEditor.get(), fontsMenu);
+    this->fontComboPrimer->initWith(this->fontEditor.get(), fontsMenuProvider);
     //[/Constructor]
 }
 
@@ -218,7 +229,7 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
         commandId <= (CommandIDs::SelectFont + this->systemFonts.size()))
     {
         const int fontIndex = commandId - CommandIDs::SelectFont;
-        auto &theme = dynamic_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
+        auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
         theme.updateFont(this->systemFonts[fontIndex]);
         SafePointer<Component> window = this->getTopLevelComponent();
         App::recreateLayout();
