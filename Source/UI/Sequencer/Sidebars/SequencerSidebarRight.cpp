@@ -88,7 +88,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
 
     this->headShadow.reset(new ShadowDownwards(Light));
     this->addAndMakeVisible(headShadow.get());
-    this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)));
+    this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)));
     this->addAndMakeVisible(annotationsButton.get());
 
     this->transportControl.reset(new TransportControlComponent(nullptr));
@@ -188,7 +188,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     switch (commandId)
     {
-    case CommandIDs::ShowAnnotations:
+    case CommandIDs::ShowAnnotations: // all this seems obsolete (at least, I've never really used it)
     {
         const AnnotationEvent *selectedAnnotation = nullptr;
         const TimeSignatureEvent *selectedTimeSignature = nullptr;
@@ -228,7 +228,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
             }
         }
 
-        this->project.getTransport().stopPlayback();
+        this->project.getTransport().stopPlaybackAndRecording();
 
 #if TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS
         if (selectedAnnotation != nullptr)
@@ -283,7 +283,7 @@ void SequencerSidebarRight::recreateMenu()
 
     //this->menu.add(MenuItem::item(Icons::record, CommandIDs::ToggleRecording)->toggled(transportIsPaused));
 
-    if (this->menuMode == PianoRollTools)
+    if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
 
@@ -299,11 +299,11 @@ void SequencerSidebarRight::recreateMenu()
     }
 
 #if HELIO_MOBILE
-    if (this->menuMode == PianoRollTools)
+    if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents));
     }
-    else if (this->menuMode == PatternRollTools)
+    else if (this->menuMode == MenuMode::PatternRollTools)
     {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips));
     }
@@ -392,6 +392,11 @@ void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
 #endif
 }
 
+void SequencerSidebarRight::onLoopModeChanged(bool hasLoop, float startBeat, float endBeat)
+{
+    this->annotationsButton->setChecked(hasLoop);
+}
+
 void SequencerSidebarRight::onPlay()
 {
 #if TOOLS_SIDEBAR_SHOWS_TIME
@@ -474,9 +479,9 @@ void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu
 
 void SequencerSidebarRight::setLinearMode()
 {
-    if (this->menuMode != PianoRollTools)
+    if (this->menuMode != MenuMode::PianoRollTools)
     {
-        this->menuMode = PianoRollTools;
+        this->menuMode = MenuMode::PianoRollTools;
         this->recreateMenu();
         this->listBox->updateContent();
     }
@@ -484,9 +489,9 @@ void SequencerSidebarRight::setLinearMode()
 
 void SequencerSidebarRight::setPatternMode()
 {
-    if (this->menuMode != PatternRollTools)
+    if (this->menuMode != MenuMode::PatternRollTools)
     {
-        this->menuMode = PatternRollTools;
+        this->menuMode = MenuMode::PatternRollTools;
         this->recreateMenu();
         this->listBox->updateContent();
     }
@@ -531,7 +536,7 @@ BEGIN_JUCER_METADATA
              constructorParams="Light"/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::annotation, CommandIDs::ShowAnnotations)"/>
+                    params="this, nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="transportControl" virtualName=""
              explicitFocusOrder="0" pos="0 0Rr 0M 79" sourceFile="../../Common/TransportControlComponent.cpp"
              constructorParams="nullptr"/>

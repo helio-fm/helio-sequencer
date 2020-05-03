@@ -24,7 +24,7 @@
 #include "Pattern.h"
 #include "MidiSequence.h"
 
-DummyClipComponent::DummyClipComponent(HybridRoll &editor, Clip clip) :
+DummyClipComponent::DummyClipComponent(HybridRoll &editor, const Clip &clip) :
     ClipComponent(editor, clip) {}
 
 void DummyClipComponent::paint(Graphics &g)

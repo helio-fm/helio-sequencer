@@ -36,12 +36,14 @@ PlayerThread::~PlayerThread()
 // Thread
 //===----------------------------------------------------------------------===//
 
-void PlayerThread::startPlayback(float relStartBeat, float relEndBeat,
+void PlayerThread::startPlayback(float seekPosition,
+    float rewindBeat, float endBeat,
     double startTempo, double currentTime, double totalTime,
     bool loopMode, bool silentMode)
 {
-    this->startBeat = relStartBeat;
-    this->endBeat = relEndBeat;
+    this->startBeat = seekPosition;
+    this->rewindBeat = rewindBeat;
+    this->endBeat = endBeat;
 
     this->msPerQuarterNote = startTempo;
     this->currentTimeMs = currentTime;
@@ -61,12 +63,12 @@ void PlayerThread::run()
     uniqueInstruments.addArray(sequences.getUniqueInstruments());
     
     double nextEventTimeDelta = 0.0;
-    
-    sequences.seekToTime(this->startBeat.get());
-    auto prevTimeStamp = this->startBeat.get();
+    auto projectStartOffset = this->transport.getProjectFirstBeat();
+    sequences.seekToTime(this->startBeat.get() - projectStartOffset);
+    auto previousEventBeat = this->startBeat.get();
     if (!this->silentMode)
     {
-        this->transport.broadcastSeek(prevTimeStamp,
+        this->transport.broadcastSeek(previousEventBeat,
             this->currentTimeMs.get(), this->totalTimeMs.get());
     }
 
@@ -120,7 +122,7 @@ void PlayerThread::run()
             instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(tempoEvent);
         }
     };
-    
+
     // And here we go.
     sendMidiStart();
     
@@ -131,7 +133,7 @@ void PlayerThread::run()
         // Handle playback from the last event to the end of track:
         if (!sequences.getNextMessage(wrapper))
         {
-            nextEventTimeDelta = this->msPerQuarterNote.get() * (this->endBeat.get() - prevTimeStamp);
+            nextEventTimeDelta = this->msPerQuarterNote.get() * (this->endBeat.get() - previousEventBeat);
             const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
 
             // Give thread a chance to exit by checking at least once a, say, second
@@ -150,11 +152,11 @@ void PlayerThread::run()
 
             if (this->loopMode)
             {
-                sequences.seekToTime(this->startBeat.get());
-                prevTimeStamp = this->startBeat.get();
+                sequences.seekToTime(this->rewindBeat.get() - projectStartOffset);
+                previousEventBeat = this->rewindBeat.get();
                 if (!this->silentMode)
                 {
-                    this->transport.broadcastSeek(prevTimeStamp,
+                    this->transport.broadcastSeek(previousEventBeat,
                         this->currentTimeMs.get(), this->totalTimeMs.get());
                 }
                 continue;
@@ -185,16 +187,23 @@ void PlayerThread::run()
             }
         }
 
+        jassert(projectStartOffset == this->transport.getProjectFirstBeat());
+
+        const auto messageBeat =
+            wrapper.message.getTimeStamp() + projectStartOffset;
+
         const bool shouldRewind =
             (this->loopMode &&
-            (wrapper.message.getTimeStamp() > this->endBeat.get()));
+            (messageBeat > this->endBeat.get()));
 
-        const float nextEventTimeStamp =
-            float(shouldRewind ? this->endBeat.get() : wrapper.message.getTimeStamp());
+        const float nextEventBeat =
+            float(shouldRewind ? this->endBeat.get() : messageBeat);
 
-        nextEventTimeDelta = this->msPerQuarterNote.get() * (nextEventTimeStamp - prevTimeStamp);
+        nextEventTimeDelta = this->msPerQuarterNote.get() * (nextEventBeat - previousEventBeat);
         this->currentTimeMs = this->currentTimeMs.get() + nextEventTimeDelta;
-        prevTimeStamp = nextEventTimeStamp;
+        
+        jassert(previousEventBeat <= nextEventBeat);
+        previousEventBeat = nextEventBeat;
 
         // Zero-delay check (we're playing a chord or so)
         if (uint32(nextEventTimeDelta) != 0)
@@ -221,18 +230,18 @@ void PlayerThread::run()
             
             if (!this->silentMode)
             {
-                this->transport.broadcastSeek(prevTimeStamp,
+                this->transport.broadcastSeek(previousEventBeat,
                     this->currentTimeMs.get(), this->totalTimeMs.get());
             }
         }
         
         if (shouldRewind)
         {
-            sequences.seekToTime(this->startBeat.get());
-            prevTimeStamp = this->startBeat.get();
+            sequences.seekToTime(this->rewindBeat.get() - projectStartOffset);
+            previousEventBeat = this->rewindBeat.get();
             if (!this->silentMode)
             {
-                this->transport.broadcastSeek(prevTimeStamp,
+                this->transport.broadcastSeek(previousEventBeat,
                     this->currentTimeMs.get(), this->totalTimeMs.get());
             }
         }

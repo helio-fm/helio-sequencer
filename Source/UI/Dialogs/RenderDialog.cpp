@@ -96,7 +96,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->filenameLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
 
     // just in case..
-    this->project.getTransport().stopPlayback();
+    this->project.getTransport().stopPlaybackAndRecording();
 
     this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
     this->indicator->setVisible(false);

@@ -193,7 +193,7 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
     auto &transport = this->roll.getTransport();
     if (forceRecreate || arp != this->lastChosenArp)
     {
-        transport.stopPlayback();
+        transport.stopPlaybackAndRecording();
         const bool needsCheckpoint = !this->hasMadeChanges;
         this->undoIfNeeded();
 
@@ -209,7 +209,7 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
 
     if (transport.isPlaying())
     {
-        transport.stopPlayback();
+        transport.stopPlaybackAndRecording();
     }
     else
     {

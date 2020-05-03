@@ -320,11 +320,8 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
 
     const auto newSeekBeat = ksc->getBeat();
     const bool wasPlaying = this->project.getTransport().isPlaying();
-    if (wasPlaying)
-    {
-        this->project.getTransport().stopPlayback();
-    }
 
+    this->project.getTransport().stopPlaybackAndRecording();
     this->project.getTransport().seekToBeat(newSeekBeat);
 
     if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)

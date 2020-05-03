@@ -73,12 +73,12 @@ class HybridRoll :
     public MultiTouchListener,
     public ProjectListener,
     public LassoSource<SelectableComponent *>,
+    public Playhead::Listener, // for smooth scrolling to seek position
     protected UserInterfaceFlags::Listener, // global UI options
     protected ChangeListener, // listens to HybridRollEditMode,
     protected TransportListener, // for positioning the playhead component and auto-scrolling
     protected AsyncUpdater, // coalesce multiple transport events ^^ into a single async view change
     protected HighResolutionTimer, // for smooth scrolling to seek position
-    protected Playhead::Listener, // for smooth scrolling to seek position
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components
 {
 public:
@@ -277,9 +277,11 @@ protected:
     // TransportListener
     //===------------------------------------------------------------------===//
     
-    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
+    void onSeek(float beat, double currentTimeMs, double totalTimeMs) override;
     void onTempoChanged(double msPerQuarter) override {}
     void onTotalTimeChanged(double timeMs) override {}
+    void onLoopModeChanged(bool hasLoop, float start, float end) override;
+
     void onPlay() override;
     void onRecord() override;
     void onStop() override;
@@ -375,9 +377,9 @@ protected:
     UniquePointer<Component> headerShadow;
     UniquePointer<Playhead> playhead;
     
-    UniquePointer<AnnotationsProjectMap> annotationsTrack;
-    UniquePointer<TimeSignaturesProjectMap> timeSignaturesTrack;
-    UniquePointer<KeySignaturesProjectMap> keySignaturesTrack;
+    UniquePointer<AnnotationsProjectMap> annotationsMap;
+    UniquePointer<TimeSignaturesProjectMap> timeSignaturesMap;
+    UniquePointer<KeySignaturesProjectMap> keySignaturesMap;
 
     UniquePointer<SelectionComponent> lassoComponent;
 

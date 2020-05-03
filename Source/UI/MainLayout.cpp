@@ -349,7 +349,7 @@ static void emitCommandPalette()
 {
     if (auto *project = findParentProjectOfSelectedNode())
     {
-        project->getTransport().stopPlayback();
+        project->getTransport().stopPlaybackAndRecording();
 
         HybridRoll *activeRoll = nullptr;
         auto *activeNode = App::Workspace().getTreeRoot()->findActiveNode();

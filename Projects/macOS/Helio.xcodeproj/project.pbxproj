@@ -3106,6 +3106,13 @@
 			path = ../../Source/UI/Pages/Settings/AudioSettings.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		80E39F4A8371DD78C034AD2B = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.svg;
+			name = reprise.svg;
+			path = ../../Resources/Icons/reprise.svg;
+			sourceTree = "SOURCE_ROOT";
+		};
 		80E4D81178BE3D1809845A9F = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5959,6 +5966,7 @@
 				2BFA98FEA3648E16A044DFB6,
 				3170E8B098D41A3BA6B9D381,
 				CE6277E05E45DC7AA6397170,
+				80E39F4A8371DD78C034AD2B,
 				9FC2E070E8CCBBA6EA2ADD48,
 				F192718DCDD97FAFA543C27B,
 				863B2AB2A472DFD4099F36F2,

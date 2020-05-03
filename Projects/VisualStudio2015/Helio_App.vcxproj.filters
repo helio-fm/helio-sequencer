@@ -7031,6 +7031,9 @@
     <None Include="..\..\Resources\Icons\render.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\reprise.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\reset.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>

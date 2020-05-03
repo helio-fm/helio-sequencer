@@ -59,6 +59,7 @@ public:
     void probeSequence(const MidiMessageSequence &sequence);
 
     void startPlayback();
+    void startPlayback(float startBeatOverride);
     void startPlaybackFragment(float startBeat, float endBeat, bool looped);
 
     bool isPlaying() const;
@@ -69,16 +70,33 @@ public:
     bool isRecording() const;
     void stopRecording();
 
+    void stopPlaybackAndRecording();
+
     void startRender(const String &filename);
     bool isRendering() const;
     void stopRender();
     
+    void toggleLoopPlayback(float startBeat, float endBeat);
+    void disableLoopPlayback();
+
     float getRenderingPercentsComplete() const;
     
     void findTimeAndTempoAt(float beatPosition,
         double &outTimeMs, double &outTempo) const;
 
     MidiMessage findFirstTempoEvent();
+
+    TransportPlaybackCache getPlaybackCache();
+
+    float getProjectFirstBeat() const noexcept
+    {
+        return this->projectFirstBeat.get();
+    }
+
+    float getProjectLastBeat() const noexcept
+    {
+        return this->projectLastBeat.get();
+    }
 
     //===------------------------------------------------------------------===//
     // Sending messages in real-time
@@ -135,7 +153,7 @@ public:
     void deserialize(const SerializedData &data) override;
     void reset() override;
 
-protected:
+private:
 
     void setTotalTime(float val);
     void setSeekBeat(float beatPosition);
@@ -146,7 +164,12 @@ protected:
     void broadcastRecordFailed(const Array<MidiDeviceInfo> &devices);
     void broadcastTempoChanged(double newTempo);
     void broadcastTotalTimeChanged(double timeMs);
+    void broadcastLoopModeChanged(bool hasLoop, float startBeat, float endBeat);
     void broadcastSeek(float newBeat, double currentTimeMs, double totalTimeMs);
+
+    friend class PlayerThread;
+    friend class PlayerThreadPool;
+    friend class RendererThread;
 
 private:
     
@@ -156,28 +179,12 @@ private:
     UniquePointer<PlayerThreadPool> player;
     UniquePointer<RendererThread> renderer;
 
-    friend class PlayerThread;
-    friend class PlayerThreadPool;
-    friend class RendererThread;
-
-    float getProjectFirstBeat() const noexcept
-    {
-        return this->projectFirstBeat.get();
-    }
-
-    float getProjectLastBeat() const noexcept
-    {
-        return this->projectLastBeat.get();
-    }
-
 private:
 
-    TransportPlaybackCache getPlaybackCache();
-    void recacheIfNeeded() const;
-    
     mutable TransportPlaybackCache playbackCache;
-    mutable Atomic<bool> sequencesAreOutdated = true;
-    
+    mutable Atomic<bool> playbackCacheIsOutdated = true;
+    void recacheIfNeeded() const;
+
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
     mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> linksCache;
@@ -221,6 +228,10 @@ private:
 
     // just a flag, all logic resides in MidiRecorder class:
     Atomic<bool> midiRecordingMode = false;
+
+    Atomic<bool> loopMode = false;
+    Atomic<float> loopStartBeat = 0.f;
+    Atomic<float> loopEndBeat = PROJECT_DEFAULT_NUM_BEATS;
 
     ListenerList<TransportListener> transportListeners;
 

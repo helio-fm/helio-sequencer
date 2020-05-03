@@ -23,7 +23,7 @@ class DummyClipComponent final : public ClipComponent
 {
 public:
 
-    DummyClipComponent(HybridRoll &editor, Clip clip);
+    DummyClipComponent(HybridRoll &editor, const Clip &clip);
 
     void paint(Graphics &g) override;
 

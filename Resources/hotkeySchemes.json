@@ -122,12 +122,13 @@
         { "command": "PasteEvents", "key": "Shift + Insert" },
 
         // Playback/record control
+        { "command": "TransportStop", "key": "Escape" },
         { "command": "TransportPlaybackStart", "key": "Return" },
         { "command": "TransportRecordingStart", "key": "Shift + Return" },
         { "command": "TransportRecordingAwait", "key": "Control + Return" },
         { "command": "TransportRecordingAwait", "key": "Command + Return" },
         { "command": "TransportRecordingAwait", "key": "F12" },
-        { "command": "TransportStop", "key": "Escape" },
+        { "command": "ToggleLoopOverSelection", "key": "F11" },
 
         // Navigation
         { "command": "ZoomIn", "key": "Z" },
@@ -238,12 +239,13 @@
         { "command": "DuplicateTrack", "key": "F5" },
 
         // Playback control
+        { "command": "TransportStop", "key": "Escape" },
         { "command": "TransportPlaybackStart", "key": "Return" },
         { "command": "TransportRecordingStart", "key": "Shift + Return" },
         { "command": "TransportRecordingAwait", "key": "Control + Return" },
         { "command": "TransportRecordingAwait", "key": "Command + Return" },
         { "command": "TransportRecordingAwait", "key": "F12" },
-        { "command": "TransportStop", "key": "Escape" },
+        { "command": "ToggleLoopOverSelection", "key": "F11" },
 
         // Navigation
         { "command": "ZoomIn", "key": "Z" },

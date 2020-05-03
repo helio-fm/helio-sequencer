@@ -135,7 +135,7 @@ void Transport::seekToBeat(float beatPosition)
     this->findTimeAndTempoAt(this->projectLastBeat.get(), realLengthMs, tempo);
     
     this->setSeekBeat(beatPosition);
-    this->broadcastSeek(beatPosition - this->projectFirstBeat.get(), timeMs, realLengthMs);
+    this->broadcastSeek(beatPosition, timeMs, realLengthMs);
 }
 
 void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitToLayer)
@@ -174,7 +174,7 @@ void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitTo
 void Transport::probeSequence(const MidiMessageSequence &sequence)
 {
     this->playbackCache.clear();
-    this->sequencesAreOutdated = false; // temporary
+    this->playbackCacheIsOutdated = false; // temporary
 
     // using the last instrument (TODO something more clever in the future)
     auto *instrument = this->orchestra.getInstruments().getLast();
@@ -184,14 +184,13 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
 
     this->playbackCache.addWrapper(cached);
 
-    if (this->player->isPlaying())
-    {
-        this->player->stopPlayback();
-        this->allNotesControllersAndSoundOff();
-    }
+    this->stopPlaybackAndRecording();
 
-    this->player->startPlayback(true);
-    this->sequencesAreOutdated = true; // will update on the next playback
+    this->player->startPlayback(this->getSeekBeat(),
+        this->getSeekBeat(), this->getProjectLastBeat(),
+        false, true);
+
+    this->playbackCacheIsOutdated = true; // will update on the next playback
 }
 
 //===----------------------------------------------------------------------===//
@@ -200,16 +199,31 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
 
 void Transport::startPlayback()
 {
+    this->startPlayback(this->getSeekBeat());
+}
+
+void Transport::startPlayback(float start)
+{
     this->sleepTimer.setAwake();
     this->recacheIfNeeded();
 
-    if (this->player->isPlaying())
+    this->stopPlayback();
+
+    if (this->loopMode.get())
     {
-        this->player->stopPlayback();
-        this->allNotesControllersAndSoundOff();
+        const auto loopStart = this->loopStartBeat.get();
+        const auto end = this->loopEndBeat.get();
+
+        this->player->startPlayback((start >= end) ? loopStart : start,
+            loopStart, end, true, false);
+    }
+    else
+    {
+        this->player->startPlayback(start,
+            this->getSeekBeat(), this->getProjectLastBeat(),
+            false, false);
     }
 
-    this->player->startPlayback(false);
     this->broadcastPlay();
 }
 
@@ -218,13 +232,9 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
     this->sleepTimer.setAwake();
     this->recacheIfNeeded();
     
-    if (this->player->isPlaying())
-    {
-        this->player->stopPlayback();
-        this->allNotesControllersAndSoundOff();
-    }
+    this->stopPlayback();
 
-    this->player->startPlayback(startBeat, endBeat, looped, false);
+    this->player->startPlayback(startBeat, startBeat, endBeat, looped, false);
     this->broadcastPlay();
 }
 
@@ -232,17 +242,17 @@ void Transport::stopPlayback()
 {
     if (this->player->isPlaying())
     {
+        this->broadcastStop();
+        this->player->stopPlayback(); // after broadcastStop so that MM can be locked
         this->allNotesControllersAndSoundOff();
         this->seekToBeat(this->getSeekBeat());
-        this->broadcastStop();
         this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
-        this->player->stopPlayback(); // after broadcastStop so that MM can be locked
     }
 }
 
 void Transport::toggleStartStopPlayback()
 {
-    this->isPlaying() ? this->stopPlayback() : this->startPlayback();
+    this->isPlaying() ? this->stopPlaybackAndRecording() : this->startPlayback();
 }
 
 bool Transport::isPlaying() const
@@ -256,7 +266,7 @@ bool Transport::isPlaying() const
 
 void Transport::startRecording()
 {
-    if (!this->player->isPlaying())
+    if (!this->isPlaying())
     {
         this->sleepTimer.setAwake();
         this->recacheIfNeeded();
@@ -294,6 +304,48 @@ void Transport::stopRecording()
         {
             this->broadcastStop();
         }
+    }
+}
+
+void Transport::stopPlaybackAndRecording()
+{
+    this->stopRecording();
+    this->stopPlayback();
+}
+
+//===----------------------------------------------------------------------===//
+// Playback loop, mostly used together with MIDI recording
+//===----------------------------------------------------------------------===//
+
+void Transport::toggleLoopPlayback(float startBeat, float endBeat)
+{
+    if (this->isPlaying())
+    {
+        this->stopPlaybackAndRecording();
+    }
+
+    if (this->loopMode.get() &&
+        this->loopStartBeat.get() == startBeat &&
+        this->loopEndBeat.get() == endBeat)
+    {
+        this->disableLoopPlayback();
+        return;
+    }
+
+    this->loopMode = true;
+    this->loopStartBeat = startBeat;
+    this->loopEndBeat = endBeat;
+
+    this->broadcastLoopModeChanged(this->loopMode.get(),
+        this->loopStartBeat.get(), this->loopEndBeat.get());
+}
+
+void Transport::disableLoopPlayback()
+{
+    if (this->loopMode.get())
+    {
+        this->loopMode = false;
+        this->broadcastLoopModeChanged(false, 0.f, 0.f);
     }
 }
 
@@ -465,10 +517,10 @@ void Transport::allNotesControllersAndSoundOff() const
 
 void Transport::instrumentAdded(Instrument *instrument)
 {
-    this->stopPlayback();
-    
-    // invalidate sequences as they use pointers to the players too
-    this->sequencesAreOutdated = true;
+    this->stopPlaybackAndRecording();
+
+    // invalidate cache as is uses pointers to the players too
+    this->playbackCacheIsOutdated = true;
 
     for (int i = 0; i < this->tracksCache.size(); ++i)
     {
@@ -480,12 +532,12 @@ void Transport::instrumentRemoved(Instrument *instrument)
 {
     // the instrument stack have still not changed here,
     // so just stop the playback before it's too late
-    this->stopPlayback();
+    this->stopPlaybackAndRecording();
 }
 
 void Transport::instrumentRemovedPostAction()
 {
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 
     for (int i = 0; i < this->tracksCache.size(); ++i)
     {
@@ -514,7 +566,7 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     }
 
     updateLengthAndTimeIfNeeded((&newEvent));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
@@ -525,15 +577,15 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
     }
 
     updateLengthAndTimeIfNeeded((&event));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onRemoveMidiEvent(const MidiEvent &event) {}
 void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
-    this->stopPlayback();
+    this->stopPlaybackAndRecording();
     updateLengthAndTimeIfNeeded(sequence->getTrack());
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onAddClip(const Clip &clip)
@@ -544,22 +596,22 @@ void Transport::onAddClip(const Clip &clip)
     }
 
     updateLengthAndTimeIfNeeded((&clip));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
-    this->stopPlayback();
+    this->stopPlaybackAndRecording();
     updateLengthAndTimeIfNeeded((&newClip));
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onRemoveClip(const Clip &clip) {}
 void Transport::onPostRemoveClip(Pattern *const pattern)
 {
-    this->stopPlayback();
+    this->stopPlaybackAndRecording();
     updateLengthAndTimeIfNeeded(pattern->getTrack());
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onChangeTrackProperties(MidiTrack *const track)
@@ -574,14 +626,14 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
             this->stopPlayback();
         }
 
-        this->sequencesAreOutdated = true;
+        this->playbackCacheIsOutdated = true;
         this->updateLinkForTrack(track);
     }
 }
 
 void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->sequencesAreOutdated = true;
+    this->playbackCacheIsOutdated = true;
 
     this->tracksCache.clearQuick();
     this->linksCache.clear();
@@ -592,7 +644,7 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
         this->updateLinkForTrack(track);
     }
 
-    this->stopPlayback();
+    this->stopPlaybackAndRecording();
 }
 
 void Transport::onAddTrack(MidiTrack *const track)
@@ -601,17 +653,17 @@ void Transport::onAddTrack(MidiTrack *const track)
     {
         this->stopPlayback();
     }
-    
-    this->sequencesAreOutdated = true;
+
+    this->playbackCacheIsOutdated = true;
     this->tracksCache.addIfNotAlreadyThere(track);
     this->updateLinkForTrack(track);
 }
 
 void Transport::onRemoveTrack(MidiTrack *const track)
 {
-    this->stopPlayback();
-    
-    this->sequencesAreOutdated = true;
+    this->stopPlaybackAndRecording();
+
+    this->playbackCacheIsOutdated = true;
     this->tracksCache.removeAllInstancesOf(track);
     this->removeLinkForTrack(track);
 }
@@ -623,9 +675,11 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
         this->stopPlayback();
     }
 
-    const auto newBeatRange = (lastBeat - firstBeat); // may also be 0
-    const auto newSeekPosition = ((newBeatRange == 0.f) ? 0.f : ((this->seekBeat.get() - firstBeat) / newBeatRange));
-    
+    // if the first beat changes while recording,
+    // the player thread has a cache with timings which make no sense:
+    jassert(!(this->isRecording() && this->isPlaying() &&
+        this->projectFirstBeat.get() != firstBeat));
+
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
 
@@ -636,12 +690,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     double realLengthMs = 0.0;
     this->findTimeAndTempoAt(lastBeat, realLengthMs, tempo);
     this->broadcastTotalTimeChanged(realLengthMs);
-    
-    // seek has also changed
-    if (!this->isRecording())
-    {
-        this->seekToBeat(newSeekPosition);
-    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -714,7 +762,7 @@ MidiMessage Transport::findFirstTempoEvent()
 
 void Transport::recacheIfNeeded() const
 {
-    if (this->sequencesAreOutdated.get())
+    if (this->playbackCacheIsOutdated.get())
     {
         //DBG("Transport::recache");
         this->playbackCache.clear();
@@ -753,7 +801,7 @@ void Transport::recacheIfNeeded() const
             this->playbackCache.addWrapper(cached);
         }
         
-        this->sequencesAreOutdated = false;
+        this->playbackCacheIsOutdated = false;
     }
 }
 
@@ -816,12 +864,11 @@ void Transport::removeTransportListener(TransportListener *listener)
     this->transportListeners.remove(listener);
 }
 
-void Transport::broadcastSeek(float relativeBeat,
-    double currentTimeMs, double totalTimeMs)
+void Transport::broadcastSeek(float beat, double currentTimeMs, double totalTimeMs)
 {
     // relativeBeat is relative to the project's first beat
     this->transportListeners.call(&TransportListener::onSeek,
-        relativeBeat + this->projectFirstBeat.get(), currentTimeMs, totalTimeMs);
+        beat, currentTimeMs, totalTimeMs);
 }
 
 void Transport::broadcastTempoChanged(double newTempo)
@@ -832,6 +879,11 @@ void Transport::broadcastTempoChanged(double newTempo)
 void Transport::broadcastTotalTimeChanged(double timeMs)
 {
     this->transportListeners.call(&TransportListener::onTotalTimeChanged, timeMs);
+}
+
+void Transport::broadcastLoopModeChanged(bool hasLoop, float startBeat, float endBeat)
+{
+    this->transportListeners.call(&TransportListener::onLoopModeChanged, hasLoop, startBeat, endBeat);
 }
 
 void Transport::broadcastPlay()
@@ -869,6 +921,8 @@ void Transport::broadcastRecordFailed(const Array<MidiDeviceInfo> &devices)
 
 void Transport::broadcastStop()
 {
+    jassert(!this->isRecording());
+
     MessageManagerLock mml(Thread::getCurrentThread());
     jassert(mml.lockWasGained());
 

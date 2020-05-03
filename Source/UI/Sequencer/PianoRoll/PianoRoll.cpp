@@ -620,6 +620,10 @@ void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
     if (this->activeClip == clip)
     {
+        // the parameters of the clip have changed;
+        // keeping track of the active clip changes this way is very ugly,
+        // but refactoring to keep a weak reference instead is too bloody;
+        // please fixme someday (maybe just keep a raw pointer?)
         this->activeClip = newClip;
     }
 
@@ -1073,6 +1077,23 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleNoteNameGuides:
         App::Config().getUiFlags()->setNoteNameGuidesEnabled(!this->noteNameGuides->isVisible());
         break;
+    case CommandIDs::ToggleLoopOverSelection:
+        if (this->selection.getNumSelected() > 0)
+        {
+            const auto clipOffset = this->activeClip.getBeat();
+            const auto startBeat = SequencerOperations::findStartBeat(this->selection);
+            const auto endBeat = SequencerOperations::findEndBeat(this->selection);
+            this->getTransport().toggleLoopPlayback(clipOffset + startBeat, clipOffset + endBeat);
+        }
+        else
+        {
+            jassert(this->activeTrack != nullptr);
+            const auto clipOffset = this->activeClip.getBeat();
+            const auto startBeat = this->activeTrack->getSequence()->getFirstBeat();
+            const auto endBeat = this->activeTrack->getSequence()->getLastBeat();
+            this->getTransport().toggleLoopPlayback(clipOffset + startBeat, clipOffset + endBeat);
+        }
+        break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         if (this->selection.getNumSelected() >= 2)
         {
@@ -1122,7 +1143,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->showChordTool(ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
-        this->project.switchMiniMaps();
+        App::Config().getUiFlags()->toggleVelocityMapVisibility();
         // TODO if shift is pressed:
         //if (this->selection.getNumSelected() == 0) { this->selectAll(); }
         //HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);

@@ -29,17 +29,19 @@
 
 ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<HybridRoll> roll) :
     transport(transportRef),
-    roll(roll)
+    roll(roll),
+    borderLineDark(findDefaultColour(ColourIDs::TrackScroller::borderLineDark)),
+    borderLineLight(findDefaultColour(ColourIDs::TrackScroller::borderLineLight))
 {
-    this->setPaintingIsUnclipped(true);
     this->setOpaque(true);
+    this->setPaintingIsUnclipped(true);
 
-    this->playhead.reset(new Playhead(*this->roll, this->transport));
+    this->playhead = makeUnique<Playhead>(*this->roll, this->transport);
 
-    this->helperRectangle.reset(new HorizontalDragHelper(*this));
+    this->helperRectangle = makeUnique<HorizontalDragHelper>(*this);
     this->addAndMakeVisible(this->helperRectangle.get());
 
-    this->screenRange.reset(new ProjectMapScrollerScreen(*this));
+    this->screenRange = makeUnique<ProjectMapScrollerScreen>(*this);
     this->addAndMakeVisible(this->screenRange.get());
 }
 
@@ -106,89 +108,86 @@ void ProjectMapScroller::horizontalDragByUser(Component *component, const Rectan
 
 void ProjectMapScroller::xyMoveByUser()
 {
-    if (this->roll != nullptr)
+    jassert(this->roll != nullptr);
+     
+    const auto screenRangeBounds = this->screenRange->getRealBounds();
+
+    const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
+    const float propX = screenRangeBounds.getTopLeft().getX() / mw;
+    const float mh = float(this->getHeight()) - screenRangeBounds.getHeight();
+    const float propY = screenRangeBounds.getTopLeft().getY() / mh;
+
+    // fixes for header height delta
+    const float hh = float(HYBRID_ROLL_HEADER_HEIGHT);
+    const float rollHeight = float(this->roll->getHeight());
+    const float propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
+    this->roll->panProportionally(propX, propY2);
+
+    const auto p = this->getIndicatorBounds();
+    const auto hp = p.toType<int>();
+    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
+    this->screenRange->setRealBounds(p);
+
+    for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        const auto screenRangeBounds = this->screenRange->getRealBounds();
-
-        const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
-        const float propX = screenRangeBounds.getTopLeft().getX() / mw;
-        const float mh = float(this->getHeight()) - screenRangeBounds.getHeight();
-        const float propY = screenRangeBounds.getTopLeft().getY() / mh;
-
-        // fixes for header height delta
-        const float hh = float(HYBRID_ROLL_HEADER_HEIGHT);
-        const float rollHeight = float(this->roll->getHeight());
-        const float propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
-        this->roll->panProportionally(propX, propY2);
-
-        const auto p = this->getIndicatorBounds();
-        const auto hp = p.toType<int>();
-        this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
-        this->screenRange->setRealBounds(p);
-
-        for (int i = 0; i < this->trackMaps.size(); ++i)
-        {
-            this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
-        }
+        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
     }
 }
 
 void ProjectMapScroller::xMoveByUser()
 {
-    if (this->roll != nullptr)
+    jassert(this->roll != nullptr);
+
+    const auto screenRangeBounds = this->screenRange->getRealBounds();
+
+    const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
+    const float propX = screenRangeBounds.getTopLeft().getX() / mw;
+    const float propY = float(this->roll->getViewport().getViewPositionY()) /
+        float(this->roll->getHeight() - this->roll->getViewport().getViewHeight());
+
+    this->roll->panProportionally(propX, propY);
+
+    const auto p = this->getIndicatorBounds();
+    const auto hp = p.toType<int>();
+    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
+    this->screenRange->setRealBounds(p);
+
+    for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        const auto screenRangeBounds = this->screenRange->getRealBounds();
-
-        const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
-        const float propX = screenRangeBounds.getTopLeft().getX() / mw;
-        const float propY = float(this->roll->getViewport().getViewPositionY()) /
-            float(this->roll->getHeight() - this->roll->getViewport().getViewHeight());
-
-        this->roll->panProportionally(propX, propY);
-
-        const auto p = this->getIndicatorBounds();
-        const auto hp = p.toType<int>();
-        this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
-        this->screenRange->setRealBounds(p);
-
-        for (int i = 0; i < this->trackMaps.size(); ++i)
-        {
-            this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
-        }
+        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
     }
 }
 
 void ProjectMapScroller::resizeByUser()
 {
-    if (this->roll != nullptr)
+    jassert(this->roll != nullptr);
+
+    const float w = float(this->screenRange->getWidth());
+    const float h = float(this->screenRange->getHeight());
+
+    const float mw = float(this->getWidth());
+    const float propX = (w / mw);
+
+    const float mh = float(this->getHeight());
+    const float propY = (h / mh);
+
+    const Point<float> proportional(propX, propY);
+    this->roll->zoomAbsolute(proportional);
+
+    const auto p = this->getIndicatorBounds();
+    const auto hp = p.toType<int>();
+    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
+    this->screenRange->setRealBounds(p);
+
+    for (int i = 0; i < this->trackMaps.size(); ++i)
     {
-        const float w = float(this->screenRange->getWidth());
-        const float h = float(this->screenRange->getHeight());
-
-        const float mw = float(this->getWidth());
-        const float propX = (w / mw);
-
-        const float mh = float(this->getHeight());
-        const float propY = (h / mh);
-
-        const Point<float> proportional(propX, propY);
-        this->roll->zoomAbsolute(proportional);
-
-        const auto p = this->getIndicatorBounds();
-        const auto hp = p.toType<int>();
-        this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
-        this->screenRange->setRealBounds(p);
-
-        for (int i = 0; i < this->trackMaps.size(); ++i)
-        {
-            this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
-        }
+        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
     }
 }
 
 void ProjectMapScroller::toggleStretchingMapAlaSublime()
 {
-    this->mapShouldGetStretched = !this->mapShouldGetStretched;
+    this->mapShouldBeStretched = !this->mapShouldBeStretched;
     this->resized();
 }
 
@@ -215,16 +214,16 @@ void ProjectMapScroller::paint(Graphics &g)
     g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
 
-    g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineDark));
+    g.setColour(this->borderLineDark);
     g.fillRect(0, 0, this->getWidth(), 1);
 
-    g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineLight));
+    g.setColour(this->borderLineLight);
     g.fillRect(0, 1, this->getWidth(), 1);
 }
 
 void ProjectMapScroller::mouseDrag(const MouseEvent &event)
 {
-    if (! this->mapShouldGetStretched)
+    if (! this->mapShouldBeStretched)
     {
         this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
         this->xyMoveByUser();
@@ -241,10 +240,8 @@ void ProjectMapScroller::mouseUp(const MouseEvent &event)
 
 void ProjectMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
-    if (this->roll != nullptr)
-    {
-        this->roll->mouseWheelMove(event.getEventRelativeTo(this->roll), wheel);
-    }
+    jassert(this->roll != nullptr);
+    this->roll->mouseWheelMove(event.getEventRelativeTo(this->roll), wheel);
 }
 
 
@@ -366,64 +363,58 @@ void ProjectMapScroller::handleAsyncUpdate()
 
 Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
 {
-    if (this->roll != nullptr)
+    jassert(this->roll != nullptr);
+
+    const float viewX = float(this->roll->getViewport().getViewPositionX());
+    const float viewWidth = float(this->roll->getViewport().getViewWidth());
+    const float rollWidth = float(this->roll->getWidth());
+    const float rollInvisibleArea = rollWidth - viewWidth;
+    const float trackWidth = float(this->getWidth());
+    const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
+    const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
+
+    const float zoomFactorY = this->roll->getZoomFactorY();
+    const float rollHeaderHeight = float(HYBRID_ROLL_HEADER_HEIGHT);
+    const float rollHeight = float(this->roll->getHeight() - rollHeaderHeight);
+    const float viewY = float(this->roll->getViewport().getViewPositionY() + rollHeaderHeight);
+    const float trackHeight = float(this->getHeight());
+    const float trackHeaderHeight = float(rollHeaderHeight * trackHeight / rollHeight);
+
+    const float rY = roundf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight;
+    const float rH = (trackHeight * zoomFactorY);
+
+    if (mapWidth <= trackWidth || !this->mapShouldBeStretched)
     {
-        const float viewX = float(this->roll->getViewport().getViewPositionX());
-        const float viewWidth = float(this->roll->getViewport().getViewWidth());
-        const float rollWidth = float(this->roll->getWidth());
-        const float rollInvisibleArea = rollWidth - viewWidth;
-        const float trackWidth = float(this->getWidth());
-        const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
-        const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
-
-        const float zoomFactorY = this->roll->getZoomFactorY();
-        const float rollHeaderHeight = float(HYBRID_ROLL_HEADER_HEIGHT);
-        const float rollHeight = float(this->roll->getHeight() - rollHeaderHeight);
-        const float viewY = float(this->roll->getViewport().getViewPositionY() + rollHeaderHeight);
-        const float trackHeight = float(this->getHeight());
-        const float trackHeaderHeight = float(rollHeaderHeight * trackHeight / rollHeight);
-
-        const float rY = roundf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight;
-        const float rH = (trackHeight * zoomFactorY);
-
-        if (mapWidth <= trackWidth || !this->mapShouldGetStretched)
-        {
-            const float rX = ((trackWidth * viewX) / rollWidth);
-            const float rW = (trackWidth * this->roll->getZoomFactorX());
-            return { rX, rY, rW, rH };
-        }
-
-        const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
-        const float rW = INDICATOR_FIXED_WIDTH;
+        const float rX = ((trackWidth * viewX) / rollWidth);
+        const float rW = (trackWidth * this->roll->getZoomFactorX());
         return { rX, rY, rW, rH };
     }
 
-    return { 0.f, 0.f, 0.f, 0.f };
+    const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
+    const float rW = INDICATOR_FIXED_WIDTH;
+    return { rX, rY, rW, rH };
 }
 
 Rectangle<int> ProjectMapScroller::getMapBounds() const noexcept
 {
-    if (this->roll != nullptr)
+    jassert(this->roll != nullptr);
+
+    const float viewX = float(this->roll->getViewport().getViewPositionX());
+    const float viewWidth = float(this->roll->getViewport().getViewWidth());
+    const float rollWidth = float(this->roll->getWidth());
+    const float rollInvisibleArea = rollWidth - viewWidth;
+    const float trackWidth = float(this->getWidth());
+    const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
+    const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
+
+    if (mapWidth <= trackWidth || !this->mapShouldBeStretched)
     {
-        const float viewX = float(this->roll->getViewport().getViewPositionX());
-        const float viewWidth = float(this->roll->getViewport().getViewWidth());
-        const float rollWidth = float(this->roll->getWidth());
-        const float rollInvisibleArea = rollWidth - viewWidth;
-        const float trackWidth = float(this->getWidth());
-        const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
-        const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
-
-        if (mapWidth <= trackWidth || !this->mapShouldGetStretched)
-        {
-            return { 0, 0, int(trackWidth), this->getHeight() };
-        }
-
-        const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
-        const float dX = (viewX * mapWidth) / rollWidth;
-        return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
+        return { 0, 0, int(trackWidth), this->getHeight() };
     }
 
-    return { 0, 0, 0, 0 };
+    const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
+    const float dX = (viewX * mapWidth) / rollWidth;
+    return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
 }
 
 //===----------------------------------------------------------------------===//

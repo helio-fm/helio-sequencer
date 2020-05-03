@@ -115,7 +115,7 @@ ProjectNode::~ProjectNode()
 {
     this->getDocument()->save();
 
-    this->transport->stopPlayback();
+    this->transport->stopPlaybackAndRecording();
     this->transport->stopRender();
 
     // remember as a recent file
@@ -249,10 +249,10 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
     App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
-void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip &clip)
+void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip *clip)
 {
     String instrumentId;
-    if (track != nullptr)
+    if (track != nullptr && clip != nullptr)
     {
         instrumentId = track->getTrackInstrumentId();
         App::Workspace().getAudioCore().setActiveMidiPlayer(instrumentId, true);
@@ -276,7 +276,7 @@ void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
         this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
             activeTrack, activeClip, shouldFocusToArea);
 
-        this->setMidiRecordingTarget(activeTrack, activeClip);
+        this->setMidiRecordingTarget(activeTrack, &activeClip);
     }
 }
 
@@ -292,11 +292,6 @@ void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack,
         this->lastShownTrack = source;
         App::Layout().showPage(this->sequencerLayout.get(), source);
     }
-}
-
-void ProjectNode::switchMiniMaps()
-{
-    this->sequencerLayout->switchMiniMaps();
 }
 
 WeakReference<TreeNode> ProjectNode::getLastShownTrack() const noexcept

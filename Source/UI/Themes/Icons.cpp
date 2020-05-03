@@ -144,6 +144,7 @@ void Icons::initBuiltInImages()
     setIconForKey(forward);
     setIconForKey(mediaForward);
     setIconForKey(mediaRewind);
+    setIconForKey(reprise);
 
     setIconForKey(pageUp);
     setIconForKey(pageDown);

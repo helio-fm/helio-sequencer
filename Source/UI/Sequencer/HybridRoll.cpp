@@ -102,46 +102,46 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
 
-    this->header.reset(new HybridRollHeader(this->project.getTransport(), *this, this->viewport));
+    this->header = makeUnique<HybridRollHeader>(this->project.getTransport(), *this, this->viewport);
+    this->headerShadow = makeUnique<ShadowDownwards>(Normal);
 
-    this->headerShadow.reset(new ShadowDownwards(Normal));
     if (hasAnnotationsTrack)
     {
-        this->annotationsTrack.reset(new AnnotationsProjectMap(this->project, *this, AnnotationsProjectMap::Large));
+        this->annotationsMap = makeUnique<AnnotationsProjectMap>(this->project, *this, AnnotationsProjectMap::Large);
     }
 
     if (hasTimeSignaturesTrack)
     {
-        this->timeSignaturesTrack.reset(new TimeSignaturesProjectMap(this->project, *this, TimeSignaturesProjectMap::Large));
+        this->timeSignaturesMap = makeUnique<TimeSignaturesProjectMap>(this->project, *this, TimeSignaturesProjectMap::Large);
     }
 
     if (hasKeySignaturesTrack)
     {
-        this->keySignaturesTrack.reset(new KeySignaturesProjectMap(this->project, *this, KeySignaturesProjectMap::Large));
+        this->keySignaturesMap = makeUnique<KeySignaturesProjectMap>(this->project, *this, KeySignaturesProjectMap::Large);
     }
 
-    this->playhead.reset(new Playhead(*this, this->project.getTransport(), this));
+    this->playhead = makeUnique<Playhead>(*this, this->project.getTransport(), this);
 
-    this->lassoComponent.reset(new SelectionComponent());
+    this->lassoComponent = makeUnique<SelectionComponent>();
     this->lassoComponent->setWantsKeyboardFocus(false);
     this->lassoComponent->setFocusContainer(false);
 
     this->addAndMakeVisible(this->header.get());
     this->addAndMakeVisible(this->headerShadow.get());
 
-    if (this->annotationsTrack)
+    if (this->annotationsMap)
     {
-        this->addAndMakeVisible(this->annotationsTrack.get());
+        this->addAndMakeVisible(this->annotationsMap.get());
     }
 
-    if (this->timeSignaturesTrack)
+    if (this->timeSignaturesMap)
     {
-        this->addAndMakeVisible(this->timeSignaturesTrack.get());
+        this->addAndMakeVisible(this->timeSignaturesMap.get());
     }
 
-    if (this->keySignaturesTrack)
+    if (this->keySignaturesMap)
     {
-        this->addAndMakeVisible(this->keySignaturesTrack.get());
+        this->addAndMakeVisible(this->keySignaturesMap.get());
     }
 
     this->addAndMakeVisible(this->playhead.get());
@@ -149,15 +149,15 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->addAndMakeVisible(this->lassoComponent.get());
 
 #if HYBRID_ROLL_LISTENS_LONG_TAP
-    this->longTapController.reset(new LongTapController(*this));
+    this->longTapController = makeUnique<LongTapController>(*this);
     this->addMouseListener(this->longTapController.get(), true); // true = listens child events as well
 #endif
 
-    this->multiTouchController.reset(new MultiTouchController(*this));
+    this->multiTouchController = makeUnique<MultiTouchController>(*this);
     this->addMouseListener(this->multiTouchController.get(), false); // false = listens only this one
 
-    this->smoothPanController.reset(new SmoothPanController(*this));
-    this->smoothZoomController.reset(new SmoothZoomController(*this));
+    this->smoothPanController = makeUnique<SmoothPanController>(*this);
+    this->smoothZoomController = makeUnique<SmoothZoomController>(*this);
     
     this->project.addListener(this);
     this->project.getEditMode().addChangeListener(this);
@@ -565,7 +565,7 @@ int HybridRoll::getPlayheadPositionByBeat(double targetBeat, double parentWidth)
 
 int HybridRoll::getXPositionByBeat(float targetBeat) const
 {
-    return int(roundf((targetBeat - this->firstBeat) * this->beatWidth));
+    return int((targetBeat - this->firstBeat) * this->beatWidth);
 }
 
 float HybridRoll::getFloorBeatSnapByXPosition(int x) const
@@ -675,7 +675,7 @@ void HybridRoll::computeVisibleBeatLines()
     const float paintStartBar = floorf(paintStartX / barWidth);
     const float paintEndBar = ceilf(paintEndX / barWidth);
 
-    // Get number of snaps depending on bar width, 
+    // Get the number of snaps depending on a bar width,
     // 2 for 64, 4 for 128, 8 for 256, etc:
     const float nearestPowTwo = ceilf(log(barWidth) / log(2.f));
     const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // use -4.f for twice as dense grid
@@ -748,7 +748,7 @@ void HybridRoll::computeVisibleBeatLines()
             }
 
             // Check if we have more time signatures to come
-            const TimeSignatureEvent *nextSignature = (nextTsIdx >= tsSequence->size()) ? nullptr :
+            const auto *nextSignature = (nextTsIdx >= tsSequence->size()) ? nullptr :
                 static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextTsIdx));
 
             // Now for the beat lines
@@ -1189,19 +1189,24 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::TransportStop:
         if (!this->getTransport().isPlaying())
         {
+            // escape keypress when not playing also resets some stuff:
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
+
+            if (!this->getTransport().isRecording())
+            {
+                this->getTransport().disableLoopPlayback();
+            }
         }
 
-        this->getTransport().stopPlayback();
-        this->getTransport().stopRecording();
+        this->getTransport().stopPlaybackAndRecording();
         this->getTransport().stopSound();
         break;
     case CommandIDs::VersionControlToggleQuickStash:
         if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
         {
             this->deselectAll(); // a couple of hacks, instead will need to improve event system
-            this->getTransport().stopPlayback(); // with a pre-reset callback or so
+            this->getTransport().stopPlaybackAndRecording(); // with a pre-reset callback or so
             vcs->toggleQuickStash();
         }
         break;
@@ -1366,6 +1371,11 @@ void HybridRoll::resetAllOversaturationIndicators()
 void HybridRoll::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
 {
     this->lastTransportBeat = beatPosition;
+}
+
+void HybridRoll::onLoopModeChanged(bool hasLoop, float start, float end)
+{
+    this->header->showLoopMode(hasLoop, start, end);
 }
 
 void HybridRoll::onPlay()
@@ -1655,19 +1665,19 @@ void HybridRoll::updateChildrenBounds()
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->headerShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, HYBRID_ROLL_HEADER_SHADOW_SIZE);
 
-    if (this->annotationsTrack != nullptr)
+    if (this->annotationsMap != nullptr)
     {
-        this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+        this->annotationsMap->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->keySignaturesTrack != nullptr)
+    if (this->keySignaturesMap != nullptr)
     {
-        this->keySignaturesTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+        this->keySignaturesMap->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->timeSignaturesTrack != nullptr)
+    if (this->timeSignaturesMap != nullptr)
     {
-        this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
+        this->timeSignaturesMap->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
     }
 
     for (int i = 0; i < this->trackMaps.size(); ++i)
@@ -1698,19 +1708,19 @@ void HybridRoll::updateChildrenPositions()
     this->header->setTopLeftPosition(0, viewY);
     this->headerShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
 
-    if (this->annotationsTrack != nullptr)
+    if (this->annotationsMap != nullptr)
     {
-        this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
+        this->annotationsMap->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->keySignaturesTrack != nullptr)
+    if (this->keySignaturesMap != nullptr)
     {
-        this->keySignaturesTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
+        this->keySignaturesMap->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
-    if (this->timeSignaturesTrack != nullptr)
+    if (this->timeSignaturesMap != nullptr)
     {
-        this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
+        this->timeSignaturesMap->setTopLeftPosition(0, viewY);
     }
 
     for (int i = 0; i < this->trackMaps.size(); ++i)

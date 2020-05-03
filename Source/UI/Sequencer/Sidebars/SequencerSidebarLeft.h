@@ -73,10 +73,13 @@ private:
     // UserInterfaceFlags::Listener
     //===------------------------------------------------------------------===//
 
+    void onVelocityMapVisibilityFlagChanged(bool visible) override;
     void onScalesHighlightingFlagChanged(bool enabled) override;
     void onNoteNameGuidesFlagChanged(bool enabled) override;
+
     bool scalesHighlightingEnabled = true;
     bool noteNameGuidesEnabled = false;
+    bool velocityMapVisible = false;
 
     //===------------------------------------------------------------------===//
     // ListBoxModel
