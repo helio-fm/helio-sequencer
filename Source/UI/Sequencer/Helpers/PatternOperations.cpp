@@ -50,8 +50,10 @@ float PatternOperations::findStartBeat(const Lasso &selection)
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        const auto *clip = selection.getItemAs<ClipComponent>(i);
-        startBeat = jmin(startBeat, clip->getBeat());
+        const auto *cc = selection.getItemAs<ClipComponent>(i);
+        const auto *track = cc->getClip().getPattern()->getTrack();
+        const auto sequenceStart = track->getSequence()->getFirstBeat();
+        startBeat = jmin(startBeat, sequenceStart + cc->getBeat());
     }
 
     return startBeat;
@@ -71,9 +73,9 @@ float PatternOperations::findEndBeat(const Lasso &selection)
         const auto *cc = selection.getItemAs<ClipComponent>(i);
 
         const auto *track = cc->getClip().getPattern()->getTrack();
+        const auto sequenceStart = track->getSequence()->getFirstBeat();
         const auto sequenceLength = track->getSequence()->getLengthInBeats();
-
-        const float beatPlusLength = cc->getBeat() + sequenceLength;
+        const float beatPlusLength = sequenceStart + cc->getBeat() + sequenceLength;
         endBeat = jmax(endBeat, beatPlusLength);
     }
 
