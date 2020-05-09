@@ -83,6 +83,12 @@ void MidiRecorder::onSeek(float beatPosition, double, double) noexcept
     if (this->isPlaying.get() &&
         beatPosition < this->lastCorrectPosition.get())
     {
+        // this callback clearly comes from the player thread,
+        // and we are going to do some changes, which the UI
+        // will reflect immediately, so let's lock the message thread:
+        MessageManagerLock mml(Thread::getCurrentThread());
+        jassert(mml.lockWasGained());
+
         this->finaliseAllHoldingNotes();
     }
 
