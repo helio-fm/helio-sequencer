@@ -316,6 +316,8 @@ Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
     return this->getEventBounds(cc->getClip(), cc->getBeat());
 }
 
+#define MIN_CLIP_LENGTH (1 / TICKS_PER_BEAT)
+
 Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) const
 {
     const auto *track = clip.getPattern()->getTrack();
@@ -327,8 +329,8 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
 
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
 
-    // In case there are no events, still display a clip of some default length:
-    const float sequenceLength = jmax(sequence->getLengthInBeats(), float(BEATS_PER_BAR));
+    // In case there are no events, still display a clip of a minimal possible length:
+    const float sequenceLength = jmax(sequence->getLengthInBeats(), float(MIN_CLIP_LENGTH));
 
     const float w = this->beatWidth * sequenceLength;
     const float x = this->beatWidth * (sequenceOffset + clipBeat - this->firstBeat);
