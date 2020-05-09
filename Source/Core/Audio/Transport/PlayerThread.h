@@ -36,6 +36,9 @@ private:
     void run() override;
 
     Transport &transport;
+    TransportPlaybackCache sequences;
+    float projectStartOffset = 0.f;
+
     bool loopMode = false;
     bool silentMode = false;
 

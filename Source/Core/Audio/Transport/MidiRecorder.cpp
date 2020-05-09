@@ -181,6 +181,15 @@ void MidiRecorder::handleAsyncUpdate()
         return;
     }
 
+    // a neat helper: start playback, if still not playing,
+    // yet have received some midi events;
+    // we do it before inserting any events,
+    // so that the first note doesn't sound twice
+    if (!this->isPlaying.get())
+    {
+        this->getTransport().startPlayback();
+    }
+
     // if no track is selected, must checkpoint anyway
     jassert(this->activeTrack != nullptr || this->shouldCheckpoint.get());
 
@@ -254,19 +263,6 @@ void MidiRecorder::handleAsyncUpdate()
     }
 
     this->unhandledNoteOffs.clearQuick();
-
-    // a neat helper: start playback, if still not playing,
-    // yet have received some midi events;
-    // important: this goes *after* the first changes are applied,
-    // because, if the project's range is be affected by
-    // the first inserted note, it should be affected
-    // before the playback thread has started
-    if (!this->isPlaying.get())
-    {
-        // a hack for the first note not to sound twice:
-        const auto playbackStart = this->getTransport().getSeekBeat() + 1.f / float(TICKS_PER_BEAT);
-        this->getTransport().startPlayback(playbackStart);
-    }
 }
 
 struct SortMidiMessagesByTimestamp final

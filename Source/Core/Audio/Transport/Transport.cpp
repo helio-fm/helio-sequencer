@@ -675,11 +675,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
         this->stopPlayback();
     }
 
-    // if the first beat changes while recording,
-    // the player thread has a cache with timings which make no sense:
-    jassert(!(this->isRecording() && this->isPlaying() &&
-        this->projectFirstBeat.get() != firstBeat));
-
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
 

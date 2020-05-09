@@ -52,24 +52,29 @@ void PlayerThread::startPlayback(float seekPosition,
     this->loopMode = loopMode;
     this->silentMode = silentMode;
 
+    this->projectStartOffset = this->transport.getProjectFirstBeat();
+    this->sequences = this->transport.getPlaybackCache();
+
     this->startThread(10);
 }
 
 void PlayerThread::run()
 {
-    auto sequences = this->transport.getPlaybackCache();
-
     Array<Instrument *> uniqueInstruments;
-    uniqueInstruments.addArray(sequences.getUniqueInstruments());
-    
+    uniqueInstruments.addArray(this->sequences.getUniqueInstruments());
+
+    auto broadcastSeek = [this](float beat)
+    {
+        this->transport.broadcastSeek(beat,
+            this->currentTimeMs.get(), this->totalTimeMs.get());
+    };
+
     double nextEventTimeDelta = 0.0;
-    auto projectStartOffset = this->transport.getProjectFirstBeat();
-    sequences.seekToTime(this->startBeat.get() - projectStartOffset);
+    this->sequences.seekToTime(this->startBeat.get() - this->projectStartOffset);
     auto previousEventBeat = this->startBeat.get();
     if (!this->silentMode)
     {
-        this->transport.broadcastSeek(previousEventBeat,
-            this->currentTimeMs.get(), this->totalTimeMs.get());
+        broadcastSeek(previousEventBeat);
     }
 
     // This hack is here to keep track of still playing events
@@ -131,7 +136,7 @@ void PlayerThread::run()
         CachedMidiMessage wrapper;
 
         // Handle playback from the last event to the end of track:
-        if (!sequences.getNextMessage(wrapper))
+        if (!this->sequences.getNextMessage(wrapper))
         {
             nextEventTimeDelta = this->msPerQuarterNote.get() * (this->endBeat.get() - previousEventBeat);
             const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
@@ -152,12 +157,11 @@ void PlayerThread::run()
 
             if (this->loopMode)
             {
-                sequences.seekToTime(this->rewindBeat.get() - projectStartOffset);
+                this->sequences.seekToTime(this->rewindBeat.get() - this->projectStartOffset);
                 previousEventBeat = this->rewindBeat.get();
                 if (!this->silentMode)
                 {
-                    this->transport.broadcastSeek(previousEventBeat,
-                        this->currentTimeMs.get(), this->totalTimeMs.get());
+                    broadcastSeek(previousEventBeat);
                 }
                 continue;
             }
@@ -187,10 +191,8 @@ void PlayerThread::run()
             }
         }
 
-        jassert(projectStartOffset == this->transport.getProjectFirstBeat());
-
         const auto messageBeat =
-            wrapper.message.getTimeStamp() + projectStartOffset;
+            wrapper.message.getTimeStamp() + this->projectStartOffset;
 
         const bool shouldRewind =
             (this->loopMode &&
@@ -230,19 +232,17 @@ void PlayerThread::run()
             
             if (!this->silentMode)
             {
-                this->transport.broadcastSeek(previousEventBeat,
-                    this->currentTimeMs.get(), this->totalTimeMs.get());
+                broadcastSeek(previousEventBeat);
             }
         }
         
         if (shouldRewind)
         {
-            sequences.seekToTime(this->rewindBeat.get() - projectStartOffset);
+            this->sequences.seekToTime(this->rewindBeat.get() - this->projectStartOffset);
             previousEventBeat = this->rewindBeat.get();
             if (!this->silentMode)
             {
-                this->transport.broadcastSeek(previousEventBeat,
-                    this->currentTimeMs.get(), this->totalTimeMs.get());
+                broadcastSeek(previousEventBeat);
             }
         }
         else

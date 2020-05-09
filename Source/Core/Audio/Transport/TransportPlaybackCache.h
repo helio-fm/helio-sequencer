@@ -61,7 +61,11 @@ private:
 public:
     
     TransportPlaybackCache() = default;
-    TransportPlaybackCache(const TransportPlaybackCache &other) = default;
+    TransportPlaybackCache(const TransportPlaybackCache &other)
+    {
+        this->sequences.addArray(other.sequences);
+        this->uniqueInstruments.addArray(other.uniqueInstruments);
+    }
 
     inline Array<Instrument *, CriticalSection> getUniqueInstruments() const noexcept
     {
