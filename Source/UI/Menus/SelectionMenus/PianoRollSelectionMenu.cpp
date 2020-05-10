@@ -47,6 +47,10 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents,
         TRANS(I18n::Menu::Selection::notesDelete))->closesMenu());
 
+    menu.add(MenuItem::item(Icons::reprise,
+        CommandIDs::ToggleLoopOverSelection,
+        TRANS(I18n::CommandPalette::toggleLoopOverSelection))->closesMenu());
+
     menu.add(MenuItem::item(Icons::refactor,
         TRANS(I18n::Menu::Selection::notesRefactor))->
         withSubmenu()->
@@ -174,8 +178,8 @@ MenuPanel::Menu PianoRollSelectionMenu::createQuantizationPanel()
 
 #define EVENTS_QUANTIZE_ITEM(cmd) \
     MenuItem::item(Icons::ellipsis, cmd, \
-        CommandIDs::getTranslationKeyFor(cmd).toString())->closesMenu()
-
+        TRANS(CommandIDs::getTranslationKeyFor(cmd)))->closesMenu()
+    
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_1));
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_2));
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_4));

@@ -31,6 +31,7 @@ private:
 
     MenuPanel::Menu createDefaultMenu();
     MenuPanel::Menu createQuantizationMenu();
+    MenuPanel::Menu createInstrumentSelectionMenu();
 
     WeakReference<Lasso> lasso;
 

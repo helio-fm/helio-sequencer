@@ -19,7 +19,19 @@
 #include "PatternRollSelectionMenu.h"
 #include "PatternOperations.h"
 #include "ClipComponent.h"
+#include "MidiTrack.h"
+#include "Pattern.h"
+#include "Clip.h"
 #include "Lasso.h"
+
+#include "ProjectNode.h"
+#include "UndoStack.h"
+#include "MidiTrackNode.h"
+#include "MidiTrackActions.h"
+
+#include "Workspace.h"
+#include "AudioCore.h"
+
 #include "CommandIDs.h"
 #include "Icons.h"
 
@@ -60,7 +72,8 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         TRANS(I18n::Menu::Selection::clipsTransposeDown)));
 
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
-        TRANS(I18n::Menu::trackRename))->disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
+        TRANS(I18n::Menu::trackRename))->
+        disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
 
     const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso) ?
         TRANS(I18n::Menu::unmute) : TRANS(I18n::Menu::mute);
@@ -71,6 +84,18 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     menu.add(MenuItem::item(Icons::mute, CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
     menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleSoloClips, soloAction)->closesMenu());
 
+    const auto canDuplicate = this->lasso->getNumSelected() == 1;
+
+    menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
+        TRANS(I18n::Menu::trackDuplicate))->disabledIf(!canDuplicate)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
+        TRANS(I18n::Menu::Selection::clipsDelete))->closesMenu());
+
+    menu.add(MenuItem::item(Icons::reprise,
+        CommandIDs::ToggleLoopOverSelection,
+        TRANS(I18n::CommandPalette::toggleLoopOverSelection))->closesMenu());
+
     menu.add(MenuItem::item(Icons::ellipsis,
         TRANS(I18n::Menu::Selection::notesQuantizeTo))->
         withSubmenu()->
@@ -79,13 +104,12 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         this->updateContent(this->createQuantizationMenu(), MenuPanel::SlideLeft);
     }));
 
-    const auto canDuplicate = this->lasso->getNumSelected() == 1;
-
-    menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
-        TRANS(I18n::Menu::trackDuplicate))->disabledIf(!canDuplicate)->closesMenu());
-
-    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
-        TRANS(I18n::Menu::Selection::clipsDelete))->closesMenu());
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
+        disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
+    {
+        this->updateContent(this->createInstrumentSelectionMenu(), MenuPanel::SlideLeft);
+    }));
 
     return menu;
 }
@@ -103,7 +127,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
 
 #define CLIP_QUANTIZE_ITEM(cmd) \
     MenuItem::item(Icons::ellipsis, cmd, \
-        CommandIDs::getTranslationKeyFor(cmd).toString())->closesMenu()
+        TRANS(CommandIDs::getTranslationKeyFor(cmd)))->closesMenu()
 
     menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_1));
     menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_2));
@@ -113,6 +137,75 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
     menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_32));
 
 #undef CLIP_QUANTIZE_ITEM
+
+    return menu;
+}
+
+MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
+{
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    }));
+
+    // get all unique track nodes in the selection;
+    // if they all have the same instrument assigned, it should be selected;
+    // perform one undo action for them all
+
+    const auto &audioCore = App::Workspace().getAudioCore();
+    const auto &instruments = audioCore.getInstruments();
+
+    Array<MidiTrack *> uniqueTracks;
+    StringArray uniqueInstrumentIds;
+    for (int i = 0; i < this->lasso->getNumSelected(); ++i)
+    {
+        const auto &clip = this->lasso->getItemAs<ClipComponent>(i)->getClip();
+        const auto instrumentId = clip.getPattern()->getTrack()->getTrackInstrumentId();
+        uniqueInstrumentIds.addIfNotAlreadyThere(instrumentId);
+        uniqueTracks.addIfNotAlreadyThere(clip.getPattern()->getTrack());
+    }
+
+    const Instrument *singleInstrumentIfAny =
+        (uniqueInstrumentIds.size() == 1) ?
+        audioCore.findInstrumentById(uniqueInstrumentIds.getReference(0)) :
+        nullptr;
+
+    for (int i = 0; i < instruments.size(); ++i)
+    {
+        const bool isTicked = (instruments[i] == singleInstrumentIfAny);
+        const auto instrumentId = instruments[i]->getIdAndHash();
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
+            instruments[i]->getName())->disabledIf(isTicked)->
+            withAction([this, instrumentId, uniqueTracks]()
+        {
+            //DBG(instrumentId);
+            bool haveCheckpoint = false;
+            for (auto *track : uniqueTracks)
+            {
+                if (instrumentId != track->getTrackInstrumentId())
+                {
+                    auto *trackNode = dynamic_cast<MidiTrackNode *>(track);
+                    jassert(trackNode != nullptr);
+
+                    auto *project = trackNode->getProject();
+
+                    if (!haveCheckpoint)
+                    {
+                        project->checkpoint();
+                        haveCheckpoint = true;
+                    }
+
+                    project->getUndoStack()->
+                        perform(new MidiTrackChangeInstrumentAction(*project,
+                            track->getTrackId(), instrumentId));
+                }
+            }
+
+            this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+            return;
+        }));
+    }
 
     return menu;
 }

@@ -174,7 +174,7 @@ void HybridRollHeader::updateClipRangeIndicator()
     jassert(this->clipRangeIndicator != nullptr);
     const int x1 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getFirstBeat());
     const int x2 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getLastBeat());
-    this->clipRangeIndicator->setBounds(x1, 0, x2 - x1, 1);
+    this->clipRangeIndicator->setBounds(x1, 0, x2 - x1 + 1, 1);
 }
 
 //===----------------------------------------------------------------------===//

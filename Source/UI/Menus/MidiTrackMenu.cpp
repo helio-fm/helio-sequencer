@@ -56,15 +56,12 @@ void MidiTrackMenu::initDefaultMenu()
         this->initColorSelectionMenu();
     }));
     
-    const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
-    const int numInstruments = info.size();
-    if (numInstruments > 1)
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
+        disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
     {
-        menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->withSubmenu()->withAction([this]()
-        {
-            this->initInstrumentSelectionMenu();
-        }));
-    }
+        this->initInstrumentSelectionMenu();
+    }));
     
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->closesMenu());
@@ -72,7 +69,9 @@ void MidiTrackMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
         TRANS(I18n::Menu::trackDuplicate))->closesMenu());
 
-    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
+    menu.add(MenuItem::item(Icons::remove,
+        CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
+
     this->updateContent(menu, MenuPanel::SlideRight);
 }
 
@@ -110,16 +109,19 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
         this->initDefaultMenu();
     }));
     
-    const auto &info = App::Workspace().getAudioCore().getInstruments();
-    const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->trackNode.getTrackInstrumentId());
-    
-    for (int i = 0; i < info.size(); ++i)
+    const auto &audioCore = App::Workspace().getAudioCore();
+    const auto &instruments = audioCore.getInstruments();
+    const auto *selectedInstrument = audioCore.findInstrumentById(this->trackNode.getTrackInstrumentId());
+
+    for (int i = 0; i < instruments.size(); ++i)
     {
-        const bool isTicked = (info[i] == selectedInstrument);
-        const String instrumentId = info[i]->getIdAndHash();
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, info[i]->getName())->withAction([this, instrumentId]()
+        const bool isTicked = (instruments[i] == selectedInstrument);
+        const String instrumentId = instruments[i]->getIdAndHash();
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
+            instruments[i]->getName())->withAction([this, instrumentId]()
         {
-            DBG(instrumentId);
+            // no need to check if not toggled, the callback will do
+            // DBG(instrumentId);
             this->trackNode.getChangeInstrumentCallback()(instrumentId);
             this->initDefaultMenu();
             return;

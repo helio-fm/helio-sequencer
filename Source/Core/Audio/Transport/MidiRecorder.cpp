@@ -35,9 +35,6 @@
 #include "AudioCore.h"
 #include "ColourIDs.h"
 
-// todo show some hints on where to expect new notes?
-// in pattern mode, highlight the selected clip in red?
-
 // todo for the future: handle pedal and more automation events
 
 // no need for updating too often, I guess:
@@ -80,6 +77,7 @@ void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track,
 
 void MidiRecorder::onSeek(float beatPosition, double, double) noexcept
 {
+    // handle the loop rewind:
     if (this->isPlaying.get() &&
         beatPosition < this->lastCorrectPosition.get())
     {
