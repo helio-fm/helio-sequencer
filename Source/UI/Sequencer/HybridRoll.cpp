@@ -964,6 +964,11 @@ void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
     }
 }
 
+void HybridRoll::onBeforeReloadProjectContent()
+{
+    this->selection.deselectAll();
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//

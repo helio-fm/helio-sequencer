@@ -48,6 +48,7 @@ namespace VCS
 
         RevisionItem::Ptr getItemWithUuid(const Uuid &uuid) const;
 
+        void onBeforeResetState() override {}
         void onResetState() override {}
 
     private:
@@ -57,6 +58,5 @@ namespace VCS
         Array<RevisionItem::Ptr> items;
 
         JUCE_LEAK_DETECTOR(Snapshot);
-
     };
 } // namespace VCS

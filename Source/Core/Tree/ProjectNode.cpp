@@ -495,6 +495,7 @@ SerializedData ProjectNode::save() const
 
 void ProjectNode::load(const SerializedData &tree)
 {
+    this->broadcastBeforeReloadProjectContent();
     this->reset();
 
     const auto root = tree.hasType(Serialization::Core::project) ?
@@ -548,11 +549,12 @@ void ProjectNode::importMidi(const File &file)
         return;
     }
 
+    this->broadcastBeforeReloadProjectContent();
+    this->timeline->reset();
+
     Random r;
     const auto colours = ColourIDs::getColoursList().getAllValues();
     const auto timeFormat = tempFile.getTimeFormat();
-
-    this->timeline->reset();
 
     for (int i = 0; i < tempFile.getNumTracks(); i++)
     {
@@ -784,6 +786,11 @@ Point<float> ProjectNode::broadcastChangeProjectBeatRange()
     return beatRange;
 }
 
+void ProjectNode::broadcastBeforeReloadProjectContent()
+{
+    this->changeListeners.call(&ProjectListener::onBeforeReloadProjectContent);
+}
+
 void ProjectNode::broadcastReloadProjectContent()
 {
     this->changeListeners.call(&ProjectListener::onReloadProjectContent, this->getTracks());
@@ -1000,6 +1007,11 @@ bool ProjectNode::deleteTrackedItem(VCS::TrackedItem *item)
     }
 
     return false;
+}
+
+void ProjectNode::onBeforeResetState()
+{
+    this->broadcastBeforeReloadProjectContent();
 }
 
 void ProjectNode::onResetState()

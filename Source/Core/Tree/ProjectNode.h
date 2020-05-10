@@ -149,8 +149,10 @@ public:
 
     void broadcastChangeProjectInfo(const ProjectMetadata *info);
     void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
-    void broadcastReloadProjectContent();
     Point<float> broadcastChangeProjectBeatRange();
+
+    void broadcastBeforeReloadProjectContent();
+    void broadcastReloadProjectContent();
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItemsSource
@@ -163,6 +165,7 @@ public:
     VCS::TrackedItem *initTrackedItem(const Identifier &type,
         const Uuid &id, const VCS::TrackedItem &newState) override;
     bool deleteTrackedItem(VCS::TrackedItem *item) override;
+    void onBeforeResetState() override;
     void onResetState() override;
 
     //===------------------------------------------------------------------===//

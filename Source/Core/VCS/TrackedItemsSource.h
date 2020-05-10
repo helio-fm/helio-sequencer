@@ -53,7 +53,8 @@ namespace VCS
             }
         }
 
-        // Called after checkout / reset to / etc
+        // Called before and after the checkout / reset to / etc
+        virtual void onBeforeResetState() = 0;
         virtual void onResetState() = 0;
 
     private:

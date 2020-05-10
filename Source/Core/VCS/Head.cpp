@@ -273,7 +273,11 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
 void Head::checkout()
 {
     if (this->state == nullptr)
-    { return; }
+    {
+        return;
+    }
+
+    this->targetVcsItemsSource.onBeforeResetState();
 
     // clear all tracked items
     {
@@ -307,7 +311,11 @@ void Head::checkout()
 void Head::cherryPick(const Array<Uuid> uuids)
 {
     if (this->state == nullptr)
-    { return; }
+    {
+        return;
+    }
+
+    this->targetVcsItemsSource.onBeforeResetState();
 
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
@@ -330,8 +338,12 @@ void Head::cherryPick(const Array<Uuid> uuids)
 void Head::cherryPickAll()
 {
     if (this->state == nullptr)
-    { return; }
-    
+    {
+        return;
+    }
+
+    this->targetVcsItemsSource.onBeforeResetState();
+
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
         RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
@@ -344,7 +356,11 @@ void Head::cherryPickAll()
 bool Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
 {
     if (this->state == nullptr)
-    { return false; }
+    {
+        return false;
+    }
+
+    this->targetVcsItemsSource.onBeforeResetState();
 
     for (const auto &item : changes)
     {

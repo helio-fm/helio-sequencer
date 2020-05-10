@@ -64,6 +64,7 @@ public:
     virtual void onChangeViewBeatRange(float firstBeat, float lastBeat) = 0;
 
     // Sent on midi import, reload or reset by VCS
+    virtual void onBeforeReloadProjectContent() {};
     virtual void onReloadProjectContent(const Array<MidiTrack *> &tracks) = 0;
 
 };
