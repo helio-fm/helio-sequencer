@@ -150,8 +150,7 @@ void AnnotationsProjectMap::onAddMidiEvent(const MidiEvent &event)
 
         component->setAlpha(0.f);
         const Rectangle<int> bounds(component->getBounds());
-        component->setBounds(bounds.translated(0, -component->getHeight()));
-        this->animator.animateComponent(component, bounds, 1.f, 250, false, 0.0, 0.0);
+        this->animator.animateComponent(component, bounds, 1.f, 200, false, 0.0, 0.0);
     }
 }
 
@@ -159,13 +158,13 @@ void AnnotationsProjectMap::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::Annotation))
     {
-        const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
+        const auto &annotation = static_cast<const AnnotationEvent &>(event);
 
-        if (AnnotationComponent *component = this->annotationsHash[annotation])
+        if (auto *component = this->annotationsHash[annotation])
         {
             this->animator.animateComponent(component,
-                                            component->getBounds().translated(0, -component->getHeight()),
-                                            0.f, 250, true, 0.0, 0.0);
+                                            component->getBounds(),
+                                            0.f, 200, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
             this->annotationsHash.erase(annotation);

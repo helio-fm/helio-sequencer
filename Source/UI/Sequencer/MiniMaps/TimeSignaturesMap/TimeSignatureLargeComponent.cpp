@@ -93,9 +93,18 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    const Colour lineCol(findDefaultColour(ColourIDs::Roll::headerSnaps));
-    g.setColour(lineCol);
-    g.fillRect(0.f, 1.f, float(this->getWidth()), 2.f);
+    g.setColour(findDefaultColour(ColourIDs::Roll::headerSnaps));
+    g.fillRect(0.f, 0.f, float(this->getWidth()), 3.f);
+
+    constexpr float dashLength = 8.f;
+
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+    for (float i = (dashLength / 2.f); i < this->getWidth(); i += (dashLength * 2.f))
+    {
+        g.fillRect(i + 2.f, 0.f, dashLength, 1.f);
+        g.fillRect(i + 1.f, 1.f, dashLength, 1.f);
+        g.fillRect(i, 2.f, dashLength, 1.f);
+    }
     //[/UserPaint]
 }
 

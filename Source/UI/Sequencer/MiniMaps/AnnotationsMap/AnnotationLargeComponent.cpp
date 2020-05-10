@@ -90,8 +90,10 @@ void AnnotationLargeComponent::paint (Graphics& g)
 
     const Colour baseColour(findDefaultColour(Label::textColourId));
 
-    g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.5f).withAlpha(0.5f));
-    g.fillRect(0.5f, 2.f, float(this->getWidth()) - 0.5f, 2.f);
+    g.setColour(this->event.getTrackColour()
+        .interpolatedWith(baseColour, 0.5f).withAlpha(0.65f));
+
+    g.fillRect(0.5f, 0.f, float(this->getWidth()) - 0.5f, 3.f);
 
     if (this->event.getDescription().isNotEmpty())
     {
@@ -102,7 +104,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
         arr.addFittedText(labelFont,
                           this->event.getDescription(),
                           2.f + this->boundsOffset.getX(),
-                          1.f,
+                          0.f,
                           float(this->getWidth()) - 16.f,
                           float(this->getHeight()) - 8.f,
                           Justification::centredLeft,

@@ -151,8 +151,7 @@ void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
 
         component->setAlpha(0.f);
         const Rectangle<int> bounds(component->getBounds());
-        component->setBounds(bounds.translated(0, -component->getHeight()));
-        this->animator.animateComponent(component, bounds, 1.f, 250, false, 0.0, 0.0);
+        this->animator.animateComponent(component, bounds, 1.f, 150, false, 0.0, 0.0);
     }
 }
 
@@ -160,13 +159,13 @@ void KeySignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::KeySignature))
     {
-        const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(event);
+        const auto &keySignature = static_cast<const KeySignatureEvent &>(event);
 
-        if (KeySignatureComponent *component = this->keySignaturesHash[keySignature])
+        if (auto *component = this->keySignaturesHash[keySignature])
         {
             this->animator.animateComponent(component,
-                                            component->getBounds().translated(0, -component->getHeight()),
-                                            0.f, 250, true, 0.0, 0.0);
+                                            component->getBounds(),
+                                            0.f, 150, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
             this->keySignaturesHash.erase(keySignature);
