@@ -91,7 +91,9 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
 
 
     //[UserPreSize]
+    jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
+
     const auto &meterNames = this->defailtMeters.getAllKeys();
     const auto &meterValues = this->defailtMeters.getAllValues();
 
@@ -304,49 +306,47 @@ void TimeSignatureDialog::updateOkButtonState()
 
 void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
 {
-    if (this->originalSequence != nullptr)
+    jassert(this->originalSequence != nullptr);
+
+    if (this->addsNewEvent)
     {
-        if (this->addsNewEvent)
+        this->originalSequence->undo();
+        this->originalSequence->insert(newEvent, true);
+        this->originalEvent = newEvent;
+    }
+    else
+    {
+        if (this->hasMadeChanges)
         {
-            this->originalSequence->change(this->originalEvent, newEvent, true);
-            this->originalEvent = newEvent;
+            this->originalSequence->undo();
+            this->hasMadeChanges = false;
         }
-        else
-        {
-            this->cancelChangesIfAny();
-            this->originalSequence->checkpoint();
-            this->originalSequence->change(this->originalEvent, newEvent, true);
-            this->hasMadeChanges = true;
-        }
+
+        this->originalSequence->checkpoint();
+        this->originalSequence->change(this->originalEvent, newEvent, true);
+        this->hasMadeChanges = true;
     }
 }
 
 void TimeSignatureDialog::removeEvent()
 {
-    if (this->originalSequence != nullptr)
-    {
-        if (this->addsNewEvent)
-        {
-            this->originalSequence->remove(this->originalEvent, true);
-        }
-        else
-        {
-            this->cancelChangesIfAny();
-            this->originalSequence->checkpoint();
-            this->originalSequence->remove(this->originalEvent, true);
-            this->hasMadeChanges = true;
-        }
-    }
-}
+    jassert(this->originalSequence != nullptr);
 
-void TimeSignatureDialog::cancelChangesIfAny()
-{
-    if (!this->addsNewEvent &&
-        this->hasMadeChanges &&
-        this->originalSequence != nullptr)
+    if (this->addsNewEvent)
     {
         this->originalSequence->undo();
-        this->hasMadeChanges = false;
+    }
+    else
+    {
+        if (this->hasMadeChanges)
+        {
+            this->originalSequence->undo();
+            this->hasMadeChanges = false;
+        }
+
+        this->originalSequence->checkpoint();
+        this->originalSequence->remove(this->originalEvent, true);
+        this->hasMadeChanges = true;
     }
 }
 
@@ -408,12 +408,11 @@ void TimeSignatureDialog::timerCallback()
 
 void TimeSignatureDialog::cancelAndDisappear()
 {
-    this->cancelChangesIfAny(); // Discards possible changes
+    jassert(this->originalSequence != nullptr);
 
-    if (this->addsNewEvent &&
-        this->originalSequence != nullptr)
+    if (this->addsNewEvent || this->hasMadeChanges)
     {
-        this->originalSequence->undo(); // Discards new event
+        this->originalSequence->undo();
     }
 
     this->dismiss();

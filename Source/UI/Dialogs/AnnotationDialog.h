@@ -64,7 +64,7 @@ private:
     //[UserVariables]
 
     AnnotationEvent originalEvent;
-    AnnotationsSequence *originalSequence;
+    AnnotationsSequence *const originalSequence;
     Component &ownerComponent;
 
     void textEditorTextChanged(TextEditor&) override;
@@ -81,7 +81,6 @@ private:
     bool hasMadeChanges;
     void sendEventChange(const AnnotationEvent &newEvent);
     void removeEvent();
-    void cancelChangesIfAny();
 
     //[/UserVariables]
 

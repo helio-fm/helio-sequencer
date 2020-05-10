@@ -80,7 +80,7 @@ private:
 
     Transport &transport;
     KeySignatureEvent originalEvent;
-    KeySignaturesSequence *originalSequence;
+    KeySignaturesSequence *const originalSequence;
     Component &ownerComponent;
 
     const Array<Scale::Ptr> defaultScales;
@@ -92,7 +92,6 @@ private:
     bool hasMadeChanges;
     void sendEventChange(const KeySignatureEvent &newEvent);
     void removeEvent();
-    bool cancelChangesIfAny();
 
     int key;
     Scale::Ptr scale;

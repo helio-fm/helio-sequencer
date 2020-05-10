@@ -59,7 +59,7 @@ private:
     //[UserVariables]
 
     TimeSignatureEvent originalEvent;
-    TimeSignaturesSequence *originalSequence;
+    TimeSignaturesSequence *const originalSequence;
     Component &ownerComponent;
 
     const StringPairArray defailtMeters;
@@ -78,7 +78,6 @@ private:
     bool hasMadeChanges;
     void sendEventChange(const TimeSignatureEvent &newEvent);
     void removeEvent();
-    void cancelChangesIfAny();
 
     //[/UserVariables]
 

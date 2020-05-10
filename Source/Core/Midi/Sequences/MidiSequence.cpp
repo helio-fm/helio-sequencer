@@ -68,11 +68,7 @@ void MidiSequence::checkpoint(UndoActionId id) noexcept
 
 void MidiSequence::undo()
 {
-    if (this->getUndoStack()->canUndo())
-    {
-        this->checkpoint(); // finish current transaction to be undoed
-        this->getUndoStack()->undo();
-    }
+    this->getUndoStack()->undo();
 }
 
 void MidiSequence::undoCurrentTransactionOnly()
@@ -82,10 +78,7 @@ void MidiSequence::undoCurrentTransactionOnly()
 
 void MidiSequence::redo()
 {
-    if (this->getUndoStack()->canRedo())
-    {
-        this->getUndoStack()->redo();
-    }
+    this->getUndoStack()->redo();
 }
 
 void MidiSequence::clearUndoHistory()

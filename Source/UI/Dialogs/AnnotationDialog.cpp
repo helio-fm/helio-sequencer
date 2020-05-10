@@ -114,6 +114,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
 
 
     //[UserPreSize]
+    jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
@@ -123,10 +124,10 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
         const int i = r.nextInt(keys.size());
         const String key(keys[i]);
         const Colour colour(getColours()[i]);
-        this->originalEvent = AnnotationEvent(sequence, targetBeat, key, colour);
+        this->originalEvent = AnnotationEvent(this->originalSequence, targetBeat, key, colour);
 
-        sequence->checkpoint();
-        sequence->insert(this->originalEvent, true);
+        this->originalSequence->checkpoint();
+        this->originalSequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::annotationAddCaption), dontSendNotification);
         this->okButton->setButtonText(TRANS(I18n::Dialog::annotationAddProceed));
@@ -253,7 +254,7 @@ void AnnotationDialog::buttonClicked(Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == okButton.get())
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
-        if (textEditor->getText().isNotEmpty())
+        if (this->textEditor->getText().isNotEmpty())
         {
             this->dismiss();
         }
@@ -347,49 +348,47 @@ void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 
 void AnnotationDialog::sendEventChange(const AnnotationEvent &newEvent)
 {
-    if (this->originalSequence != nullptr)
+    jassert(this->originalSequence != nullptr);
+    
+    if (this->addsNewEvent)
     {
-        if (this->addsNewEvent)
+        this->originalSequence->undo();
+        this->originalSequence->insert(newEvent, true);
+        this->originalEvent = newEvent;
+    }
+    else
+    {
+        if (this->hasMadeChanges)
         {
-            this->originalSequence->change(this->originalEvent, newEvent, true);
-            this->originalEvent = newEvent;
+            this->originalSequence->undo();
+            this->hasMadeChanges = false;
         }
-        else
-        {
-            this->cancelChangesIfAny();
-            this->originalSequence->checkpoint();
-            this->originalSequence->change(this->originalEvent, newEvent, true);
-            this->hasMadeChanges = true;
-        }
+
+        this->originalSequence->checkpoint();
+        this->originalSequence->change(this->originalEvent, newEvent, true);
+        this->hasMadeChanges = true;
     }
 }
 
 void AnnotationDialog::removeEvent()
 {
-    if (this->originalSequence != nullptr)
-    {
-        if (this->addsNewEvent)
-        {
-            this->originalSequence->remove(this->originalEvent, true);
-        }
-        else
-        {
-            this->cancelChangesIfAny();
-            this->originalSequence->checkpoint();
-            this->originalSequence->remove(this->originalEvent, true);
-            this->hasMadeChanges = true;
-        }
-    }
-}
+    jassert(this->originalSequence != nullptr);
 
-void AnnotationDialog::cancelChangesIfAny()
-{
-    if (!this->addsNewEvent &&
-        this->hasMadeChanges &&
-        this->originalSequence != nullptr)
+    if (this->addsNewEvent)
     {
         this->originalSequence->undo();
-        this->hasMadeChanges = false;
+    }
+    else
+    {
+        if (this->hasMadeChanges)
+        {
+            this->originalSequence->undo();
+            this->hasMadeChanges = false;
+        }
+
+        this->originalSequence->checkpoint();
+        this->originalSequence->remove(this->originalEvent, true);
+        this->hasMadeChanges = true;
     }
 }
 
@@ -419,7 +418,7 @@ void AnnotationDialog::textEditorFocusLost(TextEditor&)
 {
     this->updateOkButtonState();
 
-    const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
+    const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
     if (this->textEditor->getText().isNotEmpty() &&
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->removeEventButton.get())
@@ -444,12 +443,11 @@ void AnnotationDialog::timerCallback()
 
 void AnnotationDialog::cancelAndDisappear()
 {
-    this->cancelChangesIfAny(); // Discards possible changes
+    jassert(this->originalSequence != nullptr);
 
-    if (this->addsNewEvent &&
-        this->originalSequence != nullptr)
+    if (this->addsNewEvent || this->hasMadeChanges)
     {
-        this->originalSequence->undo(); // Discards new event
+        this->originalSequence->undo();
     }
 
     this->dismiss();

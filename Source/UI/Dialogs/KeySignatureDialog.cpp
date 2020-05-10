@@ -90,6 +90,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     this->scaleNameEditor->addListener(this);
     this->scaleNameEditor->setFont(21.f);
 
+    jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
@@ -353,63 +354,57 @@ void KeySignatureDialog::updateOkButtonState()
 
 void KeySignatureDialog::sendEventChange(const KeySignatureEvent &newEvent)
 {
-    if (this->originalSequence != nullptr)
+    jassert(this->originalSequence != nullptr);
+    
+    if (this->addsNewEvent)
     {
-        if (this->addsNewEvent)
+        this->originalSequence->undo();
+        this->originalSequence->insert(newEvent, true);
+        this->originalEvent = newEvent;
+    }
+    else
+    {
+        if (this->hasMadeChanges)
         {
-            this->originalSequence->change(this->originalEvent, newEvent, true);
-            this->originalEvent = newEvent;
+            this->originalSequence->undo();
+            this->hasMadeChanges = false;
         }
-        else
-        {
-            this->cancelChangesIfAny();
-            this->originalSequence->checkpoint();
-            this->originalSequence->change(this->originalEvent, newEvent, true);
-            this->hasMadeChanges = true;
-        }
+
+        this->originalSequence->checkpoint();
+        this->originalSequence->change(this->originalEvent, newEvent, true);
+        this->hasMadeChanges = true;
     }
 }
 
 void KeySignatureDialog::removeEvent()
 {
-    if (this->originalSequence != nullptr)
-    {
-        if (this->addsNewEvent)
-        {
-            this->originalSequence->remove(this->originalEvent, true);
-        }
-        else
-        {
-            this->cancelChangesIfAny();
-            this->originalSequence->checkpoint();
-            this->originalSequence->remove(this->originalEvent, true);
-            this->hasMadeChanges = true;
-        }
-    }
-}
-
-bool KeySignatureDialog::cancelChangesIfAny()
-{
-    if (!this->addsNewEvent &&
-        this->hasMadeChanges &&
-        this->originalSequence != nullptr)
+    jassert(this->originalSequence != nullptr);
+    
+    if (this->addsNewEvent)
     {
         this->originalSequence->undo();
-        this->hasMadeChanges = false;
-        return true;
     }
+    else
+    {
+        if (this->hasMadeChanges)
+        {
+            this->originalSequence->undo();
+            this->hasMadeChanges = false;
+        }
 
-    return false;
+        this->originalSequence->checkpoint();
+        this->originalSequence->remove(this->originalEvent, true);
+        this->hasMadeChanges = true;
+    }
 }
 
 void KeySignatureDialog::cancelAndDisappear()
 {
-    this->cancelChangesIfAny(); // Discards possible changes
+    jassert(this->originalSequence != nullptr);
 
-    if (this->addsNewEvent &&
-        this->originalSequence != nullptr)
+    if (this->addsNewEvent || this->hasMadeChanges)
     {
-        this->originalSequence->undo(); // Discards new event
+        this->originalSequence->undo();
     }
 
     this->dismiss();
