@@ -76,7 +76,7 @@ protected:
 
     bool hasChanges;
     File workingFile;
-    String extension;
+    const String extension;
     Time fileModificationTime;
     int64 fileHashCode;
     int64 fileSize;

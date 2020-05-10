@@ -239,7 +239,7 @@ String MidiTrackNode::getXPath() const noexcept
 
 void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
 {
-    if (path == this->getXPath())
+    if (path == this->getXPath() || path.isEmpty())
     {
         return;
     }

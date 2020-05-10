@@ -30,6 +30,7 @@ Document::Document(DocumentOwner &documentOwner,
 {
     if (defaultName.isNotEmpty())
     {
+        jassert(!defaultExtension.startsWithChar('.'));
         const auto safeName = File::createLegalFileName(defaultName + "." + defaultExtension);
         this->workingFile = DocumentHelpers::getDocumentSlot(safeName);
         if (this->workingFile.existsAsFile())
@@ -43,7 +44,7 @@ Document::Document(DocumentOwner &documentOwner,
 
 Document::Document(DocumentOwner &documentOwner, const File &existingFile) :
     owner(documentOwner),
-    extension(existingFile.getFileExtension().replace(",", ""))
+    extension(existingFile.getFileExtension().replace(".", ""))
 {
     this->workingFile = existingFile;
     this->owner.addChangeListener(this);
@@ -78,6 +79,7 @@ void Document::renameFile(const String &newName)
 
     const auto safeNewName = File::createLegalFileName(newName).trimCharactersAtEnd(".");
 
+    jassert(!this->extension.startsWithChar('.'));
     File newFile(this->workingFile.getSiblingFile(safeNewName + "." + this->extension));
 
     if (newFile.existsAsFile())
