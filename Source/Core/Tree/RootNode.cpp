@@ -36,6 +36,7 @@
 #include "AutomationEvent.h"
 #include "ProjectMetadata.h"
 #include "WorkspaceMenu.h"
+#include "JsonSerializer.h"
 
 #include "MainLayout.h"
 #include "Workspace.h"
@@ -46,7 +47,6 @@ RootNode::RootNode(const String &name) :
 
 String RootNode::getName() const noexcept
 {
-    // TODO: if user is logged in, show his name rather than default value?
     return TRANS(I18n::Tree::root);
 }
 
@@ -166,28 +166,6 @@ static VersionControlNode *addVCS(TreeNode *parent)
     return vcs;
 }
 
-static PianoTrackNode *addPianoTrack(TreeNode *parent, const String &name)
-{
-    auto *item = new PianoTrackNode(name);
-    const Clip clip(item->getPattern());
-    item->getPattern()->insert(clip, false);
-    parent->addChildNode(item);
-    return item;
-}
-
-static MidiTrackNode *addAutoLayer(TreeNode *parent, const String &name, int controllerNumber)
-{
-    auto *item = new AutomationTrackNode(name);
-    const Clip clip(item->getPattern());
-    item->getPattern()->insert(clip, false);
-    item->setTrackControllerNumber(controllerNumber, false);
-    auto *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
-    parent->addChildNode(item);
-    itemLayer->insert(AutomationEvent(itemLayer, 0.f, 0.5f), false);
-    itemLayer->insert(AutomationEvent(itemLayer, BEATS_PER_BAR * 4, 0.5f), false);
-    return item;
-}
-
 void RootNode::importMidi(const File &file)
 {
     auto *project = new ProjectNode(file.getFileNameWithoutExtension());
@@ -196,47 +174,24 @@ void RootNode::importMidi(const File &file)
     project->importMidi(file);
 }
 
-// someday this all should be reworked into xml/json template based generator:
 ProjectNode *RootNode::createDefaultProjectChildren(ProjectNode *project)
 {
     addVCS(project);
     project->addChildNode(new PatternEditorNode());
 
+    static JsonSerializer js;
+    static const auto exampleData =
+        String(BinaryData::exampleTemplate_json, BinaryData::exampleTemplate_jsonSize);
+
+    const auto exampleProject = js.loadFromString(exampleData);
+
+    // only load the content, i.e. tracks and the timeline:
+    TreeNodeSerializer::deserializeChildren(*project, exampleProject);
+
+    forEachChildWithType(exampleProject, node, Serialization::Core::projectTimeline)
     {
-        auto *t1 = addPianoTrack(project, "Melodic");
-        auto *s1 = static_cast<PianoSequence *>(t1->getSequence());
-        // the lick reigns supreme:
-        s1->insert(Note(s1, MIDDLE_C, 0.f, 1.f, 0.5f), false);
-        s1->insert(Note(s1, MIDDLE_C + 2, 1.f, 1.f, 0.5f), false);
-        s1->insert(Note(s1, MIDDLE_C + 3, 2.f, 1.f, 0.5f), false);
-        s1->insert(Note(s1, MIDDLE_C + 5, 3.f, 1.f, 0.5f), false);
-        s1->insert(Note(s1, MIDDLE_C + 2, 4.f, 2.f, 0.5f), false);
-        s1->insert(Note(s1, MIDDLE_C - 2, 6.f, 1.f, 0.5f), false);
-        s1->insert(Note(s1, MIDDLE_C, 7.f, 9.f, 0.5f), false);
-        t1->setTrackColour(Colours::orangered, true);
+        project->getTimeline()->deserialize(node);
     }
-
-    {
-        auto *t2 = addPianoTrack(project, "Arps");
-        auto *s2 = static_cast<PianoSequence *>(t2->getSequence());
-        s2->insert(Note(s2, MIDDLE_C - 12, 0.f, 16.f, 0.25f), false);
-        t2->setTrackColour(Colours::royalblue, true);
-    }
-
-    {
-        auto *t3 = addPianoTrack(project, "Counterpoint");
-        auto *s3 = static_cast<PianoSequence *>(t3->getSequence());
-        s3->insert(Note(s3, MIDDLE_C - 24, 0.f, 16.f, 0.25f), false);
-        t3->setTrackColour(Colours::gold, true);
-    }
-
-    addAutoLayer(project, "Tempo", MidiTrack::tempoController)->setTrackColour(Colours::floralwhite, true);
-
-    auto *ks = static_cast<KeySignaturesSequence *>(project->getTimeline()->getKeySignatures()->getSequence());
-    ks->insert(KeySignatureEvent(ks, Scale::getNaturalMinorScale(), 0.f, 0), false);
-
-    auto *ts = static_cast<TimeSignaturesSequence *>(project->getTimeline()->getTimeSignatures()->getSequence());
-    ts->insert(TimeSignatureEvent(ts, 0.f, 4, 4), false);
 
     project->broadcastReloadProjectContent();
     const auto range = project->broadcastChangeProjectBeatRange();

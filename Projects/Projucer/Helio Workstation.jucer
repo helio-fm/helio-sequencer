@@ -137,6 +137,8 @@
       <FILE id="YgjNxN" name="scales.json" compile="0" resource="1" file="../../Resources/scales.json"/>
       <FILE id="XeVaag" name="translations.json" compile="0" resource="1"
             file="../../Resources/translations.json"/>
+      <FILE id="HU2yv8" name="exampleTemplate.json" compile="0" resource="1"
+            file="../../Resources/exampleTemplate.json"/>
     </GROUP>
     <GROUP id="{D7C7CF10-6E05-4F4B-8239-EAE45F06DF85}" name="Source">
       <GROUP id="{F2A6D338-1D87-9C43-B3BB-5AFE01EEE084}" name="Core">

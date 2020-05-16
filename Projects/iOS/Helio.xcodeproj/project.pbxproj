@@ -1081,6 +1081,13 @@
 			path = ../../Source/UI/Dialogs/ModalDialogConfirmation.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		279CD6A2CD76BF051A0244AE = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.json;
+			name = exampleTemplate.json;
+			path = ../../Resources/exampleTemplate.json;
+			sourceTree = "SOURCE_ROOT";
+		};
 		28262B2984B2A6E1C85FE299 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -6038,6 +6045,7 @@
 				2FD4FA713EBE1E4DD9117FC9,
 				0B2A9FFEE1E8C7B196102E03,
 				A5406EDACDF2D97A3E5C29E0,
+				279CD6A2CD76BF051A0244AE,
 			);
 			name = Resources;
 			sourceTree = "<group>";

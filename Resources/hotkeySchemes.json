@@ -29,18 +29,17 @@
         { "command": "CommandPaletteWithMode", "key": "Shift + 1" },
         { "command": "CommandPaletteWithMode", "key": "Shift + 2" },
 
-        { "command": "ShowRootPage", "key": "Home" },
         { "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
         { "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
         { "command": "ShowPreviousPage", "key": "Alt + Cursor Left" },
         { "command": "ShowNextPage", "key": "Command + Cursor Right" },
         { "command": "ShowNextPage", "key": "Control + Cursor Right" },
         { "command": "ShowNextPage", "key": "Alt + Cursor Right" },
-        { "command": "SwitchToEditMode", "key": "Command + 1" },
-        { "command": "SwitchToArrangeMode", "key": "Command + 2" },
-        { "command": "SwitchToVersioningMode", "key": "Command + 3" },
+
+        { "command": "ShowRootPage", "key": "Home" },
         { "command": "SwitchToEditMode", "key": "Page Up" },
-        { "command": "SwitchToArrangeMode", "key": "Page Down" }
+        { "command": "SwitchToArrangeMode", "key": "Page Down" },
+        { "command": "SwitchToVersioningMode", "key": "End" }
       ]
     },
     {

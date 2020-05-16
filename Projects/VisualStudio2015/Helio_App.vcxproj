@@ -3674,6 +3674,7 @@
     <None Include="..\..\Resources\hotkeySchemes.json"/>
     <None Include="..\..\Resources\scales.json"/>
     <None Include="..\..\Resources\translations.json"/>
+    <None Include="..\..\Resources\exampleTemplate.json"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\oboe\readme.md"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>

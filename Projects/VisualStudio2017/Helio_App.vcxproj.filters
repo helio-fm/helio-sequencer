@@ -7142,6 +7142,9 @@
     <None Include="..\..\Resources\translations.json">
       <Filter>Helio\Resources</Filter>
     </None>
+    <None Include="..\..\Resources\exampleTemplate.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt">
       <Filter>JUCE Modules\juce_audio_devices\native\oboe</Filter>
     </None>

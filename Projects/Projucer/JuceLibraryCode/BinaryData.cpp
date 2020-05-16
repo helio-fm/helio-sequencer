@@ -12108,18 +12108,17 @@ static const unsigned char temp_binary_data_105[] =
 "        { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 1\" },\n"
 "        { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 2\" },\n"
 "\n"
-"        { \"command\": \"ShowRootPage\", \"key\": \"Home\" },\n"
 "        { \"command\": \"ShowPreviousPage\", \"key\": \"Command + Cursor Left\" },\n"
 "        { \"command\": \"ShowPreviousPage\", \"key\": \"Control + Cursor Left\" },\n"
 "        { \"command\": \"ShowPreviousPage\", \"key\": \"Alt + Cursor Left\" },\n"
 "        { \"command\": \"ShowNextPage\", \"key\": \"Command + Cursor Right\" },\n"
 "        { \"command\": \"ShowNextPage\", \"key\": \"Control + Cursor Right\" },\n"
 "        { \"command\": \"ShowNextPage\", \"key\": \"Alt + Cursor Right\" },\n"
-"        { \"command\": \"SwitchToEditMode\", \"key\": \"Command + 1\" },\n"
-"        { \"command\": \"SwitchToArrangeMode\", \"key\": \"Command + 2\" },\n"
-"        { \"command\": \"SwitchToVersioningMode\", \"key\": \"Command + 3\" },\n"
+"\n"
+"        { \"command\": \"ShowRootPage\", \"key\": \"Home\" },\n"
 "        { \"command\": \"SwitchToEditMode\", \"key\": \"Page Up\" },\n"
-"        { \"command\": \"SwitchToArrangeMode\", \"key\": \"Page Down\" }\n"
+"        { \"command\": \"SwitchToArrangeMode\", \"key\": \"Page Down\" },\n"
+"        { \"command\": \"SwitchToVersioningMode\", \"key\": \"End\" }\n"
 "      ]\n"
 "    },\n"
 "    {\n"
@@ -14515,6 +14514,28 @@ static const unsigned char temp_binary_data_107[] =
 
 const char* translations_json = (const char*) temp_binary_data_107;
 
+//================== exampleTemplate.json ==================
+static const unsigned char temp_binary_data_108[] =
+"{\"project\":{\"name\":\"Example Project\",\"projectInfo\":{\"description\":\"The Lick Reigns Supreme\",\"license\":\"Public Domain\",\"author\":\"Helio Example\",\"projectTimeStamp\":\"1591432978939\"},\"projectTimeline\":{\"annotations\":{},\"timeS"
+"ignatures\":{\"timeSignature\":{\"id\":\"uZ\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":[{\"id\":\"Uw\",\"key\":2,\"ts\":0,\"scale\":{\"name\":\"Dorian\",\"period\":12,\"intervals\":\"2 1 2 2 2 1 2\"}},{\"id\":\""
+"x3\",\"key\":2,\"ts\":128,\"scale\":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}]}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Alt\",\"colour\":\"ffadff2f\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{"
+"\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Va\"}},\"track\":{\"note\":[{\"id\":\"LM\",\"key\":57,\"ts\":12,\"len\":20,\"vol\":315},{\"id\":\"GT\",\"key\":60,\"ts\":32,\"len\":16,\"vol\":330},{\"id\":\"V8\",\"key\":57,\"ts\":48,\"len\":16,\"vo"
+"l\":244},{\"id\":\"b3\",\"key\":59,\"ts\":66,\"len\":62,\"vol\":236},{\"id\":\"dv\",\"key\":57,\"ts\":130,\"len\":62,\"vol\":271},{\"id\":\"ZR\",\"key\":54,\"ts\":195,\"len\":141,\"vol\":346}]}},{\"type\":\"pianoTrack\",\"name\":\"Alt 2\",\"colour\":"
+"\"ff4169e1\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Bx\"}},\"track\":{\"note\":[{\"id\":\"rO\",\"key\":53,\"ts\":8,\"len\":24,\"vol\":251},{\"id\":\"IO\",\"key\":55,\"ts\":"
+"32,\"len\":16,\"vol\":238},{\"id\":\"Gz\",\"key\":53,\"ts\":48,\"len\":16,\"vol\":285},{\"id\":\"4q\",\"key\":50,\"ts\":65,\"len\":15,\"vol\":263},{\"id\":\"7s\",\"key\":55,\"ts\":80,\"len\":32,\"vol\":326},{\"id\":\"CE\",\"key\":53,\"ts\":112,\"len\""
+":16,\"vol\":252},{\"id\":\"Lz\",\"key\":52,\"ts\":129,\"len\":15,\"vol\":306},{\"id\":\"Mn\",\"key\":50,\"ts\":144,\"len\":16,\"vol\":241},{\"id\":\"Dm\",\"key\":52,\"ts\":160,\"len\":32,\"vol\":390},{\"id\":\"a4\",\"key\":50,\"ts\":193,\"len\":127,\""
+"vol\":245}]}},{\"type\":\"pianoTrack\",\"name\":\"Bass\",\"colour\":\"ff9400d3\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"qX\"}},\"track\":{\"note\":[{\"id\":\"AA\",\"key\":3"
+"8,\"ts\":0,\"len\":32,\"vol\":375},{\"id\":\"Uh\",\"key\":36,\"ts\":32,\"len\":16,\"vol\":387},{\"id\":\"Fq\",\"key\":38,\"ts\":48,\"len\":16,\"vol\":341},{\"id\":\"9G\",\"key\":31,\"ts\":64,\"len\":64,\"vol\":385},{\"id\":\"Xh\",\"key\":33,\"ts\":12"
+"8,\"len\":64,\"vol\":324},{\"id\":\"h9\",\"key\":38,\"ts\":192,\"len\":320,\"vol\":400}]}},{\"type\":\"pianoTrack\",\"name\":\"Lick\",\"colour\":\"ffff4500\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\""
+":0,\"vol\":1024,\"id\":\"kL\"}},\"track\":{\"note\":[{\"id\":\"cj\",\"key\":62,\"ts\":16,\"len\":16,\"vol\":562},{\"id\":\"d2\",\"key\":64,\"ts\":32,\"len\":16,\"vol\":500},{\"id\":\"Lg\",\"key\":65,\"ts\":48,\"len\":16,\"vol\":541},{\"id\":\"A6\",\""
+"key\":67,\"ts\":67,\"len\":21,\"vol\":514},{\"id\":\"GU\",\"key\":65,\"ts\":88,\"len\":8,\"vol\":502},{\"id\":\"3r\",\"key\":64,\"ts\":96,\"len\":16,\"vol\":527},{\"id\":\"cm\",\"key\":62,\"ts\":112,\"len\":16,\"vol\":559},{\"id\":\"bd\",\"key\":61,\""
+"ts\":131,\"len\":13,\"vol\":540},{\"id\":\"fQ\",\"key\":62,\"ts\":144,\"len\":32,\"vol\":526},{\"id\":\"av\",\"key\":61,\"ts\":176,\"len\":16,\"vol\":557},{\"id\":\"5u\",\"key\":62,\"ts\":198,\"len\":122,\"vol\":512}]}},{\"type\":\"automationTrack\","
+"\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Om\"}},\"automation\":{\"event\":[{\"id\":\"NJ\",\"value\":0.919496,\"curve\":0.237210,\""
+"ts\":0},{\"id\":\"Yf\",\"value\":0.244512,\"curve\":1.000000,\"ts\":64},{\"id\":\"Qe\",\"value\":0.424625,\"curve\":0.000000,\"ts\":128},{\"id\":\"Sk\",\"value\":0.244914,\"curve\":0.500000,\"ts\":256}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\""
+"}]}}";
+
+const char* exampleTemplate_json = (const char*) temp_binary_data_108;
+
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 {
@@ -14631,9 +14652,10 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 13753; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 13613; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3513; return scales_json;
         case 0xf8655f25:  numBytes = 142055; return translations_json;
+        case 0x7813d043:  numBytes = 3287; return exampleTemplate_json;
         default: break;
     }
 
@@ -14750,7 +14772,8 @@ const char* namedResourceList[] =
     "colourSchemes_json",
     "hotkeySchemes_json",
     "scales_json",
-    "translations_json"
+    "translations_json",
+    "exampleTemplate_json"
 };
 
 const char* originalFilenames[] =
@@ -14862,7 +14885,8 @@ const char* originalFilenames[] =
     "colourSchemes.json",
     "hotkeySchemes.json",
     "scales.json",
-    "translations.json"
+    "translations.json",
+    "exampleTemplate.json"
 };
 
 const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)
