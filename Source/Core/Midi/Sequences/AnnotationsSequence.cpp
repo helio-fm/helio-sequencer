@@ -38,10 +38,10 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence, short 
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
-        const MidiMessage &message = sequence.getEventPointer(i)->message;
+        const auto &message = sequence.getEventPointer(i)->message;
         if (message.isTextMetaEvent() && !message.isTrackNameEvent())
         {
-            const String text = message.getTextFromTextMetaEvent();
+            const auto text = message.getTextFromTextMetaEvent().replaceCharacters("\r\n\t", "   ");
             const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
             const AnnotationEvent annotation(this, startBeat, text, Colours::white);
             this->importMidiEvent<AnnotationEvent>(annotation);

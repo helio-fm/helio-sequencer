@@ -48,7 +48,7 @@ OpenProjectButton::OpenProjectButton()
     //[UserPreSize]
     this->openProjectLabel->setInterceptsMouseClicks(false, false);
     this->clickHandler->onClick = []() {
-        App::Workspace().importProject("*.helio;*.hp");
+        App::Workspace().importProject("*.helio;*.hp;*.mid;*.midi");
     };
     //[/UserPreSize]
 
