@@ -209,7 +209,7 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
         }
     }
 
-    return true;
+    return false;
 }
 
 void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool deleteRemotely)

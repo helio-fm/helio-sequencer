@@ -165,6 +165,7 @@ void UserProfile::onProjectLocalInfoUpdated(const String &id, const String &titl
     if (auto *project = this->findProject(id))
     {
         project->updateLocalInfo(id, title, path);
+        this->projects.sort(kProjectsSort);
     }
     else
     {
@@ -179,6 +180,7 @@ void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
     if (auto *project = this->findProject(info.getId()))
     {
         project->updateRemoteInfo(info);
+        this->projects.sort(kProjectsSort);
     }
     else
     {
@@ -219,6 +221,7 @@ void UserProfile::onProjectUnloaded(const String &id)
     if (auto *project = this->findProject(id))
     {
         project->updateLocalTimestampAsNow();
+        this->projects.sort(kProjectsSort);
     }
 
     this->sendChangeMessage();

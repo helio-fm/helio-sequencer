@@ -166,9 +166,9 @@ int RecentProjectInfo::compareElements(RecentProjectInfo *first, RecentProjectIn
         return 0;
     }
 
-    const int64 firstLocalTime = first->local != nullptr ? first->local->lastModifiedMs : 0;
-    const int64 secondLocalTime = second->local != nullptr ? second->local->lastModifiedMs : 0;
-    return int(secondLocalTime - firstLocalTime);
+    const auto firstLocalTime = first->getUpdatedAt();
+    const auto secondLocalTime = second->getUpdatedAt();
+    return (firstLocalTime < secondLocalTime) - (firstLocalTime > secondLocalTime);
 }
 
 SerializedData RecentProjectInfo::serialize() const
