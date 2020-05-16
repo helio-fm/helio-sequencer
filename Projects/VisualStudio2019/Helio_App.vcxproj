@@ -4121,6 +4121,8 @@
     <None Include="..\..\Resources\Icons\zoomIn.svg"/>
     <None Include="..\..\Resources\Icons\zoomOut.svg"/>
     <None Include="..\..\Resources\Icons\zoomTool.svg"/>
+    <None Include="..\..\Resources\Templates\emptyProject.json"/>
+    <None Include="..\..\Resources\Templates\exampleProject.json"/>
     <None Include="..\..\Resources\noise.png"/>
     <None Include="..\..\Resources\logo-v2.png"/>
     <None Include="..\..\Resources\arpeggiators.json"/>
@@ -4129,7 +4131,6 @@
     <None Include="..\..\Resources\hotkeySchemes.json"/>
     <None Include="..\..\Resources\scales.json"/>
     <None Include="..\..\Resources\translations.json"/>
-    <None Include="..\..\Resources\exampleTemplate.json"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\oboe\readme.md"/>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>

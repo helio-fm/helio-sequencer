@@ -1062,13 +1062,6 @@
 			path = ../../Source/UI/Dialogs/ModalDialogConfirmation.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		279CD6A2CD76BF051A0244AE = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.json;
-			name = exampleTemplate.json;
-			path = ../../Resources/exampleTemplate.json;
-			sourceTree = "SOURCE_ROOT";
-		};
 		28262B2984B2A6E1C85FE299 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1760,6 +1753,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = AnnotationDialog.cpp;
 			path = ../../Source/UI/Dialogs/AnnotationDialog.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		43B161DB77BF5E2674356D22 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.json;
+			name = exampleProject.json;
+			path = ../../Resources/Templates/exampleProject.json;
 			sourceTree = "SOURCE_ROOT";
 		};
 		43E6BC15D5A5453E576A18C4 = {
@@ -4443,6 +4443,13 @@
 			path = ../../Resources/colourSchemes.json;
 			sourceTree = "SOURCE_ROOT";
 		};
+		BDF9F0263233221FC93BF680 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.json;
+			name = emptyProject.json;
+			path = ../../Resources/Templates/emptyProject.json;
+			sourceTree = "SOURCE_ROOT";
+		};
 		BECF0A82747907D2ABEF46F0 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -6006,11 +6013,21 @@
 			name = Icons;
 			sourceTree = "<group>";
 		};
+		1AFEBE80310146EE997D5A01 = {
+			isa = PBXGroup;
+			children = (
+				BDF9F0263233221FC93BF680,
+				43B161DB77BF5E2674356D22,
+			);
+			name = Templates;
+			sourceTree = "<group>";
+		};
 		4D9753CCE9FBD39CF4A7E451 = {
 			isa = PBXGroup;
 			children = (
 				13E54480CE9573457EA9FE0E,
 				1079DC9C4876F5F7D6DC4C85,
+				1AFEBE80310146EE997D5A01,
 				F360A4402CC8ECCD04CD9B00,
 				827AAD5C6900DDCDB38378D9,
 				A55C893A1288B2A5F6F6030E,
@@ -6019,7 +6036,6 @@
 				2FD4FA713EBE1E4DD9117FC9,
 				0B2A9FFEE1E8C7B196102E03,
 				A5406EDACDF2D97A3E5C29E0,
-				279CD6A2CD76BF051A0244AE,
 			);
 			name = Resources;
 			sourceTree = "<group>";

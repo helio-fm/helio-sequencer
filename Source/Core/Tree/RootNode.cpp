@@ -109,8 +109,6 @@ ProjectNode *RootNode::openProject(const File &file)
             }
         }
 
-        App::Workspace().autosave();
-
         project->selectChildOfType<PianoTrackNode>();
         return project.release();
     }
@@ -138,51 +136,14 @@ ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
     return nullptr;
 }
 
-// this one is for desktops
-ProjectNode *RootNode::addDefaultProject(const File &projectLocation)
+static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const char *templateName)
 {
-    auto *newProject = new ProjectNode(projectLocation);
-    this->addChildNode(newProject);
-    return this->createDefaultProjectChildren(newProject);
-}
-
-// this one is for mobiles, where we don't have file chooser dialog
-ProjectNode *RootNode::addDefaultProject(const String &projectName)
-{
-    auto *newProject = new ProjectNode(projectName);
-    this->addChildNode(newProject);
-    return this->createDefaultProjectChildren(newProject);
-}
-
-static VersionControlNode *addVCS(TreeNode *parent)
-{
-    auto *vcs = new VersionControlNode();
-    parent->addChildNode(vcs);
-
-    // при создании рутовой ноды vcs, туда надо первым делом коммитить пустой ProjectInfo,
-    // чтобы оной в списке изменений всегда показывался как измененный (не добавленный)
-    // т.к. удалить его нельзя. и смущать юзера подобными надписями тоже не айс.
-    vcs->commitProjectInfo();
-    return vcs;
-}
-
-void RootNode::importMidi(const File &file)
-{
-    auto *project = new ProjectNode(file.getFileNameWithoutExtension());
-    this->addChildNode(project);
-    addVCS(project);
-    project->importMidi(file);
-}
-
-ProjectNode *RootNode::createDefaultProjectChildren(ProjectNode *project)
-{
-    addVCS(project);
-    project->addChildNode(new PatternEditorNode());
+    int numBytes = 0;
+    const auto *templatePtr = BinaryData::getNamedResource(templateName, numBytes);
+    jassert(numBytes > 0);
 
     static JsonSerializer js;
-    static const auto exampleData =
-        String(BinaryData::exampleTemplate_json, BinaryData::exampleTemplate_jsonSize);
-
+    const auto exampleData = String(templatePtr, numBytes);
     const auto exampleProject = js.loadFromString(exampleData);
 
     // only load the content, i.e. tracks and the timeline:
@@ -198,6 +159,61 @@ ProjectNode *RootNode::createDefaultProjectChildren(ProjectNode *project)
     project->broadcastChangeViewBeatRange(range.getX(), range.getY());
     project->getDocument()->save();
 
+    return project;
+}
+
+static void addAllEssentialProjectNodes(ProjectNode *parent)
+{
+    auto *vcs = new VersionControlNode();
+    parent->addChildNode(vcs);
+
+    // the vcs node must have a first commit
+    // with all non-deletable items committed:
+    vcs->commitProjectInfo();
+
+    // also a must have:
+    parent->addChildNode(new PatternEditorNode());
+}
+
+// this one is for desktops
+ProjectNode *RootNode::addEmptyProject(const File &projectLocation)
+{
+    auto *project = new ProjectNode(projectLocation);
+    this->addChildNode(project);
+    addAllEssentialProjectNodes(project);
+    createProjectContentFromTemplate(project, "emptyProject_json");
+    project->selectChildOfType<PianoTrackNode>();
+    return project;
+}
+
+// this one is for mobiles, where we don't have file chooser dialog
+ProjectNode *RootNode::addEmptyProject(const String &projectName)
+{
+    auto *project = new ProjectNode(projectName);
+    this->addChildNode(project);
+    addAllEssentialProjectNodes(project);
+    createProjectContentFromTemplate(project, "emptyProject_json");
+    project->selectChildOfType<PianoTrackNode>();
+    return project;
+}
+
+ProjectNode *RootNode::addExampleProject()
+{
+    auto *project = new ProjectNode(TRANS(I18n::Defaults::newProjectName));
+    this->addChildNode(project);
+    addAllEssentialProjectNodes(project);
+    createProjectContentFromTemplate(project, "exampleProject_json");
+    project->selectChildOfType<PianoTrackNode>();
+    return project;
+}
+
+ProjectNode *RootNode::importMidi(const File &file)
+{
+    auto *project = new ProjectNode(file.getFileNameWithoutExtension());
+    this->addChildNode(project);
+    addAllEssentialProjectNodes(project);
+    project->importMidi(file);
+    project->selectChildOfType<PianoTrackNode>();
     return project;
 }
 

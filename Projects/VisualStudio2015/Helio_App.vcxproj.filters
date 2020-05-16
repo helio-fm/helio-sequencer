@@ -8,6 +8,9 @@
     <Filter Include="Helio\Resources\Icons">
       <UniqueIdentifier>{408F7FE0-B4E5-2CBD-2A2E-970F3A7C6943}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Resources\Templates">
+      <UniqueIdentifier>{BFB6FB5F-20F9-E42F-5A1D-9E9754E2317D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Resources">
       <UniqueIdentifier>{362F8081-11C1-8EEC-992C-BAF083C649FB}</UniqueIdentifier>
     </Filter>
@@ -7118,6 +7121,12 @@
     <None Include="..\..\Resources\Icons\zoomTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Templates\emptyProject.json">
+      <Filter>Helio\Resources\Templates</Filter>
+    </None>
+    <None Include="..\..\Resources\Templates\exampleProject.json">
+      <Filter>Helio\Resources\Templates</Filter>
+    </None>
     <None Include="..\..\Resources\noise.png">
       <Filter>Helio\Resources</Filter>
     </None>
@@ -7140,9 +7149,6 @@
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\translations.json">
-      <Filter>Helio\Resources</Filter>
-    </None>
-    <None Include="..\..\Resources\exampleTemplate.json">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt">

@@ -28,7 +28,6 @@
 #include "SettingsNode.h"
 #include "OrchestraPitNode.h"
 #include "VersionControlNode.h"
-#include "MidiTrackNode.h"
 #include "ProjectNode.h"
 #include "RootNode.h"
 #include "Dashboard.h"
@@ -164,19 +163,17 @@ void Workspace::createEmptyProject()
     
     if (fc.browseForFileToSave(true))
     {
-        if (auto *p = this->treeRoot->addDefaultProject(fc.getResult()))
+        if (auto *p = this->treeRoot->addEmptyProject(fc.getResult()))
         {
             this->userProfile.onProjectLocalInfoUpdated(p->getId(),
                 p->getName(), p->getDocument()->getFullPath());
-            p->selectChildOfType<MidiTrackNode>();
         }
     }
 #else
-    if (auto *p = this->treeRoot->addDefaultProject(newProjectName))
+    if (auto *p = this->treeRoot->addEmptyProject(newProjectName))
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
-        p->selectChildOfType<MidiTrackNode>();
     }
 #endif
 }
@@ -345,11 +342,10 @@ void Workspace::failedDeserializationFallback()
     TreeNode *instruments = new OrchestraPitNode();
     this->treeRoot->addChildNode(instruments);
     
-    if (auto *p = this->treeRoot->addDefaultProject(TRANS(I18n::Defaults::newProjectName)))
+    if (auto *p = this->treeRoot->addExampleProject())
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
-        p->selectChildOfType<MidiTrackNode>();
     }
     
     this->wasInitialized = true;
@@ -368,13 +364,21 @@ void Workspace::importProject(const String &filePattern)
         const String &extension = file.getFileExtension();
         if (extension == ".mid" || extension == ".midi" || extension == ".smf")
         {
-            this->treeRoot->importMidi(file);
-            this->autosave();
+            if (auto *p = this->treeRoot->importMidi(file))
+            {
+                this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+                    p->getName(), p->getDocument()->getFullPath());
+                this->autosave();
+            }
         }
         else
         {
-            this->treeRoot->openProject(file);
-            this->autosave();
+            if (auto *p = this->treeRoot->openProject(file))
+            {
+                this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+                    p->getName(), p->getDocument()->getFullPath());
+                this->autosave();
+            }
         }
     }
 #endif

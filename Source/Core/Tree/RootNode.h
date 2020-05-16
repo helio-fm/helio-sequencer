@@ -38,18 +38,17 @@ public:
     void showPage() override;
     void recreatePage() override;
 
-    void importMidi(const File &file);
-
     //===------------------------------------------------------------------===//
     // Children
     //===------------------------------------------------------------------===//
 
+    ProjectNode *importMidi(const File &file);
     ProjectNode *openProject(const File &file);
     ProjectNode *checkoutProject(const String &id, const String &name);
 
-    ProjectNode *addDefaultProject(const File &projectLocation);
-    ProjectNode *addDefaultProject(const String &projectName);
-    ProjectNode *createDefaultProjectChildren(ProjectNode *newProject);
+    ProjectNode *addExampleProject();
+    ProjectNode *addEmptyProject(const File &projectLocation);
+    ProjectNode *addEmptyProject(const String &projectName);
     
     //===------------------------------------------------------------------===//
     // Menu

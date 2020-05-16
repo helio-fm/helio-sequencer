@@ -11551,18 +11551,51 @@ static const unsigned char temp_binary_data_99[] =
 
 const char* zoomTool_svg = (const char*) temp_binary_data_99;
 
-//================== noise.png ==================
+//================== emptyProject.json ==================
 static const unsigned char temp_binary_data_100[] =
+"{\"project\":{\"name\":\"Empty\",\"projectTimeline\":{\"annotations\":{},\"timeSignatures\":{\"timeSignature\":{\"id\":\"uZ\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":{\"id\":\"Uw\",\"key\":0,\"ts\":0,\"scale\""
+":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}}},\"node\":[{\"type\":\"patternSet\",\"name\":\"Patterns\"},{\"type\":\"pianoTrack\",\"name\":\"Bass\",\"colour\":\"ff9400d3\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,"
+"\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"qX\"}},\"track\":{\"note\":{\"id\":\"h9\",\"key\":36,\"ts\":0,\"len\":512,\"vol\":400}}},{\"type\":\"pianoTrack\",\"name\":\"Melody\",\"colour\":\"ffff4500\",\"channel\":1,\"instrumentId"
+"\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"kL\"}},\"track\":{\"note\":{\"id\":\"5u\",\"key\":60,\"ts\":0,\"len\":512,\"vol\":512}}},{\"type\":\"automationTrack\",\"name\":\"Tempo\",\"colour\":\"fffffaf0\""
+",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Om\"}},\"automation\":{\"event\":[{\"id\":\"NJ\",\"value\":0.5,\"curve\":0.5,\"ts\":0},{\"id\":\"Sk\",\"value\":0.5,\"curve\":0.5,\""
+"ts\":512}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}],\"projectInfo\":{\"projectTimeStamp\":\"1591603725382\",\"license\":\"Public Domain\",\"author\":\"Helio\",\"description\":\"\"}}}";
+
+const char* emptyProject_json = (const char*) temp_binary_data_100;
+
+//================== exampleProject.json ==================
+static const unsigned char temp_binary_data_101[] =
+"{\"project\":{\"name\":\"Example Project\",\"projectInfo\":{\"description\":\"The Lick Reigns Supreme\",\"license\":\"Public Domain\",\"author\":\"Helio Example\",\"projectTimeStamp\":\"1591432978939\"},\"projectTimeline\":{\"annotations\":{},\"timeS"
+"ignatures\":{\"timeSignature\":{\"id\":\"uZ\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":[{\"id\":\"Uw\",\"key\":2,\"ts\":0,\"scale\":{\"name\":\"Dorian\",\"period\":12,\"intervals\":\"2 1 2 2 2 1 2\"}},{\"id\":\""
+"x3\",\"key\":2,\"ts\":128,\"scale\":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}]}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Alt\",\"colour\":\"ffadff2f\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{"
+"\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Va\"}},\"track\":{\"note\":[{\"id\":\"LM\",\"key\":57,\"ts\":12,\"len\":20,\"vol\":315},{\"id\":\"GT\",\"key\":60,\"ts\":32,\"len\":16,\"vol\":330},{\"id\":\"V8\",\"key\":57,\"ts\":48,\"len\":16,\"vo"
+"l\":244},{\"id\":\"b3\",\"key\":59,\"ts\":66,\"len\":62,\"vol\":236},{\"id\":\"dv\",\"key\":57,\"ts\":130,\"len\":62,\"vol\":271},{\"id\":\"ZR\",\"key\":54,\"ts\":195,\"len\":141,\"vol\":346}]}},{\"type\":\"pianoTrack\",\"name\":\"Alt 2\",\"colour\":"
+"\"ff4169e1\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Bx\"}},\"track\":{\"note\":[{\"id\":\"rO\",\"key\":53,\"ts\":8,\"len\":24,\"vol\":251},{\"id\":\"IO\",\"key\":55,\"ts\":"
+"32,\"len\":16,\"vol\":238},{\"id\":\"Gz\",\"key\":53,\"ts\":48,\"len\":16,\"vol\":285},{\"id\":\"4q\",\"key\":50,\"ts\":65,\"len\":15,\"vol\":263},{\"id\":\"7s\",\"key\":55,\"ts\":80,\"len\":32,\"vol\":326},{\"id\":\"CE\",\"key\":53,\"ts\":112,\"len\""
+":16,\"vol\":252},{\"id\":\"Lz\",\"key\":52,\"ts\":129,\"len\":15,\"vol\":306},{\"id\":\"Mn\",\"key\":50,\"ts\":144,\"len\":16,\"vol\":241},{\"id\":\"Dm\",\"key\":52,\"ts\":160,\"len\":32,\"vol\":390},{\"id\":\"a4\",\"key\":50,\"ts\":193,\"len\":127,\""
+"vol\":245}]}},{\"type\":\"pianoTrack\",\"name\":\"Bass\",\"colour\":\"ff9400d3\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"qX\"}},\"track\":{\"note\":[{\"id\":\"AA\",\"key\":3"
+"8,\"ts\":0,\"len\":32,\"vol\":375},{\"id\":\"Uh\",\"key\":36,\"ts\":32,\"len\":16,\"vol\":387},{\"id\":\"Fq\",\"key\":38,\"ts\":48,\"len\":16,\"vol\":341},{\"id\":\"9G\",\"key\":31,\"ts\":64,\"len\":64,\"vol\":385},{\"id\":\"Xh\",\"key\":33,\"ts\":12"
+"8,\"len\":64,\"vol\":324},{\"id\":\"h9\",\"key\":38,\"ts\":192,\"len\":320,\"vol\":400}]}},{\"type\":\"pianoTrack\",\"name\":\"Lick\",\"colour\":\"ffff4500\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\""
+":0,\"vol\":1024,\"id\":\"kL\"}},\"track\":{\"note\":[{\"id\":\"cj\",\"key\":62,\"ts\":16,\"len\":16,\"vol\":562},{\"id\":\"d2\",\"key\":64,\"ts\":32,\"len\":16,\"vol\":500},{\"id\":\"Lg\",\"key\":65,\"ts\":48,\"len\":16,\"vol\":541},{\"id\":\"A6\",\""
+"key\":67,\"ts\":67,\"len\":21,\"vol\":514},{\"id\":\"GU\",\"key\":65,\"ts\":88,\"len\":8,\"vol\":502},{\"id\":\"3r\",\"key\":64,\"ts\":96,\"len\":16,\"vol\":527},{\"id\":\"cm\",\"key\":62,\"ts\":112,\"len\":16,\"vol\":559},{\"id\":\"bd\",\"key\":61,\""
+"ts\":131,\"len\":13,\"vol\":540},{\"id\":\"fQ\",\"key\":62,\"ts\":144,\"len\":32,\"vol\":526},{\"id\":\"av\",\"key\":61,\"ts\":176,\"len\":16,\"vol\":557},{\"id\":\"5u\",\"key\":62,\"ts\":198,\"len\":122,\"vol\":512}]}},{\"type\":\"automationTrack\","
+"\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Om\"}},\"automation\":{\"event\":[{\"id\":\"NJ\",\"value\":0.919496,\"curve\":0.237210,\""
+"ts\":0},{\"id\":\"Yf\",\"value\":0.244512,\"curve\":1.000000,\"ts\":64},{\"id\":\"Qe\",\"value\":0.424625,\"curve\":0.000000,\"ts\":128},{\"id\":\"Sk\",\"value\":0.244914,\"curve\":0.500000,\"ts\":256}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\""
+"}]}}";
+
+const char* exampleProject_json = (const char*) temp_binary_data_101;
+
+//================== noise.png ==================
+static const unsigned char temp_binary_data_102[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,48,0,0,0,48,8,6,0,0,0,87,2,249,135,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,0,0,244,73,68,65,84,104,5,213,146,201,13,192,48,16,2,211,131,235,117,143,238,40,7,18,145,64,219,192,228,99,145,215,176,
 204,181,247,190,175,247,251,222,181,214,77,203,31,251,255,157,115,84,198,63,104,217,220,172,151,170,142,85,215,181,105,170,52,47,75,153,166,245,20,84,149,162,79,79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,
 114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,17,212,83,80,85,138,82,61,13,45,71,25,76,160,170,99,245,117,104,154,42,205,139,177,101,4,245,20,84,149,162,84,
 79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,9,244,1,171,21,46,
 170,68,251,251,242,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* noise_png = (const char*) temp_binary_data_100;
+const char* noise_png = (const char*) temp_binary_data_102;
 
 //================== logo-v2.png ==================
-static const unsigned char temp_binary_data_101[] =
+static const unsigned char temp_binary_data_103[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,3,0,80,76,84,69,0,0,0,202,42,42,211,43,27,207,43,27,213,53,39,203,23,6,210,46,33,211,48,30,212,49,35,205,33,16,223,87,76,192,16,1,218,64,49,201,23,8,219,66,51,
 217,59,44,222,84,73,200,23,7,218,66,51,201,21,5,221,77,64,209,29,15,194,17,3,215,53,40,221,75,61,215,51,35,220,71,58,193,18,2,218,63,50,199,20,5,203,25,8,223,88,77,222,82,70,192,16,1,200,21,5,193,17,1,200,22,7,221,75,63,221,79,68,220,74,61,210,36,21,
 215,53,39,220,73,59,209,38,24,217,60,46,216,52,36,217,60,46,199,21,6,222,82,70,191,16,2,223,85,73,213,51,36,220,74,61,217,61,47,191,17,1,222,83,71,221,80,68,220,73,59,218,62,48,207,25,9,207,24,8,211,34,19,216,55,39,221,76,64,214,47,33,208,28,12,216,54,
@@ -11919,10 +11952,10 @@ static const unsigned char temp_binary_data_101[] =
 23,0,224,11,64,213,143,85,57,139,166,180,170,31,83,0,224,6,160,14,4,202,8,230,159,74,202,195,249,21,0,140,1,184,39,112,246,153,69,214,255,143,128,82,0,224,5,64,21,209,204,63,53,47,20,0,120,2,136,105,254,169,180,2,128,113,0,91,165,84,92,243,79,37,165,
 82,106,11,0,110,0,219,248,230,255,248,35,176,5,128,17,0,49,206,63,53,47,0,192,13,160,74,89,212,165,21,0,184,58,77,88,228,37,167,12,33,132,16,66,8,33,132,16,122,173,254,1,159,34,174,167,160,212,112,218,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2_png = (const char*) temp_binary_data_101;
+const char* logov2_png = (const char*) temp_binary_data_103;
 
 //================== arpeggiators.json ==================
-static const unsigned char temp_binary_data_102[] =
+static const unsigned char temp_binary_data_104[] =
 "{\n"
 "  // TODO\n"
 "  \"arpeggiators\": {\n"
@@ -11931,10 +11964,10 @@ static const unsigned char temp_binary_data_102[] =
 "  }\n"
 "}";
 
-const char* arpeggiators_json = (const char*) temp_binary_data_102;
+const char* arpeggiators_json = (const char*) temp_binary_data_104;
 
 //================== chords.json ==================
-static const unsigned char temp_binary_data_103[] =
+static const unsigned char temp_binary_data_105[] =
 "{\n"
 "  /*\n"
 "    A number of chords that are easy to define with in-scale keys.\n"
@@ -11958,10 +11991,10 @@ static const unsigned char temp_binary_data_103[] =
 "  }\n"
 "}";
 
-const char* chords_json = (const char*) temp_binary_data_103;
+const char* chords_json = (const char*) temp_binary_data_105;
 
 //================== colourSchemes.json ==================
-static const unsigned char temp_binary_data_104[] =
+static const unsigned char temp_binary_data_106[] =
 "{\n"
 "  \"colourSchemes\": {\n"
 "    \"colourScheme\": [\n"
@@ -12073,10 +12106,10 @@ static const unsigned char temp_binary_data_104[] =
 "  }\n"
 "}";
 
-const char* colourSchemes_json = (const char*) temp_binary_data_104;
+const char* colourSchemes_json = (const char*) temp_binary_data_106;
 
 //================== hotkeySchemes.json ==================
-static const unsigned char temp_binary_data_105[] =
+static const unsigned char temp_binary_data_107[] =
 "{\n"
 "  \"hotkeySchemes\": {\n"
 "    \"hotkeyScheme\": { \"name\": \"Default\", \"group\": [\n"
@@ -12384,10 +12417,10 @@ static const unsigned char temp_binary_data_105[] =
 "  ]}\n"
 "}}";
 
-const char* hotkeySchemes_json = (const char*) temp_binary_data_105;
+const char* hotkeySchemes_json = (const char*) temp_binary_data_107;
 
 //================== scales.json ==================
-static const unsigned char temp_binary_data_106[] =
+static const unsigned char temp_binary_data_108[] =
 "{\n"
 "  /*\n"
 "    This is the list of most common scales (and their modes),\n"
@@ -12440,10 +12473,10 @@ static const unsigned char temp_binary_data_106[] =
 "  }\n"
 "}";
 
-const char* scales_json = (const char*) temp_binary_data_106;
+const char* scales_json = (const char*) temp_binary_data_108;
 
 //================== translations.json ==================
-static const unsigned char temp_binary_data_107[] =
+static const unsigned char temp_binary_data_109[] =
 { 123,34,116,114,97,110,115,108,97,116,105,111,110,115,34,58,123,34,108,111,99,97,108,101,34,58,91,13,10,123,34,105,100,34,58,34,114,117,34,44,34,110,97,109,101,34,58,34,208,160,209,131,209,129,209,129,208,186,208,184,208,185,34,44,34,112,108,117,114,97,
 108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,37,49,48,61,61,49,32,38,38,32,123,120,125,37,49,48,48,33,61,49,49,32,63,32,49,32,58,32,123,120,125,37,49,48,62,61,50,32,38,38,32,123,120,125,37,49,48,60,61,52,32,38,38,32,40,123,120,125,37,49,
 48,48,60,49,48,32,124,124,32,123,120,125,37,49,48,48,62,61,50,48,41,32,63,32,50,32,58,32,51,41,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,110,97,109,101,34,58,34,100,101,102,97,117,108,116,115,58,58,110,101,119,112,114,111,106,101,99,116,58,
@@ -14512,29 +14545,7 @@ static const unsigned char temp_binary_data_107[] =
 101,34,58,34,109,111,118,101,100,32,102,114,111,109,32,123,120,125,34,44,34,116,114,97,110,115,108,97,116,105,111,110,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,236,151,144,236,132,156,32,236,152,174,234,178,168,236,167,144,34,44,34,112,108,
 117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,44,13,10,93,125,125,0,0 };
 
-const char* translations_json = (const char*) temp_binary_data_107;
-
-//================== exampleTemplate.json ==================
-static const unsigned char temp_binary_data_108[] =
-"{\"project\":{\"name\":\"Example Project\",\"projectInfo\":{\"description\":\"The Lick Reigns Supreme\",\"license\":\"Public Domain\",\"author\":\"Helio Example\",\"projectTimeStamp\":\"1591432978939\"},\"projectTimeline\":{\"annotations\":{},\"timeS"
-"ignatures\":{\"timeSignature\":{\"id\":\"uZ\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":[{\"id\":\"Uw\",\"key\":2,\"ts\":0,\"scale\":{\"name\":\"Dorian\",\"period\":12,\"intervals\":\"2 1 2 2 2 1 2\"}},{\"id\":\""
-"x3\",\"key\":2,\"ts\":128,\"scale\":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}]}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Alt\",\"colour\":\"ffadff2f\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{"
-"\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Va\"}},\"track\":{\"note\":[{\"id\":\"LM\",\"key\":57,\"ts\":12,\"len\":20,\"vol\":315},{\"id\":\"GT\",\"key\":60,\"ts\":32,\"len\":16,\"vol\":330},{\"id\":\"V8\",\"key\":57,\"ts\":48,\"len\":16,\"vo"
-"l\":244},{\"id\":\"b3\",\"key\":59,\"ts\":66,\"len\":62,\"vol\":236},{\"id\":\"dv\",\"key\":57,\"ts\":130,\"len\":62,\"vol\":271},{\"id\":\"ZR\",\"key\":54,\"ts\":195,\"len\":141,\"vol\":346}]}},{\"type\":\"pianoTrack\",\"name\":\"Alt 2\",\"colour\":"
-"\"ff4169e1\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Bx\"}},\"track\":{\"note\":[{\"id\":\"rO\",\"key\":53,\"ts\":8,\"len\":24,\"vol\":251},{\"id\":\"IO\",\"key\":55,\"ts\":"
-"32,\"len\":16,\"vol\":238},{\"id\":\"Gz\",\"key\":53,\"ts\":48,\"len\":16,\"vol\":285},{\"id\":\"4q\",\"key\":50,\"ts\":65,\"len\":15,\"vol\":263},{\"id\":\"7s\",\"key\":55,\"ts\":80,\"len\":32,\"vol\":326},{\"id\":\"CE\",\"key\":53,\"ts\":112,\"len\""
-":16,\"vol\":252},{\"id\":\"Lz\",\"key\":52,\"ts\":129,\"len\":15,\"vol\":306},{\"id\":\"Mn\",\"key\":50,\"ts\":144,\"len\":16,\"vol\":241},{\"id\":\"Dm\",\"key\":52,\"ts\":160,\"len\":32,\"vol\":390},{\"id\":\"a4\",\"key\":50,\"ts\":193,\"len\":127,\""
-"vol\":245}]}},{\"type\":\"pianoTrack\",\"name\":\"Bass\",\"colour\":\"ff9400d3\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"qX\"}},\"track\":{\"note\":[{\"id\":\"AA\",\"key\":3"
-"8,\"ts\":0,\"len\":32,\"vol\":375},{\"id\":\"Uh\",\"key\":36,\"ts\":32,\"len\":16,\"vol\":387},{\"id\":\"Fq\",\"key\":38,\"ts\":48,\"len\":16,\"vol\":341},{\"id\":\"9G\",\"key\":31,\"ts\":64,\"len\":64,\"vol\":385},{\"id\":\"Xh\",\"key\":33,\"ts\":12"
-"8,\"len\":64,\"vol\":324},{\"id\":\"h9\",\"key\":38,\"ts\":192,\"len\":320,\"vol\":400}]}},{\"type\":\"pianoTrack\",\"name\":\"Lick\",\"colour\":\"ffff4500\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\""
-":0,\"vol\":1024,\"id\":\"kL\"}},\"track\":{\"note\":[{\"id\":\"cj\",\"key\":62,\"ts\":16,\"len\":16,\"vol\":562},{\"id\":\"d2\",\"key\":64,\"ts\":32,\"len\":16,\"vol\":500},{\"id\":\"Lg\",\"key\":65,\"ts\":48,\"len\":16,\"vol\":541},{\"id\":\"A6\",\""
-"key\":67,\"ts\":67,\"len\":21,\"vol\":514},{\"id\":\"GU\",\"key\":65,\"ts\":88,\"len\":8,\"vol\":502},{\"id\":\"3r\",\"key\":64,\"ts\":96,\"len\":16,\"vol\":527},{\"id\":\"cm\",\"key\":62,\"ts\":112,\"len\":16,\"vol\":559},{\"id\":\"bd\",\"key\":61,\""
-"ts\":131,\"len\":13,\"vol\":540},{\"id\":\"fQ\",\"key\":62,\"ts\":144,\"len\":32,\"vol\":526},{\"id\":\"av\",\"key\":61,\"ts\":176,\"len\":16,\"vol\":557},{\"id\":\"5u\",\"key\":62,\"ts\":198,\"len\":122,\"vol\":512}]}},{\"type\":\"automationTrack\","
-"\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"Om\"}},\"automation\":{\"event\":[{\"id\":\"NJ\",\"value\":0.919496,\"curve\":0.237210,\""
-"ts\":0},{\"id\":\"Yf\",\"value\":0.244512,\"curve\":1.000000,\"ts\":64},{\"id\":\"Qe\",\"value\":0.424625,\"curve\":0.000000,\"ts\":128},{\"id\":\"Sk\",\"value\":0.244914,\"curve\":0.500000,\"ts\":256}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\""
-"}]}}";
-
-const char* exampleTemplate_json = (const char*) temp_binary_data_108;
+const char* translations_json = (const char*) temp_binary_data_109;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -14647,6 +14658,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xc82285fd:  numBytes = 623; return zoomIn_svg;
         case 0x86a456a0:  numBytes = 537; return zoomOut_svg;
         case 0x100cd030:  numBytes = 498; return zoomTool_svg;
+        case 0x8453b03b:  numBytes = 1201; return emptyProject_json;
+        case 0xd91bf8d8:  numBytes = 3287; return exampleProject_json;
         case 0x3c71eb84:  numBytes = 317; return noise_png;
         case 0xe05deb51:  numBytes = 25962; return logov2_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
@@ -14655,7 +14668,6 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x25669f2b:  numBytes = 13613; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3513; return scales_json;
         case 0xf8655f25:  numBytes = 142055; return translations_json;
-        case 0x7813d043:  numBytes = 3287; return exampleTemplate_json;
         default: break;
     }
 
@@ -14765,6 +14777,8 @@ const char* namedResourceList[] =
     "zoomIn_svg",
     "zoomOut_svg",
     "zoomTool_svg",
+    "emptyProject_json",
+    "exampleProject_json",
     "noise_png",
     "logov2_png",
     "arpeggiators_json",
@@ -14772,8 +14786,7 @@ const char* namedResourceList[] =
     "colourSchemes_json",
     "hotkeySchemes_json",
     "scales_json",
-    "translations_json",
-    "exampleTemplate_json"
+    "translations_json"
 };
 
 const char* originalFilenames[] =
@@ -14878,6 +14891,8 @@ const char* originalFilenames[] =
     "zoomIn.svg",
     "zoomOut.svg",
     "zoomTool.svg",
+    "emptyProject.json",
+    "exampleProject.json",
     "noise.png",
     "logo-v2.png",
     "arpeggiators.json",
@@ -14885,8 +14900,7 @@ const char* originalFilenames[] =
     "colourSchemes.json",
     "hotkeySchemes.json",
     "scales.json",
-    "translations.json",
-    "exampleTemplate.json"
+    "translations.json"
 };
 
 const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)

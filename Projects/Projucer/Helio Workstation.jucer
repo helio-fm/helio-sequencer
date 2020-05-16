@@ -125,6 +125,12 @@
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
       </GROUP>
+      <GROUP id="{03B368B6-E773-F1D4-0B96-AA2CC86335DB}" name="Templates">
+        <FILE id="CFbwRz" name="emptyProject.json" compile="0" resource="1"
+              file="../../Resources/Templates/emptyProject.json"/>
+        <FILE id="QrZS1b" name="exampleProject.json" compile="0" resource="1"
+              file="../../Resources/Templates/exampleProject.json"/>
+      </GROUP>
       <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/noise.png"/>
       <FILE id="DQTpOG" name="logo-v2.png" compile="0" resource="1" file="../../Resources/logo-v2.png"/>
       <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
@@ -137,8 +143,6 @@
       <FILE id="YgjNxN" name="scales.json" compile="0" resource="1" file="../../Resources/scales.json"/>
       <FILE id="XeVaag" name="translations.json" compile="0" resource="1"
             file="../../Resources/translations.json"/>
-      <FILE id="HU2yv8" name="exampleTemplate.json" compile="0" resource="1"
-            file="../../Resources/exampleTemplate.json"/>
     </GROUP>
     <GROUP id="{D7C7CF10-6E05-4F4B-8239-EAE45F06DF85}" name="Source">
       <GROUP id="{F2A6D338-1D87-9C43-B3BB-5AFE01EEE084}" name="Core">
