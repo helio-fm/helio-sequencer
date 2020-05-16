@@ -205,7 +205,11 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 const float groupStartBeat = SequencerOperations::findStartBeat(selection);
                 forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    if (selection.shouldDisplayGhostNotes())
+                    {
+                        selectedNote->getRoll().showGhostNoteFor(selectedNote);
+                    }
+
                     selectedNote->startGroupScalingRight(groupStartBeat);
                 }
             }
@@ -213,7 +217,11 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             {
                 forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    if (selection.shouldDisplayGhostNotes())
+                    {
+                        selectedNote->getRoll().showGhostNoteFor(selectedNote);
+                    }
+
                     selectedNote->startResizingRight(shouldSendMidi);
                 }
             }
@@ -225,7 +233,11 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 const float groupEndBeat = SequencerOperations::findEndBeat(selection);
                 forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    if (selection.shouldDisplayGhostNotes())
+                    {
+                        selectedNote->getRoll().showGhostNoteFor(selectedNote);
+                    }
+
                     selectedNote->startGroupScalingLeft(groupEndBeat);
                 }
             }
@@ -233,7 +245,11 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             {
                 forEachSelectedNote(selection, selectedNote)
                 {
-                    if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                    if (selection.shouldDisplayGhostNotes())
+                    {
+                        selectedNote->getRoll().showGhostNoteFor(selectedNote);
+                    }
+
                     selectedNote->startResizingLeft(shouldSendMidi);
                 }
             }
@@ -243,7 +259,11 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             this->dragger.startDraggingComponent(this, e);
             forEachSelectedNote(selection, selectedNote)
             {
-                if (selection.shouldDisplayGhostNotes()) { selectedNote->getRoll().showGhostNoteFor(selectedNote); }
+                if (selection.shouldDisplayGhostNotes())
+                {
+                    selectedNote->getRoll().showGhostNoteFor(selectedNote);
+                }
+
                 selectedNote->startDragging(shouldSendMidi);
             }
         }

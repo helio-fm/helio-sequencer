@@ -563,7 +563,7 @@ int HybridRoll::getPlayheadPositionByBeat(double targetBeat, double parentWidth)
     return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
 }
 
-int HybridRoll::getXPositionByBeat(float targetBeat) const
+int HybridRoll::getXPositionByBeat(float targetBeat) const noexcept
 {
     return int((targetBeat - this->firstBeat) * this->beatWidth);
 }

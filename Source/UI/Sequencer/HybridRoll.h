@@ -179,7 +179,7 @@ public:
     // Misc
     //===------------------------------------------------------------------===//
 
-    int getXPositionByBeat(float targetBeat) const;
+    int getXPositionByBeat(float targetBeat) const noexcept;
     int getPlayheadPositionByBeat(double targetBeat, double parentWidth) const;
     float getRoundBeatSnapByXPosition(int x) const;
 

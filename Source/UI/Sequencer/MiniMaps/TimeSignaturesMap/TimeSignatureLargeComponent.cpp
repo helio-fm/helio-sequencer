@@ -94,7 +94,7 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::Roll::headerSnaps));
-    g.fillRect(0.f, 0.f, float(this->getWidth()), 3.f);
+    g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 3.f);
 
     constexpr float dashLength = 8.f;
 

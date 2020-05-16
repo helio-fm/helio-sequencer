@@ -30,7 +30,14 @@ public:
     ~AnnotationLargeComponent();
 
     //[UserMethods]
-    float getTextWidth() const override;
+    enum class State : uint8
+    {
+        None,
+        Dragging,
+        ResizingRight
+    };
+
+    float getTextWidth() const noexcept override;
     void updateContent() override;
     void setRealBounds(const Rectangle<float> bounds) override;
     //[/UserMethods]
@@ -49,20 +56,22 @@ private:
     //[UserVariables]
 
     ComponentDragger dragger;
-    AnnotationEvent anchor;
 
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
-    bool draggingState;
-    bool draggingHadCheckpoint;
+
+    State state = State::None;
+    bool hadCheckpoint = false;
 
     Font font;
     String text;
-    float textWidth;
+    float textWidth = 0.f;
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
-    bool mouseDownWasTriggered;
+    bool mouseDownWasTriggered = false;
+
+    bool canResize() const noexcept;
 
     //[/UserVariables]
 

@@ -38,6 +38,16 @@ public:
         return this->event.getBeat();
     }
 
+    float getLength() const noexcept
+    {
+        return this->event.getLength();
+    }
+
+    float hasLength() const noexcept
+    {
+        return this->event.getLength() != 0.f;
+    }
+
     virtual float getTextWidth() const = 0;
     virtual void updateContent() = 0;
     virtual void setRealBounds(const Rectangle<float> bounds) = 0;

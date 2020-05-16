@@ -28,7 +28,8 @@ AnnotationEvent::AnnotationEvent() noexcept : MidiEvent(nullptr, Type::Annotatio
 AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) noexcept :
     MidiEvent(other),
     description(other.description),
-    colour(other.colour) {}
+    colour(other.colour),
+    length(other.length) {}
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
     float newBeat, const String &description, const Colour &newColour) noexcept :
@@ -40,7 +41,8 @@ AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
     const AnnotationEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     description(parametersToCopy.description),
-    colour(parametersToCopy.colour) {}
+    colour(parametersToCopy.colour),
+    length(parametersToCopy.length) {}
 
 void AnnotationEvent::exportMessages(MidiMessageSequence &outSequence,
     const Clip &clip, double timeOffset, double timeFactor) const noexcept
@@ -61,6 +63,13 @@ AnnotationEvent AnnotationEvent::withBeat(float newBeat) const noexcept
 {
     AnnotationEvent ae(*this);
     ae.beat = newBeat;
+    return ae;
+}
+
+AnnotationEvent AnnotationEvent::withLength(float newLength) const noexcept
+{
+    AnnotationEvent ae(*this);
+    ae.length = newLength;
     return ae;
 }
 
@@ -92,7 +101,6 @@ AnnotationEvent AnnotationEvent::copyWithNewId() const noexcept
     return ae;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
@@ -107,6 +115,10 @@ Colour AnnotationEvent::getTrackColour() const noexcept
     return this->colour;
 }
 
+float AnnotationEvent::getLength() const noexcept
+{
+    return this->length;
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -120,6 +132,7 @@ SerializedData AnnotationEvent::serialize() const
     tree.setProperty(Midi::text, this->description);
     tree.setProperty(Midi::colour, this->colour.toString());
     tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
+    tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT));
     return tree;
 }
 
@@ -130,6 +143,7 @@ void AnnotationEvent::deserialize(const SerializedData &data)
     this->description = data.getProperty(Midi::text);
     this->colour = Colour::fromString(data.getProperty(Midi::colour).toString());
     this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->length = float(data.getProperty(Midi::length, 0.f)) / TICKS_PER_BEAT;
     this->id = unpackId(data.getProperty(Midi::id));
 }
 
@@ -141,4 +155,5 @@ void AnnotationEvent::applyChanges(const AnnotationEvent &other) noexcept
     this->description = other.description;
     this->colour = other.colour;
     this->beat = other.beat;
+    this->length = other.length;
 }

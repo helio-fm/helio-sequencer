@@ -24,13 +24,11 @@
 #include "AnnotationLargeComponent.h"
 
 //[MiscUserDefs]
+#define ANNOTATION_RESIZE_CORNER 10
 //[/MiscUserDefs]
 
 AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent)
-    : AnnotationComponent(parent, targetEvent),
-      anchor(targetEvent),
-      mouseDownWasTriggered(false),
-      textWidth(0.f)
+    : AnnotationComponent(parent, targetEvent)
 {
 
     //[UserPreSize]
@@ -38,8 +36,7 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    this->font = Font(16.00f, Font::plain).withTypefaceStyle("Regular");
-    this->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->font = Font(16.f, Font::plain);
     //[/UserPreSize]
 
     this->setSize(128, 32);
@@ -93,11 +90,11 @@ void AnnotationLargeComponent::paint (Graphics& g)
     g.setColour(this->event.getTrackColour()
         .interpolatedWith(baseColour, 0.5f).withAlpha(0.65f));
 
-    g.fillRect(0.5f, 0.f, float(this->getWidth()) - 0.5f, 3.f);
+    g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 3.f);
 
     if (this->event.getDescription().isNotEmpty())
     {
-        const Font labelFont(16.00f, Font::plain);
+        const Font labelFont(16.f, Font::plain);
         g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.9f));
 
         GlyphArrangement arr;
@@ -108,7 +105,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
                           float(this->getWidth()) - 16.f,
                           float(this->getHeight()) - 8.f,
                           Justification::centredLeft,
-                          2,
+                          1,
                           0.85f);
         arr.draw(g);
     }
@@ -127,6 +124,15 @@ void AnnotationLargeComponent::resized()
 void AnnotationLargeComponent::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
+    if (this->canResize() &&
+        e.x >= (this->getWidth() - ANNOTATION_RESIZE_CORNER))
+    {
+        this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
+    }
+    else
+    {
+        this->setMouseCursor(MouseCursor::PointingHandCursor);
+    }
     //[/UserCode_mouseMove]
 }
 
@@ -137,18 +143,22 @@ void AnnotationLargeComponent::mouseDown (const MouseEvent& e)
 
     if (e.mods.isLeftButtonDown())
     {
-        // don't checkpoint right here, but only before the actual change
-        //this->event.getSequence()->checkpoint();
-
-        this->dragger.startDraggingComponent(this, e);
-        this->draggingHadCheckpoint = false;
-        this->draggingState = true;
-        this->anchor = this->event;
+        if (this->canResize() &&
+            e.x >= (this->getWidth() - ANNOTATION_RESIZE_CORNER))
+        {
+            this->state = State::ResizingRight;
+            this->hadCheckpoint = false;
+        }
+        else
+        {
+            this->state = State::Dragging;
+            this->dragger.startDraggingComponent(this, e);
+            this->hadCheckpoint = false;
+        }
     }
     else
     {
         this->editor.alternateActionFor(this);
-        //this->editor.showContextMenuFor(this);
     }
     //[/UserCode_mouseDown]
 }
@@ -156,9 +166,30 @@ void AnnotationLargeComponent::mouseDown (const MouseEvent& e)
 void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
-    if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
+    if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 3)
     {
-        if (this->draggingState)
+        if (this->state == State::ResizingRight)
+        {
+            const float newLength = jmax(0.f,
+                this->editor.getBeatByXPosition(this->getX() + e.x) - this->event.getBeat());
+
+            const bool lengthHasChanged = (this->event.getLength() != newLength);
+
+            if (lengthHasChanged)
+            {
+                auto *sequence = static_cast<AnnotationsSequence *>(this->event.getSequence());
+
+                if (!this->hadCheckpoint)
+                {
+                    sequence->checkpoint();
+                    this->hadCheckpoint = true;
+                }
+
+                //DBG(newLength);
+                sequence->change(this->event, this->event.withLength(newLength), true);
+            }
+        }
+        else if (this->state == State::Dragging)
         {
             this->setMouseCursor(MouseCursor::DraggingHandCursor);
             this->dragger.dragComponent(this, e, nullptr);
@@ -167,13 +198,13 @@ void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
 
             if (beatHasChanged)
             {
-                const bool firstChangeIsToCome = !this->draggingHadCheckpoint;
+                const bool firstChangeIsToCome = !this->hadCheckpoint;
                 auto *sequence = static_cast<AnnotationsSequence *>(this->event.getSequence());
 
-                if (! this->draggingHadCheckpoint)
+                if (! this->hadCheckpoint)
                 {
                     sequence->checkpoint();
-                    this->draggingHadCheckpoint = true;
+                    this->hadCheckpoint = true;
                 }
 
                 // Drag-and-copy logic:
@@ -198,16 +229,17 @@ void AnnotationLargeComponent::mouseUp (const MouseEvent& e)
     //[UserCode_mouseUp] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
-        if (this->draggingState)
+        if (this->state == State::Dragging ||
+            this->state == State::ResizingRight)
         {
+            this->state = State::None;
             this->setMouseCursor(MouseCursor::PointingHandCursor);
-            this->draggingState = false;
             this->editor.onAnnotationMoved(this);
         }
 
         if (e.getDistanceFromDragStart() < 10 &&
             this->mouseDownWasTriggered &&
-            !this->draggingHadCheckpoint)
+            !this->hadCheckpoint)
         {
             this->editor.onAnnotationTapped(this);
         }
@@ -229,10 +261,12 @@ void AnnotationLargeComponent::mouseDoubleClick (const MouseEvent& e)
 void AnnotationLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
-    this->boundsOffset = Rectangle<float>(bounds.getX() - float(intBounds.getX()),
-                                          bounds.getY(),
-                                          bounds.getWidth() - float(intBounds.getWidth()),
-                                          bounds.getHeight());
+    this->boundsOffset = {
+        bounds.getX() - float(intBounds.getX()),
+        bounds.getY(),
+        bounds.getWidth() - float(intBounds.getWidth()),
+        bounds.getHeight()
+    };
 
     this->setBounds(intBounds);
 }
@@ -248,9 +282,14 @@ void AnnotationLargeComponent::updateContent()
     this->repaint();
 }
 
-float AnnotationLargeComponent::getTextWidth() const
+float AnnotationLargeComponent::getTextWidth() const noexcept
 {
     return this->textWidth;
+}
+
+bool AnnotationLargeComponent::canResize() const noexcept
+{
+    return (this->getWidth() >= (ANNOTATION_RESIZE_CORNER * 2));
 }
 
 //[/MiscUserCode]
@@ -262,7 +301,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="AnnotationLargeComponent"
                  template="../../../../Template" componentName="" parentClasses="public AnnotationComponent"
                  constructorParams="AnnotationsProjectMap &amp;parent, const AnnotationEvent &amp;targetEvent"
-                 variableInitialisers="AnnotationComponent(parent, targetEvent),&#10;anchor(targetEvent),&#10;mouseDownWasTriggered(false),&#10;textWidth(0.f)"
+                 variableInitialisers="AnnotationComponent(parent, targetEvent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>

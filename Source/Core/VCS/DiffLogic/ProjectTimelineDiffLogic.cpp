@@ -770,6 +770,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const SerializedData &state, const Seria
 
                 const bool eventHasChanged =
                     (stateEvent->getBeat() != changesEvent->getBeat() ||
+                     stateEvent->getLength() != changesEvent->getLength() ||
                      stateEvent->getTrackColour() != changesEvent->getTrackColour() ||
                      stateEvent->getDescription() != changesEvent->getDescription());
 

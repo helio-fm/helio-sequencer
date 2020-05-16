@@ -38,6 +38,7 @@ public:
     AnnotationEvent copyWithNewId() const noexcept;
     AnnotationEvent withDeltaBeat(float beatOffset) const noexcept;
     AnnotationEvent withBeat(float newBeat) const noexcept;
+    AnnotationEvent withLength(float newLength) const noexcept;
     AnnotationEvent withDescription(const String &newDescription) const noexcept;
     AnnotationEvent withColour(const Colour &newColour) const noexcept;
     AnnotationEvent withParameters(const SerializedData &parameters) const noexcept;
@@ -48,6 +49,7 @@ public:
 
     String getDescription() const noexcept;
     Colour getTrackColour() const noexcept;
+    float getLength() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -63,12 +65,11 @@ public:
 
     void applyChanges(const AnnotationEvent &parameters) noexcept;
 
-protected:
+private:
 
     String description;
     Colour colour;
-
-private:
+    float length = 0.f;
 
     JUCE_LEAK_DETECTOR(AnnotationEvent);
 };

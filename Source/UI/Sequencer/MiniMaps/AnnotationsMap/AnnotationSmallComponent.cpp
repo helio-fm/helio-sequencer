@@ -73,7 +73,7 @@ void AnnotationSmallComponent::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
     const Colour baseColour(findDefaultColour(Label::textColourId));
     g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.2f));
-    g.fillRect(0, this->getHeight() - 4, this->getWidth() - 4, 1);
+    g.fillRect(0, this->getHeight() - 2, this->getWidth() - 4, 2);
     //[/UserPaint]
 }
 
@@ -82,7 +82,7 @@ void AnnotationSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    annotationLabel->setBounds(-2, getHeight() - 4 - 16, 160, 16);
+    annotationLabel->setBounds(-2, getHeight() - 2 - 16, 160, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -100,10 +100,11 @@ void AnnotationSmallComponent::parentHierarchyChanged()
 void AnnotationSmallComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
-    this->boundsOffset = Rectangle<float>(bounds.getX() - float(intBounds.getX()),
-                                          bounds.getY(),
-                                          bounds.getWidth() - float(intBounds.getWidth()),
-                                          bounds.getHeight());
+    this->boundsOffset = {
+        bounds.getX() - float(intBounds.getX()),
+        bounds.getY(),
+        bounds.getWidth() - float(intBounds.getWidth()),
+        bounds.getHeight() };
 
     this->setBounds(intBounds);
 }
@@ -145,7 +146,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="annotationLabel" virtualName=""
-         explicitFocusOrder="0" pos="-2 4Rr 160 16" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="-2 2Rr 160 16" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
