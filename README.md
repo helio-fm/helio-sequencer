@@ -1,4 +1,4 @@
-## <p align="center"><img src="Resources/screen-v2.png"></p>
+## <p align="center"><img src="Docs/Images/screen-v3.png"></p>
 [Helio Workstation](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
 
 
@@ -83,3 +83,4 @@ Italian - Claudio Stano, Riccardo Cariboni
 Japanese - Kotone Itaya  
 Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
 Polish - Dawid Bugajski  
+Portuguese - Dario Silva, Daniel Leandro  
