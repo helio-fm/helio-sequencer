@@ -1,11 +1,16 @@
 [book]
 title = "Helio 101"
-description = "todo todo todo todo todo"
+description = "Helio project reference manual"
 authors = ["Peter Rudenko"]
 multilingual = false
 language = "en"
 src = "."
 
 [output.html]
+git-repository-url = "https://github.com/helio-fm/helio-workstation/tree/develop/Docs"
 default-theme = "navy"
 curly-quotes = true
+
+[output.html.playpen]
+editable = false
+copy-js = false
