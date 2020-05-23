@@ -1,17 +1,72 @@
+# Introduction
 
-# Getting Started
+Welcome to the documentation for the Helio project, a free lighweight music sequencer, which runs on the all major desktop and mobile operating systems.
 
-...
+Helio was designed to save my time by automating repetitive tasks so I could focus more on musical ideas.
 
-- [Creating a Project](Dashboard.md)
-- [Adding an Instrument](Instruments.md)
-- [Editing and Arranging](Editing.md)
-- [Version Control](VersionControl.md)
+In this documentation, I'll also try to save my time — and, hopefully, yours as well — and write it down as short and simple as I can (with lots of pictures).
 
-## UI Overview
+If you notice that something important is missing, send me an angry [email](mailto:peter.rudenko@gmail.com), or create a [PR](https://github.com/helio-fm/helio-workstation/pulls) on the Github.
 
-...
+#### How to read this
 
-### [Piano Roll Tips](PianoRoll.md)
-### [Pattern Roll Tips](PatternRoll.md)
-### [Hotkeys](Hotkeys.md)
+If you're starting out with Helio, just continue with the [Getting Started](Overview.md) page to learn the basic concepts of UI navigation, setting up the [orchestra pit](Overview.md#instruments), creating a project, [editing and arranging](Overview.md#editing-and-arranging) it and saving your work in the [version control](Overview.md#version-control).
+
+Otherwise, you might find useful the [editing and arranging tips](TipsAndTricks.md). The majority of all the nifty tools and hacks will described there.
+
+If you've already tinkered with Helio for a while, you'll probably only need the [hotkeys](Hotkeys.md) section.
+
+
+## Installation
+
+Helio is released as a single portable executable file, where possible, but installers are also available for some systems.
+In both flavours it has small disk footprint (less than 10 Mb) and should run on most available hardware and platform versions.
+
+### Portable vs installer
+
+Helio provides installers for Windows and Debian-based Linux distributions. The installer version is only needed, if you want to have the desktop shortcut and the uninstall tool.
+
+With portable version, just download the compressed archive and unzip it to a folder of your choice.
+
+### 32 or 64 bits
+
+The only practical difference between the two is that the 64-bit version will only be able to host 64-bit plugins, and the 32-bit version will only host 32-bit plugins.
+
+At the moment of writing this, Helio does not support plugin sandboxing or hosting both 32-bit and 64-bit plugins at the same time.
+
+### Master build or development build
+
+Master builds are the latest stable versions. You can keep up to date with the latest changes through the [release notes](Changelog.md). If you'd like to preview the latest features or verify bug fixes, you can install the development build.
+
+
+## Configuration files
+
+Helio keeps all files in two directories: one for the project files, and one for the configuration files.
+
+Note that installer-based versions don't remove any of these when uninstalling the app. If you want to remove Helio from the system completely, you need to delete them manually.
+
+### The configuration directory
+
+All the configuration files are created on the first start under the user application data directory. The directory is a platform-dependent location:
+
+    Windows: %APPDATA%\Helio
+    macOS: ~/Library/Application Support/Helio
+    Linux: ~/.config/Helio
+
+#### `settings.helio`
+
+This file basically contains all the settings, so if you delete or rename it, the app would run as if it was the first time. The settings are supposed to be human-readable and are stored in XML format.
+
+#### `translations.helio` and maybe others
+
+Some additional configuration resources are dynamically updated in the runtime, if the newer version is available. At the moment of writing, only translations are updated this way.
+
+In future, the app may sync more configs, including default scales, chords, arpeggiators, hotkey schemes, colour schemes, etc.
+
+### The projects directory
+
+The projects files are created in the `Helio` subfolder of the user's default documents folder. The location of this directory is also platform-dependent:
+
+    Windows: %HOMEPATH%\Helio
+    macOS: ~/Documents/Helio
+    Linux: ~/Documents/Helio
