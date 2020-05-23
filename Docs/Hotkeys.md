@@ -4,13 +4,13 @@ This page simply lists sections of the default hotkeys configuration file.
 
 Hopefully the command names are descriptive enough.
 
-## Hotkeys that work on all pages
+## Hotkeys for all pages
 
 ```json
 {{#include ../Resources/hotkeySchemes.json:MainLayout}}
 ```
 
-## Common for the piano roll and pattern roll
+## Common hotkeys for editing and arranging
 
 ```json
 {{#include ../Resources/hotkeySchemes.json:SequencerLayout}}
