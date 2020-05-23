@@ -2,6 +2,7 @@
 *.h text=auto eol=lf
 *.mm text=auto eol=lf
 *.txt text=auto eol=lf
+*.md text=auto eol=lf
 *.jucer -text
 *.xml -text
 *.json -text
