@@ -22,6 +22,8 @@ One quick way to switch between the current editing mode and the canvas panning 
 
 ![space-drag]
 
+Dragging with the right mouse button does similar thing, but it will also switch to another track, if clicked on any semi-transparent note.
+
 ### Time measure tool
 
 Hold the `Space` key, then click-and-drag over the timeline to measure time between two points at the timeline:
@@ -106,11 +108,17 @@ So, what you see in one row might be either different tracks, or there might be 
 
 ## Command palette
 
-This command palette control is inspired by 'Goto Anywhere' in Sublime Text or 'Locator' in QT Creator, and is meant for quick access to things like commands, projects, timeline events, etc.
+This command palette control is inspired by 'Goto Anywhere' in Sublime Text or 'Locator' in QT Creator, and is meant for quick access to the commands available for the current context, and things like projects and timeline events.
 
 Toggled by `~` or `Control + P` hotkeys by default:
 
 ![command-palette]
+
+Besides just commands, it supports several modes, which are triggered by typing a certain symbol. This symbol also acts as a hotkey to show the command palette in that mode:
+
+* `/` is for the project list,
+* `@` is for the timeline events list + tracks list,
+* `!` is for the chord compiler, which deserves a separate description:
 
 ### Chord compiler
 
@@ -122,21 +130,21 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 
 
 
-[space-drag]: Images/space-drag.png "Dragging the canvas"
-[time-measure-tool]: Images/time-measure.png "Time measure tool"
-[sound-probe]: Images/sound-probe.png "Sound probe tool"
+[space-drag]: images/space-drag.png "Dragging the canvas"
+[time-measure-tool]: images/time-measure.png "Time measure tool"
+[sound-probe]: images/sound-probe.png "Sound probe tool"
 
-[monitor-and-map]: Images/monitor-and-map.png "Audio monitor and minimap view modes"
-[scales-highlighting]: Images/scales-highlighting.png "Scales highlighting"
-[note-names]: Images/note-names.png "Note name guides"
+[monitor-and-map]: images/monitor-and-map.png "Audio monitor and minimap view modes"
+[scales-highlighting]: images/scales-highlighting.png "Scales highlighting"
+[note-names]: images/note-names.png "Note name guides"
 
-[chord-tool]: Images/chord-tool.png "The chord tool"
-[chord-compiler]: Images/chord-compiler.png "The chord compiler"
-[quick-rescale]: Images/quick-rescale.png "The quick rescale tool"
-[command-palette]: Images/command-palette.png "The command palette"
+[chord-tool]: images/chord-tool.png "The chord tool"
+[chord-compiler]: images/chord-compiler.png "The chord compiler"
+[quick-rescale]: images/quick-rescale.png "The quick rescale tool"
+[command-palette]: images/command-palette.png "The command palette"
 
-[warnings]: Images/warnings.png "Clipping and oversaturation warning markers"
-[velocity-map-fine-tuning]: Images/velocity-map-fine-tuning.png "Velocity map fine-tuning"
+[warnings]: images/warnings.png "Clipping and oversaturation warning markers"
+[velocity-map-fine-tuning]: images/velocity-map-fine-tuning.png "Velocity map fine-tuning"
 
-[patterns-knife-tool]: Images/patterns-knife-tool.png "Using knife tool in pattern mode"
-[patterns-clips]: Images/patterns-track-clips.png "Track instances (clips) and their modifications"
+[patterns-knife-tool]: images/patterns-knife-tool.png "Using knife tool in pattern mode"
+[patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"
