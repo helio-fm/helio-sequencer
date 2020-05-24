@@ -1,8 +1,10 @@
 # Hotkeys
 
 This page simply lists sections of the default hotkeys configuration file.
-
 Hopefully the command names are descriptive enough.
+
+If you don't see any hotkeys here, you're reading the markdown source of this page, please visit [docs.helio.fm](https://docs.helio.fm).
+
 
 ## Hotkeys for all pages
 

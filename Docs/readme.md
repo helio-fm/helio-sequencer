@@ -6,15 +6,15 @@ Helio was designed to save my time by automating repetitive tasks so I could foc
 
 In this documentation, I'll also try to save my time — and, hopefully, yours as well — and write it down as short and simple as I can (with lots of pictures).
 
-If you notice that something important is missing, send me an angry [email](mailto:peter.rudenko@gmail.com), or create a [PR](https://github.com/helio-fm/helio-workstation/pulls) on the Github.
+If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or create a [PR](https://github.com/helio-fm/helio-workstation/pulls) on the Github.
 
 #### How to read this
 
-If you're starting out with Helio, just continue with the [Getting Started](Overview.md) page to learn the basic concepts of UI navigation, setting up the [orchestra pit](Overview.md#instruments), creating a project, [editing and arranging](Overview.md#editing-and-arranging) it and saving your work in the [version control](Overview.md#version-control).
+If you're starting out with Helio, just continue with the [Getting Started](getting-started.md) page to learn the basic concepts of UI navigation, setting up the [orchestra pit](getting-started.md#instruments), creating a project, [editing and arranging](getting-started.md#editing-and-arranging) it and saving your work in the [version control](getting-started.md#version-control).
 
-Otherwise, you might find useful the [editing and arranging tips](TipsAndTricks.md). The majority of all the nifty tools and hacks will described there.
+Otherwise, you might find useful the [editing tips](tips-and-tricks.md): the majority of all the nifty tools and hacks will be described there.
 
-If you've already tinkered with Helio for a while, you'll probably only need the [hotkeys](Hotkeys.md) section.
+If you've already tinkered with Helio for a while, you'll probably only need the [hotkeys](hotkeys.md) section.
 
 
 ## Installation
@@ -24,7 +24,7 @@ In both flavours it has small disk footprint (less than 10 Mb) and should run on
 
 ### Portable vs installer
 
-Helio provides installers for Windows and Debian-based Linux distributions. The installer version is only needed, if you want to have the desktop shortcut and the uninstall tool.
+Installers are provided for Windows and Debian-based Linux distributions. The installer version is only needed, if you want to have the desktop shortcut and the uninstall tool.
 
 With portable version, just download the compressed archive and unzip it to a folder of your choice.
 
@@ -36,7 +36,7 @@ At the moment of writing this, Helio does not support plugin sandboxing or hosti
 
 ### Master build or development build
 
-Master builds are the latest stable versions. You can keep up to date with the latest changes through the [release notes](Changelog.md). If you'd like to preview the latest features or verify bug fixes, you can install the development build.
+Master builds are the latest stable versions. You can keep up to date with the latest changes through the [release notes](changelog.md). If you'd like to preview the latest features or verify bug fixes, you can install the development build.
 
 
 ## Configuration files

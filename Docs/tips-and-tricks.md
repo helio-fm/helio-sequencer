@@ -82,7 +82,7 @@ This example shows rescaling, along with some undo/redo to see the difference:
 
 As well as the chord tool, this tool assumes that the harmonic context is specified correctly. In this example, the first section is marked as D Dorian, and all the notes in that section are in the key. Any out-of-scale notes will be left in their places.
 
-#### See also: [piano roll hotkeys](Hotkeys.md#piano-roll)
+#### See also: [piano roll hotkeys](hotkeys.md#piano-roll)
 
 
 ## Pattern roll
@@ -101,7 +101,7 @@ So, what you see in one row might be either different tracks, or there might be 
 
 ![patterns-clips]
 
-#### See also: [pattern roll hotkeys](Hotkeys.md#pattern-roll)
+#### See also: [pattern roll hotkeys](hotkeys.md#pattern-roll)
 
 
 ## Command palette
