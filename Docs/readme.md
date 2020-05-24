@@ -2,9 +2,7 @@
 
 Welcome to the documentation for the Helio project, a free lighweight music sequencer, which runs on the all major desktop and mobile operating systems.
 
-Helio was designed to save my time by automating repetitive tasks so I could focus more on musical ideas.
-
-In this documentation, I'll also try to save my time — and, hopefully, yours as well — and write it down as short and simple as I can (with lots of pictures).
+Helio was designed to save me the time of struggling with the editor, so I could focus more on musical ideas. In this documentation, I'll also try to save some time and write it down as short and simple as I can.
 
 If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or create a [PR](https://github.com/helio-fm/helio-workstation/pulls) on the Github.
 
@@ -70,3 +68,21 @@ The projects files are created in the `Helio` subfolder of the user's default do
     Windows: %HOMEPATH%\Helio
     macOS: ~/Documents/Helio
     Linux: ~/Documents/Helio
+
+## Building from source
+
+Building the app from source will require a C++11 compiler, e.g. GCC 4.8 on Linux, Visual Studio 2015 on Windows, or Xcode 7.3.1 on macOS.
+
+Minimum deployment targets are:
+
+    Windows: Windows 7
+    macOS: macOS 10.7
+    Linux: Mainstream distributions
+
+#### Basic build instructions
+
+ * Clone with submodules: `git clone --recurse-submodules https://github.com/helio-fm/helio-workstation.git`.
+ * Install dependencies:
+   * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
+   * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.
+ * Pick the right project for your OS from the `Projects` directory and build.
