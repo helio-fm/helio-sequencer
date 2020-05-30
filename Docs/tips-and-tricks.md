@@ -42,15 +42,33 @@ It's possible to use the mouse wheel when dragging the velocity ramping tool to 
 
 ![velocity-map-fine-tuning]
 
+### Resizing a group
+
+Resize a group of notes proportionally by holding `Shift`:
+
+![group-resizing]
+
+### Drag-and-copy
+
+Hold `Shift` to drag-and-copy notes in the piano roll, clips in the pattern roll, key/time signatures and annotations at the timeline:
+
+![drag-and-copy]
+
+### Pen tool
+
+Also hold `Shift` or any modifier key to change the behaviour of the pen tool when adding notes. By default, the newly added note is edited in the transpose-and-resize mode. With `Shift`, it's the drag mode, more familiar:
+
+![pen-tool-alt]
+
 ### UI flags
 
-A couple of display options are available to provide a visual cue. They are toggled either in the navigation panel, or via hotkeys (`g` and `h` by default).
+A couple of display options are available to provide a visual cue. They are toggled either in the navigation panel, or via hotkeys (`G` and `H` by default).
 
 The first one is for displaying the note name guides:
 
 ![note-names]
 
-Another one highlights the in-scale keys of the key signatures that are added at the timeline. If you prefer C Major coloring in the piano roll, just turn it off.
+Another one highlights the in-scale keys of the key signatures that are added at the timeline. If you prefer C Major coloring in the piano roll, just turn it off:
 
 ![scales-highlighting]
 
@@ -129,10 +147,12 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 ![chord-compiler]
 
 
-
 [space-drag]: images/space-drag.png "Dragging the canvas"
 [time-measure-tool]: images/time-measure.png "Time measure tool"
 [sound-probe]: images/sound-probe.png "Sound probe tool"
+[group-resizing]: images/group-resizing.png "Resizing notes with shift"
+[pen-tool-alt]: images/pen-tool-alt.png "Adding notes sith shift"
+[drag-and-copy]: images/drag-and-copy.png "Drag-and-copy"
 
 [monitor-and-map]: images/monitor-and-map.png "Audio monitor and minimap view modes"
 [scales-highlighting]: images/scales-highlighting.png "Scales highlighting"

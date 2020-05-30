@@ -2,7 +2,7 @@
 
 Welcome to the documentation for the Helio project, a free lighweight music sequencer, which runs on the all major desktop and mobile operating systems.
 
-Helio was designed to save me the time of struggling with the editor, so I could focus more on musical ideas. In this documentation, I'll also try to save some time and write it down as short and simple as I can.
+Helio was designed to save me the time of struggling with the MIDI editor, so I could focus more on musical ideas. In this documentation, I'll also try to save some time and write it down as short and simple as I can.
 
 If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or create a [PR](https://github.com/helio-fm/helio-workstation/pulls) on the Github.
 
@@ -41,7 +41,7 @@ Master builds are the latest stable versions. You can keep up to date with the l
 
 Helio keeps all files in two directories: one for the project files, and one for the configuration files.
 
-Note that installer-based versions don't remove any of these when uninstalling the app. If you want to remove Helio from the system completely, you need to delete them manually.
+Note that the installer-based versions don't remove any of these when uninstalling the app. If you want to remove Helio from the system completely, you need to delete them manually.
 
 ### The configuration directory
 

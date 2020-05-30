@@ -18,13 +18,13 @@ They will be described below, but, before you dive in,
 
 ### A bit of a history and a couple of silly excuses
 
-This project was started out of the need for an advanced MIDI editor — think something like Sublime Text for music.
+This project was started out of the need for an advanced MIDI editor, something like Sublime Text for music.
 
 I was also sick and tired of visual over-stimulation, which most of the music tools out there tend to have more and more (just google some pictures for "digital audio workstation"). As one of the main goals, I wanted a tool that feels right: something with an uncluttered and non-distractive UI.
 
 So generally, I'm always trying to avoid adding UI controls if there's a way to do without them. As it turned out, though, there are a couple of challenges with that approach (for which I don't see simple solutions, UX design is hard):
  * one challenge is to keep the UI both simple or even minimalistic and not disorienting at the same time,
- * another challenge is to keep the UI look and behave consistent across all platforms, especially desktop and mobile
+ * another challenge is to keep the UI look and behave consistent across all platforms, especially desktop and mobile.
 
 If something feels misleading to you — apologizes, feel free to [report](https://github.com/helio-fm/helio-workstation/issues/new) that to help identifying the main friction points.
 
@@ -89,7 +89,7 @@ There are several ways:
 
 ### Instruments management
 
-The most notable difference in the instruments management from the most sequencers out there is that Helio separates instruments from projects.
+The most notable difference in the instruments management from the majority of DAW's and sequencers out there is that Helio separates instruments from projects.
 
 Each project only holds the instrument "references" (basically, the hashcodes of the instrument info), so that the instrument settings are not saved in the project file, but rather in the application workspace settings.
 
@@ -99,15 +99,15 @@ The reason for implementing it this way was ~~separation of concerns, yo~~ that 
 
 If your setup implies always having different instruments or instrument settings for each project, or if you want the project file to contain the instrument details, Helio will make you suffer.
 
-On the other hand, if you have an instrument library you're comfortable with (e.g. VSL or some selected soundfonts collection), and you want to set it up once and forget about it, you'll probably like this approach.
+On the other hand, if you happen to have an instrument library you're comfortable with (e.g. VSL or some selected soundfonts collection), and you want to set it up once and forget, you'll probably like this approach.
 
 
 ### Orchestra pit page
 
 The orchestra pit page has two sections:
 
- * all found plugins are displayed on the left side
- * all instruments on stage, created from those plugins, are on the right
+ * all found plugins are displayed on the left side,
+ * all instruments on stage, created from those plugins, are on the right.
 
 ![orchestra-pit]
 
@@ -128,8 +128,9 @@ Most of the actions here, including audio and MIDI routing, are available throug
 
 Interacting with nodes:
 
- * left-click on the node will create a plugin window, it it has one, or just select it, if it doesn't
- * right-click on the node will just select it
+ * left-click on the node will create a plugin window, it it has one, or just select it, if it doesn't,
+ * right-click on the node will just select it,
+ * use mouse drag to connect sockets representing audio and MIDI inputs and outputs.
 
 While it is possible to set up a multi-plugin instrument with audio/MIDI routing in Helio, the convenience of the instrument page was not of a particular concern: the development is rather focused on the sequencer functionality. If you are running it under Linux, it might be a good idea to add [Carla](https://kx.studio/Applications:Carla) as an instrument, and use it to manage VST/whatever plugins and routing.
 
@@ -190,22 +191,22 @@ This sidebar is responsible for track navigation and UI control.
 
 Most buttons on the sidebars have keyboard shortcuts, which makes then kinda redundant, but they are displayed anyway for the sake of having a consistent UI on mobiles or touch-screen laptops, where you don't have hotkeys.
 
- * ![sidebar-left-1] — switch the editor view between the piano roll and the pattern roll (`tab`),
- * ![sidebar-left-2] — zoom out (`shift + z`), zoom in (`z`), and zoom selection (`control + tab`),
+ * ![sidebar-left-1] — switch the editor view between the piano roll and the pattern roll (`Tab`),
+ * ![sidebar-left-2] — zoom out (`Shift + Z`), zoom in (`Z`), and zoom selection (`Control + Tab`),
  * ![sidebar-left-3] — jump over the timeline events (`,` and `.`),
- * ![sidebar-left-4] — toggle the [velocity map](#velocity-map) (`v`),
- * ![sidebar-left-5] — UI [flags](tips-and-tricks.md##ui-flags) that toggle scales highlighting and the note guides (`h` and `g`),
+ * ![sidebar-left-4] — toggle the [velocity map](#velocity-map) (`V`),
+ * ![sidebar-left-5] — UI [flags](tips-and-tricks.md##ui-flags) that toggle scales highlighting and the note guides (`H` and `G`),
  * ![sidebar-left-6] — a simple waveform or spectrogram view.
 
 ### Right sidebar
 
 This sidebar is responsible for editing tools and playback control:
 
- * ![sidebar-right-1] — toggle the playback loop over the selection (`f11`),
- * ![sidebar-right-2] — edit [modes](#edit-modes) (`1`, `2`, `3`, `4`, `5`),
+ * ![sidebar-right-1] — toggle the playback loop over the selection (`F11`),
+ * ![sidebar-right-2] — edit [modes](#edit-modes) (`1`, `2`, `3`, `4`),
  * ![sidebar-right-3] — some other tools - the chord tool and arpeggiators, if available,
  * ![sidebar-right-4] — copy and paste, undo and redo,
- * ![sidebar-right-5] — playback (`space` or `enter`) and recording (`f12`) control.
+ * ![sidebar-right-5] — playback (`Space` or `Enter`) and recording (`F12`) control.
 
 ## Piano roll
 
