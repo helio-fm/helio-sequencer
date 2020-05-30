@@ -209,16 +209,38 @@ This sidebar is responsible for editing tools and playback control:
 
 ## Piano roll
 
-... todo the concept of active track and clip
+The piano roll always limits the editable scope to a single track. You will see all other tracks in a semi-transparent ghost mode. Most common interactions with the piano roll canvas are:
+
+ * right-click on the inactive note to focus the editor to another track,
+ * right-drag the empty space to pan the canvas:
+
+![piano-roll]
+
+Interacting with piano roll also depends on the current edit mode, but the most commonly used modes are the first two:
 
 ### Edit modes
 
-... todo describe edit modes
-... todo also tell about drag-to-copy, group resize, undo (note that the last 10 undo actions are saved in the project and are available after restarting the app), etc
+ * **normal mode** to manage selection and edit notes: probably, most useful mode,
+ * **pen mode** to add and edit notes: a bit similar to the previous one,
+ * **drag-only mode**: self-explanatory, hold `Space` to [toggle](tips-and-tricks.md#spacebar-panning) this mode,
+ * **knife mode**: also self-explanatory, cuts notes in the piano roll and tracks in the pattern roll,
+ * **selection mode**: only displayed on the mobile.
+
+All notes, when edited, are aligned to the grid, which depends on the zoom level and supports the resolution of up to 1/64 notes.
+
+All edits are undoable; note that the last 10 undo actions are saved in the project and are still available after restarting the app.
+
+All changes are saved automatically: on exit, and on a timeout after the last change.
+
+The editor relies heavily on [hotkeys](hotkeys.md#piano-roll); feel free to explore available actions by browsing breadcrumb control menus or [command palette](tips-and-tricks.md#command-palette).
+
+### Adding new tracks
+
+Add new tracks by duplicating the existing ones (`F5`), or via project menu, or by cutting tracks with the knife tool in the pattern roll.
 
 ### Velocity map
 
-The velocity levels editor (toggled by `v` hotkey) provides a way to visualize and draw gradual increase/decrease in note volume.
+The velocity levels editor (toggled by `V` hotkey) provides a way to visualize and draw gradual increase/decrease in note volume.
 
 As well as the piano roll, the velocity map limits its editable scope to the active track. But in addition, if any notes are selected, the editable scope is limited to the selection, to make it easier to draw more complex ramps for different chunks of the track:
 
@@ -227,6 +249,22 @@ As well as the piano roll, the velocity map limits its editable scope to the act
 At the moment of writing, only linear ramps are implemented:
 
 ![velocity-map-ramps]
+
+You can also change note velocities without this editor, just by middle-button dragging the note componenets on the roll.
+
+### MIDI recording
+
+The record button (`F12`) will try to auto-detect the available and enabled MIDI input device, or provide a choice if there are more than one (the choice is "remembered" and can be changed later in the settings page):
+
+![recording-start]
+
+If the recording mode is on, but the playback has not started yet, it will wait until it receives the first MIDI event and start recording & playback.
+
+In the piano roll mode, it always records to the selected track/clip:
+
+![recording-piano-roll]
+
+In the pattern roll, it either records to the selected track/clip, or, if no piano clip is selected, it adds one, once the actual recording starts.
 
 ## Pattern roll
 
@@ -238,45 +276,41 @@ However, the pattern roll is helpful for rearranging experiments:
 
 Pattern roll also allows to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
 
-## MIDI recording
-
-The record button will try to auto-detect the available and enabled MIDI input device, or provide a choice if there are more than one:
-
-![...]
-
-If the recording mode is on, but the playback has not started yet, it will wait until it receives the first MIDI event and start recording & playback.
-
-In the piano roll mode, it always records to the selected track/clip:
-
-In the pattern roll, it either also records to the selected track/clip, or, if no piano clip is selected, it adds one, once the actual recording starts:
-
-![...]
-
-
 ## Version control
 
-### Basic concepts
+The concept of [version control](https://en.wikipedia.org/wiki/Version_control) comes from the software development world. If you're not familiar with it, you can think of it as of creating "savepoints" in your project, and tracking changes made since the last time you saved.
 
-...
+The point of having a version control is lowering the friction of committing changes: any changeset can be reset if you don't like it, any saved revision can be restored later. Helio was started as a prototyping tool, a playground for ideas, where you'd want to have several variations of your sketch — hence the idea of having a built-in version control.
 
-### Saving and resetting changes
+Notable use cases are:
 
-...
+ * saving a project state at some point, and resetting to any earlier saved state,
+ * resetting some of the recent changes (think of it as of another mechanism of undoing things),
+ * hiding/unhiding recent changes to get the idea of what have been done since the last commit,
+ * synchronizing projects across devices.
 
-### Synchronization across devices
+The UI of the versions page is split in two parts:
 
-...
+![version-control]
 
+The left side lists all changes in the project, compared to the current revision. Items in the list can be checked and unchecked: both committing and resetting changes are applied selectively.
 
+The right side shows the tree of all revisions that you have saved. Note a couple of icons under each revision: they indicate whether the revision is available locally, or remotely, or both.
+
+### Synchronizing projects across devices
+
+// TODO
 
 
 [helio-ui]: images/screen-v3.png "UI overview"
 [orchestra-pit]: images/orchestra-pit.png "The instruments management page"
 [instrument-routing]: images/instrument-routing.png "The instrument details page"
+[version-control]: images/version-control.png "The version control page"
 
 [breadcrumbs-root-menu]: images/breadcrumbs-root-menu.png "Breadcrumbs control, root menu"
 [breadcrumbs-menus]: images/breadcrumbs-menus.png "Breadcrumbs control, conetxt menus"
 
+[piano-roll]: images/piano-roll.png "Interaction with piano roll canvas"
 [patterns]: images/patterns-arrange.png "Pattern mode for arrangements"
 [patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"
 
@@ -301,3 +335,6 @@ In the pattern roll, it either also records to the selected track/clip, or, if n
 [sidebar-right-3]: images/sidebar-right-3.png "Tooling sidebar 3"
 [sidebar-right-4]: images/sidebar-right-4.png "Tooling sidebar 4"
 [sidebar-right-5]: images/sidebar-right-5.png "Tooling sidebar 5"
+
+[recording-start]: images/recording-start.png "Start MIDI recording"
+[recording-piano-roll]: images/recording-piano-roll.png "MIDI recording in the piano roll"
