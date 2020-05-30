@@ -78,6 +78,15 @@ void NoteComponent::updateColours()
     this->colourVolume = this->colour.darker(0.8f).withAlpha(ghost ? 0.f : 0.5f);
 }
 
+bool NoteComponent::isResizingOrScaling() const noexcept
+{
+    return this->state == State::DraggingResizing ||
+        this->state == State::GroupScalingLeft ||
+        this->state == State::GroupScalingRight ||
+        this->state == State::ResizingLeft ||
+        this->state == State::ResizingRight;
+}
+
 bool NoteComponent::canResize() const noexcept
 {
      return (this->getWidth() >= (RESIZE_CORNER * 2));
@@ -86,18 +95,6 @@ bool NoteComponent::canResize() const noexcept
 bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const
 {
     return (modifiers.isAltDown() || modifiers.isRightButtonDown()) && !this->isActive();
-}
-
-void NoteComponent::setQuickSelectLayerMode(bool value)
-{
-    if (value)
-    {
-        this->setMouseCursor(MouseCursor::CrosshairCursor);
-    }
-    else
-    {
-        this->setMouseCursor(MouseCursor::NormalCursor);
-    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -121,17 +118,11 @@ bool NoteComponent::keyStateChanged(bool isKeyDown)
 void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
 {
     this->roll.modifierKeysChanged(modifiers);
-
-    // Space drag mode
-    const bool mode = this->shouldGoQuickSelectLayerMode(modifiers);
-    this->setQuickSelectLayerMode(mode);
 }
 
 void NoteComponent::mouseMove(const MouseEvent &e)
 {
-    const bool selectLayerMode = this->shouldGoQuickSelectLayerMode(e.mods);
-    this->setQuickSelectLayerMode(selectLayerMode);
-    if (selectLayerMode)
+    if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         return;
     }
@@ -142,9 +133,8 @@ void NoteComponent::mouseMove(const MouseEvent &e)
         return;
     }
 
-    if (this->canResize() &&
-        (e.x >= (this->getWidth() - RESIZE_CORNER) ||
-         e.x <= RESIZE_CORNER))
+    if (this->isResizingOrScaling() ||
+        (this->canResize() && (e.x >= (this->getWidth() - RESIZE_CORNER) || e.x <= RESIZE_CORNER)))
     {
         this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
     }

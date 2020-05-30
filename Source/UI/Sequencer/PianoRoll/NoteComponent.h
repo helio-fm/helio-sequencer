@@ -168,6 +168,7 @@ private:
     void endGroupScalingLeft();
     
     bool canResize() const noexcept;
+    bool isResizingOrScaling() const noexcept;
 
 private:
 
@@ -188,7 +189,6 @@ private:
     void checkpointIfNeeded();
 
     bool shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const;
-    void setQuickSelectLayerMode(bool value);
 
     void stopSound();
     void sendNoteOn(int noteKey, float velocity) const;
