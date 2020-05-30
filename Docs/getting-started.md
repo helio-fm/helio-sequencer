@@ -11,8 +11,8 @@ The UI is separated into these parts:
 * the **breadcrumb** [navigation control](#workspace-navigation) is on the top,
 * the [**editor**](#editing-and-arranging) canvas is in the middle,
 * the project **mini-map** is on the bottom,
-* the [left sidebar](#left-sidebar) is for track **navigation tools** and **UI control**,
-* the [right sidebar](#right-sidebar) is for **editing tools** and **playback control**.
+* the track **navigation tools** are in the [left sidebar](#left-sidebar),
+* the **editing tools** are in the [right sidebar](#right-sidebar).
 
 They will be described below, but, before you dive in,
 
@@ -26,7 +26,7 @@ So generally, I'm always trying to avoid adding UI controls if there's a way to 
  * one challenge is to keep the UI both simple or even minimalistic and not disorienting at the same time,
  * another challenge is to keep the UI look and behave consistent across all platforms, especially desktop and mobile
 
-If something feels misleading to you —  I beforehand apologize, feel free to [report](https://github.com/helio-fm/helio-workstation/issues/new) that to help me identify the main friction points.
+If something feels misleading to you — apologizes, feel free to [report](https://github.com/helio-fm/helio-workstation/issues/new) that to help identifying the main friction points.
 
 ### Workspace navigation
 
@@ -131,60 +131,102 @@ Interacting with nodes:
  * left-click on the node will create a plugin window, it it has one, or just select it, if it doesn't
  * right-click on the node will just select it
 
-While it is possible to set up routing in Helio, the convenience of the instruments page was not of a particular concern. If you are running it under Linux, it might be a better idea to add [Carla](https://kx.studio/Applications:Carla) as an instrument, and use it to manage VST/whatever plugins and routing.
+While it is possible to set up a multi-plugin instrument with audio/MIDI routing in Helio, the convenience of the instrument page was not of a particular concern: the development is rather focused on the sequencer functionality. If you are running it under Linux, it might be a good idea to add [Carla](https://kx.studio/Applications:Carla) as an instrument, and use it to manage VST/whatever plugins and routing.
 
 
 ## Editing and arranging
 
-### Timeline control
+### Timeline
 
-... TODO
+On the top of the editor canvas, there's a timeline control. To interact with it:
+
+* left click at the timeline to position the playhead,
+* middle-click to start the playback from that position,
+* right click to invoke the timeline events menu:
+
+![timeline-events]
+
+Timeline events include annotations, key signatures and time signatures, and they don't affect the playback of your piece in any way, they are rather meant to provide a visual cue.
+
+Manipulating the timeline events:
+
+* click on any event to focus the playhead at its position,
+* once focused, click again to edit or delete the event (displays a dialog),
+* drag to move, or shift-drag to duplicate the event.
 
 #### Annotations
 
-...
+Annotations are just text markers with optionally adjustable length:
 
-#### Key signatures
+![timeline-annotations]
 
-...
+The right-click on the annotation selects all notes of the active track up to the next annotation.
 
 #### Time signatures
 
-...
+Time signatures simply define the way the vertical grid lines are aligned in the roll:
+
+![timeline-time-signatures]
+
+The right-click on the time signature selects all notes of the active track up to the next time signature.
+
+#### Key signatures
+
+Key signatures change the way the rows are highlighted in the piano roll, but this effect can be [disabled](tips-and-tricks.md##ui-flags).
+
+![timeline-key-signatures]
+
+Apart from that, arpeggiators and a [couple](tips-and-tricks.md#chord-tool) of [other tools](tips-and-tricks.md#quick-rescale-tool) rely on the key signatures to figure out the current harmonic context.
 
 #### Reprise
 
-...
+If you have enabled the playback loop over the selected scope, timeline will display the repeat signs:
+
+![timeline-reprise]
 
 ### Left sidebar
 
-... todo navigation and UI flags
+This sidebar is responsible for track navigation and UI control.
 
- * toggle switching betwenn the piano roll and the pattern roll,
- * ...
- * toggle [velocity map](#velocity-map),
- * toggle displaying [note guides](tips-and-tricks.md##ui-flags),
- * toggle [scales highlighting](tips-and-tricks.md##ui-flags),
+Most buttons on the sidebars have keyboard shortcuts, which makes then kinda redundant, but they are displayed anyway for the sake of having a consistent UI on mobiles or touch-screen laptops, where you don't have hotkeys.
 
-#### Velocity map
+ * ![sidebar-left-1] — switch the editor view between the piano roll and the pattern roll (`tab`),
+ * ![sidebar-left-2] — zoom out (`shift + z`), zoom in (`z`), and zoom selection (`control + tab`),
+ * ![sidebar-left-3] — jump over the timeline events (`,` and `.`),
+ * ![sidebar-left-4] — toggle the [velocity map](#velocity-map) (`v`),
+ * ![sidebar-left-5] — UI [flags](tips-and-tricks.md##ui-flags) that toggle scales highlighting and the note guides (`h` and `g`),
+ * ![sidebar-left-6] — a simple waveform or spectrogram view.
 
-Velocity levels map/editor provides a way to visualize and draw gradual increase/decrease in note volume. It is toggled by `'v'` hotkey or a volume button:
+### Right sidebar
+
+This sidebar is responsible for editing tools and playback control:
+
+ * ![sidebar-right-1] — toggle the playback loop over the selection (`f11`),
+ * ![sidebar-right-2] — edit [modes](#edit-modes) (`1`, `2`, `3`, `4`, `5`),
+ * ![sidebar-right-3] — some other tools - the chord tool and arpeggiators, if available,
+ * ![sidebar-right-4] — copy and paste, undo and redo,
+ * ![sidebar-right-5] — playback (`space` or `enter`) and recording (`f12`) control.
+
+## Piano roll
+
+... todo the concept of active track and clip
+
+### Edit modes
+
+... todo describe edit modes
+... todo also tell about drag-to-copy, group resize, undo (note that the last 10 undo actions are saved in the project and are available after restarting the app), etc
+
+### Velocity map
+
+The velocity levels editor (toggled by `v` hotkey) provides a way to visualize and draw gradual increase/decrease in note volume.
+
+As well as the piano roll, the velocity map limits its editable scope to the active track. But in addition, if any notes are selected, the editable scope is limited to the selection, to make it easier to draw more complex ramps for different chunks of the track:
 
 ![velocity-map-toggle]
 
 At the moment of writing, only linear ramps are implemented:
 
 ![velocity-map-ramps]
-
-### Right sidebar
-
-#### Edit modes
-
-...
-
-## Piano roll
-
-...
 
 ## Pattern roll
 
@@ -194,9 +236,11 @@ However, the pattern roll is helpful for rearranging experiments:
 
 ![patterns]
 
+Pattern roll also allows to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
+
 ## MIDI recording
 
-The record button will try to auto-detect the available and enabled MIDI input device or provide a choice if there are more than one:
+The record button will try to auto-detect the available and enabled MIDI input device, or provide a choice if there are more than one:
 
 ![...]
 
@@ -238,3 +282,22 @@ In the pattern roll, it either also records to the selected track/clip, or, if n
 
 [velocity-map-toggle]: images/velocity-map-toggle.png "Velocity map overview"
 [velocity-map-ramps]: images/velocity-map-ramps.png "Velocity map linear ramps"
+
+[timeline-events]: images/timeline-events.png "Timeline: interacting and events menu"
+[timeline-annotations]: images/timeline-annotations.png "Timeline: annotation events"
+[timeline-key-signatures]: images/timeline-key-signatures.png "Timeline: key signature events"
+[timeline-time-signatures]: images/timeline-time-signatures.png "Timeline: time signature events"
+[timeline-reprise]: images/timeline-reprise.png "Timeline: repeat signs"
+
+[sidebar-left-1]: images/sidebar-left-1.png "Navigation sidebar 1"
+[sidebar-left-2]: images/sidebar-left-2.png "Navigation sidebar 2"
+[sidebar-left-3]: images/sidebar-left-3.png "Navigation sidebar 3"
+[sidebar-left-4]: images/sidebar-left-4.png "Navigation sidebar 4"
+[sidebar-left-5]: images/sidebar-left-5.png "Navigation sidebar 5"
+[sidebar-left-6]: images/sidebar-left-6.png "Navigation sidebar 6"
+
+[sidebar-right-1]: images/sidebar-right-1.png "Tooling sidebar 1"
+[sidebar-right-2]: images/sidebar-right-2.png "Tooling sidebar 2"
+[sidebar-right-3]: images/sidebar-right-3.png "Tooling sidebar 3"
+[sidebar-right-4]: images/sidebar-right-4.png "Tooling sidebar 4"
+[sidebar-right-5]: images/sidebar-right-5.png "Tooling sidebar 5"

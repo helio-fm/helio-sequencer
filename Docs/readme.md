@@ -8,7 +8,7 @@ If you notice that something important is missing, which I'm pretty sure it is, 
 
 #### How to read this
 
-If you're starting out with Helio, just continue with the [Getting Started](getting-started.md) page to learn the basic concepts of UI navigation, setting up the [orchestra pit](getting-started.md#instruments), creating a project, [editing and arranging](getting-started.md#editing-and-arranging) it and saving your work in the [version control](getting-started.md#version-control).
+If you're starting out with Helio, just continue with the [Getting Started](getting-started.md) page to learn the basic concepts of UI navigation, setting up [instruments](getting-started.md#instruments), [creating](getting-started.md#creating-a-project) a project, [editing and arranging](getting-started.md#editing-and-arranging) it and saving your work in the [version control](getting-started.md#version-control).
 
 Otherwise, you might find useful the [editing tips](tips-and-tricks.md): the majority of all the nifty tools and hacks will be described there.
 
@@ -77,7 +77,7 @@ Minimum deployment targets are:
 
     Windows: Windows 7
     macOS: macOS 10.7
-    Linux: Mainstream distributions
+    Linux: mainstream distributions
 
 #### Basic build instructions
 
