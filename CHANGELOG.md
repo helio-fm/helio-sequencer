@@ -4,6 +4,16 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.0
+ - Added initial support for MIDI recording (fucking finally), hotkey F12
+ - Added initial support for looping the playback over the selected scope, hotkey F11
+ - Added quantization commands
+ - Made annotations lengths adjustable
+ - Added timeout for scanning fonts on the first run to avoid the app hanging on some systems
+ - Minor UI updates for a prettier look and less glitching; added the command palette button in the headline and the timeline repeat sign
+ - More tech debt has been paid down, this part of the update will hopefully be invisible
+ - Added some documentation
+
 ## Version 2.5
  - This is mostly a bugfix release: addressed some UX inconveniences and fixed a stupid crash
  - Added hotkeys for tweaking lengths of selected notes; also adding a note with a modifier key inserts a new note in a dragging mode
