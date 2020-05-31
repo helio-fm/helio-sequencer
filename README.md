@@ -1,4 +1,4 @@
-## ![Screenshot](Docs/Images/screen-v3.png)
+## ![Screenshot](Docs/images/screen-v3.png)
 [Helio Workstation](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
 
 
@@ -13,18 +13,12 @@ It aims to be a modern music creation software, featuring linear-based/pattern-b
 
 ## Building
 
+[Basic build instructions](Docs/readme.md#building-from-source)
+
 ||Linux|Windows|macOS|iOS|Android|
 |---|---|---|---|---|---|
 |master|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/2)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/5)](https://travis-ci.org/helio-fm/helio-workstation)|
 |develop|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/2)](https://travis-ci.org/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/3)](https://travis-ci.org/helio-fm/helio-workstation)|[![iOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/4)](https://travis-ci.org/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/5)](https://travis-ci.org/helio-fm/helio-workstation)|
-
-### Basic build instructions
-
- * Clone with submodules: `git clone --recurse-submodules https://github.com/helio-fm/helio-workstation.git`.
- * Install dependencies:
-   * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
-   * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.
- * Pick the right project for your OS from the `Projects` directory and build.
 
 ### Development builds
 
@@ -69,11 +63,9 @@ Helio is still a work in progress, and there are several ways you could help:
 
 GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-workstation/graphs/contributors), see ``LICENSE`` for more information.
 
-Icons taken from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+Icons taken from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/). Built-in piano samples are the part of [Salamander Grand Piano](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm, distributed under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
-Built-in piano samples are the part of [Salamander Grand Piano](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm, distributed under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
-
-All Helio logos and translations are distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+All documentation, translations and logotypes are distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
 ### Translation and proofreading credits
 
