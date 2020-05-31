@@ -47,9 +47,9 @@ Note that the installer-based versions don't remove any of these when uninstalli
 
 All the configuration files are created on the first start under the user application data directory. The directory is a platform-dependent location:
 
-    Windows: %APPDATA%\Helio
-    macOS: ~/Library/Application Support/Helio
-    Linux: ~/.config/Helio
+* Windows: %APPDATA%\Helio
+* macOS: ~/Library/Application Support/Helio
+* Linux: ~/.config/Helio
 
 #### `settings.helio`
 
@@ -65,9 +65,9 @@ In future, the app may sync more configs, including default scales, chords, arpe
 
 The projects files are created in the `Helio` subfolder of the user's default documents folder. The location of this directory is also platform-dependent:
 
-    Windows: %HOMEPATH%\Helio
-    macOS: ~/Documents/Helio
-    Linux: ~/Documents/Helio
+* Windows: %HOMEPATH%\Helio
+* macOS: ~/Documents/Helio
+* Linux: ~/Documents/Helio
 
 ## Building from source
 
@@ -75,14 +75,14 @@ Building the app from source will require a C++11 compiler, e.g. GCC 4.8 on Linu
 
 Minimum deployment targets are:
 
-    Windows: Windows 7
-    macOS: macOS 10.7
-    Linux: mainstream distributions
+* Windows: Windows 7
+* macOS: macOS 10.7
+* Linux: mainstream distributions
 
 #### Basic build instructions
 
- * Clone with submodules: `git clone --recurse-submodules https://github.com/helio-fm/helio-workstation.git`.
- * Install dependencies:
-   * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
-   * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.
- * Pick the right project for your OS from the `Projects` directory and build.
+* Clone with submodules: `git clone --recurse-submodules https://github.com/helio-fm/helio-workstation.git`.
+* Install dependencies:
+  * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
+  * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.
+* Pick the right project for your OS from the `Projects` directory and build.
