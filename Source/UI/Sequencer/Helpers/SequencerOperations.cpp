@@ -2403,6 +2403,11 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
 
 String SequencerOperations::generateNextNameForNewTrack(const String &name, const StringArray &allNames)
 {
+    if (!allNames.contains(name))
+    {
+        return name;
+    }
+
     StringArray tokens;
     tokens.addTokens(name, true);
     if (tokens.isEmpty())
@@ -2431,3 +2436,39 @@ String SequencerOperations::generateNextNameForNewTrack(const String &name, cons
 
     return newName;
 }
+
+//===----------------------------------------------------------------------===//
+// Tests
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+class SequencerOperationsTests final : public UnitTest
+{
+public:
+    SequencerOperationsTests() : UnitTest("Sequencer operations tests", UnitTestCategories::helio) {}
+
+    void runTest() override
+    {
+        beginTest("Generate next name for new track");
+
+        expectEquals({ "Recording" },
+            SequencerOperations::generateNextNameForNewTrack("Recording", { "Track 1", "Track 2" }));
+
+        expectEquals({ "Recording 2" },
+            SequencerOperations::generateNextNameForNewTrack("Recording", { "Track 1", "Recording", "Track 2" }));
+
+        expectEquals({ "Recording 3" },
+            SequencerOperations::generateNextNameForNewTrack("Recording", { "Track 1", "Recording", "Track 2", "Recording 2" }));
+
+        expectEquals({ "Recording" },
+            SequencerOperations::generateNextNameForNewTrack("Recording", { "Track 1", "Track 2", "Recording 2" }));
+
+        expectEquals({ "Duplicate 2" },
+            SequencerOperations::generateNextNameForNewTrack("Duplicate", { "Duplicate", "Duplicate", "Track A", "Recording" }));
+    }
+};
+
+static SequencerOperationsTests sequencerOperationsTests;
+
+#endif
