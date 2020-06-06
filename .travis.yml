@@ -15,13 +15,14 @@ branches:
     - /^\d+\.?\d+\.?\d*$/
 
 stages:
-  - test
-  - deploy
+  - Test
+  - Deploy
 
 addons_shortcuts:
   addons_gcc6: &gcc5
     apt:
       packages: [ 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+    ssh_known_hosts: helio.fm
   addons_clang7: &clang7
     apt:
       packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
@@ -32,33 +33,33 @@ addons_shortcuts:
 jobs:
   include:
     - name: "gcc 5, debug build x64"
-      stage: test
+      stage: Test
       os: linux
       dist: xenial
       addons: *gcc5
-      env: BUILD_TYPE=linux CONFIG=Tests DISPLAY=localhost:1.0 CFLAGS=-fno-pie
-    - name: "clang 7, release build x64"
-      stage: deploy
+      env: BUILD_TYPE=linux CONFIG=Tests CFLAGS=-fno-pie
+    - name: "gcc 5, release build x64"
+      stage: Deploy
       os: linux
       dist: xenial
-      addons: *clang7
-      env: BUILD_TYPE=linux CC=clang CXX=clang++ CONFIG=Release64 DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+      addons: *gcc5
+      env: BUILD_TYPE=linux CONFIG=Release64 CFLAGS=-fno-pie
     - name: "xcode 10.1 mac, release build"
-      stage: deploy
+      stage: Deploy
       os: osx
       osx_image: xcode10.1
       xcode_sdk: macosx10.14
       addons: *deploy
       env: BUILD_TYPE=osx
     - name: "xcode 10.1 ios, release build"
-      stage: deploy
+      stage: Deploy
       os: osx
       osx_image: xcode10.1
       xcode_sdk: iphoneos
       addons: *deploy
       env: BUILD_TYPE=ios
     - name: "android 21, release build"
-      stage: deploy
+      stage: Deploy
       os: linux
       dist: trusty
       language: android
@@ -78,8 +79,8 @@ jobs:
         directories:
          - $HOME/.gradle/caches/
          - $HOME/.gradle/wrapper/
-    - name: "docs"
-      stage: deploy
+    - name: "deploy docs"
+      stage: Deploy
       os: linux
       dist: trusty
       language: rust
@@ -93,9 +94,9 @@ before_script:
 
 script:
   - if [[ "${BUILD_TYPE}" == "linux" ]]; then
-      xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make all strip';
+      cd Projects/LinuxMakefile && make all strip;
       if [[ "${TRAVIS_BUILD_STAGE_NAME}" == "Test" ]]; then
-        xvfb-run -a Projects/LinuxMakefile/build/Helio;
+        build/Helio;
       fi
     fi
   - if [[ "${BUILD_TYPE}" == "android" ]]; then

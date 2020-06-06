@@ -9,7 +9,7 @@ if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
 fi
 
 # Assumed to be run either on a development branch or a tagged master branch
-if [[ ${TRAVIS_BRANCH} != "develop" || ${TRAVIS_TAG} == "" ]]; then
+if [[ ${TRAVIS_BRANCH} != "develop" && ${TRAVIS_TAG} == "" ]]; then
     echo "Skipping deployment: will only run either on a tagged commit, or a develop branch commit"
     exit 0
 fi
