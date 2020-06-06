@@ -200,6 +200,10 @@
  #define   JUCE_STRICT_REFCOUNTEDPOINTER 1
 #endif
 
+#ifndef    JUCE_ENABLE_ALLOCATION_HOOKS
+ //#define JUCE_ENABLE_ALLOCATION_HOOKS 0
+#endif
+
 //==============================================================================
 // juce_events flags:
 
@@ -260,8 +264,8 @@
  #define   JUCE_WEB_BROWSER 0
 #endif
 
-#ifndef    JUCE_USE_WINRT_WEBVIEW
- //#define JUCE_USE_WINRT_WEBVIEW 0
+#ifndef    JUCE_USE_WIN_WEBVIEW2
+ //#define JUCE_USE_WIN_WEBVIEW2 0
 #endif
 
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR

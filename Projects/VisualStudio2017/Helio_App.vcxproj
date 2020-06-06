@@ -1225,6 +1225,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\maths\juce_Random.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_AllocationHooks.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_MemoryBlock.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3115,6 +3118,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\maths\juce_Random.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\maths\juce_Range.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\maths\juce_StatisticsAccumulator.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_AllocationHooks.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_Atomic.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_ByteOrder.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_core\memory\juce_ContainerDeletePolicy.h"/>
