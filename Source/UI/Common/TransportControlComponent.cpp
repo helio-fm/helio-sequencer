@@ -303,7 +303,7 @@ TransportControlComponent::TransportControlComponent(WeakReference<Component> ev
     this->setSize(44, 79);
 
     //[Constructor]
-    this->recordButtonBlinkAnimator = makeUnique<RecordButtonBlinkAnimator>(this->recordBg.get());
+    this->recordButtonBlinkAnimator = make<RecordButtonBlinkAnimator>(this->recordBg.get());
     //[/Constructor]
 }
 
@@ -413,7 +413,7 @@ void TransportControlComponent::showRecordingMenu(const Array<MidiDeviceInfo> &d
 
     // if more than 1 devices available, provide a choice
     MenuPanel::Menu menu;
-    auto panel = makeUnique<MenuPanel>();
+    auto panel = make<MenuPanel>();
 
     for (const auto &midiInput : devices)
     {

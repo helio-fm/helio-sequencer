@@ -34,7 +34,7 @@ void AudioCore::initAudioFormats(AudioPluginFormatManager &formatManager)
 
 AudioCore::AudioCore()
 {
-    this->audioMonitor = makeUnique<AudioMonitor>();
+    this->audioMonitor = make<AudioMonitor>();
     this->deviceManager.addAudioCallback(this->audioMonitor.get());
     AudioCore::initAudioFormats(this->formatManager);
 }
@@ -494,7 +494,7 @@ void AudioCore::deserialize(const SerializedData &data)
     {
         for (const auto &instrumentNode : orchestra)
         {
-            auto instrument = makeUnique<Instrument>(this->formatManager, "");
+            auto instrument = make<Instrument>(this->formatManager, "");
             // it's important to add audio processor to device
             // before actually creating nodes and connections:
             this->addInstrumentToAudioDevice(instrument.get());

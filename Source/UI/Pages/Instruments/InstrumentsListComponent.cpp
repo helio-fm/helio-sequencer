@@ -209,7 +209,7 @@ UniquePointer<Component> InstrumentsListComponent::createMenu()
     const auto selectedRow = this->instrumentsList->getSelectedRow();
     const auto instrument = this->instruments[selectedRow];
     jassert(instrument);
-    return makeUnique<InstrumentMenu>(*instrument, this->pluginScanner);
+    return make<InstrumentMenu>(*instrument, this->pluginScanner);
 }
 
 Image InstrumentsListComponent::getIcon() const

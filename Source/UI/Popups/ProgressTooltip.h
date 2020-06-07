@@ -35,7 +35,7 @@ public:
     //[UserMethods]
     static UniquePointer<ProgressTooltip> cancellable(SimpleCloseCallback callback)
     {
-        auto tooltip = makeUnique<ProgressTooltip>(true);
+        auto tooltip = make<ProgressTooltip>(true);
         tooltip->onCancel = callback;
         return tooltip;
     }

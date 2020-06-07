@@ -148,7 +148,7 @@ private:
     void attachOpenGLContext()
     {
         DBG("Attaching OpenGL context.");
-        this->openGLContext = makeUnique<OpenGLContext>();
+        this->openGLContext = make<OpenGLContext>();
         this->openGLContext->setPixelFormat(OpenGLPixelFormat(8, 8, 0, 0));
         this->openGLContext->setMultisamplingEnabled(false);
         this->openGLContext->attachTo(*this);
@@ -172,7 +172,7 @@ private:
 
     void createLayoutComponent()
     {
-        this->layout = makeUnique<MainLayout>();
+        this->layout = make<MainLayout>();
         // optionally, in future:
         // this->setContentOwned(new ScaledComponentProxy(this->layout), false);
         this->setContentNonOwned(this->layout.get(), false);
@@ -496,10 +496,10 @@ void App::initialise(const String &commandLine)
         const auto album = Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise;
         Desktop::getInstance().setOrientationsEnabled(album);
         
-        this->config = makeUnique<class Config>();
+        this->config = make<class Config>();
         this->config->initResources();
 
-        auto helioTheme = makeUnique<HelioTheme>();
+        auto helioTheme = make<HelioTheme>();
         helioTheme->initResources();
         helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
 
@@ -537,7 +537,7 @@ void App::initialise(const String &commandLine)
 
         // if this is not a unit test runner, proceed as normal:
 
-        this->workspace = makeUnique<class Workspace>();
+        this->workspace = make<class Workspace>();
         
         bool shouldEnableOpenGL = this->config->getUiFlags()->isOpenGlRendererEnabled();
         bool shouldUseNativeTitleBar = this->config->getUiFlags()->isNativeTitleBarEnabled();
@@ -558,10 +558,10 @@ void App::initialise(const String &commandLine)
             this->config->getUiFlags()->setNativeTitleBarEnabled(shouldUseNativeTitleBar);
         }
 
-        this->window = makeUnique<MainWindow>();
+        this->window = make<MainWindow>();
         this->window->init(shouldEnableOpenGL, shouldUseNativeTitleBar);
 
-        this->network = makeUnique<class Network>(*this->workspace.get());
+        this->network = make<class Network>(*this->workspace.get());
 
         this->config->getUiFlags()->addListener(this);
         
@@ -774,7 +774,7 @@ void App::onNativeTitleBarFlagChanged(bool shouldUseNativeTitleBar)
     // just re-creating a window helps to avoid glitches:
     const bool hasOpenGl = App::isOpenGLRendererEnabled();
     auto *self = static_cast<App *>(getInstance());
-    self->window = makeUnique<MainWindow>();
+    self->window = make<MainWindow>();
     self->window->init(hasOpenGl, shouldUseNativeTitleBar);
 
 #   elif JUCE_LINUX

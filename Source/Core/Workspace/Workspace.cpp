@@ -44,11 +44,11 @@ void Workspace::init()
 {
     if (! this->wasInitialized)
     {
-        this->audioCore = makeUnique<AudioCore>();
-        this->pluginManager = makeUnique<PluginScanner>();
-        this->treeRoot = makeUnique<RootNode>("Workspace");
+        this->audioCore = make<AudioCore>();
+        this->pluginManager = make<PluginScanner>();
+        this->treeRoot = make<RootNode>("Workspace");
 
-        this->consoleProjectsList = makeUnique<CommandPaletteProjectsList>(*this);
+        this->consoleProjectsList = make<CommandPaletteProjectsList>(*this);
 
         if (! this->autoload())
         {

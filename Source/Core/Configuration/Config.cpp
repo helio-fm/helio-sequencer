@@ -26,13 +26,13 @@ Config::Config(int timeoutToSaveMs) :
     saveTimeout(timeoutToSaveMs),
     propertiesFile(DocumentHelpers::getConfigSlot("settings.helio"))
 {
-    this->translationsManager = makeUnique<TranslationsManager>();
-    this->arpeggiatorsManager = makeUnique<ArpeggiatorsManager>();
-    this->colourSchemesManager = makeUnique<ColourSchemesManager>();
-    this->hotkeySchemesManager = makeUnique<HotkeySchemesManager>();
-    this->scriptsManager = makeUnique<ScriptsManager>();
-    this->scalesManager = makeUnique<ScalesManager>();
-    this->chordsManager = makeUnique<ChordsManager>();
+    this->translationsManager = make<TranslationsManager>();
+    this->arpeggiatorsManager = make<ArpeggiatorsManager>();
+    this->colourSchemesManager = make<ColourSchemesManager>();
+    this->hotkeySchemesManager = make<HotkeySchemesManager>();
+    this->scriptsManager = make<ScriptsManager>();
+    this->scalesManager = make<ScalesManager>();
+    this->chordsManager = make<ChordsManager>();
 
     using namespace Serialization::Resources;
     this->resources[translations] = this->translationsManager.get();
@@ -43,7 +43,7 @@ Config::Config(int timeoutToSaveMs) :
     this->resources[scales] = this->scalesManager.get();
     this->resources[chords] = this->chordsManager.get();
 
-    this->uiFlags = makeUnique<UserInterfaceFlags>();
+    this->uiFlags = make<UserInterfaceFlags>();
 }
 
 Config::~Config()

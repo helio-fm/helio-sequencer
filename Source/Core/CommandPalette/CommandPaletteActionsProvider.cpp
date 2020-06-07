@@ -34,7 +34,7 @@ struct CommandPaletteActionSortByMatch final
 
 CommandPaletteAction::Ptr CommandPaletteAction::action(String text, String hint, float order)
 {
-    return CommandPaletteAction::Ptr(new CommandPaletteAction(std::move(text), std::move(hint), order));
+    return CommandPaletteAction::Ptr(new CommandPaletteAction(move(text), move(hint), order));
 }
 
 CommandPaletteAction::Ptr CommandPaletteAction::withCallback(Callback callback)
@@ -60,8 +60,8 @@ CommandPaletteAction::Ptr CommandPaletteAction::unfiltered()
 }
 
 CommandPaletteAction::CommandPaletteAction(String text, String hint, float order) :
-    name(std::move(text)),
-    hint(std::move(hint)),
+    name(move(text)),
+    hint(move(hint)),
     order(order) {}
 
 void CommandPaletteAction::setMatch(int score, const uint8 *matches)

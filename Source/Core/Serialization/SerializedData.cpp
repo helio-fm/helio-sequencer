@@ -180,14 +180,14 @@ SerializedData::SerializedData() noexcept {}
 SerializedData::SerializedData(const Identifier &type) :
     data(new SerializedData::SharedData(type)) {}
 
-SerializedData::SerializedData(SharedData::Ptr obj) noexcept : data(std::move(obj)) {}
+SerializedData::SerializedData(SharedData::Ptr obj) noexcept : data(move(obj)) {}
 SerializedData::SerializedData(SharedData &obj) noexcept : data(obj) {}
 
 SerializedData::SerializedData(const SerializedData &other) noexcept :
     data(other.data) {}
 
 SerializedData::SerializedData(SerializedData &&other) noexcept :
-    data(std::move(other.data)) {}
+    data(move(other.data)) {}
 
 SerializedData &SerializedData::operator= (const SerializedData &other)
 {

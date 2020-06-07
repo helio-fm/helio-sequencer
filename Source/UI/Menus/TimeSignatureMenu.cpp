@@ -42,7 +42,7 @@ TimeSignatureMenu::TimeSignatureMenu(ProjectNode &parentProject,
             auto *sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
             auto inputDialog = ModalDialogInput::Presets::changeTimeSignature(this->event.toString());
             inputDialog->onOk = sequence->getEventChangeCallback(this->event);
-            App::showModalComponent(std::move(inputDialog));
+            App::showModalComponent(move(inputDialog));
         }));
 
     menu.add(MenuItem::item(Icons::close,

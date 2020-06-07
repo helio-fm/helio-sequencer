@@ -81,24 +81,24 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 {
     this->setComponentID(ComponentIDs::pianoRollId);
 
-    this->defaultHighlighting = makeUnique<HighlightingScheme>(0, Scale::getNaturalMajorScale());
+    this->defaultHighlighting = make<HighlightingScheme>(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
 
-    this->selectedNotesMenuManager = makeUnique<PianoRollSelectionMenuManager>(&this->selection, this->project);
+    this->selectedNotesMenuManager = make<PianoRollSelectionMenuManager>(&this->selection, this->project);
 
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
 
-    this->draggingHelper = makeUnique<HelperRectangleHorizontal>();
+    this->draggingHelper = make<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
 
-    this->consoleChordConstructor = makeUnique<CommandPaletteChordConstructor>(*this);
+    this->consoleChordConstructor = make<CommandPaletteChordConstructor>(*this);
 
     this->reloadRollContent();
 
     this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
     const bool noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
 
-    this->noteNameGuides = makeUnique<NoteNameGuidesBar>(*this);
+    this->noteNameGuides = make<NoteNameGuidesBar>(*this);
     this->addChildComponent(this->noteNameGuides.get());
     this->noteNameGuides->setVisible(noteNameGuidesEnabled);
 
@@ -975,7 +975,7 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::RenameTrack:
         if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
         {
-            App::showModalComponent(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
+            App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
     case CommandIDs::CopyEvents:
@@ -1116,7 +1116,7 @@ void PianoRoll::handleCommandMessage(int commandId)
                     App::Config().getArpeggiators()->updateUserResource(arp);
                 };
 
-                App::showModalComponent(std::move(newArpDialog));
+                App::showModalComponent(move(newArpDialog));
             }
         }
         break;

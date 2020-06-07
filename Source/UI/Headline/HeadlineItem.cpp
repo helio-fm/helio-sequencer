@@ -202,7 +202,7 @@ void HeadlineItem::showMenuIfAny()
 {
     if (this->item != nullptr && this->item->hasMenu())
     {
-        App::showModalComponent(makeUnique<HeadlineDropdown>(this->item, this->getPosition()));
+        App::showModalComponent(make<HeadlineDropdown>(this->item, this->getPosition()));
     }
 }
 

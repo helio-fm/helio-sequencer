@@ -289,12 +289,12 @@ void TimeSignatureDialog::inputAttemptWhenModal()
 
 UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner, const TimeSignatureEvent &event)
 {
-    return makeUnique<TimeSignatureDialog>(owner, static_cast<TimeSignaturesSequence *>(event.getSequence()), event, false, 0.f);
+    return make<TimeSignatureDialog>(owner, static_cast<TimeSignaturesSequence *>(event.getSequence()), event, false, 0.f);
 }
 
 UniquePointer<Component> TimeSignatureDialog::addingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat)
 {
-    return makeUnique<TimeSignatureDialog>(owner, annotationsLayer, TimeSignatureEvent(), true, targetBeat);
+    return make<TimeSignatureDialog>(owner, annotationsLayer, TimeSignatureEvent(), true, targetBeat);
 }
 
 void TimeSignatureDialog::updateOkButtonState()

@@ -36,12 +36,12 @@ ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<Hybr
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
 
-    this->playhead = makeUnique<Playhead>(*this->roll, this->transport);
+    this->playhead = make<Playhead>(*this->roll, this->transport);
 
-    this->helperRectangle = makeUnique<HorizontalDragHelper>(*this);
+    this->helperRectangle = make<HorizontalDragHelper>(*this);
     this->addAndMakeVisible(this->helperRectangle.get());
 
-    this->screenRange = makeUnique<ProjectMapScrollerScreen>(*this);
+    this->screenRange = make<ProjectMapScrollerScreen>(*this);
     this->addAndMakeVisible(this->screenRange.get());
 }
 
@@ -448,7 +448,7 @@ ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScrolle
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toBack();
 
-    this->moveConstrainer = makeUnique<HorizontalDragHelperConstrainer>(this->scroller);
+    this->moveConstrainer = make<HorizontalDragHelperConstrainer>(this->scroller);
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 }

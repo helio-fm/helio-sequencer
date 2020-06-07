@@ -94,13 +94,15 @@ template <typename T>
 using UniquePointer = std::unique_ptr<T>;
 
 template <typename T, typename... Args> inline
-UniquePointer<T> makeUnique(Args&&... args)
+UniquePointer<T> make(Args&&... args)
 {
     return UniquePointer<T>(new T(std::forward<Args>(args)...));
 }
 
 template <typename T>
 using Function = std::function<T>;
+
+using std::move;
 
 #if _MSC_VER
 inline float roundf(float x)

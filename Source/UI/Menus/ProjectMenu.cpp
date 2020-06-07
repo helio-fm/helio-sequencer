@@ -101,10 +101,10 @@ void ProjectMenu::handleCommandMessage(int commandId)
                     }
                 };
 
-                App::showModalComponent(std::move(inputDialog));
+                App::showModalComponent(move(inputDialog));
             };
 
-            App::showModalComponent(std::move(confirmationDialog));
+            App::showModalComponent(move(confirmationDialog));
             return;
         }
     }
@@ -221,7 +221,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
                     }
                 };
 
-                App::showModalComponent(std::move(inputDialog));
+                App::showModalComponent(move(inputDialog));
             }));
     }
 
@@ -404,7 +404,7 @@ void ProjectMenu::showSetInstrumentMenu()
 SerializedData ProjectMenu::createPianoTrackTempate(const String &name,
     const String &instrumentId, String &outTrackId) const
 {
-    auto newNode = makeUnique<PianoTrackNode>(name);
+    auto newNode = make<PianoTrackNode>(name);
 
     // We need to have at least one clip on a pattern:
     const Clip clip(newNode->getPattern());
@@ -428,7 +428,7 @@ SerializedData ProjectMenu::createPianoTrackTempate(const String &name,
 SerializedData ProjectMenu::createAutoTrackTempate(const String &name,
     int controllerNumber, const String &instrumentId) const
 {
-    auto newNode = makeUnique<AutomationTrackNode>(name);
+    auto newNode = make<AutomationTrackNode>(name);
 
     // We need to have at least one clip on a pattern:
     const Clip clip(newNode->getPattern());

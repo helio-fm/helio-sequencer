@@ -69,22 +69,22 @@ void InternalPluginFormat::createPluginInstance(const PluginDescription &desc,
 {
     if (desc.uid == this->audioOutDesc.uid || desc.name.equalsIgnoreCase(this->audioOutDesc.name))
     {
-        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), {});
+        callback(make<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode), {});
         return;
     }
     if (desc.uid == this->audioInDesc.uid || desc.name.equalsIgnoreCase(this->audioInDesc.name))
     {
-        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode), {});
+        callback(make<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode), {});
         return;
     }
     if (desc.uid == this->midiInDesc.uid || desc.name.equalsIgnoreCase(this->midiInDesc.name))
     {
-        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode), {});
+        callback(make<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode), {});
         return;
     }
     else if (desc.uid == this->midiOutDesc.uid || desc.name.equalsIgnoreCase(this->midiOutDesc.name))
     {
-        callback(makeUnique<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
+        callback(make<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
         return;
     }
     

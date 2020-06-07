@@ -29,7 +29,7 @@ Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &na
     instrumentName(name),
     instrumentId()
 {
-    this->processorGraph = makeUnique<AudioProcessorGraph>();
+    this->processorGraph = make<AudioProcessorGraph>();
     this->audioCallback.setProcessor(this->processorGraph.get());
 }
 
@@ -166,7 +166,7 @@ void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y,
 
         if (instance != nullptr)
         {
-            node = this->processorGraph->addNode(std::move(instance));
+            node = this->processorGraph->addNode(move(instance));
         }
 
         if (node == nullptr)
@@ -573,7 +573,7 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
         const double nodeY = tree.getProperty(UI::positionY);
 
         AudioProcessorGraph::NodeID nodeId(nodeUid);
-        AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(std::move(instance), nodeId));
+        AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(move(instance), nodeId));
 
         if (nodeStateBlock.getSize() > 0)
         {
@@ -609,7 +609,7 @@ AudioProcessorGraph::Node::Ptr Instrument::addNode(const PluginDescription &desc
     
     if (instance != nullptr)
     {
-        node = this->processorGraph->addNode(std::move(instance));
+        node = this->processorGraph->addNode(move(instance));
     }
     
     if (node != nullptr)

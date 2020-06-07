@@ -195,7 +195,7 @@ UniquePointer<Component> VersionControlNode::createMenu()
 {
     if (this->vcs != nullptr)
     {
-        return makeUnique<VersionControlMenu>(*this->vcs);
+        return make<VersionControlMenu>(*this->vcs);
     }
     
     return nullptr;

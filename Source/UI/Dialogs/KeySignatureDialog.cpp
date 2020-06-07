@@ -334,14 +334,14 @@ void KeySignatureDialog::inputAttemptWhenModal()
 UniquePointer<Component> KeySignatureDialog::editingDialog(Component &owner,
     Transport &transport, const KeySignatureEvent &event)
 {
-    return makeUnique<KeySignatureDialog>(owner, transport,
+    return make<KeySignatureDialog>(owner, transport,
         static_cast<KeySignaturesSequence *>(event.getSequence()), event, false, 0.f);
 }
 
 UniquePointer<Component> KeySignatureDialog::addingDialog(Component &owner,
     Transport &transport, KeySignaturesSequence *annotationsLayer, float targetBeat)
 {
-    return makeUnique<KeySignatureDialog>(owner, transport,
+    return make<KeySignatureDialog>(owner, transport,
         annotationsLayer, KeySignatureEvent(), true, targetBeat);
 }
 

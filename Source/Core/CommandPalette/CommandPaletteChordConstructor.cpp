@@ -170,15 +170,15 @@ private:
         {
         case '/':
             t = t2;
-            return makeUnique<SlashToken>();
+            return make<SlashToken>();
 
         case ' ':
             t = t2.findEndOfWhitespace();
-            return makeUnique<SpaceToken>();
+            return make<SpaceToken>();
 
         case '+':
             t = t2;
-            return makeUnique<KeywordToken>(KeywordToken::Type::Augmented);
+            return make<KeywordToken>(KeywordToken::Type::Augmented);
 
         case '#': case 'b':
             return parseSignToken(t);
@@ -234,7 +234,7 @@ private:
         }
 
         const auto correctedValue = isNegative ? -intValue : intValue;
-        return makeUnique<NumberToken>((int8)correctedValue);
+        return make<NumberToken>((int8)correctedValue);
     }
 
     static UniquePointer<Token> parseNoteToken(String::CharPointerType &t)
@@ -242,20 +242,20 @@ private:
         switch (t.getAndAdvance())
         {
         case 'C':
-            return makeUnique<NoteToken>(int8(0));
+            return make<NoteToken>(int8(0));
         case 'D':
-            return makeUnique<NoteToken>(int8(1));
+            return make<NoteToken>(int8(1));
         case 'E':
-            return makeUnique<NoteToken>(int8(2));
+            return make<NoteToken>(int8(2));
         case 'F':
-            return makeUnique<NoteToken>(int8(3));
+            return make<NoteToken>(int8(3));
         case 'G':
-            return makeUnique<NoteToken>(int8(4));
+            return make<NoteToken>(int8(4));
         case 'A':
-            return makeUnique<NoteToken>(int8(5));
+            return make<NoteToken>(int8(5));
         case 'B':
         case 'H':
-            return makeUnique<NoteToken>(int8(6));
+            return make<NoteToken>(int8(6));
         default:
             break;
         }
@@ -268,9 +268,9 @@ private:
         switch (t.getAndAdvance())
         {
         case '#':
-            return makeUnique<SignToken>(true);
+            return make<SignToken>(true);
         case 'b':
-            return makeUnique<SignToken>(false);
+            return make<SignToken>(false);
         default:
             break;
         }
@@ -287,7 +287,7 @@ private:
         {
             case '+':
                 t = t2;
-                return makeUnique<KeywordToken>(KeywordToken::Type::Augmented);
+                return make<KeywordToken>(KeywordToken::Type::Augmented);
 
             case 'a': case 'A': // "add", "aug"
             {
@@ -295,12 +295,12 @@ private:
                 if (t2.getAndAdvance() == 'd' && t2.getAndAdvance() == 'd')
                 {
                     t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Added);
+                    return make<KeywordToken>(KeywordToken::Type::Added);
                 }
                 else if (t3.getAndAdvance() == 'u' && t3.getAndAdvance() == 'g')
                 {
                     t = t3;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Augmented);
+                    return make<KeywordToken>(KeywordToken::Type::Augmented);
                 }
                 break;
             }
@@ -309,7 +309,7 @@ private:
                 if (t2.getAndAdvance() == 'n' && t2.getAndAdvance() == 'v')
                 {
                     t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Inverted);
+                    return make<KeywordToken>(KeywordToken::Type::Inverted);
                 }
                 break;
 
@@ -317,7 +317,7 @@ private:
                 if (t2.getAndAdvance() == 'u' && t2.getAndAdvance() == 's')
                 {
                     t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Suspeneded);
+                    return make<KeywordToken>(KeywordToken::Type::Suspeneded);
                 }
                 break;
 
@@ -327,12 +327,12 @@ private:
                 if (t2.getAndAdvance() == 'i' && t2.getAndAdvance() == 'm')
                 {
                     t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Diminished);
+                    return make<KeywordToken>(KeywordToken::Type::Diminished);
                 }
                 else if (t3.getAndAdvance() == 'o' && t3.getAndAdvance() == 'm')
                 {
                     t = t3;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Dominant);
+                    return make<KeywordToken>(KeywordToken::Type::Dominant);
                 }
                 break;
             }
@@ -343,17 +343,17 @@ private:
                 if (t3.getAndAdvance() == 'i' && t3.getAndAdvance() == 'n')
                 {
                     t = t3;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
+                    return make<KeywordToken>(KeywordToken::Type::Minor);
                 }
                 else if (t4.getAndAdvance() == 'a' && t4.getAndAdvance() == 'j')
                 {
                     t = t4;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Major);
+                    return make<KeywordToken>(KeywordToken::Type::Major);
                 }
                 else
                 {
                     t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
+                    return make<KeywordToken>(KeywordToken::Type::Minor);
                 }
                 break;
             }
@@ -364,17 +364,17 @@ private:
                 if (t3.getAndAdvance() == 'i' && t3.getAndAdvance() == 'n')
                 {
                     t = t3;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Minor);
+                    return make<KeywordToken>(KeywordToken::Type::Minor);
                 }
                 else if (t4.getAndAdvance() == 'a' && t4.getAndAdvance() == 'j')
                 {
                     t = t4;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Major);
+                    return make<KeywordToken>(KeywordToken::Type::Major);
                 }
                 else
                 {
                     t = t2;
-                    return makeUnique<KeywordToken>(KeywordToken::Type::Major);
+                    return make<KeywordToken>(KeywordToken::Type::Major);
                 }
                 break;
             }
@@ -719,7 +719,7 @@ class Parser final
 {
 public:
 
-    explicit Parser(OwnedArray<Token> tokens) : tokens(std::move(tokens)) {}
+    explicit Parser(OwnedArray<Token> tokens) : tokens(move(tokens)) {}
 
     OwnedArray<Expression> getExpressions() const
     {
@@ -768,7 +768,7 @@ private:
                 t += 2;
                 const auto *signToken = static_cast<const SignToken *>(token);
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
-                return makeUnique<KeyAlterationExpression>(signToken, numberToken);
+                return make<KeyAlterationExpression>(signToken, numberToken);
             }
             break;
 
@@ -782,17 +782,17 @@ private:
                 {
                     t += 3;
                     const auto *signToken = static_cast<const SignToken *>(thirdToken);
-                    return makeUnique<BassNoteExpression>(noteToken, signToken);
+                    return make<BassNoteExpression>(noteToken, signToken);
                 }
 
                 t += 2;
-                return makeUnique<BassNoteExpression>(noteToken);
+                return make<BassNoteExpression>(noteToken);
             }
             else if (nextToken != nullptr && nextToken->type == Token::Type::Number)
             {
                 t += 2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
-                return makeUnique<AdditionExpression>(numberToken);
+                return make<AdditionExpression>(numberToken);
             }
             break;
 
@@ -814,11 +814,11 @@ private:
         {
             t += 2;
             const auto *signToken = static_cast<const SignToken *>(nextToken);
-            return makeUnique<RootKeyExpression>(token, signToken);
+            return make<RootKeyExpression>(token, signToken);
         }
 
         t++;
-        return makeUnique<RootKeyExpression>(token);
+        return make<RootKeyExpression>(token);
     }
 
     UniquePointer<Expression> parseKeywords(int &t) const
@@ -840,7 +840,7 @@ private:
             {
                 t = ++t2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
-                return makeUnique<AdditionExpression>(numberToken);
+                return make<AdditionExpression>(numberToken);
             }
             else if (nextToken != nullptr && nextToken->type == Token::Type::Sign)
             {
@@ -850,7 +850,7 @@ private:
                     t = ++t2;
                     const auto *signToken = static_cast<const SignToken *>(nextToken);
                     const auto *numberToken = static_cast<const NumberToken *>(thirdToken);
-                    return makeUnique<AdditionExpression>(signToken, numberToken);
+                    return make<AdditionExpression>(signToken, numberToken);
                 }
             }
             break;
@@ -860,7 +860,7 @@ private:
             {
                 t = ++t2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
-                return makeUnique<InversionExpression>(numberToken);
+                return make<InversionExpression>(numberToken);
             }
             break;
 
@@ -869,7 +869,7 @@ private:
             {
                 t = ++t2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
-                return makeUnique<SuspensionExpression>(numberToken);
+                return make<SuspensionExpression>(numberToken);
             }
             break;
 
@@ -901,11 +901,11 @@ private:
             {
                 t += 2;
                 const auto *numberToken = static_cast<const NumberToken *>(nextToken);
-                return makeUnique<ChordQualityExpression>(keywordToken, numberToken);
+                return make<ChordQualityExpression>(keywordToken, numberToken);
             }
 
             t++;
-            return makeUnique<ChordQualityExpression>(keywordToken);
+            return make<ChordQualityExpression>(keywordToken);
         }
         else if (token->type == Token::Type::Number)
         {
@@ -921,14 +921,14 @@ private:
                 case KeywordToken::Type::Augmented:
                 case KeywordToken::Type::Diminished:
                     t += 2;
-                    return makeUnique<ChordQualityExpression>(keywordToken, numberToken);
+                    return make<ChordQualityExpression>(keywordToken, numberToken);
                 default:
                     break;
                 }
             }
 
             t++;
-            return makeUnique<ChordQualityExpression>(numberToken);
+            return make<ChordQualityExpression>(numberToken);
         }
         else
         {
@@ -961,7 +961,7 @@ class CleanupPass final
 {
 public:
 
-    explicit CleanupPass(OwnedArray<Expression> expressions) : expressions(std::move(expressions)) {}
+    explicit CleanupPass(OwnedArray<Expression> expressions) : expressions(move(expressions)) {}
 
     ChordDescription getChord()
     {
@@ -1478,7 +1478,7 @@ private:
     const Scale::Ptr major = Scale::getNaturalMajorScale();
     const Scale::Ptr minor = Scale::getNaturalMinorScale();
     const UniquePointer<ChordParsing::ChordQualityExpression> qualityFallback =
-        makeUnique<ChordParsing::ChordQualityExpression>();
+        make<ChordParsing::ChordQualityExpression>();
 
     CommandPaletteActionsProvider::Actions rootKeySuggestions;
     CommandPaletteActionsProvider::Actions chordQualitySuggestions;
@@ -1523,7 +1523,7 @@ private:
 #define CHORD_COMPILER_NOTE_VELOCITY    (0.35f)
 
 CommandPaletteChordConstructor::CommandPaletteChordConstructor(PianoRoll &roll) :
-    chordCompiler(makeUnique<ChordCompiler>()),
+    chordCompiler(make<ChordCompiler>()),
     roll(roll) {}
 
 CommandPaletteChordConstructor::~CommandPaletteChordConstructor() {}

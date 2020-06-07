@@ -42,7 +42,7 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
             auto *sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
             auto inputDialog = ModalDialogInput::Presets::renameAnnotation(this->annotation.getDescription());
             inputDialog->onOk = sequence->getEventRenameCallback(this->annotation);
-            App::showModalComponent(std::move(inputDialog));
+            App::showModalComponent(move(inputDialog));
         }));
     
     const StringPairArray colours(ColourIDs::getColoursList());

@@ -108,7 +108,7 @@ void HybridRollHeader::updateSubrangeIndicator(const Colour &colour, float first
 {
     if (this->clipRangeIndicator == nullptr)
     {
-        this->clipRangeIndicator = makeUnique<ClipRangeIndicator>();
+        this->clipRangeIndicator = make<ClipRangeIndicator>();
         this->addAndMakeVisible(this->clipRangeIndicator.get());
     }
 
@@ -190,7 +190,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x);
         this->transport.probeSoundAtBeat(roundBeat, nullptr);
         
-        this->playingIndicator = makeUnique<SoundProbeIndicator>();
+        this->playingIndicator = make<SoundProbeIndicator>();
         this->roll.addAndMakeVisible(this->playingIndicator.get());
         this->updateIndicatorPosition(this->playingIndicator.get(), e);
     }
@@ -217,7 +217,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
             
             this->roll.getSelectionComponent()->beginLasso({ newX, 0.f }, &this->roll);
             
-            this->selectionIndicator = makeUnique<HeaderSelectionIndicator>();
+            this->selectionIndicator = make<HeaderSelectionIndicator>();
             this->addAndMakeVisible(this->selectionIndicator.get());
             this->selectionIndicator->setBounds(0,
                 this->getHeight() - this->selectionIndicator->getHeight(),
@@ -275,7 +275,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
                     
                     if (distance > MIN_TIME_DISTANCE_INDICATOR_SIZE)
                     {
-                        this->timeDistanceIndicator = makeUnique<TimeDistanceIndicator>();
+                        this->timeDistanceIndicator = make<TimeDistanceIndicator>();
                         this->roll.addAndMakeVisible(this->timeDistanceIndicator.get());
                         this->timeDistanceIndicator->setBounds(0, this->getBottom() + 4,
                                                                0, this->timeDistanceIndicator->getHeight());
@@ -383,7 +383,7 @@ void HybridRollHeader::mouseMove(const MouseEvent &e)
     {
         if (this->pointingIndicator == nullptr)
         {
-            this->pointingIndicator = makeUnique<SoundProbeIndicator>();
+            this->pointingIndicator = make<SoundProbeIndicator>();
             this->roll.addAndMakeVisible(this->pointingIndicator.get());
             this->updateIndicatorPosition(this->pointingIndicator.get(), e);
         }

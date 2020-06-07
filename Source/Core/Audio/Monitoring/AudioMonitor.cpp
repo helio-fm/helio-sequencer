@@ -64,8 +64,8 @@ AudioMonitor::AudioMonitor() :
     spectrumSize(AUDIO_MONITOR_SPECTRUM_SIZE),
     sampleRate(AUDIO_MONITOR_NUM_CHANNELS)
 {
-    this->asyncClippingWarning = makeUnique<ClippingWarningAsyncCallback>(*this);
-    this->asyncOversaturationWarning = makeUnique<OversaturationWarningAsyncCallback>(*this);
+    this->asyncClippingWarning = make<ClippingWarningAsyncCallback>(*this);
+    this->asyncOversaturationWarning = make<OversaturationWarningAsyncCallback>(*this);
 }
 
 //===----------------------------------------------------------------------===//

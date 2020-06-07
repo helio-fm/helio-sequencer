@@ -315,7 +315,7 @@ VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, HybridRoll &p
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
 
-    this->volumeBlendingIndicator = makeUnique<FineTuningValueIndicator>(this->volumeBlendingAmount, "");
+    this->volumeBlendingIndicator = make<FineTuningValueIndicator>(this->volumeBlendingAmount, "");
     this->volumeBlendingIndicator->setDisplayValue(false);
     this->volumeBlendingIndicator->setSize(40, 40);
     this->addChildComponent(this->volumeBlendingIndicator.get());
@@ -365,7 +365,7 @@ void VelocityProjectMap::mouseDown(const MouseEvent &e)
         this->volumeBlendingIndicator->toFront(false);
         this->updateVolumeBlendingIndicator(e.getPosition());
 
-        this->dragHelper = makeUnique<VelocityLevelDraggingHelper>(*this);
+        this->dragHelper = make<VelocityLevelDraggingHelper>(*this);
         this->addAndMakeVisible(this->dragHelper.get());
         this->dragHelper->setStartPosition(e.position);
         this->dragHelper->setEndPosition(e.position);

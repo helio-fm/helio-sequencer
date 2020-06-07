@@ -93,8 +93,8 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->switchPatternModeButton->setVisible(false);
 
     // todo save the default monitor option in global UI flags
-    this->waveformMonitor = makeUnique<WaveformAudioMonitorComponent>(nullptr);
-    this->spectrogramMonitor = makeUnique<SpectrogramAudioMonitorComponent>(nullptr);
+    this->waveformMonitor = make<WaveformAudioMonitorComponent>(nullptr);
+    this->spectrogramMonitor = make<SpectrogramAudioMonitorComponent>(nullptr);
 
     this->addChildComponent(this->waveformMonitor.get());
     this->addChildComponent(this->spectrogramMonitor.get());

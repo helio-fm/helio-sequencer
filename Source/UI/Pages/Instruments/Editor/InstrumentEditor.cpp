@@ -329,7 +329,7 @@ bool InstrumentEditor::canBeSelectedAsMenuItem() const { return false; }
 
 UniquePointer<Component> InstrumentEditor::createMenu()
 {
-    return makeUnique<InstrumentNodeSelectionMenu>(*this->instrument,
+    return make<InstrumentNodeSelectionMenu>(*this->instrument,
         this->instrument->getNodeForId(this->selectedNode));
 }
 

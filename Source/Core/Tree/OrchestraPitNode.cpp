@@ -51,7 +51,7 @@ void OrchestraPitNode::showPage()
 
 void OrchestraPitNode::recreatePage()
 {
-    this->instrumentsPage = makeUnique<OrchestraPitPage>(App::Workspace().getPluginManager(), *this);
+    this->instrumentsPage = make<OrchestraPitPage>(App::Workspace().getPluginManager(), *this);
 }
 
 //===----------------------------------------------------------------------===//
@@ -65,7 +65,7 @@ bool OrchestraPitNode::hasMenu() const noexcept
 
 UniquePointer<Component> OrchestraPitNode::createMenu()
 {
-    return makeUnique<OrchestraPitMenu>(*this);
+    return make<OrchestraPitMenu>(*this);
 }
 
 //===----------------------------------------------------------------------===//

@@ -102,27 +102,27 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
 
-    this->header = makeUnique<HybridRollHeader>(this->project.getTransport(), *this, this->viewport);
-    this->headerShadow = makeUnique<ShadowDownwards>(Normal);
+    this->header = make<HybridRollHeader>(this->project.getTransport(), *this, this->viewport);
+    this->headerShadow = make<ShadowDownwards>(Normal);
 
     if (hasAnnotationsTrack)
     {
-        this->annotationsMap = makeUnique<AnnotationsProjectMap>(this->project, *this, AnnotationsProjectMap::Large);
+        this->annotationsMap = make<AnnotationsProjectMap>(this->project, *this, AnnotationsProjectMap::Large);
     }
 
     if (hasTimeSignaturesTrack)
     {
-        this->timeSignaturesMap = makeUnique<TimeSignaturesProjectMap>(this->project, *this, TimeSignaturesProjectMap::Large);
+        this->timeSignaturesMap = make<TimeSignaturesProjectMap>(this->project, *this, TimeSignaturesProjectMap::Large);
     }
 
     if (hasKeySignaturesTrack)
     {
-        this->keySignaturesMap = makeUnique<KeySignaturesProjectMap>(this->project, *this, KeySignaturesProjectMap::Large);
+        this->keySignaturesMap = make<KeySignaturesProjectMap>(this->project, *this, KeySignaturesProjectMap::Large);
     }
 
-    this->playhead = makeUnique<Playhead>(*this, this->project.getTransport(), this);
+    this->playhead = make<Playhead>(*this, this->project.getTransport(), this);
 
-    this->lassoComponent = makeUnique<SelectionComponent>();
+    this->lassoComponent = make<SelectionComponent>();
     this->lassoComponent->setWantsKeyboardFocus(false);
     this->lassoComponent->setFocusContainer(false);
 
@@ -149,15 +149,15 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->addAndMakeVisible(this->lassoComponent.get());
 
 #if HYBRID_ROLL_LISTENS_LONG_TAP
-    this->longTapController = makeUnique<LongTapController>(*this);
+    this->longTapController = make<LongTapController>(*this);
     this->addMouseListener(this->longTapController.get(), true); // true = listens child events as well
 #endif
 
-    this->multiTouchController = makeUnique<MultiTouchController>(*this);
+    this->multiTouchController = make<MultiTouchController>(*this);
     this->addMouseListener(this->multiTouchController.get(), false); // false = listens only this one
 
-    this->smoothPanController = makeUnique<SmoothPanController>(*this);
-    this->smoothZoomController = makeUnique<SmoothZoomController>(*this);
+    this->smoothPanController = make<SmoothPanController>(*this);
+    this->smoothZoomController = make<SmoothZoomController>(*this);
     
     this->project.addListener(this);
     this->project.getEditMode().addChangeListener(this);
@@ -1779,7 +1779,7 @@ void HybridRoll::addTrackInteractively(MidiTrackNode *trackPreset,
         this->project.setEditableScope(newlyAddedTrack, *tracksSingleClip, false);
     }
 
-    auto dialog = makeUnique<TrackPropertiesDialog>(this->project,
+    auto dialog = make<TrackPropertiesDialog>(this->project,
         newlyAddedTrack, dialogTitle, dialogConfirmation);
 
     dialog->onCancel = [this]()
@@ -1796,7 +1796,7 @@ void HybridRoll::addTrackInteractively(MidiTrackNode *trackPreset,
         }
     };
 
-    App::showModalComponent(std::move(dialog));
+    App::showModalComponent(move(dialog));
 }
 
 //===----------------------------------------------------------------------===//

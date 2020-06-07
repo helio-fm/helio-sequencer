@@ -66,7 +66,7 @@ void ProjectSyncService::cloneProject(WeakReference<VersionControl> vcs, const S
         return;
     }
 
-    App::showModalComponent(makeUnique<ProgressTooltip>(false));
+    App::showModalComponent(make<ProgressTooltip>(false));
 
     this->prepareProjectCloneThread()->doClone(vcs, projectId);
 }
@@ -87,7 +87,7 @@ void ProjectSyncService::deleteProject(const String &projectId)
         return;
     }
 
-    App::showModalComponent(makeUnique<ProgressTooltip>(false));
+    App::showModalComponent(make<ProgressTooltip>(false));
 
     this->prepareProjectDeleteThread()->doDelete(projectId);
 }

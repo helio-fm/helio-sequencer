@@ -42,7 +42,7 @@ void RecentProjectInfo::updateRemoteInfo(const ProjectDto &remoteInfo)
     jassert(this->projectId == remoteInfo.getId());
     if (this->remote == nullptr)
     {
-        this->remote = makeUnique<RemoteInfo>();
+        this->remote = make<RemoteInfo>();
     }
 
     this->remote->title = remoteInfo.getTitle();
@@ -56,7 +56,7 @@ void RecentProjectInfo::updateLocalInfo(const String &localId,
     jassert(this->projectId == localId);
     if (this->local == nullptr)
     {
-        this->local = makeUnique<LocalInfo>();
+        this->local = make<LocalInfo>();
     }
 
     this->local->title = localTitle;
@@ -214,7 +214,7 @@ void RecentProjectInfo::deserialize(const SerializedData &data)
     const auto localRoot(root.getChildWithName(RecentProjects::localProjectInfo));
     if (localRoot.isValid())
     {
-        this->local = makeUnique<LocalInfo>();
+        this->local = make<LocalInfo>();
         this->local->path = localRoot.getProperty(RecentProjects::path);
         this->local->title = localRoot.getProperty(RecentProjects::title);
         this->local->lastModifiedMs = localRoot.getProperty(RecentProjects::updatedAt);
@@ -223,7 +223,7 @@ void RecentProjectInfo::deserialize(const SerializedData &data)
     const auto remoteRoot(root.getChildWithName(RecentProjects::remoteProjectInfo));
     if (remoteRoot.isValid())
     {
-        this->remote = makeUnique<RemoteInfo>();
+        this->remote = make<RemoteInfo>();
         this->remote->alias = remoteRoot.getProperty(RecentProjects::path);
         this->remote->title = remoteRoot.getProperty(RecentProjects::title);
         this->remote->lastModifiedMs = remoteRoot.getProperty(RecentProjects::updatedAt);

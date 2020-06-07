@@ -110,7 +110,7 @@ void HistoryComponent::handleCommandMessage (int commandId)
             {
                 this->vcs.checkout(this->revisionTree->getSelectedRevision());
             };
-            App::showModalComponent(std::move(confirmationDialog));
+            App::showModalComponent(move(confirmationDialog));
         }
         else
         {
@@ -181,7 +181,7 @@ UniquePointer<Component> HistoryComponent::createMenu()
 {
     if (this->revisionTree != nullptr)
     {
-        return makeUnique<VersionControlHistorySelectionMenu>(
+        return make<VersionControlHistorySelectionMenu>(
             this->revisionTree->getSelectedRevision(), this->vcs);
     }
 

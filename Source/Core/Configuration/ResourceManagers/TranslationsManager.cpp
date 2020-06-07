@@ -58,7 +58,7 @@ struct PluralEquationWrapper final : public DynamicObject
 TranslationsManager::TranslationsManager() :
     ResourceManager(Serialization::Resources::translations)
 {
-    this->engine = makeUnique<JavascriptEngine>();
+    this->engine = make<JavascriptEngine>();
     this->engine->maximumExecutionTime = RelativeTime::milliseconds(200);
 
     PluralEquationWrapper::Ptr pluralEquationWrapper(new PluralEquationWrapper(*this));

@@ -25,9 +25,9 @@
 Network::Network(Workspace &workspace)
 {
     // Prepare back-end APIs communication services
-    this->sessionService = makeUnique<SessionService>(workspace.getUserProfile());
-    this->projectSyncService = makeUnique<ProjectSyncService>();
-    this->resourceSyncService = makeUnique<ResourceSyncService>();
+    this->sessionService = make<SessionService>(workspace.getUserProfile());
+    this->projectSyncService = make<ProjectSyncService>();
+    this->resourceSyncService = make<ResourceSyncService>();
 }
 
 Network::~Network()

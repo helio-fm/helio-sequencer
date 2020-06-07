@@ -224,7 +224,7 @@ bool UndoStack::perform(UndoAction *const newAction)
             }
             
             this->totalUnitsStored += action->getSizeInUnits();
-            actionSet->actions.add(std::move(action));
+            actionSet->actions.add(move(action));
             this->hasNewEmptyTransaction = false;
             
             this->clearFutureTransactions();

@@ -302,7 +302,7 @@ bool StageComponent::canBeSelectedAsMenuItem() const { return false; }
 
 UniquePointer<Component> StageComponent::createMenu()
 {
-    return makeUnique<VersionControlStageSelectionMenu>();
+    return make<VersionControlStageSelectionMenu>();
 }
 
 Image StageComponent::getIcon() const
@@ -368,7 +368,7 @@ void StageComponent::commitSelected()
         this->lastCommitMessage = input;
     };
 
-    App::showModalComponent(std::move(dialog));
+    App::showModalComponent(move(dialog));
 }
 
 void StageComponent::resetSelected()
@@ -386,7 +386,7 @@ void StageComponent::resetSelected()
         this->vcs.resetChanges(this->changesList->getSelectedRows());
     };
 
-    App::showModalComponent(std::move(dialog));
+    App::showModalComponent(move(dialog));
 }
 
 //[/MiscUserCode]

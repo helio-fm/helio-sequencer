@@ -630,7 +630,7 @@ void MenuItemComponent::doAction()
 
 void MenuItemComponent::showCheckMark()
 {
-    this->checkMarker = makeUnique<MenuItemComponentMarker>();
+    this->checkMarker = make<MenuItemComponentMarker>();
     this->checkMarker->setBounds(this->getLocalBounds());
 
 #if ! HAS_OPENGL_BUG

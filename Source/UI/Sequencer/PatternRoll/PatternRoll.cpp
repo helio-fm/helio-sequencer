@@ -670,7 +670,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             }
 
             auto *trackNode = this->project.findTrackById<MidiTrackNode>(trackId);
-            App::showModalComponent(makeUnique<TrackPropertiesDialog>(this->project, trackNode));
+            App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
     case CommandIDs::DuplicateTrack:

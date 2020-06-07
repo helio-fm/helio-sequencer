@@ -320,14 +320,14 @@ void AnnotationDialog::inputAttemptWhenModal()
 UniquePointer<Component> AnnotationDialog::editingDialog(Component &owner,
     const AnnotationEvent &event)
 {
-    return makeUnique<AnnotationDialog>(owner,
+    return make<AnnotationDialog>(owner,
         static_cast<AnnotationsSequence *>(event.getSequence()), event, false, 0.f);
 }
 
 UniquePointer<Component> AnnotationDialog::addingDialog(Component &owner,
     AnnotationsSequence *annotationsLayer, float targetBeat)
 {
-    return makeUnique<AnnotationDialog>(owner,
+    return make<AnnotationDialog>(owner,
         annotationsLayer, AnnotationEvent(), true, targetBeat);
 }
 

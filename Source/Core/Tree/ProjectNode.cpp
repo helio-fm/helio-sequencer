@@ -88,23 +88,23 @@ ProjectNode::ProjectNode(const File &existingFile) :
 
 void ProjectNode::initialize()
 {
-    this->undoStack = makeUnique<UndoStack>(*this);
-    this->autosaver = makeUnique<Autosaver>(*this);
+    this->undoStack = make<UndoStack>(*this);
+    this->autosaver = make<Autosaver>(*this);
 
     auto &orchestra = App::Workspace().getAudioCore();
     auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
-    this->transport = makeUnique<Transport>(orchestra, audioCoreSleepTimer);
+    this->transport = make<Transport>(orchestra, audioCoreSleepTimer);
     this->addListener(this->transport.get());
 
-    this->midiRecorder = makeUnique<MidiRecorder>(*this);
+    this->midiRecorder = make<MidiRecorder>(*this);
 
-    this->metadata = makeUnique<ProjectMetadata>(*this);
+    this->metadata = make<ProjectMetadata>(*this);
     this->vcsItems.add(this->metadata.get());
 
-    this->timeline = makeUnique<ProjectTimeline>(*this, "Project Timeline");
+    this->timeline = make<ProjectTimeline>(*this, "Project Timeline");
     this->vcsItems.add(this->timeline.get());
 
-    this->consoleTimelineEvents = makeUnique<CommandPaletteTimelineEvents>(*this);
+    this->consoleTimelineEvents = make<CommandPaletteTimelineEvents>(*this);
 
     this->recreatePage();
 
@@ -229,8 +229,8 @@ void ProjectNode::recreatePage()
         layoutState = this->sequencerLayout->serialize();
     }
     
-    this->sequencerLayout = makeUnique<SequencerLayout>(*this);
-    this->projectPage = makeUnique<ProjectPage>(*this);
+    this->sequencerLayout = make<SequencerLayout>(*this);
+    this->projectPage = make<ProjectPage>(*this);
 
     // reset caches and let rolls update view ranges:
     // (fixme the below is quite a common piece of code)
@@ -310,7 +310,7 @@ bool ProjectNode::hasMenu() const noexcept
 
 UniquePointer<Component> ProjectNode::createMenu()
 {
-    return makeUnique<ProjectMenu>(*this, MenuPanel::SlideRight);
+    return make<ProjectMenu>(*this, MenuPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//

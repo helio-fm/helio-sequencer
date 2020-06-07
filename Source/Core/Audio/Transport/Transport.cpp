@@ -38,8 +38,8 @@ Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     orchestra(orchestraPit),
     sleepTimer(sleepTimer)
 {
-    this->player = makeUnique<PlayerThreadPool>(*this);
-    this->renderer = makeUnique<RendererThread>(*this);
+    this->player = make<PlayerThreadPool>(*this);
+    this->renderer = make<RendererThread>(*this);
     this->orchestra.addOrchestraListener(this);
 }
 

@@ -57,10 +57,10 @@ MainLayout::MainLayout() :
     this->setWantsKeyboardFocus(true);
     this->setFocusContainer(true);
 
-    this->tooltipContainer = makeUnique<TooltipContainer>();
+    this->tooltipContainer = make<TooltipContainer>();
     this->addChildComponent(this->tooltipContainer.get());
 
-    this->headline = makeUnique<Headline>();
+    this->headline = make<Headline>();
 
     if (App::isUsingNativeTitleBar())
     {
@@ -74,7 +74,7 @@ MainLayout::MainLayout() :
     // TODO make it able for user to select a scheme in settings page
     this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
 
-    this->consoleCommonActions = makeUnique<CommandPaletteCommonActions>();
+    this->consoleCommonActions = make<CommandPaletteCommonActions>();
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
@@ -83,7 +83,7 @@ MainLayout::MainLayout() :
     else
     {
 #if HELIO_DESKTOP
-        this->initScreen = makeUnique<InitScreen>();
+        this->initScreen = make<InitScreen>();
         this->addAndMakeVisible(this->initScreen.get());
 #endif
     }
@@ -199,16 +199,16 @@ void MainLayout::showTooltip(const String &message, TooltipType type, int timeou
 {
     if (message.isNotEmpty())
     {
-        this->tooltipContainer->showWithComponent(makeUnique<GenericTooltip>(message), timeoutMs);
+        this->tooltipContainer->showWithComponent(make<GenericTooltip>(message), timeoutMs);
     }
 
     if (type == TooltipType::Success)
     {
-        App::showModalComponent(makeUnique<SuccessTooltip>());
+        App::showModalComponent(make<SuccessTooltip>());
     }
     else if (type == TooltipType::Failure)
     {
-        App::showModalComponent(makeUnique<FailTooltip>());
+        App::showModalComponent(make<FailTooltip>());
     }
 }
 
@@ -360,7 +360,7 @@ static void emitCommandPalette()
 
         // activeRoll is ok to be null
         // (project is too, but there'll be no useful content shown):
-        App::showModalComponent(makeUnique<CommandPalette>(project, activeRoll));
+        App::showModalComponent(make<CommandPalette>(project, activeRoll));
     }
 }
 

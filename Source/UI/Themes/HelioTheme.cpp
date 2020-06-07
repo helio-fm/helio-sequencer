@@ -721,7 +721,7 @@ void HelioTheme::initResources()
     }
 
     const auto waitScanUntil = Time::getMillisecondCounter() + 10000;
-    const auto scanner = makeUnique<FontScanningThread>();
+    const auto scanner = make<FontScanningThread>();
     scanner->startThread(10);
 
     // todo flash logo on the first start? it's gonna take a while..

@@ -136,7 +136,7 @@ void TooltipContainer::showWithComponent(UniquePointer<Component> newComponent, 
     const Point<int> clickOrigin =
         Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
 
-    this->showWithComponent(std::move(newComponent),
+    this->showWithComponent(move(newComponent),
         Rectangle<int>(clickOrigin, clickOrigin.translated(1, 1)),
         timeOutMs);
 }
@@ -175,7 +175,7 @@ void TooltipContainer::showWithComponent(UniquePointer<Component> newComponent,
     this->hideTimeout = (timeOutMs > 0) ? timeOutMs : (1000 * 60 * 60);
     this->startTimer(TIMER_MILLISECONDS);
 
-    this->tooltipComponent = std::move(newComponent);
+    this->tooltipComponent = move(newComponent);
     this->addAndMakeVisible(this->tooltipComponent.get());
     this->resized();
     this->toFront(false);

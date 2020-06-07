@@ -46,7 +46,7 @@ FadingDialog::FadingDialog()
     this->setAlwaysOnTop(true);
     this->toFront(true);
 
-    this->moveConstrainer = makeUnique<DialogDragConstrainer>();
+    this->moveConstrainer = make<DialogDragConstrainer>();
 }
 
 FadingDialog::~FadingDialog()

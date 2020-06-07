@@ -371,7 +371,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     const WeakReference<AudioMonitor> clippingDetector =
         App::Workspace().getAudioCore().getMonitor();
     
-    this->pianoViewport = makeUnique<Viewport>("Viewport One");
+    this->pianoViewport = make<Viewport>("Viewport One");
     this->pianoViewport->setScrollOnDragEnabled(false);
     this->pianoViewport->setInterceptsMouseClicks(false, true);
     this->pianoViewport->setScrollBarsShown(false, false);
@@ -379,10 +379,10 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoViewport->setFocusContainer(false);
     this->pianoViewport->setPaintingIsUnclipped(true);
     
-    this->pianoRoll = makeUnique<PianoRoll>(this->project,
+    this->pianoRoll = make<PianoRoll>(this->project,
         *this->pianoViewport, clippingDetector);
 
-    this->patternViewport = makeUnique<Viewport>("Viewport Two");
+    this->patternViewport = make<Viewport>("Viewport Two");
     this->patternViewport->setScrollOnDragEnabled(false);
     this->patternViewport->setInterceptsMouseClicks(false, true);
     this->patternViewport->setScrollBarsShown(false, false);
@@ -390,10 +390,10 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternViewport->setFocusContainer(false);
     this->patternViewport->setPaintingIsUnclipped(true);
 
-    this->patternRoll = makeUnique<PatternRoll>(this->project,
+    this->patternRoll = make<PatternRoll>(this->project,
         *this->patternViewport, clippingDetector);
 
-    this->mapScroller = makeUnique<ProjectMapScroller>(this->project.getTransport(), this->pianoRoll.get());
+    this->mapScroller = make<ProjectMapScroller>(this->project.getTransport(), this->pianoRoll.get());
     this->mapScroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
     this->mapScroller->addOwnedMap(new AnnotationsProjectMap(this->project,
         *this->pianoRoll, AnnotationsProjectMap::Small), false);
@@ -404,10 +404,10 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     //this->mapScroller->addOwnedMap(new AutomationTrackMap(this->project,
     //    *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
-    this->levelsScroller = makeUnique<LevelsMapScroller>(this->pianoRoll.get());
+    this->levelsScroller = make<LevelsMapScroller>(this->pianoRoll.get());
     this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll));
 
-    this->scrollerShadow = makeUnique<ShadowUpwards>(Normal);
+    this->scrollerShadow = make<ShadowUpwards>(Normal);
 
     this->pianoRoll->setBeatWidth(HYBRID_ROLL_MAX_BEAT_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
@@ -423,20 +423,20 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoViewport->setViewPosition(this->pianoViewport->getViewPositionX(), defaultY);
     
     // create a container with 2 editors and 2 types of project map scroller
-    this->rollContainer = makeUnique<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),
+    this->rollContainer = make<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),
         this->pianoViewport.get(), this->patternViewport.get(),
         this->mapScroller.get(), this->levelsScroller.get(),
         this->scrollerShadow.get());
     
     // add sidebars
-    this->rollToolsSidebar = makeUnique<SequencerSidebarRight>(this->project);
-    this->rollNavSidebar = makeUnique<SequencerSidebarLeft>(this->project);
+    this->rollToolsSidebar = make<SequencerSidebarRight>(this->project);
+    this->rollNavSidebar = make<SequencerSidebarLeft>(this->project);
     this->rollNavSidebar->setSize(SEQUENCER_SIDEBAR_WIDTH, this->getParentHeight());
     // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
 
     // combine sidebars with editors
-    this->sequencerLayout = makeUnique<OrigamiVertical>();
+    this->sequencerLayout = make<OrigamiVertical>();
     this->sequencerLayout->addFixedPage(this->rollNavSidebar.get());
     this->sequencerLayout->addFlexiblePage(this->rollContainer.get());
     this->sequencerLayout->addShadowAtTheStart();
@@ -577,10 +577,10 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
 
     if (fc.browseForFileToSave(true))
     {
-        App::showModalComponent(makeUnique<RenderDialog>(this->project, fc.getResult(), extension));
+        App::showModalComponent(make<RenderDialog>(this->project, fc.getResult(), extension));
     }
 #else
-    App::showModalComponent(makeUnique<RenderDialog>(this->project, initialPath.getChildFile(safeRenderName), extension));
+    App::showModalComponent(make<RenderDialog>(this->project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     }
 

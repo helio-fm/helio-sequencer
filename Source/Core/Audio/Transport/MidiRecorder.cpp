@@ -157,7 +157,7 @@ void MidiRecorder::onStop()
 static SerializedData createPianoTrackTempate(const String &name,
     float startBeat, const String &instrumentId, String &outTrackId)
 {
-    auto newNode = makeUnique<PianoTrackNode>(name);
+    auto newNode = make<PianoTrackNode>(name);
 
     // We need to have at least one clip on the pattern:
     const Clip clip(newNode->getPattern(), startBeat, 0);

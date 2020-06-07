@@ -67,7 +67,7 @@ void RootNode::showPage()
 
 void RootNode::recreatePage()
 {
-    this->dashboard = makeUnique<Dashboard>(App::Layout());
+    this->dashboard = make<Dashboard>(App::Layout());
 }
 
 //===----------------------------------------------------------------------===//
@@ -228,7 +228,7 @@ bool RootNode::hasMenu() const noexcept
 
 UniquePointer<Component> RootNode::createMenu()
 {
-    return makeUnique<WorkspaceMenu>(App::Workspace());
+    return make<WorkspaceMenu>(App::Workspace());
 }
 
 //===----------------------------------------------------------------------===//
