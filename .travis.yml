@@ -54,7 +54,7 @@ jobs:
     - name: "xcode 10.1 ios, release build"
       stage: Deploy
       os: osx
-      osx_image: xcode10.1
+      osx_image: xcode12
       xcode_sdk: iphoneos
       addons: *deploy
       env: BUILD_TYPE=ios
