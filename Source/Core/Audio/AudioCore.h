@@ -89,7 +89,7 @@ public:
     void addInstrument(const PluginDescription &pluginDescription,
         const String &name, Instrument::InitializationCallback callback);
 
-    void setActiveMidiPlayer(const String &instrumentId, bool removeOthers);
+    void setActiveMidiPlayer(const String &instrumentId, bool forceReconnect);
 
     //===------------------------------------------------------------------===//
     // OrchestraPit

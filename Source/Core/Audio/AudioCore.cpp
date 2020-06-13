@@ -163,9 +163,9 @@ void AudioCore::removeInstrumentFromAudioDevice(Instrument *instrument)
     this->deviceManager.removeAudioCallback(&instrument->getProcessorPlayer());
 }
 
-void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool shouldRemoveOthers)
+void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool forceReconnect)
 {
-    if (this->lastActiveMidiPlayerId == instrumentId)
+    if (!forceReconnect && this->lastActiveMidiPlayerId == instrumentId)
     {
         //DBG("Skip setActiveMidiPlayer for " + instrumentId);
         return;
@@ -178,7 +178,7 @@ void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool shouldRemov
             //DBG("addInstrumentToMidiDevice for " + instrumentId);
             this->addInstrumentToMidiDevice(instrument);
         }
-        else if (shouldRemoveOthers)
+        else
         {
             //DBG("removeInstrumentFromMidiDevice for " + instrument->getInstrumentId());
             this->removeInstrumentFromMidiDevice(instrument);
@@ -293,6 +293,8 @@ bool AudioCore::autodetectMidiDeviceSetup()
 
     if (numEnabledDevices == 1)
     {
+        // force reconnect to instrument
+        this->setActiveMidiPlayer(this->lastActiveMidiPlayerId, true);
         return true;
     }
 
@@ -301,6 +303,7 @@ bool AudioCore::autodetectMidiDeviceSetup()
     {
         DBG("Found the single available MIDI input, enabling");
         this->deviceManager.setMidiInputDeviceEnabled(allDevices.getFirst().identifier, true);
+        this->setActiveMidiPlayer(this->lastActiveMidiPlayerId, true);
         return true;
     }
 

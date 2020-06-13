@@ -835,7 +835,7 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
     }
     
     // set default instrument, if none found
-    this->linksCache[track->getTrackId()] =  this->orchestra.getInstruments().getFirst();
+    this->linksCache[track->getTrackId()] = this->orchestra.getDefaultInstrument();
 }
 
 void Transport::removeLinkForTrack(const MidiTrack *track)

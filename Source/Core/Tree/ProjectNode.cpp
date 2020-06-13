@@ -254,8 +254,22 @@ void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip *cli
     String instrumentId;
     if (track != nullptr && clip != nullptr)
     {
+        auto &audioCore = App::Workspace().getAudioCore();
+
         instrumentId = track->getTrackInstrumentId();
-        App::Workspace().getAudioCore().setActiveMidiPlayer(instrumentId, true);
+
+        // if the track and clip is not null,
+        // but they have no instrument assigned,
+        // we should fall back to the default piano
+        // (we cannot do it in setActiveMidiPlayer, because
+        // an empty instrument id passed there means "disconnect everyone",
+        // and it happens e.g. when track == nullptr)
+        if (instrumentId.isEmpty())
+        {
+            instrumentId = audioCore.getDefaultInstrument()->getIdAndHash();
+        }
+
+        audioCore.setActiveMidiPlayer(instrumentId, false);
     }
 
     this->midiRecorder->setTargetScope(track, clip, instrumentId);
