@@ -788,10 +788,10 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
         // hardcoded zoom settings for empty tracks:
         if (!hasComponentsToFocusOn)
         {
-            focusMinKey = 32;
-            focusMaxKey = 96;
-            focusMinBeat = this->activeClip.getBeat();
-            focusMaxBeat = focusMinBeat + float(BEATS_PER_BAR * 6);
+            focusMinKey = 44;
+            focusMaxKey = 84;
+            focusMinBeat = 0;
+            focusMaxBeat = float(EMPTY_CLIP_LENGTH);
         }
 
         this->zoomToArea(focusMinKey, focusMaxKey,
