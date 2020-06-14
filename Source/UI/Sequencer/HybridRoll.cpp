@@ -491,12 +491,12 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
 
     this->stopFollowingPlayhead();
 
-    const float margin = 4.f; // hardcoded margins suck
+    constexpr auto margin = BEATS_PER_BAR * 2;
     const float widthToFit = float(this->viewport.getViewWidth());
-    const float numBeatsToFit = maxBeat - minBeat + margin;
+    const float numBeatsToFit = maxBeat - minBeat + (margin * 2.f);
     this->setBeatWidth(widthToFit / numBeatsToFit);
 
-    const int minBeatX = this->getXPositionByBeat(minBeat - (margin / 2.f));
+    const int minBeatX = this->getXPositionByBeat(minBeat - margin);
     this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
 
     this->updateChildrenPositions();

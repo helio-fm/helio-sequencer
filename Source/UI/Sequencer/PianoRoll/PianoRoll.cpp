@@ -336,8 +336,8 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     jassert(minKey >= 0);
     jassert(maxKey >= minKey);
 
-    const int margin = 2; // hardcoded margins suck
-    const float numKeysToFit = float(maxKey - minKey + margin);
+    constexpr auto margin = CHROMATIC_SCALE_SIZE;
+    const float numKeysToFit = float(maxKey - minKey + (margin * 2));
     const float heightToFit = float(this->viewport.getViewHeight());
     this->setRowHeight(int(heightToFit / numKeysToFit));
 
