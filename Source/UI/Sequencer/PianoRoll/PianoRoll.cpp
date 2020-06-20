@@ -341,7 +341,7 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     const float heightToFit = float(this->viewport.getViewHeight());
     this->setRowHeight(int(heightToFit / numKeysToFit));
 
-    const int maxKeyY = this->getRowHeight() * (128 - maxKey - margin);
+    const int maxKeyY = this->getRowHeight() * (this->numRows - maxKey - margin);
     this->viewport.setViewPosition(this->viewport.getViewPositionY() - HYBRID_ROLL_HEADER_HEIGHT, maxKeyY);
 
     HybridRoll::zoomToArea(minBeat, maxBeat);
@@ -361,7 +361,7 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
-    jassert(key >= -128 && key <= 128);
+    jassert(key >= -Globals::maxNoteKey && key <= Globals::maxNoteKey);
 
     const float x = this->beatWidth * (beat - this->firstBeat);
     const float w = this->beatWidth * length;
@@ -387,14 +387,14 @@ void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber
 {
     beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
-    noteNumber = jlimit(0, numRows - 1, noteNumber);
+    noteNumber = jlimit(0, this->numRows - 1, noteNumber);
 }
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getFloorBeatSnapByXPosition(x) - this->activeClip.getBeat();
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
-    noteNumber = jlimit(0, numRows - 1, noteNumber);
+    noteNumber = jlimit(0, this->numRows - 1, noteNumber);
 }
 
 int PianoRoll::getYPositionByKey(int targetKey) const
@@ -1676,7 +1676,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     float posY = patternImage.getHeight() - currentHeight;
 
     const int middleCOffset = scale->getBasePeriod() - (Globals::middleC % scale->getBasePeriod());
-    const int lastOctaveReminder = (128 % scale->getBasePeriod()) - root + middleCOffset;
+    const int lastOctaveReminder = (Globals::maxNoteKey % scale->getBasePeriod()) - root + middleCOffset;
 
     //g.setColour(whiteKeyOdd);
     //g.fillRect(patternImage.getBounds());

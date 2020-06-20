@@ -1600,14 +1600,14 @@ void CommandPaletteChordConstructor::previewIfNeeded()
             const auto clipBeat = this->roll.getActiveClip().getBeat();
             const auto targetBeat = this->roll.getTransport().getSeekBeat() - clipBeat;
 
-            int minKey = 128;
+            int minKey = Globals::maxNoteKey;
             int maxKey = 0;
 
             bool atLeastOneNoteShowsInViewport = false;
 
             for (const auto &relativeKey : this->chord)
             {
-                const auto key = jlimit(0, 128, Globals::middleC + relativeKey);
+                const auto key = jlimit(0, Globals::maxNoteKey, Globals::middleC + relativeKey);
 
                 minKey = jmin(minKey, key);
                 maxKey = jmax(maxKey, key);

@@ -215,7 +215,7 @@ private:
     float newNoteVolume = PIANOROLL_DEFAULT_NOTE_VOLUME;
     float newNoteLength = PIANOROLL_DEFAULT_NOTE_LENGTH;
 
-    const int numRows = 128;
+    const int numRows = Globals::maxNoteKey;
     int rowHeight = PIANOROLL_MIN_ROW_HEIGHT;
 
     void setRowHeight(int newRowHeight);

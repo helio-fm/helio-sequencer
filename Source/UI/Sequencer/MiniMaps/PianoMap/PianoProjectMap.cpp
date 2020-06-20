@@ -52,7 +52,7 @@ PianoProjectMap::~PianoProjectMap()
 
 void PianoProjectMap::resized()
 {
-    this->componentHeight = float(this->getHeight()) / 128.f; // TODO remove hard-coded value
+    this->componentHeight = static_cast<float>(this->getHeight()) / static_cast<float>(Globals::maxNoteKey);
 }
 
 void PianoProjectMap::paint(Graphics &g)
@@ -72,7 +72,7 @@ void PianoProjectMap::paint(Graphics &g)
 
         for (const auto &n : *sequenceMap)
         {
-            const auto key = jlimit(0, 128, n.getKey() + c.first.getKey());
+            const auto key = jlimit(0, Globals::maxNoteKey, n.getKey() + c.first.getKey());
             const auto beat = n.getBeat() + c.first.getBeat() - this->rollFirstBeat;
             const auto length = n.getLength();
 

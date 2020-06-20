@@ -172,6 +172,8 @@ namespace Globals
 
     static constexpr auto chromaticScaleSize = 12;
 
+    static constexpr auto maxNoteKey = 128;
+
     static constexpr auto middleC = 60;
 
     static constexpr auto emptyClipLength = beatsPerBar * 2;

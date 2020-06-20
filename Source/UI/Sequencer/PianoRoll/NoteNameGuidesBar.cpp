@@ -30,7 +30,7 @@ NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll) :
 
     this->setSize(36, 32);
 
-    for (int i = 0; i < 128; ++i)
+    for (int i = 0; i < Globals::maxNoteKey; ++i)
     {
         auto *guide = new NoteNameGuide(i);
         this->guides.add(guide);
@@ -87,7 +87,7 @@ void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
     {
         // assuming we've subscribed only on a piano roll's lasso changes
         const auto *nc = static_cast<const NoteComponent *>(e);
-        const auto key = jlimit(0, 128, nc->getNote().getKey() + nc->getClip().getKey());
+        const auto key = jlimit(0, Globals::maxNoteKey, nc->getNote().getKey() + nc->getClip().getKey());
         this->guides.getUnchecked(key)->setVisible(true);
     }
 

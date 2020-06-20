@@ -1094,7 +1094,7 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
     int prevKey = 0;
 
     float nextBeat = 0.f;
-    int nextKey = 128;
+    int nextKey = Globals::maxNoteKey;
 
     PianoChangeGroup currentChord;
     bool currentChordNotesHasSameBeat = true;
@@ -1788,10 +1788,10 @@ void SequencerOperations::invertChord(Lasso &selection,
         PianoChangeGroup targetNotes;
         
         float prevBeat = 0.f;
-        int prevKey = (deltaKey > 0) ? 128 : 0;
+        int prevKey = (deltaKey > 0) ? Globals::maxNoteKey : 0;
         
         float nextBeat = 0.f;
-        int nextKey = 128;
+        int nextKey = Globals::maxNoteKey;
         
         for (int i = 0; i < selectedNotes.size(); ++i)
         {

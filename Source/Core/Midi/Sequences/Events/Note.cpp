@@ -93,7 +93,7 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
 Note Note::withKey(Key newKey) const noexcept
 {
     Note other(*this);
-    other.key = jlimit(0, 128, newKey);
+    other.key = jlimit(0, Globals::maxNoteKey, newKey);
     return other;
 }
 
@@ -107,7 +107,7 @@ Note Note::withBeat(float newBeat) const noexcept
 Note Note::withKeyBeat(Key newKey, float newBeat) const noexcept
 {
     Note other(*this);
-    other.key = jlimit(0, 128, newKey);
+    other.key = jlimit(0, Globals::maxNoteKey, newKey);
     other.beat = roundBeat(newBeat);
     return other;
 }
@@ -115,7 +115,7 @@ Note Note::withKeyBeat(Key newKey, float newBeat) const noexcept
 Note Note::withKeyLength(Key newKey, float newLength) const noexcept
 {
     Note other(*this);
-    other.key = jlimit(0, 128, newKey);
+    other.key = jlimit(0, Globals::maxNoteKey, newKey);
     other.length = jmax(Globals::minNoteLength, roundBeat(newLength));
     return other;
 }
@@ -130,7 +130,7 @@ Note Note::withDeltaBeat(float deltaPosition) const noexcept
 Note Note::withDeltaKey(Key deltaKey) const noexcept
 {
     Note other(*this);
-    other.key = jlimit(0, 128, other.key + deltaKey);
+    other.key = jlimit(0, Globals::maxNoteKey, other.key + deltaKey);
     return other;
 }
 

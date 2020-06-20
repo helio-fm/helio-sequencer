@@ -424,7 +424,7 @@ void ScalePreviewTool::buildChord(Array<int> keys)
 
         for (int offset : keys)
         {
-            const int key = jmin(128, jmax(0, this->targetKey + offset));
+            const int key = jlimit(0, Globals::maxNoteKey, this->targetKey + offset);
             Note note(pianoLayer, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kScalePreviewDefaultNoteVelocity);
             pianoLayer->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity));
@@ -447,7 +447,7 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
 
         pianoSequence->checkpoint();
 
-        const int key = jmin(128, jmax(0, this->targetKey));
+        const int key = jlimit(0, Globals::maxNoteKey, this->targetKey);
 
         Note note1(pianoSequence, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kScalePreviewDefaultNoteVelocity);
         pianoSequence->insert(note1, true);
