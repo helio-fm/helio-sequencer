@@ -208,8 +208,8 @@ SerializedData Clip::serialize() const
 
     SerializedData tree(Midi::clip);
     tree.setProperty(Midi::key, this->key);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
-    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY));
+    tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
+    tree.setProperty(Midi::volume, int(this->velocity * Globals::velocitySaveResolution));
     tree.setProperty(Midi::id, packId(this->id));
 
     if (this->mute)
@@ -229,9 +229,9 @@ void Clip::deserialize(const SerializedData &data)
 {
     using namespace Serialization;
     this->key = data.getProperty(Midi::key, 0);
-    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id, this->id));
-    const auto vol = float(data.getProperty(Midi::volume, VELOCITY_SAVE_ACCURACY)) / VELOCITY_SAVE_ACCURACY;
+    const auto vol = float(data.getProperty(Midi::volume, Globals::velocitySaveResolution)) / Globals::velocitySaveResolution;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
     this->mute = bool(data.getProperty(Midi::mute, 0));
     this->solo = bool(data.getProperty(Midi::solo, 0));

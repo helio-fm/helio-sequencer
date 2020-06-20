@@ -221,17 +221,17 @@ private:
 private:
 
     Atomic<float> seekBeat = 0.0;
-    Atomic<float> totalTime = PROJECT_DEFAULT_NUM_BEATS;
+    Atomic<float> totalTime = Globals::projectDefaultNumBeats;
     
     Atomic<float> projectFirstBeat = 0.f;
-    Atomic<float> projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
+    Atomic<float> projectLastBeat = Globals::projectDefaultNumBeats;
 
     // just a flag, all logic resides in MidiRecorder class:
     Atomic<bool> midiRecordingMode = false;
 
     Atomic<bool> loopMode = false;
     Atomic<float> loopStartBeat = 0.f;
-    Atomic<float> loopEndBeat = PROJECT_DEFAULT_NUM_BEATS;
+    Atomic<float> loopEndBeat = Globals::projectDefaultNumBeats;
 
     ListenerList<TransportListener> transportListeners;
 

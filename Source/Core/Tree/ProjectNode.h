@@ -238,7 +238,7 @@ private:
     UniquePointer<UndoStack> undoStack;
 
     mutable float firstBeatCache = 0.f;
-    mutable float lastBeatCache = PROJECT_DEFAULT_NUM_BEATS;
+    mutable float lastBeatCache = Globals::projectDefaultNumBeats;
 
     mutable bool isTracksCacheOutdated = true;
     mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;

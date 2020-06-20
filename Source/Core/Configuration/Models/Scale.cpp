@@ -20,13 +20,13 @@
 #include "SerializationKeys.h"
 
 Scale::Scale() noexcept :
-    basePeriod(CHROMATIC_SCALE_SIZE) {}
+    basePeriod(Globals::chromaticScaleSize) {}
 
 Scale::Scale(const String &name) noexcept :
-    name(name), basePeriod(CHROMATIC_SCALE_SIZE) {}
+    name(name), basePeriod(Globals::chromaticScaleSize) {}
 
 Scale::Scale(const Scale &other) noexcept :
-    name(other.name), basePeriod(CHROMATIC_SCALE_SIZE), keys(other.keys) {}
+    name(other.name), basePeriod(Globals::chromaticScaleSize), keys(other.keys) {}
 
 Scale::Ptr Scale::withName(const String &name) const noexcept
 {
@@ -259,7 +259,7 @@ void Scale::deserialize(const SerializedData &data)
     this->reset();
 
     this->name = root.getProperty(Serialization::Midi::scaleName, this->name);
-    this->basePeriod = root.getProperty(Serialization::Midi::scalePeriod, CHROMATIC_SCALE_SIZE);
+    this->basePeriod = root.getProperty(Serialization::Midi::scalePeriod, Globals::chromaticScaleSize);
 
     const String intervals = root.getProperty(Serialization::Midi::scaleIntervals);
     StringArray tokens;

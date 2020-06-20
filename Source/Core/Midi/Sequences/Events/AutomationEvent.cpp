@@ -261,7 +261,7 @@ SerializedData AutomationEvent::serialize() const
     tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::value, this->controllerValue);
     tree.setProperty(Midi::curve, this->curvature);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
+    tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
     return tree;
 }
 
@@ -271,7 +271,7 @@ void AutomationEvent::deserialize(const SerializedData &data)
     using namespace Serialization;
     this->controllerValue = float(data.getProperty(Midi::value));
     this->curvature = float(data.getProperty(Midi::curve, AUTOEVENT_DEFAULT_CURVATURE));
-    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id));
 }
 

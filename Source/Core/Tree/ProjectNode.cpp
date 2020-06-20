@@ -235,7 +235,7 @@ void ProjectNode::recreatePage()
     // reset caches and let rolls update view ranges:
     // (fixme the below is quite a common piece of code)
     this->firstBeatCache = 0;
-    this->lastBeatCache = PROJECT_DEFAULT_NUM_BEATS;
+    this->lastBeatCache = Globals::projectDefaultNumBeats;
     const auto range = this->broadcastChangeProjectBeatRange();
     this->broadcastChangeViewBeatRange(range.getX(), range.getY());
 
@@ -427,12 +427,12 @@ Point<float> ProjectNode::getProjectRangeInBeats() const
     }
     else if (firstBeat > lastBeat)
     {
-        firstBeat = lastBeat - PROJECT_DEFAULT_NUM_BEATS;
+        firstBeat = lastBeat - Globals::projectDefaultNumBeats;
     }
     
-    if ((lastBeat - firstBeat) < PROJECT_DEFAULT_NUM_BEATS)
+    if ((lastBeat - firstBeat) < Globals::projectDefaultNumBeats)
     {
-        lastBeat = firstBeat + PROJECT_DEFAULT_NUM_BEATS;
+        lastBeat = firstBeat + Globals::projectDefaultNumBeats;
     }
 
     return { firstBeat, lastBeat };
@@ -538,7 +538,7 @@ void ProjectNode::load(const SerializedData &tree)
     // a hack to add some margin to project beat range,
     // then to round beats to nearest bars
     // because rolls' view ranges are rounded to bars
-    const float r = float(BEATS_PER_BAR);
+    const float r = float(Globals::beatsPerBar);
     const float viewStartWithMargin = range.getX() - r;
     const float viewEndWithMargin = range.getY() + r;
     const float viewFirstBeat = floorf(viewStartWithMargin / r) * r;

@@ -282,7 +282,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)
         {
-            const int key = MIDDLE_C + this->key + scaleKeys.getUnchecked(i);
+            const int key = Globals::middleC + this->key + scaleKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 0.5f));
             const double startTime = double(i) * timeFactor;

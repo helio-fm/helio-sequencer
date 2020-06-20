@@ -20,8 +20,6 @@
 #include "Chord.h"
 #include "BaseResource.h"
 
-constexpr int CHROMATIC_SCALE_SIZE = 12;
-
 class Scale final : public BaseResource
 {
 public:

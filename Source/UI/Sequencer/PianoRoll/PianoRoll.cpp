@@ -102,7 +102,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->addChildComponent(this->noteNameGuides.get());
     this->noteNameGuides->setVisible(noteNameGuidesEnabled);
 
-    this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
+    this->setBeatRange(0, Globals::projectDefaultNumBeats);
 }
 
 PianoRoll::~PianoRoll() {}
@@ -336,7 +336,7 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     jassert(minKey >= 0);
     jassert(maxKey >= minKey);
 
-    constexpr auto margin = CHROMATIC_SCALE_SIZE;
+    constexpr auto margin = Globals::chromaticScaleSize;
     const float numKeysToFit = float(maxKey - minKey + (margin * 2));
     const float heightToFit = float(this->viewport.getViewHeight());
     this->setRowHeight(int(heightToFit / numKeysToFit));
@@ -791,7 +791,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
             focusMinKey = 44;
             focusMaxKey = 84;
             focusMinBeat = 0;
-            focusMaxBeat = float(EMPTY_CLIP_LENGTH);
+            focusMaxBeat = Globals::emptyClipLength;
         }
 
         this->zoomToArea(focusMinKey, focusMaxKey,
@@ -1650,7 +1650,7 @@ Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const
 // but OpenGL doesn't work well with non-power-of-2 textures
 // and the smaller the texture is, the uglier it is displayed,
 // that's why I ended up rendering 6 octaves here instead of one:
-#define NUM_ROWS_TO_RENDER (CHROMATIC_SCALE_SIZE * 6)
+#define NUM_ROWS_TO_RENDER (Globals::chromaticScaleSize * 6)
 
 Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     const Scale::Ptr scale, int root, int height)
@@ -1675,7 +1675,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     float previousHeight = 0;
     float posY = patternImage.getHeight() - currentHeight;
 
-    const int middleCOffset = scale->getBasePeriod() - (MIDDLE_C % scale->getBasePeriod());
+    const int middleCOffset = scale->getBasePeriod() - (Globals::middleC % scale->getBasePeriod());
     const int lastOctaveReminder = (128 % scale->getBasePeriod()) - root + middleCOffset;
 
     //g.setColour(whiteKeyOdd);

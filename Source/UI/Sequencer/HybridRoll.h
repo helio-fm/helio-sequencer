@@ -54,9 +54,6 @@ class TimelineWarningMarker;
 #   define HYBRID_ROLL_LISTENS_LONG_TAP 1
 #endif
 
-#define MIN_CLIP_LENGTH (1 / TICKS_PER_BEAT)
-#define EMPTY_CLIP_LENGTH (BEATS_PER_BAR * 2)
-
 #define HYBRID_ROLL_MAX_BEAT_WIDTH (48)
 #define HYBRID_ROLL_HEADER_HEIGHT (40)
 #define HYBRID_ROLL_HEADER_SHADOW_SIZE (16)
@@ -366,7 +363,7 @@ protected:
     float lastBeat = -FLT_MAX;
 
     float projectFirstBeat = 0.f;
-    float projectLastBeat = PROJECT_DEFAULT_NUM_BEATS;
+    float projectLastBeat = Globals::projectDefaultNumBeats;
 
     float beatWidth = 0.f;
     

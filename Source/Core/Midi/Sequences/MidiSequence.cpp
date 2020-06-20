@@ -120,13 +120,13 @@ float MidiSequence::midiTicksToBeats(double ticks, int timeFormat) noexcept
     if (timeFormat < 0)
     {
         const double timeInSeconds = ticks / (-(timeFormat >> 8) * (timeFormat & 0xff));
-        return float(timeInSeconds * secsPerQuarterNoteAt120BPM * BEATS_PER_BAR);
+        return float(timeInSeconds * secsPerQuarterNoteAt120BPM * Globals::beatsPerBar);
     }
 
     const auto tickLen = 1.0 / (timeFormat & 0x7fff);
     const auto secsPerTick = 0.5 * tickLen;
     const double timeInSeconds = ticks * secsPerTick;
-    return float(timeInSeconds * secsPerQuarterNoteAt120BPM * BEATS_PER_BAR);
+    return float(timeInSeconds * secsPerQuarterNoteAt120BPM * Globals::beatsPerBar);
 }
 
 //===----------------------------------------------------------------------===//

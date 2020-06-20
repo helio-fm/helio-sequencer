@@ -125,7 +125,7 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
-    this->setBeatRange(0, PROJECT_DEFAULT_NUM_BEATS);
+    this->setBeatRange(0, Globals::projectDefaultNumBeats);
 }
 
 void PatternRoll::selectAll()
@@ -330,8 +330,8 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     // In case there are no events, display an empty clip of some default length,
     // if there are some really short events (e.g. the first moments in recording mode),
     // set the minimal limit for the clip bounds:
-    const float sequenceLength = (sequence->size() == 0) ? float(EMPTY_CLIP_LENGTH) :
-        jmax(sequence->getLengthInBeats(), float(MIN_CLIP_LENGTH));
+    const float sequenceLength = (sequence->size() == 0) ? Globals::emptyClipLength :
+        jmax(sequence->getLengthInBeats(), Globals::minClipLength);
 
     const float w = this->beatWidth * sequenceLength;
     const float x = this->beatWidth * (sequenceOffset + clipBeat - this->firstBeat);

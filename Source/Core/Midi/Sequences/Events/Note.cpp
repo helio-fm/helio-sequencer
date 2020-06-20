@@ -90,8 +90,6 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
     return n;
 }
 
-#define MIN_LENGTH (1.f / TICKS_PER_BEAT)
-
 Note Note::withKey(Key newKey) const noexcept
 {
     Note other(*this);
@@ -118,7 +116,7 @@ Note Note::withKeyLength(Key newKey, float newLength) const noexcept
 {
     Note other(*this);
     other.key = jlimit(0, 128, newKey);
-    other.length = jmax(MIN_LENGTH, roundBeat(newLength));
+    other.length = jmax(Globals::minNoteLength, roundBeat(newLength));
     return other;
 }
 
@@ -139,14 +137,14 @@ Note Note::withDeltaKey(Key deltaKey) const noexcept
 Note Note::withLength(float newLength) const noexcept
 {
     Note other(*this);
-    other.length = jmax(MIN_LENGTH, roundBeat(newLength));
+    other.length = jmax(Globals::minNoteLength, roundBeat(newLength));
     return other;
 }
 
 Note Note::withDeltaLength(float deltaLength) const noexcept
 {
     Note other(*this);
-    other.length = jmax(MIN_LENGTH, roundBeat(other.length + deltaLength));
+    other.length = jmax(Globals::minNoteLength, roundBeat(other.length + deltaLength));
     return other;
 }
 
@@ -213,9 +211,9 @@ SerializedData Note::serialize() const
     SerializedData tree(Midi::note);
     tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::key, this->key);
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
-    tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT));
-    tree.setProperty(Midi::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY));
+    tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
+    tree.setProperty(Midi::length, int(this->length * Globals::ticksPerBeat));
+    tree.setProperty(Midi::volume, int(this->velocity * Globals::velocitySaveResolution));
     if (this->tuplet > 1)
     {
         tree.setProperty(Midi::tuplet, this->tuplet);
@@ -229,9 +227,9 @@ void Note::deserialize(const SerializedData &data)
     using namespace Serialization;
     this->id = unpackId(data.getProperty(Midi::id));
     this->key = data.getProperty(Midi::key);
-    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->length = float(data.getProperty(Midi::length)) / TICKS_PER_BEAT;
-    const auto vol = float(data.getProperty(Midi::volume)) / VELOCITY_SAVE_ACCURACY;
+    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
+    this->length = float(data.getProperty(Midi::length)) / Globals::ticksPerBeat;
+    const auto vol = float(data.getProperty(Midi::volume)) / Globals::velocitySaveResolution;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
     this->tuplet = Tuplet(int(data.getProperty(Midi::tuplet, 1)));
 }

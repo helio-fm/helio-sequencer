@@ -419,7 +419,7 @@ SerializedData ProjectMenu::createPianoTrackTempate(const String &name,
     // insert a single note just so there is a visual anchor in the piano roll:
     const float firstBeat = this->project.getProjectRangeInBeats().getX();
     auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
-    pianoSequence->insert(Note(pianoSequence, MIDDLE_C, firstBeat, float(BEATS_PER_BAR), 0.5f), false);
+    pianoSequence->insert(Note(pianoSequence, Globals::middleC, firstBeat, float(Globals::beatsPerBar), 0.5f), false);
 
     outTrackId = newNode->getTrackId();
     return newNode->serialize();

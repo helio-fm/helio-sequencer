@@ -85,7 +85,7 @@ private:
 
     Atomic<float> timerStartPosition = 0.f;
     Atomic<double> timerStartTime = 0.0;
-    Atomic<double> msPerQuarterNote = DEFAULT_MS_PER_QN;
+    Atomic<double> msPerQuarterNote = Globals::defaultMsPerQuarterNote;
 
 private:
 

@@ -491,7 +491,7 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
 
     this->stopFollowingPlayhead();
 
-    constexpr auto margin = BEATS_PER_BAR * 2;
+    constexpr auto margin = Globals::beatsPerBar * 2;
     const float widthToFit = float(this->viewport.getViewWidth());
     const float numBeatsToFit = maxBeat - minBeat + (margin * 2.f);
     this->setBeatWidth(widthToFit / numBeatsToFit);
@@ -646,7 +646,7 @@ float HybridRoll::getMinVisibleBeatForCurrentZoomLevel() const
     const float minBeat = 1.f / powf(2.f, jlimit(0.f, 4.f, nearestPowOfTwo - 5.f));
 
     jassert(minBeat <= 1.f);
-    jassert(minBeat >= 1.f / TICKS_PER_BEAT);
+    jassert(minBeat >= 1.f / Globals::ticksPerBeat);
 
     return minBeat;
 }
@@ -669,8 +669,8 @@ void HybridRoll::computeVisibleBeatLines()
     const float paintStartX = viewPosX + zeroCanvasOffset;
     const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
     
-    const float barWidth = float(this->beatWidth * BEATS_PER_BAR);
-    const float firstBar = this->firstBeat / float(BEATS_PER_BAR);
+    const float barWidth = float(this->beatWidth * Globals::beatsPerBar);
+    const float firstBar = this->firstBeat / float(Globals::beatsPerBar);
 
     const float paintStartBar = floorf(paintStartX / barWidth);
     const float paintEndBar = ceilf(paintEndX / barWidth);
@@ -692,7 +692,7 @@ void HybridRoll::computeVisibleBeatLines()
     for (; nextTsIdx < tsSequence->size(); ++nextTsIdx)
     {
         const auto *signature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextTsIdx));
-        const float signatureBar = (signature->getBeat() / BEATS_PER_BAR);
+        const float signatureBar = (signature->getBeat() / Globals::beatsPerBar);
 
         // The very first event defines what's before it (both time signature and offset)
         if (firstEvent)
@@ -761,7 +761,7 @@ void HybridRoll::computeVisibleBeatLines()
                 // Check for time signature change at this point
                 if (nextSignature != nullptr)
                 {
-                    const float tsBar = nextSignature->getBeat() / BEATS_PER_BAR;
+                    const float tsBar = nextSignature->getBeat() / Globals::beatsPerBar;
                     if (tsBar <= (barIterator + j + beatStep))
                     {
                         numerator = nextSignature->getNumerator();

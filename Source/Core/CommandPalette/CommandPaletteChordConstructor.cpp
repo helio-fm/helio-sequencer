@@ -1607,7 +1607,7 @@ void CommandPaletteChordConstructor::previewIfNeeded()
 
             for (const auto &relativeKey : this->chord)
             {
-                const auto key = jlimit(0, 128, MIDDLE_C + relativeKey);
+                const auto key = jlimit(0, 128, Globals::middleC + relativeKey);
 
                 minKey = jmin(minKey, key);
                 maxKey = jmax(maxKey, key);

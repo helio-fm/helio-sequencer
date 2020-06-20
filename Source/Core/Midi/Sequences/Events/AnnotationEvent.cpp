@@ -131,8 +131,8 @@ SerializedData AnnotationEvent::serialize() const
     tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::text, this->description);
     tree.setProperty(Midi::colour, this->colour.toString());
-    tree.setProperty(Midi::timestamp, int(this->beat * TICKS_PER_BEAT));
-    tree.setProperty(Midi::length, int(this->length * TICKS_PER_BEAT));
+    tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
+    tree.setProperty(Midi::length, int(this->length * Globals::ticksPerBeat));
     return tree;
 }
 
@@ -142,8 +142,8 @@ void AnnotationEvent::deserialize(const SerializedData &data)
     using namespace Serialization;
     this->description = data.getProperty(Midi::text);
     this->colour = Colour::fromString(data.getProperty(Midi::colour).toString());
-    this->beat = float(data.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
-    this->length = float(data.getProperty(Midi::length, 0.f)) / TICKS_PER_BEAT;
+    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
+    this->length = float(data.getProperty(Midi::length, 0.f)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id));
 }
 

@@ -1897,14 +1897,14 @@ static inline void doQuantize(float &startBeat, float &length, float bar)
     // align with the time signature events
 
     jassert(bar != 0.f);
-    const float q = bar / float(BEATS_PER_BAR);
+    const float q = bar / float(Globals::beatsPerBar);
     const auto endBeat = startBeat + length;
 
     startBeat = roundf(startBeat * q) / q;
     const auto endBeatRound = roundf(endBeat * q) / q;
 
     // make sure the returned length is not too short:
-    const auto minQuantizedBeat = (1.f / bar) * float(BEATS_PER_BAR);
+    const auto minQuantizedBeat = (1.f / bar) * float(Globals::beatsPerBar);
     length = jmax(minQuantizedBeat, endBeatRound - startBeat);
 }
 
@@ -2057,7 +2057,7 @@ bool SequencerOperations::quantize(WeakReference<MidiTrack> track,
 int SequencerOperations::findAbsoluteRootKey(const Scale::Ptr scale,
     Note::Key relativeRoot, Note::Key keyToFindPeriodFor)
 {
-    const auto middleCOffset = MIDDLE_C % scale->getBasePeriod();
+    const auto middleCOffset = Globals::middleC % scale->getBasePeriod();
     const auto sequenceBasePeriod = (keyToFindPeriodFor - middleCOffset - relativeRoot) / scale->getBasePeriod();
     const auto absRootKey = (sequenceBasePeriod * scale->getBasePeriod()) + middleCOffset + relativeRoot;
     return absRootKey;

@@ -117,25 +117,6 @@ inline float roundf(float x)
 #   define HELIO_DESKTOP 1
 #endif
 
-// Beat is essentially a quarter-note
-#define BEATS_PER_BAR 4
-
-// Defines the maximum available resolution
-#define TICKS_PER_BEAT 16
-
-// Milliseconds per quarter note, default 120 BPM
-#define DEFAULT_MS_PER_QN 500
-
-#define PROJECT_DEFAULT_NUM_BEATS 32
-
-#define VELOCITY_SAVE_ACCURACY 1024.f
-
-// Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
-inline float roundBeat(float beat)
-{
-    return roundf(beat * static_cast<float>(TICKS_PER_BEAT)) / static_cast<float>(TICKS_PER_BEAT);
-}
-
 #define forEachChildWithType(parentElement, child, requiredType) \
     for (const auto &child : parentElement) if (child.hasType(requiredType))
 
@@ -169,6 +150,44 @@ namespace juce
     }
 }
 #endif
+
+//===----------------------------------------------------------------------===//
+// Global constants
+// (note: changing any of these constants may, and very probably will,
+// lead to unpredictable results, e.g. messing up all your projects)
+//===----------------------------------------------------------------------===//
+
+namespace Globals
+{
+    // Beat is essentially a quarter-note
+    static constexpr auto beatsPerBar = 4;
+
+    // Defines the maximum available resolution
+    static constexpr auto ticksPerBeat = 16;
+
+    // Milliseconds per quarter note, default 120 BPM
+    static constexpr auto defaultMsPerQuarterNote = 500;
+
+    static constexpr auto projectDefaultNumBeats = 32.f;
+
+    static constexpr auto chromaticScaleSize = 12;
+
+    static constexpr auto middleC = 60;
+
+    static constexpr auto emptyClipLength = beatsPerBar * 2;
+
+    static constexpr auto minClipLength = 1.f / static_cast<float>(ticksPerBeat);
+
+    static constexpr auto minNoteLength = 1.f / static_cast<float>(ticksPerBeat);
+
+    static constexpr auto velocitySaveResolution = 1024.f;
+}
+
+// Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
+inline float roundBeat(float beat)
+{
+    return roundf(beat * static_cast<float>(Globals::ticksPerBeat)) / static_cast<float>(Globals::ticksPerBeat);
+}
 
 //===----------------------------------------------------------------------===//
 // Internationalization

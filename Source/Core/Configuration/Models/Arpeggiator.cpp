@@ -410,9 +410,9 @@ SerializedData Arpeggiator::Key::serialize() const
     SerializedData tree(Arps::key);
     tree.setProperty(Arps::Keys::key, this->key);
     tree.setProperty(Arps::Keys::period, this->period);
-    tree.setProperty(Arps::Keys::timestamp, int(this->beat * TICKS_PER_BEAT));
-    tree.setProperty(Arps::Keys::length, int(this->length * TICKS_PER_BEAT));
-    tree.setProperty(Arps::Keys::volume, int(this->velocity * VELOCITY_SAVE_ACCURACY));
+    tree.setProperty(Arps::Keys::timestamp, int(this->beat * Globals::ticksPerBeat));
+    tree.setProperty(Arps::Keys::length, int(this->length * Globals::ticksPerBeat));
+    tree.setProperty(Arps::Keys::volume, int(this->velocity * Globals::velocitySaveResolution));
     return tree;
 }
 
@@ -421,9 +421,9 @@ void Arpeggiator::Key::deserialize(const SerializedData &data)
     using namespace Serialization;
     this->key = data.getProperty(Arps::Keys::key);
     this->period = data.getProperty(Arps::Keys::period);
-    this->beat = float(data.getProperty(Arps::Keys::timestamp)) / TICKS_PER_BEAT;
-    this->length = float(data.getProperty(Arps::Keys::length)) / TICKS_PER_BEAT;
-    const auto vol = float(data.getProperty(Arps::Keys::volume)) / VELOCITY_SAVE_ACCURACY;
+    this->beat = float(data.getProperty(Arps::Keys::timestamp)) / Globals::ticksPerBeat;
+    this->length = float(data.getProperty(Arps::Keys::length)) / Globals::ticksPerBeat;
+    const auto vol = float(data.getProperty(Arps::Keys::volume)) / Globals::velocitySaveResolution;
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
 }
 

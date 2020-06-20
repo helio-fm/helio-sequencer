@@ -94,10 +94,10 @@ private:
 private:
     
     float projectFirstBeat = 0.f;
-    float projectLastBeat = PROJECT_DEFAULT_NUM_BEATS; // not zero!
+    float projectLastBeat = Globals::projectDefaultNumBeats; // not zero!
 
     float rollFirstBeat = 0.f;
-    float rollLastBeat = PROJECT_DEFAULT_NUM_BEATS;
+    float rollLastBeat = Globals::projectDefaultNumBeats;
     
     HybridRoll &roll;
     ProjectNode &project;

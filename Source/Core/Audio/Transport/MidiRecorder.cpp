@@ -151,7 +151,7 @@ void MidiRecorder::onStop()
 
     this->isPlaying = false;
     this->lastUpdateTime = 0.0;
-    this->msPerQuarterNote = DEFAULT_MS_PER_QN;
+    this->msPerQuarterNote = Globals::defaultMsPerQuarterNote;
 }
 
 static SerializedData createPianoTrackTempate(const String &name,
@@ -323,8 +323,6 @@ void MidiRecorder::timerCallback()
 // Helpers
 //===----------------------------------------------------------------------===//
 
-#define STARTING_NOTE_LENGTH (1.f / TICKS_PER_BEAT)
-
 void MidiRecorder::startHoldingNote(MidiMessage message)
 {
     jassert(this->activeClip != nullptr);
@@ -341,7 +339,7 @@ void MidiRecorder::startHoldingNote(MidiMessage message)
     const Note noteParams(this->activeTrack->getSequence(),
         key - this->activeClip->getKey(),
         roundBeat(float(message.getTimeStamp()) - this->activeClip->getBeat()),
-        STARTING_NOTE_LENGTH,
+        Globals::minNoteLength,
         message.getVelocity() / 128.f);
 
     this->getPianoSequence()->insert(noteParams, true);
