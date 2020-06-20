@@ -59,8 +59,6 @@
 #include "Config.h"
 #include "Icons.h"
 
-#define DEFAULT_CLIP_LENGTH 1.0f
-
 inline static constexpr int rowHeight()
 {
     return PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT;
@@ -125,7 +123,7 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
-    this->setBeatRange(0, Globals::projectDefaultNumBeats);
+    this->setBeatRange(0, Globals::Defaults::projectLength);
 }
 
 void PatternRoll::selectAll()
@@ -330,7 +328,7 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     // In case there are no events, display an empty clip of some default length,
     // if there are some really short events (e.g. the first moments in recording mode),
     // set the minimal limit for the clip bounds:
-    const float sequenceLength = (sequence->size() == 0) ? Globals::emptyClipLength :
+    const float sequenceLength = (sequence->size() == 0) ? Globals::Defaults::emptyClipLength :
         jmax(sequence->getLengthInBeats(), Globals::minClipLength);
 
     const float w = this->beatWidth * sequenceLength;

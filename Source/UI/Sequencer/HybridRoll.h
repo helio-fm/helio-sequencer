@@ -363,7 +363,7 @@ protected:
     float lastBeat = -FLT_MAX;
 
     float projectFirstBeat = 0.f;
-    float projectLastBeat = Globals::projectDefaultNumBeats;
+    float projectLastBeat = Globals::Defaults::projectLength;
 
     float beatWidth = 0.f;
     

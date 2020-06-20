@@ -37,7 +37,6 @@
 
 #define NEWCHORD_POPUP_MENU_SIZE            (500)
 #define NEWCHORD_POPUP_LABEL_SIZE           (32)
-#define NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH  (4)
 
 static Label *createLabel(const String &text)
 {
@@ -425,7 +424,7 @@ void ScalePreviewTool::buildChord(Array<int> keys)
         for (int offset : keys)
         {
             const int key = jlimit(0, Globals::maxNoteKey, this->targetKey + offset);
-            Note note(pianoLayer, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kScalePreviewDefaultNoteVelocity);
+            Note note(pianoLayer, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
             pianoLayer->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity));
         }
@@ -449,7 +448,7 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
 
         const int key = jlimit(0, Globals::maxNoteKey, this->targetKey);
 
-        Note note1(pianoSequence, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kScalePreviewDefaultNoteVelocity);
+        Note note1(pianoSequence, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
         pianoSequence->insert(note1, true);
 
         if (shouldSendMidiMessage)

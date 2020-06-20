@@ -61,7 +61,7 @@ protected:
 
     Atomic<bool> loopMode = false;
     Atomic<float> loopStartBeat = 0.f;
-    Atomic<float> loopEndBeat = Globals::projectDefaultNumBeats;
+    Atomic<float> loopEndBeat = Globals::Defaults::projectLength;
 
     Colour backColour;
     Colour barColour;

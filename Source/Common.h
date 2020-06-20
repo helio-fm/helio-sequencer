@@ -159,16 +159,11 @@ namespace juce
 
 namespace Globals
 {
-    // Beat is essentially a quarter-note
+    // Beat is essentially a quarter note
     static constexpr auto beatsPerBar = 4;
 
     // Defines the maximum available resolution
     static constexpr auto ticksPerBeat = 16;
-
-    // Milliseconds per quarter note, default 120 BPM
-    static constexpr auto defaultMsPerQuarterNote = 500;
-
-    static constexpr auto projectDefaultNumBeats = 32.f;
 
     static constexpr auto chromaticScaleSize = 12;
 
@@ -176,13 +171,32 @@ namespace Globals
 
     static constexpr auto middleC = 60;
 
-    static constexpr auto emptyClipLength = beatsPerBar * 2;
-
     static constexpr auto minClipLength = 1.f / static_cast<float>(ticksPerBeat);
 
     static constexpr auto minNoteLength = 1.f / static_cast<float>(ticksPerBeat);
 
     static constexpr auto velocitySaveResolution = 1024.f;
+
+    namespace Defaults
+    {
+        // Milliseconds per quarter note, default 120 BPM
+        static constexpr auto msPerBeat = 500;
+
+        // Any length here is in beats
+        static constexpr auto projectLength = static_cast<float>(beatsPerBar * 8);
+
+        static constexpr auto newNoteLength = 0.5f;
+        static constexpr auto newNoteVelocity = 0.25f;
+        static constexpr auto chordToolNoteLength = static_cast<float>(beatsPerBar);
+        static constexpr auto emptyClipLength = static_cast<float>(beatsPerBar * 2);
+
+        // The default time is common time, 4/4
+        static constexpr auto timeSignatureNumerator = 4;
+        static constexpr auto timeSignatureDenominator = 4;
+
+        static constexpr auto onOffControllerState = false;
+        static constexpr auto automationControllerCurve = 0.5f;
+    }
 }
 
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:

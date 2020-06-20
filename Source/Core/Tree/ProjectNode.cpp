@@ -235,7 +235,7 @@ void ProjectNode::recreatePage()
     // reset caches and let rolls update view ranges:
     // (fixme the below is quite a common piece of code)
     this->firstBeatCache = 0;
-    this->lastBeatCache = Globals::projectDefaultNumBeats;
+    this->lastBeatCache = Globals::Defaults::projectLength;
     const auto range = this->broadcastChangeProjectBeatRange();
     this->broadcastChangeViewBeatRange(range.getX(), range.getY());
 
@@ -427,12 +427,12 @@ Point<float> ProjectNode::getProjectRangeInBeats() const
     }
     else if (firstBeat > lastBeat)
     {
-        firstBeat = lastBeat - Globals::projectDefaultNumBeats;
+        firstBeat = lastBeat - Globals::Defaults::projectLength;
     }
     
-    if ((lastBeat - firstBeat) < Globals::projectDefaultNumBeats)
+    if ((lastBeat - firstBeat) < Globals::Defaults::projectLength)
     {
-        lastBeat = firstBeat + Globals::projectDefaultNumBeats;
+        lastBeat = firstBeat + Globals::Defaults::projectLength;
     }
 
     return { firstBeat, lastBeat };

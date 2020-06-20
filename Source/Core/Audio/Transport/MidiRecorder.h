@@ -99,7 +99,7 @@ private:
 
     Atomic<float> lastCorrectPosition = 0.f;
     Atomic<double> lastUpdateTime = 0.0;
-    Atomic<double> msPerQuarterNote = Globals::defaultMsPerQuarterNote;
+    Atomic<double> msPerQuarterNote = Globals::Defaults::msPerBeat;
 
     Atomic<bool> isPlaying = false;
     Atomic<bool> isRecording = false;

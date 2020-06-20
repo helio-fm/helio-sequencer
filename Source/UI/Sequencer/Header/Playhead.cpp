@@ -105,7 +105,7 @@ void Playhead::onStop()
 
     this->timerStartTime = 0.0;
     this->timerStartPosition = 0.0;
-    this->msPerQuarterNote = Globals::defaultMsPerQuarterNote;
+    this->msPerQuarterNote = Globals::Defaults::msPerBeat;
 }
 
 //===----------------------------------------------------------------------===//

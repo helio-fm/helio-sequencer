@@ -681,8 +681,8 @@ void HybridRoll::computeVisibleBeatLines()
     const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // use -4.f for twice as dense grid
     const float snapWidth = barWidth / numSnaps;
 
-    int numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
-    int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
+    int numerator = Globals::Defaults::timeSignatureNumerator;
+    int denominator = Globals::Defaults::timeSignatureDenominator;
     float barIterator = firstBar;
     int nextTsIdx = 0;
     bool firstEvent = true;

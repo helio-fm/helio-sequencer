@@ -19,7 +19,6 @@
 
 #include "MidiEvent.h"
 
-#define DEFAULT_ON_OFF_EVENT_STATE (false)
 #define CURVE_INTERPOLATION_STEP_BEAT (0.25f)
 #define CURVE_INTERPOLATION_THRESHOLD (0.0025f)
 

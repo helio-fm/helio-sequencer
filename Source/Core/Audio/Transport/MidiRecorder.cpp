@@ -151,7 +151,7 @@ void MidiRecorder::onStop()
 
     this->isPlaying = false;
     this->lastUpdateTime = 0.0;
-    this->msPerQuarterNote = Globals::defaultMsPerQuarterNote;
+    this->msPerQuarterNote = Globals::Defaults::msPerBeat;
 }
 
 static SerializedData createPianoTrackTempate(const String &name,

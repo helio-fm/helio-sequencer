@@ -102,7 +102,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->addChildComponent(this->noteNameGuides.get());
     this->noteNameGuides->setVisible(noteNameGuidesEnabled);
 
-    this->setBeatRange(0, Globals::projectDefaultNumBeats);
+    this->setBeatRange(0, Globals::Defaults::projectLength);
 }
 
 PianoRoll::~PianoRoll() {}
@@ -791,7 +791,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
             focusMinKey = 44;
             focusMaxKey = 84;
             focusMinBeat = 0;
-            focusMaxBeat = Globals::emptyClipLength;
+            focusMaxBeat = Globals::Defaults::emptyClipLength;
         }
 
         this->zoomToArea(focusMinKey, focusMaxKey,

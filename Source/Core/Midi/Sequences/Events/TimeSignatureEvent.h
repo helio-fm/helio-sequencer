@@ -19,10 +19,6 @@
 
 #include "MidiEvent.h"
 
-// The default is, obviously, common time (4/4)
-#define TIME_SIGNATURE_DEFAULT_NUMERATOR 4
-#define TIME_SIGNATURE_DEFAULT_DENOMINATOR 4
-
 class TimeSignatureEvent final : public MidiEvent
 {
 public:
@@ -33,8 +29,8 @@ public:
         const TimeSignatureEvent &parametersToCopy) noexcept;
     explicit TimeSignatureEvent(WeakReference<MidiSequence> owner,
         float newBeat = 0.f,
-        int newNumerator = TIME_SIGNATURE_DEFAULT_NUMERATOR,
-        int newDenominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR) noexcept;
+        int newNumerator = Globals::Defaults::timeSignatureNumerator,
+        int newDenominator = Globals::Defaults::timeSignatureDenominator) noexcept;
 
     static void parseString(const String &data, int &numerator, int &denominator);
     

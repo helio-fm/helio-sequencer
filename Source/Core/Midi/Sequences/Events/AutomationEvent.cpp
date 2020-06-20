@@ -22,8 +22,6 @@
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
 
-#define AUTOEVENT_DEFAULT_CURVATURE (0.5f)
-
 AutomationEvent::AutomationEvent() noexcept : MidiEvent(nullptr, Type::Auto, 0.f)
 {
     //jassertfalse;
@@ -37,7 +35,7 @@ AutomationEvent::AutomationEvent(const AutomationEvent &other) noexcept :
 AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) noexcept :
     MidiEvent(owner, Type::Auto, beatVal),
     controllerValue(cValue),
-    curvature(AUTOEVENT_DEFAULT_CURVATURE) {}
+    curvature(Globals::Defaults::automationControllerCurve) {}
 
 AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
     const AutomationEvent &parametersToCopy) noexcept :
@@ -270,7 +268,7 @@ void AutomationEvent::deserialize(const SerializedData &data)
     this->reset();
     using namespace Serialization;
     this->controllerValue = float(data.getProperty(Midi::value));
-    this->curvature = float(data.getProperty(Midi::curve, AUTOEVENT_DEFAULT_CURVATURE));
+    this->curvature = float(data.getProperty(Midi::curve, Globals::Defaults::automationControllerCurve));
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id));
 }

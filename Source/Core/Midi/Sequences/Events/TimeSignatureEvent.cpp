@@ -44,8 +44,8 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
 
 void TimeSignatureEvent::parseString(const String &data, int &numerator, int &denominator)
 {
-    numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
-    denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
+    numerator = Globals::Defaults::timeSignatureNumerator;
+    denominator = Globals::Defaults::timeSignatureDenominator;
 
     StringArray sa;
     sa.addTokens(data, "/\\|-", "' \"");
@@ -152,8 +152,8 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->numerator = data.getProperty(Midi::numerator, TIME_SIGNATURE_DEFAULT_NUMERATOR);
-    this->denominator = data.getProperty(Midi::denominator, TIME_SIGNATURE_DEFAULT_DENOMINATOR);
+    this->numerator = data.getProperty(Midi::numerator, Globals::Defaults::timeSignatureNumerator);
+    this->denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id));
 }
