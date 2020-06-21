@@ -50,6 +50,10 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
 
     this->updateColours();
     this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+
+    this->selectionIndicator = make<HeaderSelectionIndicator>();
+    this->addChildComponent(this->selectionIndicator.get());
+    this->selectionIndicator->setTopLeftPosition(0, this->getHeight() - this->selectionIndicator->getHeight());
 }
 
 void HybridRollHeader::updateColours()
@@ -217,12 +221,8 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
             
             this->roll.getSelectionComponent()->beginLasso({ newX, 0.f }, &this->roll);
             
-            this->selectionIndicator = make<HeaderSelectionIndicator>();
-            this->addAndMakeVisible(this->selectionIndicator.get());
-            this->selectionIndicator->setBounds(0,
-                this->getHeight() - this->selectionIndicator->getHeight(),
-                0, this->selectionIndicator->getHeight());
-            
+            this->selectionIndicator->fadeIn();
+
 #if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             this->selectionIndicator->setStartAnchor(this->getAlignedAnchorForEvent(e));
 #else
@@ -312,14 +312,11 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
             
             this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
             
-            if (this->selectionIndicator != nullptr)
-            {
 #if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
-                this->selectionIndicator->setEndAnchor(this->getAlignedAnchorForEvent(e));
+            this->selectionIndicator->setEndAnchor(this->getAlignedAnchorForEvent(e));
 #else
-                this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
+            this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
 #endif
-            }
         }
         else
         {
@@ -338,7 +335,8 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
 {
     this->playingIndicator = nullptr;
     this->timeDistanceIndicator = nullptr;
-    this->selectionIndicator = nullptr;
+
+    this->selectionIndicator->fadeOut();
     
     if (this->soundProbeMode.get())
     {

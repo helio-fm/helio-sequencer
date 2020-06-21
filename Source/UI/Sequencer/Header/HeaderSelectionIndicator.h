@@ -17,73 +17,34 @@
 
 #pragma once
 
-//[Headers]
-class IconComponent;
-//[/Headers]
-
-
-class HeaderSelectionIndicator  : public Component,
-                                  private Timer
+class HeaderSelectionIndicator final : public Component, private Timer
 {
 public:
 
-    HeaderSelectionIndicator ();
+    HeaderSelectionIndicator();
 
-    ~HeaderSelectionIndicator();
+    void fadeIn();
+    void fadeOut();
 
-    //[UserMethods]
+    void setStartAnchor(double absX);
+    void setEndAnchor(double absX);
 
-    inline void setStartAnchor(double absX)
-    {
-        this->startAbsPosition = absX;
-        this->endAbsPosition = absX;
-        this->updateBounds();
-    }
-
-    inline void setEndAnchor(double absX)
-    {
-        this->endAbsPosition = absX;
-        this->updateBounds();
-    }
-
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
+    void paint(Graphics &g) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
 
-
 private:
 
-    //[UserVariables]
+    void timerCallback() override;
 
-    void timerCallback() override
-    {
-        this->setAlpha(this->getAlpha() + 0.1f);
+    double startAbsPosition = 0.0;
+    double endAbsPosition = 0.0;
 
-        if (this->getAlpha() >= 1.f)
-        {
-            this->stopTimer();
-        }
-    }
+    const Colour fill;
+    Colour currentFill;
+    Colour targetFill;
 
-    double startAbsPosition;
-    double endAbsPosition;
+    void updateBounds();
 
-    void updateBounds()
-    {
-        const double start = jmin(this->startAbsPosition, this->endAbsPosition);
-        const double end = jmax(this->startAbsPosition, this->endAbsPosition);
-
-        const int startX = int(double(this->getParentWidth()) * start);
-        const int endX = int(double(this->getParentWidth()) * end);
-
-        this->setBounds(startX, this->getY(), (endX - startX), this->getHeight());
-    }
-
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeaderSelectionIndicator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeaderSelectionIndicator)
 };

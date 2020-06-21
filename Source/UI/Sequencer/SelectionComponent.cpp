@@ -23,14 +23,12 @@
 
 SelectionComponent::SelectionComponent() :
     fill(findDefaultColour(ColourIDs::SelectionComponent::fill)),
-    outline(findDefaultColour(ColourIDs::SelectionComponent::outline))
+    outline(findDefaultColour(ColourIDs::SelectionComponent::outline)),
+    currentFill(fill),
+    currentOutline(outline)
 {
-    this->currentFill = this->fill;
-    this->currentOutline = this->outline;
-
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
-    this->setPaintingIsUnclipped(true);
 }
 
 void SelectionComponent::beginLasso(const Point<float> &position, LassoSource<SelectableComponent *> *lassoSource)
@@ -98,7 +96,7 @@ void SelectionComponent::endLasso()
 
 bool SelectionComponent::isDragging() const
 {
-    return (this->source != nullptr);
+    return this->source != nullptr;
 }
 
 void SelectionComponent::paint(Graphics &g)
@@ -107,15 +105,15 @@ void SelectionComponent::paint(Graphics &g)
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->currentOutline);
-    constexpr int dashLength = 4;
+    static constexpr int dashLength = 4;
 
-    for (int i = 1; i < this->getWidth() - dashLength; i += (dashLength * 2))
+    for (int i = 1; i < this->getWidth() - 1; i += (dashLength * 2))
     {
         g.fillRect(i, 0, dashLength, 1);
         g.fillRect(i, this->getHeight() - 1, dashLength, 1);
     }
 
-    for (int i = 1; i < this->getHeight() - dashLength; i += (dashLength * 2))
+    for (int i = 1; i < this->getHeight() - 1; i += (dashLength * 2))
     {
         g.fillRect(0, i, 1, dashLength);
         g.fillRect(this->getWidth() - 1, i, 1, dashLength);

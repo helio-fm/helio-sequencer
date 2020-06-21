@@ -15,102 +15,91 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "HeaderSelectionIndicator.h"
+#include "ColourIDs.h"
 
-//[MiscUserDefs]
-#include "IconComponent.h"
-//[/MiscUserDefs]
-
-HeaderSelectionIndicator::HeaderSelectionIndicator()
-    : startAbsPosition(0.f),
-      endAbsPosition(0.f)
+HeaderSelectionIndicator::HeaderSelectionIndicator() :
+    fill(findDefaultColour(ColourIDs::SelectionComponent::outline)),
+    currentFill(fill)
 {
-
-    //[UserPreSize]
+    this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
-    this->setAlwaysOnTop(true);
-    //[/UserPreSize]
-
-    setSize (128, 16);
-
-    //[Constructor]
-    this->setAlpha(0.f);
-    this->startTimerHz(60);
-    //[/Constructor]
+    this->setPaintingIsUnclipped(true);
+    this->setSize(128, 10);
 }
 
-HeaderSelectionIndicator::~HeaderSelectionIndicator()
+void HeaderSelectionIndicator::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 0.f, 50, true, 0.0, 0.0);
-    //[/Destructor_pre]
-
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void HeaderSelectionIndicator::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    g.setColour (Colour (0x1a000000));
-    g.fillRoundedRectangle (0.0f, static_cast<float> (getHeight() - 6 - (20 / 2)), static_cast<float> (getWidth() - 0), 20.0f, 7.000f);
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
-
-void HeaderSelectionIndicator::resized()
-{
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    g.setColour(this->currentFill);
+    g.fillRect(0, this->getHeight() - 3, this->getWidth(), 2);
+    g.fillRect(1, this->getHeight() - 4, this->getWidth() - 2, 1);
 }
 
 void HeaderSelectionIndicator::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updateBounds();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void HeaderSelectionIndicator::parentSizeChanged()
 {
-    //[UserCode_parentSizeChanged] -- Add your code here...
     this->updateBounds();
-    //[/UserCode_parentSizeChanged]
 }
 
+void HeaderSelectionIndicator::setStartAnchor(double absX)
+{
+    this->startAbsPosition = absX;
+    this->endAbsPosition = absX;
+    this->updateBounds();
+}
 
-//[MiscUserCode]
-//[/MiscUserCode]
+void HeaderSelectionIndicator::setEndAnchor(double absX)
+{
+    this->endAbsPosition = absX;
+    this->updateBounds();
+}
 
-#if 0
-/*
-BEGIN_JUCER_METADATA
+void HeaderSelectionIndicator::updateBounds()
+{
+    const double start = jmin(this->startAbsPosition, this->endAbsPosition);
+    const double end = jmax(this->startAbsPosition, this->endAbsPosition);
 
-<JUCER_COMPONENT documentType="Component" className="HeaderSelectionIndicator"
-                 template="../../../Template" componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="" variableInitialisers="startAbsPosition(0.f),&#10;endAbsPosition(0.f)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="16">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="parentSizeChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 6Rc 0M 20" cornerSize="7" fill="solid: 1a000000" hasStroke="0"/>
-  </BACKGROUND>
-</JUCER_COMPONENT>
+    const int startX = int(double(this->getParentWidth()) * start);
+    const int endX = int(double(this->getParentWidth()) * end);
 
-END_JUCER_METADATA
-*/
-#endif
+    this->setBounds(startX, this->getY(), (endX - startX), this->getHeight());
+}
+
+void HeaderSelectionIndicator::timerCallback()
+{
+    const auto newFill = this->currentFill.interpolatedWith(this->targetFill, 0.4f);
+
+    if (this->currentFill == newFill)
+    {
+        this->stopTimer();
+
+        if (newFill.getAlpha() == 0)
+        {
+            this->setVisible(false);
+        }
+    }
+    else
+    {
+        this->currentFill = newFill;
+        this->updateBounds();
+        this->repaint();
+    }
+}
+
+void HeaderSelectionIndicator::fadeIn()
+{
+    this->targetFill = this->fill;
+    this->setVisible(true);
+    this->startTimerHz(60);
+}
+
+void HeaderSelectionIndicator::fadeOut()
+{
+    this->targetFill = Colours::transparentBlack;
+    this->startTimerHz(60);
+}
