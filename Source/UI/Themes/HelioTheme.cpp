@@ -129,49 +129,6 @@ void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor 
     g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
 }
 
-void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
-{
-}
-
-//===----------------------------------------------------------------------===//
-// Selection
-//===----------------------------------------------------------------------===//
-
-void HelioTheme::drawLasso(Graphics &g, Component &lassoComp)
-{
-#if HELIO_DESKTOP
-    const float dashWidth = 1.f;
-    const float cornersRound = 5.f;
-    const float dashLength = 5.f;
-#elif HELIO_MOBILE
-    const float dashWidth = 2.f;
-    const float cornersRound = 10.f;
-    const float dashLength = 7.f;
-#endif
-
-    g.setColour(findDefaultColour(ColourIDs::SelectionComponent::fill));
-    g.fillRoundedRectangle(lassoComp.getLocalBounds().toFloat(), cornersRound);
-    
-    g.setColour(findDefaultColour(ColourIDs::SelectionComponent::outline));
-
-    const Rectangle<float> r(0.5f, 0.5f,
-        float(lassoComp.getLocalBounds().getWidth()) - 1.0f,
-        float(lassoComp.getLocalBounds().getHeight()) - 1.0f);
-
-    Path path;
-    path.addQuadrilateral(r.getBottomRight().getX(), r.getBottomRight().getY(),
-        r.getTopRight().getX(), r.getTopRight().getY(),
-        r.getTopLeft().getX(), r.getTopLeft().getY(),
-        r.getBottomLeft().getX(), r.getBottomLeft().getY());
-    
-    path = path.createPathWithRoundedCorners(cornersRound);
-    
-    static Array<float> dashes(dashLength, dashLength);
-    PathStrokeType(dashWidth).createDashedStroke(path, path, dashes.getRawDataPointer(), dashes.size());
-    g.strokePath(path, PathStrokeType(dashWidth));
-}
-
-
 //===----------------------------------------------------------------------===//
 // Labels
 //===----------------------------------------------------------------------===//
@@ -840,8 +797,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // Helio colours:
 
     // Lasso
-    this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.25f));
-    this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.4f));
+    this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.2f));
+    this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.75f));
 
     // A hack for icon base colors
     this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());

@@ -53,14 +53,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void fillTextEditorBackground(Graphics&, int w, int h, TextEditor&) override;
-    void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override;
-
-    //===------------------------------------------------------------------===//
-    // Selection
-    //===------------------------------------------------------------------===//
-    
-    void drawLasso(Graphics &g, Component &lassoComp) override;
-    
+    void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override {}
+        
     //===------------------------------------------------------------------===//
     // Labels
     //===------------------------------------------------------------------===//

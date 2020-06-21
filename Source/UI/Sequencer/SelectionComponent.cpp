@@ -19,15 +19,21 @@
 #include "Lasso.h"
 #include "SelectionComponent.h"
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 
 SelectionComponent::SelectionComponent() :
-    source(nullptr)
+    fill(findDefaultColour(ColourIDs::SelectionComponent::fill)),
+    outline(findDefaultColour(ColourIDs::SelectionComponent::outline))
 {
+    this->currentFill = this->fill;
+    this->currentOutline = this->outline;
+
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
 }
 
-void SelectionComponent::beginLasso(const Point<float> &position, LassoSource<SelectableComponent *> *const lassoSource)
+void SelectionComponent::beginLasso(const Point<float> &position, LassoSource<SelectableComponent *> *lassoSource)
 {
     jassert(lassoSource != nullptr);
     jassert(getParentComponent() != nullptr);
@@ -49,7 +55,7 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
         this->endPosition = e.position.toDouble() / this->getParentSize();
 
         this->updateBounds();
-        this->setVisible(true);
+        this->fadeIn();
 
         this->itemsInLasso.clearQuick();
         this->source->findLassoItemsInArea(this->itemsInLasso, getBounds());
@@ -86,7 +92,7 @@ void SelectionComponent::endLasso()
     {
         this->source = nullptr;
         this->originalSelection.clear();
-        this->setVisible(false);
+        this->fadeOut();
     }
 }
 
@@ -97,8 +103,29 @@ bool SelectionComponent::isDragging() const
 
 void SelectionComponent::paint(Graphics &g)
 {
-    LookAndFeel::getDefaultLookAndFeel().drawLasso(g, *this);
-    jassert(isMouseButtonDownAnywhere());
+    g.setColour(this->currentFill);
+    g.fillRect(this->getLocalBounds());
+
+    g.setColour(this->currentOutline);
+    constexpr int dashLength = 4;
+
+    for (int i = 1; i < this->getWidth() - dashLength; i += (dashLength * 2))
+    {
+        g.fillRect(i, 0, dashLength, 1);
+        g.fillRect(i, this->getHeight() - 1, dashLength, 1);
+    }
+
+    for (int i = 1; i < this->getHeight() - dashLength; i += (dashLength * 2))
+    {
+        g.fillRect(0, i, 1, dashLength);
+        g.fillRect(this->getWidth() - 1, i, 1, dashLength);
+    }
+
+    //g.fillRect(1, 0, this->getWidth() - 2, 1);
+    //g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);
+
+    //g.fillRect(0, 1, 1, this->getHeight() - 2);
+    //g.fillRect(this->getWidth() - 1, 1, 1, this->getHeight() - 2);
 }
 
 const Point<double> SelectionComponent::getParentSize() const
@@ -109,4 +136,47 @@ const Point<double> SelectionComponent::getParentSize() const
     }
 
     return { 1.0, 1.0 };
+}
+
+void SelectionComponent::timerCallback()
+{
+    const auto newOutline = this->currentOutline.interpolatedWith(this->targetOutline, 0.4f);
+    const auto newFill = this->currentFill.interpolatedWith(this->targetFill, 0.2f);
+
+    //DBG(newOutline.toDisplayString(true));
+    //DBG(newFill.toDisplayString(true));
+
+    if (this->currentOutline == newOutline && this->currentFill == newFill)
+    {
+        //DBG("--- stop timer");
+        this->stopTimer();
+
+        if (newOutline.getAlpha() == 0)
+        {
+            //DBG("--- set visible = false");
+            this->setVisible(false);
+        }
+    }
+    else
+    {
+        this->currentOutline = newOutline;
+        this->currentFill = newFill;
+        this->updateBounds();
+        this->repaint();
+    }
+}
+
+void SelectionComponent::fadeIn()
+{
+    this->targetFill = this->fill;
+    this->targetOutline = this->outline;
+    this->setVisible(true);
+    this->startTimerHz(60);
+}
+
+void SelectionComponent::fadeOut()
+{
+    this->targetFill = Colours::transparentBlack;
+    this->targetOutline = Colours::transparentBlack;
+    this->startTimerHz(60);
 }

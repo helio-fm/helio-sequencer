@@ -19,14 +19,14 @@
 
 #include "SelectableComponent.h"
 
-class SelectionComponent final : public Component
+class SelectionComponent final : public Component, private Timer
 {
 public:
 
     SelectionComponent();
 
     void beginLasso(const Point<float> &position,
-        LassoSource<SelectableComponent *> *const lassoSource);
+        LassoSource<SelectableComponent *> *lassoSource);
     void dragLasso(const MouseEvent &e);
     void endLasso();
     bool isDragging() const;
@@ -37,12 +37,29 @@ public:
 private:
 
     Array<SelectableComponent *> originalSelection;
-    LassoSource<SelectableComponent *> *source;
+    LassoSource<SelectableComponent *> *source = nullptr;
 
     Point<double> startPosition;
     Point<double> endPosition;
 
     const Point<double> getParentSize() const;
+
+private:
+
+    // some helpers for the fancy animation stuff
+
+    void timerCallback() override;
+    void fadeIn();
+    void fadeOut();
+
+    const Colour fill;
+    const Colour outline;
+
+    Colour currentFill;
+    Colour currentOutline;
+
+    Colour targetFill;
+    Colour targetOutline;
 
 private:
 
