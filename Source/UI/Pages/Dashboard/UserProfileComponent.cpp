@@ -104,9 +104,12 @@ void UserProfileComponent::updateProfileInfo()
     {
         this->avatar->setIconImage(userProfile.getAvatar());
         this->nameLabel->setText("/" + userProfile.getLogin(), dontSendNotification);
-        this->clickHandler->onClick = []() {
-            URL(App::Workspace().getUserProfile().getProfileUrl()).launchInDefaultBrowser();
-        };
+
+        // hidden at the moment, the user page is not implemented
+        this->clickHandler->setVisible(false);
+        //this->clickHandler->onClick = []() {
+        //    URL(App::Workspace().getUserProfile().getProfileUrl()).launchInDefaultBrowser();
+        //};
     }
 }
 //[/MiscUserCode]
