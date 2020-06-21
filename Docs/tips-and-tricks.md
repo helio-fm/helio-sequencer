@@ -36,6 +36,12 @@ Finally, holding `Space` and clicking at the timeline is something I call "sound
 
 ![sound-probe]
 
+### Range selection
+
+Click-and-drag at the timeline while holding any modifier key (`Control`/`Alt`/`Shift`) to select all notes or clips in some time range:
+
+![range-select]
+
 ### Velocity map fine-tuning
 
 It's possible to use the mouse wheel when dragging the velocity ramping tool to control how it blends with the original notes' velocities. The main use case for that is fine-tuning the dynamics:
@@ -56,7 +62,7 @@ Hold `Shift` to drag-and-copy notes in the piano roll, clips in the pattern roll
 
 ### Pen tool
 
-Also hold `Shift` or any modifier key to change the behaviour of the pen tool when adding notes. By default, the newly added note is edited in the transpose-and-resize mode. With `Shift`, it's the drag mode, more familiar:
+Also hold `Shift` or any modifier key to change the behaviour of the pen tool when adding notes. By default, the newly added note is edited in the transpose-and-resize mode. Alternatively, it's the drag mode, more familiar:
 
 ![pen-tool-alt]
 
@@ -150,6 +156,8 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 [space-drag]: images/space-drag.png "Dragging the canvas"
 [time-measure-tool]: images/time-measure.png "Time measure tool"
 [sound-probe]: images/sound-probe.png "Sound probe tool"
+[range-select]: images/range-select.png "Range selection"
+
 [group-resizing]: images/group-resizing.png "Resizing notes with shift"
 [pen-tool-alt]: images/pen-tool-alt.png "Adding notes sith shift"
 [drag-and-copy]: images/drag-and-copy.png "Drag-and-copy"

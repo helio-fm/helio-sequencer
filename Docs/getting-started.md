@@ -173,7 +173,7 @@ The right-click on the time signature selects all notes of the active track up t
 
 #### Key signatures
 
-Key signatures change the way the rows are highlighted in the piano roll, but this effect can be [disabled](tips-and-tricks.md##ui-flags).
+Key signatures change the way the rows are highlighted in the piano roll, but this effect can be [disabled](tips-and-tricks.md#ui-flags).
 
 ![timeline-key-signatures]
 
@@ -195,7 +195,7 @@ Most buttons on the sidebars have keyboard shortcuts, which makes then kinda red
  * ![sidebar-left-2] — zoom out (`Shift + Z`), zoom in (`Z`), and zoom selection (`Control + Tab`),
  * ![sidebar-left-3] — jump over the timeline events (`,` and `.`),
  * ![sidebar-left-4] — toggle the [velocity map](#velocity-map) (`V`),
- * ![sidebar-left-5] — UI [flags](tips-and-tricks.md##ui-flags) that toggle scales highlighting and the note guides (`H` and `G`),
+ * ![sidebar-left-5] — UI [flags](tips-and-tricks.md#ui-flags) that toggle scales highlighting and the note guides (`H` and `G`),
  * ![sidebar-left-6] — a simple waveform or spectrogram view.
 
 ### Right sidebar
