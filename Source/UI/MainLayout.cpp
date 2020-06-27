@@ -19,6 +19,7 @@
 #include "MainLayout.h"
 #include "TooltipContainer.h"
 #include "Headline.h"
+#include "HeadlineItem.h"
 #include "HelioTheme.h"
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -179,6 +180,15 @@ void MainLayout::showPage(Component *page, TreeNode *source)
     this->visibleCommandReceiversCache.clearQuick();
     findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceiversCache);
     this->consoleCommonActions->setActiveCommandReceivers(this->visibleCommandReceiversCache);
+}
+
+//===----------------------------------------------------------------------===//
+// Breadcrumbs
+//===----------------------------------------------------------------------===//
+
+WeakReference<HeadlineItemDataSource> MainLayout::getTailMenu() const
+{
+    return this->headline->getTailItem()->getDataSource();
 }
 
 void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)

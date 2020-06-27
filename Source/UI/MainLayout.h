@@ -49,6 +49,7 @@ public:
     void showPage(Component *page, TreeNode *source);
     bool isShowingPage(Component *page) const noexcept;
 
+    WeakReference<HeadlineItemDataSource> getTailMenu() const;
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
 

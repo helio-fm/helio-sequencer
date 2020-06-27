@@ -114,7 +114,7 @@ private:
 PianoRollSelectionMenuManager::PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectNode &project) :
     SelectionMenuManager(lasso, 2)
 {
-    this->menu.reset(new PianoRollMenuSource(lasso, project));
+    this->menu = make<PianoRollMenuSource>(lasso, project);
 }
 
 //===----------------------------------------------------------------------===//
@@ -157,7 +157,7 @@ private:
 PatternRollSelectionMenuManager::PatternRollSelectionMenuManager(WeakReference<Lasso> lasso) :
     SelectionMenuManager(lasso, 1)
 {
-    this->menu.reset(new PatternRollMenuSource(lasso));
+    this->menu = make<PatternRollMenuSource>(lasso);
 }
 
 //===----------------------------------------------------------------------===//

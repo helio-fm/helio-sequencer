@@ -45,8 +45,13 @@ public:
 
     //[UserMethods]
     void syncWithTree(NavigationHistory &history, WeakReference<TreeNode> leaf);
+    
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
+
+    // returns either the selection menu, if available,
+    // or the last menu item in the chain:
+    HeadlineItem *getTailItem() const;
     //[/UserMethods]
 
     void paint (Graphics& g) override;

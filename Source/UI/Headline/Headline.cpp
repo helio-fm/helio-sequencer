@@ -264,7 +264,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->hideSelectionMenu();
 
     const auto x = this->getChainWidth() + HEADLINE_ROOT_X;
-    this->selectionItem.reset(new HeadlineItem(menuSource, *this));
+    this->selectionItem = make<HeadlineItem>(menuSource, *this);
     this->selectionItem->updateContent();
     this->addAndMakeVisible(this->selectionItem.get());
     this->selectionItem->setTopLeftPosition(x - this->selectionItem->getWidth(), 0);
@@ -303,6 +303,12 @@ int Headline::getChainWidth() const noexcept
         w += child->getWidth() - HEADLINE_ITEMS_OVERLAP;
     }
     return w;
+}
+
+HeadlineItem *Headline::getTailItem() const
+{
+    return (this->selectionItem != nullptr) ?
+        this->selectionItem.get() : this->chain.getLast();
 }
 
 //[/MiscUserCode]

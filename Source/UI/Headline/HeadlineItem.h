@@ -54,7 +54,7 @@ private:
 
     //[UserVariables]
 
-    void changeListenerCallback(ChangeBroadcaster* source) override;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
     void timerCallback() override;
     void showMenuIfAny();
 
