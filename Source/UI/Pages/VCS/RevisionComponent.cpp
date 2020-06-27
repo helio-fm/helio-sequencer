@@ -24,6 +24,7 @@
 //[MiscUserDefs]
 #include "VersionControl.h"
 #include "RevisionTreeComponent.h"
+#include "ContextMenuController.h"
 #include "SerializationKeys.h"
 #include "ColourIDs.h"
 //[/MiscUserDefs]
@@ -70,6 +71,8 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
 
 
     //[UserPreSize]
+    this->contextMenuController = make<ContextMenuController>(*this);
+
     const auto &message = this->revision->getMessage();
     const auto timestamp = this->revision->getTimeStamp();
 
@@ -162,9 +165,14 @@ void RevisionComponent::mouseMove (const MouseEvent& e)
 void RevisionComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    if (RevisionTreeComponent *revTree = dynamic_cast<RevisionTreeComponent *>(this->getParentComponent()))
+    if (auto *revTree = dynamic_cast<RevisionTreeComponent *>(this->getParentComponent()))
     {
         revTree->selectComponent(this, true);
+    }
+
+    if (e.mods.isRightButtonDown() && this->isSelected)
+    {
+        this->contextMenuController->showAfter(1, e);
     }
     //[/UserCode_mouseDown]
 }
@@ -233,7 +241,7 @@ BEGIN_JUCER_METADATA
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
-  </METHODS>
+    </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="45b178bfb039403" memberName="revisionDescription"
          virtualName="" explicitFocusOrder="0" pos="0Cc 1 8M 20" labelText=""

@@ -26,6 +26,7 @@
 #include "Icons.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
+#include "ContextMenuController.h"
 
 class RevisionItemHighlighter final : public Component
 {
@@ -93,7 +94,9 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
     this->addAndMakeVisible(separator.get());
 
     //[UserPreSize]
-    this->selectionComponent.reset(new RevisionItemSelectionComponent());
+    this->contextMenuController = make<ContextMenuController>(*this);
+
+    this->selectionComponent = make<RevisionItemSelectionComponent>();
     this->addChildComponent(this->selectionComponent.get());
 
     // Gray out details a bit:
@@ -249,6 +252,20 @@ bool RevisionItemComponent::isSelected() const
     return this->list.isRowSelected(this->row);
 }
 
+void RevisionItemComponent::mouseDown(const MouseEvent &event)
+{
+    DraggingListBoxComponent::mouseDown(event);
+    if (event.mods.isRightButtonDown())
+    {
+        this->contextMenuController->showAfter(10, event);
+    }
+}
+
+void RevisionItemComponent::mouseDrag(const MouseEvent &event)
+{
+    DraggingListBoxComponent::mouseDrag(event);
+    this->contextMenuController->cancelIfPending();
+}
 //[/MiscUserCode]
 
 #if 0

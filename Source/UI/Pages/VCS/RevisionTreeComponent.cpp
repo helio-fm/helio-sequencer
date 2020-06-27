@@ -55,7 +55,7 @@ void RevisionTreeComponent::deselectAll(bool sendNotification)
     {
         Component *child = this->getChildComponent(i);
 
-        if (RevisionComponent *revChild = dynamic_cast<RevisionComponent *>(child))
+        if (auto *revChild = dynamic_cast<RevisionComponent *>(child))
         {
             revChild->setSelected(false);
         }

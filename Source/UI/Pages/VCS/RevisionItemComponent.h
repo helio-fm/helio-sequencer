@@ -20,6 +20,8 @@
 //[Headers]
 #include "DraggingListBoxComponent.h"
 #include "RevisionItem.h"
+
+class ContextMenuController;
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontalFading.h"
@@ -43,6 +45,9 @@ public:
 
     void setSelected(bool shouldBeSelected) override;
 
+    void mouseDown(const MouseEvent &event) override;
+    void mouseDrag(const MouseEvent &event) override;
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -61,6 +66,7 @@ private:
     ListBox &list;
     int row;
 
+    UniquePointer<ContextMenuController> contextMenuController;
     UniquePointer<Component> selectionComponent;
     VCS::RevisionItem::Ptr revisionItem;
 

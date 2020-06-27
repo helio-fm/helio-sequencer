@@ -19,6 +19,8 @@
 
 //[Headers]
 class VersionControl;
+class ContextMenuController;
+
 #include "Revision.h"
 #include "IconComponent.h"
 //[/Headers]
@@ -80,6 +82,8 @@ private:
     bool isSelected;
     bool isHeadRevision;
     VCS::Revision::SyncState viewState;
+
+    UniquePointer<ContextMenuController> contextMenuController;
 
 private:
 
