@@ -27,11 +27,13 @@ SelectionComponent::SelectionComponent() :
     currentFill(fill),
     currentOutline(outline)
 {
+    this->setSize(0, 0);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
 }
 
-void SelectionComponent::beginLasso(const Point<float> &position, LassoSource<SelectableComponent *> *lassoSource)
+void SelectionComponent::beginLasso(const Point<float> &position,
+    LassoSource<SelectableComponent *> *lassoSource)
 {
     jassert(lassoSource != nullptr);
     jassert(getParentComponent() != nullptr);
@@ -43,6 +45,7 @@ void SelectionComponent::beginLasso(const Point<float> &position, LassoSource<Se
         this->setSize(0, 0);
         this->toFront(false);
         this->startPosition = position.toDouble() / this->getParentSize();
+        this->endPosition = this->startPosition;
     }
 }
 

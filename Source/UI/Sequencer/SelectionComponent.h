@@ -39,8 +39,8 @@ private:
     Array<SelectableComponent *> originalSelection;
     LassoSource<SelectableComponent *> *source = nullptr;
 
-    Point<double> startPosition;
-    Point<double> endPosition;
+    Point<double> startPosition { 0, 0 };
+    Point<double> endPosition { 0, 0 };
 
     const Point<double> getParentSize() const;
 
