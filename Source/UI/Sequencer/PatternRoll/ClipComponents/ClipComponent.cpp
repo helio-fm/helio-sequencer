@@ -120,7 +120,6 @@ void ClipComponent::mouseDown(const MouseEvent &e)
     if (e.mods.isRightButtonDown() &&
         this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -159,6 +158,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
     if (e.mods.isRightButtonDown() &&
         this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }

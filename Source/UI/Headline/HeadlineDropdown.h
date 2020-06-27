@@ -21,7 +21,6 @@
 #include "HighlightedComponent.h"
 #include "TreeNode.h"
 
-class IconComponent;
 class HeadlineItemDataSource;
 //[/Headers]
 

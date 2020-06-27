@@ -23,7 +23,6 @@
 #include "TreeNode.h"
 
 class IconComponent;
-class HeadlineDropdown;
 //[/Headers]
 
 #include "HeadlineItemArrow.h"
@@ -59,7 +58,6 @@ private:
     void showMenuIfAny();
 
     WeakReference<HeadlineItemDataSource> item;
-    UniquePointer<HeadlineDropdown> dropdown;
     AsyncUpdater &parentHeadline;
 
     Colour bgColour;

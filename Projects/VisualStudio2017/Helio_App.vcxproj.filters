@@ -1084,6 +1084,9 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Headline\ContextMenuController.cpp">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClCompile>
@@ -4117,6 +4120,9 @@
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\ContextMenuController.h">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Input\LongTapController.h">

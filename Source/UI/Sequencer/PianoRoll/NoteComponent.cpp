@@ -152,8 +152,8 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 {
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
-        this->switchActiveSegmentToSelected(e.mods.isAnyModifierKeyDown());
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
+        this->switchActiveSegmentToSelected(e.mods.isAnyModifierKeyDown());
         return;
     }
     

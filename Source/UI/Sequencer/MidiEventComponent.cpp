@@ -48,6 +48,7 @@ void MidiEventComponent::setActive(bool val, bool force)
 
     this->flags.isActive = val;
     this->updateColours();
+    this->setMouseCursor(MouseCursor::NormalCursor);
 
     if (this->flags.isActive)
     {

@@ -62,7 +62,6 @@
 #include "TimeSignatureDialog.h"
 #include "KeySignatureDialog.h"
 #include "TrackPropertiesDialog.h"
-#include "HeadlineDropdown.h"
 
 #include "MainLayout.h"
 #include "Workspace.h"
@@ -159,6 +158,8 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
 
     this->smoothPanController = make<SmoothPanController>(*this);
     this->smoothZoomController = make<SmoothZoomController>(*this);
+
+    this->contextMenuController = make<ContextMenuController>(*this);
     
     this->project.addListener(this);
     this->project.getEditMode().addChangeListener(this);
@@ -971,50 +972,6 @@ void HybridRoll::onBeforeReloadProjectContent()
 }
 
 //===----------------------------------------------------------------------===//
-// Context menu helpers
-//===----------------------------------------------------------------------===//
-
-// we'll totally rely on the breadcrumbs logic to get the context menu contents,
-// because at the point when user calls the context menu, the breadcrumbs item and
-// its menu data source all have been set up and ready to use, we just get
-// the tail item of breadcrumbs, and use its menu source:
-struct ContextMenuTimeout final : Timer
-{
-    explicit ContextMenuTimeout(HybridRoll &roll) : owner(roll) {}
-
-    void showAt(const MouseEvent &e, int delay)
-    {
-        // todo start the expire animation somewhere (breadcrumbs?)
-        this->startTimer(500);
-    }
-
-    void cancel()
-    {
-        this->stopTimer();
-    }
-
-    void timerCallback() override
-    {
-        this->stopTimer();
-        const auto menuSource = App::Layout().getTailMenu();
-       
-        const auto pos = Desktop::getInstance().getMainMouseSource().
-            getLastMouseDownPosition().toInt();
-
-        auto content = menuSource->createMenu();
-        content->setTopLeftPosition(pos);
-        if (content != nullptr)
-        {
-            // todo fancy flash at the breadcrumbs tail?
-            this->owner.setMouseCursor(MouseCursor::NormalCursor);
-            App::showModalComponent(move(content));
-        }
-    }
-
-    HybridRoll &owner;
-};
-
-//===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
@@ -1022,15 +979,17 @@ void HybridRoll::mouseDown(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
-        // todo stop timer for context menu
+        this->contextMenuController->cancelIfPending();
         this->lassoComponent->endLasso();
         return;
     }
 
+#if HELIO_DESKTOP
     if (e.mods.isRightButtonDown())
     {
-        // todo start timer for context menu
+        this->contextMenuController->showAfter(350, e);
     }
+#endif
 
     if (this->isLassoEvent(e))
     {
@@ -1038,7 +997,6 @@ void HybridRoll::mouseDown(const MouseEvent &e)
     }
     else if (this->isViewportDragEvent(e))
     {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->resetDraggingAnchors();
     }
     else if (this->isViewportZoomEvent(e))
@@ -1049,7 +1007,7 @@ void HybridRoll::mouseDown(const MouseEvent &e)
 
 void HybridRoll::mouseDrag(const MouseEvent &e)
 {
-    // todo stop timer for context menu
+    this->contextMenuController->cancelIfPending();
 
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
@@ -1062,6 +1020,7 @@ void HybridRoll::mouseDrag(const MouseEvent &e)
     }
     else if (this->isViewportDragEvent(e))
     {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->continueDragging(e);
     }
     else if (this->isViewportZoomEvent(e))
@@ -1072,7 +1031,7 @@ void HybridRoll::mouseDrag(const MouseEvent &e)
 
 void HybridRoll::mouseUp(const MouseEvent &e)
 {
-    // todo stop timer for context menu
+    this->contextMenuController->cancelIfPending();
 
     if (const bool hasMultitouch = (e.source.getIndex() > 0))
     {

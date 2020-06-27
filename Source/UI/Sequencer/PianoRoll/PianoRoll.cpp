@@ -741,6 +741,8 @@ void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
     const Clip &newActiveClip, bool shouldFocus)
 {
+    this->contextMenuController->cancelIfPending();
+
     if (!shouldFocus &&
         this->activeClip == newActiveClip &&
         this->activeTrack == newActiveTrack)

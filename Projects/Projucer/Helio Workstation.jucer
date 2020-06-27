@@ -795,6 +795,10 @@
                 file="../../Source/UI/Headline/HeadlineNavigationPanel.cpp"/>
           <FILE id="PQRWr0" name="HeadlineNavigationPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Headline/HeadlineNavigationPanel.h"/>
+          <FILE id="LnoNrh" name="ContextMenuController.cpp" compile="1" resource="0"
+                file="../../Source/UI/Headline/ContextMenuController.cpp"/>
+          <FILE id="PbyEiN" name="ContextMenuController.h" compile="0" resource="0"
+                file="../../Source/UI/Headline/ContextMenuController.h"/>
         </GROUP>
         <GROUP id="{89960E92-2826-B73B-FFA4-CFBFD275D8BA}" name="Input">
           <FILE id="OaiUE3" name="LongTapController.h" compile="0" resource="0"

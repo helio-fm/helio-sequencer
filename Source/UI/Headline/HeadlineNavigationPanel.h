@@ -21,9 +21,6 @@
 #include "HighlightedComponent.h"
 #include "IconButton.h"
 #include "TreeNode.h"
-
-class IconComponent;
-class HeadlineDropdown;
 //[/Headers]
 
 #include "HeadlineItemArrow.h"
@@ -47,7 +44,6 @@ public:
 private:
 
     //[UserVariables]
-    UniquePointer<HeadlineDropdown> dropdown;
     Colour bgColour;
     //[/UserVariables]
 
