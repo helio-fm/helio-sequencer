@@ -21,6 +21,7 @@
 class PluginScanner;
 class OrchestraPitNode;
 class MenuItemComponent;
+class ContextMenuController;
 
 #include "HeadlineItemDataSource.h"
 
@@ -64,6 +65,7 @@ public:
     int getColumnAutoSizeWidth(int columnId) override;
     String getCellTooltip(int rowNumber, int columnId) override;
     void selectedRowsChanged(int lastRowSelected) override;
+    void cellClicked(int rowNumber, int columnId, const MouseEvent&) override;
 
     //===------------------------------------------------------------------===//
     // HeadlineItemDataSource
@@ -87,6 +89,7 @@ private:
     //[UserVariables]
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
+    UniquePointer<ContextMenuController> contextMenuController;
     //[/UserVariables]
 
     UniquePointer<TableListBox> pluginsList;

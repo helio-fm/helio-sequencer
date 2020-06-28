@@ -20,6 +20,7 @@
 //[Headers]
 class PluginScanner;
 class OrchestraPitNode;
+class ContextMenuController;
 
 #include "HeadlineItemDataSource.h"
 #include "InstrumentNode.h"
@@ -54,6 +55,7 @@ public:
     int getNumRows() override;
     void paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected) override;
     void selectedRowsChanged(int lastRowSelected) override;
+    void listBoxItemClicked(int row, const MouseEvent&) override;
     void listBoxItemDoubleClicked(int row, const MouseEvent&) override;
 
     //===------------------------------------------------------------------===//
@@ -78,6 +80,8 @@ private:
     //[UserVariables]
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
+
+    UniquePointer<ContextMenuController> contextMenuController;
 
     Array<WeakReference<InstrumentNode>> instruments;
     Image instrumentIcon;

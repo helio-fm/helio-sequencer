@@ -28,6 +28,7 @@
 #include "OrchestraPitPage.h"
 #include "OrchestraPitNode.h"
 #include "AudioPluginSelectionMenu.h"
+#include "ContextMenuController.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
 #include "CommandIDs.h"
@@ -70,6 +71,8 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->addAndMakeVisible(separator3.get());
 
     //[UserPreSize]
+    this->contextMenuController = make<ContextMenuController>(*this);
+
     this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
     this->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);
     //[/UserPreSize]
@@ -350,6 +353,14 @@ String AudioPluginsListComponent::getName() const
     const auto selectedRow = this->pluginsList->getSelectedRow();
     const auto description = pluginScanner.getPlugins()[selectedRow];
     return description.descriptiveName;
+}
+
+void AudioPluginsListComponent::cellClicked(int rowNumber, int columnId, const MouseEvent &e)
+{
+    if (e.mods.isRightButtonDown())
+    {
+        this->contextMenuController->showAfter(1, e);
+    }
 }
 
 //[/MiscUserCode]

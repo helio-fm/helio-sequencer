@@ -25,6 +25,7 @@
 #include "OrchestraPitNode.h"
 #include "OrchestraPitPage.h"
 #include "InstrumentMenu.h"
+#include "ContextMenuController.h"
 #include "Instrument.h"
 #include "MainLayout.h"
 #include "Icons.h"
@@ -48,6 +49,8 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     this->addAndMakeVisible(separator1.get());
 
     //[UserPreSize]
+    this->contextMenuController = make<ContextMenuController>(*this);
+
     this->instrumentsList->setMultipleSelectionEnabled(false);
     this->instrumentsList->setRowHeight(INSTRUMENTSLIST_ROW_HEIGHT);
     //[/UserPreSize]
@@ -223,6 +226,14 @@ String InstrumentsListComponent::getName() const
     const auto instrument = this->instruments[selectedRow];
     jassert(instrument);
     return instrument->getName();
+}
+
+void InstrumentsListComponent::listBoxItemClicked(int row, const MouseEvent &e)
+{
+    if (e.mods.isRightButtonDown())
+    {
+        this->contextMenuController->showAfter(1, e);
+    }
 }
 
 //[/MiscUserCode]
