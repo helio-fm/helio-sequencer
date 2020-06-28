@@ -89,22 +89,22 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
         if (this->instrument->isNodeStandardIOProcessor(this->nodeId) ||
             e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
         {
-            this->getParentEditor()->selectNode(this->nodeId);
+            this->getParentEditor()->selectNode(this->nodeId, e);
             return;
         }
 
-        this->getParentEditor()->selectNode({});
+        this->getParentEditor()->deselectAllNodes();
 
-        if (const AudioProcessorGraph::Node::Ptr f = this->instrument->getNodeForId(this->nodeId))
+        if (const auto f = this->instrument->getNodeForId(this->nodeId))
         {
 #if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
-            if (PluginWindow *const w = PluginWindow::getWindowFor(f, false, false))
+            if (auto *const w = PluginWindow::getWindowFor(f, false, false))
             {
                 w->toFront(true);
             }
             else
             {
-                this->getParentEditor()->selectNode(this->nodeId);
+                this->getParentEditor()->selectNode(this->nodeId, e);
             }
 #else
             const auto instrumentTreeItems =

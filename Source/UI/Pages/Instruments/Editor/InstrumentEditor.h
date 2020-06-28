@@ -21,6 +21,7 @@
 #include "HeadlineItemDataSource.h"
 #include "ComponentFader.h"
 
+class ContextMenuController;
 class InstrumentComponent;
 class InstrumentEditorConnector;
 class InstrumentEditorPin;
@@ -36,7 +37,8 @@ public:
     InstrumentEditor(WeakReference<Instrument> instrument, WeakReference<AudioCore> audioCoreRef);
     ~InstrumentEditor() override;
 
-    void selectNode(AudioProcessorGraph::NodeID id);
+    void deselectAllNodes();
+    void selectNode(AudioProcessorGraph::NodeID id, const MouseEvent &e);
     void updateComponents();
 
     InstrumentComponent *getComponentForNode(AudioProcessorGraph::NodeID id) const;
@@ -81,6 +83,8 @@ private:
     WeakReference<AudioCore> audioCore;
 
     AudioProcessorGraph::NodeID selectedNode;
+
+    UniquePointer<ContextMenuController> contextMenuController;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditor)
 };

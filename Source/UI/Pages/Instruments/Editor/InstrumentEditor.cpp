@@ -26,6 +26,7 @@
 #include "InstrumentComponent.h"
 #include "InstrumentEditorConnector.h"
 #include "InstrumentNodeSelectionMenu.h"
+#include "ContextMenuController.h"
 
 #include "AudioCore.h"
 #include "Icons.h"
@@ -41,7 +42,9 @@ InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
 {
     this->background.reset(new PanelBackgroundC());
     this->addAndMakeVisible(this->background.get());
-    
+
+    this->contextMenuController = make<ContextMenuController>(*this);
+
     this->instrument->addChangeListener(this);
     this->audioCore->getDevice().addChangeListener(this);
     
@@ -67,7 +70,7 @@ InstrumentEditor::~InstrumentEditor()
 
 void InstrumentEditor::mouseDown(const MouseEvent &e)
 {
-    this->selectNode({});
+    this->deselectAllNodes();
 }
 
 void InstrumentEditor::resized()
@@ -85,9 +88,12 @@ InstrumentComponent *InstrumentEditor::getComponentForNode(AudioProcessorGraph::
 {
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto fc = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i))) {
+        if (auto *fc = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
+        {
             if (fc->nodeId == id)
-            { return fc; }
+            {
+                return fc;
+            }
         }
     }
     
@@ -98,7 +104,7 @@ InstrumentEditorConnector *InstrumentEditor::getComponentForConnection(AudioProc
 {
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto c = dynamic_cast<InstrumentEditorConnector *>(this->getChildComponent(i)))
+        if (auto *c = dynamic_cast<InstrumentEditorConnector *>(this->getChildComponent(i)))
         {
             if (c->connection == conn)
             {
@@ -114,9 +120,9 @@ InstrumentEditorPin *InstrumentEditor::findPinAt(const int x, const int y) const
 {
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto fc = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
+        if (auto *fc = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
         {
-            if (auto pin = dynamic_cast<InstrumentEditorPin *>(fc->getComponentAt(x - fc->getX(), y - fc->getY())))
+            if (auto *pin = dynamic_cast<InstrumentEditorPin *>(fc->getComponentAt(x - fc->getX(), y - fc->getY())))
             {
                 return pin;
             }
@@ -126,13 +132,28 @@ InstrumentEditorPin *InstrumentEditor::findPinAt(const int x, const int y) const
     return nullptr;
 }
 
-void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
+void InstrumentEditor::deselectAllNodes()
+{
+    this->selectedNode = idZero;
+    
+    for (int i = this->getNumChildComponents(); --i >= 0;)
+    {
+        if (auto *node = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
+        {
+            node->setSelected(false);
+        }
+    }
+
+    App::Layout().hideSelectionMenu();
+}
+
+void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id, const MouseEvent &e)
 {
     this->selectedNode = (this->selectedNode == id) ? idZero : id;
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (auto node = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
+        if (auto *node = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
         {
             node->setSelected(node->nodeId == this->selectedNode);
         }
@@ -143,12 +164,17 @@ void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
     if (this->selectedNode != idZero)
     {
         App::Layout().showSelectionMenu(this);
+
+        if (e.mods.isRightButtonDown())
+        {
+            this->contextMenuController->showAfter(1, e);
+        }
     }
 }
 
 void InstrumentEditor::updateComponents()
 {
-    this->selectNode({});
+    this->deselectAllNodes();
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
@@ -160,7 +186,7 @@ void InstrumentEditor::updateComponents()
     
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        auto cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
+        auto *cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
         if (cc != nullptr && cc != this->draggingConnector.get())
         {
             if (! instrument->isConnected(cc->connection))
