@@ -51,7 +51,6 @@ struct MenuItem final : public ReferenceCountedObject
         bool isDisabled : 1;
         bool shouldCloseMenu : 1;
         bool hasSubmenu : 1;
-        bool hasTimer : 1;
     };
 
     union
@@ -64,7 +63,6 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withAlignment(Alignment alignment);
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withSubmenuIf(bool condition);
-    MenuItem::Ptr withTimer();
     MenuItem::Ptr toggled(bool shouldBeToggled);
     MenuItem::Ptr colouredWith(const Colour &colour);
     MenuItem::Ptr disabledIf(bool condition);
@@ -86,8 +84,7 @@ struct MenuItem final : public ReferenceCountedObject
 //[/Headers]
 
 
-class MenuItemComponent final : public DraggingListBoxComponent,
-                                private Timer
+class MenuItemComponent final : public DraggingListBoxComponent
 {
 public:
 
@@ -110,9 +107,6 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void mouseMove (const MouseEvent& e) override;
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
@@ -129,12 +123,9 @@ private:
     UniquePointer<Component> clickMarker;
     UniquePointer<Component> checkMarker;
 
-    Point<int> lastMouseScreenPosition { 0, 0 };
-
     ComponentAnimator animator;
 
     Component *createHighlighterComponent() override;
-    void timerCallback() override;
     bool hasText() const noexcept;
 
     void showCheckMark();

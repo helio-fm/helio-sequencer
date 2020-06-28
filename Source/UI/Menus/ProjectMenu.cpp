@@ -162,7 +162,7 @@ void ProjectMenu::showCreateItemsMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
         {
             this->showMainMenu(MenuPanel::SlideRight);
         }));
@@ -191,7 +191,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
         {
             this->showCreateItemsMenu(MenuPanel::SlideRight);
         }));
@@ -232,7 +232,7 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
         {
             this->showCreateItemsMenu(MenuPanel::SlideRight);
         }));
@@ -270,7 +270,7 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
         {
             this->showNewAutomationMenu(MenuPanel::SlideRight);
         }));
@@ -311,7 +311,7 @@ void ProjectMenu::showRenderMenu()
 #endif
 
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
         {
             this->showMainMenu(MenuPanel::SlideRight);
         }));
@@ -332,7 +332,7 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
         {
             this->showMainMenu(MenuPanel::SlideRight);
         }));
@@ -365,7 +365,7 @@ void ProjectMenu::showSetInstrumentMenu()
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
         {
             this->showBatchActionsMenu(MenuPanel::SlideRight);
         }));

@@ -93,7 +93,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
@@ -137,7 +137,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideRight);
     }));
@@ -171,7 +171,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createQuantizationPanel()
 
     using namespace I18n::Menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
@@ -196,7 +196,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createTupletsPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
@@ -218,7 +218,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));

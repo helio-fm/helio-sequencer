@@ -92,7 +92,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -122,7 +122,7 @@ MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));

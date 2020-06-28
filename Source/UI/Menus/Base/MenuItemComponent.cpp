@@ -76,7 +76,6 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text
     description->flags.isDisabled = false;
     description->flags.shouldCloseMenu = false;
     description->flags.hasSubmenu = false;
-    description->flags.hasTimer = false;
     description->colour = findDefaultColour(Label::textColourId);
     return description;
 }
@@ -92,7 +91,6 @@ MenuItem::Ptr MenuItem::item(Image image, int commandId, const String &text /*= 
     description->flags.isDisabled = false;
     description->flags.shouldCloseMenu = false;
     description->flags.hasSubmenu = false;
-    description->flags.hasTimer = false;
     description->colour = findDefaultColour(Label::textColourId);
     return description;
 }
@@ -113,7 +111,6 @@ MenuItem::Ptr MenuItem::withSubmenu()
 {
     MenuItem::Ptr description(this);
     description->flags.hasSubmenu = true;
-    description->flags.hasTimer = true; // a hack
     return description;
 }
 
@@ -125,13 +122,6 @@ MenuItem::Ptr MenuItem::withSubmenuIf(bool condition)
     }
 
     return this;
-}
-
-MenuItem::Ptr MenuItem::withTimer()
-{
-    MenuItem::Ptr description(this);
-    description->flags.hasTimer = true;
-    return description;
 }
 
 MenuItem::Ptr MenuItem::toggled(bool shouldBeToggled)
@@ -363,41 +353,6 @@ void MenuItemComponent::resized()
     //[/UserResized]
 }
 
-void MenuItemComponent::mouseMove (const MouseEvent& e)
-{
-    //[UserCode_mouseMove] -- Add your code here...
-    if (this->description->flags.hasTimer &&
-        e.getScreenPosition().getDistanceSquaredFrom(this->lastMouseScreenPosition) > 0 &&
-        !this->isTimerRunning())
-    {
-        this->startTimer(750);
-    }
-
-    DraggingListBoxComponent::mouseMove(e);
-
-    // This prevents item from being triggered
-    // after returning from a submenu, when
-    // this item happens to appear under mouse cursor
-    this->lastMouseScreenPosition = e.getScreenPosition();
-    //[/UserCode_mouseMove]
-}
-
-void MenuItemComponent::mouseEnter (const MouseEvent& e)
-{
-    //[UserCode_mouseEnter] -- Add your code here...
-    this->lastMouseScreenPosition = e.getScreenPosition();
-    DraggingListBoxComponent::mouseEnter(e);
-    //[/UserCode_mouseEnter]
-}
-
-void MenuItemComponent::mouseExit (const MouseEvent& e)
-{
-    //[UserCode_mouseExit] -- Add your code here...
-    DraggingListBoxComponent::mouseExit(e);
-    this->stopTimer();
-    //[/UserCode_mouseExit]
-}
-
 void MenuItemComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
@@ -518,7 +473,6 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
 {
     if (this->description->commandText != desc->commandText)
     {
-        this->stopTimer();
         this->clearHighlighterAndStopAnimations();
     }
 
@@ -573,18 +527,10 @@ Component *MenuItemComponent::createHighlighterComponent()
         desc2->flags.hasSubmenu = this->description->flags.hasSubmenu;
         desc2->colour = this->description->colour;
         desc2->alignment = this->description->alignment;
-        desc2->flags.hasTimer = false;
         return new MenuItemComponent(this->parent, nullptr, desc2);
     }
 
     return nullptr;
-}
-
-void MenuItemComponent::timerCallback()
-{
-    this->stopTimer();
-    jassert(this->description->flags.hasTimer);
-    this->doAction();
 }
 
 void MenuItemComponent::doAction()
@@ -653,7 +599,7 @@ void MenuItemComponent::hideCheckMark()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MenuItemComponent" template="../../../Template"
-                 componentName="" parentClasses="public DraggingListBoxComponent, private Timer"
+                 componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="Component *parentCommandReceiver, Viewport *parentViewport, const MenuItem::Ptr desc"
                  variableInitialisers="DraggingListBoxComponent(parentViewport),&#10;parent(parentCommandReceiver),&#10;description(MenuItem::empty()),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -661,9 +607,6 @@ BEGIN_JUCER_METADATA
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <RECT pos="0 0 0M 1" fill="solid: 6ffffff" hasStroke="0"/>

@@ -120,7 +120,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
 
     using namespace I18n::Menu;
 
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -144,7 +144,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
 MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));

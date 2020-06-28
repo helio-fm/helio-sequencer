@@ -100,7 +100,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+        TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->updateContent(this->mainMenu, MenuPanel::SlideRight);
     }));
