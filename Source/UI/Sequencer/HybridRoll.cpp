@@ -984,12 +984,10 @@ void HybridRoll::mouseDown(const MouseEvent &e)
         return;
     }
 
-#if HELIO_DESKTOP
     if (e.mods.isRightButtonDown())
     {
         this->contextMenuController->showAfter(350, e);
     }
-#endif
 
     if (this->isLassoEvent(e))
     {

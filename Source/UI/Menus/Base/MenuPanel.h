@@ -84,8 +84,8 @@ private:
 
     ComponentAnimator animator;
 
-    bool shouldResizeToFitContent;
-    AnimationType lastAnimationType;
+    bool shouldResizeToFitContent = false;
+    AnimationType lastAnimationType = AnimationType::None;
     Menu commandDescriptions;
 
     //===------------------------------------------------------------------===//

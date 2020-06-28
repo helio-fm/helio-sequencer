@@ -34,9 +34,22 @@ public:
     {
         if (this->content.get())
         {
+            this->setWantsKeyboardFocus(true);
             this->addAndMakeVisible(this->content.get());
+            this->content->setTopLeftPosition(padding / 2, padding / 2);
             this->syncWidthWithContent();
         }
+    }
+
+    bool keyPressed(const KeyPress &key) override
+    {
+        if (key.isKeyCode(KeyPress::escapeKey))
+        {
+            this->exitModalState(0);
+            delete this;
+        }
+
+        return true;
     }
 
     void childBoundsChanged(Component *child)
@@ -53,18 +66,29 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).brighter(0.035f));
-        g.fillRect(1, padding - 3, this->getWidth() - 3, this->getHeight() - padding + 3);
+        g.fillRect(1, 1, this->getWidth() - 2, this->getHeight() - 2);
 
-        // Draw a nice border around the menu:
-        g.setColour(Colours::black.withAlpha(40.f / 255.f));
-        g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 2));
-        g.drawVerticalLine(0, padding - 1.f, float(this->getHeight() - 1));
-        g.drawVerticalLine(this->getWidth() - 2, padding - 1.f, float(this->getHeight() - 1));
-
-        g.setColour(Colours::white.withAlpha(9.f / 255.f));
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+        g.fillRect(1, 1, this->getWidth() - 2, 3);
+        g.drawHorizontalLine(1, 1.f, float(this->getWidth() - 2));
         g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-        g.drawVerticalLine(1, padding - 2.f, float(this->getHeight() - 1));
-        g.drawVerticalLine(this->getWidth() - 3, padding - 2.f, float(this->getHeight() - 1));
+        g.drawVerticalLine(1, 1.f, float(this->getHeight() - 2));
+        g.drawVerticalLine(this->getWidth() - 2, 1.f, float(this->getHeight() - 2));
+
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+        g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+        g.drawVerticalLine(0, 0.f, float(this->getHeight()));
+        g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
+
+        g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).darker(0.015f));
+        constexpr float dashLength = 8.f;
+        for (float i = dashLength - 2.f; i < this->getWidth(); i += (dashLength * 2.f))
+        {
+            g.fillRect(i + 2.f, 1.f, dashLength, 1.f);
+            g.fillRect(i + 1.f, 2.f, dashLength, 1.f);
+            g.fillRect(i, 3.f, dashLength, 1.f);
+        }
     }
 
 private:
@@ -88,6 +112,12 @@ ContextMenuController::ContextMenuController(Component &owner) :
 
 void ContextMenuController::showAfter(int delay, const MouseEvent &e)
 {
+#if HELIO_DESKTOP
+    //if (!e.mods.isRightButtonDown())
+    //{
+    //    return;
+    //}
+
     // todo start an animation somewhere (breadcrumbs?)
     this->menuPosition = e.getEventRelativeTo(&App::Layout()).getPosition();
     if (!App::isUsingNativeTitleBar())
@@ -96,6 +126,7 @@ void ContextMenuController::showAfter(int delay, const MouseEvent &e)
     }
 
     this->startTimer(delay);
+#endif
 }
 
 void ContextMenuController::cancelIfPending()
