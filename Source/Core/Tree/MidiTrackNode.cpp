@@ -495,21 +495,6 @@ Function<void(const String &text)> MidiTrackNode::getRenameCallback()
     };
 }
 
-Function<void(const String &text)> MidiTrackNode::getChangeColourCallback()
-{
-    return [this](const String &text)
-    {
-        const Colour colour(Colour::fromString(text));
-        if (colour != this->getTrackColour())
-        {
-            auto project = this->getProject();
-            const auto &trackId = this->getTrackId();
-            project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackChangeColourAction(*project, trackId, colour));
-        }
-    };
-}
-
 Function<void(const String &instrumentId)> MidiTrackNode::getChangeInstrumentCallback()
 {
     return [this](const String &instrumentId)

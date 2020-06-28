@@ -113,7 +113,6 @@ public:
     //===------------------------------------------------------------------===//
 
     Function<void(const String &text)> getRenameCallback();
-    Function<void(const String &colour)> getChangeColourCallback();
     Function<void(const String &instrumentId)> getChangeInstrumentCallback();
 
 protected:

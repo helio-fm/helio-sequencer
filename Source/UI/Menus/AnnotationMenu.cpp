@@ -45,30 +45,6 @@ AnnotationMenu::AnnotationMenu(ProjectNode &parentProject, const AnnotationEvent
             App::showModalComponent(move(inputDialog));
         }));
     
-    const StringPairArray colours(ColourIDs::getColoursList());
-    
-    for (int i = 0; i < colours.getAllKeys().size(); ++i)
-    {
-        const String name(colours.getAllKeys()[i]);
-        const Colour colour(Colour::fromString(colours[name]));
-        const bool isSelected = (colour == this->annotation.getTrackColour());
-
-        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, name)->
-            colouredWith(colour)->
-            closesMenu()->
-            withAction([this, colour]()
-            {
-                if (colour == this->annotation.getTrackColour())
-                {
-                    return;
-                }
-
-                auto *sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
-                sequence->checkpoint();
-                sequence->change(this->annotation, this->annotation.withColour(colour), true);
-            }));
-    }
-    
     menu.add(MenuItem::item(Icons::close,
         TRANS(I18n::Menu::annotationDelete))->
         closesMenu()->

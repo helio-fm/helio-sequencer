@@ -21,11 +21,10 @@
 
 ColourSwatches::ColourSwatches()
 {
-    const StringPairArray colours(ColourIDs::getColoursList());
-    for (const auto &c : colours.getAllValues())
+    const auto colours(ColourIDs::getColoursList());
+    for (const auto &colour : colours)
     {
-        const Colour colour(Colour::fromString(c));
-        UniquePointer<ColourButton> button(new ColourButton(colour, this));
+        auto button = make<ColourButton>(colour, this);
         this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
     }

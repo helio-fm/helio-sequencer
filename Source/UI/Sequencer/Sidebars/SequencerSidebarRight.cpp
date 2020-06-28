@@ -230,6 +230,7 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
 
         this->project.getTransport().stopPlaybackAndRecording();
 
+        // all these menu classes are not needed anymore I guess?
 #if TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS
         if (selectedAnnotation != nullptr)
         {

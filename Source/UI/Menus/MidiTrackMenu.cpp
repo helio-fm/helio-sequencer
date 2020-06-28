@@ -51,17 +51,6 @@ void MidiTrackMenu::initDefaultMenu()
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS(I18n::Menu::trackSelectall))->closesMenu());
-    menu.add(MenuItem::item(Icons::colour, TRANS(I18n::Menu::trackChangeColour))->withSubmenu()->withAction([this]()
-    {
-        this->initColorSelectionMenu();
-    }));
-    
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
-    menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
-        disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
-    {
-        this->initInstrumentSelectionMenu();
-    }));
     
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->closesMenu());
@@ -72,39 +61,20 @@ void MidiTrackMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::remove,
         CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
 
-    this->updateContent(menu, MenuPanel::SlideRight);
-}
-
-void MidiTrackMenu::initColorSelectionMenu()
-{
-    MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
+        disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
     {
-        this->initDefaultMenu();
+        this->initInstrumentSelectionMenu();
     }));
-    
-    const StringPairArray colours(ColourIDs::getColoursList());
-    for (int i = 0; i < colours.getAllKeys().size(); ++i)
-    {
-        const String name(colours.getAllKeys()[i]);
-        const String colourString(colours[name]);
-        const Colour colour(Colour::fromString(colourString));
-        const bool isSelected = (colour == this->trackNode.getTrackColour());
-        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, name)->
-            colouredWith(colour)->withAction([this, colourString]()
-        {
-            this->trackNode.getChangeColourCallback()(colourString);
-            this->initDefaultMenu();
-        }));
-    }
 
-    this->updateContent(menu, MenuPanel::SlideLeft);
+    this->updateContent(menu, MenuPanel::SlideRight);
 }
 
 void MidiTrackMenu::initInstrumentSelectionMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
         this->initDefaultMenu();
     }));

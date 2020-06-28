@@ -411,9 +411,8 @@ SerializedData ProjectMenu::createPianoTrackTempate(const String &name,
     newNode->getPattern()->insert(clip, false);
 
     Random r;
-    const auto colours = ColourIDs::getColoursList().getAllValues();
-    const int ci = r.nextInt(colours.size());
-    newNode->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
+    const auto colours = ColourIDs::getColoursList();
+    newNode->setTrackColour(colours[r.nextInt(colours.size())], dontSendNotification);
     newNode->setTrackInstrumentId(instrumentId, false);
 
     // insert a single note just so there is a visual anchor in the piano roll:

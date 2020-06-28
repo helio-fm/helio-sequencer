@@ -30,7 +30,6 @@ public:
 private:
     
     void initDefaultMenu();
-    void initColorSelectionMenu();
     void initInstrumentSelectionMenu();
 
     MidiTrackNode &trackNode;

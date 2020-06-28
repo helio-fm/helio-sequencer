@@ -19,27 +19,6 @@
 
 namespace I18n
 {
-    namespace Colours
-    {
-        static const Identifier black = "colours::black";
-        static const Identifier blue = "colours::blue";
-        static const Identifier blueViolet = "colours::blueviolet";
-        static const Identifier crimson = "colours::crimson";
-        static const Identifier darkOrange = "colours::darkorange";
-        static const Identifier darkViolet = "colours::darkviolet";
-        static const Identifier deepPink = "colours::deeppink";
-        static const Identifier gold = "colours::gold";
-        static const Identifier greenYellow = "colours::greenyellow";
-        static const Identifier lime = "colours::lime";
-        static const Identifier none = "colours::none";
-        static const Identifier orangeRed = "colours::orangered";
-        static const Identifier red = "colours::red";
-        static const Identifier royalBlue = "colours::royalblue";
-        static const Identifier springGreen = "colours::springgreen";
-        static const Identifier tomato = "colours::tomato";
-        static const Identifier white = "colours::white";
-    }
-
     namespace Common
     {
         static const Identifier conjunction = "common::and";
@@ -208,7 +187,6 @@ namespace I18n
         static const Identifier timeSignatureAdd = "menu::timesignature::add";
         static const Identifier timeSignatureChange = "menu::timesignature::change";
         static const Identifier timeSignatureDelete = "menu::timesignature::delete";
-        static const Identifier trackChangeColour = "menu::track::change::colour";
         static const Identifier trackChangeInstrument = "menu::track::change::instrument";
         static const Identifier trackDelete = "menu::track::delete";
         static const Identifier trackRename = "menu::track::rename";

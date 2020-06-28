@@ -164,9 +164,9 @@ static SerializedData createPianoTrackTempate(const String &name,
     newNode->getPattern()->insert(clip, false);
 
     Random r;
-    const auto colours = ColourIDs::getColoursList().getAllValues();
+    const auto colours = ColourIDs::getColoursList();
     const int ci = r.nextInt(colours.size());
-    newNode->setTrackColour(Colour::fromString(colours[ci]), dontSendNotification);
+    newNode->setTrackColour(colours[ci], dontSendNotification);
     newNode->setTrackInstrumentId(instrumentId, false);
 
     outTrackId = newNode->getTrackId();

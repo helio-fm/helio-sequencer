@@ -567,7 +567,7 @@ void ProjectNode::importMidi(const File &file)
     this->timeline->reset();
 
     Random r;
-    const auto colours = ColourIDs::getColoursList().getAllValues();
+    const auto colours = ColourIDs::getColoursList();
     const auto timeFormat = tempFile.getTimeFormat();
 
     for (int i = 0; i < tempFile.getNumTracks(); i++)
@@ -577,10 +577,9 @@ void ProjectNode::importMidi(const File &file)
         bool hasPianoEvents = false;
         bool hasControllerEvents = false;
         int trackControllerNumber = 0;
-        String trackName = "Track " + String(i);
 
-        const int ci = r.nextInt(colours.size()); // set some random colour
-        const Colour colour = Colour::fromString(colours[ci]);
+        auto trackName = "Track " + String(i);
+        const auto colour = colours[r.nextInt(colours.size())]; // set some random colour
 
         for (int j = 0; j < importedTrack->getNumEvents(); ++j)
         {
