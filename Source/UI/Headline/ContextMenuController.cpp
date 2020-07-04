@@ -30,14 +30,19 @@ public:
 
     static constexpr auto padding = 4;
 
-    ContextMenuComponent(UniquePointer<Component> component) : content(move(component))
+    ContextMenuComponent()
     {
+        this->setWantsKeyboardFocus(true);
+    }
+
+    void setContent(UniquePointer<Component> component)
+    {
+        this->content = move(component);
         if (this->content.get())
         {
-            this->setWantsKeyboardFocus(true);
             this->addAndMakeVisible(this->content.get());
             this->content->setTopLeftPosition(padding / 2, padding / 2);
-            this->syncWidthWithContent();
+            this->syncBoundsWithContent();
         }
     }
 
@@ -54,7 +59,7 @@ public:
 
     void childBoundsChanged(Component *child)
     {
-        this->syncWidthWithContent();
+        this->syncBoundsWithContent();
     }
 
     void inputAttemptWhenModal() override
@@ -93,13 +98,18 @@ public:
 
 private:
 
-    void syncWidthWithContent()
+    void syncBoundsWithContent()
     {
         if (this->getWidth() != this->content->getWidth() + padding ||
             this->getHeight() != this->content->getHeight() + padding)
         {
             const int w = this->content->getWidth() + padding;
             this->setSize(w, this->content->getHeight() + padding);
+
+            const auto layoutBounds = App::Layout().getBoundsForPopups();
+            const auto myBounds = this->getBounds();
+            const auto constrained = myBounds.constrainedWithin(layoutBounds);
+            this->setBounds(constrained);
         }
     }
 
@@ -150,8 +160,9 @@ void ContextMenuController::timerCallback()
     {
         // todo fancy flash at the breadcrumbs tail?
         this->owner.setMouseCursor(MouseCursor::NormalCursor);
-        auto container = make<ContextMenuComponent>(move(content));
+        auto container = make<ContextMenuComponent>();
         container->setTopLeftPosition(this->menuPosition);
+        container->setContent(move(content));
         App::showModalComponent(move(container));
     }
 }

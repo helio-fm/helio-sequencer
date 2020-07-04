@@ -281,7 +281,7 @@ void HelioCallout::findTargetPointAndUpdateBounds()
         clickBounds.setPosition(int(b.getWidth() * this->clickPointAbs.getX()),
                                 int(b.getHeight() * this->clickPointAbs.getY()));
         
-        const Rectangle<int> pageBounds = App::Layout().getPageBounds();
+        const Rectangle<int> pageBounds = App::Layout().getBoundsForPopups();
         const Rectangle<int> pointBounds = clickBounds.expanded(CALLOUT_FRAME_MARGIN).constrainedWithin(pageBounds);
         
         this->pointToAndFit(pointBounds, pageBounds);
@@ -294,7 +294,7 @@ void HelioCallout::findTargetPointAndUpdateBounds()
                                       this->targetComponent->getWidth(),
                                       this->targetComponent->getHeight());
         
-        const Rectangle<int> pageBounds = App::Layout().getPageBounds();
+        const Rectangle<int> pageBounds = App::Layout().getBoundsForPopups();
         const Rectangle<int> pointBounds = topLevelBounds.expanded(CALLOUT_FRAME_MARGIN);
         
         this->pointToAndFit(pointBounds, pageBounds);

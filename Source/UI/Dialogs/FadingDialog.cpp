@@ -34,7 +34,7 @@ public:
         const Rectangle<int>& limits,
         bool, bool, bool, bool) override
     {
-        const auto constrain = App::Layout().getPageBounds()
+        const auto constrain = App::Layout().getBoundsForPopups()
             .translated(0, HEADLINE_HEIGHT).reduced(2);
 
         bounds = bounds.constrainedWithin(constrain);

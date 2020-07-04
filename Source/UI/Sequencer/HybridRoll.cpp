@@ -1656,13 +1656,13 @@ Point<int> HybridRoll::getDefaultPositionForPopup() const
         Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt() -
         App::Layout().getScreenBounds().getPosition();
 
-    if (App::Layout().getPageBounds().contains(mousePositionWithinApp))
+    if (App::Layout().getBoundsForPopups().contains(mousePositionWithinApp))
     {
         return mousePositionWithinApp;
     }
 #endif
 
-    return App::Layout().getPageBounds().getCentre();
+    return App::Layout().getBoundsForPopups().getCentre();
 }
 
 void HybridRoll::updateBounds()

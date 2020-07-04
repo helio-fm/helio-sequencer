@@ -92,12 +92,12 @@ void HeadlineDropdown::paint (Graphics& g)
     g.fillRect(1, HEADLINE_HEIGHT - 3, this->getWidth() - 3, this->getHeight() - HEADLINE_HEIGHT + 3);
 
     // Draw a nice border around the menu:
-    g.setColour(Colours::black.withAlpha(40.f / 255.f));
-    g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 2));
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth() - 1));
     g.drawVerticalLine(0, HEADLINE_HEIGHT - 1.f, float(this->getHeight() - 1));
     g.drawVerticalLine(this->getWidth() - 2, HEADLINE_HEIGHT - 1.f, float(this->getHeight() - 1));
 
-    g.setColour(Colours::white.withAlpha(9.f / 255.f));
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
     g.drawVerticalLine(1, HEADLINE_HEIGHT - 2.f, float(this->getHeight() - 1));
     g.drawVerticalLine(this->getWidth() - 3, HEADLINE_HEIGHT - 2.f, float(this->getHeight() - 1));

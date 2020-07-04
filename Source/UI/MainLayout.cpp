@@ -228,7 +228,7 @@ void MainLayout::hideTooltipIfAny()
 }
 
 // a hack!
-Rectangle<int> MainLayout::getPageBounds() const
+Rectangle<int> MainLayout::getBoundsForPopups() const
 {
     Rectangle<int> r(this->getLocalBounds());
 
@@ -237,8 +237,12 @@ Rectangle<int> MainLayout::getPageBounds() const
 
     if (App::isUsingNativeTitleBar())
     {
+        // todo move HEADLINE_HEIGHT into constants
         r.removeFromTop(HEADLINE_HEIGHT);
     }
+
+    // todo free some more space from the top:
+    //r.removeFromTop(HYBRID_ROLL_HEADER_HEIGHT);
 
     return r;
 }

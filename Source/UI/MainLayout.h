@@ -40,7 +40,7 @@ public:
     void show();
     void restoreLastOpenedPage();
 
-    Rectangle<int> getPageBounds() const;
+    Rectangle<int> getBoundsForPopups() const;
     
     //===------------------------------------------------------------------===//
     // Pages and headline
