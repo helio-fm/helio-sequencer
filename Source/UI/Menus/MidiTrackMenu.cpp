@@ -68,6 +68,21 @@ void MidiTrackMenu::initDefaultMenu()
         this->initInstrumentSelectionMenu();
     }));
 
+    const auto trackInstrument = this->trackNode.getTrackInstrumentId();
+    for (const auto *i : instruments)
+    {
+        // well, the track can have an instrument which has no window; but here,
+        // in the menu constructor, it's kinda too expensive to check if this is the case,
+        // so we'll only show this menu item, if the instrument has been assigned:
+        if (i->getIdAndHash() == trackInstrument)
+        {
+            const auto editInstrumentCaption = i->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
+            menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument,
+                editInstrumentCaption)->disabledIf(trackInstrument.isEmpty())->closesMenu());
+            break;
+        }
+    }
+
     this->updateContent(menu, MenuPanel::SlideRight);
 }
 

@@ -111,6 +111,18 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         this->updateContent(this->createInstrumentSelectionMenu(), MenuPanel::SlideLeft);
     }));
 
+    const auto selectionInstrumentId = PatternOperations::getSelectedInstrumentId(*this->lasso);
+    for (const auto *i : instruments)
+    {
+        if (i->getIdAndHash() == selectionInstrumentId)
+        {
+            const auto editInstrumentCaption = i->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
+            menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument,
+                editInstrumentCaption)->disabledIf(selectionInstrumentId.isEmpty())->closesMenu());
+            break;
+        }
+    }
+
     return menu;
 }
 

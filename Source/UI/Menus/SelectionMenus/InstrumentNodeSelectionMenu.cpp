@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "InstrumentNodeSelectionMenu.h"
+#include "PluginWindow.h"
 #include "Instrument.h"
 #include "CommandIDs.h"
 #include "Icons.h"
@@ -38,6 +39,29 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     const bool acceptsAudio = this->node->getProcessor()->getTotalNumInputChannels() > 0;
     const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
     const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
+    const bool isStdIo = this->instrument.isNodeStandardIOProcessor(this->node);
+
+#if HELIO_DESKTOP
+
+    menu.add(MenuItem::item(Icons::instrument,
+        TRANS(I18n::Menu::instrumentShowWindow))->
+        disabledIf(isStdIo)->closesMenu()->
+        withAction([this]()
+    {
+        if (auto *window = PluginWindow::getWindowFor(this->instrument.getIdAndHash()))
+        {
+            // this callAsync trick is needed, because the menu is a modal component,
+            // and after invoking this callback, it will dismiss, focusing the host window,
+            // and pushing the plugin window in the background, which looks silly;
+            MessageManager::getInstance()->callAsync([window]()
+            {
+                // so we have to bring it to front asynchronously:
+                window->toFront(true);
+            });
+        }
+    }));
+
+#endif
 
     menu.add(MenuItem::item(Icons::routing,
         TRANS(I18n::Menu::Selection::routeGetMidi))->
