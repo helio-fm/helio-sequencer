@@ -232,7 +232,7 @@ void InstrumentsListComponent::listBoxItemClicked(int row, const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown())
     {
-        this->contextMenuController->showAfter(1, e);
+        this->contextMenuController->showMenu(e);
     }
 }
 

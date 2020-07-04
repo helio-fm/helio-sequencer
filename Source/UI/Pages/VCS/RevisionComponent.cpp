@@ -172,7 +172,7 @@ void RevisionComponent::mouseDown (const MouseEvent& e)
 
     if (e.mods.isRightButtonDown() && this->isSelected)
     {
-        this->contextMenuController->showAfter(1, e);
+        this->contextMenuController->showMenu(e);
     }
     //[/UserCode_mouseDown]
 }

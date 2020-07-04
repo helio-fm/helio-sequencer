@@ -23,8 +23,12 @@ public:
 
     explicit ContextMenuController(Component &owner);
 
-    void showAfter(int delay, const MouseEvent &e);
+    void showMenu(const MouseEvent &e, int delay = 0);
     void cancelIfPending();
+    inline bool isPending() const noexcept
+    {
+        return this->isTimerRunning();
+    }
 
 private:
 

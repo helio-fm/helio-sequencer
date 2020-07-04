@@ -111,17 +111,11 @@ void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (!this->isActive())
-    {
-        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
-        return;
-    }
-
     if (e.mods.isRightButtonDown() &&
         this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
-        return;
+        //return;
     }
 
     MidiEventComponent::mouseDown(e);

@@ -84,7 +84,7 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
 {
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    if (e.mouseWasClicked())
+    if (e.getOffsetFromDragStart().isOrigin())
     {
         if (this->instrument->isNodeStandardIOProcessor(this->nodeId) ||
             e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())

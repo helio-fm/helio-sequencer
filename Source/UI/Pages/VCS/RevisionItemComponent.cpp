@@ -257,7 +257,7 @@ void RevisionItemComponent::mouseDown(const MouseEvent &event)
     DraggingListBoxComponent::mouseDown(event);
     if (event.mods.isRightButtonDown())
     {
-        this->contextMenuController->showAfter(10, event);
+        this->contextMenuController->showMenu(event);
     }
 }
 

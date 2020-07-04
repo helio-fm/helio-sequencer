@@ -986,7 +986,7 @@ void HybridRoll::mouseDown(const MouseEvent &e)
 
     if (e.mods.isRightButtonDown())
     {
-        this->contextMenuController->showAfter(350, e);
+        this->contextMenuController->showMenu(e, 350);
     }
 
     if (this->isLassoEvent(e))
@@ -1029,7 +1029,12 @@ void HybridRoll::mouseDrag(const MouseEvent &e)
 
 void HybridRoll::mouseUp(const MouseEvent &e)
 {
-    this->contextMenuController->cancelIfPending();
+    if (this->contextMenuController->isPending() &&
+        e.getOffsetFromDragStart().isOrigin())
+    {
+        this->contextMenuController->showMenu(e);
+        return;
+    }
 
     if (const bool hasMultitouch = (e.source.getIndex() > 0))
     {

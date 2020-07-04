@@ -148,7 +148,15 @@ void InstrumentEditor::deselectAllNodes()
 
 void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id, const MouseEvent &e)
 {
-    this->selectedNode = (this->selectedNode == id) ? idZero : id;
+    if (e.mods.isRightButtonDown())
+    {
+        this->selectedNode = id;
+    }
+    else
+    {
+        // any other event than right-click toggles the selection:
+        this->selectedNode = (this->selectedNode == id) ? idZero : id;
+    }
 
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
@@ -166,7 +174,7 @@ void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id, const MouseEve
 
         if (e.mods.isRightButtonDown())
         {
-            this->contextMenuController->showAfter(1, e);
+            this->contextMenuController->showMenu(e);
         }
     }
 }

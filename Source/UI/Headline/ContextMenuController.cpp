@@ -110,7 +110,7 @@ private:
 ContextMenuController::ContextMenuController(Component &owner) :
     owner(owner) {}
 
-void ContextMenuController::showAfter(int delay, const MouseEvent &e)
+void ContextMenuController::showMenu(const MouseEvent &e, int delay)
 {
 #if HELIO_DESKTOP
     //if (!e.mods.isRightButtonDown())

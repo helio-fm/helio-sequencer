@@ -359,7 +359,7 @@ void AudioPluginsListComponent::cellClicked(int rowNumber, int columnId, const M
 {
     if (e.mods.isRightButtonDown())
     {
-        this->contextMenuController->showAfter(1, e);
+        this->contextMenuController->showMenu(e);
     }
 }
 
