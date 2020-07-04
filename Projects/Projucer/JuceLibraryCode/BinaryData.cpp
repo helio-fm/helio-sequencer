@@ -12223,9 +12223,6 @@ static const unsigned char temp_binary_data_107[] =
 "      { \"command\": \"NewTrackFromSelection\", \"key\": \"Control + Shift + X\" },\n"
 "      { \"command\": \"NewTrackFromSelection\", \"key\": \"Command + Shift + X\" },\n"
 "\n"
-"      // Duplicate track\n"
-"      { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
-"\n"
 "      // Delete\n"
 "      { \"command\": \"DeleteEvents\", \"key\": \"X\" },\n"
 "      { \"command\": \"DeleteEvents\", \"key\": \"Delete\" },\n"
@@ -12324,7 +12321,11 @@ static const unsigned char temp_binary_data_107[] =
 "\n"
 "      // Other toggles\n"
 "      { \"command\": \"ToggleScalesHighlighting\", \"key\": \"H\" },\n"
-"      { \"command\": \"ToggleNoteNameGuides\", \"key\": \"G\" }\n"
+"      { \"command\": \"ToggleNoteNameGuides\", \"key\": \"G\" },\n"
+"\n"
+"      // Various\n"
+"      { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
+"      { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
 "    ],\n"
 "    \"keyDown\": [\n"
 "      { \"command\": \"StartDragViewport\", \"key\": \"Spacebar\" }\n"
@@ -12349,9 +12350,6 @@ static const unsigned char temp_binary_data_107[] =
 "      { \"command\": \"DeleteClips\", \"key\": \"X\" },\n"
 "      { \"command\": \"DeleteClips\", \"key\": \"Delete\" },\n"
 "      { \"command\": \"DeleteClips\", \"key\": \"Backspace\" },\n"
-"\n"
-"      // Duplicate track\n"
-"      { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
 "\n"
 "      // Playback control\n"
 "      { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
@@ -12409,7 +12407,11 @@ static const unsigned char temp_binary_data_107[] =
 "      { \"command\": \"ClipTransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
 "      { \"command\": \"ClipTransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
 "      { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
-"      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" }\n"
+"      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
+"\n"
+"      // Various\n"
+"      { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
+"      { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
 "    ],\n"
 "    \"keyDown\": [\n"
 "      { \"command\": \"StartDragViewport\", \"key\": \"Spacebar\" }\n"
@@ -14692,7 +14694,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 13411; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 13513; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 3513; return scales_json;
         case 0xf8655f25:  numBytes = 143715; return translations_json;
         default: break;

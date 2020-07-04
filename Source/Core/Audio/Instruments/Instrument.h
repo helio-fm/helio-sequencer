@@ -75,12 +75,15 @@ public:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCallback)
     };
 
-    // gets connected to the audio-core device
     AudioCallback &getProcessorPlayer() noexcept
-    { return this->audioCallback; }
+    {
+        return this->audioCallback;
+    }
 
     AudioProcessorGraph *getProcessorGraph() const noexcept
-    { return this->processorGraph.get(); }
+    {
+        return this->processorGraph.get();
+    }
 
     //===------------------------------------------------------------------===//
     // Nodes
@@ -89,7 +92,12 @@ public:
     int getNumNodes() const noexcept;
     const AudioProcessorGraph::Node::Ptr getNode(int index) const noexcept;
     const AudioProcessorGraph::Node::Ptr getNodeForId(AudioProcessorGraph::NodeID uid) const noexcept;
-    
+
+    // this method will assume the instrument is simple and only contains
+    // system I/O processor nodes and a single plugin node connected to them,
+    // and will return that node, or nullptr otherwise
+    const AudioProcessorGraph::Node::Ptr findMainPluginNode() const;
+
     void removeNode(AudioProcessorGraph::NodeID id);
     void disconnectNode(AudioProcessorGraph::NodeID id);
 

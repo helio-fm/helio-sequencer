@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "PianoRoll.h"
 #include "AudioCore.h"
+#include "PluginWindow.h"
 #include "Pattern.h"
 #include "MidiSequence.h"
 #include "PianoSequence.h"
@@ -978,6 +979,12 @@ void PianoRoll::handleCommandMessage(int commandId)
         if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
         {
             App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
+        }
+        break;
+    case CommandIDs::EditCurrentInstrument:
+        if (auto *window = PluginWindow::getWindowFor(this->activeTrack->getTrackInstrumentId()))
+        {
+            window->toFront(true);
         }
         break;
     case CommandIDs::CopyEvents:

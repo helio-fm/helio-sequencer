@@ -17,18 +17,12 @@
 
 #pragma once
 
-class PluginWindow : public DocumentWindow
+class PluginWindow final : public DocumentWindow
 {
-    PluginWindow(Component *const uiComp,
-        AudioProcessorGraph::Node::Ptr owner,
-        bool isGeneric,
-        bool shouldMimicComponent);
-
 public:
 
-    static PluginWindow *getWindowFor(AudioProcessorGraph::Node::Ptr node,
-        bool useGenericView,
-        bool shouldMimicComponent);
+    static PluginWindow *getWindowFor(AudioProcessorGraph::Node::Ptr node, bool shouldMimicComponent);
+    static PluginWindow *getWindowFor(const String &instrumentId);
     ~PluginWindow() override;
 
     static void closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeID nodeId);
@@ -38,8 +32,7 @@ public:
 
 private:
 
+    PluginWindow(Component *uiComp, AudioProcessorGraph::Node::Ptr owner, bool shouldMimicComponent);
     AudioProcessorGraph::Node::Ptr owner;
-
-    bool isGeneric;
 
 };

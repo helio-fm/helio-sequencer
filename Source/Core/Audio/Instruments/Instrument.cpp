@@ -158,6 +158,33 @@ const AudioProcessorGraph::Node::Ptr Instrument::getNodeForId(AudioProcessorGrap
     return this->processorGraph->getNodeForId(uid);
 }
 
+const AudioProcessorGraph::Node::Ptr Instrument::findMainPluginNode() const
+{
+    AudioProcessorGraph::Node::Ptr pluginNode = nullptr;
+
+    for (int i = 0; i < this->getNumNodes(); ++i)
+    {
+        const auto node = this->getNode(i);
+
+        if (this->isNodeStandardIOProcessor(node))
+        {
+            continue;
+        }
+
+        if (pluginNode == nullptr)
+        {
+            pluginNode = node;
+        }
+        else
+        {
+            // there are more than one plugin nodes in the instrument:
+            return nullptr;
+        }
+    }
+
+    return pluginNode;
+}
+
 void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f)
 {
     const auto callback = [this, desc, x, y, f](UniquePointer<AudioPluginInstance> instance, const String &error)
@@ -548,7 +575,10 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
     for (const auto &e : tree)
     {
         pd.deserialize(e);
-        if (pd.isValid()) { break; }
+        if (pd.isValid())
+        {
+            break;
+        }
     }
     
     const auto callback = [this, nodesToDeserialize, tree, allDoneCallback]

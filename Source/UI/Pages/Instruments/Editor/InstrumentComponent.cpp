@@ -98,7 +98,7 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
         if (const auto f = this->instrument->getNodeForId(this->nodeId))
         {
 #if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
-            if (auto *const w = PluginWindow::getWindowFor(f, false, false))
+            if (auto *w = PluginWindow::getWindowFor(f, false))
             {
                 w->toFront(true);
             }

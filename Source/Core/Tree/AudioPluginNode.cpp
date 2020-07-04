@@ -103,7 +103,7 @@ void AudioPluginNode::showPage()
             // ui = f->getProcessor()->createEditorIfNeeded();
             // so we try to mimic that by creating a plugin window
             // while its size and position that is managed by audioPluginEditor
-            if (auto *window = PluginWindow::getWindowFor(f, false, true))
+            if (auto *window = PluginWindow::getWindowFor(f, true))
             {
                 this->audioPluginEditor = make<AudioPluginEditorPage>(window);
             }

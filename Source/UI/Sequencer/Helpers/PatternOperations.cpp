@@ -503,3 +503,23 @@ void PatternOperations::quantize(const Lasso &selection,
         processedTracks.insert(track->getTrackId());
     }
 }
+
+String PatternOperations::getSelectedInstrumentId(const Lasso &selection)
+{
+    String id;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        const auto &instrumentId = clip.getPattern()->getTrack()->getTrackInstrumentId();
+
+        if (id.isNotEmpty() && id != instrumentId)
+        {
+            return{};
+        }
+
+        id = instrumentId;
+    }
+
+    return id;
+}

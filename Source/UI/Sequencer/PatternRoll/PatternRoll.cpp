@@ -20,6 +20,7 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"
+#include "PluginWindow.h"
 
 #include "Pattern.h"
 #include "PianoTrackNode.h"
@@ -689,6 +690,12 @@ void PatternRoll::handleCommandMessage(int commandId)
                     TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::addTrackProceed));
             }
             // TODO cloning automations here
+        }
+        break;
+    case CommandIDs::EditCurrentInstrument:
+        if (auto *window = PluginWindow::getWindowFor(PatternOperations::getSelectedInstrumentId(this->selection)))
+        {
+            window->toFront(true);
         }
         break;
     case CommandIDs::DeleteClips:

@@ -37,8 +37,7 @@ static const AudioProcessorGraph::NodeID idZero;
 InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
     WeakReference<AudioCore> audioCoreRef) :
     instrument(instrument),
-    audioCore(audioCoreRef),
-    selectedNode(0)
+    audioCore(audioCoreRef)
 {
     this->background.reset(new PanelBackgroundC());
     this->addAndMakeVisible(this->background.get());

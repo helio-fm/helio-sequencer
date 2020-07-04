@@ -18,19 +18,21 @@
 #include "Common.h"
 #include "PluginWindow.h"
 
-static Array<PluginWindow *> activePluginWindows;
+#include "App.h"
+#include "Workspace.h"
+#include "AudioCore.h"
+#include "Instrument.h"
 
-PluginWindow::PluginWindow(Component *const uiComp,
+static OwnedArray<PluginWindow> activePluginWindows;
+
+PluginWindow::PluginWindow(Component *uiComponent,
     AudioProcessorGraph::Node::Ptr owner,
-    bool isGeneric,
-    bool shouldMimicComponent)
-: 
-    DocumentWindow(uiComp->getName(), Colours::black, DocumentWindow::closeButton),
-    owner(owner),
-    isGeneric(isGeneric)
+    bool shouldMimicComponent) : 
+    DocumentWindow(uiComponent->getName(), Colours::darkgrey, DocumentWindow::closeButton),
+    owner(owner)
 {
-    this->setSize(400, 300);
-    this->setContentOwned(uiComp, true);
+    this->setSize(640, 480);
+    this->setContentOwned(uiComponent, true);
     this->setTopLeftPosition(100 + Random::getSystemRandom().nextInt(500),
                              100 + Random::getSystemRandom().nextInt(500));
     
@@ -49,11 +51,25 @@ PluginWindow::PluginWindow(Component *const uiComp,
     activePluginWindows.add(this);
 }
 
+PluginWindow::~PluginWindow()
+{
+    activePluginWindows.removeObject(this, false);
+    this->clearContentComponent();
+}
+
+void PluginWindow::closeButtonPressed()
+{
+    delete this;
+}
+
 void PluginWindow::closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeID nodeId)
 {
-    for (int i = activePluginWindows.size(); --i >= 0;) {
-        if (activePluginWindows.getUnchecked(i)->owner->nodeID == nodeId) {
-            delete activePluginWindows.getUnchecked(i);
+    for (const auto *window : activePluginWindows)
+    {
+        if (window->owner->nodeID == nodeId)
+        {
+            activePluginWindows.removeObject(window, true);
+            return;
         }
     }
 }
@@ -65,59 +81,47 @@ void PluginWindow::closeAllCurrentlyOpenWindows()
     }
 }
 
-PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node,
-    bool useGenericView,
-    bool shouldMimicComponent)
+PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node, bool shouldMimicComponent)
 {
-    for (int i = activePluginWindows.size(); --i >= 0;)
+    for (auto *window : activePluginWindows)
     {
-        if (activePluginWindows.getUnchecked(i)->owner == node
-            && activePluginWindows.getUnchecked(i)->isGeneric == useGenericView)
+        if (window->owner == node)
         {
-            return activePluginWindows.getUnchecked(i);
+            return window;
         }
     }
     
-    AudioProcessorEditor *ui = nullptr;
-    
-    if (! useGenericView)
-    {
-        ui = node->getProcessor()->createEditorIfNeeded();
-        
-        if (ui == nullptr)
-        {
-            useGenericView = true;
-        }
-    }
-    
-    if (useGenericView &&
-        !node->getProcessor()->getParameters().isEmpty())
+    auto *ui = node->getProcessor()->createEditorIfNeeded();
+
+    if (ui == nullptr && !node->getProcessor()->getParameters().isEmpty())
     {
         ui = new GenericAudioProcessorEditor(*node->getProcessor());
     }
-    
+
     if (ui != nullptr)
     {
-        AudioPluginInstance *const plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
+        auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
         
         if (plugin != nullptr)
         {
             ui->setName(plugin->getName());
         }
         
-        return new PluginWindow(ui, node, useGenericView, shouldMimicComponent);
+        return new PluginWindow(ui, node, shouldMimicComponent);
     }
     
     return nullptr;
 }
 
-PluginWindow::~PluginWindow()
+PluginWindow *PluginWindow::getWindowFor(const String &instrumentId)
 {
-    activePluginWindows.removeAllInstancesOf(this);
-    clearContentComponent();
-}
+    if (auto *instrument = App::Workspace().getAudioCore().findInstrumentById(instrumentId))
+    {
+        if (auto node = instrument->findMainPluginNode())
+        {
+            return PluginWindow::getWindowFor(node, false);
+        }
+    }
 
-void PluginWindow::closeButtonPressed()
-{
-    delete this;
+    return nullptr;
 }

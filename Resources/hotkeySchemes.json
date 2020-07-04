@@ -111,9 +111,6 @@
       { "command": "NewTrackFromSelection", "key": "Control + Shift + X" },
       { "command": "NewTrackFromSelection", "key": "Command + Shift + X" },
 
-      // Duplicate track
-      { "command": "DuplicateTrack", "key": "F5" },
-
       // Delete
       { "command": "DeleteEvents", "key": "X" },
       { "command": "DeleteEvents", "key": "Delete" },
@@ -212,7 +209,11 @@
 
       // Other toggles
       { "command": "ToggleScalesHighlighting", "key": "H" },
-      { "command": "ToggleNoteNameGuides", "key": "G" }
+      { "command": "ToggleNoteNameGuides", "key": "G" },
+
+      // Various
+      { "command": "DuplicateTrack", "key": "F5" },
+      { "command": "EditCurrentInstrument", "key": "F4" }
     ],
     "keyDown": [
       { "command": "StartDragViewport", "key": "Spacebar" }
@@ -237,9 +238,6 @@
       { "command": "DeleteClips", "key": "X" },
       { "command": "DeleteClips", "key": "Delete" },
       { "command": "DeleteClips", "key": "Backspace" },
-
-      // Duplicate track
-      { "command": "DuplicateTrack", "key": "F5" },
 
       // Playback control
       { "command": "TransportStop", "key": "Escape" },
@@ -297,7 +295,11 @@
       { "command": "ClipTransposeOctaveUp", "key": "Shift + Cursor Up" },
       { "command": "ClipTransposeOctaveDown", "key": "Shift + Cursor Down" },
       { "command": "BeatShiftLeft", "key": "Cursor Left" },
-      { "command": "BeatShiftRight", "key": "Cursor Right" }
+      { "command": "BeatShiftRight", "key": "Cursor Right" },
+
+      // Various
+      { "command": "DuplicateTrack", "key": "F5" },
+      { "command": "EditCurrentInstrument", "key": "F4" }
     ],
     "keyDown": [
       { "command": "StartDragViewport", "key": "Spacebar" }

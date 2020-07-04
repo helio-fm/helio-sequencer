@@ -111,6 +111,7 @@ namespace I18n
         static const Identifier instrumentSetColour = "menu::instrument::setcolour";
         static const Identifier instrumentSetIcon = "menu::instrument::seticon";
         static const Identifier instrumentShowEditor = "menu::instrument::showeditor";
+        static const Identifier instrumentShowWindow = "menu::instrument::showui";
         static const Identifier instrumentsReload = "menu::instruments::reload";
         static const Identifier instrumentsScanFolder = "menu::instruments::scanfolder";
         static const Identifier keySignatureAdd = "menu::keysignature::add";
