@@ -366,7 +366,7 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemArrow.cpp"/>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.cpp"/>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Headline\ContextMenuController.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineContextMenuController.cpp"/>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.cpp"/>
@@ -2607,7 +2607,7 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemDataSource.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Headline\ContextMenuController.h"/>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineContextMenuController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\LongTapController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\LongTapListener.h"/>
     <ClInclude Include="..\..\Source\UI\Input\MultiTouchController.h"/>

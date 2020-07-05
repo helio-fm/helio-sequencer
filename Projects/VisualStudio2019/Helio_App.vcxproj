@@ -611,7 +611,7 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Headline\ContextMenuController.cpp">
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineContextMenuController.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp">
@@ -3124,7 +3124,7 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemDataSource.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Headline\ContextMenuController.h"/>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineContextMenuController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\LongTapController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\LongTapListener.h"/>
     <ClInclude Include="..\..\Source\UI\Input\MultiTouchController.h"/>

@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 #include "VersionControl.h"
 #include "RevisionTreeComponent.h"
-#include "ContextMenuController.h"
+#include "HeadlineContextMenuController.h"
 #include "SerializationKeys.h"
 #include "ColourIDs.h"
 //[/MiscUserDefs]
@@ -71,7 +71,7 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
 
 
     //[UserPreSize]
-    this->contextMenuController = make<ContextMenuController>(*this);
+    this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     const auto &message = this->revision->getMessage();
     const auto timestamp = this->revision->getTimeStamp();

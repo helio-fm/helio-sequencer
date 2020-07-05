@@ -21,7 +21,7 @@
 #include "HeadlineItemDataSource.h"
 #include "ComponentFader.h"
 
-class ContextMenuController;
+class HeadlineContextMenuController;
 class InstrumentComponent;
 class InstrumentEditorConnector;
 class InstrumentEditorPin;
@@ -84,7 +84,7 @@ private:
 
     AudioProcessorGraph::NodeID selectedNode;
 
-    UniquePointer<ContextMenuController> contextMenuController;
+    UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditor)
 };

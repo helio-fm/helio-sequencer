@@ -163,7 +163,7 @@
 #include "../../Source/UI/Headline/HeadlineItemArrow.cpp"
 #include "../../Source/UI/Headline/HeadlineItemHighlighter.cpp"
 #include "../../Source/UI/Headline/HeadlineNavigationPanel.cpp"
-#include "../../Source/UI/Headline/ContextMenuController.cpp"
+#include "../../Source/UI/Headline/HeadlineContextMenuController.cpp"
 #include "../../Source/UI/Input/MultiTouchController.cpp"
 #include "../../Source/UI/Menus/Base/MenuItemComponent.cpp"
 #include "../../Source/UI/Menus/Base/MenuItemComponentMarker.cpp"

@@ -17,11 +17,11 @@
 
 #pragma once
 
-class ContextMenuController final : private Timer
+class HeadlineContextMenuController final : private Timer
 {
 public:
 
-    explicit ContextMenuController(Component &owner);
+    explicit HeadlineContextMenuController(Component &owner);
 
     void showMenu(const MouseEvent &e, int delay = 0);
     void cancelIfPending();
@@ -37,5 +37,5 @@ private:
     Component &owner;
     Point<int> menuPosition;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContextMenuController)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineContextMenuController)
 };

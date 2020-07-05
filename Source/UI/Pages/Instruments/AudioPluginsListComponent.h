@@ -21,7 +21,7 @@
 class PluginScanner;
 class OrchestraPitNode;
 class MenuItemComponent;
-class ContextMenuController;
+class HeadlineContextMenuController;
 
 #include "HeadlineItemDataSource.h"
 
@@ -89,7 +89,7 @@ private:
     //[UserVariables]
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
-    UniquePointer<ContextMenuController> contextMenuController;
+    UniquePointer<HeadlineContextMenuController> contextMenuController;
     //[/UserVariables]
 
     UniquePointer<TableListBox> pluginsList;

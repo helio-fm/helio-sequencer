@@ -464,11 +464,11 @@ void HybridRollHeader::paint(Graphics &g)
         const int startX = this->roll.getXPositionByBeat(this->loopStartBeat.get());
         const int endX = this->roll.getXPositionByBeat(this->loopEndBeat.get());
 
-        g.fillRect(float(startX), 1.f, 3.f, float(this->getHeight() - 2));
-        g.fillRect(float(startX + 5), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(startX, 1, 3, this->getHeight() - 2);
+        g.fillRect(startX + 5, 1, 1, this->getHeight() - 2);
 
-        g.fillRect(float(endX - 2), 1.f, 3.f, float(this->getHeight() - 2));
-        g.fillRect(float(endX - 5), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(endX - 2, 1, 3, this->getHeight() - 2);
+        g.fillRect(endX - 5, 1, 1, this->getHeight() - 2);
 
         // todo draw ellipses instead?
         const auto p1 = roundf(float(this->getHeight()) * 0.33f + 1.f);
@@ -483,11 +483,11 @@ void HybridRollHeader::paint(Graphics &g)
         // some fancy shadows
         g.setColour(this->bevelDarkColour);
 
-        g.fillRect(float(startX + 3), 1.f, 1.f, float(this->getHeight() - 2));
-        g.fillRect(float(startX + 6), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(startX + 3, 1, 1, this->getHeight() - 2);
+        g.fillRect(startX + 6, 1, 1, this->getHeight() - 2);
 
-        g.fillRect(float(endX + 1), 1.f, 1.f, float(this->getHeight() - 2));
-        g.fillRect(float(endX - 4), 1.f, 1.f, float(this->getHeight() - 2));
+        g.fillRect(endX + 1, 1, 1, this->getHeight() - 2);
+        g.fillRect(endX - 4, 1, 1, this->getHeight() - 2);
 
         g.fillRect(float(startX + 11), p1, 1.f, 3.f);
         g.fillRect(float(startX + 11), p2, 1.f, 3.f);

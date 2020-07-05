@@ -159,7 +159,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->smoothPanController = make<SmoothPanController>(*this);
     this->smoothZoomController = make<SmoothZoomController>(*this);
 
-    this->contextMenuController = make<ContextMenuController>(*this);
+    this->contextMenuController = make<HeadlineContextMenuController>(*this);
     
     this->project.addListener(this);
     this->project.getEditMode().addChangeListener(this);

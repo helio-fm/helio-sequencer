@@ -26,7 +26,7 @@
 #include "Icons.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
-#include "ContextMenuController.h"
+#include "HeadlineContextMenuController.h"
 
 class RevisionItemHighlighter final : public Component
 {
@@ -94,7 +94,7 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
     this->addAndMakeVisible(separator.get());
 
     //[UserPreSize]
-    this->contextMenuController = make<ContextMenuController>(*this);
+    this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->selectionComponent = make<RevisionItemSelectionComponent>();
     this->addChildComponent(this->selectionComponent.get());

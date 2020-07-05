@@ -20,7 +20,7 @@
 //[Headers]
 class PluginScanner;
 class OrchestraPitNode;
-class ContextMenuController;
+class HeadlineContextMenuController;
 
 #include "HeadlineItemDataSource.h"
 #include "InstrumentNode.h"
@@ -81,7 +81,7 @@ private:
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
 
-    UniquePointer<ContextMenuController> contextMenuController;
+    UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     Array<WeakReference<InstrumentNode>> instruments;
     Image instrumentIcon;

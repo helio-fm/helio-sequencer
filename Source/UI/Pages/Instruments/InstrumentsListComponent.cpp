@@ -25,7 +25,7 @@
 #include "OrchestraPitNode.h"
 #include "OrchestraPitPage.h"
 #include "InstrumentMenu.h"
-#include "ContextMenuController.h"
+#include "HeadlineContextMenuController.h"
 #include "Instrument.h"
 #include "MainLayout.h"
 #include "Icons.h"
@@ -49,7 +49,7 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     this->addAndMakeVisible(separator1.get());
 
     //[UserPreSize]
-    this->contextMenuController = make<ContextMenuController>(*this);
+    this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->instrumentsList->setMultipleSelectionEnabled(false);
     this->instrumentsList->setRowHeight(INSTRUMENTSLIST_ROW_HEIGHT);

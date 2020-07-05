@@ -1118,13 +1118,6 @@
 			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		2B260D9855AB01D1768373C1 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ContextMenuController.cpp;
-			path = ../../Source/UI/Headline/ContextMenuController.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		2B41BD5579B3D0369DC437E3 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3841,6 +3834,13 @@
 			path = ../../Source/UI/Input/MultiTouchController.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		A0BBA5264ABF70FA52E48208 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = HeadlineContextMenuController.h;
+			path = ../../Source/UI/Headline/HeadlineContextMenuController.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		A1D2EEF9005AFDDE32074E22 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -4702,13 +4702,6 @@
 			path = ../../Source/UI/Pages/VCS/RevisionItemComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		C9F14A015F3B885FC0ECFB28 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ContextMenuController.h;
-			path = ../../Source/UI/Headline/ContextMenuController.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		CA4D0CA209854767FEEA9373 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -4763,6 +4756,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = MidiTrackActions.cpp;
 			path = ../../Source/Core/Undo/Actions/MidiTrackActions.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		CC2F40BBB5649A3ECD6876EB = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = HeadlineContextMenuController.cpp;
+			path = ../../Source/UI/Headline/HeadlineContextMenuController.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		CD8B9DD32A46072508301668 = {
@@ -6641,8 +6641,8 @@
 				07060C5DA5E2022C09D72B9D,
 				0903C851C36497BC6250E39B,
 				F7DF3350FE908254C39FC653,
-				2B260D9855AB01D1768373C1,
-				C9F14A015F3B885FC0ECFB28,
+				CC2F40BBB5649A3ECD6876EB,
+				A0BBA5264ABF70FA52E48208,
 			);
 			name = Headline;
 			sourceTree = "<group>";

@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "ContextMenuController.h"
+#include "HeadlineContextMenuController.h"
 
 #include "Headline.h"
 #include "HeadlineItem.h"
@@ -130,10 +130,10 @@ private:
 
 };
 
-ContextMenuController::ContextMenuController(Component &owner) :
+HeadlineContextMenuController::HeadlineContextMenuController(Component &owner) :
     owner(owner) {}
 
-void ContextMenuController::showMenu(const MouseEvent &e, int delay)
+void HeadlineContextMenuController::showMenu(const MouseEvent &e, int delay)
 {
 #if HELIO_DESKTOP
     //if (!e.mods.isRightButtonDown())
@@ -154,12 +154,12 @@ void ContextMenuController::showMenu(const MouseEvent &e, int delay)
 #endif
 }
 
-void ContextMenuController::cancelIfPending()
+void HeadlineContextMenuController::cancelIfPending()
 {
     this->stopTimer();
 }
 
-void ContextMenuController::timerCallback()
+void HeadlineContextMenuController::timerCallback()
 {
     this->stopTimer();
 

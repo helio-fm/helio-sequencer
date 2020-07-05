@@ -49,7 +49,7 @@ class TimelineWarningMarker;
 #include "HybridRollEditMode.h"
 #include "UserInterfaceFlags.h"
 #include "AudioMonitor.h"
-#include "ContextMenuController.h"
+#include "HeadlineContextMenuController.h"
 
 #if HELIO_MOBILE
 #   define HYBRID_ROLL_LISTENS_LONG_TAP 1
@@ -406,7 +406,7 @@ protected:
     UniquePointer<MultiTouchController> multiTouchController;
     UniquePointer<SmoothPanController> smoothPanController;
     UniquePointer<SmoothZoomController> smoothZoomController;
-    UniquePointer<ContextMenuController> contextMenuController;
+    UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
 

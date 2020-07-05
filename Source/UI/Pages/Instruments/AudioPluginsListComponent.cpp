@@ -28,7 +28,7 @@
 #include "OrchestraPitPage.h"
 #include "OrchestraPitNode.h"
 #include "AudioPluginSelectionMenu.h"
-#include "ContextMenuController.h"
+#include "HeadlineContextMenuController.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
 #include "CommandIDs.h"
@@ -71,7 +71,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->addAndMakeVisible(separator3.get());
 
     //[UserPreSize]
-    this->contextMenuController = make<ContextMenuController>(*this);
+    this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
     this->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);

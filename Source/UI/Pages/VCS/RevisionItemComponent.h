@@ -21,7 +21,7 @@
 #include "DraggingListBoxComponent.h"
 #include "RevisionItem.h"
 
-class ContextMenuController;
+class HeadlineContextMenuController;
 //[/Headers]
 
 #include "../../Themes/SeparatorHorizontalFading.h"
@@ -64,7 +64,7 @@ private:
     ListBox &list;
     int row;
 
-    UniquePointer<ContextMenuController> contextMenuController;
+    UniquePointer<HeadlineContextMenuController> contextMenuController;
     UniquePointer<Component> selectionComponent;
     VCS::RevisionItem::Ptr revisionItem;
 

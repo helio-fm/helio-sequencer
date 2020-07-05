@@ -26,7 +26,7 @@
 #include "InstrumentComponent.h"
 #include "InstrumentEditorConnector.h"
 #include "InstrumentNodeSelectionMenu.h"
-#include "ContextMenuController.h"
+#include "HeadlineContextMenuController.h"
 
 #include "AudioCore.h"
 #include "Icons.h"
@@ -42,7 +42,7 @@ InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
     this->background.reset(new PanelBackgroundC());
     this->addAndMakeVisible(this->background.get());
 
-    this->contextMenuController = make<ContextMenuController>(*this);
+    this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->instrument->addChangeListener(this);
     this->audioCore->getDevice().addChangeListener(this);

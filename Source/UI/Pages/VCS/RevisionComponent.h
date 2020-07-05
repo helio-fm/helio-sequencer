@@ -19,7 +19,7 @@
 
 //[Headers]
 class VersionControl;
-class ContextMenuController;
+class HeadlineContextMenuController;
 
 #include "Revision.h"
 #include "IconComponent.h"
@@ -84,7 +84,7 @@ private:
     bool isHeadRevision;
     VCS::Revision::SyncState viewState;
 
-    UniquePointer<ContextMenuController> contextMenuController;
+    UniquePointer<HeadlineContextMenuController> contextMenuController;
 
 private:
 
