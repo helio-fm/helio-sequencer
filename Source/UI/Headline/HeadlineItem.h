@@ -20,8 +20,10 @@
 //[Headers]
 #include "HeadlineItemDataSource.h"
 #include "HighlightedComponent.h"
+#include "ComponentFader.h"
 #include "TreeNode.h"
 
+class HeadlineContextMenuMarker;
 class IconComponent;
 //[/Headers]
 
@@ -39,6 +41,9 @@ public:
     //[UserMethods]
     WeakReference<HeadlineItemDataSource> getDataSource() const noexcept;
     void updateContent();
+
+    void showContextMenuMarker();
+    void hideContextMenuMarker();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -56,6 +61,9 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void timerCallback() override;
     void showMenuIfAny();
+
+    ComponentFader animator;
+    UniquePointer<HeadlineContextMenuMarker> menuMarker;
 
     WeakReference<HeadlineItemDataSource> item;
     AsyncUpdater &parentHeadline;

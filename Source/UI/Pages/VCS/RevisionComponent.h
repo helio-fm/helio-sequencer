@@ -71,6 +71,7 @@ public:
     void resized() override;
     void mouseMove (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
 
 
 private:

@@ -252,19 +252,15 @@ bool RevisionItemComponent::isSelected() const
     return this->list.isRowSelected(this->row);
 }
 
-void RevisionItemComponent::mouseDown(const MouseEvent &event)
+void RevisionItemComponent::mouseUp(const MouseEvent &event)
 {
-    DraggingListBoxComponent::mouseDown(event);
-    if (event.mods.isRightButtonDown())
+    DraggingListBoxComponent::mouseUp(event);
+
+    if (event.mods.isRightButtonDown() &&
+        event.getOffsetFromDragStart().isOrigin())
     {
         this->contextMenuController->showMenu(event);
     }
-}
-
-void RevisionItemComponent::mouseDrag(const MouseEvent &event)
-{
-    DraggingListBoxComponent::mouseDrag(event);
-    this->contextMenuController->cancelIfPending();
 }
 //[/MiscUserCode]
 

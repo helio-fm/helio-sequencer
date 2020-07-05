@@ -45,9 +45,7 @@ public:
 
     void setSelected(bool shouldBeSelected) override;
 
-    void mouseDown(const MouseEvent &event) override;
-    void mouseDrag(const MouseEvent &event) override;
-
+    void mouseUp(const MouseEvent &event) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;

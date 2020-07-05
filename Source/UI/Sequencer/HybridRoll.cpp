@@ -986,7 +986,7 @@ void HybridRoll::mouseDown(const MouseEvent &e)
 
     if (e.mods.isRightButtonDown())
     {
-        this->contextMenuController->showMenu(e, 350);
+        this->contextMenuController->showMenu(e, 400);
     }
 
     if (this->isLassoEvent(e))

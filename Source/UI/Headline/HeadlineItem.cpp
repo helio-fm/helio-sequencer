@@ -29,14 +29,52 @@
 #include "CachedLabelImage.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
+
+class HeadlineContextMenuMarker final : public Component
+{
+public:
+
+    HeadlineContextMenuMarker() :
+        dark(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f)),
+        light(findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(2.f))
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+        this->setWantsKeyboardFocus(false);
+        this->setSize(1, 3);
+        this->setAlpha(0.f);
+    }
+
+    void paint(Graphics &g) override
+    {
+        static constexpr auto dashLength = 8;
+        static constexpr auto s = dashLength - 2;
+        const auto width = this->getWidth() - s;
+        const auto w = width - (width % dashLength);
+
+        g.setColour(this->dark);
+        g.fillRect(s + 1, 1, w, 1);
+        g.fillRect(s, 2, w, 1);
+
+        g.setColour(this->light);
+        for (int i = s; i < w; i += (dashLength * 2))
+        {
+            g.fillRect(i + 1, 1, dashLength, 1);
+            g.fillRect(i, 2, dashLength, 1);
+        }
+    }
+
+    const Colour dark;
+    const Colour light;
+};
+
 //[/MiscUserDefs]
 
 HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent)
     : item(treeItem),
       parentHeadline(parent)
 {
-    this->titleLabel.reset(new Label(String(),
-                                      TRANS("Project")));
+    this->titleLabel.reset(new Label(String(), String()));
     this->addAndMakeVisible(titleLabel.get());
     this->titleLabel->setFont(Font (18.00f, Font::plain));
     titleLabel->setJustificationType(Justification::centredLeft);
@@ -49,6 +87,9 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     this->addAndMakeVisible(component.get());
 
     //[UserPreSize]
+    this->menuMarker = make<HeadlineContextMenuMarker>();
+    this->addChildComponent(this->menuMarker.get());
+    
     this->titleLabel->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -102,6 +143,10 @@ void HeadlineItem::paint (Graphics& g)
 void HeadlineItem::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    this->menuMarker->setBounds(0,
+        this->getHeight() - this->menuMarker->getHeight(),
+        this->getWidth() - 16,
+        this->menuMarker->getHeight());
     //[/UserPreResize]
 
     titleLabel->setBounds(33, (getHeight() / 2) + -1 - (30 / 2), 256, 30);
@@ -206,6 +251,17 @@ void HeadlineItem::showMenuIfAny()
     }
 }
 
+void HeadlineItem::showContextMenuMarker()
+{
+    this->animator.fadeIn(this->menuMarker.get(), 150);
+    //this->menuMarker->setVisible(true);
+}
+
+void HeadlineItem::hideContextMenuMarker()
+{
+    this->animator.fadeOut(this->menuMarker.get(), 150);
+    //this->menuMarker->setVisible(false);
+}
 //[/MiscUserCode]
 
 #if 0
@@ -226,7 +282,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="33 -1Cc 256 30" labelText="Project"
+         explicitFocusOrder="0" pos="33 -1Cc 256 30" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>

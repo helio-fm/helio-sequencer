@@ -186,9 +186,9 @@ void MainLayout::showPage(Component *page, TreeNode *source)
 // Breadcrumbs
 //===----------------------------------------------------------------------===//
 
-WeakReference<HeadlineItemDataSource> MainLayout::getTailMenu() const
+HeadlineItem *MainLayout::getMenuTail() const
 {
-    return this->headline->getTailItem()->getDataSource();
+    return this->headline->getTailItem();
 }
 
 void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)

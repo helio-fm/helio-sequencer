@@ -165,16 +165,28 @@ void RevisionComponent::mouseMove (const MouseEvent& e)
 void RevisionComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
+    if (e.mods.isRightButtonDown() && this->isSelected)
+    {
+        return;
+    }
+
     if (auto *revTree = dynamic_cast<RevisionTreeComponent *>(this->getParentComponent()))
     {
         revTree->selectComponent(this, true);
     }
+    //[/UserCode_mouseDown]
+}
 
-    if (e.mods.isRightButtonDown() && this->isSelected)
+void RevisionComponent::mouseUp(const MouseEvent& e)
+{
+    //[UserCode_mouseUp] -- Add your code here...
+    if (e.mods.isRightButtonDown() &&
+        e.getOffsetFromDragStart().isOrigin() &&
+        this->isSelected)
     {
         this->contextMenuController->showMenu(e);
     }
-    //[/UserCode_mouseDown]
+    //[/UserCode_mouseUp]
 }
 
 
@@ -241,6 +253,7 @@ BEGIN_JUCER_METADATA
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
     </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="45b178bfb039403" memberName="revisionDescription"

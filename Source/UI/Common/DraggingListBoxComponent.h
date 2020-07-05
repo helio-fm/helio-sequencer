@@ -50,13 +50,13 @@ protected:
     
 private:
     
-    int maxDragDistance;
-    int viewportStartPosY;
-    bool isDraggingListbox;
-    bool shouldDisableAllChildren;
+    int maxDragDistance = 0;
+    int viewportStartPosY = 0;
+    bool isDraggingListbox = false;
+    const bool shouldDisableAllChildren = false;
     
 private:
     
-    double dragStartMilliseconds;
+    double dragStartMilliseconds = 0.0;
     
 };

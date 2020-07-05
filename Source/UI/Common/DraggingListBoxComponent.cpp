@@ -22,10 +22,6 @@
 DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disablesAllChildren) :
     HighlightedComponent(),
     parentViewport(parent),
-    maxDragDistance(0),
-    viewportStartPosY(0),
-    isDraggingListbox(false),
-    dragStartMilliseconds(0.0),
     shouldDisableAllChildren(disablesAllChildren)
 {
     if (this->parentViewport)

@@ -19,6 +19,7 @@
 #include "ContextMenuController.h"
 
 #include "Headline.h"
+#include "HeadlineItem.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
 #include "Workspace.h"
@@ -33,6 +34,14 @@ public:
     ContextMenuComponent()
     {
         this->setWantsKeyboardFocus(true);
+    }
+
+    ~ContextMenuComponent() override
+    {
+        auto *tail = App::Layout().getMenuTail();
+        jassert(tail != nullptr);
+
+        tail->hideContextMenuMarker();
     }
 
     void setContent(UniquePointer<Component> component)
@@ -50,8 +59,7 @@ public:
     {
         if (key.isKeyCode(KeyPress::escapeKey))
         {
-            this->exitModalState(0);
-            delete this;
+            this->dismiss();
         }
 
         return true;
@@ -63,6 +71,11 @@ public:
     }
 
     void inputAttemptWhenModal() override
+    {
+        this->dismiss();
+    }
+
+    void dismiss()
     {
         this->exitModalState(0);
         delete this;
@@ -128,8 +141,10 @@ void ContextMenuController::showMenu(const MouseEvent &e, int delay)
     //    return;
     //}
 
-    // todo start an animation somewhere (breadcrumbs?)
+    jassert(e.mods.isRightButtonDown());
+
     this->menuPosition = e.getEventRelativeTo(&App::Layout()).getPosition();
+
     if (!App::isUsingNativeTitleBar())
     {
         this->menuPosition.y += HEADLINE_HEIGHT;
@@ -152,17 +167,18 @@ void ContextMenuController::timerCallback()
     // because at the point when user calls the context menu, the breadcrumbs item and
     // its menu data source all have been set up and ready to use, we just get
     // the tail item of breadcrumbs, and use its menu source:
-    
-    const auto menuSource = App::Layout().getTailMenu();
-    auto content = menuSource->createMenu();
+    auto *tail = App::Layout().getMenuTail();
+    jassert(tail != nullptr);
 
-    if (content != nullptr)
+    if (auto menuContent = tail->getDataSource()->createMenu())
     {
-        // todo fancy flash at the breadcrumbs tail?
+        // show fancy marker at the breadcrumbs tail:
+        tail->showContextMenuMarker();
+
         this->owner.setMouseCursor(MouseCursor::NormalCursor);
         auto container = make<ContextMenuComponent>();
         container->setTopLeftPosition(this->menuPosition);
-        container->setContent(move(content));
+        container->setContent(move(menuContent));
         App::showModalComponent(move(container));
     }
 }
