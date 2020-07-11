@@ -23,4 +23,4 @@ xcrun xcodebuild -exportArchive \
 echo "Uploading to iTunesConnect"
 ln -s "/Applications/Xcode.app/Contents/Applications/Application Loader.app/Contents/Frameworks/ITunesSoftwareService.framework/Support/altool" /usr/local/bin/altool
 ln -s "/Applications/Xcode.app/Contents/Applications/Application Loader.app/Contents/itms" /usr/local/bin/itms # itms is needed, otherwise altool will not work correctly
-altool --upload-app -f "/tmp/Helio - App.ipa" -u ${IOS_ITC_USERNAME} -p ${IOS_ITC_APP_PASSWORD}
+xcrun altool --upload-app -f "/tmp/Helio - App.ipa" -u ${IOS_ITC_USERNAME} -p ${IOS_ITC_APP_PASSWORD}
