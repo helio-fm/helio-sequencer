@@ -39,9 +39,10 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     const bool acceptsAudio = this->node->getProcessor()->getTotalNumInputChannels() > 0;
     const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
     const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
-    const bool isStdIo = this->instrument.isNodeStandardIOProcessor(this->node);
 
 #if HELIO_DESKTOP
+
+    const bool isStdIo = this->instrument.isNodeStandardIOProcessor(this->node);
 
     menu.add(MenuItem::item(Icons::instrument,
         TRANS(I18n::Menu::instrumentShowWindow))->

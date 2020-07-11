@@ -81,6 +81,7 @@ private:
     // TransportListener
     //===----------------------------------------------------------------------===//
 
+    void onLoopModeChanged(bool, float, float) override {}
     void onSeek(float, double, double) override {}
     void onTempoChanged(double) override {}
     void onTotalTimeChanged(double) override {}

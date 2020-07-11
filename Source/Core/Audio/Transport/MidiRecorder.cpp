@@ -262,8 +262,7 @@ void MidiRecorder::handleAsyncUpdate()
     // handle unhandledNoteOffs and clean
     for (const auto &i : this->unhandledNoteOffs)
     {
-        const bool wasHandled = this->finaliseHoldingNote(i.getNoteNumber());
-        //jassert(wasHandled);
+        this->finaliseHoldingNote(i.getNoteNumber());
     }
 
     this->unhandledNoteOffs.clearQuick();
@@ -363,7 +362,7 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
     Array<Note> groupBefore;
     Array<Note> groupAfter;
 
-    for (const auto i : this->holdingNotes)
+    for (const auto &i : this->holdingNotes)
     {
         const auto newLength = roundBeat(currentBeat - i.second.getBeat());
         if (i.second.getLength() == newLength)
