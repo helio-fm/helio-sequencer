@@ -4,8 +4,14 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.1
+ - Added right-click context menus in the sequencer, version control and orchestra pit pages: the menu content is always the same as in the breadcrumbs control tail menu
+ - Added a command to bring up the current instrument's window, hotkey F4
+ - Fixed some more UI glitches - most notably, focusing the piano roll scope on a track
+ - Minor bugfixes in MIDI recording
+
 ## Version 3.0
- - Added initial support for MIDI recording (fucking finally), hotkey F12
+ - Added initial support for MIDI recording, hotkey F12
  - Added initial support for looping the playback over the selected scope, hotkey F11
  - Added quantization commands
  - Made annotations lengths adjustable
