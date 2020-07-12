@@ -33,17 +33,16 @@
 #   define SAFE_SCAN 0
 #endif
 
-PluginScanner::PluginScanner() :
-    Thread("Plugin Scanner")
-{
-    this->startThread(0);
-}
+PluginScanner::PluginScanner() : Thread("Plugin Scanner") {}
 
 PluginScanner::~PluginScanner()
 {
-    this->signalThreadShouldExit();
-    this->signal();
-    this->waitForThreadToExit(500);
+    if (this->isThreadRunning())
+    {
+        this->signalThreadShouldExit();
+        this->signal();
+        this->waitForThreadToExit(500);
+    }
 }
 
 bool PluginScanner::hasEffects() const
@@ -108,6 +107,11 @@ void PluginScanner::runInitialScan()
         return;
     }
 
+    if (!this->isThreadRunning())
+    {
+        this->startThread(0);
+    }
+
     // prepare search paths, prepare specific files to scan,
     // clear the existing list and resume search thread
 
@@ -150,6 +154,11 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
         App::Layout().showTooltip({}, MainLayout::TooltipType::Failure);
         DBG("PluginScanner scan thread is already running!");
         return;
+    }
+
+    if (!this->isThreadRunning())
+    {
+        this->startThread(0);
     }
 
     // prepare search paths and resume search thread
