@@ -23,7 +23,7 @@ class RecentFilesComponent;
 class RootNode;
 class MainLayout;
 class ComponentsList;
-class LogoFader;
+class SpectralLogo;
 class AudioSettings;
 class ThemeSettings;
 class OpenGLSettings;
@@ -54,7 +54,6 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void visibilityChanged() override;
 
 
 private:
@@ -73,7 +72,7 @@ private:
     UniquePointer<SeparatorVerticalSkew> skew;
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<PanelBackgroundA> backgroundA;
-    UniquePointer<LogoFader> logoImage;
+    UniquePointer<SpectralLogo> logo;
     UniquePointer<DashboardMenu> projectsList;
     UniquePointer<OpenProjectButton> openProjectButton;
     UniquePointer<CreateProjectButton> createProjectButton;

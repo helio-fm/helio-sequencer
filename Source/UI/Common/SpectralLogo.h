@@ -17,7 +17,8 @@
 
 #pragma once
 
-class SpectralLogo : public Component, private Thread, private AsyncUpdater
+class SpectralLogo final : public Component,
+    private Thread, private AsyncUpdater
 {
 public:
 
@@ -28,14 +29,13 @@ public:
     void paint(Graphics &g) override;
     void resized() override;
 
-    float getRandomnessRange() const noexcept;
     float getLineThickness() const noexcept;
     float getLineStepSize() const noexcept;
     float getLineWidth() const noexcept;
 
 private:
     
-    class Band
+    class Band final
     {
     public:
         
@@ -49,14 +49,14 @@ private:
         
         SpectralLogo *parent;
 
-        float value;
-        float valueDecay;
-        uint32 valueDecayStart;
+        float value = 0.f;
+        float valueDecay = 1.f;
+        uint32 valueDecayStart = 0;
 
-        float peak;
-        float peakDecay;
-        float peakDecayColour;
-        uint32 peakDecayStart;
+        float peak = 0.f;
+        float peakDecay = 1.f;
+        float peakDecayColour = 1.f;
+        uint32 peakDecayStart = 0;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band);
     };
@@ -70,15 +70,15 @@ private:
     OwnedArray<SpectralLogo::Band> bands;
     Path wave;
     
-    int bandCount;
-    int skewTime;
+    static constexpr int bandCount = 70;
     
-    float pulse;
+    int skewTime = 0;
+    float pulse = 0.f;
     
-    float randomnessRange;
-    float lineThickness;
-    float lineStepSize;
-    float lineWidth;
+    float randomnessRange = 0;
+    float lineThickness = 0;
+    float lineStepSize = 0;
+    float lineWidth = 0;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectralLogo);
 };

@@ -28,7 +28,7 @@
 #include "MainLayout.h"
 #include "SerializationKeys.h"
 #include "DashboardMenu.h"
-#include "LogoFader.h"
+#include "SpectralLogo.h"
 #include "Workspace.h"
 #include "SessionService.h"
 #include "IconComponent.h"
@@ -45,10 +45,10 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->addAndMakeVisible(backgroundB.get());
     this->backgroundA.reset(new PanelBackgroundA());
     this->addAndMakeVisible(backgroundA.get());
-    this->logoImage.reset(new LogoFader());
-    this->addAndMakeVisible(logoImage.get());
+    this->logo.reset(new SpectralLogo());
+    this->addAndMakeVisible(logo.get());
 
-    logoImage->setBounds(40, 32, 280, 280);
+    logo->setBounds(40, 32, 280, 280);
 
     this->projectsList.reset(new DashboardMenu(&App::Workspace()));
     this->addAndMakeVisible(projectsList.get());
@@ -106,7 +106,7 @@ Dashboard::~Dashboard()
     skew = nullptr;
     backgroundB = nullptr;
     backgroundA = nullptr;
-    logoImage = nullptr;
+    logo = nullptr;
     projectsList = nullptr;
     openProjectButton = nullptr;
     createProjectButton = nullptr;
@@ -142,18 +142,6 @@ void Dashboard::resized()
     //[/UserResized]
 }
 
-void Dashboard::visibilityChanged()
-{
-    //[UserCode_visibilityChanged] -- Add your code here...
-    if (this->isVisible())
-    {
-        #if HELIO_DESKTOP
-        this->logoImage->startFade();
-        #endif
-    }
-    //[/UserCode_visibilityChanged]
-}
-
 
 //[MiscUserCode]
 void Dashboard::changeListenerCallback(ChangeBroadcaster *source)
@@ -185,7 +173,6 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.660"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <METHODS>
-    <METHOD name="visibilityChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <TEXT pos="0Cc 5.5% 552 60" fill="solid: ffffff" hasStroke="0" text="Helio Workstation"
@@ -201,8 +188,8 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="981ceff5817d7b34" memberName="backgroundA" virtualName=""
              explicitFocusOrder="0" pos="0 0 320 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>
-  <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logoImage" virtualName=""
-                    explicitFocusOrder="0" pos="40 32 280 280" class="LogoFader"
+  <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logo" virtualName=""
+                    explicitFocusOrder="0" pos="40 32 280 280" class="SpectralLogo"
                     params=""/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="projectsList" virtualName=""
              explicitFocusOrder="0" pos="10Rr 10Rr 376 20M" sourceFile="Menu/DashboardMenu.cpp"

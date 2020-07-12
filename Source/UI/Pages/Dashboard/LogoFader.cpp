@@ -19,13 +19,11 @@
 #include "LogoFader.h"
 #include "SpectralLogo.h"
 
-#define DEFAULT_LOGO_SIZE 280
-
 LogoFader::LogoFader()
 {
     this->gfx.reset(new SpectralLogo());
     this->addAndMakeVisible(this->gfx.get());
-    this->setSize(DEFAULT_LOGO_SIZE, DEFAULT_LOGO_SIZE);
+    this->setSize(LogoFader::logoSize, LogoFader::logoSize);
 }
 
 LogoFader::~LogoFader()

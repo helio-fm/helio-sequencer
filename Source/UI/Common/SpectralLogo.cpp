@@ -20,35 +20,17 @@
 #include "ComponentFader.h"
 #include "ColourIDs.h"
 
-#define MAXDB (+4.0f)
-#define MINDB (-70.0f)
-#define NUM_WAVES (7)
-#define NUM_BANDS (70)
-#define NUM_SEGMENTS_TO_SKIP (8)
-#define PEAK_MAX_ALPHA (0.35f)
-
-#if HELIO_DESKTOP
-#   define UPDATE_TIMER (35)
-#   define BAND_FADE_MS (1000.f)
-#   define PEAK_FADE_MS (2500.f)
-#elif HELIO_MOBILE
-#   define UPDATE_TIMER (100)
-#   define BAND_FADE_MS (3000.f)
-#   define PEAK_FADE_MS (7500.f)
-#endif
+#define PEAK_MAX_ALPHA (0.75f)
+#define UPDATE_TIMER (50)
+#define BAND_FADE_MS (2000.f)
+#define PEAK_FADE_MS (7000.f)
+#define PULSE_SPEED  (40.f)
 
 SpectralLogo::SpectralLogo()
-    : Thread("Spectral Logo"),
-      colour(findDefaultColour(ColourIDs::Logo::fill)),
-      bandCount(NUM_BANDS),
-      skewTime(0),
-      pulse(0.f),
-      randomnessRange(0),
-      lineThickness(0),
-      lineStepSize(0),
-      lineWidth(0)
+    : Thread("Logo Animation"),
+      colour(findDefaultColour(ColourIDs::Logo::fill))
 {
-    for (int band = 0; band < this->bandCount; ++band)
+    for (int i = 0; i < SpectralLogo::bandCount; ++i)
     {
         this->bands.add(new SpectralLogo::Band(this));
     }
@@ -75,13 +57,11 @@ void SpectralLogo::run()
 
 void SpectralLogo::handleAsyncUpdate()
 {
-    this->pulse = fmodf(this->pulse + MathConstants<float>::pi / 18.f, MathConstants<float>::twoPi);
-    this->repaint();
-}
+    this->pulse = fmodf(this->pulse +
+        MathConstants<float>::pi / PULSE_SPEED,
+        MathConstants<float>::twoPi);
 
-float SpectralLogo::getRandomnessRange() const noexcept
-{
-    return this->randomnessRange;
+    this->repaint();
 }
 
 float SpectralLogo::getLineThickness() const noexcept
@@ -104,7 +84,7 @@ void SpectralLogo::resized()
     this->randomnessRange = float(this->getWidth()) / 8.f;
     this->lineThickness = ceilf(float(this->getWidth()) / 128.f);
     this->lineStepSize = ceilf(this->lineThickness * 1.5f);
-    this->lineWidth = (float(this->getWidth()) / float(NUM_BANDS) * 1.15f);
+    this->lineWidth = (float(this->getWidth()) / float(SpectralLogo::bandCount)); //* 1.1f)
 }
 
 void SpectralLogo::paint(Graphics &g)
@@ -122,10 +102,13 @@ void SpectralLogo::paint(Graphics &g)
         Random r;
         g.setColour(this->colour);
 
-        for (int i = 0; i < this->bandCount; ++i)
+        static constexpr auto numWaves = 7.f;
+        static constexpr auto coreCircleSize = 8;
+
+        for (int i = 0; i < SpectralLogo::bandCount; ++i)
         {
             const float waveOffset = - MathConstants<float>::halfPi;
-            const float wavePosition = float(i) * (MathConstants<float>::twoPi * float(NUM_WAVES) / float(this->bandCount));
+            const float wavePosition = float(i) * (MathConstants<float>::twoPi * numWaves / float(SpectralLogo::bandCount));
             const float multiplier = 0.5f + sinf(waveOffset + wavePosition) / 2.f;
 
             // Rays' sharpness:
@@ -137,11 +120,11 @@ void SpectralLogo::paint(Graphics &g)
             
             const float v =
                 (heptagramShape * bandSize) -
-                (r.nextFloat() * this->getRandomnessRange()) -
-                (pulseMultiplier * pulseMultiplier * this->getRandomnessRange() * (0.5f - heptagramShape) * 0.5f);
+                (r.nextFloat() * this->randomnessRange) -
+                (pulseMultiplier * pulseMultiplier * this->randomnessRange * (0.5f - heptagramShape) * 0.5f);
             
-            const float radians = float(i) * (MathConstants<float>::twoPi / float(this->bandCount));
-            g.fillPath(this->bands[i]->buildPath(v, cx, cy, bandSize, radians, NUM_SEGMENTS_TO_SKIP, timeNow));
+            const float radians = float(i) * (MathConstants<float>::twoPi / float(SpectralLogo::bandCount));
+            g.fillPath(this->bands[i]->buildPath(v, cx, cy, bandSize, radians, coreCircleSize, timeNow));
         }
 
         //static PNGImageFormat png;
@@ -155,14 +138,7 @@ void SpectralLogo::paint(Graphics &g)
 }
 
 SpectralLogo::Band::Band(SpectralLogo *parent) :
-    parent(parent),
-    value(0.f),
-    valueDecay(1.f),
-    valueDecayStart(0),
-    peak(0.f),
-    peakDecay(1.f),
-    peakDecayColour(1.f),
-    peakDecayStart(0) {}
+    parent(parent) {}
 
 void SpectralLogo::Band::reset()
 {

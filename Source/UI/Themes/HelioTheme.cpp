@@ -885,7 +885,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::ScriptEditor::punctuation, s->getTextColour().interpolatedWith(Colours::darkslateblue, 0.75f));
     this->setColour(ColourIDs::ScriptEditor::builtInClass, s->getTextColour().interpolatedWith(Colours::blue, 0.75f));
 
-    this->setColour(ColourIDs::Logo::fill, s->getTextColour().withMultipliedAlpha(0.85f));
+    this->setColour(ColourIDs::Logo::fill, s->getTextColour().withMultipliedAlpha(0.25f));
     this->setColour(ColourIDs::AudioMonitor::foreground, s->getTextColour());
 
     this->setColour(ColourIDs::VersionControl::connector, s->getTextColour().withAlpha(0.2f));

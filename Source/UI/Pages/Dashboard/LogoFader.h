@@ -17,7 +17,7 @@
 
 #pragma once
 
-class LogoFader : public Component, private Timer
+class LogoFader final : public Component, private Timer
 {
 public:
 
@@ -35,6 +35,8 @@ private:
     Component fadingDummy;
 
     UniquePointer<Component> gfx;
+
+    static constexpr auto logoSize = 280;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LogoFader)
 
