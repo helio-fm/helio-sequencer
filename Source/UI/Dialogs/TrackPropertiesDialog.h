@@ -33,7 +33,7 @@ class AnnotationsSequence;
 
 class TrackPropertiesDialog final : public FadingDialog,
                                     public TextEditor::Listener,
-                                    public ColourButtonListener,
+                                    public ColourButton::Listener,
                                     private Timer,
                                     public Button::Listener
 {

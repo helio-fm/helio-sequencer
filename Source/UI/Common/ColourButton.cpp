@@ -15,13 +15,8 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "ColourButton.h"
-
-//[MiscUserDefs]
 #include "IconComponent.h"
 #include "ComponentFader.h"
 #include "ColourIDs.h"
@@ -29,6 +24,13 @@
 class ColourButtonFrame final : public Component
 {
 public:
+
+    ColourButtonFrame()
+    {
+        this->setInterceptsMouseClicks(false, false);
+        this->setWantsKeyboardFocus(false);
+        this->setPaintingIsUnclipped(true);
+    }
 
     void paint(Graphics &g) override
     {
@@ -44,41 +46,27 @@ public:
         g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
     }
 };
-//[/MiscUserDefs]
 
-ColourButton::ColourButton(Colour c, ColourButtonListener *listener)
-    : index(0),
-      colour(c),
-      owner(listener)
+ColourButton::ColourButton(Colour c, ColourButton::Listener *listener) :
+    colour(c),
+    owner(listener)
 {
-
-    //[UserPreSize]
+    this->setPaintingIsUnclipped(true);
     this->setMouseClickGrabsKeyboardFocus(false);
-    //[/UserPreSize]
 
-    setSize (32, 32);
+    this->checkMark = make<IconComponent>(Icons::apply);
+    this->addChildComponent(this->checkMark.get());
 
-    //[Constructor]
-    //[/Constructor]
+    this->setSize(32, 32);
 }
 
 ColourButton::~ColourButton()
 {
-    //[Destructor_pre]
     this->checkMark = nullptr;
-    //[/Destructor_pre]
-
-
-    //[Destructor]
-    //[/Destructor]
 }
 
-void ColourButton::paint (Graphics& g)
+void ColourButton::paint(Graphics &g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
     const int y1 = 2;
     const int y2 = this->getHeight() - 2;
     const int x1 = 2;
@@ -96,39 +84,33 @@ void ColourButton::paint (Graphics& g)
     g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
     g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
     g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
-    //[/UserPaint]
 }
 
 void ColourButton::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->fader.cancelAllAnimations(true);
 
-    //[UserResized] Add your own custom resize handling here..
-    if (this->checkMark != nullptr)
-    {
-        const int s = jmin(this->getHeight(), this->getWidth()) - 4;
-        this->checkMark->setSize(s, s);
-        const auto c = this->getLocalBounds().getCentre();
-        this->checkMark->setCentrePosition(c.x, c.y + 3);
-        //this->checkMark->setBounds(this->getLocalBounds().reduced(8));
-    }
-    //[/UserResized]
+    const int s = jmin(this->getHeight(), this->getWidth()) - 4;
+    this->checkMark->setSize(s, s);
+
+    jassert(s < 30);
+
+    const auto c = this->getLocalBounds().getCentre();
+    this->checkMark->setCentrePosition(c.x, c.y + 3);
+    //this->checkMark->setBounds(this->getLocalBounds().reduced(8));
+
+    HighlightedComponent::resized();
 }
 
-void ColourButton::mouseDown (const MouseEvent& e)
+void ColourButton::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
-    if (this->checkMark == nullptr)
+    if (!this->isSelected())
     {
         this->select();
         this->owner->onColourButtonClicked(this);
     }
-    //[/UserCode_mouseDown]
 }
 
-
-//[MiscUserCode]
 Component *ColourButton::createHighlighterComponent()
 {
     return new ColourButtonFrame();
@@ -136,21 +118,19 @@ Component *ColourButton::createHighlighterComponent()
 
 void ColourButton::select()
 {
-    if (this->checkMark == nullptr)
+    if (!this->isSelected())
     {
-        this->checkMark.reset(new IconComponent(Icons::apply));
-        this->addChildComponent(this->checkMark.get());
-        this->resized();
+        this->selected = true;
         this->fader.fadeIn(this->checkMark.get(), 100);
     }
 }
 
 void ColourButton::deselect()
 {
-    if (this->checkMark != nullptr)
+    if (this->isSelected())
     {
-        this->fader.fadeOutSnapshot(this->checkMark.get(), 200);
-        this->checkMark = nullptr;
+        this->selected = false;
+        this->fader.fadeOut(this->checkMark.get(), 200);
     }
 }
 
@@ -163,24 +143,13 @@ void ColourButton::setButtonIndex(int val)
 {
     this->index = val;
 }
-//[/MiscUserCode]
 
-#if 0
-/*
-BEGIN_JUCER_METADATA
+bool ColourButton::isSelected() const noexcept
+{
+    return this->selected;
+}
 
-<JUCER_COMPONENT documentType="Component" className="ColourButton" template="../../Template"
-                 componentName="" parentClasses="public HighlightedComponent"
-                 constructorParams="Colour c, ColourButtonListener *listener"
-                 variableInitialisers="index(0),&#10;colour(c),&#10;owner(listener)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="32" initialHeight="32">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
+Colour ColourButton::getColour() const noexcept
+{
+    return this->colour;
+}

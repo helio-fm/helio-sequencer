@@ -17,60 +17,50 @@
 
 #pragma once
 
-//[Headers]
 #include "HighlightedComponent.h"
 #include "ComponentFader.h"
 
 class IconComponent;
 class ColourButton;
 
-struct ColourButtonListener
-{
-    virtual ~ColourButtonListener() {}
-    virtual void onColourButtonClicked(ColourButton *button) = 0;
-};
-//[/Headers]
-
-
-class ColourButton  : public HighlightedComponent
+class ColourButton final : public HighlightedComponent
 {
 public:
 
-    ColourButton (Colour c, ColourButtonListener *listener);
+    struct Listener
+    {
+        virtual ~Listener() {}
+        virtual void onColourButtonClicked(ColourButton *button) = 0;
+    };
 
+    ColourButton(Colour c, ColourButton::Listener *listener);
     ~ColourButton();
 
     //[UserMethods]
     void deselect();
     void select();
 
-    bool isSelected() const noexcept
-    { return this->checkMark != nullptr; }
-
-    Colour getColour() const noexcept
-    { return this->colour; }
+    bool isSelected() const noexcept;
+    Colour getColour() const noexcept;
 
     int getButtonIndex() const noexcept;
     void setButtonIndex(int val);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-
+    void mouseDown(const MouseEvent &e) override;
 
 private:
 
-    //[UserVariables]
     Component *createHighlighterComponent() override;
 
-    int index;
+    int index = 0;
+    bool selected = false;
+
     Colour colour;
     UniquePointer<IconComponent> checkMark;
-    ColourButtonListener *owner;
+    ColourButton::Listener *owner = nullptr;
     ComponentFader fader;
-    //[/UserVariables]
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourButton)
 };

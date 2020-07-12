@@ -25,7 +25,6 @@ class Transport;
 
 #include "HelperRectangle.h"
 #include "HybridRollListener.h"
-#include "ComponentFader.h"
 
 class LevelsMapScroller final :
     public Component,

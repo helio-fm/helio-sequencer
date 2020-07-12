@@ -17,58 +17,46 @@
 
 #pragma once
 
-//[Headers]
 #include "HighlightedComponent.h"
 #include "ComponentFader.h"
-
-class RadioButton;
-
-struct RadioButtonListener
-{
-    virtual ~RadioButtonListener() {}
-    virtual void onRadioButtonClicked(RadioButton *button) = 0;
-};
-//[/Headers]
-
 
 class RadioButton final : public HighlightedComponent
 {
 public:
 
-    RadioButton(const String &text, Colour c, RadioButtonListener *listener);
+    struct Listener
+    {
+        virtual ~Listener() {}
+        virtual void onRadioButtonClicked(RadioButton *button) = 0;
+    };
+
+    RadioButton(const String &text, Colour c, RadioButton::Listener *listener);
     ~RadioButton();
 
-    //[UserMethods]
     void deselect();
     void select();
 
-    bool isSelected() const noexcept
-    { return this->checkMark != nullptr; }
-
-    Colour getColour() const noexcept
-    { return this->colour; }
+    bool isSelected() const noexcept;
+    Colour getColour() const noexcept;
 
     int getButtonIndex() const noexcept;
     void setButtonIndex(int val);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-
+    void mouseDown(const MouseEvent &e) override;
 
 private:
 
-    //[UserVariables]
     Component *createHighlighterComponent() override;
 
-    int index;
+    int index = 0;
+    bool selected = false;
+
     Colour colour;
     UniquePointer<Component> checkMark;
-    RadioButtonListener *owner;
+    RadioButton::Listener *owner = nullptr;
     ComponentFader fader;
-    //[/UserVariables]
-
     UniquePointer<Label> label;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RadioButton)

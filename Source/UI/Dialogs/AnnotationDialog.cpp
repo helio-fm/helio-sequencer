@@ -459,7 +459,7 @@ void AnnotationDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ColourButtonListener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ColourButton::Listener, private Timer"
                  constructorParams="Component &amp;owner, AnnotationsSequence *sequence, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(sequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"

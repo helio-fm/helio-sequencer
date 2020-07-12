@@ -15,23 +15,18 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "RadioButton.h"
-
-//[MiscUserDefs]
-#include "ComponentFader.h"
 
 class RadioButtonFrame final : public Component
 {
 public:
 
-    RadioButtonFrame(float alpha) : alpha(alpha)
+    explicit RadioButtonFrame(float alpha) : alpha(alpha)
     {
-        this->setInterceptsMouseClicks(false, false);
         this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+        this->setWantsKeyboardFocus(false);
     }
 
     void paint(Graphics &g) override
@@ -57,50 +52,34 @@ private:
 
     float alpha = 0.f;
 };
-//[/MiscUserDefs]
 
-RadioButton::RadioButton(const String &text, Colour c, RadioButtonListener *listener)
-    : index(0),
-      colour(c),
-      owner(listener)
+RadioButton::RadioButton(const String &text, Colour c, RadioButton::Listener *listener) :
+    colour(c),
+    owner(listener)
 {
-    this->label.reset(new Label(String(),
-                                 String()));
+    this->label = make<Label>(String(), String());
     this->addAndMakeVisible(label.get());
-    this->label->setFont(Font (18.00f, Font::plain));
-    label->setJustificationType(Justification::centred);
-    label->setEditable(false, false, false);
 
-
-    //[UserPreSize]
+    this->label->setFont(Font(18.00f, Font::plain));
+    this->label->setJustificationType(Justification::centred);
+    this->label->setEditable(false, false, false);
     this->label->setText(text, dontSendNotification);
     this->label->setInterceptsMouseClicks(false, false);
-    //[/UserPreSize]
+
+    this->checkMark = make<RadioButtonFrame>(1.f);
+    this->addChildComponent(this->checkMark.get());
 
     this->setSize(32, 32);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
 RadioButton::~RadioButton()
 {
-    //[Destructor_pre]
     this->checkMark = nullptr;
-    //[/Destructor_pre]
-
-    label = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
+    this->label = nullptr;
 }
 
-void RadioButton::paint (Graphics& g)
+void RadioButton::paint(Graphics &g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
     const int y1 = 2;
     const int y2 = this->getHeight() - 2;
     const int x1 = 2;
@@ -118,26 +97,20 @@ void RadioButton::paint (Graphics& g)
     g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
     g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
     g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
-    //[/UserPaint]
 }
 
 void RadioButton::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->fader.cancelAllAnimations(true);
 
-    label->setBounds(0, 3, getWidth() - 0, getHeight() - 3);
-    //[UserResized] Add your own custom resize handling here..
-    if (this->checkMark != nullptr)
-    {
-        this->checkMark->setBounds(this->getLocalBounds());
-    }
-    //[/UserResized]
+    this->label->setBounds(0, 3, this->getWidth(), this->getHeight() - 3);
+    this->checkMark->setBounds(this->getLocalBounds());
+
+    HighlightedComponent::resized();
 }
 
-void RadioButton::mouseDown (const MouseEvent& e)
+void RadioButton::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     if (this->isSelected())
     {
         this->deselect();
@@ -148,11 +121,8 @@ void RadioButton::mouseDown (const MouseEvent& e)
     }
 
     this->owner->onRadioButtonClicked(this);
-    //[/UserCode_mouseDown]
 }
 
-
-//[MiscUserCode]
 Component *RadioButton::createHighlighterComponent()
 {
     return new RadioButtonFrame(0.5f);
@@ -160,21 +130,19 @@ Component *RadioButton::createHighlighterComponent()
 
 void RadioButton::select()
 {
-    if (this->checkMark == nullptr)
+    if (!this->isSelected())
     {
-        this->checkMark.reset(new RadioButtonFrame(1.f));
-        this->addChildComponent(this->checkMark.get());
-        this->resized();
+        this->selected = true;
         this->fader.fadeIn(this->checkMark.get(), 100);
     }
 }
 
 void RadioButton::deselect()
 {
-    if (this->checkMark != nullptr)
+    if (this->isSelected())
     {
-        this->fader.fadeOutSnapshot(this->checkMark.get(), 200);
-        this->checkMark = nullptr;
+        this->selected = false;
+        this->fader.fadeOut(this->checkMark.get(), 200);
     }
 }
 
@@ -187,31 +155,13 @@ void RadioButton::setButtonIndex(int val)
 {
     this->index = val;
 }
-//[/MiscUserCode]
 
-#if 0
-/*
-BEGIN_JUCER_METADATA
+bool RadioButton::isSelected() const noexcept
+{
+    return this->selected;
+}
 
-<JUCER_COMPONENT documentType="Component" className="RadioButton" template="../../Template"
-                 componentName="" parentClasses="public HighlightedComponent"
-                 constructorParams="const String &amp;text, Colour c, RadioButtonListener *listener"
-                 variableInitialisers="index(0),&#10;colour(c),&#10;owner(listener)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="32" initialHeight="32">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="ff14851992cbe505" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="0 3 0M 3M" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-
+Colour RadioButton::getColour() const noexcept
+{
+    return this->colour;
+}

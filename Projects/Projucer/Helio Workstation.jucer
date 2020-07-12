@@ -919,8 +919,6 @@
             <FILE id="ak0ZaE" name="Dashboard.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.h"/>
             <FILE id="Tigws8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.cpp"/>
             <FILE id="yJ1nQL" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.h"/>
-            <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.cpp"/>
-            <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/LogoFader.h"/>
             <FILE id="D8xNhI" name="UpdatesInfoComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.cpp"/>
             <FILE id="qpT5aF" name="UpdatesInfoComponent.h" compile="0" resource="0"
@@ -1363,8 +1361,6 @@
                 file="../../Source/UI/Sequencer/SequencerLayout.h"/>
         </GROUP>
         <GROUP id="{F85E9949-99EB-1D99-18B7-41B94B555349}" name="Themes">
-          <FILE id="O8SrxF" name="ComponentFader.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ComponentFader.cpp"/>
           <FILE id="QUBfY2" name="ComponentFader.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ComponentFader.h"/>
           <FILE id="A9QahU" name="DialogBackground.h" compile="0" resource="0"

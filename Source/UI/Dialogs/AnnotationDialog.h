@@ -33,7 +33,7 @@ class AnnotationsSequence;
 
 class AnnotationDialog final : public FadingDialog,
                                public TextEditor::Listener,
-                               public ColourButtonListener,
+                               public ColourButton::Listener,
                                private Timer,
                                public Button::Listener
 {

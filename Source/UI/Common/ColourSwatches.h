@@ -19,8 +19,7 @@
 
 #include "ColourButton.h"
 
-class ColourSwatches : public Component,
-    public ColourButtonListener
+class ColourSwatches final : public Component, public ColourButton::Listener
 {
 public:
 

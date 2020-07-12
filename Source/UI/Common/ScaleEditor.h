@@ -20,7 +20,7 @@
 #include "Scale.h"
 #include "RadioButton.h"
 
-class ScaleEditor final : public Component, public RadioButtonListener
+class ScaleEditor final : public Component, public RadioButton::Listener
 {
 public:
 

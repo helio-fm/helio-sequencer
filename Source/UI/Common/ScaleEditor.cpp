@@ -35,9 +35,7 @@ ScaleEditor::ScaleEditor() : scale(Scale::getNaturalMajorScale())
     this->updateButtons();
 }
 
-ScaleEditor::~ScaleEditor()
-{
-}
+ScaleEditor::~ScaleEditor() {}
 
 void ScaleEditor::resized()
 {

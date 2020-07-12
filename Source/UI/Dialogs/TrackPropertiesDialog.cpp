@@ -357,7 +357,7 @@ void TrackPropertiesDialog::doOk()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TrackPropertiesDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ColourButtonListener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ColourButton::Listener, private Timer"
                  constructorParams="ProjectNode &amp;project, WeakReference&lt;MidiTrack&gt; track, const String &amp;title = &quot;&quot;, const String &amp;confirmation = &quot;&quot;"
                  variableInitialisers="project(project),&#10;track(track)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"

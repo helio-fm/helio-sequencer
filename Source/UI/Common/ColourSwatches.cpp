@@ -21,8 +21,7 @@
 
 ColourSwatches::ColourSwatches()
 {
-    const auto colours(ColourIDs::getColoursList());
-    for (const auto &colour : colours)
+    for (const auto &colour : ColourIDs::getColoursList())
     {
         auto button = make<ColourButton>(colour, this);
         this->addAndMakeVisible(button.get());
@@ -51,8 +50,7 @@ void ColourSwatches::onColourButtonClicked(ColourButton *clickedButton)
         }
     }
 
-    if (ColourButtonListener *parentListener =
-        dynamic_cast<ColourButtonListener *>(this->getParentComponent()))
+    if (auto *parentListener = dynamic_cast<ColourButton::Listener *>(this->getParentComponent()))
     {
         this->lastSelectedColour = clickedButton->getColour();
         parentListener->onColourButtonClicked(clickedButton);

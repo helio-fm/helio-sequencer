@@ -22,7 +22,6 @@
 #include "InitScreen.h"
 
 //[MiscUserDefs]
-#include "LogoFader.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
 #include "Workspace.h"

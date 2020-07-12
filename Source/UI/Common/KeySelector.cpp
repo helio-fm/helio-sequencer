@@ -28,13 +28,11 @@ KeySelector::KeySelector()
     const StringArray keys(Scale::getKeyNames());
     for (int i = 0; i < keys.size(); ++i)
     {
-        UniquePointer<RadioButton> button(new RadioButton(keys[i], base, this));
+        auto button = make<RadioButton>(keys[i], base, this);
         button->setButtonIndex(i);
         this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
     }
-
-    this->buttons.getFirst()->select();
 }
 
 void KeySelector::resized()

@@ -21,24 +21,24 @@ class HighlightedComponent : virtual public Component
 {
 public:
     
-    HighlightedComponent() :
-        highlighted(false),
-        highlighter(nullptr),
-        fadingHighlights(false)
+    HighlightedComponent()
     {
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
     }
     
-    void setUsesFadingHighlights(bool shouldFade)
-    {
-        this->fadingHighlights = shouldFade;
-    }
-    
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
-    
+
+    void resized() override
+    {
+        if (this->highlighter != nullptr)
+        {
+            this->highlighter->setBounds(this->getLocalBounds());
+        }
+    }
+
     void mouseEnter(const MouseEvent &) override
     {
         this->setHighlighted(true);
@@ -114,8 +114,8 @@ protected:
     
 private:
 
-    bool fadingHighlights;
-    bool highlighted;
+    bool fadingHighlights = false;
+    bool highlighted = false;
     
     UniquePointer<Component> highlighter;
     ComponentAnimator highlightAnimator;

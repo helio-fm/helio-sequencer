@@ -17,34 +17,33 @@
 
 #pragma once
 
-class ComponentFader final : public ChangeBroadcaster, private Timer
+// Simply a shortcut wrapper for convenience
+class ComponentFader final : public ComponentAnimator
 {
 public:
 
     ComponentFader() = default;
-    
-    void animateComponent(Component *component,
-                          float finalAlpha,
-                          int animationDurationMilliseconds,
-                          bool useProxyComponent,
-                          bool useProxyOnly = false);
-    
+
     // Always uses proxy component
-    void fadeOut(Component *component, int millisecondsToTake);
-    void fadeIn(Component *component, int millisecondsToTake);
+    void fadeOut(Component *component, int millisecondsToTake)
+    {
+        if (component != nullptr)
+        {
+            this->animateComponent(component, component->getBounds(), 0.0f, millisecondsToTake, true, 1.f, 1.f);
+            component->setVisible(false);
+        }
+    }
 
-    // Always uses proxy component, doesn't change the original one
-    void fadeOutSnapshot(Component *component, int millisecondsToTake);
+    void fadeIn(Component *component, int millisecondsToTake)
+    {
+        if (component != nullptr && !(component->isVisible() && component->getAlpha() == 1.0f))
+        {
+            component->setAlpha(0.0f);
+            component->setVisible(true);
+            this->animateComponent(component, component->getBounds(), 1.0f, millisecondsToTake, false, 1.f, 1.f);
+        }
+    }
 
-    void softFadeOut(float targetAlpha, Component *component, int millisecondsToTake);
-    void softFadeIn(Component *component, int millisecondsToTake);
-
-    void cancelAnimation(Component *component, const bool setFinalAlpha);
-    void cancelAllAnimations(bool setFinalAlpha);
-    
-    bool isAnimating(Component *component) const noexcept;
-    bool isAnimating() const noexcept;
-    
     static float timeToDistance(float time, float startSpeed = 0.f,
         float midSpeed = 2.f, float endSpeed = 0.f) noexcept
     {
@@ -52,55 +51,4 @@ public:
             : 0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed))
             + (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
     }
-
-    static double timeToDistance(double time, double startSpeed = 0.0,
-        double midSpeed = 2.0, double endSpeed = 0.0) noexcept
-    {
-        return (time < 0.5) ? time * (startSpeed + time * (midSpeed - startSpeed))
-            : 0.5 * (startSpeed + 0.5 * (midSpeed - startSpeed))
-            + (time - 0.5) * (midSpeed + (time - 0.5) * (endSpeed - midSpeed));
-    }
-
-private:
-
-    class AnimationTask final
-    {
-    public:
-
-        explicit AnimationTask(Component *c) noexcept : component(c) {}
-
-        void reset(float finalAlpha,
-            int millisecondsToSpendMoving,
-            bool useProxyComponent,
-            bool useProxyOnly);
-        bool useTimeslice(const int elapsed);
-        void moveToFinalDestination();
-
-        class ProxyComponent final : public Component
-        {
-        public:
-            explicit ProxyComponent(Component& c);
-            void paint(Graphics& g) override;
-            Image image;
-            JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProxyComponent)
-        };
-
-        WeakReference<Component> component;
-        UniquePointer<Component> proxy;
-
-        double destAlpha;
-        int msElapsed, msTotal;
-        double startSpeed, midSpeed, endSpeed, lastProgress;
-        double left, top, right, bottom, alpha;
-        bool isChangingAlpha;
-        bool allowedToModifyOrigin;
-    };
-
-    OwnedArray<AnimationTask> tasks;
-    uint32 lastTime = 0;
-    
-    AnimationTask *findTaskFor(Component *) const noexcept;
-    void timerCallback() override;
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ComponentFader)
 };

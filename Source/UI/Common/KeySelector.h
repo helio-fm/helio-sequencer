@@ -19,7 +19,7 @@
 
 #include "RadioButton.h"
 
-class KeySelector final : public Component, public RadioButtonListener
+class KeySelector final : public Component, public RadioButton::Listener
 {
 public:
 
