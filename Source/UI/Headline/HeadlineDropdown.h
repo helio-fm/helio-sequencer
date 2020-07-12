@@ -48,6 +48,8 @@ private:
 
     //[UserVariables]
 
+    static constexpr auto padding = 4;
+
     WeakReference<HeadlineItemDataSource> item;
 
     void timerCallback() override;

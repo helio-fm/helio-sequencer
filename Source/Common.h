@@ -197,6 +197,25 @@ namespace Globals
         static constexpr auto onOffControllerState = false;
         static constexpr auto automationControllerCurve = 0.5f;
     }
+
+    namespace UI
+    {
+        #if HELIO_MOBILE
+
+        static constexpr auto headlineHeight = 42;
+
+        #elif HELIO_DESKTOP
+
+        static constexpr auto headlineHeight = 34;
+
+        #endif
+
+        static constexpr auto sidebarWidth = 44;
+        static constexpr auto sidebarRowHeight = 38;
+
+        static constexpr auto projectMapHeight = 80;
+        static constexpr auto levelsMapHeight = 128;
+    }
 }
 
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:

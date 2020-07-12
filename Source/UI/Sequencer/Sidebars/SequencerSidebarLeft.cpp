@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 
-#include "SequencerLayout.h"
 #include "TreeNode.h"
 #include "SerializationKeys.h"
 #include "WaveformAudioMonitorComponent.h"
@@ -42,7 +41,7 @@
 
 static inline constexpr int getAudioMonitorHeight()
 {
-    return SequencerLayout::getPianoMapHeight() - 2;
+    return Globals::UI::projectMapHeight - 2;
 }
 
 //[/MiscUserDefs]
@@ -86,7 +85,7 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
 
     this->recreateMenu();
     this->listBox->setMultipleSelectionEnabled(false);
-    this->listBox->setRowHeight(SEQUENCER_SIDEBAR_ROW_HEIGHT);
+    this->listBox->setRowHeight(Globals::UI::sidebarRowHeight);
     this->listBox->setModel(this);
 
     this->switchLinearModeButton->setVisible(false);

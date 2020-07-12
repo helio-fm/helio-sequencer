@@ -39,7 +39,6 @@
 #include "NotesTuningPanel.h"
 #include "MenuPanel.h"
 #include "MainLayout.h"
-#include "SequencerLayout.h"
 #include "Workspace.h"
 #include "CachedLabelImage.h"
 #include "Config.h"
@@ -100,7 +99,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->setInterceptsMouseClicks(false, true);
 
     this->listBox->setMultipleSelectionEnabled(false);
-    this->listBox->setRowHeight(SEQUENCER_SIDEBAR_ROW_HEIGHT);
+    this->listBox->setRowHeight(Globals::UI::sidebarRowHeight);
     this->listBox->setModel(this);
 
     // This one doesn't change too frequently:
@@ -120,7 +119,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     //[Constructor]
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 
-    this->setSize(SEQUENCER_SIDEBAR_WIDTH, 640);
+    this->setSize(Globals::UI::sidebarWidth, 640);
 
     this->project.getTransport().addTransportListener(this);
     this->project.getEditMode().addChangeListener(this);

@@ -22,7 +22,6 @@
 #include "HeadlineItem.h"
 
 //[MiscUserDefs]
-#include "Headline.h"
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
@@ -228,7 +227,7 @@ void HeadlineItem::updateContent()
         this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont().getStringWidth(this->titleLabel->getText());
         const int maxTextWidth = this->titleLabel->getWidth();
-        this->setSize(jmin(textWidth, maxTextWidth) + 64, HEADLINE_HEIGHT - 2);
+        this->setSize(jmin(textWidth, maxTextWidth) + 64, Globals::UI::headlineHeight - 2);
     }
 }
 

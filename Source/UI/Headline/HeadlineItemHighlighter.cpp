@@ -22,7 +22,6 @@
 #include "HeadlineItemHighlighter.h"
 
 //[MiscUserDefs]
-#include "Headline.h"
 #include "IconComponent.h"
 #include "ColourIDs.h"
 //[/MiscUserDefs]
@@ -56,7 +55,7 @@ HeadlineItemHighlighter::HeadlineItemHighlighter(WeakReference<HeadlineItemDataS
         this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont()
             .getStringWidth(this->titleLabel->getText());
-        this->setSize(textWidth + 64, HEADLINE_HEIGHT);
+        this->setSize(textWidth + 64, Globals::UI::headlineHeight);
     }
     //[/Constructor]
 }

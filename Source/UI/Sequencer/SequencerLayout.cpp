@@ -170,7 +170,7 @@ private:
     void updateAnimatedRollsBounds()
     {
         const Rectangle<int> r(this->getLocalBounds());
-        const int scrollerHeight = SequencerLayout::getPianoMapHeight();
+        const int scrollerHeight = Globals::UI::projectMapHeight;
 
 #if VERTICAL_ROLLS_LAYOUT
         const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
@@ -192,7 +192,7 @@ private:
     void updateAnimatedRollsPositions()
     {
         const Rectangle<int> r(this->getLocalBounds());
-        const int scrollerHeight = SequencerLayout::getPianoMapHeight();
+        const int scrollerHeight = Globals::UI::projectMapHeight;
 
 #if VERTICAL_ROLLS_LAYOUT
         const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
@@ -211,11 +211,11 @@ private:
 
     void updateAnimatedMapsBounds()
     {
-        const auto pianoRect = this->getLocalBounds().removeFromBottom(SequencerLayout::getPianoMapHeight());
-        const auto levelsRect = this->getLocalBounds().removeFromBottom(SequencerLayout::getLevelsMapHeight());
-        const auto levelsFullOffset = SequencerLayout::getLevelsMapHeight() - SequencerLayout::getPianoMapHeight();
+        const auto pianoRect = this->getLocalBounds().removeFromBottom(Globals::UI::projectMapHeight);
+        const auto levelsRect = this->getLocalBounds().removeFromBottom(Globals::UI::levelsMapHeight);
+        const auto levelsFullOffset = Globals::UI::levelsMapHeight - Globals::UI::projectMapHeight;
 
-        const int pianoMapPos = int(this->mapsAnimation.getPosition() * SequencerLayout::getPianoMapHeight());
+        const int pianoMapPos = int(this->mapsAnimation.getPosition() * Globals::UI::projectMapHeight);
         const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
 
         this->pianoScroller->setBounds(pianoRect.translated(0, pianoMapPos));
@@ -227,10 +227,10 @@ private:
 
     void updateAnimatedMapsPositions()
     {
-        const auto pianoMapY = this->getHeight() - SequencerLayout::getPianoMapHeight();
-        const auto levelsFullOffset = SequencerLayout::getLevelsMapHeight() - SequencerLayout::getPianoMapHeight();
+        const auto pianoMapY = this->getHeight() - Globals::UI::projectMapHeight;
+        const auto levelsFullOffset = Globals::UI::levelsMapHeight - Globals::UI::projectMapHeight;
 
-        const int pianoMapPos = int(this->mapsAnimation.getPosition() * SequencerLayout::getPianoMapHeight());
+        const int pianoMapPos = int(this->mapsAnimation.getPosition() * Globals::UI::projectMapHeight);
         const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
 
         this->pianoScroller->setTopLeftPosition(0, pianoMapY + pianoMapPos);
@@ -431,7 +431,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     // add sidebars
     this->rollToolsSidebar = make<SequencerSidebarRight>(this->project);
     this->rollNavSidebar = make<SequencerSidebarLeft>(this->project);
-    this->rollNavSidebar->setSize(SEQUENCER_SIDEBAR_WIDTH, this->getParentHeight());
+    this->rollNavSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
     // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
 

@@ -232,13 +232,12 @@ Rectangle<int> MainLayout::getBoundsForPopups() const
 {
     Rectangle<int> r(this->getLocalBounds());
 
-    r.removeFromLeft(SEQUENCER_SIDEBAR_WIDTH);
-    r.removeFromRight(SEQUENCER_SIDEBAR_WIDTH);
+    r.removeFromLeft(Globals::UI::sidebarWidth);
+    r.removeFromRight(Globals::UI::sidebarWidth);
 
     if (App::isUsingNativeTitleBar())
     {
-        // todo move HEADLINE_HEIGHT into constants
-        r.removeFromTop(HEADLINE_HEIGHT);
+        r.removeFromTop(Globals::UI::headlineHeight);
     }
 
     // todo free some more space from the top:
@@ -261,7 +260,7 @@ void MainLayout::resized()
 
     if (App::isUsingNativeTitleBar())
     {
-        this->headline->setBounds(r.removeFromTop(HEADLINE_HEIGHT));
+        this->headline->setBounds(r.removeFromTop(Globals::UI::headlineHeight));
     }
 
     if (this->currentContent)

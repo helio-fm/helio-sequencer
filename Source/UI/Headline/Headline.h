@@ -25,12 +25,6 @@ class IconButton;
 class HeadlineItem;
 class HeadlineItemDataSource;
 
-#if HELIO_MOBILE
-#   define HEADLINE_HEIGHT (42)
-#elif HELIO_DESKTOP
-#   define HEADLINE_HEIGHT (34)
-#endif
-
 //[/Headers]
 
 #include "HeadlineNavigationPanel.h"
@@ -78,6 +72,9 @@ private:
     UniquePointer<HeadlineItem> selectionItem;
 
     float getAlphaForAnimation() const noexcept;
+
+    static constexpr auto itemsOverlapOffset = 16;
+    static constexpr auto rootNodeOffset = Globals::UI::sidebarWidth;
 
     //[/UserVariables]
 

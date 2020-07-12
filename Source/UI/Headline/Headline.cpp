@@ -30,8 +30,6 @@
 #include "SequencerLayout.h"
 #include "MainLayout.h"
 
-#define HEADLINE_ITEMS_OVERLAP (16)
-#define HEADLINE_ROOT_X SEQUENCER_SIDEBAR_WIDTH
 //[/MiscUserDefs]
 
 Headline::Headline()
@@ -111,7 +109,7 @@ void Headline::handleCommandMessage (int commandId)
 
 void Headline::handleAsyncUpdate()
 {
-    int posX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
+    int posX = Headline::itemsOverlapOffset + Headline::rootNodeOffset;
     TreeNode *previousItem = nullptr;
 
     const bool hasSelectionItem = this->selectionItem != nullptr &&
@@ -136,7 +134,7 @@ void Headline::handleAsyncUpdate()
             if (hasSelectionItem)
             {
                 this->animator.cancelAnimation(this->selectionItem.get(), false);
-                this->selectionItem->setTopLeftPosition(HEADLINE_ROOT_X, this->selectionItem->getY());
+                this->selectionItem->setTopLeftPosition(Headline::rootNodeOffset, this->selectionItem->getY());
             }
 
             break;
@@ -146,7 +144,7 @@ void Headline::handleAsyncUpdate()
 
         const auto boundsBefore = child->getBounds();
         child->updateContent();
-        const auto boundsAfter = child->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
+        const auto boundsAfter = child->getBounds().withX(posX - Headline::itemsOverlapOffset);
         this->animator.cancelAnimation(child, false);
         if (boundsBefore != boundsAfter)
         {
@@ -154,12 +152,12 @@ void Headline::handleAsyncUpdate()
             this->animator.animateComponent(child, boundsAfter, 1.f, 250, false, 1.f, 0.f);
         }
 
-        posX += boundsAfter.getWidth() - HEADLINE_ITEMS_OVERLAP;
+        posX += boundsAfter.getWidth() - Headline::itemsOverlapOffset;
     }
 
     if (hasSelectionItem)
     {
-        const auto finalPos = this->selectionItem->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
+        const auto finalPos = this->selectionItem->getBounds().withX(posX - Headline::itemsOverlapOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
         this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, 250, false, 1.f, 0.f);
         this->selectionItem->toBack();
@@ -202,7 +200,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
 
     // Finds the first inconsistency point in the chain
     int firstInvalidUnitIndex = 0;
-    int fadePositionX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
+    int fadePositionX = Headline::itemsOverlapOffset + Headline::rootNodeOffset;
     for (; firstInvalidUnitIndex < this->chain.size(); firstInvalidUnitIndex++)
     {
         if (this->chain[firstInvalidUnitIndex]->getDataSource().wasObjectDeleted() ||
@@ -211,7 +209,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
             break;
         }
 
-        fadePositionX += (this->chain[firstInvalidUnitIndex]->getWidth() - HEADLINE_ITEMS_OVERLAP);
+        fadePositionX += (this->chain[firstInvalidUnitIndex]->getWidth() - Headline::itemsOverlapOffset);
     }
 
     // Removes the rest of the chain
@@ -235,8 +233,8 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         child->setTopLeftPosition(fadePositionX - child->getWidth(), 0);
         child->setAlpha(startingAlpha);
         child->toBack();
-        const auto finalPos = child->getBounds().withX(lastPosX - HEADLINE_ITEMS_OVERLAP);
-        lastPosX += child->getWidth() - HEADLINE_ITEMS_OVERLAP;
+        const auto finalPos = child->getBounds().withX(lastPosX - Headline::itemsOverlapOffset);
+        lastPosX += child->getWidth() - Headline::itemsOverlapOffset;
         this->animator.animateComponent(child, finalPos, 1.f, 150, false, 1.f, 0.f);
     }
 
@@ -263,7 +261,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
 
     this->hideSelectionMenu();
 
-    const auto x = this->getChainWidth() + HEADLINE_ROOT_X;
+    const auto x = this->getChainWidth() + Headline::rootNodeOffset;
     this->selectionItem = make<HeadlineItem>(menuSource, *this);
     this->selectionItem->updateContent();
     this->addAndMakeVisible(this->selectionItem.get());
@@ -283,7 +281,7 @@ void Headline::hideSelectionMenu()
         // TODO test animations for all-chain updates
         //const auto w = this->selectionItem->getBounds().getWidth();
         //const auto finalPos = this->selectionItem->getBounds().translated(-w, 0);
-        const auto finalPos = this->selectionItem->getBounds().withX(HEADLINE_ROOT_X);
+        const auto finalPos = this->selectionItem->getBounds().withX(Headline::rootNodeOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
         this->animator.animateComponent(this->selectionItem.get(), finalPos, this->getAlphaForAnimation(), 150, true, 0.f, 1.f);
         this->selectionItem = nullptr;
@@ -300,7 +298,7 @@ int Headline::getChainWidth() const noexcept
     int w = 0;
     for (const auto &child : this->chain)
     {
-        w += child->getWidth() - HEADLINE_ITEMS_OVERLAP;
+        w += child->getWidth() - Headline::itemsOverlapOffset;
     }
     return w;
 }

@@ -22,7 +22,6 @@
 #include "HeadlineDropdown.h"
 
 //[MiscUserDefs]
-#include "Headline.h"
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineItemDataSource.h"
@@ -31,8 +30,6 @@
 #include "MainLayout.h"
 #include "ColourIDs.h"
 #include "TreeNode.h"
-
-static constexpr int getPadding() { return 4; }
 
 //[/MiscUserDefs]
 
@@ -89,18 +86,18 @@ void HeadlineDropdown::paint (Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).brighter(0.035f));
-    g.fillRect(1, HEADLINE_HEIGHT - 3, this->getWidth() - 3, this->getHeight() - HEADLINE_HEIGHT + 3);
+    g.fillRect(1, Globals::UI::headlineHeight - 3, this->getWidth() - 3, this->getHeight() - Globals::UI::headlineHeight + 3);
 
     // Draw a nice border around the menu:
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
     g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth() - 1));
-    g.drawVerticalLine(0, HEADLINE_HEIGHT - 1.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 2, HEADLINE_HEIGHT - 1.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(0, Globals::UI::headlineHeight - 1.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 2, Globals::UI::headlineHeight - 1.f, float(this->getHeight() - 1));
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-    g.drawVerticalLine(1, HEADLINE_HEIGHT - 2.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 3, HEADLINE_HEIGHT - 2.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(1, Globals::UI::headlineHeight - 2.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 3, Globals::UI::headlineHeight - 2.f, float(this->getHeight() - 1));
 
     //[/UserPaint]
 }
@@ -116,8 +113,11 @@ void HeadlineDropdown::resized()
     //[UserResized] Add your own custom resize handling here..
 #endif
 
-    this->content->setBounds(2, HEADLINE_HEIGHT - 1, this->getWidth() - getPadding(), this->getHeight() - HEADLINE_HEIGHT);
-    this->header->setBounds(0, 0, this->getWidth() - 0, HEADLINE_HEIGHT);
+    this->content->setBounds(2, Globals::UI::headlineHeight - 1,
+        this->getWidth() - HeadlineDropdown::padding,
+        this->getHeight() - Globals::UI::headlineHeight);
+
+    this->header->setBounds(0, 0, this->getWidth() - 0, Globals::UI::headlineHeight);
 
     //[/UserResized]
 }
@@ -186,12 +186,12 @@ void HeadlineDropdown::timerCallback()
 
 void HeadlineDropdown::syncWidthWithContent()
 {
-    if (this->getWidth() != this->content->getWidth() + getPadding() ||
-        this->header->getWidth() != this->content->getWidth() + getPadding() ||
-        this->getHeight() != this->content->getHeight() + HEADLINE_HEIGHT)
+    if (this->getWidth() != this->content->getWidth() + HeadlineDropdown::padding ||
+        this->header->getWidth() != this->content->getWidth() + HeadlineDropdown::padding ||
+        this->getHeight() != this->content->getHeight() + Globals::UI::headlineHeight)
     {
-        const int w = jmax(this->header->getWidth(), this->content->getWidth() + getPadding());
-        this->setSize(w, this->content->getHeight() + HEADLINE_HEIGHT);
+        const int w = jmax(this->header->getWidth(), this->content->getWidth() + HeadlineDropdown::padding);
+        this->setSize(w, this->content->getHeight() + Globals::UI::headlineHeight);
     }
 }
 

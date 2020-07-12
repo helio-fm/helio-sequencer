@@ -31,9 +31,6 @@ class Origami;
 class Headline;
 class Clip;
 
-#define SEQUENCER_SIDEBAR_WIDTH (44)
-#define SEQUENCER_SIDEBAR_ROW_HEIGHT (38)
-
 class SequencerLayout final :
     public Component,
     public Serializable,
@@ -44,9 +41,6 @@ public:
 
     explicit SequencerLayout(ProjectNode &parentProject);
     ~SequencerLayout() override;
-
-    static constexpr int getPianoMapHeight() { return 80; }
-    static constexpr int getLevelsMapHeight() { return 128; }
 
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);

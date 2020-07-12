@@ -24,8 +24,6 @@
 //[MiscUserDefs]
 #include "CommandIDs.h"
 #include "SerializationKeys.h"
-
-#include "Headline.h"
 #include "Config.h"
 
 #include "Workspace.h"
@@ -33,9 +31,7 @@
 #include "ProjectNode.h"
 #include "PianoRoll.h"
 
-static const juce_wchar kTildaKey = '`';
-
-#define COMMAND_PALETTE_ROW_HEIGHT (28)
+static constexpr juce_wchar kTildaKey = '`';
 
 //[/MiscUserDefs]
 
@@ -84,7 +80,7 @@ CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
     this->defaultActionsProvider = this->actionsProviders.getFirst();
     this->currentActionsProvider = this->defaultActionsProvider;
 
-    this->actionsList->setRowHeight(COMMAND_PALETTE_ROW_HEIGHT);
+    this->actionsList->setRowHeight(CommandPalette::rowHeight);
     //this->actionsList->setMouseMoveSelectsRows(true); // fucks up keyboard select :(
     this->actionsList->getViewport()->setScrollBarThickness(2);
     this->actionsList->setModel(this);
@@ -387,7 +383,7 @@ void CommandPalette::fadeOut()
 
 void CommandPalette::updatePosition()
 {
-    const auto top = App::isUsingNativeTitleBar() ? HEADLINE_HEIGHT : HEADLINE_HEIGHT + 1;
+    const auto top = App::isUsingNativeTitleBar() ? Globals::UI::headlineHeight : Globals::UI::headlineHeight + 1;
     this->setTopLeftPosition(this->getParentWidth() / 2 - this->getWidth() / 2, top);
 }
 
@@ -439,13 +435,13 @@ int CommandPalette::getHeightToFitActions() const
 {
     const auto numRows = this->currentActionsProvider->getFilteredActions().size();
     const auto margin = this->getHeight() - this->actionsList->getHeight();
-    const auto maxRows = (App::Layout().getHeight() / 3) / COMMAND_PALETTE_ROW_HEIGHT;
-    return jlimit(4, maxRows, numRows) * COMMAND_PALETTE_ROW_HEIGHT + margin;
+    const auto maxRows = (App::Layout().getHeight() / 3) / CommandPalette::rowHeight;
+    return jlimit(4, maxRows, numRows) * CommandPalette::rowHeight + margin;
 }
 
 int CommandPalette::getNumVisibleRows() const noexcept
 {
-    return this->actionsList->getHeight() / COMMAND_PALETTE_ROW_HEIGHT;
+    return this->actionsList->getHeight() / CommandPalette::rowHeight;
 }
 
 //[/MiscUserCode]

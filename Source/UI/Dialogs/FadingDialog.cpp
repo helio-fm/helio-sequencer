@@ -20,7 +20,6 @@
 #include "DialogBackground.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
-#include "Headline.h"
 
 #define DIALOG_HAS_BACKGROUND 1
 //#define DIALOG_HAS_BACKGROUND 0
@@ -35,7 +34,7 @@ public:
         bool, bool, bool, bool) override
     {
         const auto constrain = App::Layout().getBoundsForPopups()
-            .translated(0, HEADLINE_HEIGHT).reduced(2);
+            .translated(0, Globals::UI::headlineHeight).reduced(2);
 
         bounds = bounds.constrainedWithin(constrain);
     }

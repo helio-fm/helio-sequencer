@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "HeadlineContextMenuController.h"
 
-#include "Headline.h"
 #include "HeadlineItem.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
@@ -28,8 +27,6 @@
 class ContextMenuComponent final : public Component
 {
 public:
-
-    static constexpr auto padding = 4;
 
     ContextMenuComponent()
     {
@@ -111,6 +108,8 @@ public:
 
 private:
 
+    static constexpr auto padding = 4;
+
     void syncBoundsWithContent()
     {
         if (this->getWidth() != this->content->getWidth() + padding ||
@@ -147,7 +146,7 @@ void HeadlineContextMenuController::showMenu(const MouseEvent &e, int delay)
 
     if (!App::isUsingNativeTitleBar())
     {
-        this->menuPosition.y += HEADLINE_HEIGHT;
+        this->menuPosition.y += Globals::UI::headlineHeight;
     }
 
     this->startTimer(delay);
