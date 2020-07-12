@@ -1168,9 +1168,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\InitScreen.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\LogoFader.cpp">
-      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClCompile>
@@ -1470,9 +1467,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ComponentFader.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\HelioTheme.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
@@ -4225,9 +4219,6 @@
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\InitScreen.h">
-      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\LogoFader.h">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.h">

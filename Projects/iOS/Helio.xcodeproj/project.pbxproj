@@ -318,13 +318,6 @@
 			path = ../../Source/UI/Headline/HeadlineItemDataSource.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		0729B693DB26F9A7AB9334CA = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = LogoFader.h;
-			path = ../../Source/UI/Pages/Dashboard/LogoFader.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		07A51E66E37DBEBE13D979E4 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -1149,13 +1142,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = KeySignatureSmallComponent.h;
 			path = ../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureSmallComponent.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		2BB5D98535886F5E5FA4F52E = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = LogoFader.cpp;
-			path = ../../Source/UI/Pages/Dashboard/LogoFader.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		2BBC7BF4112C3BFF7F841C3D = {
@@ -3697,13 +3683,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PanelBackgroundC.h;
 			path = ../../Source/UI/Themes/PanelBackgroundC.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		97E45CA74A8F783626E095A9 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ComponentFader.cpp;
-			path = ../../Source/UI/Themes/ComponentFader.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		98A8C0A00E7DACE270487093 = {
@@ -6775,8 +6754,6 @@
 				9191B3672D45F496945F1E94,
 				F2DCBD27D5D065425D06E74F,
 				D4FC8ECA9ABFE5EA6A92C629,
-				2BB5D98535886F5E5FA4F52E,
-				0729B693DB26F9A7AB9334CA,
 				F825FBB8667FE30F1276F2E0,
 				24C8D03FB11796FEF000E4BF,
 				B2DB7EC0BA0AAAE5CFD9A74F,
@@ -7176,7 +7153,6 @@
 		AF0CE2ED0E8A31641E7B1620 = {
 			isa = PBXGroup;
 			children = (
-				97E45CA74A8F783626E095A9,
 				84C12F26EDC96F3770764153,
 				4DB63E0E5DEAA8EE383C6791,
 				2308032CB837C17B8FC90E20,

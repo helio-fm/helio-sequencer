@@ -695,9 +695,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\InitScreen.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\LogoFader.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -996,9 +993,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ComponentFader.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\HelioTheme.cpp">
@@ -3159,7 +3153,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Dashboard.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\InitScreen.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\LogoFader.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h"/>

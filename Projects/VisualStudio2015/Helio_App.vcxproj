@@ -454,7 +454,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Dashboard.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\InitScreen.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\LogoFader.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp"/>
@@ -555,7 +554,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\MidiEventComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\SelectionComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\ComponentFader.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\HelioTheme.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\Icons.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\FramePanel.cpp"/>
@@ -2702,7 +2700,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Dashboard.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\InitScreen.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\LogoFader.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h"/>
