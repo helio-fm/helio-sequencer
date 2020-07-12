@@ -1542,39 +1542,6 @@
         <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <VS2017 targetFolder="../../Projects/VisualStudio2017" extraCompilerFlags="/FC /Gy /bigobj"
-            usePrecompiledHeaders="1" precompiledHeaderFileName="../../Source/Common.h"
-            precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            smallIcon="DQTpOG" bigIcon="DQTpOG" toolset="v140_xp" extraLinkerFlags="/OPT:REF /OPT:ICF=5"
-            windowsTargetPlatformVersion="10.0.26624">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="0" isDebug="1"
-                       optimisation="1" targetName="Helio" enableIncrementalLinking="1"
-                       warningsAreErrors="1"/>
-        <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       linkTimeOptimisation="1" isDebug="0" optimisation="4" targetName="Helio"
-                       useRuntimeLibDLL="0" enableIncrementalLinking="0" warningsAreErrors="1"/>
-        <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       linkTimeOptimisation="1" isDebug="0" optimisation="4" targetName="Helio"
-                       useRuntimeLibDLL="0" enableIncrementalLinking="0" warningsAreErrors="1"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
-      </MODULEPATHS>
-    </VS2017>
     <VS2019 targetFolder="../../Projects/VisualStudio2019" extraCompilerFlags="/FC /Gy /bigobj"
             extraLinkerFlags="/OPT:REF /OPT:ICF=5" unityBuild="1" windowsTargetPlatformVersion="10.0.26624"
             toolset="v141_xp" bigIcon="DQTpOG" smallIcon="DQTpOG">
