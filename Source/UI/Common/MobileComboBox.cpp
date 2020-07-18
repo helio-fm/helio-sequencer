@@ -39,7 +39,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->triggerButtton.reset(new MobileComboBox::Trigger());
     this->addAndMakeVisible(triggerButtton.get());
 
-    this->shadow.reset(new ShadowDownwards(Light));
+    this->shadow.reset(new ShadowDownwards(ShadowType::Light));
     this->addAndMakeVisible(shadow.get());
     this->separator.reset(new SeparatorHorizontalReversed());
     this->addAndMakeVisible(separator.get());
@@ -299,7 +299,7 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <JUCERCOMP name="" id="cdb9ae0975a381d3" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="1 33 2M 16" sourceFile="../Themes/ShadowDownwards.cpp"
-             constructorParams="Light"/>
+             constructorParams="ShadowType::Light"/>
   <JUCERCOMP name="" id="a46de88ae4304986" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="1 32 2M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>

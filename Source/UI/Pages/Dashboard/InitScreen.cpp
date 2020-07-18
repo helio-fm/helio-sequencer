@@ -33,7 +33,7 @@ InitScreen::InitScreen()
 {
     this->headLine.reset(new SeparatorHorizontalReversed());
     this->addAndMakeVisible(headLine.get());
-    this->headShadow.reset(new ShadowDownwards(Light));
+    this->headShadow.reset(new ShadowDownwards(ShadowType::Light));
     this->addAndMakeVisible(headShadow.get());
     this->gradient1.reset(new PanelBackgroundA());
     this->addAndMakeVisible(gradient1.get());
@@ -165,7 +165,7 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 33 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
-             constructorParams="Light"/>
+             constructorParams="ShadowType::Light"/>
   <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
              explicitFocusOrder="0" pos="-50 0 -100M 32" sourceFile="../../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>

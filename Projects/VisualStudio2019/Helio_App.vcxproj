@@ -1025,18 +1025,6 @@
     <ClCompile Include="..\..\Source\UI\Themes\SeparatorVerticalSkew.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowDownwards.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowUpwards.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowLeftwards.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowRightwards.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>

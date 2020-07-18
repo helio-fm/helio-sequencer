@@ -98,7 +98,7 @@ void OrigamiHorizontal::addShadowAtTheStart()
 {
     if (auto *page = this->pages.getLast())
     {
-        page->shadowAtStart.reset(new ShadowDownwards(Normal));
+        page->shadowAtStart.reset(new ShadowDownwards(ShadowType::Normal));
         page->shadowAtStart->setSize(12, 12);
         page->shadowAtStart->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(page->shadowAtStart.get());
@@ -109,7 +109,7 @@ void OrigamiHorizontal::addShadowAtTheEnd()
 {
     if (auto *page = this->pages.getLast())
     {
-        page->shadowAtEnd.reset(new ShadowUpwards(Normal));
+        page->shadowAtEnd.reset(new ShadowUpwards(ShadowType::Normal));
         page->shadowAtEnd->setSize(12, 12);
         page->shadowAtEnd->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(page->shadowAtEnd.get());

@@ -19,15 +19,11 @@
 
 #include "ColourIDs.h"
 
-enum ShadowType
+enum class ShadowType : int8
 {
     Normal,
     Light
 };
-
-#define SHADOW_COMPONENT_CACHED_IMAGE_SIZE (32)
-// a way to fix OpenGL non-pow-of-2 texture artifacts
-#define SHADOW_COMPONENT_CACHED_IMAGE_MARGIN (4)
 
 class ShadowComponent : public Component
 {
@@ -42,11 +38,11 @@ public:
 
         switch (type)
         {
-        case Normal:
+        case ShadowType::Normal:
             this->shadowColour = Colours::black.withAlpha(0.1f);
             this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
             break;
-        case Light:
+        case ShadowType::Light:
             this->shadowColour = Colours::black.withAlpha(0.045f);
             this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.35f);
             break;
@@ -62,6 +58,10 @@ public:
     }
 
 protected:
+
+    static constexpr auto cachedImageSize = 32;
+    // a way to fix OpenGL non-pow-of-2 texture artifacts
+    static constexpr auto cachedImageMargin = 4;
 
     Colour lineColour;
     Colour shadowColour;

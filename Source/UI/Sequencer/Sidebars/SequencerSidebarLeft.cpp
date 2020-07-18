@@ -49,11 +49,11 @@ static inline constexpr int getAudioMonitorHeight()
 SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     : project(project)
 {
-    this->shadow.reset(new ShadowUpwards(Light));
+    this->shadow.reset(new ShadowUpwards(ShadowType::Light));
     this->addAndMakeVisible(shadow.get());
     this->headLine.reset(new SeparatorHorizontalReversed());
     this->addAndMakeVisible(headLine.get());
-    this->headShadow.reset(new ShadowDownwards(Light));
+    this->headShadow.reset(new ShadowDownwards(ShadowType::Light));
     this->addAndMakeVisible(headShadow.get());
     this->separator.reset(new SeparatorHorizontal());
     this->addAndMakeVisible(separator.get());
@@ -342,13 +342,13 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 79Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
-             constructorParams="Light"/>
+             constructorParams="ShadowType::Light"/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
              explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
-             constructorParams="Light"/>
+             constructorParams="ShadowType::Light"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 78Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>

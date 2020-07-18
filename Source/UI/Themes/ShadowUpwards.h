@@ -17,30 +17,41 @@
 
 #pragma once
 
-//[Headers]
 #include "ShadowComponent.h"
-//[/Headers]
-
 
 class ShadowUpwards final : public ShadowComponent
 {
 public:
 
-    ShadowUpwards(ShadowType type);
-    ~ShadowUpwards();
+    explicit ShadowUpwards(ShadowType type) : ShadowComponent(type) {}
 
-    //[UserMethods]
-    //[/UserMethods]
+    void paint(Graphics &g) override
+    {
+        g.setTiledImageFill(this->cachedImage, 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
+    }
 
-    void paint (Graphics& g) override;
-    void resized() override;
+    void resized()
+    {
+        if (this->cachedImage.getHeight() != this->getHeight())
+        {
+            const float h = float(this->getHeight());
+            this->cachedImage = Image(Image::ARGB, ShadowComponent::cachedImageSize,
+                this->getHeight() + ShadowComponent::cachedImageMargin, true);
 
+            Graphics g(this->cachedImage);
+
+            g.setGradientFill(ColourGradient(this->shadowColour,
+                0.f, h, Colours::transparentBlack, 0.f, 0.f, false));
+            g.fillRect(this->cachedImage.getBounds());
+
+            g.setGradientFill(ColourGradient(this->shadowColour,
+                0.f, h, Colours::transparentBlack, 0.f, h / 2.5f, false));
+            g.fillRect(this->cachedImage.getBounds());
+        }
+    }
 
 private:
-
-    //[UserVariables]
-    //[/UserVariables]
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShadowUpwards)
 };

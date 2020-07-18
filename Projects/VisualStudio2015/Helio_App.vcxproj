@@ -564,10 +564,6 @@
     <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontalFadingReversed.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\SeparatorVertical.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\SeparatorVerticalSkew.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowDownwards.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowUpwards.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowLeftwards.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowRightwards.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainLayout.cpp"/>
     <ClCompile Include="..\..\Source\Common.cpp">

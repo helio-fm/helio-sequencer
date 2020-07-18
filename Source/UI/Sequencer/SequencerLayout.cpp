@@ -407,7 +407,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->levelsScroller = make<LevelsMapScroller>(this->pianoRoll.get());
     this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll));
 
-    this->scrollerShadow = make<ShadowUpwards>(Normal);
+    this->scrollerShadow = make<ShadowUpwards>(ShadowType::Normal);
 
     this->pianoRoll->setBeatWidth(HYBRID_ROLL_MAX_BEAT_WIDTH);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);

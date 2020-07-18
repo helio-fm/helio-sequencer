@@ -20,15 +20,11 @@
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationCurveClipComponent.h"
 
-#define CURVE_CONNECTOR_LINE_HEIGHT 2.0f
-
 AutomationCurveEventsConnector::AutomationCurveEventsConnector(
     AutomationCurveEventComponent *c1,
     AutomationCurveEventComponent *c2) :
     component1(c1),
-    component2(c2),
-    curvature(0.5f),
-    xAnchor(0.f)
+    component2(c2)
 {
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
@@ -90,63 +86,6 @@ void AutomationCurveEventsConnector::resized()
     this->rebuildLinePath();
 }
 
-/*
-bool AutomationCurveEventsConnector::hitTest(int x, int y)
-{
-    return this->linePath.contains(float(x), float(y) - (CURVE_CONNECTOR_LINE_HEIGHT / 2.f));
-}
-
-void AutomationCurveEventsConnector::mouseDown(const MouseEvent &e)
-{
-    this->xAnchor = e.position.x;
-
-    if (this->component1)
-    {
-        this->component1->mouseDown(e.getEventRelativeTo(this->component1));
-    }
-
-    if (e.mods.isAnyModifierKeyDown())
-    {
-        if (this->component2)
-        {
-            this->component2->mouseDown(e.getEventRelativeTo(this->component2));
-        }
-    }
-}
-
-void AutomationCurveEventsConnector::mouseDrag(const MouseEvent &e)
-{
-    if (this->component1)
-    {
-        this->component1->mouseDrag(e.withNewPosition(e.position.withX(this->xAnchor)).getEventRelativeTo(this->component1));
-    }
-    
-    if (e.mods.isAnyModifierKeyDown())
-    {
-        if (this->component2)
-        {
-            this->component2->mouseDrag(e.withNewPosition(e.position.withX(this->xAnchor)).getEventRelativeTo(this->component2));
-        }
-    }
-}
-
-void AutomationCurveEventsConnector::mouseUp(const MouseEvent &e)
-{
-    if (this->component1)
-    {
-        this->component1->mouseUp(e.withNewPosition(e.position.withX(this->xAnchor)).getEventRelativeTo(this->component1));
-    }
-    
-    if (e.mods.isAnyModifierKeyDown())
-    {
-        if (this->component2)
-        {
-            this->component2->mouseUp(e.withNewPosition(e.position.withX(this->xAnchor)).getEventRelativeTo(this->component2));
-        }
-    }
-}
-*/
-
 void AutomationCurveEventsConnector::rebuildLinePath()
 {
     jassert(this->component1);
@@ -161,7 +100,7 @@ void AutomationCurveEventsConnector::rebuildLinePath()
     const float x1 = float(this->component1->getBounds().getCentreX());
     const float x2 = float(this->component2->getBounds().getCentreX());
 
-    this->linePath.clear();
+    this->linePath.clearQuick();
 
     const auto &e1 = this->component1->getEvent();
     const auto &e2 = this->component2->getEvent();

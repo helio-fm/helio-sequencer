@@ -3659,13 +3659,6 @@
 			path = ../../Source/Core/Midi/Patterns/Pattern.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		991D65BE779BE6803BE99FA8 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ShadowDownwards.cpp;
-			path = ../../Source/UI/Themes/ShadowDownwards.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		9A8970BE5844282FCC4FBF5F = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -4014,13 +4007,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = WorkspaceMenu.h;
 			path = ../../Source/UI/Menus/WorkspaceMenu.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		AC35FF94C270F73754DE7515 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ShadowUpwards.cpp;
-			path = ../../Source/UI/Themes/ShadowUpwards.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		AC92C2151D0DEC9448D88839 = {
@@ -5297,13 +5283,6 @@
 			path = ../../Source/Core/Tree/ProjectListener.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		E55D1D930511B7A03C31972A = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ShadowRightwards.cpp;
-			path = ../../Source/UI/Themes/ShadowRightwards.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		E6821B4011BDCA9B46E32554 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -5414,13 +5393,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ProjectSyncService.cpp;
 			path = ../../Source/Core/Network/Services/ProjectSyncService.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		EC300F5C9ED40BE515CD1DFF = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ShadowLeftwards.cpp;
-			path = ../../Source/UI/Themes/ShadowLeftwards.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		EC38F7E6A2E647CA075F17C1 = {
@@ -7108,13 +7080,9 @@
 				D18259E69A62240C70800309,
 				9CFD46AC685DF731CA859D20,
 				D8CDF77A64E07F574B61D7A0,
-				991D65BE779BE6803BE99FA8,
 				0165A09CC53E9529288AE3F3,
-				AC35FF94C270F73754DE7515,
 				9266063D65E9F31326FDAD10,
-				EC300F5C9ED40BE515CD1DFF,
 				8ACC97861C00C49EF341371C,
-				E55D1D930511B7A03C31972A,
 				CB22C116E1B36786644F03D8,
 				036D4E54E4F9D7AD19B41927,
 				3B6DECC09CB08320D885EDF1,

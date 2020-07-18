@@ -21,9 +21,9 @@
 // This cache assumes that label's size is fixed,
 // so it doesn't have to re-cache it on every setBounds.
 
-struct CachedLabelImage : public CachedComponentImage
+struct CachedLabelImage final : public CachedComponentImage
 {
-    CachedLabelImage(Label &c) noexcept : owner(c), scale(1.0f) {}
+    explicit CachedLabelImage(Label &c) noexcept : owner(c) {}
 
     void paint(Graphics &g) override
     {
@@ -62,7 +62,7 @@ struct CachedLabelImage : public CachedComponentImage
     }
 
     bool invalidateAll() override { return false; }
-    bool invalidate(const Rectangle<int>& area) override { return false; }
+    bool invalidate(const Rectangle<int> &area) override { return false; }
 
     // Do nothing, this is called on every setVisible
     // (image will be released anyway in a destructor)
@@ -73,7 +73,8 @@ private:
     Image image;
     String text;
     Label &owner;
-    float scale;
+
+    float scale = 1.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CachedLabelImage)
 };

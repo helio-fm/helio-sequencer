@@ -17,30 +17,44 @@
 
 #pragma once
 
-//[Headers]
 #include "ShadowComponent.h"
-//[/Headers]
-
 
 class ShadowRightwards final : public ShadowComponent
 {
 public:
 
-    ShadowRightwards(ShadowType type);
-    ~ShadowRightwards();
+    explicit ShadowRightwards(ShadowType type) : ShadowComponent(type) {}
 
-    //[UserMethods]
-    //[/UserMethods]
+    void paint(Graphics &g)
+    {
+        g.setTiledImageFill(this->cachedImage, 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        g.setColour(this->lineColour);
+        g.fillRect(0, 0, 1, this->getHeight());
+    }
 
+    void resized()
+    {
+        if (this->cachedImage.getWidth() != this->getWidth())
+        {
+            this->cachedImage = Image(Image::ARGB,
+                this->getWidth() + ShadowComponent::cachedImageMargin,
+                ShadowComponent::cachedImageSize, true);
+
+            Graphics g(this->cachedImage);
+
+            g.setGradientFill(ColourGradient(this->shadowColour,
+                0.f, 0.f, Colours::transparentBlack, float(this->getWidth()), 0.f, false));
+            g.fillRect(this->cachedImage.getBounds());
+
+            g.setGradientFill(ColourGradient(this->shadowColour,
+                0.f, 0.f, Colours::transparentBlack, float(this->getWidth()) / 2.5f, 0.f, false));
+            g.fillRect(this->cachedImage.getBounds());
+        }
+    }
 
 private:
-
-    //[UserVariables]
-    //[/UserVariables]
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShadowRightwards)
 };

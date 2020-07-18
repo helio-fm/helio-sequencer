@@ -103,7 +103,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->setFocusContainer(false);
 
     this->header = make<HybridRollHeader>(this->project.getTransport(), *this, this->viewport);
-    this->headerShadow = make<ShadowDownwards>(Normal);
+    this->headerShadow = make<ShadowDownwards>(ShadowType::Normal);
 
     if (hasAnnotationsTrack)
     {

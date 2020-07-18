@@ -1498,18 +1498,6 @@
     <ClCompile Include="..\..\Source\UI\Themes\SeparatorVerticalSkew.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowDownwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowUpwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowLeftwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\ShadowRightwards.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>

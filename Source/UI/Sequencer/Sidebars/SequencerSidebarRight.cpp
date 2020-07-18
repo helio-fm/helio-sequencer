@@ -56,7 +56,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
 
     this->headLine.reset(new SeparatorHorizontalReversed());
     this->addAndMakeVisible(headLine.get());
-    this->shadow.reset(new ShadowUpwards(Light));
+    this->shadow.reset(new ShadowUpwards(ShadowType::Light));
     this->addAndMakeVisible(shadow.get());
     this->separator.reset(new SeparatorHorizontal());
     this->addAndMakeVisible(separator.get());
@@ -74,7 +74,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     currentTime->setJustificationType(Justification::centred);
     currentTime->setEditable(false, false, false);
 
-    this->headShadow.reset(new ShadowDownwards(Light));
+    this->headShadow.reset(new ShadowDownwards(ShadowType::Light));
     this->addAndMakeVisible(headShadow.get());
     this->annotationsButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)));
     this->addAndMakeVisible(annotationsButton.get());
@@ -435,7 +435,7 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 79Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
-             constructorParams="Light"/>
+             constructorParams="ShadowType::Light"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 78Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
@@ -449,7 +449,7 @@ BEGIN_JUCER_METADATA
          fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
-             constructorParams="Light"/>
+             constructorParams="ShadowType::Light"/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)"/>

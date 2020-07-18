@@ -1401,19 +1401,11 @@
                 file="../../Source/UI/Themes/SeparatorVerticalSkew.h"/>
           <FILE id="IwZtBU" name="ShadowComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowComponent.h"/>
-          <FILE id="NJFPby" name="ShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
           <FILE id="HrHof7" name="ShadowDownwards.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowDownwards.h"/>
-          <FILE id="OdGiuU" name="ShadowUpwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowUpwards.cpp"/>
           <FILE id="we1eAI" name="ShadowUpwards.h" compile="0" resource="0" file="../../Source/UI/Themes/ShadowUpwards.h"/>
-          <FILE id="EzFp59" name="ShadowLeftwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowLeftwards.cpp"/>
           <FILE id="RueS4b" name="ShadowLeftwards.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowLeftwards.h"/>
-          <FILE id="ls2wfl" name="ShadowRightwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/ShadowRightwards.cpp"/>
           <FILE id="N1dgn4" name="ShadowRightwards.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ShadowRightwards.h"/>
           <FILE id="mGKnp5" name="ViewportKineticSlider.cpp" compile="1" resource="0"

@@ -93,7 +93,7 @@ void OrigamiVertical::addShadowAtTheStart()
 {
     if (auto *page = this->pages.getLast())
     {
-        page->shadowAtStart.reset(new ShadowRightwards(Normal));
+        page->shadowAtStart.reset(new ShadowRightwards(ShadowType::Normal));
         page->shadowAtStart->setSize(12, 12);
         this->addAndMakeVisible(page->shadowAtStart.get());
     }
@@ -103,7 +103,7 @@ void OrigamiVertical::addShadowAtTheEnd()
 {
     if (auto *page = this->pages.getLast())
     {
-        page->shadowAtEnd.reset(new ShadowLeftwards(Normal));
+        page->shadowAtEnd.reset(new ShadowLeftwards(ShadowType::Normal));
         page->shadowAtEnd->setSize(12, 12);
         this->addAndMakeVisible(page->shadowAtEnd.get());
     }
