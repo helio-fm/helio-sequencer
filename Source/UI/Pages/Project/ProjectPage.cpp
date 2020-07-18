@@ -192,8 +192,6 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     licenseEditor->setEditable(true, true, false);
     this->licenseEditor->addListener(this);
 
-    this->menuButton.reset(new MenuButton());
-    this->addAndMakeVisible(menuButton.get());
     this->revealLocationButton.reset(new ImageButton(String()));
     this->addAndMakeVisible(revealLocationButton.get());
     revealLocationButton->addListener(this);
@@ -221,9 +219,6 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
     this->setFocusContainer(true);
 
     this->revealLocationButton->setMouseCursor(MouseCursor::PointingHandCursor);
-
-    // TODO remove this button?
-    this->menuButton->setVisible(false);
     //[/UserPreSize]
 
     this->setSize(600, 400);
@@ -265,7 +260,6 @@ ProjectPage::~ProjectPage()
     level2 = nullptr;
     licenseLabel = nullptr;
     licenseEditor = nullptr;
-    menuButton = nullptr;
     revealLocationButton = nullptr;
 
     //[Destructor]
@@ -307,7 +301,6 @@ void ProjectPage::resized()
     level2->setBounds(32, proportionOfHeight (0.0758f) + 310, 150, 24);
     licenseLabel->setBounds((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0758f) + 210, 202, 48);
     licenseEditor->setBounds((getWidth() / 2) + -100, proportionOfHeight (0.0758f) + 230, 440, 48);
-    menuButton->setBounds((getWidth() / 2) - (128 / 2), getHeight() - -16 - (128 / 2), 128, 128);
     revealLocationButton->setBounds(((getWidth() / 2) + -100) + -150, ((proportionOfHeight (0.0758f) + 310) + 138) + 0, 400 - -150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -379,17 +372,6 @@ void ProjectPage::visibilityChanged()
     //[/UserCode_visibilityChanged]
 }
 
-void ProjectPage::handleCommandMessage (int commandId)
-{
-    //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == CommandIDs::MenuButtonPressed)
-    {
-        MenuPanel *panel = new ProjectMenu(this->project, MenuPanel::SlideUp);
-        HelioCallout::emit(panel, this->menuButton.get());
-    }
-    //[/UserCode_handleCommandMessage]
-}
-
 
 //[MiscUserCode]
 void ProjectPage::updateContent()
@@ -447,7 +429,6 @@ BEGIN_JUCER_METADATA
                  snapPixels="4" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
     <METHOD name="visibilityChanged()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
@@ -551,9 +532,6 @@ BEGIN_JUCER_METADATA
          labelText="" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="37.0"
          kerning="0.0" bold="0" italic="0" justification="9"/>
-  <JUCERCOMP name="" id="2ce00deefdf277e6" memberName="menuButton" virtualName=""
-             explicitFocusOrder="0" pos="0Cc -16Rc 128 128" sourceFile="../../Common/MenuButton.cpp"
-             constructorParams=""/>
   <IMAGEBUTTON name="" id="6ab32d6eda6c96a8" memberName="revealLocationButton"
                virtualName="" explicitFocusOrder="0" pos="-150 0 -150M 24" posRelativeX="e68c5a019e000a0b"
                posRelativeY="cf836ffeded76ad1" posRelativeW="e68c5a019e000a0b"

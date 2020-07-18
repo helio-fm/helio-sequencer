@@ -536,9 +536,6 @@
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\MenuButton.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\MobileComboBox.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -644,9 +641,6 @@
     <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\AnnotationMenu.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\InstrumentMenu.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -663,9 +657,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\TimelineMenu.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureMenu.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\VersionControlMenu.cpp">
@@ -3092,7 +3083,6 @@
     <ClInclude Include="..\..\Source\UI\Common\HighlightedComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\MenuButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\MobileComboBox.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ModeIndicatorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\OverlayButton.h"/>
@@ -3136,14 +3126,12 @@
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\PianoRollSelectionMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlHistorySelectionMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\AnnotationMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\InstrumentMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\MidiTrackMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\PatternsMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\ProjectMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\TimelineMenu.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\VersionControlMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\WorkspaceMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\DashboardMenu.h"/>

@@ -24,7 +24,6 @@ class ProjectNode;
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundB.h"
-#include "../../Common/MenuButton.h"
 
 class ProjectPage final : public Component,
                           protected TransportListener,
@@ -46,7 +45,6 @@ public:
     void labelTextChanged(Label* labelThatHasChanged) override;
     void buttonClicked(Button* buttonThatWasClicked) override;
     void visibilityChanged() override;
-    void handleCommandMessage (int commandId) override;
 
 
 private:
@@ -95,7 +93,6 @@ private:
     UniquePointer<Component> level2;
     UniquePointer<Label> licenseLabel;
     UniquePointer<Label> licenseEditor;
-    UniquePointer<MenuButton> menuButton;
     UniquePointer<ImageButton> revealLocationButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectPage)

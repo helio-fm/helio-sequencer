@@ -705,8 +705,6 @@
                 file="../../Source/UI/Common/HighlightedComponent.h"/>
           <FILE id="gh5EBT" name="IconButton.h" compile="0" resource="0" file="../../Source/UI/Common/IconButton.h"/>
           <FILE id="ZZe4ma" name="IconComponent.h" compile="0" resource="0" file="../../Source/UI/Common/IconComponent.h"/>
-          <FILE id="Vmic9K" name="MenuButton.cpp" compile="1" resource="0" file="../../Source/UI/Common/MenuButton.cpp"/>
-          <FILE id="e8taDy" name="MenuButton.h" compile="0" resource="0" file="../../Source/UI/Common/MenuButton.h"/>
           <FILE id="bkogLX" name="MobileComboBox.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/MobileComboBox.cpp"/>
           <FILE id="tumRST" name="MobileComboBox.h" compile="0" resource="0"
@@ -859,10 +857,6 @@
             <FILE id="ZauTdB" name="VersionControlStageSelectionMenu.h" compile="0"
                   resource="0" file="../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.h"/>
           </GROUP>
-          <FILE id="wgLDqw" name="AnnotationMenu.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/AnnotationMenu.cpp"/>
-          <FILE id="mA4zKi" name="AnnotationMenu.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/AnnotationMenu.h"/>
           <FILE id="qiHiZv" name="InstrumentMenu.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/InstrumentMenu.cpp"/>
           <FILE id="GfB3bQ" name="InstrumentMenu.h" compile="0" resource="0"
@@ -882,10 +876,6 @@
           <FILE id="IWRyID" name="TimelineMenu.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/TimelineMenu.cpp"/>
           <FILE id="YO5QtE" name="TimelineMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/TimelineMenu.h"/>
-          <FILE id="KXvBh9" name="TimeSignatureMenu.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/TimeSignatureMenu.h"/>
-          <FILE id="jbN3Fi" name="TimeSignatureMenu.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/TimeSignatureMenu.cpp"/>
           <FILE id="W0z55J" name="VersionControlMenu.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/VersionControlMenu.cpp"/>
           <FILE id="qrKFgt" name="VersionControlMenu.h" compile="0" resource="0"

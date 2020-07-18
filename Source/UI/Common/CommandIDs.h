@@ -27,10 +27,9 @@ namespace CommandIDs
         Cancel                          = 0x0002,
         Browse                          = 0x0003,
         IconButtonPressed               = 0x0004,
-        MenuButtonPressed               = 0x0005,
-        HideDialog                      = 0x0007,
-        HideCallout                     = 0x0008,
-        DismissModalDialogAsync         = 0x0009,
+        HideDialog                      = 0x0005,
+        HideCallout                     = 0x0006,
+        DismissModalDialogAsync         = 0x0007,
 
         AddAnnotation                   = 0x0101,
         AddTimeSignature                = 0x0103,
@@ -98,12 +97,10 @@ namespace CommandIDs
 
         Undo                            = 0x1900,
         Redo                            = 0x1901,
+        ResetPreviewChanges             = 0x1902,
 
         TimelineJumpNext                = 0x2000,
         TimelineJumpPrevious            = 0x2001,
-
-        ShowAnnotations                 = 0x2010,
-        ResetPreviewChanges             = 0x2011,
 
         TransportRecordingAwait         = 0x2015,
         TransportRecordingStart         = 0x2016,

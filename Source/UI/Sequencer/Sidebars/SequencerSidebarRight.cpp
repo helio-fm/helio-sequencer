@@ -32,9 +32,6 @@
 #include "MenuItemComponent.h"
 #include "ProjectTimeline.h"
 #include "HelioCallout.h"
-#include "TimelineMenu.h"
-#include "AnnotationMenu.h"
-#include "TimeSignatureMenu.h"
 #include "SequencerOperations.h"
 #include "NotesTuningPanel.h"
 #include "MenuPanel.h"
@@ -44,14 +41,6 @@
 #include "Config.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
-
-#if HELIO_DESKTOP
-//#   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS 1
-//#   define TOOLS_SIDEBAR_SHOWS_TIME 1
-#elif HELIO_MOBILE
-//#   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS 1
-//#   define TOOLS_SIDEBAR_SHOWS_TIME 1
-#endif
 
 //[/MiscUserDefs]
 
@@ -180,78 +169,6 @@ void SequencerSidebarRight::resized()
     this->listBox->updateContent();
     this->annotationsButton->resized();
     //[/UserResized]
-}
-
-void SequencerSidebarRight::handleCommandMessage (int commandId)
-{
-    //[UserCode_handleCommandMessage] -- Add your code here...
-    switch (commandId)
-    {
-    case CommandIDs::ShowAnnotations: // all this seems obsolete (at least, I've never really used it)
-    {
-        const AnnotationEvent *selectedAnnotation = nullptr;
-        const TimeSignatureEvent *selectedTimeSignature = nullptr;
-
-        const ProjectTimeline *timeline = this->project.getTimeline();
-        const auto seekBeat = this->project.getTransport().getSeekBeat();
-
-        if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
-        {
-            static const double seekThreshold = 0.001f;
-            const auto annotationsSequence = timeline->getAnnotations()->getSequence();
-            const auto timeSignaturesSequence = timeline->getTimeSignatures()->getSequence();
-
-            for (int i = 0; i < annotationsSequence->size(); ++i)
-            {
-                if (AnnotationEvent *annotation =
-                    dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
-                {
-                    if (fabs(annotation->getBeat() - seekBeat) < seekThreshold)
-                    {
-                        selectedAnnotation = annotation;
-                        break;
-                    }
-                }
-            }
-
-            for (int i = 0; i < timeSignaturesSequence->size(); ++i)
-            {
-                if (auto *ts = dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
-                {
-                    if (fabs(ts->getBeat() - seekBeat) < seekThreshold)
-                    {
-                        selectedTimeSignature = ts;
-                        break;
-                    }
-                }
-            }
-        }
-
-        this->project.getTransport().stopPlaybackAndRecording();
-
-        // all these menu classes are not needed anymore I guess?
-#if TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS
-        if (selectedAnnotation != nullptr)
-        {
-            this->emitAnnotationsCallout(new AnnotationMenu(this->project, *selectedAnnotation));
-        }
-        else if (selectedTimeSignature != nullptr)
-        {
-            this->emitAnnotationsCallout(new TimeSignatureMenu(this->project, *selectedTimeSignature));
-        }
-        else
-        {
-            this->emitAnnotationsCallout(new TimelineMenu(this->project));
-        }
-#else
-        this->emitAnnotationsCallout(new TimelineMenu(this->project));
-#endif
-    }
-    break;
-    default:
-        break;
-    }
-    //[/UserCode_handleCommandMessage]
 }
 
 
@@ -509,7 +426,6 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="44" initialHeight="640">
   <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""

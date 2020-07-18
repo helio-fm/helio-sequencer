@@ -1009,9 +1009,6 @@
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\MenuButton.cpp">
-      <Filter>Helio\Source\UI\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\MobileComboBox.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
@@ -1117,9 +1114,6 @@
     <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.cpp">
       <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\AnnotationMenu.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\InstrumentMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
@@ -1136,9 +1130,6 @@
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\TimelineMenu.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureMenu.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\VersionControlMenu.cpp">
@@ -4038,9 +4029,6 @@
     <ClInclude Include="..\..\Source\UI\Common\IconComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\MenuButton.h">
-      <Filter>Helio\Source\UI\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\MobileComboBox.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -4170,9 +4158,6 @@
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.h">
       <Filter>Helio\Source\UI\Menus\SelectionMenus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\AnnotationMenu.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\InstrumentMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
@@ -4189,9 +4174,6 @@
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\TimelineMenu.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureMenu.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\VersionControlMenu.h">

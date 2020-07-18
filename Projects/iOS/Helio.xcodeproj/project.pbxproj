@@ -1585,13 +1585,6 @@
 			path = System/Library/Frameworks/QuartzCore.framework;
 			sourceTree = SDKROOT;
 		};
-		3DF9B7A2F7EAB5ABB4639179 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = TimeSignatureMenu.h;
-			path = ../../Source/UI/Menus/TimeSignatureMenu.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		3E0DD1DD3D9F1837F540917E = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1611,13 +1604,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = WaveformAudioMonitorComponent.cpp;
 			path = ../../Source/UI/Common/AudioMonitors/WaveformAudioMonitorComponent.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		3E8421CB9184D120D54AA131 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = AnnotationMenu.h;
-			path = ../../Source/UI/Menus/AnnotationMenu.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		3ED140E3353FE5029984332C = {
@@ -2145,13 +2131,6 @@
 			path = ../../Resources/Samples/C4v9.flac;
 			sourceTree = "SOURCE_ROOT";
 		};
-		548C026BD08DB272DE0F4815 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = MenuButton.cpp;
-			path = ../../Source/UI/Common/MenuButton.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		54DFBC5F9A390D72598FB531 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -2381,13 +2360,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = AutomationStepsClipComponent.h;
 			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsClipComponent.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		6032EA67B1E05EBA60A6B787 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = TimeSignatureMenu.cpp;
-			path = ../../Source/UI/Menus/TimeSignatureMenu.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		60F9682086FC3D0E1AFA8860 = {
@@ -3524,13 +3496,6 @@
 			path = "../../ThirdParty/JUCE/modules/juce_events";
 			sourceTree = "SOURCE_ROOT";
 		};
-		91CAB085086073D5F5BF116E = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = MenuButton.h;
-			path = ../../Source/UI/Common/MenuButton.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		9211843DC3B83E07FB5FBB6F = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -3711,13 +3676,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = ShadowDownwards.cpp;
 			path = ../../Source/UI/Themes/ShadowDownwards.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		9A5DF2968BF1342EF11656D3 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = AnnotationMenu.cpp;
-			path = ../../Source/UI/Menus/AnnotationMenu.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		9A8970BE5844282FCC4FBF5F = {
@@ -6581,8 +6539,6 @@
 				E244E684AD2AAE8431E42FA6,
 				F26CE50F1C5AECAF9A04FEE7,
 				BB3CCC43CE12744257CEC8BC,
-				548C026BD08DB272DE0F4815,
-				91CAB085086073D5F5BF116E,
 				A3941862B59534C9DE56E424,
 				D6A767843A3DF6CA33E2723A,
 				783C2C91DFA591A0042BB61C,
@@ -6705,8 +6661,6 @@
 			children = (
 				36EBAA7DC111B8220939E7E4,
 				CAFEBB1CE5078FA29B38468F,
-				9A5DF2968BF1342EF11656D3,
-				3E8421CB9184D120D54AA131,
 				9CDD5C3C63894F392DB77C72,
 				BCB766C95158A5460C8B0F5F,
 				7E8F02BA7A0D8759B7741681,
@@ -6719,8 +6673,6 @@
 				B34DA88FE252A729890F37AB,
 				7AF3E836714A6E3DAA2BB480,
 				E09C11D4F4D9254228CCCA95,
-				3DF9B7A2F7EAB5ABB4639179,
-				6032EA67B1E05EBA60A6B787,
 				66AA9EB580A65E3211273BFC,
 				2F809B2E6D01DBFB81507C01,
 				20F19044BF3C8806C851A36F,
