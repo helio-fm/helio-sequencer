@@ -58,11 +58,9 @@ PlayButton::PlayButton(WeakReference<Component> eventReceiver)
 {
     this->playIcon.reset(new IconComponent(Icons::play));
     this->addAndMakeVisible(playIcon.get());
-    playIcon->setName ("playIcon");
 
     this->pauseIcon.reset(new IconComponent(Icons::pause));
     this->addAndMakeVisible(pauseIcon.get());
-    pauseIcon->setName ("pauseIcon");
 
 
     //[UserPreSize]
@@ -174,10 +172,10 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="playIcon" id="1a8a31abbc0f3c4e" memberName="playIcon" virtualName=""
+  <GENERICCOMPONENT id="1a8a31abbc0f3c4e" memberName="playIcon" virtualName=""
                     explicitFocusOrder="0" pos="1Cc 0Cc 24M 24M" class="IconComponent"
                     params="Icons::play"/>
-  <GENERICCOMPONENT name="pauseIcon" id="f10feab7d241bacb" memberName="pauseIcon"
+  <GENERICCOMPONENT id="f10feab7d241bacb" memberName="pauseIcon"
                     virtualName="" explicitFocusOrder="0" pos="-1Cc 0Cc 24M 24M"
                     class="IconComponent" params="Icons::pause"/>
 </JUCER_COMPONENT>

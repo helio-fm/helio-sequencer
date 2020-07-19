@@ -59,10 +59,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OversaturationWarningAsyncCallback)
 };
 
-AudioMonitor::AudioMonitor() :
-    fft(),
-    spectrumSize(AUDIO_MONITOR_SPECTRUM_SIZE),
-    sampleRate(AUDIO_MONITOR_NUM_CHANNELS)
+AudioMonitor::AudioMonitor() : fft()
 {
     this->asyncClippingWarning = make<ClippingWarningAsyncCallback>(*this);
     this->asyncOversaturationWarning = make<OversaturationWarningAsyncCallback>(*this);
@@ -77,22 +74,19 @@ void AudioMonitor::audioDeviceAboutToStart(AudioIODevice *device)
     this->sampleRate = device->getCurrentSampleRate();
 }
 
-void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
-                                         int numInputChannels,
-                                         float **outputChannelData,
-                                         int numOutputChannels,
-                                         int numSamples)
+void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData, int numInputChannels,
+    float **outputChannelData, int numOutputChannels, int numSamples)
 {
-    const int numChannels = jmin(AUDIO_MONITOR_NUM_CHANNELS, numOutputChannels);
+    const int minNumChannels = jmin(AudioMonitor::numChannels, numOutputChannels);
     
-    for (int channel = 0; channel < numChannels; ++channel)
+    for (int channel = 0; channel < minNumChannels; ++channel)
     {
         this->fft.computeSpectrum(outputChannelData[channel], 0, numSamples,
-            this->spectrum[channel], this->spectrumSize.get(),
+            this->spectrum[channel], AudioMonitor::spectrumSize,
             channel, numOutputChannels);
     }
     
-    for (int channel = 0; channel < numChannels; ++channel)
+    for (int channel = 0; channel < minNumChannels; ++channel)
     {
         float pcmSquaresSum = 0.f;
         float pcmPeak = 0.f;
@@ -107,13 +101,13 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
         this->rms[channel] = rootMeanSquare;
         this->peak[channel] = pcmPeak;
         
-        if (pcmPeak > AUDIO_MONITOR_CLIP_THRESHOLD)
+        if (pcmPeak > AudioMonitor::clipThreshold)
         {
             this->asyncClippingWarning->triggerAsyncUpdate();
         }
         
-        if (pcmPeak > AUDIO_MONITOR_OVERSATURATION_THRESHOLD &&
-            (pcmPeak / rootMeanSquare) > AUDIO_MONITOR_OVERSATURATION_RATE)
+        if (pcmPeak > AudioMonitor::oversaturationThreshold &&
+            (pcmPeak / rootMeanSquare) > AudioMonitor::oversaturationRate)
         {
             this->asyncOversaturationWarning->triggerAsyncUpdate();
         }
@@ -125,8 +119,6 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
     }
 }
 
-void AudioMonitor::audioDeviceStopped() {}
-
 //===----------------------------------------------------------------------===//
 // Spectrum data
 //===----------------------------------------------------------------------===//
@@ -134,16 +126,16 @@ void AudioMonitor::audioDeviceStopped() {}
 float AudioMonitor::getInterpolatedSpectrumAtFrequency(float frequency) const
 {
     const float resolution = 
-        float(this->sampleRate.get() / 2.f) / float(this->spectrumSize.get());
+        float(this->sampleRate.get() / 2.f) / float(AudioMonitor::spectrumSize);
     
     const int index1 = roundToInt(frequency / resolution);
-    const int safeIndex1 = jlimit(0, this->spectrumSize.get(), index1);
+    const int safeIndex1 = jlimit(0, AudioMonitor::spectrumSize, index1);
     const float f1 = index1 * resolution;
     const float y1 = (this->spectrum[0][safeIndex1].get() +
                       this->spectrum[1][safeIndex1].get()) / 2.f;
     
     const int index2 = index1 + 1;
-    const int safeIndex2 = jlimit(0, this->spectrumSize.get(), index2);
+    const int safeIndex2 = jlimit(0, AudioMonitor::spectrumSize, index2);
     const float f2 = index2 * resolution;
     const float y2 = (this->spectrum[0][safeIndex2].get() +
                       this->spectrum[1][safeIndex2].get()) / 2.f;

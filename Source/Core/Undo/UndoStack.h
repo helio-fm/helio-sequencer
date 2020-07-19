@@ -22,7 +22,10 @@ class ProjectNode;
 #include "UndoAction.h"
 #include "UndoActionIDs.h"
 
-class UndoStack final : public ChangeBroadcaster, public Serializable
+// Basically the same JUCE's UndoManager, but serializable;
+// plus most actions need a reference to project, which it has
+
+class UndoStack final : public Serializable
 {
 public:
 
@@ -96,6 +99,8 @@ private:
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Transaction)
     };
+
+    static constexpr auto maxTransactionsToSerialize = 10;
     
     void setCurrentUndoActionId(UndoActionId transactionId) noexcept;
     OwnedArray<Transaction> transactions;

@@ -43,9 +43,7 @@ public:
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
 
-    // returns either the selection menu, if available,
-    // or the last menu item in the chain:
-    HeadlineItem *getTailItem() const;
+    HeadlineItem *getTailItem() const noexcept;
     //[/UserMethods]
 
     void paint (Graphics& g) override;

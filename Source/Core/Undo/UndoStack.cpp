@@ -31,8 +31,6 @@
 #include "KeySignatureEventActions.h"
 #include "PatternActions.h"
 
-#define MAX_TRANSACTIONS_TO_STORE 10
-
 UndoStack::Transaction::Transaction(ProjectNode &project, UndoActionId transactionId) :
     project(project),
     id(transactionId) {}
@@ -169,7 +167,6 @@ void UndoStack::clearUndoHistory()
     this->transactions.clear();
     this->totalUnitsStored = 0;
     this->nextIndex = 0;
-    this->sendChangeMessage();
 }
 
 bool UndoStack::perform(UndoAction *const newAction, UndoActionId transactionId)
@@ -228,7 +225,6 @@ bool UndoStack::perform(UndoAction *const newAction)
             this->hasNewEmptyTransaction = false;
             
             this->clearFutureTransactions();
-            this->sendChangeMessage();
             return true;
         }
     }
@@ -317,7 +313,6 @@ bool UndoStack::undo()
         }
         
         this->beginNewTransaction();
-        this->sendChangeMessage();
         return true;
     }
     
@@ -340,7 +335,6 @@ bool UndoStack::redo()
         }
         
         this->beginNewTransaction();
-        this->sendChangeMessage();
         return true;
     }
     
@@ -411,9 +405,9 @@ SerializedData UndoStack::serialize() const
     int numStoredTransactions = 0;
     
     while (currentIndex >= 0 &&
-           numStoredTransactions < MAX_TRANSACTIONS_TO_STORE)
+           numStoredTransactions < UndoStack::maxTransactionsToSerialize)
     {
-        if (Transaction *action = this->transactions[currentIndex])
+        if (auto *action = this->transactions[currentIndex])
         {
             tree.addChild(action->serialize(), 0);
         }

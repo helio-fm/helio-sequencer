@@ -19,9 +19,6 @@
 
 #include "ColourScheme.h"
 
-#define SHORT_FADE_TIME (150)
-#define LONG_FADE_TIME (250)
-
 class HelioTheme final : public LookAndFeel_V4
 {
 public:
@@ -35,7 +32,6 @@ public:
     void updateFont(const Font &font);
     
     Typeface::Ptr getTypefaceForFont(const Font &) override;
-    virtual Image getBackgroundNoise() const { return this->backgroundNoise; }
 
     static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);

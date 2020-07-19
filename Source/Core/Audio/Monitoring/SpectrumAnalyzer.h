@@ -17,42 +17,39 @@
 
 #pragma once
 
-const int FFT_COSTABBITS = 13;
-const int FFT_COSTABSIZE = (1 << FFT_COSTABBITS);
-const int FFT_TABLERANGE = (FFT_COSTABSIZE * 4);
-const int FFT_TABLEMASK  = (FFT_TABLERANGE - 1);
-
-// Make sure no consumer ever asks for a spectrum larger than that:
-#define FFT_MAX_SPECTRUM_SIZE (512)
-
 class SpectrumFFT final
 {
 public:
     
     SpectrumFFT();
     
-    void computeSpectrum(float *pcmbuffer,
-        unsigned int pcmposition,
-        unsigned int pcmlength,
-        Atomic<float> *spectrum,
-        int length,
-        int channel,
-        int numchannels);
-    
+    void computeSpectrum(float *pcmBuffer,
+        unsigned int pcmPosition, unsigned int pcmLength,
+        Atomic<float> *spectrum, int length,
+        int channel, int numchannels);
+
+    // please make sure no consumer ever asks for a spectrum larger than that:
+    static constexpr auto maxSpectrumSize = 512;
+
 private:
-    
+
+    static constexpr auto cosTableBits = 13;
+    static constexpr auto cosTableSize = 1 << cosTableBits;
+    static constexpr auto tableRange = cosTableSize * 4;
+    static constexpr auto tableMask = tableRange - 1;
+
     struct FftComplex final
     {
-        float re;
-        float im;
+        float re = 0.f;
+        float im = 0.f;
     };
     
-    FftComplex buffer[FFT_MAX_SPECTRUM_SIZE];
-    float costab[FFT_COSTABSIZE];
+    FftComplex buffer[maxSpectrumSize];
+    float costab[cosTableSize];
     
-    inline const float cosine(float x);
-    inline const float sine(float x);
-    inline const unsigned int reverse(unsigned int val, int bits);
+    inline float cosine(float x) const noexcept;
+    inline float sine(float x) const noexcept;
+    inline unsigned int reverse(unsigned int val, int bits) const noexcept;
     inline void process(int bits);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumFFT);

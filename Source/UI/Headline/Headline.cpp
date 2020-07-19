@@ -303,7 +303,7 @@ int Headline::getChainWidth() const noexcept
     return w;
 }
 
-HeadlineItem *Headline::getTailItem() const
+HeadlineItem *Headline::getTailItem() const noexcept
 {
     return (this->selectionItem != nullptr) ?
         this->selectionItem.get() : this->chain.getLast();

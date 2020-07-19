@@ -18,88 +18,44 @@
 #include "Common.h"
 #include "SpectrumAnalyzer.h"
 
-#define FFT_ABS(x)    ((x) < 0  ? -(x) : (x))
-#define FFT_MAX(a, b) ((a) > (b) ? (a) : (b))
-#define FFT_MIN(a, b) ((a) < (b) ? (a) : (b))
-
-#define FFT_PI     3.14159265358979323846f
-#define FFT_PI2   (3.14159265358979323846f * 2.0f)
-#define FFT_PI_2  (3.14159265358979323846f / 2.0f)
-#define FFT_SQRT2  1.41421356237309504880f
-#define FFT_LOG2   0.693147180559945309417f
-
-#if JUCE_WIN32
-
-#define FFT_SIN   (float)sin
-#define FFT_SINH  (float)sinh
-#define FFT_COS   (float)cos
-#define FFT_TAN   (float)tan
-#define FFT_SQRT  (float)sqrt
-#define FFT_POW   (float)pow
-#define FFT_ATAN  (float)atan
-#define FFT_EXP   (float)exp
-#define FFT_LDEXP (float)ldexp
-#define FFT_FABS  fabsf
-#define FFT_LOG   (float)log
-#define FFT_LOG10 (float)log10
-#define FFT_FMOD  (float)fmod
-
-#else
-
-#define FFT_SIN   sinf
-#define FFT_SINH  sinhf
-#define FFT_COS   cosf
-#define FFT_TAN   tanf
-#define FFT_SQRT  sqrtf
-#define FFT_POW   powf
-#define FFT_ATAN  atanf
-#define FFT_EXP   expf
-#define FFT_LDEXP ldexpf
-#define FFT_FABS  fabsf
-#define FFT_LOG   logf
-#define FFT_LOG10 log10f
-#define FFT_EXP2(_val) powf(2.0f, _val)
-#define FFT_FMOD  fmodf
-
-#endif
-
-SpectrumFFT::SpectrumFFT ()
+SpectrumFFT::SpectrumFFT()
 {
-    for (int count = 0; count < FFT_COSTABSIZE; count++)
+    for (int count = 0; count < SpectrumFFT::cosTableSize; count++)
     {
-        this->costab[count] = FFT_COS(FFT_PI_2 * static_cast<float>(count) / static_cast<float>(FFT_COSTABSIZE));
+        this->costab[count] = cosf(MathConstants<float>::halfPi *
+            static_cast<float>(count) / static_cast<float>(SpectrumFFT::cosTableSize));
     }
 }
 
-inline const float SpectrumFFT::cosine(float x)
+inline float SpectrumFFT::cosine(float x) const noexcept
 {
     int y;
     
-    x *= FFT_TABLERANGE;
+    x *= SpectrumFFT::tableRange;
     y = static_cast<int>(x);
     if (y < 0)
     {
         y = -y;
     }
-    
-    y &= FFT_TABLEMASK;
-    switch (y >> FFT_COSTABBITS)
+
+    y &= SpectrumFFT::tableMask;
+    switch (y >> SpectrumFFT::cosTableBits)
     {
         case 0 : return  this->costab[y];
-        case 1 : return -this->costab[(FFT_COSTABSIZE - 1) - (y - (FFT_COSTABSIZE * 1))];
-        case 2 : return -this->costab[                       (y - (FFT_COSTABSIZE * 2))];
-        case 3 : return  this->costab[(FFT_COSTABSIZE - 1) - (y - (FFT_COSTABSIZE * 3))];
+        case 1 : return -this->costab[(SpectrumFFT::cosTableSize - 1) - (y - (SpectrumFFT::cosTableSize * 1))];
+        case 2 : return -this->costab[                                  (y - (SpectrumFFT::cosTableSize * 2))];
+        case 3 : return  this->costab[(SpectrumFFT::cosTableSize - 1) - (y - (SpectrumFFT::cosTableSize * 3))];
     }
     
-    return 0.0f;
+    return 0.f;
 }
 
-inline const float SpectrumFFT::sine(float x)
+inline float SpectrumFFT::sine(float x) const noexcept
 {
     return this->cosine(x - 0.25f);
 }
 
-inline const unsigned int SpectrumFFT::reverse(unsigned int val, int bits)
+inline unsigned int SpectrumFFT::reverse(unsigned int val, int bits) const noexcept
 {
     unsigned int retn = 0;
     
@@ -115,12 +71,12 @@ inline const unsigned int SpectrumFFT::reverse(unsigned int val, int bits)
 
 inline void SpectrumFFT::process(int bits)
 {
-    int             count, count2, count3;
-    int             fftlen = 1 << bits;
-    unsigned        i1 = fftlen / 2;
-    int             i2 = 1, i3, i4, y;
-    float           a1, a2, b1, b2, z1, z2;
-    float           oneOverN = 1.0f / fftlen;
+    int count, count2, count3;
+    int fftlen = 1 << bits;
+    unsigned i1 = fftlen / 2;
+    int i2 = 1, i3, i4, y;
+    float a1, a2, b1, b2, z1, z2;
+    float oneOverN = 1.0f / fftlen;
     
     for (count = 0; count < bits; count++)
     {
@@ -157,13 +113,10 @@ inline void SpectrumFFT::process(int bits)
     }
 }
 
-void SpectrumFFT::computeSpectrum(float *pcmbuffer,
-                                  unsigned int pcmposition,
-                                  unsigned int pcmlength,
-                                  Atomic<float> *spectrum,
-                                  int length,
-                                  int channel,
-                                  int numchannels)
+void SpectrumFFT::computeSpectrum(float *pcmBuffer,
+    unsigned int pcmPosition, unsigned int pcmLength,
+    Atomic<float> *spectrum, int length,
+    int channel, int numchannels)
 {
     int count, bits, bitslength, nyquist;
     
@@ -181,14 +134,14 @@ void SpectrumFFT::computeSpectrum(float *pcmbuffer,
         const float percent = static_cast<float>(count) / static_cast<float>(length);
         const float window = 0.5f * (1.0f  - this->cosine(percent));
         
-        this->buffer[count].re = pcmbuffer[pcmposition] * window;
+        this->buffer[count].re = pcmBuffer[pcmPosition] * window;
         this->buffer[count].re /= static_cast<float>(length);
         this->buffer[count].im = 0.00000001f;
         
-        pcmposition++;
-        if (pcmposition >= pcmlength)
+        pcmPosition++;
+        if (pcmPosition >= pcmLength)
         {
-            pcmposition = 0;
+            pcmPosition = 0;
         }
     }
 
@@ -199,7 +152,7 @@ void SpectrumFFT::computeSpectrum(float *pcmbuffer,
     {
         const auto n = this->reverse(count, bits);
         spectrum[count] = jmin(1.0f, 2.5f *
-            (FFT_SQRT((this->buffer[n].re * this->buffer[n].re)
+            (sqrtf((this->buffer[n].re * this->buffer[n].re)
                 + (this->buffer[n].im * this->buffer[n].im))));
     }
 }

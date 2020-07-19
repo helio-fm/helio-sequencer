@@ -422,7 +422,7 @@ void PianoRoll::hideDragHelpers()
 {
     if (this->draggingHelper->isVisible())
     {
-        this->fader.fadeOut(this->draggingHelper.get(), SHORT_FADE_TIME);
+        this->fader.fadeOut(this->draggingHelper.get(), 150);
     }
 }
 
