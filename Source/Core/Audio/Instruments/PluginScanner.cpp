@@ -127,8 +127,6 @@ void PluginScanner::runInitialScan()
         this->filesToScan.addIfNotAlreadyThere(it.fileOrIdentifier);
     }
 
-    this->pluginsList.clear();
-
     AudioPluginFormatManager formatManager;
     AudioCore::initAudioFormats(formatManager);
 
