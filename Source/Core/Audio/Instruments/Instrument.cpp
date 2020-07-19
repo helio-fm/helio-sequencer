@@ -22,8 +22,6 @@
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
 
-const int Instrument::midiChannelNumber = 0x1000;
-
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
     formatManager(formatManager),
     instrumentName(name),
@@ -43,7 +41,7 @@ Instrument::~Instrument()
     this->processorGraph = nullptr;
 }
 
-String Instrument::getName() const
+String Instrument::getName() const noexcept
 {
     return this->instrumentName;
 }
@@ -53,23 +51,23 @@ void Instrument::setName(const String &name)
     this->instrumentName = name;
 }
 
-String Instrument::getInstrumentId() const
+String Instrument::getInstrumentId() const noexcept
 {
     return this->instrumentId.toString();
 }
 
 String Instrument::getInstrumentHash() const
 {
-    String instrumentId;
+    String idAndHash;
     const int numNodes = this->processorGraph->getNumNodes();
     
     for (int i = 0; i < numNodes; ++i)
     {
-        instrumentId += this->processorGraph->getNode(i)->
+        idAndHash += this->processorGraph->getNode(i)->
             properties[Serialization::Audio::nodeHash].toString();
     }
     
-    return String(constexprHash(instrumentId.toUTF8()));
+    return String(constexprHash(idAndHash.toUTF8()));
 }
 
 String Instrument::getIdAndHash() const
@@ -79,7 +77,8 @@ String Instrument::getIdAndHash() const
 
 bool Instrument::isValid() const noexcept
 {
-    return this->instrumentName.isNotEmpty();
+    return this->instrumentName.isNotEmpty() &&
+        this->lastValidStateFallback.isEmpty();
 }
 
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
@@ -104,7 +103,10 @@ void Instrument::initializeFrom(const PluginDescription &pluginDescription, Init
 
             if (instrument->getProcessor()->acceptsMidi())
             {
-                this->addConnection(midiIn->nodeID, Instrument::midiChannelNumber, instrument->nodeID, Instrument::midiChannelNumber);
+                this->addConnection(midiIn->nodeID,
+                    Instrument::midiChannelNumber,
+                    instrument->nodeID,
+                    Instrument::midiChannelNumber);
             }
 
             for (int i = 0; i < instrument->getProcessor()->getTotalNumOutputChannels(); ++i)
@@ -114,7 +116,10 @@ void Instrument::initializeFrom(const PluginDescription &pluginDescription, Init
 
             if (instrument->getProcessor()->producesMidi())
             {
-                this->addConnection(instrument->nodeID, Instrument::midiChannelNumber, midiOut->nodeID, Instrument::midiChannelNumber);
+                this->addConnection(instrument->nodeID,
+                    Instrument::midiChannelNumber,
+                    midiOut->nodeID,
+                    Instrument::midiChannelNumber);
             }
 
             initCallback(this);
@@ -132,6 +137,7 @@ void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription, 
     {
         if (node != nullptr)
         {
+            this->lastValidStateFallback = {}; // the instrument is now valid
             initCallback(this);
             this->sendChangeMessage();
         }
@@ -448,6 +454,13 @@ void Instrument::reset()
 SerializedData Instrument::serialize() const
 {
     using namespace Serialization;
+
+    if (!this->lastValidStateFallback.isEmpty())
+    {
+        // the instrument hasn't been loaded correctly before:
+        return this->lastValidStateFallback;
+    }
+
     SerializedData tree(Audio::instrument);
     tree.setProperty(Audio::instrumentId, this->instrumentId.toString());
     tree.setProperty(Audio::instrumentName, this->instrumentName);
@@ -508,6 +521,8 @@ void Instrument::deserialize(const SerializedData &data)
 
     if (!root.isValid() || root.getNumChildren() == 0) { return; }
 
+    this->lastValidStateFallback = root;
+
     this->instrumentId = root.getProperty(Audio::instrumentId, this->instrumentId.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);
 
@@ -555,6 +570,25 @@ void Instrument::deserialize(const SerializedData &data)
         }
 
         this->processorGraph->removeIllegalConnections();
+
+        // here we want to test if we have the instrument loaded correctly, and,
+        // if not, remember the serialized data, so we can save it later,
+        // instead of a messed up state we'll have on deserialization failure
+        // (because of, e.g. user switching between 64-bit and 32-bit versions);
+        // the simplest way to test that is to check if the processor graph
+        // now contains nothing but standard input-output nodes:
+        for (int i = 0; i < this->getNumNodes(); ++i)
+        {
+            const auto node = this->getNode(i);
+            if (!this->isNodeStandardIOProcessor(node))
+            {
+                // seems like something has been loaded ok at this point,
+                // so drop the last valid state backup, we won't need it:
+                this->lastValidStateFallback = {};
+                break;
+            }
+        }
+
         this->sendChangeMessage();
     });
 }
@@ -604,6 +638,12 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
 
         AudioProcessorGraph::NodeID nodeId(nodeUid);
         AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(move(instance), nodeId));
+
+        if (node == nullptr)
+        {
+            this->deserializeNodesAsync(nodesToDeserialize, allDoneCallback);
+            return;
+        }
 
         if (nodeStateBlock.getSize() > 0)
         {

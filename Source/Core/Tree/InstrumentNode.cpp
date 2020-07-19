@@ -138,10 +138,9 @@ void InstrumentNode::updateChildrenEditors()
 
     for (int i = 0; i < this->instrument->getNumNodes(); ++i)
     {
-        const AudioProcessorGraph::Node::Ptr node = this->instrument->getNode(i);
+        const auto node = this->instrument->getNode(i);
 
-        if (AudioProcessorGraph::AudioGraphIOProcessor *io =
-                    dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(node->getProcessor()))
+        if (auto *io = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(node->getProcessor()))
         {
             continue; // для девайсов ввода-вывода показывать нечего, пропускаем
         }
@@ -187,8 +186,7 @@ void InstrumentNode::deserialize(const SerializedData &data)
     const String id = data.getProperty(Serialization::Audio::instrumentId);
     this->instrument = this->audioCore->findInstrumentById(id);
 
-    if (this->instrument == nullptr ||
-        !this->instrument->isValid())
+    if (this->instrument == nullptr)
     {
         this->removeFromOrchestraAndDelete();
         return;

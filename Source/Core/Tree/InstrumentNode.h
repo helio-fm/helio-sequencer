@@ -31,6 +31,8 @@ public:
     ~InstrumentNode() override;
 
     void updateChildrenEditors();
+    void notifyOrchestraChanged();
+
     void removeFromOrchestraAndDelete();
 
     Image getIcon() const noexcept override;
@@ -70,7 +72,6 @@ private:
 
     void initInstrumentEditor();
     void removeInstrumentEditor();
-    void notifyOrchestraChanged();
 
     UniquePointer<InstrumentEditor> instrumentEditor;
     WeakReference<Instrument> instrument;

@@ -502,7 +502,8 @@ void AudioCore::deserialize(const SerializedData &data)
             // before actually creating nodes and connections:
             this->addInstrumentToAudioDevice(instrument.get());
             instrument->deserialize(instrumentNode);
-            if (!instrument->isValid())
+            // try to filter out the trash early:
+            if (instrument->getName().isEmpty())
             {
                 this->removeInstrumentFromAudioDevice(instrument.get());
             }

@@ -35,6 +35,7 @@ public:
 
     bool isEquivalentTo(const SerializedData &) const;
     bool isValid() const noexcept;
+    bool isEmpty() const noexcept;
 
     SerializedData createCopy() const;
 

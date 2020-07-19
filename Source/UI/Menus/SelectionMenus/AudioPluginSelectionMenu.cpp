@@ -80,7 +80,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
     }));
 
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentNode>();
-    for (const auto instrumentNode : instruments)
+    for (auto *instrumentNode : instruments)
     {
         menu.add(MenuItem::item(Icons::instrument, instrumentNode->getName())->
             closesMenu()->
@@ -90,6 +90,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
                 [this, instrumentNode](Instrument *instrument)
                 {
                     instrumentNode->updateChildrenEditors();
+                    instrumentNode->notifyOrchestraChanged(); // will update the pit page
                 });
         }));
     }

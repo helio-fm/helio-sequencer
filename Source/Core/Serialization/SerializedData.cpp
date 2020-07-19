@@ -223,6 +223,12 @@ bool SerializedData::isValid() const noexcept
     return this->data != nullptr;
 }
 
+bool SerializedData::isEmpty() const noexcept
+{
+    return this->data == nullptr ||
+        (this->getNumProperties() == 0 && this->getNumChildren() == 0);
+}
+
 SerializedData SerializedData::createCopy() const
 {
     jassert(this->data != nullptr);

@@ -119,6 +119,7 @@ void InstrumentsListComponent::updateListContent()
     this->instruments = this->instrumentsRoot.findChildrenRefsOfType<InstrumentNode>();
     this->instrumentsList->updateContent();
     this->clearSelection();
+    this->repaint();
 }
 
 //===----------------------------------------------------------------------===//
@@ -145,12 +146,18 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
     }
 
     const auto instrument = instrumentNode->getInstrument();
-    if (instrument == nullptr) { return; }
+    if (instrument == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
 
     g.setFont(h * 0.4f);
     const int margin = h / 12;
 
-    g.setColour(findDefaultColour(ListBox::textColourId));
+    // todo also display "(unavailable)", if not valid?
+    const auto alpha = instrument->isValid() ? 1.f : 0.35f;
+    g.setColour(findDefaultColour(ListBox::textColourId).withMultipliedAlpha(alpha));
     g.drawText(instrumentNode->getName(), (margin * 2) + this->instrumentIcon.getWidth(), margin,
         w, h - (margin * 2), Justification::centredLeft, false);
 
@@ -186,8 +193,10 @@ void InstrumentsListComponent::selectedRowsChanged(int lastRowSelected)
     }
 #elif HELIO_MOBILE
     auto instrumentNode = this->instruments[lastRowSelected];
-    if (instrumentNode == nullptr) { return; }
-    instrumentNode->setSelected();
+    if (instrumentNode != nullptr)
+    {
+        instrumentNode->setSelected();
+    }
 #endif
 }
 
@@ -195,8 +204,10 @@ void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const Mou
 {
 #if HELIO_DESKTOP
     auto instrumentNode = this->instruments[rowNumber];
-    if (instrumentNode == nullptr) { return; }
-    instrumentNode->setSelected();
+    if (instrumentNode != nullptr && instrumentNode->getInstrument()->isValid())
+    {
+        instrumentNode->setSelected();
+    }
 #endif
 }
 
@@ -211,8 +222,12 @@ UniquePointer<Component> InstrumentsListComponent::createMenu()
 {
     const auto selectedRow = this->instrumentsList->getSelectedRow();
     const auto instrument = this->instruments[selectedRow];
-    jassert(instrument);
-    return make<InstrumentMenu>(*instrument, this->pluginScanner);
+    if (instrument != nullptr)
+    {
+        return instrument->createMenu();
+    }
+
+    return nullptr;
 }
 
 Image InstrumentsListComponent::getIcon() const
@@ -232,7 +247,12 @@ void InstrumentsListComponent::listBoxItemClicked(int row, const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown())
     {
-        this->contextMenuController->showMenu(e);
+        const auto selectedRow = this->instrumentsList->getSelectedRow();
+        const auto instrument = this->instruments[selectedRow];
+        if (instrument != nullptr)
+        {
+            this->contextMenuController->showMenu(e);
+        }
     }
 }
 

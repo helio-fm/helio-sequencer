@@ -30,7 +30,7 @@ public:
     Instrument(AudioPluginFormatManager &formatManager, const String &name);
     ~Instrument() override;
 
-    String getName() const;
+    String getName() const noexcept;
     void setName(const String &name);
 
     // midi tracks use this to identify their instruments
@@ -139,8 +139,8 @@ public:
     void deserialize(const SerializedData &data) override;
     void reset() override;
 
-    /* The special channel index used to refer to a filter's midi channel.*/
-    static const int midiChannelNumber;
+    // The special channel index used to refer to a filter's midi channel
+    static constexpr auto midiChannelNumber = 0x1000;
     
 protected:
 
@@ -153,7 +153,7 @@ protected:
     
 private:
 
-    String getInstrumentId() const; // will differ between platforms
+    String getInstrumentId() const noexcept; // will differ between platforms
     String getInstrumentHash() const; // should be the same on all platforms
     
     AudioProcessorGraph::Node::Ptr addNode(const PluginDescription &, double x, double y);
@@ -172,6 +172,8 @@ private:
 
     using DeserializeNodesCallback = Function<void()>;
     void deserializeNodesAsync(Array<SerializedData> nodesToDeserialize, DeserializeNodesCallback f);
+
+    SerializedData lastValidStateFallback;
 
 private:
 

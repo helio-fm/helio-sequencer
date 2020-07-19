@@ -35,10 +35,13 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
-    if (!instrumentNode.isSelected())
+    const auto instrument = this->instrumentNode.getInstrument();
+
+    if (!this->instrumentNode.isSelected())
     {
         menu.add(MenuItem::item(Icons::routing,
             TRANS(I18n::Menu::instrumentShowEditor))->
+            disabledIf(!instrument->isValid())->
             closesMenu()->
             withAction([this]()
             {
@@ -48,6 +51,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 
     menu.add(MenuItem::item(Icons::ellipsis,
         TRANS(I18n::Menu::instrumentRename))->
+        disabledIf(!instrument->isValid())->
         withAction([this]()
         {
             auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
@@ -71,7 +75,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     menu.add(MenuItem::item(Icons::audioPlugin,
         TRANS(I18n::Menu::instrumentAddEffect))->
         withSubmenu()->
-        disabledIf(!this->pluginScanner.hasEffects())->
+        disabledIf(!this->pluginScanner.hasEffects() || !instrument->isValid())->
         withAction([this]()
         {
             this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
