@@ -24,6 +24,11 @@ class ProjectNode;
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundB.h"
+#include "../../Themes/SeparatorVerticalSkew.h"
+#include "../../Themes/PanelBackgroundA.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "../../Themes/SeparatorHorizontalFadingReversed.h"
 
 class ProjectPage final : public Component,
                           protected TransportListener,
@@ -42,8 +47,8 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void labelTextChanged(Label* labelThatHasChanged) override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
+    void labelTextChanged(Label *labelThatHasChanged) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
 
 
@@ -72,7 +77,9 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<SeparatorVerticalSkew> skew;
+    UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<Label> projectTitleEditor;
     UniquePointer<Label> projectTitleLabel;
     UniquePointer<Label> authorEditor;
@@ -94,6 +101,9 @@ private:
     UniquePointer<Label> licenseLabel;
     UniquePointer<Label> licenseEditor;
     UniquePointer<ImageButton> revealLocationButton;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator2;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectPage)
 };
