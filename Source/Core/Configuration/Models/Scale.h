@@ -24,7 +24,7 @@ class Scale final : public BaseResource
 {
 public:
 
-    Scale() noexcept;
+    Scale() = default;
     Scale(const Scale &other) noexcept;
     explicit Scale(const String &name) noexcept;
 
@@ -127,7 +127,7 @@ private:
     // e.g. for Ionian: keys[0] = 0, keys[1] = 2, keys[2] = 4, etc
     Array<int> keys;
 
-    int basePeriod;
+    int basePeriod = Globals::chromaticScaleSize;
 
     JUCE_LEAK_DETECTOR(Scale)
 };

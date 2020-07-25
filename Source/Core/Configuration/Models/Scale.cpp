@@ -19,14 +19,10 @@
 #include "Scale.h"
 #include "SerializationKeys.h"
 
-Scale::Scale() noexcept :
-    basePeriod(Globals::chromaticScaleSize) {}
-
-Scale::Scale(const String &name) noexcept :
-    name(name), basePeriod(Globals::chromaticScaleSize) {}
+Scale::Scale(const String &name) noexcept : name(name) {}
 
 Scale::Scale(const Scale &other) noexcept :
-    name(other.name), basePeriod(Globals::chromaticScaleSize), keys(other.keys) {}
+    name(other.name), basePeriod(other.basePeriod), keys(other.keys) {}
 
 Scale::Ptr Scale::withName(const String &name) const noexcept
 {
