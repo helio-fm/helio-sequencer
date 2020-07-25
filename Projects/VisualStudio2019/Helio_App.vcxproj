@@ -209,6 +209,9 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Script.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Temperament.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -231,6 +234,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.cpp">
@@ -2923,6 +2929,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Script.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Temperament.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\TranslationKeys.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.h"/>
@@ -2932,6 +2939,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Config.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\UserInterfaceFlags.h"/>

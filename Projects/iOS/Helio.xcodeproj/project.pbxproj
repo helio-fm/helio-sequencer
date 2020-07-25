@@ -1585,6 +1585,13 @@
 			path = System/Library/Frameworks/QuartzCore.framework;
 			sourceTree = SDKROOT;
 		};
+		3D53BBC55853A41AFFBA08E0 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TemperamentsManager.cpp;
+			path = ../../Source/Core/Configuration/ResourceManagers/TemperamentsManager.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		3E0DD1DD3D9F1837F540917E = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5393,6 +5400,13 @@
 			path = ../../Source/Core/Workspace/Workspace.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		EAC405D2F3DC43BAAE5AE15E = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = Temperament.cpp;
+			path = ../../Source/Core/Configuration/Models/Temperament.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		EB1653FC6707E1C5F4F0420B = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5617,6 +5631,13 @@
 			path = ../../Source/UI/Dialogs/FadingDialog.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		F3FFF7E6BC9AE0FE28822279 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = Temperament.h;
+			path = ../../Source/Core/Configuration/Models/Temperament.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		F4610814BF7C06CEE3B3A22A = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5692,6 +5713,13 @@
 			lastKnownFileType = file.flac;
 			name = "F#2v9.flac";
 			path = "../../Resources/Samples/F#2v9.flac";
+			sourceTree = "SOURCE_ROOT";
+		};
+		F824386C24E0394EF09006B0 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TemperamentsManager.h;
+			path = ../../Source/Core/Configuration/ResourceManagers/TemperamentsManager.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		F825FBB8667FE30F1276F2E0 = {
@@ -6078,6 +6106,8 @@
 				A808F944BD1E55E8A319C067,
 				0998A047F3F63473B4D027F4,
 				4CB4193955D65B4696E93440,
+				EAC405D2F3DC43BAAE5AE15E,
+				F3FFF7E6BC9AE0FE28822279,
 				E7198041504784409868B07B,
 				C63A28C80B15F986AED2D11D,
 				7EA9485E18D0B9569175FFB9,
@@ -6102,6 +6132,8 @@
 				5C7810665BFC8C8CA86A478F,
 				AD88F6D4B1B520CC0ABC1D48,
 				F2C8AA97CB84C97903511850,
+				3D53BBC55853A41AFFBA08E0,
+				F824386C24E0394EF09006B0,
 				A533B6E5A65824292786111C,
 				8833481C9823230E2BDD4E9F,
 			);

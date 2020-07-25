@@ -682,6 +682,9 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Script.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Temperament.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
@@ -704,6 +707,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.cpp">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.cpp">
@@ -3573,6 +3579,9 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Script.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Temperament.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
@@ -3598,6 +3607,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.h">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.h">

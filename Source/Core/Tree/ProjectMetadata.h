@@ -19,6 +19,7 @@
 
 class ProjectNode;
 
+#include "Temperament.h"
 #include "ProjectInfoDiffLogic.h"
 #include "TrackedItem.h"
 #include "Delta.h"
@@ -92,10 +93,7 @@ private:
     String license;
     int64 initTimestamp;
 
-    // TODO! ability to set up middle c
-    // and temperament in general
-    // int32 getMiddleC() const noexcept;
-    // Temperament temperament;
+    Temperament::Ptr temperament;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMetadata);
 };

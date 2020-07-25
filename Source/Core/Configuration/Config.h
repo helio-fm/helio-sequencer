@@ -23,6 +23,7 @@ class Serializable;
 #include "ArpeggiatorsManager.h"
 #include "ColourSchemesManager.h"
 #include "HotkeySchemesManager.h"
+#include "TemperamentsManager.h"
 #include "ScriptsManager.h"
 #include "ScalesManager.h"
 #include "ChordsManager.h"
@@ -78,6 +79,7 @@ private:
     UniquePointer<ArpeggiatorsManager> arpeggiatorsManager;
     UniquePointer<ColourSchemesManager> colourSchemesManager;
     UniquePointer<HotkeySchemesManager> hotkeySchemesManager;
+    UniquePointer<TemperamentsManager> temperamentsManager;
     UniquePointer<ScriptsManager> scriptsManager;
     UniquePointer<ScalesManager> scalesManager;
     UniquePointer<ChordsManager> chordsManager;

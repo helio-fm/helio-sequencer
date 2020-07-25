@@ -72,6 +72,12 @@ namespace Serialization
         static const Identifier scalePeriod = "period";
         static const Identifier scaleIntervals = "intervals";
 
+        // Temperaments
+        static const Identifier temperament = "temperament";
+        static const Identifier temperamentName = "name";
+        static const Identifier temperamentMiddleC = "middleC";
+        static const Identifier temperamentNoteNames = "noteNames";
+
         // Chords
         static const Identifier chord = "chord";
         static const Identifier chordName = "name";
@@ -198,6 +204,7 @@ namespace Serialization
         static const Identifier scales = "scales";
         static const Identifier chords = "chords";
         static const Identifier scripts = "scripts";
+        static const Identifier temperaments = "temperaments";
         static const Identifier arpeggiators = "arpeggiators";
         static const Identifier translations = "translations";
         static const Identifier colourSchemes = "colourSchemes";

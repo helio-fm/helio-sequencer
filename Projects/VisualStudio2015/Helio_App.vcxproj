@@ -292,6 +292,7 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Scale.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Script.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Temperament.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.cpp"/>
@@ -300,6 +301,7 @@
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Config.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\UserInterfaceFlags.cpp"/>
@@ -2484,6 +2486,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Script.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Temperament.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\TranslationKeys.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.h"/>
@@ -2493,6 +2496,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScriptsManager.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Config.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\UserInterfaceFlags.h"/>

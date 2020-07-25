@@ -30,6 +30,7 @@ Config::Config(int timeoutToSaveMs) :
     this->arpeggiatorsManager = make<ArpeggiatorsManager>();
     this->colourSchemesManager = make<ColourSchemesManager>();
     this->hotkeySchemesManager = make<HotkeySchemesManager>();
+    this->temperamentsManager = make<TemperamentsManager>();
     this->scriptsManager = make<ScriptsManager>();
     this->scalesManager = make<ScalesManager>();
     this->chordsManager = make<ChordsManager>();
@@ -39,6 +40,7 @@ Config::Config(int timeoutToSaveMs) :
     this->resources[arpeggiators] = this->arpeggiatorsManager.get();
     this->resources[colourSchemes] = this->colourSchemesManager.get();
     this->resources[hotkeySchemes] = this->hotkeySchemesManager.get();
+    this->resources[temperaments] = this->temperamentsManager.get();
     this->resources[scripts] = this->scriptsManager.get();
     this->resources[scales] = this->scalesManager.get();
     this->resources[chords] = this->chordsManager.get();
@@ -53,6 +55,7 @@ Config::~Config()
     this->chordsManager = nullptr;
     this->scalesManager = nullptr;
     this->scriptsManager = nullptr;
+    this->temperamentsManager = nullptr;
     this->hotkeySchemesManager = nullptr;
     this->colourSchemesManager = nullptr;
     this->arpeggiatorsManager = nullptr;

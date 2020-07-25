@@ -230,6 +230,8 @@
             <FILE id="ybmkDB" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Scale.h"/>
             <FILE id="kgyKst" name="Script.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Script.cpp"/>
             <FILE id="hQLSXp" name="Script.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Script.h"/>
+            <FILE id="baGGFk" name="Temperament.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Temperament.cpp"/>
+            <FILE id="tcJjIn" name="Temperament.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Temperament.h"/>
             <FILE id="IYGH5g" name="Translation.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Translation.cpp"/>
             <FILE id="UNzZAk" name="Translation.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Translation.h"/>
             <FILE id="mbynio" name="TranslationKeys.h" compile="0" resource="0"
@@ -262,6 +264,10 @@
                   file="../../Source/Core/Configuration/ResourceManagers/ScriptsManager.cpp"/>
             <FILE id="W4McX5" name="ScriptsManager.h" compile="0" resource="0"
                   file="../../Source/Core/Configuration/ResourceManagers/ScriptsManager.h"/>
+            <FILE id="qu4A8V" name="TemperamentsManager.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/ResourceManagers/TemperamentsManager.cpp"/>
+            <FILE id="D5KjUb" name="TemperamentsManager.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/ResourceManagers/TemperamentsManager.h"/>
             <FILE id="j3ykPD" name="TranslationsManager.cpp" compile="1" resource="0"
                   file="../../Source/Core/Configuration/ResourceManagers/TranslationsManager.cpp"/>
             <FILE id="zrz77y" name="TranslationsManager.h" compile="0" resource="0"
