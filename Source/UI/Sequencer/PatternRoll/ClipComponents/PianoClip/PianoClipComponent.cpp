@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "PianoClipComponent.h"
 #include "ProjectNode.h"
+#include "ProjectMetadata.h"
 #include "MidiSequence.h"
 #include "PianoSequence.h"
 #include "PlayerThread.h"
@@ -56,11 +57,11 @@ void PianoClipComponent::paint(Graphics &g)
         const auto *ns = note.getSequence();
         const float sequenceLength = ns->getLengthInBeats();
         const float beat = note.getBeat() - ns->getFirstBeat();
-        const auto key = jlimit(0, Globals::maxNoteKey, note.getKey() + this->clip.getKey());
+        const auto key = jlimit(0, this->keyboardSize, note.getKey() + this->clip.getKey());
         const float x = static_cast<float>(this->getWidth()) * (beat / sequenceLength);
         const float w = static_cast<float>(this->getWidth()) * (note.getLength() / sequenceLength);
         const float h = static_cast<float>(this->getHeight());
-        const int y = static_cast<int>(h - key * h / static_cast<float>(Globals::maxNoteKey));
+        const int y = static_cast<int>(h - key * h / static_cast<float>(this->keyboardSize));
         g.fillRect(x, static_cast<float>(y), jmax(0.25f, w), 1.f);
     }
 }
@@ -134,7 +135,16 @@ void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks
 {
     if (this->sequence != nullptr)
     {
+        this->keyboardSize = this->project.getProjectInfo()->getKeyboardSize();
         this->reloadTrackMap();
+    }
+}
+
+void PianoClipComponent::onChangeProjectInfo(const ProjectMetadata *info)
+{
+    if (this->keyboardSize != info->getKeyboardSize())
+    {
+        this->keyboardSize = info->getKeyboardSize();
         this->roll.triggerBatchRepaintFor(this);
     }
 }

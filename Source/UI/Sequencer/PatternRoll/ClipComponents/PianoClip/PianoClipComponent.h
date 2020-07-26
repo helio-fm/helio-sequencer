@@ -61,6 +61,7 @@ public:
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override {}
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onChangeProjectInfo(const ProjectMetadata *info) override;
 
 private:
 
@@ -69,6 +70,8 @@ private:
     ProjectNode &project;
     WeakReference<MidiSequence> sequence;
     FlatHashSet<Note, MidiEventHash> displayedNotes;
+
+    int keyboardSize = Globals::twelveToneKeyboardSize;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoClipComponent)
 };

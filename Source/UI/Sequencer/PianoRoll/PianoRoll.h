@@ -17,16 +17,6 @@
 
 #pragma once
 
-#if HELIO_DESKTOP
-#   define PIANOROLL_HAS_NOTE_RESIZERS 0
-#   define PIANOROLL_MIN_ROW_HEIGHT (7)
-#   define PIANOROLL_MAX_ROW_HEIGHT (26)
-#elif HELIO_MOBILE
-#   define PIANOROLL_HAS_NOTE_RESIZERS 1
-#   define PIANOROLL_MIN_ROW_HEIGHT (10)
-#   define PIANOROLL_MAX_ROW_HEIGHT (35)
-#endif
-
 class MidiSequence;
 class NoteComponent;
 class PianoRollCellHighlighter;
@@ -42,6 +32,7 @@ class Scale;
 #include "HelioTheme.h"
 #include "NoteResizerLeft.h"
 #include "NoteResizerRight.h"
+#include "Temperament.h"
 #include "Note.h"
 #include "Clip.h"
 
@@ -59,6 +50,9 @@ public:
 
     WeakReference<MidiTrack> getActiveTrack() const noexcept;
     const Clip &getActiveClip() const noexcept;
+
+    int getNumKeys() const noexcept;
+    Note::Key getMiddleC() const noexcept;
 
     void setDefaultNoteVolume(float volume) noexcept;
     void setDefaultNoteLength(float length) noexcept;
@@ -125,6 +119,7 @@ public:
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
 
+    void onChangeProjectInfo(const ProjectMetadata *info) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewEditableScope(MidiTrack *const track,
@@ -188,6 +183,8 @@ private:
     WeakReference<MidiTrack> activeTrack = nullptr;
     Clip activeClip;
 
+    Temperament::Ptr temperament;
+
     void updateActiveRangeIndicator() const;
 
 private:
@@ -212,9 +209,7 @@ private:
     float newNoteVolume = Globals::Defaults::newNoteVelocity;
     float newNoteLength = Globals::Defaults::newNoteLength;
 
-    const int numRows = Globals::maxNoteKey;
-    int rowHeight = PIANOROLL_MIN_ROW_HEIGHT;
-
+    int rowHeight = 0;
     void setRowHeight(int newRowHeight);
     inline int getRowHeight() const noexcept
     {
@@ -223,7 +218,7 @@ private:
 
 private:
 
-    enum ToolType
+    enum class ToolType : int8
     {
         ScalePreview,
         ChordPreview
@@ -236,7 +231,7 @@ private:
     class HighlightingScheme final
     {
     public:
-        HighlightingScheme(int rootKey, const Scale::Ptr scale) noexcept;
+        HighlightingScheme(Note::Key rootKey, const Scale::Ptr scale) noexcept;
         
         template<typename T1, typename T2>
         static int compareElements(const T1 *const l, const T2 *const r)
@@ -252,21 +247,26 @@ private:
         }
 
         const Scale::Ptr getScale() const noexcept { return this->scale; }
-        const int getRootKey() const noexcept { return this->rootKey; }
+        const Note::Key getRootKey() const noexcept { return this->rootKey; }
         const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
-        void setRows(Array<Image> val) noexcept { this->rows = val; }
+        void setRows(Array<Image> &&val) noexcept { this->rows.swapWith(val); }
 
     private:
         Scale::Ptr scale;
-        int rootKey;
+        Note::Key rootKey;
         Array<Image> rows;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightingScheme);
     };
 
+    void updateBackgroundCachesAndRepaint();
     void updateBackgroundCacheFor(const KeySignatureEvent &key);
     void removeBackgroundCacheFor(const KeySignatureEvent &key);
+
     Array<Image> renderBackgroundCacheFor(const HighlightingScheme *const scheme) const;
-    static Image renderRowsPattern(const HelioTheme &, const Scale::Ptr, int root, int height);
+    static Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
+        const Temperament::Ptr temperament, const Scale::Ptr scale,
+        Note::Key root, int height);
+
     OwnedArray<HighlightingScheme> backgroundsCache;
     UniquePointer<HighlightingScheme> defaultHighlighting;
     int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
@@ -294,6 +294,18 @@ private:
     using SequenceMap = FlatHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
+
+private:
+
+#if HELIO_DESKTOP
+    static constexpr auto minRowHeight = 7;
+    static constexpr auto defaultRowHeight = 12;
+    static constexpr auto maxRowHeight = 26;
+#elif HELIO_MOBILE
+    static constexpr auto minRowHeight = 10;
+    static constexpr auto defaultRowHeight = 15;
+    static constexpr auto maxRowHeight = 35;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll);
 };

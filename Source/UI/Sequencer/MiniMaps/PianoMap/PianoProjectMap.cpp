@@ -22,6 +22,8 @@
 #include "MidiSequence.h"
 #include "Pattern.h"
 #include "PianoSequence.h"
+#include "Temperament.h"
+#include "ProjectMetadata.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
@@ -52,7 +54,9 @@ PianoProjectMap::~PianoProjectMap()
 
 void PianoProjectMap::resized()
 {
-    this->componentHeight = static_cast<float>(this->getHeight()) / static_cast<float>(Globals::maxNoteKey);
+    this->componentHeight =
+        static_cast<float>(this->getHeight()) /
+        static_cast<float>(this->keyboardSize);
 }
 
 void PianoProjectMap::paint(Graphics &g)
@@ -72,7 +76,7 @@ void PianoProjectMap::paint(Graphics &g)
 
         for (const auto &n : *sequenceMap)
         {
-            const auto key = jlimit(0, Globals::maxNoteKey, n.getKey() + c.first.getKey());
+            const auto key = jlimit(0, this->keyboardSize, n.getKey() + c.first.getKey());
             const auto beat = n.getBeat() + c.first.getBeat() - this->rollFirstBeat;
             const auto length = n.getLength();
 
@@ -205,6 +209,15 @@ void PianoProjectMap::onRemoveClip(const Clip &clip)
     }
 }
 
+void PianoProjectMap::onChangeProjectInfo(const ProjectMetadata *info)
+{
+    if (this->keyboardSize != info->getKeyboardSize())
+    {
+        this->keyboardSize = info->getKeyboardSize();
+        this->triggerAsyncUpdate();
+    }
+}
+
 void PianoProjectMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
@@ -213,6 +226,7 @@ void PianoProjectMap::onChangeTrackProperties(MidiTrack *const track)
 
 void PianoProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
+    this->keyboardSize = this->project.getProjectInfo()->getKeyboardSize();
     this->reloadTrackMap();
 }
 

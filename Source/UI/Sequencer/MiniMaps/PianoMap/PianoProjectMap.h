@@ -63,6 +63,8 @@ public:
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewEditableScope(MidiTrack *const track, const Clip &clip, bool) override;
 
+    void onChangeProjectInfo(const ProjectMetadata *info) override;
+
 private:
 
     void reloadTrackMap();
@@ -75,6 +77,8 @@ private:
     float rollLastBeat = Globals::Defaults::projectLength;
 
     float componentHeight = 1.f;
+
+    int keyboardSize = Globals::twelveToneKeyboardSize;
 
     HybridRoll &roll;
     ProjectNode &project;

@@ -31,6 +31,7 @@
 #include "ModalDialogInput.h"
 #include "TrackPropertiesDialog.h"
 #include "ProjectTimeline.h"
+#include "ProjectMetadata.h"
 #include "Note.h"
 #include "NoteComponent.h"
 #include "NoteNameGuidesBar.h"
@@ -76,6 +77,11 @@
     for (const auto &_c : this->patternMap) \
         for (const auto &child : (*_c.second.get()))
 
+#if HELIO_DESKTOP
+#   define PIANOROLL_HAS_NOTE_RESIZERS 1
+#elif HELIO_MOBILE
+#   define PIANOROLL_HAS_NOTE_RESIZERS 0
+#endif
 
 PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(project, viewport, clippingDetector)
@@ -87,7 +93,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 
     this->selectedNotesMenuManager = make<PianoRollSelectionMenuManager>(&this->selection, this->project);
 
-    this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
+    this->setRowHeight(PianoRoll::defaultRowHeight);
 
     this->draggingHelper = make<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
@@ -111,29 +117,16 @@ PianoRoll::~PianoRoll() {}
 void PianoRoll::reloadRollContent()
 {
     this->selection.deselectAll();
-    this->backgroundsCache.clear();
     this->patternMap.clear();
 
     HYBRID_ROLL_BULK_REPAINT_START
 
-    const auto &tracks = this->project.getTracks();
-    for (const auto *track : tracks)
+    for (const auto *track : this->project.getTracks())
     {
         this->loadTrack(track);
-
-        // Re-render backgrounds for all key signatures:
-        for (int j = 0; j < track->getSequence()->size(); ++j)
-        {
-            const MidiEvent *event = track->getSequence()->getUnchecked(j);
-            if (event->isTypeOf(MidiEvent::Type::KeySignature))
-            {
-                const auto &key = static_cast<const KeySignatureEvent &>(*event);
-                this->updateBackgroundCacheFor(key);
-            }
-        }
     }
 
-    this->repaint(this->viewport.getViewArea());
+    this->updateBackgroundCachesAndRepaint();
 
     HYBRID_ROLL_BULK_REPAINT_END
 }
@@ -199,8 +192,18 @@ void PianoRoll::setDefaultNoteLength(float length) noexcept
 void PianoRoll::setRowHeight(int newRowHeight)
 {
     if (newRowHeight == this->rowHeight) { return; }
-    this->rowHeight = jlimit(PIANOROLL_MIN_ROW_HEIGHT, PIANOROLL_MAX_ROW_HEIGHT, newRowHeight);
-    this->setSize(this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT + this->numRows * this->rowHeight);
+    this->rowHeight = jlimit(PianoRoll::minRowHeight, PianoRoll::maxRowHeight, newRowHeight);
+    this->setSize(this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT + this->getNumKeys() * this->rowHeight);
+}
+
+int PianoRoll::getNumKeys() const noexcept
+{
+    return this->temperament->getNumKeys();
+}
+
+Note::Key PianoRoll::getMiddleC() const noexcept
+{
+    return this->temperament->getMiddleC();
 }
 
 //===----------------------------------------------------------------------===//
@@ -295,11 +298,11 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
         newRowHeight = (factor.getY() < -yZoomThreshold) ? (newRowHeight - 1) : newRowHeight;
         newRowHeight = (factor.getY() > yZoomThreshold) ? (newRowHeight + 1) : newRowHeight;
 
-        const float estimatedNewHeight = float(newRowHeight * this->numRows);
+        const float estimatedNewHeight = float(newRowHeight * this->getNumKeys());
 
         if (estimatedNewHeight < this->viewport.getViewHeight() ||
-            newRowHeight > PIANOROLL_MAX_ROW_HEIGHT ||
-            newRowHeight < PIANOROLL_MIN_ROW_HEIGHT)
+            newRowHeight > PianoRoll::maxRowHeight ||
+            newRowHeight < PianoRoll::minRowHeight)
         {
             newRowHeight = this->getRowHeight();
         }
@@ -317,8 +320,8 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
 
 void PianoRoll::zoomAbsolute(const Point<float> &zoom)
 {
-    const float newHeight = (this->numRows * PIANOROLL_MAX_ROW_HEIGHT) * zoom.getY();
-    const float rowsOnNewScreen = float(newHeight / PIANOROLL_MAX_ROW_HEIGHT);
+    const float newHeight = (this->getNumKeys() * PianoRoll::maxRowHeight) * zoom.getY();
+    const float rowsOnNewScreen = float(newHeight / PianoRoll::maxRowHeight);
     const float viewHeight = float(this->viewport.getViewHeight());
     const float newRowHeight = floorf(viewHeight / rowsOnNewScreen + .5f);
 
@@ -337,12 +340,12 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     jassert(minKey >= 0);
     jassert(maxKey >= minKey);
 
-    constexpr auto margin = Globals::chromaticScaleSize;
+    constexpr auto margin = Globals::twelveTonePeriodSize;
     const float numKeysToFit = float(maxKey - minKey + (margin * 2));
     const float heightToFit = float(this->viewport.getViewHeight());
     this->setRowHeight(int(heightToFit / numKeysToFit));
 
-    const int maxKeyY = this->getRowHeight() * (this->numRows - maxKey - margin);
+    const int maxKeyY = this->getRowHeight() * (this->getNumKeys() - maxKey - margin);
     this->viewport.setViewPosition(this->viewport.getViewPositionY() - HYBRID_ROLL_HEADER_HEIGHT, maxKeyY);
 
     HybridRoll::zoomToArea(minBeat, maxBeat);
@@ -362,7 +365,8 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
-    jassert(key >= -Globals::maxNoteKey && key <= Globals::maxNoteKey);
+    // todo jassert depending on temperament used
+    //jassert(key >= -Globals::maxNoteKey && key <= Globals::maxNoteKey);
 
     const float x = this->beatWidth * (beat - this->firstBeat);
     const float w = this->beatWidth * length;
@@ -388,14 +392,14 @@ void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber
 {
     beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
-    noteNumber = jlimit(0, this->numRows - 1, noteNumber);
+    noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getFloorBeatSnapByXPosition(x) - this->activeClip.getBeat();
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
-    noteNumber = jlimit(0, this->numRows - 1, noteNumber);
+    noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }
 
 int PianoRoll::getYPositionByKey(int targetKey) const
@@ -728,9 +732,25 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
     this->repaint();
 }
 
+void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
+{
+    if (this->temperament != info->getTemperament())
+    {
+        this->temperament = info->getTemperament();
+        this->noteNameGuides->syncWithTemperament(this->temperament);
+        this->updateBackgroundCachesAndRepaint();
+    }
+}
+
 void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->reloadRollContent();
+    if (this->temperament != this->project.getProjectInfo()->getTemperament())
+    {
+        this->temperament = this->project.getProjectInfo()->getTemperament();
+        this->noteNameGuides->syncWithTemperament(this->temperament);
+    }
+
+    this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
 }
 
 void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -900,7 +920,8 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
     if (! this->project.getEditMode().forbidsAddingEvents())
     {
         const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
-        this->showChordTool(e.mods.isAnyModifierKeyDown() ? ScalePreview : ChordPreview, e2.getPosition());
+        this->showChordTool(e.mods.isAnyModifierKeyDown() ?
+            ToolType::ScalePreview : ToolType::ChordPreview, e2.getPosition());
     }
 }
 
@@ -1146,10 +1167,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ShowScalePanel:
-        this->showChordTool(ScalePreview, this->getDefaultPositionForPopup());
+        this->showChordTool(ToolType::ScalePreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowChordPanel:
-        this->showChordTool(ChordPreview, this->getDefaultPositionForPopup());
+        this->showChordTool(ToolType::ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
         App::Config().getUiFlags()->toggleVelocityMapVisibility();
@@ -1586,12 +1607,37 @@ void PianoRoll::reset() {}
 // Background pattern images cache
 //===----------------------------------------------------------------------===//
 
+void PianoRoll::updateBackgroundCachesAndRepaint()
+{
+    HYBRID_ROLL_BULK_REPAINT_START
+
+        this->backgroundsCache.clear();
+
+    for (const auto *track : this->project.getTracks())
+    {
+        // Re-render backgrounds for all key signatures:
+        for (int i = 0; i < track->getSequence()->size(); ++i)
+        {
+            const auto *event = track->getSequence()->getUnchecked(i);
+            if (event->isTypeOf(MidiEvent::Type::KeySignature))
+            {
+                const auto &key = static_cast<const KeySignatureEvent &>(*event);
+                this->updateBackgroundCacheFor(key);
+            }
+        }
+    }
+
+    this->repaint(this->viewport.getViewArea());
+
+    HYBRID_ROLL_BULK_REPAINT_END
+}
+
 void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)
 {
     int duplicateSchemeIndex = this->binarySearchForHighlightingScheme(&key);
     if (duplicateSchemeIndex < 0)
     {
-        UniquePointer<HighlightingScheme> scheme(new HighlightingScheme(key.getRootKey(), key.getScale()));
+        auto scheme = make<HighlightingScheme>(key.getRootKey(), key.getScale());
         scheme->setRows(this->renderBackgroundCacheFor(scheme.get()));
         this->backgroundsCache.addSorted(*this->defaultHighlighting, scheme.release());
     }
@@ -1644,32 +1690,37 @@ Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const
 {
     Array<Image> result;
     const auto &theme = HelioTheme::getCurrentTheme();
-    for (int j = 0; j < PIANOROLL_MIN_ROW_HEIGHT; ++j)
+    for (int j = 0; j < PianoRoll::minRowHeight; ++j)
     {
         result.add({});
     }
-    for (int j = PIANOROLL_MIN_ROW_HEIGHT; j <= PIANOROLL_MAX_ROW_HEIGHT; ++j)
+    for (int j = PianoRoll::minRowHeight; j <= PianoRoll::maxRowHeight; ++j)
     {
-        result.add(PianoRoll::renderRowsPattern(theme, scheme->getScale(), scheme->getRootKey(), j));
+        result.add(PianoRoll::renderRowsPattern(theme,
+            this->temperament, scheme->getScale(), scheme->getRootKey(), j));
     }
     return result;
 }
 
-// pre-rendered tiles are used in paint() method to fill the background,
-// but OpenGL doesn't work well with non-power-of-2 textures
-// and the smaller the texture is, the uglier it is displayed,
-// that's why I ended up rendering 6 octaves here instead of one:
-#define NUM_ROWS_TO_RENDER (Globals::chromaticScaleSize * 6)
-
 Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
-    const Scale::Ptr scale, int root, int height)
+    const Temperament::Ptr temperament, const Scale::Ptr scale,
+    Note::Key root, int height)
 {
-    if (height < PIANOROLL_MIN_ROW_HEIGHT)
+    if (height < PianoRoll::minRowHeight)
     {
         return Image(Image::RGB, 1, 1, true);
     }
 
-    Image patternImage(Image::RGB, 4, height * NUM_ROWS_TO_RENDER, false);
+    const auto periodSize = temperament->getPeriodSize();
+    jassert(scale->getBasePeriod() == periodSize);
+
+    // pre-rendered tiles are used in paint() method to fill the background,
+    // but OpenGL doesn't work well with non-power-of-2 textures
+    // and the smaller the texture is, the uglier it is displayed,
+    // that's why I ended up rendering 6 octaves here instead of one:
+    const auto numRowsToRender = periodSize * 6;
+
+    Image patternImage(Image::RGB, 4, height * numRowsToRender, false);
     Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKey);
@@ -1684,26 +1735,26 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     float previousHeight = 0;
     float posY = patternImage.getHeight() - currentHeight;
 
-    const int middleCOffset = scale->getBasePeriod() - (Globals::middleC % scale->getBasePeriod());
-    const int lastOctaveReminder = (Globals::maxNoteKey % scale->getBasePeriod()) - root + middleCOffset;
+    const int middleCOffset = periodSize - (temperament->getMiddleC() % periodSize);
+    const int lastPeriodRemainder = (temperament->getNumKeys() % periodSize) - root + middleCOffset;
 
     //g.setColour(whiteKeyOdd);
     //g.fillRect(patternImage.getBounds());
 
     // draw rows
-    for (int i = lastOctaveReminder;
-        (i < NUM_ROWS_TO_RENDER + lastOctaveReminder) && ((posY + previousHeight) >= 0.0f);
+    for (int i = lastPeriodRemainder;
+        (i < numRowsToRender + lastPeriodRemainder) && ((posY + previousHeight) >= 0.0f);
         i++)
     {
-        const int noteNumber = (i % 12);
-        const int octaveNumber = (i) / 12;
-        const bool octaveIsOdd = ((octaveNumber % 2) > 0);
+        const int noteNumber = i % periodSize;
+        const int periodNumber = i / periodSize;
+        const bool periodIsOdd = ((periodNumber % 2) > 0);
 
         previousHeight = currentHeight;
 
         if (noteNumber == 0)
         {
-            const Colour c = octaveIsOdd ? rootKeyOdd : rootKey;
+            const Colour c = periodIsOdd ? rootKeyOdd : rootKey;
             g.setColour(c);
             g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
             g.setColour(c.brighter(0.025f));
@@ -1711,7 +1762,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
         }
         else if (scale->hasKey(noteNumber))
         {
-            const Colour c = octaveIsOdd ? whiteKeyOdd : whiteKey;
+            const Colour c = periodIsOdd ? whiteKeyOdd : whiteKey;
             g.setColour(c);
             g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
             g.setColour(c.brighter(0.025f));
@@ -1719,7 +1770,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
         }
         else
         {
-            g.setColour(octaveIsOdd ? blackKeyOdd : blackKey);
+            g.setColour(periodIsOdd ? blackKeyOdd : blackKey);
             g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
         }
 
@@ -1736,7 +1787,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     return patternImage;
 }
 
-PianoRoll::HighlightingScheme::HighlightingScheme(int rootKey, const Scale::Ptr scale) noexcept :
+PianoRoll::HighlightingScheme::HighlightingScheme(Note::Key rootKey, const Scale::Ptr scale) noexcept :
     rootKey(rootKey), scale(scale) {}
 
 int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const target) const noexcept
@@ -1771,7 +1822,7 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
 
     switch (type)
     {
-    case PianoRoll::ScalePreview:
+    case ToolType::ScalePreview:
         if (pianoSequence != nullptr)
         {
             auto *popup = new ScalePreviewTool(this, pianoSequence);
@@ -1779,7 +1830,7 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
             App::Layout().addAndMakeVisible(popup);
         }
         break;
-    case PianoRoll::ChordPreview:
+    case ToolType::ChordPreview:
         if (auto *harmonicContext =
             dynamic_cast<KeySignaturesSequence *>(this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
