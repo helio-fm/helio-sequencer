@@ -36,7 +36,7 @@ public:
 
     Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept;
     explicit Note(WeakReference<MidiSequence> owner,
-        Key keyVal = Globals::middleC, float beatVal = 0.f,
+        Key keyVal = 0, float beatVal = 0.f,
         float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
@@ -93,7 +93,7 @@ public:
 
 protected:
 
-    Key key = Globals::middleC;
+    Key key = 0;
     float length = 1.f;
     float velocity = 1.f;
     Tuplet tuplet = 1;

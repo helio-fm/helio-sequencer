@@ -335,7 +335,8 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     this->schemeNameLabel->setColour(Label::textColourId, this->theme->findColour(Label::textColourId));
 
     this->rollImage = PianoRoll::renderRowsPattern(*this->theme,
-        Scale::getNaturalMajorScale(), 0, PIANOROLL_MIN_ROW_HEIGHT);
+        Temperament::getTwelveToneEqualTemperament(), Scale::getNaturalMajorScale(),
+        0, PianoRoll::minRowHeight);
 
     this->icon1 = Icons::renderForTheme(*this->theme, Icons::pianoTrack, 20);
     this->icon2 = Icons::renderForTheme(*this->theme, Icons::submenu, 20);

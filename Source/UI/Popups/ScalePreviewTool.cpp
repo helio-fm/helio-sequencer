@@ -415,17 +415,17 @@ void ScalePreviewTool::buildChord(Array<int> keys)
 {
     if (keys.size() == 0) { return;  }
 
-    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(this->sequence))
+    if (auto *sequence = dynamic_cast<PianoSequence *>(this->sequence))
     {
         this->cancelChangesIfAny();
         this->stopSound();
-        pianoLayer->checkpoint();
+        sequence->checkpoint();
 
         for (int offset : keys)
         {
-            const int key = jlimit(0, Globals::maxNoteKey, this->targetKey + offset);
-            Note note(pianoLayer, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
-            pianoLayer->insert(note, true);
+            const int key = jlimit(0, this->roll->getNumKeys(), this->targetKey + offset);
+            Note note(sequence, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
+            sequence->insert(note, true);
             this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity));
         }
 
@@ -435,7 +435,7 @@ void ScalePreviewTool::buildChord(Array<int> keys)
 
 void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
 {
-    if (PianoSequence *pianoSequence = dynamic_cast<PianoSequence *>(this->sequence))
+    if (auto *pianoSequence = dynamic_cast<PianoSequence *>(this->sequence))
     {
         this->cancelChangesIfAny();
 
@@ -446,7 +446,7 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
 
         pianoSequence->checkpoint();
 
-        const int key = jlimit(0, Globals::maxNoteKey, this->targetKey);
+        const int key = jlimit(0, this->roll->getNumKeys(), this->targetKey);
 
         Note note1(pianoSequence, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
         pianoSequence->insert(note1, true);

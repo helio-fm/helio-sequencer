@@ -274,7 +274,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::TransportPlaybackStart)
     {
-        // Play scale forward and backward
+        // scale preview: simply play it forward and backward
         auto scaleKeys = this->scale->getUpScale();
         scaleKeys.addArray(this->scale->getDownScale());
         const double timeFactor = 0.75; // playback speed
@@ -314,7 +314,9 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
             this->scale = this->defaultScales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
             this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
-            const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(this->scale);
+            const auto newEvent = this->originalEvent
+                .withRootKey(this->key).withScale(this->scale);
+
             this->sendEventChange(newEvent);
         }
     }
@@ -415,7 +417,9 @@ void KeySignatureDialog::onKeyChanged(int key)
     if (this->key != key)
     {
         this->key = key;
-        KeySignatureEvent newEvent = this->originalEvent.withRootKey(key).withScale(this->scale);
+        const auto newEvent = this->originalEvent
+            .withRootKey(key).withScale(this->scale);
+
         this->sendEventChange(newEvent);
     }
 }
@@ -439,7 +443,9 @@ void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
             }
         }
 
-        KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(this->scale);
+        const auto newEvent = this->originalEvent
+            .withRootKey(this->key).withScale(this->scale);
+
         this->sendEventChange(newEvent);
 
         // Don't erase user's text, but let user know the scale is unknown - how?
@@ -452,7 +458,9 @@ void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
     this->updateOkButtonState();
     this->scale = this->scale->withName(this->scaleNameEditor->getText());
     this->scaleEditor->setScale(this->scale);
-    const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(scale);
+    const auto newEvent = this->originalEvent
+        .withRootKey(this->key).withScale(scale);
+
     this->sendEventChange(newEvent);
 }
 

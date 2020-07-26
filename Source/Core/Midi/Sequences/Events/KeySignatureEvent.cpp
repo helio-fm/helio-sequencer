@@ -22,11 +22,7 @@
 
 KeySignatureEvent::KeySignatureEvent() noexcept :
     MidiEvent(nullptr, Type::KeySignature, 0.f),
-    rootKey(0),
-    scale()
-{
-    //jassertfalse;
-}
+    scale() {}
 
 KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) noexcept :
     MidiEvent(other),
@@ -156,17 +152,19 @@ void KeySignatureEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->rootKey = data.getProperty(Midi::key, 0);
-    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
-    this->id = unpackId(data.getProperty(Midi::id));
 
     this->scale = new Scale();
     this->scale->deserialize(data);
+
+    const int root = data.getProperty(Midi::key, 0);
+    this->rootKey = root % this->scale->getBasePeriod();
+    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
+    this->id = unpackId(data.getProperty(Midi::id));
 }
 
 void KeySignatureEvent::reset() noexcept
 {
-    this->rootKey = Globals::middleC;
+    this->rootKey = 0;
 
     if (this->scale != nullptr)
     {

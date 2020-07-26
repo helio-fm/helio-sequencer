@@ -68,7 +68,7 @@ public:
 
 protected:
 
-    Note::Key rootKey;
+    Note::Key rootKey = 0;
     Scale::Ptr scale;
 
 private:

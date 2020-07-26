@@ -321,7 +321,7 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
         this->sequence->checkpoint();
     }
     
-    const int key = jlimit(0, Globals::maxNoteKey, this->targetKey);
+    const int key = jlimit(0, this->roll.getNumKeys(), this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
         CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
 

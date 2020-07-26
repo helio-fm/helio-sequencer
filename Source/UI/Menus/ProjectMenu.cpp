@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "ProjectMenu.h"
 #include "ProjectNode.h"
+#include "ProjectMetadata.h"
 #include "Icons.h"
 #include "ModalDialogInput.h"
 #include "ModalDialogConfirmation.h"
@@ -417,8 +418,10 @@ SerializedData ProjectMenu::createPianoTrackTempate(const String &name,
 
     // insert a single note just so there is a visual anchor in the piano roll:
     const float firstBeat = this->project.getProjectRangeInBeats().getX();
+    const int middleC = this->project.getProjectInfo()->getTemperament()->getMiddleC();
     auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
-    pianoSequence->insert(Note(pianoSequence, Globals::middleC, firstBeat, float(Globals::beatsPerBar), 0.5f), false);
+    pianoSequence->insert(Note(pianoSequence, middleC, firstBeat,
+        float(Globals::beatsPerBar), 0.5f), false);
 
     outTrackId = newNode->getTrackId();
     return newNode->serialize();
