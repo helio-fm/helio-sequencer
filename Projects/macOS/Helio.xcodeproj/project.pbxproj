@@ -1230,6 +1230,13 @@
 			path = ../../Resources/hotkeySchemes.json;
 			sourceTree = "SOURCE_ROOT";
 		};
+		2FD5D0F266D08F2079B6418F = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.json;
+			name = temperaments.json;
+			path = ../../Resources/temperaments.json;
+			sourceTree = "SOURCE_ROOT";
+		};
 		3040E84031AADEDFCED4F915 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5986,6 +5993,7 @@
 				BDBE5C034C80B5342B78B373,
 				2FD4FA713EBE1E4DD9117FC9,
 				0B2A9FFEE1E8C7B196102E03,
+				2FD5D0F266D08F2079B6418F,
 				A5406EDACDF2D97A3E5C29E0,
 			);
 			name = Resources;

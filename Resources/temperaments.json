@@ -1,0 +1,21 @@
+{
+  "temperaments": {
+    "temperament": [
+      {
+        "id": "12edo",
+        "name": "12 equal temperament",
+        "period": "C C# D D# E F F# G G# A A# B"
+      },
+      {
+        "id": "22edo",
+        "name": "22 equal temperament",
+        "period": "C ^C vC# C# D Eb ^Eb vE E F Gb ^Gb vG G Ab ^Ab vA A Bb ^Bb B"
+      },
+      {
+        "id": "31edo",
+        "name": "31 equal temperament",
+        "period": "C Dbb C# Db C## D Ebb D# Eb D## E Fb E# F Gbb F# Gb F## G Abb G# Ab G## A Bbb A# Bb A## B Cb B#"
+      }
+    ]
+  }
+}

@@ -7133,6 +7133,9 @@
     <None Include="..\..\Resources\scales.json">
       <Filter>Helio\Resources</Filter>
     </None>
+    <None Include="..\..\Resources\temperaments.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
     <None Include="..\..\Resources\translations.json">
       <Filter>Helio\Resources</Filter>
     </None>

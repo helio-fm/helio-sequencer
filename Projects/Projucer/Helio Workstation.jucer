@@ -141,6 +141,8 @@
       <FILE id="MfFPAK" name="hotkeySchemes.json" compile="0" resource="1"
             file="../../Resources/hotkeySchemes.json"/>
       <FILE id="YgjNxN" name="scales.json" compile="0" resource="1" file="../../Resources/scales.json"/>
+      <FILE id="xadHuy" name="temperaments.json" compile="0" resource="1"
+            file="../../Resources/temperaments.json"/>
       <FILE id="XeVaag" name="translations.json" compile="0" resource="1"
             file="../../Resources/translations.json"/>
     </GROUP>
