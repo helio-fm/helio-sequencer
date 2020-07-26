@@ -25,7 +25,7 @@ class NoteNameGuide final : public Component
 {
 public:
 
-    NoteNameGuide(int noteNumber);
+    NoteNameGuide(const String &noteName, int noteNumber);
     ~NoteNameGuide();
 
     //[UserMethods]

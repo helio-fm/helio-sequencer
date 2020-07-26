@@ -26,7 +26,7 @@
 #include "CachedLabelImage.h"
 //[/MiscUserDefs]
 
-NoteNameGuide::NoteNameGuide(int noteNumber)
+NoteNameGuide::NoteNameGuide(const String &noteName, int noteNumber)
     : noteNumber(noteNumber),
       fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),
       borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),
@@ -47,7 +47,7 @@ NoteNameGuide::NoteNameGuide(int noteNumber)
 
     this->noteNameLabel->setBufferedToImage(true);
     this->noteNameLabel->setCachedComponentImage(new CachedLabelImage(*this->noteNameLabel));
-    this->noteNameLabel->setText(MidiMessage::getMidiNoteName(noteNumber, true, true, 3), dontSendNotification);
+    this->noteNameLabel->setText(noteName, dontSendNotification);
     //[/UserPreSize]
 
     this->setSize(36, 32);
@@ -148,7 +148,7 @@ void NoteNameGuide::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="NoteNameGuide" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="int noteNumber"
+                 componentName="" parentClasses="public Component" constructorParams="const String &noteName, int noteNumber"
                  variableInitialisers="noteNumber(noteNumber),&#10;fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),&#10;borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),&#10;shadowColour(findDefaultColour(ColourIDs::Roll::noteNameShadow))"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="36" initialHeight="32">

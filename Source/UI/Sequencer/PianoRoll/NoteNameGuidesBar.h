@@ -21,21 +21,28 @@ class PianoRoll;
 class NoteNameGuide;
 class Lasso;
 
+#include "Temperament.h"
+
 class NoteNameGuidesBar final : public Component, private ChangeListener
 {
 public:
 
-    NoteNameGuidesBar(PianoRoll &roll);
+    explicit NoteNameGuidesBar(PianoRoll &roll);
     ~NoteNameGuidesBar();
     
     void updatePosition();
     void updateBounds();
+
     void syncWithSelection(const Lasso *selection);
+    void syncWithTemperament(Temperament::Ptr temperament);
 
 private:
 
     PianoRoll &roll;
     OwnedArray<NoteNameGuide> guides;
+
+    static constexpr auto defaultWidth = 36;
+    static constexpr auto extendedWidth = 42;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 

@@ -28,15 +28,7 @@ NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll) :
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
 
-    this->setSize(36, 32);
-
-    for (int i = 0; i < Globals::maxNoteKey; ++i)
-    {
-        auto *guide = new NoteNameGuide(i);
-        this->guides.add(guide);
-        this->addChildComponent(guide);
-        guide->setVisible(guide->isRootKey());
-    }
+    this->setSize(NoteNameGuidesBar::defaultWidth, 32);
 
     this->roll.getLassoSelection().addChangeListener(this);
 }
@@ -45,6 +37,7 @@ NoteNameGuidesBar::~NoteNameGuidesBar()
 {
     this->roll.getLassoSelection().removeChangeListener(this);
 
+    this->removeAllChildren();
     this->guides.clear(true);
 }
 
@@ -87,11 +80,39 @@ void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
     {
         // assuming we've subscribed only on a piano roll's lasso changes
         const auto *nc = static_cast<const NoteComponent *>(e);
-        const auto key = jlimit(0, Globals::maxNoteKey, nc->getNote().getKey() + nc->getClip().getKey());
+        const auto key = jlimit(0, this->roll.getNumKeys(),
+            nc->getNote().getKey() + nc->getClip().getKey());
+
         this->guides.getUnchecked(key)->setVisible(true);
     }
 
     this->setVisible(wasVisible);
+}
+
+void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr temperament)
+{
+    this->removeAllChildren();
+    this->guides.clearQuick(true);
+
+    if (temperament->getPeriodSize() > Globals::twelveTonePeriodSize)
+    {
+        // add more width for longer note names:
+        this->setSize(NoteNameGuidesBar::extendedWidth, this->getHeight());
+    }
+    else
+    {
+        this->setSize(NoteNameGuidesBar::defaultWidth, this->getHeight());
+    }
+
+    for (int i = 0; i < temperament->getNumKeys(); ++i)
+    {
+        const auto noteName = temperament->getMidiNoteName(i, true);
+        auto *guide = this->guides.add(new NoteNameGuide(noteName, i));
+        this->addChildComponent(guide);
+        guide->setVisible(guide->isRootKey());
+    }
+
+    this->updateBounds();
 }
 
 void NoteNameGuidesBar::changeListenerCallback(ChangeBroadcaster *source)
