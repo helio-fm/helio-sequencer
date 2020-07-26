@@ -17,65 +17,124 @@
 
 #include "Common.h"
 #include "Temperament.h"
+#include "SerializationKeys.h"
 
-Temperament::Temperament(const Temperament &other) noexcept
+Temperament::Temperament(const Temperament &other) noexcept :
+    id(other.id), name(other.name),
+    period(other.period), middleC(other.middleC) {}
+
+Temperament::Temperament(Temperament &&other) noexcept :
+    id(other.id), name(other.name), middleC(other.middleC)
 {
-    jassertfalse;
+    this->period.swapWith(other.period);
 }
 
-Temperament::Temperament(const String &name) noexcept
+String Temperament::getMidiNoteName(Note::Key note, bool includePeriod) const noexcept
 {
-    jassertfalse;
+    if (isPositiveAndBelow(note, this->getNumKeys()))
+    {
+        String result(this->period[note % this->getPeriodSize()]);
+
+        if (includePeriod)
+        {
+            result << (note / this->getPeriodSize() +
+                (Temperament::displayedPeriodNumForMiddleC - Temperament::periodNumForMiddleC));
+        }
+
+        return result;
+    }
+
+    return {};
 }
+
+//===----------------------------------------------------------------------===//
+// BaseResource
+//===----------------------------------------------------------------------===//
 
 String Temperament::getResourceId() const noexcept
 {
-    jassertfalse;
-    return {};
+    return this->id;
 }
 
 Identifier Temperament::getResourceType() const noexcept
 {
-    jassertfalse;
-    return {};
+    return Serialization::Resources::temperaments;
 }
+
+//===----------------------------------------------------------------------===//
+// Hard-coded defaults
+//===----------------------------------------------------------------------===//
+
+Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
+{
+    Temperament::Ptr t(new Temperament());
+    t->id = "12edo";
+    t->name = "12 equal temperament";
+    t->period = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+    t->keysTotal = Globals::twelveToneKeyboardSize;
+    t->middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
+    return t;
+}
+
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
 
 SerializedData Temperament::serialize() const
 {
-    jassertfalse;
-    return {};
+    SerializedData data(Serialization::Midi::temperament);
+
+    data.setProperty(Serialization::Midi::temperamentId, this->id);
+    data.setProperty(Serialization::Midi::temperamentName, this->name);
+    data.setProperty(Serialization::Midi::temperamentPeriod,
+        this->period.joinIntoString(" "));
+
+    return data;
 }
 
 void Temperament::deserialize(const SerializedData &data)
 {
-    jassertfalse;
+    const auto root = data.hasType(Serialization::Midi::temperament) ?
+        data : data.getChildWithName(Serialization::Midi::temperament);
+
+    if (!root.isValid()) { return; }
+
+    this->reset();
+
+    this->id = root.getProperty(Serialization::Midi::temperamentId, this->id);
+    this->name = root.getProperty(Serialization::Midi::temperamentName, this->name);
+
+    const String periodString = root.getProperty(Serialization::Midi::temperamentPeriod);
+    this->period.addTokens(periodString, true);
+
+    // other parameters are computed quite straightforward, but let's do it here:
+    this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();
+    this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
 }
 
-void Temperament::reset()
-{
-    jassertfalse;
-}
+void Temperament::reset() {}
 
 Temperament &Temperament::operator=(const Temperament &other)
 {
-    jassertfalse;
+    this->id = other.id;
+    this->name = other.name;
+    this->period = other.period;
+    this->middleC = other.middleC;
+    this->keysTotal = other.keysTotal;
     return *this;
 }
 
 int Temperament::hashCode() const noexcept
 {
-    jassertfalse;
-    return {};
+    return static_cast<int>(this->period.size() + this->id.hash());
 }
 
 bool operator==(const Temperament &l, const Temperament &r)
 {
-    jassertfalse;
-    return {};
+    return &l == &r || (l.id == r.id && l.period == r.period);
 }
 
 bool operator!=(const Temperament &l, const Temperament &r)
 {
-    jassertfalse;
-    return {};
+    return !operator== (l, r);
 }

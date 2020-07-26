@@ -74,9 +74,9 @@ namespace Serialization
 
         // Temperaments
         static const Identifier temperament = "temperament";
+        static const Identifier temperamentId = "id";
         static const Identifier temperamentName = "name";
-        static const Identifier temperamentMiddleC = "middleC";
-        static const Identifier temperamentNoteNames = "noteNames";
+        static const Identifier temperamentPeriod = "period";
 
         // Chords
         static const Identifier chord = "chord";
@@ -476,6 +476,7 @@ namespace Serialization
             static const Identifier projectTitle = "title";
             static const Identifier projectAuthor = "author";
             static const Identifier projectDescription = "description";
+            static const Identifier projectTemperament = "temperament";
         }
 
         namespace MidiTrackDeltas

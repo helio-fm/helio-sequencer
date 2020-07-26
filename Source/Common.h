@@ -165,17 +165,16 @@ namespace Globals
     // Defines the maximum available resolution
     static constexpr auto ticksPerBeat = 16;
 
-    static constexpr auto chromaticScaleSize = 12;
-
-    static constexpr auto maxNoteKey = 128;
-
-    static constexpr auto middleC = 60;
-
     static constexpr auto minClipLength = 1.f / static_cast<float>(ticksPerBeat);
-
     static constexpr auto minNoteLength = 1.f / static_cast<float>(ticksPerBeat);
 
     static constexpr auto velocitySaveResolution = 1024.f;
+
+    static constexpr auto twelveToneKeyboardSize = 128;
+    static constexpr auto twelveTonePeriodSize = 12;
+    static constexpr auto numPeriodsInKeyboard =
+        static_cast<float>(twelveToneKeyboardSize) /
+        static_cast<float>(twelveTonePeriodSize);
 
     namespace Defaults
     {
@@ -221,7 +220,8 @@ namespace Globals
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
 inline float roundBeat(float beat)
 {
-    return roundf(beat * static_cast<float>(Globals::ticksPerBeat)) / static_cast<float>(Globals::ticksPerBeat);
+    return roundf(beat * static_cast<float>(Globals::ticksPerBeat)) /
+        static_cast<float>(Globals::ticksPerBeat);
 }
 
 //===----------------------------------------------------------------------===//

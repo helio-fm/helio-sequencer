@@ -30,11 +30,13 @@ ProjectMetadata::ProjectMetadata(ProjectNode &parent) : project(parent)
     this->license = "Copyright";
     this->author = SystemStats::getFullUserName();
     this->description = "";
+    this->temperament = Temperament::getTwelveToneEqualTemperament();
 
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectLicense));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTitle));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectAuthor));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription("initialized"), ProjectInfoDeltas::projectDescription));
+    // todo temperament deltas
 }
 
 int64 ProjectMetadata::getStartTimestamp() const noexcept
@@ -63,7 +65,7 @@ String ProjectMetadata::getFullName() const noexcept
 
 void ProjectMetadata::setFullName(String val)
 {
-    this->project.safeRename(val, true); // will broadcastChangeProjectInfo itself
+    this->project.safeRename(val, true); // will broadcastChangeProjectInfo
 }
 
 String ProjectMetadata::getAuthor() const noexcept
@@ -92,6 +94,16 @@ void ProjectMetadata::setDescription(String val)
         this->description = val;
         this->project.broadcastChangeProjectInfo(this);
     }
+}
+
+Temperament::Ptr ProjectMetadata::getTemperament() const noexcept
+{
+    return this->temperament;
+}
+
+int ProjectMetadata::getKeyboardSize() const noexcept
+{
+    return this->temperament->getNumKeys();
 }
 
 //===----------------------------------------------------------------------===//
@@ -134,6 +146,8 @@ SerializedData ProjectMetadata::getDeltaData(int deltaIndex) const
         return this->serializeDescriptionDelta();
     }
 
+    // todo temperaments
+
     jassertfalse;
     return {};
 }
@@ -168,6 +182,7 @@ void ProjectMetadata::resetStateTo(const TrackedItem &newState)
         {
             this->resetDescriptionDelta(newDeltaData);
         }
+        // todo temperaments
     }
 }
 
@@ -187,6 +202,8 @@ SerializedData ProjectMetadata::serialize() const
     tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense());
     tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor());
     tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription());
+
+    tree.appendChild(this->temperament->serialize());
 
     return tree;
 }
@@ -209,6 +226,17 @@ void ProjectMetadata::deserialize(const SerializedData &data)
     this->author = root.getProperty(ProjectInfoDeltas::projectAuthor);
     this->description = root.getProperty(ProjectInfoDeltas::projectDescription);
 
+    if (root.getNumChildren() > 0)
+    {
+        jassert(this->temperament != nullptr);
+        this->temperament->deserialize(root);
+    }
+    else
+    {
+        // do we really need to fallback to the default one here?
+        this->temperament = Temperament::getTwelveToneEqualTemperament();
+    }
+
     this->project.broadcastChangeProjectInfo(this);
 }
 
@@ -220,10 +248,11 @@ void ProjectMetadata::reset()
     this->initTimestamp = 0;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Deltas
 //===----------------------------------------------------------------------===//
+
+// todo temperaments
 
 SerializedData ProjectMetadata::serializeLicenseDelta() const
 {

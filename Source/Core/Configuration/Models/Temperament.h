@@ -18,19 +18,45 @@
 #pragma once
 
 #include "BaseResource.h"
+#include "Note.h"
 
 class Temperament final : public BaseResource
 {
 public:
 
     Temperament() = default;
+    Temperament(Temperament &&other) noexcept;
     Temperament(const Temperament &other) noexcept;
-    explicit Temperament(const String &name) noexcept;
 
     String getResourceId() const noexcept override;
     Identifier getResourceType() const noexcept override;
+
+    using Period = StringArray;
     using Ptr = ReferenceCountedObjectPtr<Temperament>;
     
+    inline auto getPeriodSize() const noexcept
+    {
+        return this->period.size();
+    }
+
+    inline auto getNumKeys() const noexcept
+    {
+        return this->keysTotal;
+    }
+
+    inline auto getMiddleC() const noexcept
+    {
+        return this->middleC;
+    }
+
+    String getMidiNoteName(Note::Key note, bool includePeriod) const noexcept;
+
+    //===------------------------------------------------------------------===//
+    // Hard-coded defaults
+    //===------------------------------------------------------------------===//
+
+    static Temperament::Ptr getTwelveToneEqualTemperament();
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -51,11 +77,15 @@ public:
 
 private:
 
+    String id;
     String name;
-    StringArray noteNames;
+    Period period;
 
-    int period = Globals::chromaticScaleSize;
-    int middleC = Globals::middleC;
+    Note::Key middleC = 0;
+    int keysTotal = 0;
+
+    static constexpr auto periodNumForMiddleC = 5;
+    static constexpr auto displayedPeriodNumForMiddleC = 3;
 
     JUCE_LEAK_DETECTOR(Temperament)
 };

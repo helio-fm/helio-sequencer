@@ -127,7 +127,7 @@ private:
     // e.g. for Ionian: keys[0] = 0, keys[1] = 2, keys[2] = 4, etc
     Array<int> keys;
 
-    int basePeriod = Globals::chromaticScaleSize;
+    int basePeriod = Globals::twelveTonePeriodSize;
 
     JUCE_LEAK_DETECTOR(Scale)
 };

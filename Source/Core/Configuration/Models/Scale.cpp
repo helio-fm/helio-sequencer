@@ -255,7 +255,7 @@ void Scale::deserialize(const SerializedData &data)
     this->reset();
 
     this->name = root.getProperty(Serialization::Midi::scaleName, this->name);
-    this->basePeriod = root.getProperty(Serialization::Midi::scalePeriod, Globals::chromaticScaleSize);
+    this->basePeriod = root.getProperty(Serialization::Midi::scalePeriod, Globals::twelveTonePeriodSize);
 
     const String intervals = root.getProperty(Serialization::Midi::scaleIntervals);
     StringArray tokens;

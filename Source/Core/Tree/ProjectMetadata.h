@@ -46,6 +46,9 @@ public:
     String getDescription() const noexcept;
     void setDescription(String val);
 
+    Temperament::Ptr getTemperament() const noexcept;
+    int getKeyboardSize() const noexcept;
+
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//
