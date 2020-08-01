@@ -257,6 +257,11 @@ HotkeySchemesManager *Config::getHotkeySchemes() const noexcept
     return this->hotkeySchemesManager.get();
 }
 
+TemperamentsManager * Config::getTemperaments() const noexcept
+{
+    return this->temperamentsManager.get();
+}
+
 UserInterfaceFlags *Config::getUiFlags() const noexcept
 {
     return this->uiFlags.get();

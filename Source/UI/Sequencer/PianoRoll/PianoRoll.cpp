@@ -78,15 +78,17 @@
         for (const auto &child : (*_c.second.get()))
 
 #if HELIO_DESKTOP
-#   define PIANOROLL_HAS_NOTE_RESIZERS 1
-#elif HELIO_MOBILE
 #   define PIANOROLL_HAS_NOTE_RESIZERS 0
+#elif HELIO_MOBILE
+#   define PIANOROLL_HAS_NOTE_RESIZERS 1
 #endif
 
 PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(project, viewport, clippingDetector)
 {
     this->setComponentID(ComponentIDs::pianoRollId);
+
+    this->temperament = this->project.getProjectInfo()->getTemperament();
 
     this->defaultHighlighting = make<HighlightingScheme>(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
@@ -100,14 +102,14 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 
     this->consoleChordConstructor = make<CommandPaletteChordConstructor>(*this);
 
-    this->reloadRollContent();
-
     this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
     const bool noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
 
     this->noteNameGuides = make<NoteNameGuidesBar>(*this);
     this->addChildComponent(this->noteNameGuides.get());
     this->noteNameGuides->setVisible(noteNameGuidesEnabled);
+
+    this->reloadRollContent();
 
     this->setBeatRange(0, Globals::Defaults::projectLength);
 }
@@ -193,6 +195,11 @@ void PianoRoll::setRowHeight(int newRowHeight)
 {
     if (newRowHeight == this->rowHeight) { return; }
     this->rowHeight = jlimit(PianoRoll::minRowHeight, PianoRoll::maxRowHeight, newRowHeight);
+    this->updateSize();
+}
+
+void PianoRoll::updateSize()
+{
     this->setSize(this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT + this->getNumKeys() * this->rowHeight);
 }
 
@@ -201,9 +208,19 @@ int PianoRoll::getNumKeys() const noexcept
     return this->temperament->getNumKeys();
 }
 
+int PianoRoll::getPeriodSize() const noexcept
+{
+    return this->temperament->getPeriodSize();
+}
+
 Note::Key PianoRoll::getMiddleC() const noexcept
 {
     return this->temperament->getMiddleC();
+}
+
+Temperament::Ptr PianoRoll::getTemperament() const noexcept
+{
+    return this->temperament;
 }
 
 //===----------------------------------------------------------------------===//
@@ -744,13 +761,10 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
 
 void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    if (this->temperament != this->project.getProjectInfo()->getTemperament())
-    {
-        this->temperament = this->project.getProjectInfo()->getTemperament();
-        this->noteNameGuides->syncWithTemperament(this->temperament);
-    }
-
+    this->temperament = this->project.getProjectInfo()->getTemperament();
+    this->noteNameGuides->syncWithTemperament(this->temperament);
     this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
+    this->updateSize(); // might have changed by due to different temperament
 }
 
 void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -1140,9 +1154,11 @@ void PianoRoll::handleCommandMessage(int commandId)
                 this->project.getTimeline()->getKeySignatures(), contextScale, contextKey))
             {
                 auto newArpDialog = ModalDialogInput::Presets::newArpeggiator();
-                newArpDialog->onOk = [contextScale, contextKey, selectedNotes](const String &name)
+                newArpDialog->onOk = [this, contextScale, contextKey, selectedNotes](const String &name)
                 {
-                    Arpeggiator::Ptr arp(new Arpeggiator(name, contextScale, selectedNotes, contextKey));
+                    Arpeggiator::Ptr arp(new Arpeggiator(name,
+                        this->temperament, contextScale, selectedNotes, contextKey));
+
                     App::Config().getArpeggiators()->updateUserResource(arp);
                 };
 

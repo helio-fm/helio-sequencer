@@ -112,7 +112,12 @@ void Temperament::deserialize(const SerializedData &data)
     this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
 }
 
-void Temperament::reset() {}
+void Temperament::reset()
+{
+    this->id = {};
+    this->period = {};
+    this->period.clearQuick();
+}
 
 Temperament &Temperament::operator=(const Temperament &other)
 {

@@ -36,6 +36,8 @@ public:
         return this->getAllResources<Scale>();
     }
 
+    Scale::Ptr getDefaultScaleFor(int periodSize) const;
+
 private:
 
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;

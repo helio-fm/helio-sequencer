@@ -325,8 +325,7 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
 
     if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)
     {
-        App::showModalComponent(KeySignatureDialog::editingDialog(*this,
-            this->project.getTransport(), ksc->getEvent()));
+        App::showModalComponent(KeySignatureDialog::editingDialog(this->project, ksc->getEvent()));
     }
 }
 

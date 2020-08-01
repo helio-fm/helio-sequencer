@@ -25,6 +25,7 @@
 #include "MobileComboBox.h"
 
 class Transport;
+class ProjectNode;
 class KeySignaturesSequence;
 //[/Headers]
 
@@ -42,16 +43,15 @@ class KeySignatureDialog final : public FadingDialog,
 {
 public:
 
-    KeySignatureDialog(Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    KeySignatureDialog(ProjectNode &project, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
     ~KeySignatureDialog();
 
     //[UserMethods]
-    static UniquePointer<Component> editingDialog(Component &owner,
-        Transport &transport, const KeySignatureEvent &event);
+    static UniquePointer<Component> editingDialog(ProjectNode &project,
+        const KeySignatureEvent &event);
 
-    static UniquePointer<Component> addingDialog(Component &owner,
-        Transport &transport,  KeySignaturesSequence *annotationsLayer,
-        float targetBeat);
+    static UniquePointer<Component> addingDialog(ProjectNode &project,
+        KeySignaturesSequence *annotationsLayer, float targetBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -78,10 +78,10 @@ private:
 
     void timerCallback() override;
 
+    ProjectNode &project;
     Transport &transport;
     KeySignatureEvent originalEvent;
     KeySignaturesSequence *const originalSequence;
-    Component &ownerComponent;
 
     const Array<Scale::Ptr> defaultScales;
 

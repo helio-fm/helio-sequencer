@@ -70,10 +70,11 @@ void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
     this->setVisible(false);
 
     const bool showsRootKeys = (selection->getNumSelected() <= 1);
+    const auto periodSize = this->roll.getPeriodSize();
 
     for (auto *c : this->guides)
     {
-        c->setVisible(showsRootKeys && c->isRootKey());
+        c->setVisible(showsRootKeys && c->isRootKey(periodSize));
     }
 
     for (const auto *e : *selection)
@@ -83,6 +84,7 @@ void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
         const auto key = jlimit(0, this->roll.getNumKeys(),
             nc->getNote().getKey() + nc->getClip().getKey());
 
+        jassert(key <= this->guides.size() - 1);
         this->guides.getUnchecked(key)->setVisible(true);
     }
 
@@ -93,8 +95,9 @@ void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr temperament)
 {
     this->removeAllChildren();
     this->guides.clearQuick(true);
+    const auto periodSize = temperament->getPeriodSize();
 
-    if (temperament->getPeriodSize() > Globals::twelveTonePeriodSize)
+    if (periodSize > Globals::twelveTonePeriodSize)
     {
         // add more width for longer note names:
         this->setSize(NoteNameGuidesBar::extendedWidth, this->getHeight());
@@ -109,7 +112,7 @@ void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr temperament)
         const auto noteName = temperament->getMidiNoteName(i, true);
         auto *guide = this->guides.add(new NoteNameGuide(noteName, i));
         this->addChildComponent(guide);
-        guide->setVisible(guide->isRootKey());
+        guide->setVisible(guide->isRootKey(periodSize));
     }
 
     this->updateBounds();

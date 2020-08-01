@@ -19,6 +19,7 @@
 
 #include "Note.h"
 #include "Scale.h"
+#include "Temperament.h"
 #include "BaseResource.h"
 
 // Arpeggiators are created by user simply as a sequences within a scale.
@@ -40,6 +41,7 @@ public:
 
     Arpeggiator() = default;
     Arpeggiator(const String &name, 
+        const Temperament::Ptr temperament,
         const Scale::Ptr scale,
         const Array<Note> &sequence,
         Note::Key rootKey);
@@ -55,7 +57,8 @@ public:
     bool isKeyIndexValid(int index) const noexcept;
 
     float getBeatFor(int arpKeyIndex) const noexcept;
-    Note mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
+    Note mapArpKeyIntoChordSpace(const Temperament::Ptr temperament,
+        int arpKeyIndex, float startBeat,
         const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot,
         bool reversed, float durationMultiplier = 1.f, float randomness = 0.f) const;
 

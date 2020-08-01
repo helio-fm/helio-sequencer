@@ -22,18 +22,21 @@
 #include "KeySignatureDialog.h"
 
 //[MiscUserDefs]
-#include "CommandIDs.h"
 #include "KeySignaturesSequence.h"
+#include "ProjectNode.h"
+#include "ProjectMetadata.h"
 #include "Transport.h"
+
 #include "SerializationKeys.h"
+#include "CommandIDs.h"
 #include "Config.h"
 //[/MiscUserDefs]
 
-KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
-    : transport(transport),
+KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+    : transport(project.getTransport()),
       originalEvent(editedEvent),
       originalSequence(keySequence),
-      ownerComponent(owner),
+      project(project),
       defaultScales(App::Config().getScales()->getAll()),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false),
@@ -282,7 +285,8 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)
         {
-            const int key = Globals::middleC + this->key + scaleKeys.getUnchecked(i);
+            const int key = this->project.getProjectInfo()->getTemperament()->getMiddleC()
+                + this->key + scaleKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 0.5f));
             const double startTime = double(i) * timeFactor;
@@ -333,17 +337,17 @@ void KeySignatureDialog::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-UniquePointer<Component> KeySignatureDialog::editingDialog(Component &owner,
-    Transport &transport, const KeySignatureEvent &event)
+UniquePointer<Component> KeySignatureDialog::editingDialog(ProjectNode &project,
+    const KeySignatureEvent &event)
 {
-    return make<KeySignatureDialog>(owner, transport,
+    return make<KeySignatureDialog>(project,
         static_cast<KeySignaturesSequence *>(event.getSequence()), event, false, 0.f);
 }
 
-UniquePointer<Component> KeySignatureDialog::addingDialog(Component &owner,
-    Transport &transport, KeySignaturesSequence *annotationsLayer, float targetBeat)
+UniquePointer<Component> KeySignatureDialog::addingDialog(ProjectNode &project,
+    KeySignaturesSequence *annotationsLayer, float targetBeat)
 {
-    return make<KeySignatureDialog>(owner, transport,
+    return make<KeySignatureDialog>(project,
         annotationsLayer, KeySignatureEvent(), true, targetBeat);
 }
 
@@ -509,8 +513,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
-                 constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(App::Config().getScales()-&gt;getAll()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
+                 constructorParams="ProjectNode &amp;project, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 variableInitialisers="transport(project.getTransport()),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;project(project),&#10;defaultScales(App::Config().getScales()-&gt;getAll()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="460" initialHeight="260">
   <METHODS>

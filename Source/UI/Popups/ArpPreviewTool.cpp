@@ -198,6 +198,7 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
         this->undoIfNeeded();
 
         SequencerOperations::arpeggiate(this->roll.getLassoSelection(),
+            this->roll.getTemperament(),
             this->scaleContext, this->keyContext, arp,
             options.durationMultiplier, options.randomness,
             options.reversed, options.limitToChord,

@@ -48,6 +48,7 @@ public:
     ChordsManager *getChords() const noexcept;
     ScalesManager *getScales() const noexcept;
     ScriptsManager *getScripts() const noexcept;
+    TemperamentsManager *getTemperaments() const noexcept;
     TranslationsManager *getTranslations() const noexcept;
     ArpeggiatorsManager *getArpeggiators() const noexcept;
     ColourSchemesManager *getColourSchemes() const noexcept;

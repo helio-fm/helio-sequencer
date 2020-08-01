@@ -1253,8 +1253,8 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::showModalComponent(KeySignatureDialog::addingDialog(*this,
-                this->getTransport(), sequence, targetBeat));
+            App::showModalComponent(KeySignatureDialog::addingDialog(this->project,
+                sequence, targetBeat));
         }
         break;
     default:

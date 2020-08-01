@@ -52,7 +52,9 @@ public:
     const Clip &getActiveClip() const noexcept;
 
     int getNumKeys() const noexcept;
+    int getPeriodSize() const noexcept;
     Note::Key getMiddleC() const noexcept;
+    Temperament::Ptr getTemperament() const noexcept;
 
     void setDefaultNoteVolume(float volume) noexcept;
     void setDefaultNoteLength(float length) noexcept;
@@ -192,6 +194,7 @@ private:
     void reloadRollContent();
     void loadTrack(const MidiTrack *const track);
 
+    void updateSize();
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;

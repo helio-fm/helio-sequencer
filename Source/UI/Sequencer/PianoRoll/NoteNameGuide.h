@@ -34,10 +34,9 @@ public:
         return this->noteNumber;
     }
 
-    inline bool isRootKey() const noexcept
+    inline bool isRootKey(int period) const noexcept
     {
-        // fixme hard-coded period:
-        return this->noteNumber % 12 == 0;
+        return this->noteNumber % period == 0;
     }
     //[/UserMethods]
 

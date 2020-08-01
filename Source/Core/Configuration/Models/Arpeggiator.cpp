@@ -105,7 +105,7 @@ class DiatonicArpMapper final : public Arpeggiator::Mapper
 };
 
 //===----------------------------------------------------------------------===//
-// Pentatonic mapper, similar as above
+// Pentatonic mapper, similar to the one above
 //===----------------------------------------------------------------------===//
 
 class PentatonicArpMapper final : public Arpeggiator::Mapper
@@ -216,8 +216,8 @@ bool operator==(const Arpeggiator &l, const Arpeggiator &r)
     return &l == &r || l.name == r.name;
 }
 
-Arpeggiator::Arpeggiator(const String &name, const Scale::Ptr scale,
-    const Array<Note> &sequence, Note::Key rootKey)
+Arpeggiator::Arpeggiator(const String &name, const Temperament::Ptr temperament,
+    const Scale::Ptr scale, const Array<Note> &sequence, Note::Key rootKey)
 {
     auto sequenceMeanKey = 0;
     auto sequenceStartBeat = FLT_MAX;
@@ -228,7 +228,7 @@ Arpeggiator::Arpeggiator(const String &name, const Scale::Ptr scale,
     }
 
     sequenceMeanKey /= sequence.size();
-    const auto absRootKey = SequencerOperations::findAbsoluteRootKey(scale, rootKey, sequenceMeanKey);
+    const auto absRootKey = SequencerOperations::findAbsoluteRootKey(temperament, rootKey, sequenceMeanKey);
 
     static Key sorter;
     for (const auto &note : sequence)
@@ -300,7 +300,8 @@ float Arpeggiator::getBeatFor(int arpKeyIndex) const noexcept
     return this->keys.getUnchecked(safeKeyIndex).beat;
 }
 
-Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
+Note Arpeggiator::mapArpKeyIntoChordSpace(const Temperament::Ptr temperament,
+    int arpKeyIndex, float startBeat,
     const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot,
     bool reversed, float durationMultiplier, float randomness) const
 {
@@ -315,7 +316,7 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
     const auto arpKey = this->keys.getUnchecked(safeKeyIndex);
     const auto arpKeyOrReversed = this->keys.getUnchecked(safeKeyIndexOrReversed);
 
-    const auto absChordRoot = SequencerOperations::findAbsoluteRootKey(chordScale,
+    const auto absChordRoot = SequencerOperations::findAbsoluteRootKey(temperament,
         chordRoot, chord.getUnchecked(0).getKey());
 
     static Random rng; // add -1, 0 or 1 scale offset randomly:

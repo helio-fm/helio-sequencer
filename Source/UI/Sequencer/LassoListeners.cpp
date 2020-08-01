@@ -84,8 +84,7 @@ public:
 
     UniquePointer<Component> createMenu() override
     {
-        return make<PianoRollSelectionMenu>(this->lasso,
-            this->project.getTimeline()->getKeySignatures());
+        return make<PianoRollSelectionMenu>(this->project, this->lasso);
     }
 
     Image getIcon() const override

@@ -24,6 +24,10 @@
 #include "Arpeggiator.h"
 #include "NoteComponent.h"
 
+#include "ProjectNode.h"
+#include "ProjectMetadata.h"
+#include "Temperament.h"
+
 #include "ProjectTimeline.h"
 #include "MidiTrack.h"
 
@@ -242,7 +246,8 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
             }
 
             const auto arps = App::Config().getArpeggiators()->getAll();
-            SequencerOperations::arpeggiate(*this->lasso, this->harmonicContextScale,
+            const auto temperament = this->project.getProjectInfo()->getTemperament();
+            SequencerOperations::arpeggiate(*this->lasso, temperament, this->harmonicContextScale,
                 this->harmonicContextKey, arps[i], 1.0f, 0.0f, false, false, true);
         }));
     }
@@ -250,13 +255,15 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
     return menu;
 }
 
-PianoRollSelectionMenu::PianoRollSelectionMenu(WeakReference<Lasso> lasso, WeakReference<MidiTrack> keySignatures) :
+PianoRollSelectionMenu::PianoRollSelectionMenu(const ProjectNode &project, WeakReference<Lasso> lasso) :
+    project(project),
     lasso(lasso)
 {
     if (this->lasso->getNumSelected() > 0)
     {
         const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(*this->lasso, clip, keySignatures,
+        if (!SequencerOperations::findHarmonicContext(*this->lasso, clip,
+            this->project.getTimeline()->getKeySignatures(),
             this->harmonicContextScale, this->harmonicContextKey))
         {
             DBG("Warning: harmonic context could not be detected");

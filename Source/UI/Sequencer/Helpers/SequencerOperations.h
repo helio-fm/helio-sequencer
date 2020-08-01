@@ -30,6 +30,7 @@ class PianoSequence;
 #include "Lasso.h"
 #include "AutomationEvent.h"
 #include "Scale.h"
+#include "Temperament.h"
 #include "Arpeggiator.h"
 
 struct SequencerOperations final
@@ -59,6 +60,7 @@ struct SequencerOperations final
     static void moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint = true);
     
     static bool arpeggiate(Lasso &selection,
+        const Temperament::Ptr temperament,
         const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
         float durationMultiplier, float randomness,
         bool reversed = false, bool limitToChord = false,
@@ -103,7 +105,7 @@ struct SequencerOperations final
     static bool quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
     static bool quantize(WeakReference<MidiTrack> track, float bar, bool shouldCheckpoint = true);
 
-    static int findAbsoluteRootKey(const Scale::Ptr scale,
+    static int findAbsoluteRootKey(const Temperament::Ptr temperament,
         Note::Key relativeRoot, Note::Key keyToFindPeriodFor);
 
     static void rescale(Lasso &selection, Note::Key rootKey,

@@ -1061,6 +1061,7 @@ void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, boo
 }
 
 bool SequencerOperations::arpeggiate(Lasso &selection,
+    const Temperament::Ptr temperament,
     const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
     float durationMultiplier, float randomness,
     bool isReversed, bool isLimitedToChord,
@@ -1170,8 +1171,9 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
                 break;
             }
 
-            insertions.add(arp->mapArpKeyIntoChordSpace(arpKeyIndex,
-                beatOffset, chord, chordScale, chordRoot,
+            insertions.add(arp->mapArpKeyIntoChordSpace(temperament,
+                arpKeyIndex, beatOffset,
+                chord, chordScale, chordRoot,
                 isReversed, durationMultiplier, randomness));
 
             arpKeyIndex++;
@@ -2054,12 +2056,12 @@ bool SequencerOperations::quantize(WeakReference<MidiTrack> track,
     return true;
 }
 
-int SequencerOperations::findAbsoluteRootKey(const Scale::Ptr scale,
+int SequencerOperations::findAbsoluteRootKey(const Temperament::Ptr temperament,
     Note::Key relativeRoot, Note::Key keyToFindPeriodFor)
 {
-    const auto middleCOffset = Globals::middleC % scale->getBasePeriod();
-    const auto sequenceBasePeriod = (keyToFindPeriodFor - middleCOffset - relativeRoot) / scale->getBasePeriod();
-    const auto absRootKey = (sequenceBasePeriod * scale->getBasePeriod()) + middleCOffset + relativeRoot;
+    const auto middleCOffset = temperament->getMiddleC() % temperament->getPeriodSize();
+    const auto sequenceBasePeriod = (keyToFindPeriodFor - middleCOffset - relativeRoot) / temperament->getPeriodSize();
+    const auto absRootKey = (sequenceBasePeriod * temperament->getPeriodSize()) + middleCOffset + relativeRoot;
     return absRootKey;
 }
 

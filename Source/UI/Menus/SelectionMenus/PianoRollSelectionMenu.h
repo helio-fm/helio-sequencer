@@ -19,6 +19,7 @@
 
 class Lasso;
 class MidiTrack;
+class ProjectNode;
 
 #include "MenuPanel.h"
 #include "Scale.h"
@@ -28,11 +29,11 @@ class PianoRollSelectionMenu final : public MenuPanel
 {
 public:
     
-    PianoRollSelectionMenu(WeakReference<Lasso> lasso,
-        WeakReference<MidiTrack> keySignatures);
+    PianoRollSelectionMenu(const ProjectNode &project, WeakReference<Lasso> lasso);
 
 private:
 
+    const ProjectNode &project;
     WeakReference<Lasso> lasso;
 
     Note::Key harmonicContextKey = -1;
