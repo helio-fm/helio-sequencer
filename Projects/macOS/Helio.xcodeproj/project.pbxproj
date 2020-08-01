@@ -1489,6 +1489,13 @@
 			path = ../../Source/Core/Workspace/Workspace.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		3A983D5C8430D96C0C9B2A26 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.json;
+			name = emptyProject22.json;
+			path = ../../Resources/Templates/emptyProject22.json;
+			sourceTree = "SOURCE_ROOT";
+		};
 		3AB1D3C667D95C917445A652 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4142,6 +4149,13 @@
 			path = ../../Source/UI/Sequencer/PianoRoll/NoteComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		AFE621D33ECDBF8F0A6EEC59 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file.json;
+			name = emptyProject31.json;
+			path = ../../Resources/Templates/emptyProject31.json;
+			sourceTree = "SOURCE_ROOT";
+		};
 		B01481C8E39AD377E82E3F10 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5975,6 +5989,8 @@
 			isa = PBXGroup;
 			children = (
 				BDF9F0263233221FC93BF680,
+				3A983D5C8430D96C0C9B2A26,
+				AFE621D33ECDBF8F0A6EEC59,
 				43B161DB77BF5E2674356D22,
 			);
 			name = Templates;

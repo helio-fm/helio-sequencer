@@ -3664,6 +3664,8 @@
     <None Include="..\..\Resources\Icons\zoomOut.svg"/>
     <None Include="..\..\Resources\Icons\zoomTool.svg"/>
     <None Include="..\..\Resources\Templates\emptyProject.json"/>
+    <None Include="..\..\Resources\Templates\emptyProject22.json"/>
+    <None Include="..\..\Resources\Templates\emptyProject31.json"/>
     <None Include="..\..\Resources\Templates\exampleProject.json"/>
     <None Include="..\..\Resources\noise.png"/>
     <None Include="..\..\Resources\logo-v2.png"/>
