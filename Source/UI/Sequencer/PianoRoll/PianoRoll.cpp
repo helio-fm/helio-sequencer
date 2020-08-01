@@ -1627,7 +1627,7 @@ void PianoRoll::updateBackgroundCachesAndRepaint()
 {
     HYBRID_ROLL_BULK_REPAINT_START
 
-        this->backgroundsCache.clear();
+    this->backgroundsCache.clear();
 
     for (const auto *track : this->project.getTracks())
     {

@@ -245,6 +245,7 @@ namespace I18n
         static const Identifier projectStatsContent = "page::project::stats::content";
         static const Identifier projectStatsVcs = "page::project::stats::vcs";
         static const Identifier projectTitle = "page::project::title";
+        static const Identifier projectTemperament = "page::project::temperament";
     }
 
     namespace Popup

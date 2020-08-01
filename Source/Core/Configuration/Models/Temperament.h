@@ -33,7 +33,12 @@ public:
 
     using Period = StringArray;
     using Ptr = ReferenceCountedObjectPtr<Temperament>;
-    
+
+    inline const String &getName() const noexcept
+    {
+        return this->name;
+    }
+
     inline auto getPeriodSize() const noexcept
     {
         return this->period.size();

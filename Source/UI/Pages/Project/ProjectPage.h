@@ -17,47 +17,38 @@
 
 #pragma once
 
-//[Headers]
 class ProjectNode;
 
 #include "TransportListener.h"
-//[/Headers]
-
-#include "../../Themes/PanelBackgroundB.h"
-#include "../../Themes/SeparatorVerticalSkew.h"
-#include "../../Themes/PanelBackgroundA.h"
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "PanelBackgroundA.h"
+#include "PanelBackgroundB.h"
+#include "SeparatorVerticalSkew.h"
 
 class ProjectPage final : public Component,
-                          protected TransportListener,
-                          protected ChangeListener,
-                          public Label::Listener,
-                          public Button::Listener
+    protected TransportListener,
+    protected ChangeListener,
+    public Label::Listener,
+    public Button::Listener
 {
 public:
 
-    ProjectPage(ProjectNode &parentProject);
+    explicit ProjectPage(ProjectNode &parentProject);
     ~ProjectPage();
 
-    //[UserMethods]
     void updateContent();
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    //===----------------------------------------------------------------------===//
+    // Component
+    //===----------------------------------------------------------------------===//
+
     void resized() override;
     void labelTextChanged(Label *labelThatHasChanged) override;
     void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
 
-
 private:
 
-    //[UserVariables]
-
     ProjectNode &project;
-    MidiKeyboardState state;
     Atomic<double> totalTimeMs = 0.0;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
@@ -75,7 +66,18 @@ private:
     void onRecord() noexcept override {}
     void onStop() noexcept override {}
 
-    //[/UserVariables]
+    //===----------------------------------------------------------------------===//
+    // Some helpers for layout
+    //===----------------------------------------------------------------------===//
+
+    Array<Label *> metadataCaptions;
+    Array<Label *> metadataEditors;
+    Array<Label *> statisticsCaptions;
+    Array<Label *> statisticsLabels;
+
+    //===----------------------------------------------------------------------===//
+    // Children
+    //===----------------------------------------------------------------------===//
 
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<SeparatorVerticalSkew> skew;
@@ -96,16 +98,11 @@ private:
     UniquePointer<Label> startTimeText;
     UniquePointer<Label> lengthLabel;
     UniquePointer<Label> lengthText;
-    UniquePointer<Component> level1;
-    UniquePointer<Component> level2;
     UniquePointer<Label> licenseLabel;
     UniquePointer<Label> licenseEditor;
     UniquePointer<ImageButton> revealLocationButton;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator2;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
+    UniquePointer<Label> temperamentLabel;
+    UniquePointer<Label> temperamentText;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectPage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectPage)
 };
-
-
