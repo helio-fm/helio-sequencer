@@ -289,13 +289,6 @@ void MenuItemComponent::paint (Graphics& g)
 
     //[UserPaint] Add your own custom painting code here..
 
-#if HELIO_DESKTOP
-
-    g.setColour (Colour (0x02ffffff));
-    g.fillRect (0, 1, getWidth() - 0, getHeight() - 1);
-
-#endif
-
     }
 
     g.setOpacity(1.f);

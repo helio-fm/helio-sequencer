@@ -47,8 +47,8 @@ public:
     ProjectNode *checkoutProject(const String &id, const String &name);
 
     ProjectNode *addExampleProject();
-    ProjectNode *addEmptyProject(const File &projectLocation);
-    ProjectNode *addEmptyProject(const String &projectName);
+    ProjectNode *addEmptyProject(const File &projectLocation, const String &templateName);
+    ProjectNode *addEmptyProject(const String &projectName, const String &templateName);
     
     //===------------------------------------------------------------------===//
     // Menu

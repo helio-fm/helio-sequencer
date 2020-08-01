@@ -49,12 +49,12 @@ public:
 
     enum AnimationType
     {
-        None            = 0x000,
-        Fading          = 0x010,
-        SlideLeft       = 0x020,
-        SlideRight      = 0x030,
-        SlideUp         = 0x040,
-        SlideDown       = 0x050,
+        None,
+        Fading,
+        SlideLeft,
+        SlideRight,
+        SlideUp,
+        SlideDown
     };
 
     using Menu = ReferenceCountedArray<MenuItem>;

@@ -30,11 +30,11 @@ class OpenGLSettings;
 class Log;
 //[/Headers]
 
-#include "../../Themes/SeparatorVerticalSkew.h"
 #include "../../Themes/PanelBackgroundB.h"
+#include "Menu/OpenProjectButton.h"
+#include "../../Themes/SeparatorVerticalSkew.h"
 #include "../../Themes/PanelBackgroundA.h"
 #include "Menu/DashboardMenu.h"
-#include "Menu/OpenProjectButton.h"
 #include "Menu/CreateProjectButton.h"
 #include "../../Themes/SeparatorHorizontalFadingReversed.h"
 #include "Menu/LoginButton.h"
@@ -52,7 +52,7 @@ public:
     //[UserMethods]
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint (juce::Graphics& g) override;
     void resized() override;
 
 
@@ -69,12 +69,13 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<SeparatorVerticalSkew> skew;
     UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<OpenProjectButton> openProjectButton;
+    UniquePointer<MobileComboBox::Primer> createProjectComboSource;
+    UniquePointer<SeparatorVerticalSkew> skew;
     UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<SpectralLogo> logo;
     UniquePointer<DashboardMenu> projectsList;
-    UniquePointer<OpenProjectButton> openProjectButton;
     UniquePointer<CreateProjectButton> createProjectButton;
     UniquePointer<SeparatorHorizontalFadingReversed> separator2;
     UniquePointer<LoginButton> loginButton;
@@ -83,3 +84,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
 };
+
+

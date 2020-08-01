@@ -134,8 +134,7 @@ void InitScreen::handleCommandMessage (int commandId)
 
 void InitScreen::timerCallback()
 {
-    const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-    if (! isShiftPressed)
+    if (!Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown())
     {
         this->stopTimer();
         this->postCommandMessage(CommandIDs::InitWorkspace);

@@ -57,7 +57,7 @@ public:
     // Project management
     //===------------------------------------------------------------------===//
 
-    void createEmptyProject();
+    void createEmptyProject(const String &templateName = "");
     bool loadRecentProject(RecentProjectInfo::Ptr file);
     Array<ProjectNode *> getLoadedProjects() const;
     bool hasLoadedProject(const RecentProjectInfo::Ptr file) const;

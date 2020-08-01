@@ -123,9 +123,9 @@ ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
     {
         // construct a stub project with no first revision and no tracks,
         // only the essential stuff it will need anyway:
-        UniquePointer<ProjectNode> project(new ProjectNode(name, id));
+        auto project = make<ProjectNode>(name, id);
         this->addChildNode(project.get(), 1);
-        UniquePointer<VersionControlNode> vcs(new VersionControlNode());
+        auto vcs = make<VersionControlNode>();
         project->addChildNode(vcs.get());
         project->addChildNode(new PatternEditorNode());
         vcs->cloneProject();
@@ -136,22 +136,35 @@ ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
     return nullptr;
 }
 
-static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const char *templateName)
+static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const String &templateName)
 {
     int numBytes = 0;
-    const auto *templatePtr = BinaryData::getNamedResource(templateName, numBytes);
-    jassert(numBytes > 0);
+
+    const auto resourceName = templateName.isNotEmpty() ? templateName : "emptyProject";
+    const auto resourceNameFull = resourceName + "_json";
+    auto *templatePtr = BinaryData::getNamedResource(resourceNameFull.getCharPointer(), numBytes);
+    if (numBytes == 0)
+    {
+        // it might happen that templateName is already a full resource name:
+        templatePtr = BinaryData::getNamedResource(resourceName.getCharPointer(), numBytes);
+        jassert(numBytes > 0);
+    }
 
     static JsonSerializer js;
     const auto exampleData = String(templatePtr, numBytes);
     const auto exampleProject = js.loadFromString(exampleData);
 
-    // only load the content, i.e. tracks and the timeline:
+    // only load the content, i.e. tracks, the timeline, and the temperament:
     TreeNodeSerializer::deserializeChildren(*project, exampleProject);
 
     forEachChildWithType(exampleProject, node, Serialization::Core::projectTimeline)
     {
         project->getTimeline()->deserialize(node);
+    }
+
+    forEachChildWithType(exampleProject, node, Serialization::Core::projectInfo)
+    {
+        project->getProjectInfo()->getTemperament()->deserialize(node);
     }
 
     project->broadcastReloadProjectContent();
@@ -176,23 +189,23 @@ static void addAllEssentialProjectNodes(ProjectNode *parent)
 }
 
 // this one is for desktops
-ProjectNode *RootNode::addEmptyProject(const File &projectLocation)
+ProjectNode *RootNode::addEmptyProject(const File &projectLocation, const String &templateName)
 {
     auto *project = new ProjectNode(projectLocation);
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
-    createProjectContentFromTemplate(project, "emptyProject_json");
+    createProjectContentFromTemplate(project, templateName);
     project->selectChildOfType<PianoTrackNode>();
     return project;
 }
 
 // this one is for mobiles, where we don't have file chooser dialog
-ProjectNode *RootNode::addEmptyProject(const String &projectName)
+ProjectNode *RootNode::addEmptyProject(const String &projectName, const String &templateName)
 {
     auto *project = new ProjectNode(projectName);
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
-    createProjectContentFromTemplate(project, "emptyProject_json");
+    createProjectContentFromTemplate(project, templateName);
     project->selectChildOfType<PianoTrackNode>();
     return project;
 }

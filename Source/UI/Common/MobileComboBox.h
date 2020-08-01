@@ -17,13 +17,10 @@
 
 #pragma once
 
-//[Headers]
 #include "IconButton.h"
 #include "MenuPanel.h"
-//[/Headers]
-
-#include "../Themes/ShadowDownwards.h"
-#include "../Themes/SeparatorHorizontalReversed.h"
+#include "ShadowDownwards.h"
+#include "SeparatorHorizontalReversed.h"
 
 class MobileComboBox final : public Component
 {
@@ -32,22 +29,26 @@ public:
     MobileComboBox(WeakReference<Component> editor, WeakReference<Component> primer);
     ~MobileComboBox();
 
-    //[UserMethods]
-
     void initMenu(MenuPanel::Menu menu);
 
     class Trigger final : public IconButton
     {
     public:
+
         Trigger(WeakReference<Component> listener = nullptr);
         void parentHierarchyChanged() override;
         void parentSizeChanged() override;
         void updateBounds();
+
+    private:
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Trigger)
     };
 
     class Primer final : public Component
     {
     public:
+
         Primer();
         ~Primer() override;
 
@@ -62,35 +63,39 @@ public:
             Component *newCustomBackground = nullptr);
 
         void updateMenu(MenuPanel::Menu menu);
+
+        // this needs to be called before target text editor is deleted
         void cleanup();
+
     private:
+
         ComponentAnimator animator;
         UniquePointer<MobileComboBox> combo;
         UniquePointer<MobileComboBox::Trigger> comboTrigger;
         WeakReference<Component> textEditor;
         Function<MenuPanel::Menu(void)> menuInitializer;
-    };
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Primer)
+    };
+
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
-    void initText(TextEditor *editor);
-    void initText(Label *label);
+    void initCaption(TextEditor *editor);
+    void initCaption(Label *label);
+    void initCaption(const String &text);
+
     void initBackground(Component *newCustomBackground);
 
     WeakReference<Component> primer;
     WeakReference<Component> editor;
     ComponentAnimator animator;
-    //[/UserVariables]
 
+    bool hasCaption = true;
     UniquePointer<Component> background;
     UniquePointer<MenuPanel> menu;
     UniquePointer<MobileComboBox::Trigger> triggerButtton;
@@ -98,5 +103,5 @@ private:
     UniquePointer<SeparatorHorizontalReversed> separator;
     UniquePointer<Label> currentNameLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MobileComboBox)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MobileComboBox)
 };

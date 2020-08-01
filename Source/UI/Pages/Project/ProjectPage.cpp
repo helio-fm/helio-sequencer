@@ -175,11 +175,9 @@ ProjectPage::ProjectPage(ProjectNode &parentProject)
 
     this->level1.reset(new Component());
     this->addAndMakeVisible(level1.get());
-    level1->setName ("level1");
 
     this->level2.reset(new Component());
     this->addAndMakeVisible(level2.get());
-    level2->setName ("level2");
 
     this->licenseLabel.reset(new Label(String(),
                                               String()));
@@ -541,10 +539,10 @@ BEGIN_JUCER_METADATA
          posRelativeY="91994c13c1a34ef8" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="1" fontname="Default font"
          fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="9"/>
-  <GENERICCOMPONENT name="level1" id="b6ea6ccc6b9be1f8" memberName="level1" virtualName=""
-                    explicitFocusOrder="0" pos="32 8.964% 150 24" class="Component"
+  <GENERICCOMPONENT name="" id="b6ea6ccc6b9be1f8" memberName="level1" virtualName=""
+                    explicitFocusOrder="0" pos="32 8.969% 150 24" class="Component"
                     params=""/>
-  <GENERICCOMPONENT name="level2" id="91994c13c1a34ef8" memberName="level2" virtualName=""
+  <GENERICCOMPONENT name="" id="91994c13c1a34ef8" memberName="level2" virtualName=""
                     explicitFocusOrder="0" pos="32 310 150 24" posRelativeY="b6ea6ccc6b9be1f8"
                     class="Component" params=""/>
   <LABEL name="" id="ed8bce664dddb1d1" memberName="licenseLabel" virtualName=""

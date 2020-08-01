@@ -31,7 +31,7 @@ SeparatorVerticalSkew::SeparatorVerticalSkew()
     //[UserPreSize]
     //[/UserPreSize]
 
-    this->setSize(128, 400);
+    this->setSize(16, 16);
 
     //[Constructor]
     //[/Constructor]
@@ -137,7 +137,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="SeparatorVerticalSkew" template="../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="128" initialHeight="400">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="16" initialHeight="16">
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill="solid: ff474c90" hasStroke="0" nonZeroWinding="1">s 0R 0 l 0R 0R l -1 0R x</PATH>
     <PATH pos="0 0 100 100" fill="solid: ff5156a1" hasStroke="0" nonZeroWinding="1">s -1R 0 l 0 0 l 0 0R x</PATH>

@@ -152,7 +152,7 @@ UserProfile &Workspace::getUserProfile() noexcept
 // Project management
 //===----------------------------------------------------------------------===//
 
-void Workspace::createEmptyProject()
+void Workspace::createEmptyProject(const String &templateName)
 {
     const String newProjectName = TRANS(I18n::Defaults::newProjectName);
 
@@ -163,14 +163,14 @@ void Workspace::createEmptyProject()
     
     if (fc.browseForFileToSave(true))
     {
-        if (auto *p = this->treeRoot->addEmptyProject(fc.getResult()))
+        if (auto *p = this->treeRoot->addEmptyProject(fc.getResult(), templateName))
         {
             this->userProfile.onProjectLocalInfoUpdated(p->getId(),
                 p->getName(), p->getDocument()->getFullPath());
         }
     }
 #else
-    if (auto *p = this->treeRoot->addEmptyProject(newProjectName))
+    if (auto *p = this->treeRoot->addEmptyProject(newProjectName, templateName))
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
