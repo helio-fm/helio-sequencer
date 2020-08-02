@@ -25,11 +25,17 @@
 #include "KeySignaturesSequence.h"
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
+#include "Temperament.h"
 #include "Transport.h"
 
 #include "SerializationKeys.h"
 #include "CommandIDs.h"
 #include "Config.h"
+
+static inline auto getPeriod(ProjectNode &project)
+{
+    return project.getProjectInfo()->getTemperament()->getPeriod();
+}
 //[/MiscUserDefs]
 
 KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
@@ -37,10 +43,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
       originalEvent(editedEvent),
       originalSequence(keySequence),
       project(project),
-      defaultScales(App::Config().getScales()->getAll()),
-      addsNewEvent(shouldAddNewEvent),
-      hasMadeChanges(false),
-      key(0)
+      addsNewEvent(shouldAddNewEvent)
 {
     this->background.reset(new DialogPanel());
     this->addAndMakeVisible(background.get());
@@ -48,7 +51,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->addAndMakeVisible(comboPrimer.get());
 
     this->messageLabel.reset(new Label(String(),
-                                        String()));
+                                              String()));
     this->addAndMakeVisible(messageLabel.get());
     this->messageLabel->setFont(Font (21.00f, Font::plain));
     messageLabel->setJustificationType(Justification::centred);
@@ -68,7 +71,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->addAndMakeVisible(separatorH.get());
     this->separatorV.reset(new SeparatorVertical());
     this->addAndMakeVisible(separatorV.get());
-    this->keySelector.reset(new KeySelector());
+    this->keySelector.reset(new KeySelector(getPeriod(project)));
     this->addAndMakeVisible(keySelector.get());
 
     this->scaleEditor.reset(new ScaleEditor());
@@ -88,10 +91,24 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
 
 
     //[UserPreSize]
+
+    const auto periodSize = getPeriod(project).size();
+    const auto allScales = App::Config().getScales()->getAll();
+    for (const auto scale : allScales)
+    {
+        if (scale->getBasePeriod() == periodSize)
+        {
+            this->scales.add(scale);
+        }
+    }
+
+    // todo set dialog size according to the period size
+
+
     this->transport.stopPlaybackAndRecording();
 
     this->scaleNameEditor->addListener(this);
-    this->scaleNameEditor->setFont(21.f);
+    this->scaleNameEditor->setFont({ 21.f });
 
     jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
@@ -99,9 +116,9 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     if (this->addsNewEvent)
     {
         Random r;
-        const auto i = r.nextInt(this->defaultScales.size());
+        const auto i = r.nextInt(this->scales.size());
         this->key = 0;
-        this->scale = this->defaultScales[i];
+        this->scale = this->scales[i];
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
         this->scaleNameEditor->setText(this->scale->getLocalizedName());
@@ -142,9 +159,9 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->updateOkButtonState();
 
     MenuPanel::Menu menu;
-    for (int i = 0; i < this->defaultScales.size(); ++i)
+    for (int i = 0; i < this->scales.size(); ++i)
     {
-        const auto &s = this->defaultScales.getUnchecked(i);
+        const auto &s = this->scales.getUnchecked(i);
         menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
     }
     this->comboPrimer->initWith(this->scaleNameEditor.get(), menu);
@@ -182,15 +199,6 @@ void KeySignatureDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
-        Colour fillColour = Colour (0x59000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRoundedRectangle (x, y, width, height, 10.000f);
-    }
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -200,9 +208,9 @@ void KeySignatureDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     comboPrimer->setBounds((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
-    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 36);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 0 + 12, getWidth() - 32, 36);
     removeEventButton->setBounds(4, getHeight() - 4 - 48, 225, 48);
     okButton->setBounds(getWidth() - 4 - 226, getHeight() - 4 - 48, 226, 48);
     separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
@@ -215,7 +223,7 @@ void KeySignatureDialog::resized()
     //[/UserResized]
 }
 
-void KeySignatureDialog::buttonClicked(Button* buttonThatWasClicked)
+void KeySignatureDialog::buttonClicked(Button *buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -312,10 +320,10 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
     else
     {
         const int scaleIndex = commandId - CommandIDs::SelectScale;
-        if (scaleIndex >= 0 && scaleIndex < this->defaultScales.size())
+        if (scaleIndex >= 0 && scaleIndex < this->scales.size())
         {
             this->playButton->setPlaying(false);
-            this->scale = this->defaultScales[scaleIndex];
+            this->scale = this->scales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
             this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
             const auto newEvent = this->originalEvent
@@ -361,7 +369,7 @@ void KeySignatureDialog::updateOkButtonState()
 void KeySignatureDialog::sendEventChange(const KeySignatureEvent &newEvent)
 {
     jassert(this->originalSequence != nullptr);
-    
+
     if (this->addsNewEvent)
     {
         this->originalSequence->undo();
@@ -385,7 +393,7 @@ void KeySignatureDialog::sendEventChange(const KeySignatureEvent &newEvent)
 void KeySignatureDialog::removeEvent()
 {
     jassert(this->originalSequence != nullptr);
-    
+
     if (this->addsNewEvent)
     {
         this->originalSequence->undo();
@@ -435,9 +443,9 @@ void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
         this->scale = scale;
 
         // Update name, if found equivalent:
-        for (int i = 0; i < this->defaultScales.size(); ++i)
+        for (int i = 0; i < this->scales.size(); ++i)
         {
-            const auto &s = this->defaultScales.getUnchecked(i);
+            const auto &s = this->scales.getUnchecked(i);
             if (s->isEquivalentTo(scale))
             {
                 this->scaleNameEditor->setText(s->getLocalizedName());
@@ -497,6 +505,8 @@ void KeySignatureDialog::textEditorFocusLost(TextEditor &)
 
 void KeySignatureDialog::timerCallback()
 {
+    // the timer is needed to grab a focus
+    // once the fade in animation is completed:
     if (!this->scaleNameEditor->hasKeyboardFocus(false))
     {
         this->scaleNameEditor->grabKeyboardFocus();
@@ -514,7 +524,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
                  constructorParams="ProjectNode &amp;project, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="transport(project.getTransport()),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;project(project),&#10;defaultScales(App::Config().getScales()-&gt;getAll()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
+                 variableInitialisers="transport(project.getTransport()),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;project(project),&#10;addsNewEvent(shouldAddNewEvent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="460" initialHeight="260">
   <METHODS>
@@ -524,11 +534,9 @@ BEGIN_JUCER_METADATA
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.0" fill="solid: 59000000" hasStroke="0"/>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
+             explicitFocusOrder="0" pos="0 0 0M 0M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="MobileComboBox::Primer"
@@ -552,7 +560,7 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="fa164e6b39caa19f" memberName="keySelector" virtualName=""
                     explicitFocusOrder="0" pos="2Cc 58 40M 34" class="KeySelector"
-                    params=""/>
+                    params="getPeriod(project)"/>
   <GENERICCOMPONENT name="" id="9716b1069cf3430e" memberName="scaleEditor" virtualName=""
                     explicitFocusOrder="0" pos="2Cc 108 40M 34" class="ScaleEditor"
                     params=""/>
@@ -568,3 +576,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

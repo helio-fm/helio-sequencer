@@ -18,12 +18,13 @@
 #pragma once
 
 #include "RadioButton.h"
+#include "Temperament.h"
 
 class KeySelector final : public Component, public RadioButton::Listener
 {
 public:
 
-    KeySelector();
+    explicit KeySelector(const Temperament::Period &period);
 
     struct Listener
     {

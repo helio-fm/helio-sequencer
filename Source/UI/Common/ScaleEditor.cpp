@@ -20,21 +20,6 @@
 #include "KeySelector.h"
 #include "ColourIDs.h"
 
-ScaleEditor::ScaleEditor() : scale(Scale::getNaturalMajorScale())
-{
-    const Colour base(findDefaultColour(ColourIDs::ColourButton::outline));
-
-    for (int i = 0; i < 12; ++i)
-    {
-        UniquePointer<RadioButton> button(new RadioButton(String(i), base, this));
-        button->setButtonIndex(i);
-        this->addAndMakeVisible(button.get());
-        this->buttons.add(button.release());
-    }
-
-    this->updateButtons();
-}
-
 ScaleEditor::~ScaleEditor() {}
 
 void ScaleEditor::resized()
@@ -56,6 +41,8 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
         clickedButton->select();
     }
 
+    jassert(this->scale != nullptr);
+
     Array<int> keys;
     for (const auto b : this->buttons)
     {
@@ -66,7 +53,7 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
     }
 
     this->scale = this->scale->withKeys(keys);
-    this->updateButtons();
+    this->updateButtonsState();
 
     if (auto *parentListener = dynamic_cast<ScaleEditor::Listener *>(this->getParentComponent()))
     {
@@ -76,10 +63,11 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
 
 void ScaleEditor::setScale(const Scale::Ptr scale)
 {
-    if (!this->scale->isEquivalentTo(scale))
+    if (this->scale == nullptr ||
+        !this->scale->isEquivalentTo(scale))
     {
         this->scale = scale;
-        this->updateButtons();
+        this->rebuildButtons();
     }
     else
     {
@@ -87,8 +75,29 @@ void ScaleEditor::setScale(const Scale::Ptr scale)
     }
 }
 
-void ScaleEditor::updateButtons()
+void ScaleEditor::rebuildButtons()
 {
+    jassert(this->scale != nullptr);
+
+    this->buttons.clearQuick(true);
+
+    const Colour buttonColour(findDefaultColour(ColourIDs::ColourButton::outline));
+
+    for (int i = 0; i < this->scale->getBasePeriod(); ++i)
+    {
+        auto button = make<RadioButton>(String(i), buttonColour, this);
+        button->setButtonIndex(i);
+        this->addAndMakeVisible(button.get());
+        this->buttons.add(button.release());
+    }
+
+    this->resized();
+    this->updateButtonsState();
+}
+
+void ScaleEditor::updateButtonsState()
+{
+    jassert(this->scale != nullptr);
     for (int i = 0; i < this->buttons.size(); ++i)
     {
         if (this->scale->hasKey(i))

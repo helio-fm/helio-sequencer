@@ -56,7 +56,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -83,17 +83,17 @@ private:
     KeySignatureEvent originalEvent;
     KeySignaturesSequence *const originalSequence;
 
-    const Array<Scale::Ptr> defaultScales;
+    Array<Scale::Ptr> scales;
 
     inline void cancelAndDisappear();
     inline void updateOkButtonState();
 
-    bool addsNewEvent;
-    bool hasMadeChanges;
+    bool addsNewEvent = false;
+    bool hasMadeChanges = false;
     void sendEventChange(const KeySignatureEvent &newEvent);
     void removeEvent();
 
-    int key;
+    int key = 0;
     Scale::Ptr scale;
 
     //[/UserVariables]
@@ -112,3 +112,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureDialog)
 };
+
+

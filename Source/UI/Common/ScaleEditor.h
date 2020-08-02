@@ -24,7 +24,7 @@ class ScaleEditor final : public Component, public RadioButton::Listener
 {
 public:
 
-    ScaleEditor();
+    ScaleEditor() = default;
     ~ScaleEditor();
 
     struct Listener
@@ -43,7 +43,8 @@ private:
     Scale::Ptr scale;
     OwnedArray<RadioButton> buttons;
 
-    void updateButtons();
+    void rebuildButtons();
+    void updateButtonsState();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScaleEditor)
 };

@@ -21,14 +21,14 @@
 #include "ColourIDs.h"
 #include "Scale.h"
 
-KeySelector::KeySelector()
+KeySelector::KeySelector(const Temperament::Period &period)
 {
-    const Colour base(findDefaultColour(ColourIDs::ColourButton::outline).withAlpha(0.5f));
+    const Colour outline(findDefaultColour(ColourIDs::ColourButton::outline));
+    const Colour buttonColour(outline.withAlpha(0.5f));
 
-    const StringArray keys(Scale::getKeyNames());
-    for (int i = 0; i < keys.size(); ++i)
+    for (int i = 0; i < period.size(); ++i)
     {
-        auto button = make<RadioButton>(keys[i], base, this);
+        auto button = make<RadioButton>(period[i], buttonColour, this);
         button->setButtonIndex(i);
         this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
@@ -58,7 +58,7 @@ void KeySelector::onRadioButtonClicked(RadioButton *clickedButton)
 
     clickedButton->select();
 
-    if (KeySelector::Listener *parentListener =
+    if (auto *parentListener =
         dynamic_cast<KeySelector::Listener *>(this->getParentComponent()))
     {
         parentListener->onKeyChanged(clickedButton->getButtonIndex());
