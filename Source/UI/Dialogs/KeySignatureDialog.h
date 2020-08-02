@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-#include "FadingDialog.h"
+#include "DialogBase.h"
 #include "KeySignatureEvent.h"
 #include "ScaleEditor.h"
 #include "KeySelector.h"
@@ -29,12 +29,9 @@ class ProjectNode;
 class KeySignaturesSequence;
 //[/Headers]
 
-#include "../Themes/DialogPanel.h"
-#include "../Themes/SeparatorHorizontal.h"
-#include "../Themes/SeparatorVertical.h"
 #include "../Common/PlayButton.h"
 
-class KeySignatureDialog final : public FadingDialog,
+class KeySignatureDialog final : public DialogBase,
                                  public TextEditor::Listener,
                                  public ScaleEditor::Listener,
                                  public KeySelector::Listener,
@@ -54,7 +51,6 @@ public:
         KeySignaturesSequence *annotationsLayer, float targetBeat);
     //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
@@ -98,13 +94,10 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<DialogPanel> background;
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> removeEventButton;
     UniquePointer<TextButton> okButton;
-    UniquePointer<SeparatorHorizontal> separatorH;
-    UniquePointer<SeparatorVertical> separatorV;
     UniquePointer<KeySelector> keySelector;
     UniquePointer<ScaleEditor> scaleEditor;
     UniquePointer<PlayButton> playButton;

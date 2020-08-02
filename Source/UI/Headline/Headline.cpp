@@ -75,7 +75,7 @@ void Headline::paint (Graphics& g)
     if (App::isUsingNativeTitleBar())
     {
         const auto &theme = HelioTheme::getCurrentTheme();
-        g.setFillType({ theme.getBgCacheA(),{} });
+        g.setFillType({ theme.getBgCacheA(), {} });
         g.fillRect(this->getLocalBounds());
 
         g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));

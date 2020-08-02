@@ -17,9 +17,7 @@
 
 #pragma once
 
-#include "FadingDialog.h"
-
-class CenteredTooltipComponent : public FadingDialog
+class CenteredTooltipComponent : public Component
 {
 public:
 
@@ -31,7 +29,6 @@ public:
 
     void parentHierarchyChanged() override
     {
-        FadingDialog::parentHierarchyChanged();
         this->reposition();
     }
 

@@ -750,13 +750,12 @@
                 file="../../Source/UI/Common/ViewportFitProxyComponent.h"/>
         </GROUP>
         <GROUP id="{C442EB44-2A42-3717-4072-B117F284125C}" name="Dialogs">
+          <FILE id="LnmUma" name="DialogBase.cpp" compile="1" resource="0" file="../../Source/UI/Dialogs/DialogBase.cpp"/>
+          <FILE id="zCMR8o" name="DialogBase.h" compile="0" resource="0" file="../../Source/UI/Dialogs/DialogBase.h"/>
           <FILE id="p6d4bP" name="AnnotationDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/AnnotationDialog.cpp"/>
           <FILE id="aje40l" name="AnnotationDialog.h" compile="0" resource="0"
                 file="../../Source/UI/Dialogs/AnnotationDialog.h"/>
-          <FILE id="LnmUma" name="FadingDialog.cpp" compile="1" resource="0"
-                file="../../Source/UI/Dialogs/FadingDialog.cpp"/>
-          <FILE id="zCMR8o" name="FadingDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/FadingDialog.h"/>
           <FILE id="nWRFrk" name="KeySignatureDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/KeySignatureDialog.cpp"/>
           <FILE id="bQvpt2" name="KeySignatureDialog.h" compile="0" resource="0"
@@ -1373,8 +1372,6 @@
           <FILE id="cuElFX" name="Icons.h" compile="0" resource="0" file="../../Source/UI/Themes/Icons.h"/>
           <FILE id="assiuD" name="FramePanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/FramePanel.cpp"/>
           <FILE id="jNvXXq" name="FramePanel.h" compile="0" resource="0" file="../../Source/UI/Themes/FramePanel.h"/>
-          <FILE id="N4N3KP" name="DialogPanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/DialogPanel.cpp"/>
-          <FILE id="IdO4fh" name="DialogPanel.h" compile="0" resource="0" file="../../Source/UI/Themes/DialogPanel.h"/>
           <FILE id="pX96CH" name="PanelBackgroundA.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/PanelBackgroundA.cpp"/>
           <FILE id="oQQzCv" name="PanelBackgroundA.h" compile="0" resource="0"

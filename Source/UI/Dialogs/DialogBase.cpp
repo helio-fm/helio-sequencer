@@ -16,18 +16,18 @@
 */
 
 #include "Common.h"
-#include "FadingDialog.h"
+#include "DialogBase.h"
 #include "DialogBackground.h"
-#include "CommandIDs.h"
+#include "HelioTheme.h"
 #include "MainLayout.h"
+#include "CommandIDs.h"
+#include "ColourIDs.h"
 
 #define DIALOG_HAS_BACKGROUND 1
 //#define DIALOG_HAS_BACKGROUND 0
 
-class DialogDragConstrainer final : public ComponentBoundsConstrainer
+struct DialogDragConstrainer final : public ComponentBoundsConstrainer
 {
-public:
-
     void checkBounds(Rectangle<int>& bounds,
         const Rectangle<int>& previousBounds,
         const Rectangle<int>& limits,
@@ -40,15 +40,15 @@ public:
     }
 };
 
-FadingDialog::FadingDialog()
+DialogBase::DialogBase()
 {
-    this->setAlwaysOnTop(true);
     this->toFront(true);
+    this->setAlwaysOnTop(true);
 
     this->moveConstrainer = make<DialogDragConstrainer>();
 }
 
-FadingDialog::~FadingDialog()
+DialogBase::~DialogBase()
 {
 #if DIALOG_HAS_BACKGROUND
     if (this->background != nullptr)
@@ -58,7 +58,27 @@ FadingDialog::~FadingDialog()
 #endif
 }
 
-void FadingDialog::parentHierarchyChanged()
+void DialogBase::paint(Graphics &g)
+{
+    const auto &theme = HelioTheme::getCurrentTheme();
+    g.setFillType({ theme.getBgCacheC(), {} });
+    g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 4);
+
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+    g.fillRect(1, 0, this->getWidth() - 2, 2);
+    g.fillRect(1, this->getHeight() - 2, this->getWidth() - 2, 2);
+    g.fillRect(0, 1, 2, this->getHeight() - 2);
+    g.fillRect(this->getWidth() - 2, 1, 2, this->getHeight() - 2);
+
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(2.f));
+    g.fillRect(2, 1, this->getWidth() - 4, 5);
+    g.fillRect(2, 1, this->getWidth() - 4, 1);
+    g.fillRect(2, this->getHeight() - 2, this->getWidth() - 4, 1);
+    g.fillRect(1, 2, 1, this->getHeight() - 4);
+    g.fillRect(this->getWidth() - 2, 2, 1, this->getHeight() - 4);
+}
+
+void DialogBase::parentHierarchyChanged()
 {
 #if DIALOG_HAS_BACKGROUND
     if (this->background == nullptr)
@@ -69,37 +89,37 @@ void FadingDialog::parentHierarchyChanged()
 #endif
 }
 
-void FadingDialog::mouseDown(const MouseEvent &e)
+void DialogBase::mouseDown(const MouseEvent &e)
 {
     this->dragger.startDraggingComponent(this, e);
 }
 
-void FadingDialog::mouseDrag(const MouseEvent &e)
+void DialogBase::mouseDrag(const MouseEvent &e)
 {
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
 }
 
-void FadingDialog::dismiss()
+void DialogBase::dismiss()
 {
     this->fadeOut();
     delete this;
 }
 
-void FadingDialog::fadeOut()
+void DialogBase::fadeOut()
 {
-    const int fadeoutTime = 200;
+    static constexpr auto fadeoutTime = 150;
     auto &animator = Desktop::getInstance().getAnimator();
     if (App::isOpenGLRendererEnabled())
     {
-        animator.animateComponent(this, this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 0.0);
+        animator.animateComponent(this, this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 1.0);
     }
     else
     {
-        animator.animateComponent(this, this->getBounds(), 0.f, fadeoutTime, true, 0.0, 0.0);
+        animator.animateComponent(this, this->getBounds(), 0.f, fadeoutTime, true, 0.0, 1.0);
     }
 }
 
-void FadingDialog::updatePosition()
+void DialogBase::updatePosition()
 {
 #if HELIO_DESKTOP
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);

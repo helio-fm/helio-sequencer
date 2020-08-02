@@ -18,16 +18,13 @@
 #pragma once
 
 //[Headers]
-#include "FadingDialog.h"
+#include "DialogBase.h"
 
 using InputDialogCallback = Function<void(const String &result)>;
 //[/Headers]
 
-#include "../Themes/DialogPanel.h"
-#include "../Themes/SeparatorHorizontal.h"
-#include "../Themes/SeparatorVertical.h"
 
-class ModalDialogInput final : public FadingDialog,
+class ModalDialogInput final : public DialogBase,
                                public TextEditor::Listener,
                                private Timer,
                                public Button::Listener
@@ -56,7 +53,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -81,13 +78,12 @@ private:
     void textEditorFocusLost(TextEditor&) override;
     //[/UserVariables]
 
-    UniquePointer<DialogPanel> background;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;
     UniquePointer<TextButton> okButton;
     UniquePointer<TextEditor> textEditor;
-    UniquePointer<SeparatorHorizontal> separatorH;
-    UniquePointer<SeparatorVertical> separatorV;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogInput)
 };
+
+

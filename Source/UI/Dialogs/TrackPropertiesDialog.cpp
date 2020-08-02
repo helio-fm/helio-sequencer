@@ -32,10 +32,8 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference
     : project(project),
       track(track)
 {
-    this->background.reset(new DialogPanel());
-    this->addAndMakeVisible(background.get());
     this->messageLabel.reset(new Label(String(),
-                                        String()));
+                                              String()));
     this->addAndMakeVisible(messageLabel.get());
     this->messageLabel->setFont(Font (21.00f, Font::plain));
     messageLabel->setJustificationType(Justification::centred);
@@ -51,10 +49,6 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener(this);
 
-    this->separatorH.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separatorH.get());
-    this->separatorV.reset(new SeparatorVertical());
-    this->addAndMakeVisible(separatorV.get());
     this->colourSwatches.reset(new ColourSwatches());
     this->addAndMakeVisible(colourSwatches.get());
 
@@ -108,12 +102,9 @@ TrackPropertiesDialog::~TrackPropertiesDialog()
     this->textEditor->removeListener(this);
     //[/Destructor_pre]
 
-    background = nullptr;
     messageLabel = nullptr;
     cancelButton = nullptr;
     okButton = nullptr;
-    separatorH = nullptr;
-    separatorV = nullptr;
     colourSwatches = nullptr;
     textEditor = nullptr;
 
@@ -126,15 +117,6 @@ void TrackPropertiesDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
-        Colour fillColour = Colour (0x59000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRoundedRectangle (x, y, width, height, 10.000f);
-    }
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -144,19 +126,16 @@ void TrackPropertiesDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 4 + 16, getWidth() - 48, 36);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 16, getWidth() - 48, 36);
     cancelButton->setBounds(4, getHeight() - 4 - 48, 220, 48);
     okButton->setBounds(getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
-    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
-    separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     colourSwatches->setBounds((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 106, getWidth() - 56, 34);
     textEditor->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 66, getWidth() - 48, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void TrackPropertiesDialog::buttonClicked(Button* buttonThatWasClicked)
+void TrackPropertiesDialog::buttonClicked(Button *buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -357,7 +336,7 @@ void TrackPropertiesDialog::doOk()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TrackPropertiesDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ColourButton::Listener, private Timer"
+                 componentName="" parentClasses="public DialogBase, public TextEditor::Listener, public ColourButton::Listener, private Timer"
                  constructorParams="ProjectNode &amp;project, WeakReference&lt;MidiTrack&gt; track, const String &amp;title = &quot;&quot;, const String &amp;confirmation = &quot;&quot;"
                  variableInitialisers="project(project),&#10;track(track)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
@@ -368,12 +347,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.0" fill="solid: 59000000" hasStroke="0"/>
-  </BACKGROUND>
-  <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
+  <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 16 48M 36" posRelativeY="e96b77baef792d3a"
          labelText="" editableSingleClick="0" editableDoubleClick="0"
@@ -385,12 +359,6 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
               explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="" connectedEdges="5"
               needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
-             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="123ea615ffefd36f" memberName="colourSwatches" virtualName=""
                     explicitFocusOrder="0" pos="2Cc 106 56M 34" class="ColourSwatches"
                     params=""/>

@@ -36,15 +36,13 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
       extension(formatExtension.toLowerCase()),
       shouldRenderAfterDialogCompletes(false)
 {
-    this->background.reset(new DialogPanel());
-    this->addAndMakeVisible(background.get());
     this->renderButton.reset(new TextButton(String()));
     this->addAndMakeVisible(renderButton.get());
     renderButton->setConnectedEdges (Button::ConnectedOnTop);
     renderButton->addListener(this);
 
     this->filenameEditor.reset(new Label(String(),
-                                          String()));
+                                                String()));
     this->addAndMakeVisible(filenameEditor.get());
     this->filenameEditor->setFont(Font (28.00f, Font::plain));
     filenameEditor->setJustificationType(Justification::topLeft);
@@ -52,16 +50,11 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->filenameEditor->addListener(this);
 
     this->filenameLabel.reset(new Label(String(),
-                                         String()));
+                                               String()));
     this->addAndMakeVisible(filenameLabel.get());
     this->filenameLabel->setFont(Font (21.00f, Font::plain));
     filenameLabel->setJustificationType(Justification::centredLeft);
     filenameLabel->setEditable(false, false, false);
-
-    this->cancelButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(cancelButton.get());
-    cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    cancelButton->addListener(this);
 
     this->slider.reset(new Slider(String()));
     this->addAndMakeVisible(slider.get());
@@ -77,7 +70,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->addAndMakeVisible(browseButton.get());
 
     this->pathEditor.reset(new Label(String(),
-                                      String()));
+                                            String()));
     this->addAndMakeVisible(pathEditor.get());
     this->pathEditor->setFont(Font (16.00f, Font::plain));
     pathEditor->setJustificationType(Justification::centredLeft);
@@ -87,12 +80,9 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->addAndMakeVisible(component3.get());
     component3->setBounds(32, 121, 456, 8);
 
-    this->separatorH.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separatorH.get());
 
     //[UserPreSize]
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
-    this->cancelButton->setButtonText(TRANS(I18n::Dialog::renderClose));
     this->filenameLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
 
     // just in case..
@@ -102,8 +92,6 @@ RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, con
     this->indicator->setVisible(false);
     this->slider->setEnabled(false);
     this->slider->setRange(0.0, 1.0, 0.01);
-
-    this->separatorH->setAlphaMultiplier(2.5f);
 
     this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
     this->filenameEditor->setText(renderTo.getFileName(), dontSendNotification);
@@ -125,17 +113,14 @@ RenderDialog::~RenderDialog()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    background = nullptr;
     renderButton = nullptr;
     filenameEditor = nullptr;
     filenameLabel = nullptr;
-    cancelButton = nullptr;
     slider = nullptr;
     indicator = nullptr;
     browseButton = nullptr;
     pathEditor = nullptr;
     component3 = nullptr;
-    separatorH = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -146,15 +131,6 @@ void RenderDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
-        Colour fillColour = Colour (0x59000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRoundedRectangle (x, y, width, height, 10.000f);
-    }
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -164,21 +140,18 @@ void RenderDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
     renderButton->setBounds(getWidth() - 4 - (getWidth() - 8), getHeight() - 4 - 48, getWidth() - 8, 48);
-    filenameEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 4 + 71, 406, 32);
-    filenameLabel->setBounds((getWidth() / 2) + 29 - (414 / 2), 4 + 16, 414, 22);
-    cancelButton->setBounds(0, getHeight() - -74 - 48, 255, 48);
+    filenameEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 71, 406, 32);
+    filenameLabel->setBounds((getWidth() / 2) + 29 - (414 / 2), 16, 414, 22);
     slider->setBounds((getWidth() / 2) + 24 - (392 / 2), 139, 392, 12);
     indicator->setBounds((getWidth() / 2) + -212 - (32 / 2), 139 + 12 / 2 + -2 - (32 / 2), 32, 32);
     browseButton->setBounds(getWidth() - 448 - 48, 59, 48, 48);
-    pathEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 4 + 48, 406, 24);
-    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    pathEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 48, 406, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void RenderDialog::buttonClicked(Button* buttonThatWasClicked)
+void RenderDialog::buttonClicked(Button *buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -189,19 +162,12 @@ void RenderDialog::buttonClicked(Button* buttonThatWasClicked)
         this->startOrAbortRender();
         //[/UserButtonCode_renderButton]
     }
-    else if (buttonThatWasClicked == cancelButton.get())
-    {
-        //[UserButtonCode_cancelButton] -- add your button handler code here..
-        this->stopRender();
-        this->dismiss();
-        //[/UserButtonCode_cancelButton]
-    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
 }
 
-void RenderDialog::labelTextChanged(Label* labelThatHasChanged)
+void RenderDialog::labelTextChanged(Label *labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
     //[/UserlabelTextChanged_Pre]
@@ -376,7 +342,7 @@ void RenderDialog::stopTrackingProgress()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RenderDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, private Timer"
+                 componentName="" parentClasses="public DialogBase, private Timer"
                  constructorParams="ProjectNode &amp;parentProject, const File &amp;renderTo, const String &amp;formatExtension"
                  variableInitialisers="project(parentProject),&#10;extension(formatExtension.toLowerCase()),&#10;shouldRenderAfterDialogCompletes(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -388,15 +354,10 @@ BEGIN_JUCER_METADATA
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.0" fill="solid: 59000000" hasStroke="0"/>
-  </BACKGROUND>
-  <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
+  <BACKGROUND backgroundColour="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="renderButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 8M 48" buttonText=""
-              connectedEdges="4" needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 8M 48" buttonText="" connectedEdges="4"
+              needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="filenameEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 71 406 32" posRelativeY="e96b77baef792d3a"
          labelText="" editableSingleClick="1" editableDoubleClick="1"
@@ -407,9 +368,6 @@ BEGIN_JUCER_METADATA
          labelText="" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
          kerning="0.0" bold="0" italic="0" justification="33"/>
-  <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="0 -74Rr 255 48" buttonText=""
-              connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="" id="53d73eae72d7741b" memberName="slider" virtualName=""
           explicitFocusOrder="0" pos="24Cc 139 392 12" min="0.0" max="1000.0"
           int="0.0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
@@ -428,11 +386,11 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="ab3833b58a212645" memberName="component3" virtualName=""
              explicitFocusOrder="0" pos="32 121 456 8" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
-  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
-             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

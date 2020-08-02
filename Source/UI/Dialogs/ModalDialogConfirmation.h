@@ -18,16 +18,13 @@
 #pragma once
 
 //[Headers]
-#include "FadingDialog.h"
+#include "DialogBase.h"
 
 using SimpleDialogCallback = Function<void()>;
 //[/Headers]
 
-#include "../Themes/DialogPanel.h"
-#include "../Themes/SeparatorHorizontal.h"
-#include "../Themes/SeparatorVertical.h"
 
-class ModalDialogConfirmation final : public FadingDialog,
+class ModalDialogConfirmation final : public DialogBase,
                                       public Button::Listener
 {
 public:
@@ -50,7 +47,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
@@ -65,12 +62,11 @@ private:
     void okay();
     //[/UserVariables]
 
-    UniquePointer<DialogPanel> background;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;
     UniquePointer<TextButton> okButton;
-    UniquePointer<SeparatorHorizontal> separatorH;
-    UniquePointer<SeparatorVertical> separatorV;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogConfirmation)
 };
+
+

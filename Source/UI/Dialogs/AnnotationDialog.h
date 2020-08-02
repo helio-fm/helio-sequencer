@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-#include "FadingDialog.h"
+#include "DialogBase.h"
 #include "AnnotationEvent.h"
 #include "ColourButton.h"
 #include "ColourSwatches.h"
@@ -27,11 +27,8 @@
 class AnnotationsSequence;
 //[/Headers]
 
-#include "../Themes/DialogPanel.h"
-#include "../Themes/SeparatorHorizontal.h"
-#include "../Themes/SeparatorVertical.h"
 
-class AnnotationDialog final : public FadingDialog,
+class AnnotationDialog final : public DialogBase,
                                public TextEditor::Listener,
                                public ColourButton::Listener,
                                private Timer,
@@ -51,7 +48,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -84,15 +81,14 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<DialogPanel> background;
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> removeEventButton;
     UniquePointer<TextButton> okButton;
-    UniquePointer<SeparatorHorizontal> separatorH;
-    UniquePointer<SeparatorVertical> separatorV;
     UniquePointer<ColourSwatches> colourSwatches;
     UniquePointer<TextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };
+
+

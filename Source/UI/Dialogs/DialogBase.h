@@ -17,29 +17,30 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
-class DialogPanel final : public Component
+class DialogBase : public Component
 {
 public:
+    
+    DialogBase();
+    ~DialogBase() override;
 
-    DialogPanel();
-    ~DialogPanel();
+    void paint(Graphics &g) override;
+    void parentHierarchyChanged() override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
-
+protected:
+    
+    void dismiss();
+    virtual void updatePosition();
+    
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
+    void fadeOut();
+    SafePointer<Component> background;
 
+    ComponentDragger dragger;
+    UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DialogPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DialogBase)
 };

@@ -18,18 +18,15 @@
 #pragma once
 
 //[Headers]
-#include "FadingDialog.h"
+#include "DialogBase.h"
 #include "TimeSignatureEvent.h"
 #include "MobileComboBox.h"
 
 class TimeSignaturesSequence;
 //[/Headers]
 
-#include "../Themes/DialogPanel.h"
-#include "../Themes/SeparatorHorizontal.h"
-#include "../Themes/SeparatorVertical.h"
 
-class TimeSignatureDialog final : public FadingDialog,
+class TimeSignatureDialog final : public DialogBase,
                                   public TextEditor::Listener,
                                   private Timer,
                                   public Button::Listener
@@ -46,7 +43,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -81,14 +78,13 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<DialogPanel> background;
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> removeEventButton;
     UniquePointer<TextButton> okButton;
-    UniquePointer<SeparatorHorizontal> separatorH;
-    UniquePointer<SeparatorVertical> separatorV;
     UniquePointer<TextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };
+
+

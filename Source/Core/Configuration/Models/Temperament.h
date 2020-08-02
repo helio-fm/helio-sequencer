@@ -39,6 +39,11 @@ public:
         return this->name;
     }
 
+    inline const Period &getPeriod() const noexcept
+    {
+        return this->period;
+    }
+
     inline auto getPeriodSize() const noexcept
     {
         return this->period.size();

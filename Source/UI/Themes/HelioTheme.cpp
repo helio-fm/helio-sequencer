@@ -805,14 +805,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
 
     // Panels
-    this->setColour(ColourIDs::BackgroundA::fill, s->getPrimaryGradientColourA().brighter(0.005f));
-    this->setColour(ColourIDs::BackgroundB::fill, s->getPrimaryGradientColourA().darker(0.02f));
+    this->setColour(ColourIDs::BackgroundA::fill, s->getPrimaryGradientColourA());
+    this->setColour(ColourIDs::BackgroundB::fill, s->getPrimaryGradientColourA().darker(0.025f));
     this->setColour(ColourIDs::BackgroundC::fill, s->getSecondaryGradientColourA());
 
     this->setColour(ColourIDs::Panel::fill, s->getPanelFillColour());
     this->setColour(ColourIDs::Panel::border, s->getPanelBorderColour().withAlpha(0.225f));
 
-    this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPrimaryGradientColourA().darker(0.25f));
+    this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPrimaryGradientColourA().darker(0.35f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.025f));
     this->setColour(ColourIDs::TrackScroller::screenRangeFill, s->getIconBaseColour().withMultipliedAlpha(0.45f));
     this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.2f));
@@ -828,8 +828,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Instrument::shadowConnector, Colours::black.withAlpha(0.2f));
 
     // Borders
-    this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.06f));
-    this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.2f));
+    this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.07f));
+    this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.3f));
     this->setColour(ColourIDs::ColourButton::outline, s->getTextColour());
 
     // CallOutBox

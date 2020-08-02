@@ -58,24 +58,27 @@ public:
 
 private:
 
+    static constexpr auto alphaStep = 0.025f;
+    static constexpr auto maxAlpha = 0.2f;
+
     void timerCallback() override
     {
         if (this->appearMode)
         {
-            this->alpha += 0.025f;
+            this->alpha += alphaStep;
             this->repaint();
 
-            if (this->alpha >= 0.15f)
+            if (this->alpha >= maxAlpha)
             {
                 this->stopTimer();
             }
         }
         else
         {
-            this->alpha -= 0.025f;
+            this->alpha -= alphaStep;
             this->repaint();
 
-            if (this->alpha <= 0.025f)
+            if (this->alpha <= alphaStep)
             {
                 delete this;
             }

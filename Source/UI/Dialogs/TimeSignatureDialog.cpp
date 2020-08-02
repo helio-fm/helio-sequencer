@@ -51,13 +51,11 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
 {
-    this->background.reset(new DialogPanel());
-    this->addAndMakeVisible(background.get());
     this->comboPrimer.reset(new MobileComboBox::Primer());
     this->addAndMakeVisible(comboPrimer.get());
 
     this->messageLabel.reset(new Label(String(),
-                                        String()));
+                                              String()));
     this->addAndMakeVisible(messageLabel.get());
     this->messageLabel->setFont(Font (21.00f, Font::plain));
     messageLabel->setJustificationType(Justification::centred);
@@ -65,20 +63,14 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
 
     this->removeEventButton.reset(new TextButton(String()));
     this->addAndMakeVisible(removeEventButton.get());
-    removeEventButton->setButtonText(String());
     removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     removeEventButton->addListener(this);
 
     this->okButton.reset(new TextButton(String()));
     this->addAndMakeVisible(okButton.get());
-    okButton->setButtonText(String());
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener(this);
 
-    this->separatorH.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separatorH.get());
-    this->separatorV.reset(new SeparatorVertical());
-    this->addAndMakeVisible(separatorV.get());
     this->textEditor.reset(new TextEditor(String()));
     this->addAndMakeVisible(textEditor.get());
     textEditor->setMultiLine (false);
@@ -124,7 +116,6 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     this->textEditor->setFont(21.f);
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
 
-    this->separatorH->setAlphaMultiplier(2.5f);
     this->messageLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
@@ -156,13 +147,10 @@ TimeSignatureDialog::~TimeSignatureDialog()
     textEditor->removeListener(this);
     //[/Destructor_pre]
 
-    background = nullptr;
     comboPrimer = nullptr;
     messageLabel = nullptr;
     removeEventButton = nullptr;
     okButton = nullptr;
-    separatorH = nullptr;
-    separatorV = nullptr;
     textEditor = nullptr;
 
     //[Destructor]
@@ -174,15 +162,6 @@ void TimeSignatureDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
-        Colour fillColour = Colour (0x59000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRoundedRectangle (x, y, width, height, 10.000f);
-    }
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -192,19 +171,16 @@ void TimeSignatureDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
     comboPrimer->setBounds((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
-    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 20, getWidth() - 32, 36);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 20, getWidth() - 32, 36);
     removeEventButton->setBounds(4, getHeight() - 4 - 48, 180, 48);
     okButton->setBounds(getWidth() - 4 - 181, getHeight() - 4 - 48, 181, 48);
-    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
-    separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     textEditor->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 68, getWidth() - 48, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void TimeSignatureDialog::buttonClicked(Button* buttonThatWasClicked)
+void TimeSignatureDialog::buttonClicked(Button *buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -425,7 +401,7 @@ void TimeSignatureDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, private Timer"
+                 componentName="" parentClasses="public DialogBase, public TextEditor::Listener, private Timer"
                  constructorParams="Component &amp;owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(timeSequence),&#10;ownerComponent(owner),&#10;defailtMeters(getDefaultMeters()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -437,33 +413,21 @@ BEGIN_JUCER_METADATA
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
-               hasStroke="0"/>
-  </BACKGROUND>
-  <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
+  <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="MobileComboBox::Primer"
                     params=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 20 32M 36" posRelativeY="e96b77baef792d3a"
          labelText="" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.00000000000000000000"
-         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
+         kerning="0.0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
               virtualName="" explicitFocusOrder="0" pos="4 4Rr 180 48" buttonText=""
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 181 48" buttonText=""
-              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
-             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
-             constructorParams=""/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 181 48" buttonText="" connectedEdges="5"
+              needsCallback="1" radioGroupId="0"/>
   <TEXTEDITOR name="" id="3f330f1d57714294" memberName="textEditor" virtualName=""
               explicitFocusOrder="0" pos="0Cc 68 48M 32" initialText="" multiline="0"
               retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
@@ -472,3 +436,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

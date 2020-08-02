@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-#include "FadingDialog.h"
+#include "DialogBase.h"
 
 class DocumentOwner;
 class ProjectNode;
@@ -26,11 +26,9 @@ class ProgressIndicator;
 class MenuItemComponent;
 //[/Headers]
 
-#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontalFading.h"
-#include "../Themes/SeparatorHorizontal.h"
 
-class RenderDialog final : public FadingDialog,
+class RenderDialog final : public DialogBase,
                            private Timer,
                            public Button::Listener,
                            public Label::Listener,
@@ -47,8 +45,8 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
-    void labelTextChanged(Label* labelThatHasChanged) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
+    void labelTextChanged(Label *labelThatHasChanged) override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -78,17 +76,16 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<DialogPanel> background;
     UniquePointer<TextButton> renderButton;
     UniquePointer<Label> filenameEditor;
     UniquePointer<Label> filenameLabel;
-    UniquePointer<TextButton> cancelButton;
     UniquePointer<Slider> slider;
     UniquePointer<ProgressIndicator> indicator;
     UniquePointer<MenuItemComponent> browseButton;
     UniquePointer<Label> pathEditor;
     UniquePointer<SeparatorHorizontalFading> component3;
-    UniquePointer<SeparatorHorizontal> separatorH;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
 };
+
+

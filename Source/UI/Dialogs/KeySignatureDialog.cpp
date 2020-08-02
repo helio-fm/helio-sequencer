@@ -45,8 +45,6 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
       project(project),
       addsNewEvent(shouldAddNewEvent)
 {
-    this->background.reset(new DialogPanel());
-    this->addAndMakeVisible(background.get());
     this->comboPrimer.reset(new MobileComboBox::Primer());
     this->addAndMakeVisible(comboPrimer.get());
 
@@ -59,18 +57,14 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
 
     this->removeEventButton.reset(new TextButton(String()));
     this->addAndMakeVisible(removeEventButton.get());
-    removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
+    removeEventButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
     removeEventButton->addListener(this);
 
     this->okButton.reset(new TextButton(String()));
     this->addAndMakeVisible(okButton.get());
-    okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
+    okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight | Button::ConnectedOnTop | Button::ConnectedOnBottom);
     okButton->addListener(this);
 
-    this->separatorH.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separatorH.get());
-    this->separatorV.reset(new SeparatorVertical());
-    this->addAndMakeVisible(separatorV.get());
     this->keySelector.reset(new KeySelector(getPeriod(project)));
     this->addAndMakeVisible(keySelector.get());
 
@@ -101,9 +95,6 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
             this->scales.add(scale);
         }
     }
-
-    // todo set dialog size according to the period size
-
 
     this->transport.stopPlaybackAndRecording();
 
@@ -144,13 +135,14 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
         this->removeEventButton->setButtonText(TRANS(I18n::Dialog::keySignatureEditDelete));
     }
 
-    this->separatorH->setAlphaMultiplier(2.5f);
     this->messageLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
     this->setSize(460, 260);
 
     //[Constructor]
+    // todo set dialog size according to the period size
+
     this->updatePosition();
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -178,13 +170,10 @@ KeySignatureDialog::~KeySignatureDialog()
     this->scaleNameEditor->removeListener(this);
     //[/Destructor_pre]
 
-    background = nullptr;
     comboPrimer = nullptr;
     messageLabel = nullptr;
     removeEventButton = nullptr;
     okButton = nullptr;
-    separatorH = nullptr;
-    separatorV = nullptr;
     keySelector = nullptr;
     scaleEditor = nullptr;
     playButton = nullptr;
@@ -194,27 +183,15 @@ KeySignatureDialog::~KeySignatureDialog()
     //[/Destructor]
 }
 
-void KeySignatureDialog::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
-
 void KeySignatureDialog::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
     comboPrimer->setBounds((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
-    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 0 + 12, getWidth() - 32, 36);
+    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 12, getWidth() - 32, 36);
     removeEventButton->setBounds(4, getHeight() - 4 - 48, 225, 48);
     okButton->setBounds(getWidth() - 4 - 226, getHeight() - 4 - 48, 226, 48);
-    separatorH->setBounds(4, getHeight() - 52 - 2, getWidth() - 8, 2);
-    separatorV->setBounds((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     keySelector->setBounds((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 58, getWidth() - 40, 34);
     scaleEditor->setBounds((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 108, getWidth() - 40, 34);
     playButton->setBounds(getWidth() - 25 - 40, 148, 40, 40);
@@ -522,7 +499,7 @@ void KeySignatureDialog::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
+                 componentName="" parentClasses="public DialogBase, public TextEditor::Listener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
                  constructorParams="ProjectNode &amp;project, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="transport(project.getTransport()),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;project(project),&#10;addsNewEvent(shouldAddNewEvent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -535,9 +512,6 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="MobileComboBox::Primer"
                     params=""/>
@@ -548,16 +522,10 @@ BEGIN_JUCER_METADATA
          kerning="0.0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
               virtualName="" explicitFocusOrder="0" pos="4 4Rr 225 48" buttonText=""
-              connectedEdges="6" needsCallback="1" radioGroupId="0"/>
+              connectedEdges="15" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 226 48" buttonText="" connectedEdges="5"
+              explicitFocusOrder="0" pos="4Rr 4Rr 226 48" buttonText="" connectedEdges="15"
               needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
-             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="fa164e6b39caa19f" memberName="keySelector" virtualName=""
                     explicitFocusOrder="0" pos="2Cc 58 40M 34" class="KeySelector"
                     params="getPeriod(project)"/>
