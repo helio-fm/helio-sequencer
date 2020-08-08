@@ -15,187 +15,109 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "ModalDialogInput.h"
-
-//[MiscUserDefs]
 #include "CommandIDs.h"
 
-#if HELIO_DESKTOP
-#    define INPUT_DIALOG_FONT_SIZE (21)
-#elif HELIO_MOBILE
-#    define INPUT_DIALOG_FONT_SIZE (28)
-#endif
-//[/MiscUserDefs]
-
-ModalDialogInput::ModalDialogInput(const String &text, const String &message, const String &okText, const String &cancelText)
-    : input(text)
+ModalDialogInput::ModalDialogInput(const String &text, const String &message,
+    const String &okText, const String &cancelText) :
+    input(text)
 {
-    this->messageLabel.reset(new Label(String(),
-                                              String()));
-    this->addAndMakeVisible(messageLabel.get());
-    this->messageLabel->setFont(Font (21.00f, Font::plain));
-    messageLabel->setJustificationType(Justification::centred);
-    messageLabel->setEditable(false, false, false);
-
-    this->cancelButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(cancelButton.get());
-    cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    cancelButton->addListener(this);
-
-    this->okButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(okButton.get());
-    okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    okButton->addListener(this);
-
-    this->textEditor.reset(new TextEditor(String()));
-    this->addAndMakeVisible(textEditor.get());
-    textEditor->setMultiLine (false);
-    textEditor->setReturnKeyStartsNewLine (false);
-    textEditor->setReadOnly (false);
-    textEditor->setScrollbarsShown (false);
-    textEditor->setCaretVisible (true);
-    textEditor->setPopupMenuEnabled (true);
-    textEditor->setText (String());
-
-
-    //[UserPreSize]
+    this->messageLabel = make<Label>();
+    this->addAndMakeVisible(this->messageLabel.get());
+    this->messageLabel->setFont({ 21.f });
+    this->messageLabel->setJustificationType(Justification::centred);
     this->messageLabel->setText(message, dontSendNotification);
-    this->okButton->setButtonText(okText);
-    this->cancelButton->setButtonText(cancelText);
+    this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    this->textEditor->setFont(Font(INPUT_DIALOG_FONT_SIZE));
+    this->cancelButton = make<TextButton>();
+    this->addAndMakeVisible(this->cancelButton.get());
+    this->cancelButton->onClick = [this]()
+    {
+        this->cancel();
+    };
+
+    this->okButton = make<TextButton>();
+    this->addAndMakeVisible(this->okButton.get());
+    this->okButton->onClick = [this]()
+    {
+        this->okay();
+    };
+
+    this->textEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->textEditor.get());
+    this->textEditor->setMultiLine(false);
+    this->textEditor->setReturnKeyStartsNewLine(false);
+    this->textEditor->setReadOnly(false);
+    this->textEditor->setScrollbarsShown(false);
+    this->textEditor->setCaretVisible(true);
+    this->textEditor->setPopupMenuEnabled(true);
+
+    this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
+#if HELIO_DESKTOP
+    this->textEditor->setFont({ 21 });
+#elif HELIO_MOBILE
+    this->textEditor->setFont({ 28 });
+#endif
     this->textEditor->setText(this->input, dontSendNotification);
     this->textEditor->addListener(this);
 
-    this->messageLabel->setInterceptsMouseClicks(false, false);
-    //[/UserPreSize]
+    this->okButton->setButtonText(okText);
+    this->cancelButton->setButtonText(cancelText);
 
     this->setSize(450, 165);
-
-    //[Constructor]
     this->updatePosition();
-    this->setInterceptsMouseClicks(true, true);
-    this->setMouseClickGrabsKeyboardFocus(false);
-    this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
-    this->setAlwaysOnTop(true);
-    this->toFront(true);
     this->updateOkButtonState();
-
-    this->startTimer(100);
-    //[/Constructor]
 }
 
 ModalDialogInput::~ModalDialogInput()
 {
-    //[Destructor_pre]
-    this->stopTimer();
-    textEditor->removeListener(this);
-    //[/Destructor_pre]
-
-    messageLabel = nullptr;
-    cancelButton = nullptr;
-    okButton = nullptr;
-    textEditor = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void ModalDialogInput::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+    this->textEditor->removeListener(this);
 }
 
 void ModalDialogInput::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->messageLabel->setBounds(this->getCaptionBounds());
 
-    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 60) / 2), 12, getWidth() - 60, 36);
-    cancelButton->setBounds(4, getHeight() - 4 - 48, 220, 48);
-    okButton->setBounds(getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
-    textEditor->setBounds((getWidth() / 2) - ((getWidth() - 60) / 2), 58, getWidth() - 60, 36);
-    //[UserResized] Add your own custom resize handling here..
-    if (this->isShowing())
-    {
-        this->textEditor->grabKeyboardFocus();
-    }
-    //[/UserResized]
-}
+    const auto buttonsBounds(this->getButtonsBounds());
+    const auto buttonWidth = buttonsBounds.getWidth() / 2;
 
-void ModalDialogInput::buttonClicked(Button *buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
+    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
+    this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    if (buttonThatWasClicked == cancelButton.get())
-    {
-        //[UserButtonCode_cancelButton] -- add your button handler code here..
-        this->cancel();
-        //[/UserButtonCode_cancelButton]
-    }
-    else if (buttonThatWasClicked == okButton.get())
-    {
-        //[UserButtonCode_okButton] -- add your button handler code here..
-        this->okay();
-        //[/UserButtonCode_okButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
+    this->textEditor->setBounds(this->getRowBounds(0.5f, DialogBase::textEditorHeight));
 }
 
 void ModalDialogInput::visibilityChanged()
 {
-    //[UserCode_visibilityChanged] -- Add your code here...
     if (this->isShowing())
     {
         this->textEditor->grabKeyboardFocus();
     }
-    //[/UserCode_visibilityChanged]
 }
 
 void ModalDialogInput::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void ModalDialogInput::parentSizeChanged()
 {
-    //[UserCode_parentSizeChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentSizeChanged]
 }
 
-void ModalDialogInput::handleCommandMessage (int commandId)
+void ModalDialogInput::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->cancel();
     }
-    //[/UserCode_handleCommandMessage]
 }
 
 void ModalDialogInput::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
 {
@@ -203,9 +125,9 @@ void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
     this->updateOkButtonState();
 }
 
-void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &ed)
+void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &editor)
 {
-    this->textEditorFocusLost(ed);
+    this->textEditorFocusLost(editor);
 }
 
 void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
@@ -270,16 +192,6 @@ void ModalDialogInput::updateOkButtonState()
     const bool textIsEmpty = this->input.isEmpty();
     this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
     this->okButton->setEnabled(!textIsEmpty);
-}
-
-void ModalDialogInput::timerCallback()
-{
-    if (! this->textEditor->hasKeyboardFocus(true))
-    {
-        this->textEditor->grabKeyboardFocus();
-        this->textEditor->selectAll();
-        this->stopTimer();
-    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -358,46 +270,3 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
             TRANS(I18n::Dialog::addArpProceed),
             TRANS(I18n::Dialog::cancel)));
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="ModalDialogInput" template="../../Template"
-                 componentName="" parentClasses="public DialogBase, public TextEditor::Listener, private Timer"
-                 constructorParams="const String &amp;text, const String &amp;message, const String &amp;okText, const String &amp;cancelText"
-                 variableInitialisers="input(text)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="450"
-                 initialHeight="165">
-  <METHODS>
-    <METHOD name="parentSizeChanged()"/>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="visibilityChanged()"/>
-    <METHOD name="inputAttemptWhenModal()"/>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 12 60M 36" posRelativeY="e96b77baef792d3a"
-         labelText="" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
-         kerning="0.0" bold="0" italic="0" justification="36"/>
-  <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="" connectedEdges="6"
-              needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="" connectedEdges="5"
-              needsCallback="1" radioGroupId="0"/>
-  <TEXTEDITOR name="" id="4d16d51ea0c579db" memberName="textEditor" virtualName=""
-              explicitFocusOrder="0" pos="0Cc 58 60M 36" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="0" caret="1" popupmenu="1"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

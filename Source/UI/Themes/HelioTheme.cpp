@@ -270,27 +270,28 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                                       const Colour &backgroundColour,
                                       bool isMouseOverButton, bool isButtonDown)
 {
-    Colour baseColour(backgroundColour
-                      .withMultipliedAlpha(button.isEnabled() ? 0.75f : 0.3f));
+    Colour baseColour(backgroundColour.withMultipliedAlpha(button.isEnabled() ? 0.75f : 0.3f));
 
-    const bool flatOnLeft   = button.isConnectedOnLeft();
-    const bool flatOnRight  = button.isConnectedOnRight();
-    const bool flatOnTop    = button.isConnectedOnTop();
-    const bool flatOnBottom = button.isConnectedOnBottom();
+    //const bool flatOnLeft   = button.isConnectedOnLeft();
+    //const bool flatOnRight  = button.isConnectedOnRight();
+    //const bool flatOnTop    = button.isConnectedOnTop();
+    //const bool flatOnBottom = button.isConnectedOnBottom();
 
     const float width  = float(button.getWidth());
     const float height = float(button.getHeight());
 
     if (width > 0 && height > 0)
     {
-        const float cornerSize = 7.f;
+        const float cornerSize = 2.f;
 
         Path outline;
-        outline.addRoundedRectangle(0.f, -cornerSize, width, height + cornerSize, cornerSize, cornerSize,
-                                    !(flatOnLeft  || flatOnTop),
-                                    !(flatOnRight || flatOnTop),
-                                    !(flatOnLeft  || flatOnBottom),
-                                    !(flatOnRight || flatOnBottom));
+        outline.addRoundedRectangle(0.f, -cornerSize,
+            width, height + cornerSize, cornerSize, cornerSize,
+            true, true, true, true);
+            //!(flatOnLeft || flatOnTop),
+            //!(flatOnRight || flatOnTop),
+            //!(flatOnLeft || flatOnBottom),
+            //!(flatOnRight || flatOnBottom));
 
         const float mainAlpha = baseColour.getFloatAlpha();
 

@@ -17,22 +17,17 @@
 
 #pragma once
 
-//[Headers]
 #include "DialogBase.h"
 
 using SimpleDialogCallback = Function<void()>;
-//[/Headers]
 
-
-class ModalDialogConfirmation final : public DialogBase,
-                                      public Button::Listener
+class ModalDialogConfirmation final : public DialogBase
 {
 public:
 
     ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText);
     ~ModalDialogConfirmation();
 
-    //[UserMethods]
     SimpleDialogCallback onOk;
     SimpleDialogCallback onCancel;
 
@@ -43,24 +38,18 @@ public:
         static UniquePointer<ModalDialogConfirmation> resetChanges();
         static UniquePointer<ModalDialogConfirmation> confirmOpenGL();
     };
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
     void inputAttemptWhenModal() override;
-
 
 private:
 
-    //[UserVariables]
     void cancel();
     void okay();
-    //[/UserVariables]
 
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;
@@ -68,5 +57,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogConfirmation)
 };
-
-

@@ -17,52 +17,42 @@
 
 #pragma once
 
-//[Headers]
 #include "DialogBase.h"
 #include "KeySignatureEvent.h"
 #include "ScaleEditor.h"
 #include "KeySelector.h"
 #include "MobileComboBox.h"
+#include "PlayButton.h"
 
 class Transport;
 class ProjectNode;
 class KeySignaturesSequence;
-//[/Headers]
-
-#include "../Common/PlayButton.h"
 
 class KeySignatureDialog final : public DialogBase,
-                                 public TextEditor::Listener,
-                                 public ScaleEditor::Listener,
-                                 public KeySelector::Listener,
-                                 private Timer,
-                                 public Button::Listener
+    public TextEditor::Listener,
+    public ScaleEditor::Listener,
+    public KeySelector::Listener
 {
 public:
 
-    KeySignatureDialog(ProjectNode &project, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    KeySignatureDialog(ProjectNode &project, KeySignaturesSequence *keySequence,
+        const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+
     ~KeySignatureDialog();
 
-    //[UserMethods]
     static UniquePointer<Component> editingDialog(ProjectNode &project,
         const KeySignatureEvent &event);
 
     static UniquePointer<Component> addingDialog(ProjectNode &project,
         KeySignaturesSequence *annotationsLayer, float targetBeat);
-    //[/UserMethods]
 
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
-    void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
+    void handleCommandMessage(int commandId) override;
     void inputAttemptWhenModal() override;
 
-
 private:
-
-    //[UserVariables]
 
     void onKeyChanged(int key) override;
     void onScaleChanged(const Scale::Ptr scale) override;
@@ -71,8 +61,6 @@ private:
     void textEditorReturnKeyPressed(TextEditor&) override;
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
-
-    void timerCallback() override;
 
     ProjectNode &project;
     Transport &transport;
@@ -92,8 +80,6 @@ private:
     int key = 0;
     Scale::Ptr scale;
 
-    //[/UserVariables]
-
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> removeEventButton;
@@ -105,5 +91,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureDialog)
 };
-
-

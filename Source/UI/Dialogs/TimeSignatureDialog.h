@@ -17,43 +17,32 @@
 
 #pragma once
 
-//[Headers]
 #include "DialogBase.h"
 #include "TimeSignatureEvent.h"
 #include "MobileComboBox.h"
 
 class TimeSignaturesSequence;
-//[/Headers]
 
-
-class TimeSignatureDialog final : public DialogBase,
-                                  public TextEditor::Listener,
-                                  private Timer,
-                                  public Button::Listener
+class TimeSignatureDialog final : public DialogBase, public TextEditor::Listener
 {
 public:
 
-    TimeSignatureDialog(Component &owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    TimeSignatureDialog(Component &owner,
+        TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent,
+        bool shouldAddNewEvent, float targetBeat);
+
     ~TimeSignatureDialog();
 
-    //[UserMethods]
     static UniquePointer<Component> editingDialog(Component &owner, const TimeSignatureEvent &event);
     static UniquePointer<Component> addingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
-    void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
+    void handleCommandMessage(int commandId) override;
     void inputAttemptWhenModal() override;
 
-
 private:
-
-    //[UserVariables]
 
     TimeSignatureEvent originalEvent;
     TimeSignaturesSequence *const originalSequence;
@@ -66,17 +55,14 @@ private:
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
 
-    void timerCallback() override;
-
     inline void cancelAndDisappear();
     inline void updateOkButtonState();
 
-    bool addsNewEvent;
-    bool hasMadeChanges;
+    const bool addsNewEvent = false;
+    bool hasMadeChanges = false;
+
     void sendEventChange(const TimeSignatureEvent &newEvent);
     void removeEvent();
-
-    //[/UserVariables]
 
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> messageLabel;
@@ -86,5 +72,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };
-
-

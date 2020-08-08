@@ -17,24 +17,19 @@
 
 #pragma once
 
-//[Headers]
 #include "DialogBase.h"
 
 using InputDialogCallback = Function<void(const String &result)>;
-//[/Headers]
 
-
-class ModalDialogInput final : public DialogBase,
-                               public TextEditor::Listener,
-                               private Timer,
-                               public Button::Listener
+class ModalDialogInput final : public DialogBase, public TextEditor::Listener
 {
 public:
 
-    ModalDialogInput(const String &text, const String &message, const String &okText, const String &cancelText);
+    ModalDialogInput(const String &text, const String &message,
+        const String &okText, const String &cancelText);
+
     ~ModalDialogInput();
 
-    //[UserMethods]
     InputDialogCallback onOk;
     InputDialogCallback onCancel;
 
@@ -49,34 +44,27 @@ public:
         static UniquePointer<ModalDialogInput> deleteProjectConfirmation();
         static UniquePointer<ModalDialogInput> commit(const String &name);
     };
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
+    void handleCommandMessage(int commandId) override;
     void inputAttemptWhenModal() override;
-
 
 private:
 
-    //[UserVariables]
     String input;
 
     void cancel();
     void okay();
 
     void updateOkButtonState();
-    void timerCallback() override;
 
     void textEditorTextChanged(TextEditor &editor) override;
     void textEditorReturnKeyPressed(TextEditor&) override;
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
-    //[/UserVariables]
 
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;
@@ -85,5 +73,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogInput)
 };
-
-

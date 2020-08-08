@@ -17,7 +17,6 @@
 
 #pragma once
 
-//[Headers]
 #include "DialogBase.h"
 #include "AnnotationEvent.h"
 #include "ColourButton.h"
@@ -25,40 +24,34 @@
 #include "MobileComboBox.h"
 
 class AnnotationsSequence;
-//[/Headers]
-
 
 class AnnotationDialog final : public DialogBase,
-                               public TextEditor::Listener,
-                               public ColourButton::Listener,
-                               private Timer,
-                               public Button::Listener
+    public TextEditor::Listener,
+    public ColourButton::Listener
 {
 public:
 
-    AnnotationDialog(Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    AnnotationDialog(Component &owner,
+        AnnotationsSequence *sequence, const AnnotationEvent &editedEvent,
+        bool shouldAddNewEvent, float targetBeat);
+
     ~AnnotationDialog();
 
-    //[UserMethods]
-    static UniquePointer<Component> editingDialog(Component &owner, const AnnotationEvent &event);
-    static UniquePointer<Component> addingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat);
+    static UniquePointer<Component> editingDialog(Component &owner,
+        const AnnotationEvent &event);
+
+    static UniquePointer<Component> addingDialog(Component &owner,
+        AnnotationsSequence *annotationsLayer, float targetBeat);
 
     void onColourButtonClicked(ColourButton *button) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
-    void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
+    void handleCommandMessage(int commandId) override;
     void inputAttemptWhenModal() override;
 
-
 private:
-
-    //[UserVariables]
 
     AnnotationEvent originalEvent;
     AnnotationsSequence *const originalSequence;
@@ -69,17 +62,14 @@ private:
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
 
-    void timerCallback() override;
-
     inline void cancelAndDisappear();
     inline void updateOkButtonState();
 
-    bool addsNewEvent;
-    bool hasMadeChanges;
+    const bool addsNewEvent = false;
+    bool hasMadeChanges = false;
+
     void sendEventChange(const AnnotationEvent &newEvent);
     void removeEvent();
-
-    //[/UserVariables]
 
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> messageLabel;
@@ -90,5 +80,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };
-
-

@@ -17,7 +17,6 @@
 
 #pragma once
 
-//[Headers]
 #include "DialogBase.h"
 #include "ColourButton.h"
 #include "ColourSwatches.h"
@@ -25,39 +24,30 @@
 
 class ProjectNode;
 class AnnotationsSequence;
-//[/Headers]
-
 
 class TrackPropertiesDialog final : public DialogBase,
-                                    public TextEditor::Listener,
-                                    public ColourButton::Listener,
-                                    private Timer,
-                                    public Button::Listener
+    public TextEditor::Listener,
+    public ColourButton::Listener
 {
 public:
 
-    TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track, const String &title = "", const String &confirmation = "");
+    TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track,
+        const String &title = "", const String &confirmation = "");
+
     ~TrackPropertiesDialog();
 
-    //[UserMethods]
     Function<void()> onOk;
     Function<void()> onCancel;
 
     void onColourButtonClicked(ColourButton *button) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
+    void handleCommandMessage(int commandId) override;
     void inputAttemptWhenModal() override;
 
-
 private:
-
-    //[UserVariables]
 
     ProjectNode &project;
     WeakReference<MidiTrack> track;
@@ -75,8 +65,6 @@ private:
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
 
-    void timerCallback() override;
-
     inline void updateOkButtonState();
 
     void applyChangesIfAny();
@@ -86,8 +74,6 @@ private:
     void doCancel();
     void doOk();
 
-    //[/UserVariables]
-
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;
     UniquePointer<TextButton> okButton;
@@ -96,5 +82,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackPropertiesDialog)
 };
-
-

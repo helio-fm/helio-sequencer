@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "RenderDialog.h"
 
-//[MiscUserDefs]
 #include "DocumentOwner.h"
 #include "MainLayout.h"
 #include "ProjectNode.h"
@@ -29,191 +25,96 @@
 #include "ProgressIndicator.h"
 #include "MenuItemComponent.h"
 #include "CommandIDs.h"
-//[/MiscUserDefs]
 
-RenderDialog::RenderDialog(ProjectNode &parentProject, const File &renderTo, const String &formatExtension)
-    : project(parentProject),
-      extension(formatExtension.toLowerCase()),
-      shouldRenderAfterDialogCompletes(false)
+RenderDialog::RenderDialog(ProjectNode &parentProject,
+    const File &renderTo, const String &formatExtension) :
+    project(parentProject),
+    extension(formatExtension.toLowerCase())
 {
-    this->renderButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(renderButton.get());
-    renderButton->setConnectedEdges (Button::ConnectedOnTop);
-    renderButton->addListener(this);
-
-    this->filenameEditor.reset(new Label(String(),
-                                                String()));
-    this->addAndMakeVisible(filenameEditor.get());
-    this->filenameEditor->setFont(Font (28.00f, Font::plain));
-    filenameEditor->setJustificationType(Justification::topLeft);
-    filenameEditor->setEditable(true, true, false);
-    this->filenameEditor->addListener(this);
-
-    this->filenameLabel.reset(new Label(String(),
-                                               String()));
-    this->addAndMakeVisible(filenameLabel.get());
-    this->filenameLabel->setFont(Font (21.00f, Font::plain));
-    filenameLabel->setJustificationType(Justification::centredLeft);
-    filenameLabel->setEditable(false, false, false);
-
-    this->slider.reset(new Slider(String()));
-    this->addAndMakeVisible(slider.get());
-    slider->setRange (0, 1000, 0);
-    slider->setSliderStyle (Slider::LinearBar);
-    slider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
-    slider->addListener (this);
-
-    this->indicator.reset(new ProgressIndicator());
-    this->addAndMakeVisible(indicator.get());
-
-    this->browseButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse)));
-    this->addAndMakeVisible(browseButton.get());
-
-    this->pathEditor.reset(new Label(String(),
-                                            String()));
-    this->addAndMakeVisible(pathEditor.get());
-    this->pathEditor->setFont(Font (16.00f, Font::plain));
-    pathEditor->setJustificationType(Justification::centredLeft);
-    pathEditor->setEditable(false, false, false);
-
-    this->component3.reset(new SeparatorHorizontalFading());
-    this->addAndMakeVisible(component3.get());
-    component3->setBounds(32, 121, 456, 8);
-
-
-    //[UserPreSize]
+    this->renderButton = make<TextButton>();
+    this->addAndMakeVisible(this->renderButton.get());
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
+    this->renderButton->onClick = [this]()
+    {
+        this->startOrAbortRender();
+    };
+
+    this->filenameEditor = make<Label>();
+    this->addAndMakeVisible(this->filenameEditor.get());
+    this->filenameEditor->setFont({ 28.f });
+    this->filenameEditor->setJustificationType(Justification::topLeft);
+    this->filenameEditor->setText(renderTo.getFileName(), dontSendNotification);
+#if JUCE_MAC
+    this->filenameEditor->setEditable(false);
+#else
+    this->filenameEditor->setEditable(true, true, false);
+#endif
+
+    this->filenameLabel = make<Label>();
+    this->addAndMakeVisible(this->filenameLabel.get());
+    this->filenameLabel->setFont({ 21.f });
+    this->filenameLabel->setJustificationType(Justification::centredLeft);
     this->filenameLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
+
+    this->slider = make<Slider>();
+    this->addAndMakeVisible(this->slider.get());
+    this->slider->setRange(0, 1000, 0);
+    this->slider->setSliderStyle(Slider::LinearBar);
+    this->slider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
+    this->slider->setEnabled(false);
+    this->slider->setRange(0.0, 1.0, 0.01);
+
+    this->indicator = make<ProgressIndicator>();
+    this->addChildComponent(this->indicator.get());
+
+    this->browseButton = make<MenuItemComponent>(this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse));
+    this->addAndMakeVisible(this->browseButton.get());
+    this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
+
+    this->pathEditor = make<Label>();
+    this->addAndMakeVisible(this->pathEditor.get());
+    this->pathEditor->setFont({ 16.f });
+    this->pathEditor->setJustificationType(Justification::centredLeft);
+    this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
+
+    this->component3 = make<SeparatorHorizontalFading>();
+    this->addAndMakeVisible(this->component3.get());
+    this->component3->setBounds(32, 121, 456, 8);
 
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
 
-    this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->indicator->setVisible(false);
-    this->slider->setEnabled(false);
-    this->slider->setRange(0.0, 1.0, 0.01);
-
-    this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
-    this->filenameEditor->setText(renderTo.getFileName(), dontSendNotification);
-
-#if JUCE_MAC
-    this->filenameEditor->setEditable(false);
-#endif
-    //[/UserPreSize]
-
     this->setSize(520, 224);
-
-    //[Constructor]
     this->updatePosition();
-    //[/Constructor]
 }
 
-RenderDialog::~RenderDialog()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    renderButton = nullptr;
-    filenameEditor = nullptr;
-    filenameLabel = nullptr;
-    slider = nullptr;
-    indicator = nullptr;
-    browseButton = nullptr;
-    pathEditor = nullptr;
-    component3 = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void RenderDialog::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+RenderDialog::~RenderDialog() {}
 
 void RenderDialog::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    renderButton->setBounds(getWidth() - 4 - (getWidth() - 8), getHeight() - 4 - 48, getWidth() - 8, 48);
+    // todo: refactor this abomination:
     filenameEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 71, 406, 32);
     filenameLabel->setBounds((getWidth() / 2) + 29 - (414 / 2), 16, 414, 22);
     slider->setBounds((getWidth() / 2) + 24 - (392 / 2), 139, 392, 12);
     indicator->setBounds((getWidth() / 2) + -212 - (32 / 2), 139 + 12 / 2 + -2 - (32 / 2), 32, 32);
     browseButton->setBounds(getWidth() - 448 - 48, 59, 48, 48);
     pathEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 48, 406, 24);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
 
-void RenderDialog::buttonClicked(Button *buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == renderButton.get())
-    {
-        //[UserButtonCode_renderButton] -- add your button handler code here..
-        this->startOrAbortRender();
-        //[/UserButtonCode_renderButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
-}
-
-void RenderDialog::labelTextChanged(Label *labelThatHasChanged)
-{
-    //[UserlabelTextChanged_Pre]
-    //[/UserlabelTextChanged_Pre]
-
-    if (labelThatHasChanged == filenameEditor.get())
-    {
-        //[UserLabelCode_filenameEditor] -- add your label text handling code here..
-        //[/UserLabelCode_filenameEditor]
-    }
-
-    //[UserlabelTextChanged_Post]
-    //[/UserlabelTextChanged_Post]
-}
-
-void RenderDialog::sliderValueChanged (Slider* sliderThatWasMoved)
-{
-    //[UsersliderValueChanged_Pre]
-    //[/UsersliderValueChanged_Pre]
-
-    if (sliderThatWasMoved == slider.get())
-    {
-        //[UserSliderCode_slider] -- add your slider handling code here..
-        //[/UserSliderCode_slider]
-    }
-
-    //[UsersliderValueChanged_Post]
-    //[/UsersliderValueChanged_Post]
+    this->renderButton->setBounds(this->getButtonsBounds());
 }
 
 void RenderDialog::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void RenderDialog::parentSizeChanged()
 {
-    //[UserCode_parentSizeChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentSizeChanged]
 }
 
-void RenderDialog::handleCommandMessage (int commandId)
+void RenderDialog::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::HideDialog)
     {
         Transport &transport = this->project.getTransport();
@@ -232,35 +133,20 @@ void RenderDialog::handleCommandMessage (int commandId)
         {
             this->pathEditor->setText(fc.getResult().getParentDirectory().getFullPathName(), dontSendNotification);
             this->filenameEditor->setText(fc.getResult().getFileName(), dontSendNotification);
-
-            if (this->shouldRenderAfterDialogCompletes)
-            {
-                this->startOrAbortRender();
-            }
         }
-
-        this->shouldRenderAfterDialogCompletes = false;
 #endif
     }
-    //[/UserCode_handleCommandMessage]
 }
 
-bool RenderDialog::keyPressed (const KeyPress& key)
+bool RenderDialog::keyPressed(const KeyPress &key)
 {
-    //[UserCode_keyPressed] -- Add your code here...
-    return false;  // Return true if your handler uses this key event, or false to allow it to be passed-on.
-    //[/UserCode_keyPressed]
+    return false;
 }
 
 void RenderDialog::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->postCommandMessage(CommandIDs::HideDialog);
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 void RenderDialog::startOrAbortRender()
 {
@@ -297,8 +183,13 @@ String RenderDialog::getFileName() const
     return File(absolutePath).getChildFile(safeRenderName).getFullPathName();
 }
 
-void RenderDialog::timerCallback()
+void RenderDialog::timerCallback(int timerId)
 {
+    if (timerId != RenderDialog::renderProgressTimer)
+    {
+        return;
+    }
+
     Transport &transport = this->project.getTransport();
 
     if (transport.isRendering())
@@ -316,7 +207,7 @@ void RenderDialog::timerCallback()
 
 void RenderDialog::startTrackingProgress()
 {
-    this->startTimerHz(60);
+    this->startTimer(RenderDialog::renderProgressTimer, 17);
     this->indicator->startAnimating();
     this->animator.fadeIn(this->indicator.get(), 250);
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderAbort));
@@ -324,7 +215,7 @@ void RenderDialog::startTrackingProgress()
 
 void RenderDialog::stopTrackingProgress()
 {
-    this->stopTimer();
+    this->stopTimer(RenderDialog::renderProgressTimer);
 
     Transport &transport = this->project.getTransport();
     const float percentsDone = transport.getRenderingPercentsComplete();
@@ -334,63 +225,3 @@ void RenderDialog::stopTrackingProgress()
     this->indicator->stopAnimating();
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="RenderDialog" template="../../Template"
-                 componentName="" parentClasses="public DialogBase, private Timer"
-                 constructorParams="ProjectNode &amp;parentProject, const File &amp;renderTo, const String &amp;formatExtension"
-                 variableInitialisers="project(parentProject),&#10;extension(formatExtension.toLowerCase()),&#10;shouldRenderAfterDialogCompletes(false)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="520" initialHeight="224">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="parentSizeChanged()"/>
-    <METHOD name="keyPressed (const KeyPress&amp; key)"/>
-    <METHOD name="inputAttemptWhenModal()"/>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="renderButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 8M 48" buttonText="" connectedEdges="4"
-              needsCallback="1" radioGroupId="0"/>
-  <LABEL name="" id="9c63b5388edfe183" memberName="filenameEditor" virtualName=""
-         explicitFocusOrder="0" pos="25Cc 71 406 32" posRelativeY="e96b77baef792d3a"
-         labelText="" editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="28.0"
-         kerning="0.0" bold="0" italic="0" justification="9"/>
-  <LABEL name="" id="cf32360d33639f7f" memberName="filenameLabel" virtualName=""
-         explicitFocusOrder="0" pos="29Cc 16 414 22" posRelativeY="e96b77baef792d3a"
-         labelText="" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
-         kerning="0.0" bold="0" italic="0" justification="33"/>
-  <SLIDER name="" id="53d73eae72d7741b" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0.0" max="1000.0"
-          int="0.0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1.0" needsCallback="1"/>
-  <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
-                    explicitFocusOrder="0" pos="-212Cc -2Cc 32 32" posRelativeY="53d73eae72d7741b"
-                    class="ProgressIndicator" params=""/>
-  <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="browseButton" virtualName=""
-                    explicitFocusOrder="0" pos="448Rr 59 48 48" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse)"/>
-  <LABEL name="" id="2310f57af9b4eefb" memberName="pathEditor" virtualName=""
-         explicitFocusOrder="0" pos="25Cc 48 406 24" posRelativeY="e96b77baef792d3a"
-         labelText="" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="16.0"
-         kerning="0.0" bold="0" italic="0" justification="33"/>
-  <JUCERCOMP name="" id="ab3833b58a212645" memberName="component3" virtualName=""
-             explicitFocusOrder="0" pos="32 121 456 8" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

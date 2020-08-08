@@ -15,55 +15,49 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "TrackPropertiesDialog.h"
 
-//[MiscUserDefs]
 #include "CommandIDs.h"
 #include "UndoStack.h"
 #include "ProjectNode.h"
 #include "MidiTrackActions.h"
-//[/MiscUserDefs]
 
-TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track, const String &title, const String &confirmation)
-    : project(project),
-      track(track)
+TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
+    WeakReference<MidiTrack> track, const String &title, const String &confirmation) :
+    project(project),
+    track(track)
 {
-    this->messageLabel.reset(new Label(String(),
-                                              String()));
-    this->addAndMakeVisible(messageLabel.get());
-    this->messageLabel->setFont(Font (21.00f, Font::plain));
-    messageLabel->setJustificationType(Justification::centred);
-    messageLabel->setEditable(false, false, false);
+    this->messageLabel = make<Label>();
+    this->addAndMakeVisible(this->messageLabel.get());
+    this->messageLabel->setFont({ 21.f });
+    this->messageLabel->setJustificationType(Justification::centred);
 
-    this->cancelButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(cancelButton.get());
-    cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    cancelButton->addListener(this);
+    this->cancelButton = make<TextButton>();
+    this->addAndMakeVisible(this->cancelButton.get());
+    this->cancelButton->onClick = [this]()
+    {
+        this->doCancel();
+    };
 
-    this->okButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(okButton.get());
-    okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    okButton->addListener(this);
+    this->okButton = make<TextButton>();
+    this->addAndMakeVisible(this->okButton.get());
+    this->okButton->onClick = [this]()
+    {
+        this->doOk();
+    };
 
-    this->colourSwatches.reset(new ColourSwatches());
-    this->addAndMakeVisible(colourSwatches.get());
+    this->colourSwatches = make<ColourSwatches>();
+    this->addAndMakeVisible(this->colourSwatches.get());
 
-    this->textEditor.reset(new TextEditor(String()));
-    this->addAndMakeVisible(textEditor.get());
-    textEditor->setMultiLine (false);
-    textEditor->setReturnKeyStartsNewLine (false);
-    textEditor->setReadOnly (false);
-    textEditor->setScrollbarsShown (true);
-    textEditor->setCaretVisible (true);
-    textEditor->setPopupMenuEnabled (true);
-    textEditor->setText (String());
-
-
-    //[UserPreSize]
+    this->textEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->textEditor.get());
+    this->textEditor->setMultiLine(false);
+    this->textEditor->setReturnKeyStartsNewLine(false);
+    this->textEditor->setReadOnly(false);
+    this->textEditor->setScrollbarsShown(true);
+    this->textEditor->setCaretVisible(true);
+    this->textEditor->setPopupMenuEnabled(true);
     this->textEditor->setFont(21.f);
     this->textEditor->addListener(this);
 
@@ -79,119 +73,55 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project, WeakReference
     this->okButton->setButtonText(confirmation.isNotEmpty() ? confirmation : TRANS(I18n::Dialog::renameTrackProceed));
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
-    this->separatorH->setAlphaMultiplier(2.5f);
     this->messageLabel->setInterceptsMouseClicks(false, false);
-    //[/UserPreSize]
 
     this->setSize(450, 220);
-
-    //[Constructor]
     this->updatePosition();
-    this->setInterceptsMouseClicks(true, true);
-    this->setMouseClickGrabsKeyboardFocus(false);
-    this->toFront(true);
-    this->setAlwaysOnTop(true);
     this->updateOkButtonState();
-    this->startTimer(100);
-    //[/Constructor]
 }
 
 TrackPropertiesDialog::~TrackPropertiesDialog()
 {
-    //[Destructor_pre]
     this->textEditor->removeListener(this);
-    //[/Destructor_pre]
-
-    messageLabel = nullptr;
-    cancelButton = nullptr;
-    okButton = nullptr;
-    colourSwatches = nullptr;
-    textEditor = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void TrackPropertiesDialog::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void TrackPropertiesDialog::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->messageLabel->setBounds(this->getCaptionBounds());
 
-    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 16, getWidth() - 48, 36);
-    cancelButton->setBounds(4, getHeight() - 4 - 48, 220, 48);
-    okButton->setBounds(getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
-    colourSwatches->setBounds((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 106, getWidth() - 56, 34);
-    textEditor->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 66, getWidth() - 48, 32);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
+    const auto buttonsBounds(this->getButtonsBounds());
+    const auto buttonWidth = buttonsBounds.getWidth() / 2;
 
-void TrackPropertiesDialog::buttonClicked(Button *buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
+    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
+    this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    if (buttonThatWasClicked == cancelButton.get())
-    {
-        //[UserButtonCode_cancelButton] -- add your button handler code here..
-        this->doCancel();
-        return;
-        //[/UserButtonCode_cancelButton]
-    }
-    else if (buttonThatWasClicked == okButton.get())
-    {
-        //[UserButtonCode_okButton] -- add your button handler code here..
-        this->doOk();
-        return;
-        //[/UserButtonCode_okButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
+    static constexpr auto swatchesMargin = 6;
+    this->colourSwatches->setBounds(this->getRowBounds(0.7f, DialogBase::textEditorHeight, swatchesMargin));
+    this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
 }
 
 void TrackPropertiesDialog::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void TrackPropertiesDialog::parentSizeChanged()
 {
-    //[UserCode_parentSizeChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentSizeChanged]
 }
 
 void TrackPropertiesDialog::handleCommandMessage (int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->doCancel();
     }
-    //[/UserCode_handleCommandMessage]
 }
 
 void TrackPropertiesDialog::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 void TrackPropertiesDialog::updateOkButtonState()
 {
@@ -278,16 +208,6 @@ void TrackPropertiesDialog::textEditorFocusLost(TextEditor&)
     }
 }
 
-void TrackPropertiesDialog::timerCallback()
-{
-    if (!this->textEditor->hasKeyboardFocus(false))
-    {
-        this->textEditor->grabKeyboardFocus();
-        this->textEditor->selectAll();
-        this->stopTimer();
-    }
-}
-
 void TrackPropertiesDialog::doCancel()
 {
     this->cancelChangesIfAny();
@@ -328,48 +248,3 @@ void TrackPropertiesDialog::doOk()
         this->dismiss();
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TrackPropertiesDialog" template="../../Template"
-                 componentName="" parentClasses="public DialogBase, public TextEditor::Listener, public ColourButton::Listener, private Timer"
-                 constructorParams="ProjectNode &amp;project, WeakReference&lt;MidiTrack&gt; track, const String &amp;title = &quot;&quot;, const String &amp;confirmation = &quot;&quot;"
-                 variableInitialisers="project(project),&#10;track(track)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="450" initialHeight="220">
-  <METHODS>
-    <METHOD name="parentSizeChanged()"/>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="inputAttemptWhenModal()"/>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 16 48M 36" posRelativeY="e96b77baef792d3a"
-         labelText="" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
-         kerning="0.0" bold="0" italic="0" justification="36"/>
-  <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="" connectedEdges="6"
-              needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="" connectedEdges="5"
-              needsCallback="1" radioGroupId="0"/>
-  <GENERICCOMPONENT name="" id="123ea615ffefd36f" memberName="colourSwatches" virtualName=""
-                    explicitFocusOrder="0" pos="2Cc 106 56M 34" class="ColourSwatches"
-                    params=""/>
-  <TEXTEDITOR name="" id="3f330f1d57714294" memberName="textEditor" virtualName=""
-              explicitFocusOrder="0" pos="0Cc 66 48M 32" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

@@ -17,50 +17,38 @@
 
 #pragma once
 
-//[Headers]
 #include "DialogBase.h"
+#include "SeparatorHorizontalFading.h"
 
 class DocumentOwner;
 class ProjectNode;
 class ProgressIndicator;
 class MenuItemComponent;
-//[/Headers]
 
-#include "../Themes/SeparatorHorizontalFading.h"
-
-class RenderDialog final : public DialogBase,
-                           private Timer,
-                           public Button::Listener,
-                           public Label::Listener,
-                           public Slider::Listener
+class RenderDialog final : public DialogBase
 {
 public:
 
-    RenderDialog(ProjectNode &parentProject, const File &renderTo, const String &formatExtension);
+    RenderDialog(ProjectNode &parentProject,
+        const File &renderTo, const String &formatExtension);
+
     ~RenderDialog();
 
-    //[UserMethods]
     void showImport(DocumentOwner *owner);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
-    void labelTextChanged(Label *labelThatHasChanged) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress& key) override;
     void inputAttemptWhenModal() override;
-
 
 private:
 
-    //[UserVariables]
-
     String getFileName() const;
-    void timerCallback() override;
+
+    static constexpr auto renderProgressTimer = 100;
+    void timerCallback(int timerId) override;
 
     void startTrackingProgress();
     void stopTrackingProgress();
@@ -69,12 +57,9 @@ private:
     ProjectNode &project;
 
     String extension;
-    bool shouldRenderAfterDialogCompletes;
 
     void startOrAbortRender();
     void stopRender();
-
-    //[/UserVariables]
 
     UniquePointer<TextButton> renderButton;
     UniquePointer<Label> filenameEditor;
@@ -87,5 +72,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
 };
-
-

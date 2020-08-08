@@ -23,14 +23,11 @@
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
-#define DIALOG_HAS_BACKGROUND 1
-//#define DIALOG_HAS_BACKGROUND 0
-
 struct DialogDragConstrainer final : public ComponentBoundsConstrainer
 {
-    void checkBounds(Rectangle<int>& bounds,
-        const Rectangle<int>& previousBounds,
-        const Rectangle<int>& limits,
+    void checkBounds(Rectangle<int> &bounds,
+        const Rectangle<int> &previousBounds,
+        const Rectangle<int> &limits,
         bool, bool, bool, bool) override
     {
         const auto constrain = App::Layout().getBoundsForPopups()
@@ -44,18 +41,25 @@ DialogBase::DialogBase()
 {
     this->toFront(true);
     this->setAlwaysOnTop(true);
+    this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
 
     this->moveConstrainer = make<DialogDragConstrainer>();
+
+    this->startTimer(DialogBase::focusCheckTimer, 100);
 }
 
 DialogBase::~DialogBase()
 {
-#if DIALOG_HAS_BACKGROUND
+    if (this->isTimerRunning(DialogBase::focusCheckTimer))
+    {
+        this->stopTimer(DialogBase::focusCheckTimer);
+    }
+
     if (this->background != nullptr)
     {
         this->background->postCommandMessage(CommandIDs::HideDialog);
     }
-#endif
 }
 
 void DialogBase::paint(Graphics &g)
@@ -80,13 +84,11 @@ void DialogBase::paint(Graphics &g)
 
 void DialogBase::parentHierarchyChanged()
 {
-#if DIALOG_HAS_BACKGROUND
     if (this->background == nullptr)
     {
         this->background = new DialogBackground();
         App::Layout().addAndMakeVisible(this->background);
     }
-#endif
 }
 
 void DialogBase::mouseDown(const MouseEvent &e)
@@ -111,11 +113,13 @@ void DialogBase::fadeOut()
     auto &animator = Desktop::getInstance().getAnimator();
     if (App::isOpenGLRendererEnabled())
     {
-        animator.animateComponent(this, this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 1.0);
+        animator.animateComponent(this,
+            this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 1.0);
     }
     else
     {
-        animator.animateComponent(this, this->getBounds(), 0.f, fadeoutTime, true, 0.0, 1.0);
+        animator.animateComponent(this,
+            this->getBounds(), 0.f, fadeoutTime, true, 0.0, 1.0);
     }
 }
 
@@ -127,4 +131,60 @@ void DialogBase::updatePosition()
     // Place the dialog slightly above the center, so that screen keyboard doesn't mess with it:
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 3.5f);
 #endif
+}
+
+Rectangle<int> DialogBase::getContentBounds(float paddingAmount) const noexcept
+{
+    const auto actualBounds = this->getBounds()
+        .reduced(DialogBase::contentMargin)
+        .withTrimmedBottom(DialogBase::buttonsHeight);
+
+    return actualBounds.reduced(int(DialogBase::contentPadding * paddingAmount));
+}
+
+Rectangle<int> DialogBase::getCaptionBounds() const noexcept
+{
+    return this->getContentBounds().withHeight(DialogBase::captionHeight);
+}
+
+Rectangle<int> DialogBase::getButtonsBounds() const noexcept
+{
+    const auto actualBounds = this->getBounds().reduced(DialogBase::contentMargin);
+    return actualBounds.withHeight(DialogBase::buttonsHeight).withBottomY(actualBounds.getBottom());
+}
+
+Rectangle<int> DialogBase::getRowBounds(float yInPercent, int height, int xPadding) const noexcept
+{
+    const auto area = this->getContentBounds().withTrimmedTop(DialogBase::captionHeight).reduced(xPadding, 0);
+    const auto y = area.proportionOfHeight(yInPercent);
+    return area.withHeight(height).translated(0, y - height / 2);
+}
+
+int DialogBase::getPaddingAndMarginTotal() const noexcept
+{
+    return DialogBase::contentPadding * 2 + DialogBase::contentMargin * 2;
+}
+
+// This is a hack to workaround some tricky focus-related issues 
+void DialogBase::timerCallback(int timerId)
+{
+    if (timerId != DialogBase::focusCheckTimer)
+    {
+        return;
+    }
+
+    for (int i = 0; i < this->getNumChildComponents(); ++i)
+    {
+        auto *editor = dynamic_cast<TextEditor *>(this->getChildComponent(i));
+        if (editor != nullptr && !editor->hasKeyboardFocus(false))
+        {
+            this->stopTimer(DialogBase::focusCheckTimer);
+            editor->grabKeyboardFocus();
+            editor->selectAll();
+            return;
+        }
+    }
+
+    // no editor found, or it already has the focus
+    this->stopTimer(DialogBase::focusCheckTimer);
 }

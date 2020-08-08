@@ -17,7 +17,7 @@
 
 #pragma once
 
-class DialogBase : public Component
+class DialogBase : public Component, protected MultiTimer
 {
 public:
     
@@ -33,7 +33,22 @@ protected:
     
     void dismiss();
     virtual void updatePosition();
-    
+
+    static constexpr auto focusCheckTimer = 0;
+    void timerCallback(int timerId) override;
+
+    Rectangle<int> getContentBounds(float paddingAmount = 1.f) const noexcept;
+    Rectangle<int> getCaptionBounds() const noexcept;
+    Rectangle<int> getButtonsBounds() const noexcept;
+    Rectangle<int> getRowBounds(float yInPercent, int height, int xPadding = 0) const noexcept;
+    int getPaddingAndMarginTotal() const noexcept;
+
+    static constexpr auto buttonsHeight = 48;
+    static constexpr auto contentMargin = 1;
+    static constexpr auto contentPadding = 14;
+    static constexpr auto captionHeight = 40;
+    static constexpr auto textEditorHeight = 32;
+
 private:
 
     void fadeOut();

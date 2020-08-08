@@ -15,15 +15,10 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "TimeSignatureDialog.h"
-
-//[MiscUserDefs]
-#include "CommandIDs.h"
 #include "TimeSignaturesSequence.h"
+#include "CommandIDs.h"
 
 static StringPairArray getDefaultMeters()
 {
@@ -41,48 +36,58 @@ static StringPairArray getDefaultMeters()
     c.set("12/8", "12/8");
     return c;
 }
-//[/MiscUserDefs]
 
-TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
-    : originalEvent(editedEvent),
-      originalSequence(timeSequence),
-      ownerComponent(owner),
-      defailtMeters(getDefaultMeters()),
-      addsNewEvent(shouldAddNewEvent),
-      hasMadeChanges(false)
+TimeSignatureDialog::TimeSignatureDialog(Component &owner,
+    TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent,
+    bool shouldAddNewEvent, float targetBeat) : 
+    originalEvent(editedEvent),
+    originalSequence(timeSequence),
+    ownerComponent(owner),
+    defailtMeters(getDefaultMeters()),
+    addsNewEvent(shouldAddNewEvent)
 {
-    this->comboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(comboPrimer.get());
+    this->comboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->comboPrimer.get());
 
-    this->messageLabel.reset(new Label(String(),
-                                              String()));
-    this->addAndMakeVisible(messageLabel.get());
-    this->messageLabel->setFont(Font (21.00f, Font::plain));
-    messageLabel->setJustificationType(Justification::centred);
-    messageLabel->setEditable(false, false, false);
+    this->messageLabel = make<Label>();
+    this->addAndMakeVisible(this->messageLabel.get());
+    this->messageLabel->setFont({ 21.f });
+    this->messageLabel->setJustificationType(Justification::centred);
 
-    this->removeEventButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(removeEventButton.get());
-    removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    removeEventButton->addListener(this);
+    this->removeEventButton = make<TextButton>();
+    this->addAndMakeVisible(this->removeEventButton.get());
+    this->removeEventButton->onClick = [this]()
+    {
+        if (this->addsNewEvent)
+        {
+            this->cancelAndDisappear();
+        }
+        else
+        {
+            this->removeEvent();
+            this->dismiss();
+        }
+    };
 
-    this->okButton.reset(new TextButton(String()));
-    this->addAndMakeVisible(okButton.get());
-    okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    okButton->addListener(this);
+    this->okButton = make<TextButton>();
+    this->addAndMakeVisible(this->okButton.get());
+    this->okButton->onClick = [this]()
+    {
+        if (textEditor->getText().isNotEmpty())
+        {
+            this->dismiss();
+        }
+    };
 
-    this->textEditor.reset(new TextEditor(String()));
+    this->textEditor = make<TextEditor>();
     this->addAndMakeVisible(textEditor.get());
-    textEditor->setMultiLine (false);
-    textEditor->setReturnKeyStartsNewLine (false);
-    textEditor->setReadOnly (false);
-    textEditor->setScrollbarsShown (true);
-    textEditor->setCaretVisible (true);
-    textEditor->setPopupMenuEnabled (true);
-    textEditor->setText (String());
+    this->textEditor->setMultiLine(false);
+    this->textEditor->setReturnKeyStartsNewLine(false);
+    this->textEditor->setReadOnly(false);
+    this->textEditor->setScrollbarsShown(true);
+    this->textEditor->setCaretVisible(true);
+    this->textEditor->setPopupMenuEnabled(true);
 
-
-    //[UserPreSize]
     jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
@@ -117,17 +122,6 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
-    //[/UserPreSize]
-
-    this->setSize(370, 185);
-
-    //[Constructor]
-    this->updatePosition();
-    this->setInterceptsMouseClicks(true, true);
-    this->setMouseClickGrabsKeyboardFocus(false);
-    this->toFront(true);
-    this->setAlwaysOnTop(true);
-    this->updateOkButtonState();
 
     MenuPanel::Menu menu;
     for (int i = 0; i < this->defailtMeters.size(); ++i)
@@ -137,105 +131,42 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     }
     this->comboPrimer->initWith(this->textEditor.get(), menu);
 
-    this->startTimer(100);
-    //[/Constructor]
+    this->setSize(370, 185);
+    this->updatePosition();
+    this->updateOkButtonState();
 }
 
 TimeSignatureDialog::~TimeSignatureDialog()
 {
-    //[Destructor_pre]
-    textEditor->removeListener(this);
-    //[/Destructor_pre]
-
-    comboPrimer = nullptr;
-    messageLabel = nullptr;
-    removeEventButton = nullptr;
-    okButton = nullptr;
-    textEditor = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void TimeSignatureDialog::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+    this->textEditor->removeListener(this);
 }
 
 void TimeSignatureDialog::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->comboPrimer->setBounds(this->getContentBounds(0.5f));
+    this->messageLabel->setBounds(this->getCaptionBounds());
 
-    comboPrimer->setBounds((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
-    messageLabel->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 20, getWidth() - 32, 36);
-    removeEventButton->setBounds(4, getHeight() - 4 - 48, 180, 48);
-    okButton->setBounds(getWidth() - 4 - 181, getHeight() - 4 - 48, 181, 48);
-    textEditor->setBounds((getWidth() / 2) - ((getWidth() - 48) / 2), 68, getWidth() - 48, 32);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
+    const auto buttonsBounds(this->getButtonsBounds());
+    const auto buttonWidth = buttonsBounds.getWidth() / 2;
 
-void TimeSignatureDialog::buttonClicked(Button *buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
+    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
+    this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    if (buttonThatWasClicked == removeEventButton.get())
-    {
-        //[UserButtonCode_removeEventButton] -- add your button handler code here..
-        if (this->addsNewEvent)
-        {
-            this->cancelAndDisappear();
-        }
-        else
-        {
-            this->removeEvent();
-            this->dismiss();
-        }
-        //[/UserButtonCode_removeEventButton]
-    }
-    else if (buttonThatWasClicked == okButton.get())
-    {
-        //[UserButtonCode_okButton] -- add your button handler code here..
-        if (textEditor->getText().isNotEmpty())
-        {
-            this->dismiss();
-        }
-        //[/UserButtonCode_okButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
-}
-
-void TimeSignatureDialog::visibilityChanged()
-{
-    //[UserCode_visibilityChanged] -- Add your code here...
-    //[/UserCode_visibilityChanged]
+    this->textEditor->setBounds(this->getRowBounds(0.5f, DialogBase::textEditorHeight));
 }
 
 void TimeSignatureDialog::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void TimeSignatureDialog::parentSizeChanged()
 {
-    //[UserCode_parentSizeChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentSizeChanged]
 }
 
-void TimeSignatureDialog::handleCommandMessage (int commandId)
+void TimeSignatureDialog::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->cancelAndDisappear();
@@ -250,18 +181,12 @@ void TimeSignatureDialog::handleCommandMessage (int commandId)
             this->textEditor->setText(time, true);
         }
     }
-    //[/UserCode_handleCommandMessage]
 }
 
 void TimeSignatureDialog::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner, const TimeSignatureEvent &event)
 {
@@ -372,16 +297,6 @@ void TimeSignatureDialog::textEditorFocusLost(TextEditor&)
     }
 }
 
-void TimeSignatureDialog::timerCallback()
-{
-    if (!this->textEditor->hasKeyboardFocus(false))
-    {
-        this->textEditor->grabKeyboardFocus();
-        this->textEditor->selectAll();
-        this->stopTimer();
-    }
-}
-
 void TimeSignatureDialog::cancelAndDisappear()
 {
     jassert(this->originalSequence != nullptr);
@@ -393,49 +308,3 @@ void TimeSignatureDialog::cancelAndDisappear()
 
     this->dismiss();
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TimeSignatureDialog" template="../../Template"
-                 componentName="" parentClasses="public DialogBase, public TextEditor::Listener, private Timer"
-                 constructorParams="Component &amp;owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(timeSequence),&#10;ownerComponent(owner),&#10;defailtMeters(getDefaultMeters()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="370" initialHeight="185">
-  <METHODS>
-    <METHOD name="parentSizeChanged()"/>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="visibilityChanged()"/>
-    <METHOD name="inputAttemptWhenModal()"/>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="MobileComboBox::Primer"
-                    params=""/>
-  <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 20 32M 36" posRelativeY="e96b77baef792d3a"
-         labelText="" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21.0"
-         kerning="0.0" bold="0" italic="0" justification="36"/>
-  <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
-              virtualName="" explicitFocusOrder="0" pos="4 4Rr 180 48" buttonText=""
-              connectedEdges="6" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="4Rr 4Rr 181 48" buttonText="" connectedEdges="5"
-              needsCallback="1" radioGroupId="0"/>
-  <TEXTEDITOR name="" id="3f330f1d57714294" memberName="textEditor" virtualName=""
-              explicitFocusOrder="0" pos="0Cc 68 48M 32" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-
