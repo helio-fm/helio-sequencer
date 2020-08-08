@@ -26,9 +26,7 @@ class ProjectNode;
 
 class ProjectPage final : public Component,
     protected TransportListener,
-    protected ChangeListener,
-    public Label::Listener,
-    public Button::Listener
+    protected ChangeListener
 {
 public:
 
@@ -42,8 +40,6 @@ public:
     //===----------------------------------------------------------------------===//
 
     void resized() override;
-    void labelTextChanged(Label *labelThatHasChanged) override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
 
 private:

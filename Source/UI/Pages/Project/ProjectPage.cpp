@@ -65,7 +65,18 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->projectTitleEditor = make<Label>();
     this->addAndMakeVisible(this->projectTitleEditor.get());
     this->projectTitleEditor->setEditable(true, true, false);
-    this->projectTitleEditor->addListener(this);
+    this->projectTitleEditor->onTextChange = [this]()
+    {
+        if (this->projectTitleEditor->getText().isNotEmpty())
+        {
+            this->project.getProjectInfo()->setFullName(this->projectTitleEditor->getText());
+        }
+        else
+        {
+            const String &fullname = this->project.getProjectInfo()->getFullName();
+            this->projectTitleEditor->setText(fullname, sendNotification);
+        }
+    };
 
     this->projectTitleLabel = make<Label>();
     this->addAndMakeVisible(this->projectTitleLabel.get());
@@ -73,7 +84,10 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->authorEditor = make<Label>();
     this->addAndMakeVisible(this->authorEditor.get());
     this->authorEditor->setEditable(true, true, false);
-    this->authorEditor->addListener(this);
+    this->authorEditor->onTextChange = [this]()
+    {
+        this->project.getProjectInfo()->setAuthor(this->authorEditor->getText());
+    };
 
     this->authorLabel = make<Label>();
     this->addAndMakeVisible(this->authorLabel.get());
@@ -81,7 +95,10 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->descriptionEditor = make<Label>();
     this->addAndMakeVisible(this->descriptionEditor.get());
     this->descriptionEditor->setEditable(true, true, false);
-    this->descriptionEditor->addListener(this);
+    this->descriptionEditor->onTextChange = [this]()
+    {
+        this->project.getProjectInfo()->setDescription(this->descriptionEditor->getText());
+    };
 
     this->descriptionLabel = make<Label>();
     this->addAndMakeVisible(this->descriptionLabel.get());
@@ -122,11 +139,17 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->licenseEditor = make<Label>();
     this->addAndMakeVisible(this->licenseEditor.get());
     this->licenseEditor->setEditable(true, true, false);
-    this->licenseEditor->addListener(this);
+    this->licenseEditor->onTextChange = [this]()
+    {
+        this->project.getProjectInfo()->setLicense(this->licenseEditor->getText());
+    };
 
     this->revealLocationButton = make<ImageButton>();
     this->addAndMakeVisible(this->revealLocationButton.get());
-    this->revealLocationButton->addListener(this);
+    this->revealLocationButton->onClick = [this]()
+    {
+        this->project.getDocument()->getFile().revealToUser();
+    };
 
     this->temperamentLabel = make<Label>();
     this->addAndMakeVisible(this->temperamentLabel.get());
@@ -257,42 +280,6 @@ void ProjectPage::resized()
     layoutRightSide(this->statisticsLabels, statisticsY, statsLineHieght);
 
     this->revealLocationButton->setBounds(this->locationText->getBounds());
-}
-
-void ProjectPage::labelTextChanged(Label *labelThatHasChanged)
-{
-    if (labelThatHasChanged == projectTitleEditor.get())
-    {
-        if (labelThatHasChanged->getText().isNotEmpty())
-        {
-            this->project.getProjectInfo()->setFullName(labelThatHasChanged->getText());
-        }
-        else
-        {
-            const String &fullname = this->project.getProjectInfo()->getFullName();
-            labelThatHasChanged->setText(fullname, sendNotification);
-        }
-    }
-    else if (labelThatHasChanged == authorEditor.get())
-    {
-        this->project.getProjectInfo()->setAuthor(labelThatHasChanged->getText());
-    }
-    else if (labelThatHasChanged == descriptionEditor.get())
-    {
-        this->project.getProjectInfo()->setDescription(labelThatHasChanged->getText());
-    }
-    else if (labelThatHasChanged == licenseEditor.get())
-    {
-        this->project.getProjectInfo()->setLicense(labelThatHasChanged->getText());
-    }
-}
-
-void ProjectPage::buttonClicked(Button *buttonThatWasClicked)
-{
-    if (buttonThatWasClicked == revealLocationButton.get())
-    {
-        this->project.getDocument()->getFile().revealToUser();
-    }
 }
 
 void ProjectPage::visibilityChanged()
