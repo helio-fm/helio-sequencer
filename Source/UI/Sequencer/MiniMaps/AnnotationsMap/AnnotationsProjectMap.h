@@ -30,11 +30,7 @@ class AnnotationsProjectMap final :
 {
 public:
 
-    enum Type
-    {
-        Large,
-        Small
-    };
+    enum class Type : int8 { Large, Small };
 
     AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
     ~AnnotationsProjectMap() override;

@@ -107,17 +107,17 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
 
     if (hasAnnotationsTrack)
     {
-        this->annotationsMap = make<AnnotationsProjectMap>(this->project, *this, AnnotationsProjectMap::Large);
+        this->annotationsMap = make<AnnotationsProjectMap>(this->project, *this, AnnotationsProjectMap::Type::Large);
     }
 
     if (hasTimeSignaturesTrack)
     {
-        this->timeSignaturesMap = make<TimeSignaturesProjectMap>(this->project, *this, TimeSignaturesProjectMap::Large);
+        this->timeSignaturesMap = make<TimeSignaturesProjectMap>(this->project, *this, TimeSignaturesProjectMap::Type::Large);
     }
 
     if (hasKeySignaturesTrack)
     {
-        this->keySignaturesMap = make<KeySignaturesProjectMap>(this->project, *this, KeySignaturesProjectMap::Large);
+        this->keySignaturesMap = make<KeySignaturesProjectMap>(this->project, *this, KeySignaturesProjectMap::Type::Large);
     }
 
     this->playhead = make<Playhead>(*this, this->project.getTransport(), this);

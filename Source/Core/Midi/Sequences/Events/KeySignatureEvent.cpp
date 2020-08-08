@@ -43,11 +43,10 @@ KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     rootKey(parametersToCopy.rootKey),
     scale(parametersToCopy.scale) {}
 
-String KeySignatureEvent::toString() const
+String KeySignatureEvent::toString(const StringArray &keyNames) const
 {
     const int index = this->rootKey % this->scale->getBasePeriod();
-    const String keyName = Scale::getKeyNames()[index];
-    return keyName + ", " + this->scale->getLocalizedName();
+    return keyNames[index] + ", " + this->scale->getLocalizedName();
 }
 
 void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence,
@@ -69,7 +68,7 @@ void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence,
     // and index is a root key, starting from C:
     static const int majorCircle[] = {  0, 7,  2, -3, 4, -1, 6,  1, -4, 3, -2, 5 };
     static const int minorCircle[] = { -3, 4, -1, -6, 1, -4, 3, -2, -7, 0, -5, 2 };
-    const int root = this->rootKey % 12;
+    const int root = this->rootKey % Globals::twelveTonePeriodSize;
     const int flatsOrSharps = isMinor ? minorCircle[root] : majorCircle[root];
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));

@@ -434,9 +434,9 @@ TimeSignatureComponent *TimeSignaturesProjectMap::createComponent(const TimeSign
 {
     switch (this->type)
     {
-    case Large:
+    case Type::Large:
         return new TimeSignatureLargeComponent(*this, event);
-    case Small:
+    case Type::Small:
         return new TimeSignatureSmallComponent(*this, event);
     default:
         return nullptr;

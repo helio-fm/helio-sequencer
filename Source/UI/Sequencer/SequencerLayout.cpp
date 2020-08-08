@@ -396,13 +396,11 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->mapScroller = make<ProjectMapScroller>(this->project.getTransport(), this->pianoRoll.get());
     this->mapScroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
     this->mapScroller->addOwnedMap(new AnnotationsProjectMap(this->project,
-        *this->pianoRoll, AnnotationsProjectMap::Small), false);
+        *this->pianoRoll, AnnotationsProjectMap::Type::Small), false);
     this->mapScroller->addOwnedMap(new TimeSignaturesProjectMap(this->project,
-        *this->pianoRoll, TimeSignaturesProjectMap::Small), false);
+        *this->pianoRoll, TimeSignaturesProjectMap::Type::Small), false);
     //this->mapScroller->addOwnedMap(new KeySignaturesProjectMap(this->project,
-    //    *this->pianoRoll, KeySignaturesProjectMap::Small), false);
-    //this->mapScroller->addOwnedMap(new AutomationTrackMap(this->project,
-    //    *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
+    //    *this->pianoRoll, KeySignaturesProjectMap::Type::Small), false);
 
     this->levelsScroller = make<LevelsMapScroller>(this->pianoRoll.get());
     this->levelsScroller->addOwnedMap(new VelocityProjectMap(this->project, *this->pianoRoll));

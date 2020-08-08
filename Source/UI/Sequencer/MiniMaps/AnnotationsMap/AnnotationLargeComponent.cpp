@@ -15,76 +15,28 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
 #include "AnnotationsSequence.h"
 #include "AnnotationsProjectMap.h"
-//[/Headers]
-
 #include "AnnotationLargeComponent.h"
 
-//[MiscUserDefs]
-#define ANNOTATION_RESIZE_CORNER 10
-//[/MiscUserDefs]
-
-AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent)
-    : AnnotationComponent(parent, targetEvent)
+AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent,
+    const AnnotationEvent &targetEvent) :
+    AnnotationComponent(parent, targetEvent)
 {
-
-    //[UserPreSize]
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
     this->font = Font(16.f, Font::plain);
-    //[/UserPreSize]
 
-    this->setSize(128, 32);
-
-    //[Constructor]
-    //[/Constructor]
+    this->setSize(32, 32);
 }
 
-AnnotationLargeComponent::~AnnotationLargeComponent()
+AnnotationLargeComponent::~AnnotationLargeComponent() {}
+
+void AnnotationLargeComponent::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void AnnotationLargeComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-#if 0
-    //[/UserPrePaint]
-
-    {
-        int x = 2, y = 1, width = getWidth() - 6, height = getHeight() - 8;
-        String text (String());
-        Colour fillColour = Colour (0x88ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.setFont (Font (16.00f, Font::plain));
-        g.drawText (text, x, y, width, height,
-                    Justification::centredLeft, true);
-    }
-
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = 3;
-        Colour fillColour = Colour (0x20ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-#endif
-
     const Colour baseColour(findDefaultColour(Label::textColourId));
 
     g.setColour(this->event.getTrackColour()
@@ -99,33 +51,23 @@ void AnnotationLargeComponent::paint (Graphics& g)
 
         GlyphArrangement arr;
         arr.addFittedText(labelFont,
-                          this->event.getDescription(),
-                          2.f + this->boundsOffset.getX(),
-                          0.f,
-                          float(this->getWidth()) - 16.f,
-                          float(this->getHeight()) - 8.f,
-                          Justification::centredLeft,
-                          1,
-                          0.85f);
+            this->event.getDescription(),
+            2.f + this->boundsOffset.getX(),
+            0.f,
+            float(this->getWidth()) - 16.f,
+            float(this->getHeight()) - 8.f,
+            Justification::centredLeft,
+            1,
+            0.85f);
+
         arr.draw(g);
     }
-    //[/UserPaint]
 }
 
-void AnnotationLargeComponent::resized()
+void AnnotationLargeComponent::mouseMove(const MouseEvent &e)
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
-
-void AnnotationLargeComponent::mouseMove (const MouseEvent& e)
-{
-    //[UserCode_mouseMove] -- Add your code here...
     if (this->canResize() &&
-        e.x >= (this->getWidth() - ANNOTATION_RESIZE_CORNER))
+        e.x >= (this->getWidth() - AnnotationLargeComponent::borderResizingArea))
     {
         this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
     }
@@ -133,18 +75,16 @@ void AnnotationLargeComponent::mouseMove (const MouseEvent& e)
     {
         this->setMouseCursor(MouseCursor::PointingHandCursor);
     }
-    //[/UserCode_mouseMove]
 }
 
-void AnnotationLargeComponent::mouseDown (const MouseEvent& e)
+void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
     {
         if (this->canResize() &&
-            e.x >= (this->getWidth() - ANNOTATION_RESIZE_CORNER))
+            e.x >= (this->getWidth() - AnnotationLargeComponent::borderResizingArea))
         {
             this->state = State::ResizingRight;
             this->hadCheckpoint = false;
@@ -160,12 +100,10 @@ void AnnotationLargeComponent::mouseDown (const MouseEvent& e)
     {
         this->editor.alternateActionFor(this);
     }
-    //[/UserCode_mouseDown]
 }
 
-void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
+void AnnotationLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 3)
     {
         if (this->state == State::ResizingRight)
@@ -221,12 +159,10 @@ void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
             }
         }
     }
-    //[/UserCode_mouseDrag]
 }
 
-void AnnotationLargeComponent::mouseUp (const MouseEvent& e)
+void AnnotationLargeComponent::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         if (this->state == State::Dragging ||
@@ -246,17 +182,7 @@ void AnnotationLargeComponent::mouseUp (const MouseEvent& e)
     }
 
     this->mouseDownWasTriggered = false;
-    //[/UserCode_mouseUp]
 }
-
-void AnnotationLargeComponent::mouseDoubleClick (const MouseEvent& e)
-{
-    //[UserCode_mouseDoubleClick] -- Add your code here...
-    //[/UserCode_mouseDoubleClick]
-}
-
-
-//[MiscUserCode]
 
 void AnnotationLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
@@ -289,39 +215,5 @@ float AnnotationLargeComponent::getTextWidth() const noexcept
 
 bool AnnotationLargeComponent::canResize() const noexcept
 {
-    return (this->getWidth() >= (ANNOTATION_RESIZE_CORNER * 2));
+    return this->getWidth() >= (AnnotationLargeComponent::borderResizingArea * 2);
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="AnnotationLargeComponent"
-                 template="../../../../Template" componentName="" parentClasses="public AnnotationComponent"
-                 constructorParams="AnnotationsProjectMap &amp;parent, const AnnotationEvent &amp;targetEvent"
-                 variableInitialisers="AnnotationComponent(parent, targetEvent)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="32">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <TEXT pos="2 1 6M 8M" fill="solid: 88ffffff" hasStroke="0" text=""
-          fontname="Default font" fontsize="16.0" kerning="0.0" bold="0"
-          italic="0" justification="33"/>
-    <RECT pos="0 0 0M 3" fill="solid: 20ffffff" hasStroke="0"/>
-  </BACKGROUND>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

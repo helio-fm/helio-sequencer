@@ -15,51 +15,36 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
 #include "TimeSignaturesProjectMap.h"
 #include "HybridRoll.h"
 #include "ColourIDs.h"
 #include "CachedLabelImage.h"
-//[/Headers]
-
 #include "TimeSignatureLargeComponent.h"
 
-//[MiscUserDefs]
-//[/MiscUserDefs]
-
-TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent)
-    : TimeSignatureComponent(parent, targetEvent),
-      anchor(targetEvent),
-      numerator(0),
-      denominator(0),
-      mouseDownWasTriggered(false)
+TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent,
+    const TimeSignatureEvent &targetEvent) :
+    TimeSignatureComponent(parent, targetEvent),
+    anchor(targetEvent)
 {
-    this->numeratorLabel.reset(new Label(String(),
-                                          String()));
-    this->addAndMakeVisible(numeratorLabel.get());
-    this->numeratorLabel->setFont(Font (18.00f, Font::plain));
-    numeratorLabel->setJustificationType(Justification::centredLeft);
-    numeratorLabel->setEditable(false, false, false);
-
-    numeratorLabel->setBounds(-2, 4, 32, 14);
-
-    this->denominatorLabel.reset(new Label(String(),
-                                            String()));
-    this->addAndMakeVisible(denominatorLabel.get());
-    this->denominatorLabel->setFont(Font (18.00f, Font::plain));
-    denominatorLabel->setJustificationType(Justification::centredLeft);
-    denominatorLabel->setEditable(false, false, false);
-
-    denominatorLabel->setBounds(-2, 17, 32, 14);
-
-
-    //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+
+    this->numeratorLabel = make<Label>();
+    this->addAndMakeVisible(this->numeratorLabel.get());
+    this->numeratorLabel->setFont({ 18.f });
+    this->numeratorLabel->setJustificationType(Justification::centredLeft);
+    this->numeratorLabel->setBounds(-2, 4, 32, 14);
     this->numeratorLabel->setInterceptsMouseClicks(false, false);
+
+    this->denominatorLabel = make<Label>();
+    this->addAndMakeVisible(this->denominatorLabel.get());
+    this->denominatorLabel->setFont({ 18.f });
+    this->denominatorLabel->setJustificationType(Justification::centredLeft);
+    this->denominatorLabel->setBounds(-2, 17, 32, 14);
     this->denominatorLabel->setInterceptsMouseClicks(false, false);
+
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
     this->numeratorLabel->setBufferedToImage(true);
@@ -67,32 +52,14 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
 
     this->denominatorLabel->setBufferedToImage(true);
     this->denominatorLabel->setCachedComponentImage(new CachedLabelImage(*this->denominatorLabel));
-    //[/UserPreSize]
 
-    this->setSize(128, 32);
-
-    //[Constructor]
-    //[/Constructor]
+    this->setSize(32, 32);
 }
 
-TimeSignatureLargeComponent::~TimeSignatureLargeComponent()
+TimeSignatureLargeComponent::~TimeSignatureLargeComponent() {}
+
+void TimeSignatureLargeComponent::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    numeratorLabel = nullptr;
-    denominatorLabel = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void TimeSignatureLargeComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::Roll::headerSnaps));
     g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 3.f);
 
@@ -105,27 +72,10 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
         g.fillRect(i + 1.f, 1.f, dashLength, 1.f);
         g.fillRect(i, 2.f, dashLength, 1.f);
     }
-    //[/UserPaint]
 }
 
-void TimeSignatureLargeComponent::resized()
+void TimeSignatureLargeComponent::mouseDown(const MouseEvent &e)
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
-
-void TimeSignatureLargeComponent::mouseMove (const MouseEvent& e)
-{
-    //[UserCode_mouseMove] -- Add your code here...
-    //[/UserCode_mouseMove]
-}
-
-void TimeSignatureLargeComponent::mouseDown (const MouseEvent& e)
-{
-    //[UserCode_mouseDown] -- Add your code here...
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
@@ -143,12 +93,10 @@ void TimeSignatureLargeComponent::mouseDown (const MouseEvent& e)
         this->editor.alternateActionFor(this);
         //this->editor.showContextMenuFor(this);
     }
-    //[/UserCode_mouseDown]
 }
 
-void TimeSignatureLargeComponent::mouseDrag (const MouseEvent& e)
+void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
     {
         if (this->draggingState)
@@ -183,12 +131,10 @@ void TimeSignatureLargeComponent::mouseDrag (const MouseEvent& e)
             }
         }
     }
-    //[/UserCode_mouseDrag]
 }
 
-void TimeSignatureLargeComponent::mouseUp (const MouseEvent& e)
+void TimeSignatureLargeComponent::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         if (this->draggingState)
@@ -207,25 +153,16 @@ void TimeSignatureLargeComponent::mouseUp (const MouseEvent& e)
     }
 
     this->mouseDownWasTriggered = false;
-    //[/UserCode_mouseUp]
 }
-
-void TimeSignatureLargeComponent::mouseDoubleClick (const MouseEvent& e)
-{
-    //[UserCode_mouseDoubleClick] -- Add your code here...
-    //[/UserCode_mouseDoubleClick]
-}
-
-
-//[MiscUserCode]
 
 void TimeSignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
-    Rectangle<int> intBounds(bounds.toType<int>());
-    this->boundsOffset = Rectangle<float>(bounds.getX() - float(intBounds.getX()),
-                                          bounds.getY(),
-                                          bounds.getWidth() - float(intBounds.getWidth()),
-                                          bounds.getHeight());
+    const auto intBounds = bounds.toType<int>();
+
+    this->boundsOffset = { bounds.getX() - float(intBounds.getX()),
+        bounds.getY(),
+        bounds.getWidth() - float(intBounds.getWidth()),
+        bounds.getHeight() };
 
     this->setBounds(intBounds);
 }
@@ -241,40 +178,4 @@ void TimeSignatureLargeComponent::updateContent()
         this->denominatorLabel->setText(String(this->denominator), dontSendNotification);
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TimeSignatureLargeComponent"
-                 template="../../../../Template" componentName="" parentClasses="public TimeSignatureComponent"
-                 constructorParams="TimeSignaturesProjectMap &amp;parent, const TimeSignatureEvent &amp;targetEvent"
-                 variableInitialisers="TimeSignatureComponent(parent, targetEvent),&#10;anchor(targetEvent),&#10;numerator(0),&#10;denominator(0),&#10;mouseDownWasTriggered(false)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="32">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-2 4 32 14" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
-  <LABEL name="" id="48b6c750cc766a42" memberName="denominatorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-2 17 32 14" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
 

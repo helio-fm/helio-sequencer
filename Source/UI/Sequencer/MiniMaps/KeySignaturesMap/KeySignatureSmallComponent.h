@@ -17,10 +17,7 @@
 
 #pragma once
 
-//[Headers]
 #include "KeySignatureComponent.h"
-//[/Headers]
-
 
 class KeySignatureSmallComponent final : public KeySignatureComponent
 {
@@ -29,31 +26,20 @@ public:
     KeySignatureSmallComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent);
     ~KeySignatureSmallComponent();
 
-    //[UserMethods]
     float getTextWidth() const override;
-    void updateContent() override;
+    void updateContent(const StringArray &keyNames) override;
     void setRealBounds(const Rectangle<float> bounds) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
-    void resized() override;
     void parentHierarchyChanged() override;
-
 
 private:
 
-    //[UserVariables]
-
-    float textWidth;
+    float textWidth = 0.f;
     String eventName;
 
     Rectangle<float> boundsOffset;
-
-    //[/UserVariables]
 
     UniquePointer<Label> signatureLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureSmallComponent)
 };
-
-

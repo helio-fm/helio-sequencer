@@ -15,66 +15,38 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
 #include "KeySignaturesSequence.h"
 #include "HybridRoll.h"
 #include "ColourIDs.h"
 #include "CachedLabelImage.h"
-//[/Headers]
-
 #include "KeySignatureLargeComponent.h"
 
-//[MiscUserDefs]
-//[/MiscUserDefs]
-
-KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent)
-    : KeySignatureComponent(parent, targetEvent),
-      anchor(targetEvent),
-      textWidth(0.f),
-      mouseDownWasTriggered(false)
+KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &parent,
+    const KeySignatureEvent &targetEvent) :
+    KeySignatureComponent(parent, targetEvent),
+    anchor(targetEvent)
 {
-    this->signatureLabel.reset(new Label(String(),
-                                          String()));
-    this->addAndMakeVisible(signatureLabel.get());
-    this->signatureLabel->setFont(Font (16.00f, Font::plain));
-    signatureLabel->setJustificationType(Justification::centredLeft);
-    signatureLabel->setEditable(false, false, false);
-
-    signatureLabel->setBounds(-2, 1, 192, 24);
-
-
-    //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
-    this->signatureLabel->setInterceptsMouseClicks(false, false);
 
+    this->signatureLabel = make<Label>();
+    this->addAndMakeVisible(this->signatureLabel.get());
+    this->signatureLabel->setFont({ 16.f });
+    this->signatureLabel->setJustificationType(Justification::centredLeft);
+    this->signatureLabel->setBounds(-2, 1, 192, 24);
+    this->signatureLabel->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setBufferedToImage(true);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
-    //[/UserPreSize]
-
-    this->setSize(128, 24);
-
-    //[Constructor]
-    //[/Constructor]
+    this->setSize(24, 24);
 }
 
-KeySignatureLargeComponent::~KeySignatureLargeComponent()
+KeySignatureLargeComponent::~KeySignatureLargeComponent() {}
+
+void KeySignatureLargeComponent::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    signatureLabel = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void KeySignatureLargeComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::Roll::headerSnaps));
     g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 3.f);
 
@@ -87,30 +59,10 @@ void KeySignatureLargeComponent::paint (Graphics& g)
         g.fillRect(i + 1.f, 1.f, dashLength, 1.f);
         g.fillRect(i, 2.f, dashLength, 1.f);
     }
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
-void KeySignatureLargeComponent::resized()
+void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
-
-void KeySignatureLargeComponent::mouseMove (const MouseEvent& e)
-{
-    //[UserCode_mouseMove] -- Add your code here...
-    //[/UserCode_mouseMove]
-}
-
-void KeySignatureLargeComponent::mouseDown (const MouseEvent& e)
-{
-    //[UserCode_mouseDown] -- Add your code here...
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
@@ -127,12 +79,10 @@ void KeySignatureLargeComponent::mouseDown (const MouseEvent& e)
     {
         this->editor.onKeySignatureAltAction(this);
     }
-    //[/UserCode_mouseDown]
 }
 
-void KeySignatureLargeComponent::mouseDrag (const MouseEvent& e)
+void KeySignatureLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
     {
         if (this->draggingState)
@@ -167,12 +117,10 @@ void KeySignatureLargeComponent::mouseDrag (const MouseEvent& e)
             }
         }
     }
-    //[/UserCode_mouseDrag]
 }
 
-void KeySignatureLargeComponent::mouseUp (const MouseEvent& e)
+void KeySignatureLargeComponent::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         if (this->draggingState)
@@ -197,25 +145,15 @@ void KeySignatureLargeComponent::mouseUp (const MouseEvent& e)
     }
 
     this->mouseDownWasTriggered = false;
-    //[/UserCode_mouseUp]
 }
-
-void KeySignatureLargeComponent::mouseDoubleClick (const MouseEvent& e)
-{
-    //[UserCode_mouseDoubleClick] -- Add your code here...
-    //[/UserCode_mouseDoubleClick]
-}
-
-
-//[MiscUserCode]
 
 void KeySignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
     this->boundsOffset = Rectangle<float>(bounds.getX() - float(intBounds.getX()),
-                                          bounds.getY(),
-                                          bounds.getWidth() - float(intBounds.getWidth()),
-                                          bounds.getHeight());
+        bounds.getY(),
+        bounds.getWidth() - float(intBounds.getWidth()),
+        bounds.getHeight());
 
     this->setBounds(intBounds);
 }
@@ -225,9 +163,9 @@ float KeySignatureLargeComponent::getTextWidth() const
     return this->textWidth;
 }
 
-void KeySignatureLargeComponent::updateContent()
+void KeySignatureLargeComponent::updateContent(const StringArray &keyNames)
 {
-    const String originalName = this->event.toString();
+    const String originalName = this->event.toString(keyNames);
     if (this->eventName != originalName)
     {
         this->eventName = originalName;
@@ -236,36 +174,3 @@ void KeySignatureLargeComponent::updateContent()
         this->repaint();
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="KeySignatureLargeComponent"
-                 template="../../../../Template" componentName="" parentClasses="public KeySignatureComponent"
-                 constructorParams="KeySignaturesProjectMap &amp;parent, const KeySignatureEvent &amp;targetEvent"
-                 variableInitialisers="KeySignatureComponent(parent, targetEvent),&#10;anchor(targetEvent),&#10;textWidth(0.f),&#10;mouseDownWasTriggered(false)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="24">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="-2 1 192 24" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

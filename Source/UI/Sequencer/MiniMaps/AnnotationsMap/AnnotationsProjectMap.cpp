@@ -409,9 +409,9 @@ AnnotationComponent *AnnotationsProjectMap::createComponent(const AnnotationEven
 {
     switch (this->type)
     {
-    case Large:
+    case Type::Large:
         return new AnnotationLargeComponent(*this, event);
-    case Small:
+    case Type::Small:
         return new AnnotationSmallComponent(*this, event);
     default:
         return nullptr;

@@ -24,17 +24,11 @@
 class HybridRoll;
 class ProjectNode;
 
-class KeySignaturesProjectMap final :
-    public Component,
-    public ProjectListener
+class KeySignaturesProjectMap final : public Component, public ProjectListener
 {
 public:
     
-    enum Type
-    {
-        Large,
-        Small
-    };
+    enum class Type : int8 { Large, Small };
 
     KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
     ~KeySignaturesProjectMap() override;
@@ -86,6 +80,8 @@ private:
 
     KeySignatureComponent *getPreviousEventComponent(int indexOfSorted) const;
     KeySignatureComponent *getNextEventComponent(int indexOfSorted) const;
+
+    const StringArray &getProjectKeyNames() const noexcept;
     
 private:
 
@@ -105,6 +101,6 @@ private:
 
     OwnedArray<KeySignatureComponent> keySignatureComponents;
     FlatHashMap<KeySignatureEvent, KeySignatureComponent *, MidiEventHash> keySignaturesHash;
-    
-};
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeySignaturesProjectMap)
+};

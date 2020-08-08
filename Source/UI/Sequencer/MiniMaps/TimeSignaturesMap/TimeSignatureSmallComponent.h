@@ -17,41 +17,30 @@
 
 #pragma once
 
-//[Headers]
 #include "TimeSignatureComponent.h"
-//[/Headers]
-
-#include "../../../Themes/SeparatorVertical.h"
+#include "SeparatorVertical.h"
 
 class TimeSignatureSmallComponent final : public TimeSignatureComponent
 {
 public:
 
-    TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent);
+    TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent,
+        const TimeSignatureEvent &targetEvent);
+
     ~TimeSignatureSmallComponent();
 
-    //[UserMethods]
     void updateContent() override;
     void setRealBounds(const Rectangle<float> bounds) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
     void parentHierarchyChanged() override;
 
-
 private:
-
-    //[UserVariables]
 
     Rectangle<float> boundsOffset;
 
-    //[/UserVariables]
-
     UniquePointer<Label> signatureLabel;
-    UniquePointer<SeparatorVertical> component;
+    UniquePointer<SeparatorVertical> separator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureSmallComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignatureSmallComponent)
 };
-
-

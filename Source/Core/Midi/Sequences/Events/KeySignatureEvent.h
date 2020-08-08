@@ -29,12 +29,14 @@ public:
     KeySignatureEvent(const KeySignatureEvent &other) noexcept;
     KeySignatureEvent(WeakReference<MidiSequence> owner,
         const KeySignatureEvent &parametersToCopy) noexcept;
+
     explicit KeySignatureEvent(WeakReference<MidiSequence> owner,
         Scale::Ptr scale = nullptr,
         float newBeat = 0.f,
         Note::Key key = 0) noexcept;
 
-    String toString() const;
+    String toString(const StringArray &keyNames) const;
+
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         double timeOffset, double timeFactor) const noexcept override;
     

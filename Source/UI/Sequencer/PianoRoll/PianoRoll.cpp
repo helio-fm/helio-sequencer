@@ -1322,12 +1322,7 @@ void PianoRoll::paint(Graphics &g)
         const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
         const int index = this->binarySearchForHighlightingScheme(key);
 
-#if DEBUG
-        if (index < 0)
-        {
-            DBG("Missing " + key->toString());
-        }
-#endif
+        jassert(index >= 0);
 
         const auto *s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
         const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
@@ -1657,17 +1652,6 @@ void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)
         scheme->setRows(this->renderBackgroundCacheFor(scheme.get()));
         this->backgroundsCache.addSorted(*this->defaultHighlighting, scheme.release());
     }
-
-#if DEBUG
-    if (duplicateSchemeIndex < 0)
-    {
-        DBG("Added scheme " + key.toString());
-    }
-    else
-    {
-        DBG("Ignored duplicate " + key.toString());
-    }
-#endif
 }
 
 void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
@@ -1689,17 +1673,7 @@ void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
         this->backgroundsCache.remove(index);
     }
 
-#if DEBUG
-    if (index >= 0)
-    {
-        DBG("Removed scheme " + key.toString());
-    }
-    else
-    {
-        DBG("Failed to remove scheme " + key.toString());
-        jassertfalse;
-    }
-#endif
+    jassert(index >= 0);
 }
 
 Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const scheme) const

@@ -17,10 +17,7 @@
 
 #pragma once
 
-//[Headers]
 #include "AnnotationComponent.h"
-//[/Headers]
-
 
 class AnnotationLargeComponent final : public AnnotationComponent
 {
@@ -29,7 +26,6 @@ public:
     AnnotationLargeComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent);
     ~AnnotationLargeComponent();
 
-    //[UserMethods]
     enum class State : uint8
     {
         None,
@@ -40,20 +36,16 @@ public:
     float getTextWidth() const noexcept override;
     void updateContent() override;
     void setRealBounds(const Rectangle<float> bounds) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    void mouseMove (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-    void mouseDoubleClick (const MouseEvent& e) override;
-
+    void paint(Graphics &g) override;
+    void mouseMove(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
 
-    //[UserVariables]
+    static constexpr auto borderResizingArea = 10;
 
     ComponentDragger dragger;
 
@@ -73,10 +65,5 @@ private:
 
     bool canResize() const noexcept;
 
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationLargeComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnnotationLargeComponent)
 };
-
-

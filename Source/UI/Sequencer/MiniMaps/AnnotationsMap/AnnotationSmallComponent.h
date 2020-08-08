@@ -17,42 +17,34 @@
 
 #pragma once
 
-//[Headers]
 #include "AnnotationComponent.h"
-//[/Headers]
-
 
 class AnnotationSmallComponent final : public AnnotationComponent
 {
 public:
 
-    AnnotationSmallComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent);
+    AnnotationSmallComponent(AnnotationsProjectMap &parent,
+        const AnnotationEvent &targetEvent);
+
     ~AnnotationSmallComponent();
 
-    //[UserMethods]
     float getTextWidth() const override;
     void updateContent() override;
     void setRealBounds(const Rectangle<float> bounds) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
 
-
 private:
 
-    //[UserVariables]
-
     Rectangle<float> boundsOffset;
-    float textWidth;
+    float textWidth = 0.f;
     Colour lastColour;
-
-    //[/UserVariables]
 
     UniquePointer<Label> annotationLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationSmallComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnnotationSmallComponent)
 };
 
 

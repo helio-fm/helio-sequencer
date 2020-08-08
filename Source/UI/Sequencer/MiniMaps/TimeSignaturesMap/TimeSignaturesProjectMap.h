@@ -32,11 +32,7 @@ class TimeSignaturesProjectMap final :
 {
 public:
 
-    enum Type
-    {
-        Large,
-        Small
-    };
+    enum class Type : int8 { Large, Small };
 
     TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
     ~TimeSignaturesProjectMap() override;

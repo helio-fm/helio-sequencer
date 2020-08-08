@@ -15,79 +15,30 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
 #include "KeySignaturesSequence.h"
-//[/Headers]
-
 #include "KeySignatureSmallComponent.h"
 
-//[MiscUserDefs]
-//[/MiscUserDefs]
-
-KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent)
-    : KeySignatureComponent(parent, targetEvent),
-      textWidth(0.f)
+KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesProjectMap &parent,
+    const KeySignatureEvent &targetEvent) :
+    KeySignatureComponent(parent, targetEvent)
 {
-    this->signatureLabel.reset(new Label(String(),
-                                          String()));
-    this->addAndMakeVisible(signatureLabel.get());
-    this->signatureLabel->setFont(Font (14.00f, Font::plain));
-    signatureLabel->setJustificationType(Justification::centredLeft);
-    signatureLabel->setEditable(false, false, false);
+    this->signatureLabel = make<Label>();
+    this->addAndMakeVisible(this->signatureLabel.get());
+    this->signatureLabel->setFont({ 14.f });
+    this->signatureLabel->setJustificationType(Justification::centredLeft);
+    this->signatureLabel->setBounds(0, 2, 132, 16);
 
-    signatureLabel->setBounds(0, 2, 132, 16);
-
-
-    //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
-    //[/UserPreSize]
-
-    this->setSize(128, 32);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-KeySignatureSmallComponent::~KeySignatureSmallComponent()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    signatureLabel = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void KeySignatureSmallComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
-
-void KeySignatureSmallComponent::resized()
-{
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
+KeySignatureSmallComponent::~KeySignatureSmallComponent() {}
 
 void KeySignatureSmallComponent::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->setSize(this->getWidth(), this->getParentHeight());
-    //[/UserCode_parentHierarchyChanged]
 }
-
-
-//[MiscUserCode]
 
 void KeySignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
 {
@@ -106,9 +57,9 @@ float KeySignatureSmallComponent::getTextWidth() const
     return this->textWidth;
 }
 
-void KeySignatureSmallComponent::updateContent()
+void KeySignatureSmallComponent::updateContent(const StringArray &keyNames)
 {
-    const String originalName = this->event.toString();
+    const String originalName = this->event.toString(keyNames);
     if (this->eventName != originalName)
     {
         this->eventName = originalName;
@@ -117,32 +68,3 @@ void KeySignatureSmallComponent::updateContent()
         this->repaint();
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="KeySignatureSmallComponent"
-                 template="../../../../Template" componentName="" parentClasses="public KeySignatureComponent"
-                 constructorParams="KeySignaturesProjectMap &amp;parent, const KeySignatureEvent &amp;targetEvent"
-                 variableInitialisers="KeySignatureComponent(parent, targetEvent),&#10;textWidth(0.f)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="32">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 2 132 16" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

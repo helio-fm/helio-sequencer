@@ -20,12 +20,13 @@
 
 #include "Transport.h"
 #include "ProjectTimeline.h"
+#include "ProjectMetadata.h"
+#include "Temperament.h"
 #include "HybridRoll.h"
 #include "MidiSequence.h"
 #include "AnnotationEvent.h"
 #include "TimeSignatureEvent.h"
 #include "KeySignatureEvent.h"
-
 #include "PianoTrackNode.h"
 #include "PianoSequence.h"
 #include "Pattern.h"
@@ -95,6 +96,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
     if (this->keySignatureActionsOutdated)
     {
         this->keySignatureActionsCache.clearQuick();
+        const auto &keyNames = this->project.getProjectInfo()->getTemperament()->getPeriod();
 
         const auto *ksSequence = timeline->getKeySignatures()->getSequence();
         for (int i = 0; i < ksSequence->size(); ++i)
@@ -119,7 +121,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 return true;
             };
 
-            this->keySignatureActionsCache.add(CommandPaletteAction::action(event->toString(),
+            this->keySignatureActionsCache.add(CommandPaletteAction::action(event->toString(keyNames),
                 Transport::getTimeString(outStartTimeMs), float(outStartTimeMs))->
                 withColour(event->getTrackColour())->
                 withCallback(action));

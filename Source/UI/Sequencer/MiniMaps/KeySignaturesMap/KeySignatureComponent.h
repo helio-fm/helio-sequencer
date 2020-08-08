@@ -40,7 +40,7 @@ public:
 
     virtual float getTextWidth() const = 0;
 
-    virtual void updateContent() = 0;
+    virtual void updateContent(const StringArray &keyNames) = 0;
     virtual void setRealBounds(const Rectangle<float> bounds) = 0;
 
     static int compareElements(const KeySignatureComponent *first,

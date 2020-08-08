@@ -17,57 +17,45 @@
 
 #pragma once
 
-//[Headers]
 #include "TimeSignatureComponent.h"
-//[/Headers]
-
 
 class TimeSignatureLargeComponent final : public TimeSignatureComponent
 {
 public:
 
-    TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent);
+    TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent,
+        const TimeSignatureEvent &targetEvent);
+
     ~TimeSignatureLargeComponent();
 
-    //[UserMethods]
     void updateContent() override;
     void setRealBounds(const Rectangle<float> bounds) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    void mouseMove (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-    void mouseDoubleClick (const MouseEvent& e) override;
-
+    void paint(Graphics &g) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
-
-    //[UserVariables]
 
     ComponentDragger dragger;
     TimeSignatureEvent anchor;
 
-    int numerator;
-    int denominator;
+    int numerator = 0;
+    int denominator = 0;
 
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
-    bool draggingState;
-    bool draggingHadCheckpoint;
+
+    bool draggingState = false;
+    bool draggingHadCheckpoint = false;
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
-    bool mouseDownWasTriggered;
-
-    //[/UserVariables]
+    bool mouseDownWasTriggered = false;
 
     UniquePointer<Label> numeratorLabel;
     UniquePointer<Label> denominatorLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureLargeComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignatureLargeComponent)
 };
-
-

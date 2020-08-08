@@ -35,13 +35,6 @@ public:
     Scale::Ptr withName(const String &name) const noexcept;
     Scale::Ptr withKeys(const Array<int> &keys) const noexcept;
 
-    inline static StringArray getKeyNames(bool sharps = true)
-    {
-        return sharps ?
-            StringArray("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B") :
-            StringArray("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B");
-    }
-
     // These names only make sense in diatonic scales:
     enum Function
     {

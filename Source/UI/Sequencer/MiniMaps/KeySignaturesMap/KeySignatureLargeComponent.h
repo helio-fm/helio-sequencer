@@ -17,10 +17,7 @@
 
 #pragma once
 
-//[Headers]
 #include "KeySignatureComponent.h"
-//[/Headers]
-
 
 class KeySignatureLargeComponent final : public KeySignatureComponent
 {
@@ -29,45 +26,34 @@ public:
     KeySignatureLargeComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent);
     ~KeySignatureLargeComponent();
 
-    //[UserMethods]
     float getTextWidth() const override;
-    void updateContent() override;
+    void updateContent(const StringArray &keyNames) override;
     void setRealBounds(const Rectangle<float> bounds) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    void mouseMove (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-    void mouseDoubleClick (const MouseEvent& e) override;
-
+    void paint(Graphics &g) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
-
-    //[UserVariables]
 
     ComponentDragger dragger;
     KeySignatureEvent anchor;
 
-    float textWidth;
+    float textWidth = 0.f;
     String eventName;
 
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
-    bool draggingState;
-    bool draggingHadCheckpoint;
+
+    bool draggingState = false;
+    bool draggingHadCheckpoint = false;
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
-    bool mouseDownWasTriggered;
-
-    //[/UserVariables]
+    bool mouseDownWasTriggered = false;
 
     UniquePointer<Label> signatureLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureLargeComponent)
 };
-
-

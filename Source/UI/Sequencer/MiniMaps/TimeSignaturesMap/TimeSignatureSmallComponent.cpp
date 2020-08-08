@@ -15,95 +15,51 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
 #include "TimeSignaturesProjectMap.h"
 #include "CachedLabelImage.h"
-//[/Headers]
-
 #include "TimeSignatureSmallComponent.h"
 
-//[MiscUserDefs]
-//[/MiscUserDefs]
-
-TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &targetEvent)
-    : TimeSignatureComponent(parent, targetEvent)
+TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent,
+    const TimeSignatureEvent &targetEvent) :
+    TimeSignatureComponent(parent, targetEvent)
 {
-    this->signatureLabel.reset(new Label(String(),
-                                          String()));
-    this->addAndMakeVisible(signatureLabel.get());
-    this->signatureLabel->setFont(Font (14.00f, Font::plain));
-    signatureLabel->setJustificationType(Justification::centredLeft);
-    signatureLabel->setEditable(false, false, false);
+    this->signatureLabel = make<Label>();
+    this->addAndMakeVisible(this->signatureLabel.get());
+    this->signatureLabel->setFont({ 14.f });
+    this->signatureLabel->setJustificationType(Justification::centredLeft);
+    this->signatureLabel->setBounds(0, 4, 48, 16);
 
-    signatureLabel->setBounds(0, 4, 48, 16);
+    this->separator = make<SeparatorVertical>();
+    this->addAndMakeVisible(this->separator.get());
 
-    this->component.reset(new SeparatorVertical());
-    this->addAndMakeVisible(component.get());
-
-    //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
 
     this->signatureLabel->setBufferedToImage(true);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
-    //[/UserPreSize]
-
-    this->setSize(128, 32);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-TimeSignatureSmallComponent::~TimeSignatureSmallComponent()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    signatureLabel = nullptr;
-    component = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void TimeSignatureSmallComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+TimeSignatureSmallComponent::~TimeSignatureSmallComponent() {}
 
 void TimeSignatureSmallComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    component->setBounds(0, 0, 2, getHeight() - 0);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->separator->setBounds(0, 0, 2, this->getHeight());
 }
 
 void TimeSignatureSmallComponent::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->setSize(this->getWidth(), this->getParentHeight());
-    //[/UserCode_parentHierarchyChanged]
 }
-
-
-//[MiscUserCode]
 
 void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
 {
-    Rectangle<int> intBounds(bounds.toType<int>());
-    this->boundsOffset = Rectangle<float>(bounds.getX() - float(intBounds.getX()),
-                                          bounds.getY(),
-                                          bounds.getWidth() - float(intBounds.getWidth()),
-                                          bounds.getHeight());
+    const auto intBounds = bounds.toType<int>();
+    this->boundsOffset = { bounds.getX() - float(intBounds.getX()),
+        bounds.getY(),
+        bounds.getWidth() - float(intBounds.getWidth()),
+        bounds.getHeight() };
 
     this->setBounds(intBounds);
 }
@@ -112,35 +68,3 @@ void TimeSignatureSmallComponent::updateContent()
 {
     this->signatureLabel->setText(this->event.toString(), dontSendNotification);
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TimeSignatureSmallComponent"
-                 template="../../../../Template" componentName="" parentClasses="public TimeSignatureComponent"
-                 constructorParams="TimeSignaturesProjectMap &amp;parent, const TimeSignatureEvent &amp;targetEvent"
-                 variableInitialisers="TimeSignatureComponent(parent, targetEvent)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="32">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 4 48 16" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
-  <JUCERCOMP name="" id="1e5a57ee127ef53d" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0 0 2 0M" sourceFile="../../../Themes/SeparatorVertical.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-
