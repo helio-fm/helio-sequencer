@@ -19,15 +19,11 @@
 #include "HelioCallout.h"
 #include "MainLayout.h"
 #include "ComponentFader.h"
-#include "DialogBackground.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
 static int kClickCounterOnPopupClose = 0;
 static int kClickCounterOnPopupStart = 0;
-
-//#define CALLOUT_HAS_BACKGROUND 1
-#define CALLOUT_HAS_BACKGROUND 0
 
 HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     MainLayout *parentWorkspace, bool shouldAlignToMouse) :
@@ -55,11 +51,6 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
 
         this->clickPointAbs = Point<float>(p.getX() / float(b.getWidth()), p.getY() / float(b.getHeight()));
 
-#if CALLOUT_HAS_BACKGROUND
-        this->backgroundWhite.reset(new DialogBackground());
-        parentWorkspace->addAndMakeVisible(this->backgroundWhite);
-#endif
-        
         parentWorkspace->addChildComponent(this);
         this->findTargetPointAndUpdateBounds();
         this->setVisible(true);
@@ -74,13 +65,6 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
 
 HelioCallout::~HelioCallout()
 {
-#if CALLOUT_HAS_BACKGROUND
-    if (this->backgroundWhite)
-    {
-        this->backgroundWhite->postCommandMessage(CommandIDs::HideDialog);
-    }
-#endif
-    
     kClickCounterOnPopupClose = Desktop::getInstance().getMouseButtonClickCounter();
 }
 

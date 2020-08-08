@@ -78,8 +78,6 @@ private:
     Point<float> clickPointAbs;
     bool alignsToMouse;
     
-    SafePointer<Component> backgroundWhite;
-    
     void fadeIn();
     void fadeOut();
     void dismissAsync();

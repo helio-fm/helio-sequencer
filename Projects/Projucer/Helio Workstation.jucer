@@ -1083,12 +1083,6 @@
                 file="../../Source/UI/Popups/ScalePreviewTool.cpp"/>
           <FILE id="VghbFx" name="ScalePreviewTool.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/ScalePreviewTool.h"/>
-          <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/CenteredTooltipComponent.h"/>
-          <FILE id="euPsem" name="FailTooltip.cpp" compile="1" resource="0" file="../../Source/UI/Popups/FailTooltip.cpp"/>
-          <FILE id="a8yoZt" name="FailTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/FailTooltip.h"/>
-          <FILE id="wb4uAi" name="GenericTooltip.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/GenericTooltip.h"/>
           <FILE id="CM2odV" name="HelioCallout.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/HelioCallout.cpp"/>
           <FILE id="IPhSkz" name="HelioCallout.h" compile="0" resource="0" file="../../Source/UI/Popups/HelioCallout.h"/>
@@ -1102,16 +1096,19 @@
                 file="../../Source/UI/Popups/PopupCustomButton.h"/>
           <FILE id="Z8rbjQ" name="PopupMenuComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupMenuComponent.h"/>
+          <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/CenteredTooltipComponent.h"/>
+          <FILE id="a8yoZt" name="FailTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/FailTooltip.h"/>
+          <FILE id="wb4uAi" name="GenericTooltip.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/GenericTooltip.h"/>
+          <FILE id="yeXAIy" name="SuccessTooltip.h" compile="0" resource="0"
+                file="../../Source/UI/Popups/SuccessTooltip.h"/>
           <FILE id="IHNxez" name="ProgressIndicator.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/ProgressIndicator.h"/>
           <FILE id="YLo8ib" name="ProgressTooltip.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/ProgressTooltip.cpp"/>
           <FILE id="Vhrx3H" name="ProgressTooltip.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/ProgressTooltip.h"/>
-          <FILE id="ABTVjD" name="SuccessTooltip.cpp" compile="1" resource="0"
-                file="../../Source/UI/Popups/SuccessTooltip.cpp"/>
-          <FILE id="yeXAIy" name="SuccessTooltip.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/SuccessTooltip.h"/>
           <FILE id="U0hFaV" name="TooltipContainer.cpp" compile="1" resource="0"
                 file="../../Source/UI/Popups/TooltipContainer.cpp"/>
           <FILE id="tJX7b3" name="TooltipContainer.h" compile="0" resource="0"

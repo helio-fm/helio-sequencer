@@ -18,9 +18,7 @@
 #pragma once
 
 #include "Common.h"
-
 #include "Icons.h"
-#define PROGRESS_INDICATOR_UPDATE_TIMS_MS 17
 
 class ProgressIndicator final : public Component, private Timer
 {
@@ -39,7 +37,7 @@ public:
     
     void startAnimating()
     {
-        this->startTimer(PROGRESS_INDICATOR_UPDATE_TIMS_MS);
+        this->startTimerHz(60);
     }
     
     void stopAnimating()

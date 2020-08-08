@@ -30,7 +30,8 @@ public:
 
     ContextMenuComponent()
     {
-        this->setWantsKeyboardFocus(true);
+        this->setOpaque(true);
+        this->setPaintingIsUnclipped(true);
     }
 
     ~ContextMenuComponent() override

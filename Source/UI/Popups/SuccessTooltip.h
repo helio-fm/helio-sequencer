@@ -17,35 +17,50 @@
 
 #pragma once
 
-//[Headers]
 #include "CenteredTooltipComponent.h"
-//[/Headers]
-
+#include "Icons.h"
 
 class SuccessTooltip final : public CenteredTooltipComponent,
                              private Timer
 {
 public:
 
-    SuccessTooltip();
-    ~SuccessTooltip();
+    SuccessTooltip() : iconShape(Icons::getPathByName(Icons::success))
+    {
+        this->setSize(SuccessTooltip::tooltipSize, SuccessTooltip::tooltipSize);
+        this->startTimer(SuccessTooltip::onScreenTimeMs);
+    }
 
-    //[UserMethods]
-    //[/UserMethods]
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colours::black.withAlpha(0.5f));
+        g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 15.000f);
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    void parentHierarchyChanged() override;
+        g.setColour(Colours::white.withAlpha(0.7f));
+        Rectangle<int> imageBounds(0, 0, SuccessTooltip::imageSize, SuccessTooltip::imageSize);
+        g.fillPath(this->iconShape, this->iconShape.getTransformToScaleToFit(
+            imageBounds.withCentre(this->getLocalBounds().getCentre()).toFloat(),
+            true, Justification::centred));
+    }
 
+    void parentHierarchyChanged() override
+    {
+        this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);
+    }
 
 private:
 
-    //[UserVariables]
-    void timerCallback() override;
-    Path iconShape;
-    //[/UserVariables]
+    static constexpr auto onScreenTimeMs = 1000;
+    static constexpr auto tooltipSize = 96;
+    static constexpr auto imageSize = 40;
 
-    UniquePointer<Component> imageRange;
+    void timerCallback() override
+    {
+        this->stopTimer();
+        this->dismiss();
+    }
+
+    Path iconShape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SuccessTooltip)
 };

@@ -17,45 +17,39 @@
 
 #pragma once
 
-//[Headers]
 #include "CenteredTooltipComponent.h"
 #include "ProgressIndicator.h"
 
 using SimpleCloseCallback = Function<void()>;
-//[/Headers]
-
 
 class ProgressTooltip final : public CenteredTooltipComponent
 {
 public:
 
     ProgressTooltip(bool cancellable);
-    ~ProgressTooltip();
 
-    //[UserMethods]
     static UniquePointer<ProgressTooltip> cancellable(SimpleCloseCallback callback)
     {
         auto tooltip = make<ProgressTooltip>(true);
         tooltip->onCancel = callback;
         return tooltip;
     }
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
     void handleCommandMessage (int commandId) override;
     bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
-
 private:
 
-    //[UserVariables]
+    static constexpr auto tooltipSize = 96;
+    static constexpr auto imageSize = 64;
+
     SimpleCloseCallback onCancel;
-    bool isCancellable;
+    const bool isCancellable;
     void cancel();
-    //[/UserVariables]
 
     UniquePointer<ProgressIndicator> progressIndicator;
 
