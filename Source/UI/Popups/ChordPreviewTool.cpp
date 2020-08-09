@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "ChordPreviewTool.h"
 
-//[MiscUserDefs]
 #include "PianoSequence.h"
 #include "PianoRoll.h"
 #include "Transport.h"
@@ -46,7 +42,6 @@ static Label *createPopupButtonLabel(const String &text)
     newLabel->setFont(CHORD_BUILDER_FONT_SIZE);
     return newLabel;
 }
-//[/MiscUserDefs]
 
 ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext)
     : PopupMenuComponent(&caller),
@@ -54,21 +49,12 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
       sequence(target),
       clip(clip),
       harmonicContext(harmonicContext),
-      defaultChords(App::Config().getChords()->getAll()),
-      hasMadeChanges(false),
-      draggingStartPosition(0, 0),
-      draggingEndPosition(0, 0)
+      defaultChords(App::Config().getChords()->getAll())
 {
-    this->newChord.reset(new PopupCustomButton(createPopupButtonLabel("+")));
-    this->addAndMakeVisible(newChord.get());
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
+    this->newChord = make<PopupCustomButton>(createPopupButtonLabel("+"));
+    this->addAndMakeVisible(this->newChord.get());
 
     this->setSize(500, 500);
-
-    //[Constructor]
 
     this->defaultScale = Scale::getNaturalMajorScale();
 
@@ -95,62 +81,38 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequenc
     this->enterModalState(false, nullptr, true); // deleted when dismissed
 
     this->newChord->setMouseCursor(MouseCursor::DraggingHandCursor);
-    //[/Constructor]
 }
 
 ChordPreviewTool::~ChordPreviewTool()
 {
-    //[Destructor_pre]
     this->stopSound();
-    //[/Destructor_pre]
-
-    newChord = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void ChordPreviewTool::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void ChordPreviewTool::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    newChord->setBounds((getWidth() / 2) - (proportionOfWidth (0.1400f) / 2), (getHeight() / 2) - (proportionOfHeight (0.1400f) / 2), proportionOfWidth (0.1400f), proportionOfHeight (0.1400f));
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    static constexpr auto yOffset = 0.14f;
+    this->newChord->setBounds((this->getWidth() / 2) - (this->proportionOfWidth(yOffset) / 2),
+        (this->getHeight() / 2) - (this->proportionOfHeight(yOffset) / 2),
+        this->proportionOfWidth(yOffset), this->proportionOfHeight(yOffset));
 }
 
 void ChordPreviewTool::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->detectKeyBeatAndContext();
     this->buildNewNote(true);
     this->newChord->setState(true);
-    //[/UserCode_parentHierarchyChanged]
 }
 
-void ChordPreviewTool::handleCommandMessage (int commandId)
+void ChordPreviewTool::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::PopupMenuDismiss)
     {
         this->exitModalState(0);
     }
-    //[/UserCode_handleCommandMessage]
 }
 
 bool ChordPreviewTool::keyPressed (const KeyPress& key)
 {
-    //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
     {
         this->undoChangesIfAny();
@@ -158,18 +120,12 @@ bool ChordPreviewTool::keyPressed (const KeyPress& key)
 
     this->dismissAsDone();
     return true;
-    //[/UserCode_keyPressed]
 }
 
 void ChordPreviewTool::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->dismissAsCancelled();
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 void ChordPreviewTool::onPopupsResetState(PopupButton *button)
 {
@@ -202,14 +158,6 @@ void ChordPreviewTool::onPopupButtonSecondAction(PopupButton *button)
     this->dismissAsDone();
 }
 
-void ChordPreviewTool::onPopupButtonStartDragging(PopupButton *button)
-{
-    if (button == this->newChord.get())
-    {
-        this->draggingStartPosition = this->getPosition();
-    }
-}
-
 bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
 {
     if (button == this->newChord.get())
@@ -233,14 +181,6 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
     }
 
     return false;
-}
-
-void ChordPreviewTool::onPopupButtonEndDragging(PopupButton *button)
-{
-    if (button == this->newChord.get())
-    {
-        this->draggingEndPosition = this->getPosition();
-    }
 }
 
 Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
@@ -275,14 +215,16 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             this->sequence->checkpoint();
         }
 
+        const auto temperament = this->roll.getTemperament();
+
         if (!App::isRunningOnPhone())
         {
             static const auto fnNames = Chord::getLocalizedFunctionNames();
             const String tooltip =
-                MidiMessage::getMidiNoteName(this->root, true, false, 3) + " "
+                temperament->getMidiNoteName(this->root, true) + " "
                 + this->scale->getLocalizedName() + ", "
                 + fnNames[scaleFnOffset] + ", "
-                + MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3) + " "
+                + temperament->getMidiNoteName(this->targetKey + this->clip.getKey(), true) + " "
                 + chord->getName();
 
             App::Layout().showTooltip(tooltip);
@@ -292,7 +234,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
         {
             const auto inScaleKey = scaleFnOffset + chordKey.getInScaleKey();
             const auto finalRootOffset = periodOffset + this->root;
-            const int key = jlimit(0, 128, finalRootOffset +
+            const int key = jlimit(0, temperament->getNumKeys(), finalRootOffset +
                 this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
 
             const Note note(this->sequence.get(), key,
@@ -404,31 +346,3 @@ void ChordPreviewTool::sendMidiMessage(const MidiMessage &message)
 {
     this->roll.getTransport().previewMidiMessage(this->sequence->getTrackId(), message);
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="ChordPreviewTool" template="../../Template"
-                 componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll &amp;caller, WeakReference&lt;PianoSequence&gt; target, const Clip &amp;clip, WeakReference&lt;KeySignaturesSequence&gt; harmonicContext"
-                 variableInitialisers="PopupMenuComponent(&amp;caller),&#10;roll(caller),&#10;sequence(target),&#10;clip(clip),&#10;harmonicContext(harmonicContext),&#10;defaultChords(App::Config().getChords()-&gt;getAll()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="500" initialHeight="500">
-  <METHODS>
-    <METHOD name="inputAttemptWhenModal()"/>
-    <METHOD name="keyPressed (const KeyPress&amp; key)"/>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-    <METHOD name="parentHierarchyChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="e7f368456de9aae7" memberName="newChord" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 0Cc 14% 14%" class="PopupCustomButton"
-                    params="createPopupButtonLabel(&quot;+&quot;)"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

@@ -17,7 +17,6 @@
 
 #pragma once
 
-//[Headers]
 class Transport;
 class PianoRoll;
 class MidiSequence;
@@ -30,54 +29,44 @@ class KeySignaturesSequence;
 #include "Scale.h"
 #include "PopupMenuComponent.h"
 #include "PopupCustomButton.h"
-//[/Headers]
-
 
 class ChordPreviewTool final : public PopupMenuComponent,
                                public PopupButtonOwner
 {
 public:
 
-    ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext);
-    ~ChordPreviewTool();
+    ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target,
+        const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext);
 
-    //[UserMethods]
+    ~ChordPreviewTool();
 
     void onPopupsResetState(PopupButton *button) override;
 
     void onPopupButtonFirstAction(PopupButton *button) override;
     void onPopupButtonSecondAction(PopupButton *button) override;
 
-    void onPopupButtonStartDragging(PopupButton *button) override;
+    void onPopupButtonStartDragging(PopupButton *) override {}
     bool onPopupButtonDrag(PopupButton *button) override;
-    void onPopupButtonEndDragging(PopupButton *button) override;
+    void onPopupButtonEndDragging(PopupButton *) override {}
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
     void parentHierarchyChanged() override;
-    void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
     void inputAttemptWhenModal() override;
 
-
 private:
-
-    //[UserVariables]
-    Point<int> draggingStartPosition;
-    Point<int> draggingEndPosition;
 
     const PianoRoll &roll;
     WeakReference<PianoSequence> sequence;
     const Clip clip;
 
-    bool hasMadeChanges;
+    bool hasMadeChanges = false;
     void undoChangesIfAny();
 
     // detected on the fly as the user drags the tool around:
-    int targetKey;
-    float targetBeat;
+    int targetKey = 0;
+    float targetBeat = 0;
     Note::Key root;
     Scale::Ptr scale;
     // using project context:
@@ -96,9 +85,7 @@ private:
     void stopSound();
     void sendMidiMessage(const MidiMessage &message);
 
-    //[/UserVariables]
-
     UniquePointer<PopupCustomButton> newChord;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordPreviewTool)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordPreviewTool)
 };
