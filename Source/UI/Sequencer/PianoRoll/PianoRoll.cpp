@@ -200,7 +200,7 @@ void PianoRoll::setRowHeight(int newRowHeight)
 
 void PianoRoll::updateSize()
 {
-    this->setSize(this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT + this->getNumKeys() * this->rowHeight);
+    this->setSize(this->getWidth(), HybridRoll::headerHeight + this->getNumKeys() * this->rowHeight);
 }
 
 int PianoRoll::getNumKeys() const noexcept
@@ -363,7 +363,7 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     this->setRowHeight(int(heightToFit / numKeysToFit));
 
     const int maxKeyY = this->getRowHeight() * (this->getNumKeys() - maxKey - margin);
-    this->viewport.setViewPosition(this->viewport.getViewPositionY() - HYBRID_ROLL_HEADER_HEIGHT, maxKeyY);
+    this->viewport.setViewPosition(this->viewport.getViewPositionY() - HybridRoll::headerHeight, maxKeyY);
 
     HybridRoll::zoomToArea(minBeat, maxBeat);
 }
@@ -1309,7 +1309,7 @@ void PianoRoll::paint(Graphics &g)
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = paintStartX + this->viewport.getViewWidth();
 
-    static const float paintOffsetY = float(HYBRID_ROLL_HEADER_HEIGHT);
+    static const float paintOffsetY = float(HybridRoll::headerHeight);
 
     int prevBeatX = paintStartX;
     const HighlightingScheme *prevScheme = nullptr;

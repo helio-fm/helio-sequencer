@@ -241,7 +241,7 @@ Rectangle<int> MainLayout::getBoundsForPopups() const
     }
 
     // todo free some more space from the top:
-    //r.removeFromTop(HYBRID_ROLL_HEADER_HEIGHT);
+    //r.removeFromTop(HybridRoll::headerHeight);
 
     return r;
 }

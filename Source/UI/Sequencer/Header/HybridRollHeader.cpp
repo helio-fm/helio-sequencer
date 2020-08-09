@@ -49,7 +49,7 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->setMouseClickGrabsKeyboardFocus(false);
 
     this->updateColours();
-    this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+    this->setSize(this->getParentWidth(), HybridRoll::headerHeight);
 
     this->selectionIndicator = make<HeaderSelectionIndicator>();
     this->addChildComponent(this->selectionIndicator.get());
@@ -417,7 +417,7 @@ void HybridRollHeader::paint(Graphics &g)
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
     g.setColour(this->backColour);
-    g.fillRect(paintStartX, 0, paintEndX - paintStartX, HYBRID_ROLL_HEADER_HEIGHT);
+    g.fillRect(paintStartX, 0, paintEndX - paintStartX, HybridRoll::headerHeight);
 
     g.setColour(this->barColour);
     for (const auto f : this->roll.getVisibleBars())

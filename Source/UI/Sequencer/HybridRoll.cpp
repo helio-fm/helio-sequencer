@@ -508,8 +508,8 @@ void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
     this->stopFollowingPlayhead();
 
-    const float newWidth = this->getNumBeats() * HYBRID_ROLL_MAX_BEAT_WIDTH * zoom.getX();
-    const float beatsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BEAT_WIDTH);
+    const float newWidth = this->getNumBeats() * HybridRoll::maxBeatWidth * zoom.getX();
+    const float beatsOnNewScreen = float(newWidth / HybridRoll::maxBeatWidth);
     const float viewWidth = float(this->viewport.getViewWidth());
     const float newBeatWidth = floorf(viewWidth / beatsOnNewScreen + .5f);
 
@@ -617,7 +617,7 @@ void HybridRoll::setBeatRange(float first, float last)
     this->updateBounds();
 }
 
-void HybridRoll::setBeatWidth(const float newBeatWidth)
+void HybridRoll::setBeatWidth(float newBeatWidth)
 {
     if (this->beatWidth == newBeatWidth ||
         newBeatWidth > 360 || newBeatWidth <= 0)
@@ -1449,7 +1449,9 @@ void HybridRoll::scrollToSeekPosition()
     this->startTimer(7);
 #else
     const int playheadX = this->getXPositionByBeat(this->lastTransportBeat.get());
-    this->viewport.setViewPosition(playheadX - (this->viewport.getViewWidth() / 3), this->viewport.getViewPositionY());
+    this->viewport.setViewPosition(playheadX -
+        (this->viewport.getViewWidth() / 3), this->viewport.getViewPositionY());
+
     this->updateChildrenBounds();
 #endif
 }
@@ -1627,7 +1629,6 @@ void HybridRoll::endZooming()
     this->zoomMarker = nullptr;
 }
 
-
 Point<float> HybridRoll::getMouseOffset(Point<float> mouseScreenPosition) const
 {
     const int w = this->getWidth() - this->viewport.getWidth();
@@ -1684,22 +1685,26 @@ void HybridRoll::updateChildrenBounds()
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();
 
-    this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    this->headerShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, HYBRID_ROLL_HEADER_SHADOW_SIZE);
+    this->header->setBounds(0, viewY, this->getWidth(), HybridRoll::headerHeight);
+    this->headerShadow->setBounds(viewX,
+        viewY + HybridRoll::headerHeight, viewWidth, HybridRoll::headerShadowSize);
 
     if (this->annotationsMap != nullptr)
     {
-        this->annotationsMap->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+        this->annotationsMap->setBounds(0,
+            viewY + HybridRoll::headerHeight, this->getWidth(), HybridRoll::headerHeight);
     }
 
     if (this->keySignaturesMap != nullptr)
     {
-        this->keySignaturesMap->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+        this->keySignaturesMap->setBounds(0,
+            viewY + HybridRoll::headerHeight, this->getWidth(), HybridRoll::headerHeight);
     }
 
     if (this->timeSignaturesMap != nullptr)
     {
-        this->timeSignaturesMap->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
+        this->timeSignaturesMap->setBounds(0,
+            viewY, this->getWidth(), HybridRoll::headerHeight - 1);
     }
 
     for (int i = 0; i < this->trackMaps.size(); ++i)
@@ -1728,16 +1733,16 @@ void HybridRoll::updateChildrenPositions()
     const int &viewY = this->viewport.getViewPositionY();
 
     this->header->setTopLeftPosition(0, viewY);
-    this->headerShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
+    this->headerShadow->setTopLeftPosition(viewX, viewY + HybridRoll::headerHeight);
 
     if (this->annotationsMap != nullptr)
     {
-        this->annotationsMap->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
+        this->annotationsMap->setTopLeftPosition(0, viewY + HybridRoll::headerHeight);
     }
 
     if (this->keySignaturesMap != nullptr)
     {
-        this->keySignaturesMap->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
+        this->keySignaturesMap->setTopLeftPosition(0, viewY + HybridRoll::headerHeight);
     }
 
     if (this->timeSignaturesMap != nullptr)

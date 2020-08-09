@@ -118,7 +118,7 @@ void ProjectMapScroller::xyMoveByUser()
     const float propY = screenRangeBounds.getTopLeft().getY() / mh;
 
     // fixes for header height delta
-    const float hh = float(HYBRID_ROLL_HEADER_HEIGHT);
+    const float hh = float(HybridRoll::headerHeight);
     const float rollHeight = float(this->roll->getHeight());
     const float propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
     this->roll->panProportionally(propX, propY2);
@@ -374,7 +374,7 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
 
     const float zoomFactorY = this->roll->getZoomFactorY();
-    const float rollHeaderHeight = float(HYBRID_ROLL_HEADER_HEIGHT);
+    const float rollHeaderHeight = float(HybridRoll::headerHeight);
     const float rollHeight = float(this->roll->getHeight() - rollHeaderHeight);
     const float viewY = float(this->roll->getViewport().getViewPositionY() + rollHeaderHeight);
     const float trackHeight = float(this->getHeight());

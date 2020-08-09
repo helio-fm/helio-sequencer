@@ -55,10 +55,6 @@ class TimelineWarningMarker;
 #   define HYBRID_ROLL_LISTENS_LONG_TAP 1
 #endif
 
-#define HYBRID_ROLL_MAX_BEAT_WIDTH (48)
-#define HYBRID_ROLL_HEADER_HEIGHT (40)
-#define HYBRID_ROLL_HEADER_SHADOW_SIZE (16)
-
 #define HYBRID_ROLL_BULK_REPAINT_START \
     if (this->isEnabled()) { this->setVisible(false); }
 
@@ -105,6 +101,10 @@ public:
     void insertAnnotationWithinScreen(const String &annotation);
     void insertTimeSignatureWithinScreen(int numerator, int denominator);
     
+    static constexpr auto maxBeatWidth = 48;
+    static constexpr auto headerHeight = 40;
+    static constexpr auto headerShadowSize = 16;
+
     //===------------------------------------------------------------------===//
     // Custom maps
     //===------------------------------------------------------------------===//
@@ -190,7 +190,7 @@ public:
     void setBeatRange(float first, float last);
     inline float getNumBeats() const noexcept { return this->lastBeat - this->firstBeat; }
 
-    virtual void setBeatWidth(const float newBeatWidth);
+    virtual void setBeatWidth(float newBeatWidth);
     inline float getBeatWidth() const noexcept { return this->beatWidth; }
 
     float getMinVisibleBeatForCurrentZoomLevel() const;
