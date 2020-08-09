@@ -129,7 +129,7 @@ void PanelBackgroundC::resized()
 
 //[MiscUserCode]
 
-static void drawPanel(Graphics& g, HelioTheme &theme)
+static void drawPanel(Graphics &g, HelioTheme &theme)
 {
     g.setColour(theme.findColour(ColourIDs::BackgroundC::fill));
     g.fillAll();
@@ -143,8 +143,8 @@ void PanelBackgroundC::updateRender(HelioTheme &theme)
         return;
     }
 
-    const int w = 64;
-    const int h = 64;
+    const int w = 128;
+    const int h = 128;
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
     drawPanel(g, theme);

@@ -124,6 +124,7 @@
         <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
+        <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/Icons/noise.png"/>
       </GROUP>
       <GROUP id="{03B368B6-E773-F1D4-0B96-AA2CC86335DB}" name="Templates">
         <FILE id="CFbwRz" name="emptyProject.json" compile="0" resource="1"
@@ -135,7 +136,6 @@
         <FILE id="QrZS1b" name="exampleProject.json" compile="0" resource="1"
               file="../../Resources/Templates/exampleProject.json"/>
       </GROUP>
-      <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/noise.png"/>
       <FILE id="DQTpOG" name="logo-v2.png" compile="0" resource="1" file="../../Resources/logo-v2.png"/>
       <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
             file="../../Resources/arpeggiators.json"/>

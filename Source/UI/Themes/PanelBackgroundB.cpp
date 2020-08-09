@@ -104,8 +104,8 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
         return;
     }
 
-    const int w = 64;
-    const int h = 64;
+    const int w = 128;
+    const int h = 128;
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
     g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));
