@@ -19,7 +19,6 @@
 
 class MidiSequence;
 class NoteComponent;
-class PianoRollCellHighlighter;
 class PianoRollSelectionMenuManager;
 class CommandPaletteChordConstructor;
 class HelperRectangle;

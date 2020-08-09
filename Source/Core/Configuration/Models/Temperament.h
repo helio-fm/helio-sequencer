@@ -18,6 +18,7 @@
 #pragma once
 
 #include "BaseResource.h"
+#include "Scale.h"
 #include "Note.h"
 
 class Temperament final : public BaseResource
@@ -93,6 +94,9 @@ private:
 
     Note::Key middleC = 0;
     int keysTotal = 0;
+
+    Scale highlighting;
+    Scale chromaticMap;
 
     static constexpr auto periodNumForMiddleC = 5;
     static constexpr auto displayedPeriodNumForMiddleC = 3;

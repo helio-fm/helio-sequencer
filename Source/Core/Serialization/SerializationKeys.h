@@ -77,6 +77,8 @@ namespace Serialization
         static const Identifier temperamentId = "id";
         static const Identifier temperamentName = "name";
         static const Identifier temperamentPeriod = "period";
+        static const Identifier temperamentHighlighting = "highlighting";
+        static const Identifier temperamentChromaticMap = "chromaticMap";
 
         // Chords
         static const Identifier chord = "chord";

@@ -82,34 +82,46 @@ Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
 
 SerializedData Temperament::serialize() const
 {
-    SerializedData data(Serialization::Midi::temperament);
+    using namespace Serialization;
 
-    data.setProperty(Serialization::Midi::temperamentId, this->id);
-    data.setProperty(Serialization::Midi::temperamentName, this->name);
-    data.setProperty(Serialization::Midi::temperamentPeriod,
-        this->period.joinIntoString(" "));
+    SerializedData data(Midi::temperament);
+
+    data.setProperty(Midi::temperamentId, this->id);
+    data.setProperty(Midi::temperamentName, this->name);
+    data.setProperty(Midi::temperamentPeriod, this->period.joinIntoString(" "));
+
+    data.setProperty(Midi::temperamentHighlighting, this->highlighting.getIntervals());
+    data.setProperty(Midi::temperamentChromaticMap, this->chromaticMap.getIntervals());
 
     return data;
 }
 
 void Temperament::deserialize(const SerializedData &data)
 {
-    const auto root = data.hasType(Serialization::Midi::temperament) ?
-        data : data.getChildWithName(Serialization::Midi::temperament);
+    using namespace Serialization;
+
+    const auto root = data.hasType(Midi::temperament) ?
+        data : data.getChildWithName(Midi::temperament);
 
     if (!root.isValid()) { return; }
 
     this->reset();
 
-    this->id = root.getProperty(Serialization::Midi::temperamentId, this->id);
-    this->name = root.getProperty(Serialization::Midi::temperamentName, this->name);
+    this->id = root.getProperty(Midi::temperamentId, this->id);
+    this->name = root.getProperty(Midi::temperamentName, this->name);
 
-    const String periodString = root.getProperty(Serialization::Midi::temperamentPeriod);
+    const String periodString = root.getProperty(Midi::temperamentPeriod);
     this->period.addTokens(periodString, true);
 
     // other parameters are computed quite straightforward, but let's do it here:
     this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();
     this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
+
+    this->highlighting = Scale::fromIntervalsAndPeriod(
+        root.getProperty(Midi::temperamentHighlighting), this->getPeriodSize());
+
+    this->chromaticMap = Scale::fromIntervalsAndPeriod(
+        root.getProperty(Midi::temperamentChromaticMap), this->getPeriodSize());
 }
 
 void Temperament::reset()
@@ -117,6 +129,8 @@ void Temperament::reset()
     this->id = {};
     this->period = {};
     this->period.clearQuick();
+    this->highlighting.reset();
+    this->chromaticMap.reset();
 }
 
 Temperament &Temperament::operator=(const Temperament &other)

@@ -19,8 +19,6 @@
 #include "Scale.h"
 #include "SerializationKeys.h"
 
-Scale::Scale(const String &name) noexcept : name(name) {}
-
 Scale::Scale(const Scale &other) noexcept :
     name(other.name), basePeriod(other.basePeriod), keys(other.keys) {}
 
@@ -41,19 +39,6 @@ Scale::Ptr Scale::withKeys(const Array<int> &keys) const noexcept
 //===----------------------------------------------------------------------===//
 // Hard-coded defaults
 //===----------------------------------------------------------------------===//
-
-inline static Array<int> getChromaticKeys()
-{
-    return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-}
-
-Scale::Ptr Scale::getChromaticScale()
-{
-    Scale::Ptr s(new Scale());
-    s->keys = getChromaticKeys();
-    s->name = TRANS("Chromatic");
-    return s;
-}
 
 inline static Array<int> getNaturalMinorKeys()
 {
@@ -93,11 +78,6 @@ int Scale::getSize() const noexcept
 bool Scale::isValid() const noexcept
 {
     return !this->keys.isEmpty() && !this->name.isEmpty();
-}
-
-bool Scale::isChromatic() const noexcept
-{
-    return this->keys == getChromaticKeys();
 }
 
 String Scale::getLocalizedName() const
@@ -195,6 +175,11 @@ bool operator!=(const Scale &l, const Scale &r)
 
 bool Scale::isEquivalentTo(const Scale::Ptr other) const
 {
+    return this->isEquivalentTo(other.get());
+}
+
+bool Scale::isEquivalentTo(const Scale *other) const
+{
     if (other != nullptr)
     {
         return this->keys == other->keys;
@@ -222,50 +207,44 @@ Identifier Scale::getResourceType() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Scale::serialize() const
+Array<int> getKeysFromIntervals(const String &intervals, int periodSize)
 {
-    SerializedData tree(Serialization::Midi::scale);
-    tree.setProperty(Serialization::Midi::scaleName, this->name);
-    tree.setProperty(Serialization::Midi::scalePeriod, this->basePeriod);
-
-    int prevKey = 0;
-    String intervals;
-    for (const auto &key : this->keys)
-    {
-        if (key > 0)
-        {
-            intervals += String(key - prevKey) + " ";
-            prevKey = key;
-        }
-    }
-
-    intervals += String(this->getBasePeriod() - prevKey);
-    tree.setProperty(Serialization::Midi::scaleIntervals, intervals);
-
-    return tree;
-}
-
-void Scale::deserialize(const SerializedData &data)
-{
-    const auto root = data.hasType(Serialization::Midi::scale) ?
-        data : data.getChildWithName(Serialization::Midi::scale);
-
-    if (!root.isValid()) { return; }
-
-    this->reset();
-
-    this->name = root.getProperty(Serialization::Midi::scaleName, this->name);
-    this->basePeriod = root.getProperty(Serialization::Midi::scalePeriod, Globals::twelveTonePeriodSize);
-
-    const String intervals = root.getProperty(Serialization::Midi::scaleIntervals);
+    Array<int> keys;
     StringArray tokens;
     tokens.addTokens(intervals, true);
     int key = 0;
     for (auto token : tokens)
     {
-        this->keys.add(key);
-        key = jlimit(0, this->basePeriod, key + token.getIntValue());
+        keys.add(key);
+        key = jlimit(0, periodSize, key + token.getIntValue());
     }
+    return keys;
+}
+
+SerializedData Scale::serialize() const
+{
+    SerializedData tree(Serialization::Midi::scale);
+    tree.setProperty(Serialization::Midi::scaleName, this->name);
+    tree.setProperty(Serialization::Midi::scalePeriod, this->basePeriod);
+    tree.setProperty(Serialization::Midi::scaleIntervals, this->getIntervals());
+    return tree;
+}
+
+void Scale::deserialize(const SerializedData &data)
+{
+    using namespace Serialization;
+    const auto root = data.hasType(Midi::scale) ?
+        data : data.getChildWithName(Midi::scale);
+
+    if (!root.isValid()) { return; }
+
+    this->reset();
+
+    this->name = root.getProperty(Midi::scaleName, this->name);
+    this->basePeriod = root.getProperty(Midi::scalePeriod, Globals::twelveTonePeriodSize);
+
+    const String intervals = root.getProperty(Midi::scaleIntervals);
+    this->keys = getKeysFromIntervals(intervals, this->basePeriod);
 }
 
 void Scale::reset()
@@ -284,4 +263,29 @@ int Scale::hashCode() const noexcept
         hc = hc * prime + k;
     }
     return static_cast<int>(hc);
+}
+
+Scale Scale::fromIntervalsAndPeriod(const String &intervals, int periodSize)
+{
+    Scale scale;
+    scale.keys = getKeysFromIntervals(intervals, periodSize);
+    scale.basePeriod = periodSize;
+    return scale;
+}
+
+String Scale::getIntervals() const noexcept
+{
+    int prevKey = 0;
+    String intervals;
+    for (const auto &key : this->keys)
+    {
+        if (key > 0)
+        {
+            intervals << String(key - prevKey) << " ";
+            prevKey = key;
+        }
+    }
+
+    intervals << String(this->getBasePeriod() - prevKey);
+    return intervals;
 }

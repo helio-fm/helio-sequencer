@@ -4,17 +4,23 @@
       {
         "id": "12edo",
         "name": "12 equal temperament",
-        "period": "C C# D D# E F F# G G# A A# B"
+        "period": "C C# D D# E F F# G G# A A# B",
+        "highlighting": "2 2 1 2 2 2 1",
+        "chromaticMap": "1 1 1 1 1 1 1 1 1 1 1"
       },
       {
         "id": "22edo",
         "name": "22 equal temperament",
-        "period": "C ^C vC# C# D Eb ^Eb vE E F Gb ^Gb vG G Ab ^Ab vA A Bb ^Bb B"
+        "period": "C ^C vC# C# D Eb ^Eb vE E F Gb ^Gb vG G Ab ^Ab vA A Bb ^Bb vB B",
+        "highlighting": "3 1 3 1 3 1 1 3 1 3 1",
+        "chromaticMap": "3 1 3 1 3 1 1 3 1 3 1"
       },
       {
         "id": "31edo",
         "name": "31 equal temperament",
-        "period": "C Dbb C# Db C## D Ebb D# Eb D## E Fb E# F Gbb F# Gb F## G Abb G# Ab G## A Bbb A# Bb A## B Cb B#"
+        "period": "C Dbb C# Db C## D Ebb D# Eb D## E Fb E# F Gbb F# Gb F## G Abb G# Ab G## A Bbb A# Bb A## B Cb B#",
+        "highlighting": "2 3 3 2 3 2 3 2 3 3 2",
+        "chromaticMap": "2 3 3 2 3 2 3 2 3 3 2"
       }
     ]
   }

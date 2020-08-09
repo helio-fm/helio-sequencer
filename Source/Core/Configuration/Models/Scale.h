@@ -26,7 +26,6 @@ public:
 
     Scale() = default;
     Scale(const Scale &other) noexcept;
-    explicit Scale(const String &name) noexcept;
 
     String getResourceId() const noexcept override;
     Identifier getResourceType() const noexcept override;
@@ -51,7 +50,6 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
-    bool isChromatic() const noexcept;
     bool isValid() const noexcept;
     int getSize() const noexcept;
     String getLocalizedName() const;
@@ -84,7 +82,6 @@ public:
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
-    static Scale::Ptr getChromaticScale();
     static Scale::Ptr getNaturalMinorScale();
     static Scale::Ptr getNaturalMajorScale();
 
@@ -107,6 +104,7 @@ public:
     // Used to compare scales in version control
     // (there may be lots of synonyms for the same sets of notes,
     // e.g. Phrygian is called Zokuso in Japan and Ousak in Greece)
+    bool isEquivalentTo(const Scale *other) const;
     bool isEquivalentTo(const Scale::Ptr other) const;
 
     int hashCode() const noexcept;
@@ -121,6 +119,13 @@ private:
     Array<int> keys;
 
     int basePeriod = Globals::twelveTonePeriodSize;
+
+private:
+
+    // "anonymous" scales, helpers for temperaments
+    static Scale fromIntervalsAndPeriod(const String &intervals, int periodSize);
+    String getIntervals() const noexcept;
+    friend class Temperament;
 
     JUCE_LEAK_DETECTOR(Scale)
 };

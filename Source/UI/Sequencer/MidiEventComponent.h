@@ -59,7 +59,7 @@ protected:
     HybridRoll &roll;
     ComponentDragger dragger;
 
-    struct MidiEventComponentFlags
+    struct MidiEventComponentFlags final
     {
         bool isSelected : 1;
         bool isActive : 1;
