@@ -159,6 +159,7 @@ protected:
     ProjectEventDispatcher &eventDispatcher;
     ProjectNode *getProject() const noexcept;
     UndoStack *getUndoStack() const noexcept;
+    int getPeriodSize() const noexcept;
 
     OwnedArray<MidiEvent> midiEvents;
     mutable FlatHashSet<MidiEvent::Id> usedEventIds;

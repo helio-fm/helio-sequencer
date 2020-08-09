@@ -24,6 +24,7 @@
 #include "KeySignatureEvent.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
+#include "PianoRoll.h"
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
 #include "PianoSequence.h"
@@ -1664,9 +1665,13 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             
             if (transport != nullptr && numSelected < 8)
             {
+                auto channel = newNote.getTrackChannel();
+                auto mappedKey = newNote.getKey() + nc->getClip().getKey();
+                const auto periodSize = nc->getRoll().getPeriodSize();
+                Note::performMultiChannelMapping(periodSize, channel, mappedKey);
+
                 transport->previewMidiMessage(pianoSequence->getTrackId(),
-                    MidiMessage::noteOn(newNote.getTrackChannel(),
-                        newNote.getKey() + nc->getClip().getKey(), newNote.getVelocity()));
+                    MidiMessage::noteOn(channel, mappedKey, newNote.getVelocity()));
             }
         }
         
@@ -1851,9 +1856,14 @@ void SequencerOperations::invertChord(Lasso &selection,
             for (int i = 0; i < numSelected; ++i)
             {
                 auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+
+                auto channel = nc->getNote().getTrackChannel();
+                auto mappedKey = nc->getNote().getKey() + nc->getClip().getKey();
+                const auto periodSize = nc->getRoll().getPeriodSize();
+                Note::performMultiChannelMapping(periodSize, channel, mappedKey);
+
                 transport->previewMidiMessage(pianoSequence->getTrackId(),
-                    MidiMessage::noteOn(pianoSequence->getChannel(),
-                        nc->getNote().getKey() + nc->getClip().getKey(), nc->getVelocity()));
+                    MidiMessage::noteOn(channel, mappedKey, nc->getVelocity()));
             }
         }
     }

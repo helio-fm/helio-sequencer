@@ -35,7 +35,7 @@ public:
         float controllerValue = 0.f) noexcept;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        double timeOffset, double timeFactor) const noexcept override;
+        double timeOffset, double timeFactor, int periodSize) const noexcept override;
 
     static float interpolateEvents(float cv1, float cv2, float factor, float easing);
 

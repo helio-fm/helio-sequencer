@@ -19,6 +19,8 @@
 #include "MidiSequence.h"
 #include "ProjectEventDispatcher.h"
 #include "ProjectNode.h"
+#include "ProjectMetadata.h"
+#include "Temperament.h"
 #include "UndoStack.h"
 #include "MidiTrack.h"
 
@@ -105,9 +107,11 @@ void MidiSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &clip
     // Moreover, for now, only PianoSequence will override this method
     // and make sure it skips a no-solo clip, when soloPlaybackMode is true.
 
+    const auto periodSize = this->getPeriodSize();
+
     for (const auto *event : this->midiEvents)
     {
-        event->exportMessages(outSequence, clip, timeAdjustment, timeFactor);
+        event->exportMessages(outSequence, clip, timeAdjustment, timeFactor, periodSize);
     }
 
     outSequence.updateMatchedPairs();
@@ -168,6 +172,8 @@ MidiTrack *MidiSequence::getTrack() const noexcept
     return &this->track;
 }
 
+// I hate these 3 getters but have very little idea how to do without:
+
 ProjectNode *MidiSequence::getProject() const noexcept
 {
     return this->eventDispatcher.getProject();
@@ -176,6 +182,12 @@ ProjectNode *MidiSequence::getProject() const noexcept
 UndoStack *MidiSequence::getUndoStack() const noexcept
 {
     return this->eventDispatcher.getProject()->getUndoStack();
+}
+
+int MidiSequence::getPeriodSize() const noexcept
+{
+    return this->eventDispatcher.getProject()->getProjectInfo()->
+        getTemperament()->getPeriodSize();
 }
 
 //===----------------------------------------------------------------------===//

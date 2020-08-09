@@ -73,9 +73,11 @@ void PianoSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &cli
         return;
     }
 
+    const auto periodSize = this->getPeriodSize();
+
     for (const auto *event : this->midiEvents)
     {
-        event->exportMessages(outSequence, clip, timeAdjustment, timeFactor);
+        event->exportMessages(outSequence, clip, timeAdjustment, timeFactor, periodSize);
     }
 
     outSequence.updateMatchedPairs();

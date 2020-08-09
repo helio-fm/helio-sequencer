@@ -426,7 +426,11 @@ void ScalePreviewTool::buildChord(Array<int> keys)
             const int key = jlimit(0, this->roll->getNumKeys(), this->targetKey + offset);
             Note note(sequence, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
             sequence->insert(note, true);
-            this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity));
+
+            auto mappedKey = key;
+            auto channel = note.getTrackChannel();
+            Note::performMultiChannelMapping(this->roll->getPeriodSize(), channel, mappedKey);
+            this->sendMidiMessage(MidiMessage::noteOn(channel, mappedKey, kScalePreviewDefaultNoteVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -453,7 +457,10 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
 
         if (shouldSendMidiMessage)
         {
-            this->sendMidiMessage(MidiMessage::noteOn(note1.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity));
+            auto mappedKey = key;
+            auto channel = note1.getTrackChannel();
+            Note::performMultiChannelMapping(this->roll->getPeriodSize(), channel, mappedKey);
+            this->sendMidiMessage(MidiMessage::noteOn(channel, mappedKey, kScalePreviewDefaultNoteVelocity));
         }
 
         this->hasMadeChanges = true;

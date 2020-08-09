@@ -38,11 +38,14 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noex
     tuplet(parametersToCopy.tuplet) {}
 
 void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-    double timeOffset, double timeFactor) const noexcept
+    double timeOffset, double timeFactor, int periodSize) const noexcept
 {
-    const auto finalKey = this->key + clip.getKey();
+    auto finalKey = this->key + clip.getKey();
     const auto finalVolume = this->velocity * clip.getVelocity();
     const auto tupletLength = this->length / float(this->tuplet);
+
+    auto channel = this->getTrackChannel();
+    Note::performMultiChannelMapping(periodSize, channel, finalKey);
 
     for (int i = 0; i < this->tuplet; ++i)
     {
@@ -54,7 +57,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         // (like implement auto curves for individual notes?)
         const float tupletVolume = finalVolume * (1.f - float(i) / 100.f);
 
-        MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), finalKey, tupletVolume));
+        MidiMessage eventNoteOn(MidiMessage::noteOn(channel, finalKey, tupletVolume));
         const double startTime = (tupletStart + clip.getBeat()) * timeFactor;
         eventNoteOn.setTimeStamp(startTime);
         outSequence.addEvent(eventNoteOn, timeOffset);
@@ -71,7 +74,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         // to make sure end/start times of neighbor notes never overlap:
         const double oddTupletFix = double(i % 2) / 1000;
 
-        MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), finalKey));
+        MidiMessage eventNoteOff(MidiMessage::noteOff(channel, finalKey));
         const double endTime = (tupletStart + tupletLength + clip.getBeat()) * timeFactor - oddTupletFix;
         eventNoteOff.setTimeStamp(endTime);
         outSequence.addEvent(eventNoteOff, timeOffset);
@@ -267,4 +270,38 @@ int Note::compareElements(const Note *const first, const Note *const second) noe
     if (keyResult != 0) { return keyResult; }
 
     return first->getId() - second->getId();
+}
+
+void Note::performMultiChannelMapping(int periodSize, int &channel, Key &key) noexcept
+{
+    // this is a hardcoded multi-channel mapping in Pianoteq style:
+    // fit as many notes as possible in a channel, and then
+    // for the next channel transpose everything by one octave, etc;
+
+    // e.g. for 31-edo, the mapping in channels would look like this:
+    // 1: 0...127
+    // 2:  31...158
+    // 3:   62...189
+    // 4:    93...220
+    // 5:     124...251
+    // 6:      155...282
+    // 7:       186...313
+    // 8:        217...344
+
+    // so the note 128 will be in a channel number: 1+(128-127)/31
+    // and the actual key in that channel will be 128-(31*channel#)
+
+    // hopefully someday I'll make something more flexible than this
+
+    const auto lastKeyOfMainChannel = Globals::twelveToneKeyboardSize - 1;
+
+    if (key <= lastKeyOfMainChannel)
+    {
+        return;
+    }
+
+    channel = 1 + (key - lastKeyOfMainChannel) / periodSize; // # is now 0-based
+    key -= (periodSize * channel);
+    channel += 1;
+    //DBG("Channel " + String(channel) + ", key " + String(key));
 }

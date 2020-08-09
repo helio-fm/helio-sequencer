@@ -1107,7 +1107,12 @@ void NoteComponent::stopSound()
 
 void NoteComponent::sendNoteOn(int noteKey, float velocity) const
 {
-    const auto &trackId = this->getNote().getSequence()->getTrackId();
+    auto key = noteKey + this->clip.getKey();
+    auto channel = this->note.getTrackChannel();
+    const auto periodSize = this->getRoll().getPeriodSize();
+    Note::performMultiChannelMapping(periodSize, channel, key);
+
+    const auto &trackId = this->note.getSequence()->getTrackId();
     this->getRoll().getTransport().previewMidiMessage(trackId,
-        MidiMessage::noteOn(1, noteKey + this->clip.getKey(), velocity * this->clip.getVelocity()));
+        MidiMessage::noteOn(channel, key, velocity * this->clip.getVelocity()));
 }

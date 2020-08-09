@@ -52,8 +52,8 @@ public:
     // with custom parameters (assumes the id is already valid and unique)
     MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) noexcept;
 
-    virtual void exportMessages(MidiMessageSequence &outSequence,
-        const Clip &clip, double timeOffset, double timeFactor) const noexcept = 0;
+    virtual void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
+        double timeOffset, double timeFactor, int periodSize) const noexcept = 0;
 
     //===------------------------------------------------------------------===//
     // Accessors

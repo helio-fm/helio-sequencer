@@ -50,7 +50,7 @@ String KeySignatureEvent::toString(const StringArray &keyNames) const
 }
 
 void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence,
-    const Clip &clip, double timeOffset, double timeFactor) const noexcept
+    const Clip &clip, double timeOffset, double timeFactor, int periodSize) const noexcept
 {
     // Basically, we can have any non-standard scale here:
     // from "symmetrical nonatonic" or "chromatic permutated diatonic dorian"

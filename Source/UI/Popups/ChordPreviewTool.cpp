@@ -205,6 +205,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
     const auto targetKeyOffset = (this->targetKey + this->clip.getKey()) % this->scale->getBasePeriod();
     const auto chromaticFnOffset = (targetKeyOffset - this->root);
     const auto scaleFnOffset = this->scale->getScaleKey(chromaticFnOffset);
+
     if (scaleFnOffset >= 0) // todo just use nearest neighbor key in scale?
     {
         this->undoChangesIfAny();
@@ -241,8 +242,14 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
                 this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
 
             this->sequence->insert(note, true);
-            this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
-                key + this->clip.getKey(), CHORD_BUILDER_NOTE_VELOCITY));
+
+            // preview:
+
+            auto channel = note.getTrackChannel();
+            auto mappedKey = key + this->clip.getKey();
+            Note::performMultiChannelMapping(temperament->getPeriodSize(), channel, mappedKey);
+
+            this->sendMidiMessage(MidiMessage::noteOn(channel, mappedKey, CHORD_BUILDER_NOTE_VELOCITY));
         }
 
         this->hasMadeChanges = true;
@@ -270,8 +277,12 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
     {
-        this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(),
-            key + this->clip.getKey(), CHORD_BUILDER_NOTE_VELOCITY));
+        auto channel = note.getTrackChannel();
+        auto mappedKey = key + this->clip.getKey();
+        Note::performMultiChannelMapping(this->roll.getPeriodSize(), channel, mappedKey);
+        
+        this->sendMidiMessage(MidiMessage::noteOn(channel,
+            mappedKey, CHORD_BUILDER_NOTE_VELOCITY));
     }
 
     this->hasMadeChanges = true;

@@ -209,17 +209,20 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
         scaleKeys.addArray(this->scale->getDownScale());
         const double timeFactor = 0.75; // playback speed
 
+        const auto temperament = this->project.getProjectInfo()->getTemperament();
+
         MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)
         {
-            const int key = this->project.getProjectInfo()->getTemperament()->getMiddleC()
-                + this->key + scaleKeys.getUnchecked(i);
+            auto channel = 1;
+            int key = temperament->getMiddleC() + this->key + scaleKeys.getUnchecked(i);
+            Note::performMultiChannelMapping(temperament->getPeriodSize(), channel, key);
 
-            MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 0.5f));
+            MidiMessage eventNoteOn(MidiMessage::noteOn(channel, key, 0.5f));
             const double startTime = double(i) * timeFactor;
             eventNoteOn.setTimeStamp(startTime);
 
-            MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
+            MidiMessage eventNoteOff(MidiMessage::noteOff(channel, key));
             const double endTime = (double(i) + timeFactor * 0.95) * timeFactor;
             eventNoteOff.setTimeStamp(endTime);
 

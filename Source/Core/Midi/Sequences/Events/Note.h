@@ -40,7 +40,7 @@ public:
         float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        double timeOffset, double timeFactor) const noexcept override;
+        double timeOffset, double timeFactor, int periodSize) const noexcept override;
     
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     Note withKey(Key newKey) const noexcept;
@@ -90,6 +90,8 @@ public:
     }
 
     static int compareElements(const Note *const first, const Note *const second) noexcept;
+
+    static void performMultiChannelMapping(int periodSize, int &channel, Key &key) noexcept;
 
 protected:
 
