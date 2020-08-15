@@ -200,73 +200,64 @@ void ModalDialogInput::updateOkButtonState()
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameAnnotation(const String &name)
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput(name,
-            TRANS(I18n::Dialog::annotationRenameCaption),
-            TRANS(I18n::Dialog::annotationRenameProceed),
-            TRANS(I18n::Dialog::annotationRenameCancel)));
+    return make<ModalDialogInput>(name,
+        TRANS(I18n::Dialog::annotationRenameCaption),
+        TRANS(I18n::Dialog::annotationRenameProceed),
+        TRANS(I18n::Dialog::annotationRenameCancel));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameInstrument(const String &name)
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput(name,
-            TRANS(I18n::Dialog::instrumentRenameCaption),
-            TRANS(I18n::Dialog::instrumentRenameProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogInput>(name,
+        TRANS(I18n::Dialog::instrumentRenameCaption),
+        TRANS(I18n::Dialog::instrumentRenameProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::changeTimeSignature(const String &name)
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput(name,
-            TRANS(I18n::Dialog::timeSignatureEditCaption),
-            TRANS(I18n::Dialog::timeSignatureEditApply),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogInput>(name,
+        TRANS(I18n::Dialog::timeSignatureEditCaption),
+        TRANS(I18n::Dialog::timeSignatureEditApply),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameTrack(const String &name)
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput(name,
-            TRANS(I18n::Dialog::renameTrackCaption),
-            TRANS(I18n::Dialog::renameTrackProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogInput>(name,
+        TRANS(I18n::Dialog::renameTrackCaption),
+        TRANS(I18n::Dialog::renameTrackProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput(
-            TRANS(I18n::Defaults::midiTrackName),
-            TRANS(I18n::Dialog::addTrackCaption),
-            TRANS(I18n::Dialog::addTrackProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogInput>(TRANS(I18n::Defaults::midiTrackName),
+        TRANS(I18n::Dialog::addTrackCaption),
+        TRANS(I18n::Dialog::addTrackProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirmation()
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput({},
-            TRANS(I18n::Dialog::deleteProjectConfirmCaption),
-            TRANS(I18n::Dialog::deleteProjectConfirmProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogInput>(String(),
+        TRANS(I18n::Dialog::deleteProjectConfirmCaption),
+        TRANS(I18n::Dialog::deleteProjectConfirmProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &name)
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput(name,
-            TRANS(I18n::Dialog::vcsCommitCaption),
-            TRANS(I18n::Dialog::vcsCommitProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogInput>(name,
+        TRANS(I18n::Dialog::vcsCommitCaption),
+        TRANS(I18n::Dialog::vcsCommitProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
 {
-    return UniquePointer<ModalDialogInput>(
-        new ModalDialogInput({},
-            TRANS(I18n::Dialog::addArpCaption),
-            TRANS(I18n::Dialog::addArpProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogInput>(String(),
+        TRANS(I18n::Dialog::addArpCaption),
+        TRANS(I18n::Dialog::addArpProceed),
+        TRANS(I18n::Dialog::cancel));
 }

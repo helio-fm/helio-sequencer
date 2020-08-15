@@ -23,12 +23,11 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
 {
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
-    this->messageLabel->setFont(Font (21.00f, Font::plain));
+    this->messageLabel->setFont({ 21.f });
     this->messageLabel->setJustificationType(Justification::centred);
 
     this->cancelButton = make<TextButton>();
     this->addAndMakeVisible(this->cancelButton.get());
-    this->cancelButton->setConnectedEdges(Button::ConnectedOnRight | Button::ConnectedOnTop);
     this->cancelButton->onClick = [this]()
     {
         this->cancel();
@@ -36,7 +35,6 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
-    this->okButton->setConnectedEdges(Button::ConnectedOnLeft | Button::ConnectedOnTop);
     this->okButton->onClick = [this]()
     {
         this->okay();
@@ -142,36 +140,32 @@ void ModalDialogConfirmation::okay()
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteProject()
 {
-    return UniquePointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS(I18n::Dialog::deleteProjectCaption),
-            TRANS(I18n::Dialog::deleteProjectProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogConfirmation>(
+        TRANS(I18n::Dialog::deleteProjectCaption),
+        TRANS(I18n::Dialog::deleteProjectProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forceCheckout()
 {
-    return UniquePointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS(I18n::Dialog::vcsCheckoutWarning),
-            TRANS(I18n::Dialog::vcsCheckoutProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogConfirmation>(
+        TRANS(I18n::Dialog::vcsCheckoutWarning),
+        TRANS(I18n::Dialog::vcsCheckoutProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
 {
-    return UniquePointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS(I18n::Dialog::vcsResetCaption),
-            TRANS(I18n::Dialog::vcsResetProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogConfirmation>(
+        TRANS(I18n::Dialog::vcsResetCaption),
+        TRANS(I18n::Dialog::vcsResetProceed),
+        TRANS(I18n::Dialog::cancel));
 }
 
 UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
 {
-    return UniquePointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS(I18n::Dialog::openglCaption),
-            TRANS(I18n::Dialog::openglProceed),
-            TRANS(I18n::Dialog::cancel)));
+    return make<ModalDialogConfirmation>(
+        TRANS(I18n::Dialog::openglCaption),
+        TRANS(I18n::Dialog::openglProceed),
+        TRANS(I18n::Dialog::cancel));
 }
