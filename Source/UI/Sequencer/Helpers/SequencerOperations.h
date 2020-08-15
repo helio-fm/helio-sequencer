@@ -45,20 +45,6 @@ struct SequencerOperations final
     static PianoSequence *getPianoSequence(const Lasso &selection);
     static PianoSequence *getPianoSequence(const SelectionProxyArray::Ptr selection);
 
-    static void wipeSpace(Array<MidiTrack *> tracks, float startBeat, float endBeat,
-        bool shouldKeepCroppedNotes = true,  bool shouldCheckpoint = true);
-    
-    static void shiftEventsToTheLeft(Array<MidiTrack *> tracks,
-        float targetBeat,  float beatOffset, bool shouldCheckpoint = true);
-    
-    static void shiftEventsToTheRight(Array<MidiTrack *> tracks,
-        float targetBeat, float beatOffset, bool shouldCheckpoint = true);
-    
-    static void snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint = true);
-    static void removeDuplicates(Lasso &selection, bool shouldCheckpoint = true);
-
-    static void moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint = true);
-    
     static bool arpeggiate(Lasso &selection,
         const Temperament::Ptr temperament,
         const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,

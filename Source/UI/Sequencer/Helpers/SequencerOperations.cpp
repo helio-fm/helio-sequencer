@@ -42,7 +42,7 @@
 // most of this code assumes every track has its own undo stack;
 // sounds weird, which it is, but that's how it was implemented back in 2014;
 // later I've discovered that the idea of multiple undo stacks sucks,
-// and left wrappers in sequence classes which use call project's undo stack;
+// and left wrappers in sequence classes which use the project's undo stack;
 // the code here still needs refactoring and passing common undo stack
 // reference to each method.
 
@@ -89,15 +89,6 @@ void splitChangeGroupByLayers(const TGroup &group, TGroups &outGroups)
         outGroups[trackId] = targetArray;
     }
 }
-
-void splitPianoGroupByLayers(const PianoChangeGroup &group, PianoChangeGroupsPerLayer &outGroups)
-{ splitChangeGroupByLayers<Note, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, outGroups); }
-
-void splitAnnotationsGroupByLayers(const AnnotationChangeGroup &group, AnnotationChangeGroupsPerLayer &outGroups)
-{ splitChangeGroupByLayers<AnnotationEvent, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, outGroups); }
-
-void splitAutoGroupByLayers(const AutoChangeGroup &group, AutoChangeGroupsPerLayer &outGroups)
-{ splitChangeGroupByLayers<AutomationEvent, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, outGroups); }
 
 // returns true if madeAnyChanges
 template<typename TEvent, typename TLayer, typename TGroup, typename TGroups>
@@ -198,7 +189,6 @@ bool applyInsertions(const TGroup &groupToInsert,
     return madeAnyChanges;
 }
 
-
 bool applyPianoChanges(const PianoChangeGroup &groupBefore, const PianoChangeGroup &groupAfter, bool &didCheckpoint)
 { return applyChanges<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
 
@@ -249,10 +239,6 @@ bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
     
     return madeAnyChanges;
 }
-
-//bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
-//{ applyRemovals<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint); }
-
 
 bool applyPianoInsertions(const PianoChangeGroup &group, bool &didCheckpoint)
 { return applyInsertions<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint); }
@@ -363,266 +349,6 @@ float SequencerOperations::findEndBeat(const WeakReference<Lasso> selection)
     if (selection != nullptr) { return findEndBeat(*selection); }
     return 0.f;
 }
-
-static float snappedBeat(float beat, float snapsPerBeat)
-{
-    return roundf(beat / snapsPerBeat) * snapsPerBeat;
-}
-
-void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
-                                float startBeat, float endBeat,
-                                bool shouldKeepCroppedNotes /*= true*/, bool shouldCheckpoint /*= true*/)
-{
-    // массив 1: найти все события внутри области
-    // массив 2: создать ноты-обрезки, для тех нот, которые полностью не вмещаются
-    // отложенно удалить все из массива 1
-    // и добавить все из массива 2
-
-    bool didCheckpoint = !shouldCheckpoint;
-    
-    PianoChangeGroup pianoRemoveGroup;
-    PianoChangeGroup pianoInsertGroup;
-
-    AnnotationChangeGroup annotationsRemoveGroup;
-    AutoChangeGroup autoRemoveGroup;
-   
-    for (int i = 0; i < tracks.size(); ++i)
-    {
-        const auto sequence = tracks.getUnchecked(i)->getSequence();
-
-        if (auto *pianoSequence = dynamic_cast<PianoSequence *>(sequence))
-        {
-            for (int j = 0; j < pianoSequence->size(); ++j)
-            {
-                Note *note = static_cast<Note *>(pianoSequence->getUnchecked(j));
-                const float noteStartBeat = note->getBeat();
-                const float noteEndBeat = note->getBeat() + note->getLength();
-                
-                const bool shouldBeDeleted = ((noteStartBeat < endBeat && noteStartBeat >= startBeat) ||
-                                              (noteEndBeat > startBeat && noteEndBeat <= endBeat) ||
-                                              (noteStartBeat < endBeat && noteEndBeat > endBeat));
-                
-                if (shouldBeDeleted)
-                {
-                    pianoRemoveGroup.add(*note);
-                }
-                
-                if (shouldKeepCroppedNotes)
-                {
-                    const bool hasLeftPartToKeep = (noteStartBeat < startBeat && noteEndBeat > startBeat);
-                    
-                    if (hasLeftPartToKeep)
-                    {
-                        pianoInsertGroup.add(note->withLength(startBeat - noteStartBeat).copyWithNewId());
-                    }
-                    
-                    const bool hasRightPartToKeep = (noteStartBeat < endBeat && noteEndBeat > endBeat);
-                    
-                    if (hasRightPartToKeep)
-                    {
-                        pianoInsertGroup.add(note->withBeat(endBeat).withLength(noteEndBeat - endBeat).copyWithNewId());
-                    }
-                }
-            }
-        }
-        else if (auto *textSequence = dynamic_cast<AnnotationsSequence *>(sequence))
-        {
-            for (int j = 0; j < textSequence->size(); ++j)
-            {
-                AnnotationEvent *annotation = static_cast<AnnotationEvent *>(textSequence->getUnchecked(j));
-                const bool shouldBeDeleted = (annotation->getBeat() < endBeat && annotation->getBeat() >= startBeat);
-                
-                if (shouldBeDeleted)
-                {
-                    annotationsRemoveGroup.add(*annotation);
-                }
-            }
-        }
-        else if (auto *autoSequence = dynamic_cast<AutomationSequence *>(sequence))
-        {
-            for (int j = 0; j < autoSequence->size(); ++j)
-            {
-                AutomationEvent *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(j));
-                const bool shouldBeDeleted = (event->getBeat() < endBeat && event->getBeat() >= startBeat);
-                
-                if (shouldBeDeleted)
-                {
-                    autoRemoveGroup.add(*event);
-                }
-            }
-        }
-    }
-    
-    applyPianoRemovals(pianoRemoveGroup, didCheckpoint);
-    applyAnnotationRemovals(annotationsRemoveGroup, didCheckpoint);
-    applyAutoRemovals(autoRemoveGroup, didCheckpoint);
-
-    if (shouldKeepCroppedNotes)
-    {
-        applyPianoInsertions(pianoInsertGroup, didCheckpoint);
-    }
-}
-
-void SequencerOperations::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
-{
-    bool didCheckpoint = !shouldCheckpoint;
-    
-    PianoChangeGroup pianoGroupBefore;
-    PianoChangeGroup pianoGroupAfter;
-    
-    AnnotationChangeGroup annotationsGroupBefore;
-    AnnotationChangeGroup annotationsGroupAfter;
-    
-    AutoChangeGroup autoGroupBefore;
-    AutoChangeGroup autoGroupAfter;
-    
-    for (int i = 0; i < tracks.size(); ++i)
-    {
-        auto *sequence = tracks.getUnchecked(i)->getSequence();
-
-        if (auto *pianoSequence = dynamic_cast<PianoSequence *>(sequence))
-        {
-            for (int j = 0; j < pianoSequence->size(); ++j)
-            {
-                auto *note = static_cast<Note *>(pianoSequence->getUnchecked(j));
-
-                if (note->getBeat() < targetBeat)
-                {
-                    pianoGroupBefore.add(*note);
-                    pianoGroupAfter.add(note->withDeltaBeat(beatOffset));
-                }
-            }
-        }
-        else if (auto *textSequence = dynamic_cast<AnnotationsSequence *>(sequence))
-        {
-            for (int j = 0; j < textSequence->size(); ++j)
-            {
-                auto *annotation = static_cast<AnnotationEvent *>(textSequence->getUnchecked(j));
-
-                if (annotation->getBeat() < targetBeat)
-                {
-                    annotationsGroupBefore.add(*annotation);
-                    annotationsGroupAfter.add(annotation->withDeltaBeat(beatOffset));
-                }
-            }
-        }
-        else if (auto *autoSequence = dynamic_cast<AutomationSequence *>(sequence))
-        {
-            for (int j = 0; j < autoSequence->size(); ++j)
-            {
-                auto *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(j));
-                
-                if (event->getBeat() < targetBeat)
-                {
-                    autoGroupBefore.add(*event);
-                    autoGroupAfter.add(event->withDeltaBeat(beatOffset));
-                }
-            }
-        }
-    }
-    
-    applyPianoChanges(pianoGroupBefore, pianoGroupAfter, didCheckpoint);
-    applyAnnotationChanges(annotationsGroupBefore, annotationsGroupAfter, didCheckpoint);
-    applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint);
-}
-
-void SequencerOperations::shiftEventsToTheRight(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
-{
-    bool didCheckpoint = !shouldCheckpoint;
-    
-    PianoChangeGroup groupBefore;
-    PianoChangeGroup groupAfter;
-    
-    AnnotationChangeGroup annotationsGroupBefore;
-    AnnotationChangeGroup annotationsGroupAfter;
-    
-    AutoChangeGroup autoGroupBefore;
-    AutoChangeGroup autoGroupAfter;
-    
-    for (int i = 0; i < tracks.size(); ++i)
-    {
-        auto *sequence = tracks.getUnchecked(i)->getSequence();
-
-        if (auto *pianoSequence = dynamic_cast<PianoSequence *>(sequence))
-        {
-            for (int j = 0; j < pianoSequence->size(); ++j)
-            {
-                auto *note = static_cast<Note *>(pianoSequence->getUnchecked(j));
-                
-                if (note->getBeat() >= targetBeat)
-                {
-                    groupBefore.add(*note);
-                    groupAfter.add(note->withDeltaBeat(beatOffset));
-                }
-            }
-        }
-        else if (auto *textSequence = dynamic_cast<AnnotationsSequence *>(sequence))
-        {
-            for (int j = 0; j < textSequence->size(); ++j)
-            {
-                auto *annotation = static_cast<AnnotationEvent *>(textSequence->getUnchecked(j));
-                
-                if (annotation->getBeat() >= targetBeat)
-                {
-                    annotationsGroupBefore.add(*annotation);
-                    annotationsGroupAfter.add(annotation->withDeltaBeat(beatOffset));
-                }
-            }
-        }
-        else if (auto *autoSequence = dynamic_cast<AutomationSequence *>(sequence))
-        {
-            for (int j = 0; j < autoSequence->size(); ++j)
-            {
-                auto *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(j));
-                
-                if (event->getBeat() >= targetBeat)
-                {
-                    autoGroupBefore.add(*event);
-                    autoGroupAfter.add(event->withDeltaBeat(beatOffset));
-                }
-            }
-        }
-    }
-    
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
-    applyAnnotationChanges(annotationsGroupBefore, annotationsGroupAfter, didCheckpoint);
-    applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint);
-}
-
-
-void SequencerOperations::snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint)
-{
-    if (selection.getNumSelected() == 0)
-    {
-        return;
-    }
-    
-    bool didCheckpoint = !shouldCheckpoint;
-    
-    PianoChangeGroup groupBefore, groupAfter;
-    
-    for (int i = 0; i < selection.getNumSelected(); ++i)
-    {
-        auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-        
-        const float startBeat = nc->getBeat();
-        const float startBeatSnap = snappedBeat(startBeat, snapsPerBeat);
-        
-        const float endBeat = nc->getBeat() + nc->getLength();
-        const float endBeatSnap = snappedBeat(endBeat, snapsPerBeat);
-        const float lengthSnap = endBeatSnap - startBeatSnap;
-        
-        if (startBeat != startBeatSnap ||
-            endBeat != endBeatSnap)
-        {
-            groupBefore.add(nc->getNote());
-            groupAfter.add(nc->getNote().withBeat(startBeatSnap).withLength(lengthSnap));
-        }
-    }
-    
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
-}
-
 
 void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoint)
 {
@@ -927,138 +653,6 @@ void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoi
     }
 
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
-}
-
-
-void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
-{
-    if (selection.getNumSelected() == 0)
-    { return; }
-    
-    FlatHashMap<MidiEvent::Id, Note> deferredRemoval;
-    FlatHashMap<MidiEvent::Id, Note> unremovableNotes;
-    
-    bool didCheckpoint = !shouldCheckpoint;
-
-    for (int i = 0; i < selection.getNumSelected(); ++i)
-    {
-        NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-        
-        for (int j = 0; j < selection.getNumSelected(); ++j)
-        {
-            if (i == j)
-            {
-                continue;
-            }
-            
-            NoteComponent *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
-            
-            // full overlap
-            const bool isOverlappingNote = (nc->getKey() == nc2->getKey() &&
-                                            nc->getBeat() >= nc2->getBeat() &&
-                                            (nc->getBeat() + nc->getLength()) <= (nc2->getBeat() + nc2->getLength()));
-
-            const bool startsFromTheSameBeat = (nc->getKey() == nc2->getKey() &&
-                                                nc->getBeat() == nc2->getBeat());
-            
-            const bool isOriginalNote = unremovableNotes.contains(nc2->getNote().getId());
-
-            if (! isOriginalNote &&
-                (isOverlappingNote || startsFromTheSameBeat))
-            {
-                unremovableNotes[nc->getNote().getId()] = nc->getNote();
-                deferredRemoval[nc2->getNote().getId()] = nc2->getNote();
-            }
-        }
-    }
-    
-    PianoChangeGroup removalGroup;
-    for (const auto &deferredRemovalIterator : deferredRemoval)
-    {
-        removalGroup.add(deferredRemovalIterator.second);
-    }
-    
-    applyPianoRemovals(removalGroup, didCheckpoint);
-}
-
-
-void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint)
-{
-    if (selection.getNumSelected() == 0)
-    {
-        return;
-    }
-    
-    PianoSequence *targetLayer = dynamic_cast<PianoSequence *>(layer);
-    jassert(targetLayer != nullptr);
-
-    bool didCheckpoint = !shouldCheckpoint;
-    PianoChangeGroupsPerLayer deferredRemovals;
-    PianoChangeGroupProxy::Ptr insertionsForTargetLayer(new PianoChangeGroupProxy());
-    
-    for (const auto &s : selection.getGroupedSelections())
-    {
-        const auto trackSelection(s.second);
-        MidiSequence *midiLayer = trackSelection->getFirstAs<NoteComponent>()->getNote().getSequence();
-
-        if (PianoSequence *sourcePianoLayer = dynamic_cast<PianoSequence *>(midiLayer))
-        {
-            if (sourcePianoLayer != targetLayer)
-            {
-                PianoChangeGroupProxy::Ptr removalsForThisLayer(new PianoChangeGroupProxy());
-                
-                for (int i = 0; i < trackSelection->size(); ++i)
-                {
-                    const Note &n1 = trackSelection->getItemAs<NoteComponent>(i)->getNote();
-                    
-                    bool targetHasTheSameNote = false;
-                    
-                    for (int j = 0; j < targetLayer->size(); ++j)
-                    {
-                        const Note *n2 = static_cast<Note *>(targetLayer->getUnchecked(j));
-                        
-                        if (fabs(n1.getBeat() - n2->getBeat()) < 0.01f &&
-                            fabs(n1.getLength() - n2->getLength()) < 0.01f &&
-                            n1.getKey() == n2->getKey())
-                        {
-                            DBG("targetHasTheSameNote");
-                            targetHasTheSameNote = true;
-                            break;
-                        }
-                    }
-                    
-                    removalsForThisLayer->add(n1);
-                    
-                    if (! targetHasTheSameNote)
-                    {
-                        insertionsForTargetLayer->add(n1);
-                    }
-                    
-                    if (!didCheckpoint)
-                    {
-                        didCheckpoint = true;
-                        sourcePianoLayer->checkpoint();
-                        targetLayer->checkpoint(); // compatibility with per-layer undo system?
-                    }
-                }
-                
-                deferredRemovals[sourcePianoLayer->getTrackId()] = removalsForThisLayer;
-            }
-        }
-    }
-    
-    // events removal
-
-    for (const auto &deferredRemovalIterator : deferredRemovals)
-    {
-        auto groupToRemove = deferredRemovalIterator.second;
-        MidiSequence *midiLayer = groupToRemove->getFirst().getSequence();
-        PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
-        pianoLayer->removeGroup(*groupToRemove, true);
-    }
-    
-    // events insertions
-    targetLayer->insertGroup(*insertionsForTargetLayer, true);
 }
 
 bool SequencerOperations::arpeggiate(Lasso &selection,
@@ -1906,7 +1500,7 @@ void SequencerOperations::applyTuplets(Lasso &selection, Note::Tuplet tuplet, bo
 static inline void doQuantize(float &startBeat, float &length, float bar)
 {
     // todo for the future:
-    // align with the time signature events
+    // align with time signature events
 
     jassert(bar != 0.f);
     const float q = bar / float(Globals::beatsPerBar);
