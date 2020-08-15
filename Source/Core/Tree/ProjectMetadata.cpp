@@ -101,6 +101,15 @@ Temperament::Ptr ProjectMetadata::getTemperament() const noexcept
     return this->temperament;
 }
 
+void ProjectMetadata::setTemperament(const Temperament &value)
+{
+    if (this->temperament->getResourceId() != value.getResourceId())
+    {
+        this->temperament = Temperament::Ptr(new Temperament(value));
+        this->project.broadcastChangeProjectInfo(this);
+    }
+}
+
 int ProjectMetadata::getKeyboardSize() const noexcept
 {
     return this->temperament->getNumKeys();

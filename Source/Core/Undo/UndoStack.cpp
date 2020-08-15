@@ -29,6 +29,7 @@
 #include "AutomationEventActions.h"
 #include "TimeSignatureEventActions.h"
 #include "KeySignatureEventActions.h"
+#include "ProjectMetadataActions.h"
 #include "PatternActions.h"
 
 UndoStack::Transaction::Transaction(ProjectNode &project, UndoActionId transactionId) :
@@ -150,6 +151,7 @@ UndoAction *UndoStack::Transaction::createUndoActionByTag(const Identifier &tagN
     else if (tagName == Undo::automationEventsGroupInsertAction)     { return new AutomationEventsGroupInsertAction(this->project); }
     else if (tagName == Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
     else if (tagName == Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
+    else if (tagName == Undo::projectTemperamentChangeAction)        { return new ProjectTemperamentChangeAction(this->project); }
 
     // Here we could meet deprecated legacy actions
     return nullptr;

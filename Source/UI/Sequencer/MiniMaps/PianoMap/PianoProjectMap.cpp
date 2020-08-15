@@ -214,7 +214,8 @@ void PianoProjectMap::onChangeProjectInfo(const ProjectMetadata *info)
     if (this->keyboardSize != info->getKeyboardSize())
     {
         this->keyboardSize = info->getKeyboardSize();
-        this->triggerAsyncUpdate();
+        this->resized(); // updates componenetHeight
+        this->triggerAsyncUpdate(); // repaints
     }
 }
 

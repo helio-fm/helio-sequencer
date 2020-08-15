@@ -62,9 +62,6 @@ private:
     
     Rectangle<float> realBounds;
 
-    void updatePan();
-    void updateZoom();
-
     Colour colour;
     ProjectMapScroller &scroller;
     ComponentDragger dragger;

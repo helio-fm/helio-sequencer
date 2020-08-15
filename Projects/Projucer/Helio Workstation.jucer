@@ -568,6 +568,10 @@
                   file="../../Source/Core/Undo/Actions/PianoTrackActions.cpp"/>
             <FILE id="z13mOO" name="PianoTrackActions.h" compile="0" resource="0"
                   file="../../Source/Core/Undo/Actions/PianoTrackActions.h"/>
+            <FILE id="UzeL3j" name="ProjectMetadataActions.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Undo/Actions/ProjectMetadataActions.cpp"/>
+            <FILE id="gMljlz" name="ProjectMetadataActions.h" compile="0" resource="0"
+                  file="../../Source/Core/Undo/Actions/ProjectMetadataActions.h"/>
             <FILE id="RqeYx1" name="TimeSignatureEventActions.cpp" compile="1"
                   resource="0" file="../../Source/Core/Undo/Actions/TimeSignatureEventActions.cpp"/>
             <FILE id="fXYYo6" name="TimeSignatureEventActions.h" compile="0" resource="0"

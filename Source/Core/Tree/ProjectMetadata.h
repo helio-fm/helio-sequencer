@@ -47,6 +47,7 @@ public:
     void setDescription(String val);
 
     Temperament::Ptr getTemperament() const noexcept;
+    void setTemperament(const Temperament &temperament);
     int getKeyboardSize() const noexcept;
 
     //===------------------------------------------------------------------===//

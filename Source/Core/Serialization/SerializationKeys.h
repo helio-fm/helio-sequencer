@@ -715,5 +715,7 @@ namespace Serialization
         static const Identifier automationEventsGroupInsertAction = "automationEventsInsert";
         static const Identifier automationEventsGroupRemoveAction = "automationEventsRemove";
         static const Identifier automationEventsGroupChangeAction = "automationEventsChange";
+
+        static const Identifier projectTemperamentChangeAction = "temperamentChange";
     } // namespace Undo
 }  // namespace Serialization
