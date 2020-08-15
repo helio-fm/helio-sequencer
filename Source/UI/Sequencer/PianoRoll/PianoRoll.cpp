@@ -90,20 +90,16 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 
     this->temperament = this->project.getProjectInfo()->getTemperament();
 
-    this->defaultHighlighting = make<HighlightingScheme>(0, Scale::getNaturalMajorScale());
-    this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
-
     this->selectedNotesMenuManager = make<PianoRollSelectionMenuManager>(&this->selection, this->project);
-
-    this->setRowHeight(PianoRoll::defaultRowHeight);
 
     this->draggingHelper = make<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
 
     this->consoleChordConstructor = make<CommandPaletteChordConstructor>(*this);
 
-    this->scalesHighlightingEnabled = App::Config().getUiFlags()->isScalesHighlightingEnabled();
-    const bool noteNameGuidesEnabled = App::Config().getUiFlags()->isNoteNameGuidesEnabled();
+    const auto *uiFlags = App::Config().getUiFlags();
+    this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
+    const bool noteNameGuidesEnabled = uiFlags->isNoteNameGuidesEnabled();
 
     this->noteNameGuides = make<NoteNameGuidesBar>(*this);
     this->addChildComponent(this->noteNameGuides.get());
@@ -111,6 +107,8 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 
     this->reloadRollContent();
 
+    // finally, when the bg caches are rendered:
+    this->setRowHeight(PianoRoll::defaultRowHeight);
     this->setBeatRange(0, Globals::Defaults::projectLength);
 }
 
@@ -756,6 +754,7 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
         this->temperament = info->getTemperament();
         this->noteNameGuides->syncWithTemperament(this->temperament);
         this->updateBackgroundCachesAndRepaint();
+        this->updateSize(); // might have changed by due to different temperament
     }
 }
 
@@ -1622,6 +1621,10 @@ void PianoRoll::updateBackgroundCachesAndRepaint()
 {
     HYBRID_ROLL_BULK_REPAINT_START
 
+    const auto highlightingScale = App::Config().getTemperaments()->findHighlightingFor(this->temperament);
+    this->defaultHighlighting = make<HighlightingScheme>(0, highlightingScale);
+    this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
+
     this->backgroundsCache.clear();
 
     for (const auto *track : this->project.getTracks())
@@ -1702,13 +1705,12 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     }
 
     const auto periodSize = temperament->getPeriodSize();
-    jassert(scale->getBasePeriod() == periodSize);
+    //jassert(scale->getBasePeriod() == periodSize);
 
     // pre-rendered tiles are used in paint() method to fill the background,
-    // but OpenGL doesn't work well with non-power-of-2 textures
-    // and the smaller the texture is, the uglier it is displayed,
-    // that's why I ended up rendering 6 octaves here instead of one:
-    const auto numRowsToRender = periodSize * 6;
+    // but OpenGL doesn't work well with non-power-of-2 textures;
+    // let's render a number of periods which fit into a 1024px texture:
+    const auto numRowsToRender = periodSize * jmax(2, 1024 / (periodSize * height));
 
     Image patternImage(Image::RGB, 4, height * numRowsToRender, false);
     Graphics g(patternImage);

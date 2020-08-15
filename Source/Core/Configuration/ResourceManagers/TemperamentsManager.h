@@ -17,8 +17,9 @@
 
 #pragma once
 
-#include "Temperament.h"
 #include "ResourceManager.h"
+#include "Temperament.h"
+#include "Scale.h"
 
 class TemperamentsManager final : public ResourceManager
 {
@@ -35,6 +36,8 @@ public:
     {
         return this->getAllResources<Temperament>();
     }
+
+    const Scale::Ptr findHighlightingFor(Temperament::Ptr temperament) const;
 
 private:
 

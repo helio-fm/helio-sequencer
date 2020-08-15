@@ -82,6 +82,7 @@ public:
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
+    static Scale::Ptr getChromaticScale();
     static Scale::Ptr getNaturalMinorScale();
     static Scale::Ptr getNaturalMajorScale();
 
@@ -123,7 +124,7 @@ private:
 private:
 
     // "anonymous" scales, helpers for temperaments
-    static Scale fromIntervalsAndPeriod(const String &intervals, int periodSize);
+    static Scale::Ptr fromIntervalsAndPeriod(const String &intervals, int periodSize);
     String getIntervals() const noexcept;
     friend class Temperament;
 

@@ -35,30 +35,14 @@ public:
     using Period = StringArray;
     using Ptr = ReferenceCountedObjectPtr<Temperament>;
 
-    inline const String &getName() const noexcept
-    {
-        return this->name;
-    }
+    inline const String &getName() const noexcept { return this->name; }
+    inline const Period &getPeriod() const noexcept { return this->period; }
+    inline auto getPeriodSize() const noexcept { return this->period.size(); }
+    inline auto getNumKeys() const noexcept { return this->keysTotal; }
+    inline auto getMiddleC() const noexcept { return this->middleC; }
 
-    inline const Period &getPeriod() const noexcept
-    {
-        return this->period;
-    }
-
-    inline auto getPeriodSize() const noexcept
-    {
-        return this->period.size();
-    }
-
-    inline auto getNumKeys() const noexcept
-    {
-        return this->keysTotal;
-    }
-
-    inline auto getMiddleC() const noexcept
-    {
-        return this->middleC;
-    }
+    const Scale::Ptr getHighlighting() const noexcept { return this->highlighting; }
+    const Scale::Ptr getChromaticMap() const noexcept { return this->chromaticMap; }
 
     String getMidiNoteName(Note::Key note, bool includePeriod) const noexcept;
 
@@ -95,8 +79,8 @@ private:
     Note::Key middleC = 0;
     int keysTotal = 0;
 
-    Scale highlighting;
-    Scale chromaticMap;
+    Scale::Ptr highlighting;
+    Scale::Ptr chromaticMap;
 
     static constexpr auto periodNumForMiddleC = 5;
     static constexpr auto displayedPeriodNumForMiddleC = 3;

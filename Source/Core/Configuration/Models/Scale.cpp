@@ -40,6 +40,19 @@ Scale::Ptr Scale::withKeys(const Array<int> &keys) const noexcept
 // Hard-coded defaults
 //===----------------------------------------------------------------------===//
 
+inline static Array<int> getChromaticKeys()
+{
+    return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+}
+
+Scale::Ptr Scale::getChromaticScale()
+{
+    Scale::Ptr s(new Scale());
+    s->keys = getChromaticKeys();
+    s->name = TRANS("Chromatic");
+    return s;
+}
+
 inline static Array<int> getNaturalMinorKeys()
 {
     return { 0, 2, 3, 5, 7, 8, 10 };
@@ -77,7 +90,7 @@ int Scale::getSize() const noexcept
 
 bool Scale::isValid() const noexcept
 {
-    return !this->keys.isEmpty() && !this->name.isEmpty();
+    return !this->keys.isEmpty() && this->basePeriod > 0;
 }
 
 String Scale::getLocalizedName() const
@@ -265,11 +278,11 @@ int Scale::hashCode() const noexcept
     return static_cast<int>(hc);
 }
 
-Scale Scale::fromIntervalsAndPeriod(const String &intervals, int periodSize)
+Scale::Ptr Scale::fromIntervalsAndPeriod(const String &intervals, int periodSize)
 {
-    Scale scale;
-    scale.keys = getKeysFromIntervals(intervals, periodSize);
-    scale.basePeriod = periodSize;
+    Scale::Ptr scale(new Scale());
+    scale->keys = getKeysFromIntervals(intervals, periodSize);
+    scale->basePeriod = periodSize;
     return scale;
 }
 

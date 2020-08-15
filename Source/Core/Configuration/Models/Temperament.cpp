@@ -21,10 +21,12 @@
 
 Temperament::Temperament(const Temperament &other) noexcept :
     id(other.id), name(other.name),
-    period(other.period), middleC(other.middleC) {}
+    period(other.period), middleC(other.middleC), keysTotal(other.keysTotal),
+    highlighting(other.highlighting), chromaticMap(other.chromaticMap) {}
 
 Temperament::Temperament(Temperament &&other) noexcept :
-    id(other.id), name(other.name), middleC(other.middleC)
+    id(other.id), name(other.name), middleC(other.middleC), keysTotal(other.keysTotal),
+    highlighting(other.highlighting), chromaticMap(other.chromaticMap)
 {
     this->period.swapWith(other.period);
 }
@@ -71,6 +73,8 @@ Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
     t->id = "12edo";
     t->name = "12 equal temperament";
     t->period = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+    t->highlighting = Scale::getNaturalMajorScale();
+    t->chromaticMap = Scale::getChromaticScale();
     t->keysTotal = Globals::twelveToneKeyboardSize;
     t->middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
     return t;
@@ -90,8 +94,8 @@ SerializedData Temperament::serialize() const
     data.setProperty(Midi::temperamentName, this->name);
     data.setProperty(Midi::temperamentPeriod, this->period.joinIntoString(" "));
 
-    data.setProperty(Midi::temperamentHighlighting, this->highlighting.getIntervals());
-    data.setProperty(Midi::temperamentChromaticMap, this->chromaticMap.getIntervals());
+    data.setProperty(Midi::temperamentHighlighting, this->highlighting->getIntervals());
+    data.setProperty(Midi::temperamentChromaticMap, this->chromaticMap->getIntervals());
 
     return data;
 }
@@ -140,6 +144,8 @@ Temperament &Temperament::operator=(const Temperament &other)
     this->period = other.period;
     this->middleC = other.middleC;
     this->keysTotal = other.keysTotal;
+    this->highlighting = other.highlighting;
+    this->chromaticMap = other.chromaticMap;
     return *this;
 }
 

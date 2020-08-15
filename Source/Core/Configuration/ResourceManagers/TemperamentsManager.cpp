@@ -36,3 +36,32 @@ void TemperamentsManager::deserializeResources(const SerializedData &tree, Resou
         outResources[temperament->getResourceId()] = temperament;
     }
 }
+
+const Scale::Ptr TemperamentsManager::findHighlightingFor(Temperament::Ptr temperament) const
+{
+    const auto ownHighlighting = temperament->getHighlighting();
+
+    if (ownHighlighting != nullptr && ownHighlighting->isValid())
+    {
+        return ownHighlighting;
+    }
+
+    jassertfalse;
+
+    // play safe: if the temperament doesn't describe highlighting
+    // for whatever reason, try to find it among other resources
+    for (const auto t : this->getAll())
+    {
+        if (t->getResourceId() == temperament->getResourceId())
+        {
+            const auto otherHighlighting = t->getHighlighting();
+            if (otherHighlighting != nullptr && otherHighlighting->isValid())
+            {
+                return otherHighlighting;
+            }
+        }
+    }
+
+    // and fallback to 12-tone major
+    return Scale::getNaturalMajorScale();
+}
