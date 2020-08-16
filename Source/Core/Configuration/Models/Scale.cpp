@@ -142,16 +142,35 @@ static int wrapKey(int key, int const lowerKey, int const upperKey)
     return lowerKey + (safeKey - lowerKey) % keyRange;
 }
 
-bool Scale::hasKey(int chormaticKey) const
+bool Scale::hasKey(int chromaticKey) const
 {
-    const auto wrappedKey = wrapKey(chormaticKey, 0, this->getBasePeriod());
+    const auto wrappedKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
     return this->keys.contains(wrappedKey);
 }
 
-int Scale::getScaleKey(int chormaticKey) const
+int Scale::getScaleKey(int chromaticKey) const
 {
-    const auto wrappedKey = wrapKey(chormaticKey, 0, this->getBasePeriod());
+    const auto wrappedKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
     return this->keys.indexOf(wrappedKey);
+}
+
+int Scale::getNearestScaleKey(int chromaticKey) const
+{
+    const auto wrappedKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
+    auto minDelta = this->getBasePeriod();
+    auto result = wrappedKey;
+
+    for (const auto &scaleKey : this->keys)
+    {
+        const auto delta = abs(scaleKey - wrappedKey);
+        if (minDelta > delta)
+        {
+            minDelta = delta;
+            result = this->keys.indexOf(scaleKey);
+        }
+    }
+    
+    return result;
 }
 
 int Scale::getChromaticKey(int inScaleKey, int extraChromaticOffset,
@@ -163,6 +182,7 @@ int Scale::getChromaticKey(int inScaleKey, int extraChromaticOffset,
         idx + (this->getBasePeriod() * (inScaleKey / this->getSize()));
     return scaleToChromatic + extraChromaticOffset;
 }
+
 
 int Scale::getBasePeriod() const noexcept
 {

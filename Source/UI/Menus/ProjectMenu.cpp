@@ -19,6 +19,7 @@
 #include "ProjectMenu.h"
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
+#include "ProjectMetadataActions.h"
 #include "Icons.h"
 #include "ModalDialogInput.h"
 #include "ModalDialogConfirmation.h"
@@ -31,7 +32,7 @@
 #include "Instrument.h"
 #include "PianoSequence.h"
 #include "HybridRoll.h"
-#include "Document.h"
+#include "SequencerOperations.h"
 #include "SuccessTooltip.h"
 #include "MidiTrackActions.h"
 #include "PianoTrackActions.h"
@@ -40,6 +41,7 @@
 #include "UndoStack.h"
 #include "MainLayout.h"
 #include "Workspace.h"
+#include "Config.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
@@ -358,18 +360,65 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
                 this->showSetInstrumentMenu();
             }));
     }
+    
+    //const auto currentPeriodSize = this->project.getProjectInfo()->getTemperament()->getPeriodSize();
+    //const auto canRemap = currentPeriodSize == Globals::twelveTonePeriodSize; // and experimental features flag is enabled?
+    //if (canRemap)
+    {
+        menu.add(MenuItem::item(Icons::refactor,
+            TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
+            {
+                this->showTemperamentsMenu();
+            }));
+    }
 
     this->updateContent(menu, animationType);
+}
+
+void ProjectMenu::showTemperamentsMenu()
+{
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
+    {
+        this->showBatchActionsMenu(MenuPanel::SlideRight);
+    }));
+
+    const auto &temperaments = App::Config().getTemperaments()->getAll();
+    const auto currentPeriodSize = this->project.getProjectInfo()->getTemperament()->getPeriodSize();
+
+    for (const auto otherTemperament : temperaments)
+    {
+        menu.add(MenuItem::item(Icons::refactor,
+            TRANS(otherTemperament->getName()))->
+            disabledIf(otherTemperament->getPeriodSize() == currentPeriodSize)->
+            closesMenu()->
+            withAction([this, otherTemperament]()
+        {
+            const bool hasMadeChanges = 
+                SequencerOperations::remapToTemperament(this->project, otherTemperament, true);
+
+            if (!hasMadeChanges)
+            {
+                this->project.checkpoint();
+            }
+
+            this->project.getUndoStack()->perform(
+                new ProjectTemperamentChangeAction(this->project, *otherTemperament));
+
+            // todo also readjust the sequencer view? now it jumps up or down
+        }));
+    }
+
+    this->updateContent(menu, MenuPanel::SlideLeft);
 }
 
 void ProjectMenu::showSetInstrumentMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::back,
-        TRANS(I18n::Menu::back))->withAction([this]()
-        {
-            this->showBatchActionsMenu(MenuPanel::SlideRight);
-        }));
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
+    {
+        this->showBatchActionsMenu(MenuPanel::SlideRight);
+    }));
 
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (int i = 0; i < instruments.size(); ++i)
@@ -381,8 +430,7 @@ void ProjectMenu::showSetInstrumentMenu()
             {
                 DBG(instruments[i]->getIdAndHash());
 
-                const Array<MidiTrackNode *> tracks =
-                    this->project.findChildrenOfType<MidiTrackNode>();
+                const auto tracks = this->project.findChildrenOfType<MidiTrackNode>();
 
                 if (tracks.size() > 0)
                 {

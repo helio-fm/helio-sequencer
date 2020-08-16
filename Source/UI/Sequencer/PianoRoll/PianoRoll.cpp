@@ -755,6 +755,7 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
         this->noteNameGuides->syncWithTemperament(this->temperament);
         this->updateBackgroundCachesAndRepaint();
         this->updateSize(); // might have changed by due to different temperament
+        this->updateChildrenPositions();
     }
 }
 
@@ -764,6 +765,7 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
     this->noteNameGuides->syncWithTemperament(this->temperament);
     this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
     this->updateSize(); // might have changed by due to different temperament
+    this->updateChildrenPositions();
 }
 
 void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)

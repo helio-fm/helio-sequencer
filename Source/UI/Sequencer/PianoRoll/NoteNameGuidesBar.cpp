@@ -84,8 +84,10 @@ void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
         const auto key = jlimit(0, this->roll.getNumKeys(),
             nc->getNote().getKey() + nc->getClip().getKey());
 
-        jassert(key <= this->guides.size() - 1);
-        this->guides.getUnchecked(key)->setVisible(true);
+        if (key <= this->guides.size() - 1)
+        {
+            this->guides.getUnchecked(key)->setVisible(true);
+        }
     }
 
     this->setVisible(wasVisible);

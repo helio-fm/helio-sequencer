@@ -71,6 +71,10 @@ public:
     // Returns -1 if chromatic key is not found within the scale
     int getScaleKey(int chormaticKey) const;
 
+    // Chromatic key will be wrapped from 0 to scale's period size
+    // Returns index of the closest in-scale key
+    int getNearestScaleKey(int chromaticKey) const;
+
     // Key (input and returned) starts from 0
     int getChromaticKey(int inScaleKey, int extraChromaticOffset,
         bool restrictToOneOctave) const noexcept;

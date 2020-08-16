@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "SequencerOperations.h"
 #include "ProjectNode.h"
+#include "ProjectMetadata.h"
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
@@ -1751,6 +1752,73 @@ bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, f
                     }
                 }
             }
+        }
+
+        if (groupBefore.size() == 0)
+        {
+            continue;
+        }
+
+        if (!didCheckpoint)
+        {
+            sequence->checkpoint();
+            didCheckpoint = true;
+        }
+
+        hasMadeChanges = true;
+        sequence->changeGroup(groupBefore, groupAfter, true);
+    }
+
+    return hasMadeChanges;
+}
+
+bool SequencerOperations::remapToTemperament(const ProjectNode &project,
+    Temperament::Ptr temperament, bool shouldCheckpoint)
+{
+    bool hasMadeChanges = false;
+    bool didCheckpoint = !shouldCheckpoint;
+
+    const auto currentTemperament = project.getProjectInfo()->getTemperament();
+    const auto chromaticMapFrom = currentTemperament->getChromaticMap();
+    const auto chromaticMapTo = temperament->getChromaticMap();
+
+    if (chromaticMapFrom == nullptr || chromaticMapTo == nullptr ||
+        !chromaticMapFrom->isValid() || !chromaticMapTo->isValid())
+    {
+        jassertfalse;
+        return false;
+    }
+
+    const auto periodSizeBefore = currentTemperament->getPeriodSize();
+    const auto periodSizeAfter = temperament->getPeriodSize();
+
+    const auto pianoTracks = project.findChildrenOfType<PianoTrackNode>();
+    for (const auto *track : pianoTracks)
+    {
+        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
+
+        PianoChangeGroup groupBefore, groupAfter;
+
+        // upscaling temperament from twelve-tone is really straightforward,
+        // but we'll also support downscaling from larger temperament to smaller one:
+        // for that we'll just round each key to the nearest key of chromatic approximation scale
+        // (we totally ignore clip key offsets at the moment, although they could also be mapped?)
+
+        for (int i = 0; i < sequence->size(); ++i)
+        {
+            const auto *note = static_cast<Note *>(sequence->getUnchecked(i));
+            const auto key = note->getKey();
+            const auto periodNum = key / periodSizeBefore;
+            const auto relativeKey = key % periodSizeBefore;
+
+            // now we need to round relative key to the nearest one in chromaticMapFrom 
+            const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
+            const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, 0, false);
+
+            const auto newKey = periodNum * periodSizeAfter + newRelativeKey;
+
+            groupBefore.add(*note);
+            groupAfter.add(note->withKey(newKey));
         }
 
         if (groupBefore.size() == 0)
