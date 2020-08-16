@@ -171,6 +171,46 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         }
     }
 
+    // step 2:
+    // resolve new delta types that may be missing in project history state
+
+    bool stateHasTmperaments = false;
+
+    for (int i = 0; i < initialState.getNumDeltas(); ++i)
+    {
+        const Delta *stateDelta = initialState.getDelta(i);
+        stateHasTmperaments = stateHasTmperaments || stateDelta->hasType(ProjectInfoDeltas::projectTemperament);
+    }
+
+    for (int i = 0; i < initialState.getNumDeltas(); ++i)
+    {
+        auto temperamentsDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectInfoDeltas::projectTemperament);
+
+        SerializedData temperamentsDeltaData;
+
+        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        {
+            const Delta *targetDelta = this->target.getDelta(j);
+            const auto targetDeltaData(this->target.getDeltaData(j));
+
+            const bool foundMissingTemperament = !stateHasTmperaments &&
+                targetDelta->hasType(ProjectInfoDeltas::projectTemperament);
+
+            if (foundMissingTemperament)
+            {
+                SerializedData emptyTemperamentDeltaData(ProjectInfoDeltas::projectTemperament);
+                temperamentsDeltaData = mergeTemperament(emptyTemperamentDeltaData, targetDeltaData);
+            }
+        }
+
+        if (temperamentsDeltaData.isValid())
+        {
+            diff->applyDelta(temperamentsDelta.release(), temperamentsDeltaData);
+        }
+    }
+
     return diff;
 }
 

@@ -124,8 +124,18 @@ void Temperament::deserialize(const SerializedData &data)
     this->highlighting = Scale::fromIntervalsAndPeriod(
         root.getProperty(Midi::temperamentHighlighting), this->getPeriodSize());
 
+    if (!this->highlighting->isValid())
+    {
+        this->highlighting = Scale::getNaturalMajorScale();
+    }
+
     this->chromaticMap = Scale::fromIntervalsAndPeriod(
         root.getProperty(Midi::temperamentChromaticMap), this->getPeriodSize());
+
+    if (!this->chromaticMap->isValid())
+    {
+        this->chromaticMap = Scale::getChromaticScale();
+    }
 }
 
 void Temperament::reset()

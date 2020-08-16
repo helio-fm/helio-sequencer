@@ -90,7 +90,7 @@ int Scale::getSize() const noexcept
 
 bool Scale::isValid() const noexcept
 {
-    return !this->keys.isEmpty() && this->basePeriod > 0;
+    return this->getSize() > 1 && this->getBasePeriod() > 0;
 }
 
 String Scale::getLocalizedName() const
