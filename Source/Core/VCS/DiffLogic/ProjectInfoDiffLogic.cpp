@@ -28,11 +28,13 @@ static SerializedData mergeLicense(const SerializedData &state, const Serialized
 static SerializedData mergeFullName(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeAuthor(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeDescription(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeTemperament(const SerializedData &state, const SerializedData &changes);
 
 static DeltaDiff createLicenseDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createFullNameDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createAuthorDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createDescriptionDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createTemperamentDiff(const SerializedData &state, const SerializedData &changes);
 
 ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
@@ -93,6 +95,10 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
             {
                 diff->applyDelta(createDescriptionDiff(stateDeltaData, myDeltaData));
             }
+            else if (myDelta->hasType(ProjectInfoDeltas::projectTemperament))
+            {
+                diff->applyDelta(createTemperamentDiff(stateDeltaData, myDeltaData));
+            }
         }
     }
 
@@ -127,26 +133,32 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 
                 if (targetDelta->hasType(ProjectInfoDeltas::projectLicense))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    SerializedData diffDeltaData = mergeLicense(stateDeltaData, targetDeltaData);
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeLicense(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectTitle))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    SerializedData diffDeltaData = mergeFullName(stateDeltaData, targetDeltaData);
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeFullName(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectAuthor))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    SerializedData diffDeltaData = mergeAuthor(stateDeltaData, targetDeltaData);
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeAuthor(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectDescription))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    SerializedData diffDeltaData = mergeDescription(stateDeltaData, targetDeltaData);
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeDescription(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
+                }
+                else if (targetDelta->hasType(ProjectInfoDeltas::projectTemperament))
+                {
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeTemperament(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
@@ -186,6 +198,11 @@ SerializedData mergeDescription(const SerializedData &state, const SerializedDat
     return changes.createCopy();
 }
 
+SerializedData mergeTemperament(const SerializedData &state, const SerializedData &changes)
+{
+    return changes.createCopy();
+}
+
 DeltaDiff createLicenseDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
@@ -218,6 +235,15 @@ DeltaDiff createDescriptionDiff(const SerializedData &state, const SerializedDat
     DeltaDiff res;
     using namespace Serialization::VCS;
     res.delta.reset(new Delta(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription));
+    res.deltaData = changes.createCopy();
+    return res;
+}
+
+DeltaDiff createTemperamentDiff(const SerializedData &state, const SerializedData &changes)
+{
+    DeltaDiff res;
+    using namespace Serialization::VCS;
+    res.delta.reset(new Delta(DeltaDescription("temperament changed"), ProjectInfoDeltas::projectTemperament));
     res.deltaData = changes.createCopy();
     return res;
 }

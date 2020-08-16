@@ -24,7 +24,7 @@ ProjectMetadata::ProjectMetadata(ProjectNode &parent) : project(parent)
 {
     using namespace Serialization::VCS;
 
-    this->vcsDiffLogic.reset(new VCS::ProjectInfoDiffLogic(*this));
+    this->vcsDiffLogic = make<VCS::ProjectInfoDiffLogic>(*this);
 
     this->initTimestamp = Time::getCurrentTime().toMilliseconds();
     this->license = "Copyright";
@@ -35,8 +35,8 @@ ProjectMetadata::ProjectMetadata(ProjectNode &parent) : project(parent)
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectLicense));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTitle));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectAuthor));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTemperament));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription("initialized"), ProjectInfoDeltas::projectDescription));
-    // todo temperament deltas
 }
 
 int64 ProjectMetadata::getStartTimestamp() const noexcept
@@ -154,8 +154,10 @@ SerializedData ProjectMetadata::getDeltaData(int deltaIndex) const
     {
         return this->serializeDescriptionDelta();
     }
-
-    // todo temperaments
+    else if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectTemperament))
+    {
+        return this->serializeTemperamentDelta();
+    }
 
     jassertfalse;
     return {};
@@ -191,7 +193,10 @@ void ProjectMetadata::resetStateTo(const TrackedItem &newState)
         {
             this->resetDescriptionDelta(newDeltaData);
         }
-        // todo temperaments
+        else if (newDelta->hasType(ProjectInfoDeltas::projectTemperament))
+        {
+            this->resetTemperamentDelta(newDeltaData);
+        }
     }
 }
 
@@ -261,8 +266,6 @@ void ProjectMetadata::reset()
 // Deltas
 //===----------------------------------------------------------------------===//
 
-// todo temperaments
-
 SerializedData ProjectMetadata::serializeLicenseDelta() const
 {
     SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectLicense);
@@ -288,6 +291,13 @@ SerializedData ProjectMetadata::serializeDescriptionDelta() const
 {
     SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectDescription);
     tree.setProperty(Serialization::VCS::delta, this->getDescription());
+    return tree;
+}
+
+SerializedData ProjectMetadata::serializeTemperamentDelta() const
+{
+    SerializedData tree(Serialization::VCS::ProjectInfoDeltas::projectTemperament);
+    tree.appendChild(this->temperament->serialize());
     return tree;
 }
 
@@ -328,5 +338,19 @@ void ProjectMetadata::resetDescriptionDelta(const SerializedData &state)
     if (descriptionDelta != this->description)
     {
         this->setDescription(descriptionDelta);
+    }
+}
+
+void ProjectMetadata::resetTemperamentDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::ProjectInfoDeltas::projectTemperament));
+    if (state.getNumChildren() > 0)
+    {
+        jassert(this->temperament != nullptr);
+        this->temperament->deserialize(state.getChild(0));
+    }
+    else
+    {
+        this->temperament = Temperament::getTwelveToneEqualTemperament();
     }
 }

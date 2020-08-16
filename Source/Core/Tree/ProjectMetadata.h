@@ -77,11 +77,13 @@ public:
     SerializedData serializeFullNameDelta() const;
     SerializedData serializeAuthorDelta() const;
     SerializedData serializeDescriptionDelta() const;
+    SerializedData serializeTemperamentDelta() const;
 
     void resetLicenseDelta(const SerializedData &state);
     void resetFullNameDelta(const SerializedData &state);
     void resetAuthorDelta(const SerializedData &state);
     void resetDescriptionDelta(const SerializedData &state);
+    void resetTemperamentDelta(const SerializedData &state);
 
 private:
 
