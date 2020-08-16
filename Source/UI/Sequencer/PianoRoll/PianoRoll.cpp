@@ -1090,10 +1090,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -1, true, &this->getTransport());
         break;
     case CommandIDs::OctaveShiftUp:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), 12, true, &this->getTransport());
+        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::OctaveShiftDown:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -12, true, &this->getTransport());
+        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::CleanupOverlaps:
         SequencerOperations::cleanupOverlaps(this->getLassoSelection());
@@ -1105,10 +1105,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::retrograde(this->getLassoSelection());
         break;
     case CommandIDs::InvertChordUp:
-        SequencerOperations::invertChord(this->getLassoSelection(), 12, true, &this->getTransport());
+        SequencerOperations::invertChord(this->getLassoSelection(), this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::InvertChordDown:
-        SequencerOperations::invertChord(this->getLassoSelection(), -12, true, &this->getTransport());
+        SequencerOperations::invertChord(this->getLassoSelection(), -this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::ToggleMuteClips:
         PatternOperations::toggleMuteClip(this->activeClip);
