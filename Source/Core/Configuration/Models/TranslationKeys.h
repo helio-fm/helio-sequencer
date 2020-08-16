@@ -128,6 +128,7 @@ namespace I18n
             static const Identifier addTrack = "menu::project::addlayer";
             static const Identifier addTempo = "menu::project::addtempo";
             static const Identifier changeInstrument = "menu::project::change::instrument";
+            static const Identifier changeTemperament = "menu::project::change::tmpr";
             static const Identifier convertTemperament = "menu::project::convert::tmpr";
             static const Identifier deleteConfirm = "menu::project::delete";
             static const Identifier deleteCancelled = "menu::project::delete::cancelled";

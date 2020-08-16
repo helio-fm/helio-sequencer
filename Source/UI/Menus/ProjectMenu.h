@@ -38,7 +38,7 @@ private:
     void showBatchActionsMenu(AnimationType animationType);
     void showRenderMenu();
     void showSetInstrumentMenu();
-    void showTemperamentsMenu();
+    void showTemperamentsMenu(bool convertTracks);
 
     void showCreateItemsMenu(AnimationType animationType);
     void showNewTrackMenu(AnimationType animationType);

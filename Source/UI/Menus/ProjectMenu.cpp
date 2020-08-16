@@ -364,18 +364,22 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
     //const auto currentPeriodSize = this->project.getProjectInfo()->getTemperament()->getPeriodSize();
     //const auto canRemap = currentPeriodSize == Globals::twelveTonePeriodSize; // and experimental features flag is enabled?
     //if (canRemap)
+    menu.add(MenuItem::item(Icons::refactor,
+        TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
     {
-        menu.add(MenuItem::item(Icons::refactor,
-            TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
-            {
-                this->showTemperamentsMenu();
-            }));
-    }
+        this->showTemperamentsMenu(false);
+    }));
+
+    menu.add(MenuItem::item(Icons::refactor,
+        TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
+    {
+        this->showTemperamentsMenu(true);
+    }));
 
     this->updateContent(menu, animationType);
 }
 
-void ProjectMenu::showTemperamentsMenu()
+void ProjectMenu::showTemperamentsMenu(bool convertTracks)
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
@@ -392,12 +396,19 @@ void ProjectMenu::showTemperamentsMenu()
             TRANS(otherTemperament->getName()))->
             disabledIf(otherTemperament->getPeriodSize() == currentPeriodSize)->
             closesMenu()->
-            withAction([this, otherTemperament]()
+            withAction([this, otherTemperament, convertTracks]()
         {
-            const bool hasMadeChanges = 
-                SequencerOperations::remapToTemperament(this->project, otherTemperament, true);
+            if (convertTracks)
+            {
+                const bool hasMadeChanges =
+                    SequencerOperations::remapToTemperament(this->project, otherTemperament, true);
 
-            if (!hasMadeChanges)
+                if (!hasMadeChanges)
+                {
+                    this->project.checkpoint();
+                }
+            }
+            else
             {
                 this->project.checkpoint();
             }
