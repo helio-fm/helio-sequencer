@@ -39,10 +39,10 @@ TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &parentProject, H
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
 
-    this->trackStartIndicator.reset(new TrackStartIndicator());
+    this->trackStartIndicator = make<TrackStartIndicator>();
     this->addAndMakeVisible(this->trackStartIndicator.get());
     
-    this->trackEndIndicator.reset(new TrackEndIndicator());
+    this->trackEndIndicator = make<TrackEndIndicator>();
     this->addAndMakeVisible(this->trackEndIndicator.get());
     
     this->updateTrackRangeIndicatorsAnchors();
@@ -218,7 +218,6 @@ void TimeSignaturesProjectMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-
 void TimeSignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadTrackMap();
@@ -313,12 +312,7 @@ void TimeSignaturesProjectMap::onTimeSignatureTapped(TimeSignatureComponent *nc)
 
     this->project.getTransport().stopPlaybackAndRecording();
     this->project.getTransport().seekToBeat(newSeekBeat);
-
-    //if (wasPlaying)
-    //{
-    //    this->project.getTransport().startPlayback();
-    //}
-
+    
     if (timeSignatureUnderSeekCursor == &nc->getEvent() && !wasPlaying)
     {
         this->showContextMenuFor(nc);

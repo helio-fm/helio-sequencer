@@ -17,20 +17,32 @@
 
 #pragma once
 
-//[Headers]
-class IconComponent;
-//[/Headers]
-
-
-class TimeDistanceIndicator final : public Component,
-                                    private Timer
+class TimeDistanceIndicator final : public Component, private Timer
 {
 public:
 
-    TimeDistanceIndicator();
-    ~TimeDistanceIndicator();
+    TimeDistanceIndicator()
+    {
+        this->timeLabel = make<Label>();
+        this->addAndMakeVisible(this->timeLabel.get());
+        this->timeLabel->setFont({ 21.f });
+        this->timeLabel->setJustificationType(Justification::centred);
 
-    //[UserMethods]
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+        this->setAlwaysOnTop(true);
+
+        this->setSize(32, 32);
+
+        this->setAlpha(0.f);
+        this->startTimerHz(60);
+    }
+
+    ~TimeDistanceIndicator() override
+    {
+        Desktop::getInstance().getAnimator().
+            animateComponent(this, this->getBounds(), 0.f, 100, true, 0.0, 0.0);
+    }
 
     Label *getTimeLabel() const
     {
@@ -44,17 +56,30 @@ public:
         this->updateBounds();
     }
 
-    //[/UserMethods]
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colour(0x3dffffff));
+        g.fillRect(4, 0, this->getWidth() - 8, 1);
+        g.fillRect(3, 1, this->getWidth() - 6, 2);
+        g.fillRect(4, 3, this->getWidth() - 8, 1);
+    }
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    void parentHierarchyChanged() override;
-    void parentSizeChanged() override;
+    void resized() override
+    {
+        this->timeLabel->setBounds(0, 4, this->getWidth(), 20);
+    }
 
+    void parentHierarchyChanged() override
+    {
+        this->updateBounds();
+    }
+
+    void parentSizeChanged() override
+    {
+        this->updateBounds();
+    }
 
 private:
-
-    //[UserVariables]
 
     void timerCallback() override
     {
@@ -76,11 +101,7 @@ private:
         this->setBounds(startX, this->getY(), (endX - startX), this->getHeight());
     }
 
-    //[/UserVariables]
-
     UniquePointer<Label> timeLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeDistanceIndicator)
 };
-
-

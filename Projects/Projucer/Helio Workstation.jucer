@@ -1120,8 +1120,6 @@
         </GROUP>
         <GROUP id="{9ABD7DD8-D3C8-EE5D-AD5E-6E6E6D1D3F8B}" name="Sequencer">
           <GROUP id="{FFB3A4BD-F358-7D17-AC4A-525D35F9E965}" name="Header">
-            <FILE id="z5FePy" name="ClipRangeIndicator.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Header/ClipRangeIndicator.cpp"/>
             <FILE id="kbi6Nd" name="ClipRangeIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/ClipRangeIndicator.h"/>
             <FILE id="C2HVvH" name="HeaderSelectionIndicator.cpp" compile="1" resource="0"
@@ -1134,20 +1132,12 @@
                   file="../../Source/UI/Sequencer/Header/HybridRollHeader.h"/>
             <FILE id="Lh8JqJ" name="Playhead.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.cpp"/>
             <FILE id="HTYKGw" name="Playhead.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.h"/>
-            <FILE id="rdz3ZU" name="SoundProbeIndicator.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Header/SoundProbeIndicator.cpp"/>
             <FILE id="fSWSdO" name="SoundProbeIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/SoundProbeIndicator.h"/>
-            <FILE id="vy1AkC" name="TimeDistanceIndicator.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Header/TimeDistanceIndicator.cpp"/>
             <FILE id="VbhZPg" name="TimeDistanceIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/TimeDistanceIndicator.h"/>
-            <FILE id="vvalau" name="TrackEndIndicator.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Header/TrackEndIndicator.cpp"/>
             <FILE id="rTrt9H" name="TrackEndIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/TrackEndIndicator.h"/>
-            <FILE id="gE3IZT" name="TrackStartIndicator.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Header/TrackStartIndicator.cpp"/>
             <FILE id="cMsYHX" name="TrackStartIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/TrackStartIndicator.h"/>
           </GROUP>

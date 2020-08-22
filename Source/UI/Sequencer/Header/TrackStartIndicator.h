@@ -17,19 +17,20 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-#include "../../Themes/ShadowLeftwards.h"
+#include "ShadowLeftwards.h"
 
 class TrackStartIndicator final : public Component
 {
 public:
 
-    TrackStartIndicator();
-    ~TrackStartIndicator();
+    TrackStartIndicator()
+    {
+        this->shadow = make<ShadowLeftwards>(ShadowType::Light);
+        this->addAndMakeVisible(this->shadow.get());
 
-    //[UserMethods]
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
     double getAnchor() const noexcept
     {
@@ -42,28 +43,33 @@ public:
         this->updateBounds();
     }
 
-    //[/UserMethods]
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colour(0x1a000000));
+        g.fillRect(this->getLocalBounds());
+    }
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    void parentHierarchyChanged() override;
-    void parentSizeChanged() override;
+    void resized() override
+    {
+        this->shadow->setBounds(this->getWidth() - 12, 0, 12, this->getHeight());
+    }
 
+    void parentHierarchyChanged() override
+    {
+        this->updateBounds();
+    }
 
 private:
 
-    //[UserVariables]
-
-    double absPosition;
+    double absPosition = 0.0;
 
     void updateBounds()
     {
+        this->toFront(false);
         this->setBounds(0, 0,
-            int(double(this->getParentWidth()) * this->absPosition + 1.0),
+            int(double(this->getParentWidth()) * this->absPosition),
             this->getParentHeight());
     }
-
-    //[/UserVariables]
 
     UniquePointer<ShadowLeftwards> shadow;
 

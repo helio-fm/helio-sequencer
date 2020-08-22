@@ -17,22 +17,25 @@
 
 #pragma once
 
-//[Headers]
-class IconComponent;
-//[/Headers]
-
-
-class SoundProbeIndicator  : public Component
+class SoundProbeIndicator final : public Component
 {
 public:
 
-    SoundProbeIndicator ();
+    SoundProbeIndicator()
+    {
+        this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
+        this->setAlwaysOnTop(true);
+        this->setSize(3, 3);
+    }
 
-    ~SoundProbeIndicator();
+    ~SoundProbeIndicator() override
+    {
+        Desktop::getInstance().getAnimator().
+            animateComponent(this, this->getBounds(), 0.f, 100, true, 0.0, 0.0);
+    }
 
-    //[UserMethods]
-
-    double getAnchor() const
+    double getAnchor() const noexcept
     {
         return this->absPosition;
     }
@@ -43,19 +46,25 @@ public:
         this->updateBounds();
     }
 
-    //[/UserMethods]
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colour(0x2dffffff));
+        g.fillRect(this->getLocalBounds());
+    }
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    void parentHierarchyChanged() override;
-    void parentSizeChanged() override;
+    void parentHierarchyChanged() override
+    {
+        this->updateBounds();
+    }
 
+    void parentSizeChanged() override
+    {
+        this->updateBounds();
+    }
 
 private:
 
-    //[UserVariables]
-
-    double absPosition;
+    double absPosition = 0.0;
 
     void updateBounds()
     {
@@ -63,8 +72,5 @@ private:
         this->setBounds(x, 0, this->getWidth(), this->getParentHeight());
     }
 
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SoundProbeIndicator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundProbeIndicator)
 };

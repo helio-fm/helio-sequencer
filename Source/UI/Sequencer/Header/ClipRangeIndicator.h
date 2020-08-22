@@ -17,38 +17,58 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
 class ClipRangeIndicator final : public Component
 {
 public:
 
-    ClipRangeIndicator();
-    ~ClipRangeIndicator();
+    ClipRangeIndicator()
+    {
+        this->setOpaque(true);
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    float getFirstBeat() const noexcept { return this->firstBeat; }
-    float getLastBeat() const noexcept { return this->lastBeat; }
+    float getFirstBeat() const noexcept
+    {
+        return this->firstBeat;
+    }
+
+    float getLastBeat() const noexcept
+    {
+        return this->lastBeat;
+    }
 
     // Returns true if range is updated and component should be repositioned
-    bool updateWith(const Colour &colour, float firstBeat, float lastBeat);
-    //[/UserMethods]
+    bool updateWith(const Colour &colour, float start, float end)
+    {
+        bool updatedRange = this->firstBeat != start || this->lastBeat != end;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        if (this->trackColour != colour)
+        {
+            this->trackColour = colour;
+            const auto fgColour = findDefaultColour(Label::textColourId);
+            this->paintColour = colour.interpolatedWith(fgColour, 0.5f).withAlpha(0.45f);
+            this->repaint();
+        }
+        
+        this->firstBeat = start;
+        this->lastBeat = end;
 
+        return updatedRange;
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->paintColour);
+        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+    }
 
 private:
 
-    //[UserVariables]
     Colour paintColour;
     Colour trackColour;
-    float firstBeat;
-    float lastBeat;
-    //[/UserVariables]
-
+    float firstBeat = 0.f;
+    float lastBeat = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipRangeIndicator)
 };
