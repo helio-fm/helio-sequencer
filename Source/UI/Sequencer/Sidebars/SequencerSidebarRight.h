@@ -32,10 +32,8 @@ class ProjectNode;
 
 class SequencerSidebarRight final : public Component,
                                     protected TransportListener,
-                                    protected AsyncUpdater,
                                     protected ListBoxModel,
-                                    protected ChangeListener,
-                                    protected Timer
+                                    protected ChangeListener
 {
 public:
 
@@ -60,12 +58,7 @@ private:
     //===------------------------------------------------------------------===//
 
     ProjectNode &project;
-
-    Atomic<double> lastSeekTime;
-    Atomic<double> lastTotalTime;
-    Atomic<double> timerStartSeekTime;
-    Atomic<double> timerStartSystemTime;
-
+    
     enum class MenuMode : int8
     {
         None,
@@ -93,19 +86,7 @@ private:
     //===------------------------------------------------------------------===//
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-
-    //===------------------------------------------------------------------===//
-    // AsyncUpdater
-    //===------------------------------------------------------------------===//
-
-    void handleAsyncUpdate() override;
-
-    //===------------------------------------------------------------------===//
-    // Timer
-    //===------------------------------------------------------------------===//
-
-    void timerCallback() override;
-
+    
     //===------------------------------------------------------------------===//
     // TransportListener
     //===------------------------------------------------------------------===//
@@ -126,8 +107,6 @@ private:
     UniquePointer<SeparatorHorizontalReversed> headLine;
     UniquePointer<ShadowUpwards> shadow;
     UniquePointer<SeparatorHorizontal> separator;
-    UniquePointer<Label> totalTime;
-    UniquePointer<Label> currentTime;
     UniquePointer<ShadowDownwards> headShadow;
     UniquePointer<MenuItemComponent> annotationsButton;
     UniquePointer<TransportControlComponent> transportControl;

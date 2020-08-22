@@ -278,7 +278,6 @@ void Headline::hideSelectionMenu()
 {
     if (this->selectionItem != nullptr)
     {
-        // TODO test animations for all-chain updates
         //const auto w = this->selectionItem->getBounds().getWidth();
         //const auto finalPos = this->selectionItem->getBounds().translated(-w, 0);
         const auto finalPos = this->selectionItem->getBounds().withX(Headline::rootNodeOffset);

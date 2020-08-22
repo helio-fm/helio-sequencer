@@ -24,9 +24,7 @@
 
 RendererThread::RendererThread(Transport &parentTrasport) :
     Thread("RendererThread"),
-    transport(parentTrasport),
-    writer(nullptr),
-    percentsDone(0.f) {}
+    transport(parentTrasport) {}
 
 RendererThread::~RendererThread()
 {
@@ -98,7 +96,7 @@ void RendererThread::stop()
     }
 
     {
-        const ScopedLock sl(this->writerLock);
+        const ScopedLock lock(this->writerLock);
         this->writer = nullptr;
     }
 }
@@ -171,7 +169,7 @@ void RendererThread::run()
         graph->setNonRealtime(true);
     }
 
-    // let processor graphs call handle their async updates
+    // let the processor graphs handle their async updates
     Thread::sleep(200);
 
     // step 3. render loop itself.
@@ -216,7 +214,7 @@ void RendererThread::run()
                 secPerQuarter = nextMessage.message.getTempoSecondsPerQuarterNote();
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
-                for (auto subBuffer : subBuffers)
+                for (auto *subBuffer : subBuffers)
                 {
                     subBuffer->midiBuffer.addEvent(nextMessage.message, messageFrame);
                 }
@@ -242,7 +240,7 @@ void RendererThread::run()
         }
 
         // step 3b. call processBlock for every instrument.
-        for (auto subBuffer : subBuffers)
+        for (auto *subBuffer : subBuffers)
         {
             AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
             {
@@ -259,7 +257,7 @@ void RendererThread::run()
         // step 3c. mix them down to the render buffer.
         mixingBuffer.clear();
 
-        for (auto subBuffer : subBuffers)
+        for (auto *subBuffer : subBuffers)
         {
             for (int j = 0; j < numOutChannels; ++j)
             {
@@ -272,13 +270,13 @@ void RendererThread::run()
 
         // step 3d. write resulting buffer to disk.
         {
-            const ScopedLock sl(this->writerLock);
+            const ScopedLock lock(this->writerLock);
             bool writedSuccessfullty = false;
             
             while (! writedSuccessfullty)
             {
                 writedSuccessfullty =
-                this->writer->writeFromAudioSampleBuffer(mixingBuffer, 0, mixingBuffer.getNumSamples());
+                    this->writer->writeFromAudioSampleBuffer(mixingBuffer, 0, mixingBuffer.getNumSamples());
             }
         }
 
@@ -286,16 +284,16 @@ void RendererThread::run()
         currentFrame += bufferSize;
 
         {
-            const ScopedWriteLock pl(this->percentsLock);
+            const ScopedWriteLock lock(this->percentsLock);
             this->percentsDone = float(currentFrame / lastFrame);
             //DBG("this->percentsDone : " + String(this->percentsDone));
         }
     }
 
     // step 4. setNonRealtime false.
-    for (auto subBuffer : subBuffers)
+    for (auto *subBuffer : subBuffers)
     {
-        AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
+        auto *graph = subBuffer->instrument->getProcessorGraph();
         graph->setNonRealtime(false);
     }
     

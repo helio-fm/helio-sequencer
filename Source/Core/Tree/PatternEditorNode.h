@@ -30,8 +30,6 @@ public:
 
     void showPage() override;
     void recreatePage() override;
-
-    String getStatsString() const;
     
     //===------------------------------------------------------------------===//
     // Menu

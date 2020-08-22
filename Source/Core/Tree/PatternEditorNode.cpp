@@ -48,12 +48,6 @@ String PatternEditorNode::getName() const noexcept
     return TRANS(I18n::Tree::patterns);
 }
 
-String PatternEditorNode::getStatsString() const
-{
-    // TODO
-    return {};
-}
-
 //===----------------------------------------------------------------------===//
 // Popup
 //===----------------------------------------------------------------------===//

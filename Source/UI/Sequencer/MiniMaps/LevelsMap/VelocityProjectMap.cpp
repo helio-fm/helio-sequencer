@@ -801,7 +801,6 @@ void VelocityProjectMap::applyVolumeChanges()
     }
 
     // filling up arrays all the time on mouse drag - kinda sucks, nah?
-    // todo test performance
     this->dragChangedNotes.clearQuick();
     this->dragChanges.clearQuick();
 

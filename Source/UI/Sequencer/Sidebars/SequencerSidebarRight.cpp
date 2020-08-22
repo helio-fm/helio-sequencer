@@ -45,11 +45,7 @@
 //[/MiscUserDefs]
 
 SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
-    : project(parent),
-      lastSeekTime(0.0),
-      lastTotalTime(0.0),
-      timerStartSeekTime(0.0),
-      timerStartSystemTime(0.0)
+    : project(parent)
 {
     this->listBox.reset(new ListBox());
     this->addAndMakeVisible(listBox.get());
@@ -60,19 +56,6 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->addAndMakeVisible(shadow.get());
     this->separator.reset(new SeparatorHorizontal());
     this->addAndMakeVisible(separator.get());
-    this->totalTime.reset(new Label(String(),
-                                     String()));
-    this->addAndMakeVisible(totalTime.get());
-    this->totalTime->setFont(Font (14.00f, Font::plain));
-    totalTime->setJustificationType(Justification::centred);
-    totalTime->setEditable(false, false, false);
-
-    this->currentTime.reset(new Label(String(),
-                                       String()));
-    this->addAndMakeVisible(currentTime.get());
-    this->currentTime->setFont(Font (16.00f, Font::plain));
-    currentTime->setJustificationType(Justification::centred);
-    currentTime->setEditable(false, false, false);
 
     this->headShadow.reset(new ShadowDownwards(ShadowType::Light));
     this->addAndMakeVisible(headShadow.get());
@@ -90,20 +73,9 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent)
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setRowHeight(Globals::UI::sidebarRowHeight);
     this->listBox->setModel(this);
-
-    // This one doesn't change too frequently:
-    //this->totalTime->setBufferedToImage(true);
-    //this->totalTime->setCachedComponentImage(new CachedLabelImage(*this->totalTime));
-
-    // TODO: remove these and show timings somewhere else
-#if !TOOLS_SIDEBAR_SHOWS_TIME
-    this->totalTime->setVisible(false);
-    this->currentTime->setVisible(false);
-#endif
-
     //[/UserPreSize]
 
-    this->setSize(44, 640);
+    //this->setSize(44, 640);
 
     //[Constructor]
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
@@ -126,8 +98,6 @@ SequencerSidebarRight::~SequencerSidebarRight()
     headLine = nullptr;
     shadow = nullptr;
     separator = nullptr;
-    totalTime = nullptr;
-    currentTime = nullptr;
     headShadow = nullptr;
     annotationsButton = nullptr;
     transportControl = nullptr;
@@ -159,8 +129,6 @@ void SequencerSidebarRight::resized()
     headLine->setBounds(0, 39, getWidth() - 0, 2);
     shadow->setBounds(0, getHeight() - 79 - 6, getWidth() - 0, 6);
     separator->setBounds(0, getHeight() - 78 - 2, getWidth() - 0, 2);
-    totalTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 9 - 18, 72, 18);
-    currentTime->setBounds((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
     headShadow->setBounds(0, 40, getWidth() - 0, 6);
     annotationsButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
     transportControl->setBounds(0, getHeight() - 79, getWidth() - 0, 79);
@@ -267,47 +235,11 @@ int SequencerSidebarRight::getNumRows()
 }
 
 //===----------------------------------------------------------------------===//
-// AsyncUpdater
-//===----------------------------------------------------------------------===//
-
-void SequencerSidebarRight::handleAsyncUpdate()
-{
-#if TOOLS_SIDEBAR_SHOWS_TIME
-    if (this->isTimerRunning())
-    {
-        const double systemTimeOffset = (Time::getMillisecondCounter() - this->timerStartSystemTime.get());
-        const double currentTimeMs(this->timerStartSeekTime.get() + systemTimeOffset);
-        this->currentTime->setText(Transport::getTimeString(currentTimeMs), dontSendNotification);
-    }
-    else
-    {
-        this->currentTime->setText(Transport::getTimeString(this->lastSeekTime.get()), dontSendNotification);
-    }
-
-    this->totalTime->setText(Transport::getTimeString(this->lastTotalTime.get()), dontSendNotification);
-#endif
-}
-
-//===----------------------------------------------------------------------===//
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void SequencerSidebarRight::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
-{
-#if TOOLS_SIDEBAR_SHOWS_TIME
-    this->lastSeekTime = currentTimeMs;
-    this->lastTotalTime = totalTimeMs;
-    this->triggerAsyncUpdate();
-#endif
-}
-
-void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
-{
-#if TOOLS_SIDEBAR_SHOWS_TIME
-    this->lastTotalTime = timeMs;
-    this->totalTime->setText(Transport::getTimeString(this->lastTotalTime.get()), dontSendNotification);
-#endif
-}
+void SequencerSidebarRight::onSeek(float, double, double) {}
+void SequencerSidebarRight::onTotalTimeChanged(double) {}
 
 void SequencerSidebarRight::onLoopModeChanged(bool hasLoop, float startBeat, float endBeat)
 {
@@ -316,12 +248,6 @@ void SequencerSidebarRight::onLoopModeChanged(bool hasLoop, float startBeat, flo
 
 void SequencerSidebarRight::onPlay()
 {
-#if TOOLS_SIDEBAR_SHOWS_TIME
-    this->timerStartSystemTime = Time::getMillisecondCounter();
-    this->timerStartSeekTime = this->lastSeekTime;
-    this->startTimer(100);
-#endif
-
     this->transportControl->showPlayingMode(true);
 }
 
@@ -353,10 +279,6 @@ void SequencerSidebarRight::onRecordFailed(const Array<MidiDeviceInfo> &devices)
 
 void SequencerSidebarRight::onStop()
 {
-#if TOOLS_SIDEBAR_SHOWS_TIME
-    this->stopTimer();
-#endif
-
     this->transportControl->showPlayingMode(false);
     this->transportControl->showRecordingMode(false);
 }
@@ -368,15 +290,6 @@ void SequencerSidebarRight::onStop()
 void SequencerSidebarRight::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->updateModeButtons();
-}
-
-//===----------------------------------------------------------------------===//
-// Timer
-//===----------------------------------------------------------------------===//
-
-void SequencerSidebarRight::timerCallback()
-{
-    this->triggerAsyncUpdate();
 }
 
 //===----------------------------------------------------------------------===//
@@ -421,8 +334,8 @@ void SequencerSidebarRight::setPatternMode()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="SequencerSidebarRight" template="../../../Template"
-                 componentName="" parentClasses="public Component, protected TransportListener, protected AsyncUpdater, protected ListBoxModel, protected ChangeListener, protected Timer"
-                 constructorParams="ProjectNode &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
+                 componentName="" parentClasses="public Component, protected TransportListener, protected ListBoxModel, protected ChangeListener"
+                 constructorParams="ProjectNode &amp;parent" variableInitialisers="project(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="44" initialHeight="640">
   <METHODS>
@@ -439,14 +352,6 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 78Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
-  <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
-         explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="14.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="b9e867ece7f52ad8" memberName="currentTime" virtualName=""
-         explicitFocusOrder="0" pos="80Cc 26Rr 72 22" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
              constructorParams="ShadowType::Light"/>

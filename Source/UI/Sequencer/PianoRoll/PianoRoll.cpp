@@ -1538,7 +1538,13 @@ void PianoRoll::updateChildrenPositions()
 
 Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProviders() const
 {
-    return { this->consoleChordConstructor.get() };
+    if (this->getPeriodSize() == Globals::twelveTonePeriodSize)
+    {
+        // the chord constructor will only work for 12-EDO:
+        return { this->consoleChordConstructor.get() };
+    }
+
+    return {};
 }
 
 //===----------------------------------------------------------------------===//
