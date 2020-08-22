@@ -135,7 +135,6 @@ void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks
 {
     if (this->sequence != nullptr)
     {
-        this->keyboardSize = this->project.getProjectInfo()->getKeyboardSize();
         this->reloadTrackMap();
     }
 }
@@ -179,6 +178,8 @@ void PianoClipComponent::onRemoveTrack(MidiTrack *const track)
 
 void PianoClipComponent::reloadTrackMap()
 {
+    this->keyboardSize = this->project.getProjectInfo()->getKeyboardSize();
+
     this->displayedNotes.clear();
 
     for (auto *track : this->project.getTracks())

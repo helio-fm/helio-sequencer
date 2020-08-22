@@ -1692,7 +1692,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     // pre-rendered tiles are used in paint() method to fill the background,
     // but OpenGL doesn't work well with non-power-of-2 textures;
     // let's render a number of periods which fit into a 1024px texture:
-    const auto numRowsToRender = periodSize * jmax(2, 1024 / (periodSize * height));
+    const auto numRowsToRender = periodSize * jmax(3, 1024 / (periodSize * height));
 
     Image patternImage(Image::RGB, 4, height * numRowsToRender, false);
     Graphics g(patternImage);
