@@ -1797,16 +1797,16 @@ bool SequencerOperations::remapToTemperament(const ProjectNode &project,
     {
         auto *sequence = static_cast<PianoSequence *>(track->getSequence());
 
-        PianoChangeGroup groupBefore, groupAfter;
+        Array<Note> notesBefore, notesAfter;
 
         // upscaling temperament from twelve-tone is really straightforward,
         // but we'll also support downscaling from larger temperament to smaller one:
         // for that we'll just round each key to the nearest key of chromatic approximation scale
-        // (we totally ignore clip key offsets at the moment, although they could also be mapped?)
 
         for (int i = 0; i < sequence->size(); ++i)
         {
             const auto *note = static_cast<Note *>(sequence->getUnchecked(i));
+
             const auto key = note->getKey();
             const auto periodNum = key / periodSizeBefore;
             const auto relativeKey = key % periodSizeBefore;
@@ -1814,14 +1814,38 @@ bool SequencerOperations::remapToTemperament(const ProjectNode &project,
             // now we need to round relative key to the nearest one in chromaticMapFrom 
             const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
             const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, 0, false);
-
             const auto newKey = periodNum * periodSizeAfter + newRelativeKey;
 
-            groupBefore.add(*note);
-            groupAfter.add(note->withKey(newKey));
+            notesBefore.add(*note);
+            notesAfter.add(note->withKey(newKey));
         }
 
-        if (groupBefore.size() == 0)
+        // same mapping rules apply to any keys, so we will adjust clip key offsets as well
+
+        auto *pattern = track->getPattern();
+
+        Array<Clip> clipsBefore, clipsAfter;
+
+        for (int i = 0; i < pattern->size(); ++i)
+        {
+            const auto *clip = pattern->getUnchecked(i);
+
+            const auto key = clip->getKey();
+            const auto periodNum = key / periodSizeBefore;
+            const auto relativeKey = key % periodSizeBefore;
+            const auto keySign = (key > 0) - (key < 0); // key offset can be negative
+
+            const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
+            const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, 0, false);
+            const auto newKey = periodNum * periodSizeAfter + newRelativeKey * keySign;
+
+            clipsBefore.add(*clip);
+            clipsAfter.add(clip->withKey(newKey));
+        }
+
+        // now just apply changes
+
+        if (notesBefore.isEmpty() && clipsBefore.isEmpty())
         {
             continue;
         }
@@ -1833,7 +1857,16 @@ bool SequencerOperations::remapToTemperament(const ProjectNode &project,
         }
 
         hasMadeChanges = true;
-        sequence->changeGroup(groupBefore, groupAfter, true);
+
+        if (!notesBefore.isEmpty())
+        {
+            sequence->changeGroup(notesBefore, notesAfter, true);
+        }
+
+        if (!clipsBefore.isEmpty())
+        {
+            pattern->changeGroup(clipsBefore, clipsAfter, true);
+        }
     }
 
     return hasMadeChanges;
