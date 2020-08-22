@@ -50,6 +50,7 @@ class TimelineWarningMarker;
 #include "UserInterfaceFlags.h"
 #include "AudioMonitor.h"
 #include "HeadlineContextMenuController.h"
+#include "Temperament.h"
 
 #if HELIO_MOBILE
 #   define HYBRID_ROLL_LISTENS_LONG_TAP 1
@@ -131,7 +132,16 @@ public:
     bool isInSelectionMode() const;
     bool isInDragMode() const;
     // ...
-    
+
+    //===------------------------------------------------------------------===//
+    // Temperament info
+    //===------------------------------------------------------------------===//
+
+    int getNumKeys() const noexcept;
+    int getPeriodSize() const noexcept;
+    Note::Key getMiddleC() const noexcept;
+    Temperament::Ptr getTemperament() const noexcept;
+
     //===------------------------------------------------------------------===//
     // HybridRoll listeners management
     //===------------------------------------------------------------------===//
@@ -233,6 +243,8 @@ public:
     void onRemoveMidiEvent(const MidiEvent &event) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeProjectInfo(const ProjectMetadata *info) override;
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
     void onBeforeReloadProjectContent() override;
 
     //===------------------------------------------------------------------===//
@@ -335,6 +347,8 @@ protected:
     ProjectNode &project;
     Viewport &viewport;
     
+    Temperament::Ptr temperament;
+
     OwnedArray<Component> trackMaps;
 
     Point<int> viewportAnchor = { 0, 0 };

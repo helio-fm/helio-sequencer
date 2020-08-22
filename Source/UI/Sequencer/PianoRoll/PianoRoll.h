@@ -31,7 +31,6 @@ class Scale;
 #include "HelioTheme.h"
 #include "NoteResizerLeft.h"
 #include "NoteResizerRight.h"
-#include "Temperament.h"
 #include "Note.h"
 #include "Clip.h"
 
@@ -49,11 +48,6 @@ public:
 
     WeakReference<MidiTrack> getActiveTrack() const noexcept;
     const Clip &getActiveClip() const noexcept;
-
-    int getNumKeys() const noexcept;
-    int getPeriodSize() const noexcept;
-    Note::Key getMiddleC() const noexcept;
-    Temperament::Ptr getTemperament() const noexcept;
 
     void setDefaultNoteVolume(float volume) noexcept;
     void setDefaultNoteLength(float length) noexcept;
@@ -183,8 +177,6 @@ private:
 
     WeakReference<MidiTrack> activeTrack = nullptr;
     Clip activeClip;
-
-    Temperament::Ptr temperament;
 
     void updateActiveRangeIndicator() const;
 

@@ -88,8 +88,6 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 {
     this->setComponentID(ComponentIDs::pianoRollId);
 
-    this->temperament = this->project.getProjectInfo()->getTemperament();
-
     this->selectedNotesMenuManager = make<PianoRollSelectionMenuManager>(&this->selection, this->project);
 
     this->draggingHelper = make<HelperRectangleHorizontal>();
@@ -199,26 +197,6 @@ void PianoRoll::setRowHeight(int newRowHeight)
 void PianoRoll::updateSize()
 {
     this->setSize(this->getWidth(), HybridRoll::headerHeight + this->getNumKeys() * this->rowHeight);
-}
-
-int PianoRoll::getNumKeys() const noexcept
-{
-    return this->temperament->getNumKeys();
-}
-
-int PianoRoll::getPeriodSize() const noexcept
-{
-    return this->temperament->getPeriodSize();
-}
-
-Note::Key PianoRoll::getMiddleC() const noexcept
-{
-    return this->temperament->getMiddleC();
-}
-
-Temperament::Ptr PianoRoll::getTemperament() const noexcept
-{
-    return this->temperament;
 }
 
 //===----------------------------------------------------------------------===//
@@ -749,6 +727,8 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
 
 void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
 {
+    // note: not calling HybridRoll::onChangeProjectInfo here,
+    // because it only updates temperament, and we have a very own logic here
     if (this->temperament != info->getTemperament())
     {
         this->temperament = info->getTemperament();
@@ -761,7 +741,7 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
 
 void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    this->temperament = this->project.getProjectInfo()->getTemperament();
+    HybridRoll::onReloadProjectContent(tracks); // updates temperament
     this->noteNameGuides->syncWithTemperament(this->temperament);
     this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
     this->updateSize(); // might have changed by due to different temperament

@@ -497,6 +497,7 @@ void PatternRoll::onPostRemoveClip(Pattern *const pattern) {}
 
 void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
+    HybridRoll::onReloadProjectContent(tracks); // updates temperament ref
     this->reloadRollContent();
 }
 
@@ -715,10 +716,10 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::transposeClips(this->getLassoSelection(), -1);
         break;
     case CommandIDs::ClipTransposeOctaveUp:
-        PatternOperations::transposeClips(this->getLassoSelection(), 12);
+        PatternOperations::transposeClips(this->getLassoSelection(), this->getPeriodSize());
         break;
     case CommandIDs::ClipTransposeOctaveDown:
-        PatternOperations::transposeClips(this->getLassoSelection(), -12);
+        PatternOperations::transposeClips(this->getLassoSelection(), -this->getPeriodSize());
         break;
     case CommandIDs::ClipVolumeUp:
         PatternOperations::tuneClips(this->getLassoSelection(), 1.f / 32.f);

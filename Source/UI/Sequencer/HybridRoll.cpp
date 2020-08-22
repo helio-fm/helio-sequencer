@@ -48,6 +48,7 @@
 #include "IconComponent.h"
 #include "PlayerThread.h"
 
+#include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
@@ -101,6 +102,8 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
+
+    this->temperament = this->project.getProjectInfo()->getTemperament();
 
     this->header = make<HybridRollHeader>(this->project.getTransport(), *this, this->viewport);
     this->headerShadow = make<ShadowDownwards>(ShadowType::Normal);
@@ -308,6 +311,30 @@ bool HybridRoll::isInSelectionMode() const
 bool HybridRoll::isInDragMode() const
 {
     return (this->project.getEditMode().isMode(HybridRollEditMode::dragMode));
+}
+
+//===----------------------------------------------------------------------===//
+// Temperament info
+//===----------------------------------------------------------------------===//
+
+int HybridRoll::getNumKeys() const noexcept
+{
+    return this->temperament->getNumKeys();
+}
+
+int HybridRoll::getPeriodSize() const noexcept
+{
+    return this->temperament->getPeriodSize();
+}
+
+Note::Key HybridRoll::getMiddleC() const noexcept
+{
+    return this->temperament->getMiddleC();
+}
+
+Temperament::Ptr HybridRoll::getTemperament() const noexcept
+{
+    return this->temperament;
 }
 
 //===----------------------------------------------------------------------===//
@@ -964,6 +991,19 @@ void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
         const auto newViewX = this->getXPositionByBeat(viewStartBeat);
         this->viewport.setViewPosition(newViewX, viewPos.y);
     }
+}
+
+void HybridRoll::onChangeProjectInfo(const ProjectMetadata *info)
+{
+    if (this->temperament != info->getTemperament())
+    {
+        this->temperament = info->getTemperament();
+    }
+}
+
+void HybridRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+{
+    this->temperament = this->project.getProjectInfo()->getTemperament();
 }
 
 void HybridRoll::onBeforeReloadProjectContent()

@@ -153,7 +153,7 @@ Clip Clip::withDeltaBeat(float deltaPosition) const
 Clip Clip::withKey(int absKey) const
 {
     Clip other(*this);
-    other.key = jlimit(-64, 64, absKey);
+    other.key = jlimit(-128, 128, absKey);
     other.updateCaches();
     return other;
 }
@@ -161,7 +161,7 @@ Clip Clip::withKey(int absKey) const
 Clip Clip::withDeltaKey(int deltaKey) const
 {
     Clip other(*this);
-    other.key = jlimit(-64, 64, other.key + deltaKey);
+    other.key = jlimit(-128, 128, other.key + deltaKey);
     other.updateCaches();
     return other;
 }
