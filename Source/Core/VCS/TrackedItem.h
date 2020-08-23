@@ -36,6 +36,8 @@ namespace VCS
         virtual int getNumDeltas() const = 0;
         virtual Delta *getDelta(int index) const = 0;
         virtual SerializedData getDeltaData(int deltaIndex) const = 0;
+        virtual bool deltaHasDefaultData(int deltaIndex) const { return false; }
+
         virtual String getVCSName() const = 0;
         virtual DiffLogic *getDiffLogic() const = 0;
         virtual void resetStateTo(const TrackedItem &newState) = 0;

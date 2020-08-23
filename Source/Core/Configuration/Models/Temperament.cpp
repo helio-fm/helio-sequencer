@@ -67,10 +67,12 @@ Identifier Temperament::getResourceType() const noexcept
 // Hard-coded defaults
 //===----------------------------------------------------------------------===//
 
+static const String defaultTemperamentId = "12edo";
+
 Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
 {
     Temperament::Ptr t(new Temperament());
-    t->id = "12edo";
+    t->id = defaultTemperamentId;
     t->name = "12 equal temperament";
     t->period = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
     t->highlighting = Scale::getNaturalMajorScale();
@@ -78,6 +80,13 @@ Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
     t->keysTotal = Globals::twelveToneKeyboardSize;
     t->middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
     return t;
+}
+
+bool Temperament::isDefault() const noexcept
+{
+    return this->keysTotal == Globals::twelveToneKeyboardSize &&
+        this->getPeriodSize() == Globals::twelveTonePeriodSize &&
+        this->id == defaultTemperamentId;
 }
 
 //===----------------------------------------------------------------------===//

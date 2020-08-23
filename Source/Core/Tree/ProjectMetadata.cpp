@@ -163,6 +163,18 @@ SerializedData ProjectMetadata::getDeltaData(int deltaIndex) const
     return {};
 }
 
+bool ProjectMetadata::deltaHasDefaultData(int deltaIndex) const
+{
+    using namespace Serialization::VCS;
+    if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectTemperament))
+    {
+        jassert(this->temperament != nullptr);
+        return this->temperament->isDefault();
+    }
+
+    return false;
+}
+
 VCS::DiffLogic *ProjectMetadata::getDiffLogic() const
 {
     return this->vcsDiffLogic.get();
@@ -171,6 +183,9 @@ VCS::DiffLogic *ProjectMetadata::getDiffLogic() const
 void ProjectMetadata::resetStateTo(const TrackedItem &newState)
 {
     using namespace Serialization::VCS;
+
+    // first, reset default state for the new delta, which may be missing in base:
+    this->temperament = Temperament::getTwelveToneEqualTemperament();
 
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
@@ -348,9 +363,5 @@ void ProjectMetadata::resetTemperamentDelta(const SerializedData &state)
     {
         jassert(this->temperament != nullptr);
         this->temperament->deserialize(state.getChild(0));
-    }
-    else
-    {
-        this->temperament = Temperament::getTwelveToneEqualTemperament();
     }
 }

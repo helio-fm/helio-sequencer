@@ -58,6 +58,8 @@ public:
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
     SerializedData getDeltaData(int deltaIndex) const override;
+    bool deltaHasDefaultData(int deltaIndex) const override;
+
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
 

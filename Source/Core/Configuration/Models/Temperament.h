@@ -41,6 +41,8 @@ public:
     inline auto getNumKeys() const noexcept { return this->keysTotal; }
     inline auto getMiddleC() const noexcept { return this->middleC; }
 
+    bool isDefault() const noexcept;
+
     const Scale::Ptr getHighlighting() const noexcept { return this->highlighting; }
     const Scale::Ptr getChromaticMap() const noexcept { return this->chromaticMap; }
 

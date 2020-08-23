@@ -57,8 +57,9 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
     {
         const Delta *myDelta = this->target.getDelta(i);
-
         const auto myDeltaData(this->target.getDeltaData(i));
+        const bool deltaIsDefault = this->target.deltaHasDefaultData(i);
+
         SerializedData stateDeltaData;
 
         bool deltaFoundInState = false;
@@ -77,7 +78,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
             }
         }
 
-        if (!deltaFoundInState || dataHasChanged)
+        if ((!deltaFoundInState && !deltaIsDefault) || (deltaFoundInState && dataHasChanged))
         {
             if (myDelta->hasType(ProjectInfoDeltas::projectLicense))
             {
