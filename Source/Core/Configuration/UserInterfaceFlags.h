@@ -19,7 +19,7 @@
 
 // UI flags is a special scope of configuration that I want to be observable in the runtime,
 // and have callbacks and setters defined in a more explicit manner - i.e. not just set(k, v);
-// some of these flags are to be toggled by hotkeys in the runtime affecting several observers
+// some of these flags are to be toggled by hotkeys in runtime affecting several observers
 
 class UserInterfaceFlags final : public Serializable, private Timer
 {

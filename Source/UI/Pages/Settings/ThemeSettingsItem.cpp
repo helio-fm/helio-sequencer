@@ -27,6 +27,7 @@
 #include "SerializationKeys.h"
 #include "IconComponent.h"
 #include "Workspace.h"
+#include "HighlightingScheme.h"
 #include "PianoRoll.h"
 #include "Config.h"
 #include "SettingsListItemHighlighter.h"
@@ -334,7 +335,7 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     this->schemeNameLabel->setText("\"" + colours->getName() + "\"", dontSendNotification);
     this->schemeNameLabel->setColour(Label::textColourId, this->theme->findColour(Label::textColourId));
 
-    this->rollImage = PianoRoll::renderRowsPattern(*this->theme,
+    this->rollImage = HighlightingScheme::renderRowsPattern(*this->theme,
         Temperament::getTwelveToneEqualTemperament(), Scale::getNaturalMajorScale(),
         0, PianoRoll::minRowHeight);
 

@@ -26,13 +26,14 @@ class KnifeToolHelper;
 class NoteNameGuidesBar;
 class Scale;
 
-#include "CommandPaletteModel.h"
+#include "Note.h"
+#include "Clip.h"
 #include "HybridRoll.h"
 #include "HelioTheme.h"
 #include "NoteResizerLeft.h"
 #include "NoteResizerRight.h"
-#include "Note.h"
-#include "Clip.h"
+#include "HighlightingScheme.h"
+#include "CommandPaletteModel.h"
 
 class PianoRoll final :
     public HybridRoll,
@@ -222,44 +223,9 @@ private:
 
 private:
 
-    class HighlightingScheme final
-    {
-    public:
-        HighlightingScheme(Note::Key rootKey, const Scale::Ptr scale) noexcept;
-        
-        template<typename T1, typename T2>
-        static int compareElements(const T1 *const l, const T2 *const r)
-        {
-            const int keyDiff = l->getRootKey() - r->getRootKey();
-            const int keyResult = (keyDiff > 0) - (keyDiff < 0);
-            if (keyResult != 0) { return keyDiff; }
-
-            if (l->getScale()->isEquivalentTo(r->getScale())) { return 0; }
-
-            const int scaleDiff = l->getScale()->hashCode() - r->getScale()->hashCode();
-            return (scaleDiff > 0) - (scaleDiff < 0);
-        }
-
-        const Scale::Ptr getScale() const noexcept { return this->scale; }
-        const Note::Key getRootKey() const noexcept { return this->rootKey; }
-        const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
-        void setRows(Array<Image> &&val) noexcept { this->rows.swapWith(val); }
-
-    private:
-        Scale::Ptr scale;
-        Note::Key rootKey;
-        Array<Image> rows;
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightingScheme);
-    };
-
     void updateBackgroundCachesAndRepaint();
     void updateBackgroundCacheFor(const KeySignatureEvent &key);
     void removeBackgroundCacheFor(const KeySignatureEvent &key);
-
-    Array<Image> renderBackgroundCacheFor(const HighlightingScheme *const scheme) const;
-    static Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
-        const Temperament::Ptr temperament, const Scale::Ptr scale,
-        Note::Key root, int height);
 
     OwnedArray<HighlightingScheme> backgroundsCache;
     UniquePointer<HighlightingScheme> defaultHighlighting;
@@ -300,6 +266,8 @@ private:
     static constexpr auto defaultRowHeight = 15;
     static constexpr auto maxRowHeight = 35;
 #endif
+
+    friend class HighlightingScheme;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll);
 };

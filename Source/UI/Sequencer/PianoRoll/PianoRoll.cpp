@@ -1290,12 +1290,18 @@ void PianoRoll::paint(Graphics &g)
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = paintStartX + this->viewport.getViewWidth();
 
-    static const float paintOffsetY = float(HybridRoll::headerHeight);
+    static constexpr auto paintOffsetY = HybridRoll::headerHeight;
 
     int prevBeatX = paintStartX;
     const HighlightingScheme *prevScheme = nullptr;
     const int y = this->viewport.getViewPositionY();
     const int h = this->viewport.getViewHeight();
+
+    const auto periodHeight = this->rowHeight * this->getPeriodSize();
+    const auto numPeriodsToSkip = (y - paintOffsetY) / periodHeight;
+    const auto paintStartY = paintOffsetY + numPeriodsToSkip * periodHeight;
+
+    //g.setImageResamplingQuality(Graphics::lowResamplingQuality);
 
     for (int nextKeyIdx = 0; this->scalesHighlightingEnabled && nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
     {
@@ -1306,18 +1312,35 @@ void PianoRoll::paint(Graphics &g)
         jassert(index >= 0);
 
         const auto *s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
-        const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
-        g.setFillType(fillType);
+        const auto fillImage = s->getUnchecked(this->rowHeight);
+
+        if (beatX >= paintStartX)
+        {
+            /*
+                You might be thinking: why the do we need this ugly loop here?
+                Given a tiled texture, we can just fill it all at once with a single fillRect()?
+
+                Well yes, but actually no.
+                OpenGmotherfuckingL does suck real hard, and it can't seem to do
+                texture tiling correctly unless the stars are well aligned (they are not),
+                so there is always some weird offset, and it's getting weirder at each next tile.
+
+                For horizontal tiling, we don't care, but for vertical tiling, this means that
+                sequencer rows are messed up, so we have to say explicitly where to fill each period.
+                Also because of that we will pre-render bg's of size period+1 lines to avoid gaps.
+            */
+
+            for (int i = paintStartY; i < y + h; i += periodHeight)
+            {
+                g.setFillType({ fillImage, AffineTransform::translation(0.f, float(i)) });
+                g.fillRect(prevBeatX, i, beatX - prevBeatX, periodHeight);
+            }
+        }
 
         if (beatX >= paintEndX)
         {
-            g.fillRect(prevBeatX, y, beatX - prevBeatX, h);
             HybridRoll::paint(g);
             return;
-        }
-        else if (beatX >= paintStartX)
-        {
-            g.fillRect(prevBeatX, y, beatX - prevBeatX, h);
         }
 
         prevBeatX = beatX;
@@ -1327,9 +1350,15 @@ void PianoRoll::paint(Graphics &g)
     if (prevBeatX < paintEndX)
     {
         const auto *s = (prevScheme == nullptr) ? this->defaultHighlighting.get() : prevScheme;
-        const FillType fillType(s->getUnchecked(this->rowHeight), AffineTransform::translation(0.f, paintOffsetY));
-        g.setFillType(fillType);
-        g.fillRect(prevBeatX, y, paintEndX - prevBeatX, h);
+        const auto fillImage = s->getUnchecked(this->rowHeight);
+
+        // just because we cannot rely on OpenGL tiling:
+        for (int i = paintStartY; i < y + h; i += periodHeight)
+        {
+            g.setFillType({ fillImage, AffineTransform::translation(0.f, float(i)) });
+            g.fillRect(prevBeatX, i, paintEndX - prevBeatX, periodHeight);
+        }
+
         HybridRoll::paint(g);
     }
 }
@@ -1611,7 +1640,7 @@ void PianoRoll::updateBackgroundCachesAndRepaint()
 
     const auto highlightingScale = App::Config().getTemperaments()->findHighlightingFor(this->temperament);
     this->defaultHighlighting = make<HighlightingScheme>(0, highlightingScale);
-    this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting.get()));
+    this->defaultHighlighting->renderBackgroundCache(this->temperament);
 
     this->backgroundsCache.clear();
 
@@ -1640,17 +1669,17 @@ void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)
     if (duplicateSchemeIndex < 0)
     {
         auto scheme = make<HighlightingScheme>(key.getRootKey(), key.getScale());
-        scheme->setRows(this->renderBackgroundCacheFor(scheme.get()));
+        scheme->renderBackgroundCache(this->temperament);
         this->backgroundsCache.addSorted(*this->defaultHighlighting, scheme.release());
     }
 }
 
 void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
 {
-    const auto sequences = this->project.getTimeline()->getKeySignatures()->getSequence();
-    for (int i = 0; i < sequences->size(); ++i)
+    const auto keySignatures = this->project.getTimeline()->getKeySignatures()->getSequence();
+    for (int i = 0; i < keySignatures->size(); ++i)
     {
-        const auto *k = static_cast<KeySignatureEvent *>(sequences->getUnchecked(i));
+        const auto *k = static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
         if (k != &key &&
             HighlightingScheme::compareElements<KeySignatureEvent, KeySignatureEvent>(k, &key) == 0)
         {
@@ -1666,109 +1695,6 @@ void PianoRoll::removeBackgroundCacheFor(const KeySignatureEvent &key)
 
     jassert(index >= 0);
 }
-
-Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const scheme) const
-{
-    Array<Image> result;
-    const auto &theme = HelioTheme::getCurrentTheme();
-    for (int j = 0; j < PianoRoll::minRowHeight; ++j)
-    {
-        result.add({});
-    }
-    for (int j = PianoRoll::minRowHeight; j <= PianoRoll::maxRowHeight; ++j)
-    {
-        result.add(PianoRoll::renderRowsPattern(theme,
-            this->temperament, scheme->getScale(), scheme->getRootKey(), j));
-    }
-    return result;
-}
-
-Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
-    const Temperament::Ptr temperament, const Scale::Ptr scale,
-    Note::Key root, int height)
-{
-    if (height < PianoRoll::minRowHeight)
-    {
-        return Image(Image::RGB, 1, 1, true);
-    }
-
-    const auto periodSize = temperament->getPeriodSize();
-    //jassert(scale->getBasePeriod() == periodSize);
-
-    // pre-rendered tiles are used in paint() method to fill the background,
-    // but OpenGL doesn't work well with non-power-of-2 textures;
-    // let's render a number of periods which fit into a 1024px texture:
-    const auto numRowsToRender = periodSize * jmax(3, 1024 / (periodSize * height));
-
-    Image patternImage(Image::RGB, 4, height * numRowsToRender, false);
-    Graphics g(patternImage);
-
-    const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKey);
-    const Colour blackKeyOdd = theme.findColour(ColourIDs::Roll::blackKeyAlt);
-    const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKey);
-    const Colour whiteKeyOdd = theme.findColour(ColourIDs::Roll::whiteKeyAlt);
-    const Colour rootKey = whiteKey.brighter(0.1f);
-    const Colour rootKeyOdd = whiteKeyOdd.brighter(0.1f);
-    const Colour rowLine = theme.findColour(ColourIDs::Roll::rowLine);
-
-    float currentHeight = float(height);
-    float previousHeight = 0;
-    float posY = patternImage.getHeight() - currentHeight;
-
-    const int middleCOffset = periodSize - (temperament->getMiddleC() % periodSize);
-    const int lastPeriodRemainder = (temperament->getNumKeys() % periodSize) - root + middleCOffset;
-
-    //g.setColour(whiteKeyOdd);
-    //g.fillRect(patternImage.getBounds());
-
-    // draw rows
-    for (int i = lastPeriodRemainder;
-        (i < numRowsToRender + lastPeriodRemainder) && ((posY + previousHeight) >= 0.0f);
-        i++)
-    {
-        const int noteNumber = i % periodSize;
-        const int periodNumber = i / periodSize;
-        const bool periodIsOdd = ((periodNumber % 2) > 0);
-
-        previousHeight = currentHeight;
-
-        if (noteNumber == 0)
-        {
-            const Colour c = periodIsOdd ? rootKeyOdd : rootKey;
-            g.setColour(c);
-            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
-            g.setColour(c.brighter(0.025f));
-            g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
-        }
-        else if (scale->hasKey(noteNumber))
-        {
-            const Colour c = periodIsOdd ? whiteKeyOdd : whiteKey;
-            g.setColour(c);
-            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
-            g.setColour(c.brighter(0.025f));
-            g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
-        }
-        else
-        {
-            g.setColour(periodIsOdd ? blackKeyOdd : blackKey);
-            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
-        }
-
-        // fill divider line
-        g.setColour(rowLine);
-        g.drawHorizontalLine(int(posY), 0.f, float(patternImage.getWidth()));
-
-        currentHeight = float(height);
-        posY -= currentHeight;
-    }
-
-    HelioTheme::drawNoise(theme, g, 2.f);
-
-    return patternImage;
-}
-
-PianoRoll::HighlightingScheme::HighlightingScheme(Note::Key rootKey, const Scale::Ptr scale) noexcept :
-    rootKey(rootKey), scale(scale) {}
 
 int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const target) const noexcept
 {

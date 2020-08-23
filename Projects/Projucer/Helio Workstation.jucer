@@ -1218,6 +1218,10 @@
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
           <GROUP id="{EFEF1060-46EA-01AF-80DB-F6245A003904}" name="PianoRoll">
+            <FILE id="zlH1X9" name="HighlightingScheme.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/HighlightingScheme.cpp"/>
+            <FILE id="C5vy43" name="HighlightingScheme.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/HighlightingScheme.h"/>
             <FILE id="nkGHj5" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp"/>
             <FILE id="o50CGJ" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.h"/>
