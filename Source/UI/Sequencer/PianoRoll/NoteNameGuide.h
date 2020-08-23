@@ -17,18 +17,12 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
 class NoteNameGuide final : public Component
 {
 public:
 
     NoteNameGuide(const String &noteName, int noteNumber);
-    ~NoteNameGuide();
-
-    //[UserMethods]
+    
     inline int getNoteNumber() const noexcept
     {
         return this->noteNumber;
@@ -38,27 +32,21 @@ public:
     {
         return this->noteNumber % period == 0;
     }
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
     const int noteNumber;
 
     const Colour fillColour;
     const Colour borderColour;
     const Colour shadowColour;
-    //[/UserVariables]
 
     UniquePointer<Label> noteNameLabel;
     Path internalPath1;
     Path internalPath2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoteNameGuide)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteNameGuide)
 };
-
-

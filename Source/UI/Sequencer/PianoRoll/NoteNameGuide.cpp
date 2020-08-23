@@ -15,94 +15,33 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "NoteNameGuide.h"
-
-//[MiscUserDefs]
-#include "ColourIDs.h"
 #include "CachedLabelImage.h"
-//[/MiscUserDefs]
+#include "ColourIDs.h"
 
-NoteNameGuide::NoteNameGuide(const String &noteName, int noteNumber)
-    : noteNumber(noteNumber),
-      fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),
-      borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),
-      shadowColour(findDefaultColour(ColourIDs::Roll::noteNameShadow))
+NoteNameGuide::NoteNameGuide(const String &noteName, int noteNumber) :
+    noteNumber(noteNumber),
+    fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),
+    borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),
+    shadowColour(findDefaultColour(ColourIDs::Roll::noteNameShadow))
 {
-    this->noteNameLabel.reset(new Label(String(),
-                                         String()));
-    this->addAndMakeVisible(noteNameLabel.get());
-    this->noteNameLabel->setFont(Font (16.00f, Font::plain));
-    noteNameLabel->setJustificationType(Justification::centredLeft);
-    noteNameLabel->setEditable(false, false, false);
-
-
-    //[UserPreSize]
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
 
+    this->noteNameLabel = make<Label>();
+    this->addAndMakeVisible(this->noteNameLabel.get());
+    this->noteNameLabel->setFont({ 16.f });
+    this->noteNameLabel->setJustificationType(Justification::centredLeft);
+    
     this->noteNameLabel->setBufferedToImage(true);
     this->noteNameLabel->setCachedComponentImage(new CachedLabelImage(*this->noteNameLabel));
     this->noteNameLabel->setText(noteName, dontSendNotification);
-    //[/UserPreSize]
-
-    this->setSize(36, 32);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-NoteNameGuide::~NoteNameGuide()
+void NoteNameGuide::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    noteNameLabel = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void NoteNameGuide::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-#if 0
-    //[/UserPrePaint]
-
-    {
-        float x = 0, y = 0;
-        Colour fillColour = Colour (0x44ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillPath (internalPath1, AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour fillColour = Colour (0xc1000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillPath (internalPath2, AffineTransform::translation(x, y));
-    }
-
-    {
-        int x = 0, y = 1, width = 2, height = getHeight() - 1;
-        Colour fillColour = Colour (0x88ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-#endif
-
     g.setColour(this->shadowColour);
     g.fillPath(this->internalPath1);
 
@@ -110,62 +49,24 @@ void NoteNameGuide::paint (Graphics& g)
     g.fillPath(this->internalPath2);
 
     g.setColour(this->borderColour);
-    g.fillRect(0, 1, 2, this->getHeight() - 1);
-
-    //[/UserPaint]
+    g.fillRect(0, 1, 3, this->getHeight() - 1);
 }
 
 void NoteNameGuide::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->noteNameLabel->setBounds(1, (this->getHeight() / 2) - 10, 45, 21);
+    
+    this->internalPath1.clear();
+    this->internalPath1.startNewSubPath (3.f, 1.f);
+    this->internalPath1.lineTo(30.f, 1.f);
+    this->internalPath1.lineTo(34.f, static_cast<float> (this->getHeight()));
+    this->internalPath1.lineTo(3.f, static_cast<float> (this->getHeight()));
+    this->internalPath1.closeSubPath();
 
-    noteNameLabel->setBounds(1, (getHeight() / 2) - (21 / 2), 38, 21);
-    internalPath1.clear();
-    internalPath1.startNewSubPath (3.0f, 1.0f);
-    internalPath1.lineTo (30.0f, 1.0f);
-    internalPath1.lineTo (34.0f, static_cast<float> (getHeight()));
-    internalPath1.lineTo (3.0f, static_cast<float> (getHeight()));
-    internalPath1.closeSubPath();
-
-    internalPath2.clear();
-    internalPath2.startNewSubPath (0.0f, 1.0f);
-    internalPath2.lineTo (29.0f, 1.0f);
-    internalPath2.lineTo (33.0f, static_cast<float> (getHeight()));
-    internalPath2.lineTo (0.0f, static_cast<float> (getHeight()));
-    internalPath2.closeSubPath();
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->internalPath2.clear();
+    this->internalPath2.startNewSubPath(0.f, 1.f);
+    this->internalPath2.lineTo(29.f, 1.f);
+    this->internalPath2.lineTo(33.f, static_cast<float>(this->getHeight()));
+    this->internalPath2.lineTo(0.f, static_cast<float>(this->getHeight()));
+    this->internalPath2.closeSubPath();
 }
-
-
-//[MiscUserCode]
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="NoteNameGuide" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="const String &noteName, int noteNumber"
-                 variableInitialisers="noteNumber(noteNumber),&#10;fillColour(findDefaultColour(ColourIDs::Roll::noteNameFill)),&#10;borderColour(findDefaultColour(ColourIDs::Roll::noteNameBorder)),&#10;shadowColour(findDefaultColour(ColourIDs::Roll::noteNameShadow))"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="36" initialHeight="32">
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: 44ffffff" hasStroke="0" nonZeroWinding="1">s 3 1 l 30 1 l 34 0R l 3 0R x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: c1000000" hasStroke="0" nonZeroWinding="1">s 0 1 l 29 1 l 33 0R l 0 0R x</PATH>
-    <RECT pos="0 1 2 1M" fill="solid: 88ffffff" hasStroke="0"/>
-  </BACKGROUND>
-  <LABEL name="" id="bfd24d0a91476b7" memberName="noteNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="1 0.5Cc 38 21" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

@@ -1327,7 +1327,6 @@ void PianoRoll::paint(Graphics &g)
 
                 For horizontal tiling, we don't care, but for vertical tiling, this means that
                 sequencer rows are messed up, so we have to say explicitly where to fill each period.
-                Also because of that we will pre-render bg's of size period+1 lines to avoid gaps.
             */
 
             for (int i = paintStartY; i < y + h; i += periodHeight)

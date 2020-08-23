@@ -21,8 +21,7 @@
 #include "NoteComponent.h"
 #include "PianoRoll.h"
 
-NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll) :
-    roll(roll)
+NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll) : roll(roll)
 {
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
@@ -50,7 +49,7 @@ void NoteNameGuidesBar::updateBounds()
     for (auto *c : this->guides)
     {
         c->setBounds(0, this->roll.getYPositionByKey(c->getNoteNumber()),
-            c->getWidth(), this->roll.getRowHeight());
+            this->getWidth(), this->roll.getRowHeight());
     }
 }
 

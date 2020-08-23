@@ -68,9 +68,9 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     const auto periodSize = temperament->getPeriodSize();
     //jassert(scale->getBasePeriod() == periodSize);
 
-    const auto numRowsToRender = periodSize + 1;
+    const auto numRowsToRender = periodSize * 2;
 
-    Image patternImage(Image::RGB, 32, height * numRowsToRender, false);
+    Image patternImage(Image::RGB, 16, height * numRowsToRender, false);
     Graphics g(patternImage);
 
     float currentHeight = float(height);

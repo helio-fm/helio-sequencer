@@ -858,7 +858,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::Roll::noteFill, s->getTextColour().interpolatedWith(Colours::white, 0.5f));
     this->setColour(ColourIDs::Roll::noteNameFill, s->getBlackKeyColour().darker(0.4f).withAlpha(0.95f));
-    this->setColour(ColourIDs::Roll::noteNameBorder, s->getTextColour().withAlpha(0.5f));
+    this->setColour(ColourIDs::Roll::noteNameBorder, s->getTextColour().withAlpha(0.4f));
     this->setColour(ColourIDs::Roll::noteNameShadow, s->getTextColour().withAlpha(0.25f));
 
     this->setColour(ColourIDs::TransportControl::recordInactive, Colours::transparentBlack);

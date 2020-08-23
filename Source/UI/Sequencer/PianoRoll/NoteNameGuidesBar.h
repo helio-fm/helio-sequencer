@@ -42,7 +42,7 @@ private:
     OwnedArray<NoteNameGuide> guides;
 
     static constexpr auto defaultWidth = 36;
-    static constexpr auto extendedWidth = 44;
+    static constexpr auto extendedWidth = 48;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
