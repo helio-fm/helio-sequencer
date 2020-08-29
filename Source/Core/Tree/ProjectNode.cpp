@@ -236,8 +236,15 @@ void ProjectNode::recreatePage()
     // (fixme the below is quite a common piece of code)
     this->firstBeatCache = 0;
     this->lastBeatCache = Globals::Defaults::projectLength;
-    const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.getX(), range.getY());
+
+    // if there is anything to reload, reload:
+    if (!this->findChildrenOfType<MidiTrack>().isEmpty())
+    {
+        this->broadcastReloadProjectContent();
+
+        const auto range = this->broadcastChangeProjectBeatRange();
+        this->broadcastChangeViewBeatRange(range.getX(), range.getY());
+    }
 
     this->sequencerLayout->deserialize(layoutState);
 }
