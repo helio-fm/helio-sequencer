@@ -308,14 +308,20 @@ namespace BinaryData
     extern const char*   zoomTool_svg;
     const int            zoomTool_svgSize = 498;
 
+    extern const char*   noise_png;
+    const int            noise_pngSize = 149;
+
     extern const char*   emptyProject_json;
     const int            emptyProject_jsonSize = 1201;
 
+    extern const char*   emptyProject22_json;
+    const int            emptyProject22_jsonSize = 1422;
+
+    extern const char*   emptyProject31_json;
+    const int            emptyProject31_jsonSize = 1453;
+
     extern const char*   exampleProject_json;
     const int            exampleProject_jsonSize = 3287;
-
-    extern const char*   noise_png;
-    const int            noise_pngSize = 317;
 
     extern const char*   logov2_png;
     const int            logov2_pngSize = 25962;
@@ -333,13 +339,16 @@ namespace BinaryData
     const int            hotkeySchemes_jsonSize = 13513;
 
     extern const char*   scales_json;
-    const int            scales_jsonSize = 3513;
+    const int            scales_jsonSize = 9635;
+
+    extern const char*   temperaments_json;
+    const int            temperaments_jsonSize = 839;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 138296;
+    const int            translations_jsonSize = 138167;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 110;
+    const int namedResourceListSize = 113;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

@@ -904,6 +904,9 @@
     <ClCompile Include="..\..\Source\Core\Undo\Actions\PianoTrackActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Undo\Actions\ProjectMetadataActions.cpp">
+      <Filter>Helio\Source\Core\Undo\Actions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
@@ -1045,10 +1048,10 @@
     <ClCompile Include="..\..\Source\UI\Common\ViewportFitProxyComponent.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Dialogs\AnnotationDialog.cpp">
+    <ClCompile Include="..\..\Source\UI\Dialogs\DialogBase.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Dialogs\FadingDialog.cpp">
+    <ClCompile Include="..\..\Source\UI\Dialogs\AnnotationDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Dialogs\KeySignatureDialog.cpp">
@@ -1160,9 +1163,6 @@
       <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Dashboard.cpp">
-      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\InitScreen.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp">
@@ -1282,9 +1282,6 @@
     <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\FailTooltip.cpp">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\HelioCallout.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
@@ -1297,14 +1294,8 @@
     <ClCompile Include="..\..\Source\UI\Popups\ProgressTooltip.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\SuccessTooltip.cpp">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\TooltipContainer.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\ClipRangeIndicator.cpp">
-      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.cpp">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
@@ -1313,18 +1304,6 @@
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\Playhead.cpp">
-      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\SoundProbeIndicator.cpp">
-      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\TimeDistanceIndicator.cpp">
-      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\TrackEndIndicator.cpp">
-      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\TrackStartIndicator.cpp">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.cpp">
@@ -1377,6 +1356,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.cpp">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\HighlightingScheme.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.cpp">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
@@ -1472,9 +1454,6 @@
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\FramePanel.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\DialogPanel.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\PanelBackgroundA.cpp">
@@ -3882,6 +3861,9 @@
     <ClInclude Include="..\..\Source\Core\Undo\Actions\PianoTrackActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Undo\Actions\ProjectMetadataActions.h">
+      <Filter>Helio\Source\Core\Undo\Actions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
@@ -4059,10 +4041,10 @@
     <ClInclude Include="..\..\Source\UI\Common\ViewportFitProxyComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Dialogs\AnnotationDialog.h">
+    <ClInclude Include="..\..\Source\UI\Dialogs\DialogBase.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Dialogs\FadingDialog.h">
+    <ClInclude Include="..\..\Source\UI\Dialogs\AnnotationDialog.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\KeySignatureDialog.h">
@@ -4200,9 +4182,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Dashboard.h">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\InitScreen.h">
-      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.h">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClInclude>
@@ -4320,15 +4299,6 @@
     <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\FailTooltip.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\GenericTooltip.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\HelioCallout.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
@@ -4344,13 +4314,22 @@
     <ClInclude Include="..\..\Source\UI\Popups\PopupMenuComponent.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\FailTooltip.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\GenericTooltip.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\SuccessTooltip.h">
+      <Filter>Helio\Source\UI\Popups</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\ProgressIndicator.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\ProgressTooltip.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\SuccessTooltip.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\TooltipContainer.h">
@@ -4430,6 +4409,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.h">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\HighlightingScheme.h">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.h">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
@@ -4546,9 +4528,6 @@
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\FramePanel.h">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\DialogPanel.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\PanelBackgroundA.h">
@@ -7106,6 +7085,9 @@
     <None Include="..\..\Resources\Icons\zoomTool.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\noise.png">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Templates\emptyProject.json">
       <Filter>Helio\Resources\Templates</Filter>
     </None>
@@ -7117,9 +7099,6 @@
     </None>
     <None Include="..\..\Resources\Templates\exampleProject.json">
       <Filter>Helio\Resources\Templates</Filter>
-    </None>
-    <None Include="..\..\Resources\noise.png">
-      <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\logo-v2.png">
       <Filter>Helio\Resources</Filter>
