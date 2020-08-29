@@ -19,12 +19,6 @@
 
 #include "HeadlineItemDataSource.h"
 
-#if HELIO_DESKTOP
-#   define TREE_NODE_ICON_HEIGHT (24)
-#elif HELIO_MOBILE
-#   define TREE_NODE_ICON_HEIGHT (24)
-#endif
-
 class TreeNodeBase
 {
 public:

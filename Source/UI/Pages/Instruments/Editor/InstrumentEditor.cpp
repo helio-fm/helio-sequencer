@@ -368,7 +368,7 @@ UniquePointer<Component> InstrumentEditor::createMenu()
 
 Image InstrumentEditor::getIcon() const
 {
-    return Icons::findByName(Icons::audioPlugin, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::audioPlugin, Globals::UI::headlineIconSize);
 }
 
 String InstrumentEditor::getName() const

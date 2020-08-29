@@ -189,7 +189,7 @@ HybridRoll *ProjectNode::getLastFocusedRoll() const
 
 Image ProjectNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::project, TREE_NODE_ICON_HEIGHT);
+    return Icons::findByName(Icons::project, Globals::UI::headlineIconSize);
 }
 
 void ProjectNode::showPage()

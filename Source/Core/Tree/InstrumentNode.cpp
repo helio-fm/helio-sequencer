@@ -59,7 +59,7 @@ InstrumentNode::~InstrumentNode()
 
 Image InstrumentNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::instrument, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::instrument, Globals::UI::headlineIconSize);
 }
 
 void InstrumentNode::showPage()

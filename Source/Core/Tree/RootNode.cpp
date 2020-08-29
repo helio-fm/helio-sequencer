@@ -52,7 +52,7 @@ String RootNode::getName() const noexcept
 
 Image RootNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::helio, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::helio, Globals::UI::headlineIconSize);
 }
 
 void RootNode::showPage()

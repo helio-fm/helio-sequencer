@@ -202,10 +202,12 @@ namespace Globals
         #if HELIO_MOBILE
 
         static constexpr auto headlineHeight = 42;
+        static constexpr auto headlineIconSize = 24;
 
         #elif HELIO_DESKTOP
 
         static constexpr auto headlineHeight = 34;
+        static constexpr auto headlineIconSize = 16;
 
         #endif
 

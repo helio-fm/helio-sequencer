@@ -64,7 +64,7 @@ UniquePointer<Component> AudioPluginNode::createMenu()
 
 Image AudioPluginNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::audioPlugin, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::audioPlugin, Globals::UI::headlineIconSize);
 }
 
 AudioProcessorGraph::NodeID AudioPluginNode::getNodeId() const noexcept

@@ -36,8 +36,8 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
     this->navigateNext.reset(new IconButton(Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage));
     this->addAndMakeVisible(navigateNext.get());
 
-    this->component.reset(new HeadlineItemArrow());
-    this->addAndMakeVisible(component.get());
+    this->arrow.reset(new HeadlineItemArrow());
+    this->addAndMakeVisible(arrow.get());
 
     //[UserPreSize]
     this->updateState(false, false);
@@ -60,13 +60,13 @@ HeadlineNavigationPanel::~HeadlineNavigationPanel()
 
     navigatePrevious = nullptr;
     navigateNext = nullptr;
-    component = nullptr;
+    arrow = nullptr;
 
     //[Destructor]
     //[/Destructor]
 }
 
-void HeadlineNavigationPanel::paint (Graphics& g)
+void HeadlineNavigationPanel::paint (juce::Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     g.setColour(this->bgColour);
@@ -84,7 +84,7 @@ void HeadlineNavigationPanel::resized()
 
     navigatePrevious->setBounds(0, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
     navigateNext->setBounds(21, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
-    component->setBounds(getWidth() - 16, 0, 16, getHeight() - 0);
+    arrow->setBounds(getWidth() - 1 - 16, 0, 16, getHeight() - 1);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -136,11 +136,14 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="" id="900658e63c264259" memberName="navigateNext" virtualName=""
                     explicitFocusOrder="0" pos="21 -1Cc 25 32" class="IconButton"
                     params="Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage"/>
-  <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
+  <JUCERCOMP name="" id="6845054f3705e31" memberName="arrow" virtualName=""
+             explicitFocusOrder="0" pos="1Rr 0 16 1M" sourceFile="HeadlineItemArrow.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

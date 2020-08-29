@@ -232,7 +232,7 @@ UniquePointer<Component> InstrumentsListComponent::createMenu()
 
 Image InstrumentsListComponent::getIcon() const
 {
-    return Icons::findByName(Icons::instrument, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::instrument, Globals::UI::headlineIconSize);
 }
 
 String InstrumentsListComponent::getName() const

@@ -49,7 +49,9 @@ private:
 
     UniquePointer<IconButton> navigatePrevious;
     UniquePointer<IconButton> navigateNext;
-    UniquePointer<HeadlineItemArrow> component;
+    UniquePointer<HeadlineItemArrow> arrow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineNavigationPanel)
 };
+
+

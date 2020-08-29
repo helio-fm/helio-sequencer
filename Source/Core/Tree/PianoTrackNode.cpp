@@ -51,7 +51,7 @@ PianoTrackNode::PianoTrackNode(const String &name) :
 
 Image PianoTrackNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::pianoTrack, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::pianoTrack, Globals::UI::headlineIconSize);
 }
 
 int PianoTrackNode::getNumDeltas() const

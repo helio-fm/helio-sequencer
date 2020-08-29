@@ -45,7 +45,7 @@ SettingsNode::SettingsNode() :
 
 Image SettingsNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::settings, TREE_NODE_ICON_HEIGHT);
+    return Icons::findByName(Icons::settings, Globals::UI::headlineIconSize);
 }
 
 String SettingsNode::getName() const noexcept

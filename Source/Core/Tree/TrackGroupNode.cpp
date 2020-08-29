@@ -31,7 +31,7 @@ TrackGroupNode::TrackGroupNode(const String &name) :
 
 Image TrackGroupNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::trackGroup, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::trackGroup, Globals::UI::headlineIconSize);
 }
 
 void TrackGroupNode::removeAllEmptyGroupsInProject(ProjectNode *project)

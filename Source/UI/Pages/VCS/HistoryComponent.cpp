@@ -191,7 +191,7 @@ UniquePointer<Component> HistoryComponent::createMenu()
 
 Image HistoryComponent::getIcon() const
 {
-    return Icons::findByName(Icons::revision, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::revision, Globals::UI::headlineIconSize);
 }
 
 String HistoryComponent::getName() const

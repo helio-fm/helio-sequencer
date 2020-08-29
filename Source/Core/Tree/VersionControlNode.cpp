@@ -49,7 +49,7 @@ VersionControlNode::~VersionControlNode()
 
 Image VersionControlNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::versionControl, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::versionControl, Globals::UI::headlineIconSize);
 }
 
 void VersionControlNode::showPage()

@@ -41,7 +41,7 @@ AutomationTrackNode::AutomationTrackNode(const String &name) :
 
 Image AutomationTrackNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::automationTrack, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::automationTrack, Globals::UI::headlineIconSize);
 }
 
 //===----------------------------------------------------------------------===//

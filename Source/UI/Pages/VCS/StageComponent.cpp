@@ -307,7 +307,7 @@ UniquePointer<Component> StageComponent::createMenu()
 
 Image StageComponent::getIcon() const
 {
-    return Icons::findByName(Icons::selection, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::selection, Globals::UI::headlineIconSize);
 }
 
 String StageComponent::getName() const

@@ -29,7 +29,7 @@ PatternEditorNode::PatternEditorNode() :
 
 Image PatternEditorNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::patterns, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::patterns, Globals::UI::headlineIconSize);
 }
 
 void PatternEditorNode::showPage()
