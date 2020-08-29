@@ -24,6 +24,7 @@
 //[MiscUserDefs]
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
+#include "Headline.h"
 #include "HeadlineDropdown.h"
 #include "CachedLabelImage.h"
 #include "ColourIDs.h"
@@ -73,7 +74,8 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     : item(treeItem),
       parentHeadline(parent)
 {
-    this->titleLabel.reset(new Label(String(), String()));
+    this->titleLabel.reset(new Label(String(),
+                                            String()));
     this->addAndMakeVisible(titleLabel.get());
     this->titleLabel->setFont(Font (18.00f, Font::plain));
     titleLabel->setJustificationType(Justification::centredLeft);
@@ -82,13 +84,13 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     this->icon.reset(new IconComponent(Icons::helio));
     this->addAndMakeVisible(icon.get());
 
-    this->component.reset(new HeadlineItemArrow());
-    this->addAndMakeVisible(component.get());
+    this->arrow.reset(new HeadlineItemArrow());
+    this->addAndMakeVisible(arrow.get());
 
     //[UserPreSize]
     this->menuMarker = make<HeadlineContextMenuMarker>();
     this->addChildComponent(this->menuMarker.get());
-    
+
     this->titleLabel->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -114,6 +116,8 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
 HeadlineItem::~HeadlineItem()
 {
     //[Destructor_pre]
+    this->stopTimer();
+
     if (this->item != nullptr)
     {
         this->item->removeChangeListener(this);
@@ -122,7 +126,7 @@ HeadlineItem::~HeadlineItem()
 
     titleLabel = nullptr;
     icon = nullptr;
-    component = nullptr;
+    arrow = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -133,24 +137,39 @@ void HeadlineItem::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
+    {
+        Colour fillColour = this->bgColour;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //fillColour = this->bgColour;
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillPath (internalPath1);
+    }
+
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->bgColour);
-    g.fillRect(0, 0, getWidth() - 11, getHeight());
     //[/UserPaint]
 }
 
 void HeadlineItem::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    this->menuMarker->setBounds(0,
+    this->menuMarker->setBounds(Headline::itemsOverlapOffset,
         this->getHeight() - this->menuMarker->getHeight(),
-        this->getWidth() - 16,
+        this->getWidth() - Headline::itemsOverlapOffset,
         this->menuMarker->getHeight());
     //[/UserPreResize]
 
-    titleLabel->setBounds(33, (getHeight() / 2) + -1 - (30 / 2), 256, 30);
-    icon->setBounds(7, (getHeight() / 2) + -1 - (32 / 2), 32, 32);
-    component->setBounds(getWidth() - 16, 0, 16, getHeight() - 0);
+    titleLabel->setBounds(33, (getHeight() / 2) - (30 / 2), 256, 30);
+    icon->setBounds(11, (getHeight() / 2) - (26 / 2), 26, 26);
+    arrow->setBounds(getWidth() - 16, 0, 16, getHeight() - 0);
+    internalPath1.clear();
+    internalPath1.startNewSubPath (2.0f, 1.0f);
+    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 1.0f);
+    internalPath1.lineTo (static_cast<float> (getWidth() - 2), static_cast<float> (getHeight() - 2));
+    internalPath1.lineTo (1.0f, static_cast<float> (getHeight() - 1));
+    internalPath1.lineTo (2.0f, static_cast<float> (getHeight() - 2));
+    internalPath1.closeSubPath();
+
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -227,7 +246,7 @@ void HeadlineItem::updateContent()
         this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont().getStringWidth(this->titleLabel->getText());
         const int maxTextWidth = this->titleLabel->getWidth();
-        this->setSize(jmin(textWidth, maxTextWidth) + 64, Globals::UI::headlineHeight - 2);
+        this->setSize(jmin(textWidth, maxTextWidth) + 44 + Headline::itemsOverlapOffset, Globals::UI::headlineHeight - 1);
     }
 }
 
@@ -279,16 +298,17 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
     <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0"/>
+  <BACKGROUND backgroundColour="0">
+    <PATH pos="0 0 100 100" fill="solid: 15ffffff" hasStroke="0" nonZeroWinding="1">s 2 1 l 16R 1 l 2R 2R l 1 1R l 2 2R x</PATH>
+  </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="33 -1Cc 256 30" labelText=""
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="33 0Cc 256 30" labelText="" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="18.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
-                    explicitFocusOrder="0" pos="7 -1Cc 32 32" class="IconComponent"
+                    explicitFocusOrder="0" pos="11 0Cc 26 26" class="IconComponent"
                     params="Icons::helio"/>
-  <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
+  <JUCERCOMP name="" id="6845054f3705e31" memberName="arrow" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
@@ -296,3 +316,6 @@ BEGIN_JUCER_METADATA
 END_JUCER_METADATA
 */
 #endif
+
+
+

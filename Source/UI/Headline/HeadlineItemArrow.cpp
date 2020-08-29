@@ -56,62 +56,32 @@ void HeadlineItemArrow::paint (Graphics& g)
 
     {
         float x = 0, y = 0;
-        Colour fillColour1 = Colour (0x22000000), fillColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> (getWidth() - 12) - 0.0f + x,
-                                       static_cast<float> ((getHeight() / 2)) - 0.0f + y,
-                                       fillColour2,
-                                       static_cast<float> (getWidth() - 6) - 0.0f + x,
-                                       static_cast<float> ((getHeight() / 2) + 5) - 0.0f + y,
-                                       false));
-        g.fillPath (internalPath1, AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x77000000), strokeColour2 = Colour (0x00000000);
+        Colour strokeColour1 = Colour (0x77000000), strokeColour2 = Colour (0x11000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 9) - 0.0f + x,
-                                       static_cast<float> ((getHeight() / 2)) - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 16) - 0.0f + x,
-                                       2.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath2, PathStrokeType (1.000f), AffineTransform::translation(x, y));
+                                             static_cast<float> (getWidth() - 2) - 0.0f + x,
+                                             static_cast<float> (getHeight() - 2) - 0.0f + y,
+                                             strokeColour2,
+                                             static_cast<float> (getWidth() - 16) - 0.0f + x,
+                                             2.0f - 0.0f + y,
+                                             true));
+        g.strokePath (internalPath1, PathStrokeType (1.000f), AffineTransform::translation(x, y));
     }
 
     {
         float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x55ffffff), strokeColour2 = Colour (0x00ffffff);
+        Colour strokeColour1 = Colour (0x33ffffff), strokeColour2 = Colour (0x0bffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 10) - 0.0f + x,
-                                       static_cast<float> ((getHeight() / 2)) - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 17) - 0.0f + x,
-                                       5.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath3, PathStrokeType (0.500f), AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour fillColour1 = Colour (0x22000000), fillColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       static_cast<float> (getWidth() - 12) - 0.0f + x,
-                                       static_cast<float> ((getHeight() / 2)) - 0.0f + y,
-                                       fillColour2,
-                                       static_cast<float> (getWidth() - 6) - 0.0f + x,
-                                       static_cast<float> ((getHeight() / 2) + -5) - 0.0f + y,
-                                       false));
-        g.fillPath (internalPath4, AffineTransform::translation(x, y));
+                                             static_cast<float> (getWidth() - 3) - 0.0f + x,
+                                             static_cast<float> (getHeight() - 2) - 0.0f + y,
+                                             strokeColour2,
+                                             static_cast<float> (getWidth() - 16) - 0.0f + x,
+                                             0.0f - 0.0f + y,
+                                             true));
+        g.strokePath (internalPath2, PathStrokeType (0.500f), AffineTransform::translation(x, y));
     }
 
     //[UserPaint] Add your own custom painting code here..
@@ -124,34 +94,12 @@ void HeadlineItemArrow::resized()
     //[/UserPreResize]
 
     internalPath1.clear();
-    internalPath1.startNewSubPath (static_cast<float> (getWidth()), static_cast<float> ((getHeight() / 2)));
-    internalPath1.lineTo (static_cast<float> (getWidth()), static_cast<float> (getHeight()));
-    internalPath1.lineTo (static_cast<float> (getWidth() - 16), static_cast<float> (getHeight()));
-    internalPath1.lineTo (static_cast<float> (getWidth() - 9), static_cast<float> ((getHeight() / 2)));
-    internalPath1.closeSubPath();
+    internalPath1.startNewSubPath (static_cast<float> (getWidth() - 16), 0.0f);
+    internalPath1.lineTo (static_cast<float> (getWidth() - 1), static_cast<float> (getHeight()));
 
     internalPath2.clear();
-    internalPath2.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 9), static_cast<float> ((getHeight() / 2)));
-    internalPath2.lineTo (static_cast<float> (getWidth() - 16), static_cast<float> (getHeight()));
-    internalPath2.lineTo (static_cast<float> (getWidth() - 32), static_cast<float> (getHeight()));
-    internalPath2.closeSubPath();
-
-    internalPath3.clear();
-    internalPath3.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 17), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 10), static_cast<float> ((getHeight() / 2)));
-    internalPath3.lineTo (static_cast<float> (getWidth() - 17), static_cast<float> (getHeight()));
-    internalPath3.lineTo (static_cast<float> (getWidth() - 32), static_cast<float> (getHeight()));
-    internalPath3.closeSubPath();
-
-    internalPath4.clear();
-    internalPath4.startNewSubPath (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth()), 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth()), static_cast<float> ((getHeight() / 2)));
-    internalPath4.lineTo (static_cast<float> (getWidth() - 9), static_cast<float> ((getHeight() / 2)));
-    internalPath4.closeSubPath();
+    internalPath2.startNewSubPath (static_cast<float> (getWidth() - 17), 0.0f);
+    internalPath2.lineTo (static_cast<float> (getWidth() - 2), static_cast<float> (getHeight()));
 
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -170,17 +118,17 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="32" initialHeight="32">
   <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="linear: 12R 0C, 6R 5C, 0=22000000, 1=0"
-          hasStroke="0" nonZeroWinding="1">s 0R 0C l 0R 0R l 16R 0R l 9R 0C x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour=" radial: 9R 0C, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 0C l 16R 0R l 32R 0R x</PATH>
+          strokeColour=" radial: 2R 2R, 16R 2, 0=77000000, 1=11000000"
+          nonZeroWinding="1">s 16R 0 l 1R 0R</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="0.5, mitered, butt"
-          strokeColour=" radial: 10R 0C, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 0C l 17R 0R l 32R 0R x</PATH>
-    <PATH pos="0 0 100 100" fill="linear: 12R 0C, 6R -5C, 0=22000000, 1=0"
-          hasStroke="0" nonZeroWinding="1">s 16R 0 l 0R 0 l 0R 0C l 9R 0C x</PATH>
+          strokeColour=" radial: 3R 2R, 16R 0, 0=33ffffff, 1=bffffff" nonZeroWinding="1">s 17R 0 l 2R 0R</PATH>
   </BACKGROUND>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

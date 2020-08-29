@@ -25,6 +25,7 @@
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineItemDataSource.h"
+#include "Headline.h"
 #include "MenuPanel.h"
 #include "RootNode.h"
 #include "MainLayout.h"
@@ -70,6 +71,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
 HeadlineDropdown::~HeadlineDropdown()
 {
     //[Destructor_pre]
+    this->stopTimer();
     //[/Destructor_pre]
 
     content = nullptr;
@@ -89,15 +91,18 @@ void HeadlineDropdown::paint (Graphics& g)
     g.fillRect(1, Globals::UI::headlineHeight - 3, this->getWidth() - 3, this->getHeight() - Globals::UI::headlineHeight + 3);
 
     // Draw a nice border around the menu:
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.75f));
+    g.drawHorizontalLine(0, 1.f, float(this->getWidth() - Headline::itemsOverlapOffset));
+    g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
+
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
     g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth() - 1));
-    g.drawVerticalLine(0, Globals::UI::headlineHeight - 1.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 2, Globals::UI::headlineHeight - 1.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 2, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-    g.drawVerticalLine(1, Globals::UI::headlineHeight - 2.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 3, Globals::UI::headlineHeight - 2.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(1, 2.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 3, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
 
     //[/UserPaint]
 }
@@ -113,7 +118,8 @@ void HeadlineDropdown::resized()
     //[UserResized] Add your own custom resize handling here..
 #endif
 
-    this->content->setBounds(2, Globals::UI::headlineHeight - 1,
+    this->content->setBounds(HeadlineDropdown::padding / 2,
+        Globals::UI::headlineHeight - 1,
         this->getWidth() - HeadlineDropdown::padding,
         this->getHeight() - Globals::UI::headlineHeight);
 
@@ -135,6 +141,8 @@ void HeadlineDropdown::mouseDown (const MouseEvent& e)
 void HeadlineDropdown::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
+    this->stopTimer();
+    Desktop::getInstance().getAnimator().cancelAllAnimations(false);
     this->exitModalState(0);
     delete this;
     //[/UserCode_inputAttemptWhenModal]
@@ -178,8 +186,8 @@ void HeadlineDropdown::timerCallback()
     {
         this->stopTimer();
         this->exitModalState(0);
-        Desktop::getInstance().getAnimator()
-            .animateComponent(this, this->getBounds(), 0.f, 100, true, 0.f, 1.f);
+        Desktop::getInstance().getAnimator().cancelAllAnimations(false);
+        Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 0.f, 100, true, 0.f, 1.f);
         delete this;
     }
 }

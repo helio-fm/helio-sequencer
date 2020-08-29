@@ -38,6 +38,8 @@ public:
     ~Headline();
 
     //[UserMethods]
+    static constexpr auto itemsOverlapOffset = 16;
+
     void syncWithTree(NavigationHistory &history, WeakReference<TreeNode> leaf);
     
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
@@ -71,9 +73,8 @@ private:
 
     float getAlphaForAnimation() const noexcept;
 
-    static constexpr auto itemsOverlapOffset = 16;
     static constexpr auto rootNodeOffset = Globals::UI::sidebarWidth;
-
+    
     //[/UserVariables]
 
     UniquePointer<HeadlineNavigationPanel> navPanel;

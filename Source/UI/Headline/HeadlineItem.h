@@ -74,7 +74,10 @@ private:
 
     UniquePointer<Label> titleLabel;
     UniquePointer<IconComponent> icon;
-    UniquePointer<HeadlineItemArrow> component;
+    UniquePointer<HeadlineItemArrow> arrow;
+    Path internalPath1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItem)
 };
+
+
