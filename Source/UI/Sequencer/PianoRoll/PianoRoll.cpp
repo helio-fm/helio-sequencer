@@ -102,12 +102,6 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->noteNameGuides = make<NoteNameGuidesBar>(*this);
     this->addChildComponent(this->noteNameGuides.get());
     this->noteNameGuides->setVisible(noteNameGuidesEnabled);
-
-    this->reloadRollContent();
-
-    // finally, when the bg caches are rendered:
-    this->setRowHeight(PianoRoll::defaultRowHeight);
-    this->setBeatRange(0, Globals::Defaults::projectLength);
 }
 
 PianoRoll::~PianoRoll() {}
@@ -746,6 +740,13 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
     this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
     this->updateSize(); // might have changed by due to different temperament
     this->updateChildrenPositions();
+
+    // if this happens to be a new project, focus somewhere in the centre:
+    if (this->getViewport().getViewPositionY() == 0)
+    {
+        const int defaultY = (this->getHeight() / 2 - this->getViewport().getViewHeight() / 2);
+        this->getViewport().setViewPosition(this->getViewport().getViewPositionX(), defaultY);
+    }
 }
 
 void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -1286,6 +1287,8 @@ void PianoRoll::resized()
 
 void PianoRoll::paint(Graphics &g)
 {
+    jassert(this->defaultHighlighting != nullptr); // trying to paint before the content is ready
+
     const auto *keysSequence = this->project.getTimeline()->getKeySignatures()->getSequence();
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = paintStartX + this->viewport.getViewWidth();
@@ -1308,7 +1311,6 @@ void PianoRoll::paint(Graphics &g)
         const auto *key = static_cast<KeySignatureEvent *>(keysSequence->getUnchecked(nextKeyIdx));
         const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
         const int index = this->binarySearchForHighlightingScheme(key);
-
         jassert(index >= 0);
 
         const auto *s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;

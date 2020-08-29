@@ -415,10 +415,6 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternRoll->setBeatWidth(float(HybridRoll::maxBeatWidth));
     this->patternViewport->setViewedComponent(this->patternRoll.get(), false);
     this->patternRoll->addRollListener(this->mapScroller.get());
-
-    // hard-code the default y view position
-    const int defaultY = (this->pianoRoll->getHeight() / 3);
-    this->pianoViewport->setViewPosition(this->pianoViewport->getViewPositionX(), defaultY);
     
     // create a container with 2 editors and 2 types of project map scroller
     this->rollContainer = make<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),

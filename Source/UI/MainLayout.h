@@ -22,22 +22,20 @@ class HeadlineItem;
 class HeadlineItemDataSource;
 class CommandPaletteCommonActions;
 class TooltipContainer;
+class InitScreen;
 class TreeNode;
 
 #include "CommandPaletteModel.h"
 #include "ComponentFader.h"
 #include "HotkeyScheme.h"
 
-class MainLayout final :
-    public Component,
-    public CommandPaletteModel
+class MainLayout final : public Component, public CommandPaletteModel
 {
 public:
 
     MainLayout();
     ~MainLayout() override;
 
-    void show();
     void restoreLastOpenedPage();
 
     Rectangle<int> getBoundsForPopups() const;
@@ -92,10 +90,11 @@ public:
 
 private:
 
-    ComponentFader fader;
-    
+    void clearInitScreen();
+    UniquePointer<InitScreen> initScreen;
+    friend class InitScreen;
+
     UniquePointer<Headline> headline;
-    UniquePointer<Component> initScreen;
     UniquePointer<TooltipContainer> tooltipContainer;
     
     SafePointer<Component> currentContent;

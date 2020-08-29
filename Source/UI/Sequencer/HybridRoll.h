@@ -374,8 +374,8 @@ protected:
     bool isLassoEvent(const MouseEvent &e) const;
     bool isKnifeToolEvent(const MouseEvent &e) const;
 
-    float firstBeat = FLT_MAX;
-    float lastBeat = -FLT_MAX;
+    float firstBeat = 0.f;
+    float lastBeat = Globals::Defaults::projectLength;
 
     float projectFirstBeat = 0.f;
     float projectLastBeat = Globals::Defaults::projectLength;

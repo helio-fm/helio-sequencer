@@ -922,8 +922,6 @@
             </GROUP>
             <FILE id="SATMyc" name="Dashboard.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.cpp"/>
             <FILE id="ak0ZaE" name="Dashboard.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Dashboard.h"/>
-            <FILE id="Tigws8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.cpp"/>
-            <FILE id="yJ1nQL" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/InitScreen.h"/>
             <FILE id="D8xNhI" name="UpdatesInfoComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.cpp"/>
             <FILE id="qpT5aF" name="UpdatesInfoComponent.h" compile="0" resource="0"

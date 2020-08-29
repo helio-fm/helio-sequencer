@@ -204,7 +204,7 @@ private:
     float newNoteVolume = Globals::Defaults::newNoteVelocity;
     float newNoteLength = Globals::Defaults::newNoteLength;
 
-    int rowHeight = 0;
+    int rowHeight = PianoRoll::defaultRowHeight;
     void setRowHeight(int newRowHeight);
     inline int getRowHeight() const noexcept
     {

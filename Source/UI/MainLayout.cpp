@@ -35,7 +35,6 @@
 #include "PianoTrackNode.h"
 #include "PatternEditorNode.h"
 #include "VersionControlNode.h"
-#include "InitScreen.h"
 #include "SequencerLayout.h"
 #include "JsonSerializer.h"
 #include "ComponentIDs.h"
@@ -45,8 +44,74 @@
 #include "ColourSchemesManager.h"
 #include "CommandPaletteCommonActions.h"
 
-MainLayout::MainLayout() :
-    currentContent(nullptr)
+class InitScreen final : public Component, private Timer
+{
+public:
+
+    InitScreen() : fillColour(findDefaultColour(ColourIDs::BackgroundA::fill))
+    {
+        this->setOpaque(false);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(true, false);
+        this->setPaintingIsUnclipped(true);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        g.fillRect(this->getLocalBounds());
+        //HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), g, 1.5f);
+    }
+
+    void visibilityChanged() override
+    {
+        if (this->isVisible())
+        {
+            // now that this dummy screen is visible, init the workspace
+            this->postCommandMessage(CommandIDs::InitWorkspace);
+        }
+    }
+
+    void handleCommandMessage(int commandId) override
+    {
+        if (commandId == CommandIDs::InitWorkspace)
+        {
+            App::Workspace().init();
+            App::Layout().setVisible(true);
+            this->startFadeOut();
+        }
+    }
+
+private:
+
+    void timerCallback() override
+    {
+        const auto newFill = this->fillColour.interpolatedWith(Colours::transparentBlack, 0.2f);
+
+        if (this->fillColour == newFill)
+        {
+            this->stopTimer();
+            App::Layout().clearInitScreen();
+        }
+        else
+        {
+            this->fillColour = newFill;
+            this->repaint();
+        }
+    }
+
+    inline void startFadeOut()
+    {
+        this->toFront(false);
+        this->startTimerHz(60);
+    }
+
+    Colour fillColour;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InitScreen)
+};
+
+MainLayout::MainLayout()
 {
     this->setComponentID(ComponentIDs::mainLayoutId);
     this->setPaintingIsUnclipped(true);
@@ -79,7 +144,8 @@ MainLayout::MainLayout() :
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
-        this->show();
+        this->setVisible(true);
+        this->clearInitScreen();
     }
     else
     {
@@ -98,14 +164,10 @@ MainLayout::~MainLayout()
     this->headline = nullptr;
 }
 
-void MainLayout::show()
+void MainLayout::clearInitScreen()
 {
-    this->setVisible(true);
-
     if (this->initScreen != nullptr)
     {
-        this->initScreen->toFront(false);
-        this->fader.fadeOut(this->initScreen.get(), 200);
         this->initScreen = nullptr;
     }
 }
