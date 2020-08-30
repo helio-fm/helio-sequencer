@@ -178,6 +178,8 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
         {
             const String title = this->defailtMeters.getAllKeys()[targetIndex];
             const String time(this->defailtMeters[title]);
+
+            this->textEditor->grabKeyboardFocus();
             this->textEditor->setText(time, true);
         }
     }
@@ -284,7 +286,13 @@ void TimeSignatureDialog::textEditorFocusLost(TextEditor&)
 {
     this->updateOkButtonState();
 
-    const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
+    auto *focusedComponent = Component::getCurrentlyFocusedComponent();
+
+    if (nullptr != dynamic_cast<TextEditor *>(focusedComponent))
+    {
+        return; // other editor is focused
+    }
+
     if (this->textEditor->getText().isNotEmpty() &&
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->removeEventButton.get())

@@ -197,7 +197,7 @@ void AnnotationDialog::parentSizeChanged()
     this->updatePosition();
 }
 
-void AnnotationDialog::handleCommandMessage (int commandId)
+void AnnotationDialog::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
@@ -212,6 +212,8 @@ void AnnotationDialog::handleCommandMessage (int commandId)
         {
             const String text = dynamics[targetIndex];
             this->colourSwatches->setSelectedColour(colours[targetIndex]);
+
+            this->textEditor->grabKeyboardFocus();
             this->textEditor->setText(text, true);
         }
     }
@@ -323,7 +325,13 @@ void AnnotationDialog::textEditorFocusLost(TextEditor&)
 {
     this->updateOkButtonState();
 
-    const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
+    auto *focusedComponent = Component::getCurrentlyFocusedComponent();
+
+    if (nullptr != dynamic_cast<TextEditor *>(focusedComponent))
+    {
+        return; // other editor is focused
+    }
+
     if (this->textEditor->getText().isNotEmpty() &&
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->removeEventButton.get())

@@ -44,9 +44,9 @@ void MenuPanel::resized()
 
     // Parent component may reposition menu at any time,
     // need to update content bounds animation:
-    if (this->commandDescriptions.size() != 0)
+    if (this->menu.size() != 0)
     {
-        this->updateContent(this->commandDescriptions,
+        this->updateContent(this->menu,
             this->lastAnimationType, this->shouldResizeToFitContent,
             this->customFooter.get());
     }
@@ -71,10 +71,12 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
     this->shouldResizeToFitContent = adjustsWidth;
 
     // If has new commands, fade out old list and create a new one
-    const bool receivedNewCommands = commands != this->commandDescriptions;
+    const bool receivedNewCommands = commands != this->menu;
     if (receivedNewCommands)
     {
-        this->commandDescriptions = commands;
+        this->menu = commands;
+        this->filteredMenu.clearQuick();
+
         if (animationType == Fading)
         {
             this->animator.fadeOut(this->listBox.get(), menuAnimationTime);
@@ -102,12 +104,18 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
 
         this->removeChildComponent(this->listBox.get());
 
-        this->listBox.reset(new ListBox());
+        this->listBox = make<ListBox>();
         this->listBox->setModel(this);
         this->listBox->setMultipleSelectionEnabled(false);
         this->listBox->setRowHeight(COMMAND_PANEL_BUTTON_HEIGHT);
         this->listBox->updateContent();
         this->addAndMakeVisible(this->listBox.get());
+    }
+    else
+    {
+        // clear the filters anyway
+        this->filteredMenu.clearQuick();
+        this->listBox->updateContent();
     }
 
     if (this->customFooter.get() != newFooter)
@@ -202,24 +210,49 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
     }
 }
 
+void MenuPanel::applyFilter(const String &text)
+{
+    this->filteredMenu.clearQuick();
+
+    if (text.isEmpty())
+    {
+        this->listBox->updateContent();
+        return;
+    }
+
+    for (const auto item : this->menu)
+    {
+        if (item->commandText.containsIgnoreCase(text))
+        {
+            this->filteredMenu.add(item);
+        }
+    }
+
+    this->listBox->updateContent();
+}
+
 //===----------------------------------------------------------------------===//
 // ListBoxModel
 //===----------------------------------------------------------------------===//
 
 int MenuPanel::getNumRows()
 {
-    return this->commandDescriptions.size();
+    return this->filteredMenu.isEmpty() ?
+        this->menu.size() : this->filteredMenu.size();
 }
 
 Component *MenuPanel::refreshComponentForRow(int rowNumber,
     bool isRowSelected, Component *existingComponentToUpdate)
 {
-    if (rowNumber >= this->commandDescriptions.size())
+    auto &menuToShow = this->filteredMenu.isEmpty() ?
+        this->menu : this->filteredMenu;
+
+    if (rowNumber >= menuToShow.size())
     {
         return existingComponentToUpdate;
     }
 
-    const auto itemDescription = this->commandDescriptions[rowNumber];
+    const auto itemDescription = menuToShow[rowNumber];
 
     if (existingComponentToUpdate != nullptr)
     {

@@ -59,11 +59,18 @@ public:
 
     using Menu = ReferenceCountedArray<MenuItem>;
 
+    auto getMenuSize() const noexcept
+    {
+        return this->menu.size();
+    }
+
     void updateContent(const Menu &commands,
         AnimationType animationType = SlideDown,
         bool adjustsWidth = true,
         Component *customFooter = nullptr);
     
+    void applyFilter(const String &text);
+
     void resized() override;
     void handleCommandMessage (int commandId) override;
 
@@ -86,7 +93,9 @@ private:
 
     bool shouldResizeToFitContent = false;
     AnimationType lastAnimationType = AnimationType::None;
-    Menu commandDescriptions;
+
+    Menu menu;
+    Menu filteredMenu;
 
     //===------------------------------------------------------------------===//
     // ListBoxModel

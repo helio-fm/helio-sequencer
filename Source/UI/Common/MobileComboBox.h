@@ -19,15 +19,14 @@
 
 #include "IconButton.h"
 #include "MenuPanel.h"
-#include "ShadowDownwards.h"
 #include "SeparatorHorizontalReversed.h"
 
 class MobileComboBox final : public Component
 {
 public:
 
-    MobileComboBox(WeakReference<Component> editor, WeakReference<Component> primer);
-    ~MobileComboBox();
+    MobileComboBox(WeakReference<Component> editor,
+        WeakReference<Component> area);
 
     void initMenu(MenuPanel::Menu menu);
 
@@ -85,23 +84,29 @@ public:
 
 private:
 
-    void initCaption(TextEditor *editor);
-    void initCaption(Label *label);
-    void initCaption(const String &text);
+    void initHeader(TextEditor *editor, bool hasSearch, bool hasCaption);
+    void initHeader(Label *label, bool hasSearch, bool hasCaption);
+    void initHeader(const String &text, bool hasSearch, bool hasCaption);
 
     void initBackground(Component *newCustomBackground);
+
+    bool isSimpleDropdown() const noexcept
+    {
+        return !this->searchTextBox->isVisible() &&
+            !this->currentNameLabel->isVisible();
+    }
 
     WeakReference<Component> primer;
     WeakReference<Component> editor;
     ComponentAnimator animator;
 
-    bool hasCaption = true;
+    UniquePointer<TextEditor> searchTextBox;
+    UniquePointer<SeparatorHorizontalReversed> separator;
+    UniquePointer<Label> currentNameLabel;
+
     UniquePointer<Component> background;
     UniquePointer<MenuPanel> menu;
     UniquePointer<MobileComboBox::Trigger> triggerButtton;
-    UniquePointer<ShadowDownwards> shadow;
-    UniquePointer<SeparatorHorizontalReversed> separator;
-    UniquePointer<Label> currentNameLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MobileComboBox)
 };

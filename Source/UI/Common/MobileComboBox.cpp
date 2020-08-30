@@ -24,63 +24,66 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     editor(editor),
     primer(primer)
 {
-    this->background = make<Component>();
-    this->addAndMakeVisible(background.get());
-
-    this->menu = make<MenuPanel>();
-    this->addAndMakeVisible(menu.get());
-
-    this->shadow = make<ShadowDownwards>(ShadowType::Light);
-    this->addAndMakeVisible(shadow.get());
-
-    this->separator = make<SeparatorHorizontalReversed>();
-    this->addAndMakeVisible(separator.get());
-
-    this->currentNameLabel = make<Label>(String(), String());
-    this->addAndMakeVisible(currentNameLabel.get());
-
-    this->triggerButtton = make<MobileComboBox::Trigger>();
-    this->addAndMakeVisible(triggerButtton.get());
-
-    this->currentNameLabel->setFont(Font (21.00f, Font::plain));
-    this->currentNameLabel->setJustificationType(Justification::centredLeft);
-    this->currentNameLabel->setEditable(false, false, false);
-
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
-}
 
-MobileComboBox::~MobileComboBox()
-{
-    this->background = nullptr;
-    this->menu = nullptr;
-    this->triggerButtton = nullptr;
-    this->shadow = nullptr;
-    this->separator = nullptr;
-    this->currentNameLabel = nullptr;
+    this->background = make<Component>();
+    this->addAndMakeVisible(this->background.get());
+
+    this->menu = make<MenuPanel>();
+    this->addAndMakeVisible(this->menu.get());
+
+    this->triggerButtton = make<MobileComboBox::Trigger>();
+    this->addAndMakeVisible(this->triggerButtton.get());
+
+    this->separator = make<SeparatorHorizontalReversed>();
+    this->addAndMakeVisible(this->separator.get());
+
+    this->currentNameLabel = make<Label>();
+    this->addAndMakeVisible(this->currentNameLabel.get());
+    this->currentNameLabel->setFont({ 21.f });
+    this->currentNameLabel->setJustificationType(Justification::centredLeft);
+
+    this->searchTextBox = make<TextEditor>();
+    this->addAndMakeVisible(this->searchTextBox.get());
+    this->searchTextBox->setFont({ 21.f });
+    this->searchTextBox->setMultiLine(false);
+    this->searchTextBox->setReturnKeyStartsNewLine(false);
+    this->searchTextBox->setScrollbarsShown(true);
+    this->searchTextBox->setPopupMenuEnabled(false);
+    this->searchTextBox->setCaretVisible(true);
+    this->searchTextBox->setEnabled(true);
+
+    this->searchTextBox->onEscapeKey = [this]()
+    {
+        this->postCommandMessage(CommandIDs::ToggleShowHideCombo);
+    };
+    
+    this->searchTextBox->onTextChange = [this]()
+    {
+        this->menu->applyFilter(this->searchTextBox->getText());
+    };
 }
 
 void MobileComboBox::resized()
 {
-    static constexpr auto menuY = 34;
-    static constexpr auto triggerSize = 32;
-    static constexpr auto shadowHeight = 16;
+    static constexpr auto menuY = 32;
 
-    if (this->hasCaption)
-    {
-        this->background->setBounds(0, 0, this->getWidth(), this->getHeight());
-    }
-    else
+    if (this->isSimpleDropdown())
     {
         this->background->setBounds(0, menuY, this->getWidth(), this->getHeight() - menuY);
     }
+    else
+    {
+        this->background->setBounds(0, 0, this->getWidth(), this->getHeight());
+    }
 
-    this->menu->setBounds(2, menuY, this->getWidth() - 4, getHeight() - menuY);
-    this->triggerButtton->setBounds(this->getWidth() - triggerSize, 0, triggerSize, triggerSize);
-    this->shadow->setBounds(1, menuY - 1, this->getWidth() - 2, shadowHeight);
     this->separator->setBounds(1, menuY - 2, this->getWidth() - 2, 2);
     this->currentNameLabel->setBounds(0, 0, this->getWidth() - 0, menuY - 2);
+
+    this->menu->setBounds(2, menuY, this->getWidth() - 4, this->getHeight() - menuY);
+    this->searchTextBox->setBounds(1, 1, this->getWidth() - 2, menuY - 2);
 
     // a hack to prevent sending `resized` message to menu
     // and thus to prevent it from starting its animation,
@@ -108,7 +111,7 @@ void MobileComboBox::parentSizeChanged()
     }
 }
 
-void MobileComboBox::handleCommandMessage (int commandId)
+void MobileComboBox::handleCommandMessage(int commandId)
 {
     if (this->getParentComponent() != nullptr && this->editor != nullptr)
     {
@@ -117,7 +120,10 @@ void MobileComboBox::handleCommandMessage (int commandId)
             this->getParentComponent()->postCommandMessage(commandId);
         }
 
-        this->animator.animateComponent(this, this->editor->getBounds(), 0.f, 150, true, 0.0, 1.0);
+        this->animator.animateComponent(this,
+            this->isSimpleDropdown() ? this->getBounds() : this->editor->getBounds(),
+            0.f, 150, true, 0.0, 1.0);
+
         this->getParentComponent()->removeChildComponent(this);
     }
 }
@@ -127,24 +133,42 @@ void MobileComboBox::initMenu(MenuPanel::Menu menu)
     this->menu->updateContent(menu);
 }
 
-void MobileComboBox::initCaption(TextEditor *editor)
+void MobileComboBox::initHeader(TextEditor *editor, bool hasSearch, bool hasCaption)
 {
+    this->searchTextBox->setFont(editor->getFont());
     this->currentNameLabel->setFont(editor->getFont());
-    this->initCaption(editor->getText());
+
+    this->initHeader(editor->getText(), hasSearch, hasCaption);
 }
 
-void MobileComboBox::initCaption(Label *label)
+void MobileComboBox::initHeader(Label *label, bool hasSearch, bool hasCaption)
 {
+    this->searchTextBox->setFont(label->getFont());
     this->currentNameLabel->setFont(label->getFont());
-    this->initCaption(label->getText());
+
+    this->initHeader(label->getText(), hasSearch, hasCaption);
 }
 
-void MobileComboBox::initCaption(const String &text)
+void MobileComboBox::initHeader(const String &text, bool hasSearch, bool hasCaption)
 {
-    this->hasCaption = text.isNotEmpty();
-    this->setInterceptsMouseClicks(this->hasCaption, true);
-    this->currentNameLabel->setVisible(this->hasCaption);
+    this->setInterceptsMouseClicks(hasSearch || hasCaption, true);
+
+    this->searchTextBox->setText({}, dontSendNotification);
     this->currentNameLabel->setText(text, dontSendNotification);
+
+    // on mobile, just show label: search box is not very convenient
+#if HELIO_DESKTOP
+    this->searchTextBox->setVisible(hasSearch);
+    this->currentNameLabel->setVisible(hasCaption);
+#elif HELIO_MOBILE
+    this->searchTextBox->setVisible(false);
+    this->currentNameLabel->setVisible(hasSearch || hasCaption);
+#endif
+
+    if (this->searchTextBox->isVisible())
+    {
+        this->searchTextBox->grabKeyboardFocus();
+    }
 }
 
 void MobileComboBox::initBackground(Component *newCustomBackground)
@@ -171,9 +195,10 @@ void MobileComboBox::Primer::initWith(WeakReference<Component> editor,
     this->toFront(false);
     this->textEditor = editor;
     this->combo = make<MobileComboBox>(editor, this);
-    this->combo->initMenu(menu);
     this->combo->initBackground(newCustomBackground);
+    this->combo->initMenu(menu);
     this->comboTrigger = make<MobileComboBox::Trigger>(this);
+
     if (this->textEditor != nullptr)
     {
         this->textEditor->addAndMakeVisible(this->comboTrigger.get());
@@ -211,24 +236,25 @@ void MobileComboBox::Primer::handleCommandMessage(int commandId)
             this->menuInitializer = nullptr;
         }
 
-        // Show combo
-        this->combo->setAlpha(1.f);
+        const bool hasSearchBox = this->combo->menu->getMenuSize() > 20;
+        const bool hasCaptionLabel = !hasSearchBox;
+
+        this->getParentComponent()->addAndMakeVisible(this->combo.get());
+
         if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
         {
-            this->combo->initCaption(ed);
+            this->combo->initHeader(ed, hasSearchBox, hasCaptionLabel);
         }
         else if (auto *label = dynamic_cast<Label *>(this->textEditor.get()))
         {
-            this->combo->initCaption(label);
+            this->combo->initHeader(label, hasSearchBox, hasCaptionLabel);
         }
         else
         {
-            this->combo->initCaption(String());
+            this->combo->initHeader(String(), false, false);
         }
 
-        // todo mofo!!! search!
-
-        this->getParentComponent()->addAndMakeVisible(this->combo.get());
+        this->combo->setAlpha(1.f);
         this->combo->setBounds(this->textEditor->getBounds());
         this->animator.animateComponent(this->combo.get(), this->getBounds(), 1.f, 150, false, 1.0, 0.0);
     }
@@ -252,10 +278,13 @@ void MobileComboBox::Trigger::updateBounds()
 {
     if (const auto *parent = this->getParentComponent())
     {
-        const int w = 64;
-        const int h = 32;
-        const int x = parent->getWidth() - w / 2 - 16;
+        static constexpr auto triggerSize = 32;
+
+        const int w = triggerSize * 2;
+        const int h = triggerSize;
+        const int x = parent->getWidth() - w / 2 - triggerSize / 2;
         const int y = 0;
+
         this->setBounds(x, y, w, h);
         this->setAlwaysOnTop(true);
         this->toFront(false);

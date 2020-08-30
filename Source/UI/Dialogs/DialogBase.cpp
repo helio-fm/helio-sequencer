@@ -137,7 +137,8 @@ Rectangle<int> DialogBase::getContentBounds(float paddingAmount) const noexcept
 {
     const auto actualBounds = this->getBounds()
         .reduced(DialogBase::contentMargin)
-        .withTrimmedBottom(DialogBase::buttonsHeight);
+        .withTrimmedBottom(DialogBase::buttonsHeight)
+        .translated(0, 1); // 1 pixel y offset because we have a header line
 
     return actualBounds.reduced(int(DialogBase::contentPadding * paddingAmount));
 }

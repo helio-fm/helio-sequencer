@@ -247,6 +247,8 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
             this->playButton->setPlaying(false);
             this->scale = this->scales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
+
+            this->scaleNameEditor->grabKeyboardFocus();
             this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
             const auto newEvent = this->originalEvent
                 .withRootKey(this->rootKey).withScale(this->scale);
@@ -437,7 +439,13 @@ void KeySignatureDialog::textEditorFocusLost(TextEditor &)
 {
     this->updateOkButtonState();
 
-    const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
+    auto *focusedComponent = Component::getCurrentlyFocusedComponent();
+
+    if (nullptr != dynamic_cast<TextEditor *>(focusedComponent))
+    {
+        return; // other editor is focused
+    }
+
     if (this->scaleNameEditor->getText().isNotEmpty() &&
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->removeEventButton.get())
