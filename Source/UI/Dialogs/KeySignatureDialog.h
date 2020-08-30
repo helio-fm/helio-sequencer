@@ -55,7 +55,10 @@ public:
 private:
 
     void onKeyChanged(int key) override;
+    void onRootKeyPreview(int key) override;
+
     void onScaleChanged(const Scale::Ptr scale) override;
+    void onScaleNotePreview(int key) override;
 
     void textEditorTextChanged(TextEditor&) override;
     void textEditorReturnKeyPressed(TextEditor&) override;
@@ -74,10 +77,12 @@ private:
 
     bool addsNewEvent = false;
     bool hasMadeChanges = false;
+
+    void previewNote(int key) const;
     void sendEventChange(const KeySignatureEvent &newEvent);
     void removeEvent();
 
-    int key = 0;
+    int rootKey = 0;
     Scale::Ptr scale;
 
     UniquePointer<MobileComboBox::Primer> comboPrimer;

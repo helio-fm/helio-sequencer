@@ -443,7 +443,18 @@ void Transport::MidiMessageDelayedPreview::timerCallback()
 void Transport::previewMidiMessage(const String &trackId, const MidiMessage &message) const
 {
     this->sleepTimer.setAwake();
-    this->messagePreviewQueue.previewMessage(message, this->linksCache[trackId]);
+
+    const auto foundLink = this->linksCache.find(trackId);
+    const bool useDefaultInstrument =
+        trackId.isEmpty() || foundLink == this->linksCache.end();
+
+    auto *instrument = useDefaultInstrument ?
+        this->orchestra.getInstruments().getLast() :
+        foundLink.value();
+
+    jassert(instrument != nullptr);
+
+    this->messagePreviewQueue.previewMessage(message, instrument);
     this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 

@@ -33,12 +33,22 @@ void ScaleEditor::resized()
     }
 }
 
-void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
+void ScaleEditor::onRadioButtonClicked(const MouseEvent &e, RadioButton *clickedButton)
 {
     if (clickedButton->getButtonIndex() == 0)
     {
         // Root key cannot be missed
         clickedButton->select();
+    }
+
+    if (e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
+    {
+        if (auto *parentListener = this->getParentListener())
+        {
+            parentListener->onScaleNotePreview(clickedButton->getButtonIndex());
+        }
+
+        return; // rmb click is note preview
     }
 
     jassert(this->scale != nullptr);
@@ -55,7 +65,7 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
     this->scale = this->scale->withKeys(keys);
     this->updateButtonsState();
 
-    if (auto *parentListener = dynamic_cast<ScaleEditor::Listener *>(this->getParentComponent()))
+    if (auto *parentListener = this->getParentListener())
     {
         parentListener->onScaleChanged(this->scale);
     }

@@ -111,16 +111,22 @@ void RadioButton::resized()
 
 void RadioButton::mouseDown(const MouseEvent &e)
 {
-    if (this->isSelected())
+    // let's say only left-click with no mod keys triggers the button
+    // (this is kinda ugly because ScaleEditor and KeySelector depend
+    // very much on this logic, but I'll leave it as it is for now)
+    if (!e.mods.isRightButtonDown() && !e.mods.isAnyModifierKeyDown())
     {
-        this->deselect();
-    }
-    else
-    {
-        this->select();
+        if (this->isSelected())
+        {
+            this->deselect();
+        }
+        else
+        {
+            this->select();
+        }
     }
 
-    this->owner->onRadioButtonClicked(this);
+    this->owner->onRadioButtonClicked(e, this);
 }
 
 Component *RadioButton::createHighlighterComponent()

@@ -31,9 +31,10 @@ public:
     {
         virtual ~Listener() {}
         virtual void onScaleChanged(const Scale::Ptr scale) = 0;
+        virtual void onScaleNotePreview(int key) = 0;
     };
 
-    void onRadioButtonClicked(RadioButton *button) override;
+    void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) override;
     void setScale(const Scale::Ptr scale);
 
     void resized() override;
@@ -45,6 +46,11 @@ private:
 
     void rebuildButtons();
     void updateButtonsState();
+
+    Listener *getParentListener() const noexcept
+    {
+        return dynamic_cast<Listener *>(this->getParentComponent());
+    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScaleEditor)
 };

@@ -114,12 +114,12 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     {
         Random r;
         const auto i = r.nextInt(this->scales.size());
-        this->key = 0;
+        this->rootKey = 0;
         this->scale = this->scales[i];
         this->scaleEditor->setScale(this->scale);
-        this->keySelector->setSelectedKey(this->key);
+        this->keySelector->setSelectedKey(this->rootKey);
         this->scaleNameEditor->setText(this->scale->getLocalizedName());
-        this->originalEvent = KeySignatureEvent(this->originalSequence, this->scale, targetBeat, this->key);
+        this->originalEvent = KeySignatureEvent(this->originalSequence, this->scale, targetBeat, this->rootKey);
 
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
@@ -130,10 +130,10 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     }
     else
     {
-        this->key = this->originalEvent.getRootKey();
+        this->rootKey = this->originalEvent.getRootKey();
         this->scale = this->originalEvent.getScale();
         this->scaleEditor->setScale(this->scale);
-        this->keySelector->setSelectedKey(this->key);
+        this->keySelector->setSelectedKey(this->rootKey);
         this->scaleNameEditor->setText(this->scale->getLocalizedName(), dontSendNotification);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::keySignatureEditCaption), dontSendNotification);
@@ -215,7 +215,7 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
         for (int i = 0; i < scaleKeys.size(); ++i)
         {
             auto channel = 1;
-            int key = temperament->getMiddleC() + this->key + scaleKeys.getUnchecked(i);
+            int key = temperament->getMiddleC() + this->rootKey + scaleKeys.getUnchecked(i);
             Note::performMultiChannelMapping(temperament->getPeriodSize(), channel, key);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(channel, key, 0.5f));
@@ -249,7 +249,7 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
             this->scaleEditor->setScale(this->scale);
             this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
             const auto newEvent = this->originalEvent
-                .withRootKey(this->key).withScale(this->scale);
+                .withRootKey(this->rootKey).withScale(this->scale);
 
             this->sendEventChange(newEvent);
         }
@@ -340,17 +340,39 @@ void KeySignatureDialog::cancelAndDisappear()
     this->dismiss();
 }
 
+void KeySignatureDialog::previewNote(int keyToPreview) const
+{
+    auto channel = 1;
+    const auto temperament = this->project.getProjectInfo()->getTemperament();
+    int key = temperament->getMiddleC() + keyToPreview;
+    Note::performMultiChannelMapping(temperament->getPeriodSize(), channel, key);
+    this->transport.previewMidiMessage({}, MidiMessage::noteOn(channel, key, 0.5f));
+}
+
+//===----------------------------------------------------------------------===//
+// KeySelector::Listener
+//===----------------------------------------------------------------------===//
+
 void KeySignatureDialog::onKeyChanged(int key)
 {
-    if (this->key != key)
+    if (this->rootKey != key)
     {
-        this->key = key;
+        this->rootKey = key;
         const auto newEvent = this->originalEvent
             .withRootKey(key).withScale(this->scale);
 
         this->sendEventChange(newEvent);
     }
 }
+
+void KeySignatureDialog::onRootKeyPreview(int key)
+{
+    this->previewNote(key);
+}
+
+//===----------------------------------------------------------------------===//
+// ScaleEditor::Listener
+//===----------------------------------------------------------------------===//
 
 void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
 {
@@ -372,7 +394,7 @@ void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
         }
 
         const auto newEvent = this->originalEvent
-            .withRootKey(this->key).withScale(this->scale);
+            .withRootKey(this->rootKey).withScale(this->scale);
 
         this->sendEventChange(newEvent);
 
@@ -381,13 +403,22 @@ void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
     }
 }
 
+void KeySignatureDialog::onScaleNotePreview(int key)
+{
+    this->previewNote(this->rootKey + key);
+}
+
+//===----------------------------------------------------------------------===//
+// TextEditor::Listener
+//===----------------------------------------------------------------------===//
+
 void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
 {
     this->updateOkButtonState();
     this->scale = this->scale->withName(this->scaleNameEditor->getText());
     this->scaleEditor->setScale(this->scale);
     const auto newEvent = this->originalEvent
-        .withRootKey(this->key).withScale(scale);
+        .withRootKey(this->rootKey).withScale(scale);
 
     this->sendEventChange(newEvent);
 }

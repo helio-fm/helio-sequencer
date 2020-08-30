@@ -30,16 +30,22 @@ public:
     {
         virtual ~Listener() {}
         virtual void onKeyChanged(int key) = 0;
+        virtual void onRootKeyPreview(int key) = 0;
     };
 
-    void onRadioButtonClicked(RadioButton *button) override;
+    void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) override;
     void setSelectedKey(int key);
 
     void resized() override;
 
 private:
 
+    Listener *getParentListener() const noexcept
+    {
+        return dynamic_cast<Listener *>(this->getParentComponent());
+    }
+
     OwnedArray<RadioButton> buttons;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySelector)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeySelector)
 };

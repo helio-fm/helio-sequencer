@@ -27,7 +27,7 @@ public:
     struct Listener
     {
         virtual ~Listener() {}
-        virtual void onRadioButtonClicked(RadioButton *button) = 0;
+        virtual void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) = 0;
     };
 
     RadioButton(const String &text, Colour c, RadioButton::Listener *listener);

@@ -46,8 +46,18 @@ void KeySelector::resized()
     }
 }
 
-void KeySelector::onRadioButtonClicked(RadioButton *clickedButton)
+void KeySelector::onRadioButtonClicked(const MouseEvent &e, RadioButton *clickedButton)
 {
+    if (e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
+    {
+        if (auto *parentListener = this->getParentListener())
+        {
+            parentListener->onRootKeyPreview(clickedButton->getButtonIndex());
+        }
+
+        return; // rmb click is note preview
+    }
+
     for (const auto &button : this->buttons)
     {
         if (button != clickedButton)
@@ -58,8 +68,7 @@ void KeySelector::onRadioButtonClicked(RadioButton *clickedButton)
 
     clickedButton->select();
 
-    if (auto *parentListener =
-        dynamic_cast<KeySelector::Listener *>(this->getParentComponent()))
+    if (auto *parentListener = this->getParentListener())
     {
         parentListener->onKeyChanged(clickedButton->getButtonIndex());
     }
