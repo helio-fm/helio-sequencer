@@ -159,8 +159,8 @@ void HeadlineItem::resized()
         this->menuMarker->getHeight());
     //[/UserPreResize]
 
-    titleLabel->setBounds(32, (getHeight() / 2) - (30 / 2), 256, 30);
-    icon->setBounds(11, (getHeight() / 2) - (26 / 2), 26, 26);
+    titleLabel->setBounds(33, (getHeight() / 2) - (30 / 2), 256, 30);
+    icon->setBounds(12, (getHeight() / 2) - (26 / 2), 26, 26);
     arrow->setBounds(getWidth() - 16, 0, 16, getHeight() - 0);
     internalPath1.clear();
     internalPath1.startNewSubPath (2.0f, 1.0f);
@@ -246,7 +246,7 @@ void HeadlineItem::updateContent()
         this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont().getStringWidth(this->titleLabel->getText());
         const int maxTextWidth = this->titleLabel->getWidth();
-        this->setSize(jmin(textWidth, maxTextWidth) + 45 + Headline::itemsOverlapOffset, Globals::UI::headlineHeight - 1);
+        this->setSize(jmin(textWidth, maxTextWidth) + 46 + Headline::itemsOverlapOffset, Globals::UI::headlineHeight - 1);
     }
 }
 
@@ -302,11 +302,11 @@ BEGIN_JUCER_METADATA
     <PATH pos="0 0 100 100" fill="solid: 15ffffff" hasStroke="0" nonZeroWinding="1">s 2 1 l 16R 1 l 2R 2R l 1 1R l 2 2R x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="32 0Cc 256 30" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="33 0Cc 256 30" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.0" kerning="0.0" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
-                    explicitFocusOrder="0" pos="11 0Cc 26 26" class="IconComponent"
+                    explicitFocusOrder="0" pos="12 0Cc 26 26" class="IconComponent"
                     params="Icons::helio"/>
   <JUCERCOMP name="" id="6845054f3705e31" memberName="arrow" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"

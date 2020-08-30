@@ -55,6 +55,8 @@ private:
     void timerCallback() override;
     void syncWidthWithContent();
 
+    Path internalPath1;
+
     //[/UserVariables]
 
     UniquePointer<Component> content;

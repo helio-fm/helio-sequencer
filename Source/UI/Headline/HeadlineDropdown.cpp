@@ -51,7 +51,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
-    this->setSize(150, 34);
+    //this->setSize(150, 34);
 
     //[Constructor]
     if (this->item != nullptr)
@@ -89,6 +89,7 @@ void HeadlineDropdown::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).brighter(0.035f));
     g.fillRect(1, Globals::UI::headlineHeight - 3, this->getWidth() - 3, this->getHeight() - Globals::UI::headlineHeight + 3);
+    g.fillPath(this->internalPath1);
 
     // Draw a nice border around the menu:
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.75f));
@@ -101,7 +102,7 @@ void HeadlineDropdown::paint (Graphics& g)
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-    g.drawVerticalLine(1, 2.f, float(this->getHeight() - 1));
+    g.fillRect(1.f, 1.f, 3.f, float(this->getHeight() - 3));
     g.drawVerticalLine(this->getWidth() - 3, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
 
     //[/UserPaint]
@@ -118,12 +119,19 @@ void HeadlineDropdown::resized()
     //[UserResized] Add your own custom resize handling here..
 #endif
 
-    this->content->setBounds(HeadlineDropdown::padding / 2,
+    this->content->setBounds(HeadlineDropdown::padding / 2 + 1,
         Globals::UI::headlineHeight - 1,
         this->getWidth() - HeadlineDropdown::padding,
         this->getHeight() - Globals::UI::headlineHeight);
 
     this->header->setBounds(0, 0, this->getWidth() - 0, Globals::UI::headlineHeight);
+
+    this->internalPath1.clear();
+    this->internalPath1.startNewSubPath(1.f, 1.f);
+    this->internalPath1.lineTo(float(this->getWidth() - Headline::itemsOverlapOffset), 1.f);
+    this->internalPath1.lineTo(float(this->getWidth() - 2), float(Globals::UI::headlineHeight - 2));
+    this->internalPath1.lineTo(1.f, float(Globals::UI::headlineHeight - 1));
+    this->internalPath1.closeSubPath();
 
     //[/UserResized]
 }
