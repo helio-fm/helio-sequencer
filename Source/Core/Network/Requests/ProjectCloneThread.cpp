@@ -72,6 +72,7 @@ void ProjectCloneThread::run()
     {
         DBG("Failed to construct remote history tree");
         callbackOnMessageThread(ProjectCloneThread, onCloneFailed, {}, self->projectId);
+        return;
     }
 
     this->vcs->replaceHistory(remoteHistory);

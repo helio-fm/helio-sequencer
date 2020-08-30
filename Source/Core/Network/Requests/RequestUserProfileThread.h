@@ -60,6 +60,7 @@ private:
         if (!this->response.hasValidBody() || !this->response.is200())
         {
             callbackOnMessageThread(RequestUserProfileThread, onRequestProfileFailed, self->response.getErrors());
+            return;
         }
 
         this->profile = { this->response.getBody(), {} };
