@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ProjectNode.h"
+#include "ProjectMetadata.h"
 #include "RescalePreviewTool.h"
 #include "PianoRoll.h"
 #include "Transport.h"
@@ -68,6 +69,11 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     const auto scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
+        if (scales.getUnchecked(i)->getBasePeriod() != this->roll->getPeriodSize())
+        {
+            continue;
+        }
+
         menu.add(MenuItem::item(Icons::arpeggiate,
             scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
         {
@@ -144,6 +150,12 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
     const auto scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
+        if (scales.getUnchecked(i)->getBasePeriod() !=
+            this->project.getProjectInfo()->getTemperament()->getPeriodSize())
+        {
+            continue;
+        }
+
         menu.add(MenuItem::item(Icons::arpeggiate,
             scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
         {

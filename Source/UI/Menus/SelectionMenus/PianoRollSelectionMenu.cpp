@@ -149,6 +149,12 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
     const auto &scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
+        if (scales.getUnchecked(i)->getBasePeriod() !=
+            this->project.getProjectInfo()->getTemperament()->getPeriodSize())
+        {
+            continue;
+        }
+
         menu.add(MenuItem::item(Icons::arpeggiate,
             scales.getUnchecked(i)->getLocalizedName())->
             closesMenu()->
