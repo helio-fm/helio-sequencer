@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "ProjectMenu.h"
 #include "ProjectNode.h"
+#include "ProjectTimeline.h"
 #include "ProjectMetadata.h"
 #include "ProjectMetadataActions.h"
 #include "Icons.h"
@@ -28,6 +29,7 @@
 #include "VersionControlNode.h"
 #include "PatternEditorNode.h"
 #include "AutomationSequence.h"
+#include "KeySignaturesSequence.h"
 #include "AudioCore.h"
 #include "Instrument.h"
 #include "PianoSequence.h"
@@ -388,15 +390,15 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
     }));
 
     const auto &temperaments = App::Config().getTemperaments()->getAll();
-    const auto currentPeriodSize = this->project.getProjectInfo()->getTemperament()->getPeriodSize();
+    const auto currentTemperament = this->project.getProjectInfo()->getTemperament();
 
     for (const auto otherTemperament : temperaments)
     {
         menu.add(MenuItem::item(Icons::refactor,
             TRANS(otherTemperament->getName()))->
-            disabledIf(otherTemperament->getPeriodSize() == currentPeriodSize)->
+            disabledIf(otherTemperament->getPeriodSize() == currentTemperament->getPeriodSize())->
             closesMenu()->
-            withAction([this, otherTemperament, convertTracks]()
+            withAction([this, currentTemperament, otherTemperament, convertTracks]()
         {
             if (convertTracks)
             {
@@ -413,10 +415,35 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
                 this->project.checkpoint();
             }
 
+            // let's also update key signature if there's only one:
+            auto *keySignatures = this->project.getTimeline()->getKeySignatures()->getSequence();
+            if (keySignatures->size() == 1)
+            {
+                auto *firstSignature = static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(0));
+
+                auto newScale = otherTemperament->getHighlighting();
+                for (const auto scale : App::Config().getScales()->getAll())
+                {
+                    if (scale->getBasePeriod() == otherTemperament->getPeriodSize())
+                    {
+                        newScale = scale;
+                        break;
+                    }
+                }
+
+                const auto rootIndexInChromaticMap = currentTemperament->
+                    getChromaticMap()->getNearestScaleKey(firstSignature->getRootKey());
+
+                const auto newRootKey = otherTemperament->getChromaticMap()->
+                    getChromaticKey(rootIndexInChromaticMap, 0, true);
+
+                const auto newSignature = firstSignature->withScale(newScale).withRootKey(newRootKey);
+                static_cast<KeySignaturesSequence *>(keySignatures)->change(*firstSignature, newSignature, true);
+            }
+
+            // finally the temperament itself:
             this->project.getUndoStack()->perform(
                 new ProjectTemperamentChangeAction(this->project, *otherTemperament));
-
-            // todo also readjust the sequencer view? now it jumps up or down
         }));
     }
 

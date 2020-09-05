@@ -94,6 +94,7 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
         findDefaultColour(Label::textColourId).withMultipliedAlpha(0.25f));
     this->addAndMakeVisible(this->patreonButton.get());
 
+    /*
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::create, "12-EDO")->
         withAction([](){ App::Workspace().createEmptyProject("emptyProject"); }));
@@ -104,6 +105,7 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
 
     this->createProjectComboSource->initWith(this->createProjectButton.get(),
         menu, new PanelBackgroundB());
+    */
 
     //[/UserPreSize]
 
