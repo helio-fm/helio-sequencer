@@ -37,9 +37,9 @@ public:
 
     inline const String &getName() const noexcept { return this->name; }
     inline const Period &getPeriod() const noexcept { return this->period; }
-    inline auto getPeriodSize() const noexcept { return this->period.size(); }
-    inline auto getNumKeys() const noexcept { return this->keysTotal; }
-    inline auto getMiddleC() const noexcept { return this->middleC; }
+    inline int getPeriodSize() const noexcept { return this->period.size(); }
+    inline int getNumKeys() const noexcept { return this->keysTotal; }
+    inline Note::Key getMiddleC() const noexcept { return this->middleC; }
 
     bool isDefault() const noexcept;
 

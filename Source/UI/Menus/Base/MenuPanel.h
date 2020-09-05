@@ -59,7 +59,7 @@ public:
 
     using Menu = ReferenceCountedArray<MenuItem>;
 
-    auto getMenuSize() const noexcept
+    inline int getMenuSize() const noexcept
     {
         return this->menu.size();
     }

@@ -261,7 +261,6 @@ void ProjectPage::resized()
     const auto layoutRightSide = [this, &getSkewX]
     (Array<Label *> &target, int yOffset, int lineHeight)
     {
-        static constexpr auto editorPadding = 4;
         for (int i = 0; i < target.size(); ++i)
         {
             auto *textComponent = target.getUnchecked(i);

@@ -28,7 +28,7 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-static inline auto getPeriod(ProjectNode &project)
+static inline const Temperament::Period &getPeriod(ProjectNode &project)
 {
     return project.getProjectInfo()->getTemperament()->getPeriod();
 }

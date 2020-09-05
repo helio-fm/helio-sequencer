@@ -450,7 +450,7 @@ void Transport::previewMidiMessage(const String &trackId, const MidiMessage &mes
 
     auto *instrument = useDefaultInstrument ?
         this->orchestra.getInstruments().getLast() :
-        foundLink.value();
+        foundLink.value().get();
 
     jassert(instrument != nullptr);
 

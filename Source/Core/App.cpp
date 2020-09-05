@@ -569,7 +569,7 @@ void App::initialise(const String &commandLine)
 
         // desktop versions will be initialised by InitScreen component.
         App::Workspace().init();
-        App::Layout().show();
+        App::Layout().setVisible(true);
 
 #   endif
 
