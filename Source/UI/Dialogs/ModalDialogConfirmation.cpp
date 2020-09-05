@@ -28,6 +28,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
 
     this->cancelButton = make<TextButton>();
     this->addAndMakeVisible(this->cancelButton.get());
+    this->cancelButton->setWantsKeyboardFocus(false);
     this->cancelButton->onClick = [this]()
     {
         this->cancel();
@@ -35,6 +36,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
+    this->okButton->setWantsKeyboardFocus(false);
     this->okButton->onClick = [this]()
     {
         this->okay();
@@ -72,7 +74,7 @@ void ModalDialogConfirmation::parentSizeChanged()
     this->updatePosition();
 }
 
-void ModalDialogConfirmation::handleCommandMessage (int commandId)
+void ModalDialogConfirmation::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {

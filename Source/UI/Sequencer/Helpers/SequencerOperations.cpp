@@ -633,8 +633,7 @@ void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoi
         sortedSelection.addSorted(nc->getNote(), nc->getNote());
     }
 
-    PianoChangeGroup groupBefore;
-    PianoChangeGroup groupAfter;
+    Array<Note> groupBefore, groupAfter;
 
     // 2. invert key intervals between each note and the previous one
     // (as well as retrograde, this assumes selection is a melodic line,
