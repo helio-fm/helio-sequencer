@@ -12501,7 +12501,6 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"period\": 22, \"name\": \"Just harmonic minor\", \"intervals\": \"4 2 3 4 2 5 2\" },\n"
 "      { \"period\": 22, \"name\": \"Just harmonic major\", \"intervals\": \"4 3 2 4 2 5 2\" },\n"
 "      { \"period\": 22, \"name\": \"Just melodic minor\", \"intervals\": \"4 2 3 4 3 4 2\" },\n"
-"      { \"period\": 22, \"name\": \"Just double harmonic\", \"intervals\": \"2 5 2 4 2 5 2\" },\n"
 "      { \"period\": 22, \"name\": \"Superpyth harmonic minor\", \"intervals\": \"4 1 4 4 1 7 1\" },\n"
 "      { \"period\": 22, \"name\": \"Superpyth harmonic major\", \"intervals\": \"4 4 1 4 1 7 1\" },\n"
 "      { \"period\": 22, \"name\": \"Superpyth melodic minor\", \"intervals\": \"4 1 4 4 4 4 1\" },\n"
@@ -12524,13 +12523,6 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"period\": 31, \"name\": \"Neutral Diatonic Hypolydian\", \"intervals\": \"4 5 5 4 4 5 4\" },\n"
 "      { \"period\": 31, \"name\": \"Neutral Diatonic Hypophrygian\", \"intervals\": \"5 5 4 4 5 4 4\" },\n"
 "      { \"period\": 31, \"name\": \"Neutral Diatonic Hypodorian\", \"intervals\": \"5 4 4 5 4 4 5\" },\n"
-"      { \"period\": 31, \"name\": \"Neutral Mixolydian\", \"intervals\": \"4 5 4 4 5 4 5\" },\n"
-"      { \"period\": 31, \"name\": \"Neutral Lydian\", \"intervals\": \"5 4 4 5 4 5 4\" },\n"
-"      { \"period\": 31, \"name\": \"Neutral Phrygian\", \"intervals\": \"4 4 5 4 5 4 5\" },\n"
-"      { \"period\": 31, \"name\": \"Neutral Dorian\", \"intervals\": \"4 5 4 5 4 5 4\" },\n"
-"      { \"period\": 31, \"name\": \"Neutral Hypolydian\", \"intervals\": \"5 4 5 4 5 4 4\" },\n"
-"      { \"period\": 31, \"name\": \"Neutral Hypophrygian\", \"intervals\": \"4 5 4 5 4 4 5\" },\n"
-"      { \"period\": 31, \"name\": \"Neutral Hypodorian\", \"intervals\": \"5 4 5 4 4 5 4\" },\n"
 "      { \"period\": 31, \"name\": \"Hemiolic Chromatic Mixolydian\", \"intervals\": \"2 2 9 2 2 9 5\" },\n"
 "      { \"period\": 31, \"name\": \"Hemiolic Chromatic Lydian\", \"intervals\": \"2 9 2 2 9 5 2\" },\n"
 "      { \"period\": 31, \"name\": \"Hemiolic Chromatic Phrygian\", \"intervals\": \"9 2 2 9 5 2 2\" },\n"
@@ -12556,14 +12548,7 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"period\": 31, \"name\": \"Soft Diatonic Dorian\", \"intervals\": \"2 5 6 5 2 5 6\" },\n"
 "      { \"period\": 31, \"name\": \"Soft Diatonic Hypolydian\", \"intervals\": \"5 6 5 2 5 6 2\" },\n"
 "      { \"period\": 31, \"name\": \"Soft Diatonic Hypophrygian\", \"intervals\": \"6 5 2 5 6 2 5\" },\n"
-"      { \"period\": 31, \"name\": \"Soft Diatonic Hypodorian\", \"intervals\": \"5 2 5 6 2 5 6\" },\n"
-"      { \"period\": 31, \"name\": \"Enharmonic Mixolydian\", \"intervals\": \"1 2 10 1 2 10 5\" },\n"
-"      { \"period\": 31, \"name\": \"Enharmonic Lydian\", \"intervals\": \"2 10 1 2 10 5 1\" },\n"
-"      { \"period\": 31, \"name\": \"Enharmonic Phrygian\", \"intervals\": \"10 1 2 10 5 1 2\" },\n"
-"      { \"period\": 31, \"name\": \"Enharmonic Dorian\", \"intervals\": \"1 2 10 5 1 2 10\" },\n"
-"      { \"period\": 31, \"name\": \"Enharmonic Hypolydian\", \"intervals\": \"2 10 5 1 2 10 1\" },\n"
-"      { \"period\": 31, \"name\": \"Enharmonic Hypophrygian\", \"intervals\": \"10 5 1 2 10 1 2\" },\n"
-"      { \"period\": 31, \"name\": \"Enharmonic Hypodorian\", \"intervals\": \"5 1 2 10 1 2 10\" }\n"
+"      { \"period\": 31, \"name\": \"Soft Diatonic Hypodorian\", \"intervals\": \"5 2 5 6 2 5 6\" }\n"
 "    ]\n"
 "  }\n"
 "}";
@@ -14738,7 +14723,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 13513; return hotkeySchemes_json;
-        case 0x048f5efe:  numBytes = 9635; return scales_json;
+        case 0x048f5efe:  numBytes = 8354; return scales_json;
         case 0x77719112:  numBytes = 839; return temperaments_json;
         case 0xf8655f25:  numBytes = 138167; return translations_json;
         default: break;

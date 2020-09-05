@@ -339,7 +339,7 @@ namespace BinaryData
     const int            hotkeySchemes_jsonSize = 13513;
 
     extern const char*   scales_json;
-    const int            scales_jsonSize = 9635;
+    const int            scales_jsonSize = 8354;
 
     extern const char*   temperaments_json;
     const int            temperaments_jsonSize = 839;
