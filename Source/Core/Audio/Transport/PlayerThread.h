@@ -26,10 +26,7 @@ public:
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-    void startPlayback(float seekPosition,
-        float rewindBeat, float endBeat,
-        double startTempo, double currentTime, double totalTime,
-        bool loopMode, bool silentMode = false);
+    void startPlayback(Transport::PlaybackContext::Ptr context);
 
 private:
 
@@ -37,18 +34,8 @@ private:
 
     Transport &transport;
     TransportPlaybackCache sequences;
-    float projectStartOffset = 0.f;
 
-    bool loopMode = false;
-    bool silentMode = false;
-
-    Atomic<float> startBeat = 0.f; // where to start from
-    Atomic<float> rewindBeat = 0.f; // where to rewind, if looped
-    Atomic<float> endBeat = 1.f; // where to stop or rewind
-
-    Atomic<double> totalTimeMs = 0.0;
-    Atomic<double> currentTimeMs = 0.0;
-    Atomic<double> msPerQuarterNote = 0.0;
+    Transport::PlaybackContext::Ptr context;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };

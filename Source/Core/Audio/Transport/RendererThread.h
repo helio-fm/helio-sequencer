@@ -28,7 +28,9 @@ public:
     
     float getPercentsComplete() const;
 
-    void startRecording(const File &file);
+    void startRecording(const File &file,
+        Transport::PlaybackContext::Ptr context);
+
     void stop();
     bool isRecording() const;
 
@@ -43,6 +45,7 @@ private:
 private:
 
     Transport &transport;
+    Transport::PlaybackContext::Ptr context;
 
     CriticalSection writerLock;
     UniquePointer<AudioFormatWriter> writer;

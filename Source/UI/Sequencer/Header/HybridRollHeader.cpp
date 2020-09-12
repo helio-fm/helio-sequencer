@@ -158,17 +158,11 @@ void HybridRollHeader::updateTimeDistanceIndicator()
     const auto seek2 = this->roll.getBeatByXPosition(float(this->playingIndicator->getX()));
 
     this->timeDistanceIndicator->setAnchoredBetween(anchor1, anchor2);
+
+    const auto timeMs1 = this->transport.findTimeAt(seek1);
+    const auto timeMs2 = this->transport.findTimeAt(seek2);
     
-    double outTimeMs1 = 0.0;
-    double outTempo1 = 0.0;
-    double outTimeMs2 = 0.0;
-    double outTempo2 = 0.0;
-    
-    // todo don't rebuild sequences here
-    this->transport.findTimeAndTempoAt(seek1, outTimeMs1, outTempo1);
-    this->transport.findTimeAndTempoAt(seek2, outTimeMs2, outTempo2);
-    
-    const double timeDelta = fabs(outTimeMs2 - outTimeMs1);
+    const double timeDelta = fabs(timeMs2 - timeMs1);
     const auto timeDeltaText = Transport::getTimeString(timeDelta);
     this->timeDistanceIndicator->getTimeLabel()->setText(timeDeltaText, dontSendNotification);
 }

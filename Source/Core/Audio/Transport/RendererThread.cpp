@@ -37,20 +37,12 @@ float RendererThread::getPercentsComplete() const
     return this->percentsDone;
 }
 
-void RendererThread::startRecording(const File &file)
+void RendererThread::startRecording(const File &file,
+    Transport::PlaybackContext::Ptr playbackContext)
 {
-    this->transport.recacheIfNeeded();
-    const auto sequencesCache = this->transport.getPlaybackCache();
-    
-    if (sequencesCache.isEmpty())
-    {
-        return;
-    }
-
     this->stop();
 
-    double sampleRate = sequencesCache.getSampleRate();
-    int numChannels = sequencesCache.getNumOutputChannels();
+    this->context = playbackContext;
 
     // Create an OutputStream to write to our destination file...
     file.deleteFile();
@@ -71,13 +63,15 @@ void RendererThread::startRecording(const File &file)
         {
             WavAudioFormat wavFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer.reset(wavFormat.createWriterFor(fileStream.release(), sampleRate, numChannels, bitDepth, {}, 0));
+            this->writer.reset(wavFormat.createWriterFor(fileStream.release(),
+                this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, 0));
         }
         else if (file.getFileExtension().endsWithIgnoreCase("flac"))
         {
             FlacAudioFormat flacFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer.reset(flacFormat.createWriterFor(fileStream.release(), sampleRate, numChannels, bitDepth, {}, 0));
+            this->writer.reset(flacFormat.createWriterFor(fileStream.release(),
+                this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, 0));
         }
 
         if (writer != nullptr)
@@ -129,14 +123,9 @@ void RendererThread::run()
     const int numOutChannels = sequences.getNumOutputChannels();
     const int numInChannels = sequences.getNumInputChannels();
     const double sampleRate = sequences.getSampleRate();
-    
-    double totalTimeMs = 0.0;
-    double tempoAtTheEndOfTrack = 0.0;
-    this->transport.findTimeAndTempoAt(this->transport.getProjectLastBeat(), totalTimeMs, tempoAtTheEndOfTrack);
-    
-    double startTimeMs = 0.0;
-    double msPerQuarter = 0.0;
-    this->transport.findTimeAndTempoAt(this->transport.getProjectFirstBeat(), startTimeMs, msPerQuarter);
+    const double totalTimeMs = this->context->totalTimeMs;
+    const double startTimeMs = this->context->startBeatTimeMs; // at project first beat
+    const double msPerQuarter = this->context->startBeatTempo;
     double secPerQuarter = msPerQuarter / 1000.0;
 
     double currentFrame = 0.0;

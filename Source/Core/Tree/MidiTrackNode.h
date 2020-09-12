@@ -127,10 +127,10 @@ protected:
     void setTrackId(const String &val) override;
     String id;
 
-    Colour colour;
-    int channel;
+    Colour colour = Colours::white;
+    int channel = 1;
 
     String instrumentId;
-    int controllerNumber;
+    int controllerNumber = 0;
     
 };

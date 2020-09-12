@@ -81,10 +81,49 @@ public:
 
     float getRenderingPercentsComplete() const;
     
-    void findTimeAndTempoAt(float beatPosition,
-        double &outTimeMs, double &outTempo) const;
+    //===------------------------------------------------------------------===//
+    // Playback context and caches
+    //===------------------------------------------------------------------===//
 
-    MidiMessage findFirstTempoEvent();
+    double findTimeAt(float beat) const;
+
+    struct PlaybackContext final : public ReferenceCountedObject
+    {
+        using Ptr = ReferenceCountedObjectPtr<PlaybackContext>;
+
+        PlaybackContext()
+        {
+            memset(this->ccStates, -1, sizeof(this->ccStates));
+        }
+
+        float startBeat = 0.f;
+        float rewindBeat = 0.f;
+        float endBeat = 0.f;
+
+        float projectFirstBeat = 0.f;
+        float projectLastBeat = 0.f;
+
+        double startBeatTempo = 0.0; // ms per beat (or per quarter-note)
+        double startBeatTimeMs = 0.0;
+        double totalTimeMs = 0.0;
+
+        double sampleRate = 0.0;
+        int numOutputChannels = 0;
+
+        bool playbackLoopMode = false;
+        bool playbackSilentMode = false;
+
+        // computed CC values: -1 if not found in any track,
+        // otherwise, the controller value at the time of playback start;
+        // CC numbers 102–119 are undefined, and numbers 120-127 are
+        // reserved for channel mode messages, which we will ignore
+        static constexpr auto numCCs = 101;
+        int ccStates[numCCs + 1];
+
+        // todo pass temperament info
+    };
+
+    PlaybackContext::Ptr fillPlaybackContextAt(float beat) const;
 
     TransportPlaybackCache getPlaybackCache();
 

@@ -51,10 +51,6 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
         return this->allActions;
     }
 
-    double outTempo = 0.0;
-    double outStartTimeMs = 0.0;
-    double outEndTimeMs = 0.0;
-
     const auto *timeline = this->project.getTimeline();
     
     if (this->annotationActionsOutdated)
@@ -67,7 +63,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto *annotation = dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i));
             jassert(annotation != nullptr);
 
-            this->project.getTransport().findTimeAndTempoAt(annotation->getBeat(), outStartTimeMs, outTempo);
+            const auto startTimeMs = this->project.getTransport().findTimeAt(annotation->getBeat());
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
@@ -85,7 +81,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             };
 
             this->annotationActionsCache.add(CommandPaletteAction::action(annotation->getDescription(),
-                Transport::getTimeString(outStartTimeMs), float(outStartTimeMs))->
+                Transport::getTimeString(startTimeMs), float(startTimeMs))->
                 withColour(annotation->getTrackColour())->
                 withCallback(action));
         }
@@ -104,7 +100,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto *event = dynamic_cast<KeySignatureEvent *>(ksSequence->getUnchecked(i));
             jassert(event != nullptr);
 
-            this->project.getTransport().findTimeAndTempoAt(event->getBeat(), outStartTimeMs, outTempo);
+            const auto startTimeMs = this->project.getTransport().findTimeAt(event->getBeat());
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
@@ -122,7 +118,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             };
 
             this->keySignatureActionsCache.add(CommandPaletteAction::action(event->toString(keyNames),
-                Transport::getTimeString(outStartTimeMs), float(outStartTimeMs))->
+                Transport::getTimeString(startTimeMs), float(startTimeMs))->
                 withColour(event->getTrackColour())->
                 withCallback(action));
         }
@@ -140,7 +136,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             const auto *event = dynamic_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(i));
             jassert(event != nullptr);
 
-            this->project.getTransport().findTimeAndTempoAt(event->getBeat(), outStartTimeMs, outTempo);
+            const auto startTimeMs = this->project.getTransport().findTimeAt(event->getBeat());
             const auto action = [this, i](TextEditor &ed)
             {
                 auto *roll = this->project.getLastFocusedRoll();
@@ -158,7 +154,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             };
 
             this->timeSignatureActionsCache.add(CommandPaletteAction::action(event->toString(),
-                Transport::getTimeString(outStartTimeMs), float(outStartTimeMs))->
+                Transport::getTimeString(startTimeMs), float(startTimeMs))->
                 withColour(event->getTrackColour())->
                 withCallback(action));
         }
@@ -177,11 +173,9 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
             {
                 const auto seekStart = sequence->getFirstBeat() + clip->getBeat();
                 const auto seekEnd = sequence->getLastBeat() + clip->getBeat();
-
-                this->project.getTransport().findTimeAndTempoAt(seekStart, outStartTimeMs, outTempo);
-                this->project.getTransport().findTimeAndTempoAt(seekEnd, outEndTimeMs, outTempo);
-
-                const auto timeString = Transport::getTimeString(outStartTimeMs) + " - " + Transport::getTimeString(outEndTimeMs);
+                const auto startTimeMs = this->project.getTransport().findTimeAt(seekStart);
+                const auto endTimeMs = this->project.getTransport().findTimeAt(seekEnd);
+                const auto timeString = Transport::getTimeString(startTimeMs) + " - " + Transport::getTimeString(endTimeMs);
 
                 const auto action = [this, pianoTrackNode, clip](TextEditor &ed)
                 {
@@ -192,7 +186,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
                 // all clips are to be listed at the bottom, thus + 10000 sec offset:
                 static const float orderOffset = 10000000.f;
                 this->clipActionsCache.add(CommandPaletteAction::action(pianoTrackNode->getTrackName(),
-                    timeString, float(outStartTimeMs + orderOffset))->
+                    timeString, float(startTimeMs + orderOffset))->
                     withColour(pianoTrackNode->getTrackColour())->
                     withCallback(action));
             }

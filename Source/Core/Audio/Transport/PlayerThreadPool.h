@@ -52,21 +52,11 @@ public:
             this->currentPlayer = this->findNextFreePlayer();
         }
 
-        double totalTimeMs = 0.0;
-        double _tempoAtTheEnd = 0.0;
-        this->transport.findTimeAndTempoAt(this->transport.getProjectLastBeat(), totalTimeMs, _tempoAtTheEnd);
-
-        double currentTimeMs = 0.0;
-        double msPerQuarter = 0.0;
-        this->transport.findTimeAndTempoAt(startBeat, currentTimeMs, msPerQuarter);
+        const auto playbackContext = this->transport.fillPlaybackContextAt(startBeat);
 
         // let listeners know about the tempo before the playback starts
-        this->transport.broadcastTempoChanged(msPerQuarter);
-
-        this->currentPlayer->startPlayback(startBeat,
-            rewindBeat, endBeat,
-            msPerQuarter, currentTimeMs, totalTimeMs,
-            loopMode, silentMode);
+        this->transport.broadcastTempoChanged(playbackContext->startBeatTempo);
+        this->currentPlayer->startPlayback(playbackContext);
     }
 
     void stopPlayback()
@@ -91,7 +81,7 @@ private:
     {
         this->cleanup();
 
-        for (const auto player : this->players)
+        for (auto *player : this->players)
         {
             if (!player->isThreadRunning())
             {
@@ -122,6 +112,7 @@ private:
     }
 
     Transport &transport;
+
     const int minPoolSize;
 
     OwnedArray<PlayerThread> players;

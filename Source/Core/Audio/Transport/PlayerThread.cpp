@@ -36,25 +36,10 @@ PlayerThread::~PlayerThread()
 // Thread
 //===----------------------------------------------------------------------===//
 
-void PlayerThread::startPlayback(float seekPosition,
-    float rewindBeat, float endBeat,
-    double startTempo, double currentTime, double totalTime,
-    bool loopMode, bool silentMode)
+void PlayerThread::startPlayback(Transport::PlaybackContext::Ptr context)
 {
-    this->startBeat = seekPosition;
-    this->rewindBeat = rewindBeat;
-    this->endBeat = endBeat;
-
-    this->msPerQuarterNote = startTempo;
-    this->currentTimeMs = currentTime;
-    this->totalTimeMs = totalTime;
-
-    this->loopMode = loopMode;
-    this->silentMode = silentMode;
-
-    this->projectStartOffset = this->transport.getProjectFirstBeat();
+    this->context = context;
     this->sequences = this->transport.getPlaybackCache();
-
     this->startThread(10);
 }
 
@@ -63,16 +48,22 @@ void PlayerThread::run()
     Array<Instrument *> uniqueInstruments;
     uniqueInstruments.addArray(this->sequences.getUniqueInstruments());
 
-    auto broadcastSeek = [this](float beat)
+    auto broadcastSeek = [this](Atomic<float> &beat)
     {
-        this->transport.broadcastSeek(beat,
-            this->currentTimeMs.get(), this->totalTimeMs.get());
+        this->transport.broadcastSeek(beat.get(),
+            this->context->startBeatTimeMs,
+            this->context->totalTimeMs);
     };
 
-    double nextEventTimeDelta = 0.0;
-    this->sequences.seekToTime(this->startBeat.get() - this->projectStartOffset);
-    auto previousEventBeat = this->startBeat.get();
-    if (!this->silentMode)
+    const bool isLooped = this->context->playbackLoopMode;
+    const bool isSilent = this->context->playbackSilentMode;
+
+    const auto seek = this->context->startBeat - this->context->projectFirstBeat;
+    this->sequences.seekToTime(seek);
+
+    Atomic<float> previousEventBeat = this->context->startBeat;
+
+    if (!isSilent)
     {
         broadcastSeek(previousEventBeat);
     }
@@ -99,6 +90,27 @@ void PlayerThread::run()
         }
     };
 
+    auto sendControllerStates = [&uniqueInstruments, this]()
+    {
+        for (int cc = 0; cc < Transport::PlaybackContext::numCCs; ++cc)
+        {
+            const auto state = this->context->ccStates[cc];
+
+            if (state < 0) // not present in any track
+            {
+                continue;
+            }
+
+            for (auto &instrument : uniqueInstruments)
+            {
+                const auto channel = 1; // fixme what channel to use?
+                MidiMessage m(MidiMessage::controllerEvent(channel, cc, state));
+                m.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+                instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(m);
+            }
+        }
+    };
+
     auto sendHoldingNotesOffAndMidiStop = [&holdingNotes, &uniqueInstruments]()
     {
         for (const auto &holding : holdingNotes)
@@ -113,24 +125,33 @@ void PlayerThread::run()
         
         for (auto &instrument : uniqueInstruments)
         {
-            instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(stopPlayback);
+            instrument->getProcessorPlayer()
+                .getMidiMessageCollector().addMessageToQueue(stopPlayback);
         }
         
         // Wait until all plugins process the messages in their queues
         Thread::sleep(50);
     };
     
-    auto sendTempoChangeToEverybody = [&uniqueInstruments](const MidiMessage &tempoEvent)
+    auto sendTempoChangeToEverybody =
+        [&uniqueInstruments](const MidiMessage &tempoEvent)
     {
         for (auto &instrument : uniqueInstruments)
         {
-            instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(tempoEvent);
+            instrument->getProcessorPlayer().
+                getMidiMessageCollector().addMessageToQueue(tempoEvent);
         }
     };
 
     // And here we go.
+
     sendMidiStart();
-    
+    sendControllerStates();
+
+    double nextEventTimeDelta = 0.0;
+    auto currentTimeMs = this->context->startBeatTimeMs;
+    Atomic<double> currentTempo = this->context->startBeatTempo;
+
     while (1)
     {
         CachedMidiMessage wrapper;
@@ -138,8 +159,11 @@ void PlayerThread::run()
         // Handle playback from the last event to the end of track:
         if (!this->sequences.getNextMessage(wrapper))
         {
-            nextEventTimeDelta = this->msPerQuarterNote.get() * (this->endBeat.get() - previousEventBeat);
-            const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
+            nextEventTimeDelta = currentTempo.get() *
+                (this->context->endBeat - previousEventBeat.get());
+
+            const uint32 targetTime =
+                Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
 
             // Give thread a chance to exit by checking at least once a, say, second
             while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
@@ -155,11 +179,11 @@ void PlayerThread::run()
 
             Time::waitForMillisecondCounter(targetTime);
 
-            if (this->loopMode)
+            if (isLooped)
             {
-                this->sequences.seekToTime(this->rewindBeat.get() - this->projectStartOffset);
-                previousEventBeat = this->rewindBeat.get();
-                if (!this->silentMode)
+                this->sequences.seekToTime(this->context->rewindBeat - this->context->projectFirstBeat);
+                previousEventBeat = this->context->rewindBeat;
+                if (!isSilent)
                 {
                     broadcastSeek(previousEventBeat);
                 }
@@ -181,7 +205,7 @@ void PlayerThread::run()
 
                 this->transport.allNotesControllersAndSoundOff();
 
-                if (!this->silentMode)
+                if (!isSilent)
                 {
                     this->transport.stopRecording();
                     this->transport.stopPlayback();
@@ -192,19 +216,18 @@ void PlayerThread::run()
         }
 
         const auto messageBeat =
-            wrapper.message.getTimeStamp() + this->projectStartOffset;
+            wrapper.message.getTimeStamp() + this->context->projectFirstBeat;
 
         const bool shouldRewind =
-            (this->loopMode &&
-            (messageBeat > this->endBeat.get()));
+            (isLooped && (messageBeat > this->context->endBeat));
 
         const float nextEventBeat =
-            float(shouldRewind ? this->endBeat.get() : messageBeat);
+            float(shouldRewind ? this->context->endBeat : messageBeat);
 
-        nextEventTimeDelta = this->msPerQuarterNote.get() * (nextEventBeat - previousEventBeat);
-        this->currentTimeMs = this->currentTimeMs.get() + nextEventTimeDelta;
+        nextEventTimeDelta = currentTempo.get() * (nextEventBeat - previousEventBeat.get());
+        currentTimeMs += nextEventTimeDelta;
         
-        jassert(previousEventBeat <= nextEventBeat);
+        jassert(previousEventBeat.get() <= nextEventBeat);
         previousEventBeat = nextEventBeat;
 
         // Zero-delay check (we're playing a chord or so)
@@ -230,7 +253,7 @@ void PlayerThread::run()
                 return;
             }
             
-            if (!this->silentMode)
+            if (!isSilent)
             {
                 broadcastSeek(previousEventBeat);
             }
@@ -238,9 +261,10 @@ void PlayerThread::run()
         
         if (shouldRewind)
         {
-            this->sequences.seekToTime(this->rewindBeat.get() - this->projectStartOffset);
-            previousEventBeat = this->rewindBeat.get();
-            if (!this->silentMode)
+            this->sequences.seekToTime(this->context->rewindBeat - this->context->projectFirstBeat);
+
+            previousEventBeat = this->context->rewindBeat;
+            if (!isSilent)
             {
                 broadcastSeek(previousEventBeat);
             }
@@ -254,11 +278,11 @@ void PlayerThread::run()
             // Master tempo event is sent to everybody
             if (wrapper.message.isTempoMetaEvent())
             {
-                this->msPerQuarterNote = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
+                currentTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
 
-                if (!this->silentMode)
+                if (!isSilent)
                 {
-                    this->transport.broadcastTempoChanged(this->msPerQuarterNote.get());
+                    this->transport.broadcastTempoChanged(currentTempo.get());
                 }
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test

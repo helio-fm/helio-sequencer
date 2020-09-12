@@ -41,10 +41,7 @@
 
 MidiTrackNode::MidiTrackNode(const String &name, const Identifier &type) :
     TreeNode(name, type),
-    id(Uuid().toString()),
-    colour(Colours::white),
-    channel(1),
-    controllerNumber(0)
+    id(Uuid().toString())
 {
     this->lastFoundParent = this->findParentOfType<ProjectNode>();
     // do not dispatch new track events here,
@@ -136,6 +133,7 @@ int MidiTrackNode::getTrackChannel() const noexcept
 void MidiTrackNode::setTrackName(const String &val, bool sendNotifications)
 {
     this->safeRename(val, sendNotifications);
+
     if (sendNotifications)
     {
         this->dispatchChangeTrackProperties();
@@ -150,14 +148,17 @@ Colour MidiTrackNode::getTrackColour() const noexcept
 
 void MidiTrackNode::setTrackColour(const Colour &val, bool sendNotifications)
 {
-    if (this->colour != val)
+    if (this->colour == val)
     {
-        this->colour = val;
-        if (sendNotifications)
-        {
-            this->dispatchChangeTrackProperties();
-            this->dispatchChangeTreeNodeViews();
-        }
+        return;
+    }
+
+    this->colour = val;
+
+    if (sendNotifications)
+    {
+        this->dispatchChangeTrackProperties();
+        this->dispatchChangeTreeNodeViews();
     }
 }
 
@@ -169,15 +170,18 @@ String MidiTrackNode::getTrackInstrumentId() const noexcept
 
 void MidiTrackNode::setTrackInstrumentId(const String &val, bool sendNotifications)
 {
-    if (this->instrumentId != val)
+    if (this->instrumentId == val)
     {
-        this->instrumentId = val;
-        if (sendNotifications)
-        {
-            this->dispatchChangeTrackProperties();
-            // instrument id is not displayed anywhere, fix this is it does someday
-            //this->dispatchChangeTreeNodeViews();
-        }
+        return;
+    }
+
+    this->instrumentId = val;
+
+    if (sendNotifications)
+    {
+        this->dispatchChangeTrackProperties();
+        // instrument id is not displayed anywhere, fix this is it does someday
+        //this->dispatchChangeTreeNodeViews();
     }
 }
 
@@ -188,15 +192,18 @@ int MidiTrackNode::getTrackControllerNumber() const noexcept
 
 void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
 {
-    if (this->controllerNumber != val)
+    if (this->controllerNumber == val)
     {
-        this->controllerNumber = val;
-        if (sendNotifications)
-        {
-            this->dispatchChangeTrackProperties();
-            // controller value is not displayed anywhere, fix this is it does someday
-            //this->dispatchChangeTreeNodeViews();
-        }
+        return;
+    }
+
+    this->controllerNumber = val;
+
+    if (sendNotifications)
+    {
+        this->dispatchChangeTrackProperties();
+        // controller value is not displayed anywhere, fix this is it does someday
+        //this->dispatchChangeTreeNodeViews();
     }
 }
 
@@ -219,16 +226,16 @@ String MidiTrackNode::getXPath() const noexcept
     const TreeNodeBase *rootItem = this;
     String xpath = this->getName();
 
-    while (TreeNodeBase *item = rootItem->getParent())
+    while (auto *item = rootItem->getParent())
     {
         rootItem = item;
 
-        if (ProjectNode *parentProject = dynamic_cast<ProjectNode *>(item))
+        if (auto *parentProject = dynamic_cast<ProjectNode *>(item))
         {
             return xpath;
         }
 
-        if (TreeNode *treeItem = dynamic_cast<TreeNode *>(item))
+        if (auto *treeItem = dynamic_cast<TreeNode *>(item))
         {
             xpath = treeItem->getName() + TreeNode::xPathSeparator + xpath;
         }

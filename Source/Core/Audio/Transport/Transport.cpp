@@ -128,14 +128,10 @@ void Transport::setTotalTime(float val)
 
 void Transport::seekToBeat(float beatPosition)
 {
-    double timeMs = 0.0;
-    double realLengthMs = 0.0;
-    double tempo = 0.0;
-    this->findTimeAndTempoAt(this->projectFirstBeat.get(), timeMs, tempo);
-    this->findTimeAndTempoAt(this->projectLastBeat.get(), realLengthMs, tempo);
-    
+    const auto currentTimeMs = this->findTimeAt(this->projectFirstBeat.get());
+    const auto totalTimeMs = this->findTimeAt(this->projectLastBeat.get());
     this->setSeekBeat(beatPosition);
-    this->broadcastSeek(beatPosition, timeMs, realLengthMs);
+    this->broadcastSeek(beatPosition, currentTimeMs, totalTimeMs);
 }
 
 void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitToLayer)
@@ -363,7 +359,8 @@ void Transport::startRender(const String &fileName)
     this->sleepTimer.setCanSleepAfter(0);
 
     File file(File::getCurrentWorkingDirectory().getChildFile(fileName));
-    this->renderer->startRecording(file);
+    this->renderer->startRecording(file,
+        this->fillPlaybackContextAt(this->getProjectFirstBeat()));
 }
 
 void Transport::stopRender()
@@ -692,74 +689,120 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     this->setTotalTime(lastBeat - firstBeat);
     
     // real track total time changed
-    double tempo = 0.0;
-    double realLengthMs = 0.0;
-    this->findTimeAndTempoAt(lastBeat, realLengthMs, tempo);
+    const auto realLengthMs = this->findTimeAt(lastBeat);
     this->broadcastTotalTimeChanged(realLengthMs);
 }
 
 //===----------------------------------------------------------------------===//
-// Real track length calc
+// Track time calculations
 //===----------------------------------------------------------------------===//
 
-void Transport::findTimeAndTempoAt(float beat, double &outTimeMs, double &outTempo) const
+double Transport::findTimeAt(float beat) const
 {
+    double resultTimeMs = 0.0;
+
     this->recacheIfNeeded();
     this->playbackCache.seekToZeroIndexes();
-    
+
     const auto targetRelativeBeat = beat - this->projectFirstBeat.get();
-    
-    outTimeMs = 0.0;
-    outTempo = Globals::Defaults::msPerBeat;
-    
+
+    double tempo = Globals::Defaults::msPerBeat;
     double prevTimestamp = 0.0;
-    double nextEventTimeDelta = 0.0;
-    bool foundFirstTempoEvent = false;
-    
+
     CachedMidiMessage cached;
-    
     while (this->playbackCache.getNextMessage(cached))
     {
-        const auto nextPosition = cached.message.getTimeStamp();
-        
-        // first tempo event sets the tempo all the way before it
-        if (nextPosition > targetRelativeBeat && foundFirstTempoEvent)
+        const auto nextTimestamp = cached.message.getTimeStamp();
+
+        if (nextTimestamp > targetRelativeBeat)
         {
             break;
         }
-        
-        nextEventTimeDelta = outTempo * (cached.message.getTimeStamp() - prevTimestamp);
-        outTimeMs += nextEventTimeDelta;
-        prevTimestamp = cached.message.getTimeStamp();
-        
+
+        const auto nextEventTimeDelta = tempo * (nextTimestamp - prevTimestamp);
+        resultTimeMs += nextEventTimeDelta;
+        prevTimestamp = nextTimestamp;
+
         if (cached.message.isTempoMetaEvent())
         {
-            outTempo = cached.message.getTempoSecondsPerQuarterNote() * 1000.f;
-            foundFirstTempoEvent = true;
+            tempo = cached.message.getTempoSecondsPerQuarterNote() * 1000.f;
         }
     }
-    
-    nextEventTimeDelta = outTempo * (targetRelativeBeat - prevTimestamp);
-    outTimeMs += nextEventTimeDelta;
+
+    // add remainder, the time from the last event to the given beat:
+    resultTimeMs += (tempo * (targetRelativeBeat - prevTimestamp));
+
+    return resultTimeMs;
 }
 
-MidiMessage Transport::findFirstTempoEvent()
+Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) const
 {
     this->recacheIfNeeded();
     this->playbackCache.seekToZeroIndexes();
-    
-    CachedMidiMessage wrapper;
-    
-    while (this->playbackCache.getNextMessage(wrapper))
+
+    double tempo = Globals::Defaults::msPerBeat;
+
+    Transport::PlaybackContext::Ptr context(new Transport::PlaybackContext());
+    context->projectFirstBeat = this->projectFirstBeat.get();
+    context->projectLastBeat = this->projectLastBeat.get();
+
+    context->startBeat = beat;
+
+    context->totalTimeMs = 0.0;
+    context->startBeatTimeMs = 0.0;
+    context->startBeatTempo = tempo;
+
+    context->sampleRate = this->playbackCache.getSampleRate();
+    context->numOutputChannels = this->playbackCache.getNumOutputChannels();
+
+    const auto targetRelativeBeat = context->startBeat - context->projectFirstBeat;
+
+    double prevTimestamp = 0.0;
+    bool startBeatPassed = false;
+
+    CachedMidiMessage cached;
+    while (this->playbackCache.getNextMessage(cached))
     {
-        if (wrapper.message.isTempoMetaEvent())
+        const auto nextTimestamp = cached.message.getTimeStamp();
+        const auto nextEventTimeDelta = tempo * (nextTimestamp - prevTimestamp);
+
+        if (nextTimestamp > targetRelativeBeat)
         {
-            return wrapper.message;
+            // the time from the last event to the given beat:
+            context->startBeatTimeMs += (tempo * (targetRelativeBeat - prevTimestamp));
+            startBeatPassed = true;
+        }
+
+        if (!startBeatPassed)
+        {
+            context->startBeatTimeMs += nextEventTimeDelta;
+        }
+
+        context->totalTimeMs += nextEventTimeDelta;
+        prevTimestamp = nextTimestamp;
+
+        if (cached.message.isTempoMetaEvent())
+        {
+            tempo = cached.message.getTempoSecondsPerQuarterNote() * 1000.f;
+        }
+        else if (!startBeatPassed &&
+            cached.message.isController() &&
+            cached.message.getControllerNumber() <= PlaybackContext::numCCs)
+        {
+            context->ccStates[cached.message.getControllerNumber()] =
+                cached.message.getControllerValue();
+        }
+
+        if (!startBeatPassed)
+        {
+            context->startBeatTempo = tempo;
         }
     }
-    
-    // return default 120 bpm (== 500 ms per quarter note)
-    return MidiMessage::tempoMetaEvent(Globals::Defaults::msPerBeat * 1000);
+
+    context->totalTimeMs +=
+        (tempo * (context->projectLastBeat - prevTimestamp));
+
+    return context;
 }
 
 //===----------------------------------------------------------------------===//
