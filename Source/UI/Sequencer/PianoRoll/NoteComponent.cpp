@@ -63,9 +63,10 @@ void NoteComponent::updateColours()
     const auto base = findDefaultColour(ColourIDs::Roll::noteFill);
 
     this->colour = this->getNote().getTrackColour()
-        .interpolatedWith(base, ghost ? 0.35f : 0.5f)
-        .brighter(this->flags.isSelected ? 0.95f : 0.f)
-        .withAlpha(this->flags.isSelected ? 1.f : (ghost ? 0.3f : .95f));
+        .interpolatedWith(base, ghost ? 0.15f : 0.4f)
+        .brighter(this->flags.isSelected ? 1.15f : 0.f)
+        .withMultipliedSaturationHSL(ghost ? 1.5f : 1.f)
+        .withAlpha(ghost ? 0.25f : 0.9f);
 
     if (ghost)
     {

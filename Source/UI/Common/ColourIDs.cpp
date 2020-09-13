@@ -17,33 +17,20 @@
 
 #include "Common.h"
 #include "ColourIDs.h"
-#include "TranslationKeys.h"
 
-// Hardcoded for now
 Array<Colour> ColourIDs::getColoursList()
 {
-    static Array<Colour> c;
+    static Array<Colour> list;
 
-    if (c.isEmpty())
+    if (list.isEmpty())
     {
-        //c.add(Colours::transparentWhite);
-        //c.add(Colours::black);
-        c.add(Colours::white);
-        c.add(Colours::red);
-        c.add(Colours::crimson);
-        c.add(Colours::deeppink);
-        c.add(Colours::darkviolet);
-        c.add(Colours::blueviolet);
-        c.add(Colours::blue);
-        c.add(Colours::royalblue);
-        c.add(Colours::springgreen);
-        c.add(Colours::lime);
-        c.add(Colours::greenyellow);
-        c.add(Colours::gold);
-        c.add(Colours::darkorange);
-        c.add(Colours::tomato);
-        c.add(Colours::orangered);
+        constexpr auto numColours = 20;
+        constexpr auto hueStep = 1.f / (numColours + 1);
+        for (float hue = 0.f; hue < (1.f - hueStep); hue += hueStep)
+        {
+            list.add(Colours::red.withHue(hue));
+        }
     }
 
-    return c;
+    return list;
 }
