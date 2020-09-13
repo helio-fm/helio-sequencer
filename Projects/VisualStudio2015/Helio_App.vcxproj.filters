@@ -7091,12 +7091,6 @@
     <None Include="..\..\Resources\Templates\emptyProject.json">
       <Filter>Helio\Resources\Templates</Filter>
     </None>
-    <None Include="..\..\Resources\Templates\emptyProject22.json">
-      <Filter>Helio\Resources\Templates</Filter>
-    </None>
-    <None Include="..\..\Resources\Templates\emptyProject31.json">
-      <Filter>Helio\Resources\Templates</Filter>
-    </None>
     <None Include="..\..\Resources\Templates\exampleProject.json">
       <Filter>Helio\Resources\Templates</Filter>
     </None>

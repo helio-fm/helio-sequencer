@@ -3658,8 +3658,6 @@
     <None Include="..\..\Resources\Icons\zoomTool.svg"/>
     <None Include="..\..\Resources\Icons\noise.png"/>
     <None Include="..\..\Resources\Templates\emptyProject.json"/>
-    <None Include="..\..\Resources\Templates\emptyProject22.json"/>
-    <None Include="..\..\Resources\Templates\emptyProject31.json"/>
     <None Include="..\..\Resources\Templates\exampleProject.json"/>
     <None Include="..\..\Resources\logo-v2.png"/>
     <None Include="..\..\Resources\arpeggiators.json"/>

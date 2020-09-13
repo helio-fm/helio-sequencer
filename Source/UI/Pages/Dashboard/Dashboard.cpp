@@ -93,20 +93,6 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->patreonButton->setColour(HyperlinkButton::textColourId,
         findDefaultColour(Label::textColourId).withMultipliedAlpha(0.25f));
     this->addAndMakeVisible(this->patreonButton.get());
-
-    /*
-    MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::create, "12-EDO")->
-        withAction([](){ App::Workspace().createEmptyProject("emptyProject"); }));
-    menu.add(MenuItem::item(Icons::create, "22-EDO")->
-        withAction([](){ App::Workspace().createEmptyProject("emptyProject22"); }));
-    menu.add(MenuItem::item(Icons::create, "31-EDO")->
-        withAction([](){ App::Workspace().createEmptyProject("emptyProject31"); }));
-
-    this->createProjectComboSource->initWith(this->createProjectButton.get(),
-        menu, new PanelBackgroundB());
-    */
-
     //[/UserPreSize]
 
     this->setSize(600, 400);

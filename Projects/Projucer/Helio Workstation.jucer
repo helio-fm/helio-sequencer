@@ -129,10 +129,6 @@
       <GROUP id="{03B368B6-E773-F1D4-0B96-AA2CC86335DB}" name="Templates">
         <FILE id="CFbwRz" name="emptyProject.json" compile="0" resource="1"
               file="../../Resources/Templates/emptyProject.json"/>
-        <FILE id="xKmYZn" name="emptyProject22.json" compile="0" resource="1"
-              file="../../Resources/Templates/emptyProject22.json"/>
-        <FILE id="cDeu92" name="emptyProject31.json" compile="0" resource="1"
-              file="../../Resources/Templates/emptyProject31.json"/>
         <FILE id="QrZS1b" name="exampleProject.json" compile="0" resource="1"
               file="../../Resources/Templates/exampleProject.json"/>
       </GROUP>

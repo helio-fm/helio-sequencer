@@ -314,12 +314,6 @@ namespace BinaryData
     extern const char*   emptyProject_json;
     const int            emptyProject_jsonSize = 1201;
 
-    extern const char*   emptyProject22_json;
-    const int            emptyProject22_jsonSize = 1422;
-
-    extern const char*   emptyProject31_json;
-    const int            emptyProject31_jsonSize = 1453;
-
     extern const char*   exampleProject_json;
     const int            exampleProject_jsonSize = 3287;
 
@@ -348,7 +342,7 @@ namespace BinaryData
     const int            translations_jsonSize = 138167;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 113;
+    const int namedResourceListSize = 111;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
