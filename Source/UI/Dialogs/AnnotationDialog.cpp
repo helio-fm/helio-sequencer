@@ -20,6 +20,7 @@
 
 #include "AnnotationsSequence.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 
 static Array<String> getDynamics()
 {
@@ -31,33 +32,19 @@ static Array<String> getDynamics()
         "Mezzo-forte",
         "Forte",
         "Fortissimo",
+        "Fortepiano",
+        "In rilievo",
         "Al niente",
+        "Calando",
         "Calmando",
         "Crescendo",
         "Dal niente",
         "Diminuendo",
+        "Morendo",
         "Marcato",
+        "Pianoforte",
+        "Sotto voce",
         "Smorzando"
-    };
-}
-
-static Array<Colour> getColours()
-{
-    return
-    {
-        Colours::greenyellow,
-        Colours::gold,
-        Colours::tomato,
-        Colours::orangered,
-        Colours::red,
-        Colours::fuchsia,
-        Colours::white,
-        Colours::royalblue,
-        Colours::red,
-        Colours::aqua,
-        Colours::blue,
-        Colours::lime,
-        Colours::greenyellow
     };
 }
 
@@ -117,14 +104,15 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
+    const auto dynamics(getDynamics());
+    const auto colours(ColourIDs::getColoursList());
+
     if (this->addsNewEvent)
     {
         Random r;
-        const auto keys(getDynamics());
-        const int i = r.nextInt(keys.size());
-        const String key(keys[i]);
-        const Colour colour(getColours()[i]);
-        this->originalEvent = AnnotationEvent(this->originalSequence, targetBeat, key, colour);
+        const int i = r.nextInt(dynamics.size());
+        this->originalEvent = AnnotationEvent(this->originalSequence,
+            targetBeat, dynamics[i], colours[i]);
 
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
@@ -148,8 +136,6 @@ AnnotationDialog::AnnotationDialog(Component &owner,
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    const auto dynamics = getDynamics();
-    const auto colours = getColours();
     MenuPanel::Menu menu;
     for (int i = 0; i < getDynamics().size(); ++i)
     {
@@ -161,7 +147,11 @@ AnnotationDialog::AnnotationDialog(Component &owner,
 
     this->comboPrimer->initWith(this->textEditor.get(), menu);
 
-    this->setSize(450, 220);
+    static constexpr auto colourButtonSize = 30;
+    this->setSize(this->getPaddingAndMarginTotal() +
+        AnnotationDialog::colourSwatchesMargin * 2 +
+        colourButtonSize * this->colourSwatches->getNumButtons(), 220);
+
     this->updatePosition();
     this->updateOkButtonState();
 }
@@ -182,9 +172,9 @@ void AnnotationDialog::resized()
     this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
     this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    static constexpr auto swatchesMargin = 6;
-    this->colourSwatches->setBounds(this->getRowBounds(0.7f, DialogBase::textEditorHeight, swatchesMargin));
     this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
+    this->colourSwatches->setBounds(this->getRowBounds(0.7f,
+        DialogBase::textEditorHeight, AnnotationDialog::colourSwatchesMargin));
 }
 
 void AnnotationDialog::parentHierarchyChanged()
@@ -205,9 +195,9 @@ void AnnotationDialog::handleCommandMessage(int commandId)
     }
     else
     {
+        const auto dynamics(getDynamics());
+        const auto colours(ColourIDs::getColoursList());
         const int targetIndex = commandId - CommandIDs::JumpToAnnotation;
-        const auto dynamics = getDynamics();
-        const auto colours = getColours();
         if (targetIndex >= 0 && targetIndex < dynamics.size())
         {
             const String text = dynamics[targetIndex];

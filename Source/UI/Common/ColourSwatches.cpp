@@ -62,14 +62,23 @@ Colour ColourSwatches::getColour() const noexcept
     return this->lastSelectedColour;
 }
 
+int ColourSwatches::getNumButtons() const noexcept
+{
+    return this->buttons.size();
+}
+
 void ColourSwatches::setSelectedColour(Colour colour)
 {
     this->lastSelectedColour = colour;
     for (const auto &button : this->buttons)
     {
         if (button->getColour() == colour)
-        { button->select(); }
+        {
+            button->select();
+        }
         else
-        { button->deselect(); }
+        {
+            button->deselect();
+        }
     }
 }

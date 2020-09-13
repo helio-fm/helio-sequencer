@@ -58,7 +58,7 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
     this->textEditor->setScrollbarsShown(true);
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont(21.f);
+    this->textEditor->setFont({ 21.f });
     this->textEditor->addListener(this);
 
     this->originalName = this->track->getTrackName();
@@ -75,7 +75,11 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    this->setSize(450, 220);
+    static constexpr auto colourButtonSize = 30;
+    this->setSize(this->getPaddingAndMarginTotal() + 
+        TrackPropertiesDialog::colourSwatchesMargin * 2 +
+        colourButtonSize * this->colourSwatches->getNumButtons(), 220);
+
     this->updatePosition();
     this->updateOkButtonState();
 }
@@ -95,9 +99,9 @@ void TrackPropertiesDialog::resized()
     this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
     this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    static constexpr auto swatchesMargin = 6;
-    this->colourSwatches->setBounds(this->getRowBounds(0.7f, DialogBase::textEditorHeight, swatchesMargin));
     this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
+    this->colourSwatches->setBounds(this->getRowBounds(0.7f, DialogBase::textEditorHeight,
+        TrackPropertiesDialog::colourSwatchesMargin));
 }
 
 void TrackPropertiesDialog::parentHierarchyChanged()

@@ -60,6 +60,8 @@ private:
 
     bool hasMadeChanges = false;
 
+    static constexpr auto colourSwatchesMargin = 6;
+
     void textEditorTextChanged(TextEditor&) override;
     void textEditorReturnKeyPressed(TextEditor&) override;
     void textEditorEscapeKeyPressed(TextEditor&) override;

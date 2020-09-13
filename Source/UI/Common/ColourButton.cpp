@@ -90,14 +90,13 @@ void ColourButton::resized()
 {
     this->fader.cancelAllAnimations(true);
 
-    const int s = jmin(this->getHeight(), this->getWidth()) - 4;
+    const int s = jmin(this->getHeight(), this->getWidth()) - 8;
     this->checkMark->setSize(s, s);
 
     jassert(s < 30);
 
     const auto c = this->getLocalBounds().getCentre();
     this->checkMark->setCentrePosition(c.x, c.y + 3);
-    //this->checkMark->setBounds(this->getLocalBounds().reduced(8));
 
     HighlightedComponent::resized();
 }

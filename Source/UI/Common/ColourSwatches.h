@@ -28,6 +28,7 @@ public:
     void onColourButtonClicked(ColourButton *button) override;
     void setSelectedColour(Colour colour);
     Colour getColour() const noexcept;
+    int getNumButtons() const noexcept;
 
     void resized() override;
 
@@ -36,5 +37,5 @@ private:
     Colour lastSelectedColour;
     OwnedArray<ColourButton> buttons;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourSwatches)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSwatches)
 };
