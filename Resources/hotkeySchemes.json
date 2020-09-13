@@ -133,6 +133,7 @@
       // Navigation
       { "command": "ZoomIn", "key": "Z" },
       { "command": "ZoomOut", "key": "Shift + Z" },
+      { "command": "ZoomEntireClip", "key": "Alt + Z" },
       { "command": "ZoomEntireClip", "key": "Command + Tab" },
       { "command": "ZoomEntireClip", "key": "Control + Tab" },
       { "command": "TimelineJumpNext", "key": "." },
@@ -251,6 +252,7 @@
       // Navigation
       { "command": "ZoomIn", "key": "Z" },
       { "command": "ZoomOut", "key": "Shift + Z" },
+      { "command": "ZoomEntireClip", "key": "Alt + Z" },
       { "command": "ZoomEntireClip", "key": "Command + Tab" },
       { "command": "ZoomEntireClip", "key": "Control + Tab" },
       { "command": "TimelineJumpNext", "key": "." },

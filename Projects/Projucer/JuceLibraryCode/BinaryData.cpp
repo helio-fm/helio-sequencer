@@ -12266,6 +12266,7 @@ static const unsigned char temp_binary_data_109[] =
 "      // Navigation\n"
 "      { \"command\": \"ZoomIn\", \"key\": \"Z\" },\n"
 "      { \"command\": \"ZoomOut\", \"key\": \"Shift + Z\" },\n"
+"      { \"command\": \"ZoomEntireClip\", \"key\": \"Alt + Z\" },\n"
 "      { \"command\": \"ZoomEntireClip\", \"key\": \"Command + Tab\" },\n"
 "      { \"command\": \"ZoomEntireClip\", \"key\": \"Control + Tab\" },\n"
 "      { \"command\": \"TimelineJumpNext\", \"key\": \".\" },\n"
@@ -12384,6 +12385,7 @@ static const unsigned char temp_binary_data_109[] =
 "      // Navigation\n"
 "      { \"command\": \"ZoomIn\", \"key\": \"Z\" },\n"
 "      { \"command\": \"ZoomOut\", \"key\": \"Shift + Z\" },\n"
+"      { \"command\": \"ZoomEntireClip\", \"key\": \"Alt + Z\" },\n"
 "      { \"command\": \"ZoomEntireClip\", \"key\": \"Command + Tab\" },\n"
 "      { \"command\": \"ZoomEntireClip\", \"key\": \"Control + Tab\" },\n"
 "      { \"command\": \"TimelineJumpNext\", \"key\": \".\" },\n"
@@ -14722,7 +14724,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 13513; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 13627; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 8354; return scales_json;
         case 0x77719112:  numBytes = 839; return temperaments_json;
         case 0xf8655f25:  numBytes = 138167; return translations_json;
