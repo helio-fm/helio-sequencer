@@ -1066,6 +1066,9 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\RenderDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Dialogs\TempoDialog.cpp">
+      <Filter>Helio\Source\UI\Dialogs</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
@@ -4057,6 +4060,9 @@
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\RenderDialog.h">
+      <Filter>Helio\Source\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Dialogs\TempoDialog.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.h">

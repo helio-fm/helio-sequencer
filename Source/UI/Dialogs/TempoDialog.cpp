@@ -16,17 +16,84 @@
 */
 
 #include "Common.h"
-#include "TrackPropertiesDialog.h"
-
+#include "TempoDialog.h"
 #include "CommandIDs.h"
-#include "UndoStack.h"
-#include "ProjectNode.h"
-#include "MidiTrackActions.h"
+#include "ColourIDs.h"
+#include "HelioTheme.h"
 
-TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
-    WeakReference<MidiTrack> track, const String &title, const String &confirmation) :
-    project(project),
-    track(track)
+class TapTempoComponent final : public Component, private Timer
+{
+public:
+
+    TapTempoComponent() :
+        targetColour(Colours::white.withAlpha(0.01f)),
+        highlightColour(Colours::white.withAlpha(0.05f))
+    {
+        this->currentFillColour = this->targetColour;
+    }
+
+    Function<void(int newTempoBpm)> onTempoChanged;
+
+    void paint(Graphics &g) override
+    {
+        // todo frame
+
+        g.setColour(this->currentFillColour);
+        g.fillRect(this->getLocalBounds());
+
+        HelioTheme::drawNoiseWithin(this->getLocalBounds().reduced(1), g, 10.f);
+    }
+
+    void mouseDown(const MouseEvent &e) override
+    {
+        this->detectAndSendTapTempo();
+        this->currentFillColour = this->highlightColour; // then animate
+        this->startTimerHz(60);
+    }
+
+private:
+
+    void detectAndSendTapTempo()
+    {
+        // todo
+        const auto now = Time::getMillisecondCounterHiRes();
+
+
+        if (this->onTempoChanged != nullptr)
+        {
+            // todo
+        }
+    }
+
+    void timerCallback() override
+    {
+        const auto newColour = this->currentFillColour.
+            interpolatedWith(this->targetColour, 0.1f);
+
+        if (this->currentFillColour == newColour)
+        {
+            this->stopTimer();
+        }
+        else
+        {
+            this->currentFillColour = newColour;
+            this->repaint();
+        }
+    }
+
+    Colour currentFillColour;
+    const Colour targetColour;
+    const Colour highlightColour;
+
+    double lastTapMs = 0.0;
+    Array<double> tapIntervalsMs;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TapTempoComponent)
+};
+
+TempoDialog::TempoDialog(int bpmValue) :
+    originalValue(bpmValue),
+    newValue(bpmValue)
 {
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
@@ -47,8 +114,13 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
         this->doOk();
     };
 
-    this->colourSwatches = make<ColourSwatches>();
-    this->addAndMakeVisible(this->colourSwatches.get());
+    this->tapTempo = make<TapTempoComponent>();
+    this->addAndMakeVisible(this->tapTempo.get());
+    this->tapTempo->onTempoChanged = [this](int newTempoBpm)
+    {
+        this->newValue = newTempoBpm;
+        // update text field
+    };
 
     this->textEditor = make<TextEditor>();
     this->addAndMakeVisible(this->textEditor.get());
@@ -59,37 +131,47 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
     this->textEditor->setFont({ 21.f });
-    this->textEditor->addListener(this);
 
-    this->originalName = this->track->getTrackName();
-    this->originalColour = this->track->getTrackColour();
-    this->newName = this->originalName;
-    this->newColour = this->originalColour;
+    this->textEditor->onTextChange = [this]()
+    {
+        this->updateOkButtonState();
+        this->newValue = this->textEditor->getText().getIntValue();
+        // reset tap-tempo? or is that not necessary?
+    };
 
-    this->colourSwatches->setSelectedColour(this->originalColour);
-    this->textEditor->setText(this->originalName, dontSendNotification);
+    this->textEditor->onFocusLost = [this]()
+    {
+        this->onTextFocusLost();
+    };
 
-    this->messageLabel->setText(title.isNotEmpty() ? title : TRANS(I18n::Dialog::renameTrackCaption), dontSendNotification);
-    this->okButton->setButtonText(confirmation.isNotEmpty() ? confirmation : TRANS(I18n::Dialog::renameTrackProceed));
-    this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
+    this->textEditor->onReturnKey = [this]()
+    {
+        this->onTextFocusLost();
+    };
 
+    this->textEditor->onEscapeKey = [this]()
+    {
+        this->doCancel();
+    };
+
+    this->textEditor->setText(String(this->originalValue), dontSendNotification);
+
+    this->messageLabel->setText(TRANS(I18n::Dialog::setTempoCaption), dontSendNotification);
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    static constexpr auto colourButtonSize = 30;
-    this->setSize(this->getPaddingAndMarginTotal() + 
-        TrackPropertiesDialog::colourSwatchesMargin * 2 +
-        colourButtonSize * this->colourSwatches->getNumButtons(), 220);
+    this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
+    this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
+    this->setSize(450, 250);
     this->updatePosition();
     this->updateOkButtonState();
 }
 
-TrackPropertiesDialog::~TrackPropertiesDialog()
-{
-    this->textEditor->removeListener(this);
-}
+// still need to have this empty dtor here,
+// so that compiler can resolve the forward-declared TapTempo
+TempoDialog::~TempoDialog() {}
 
-void TrackPropertiesDialog::resized()
+void TempoDialog::resized()
 {
     this->messageLabel->setBounds(this->getCaptionBounds());
 
@@ -100,21 +182,21 @@ void TrackPropertiesDialog::resized()
     this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
     this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
-    this->colourSwatches->setBounds(this->getRowBounds(0.7f, DialogBase::textEditorHeight,
-        TrackPropertiesDialog::colourSwatchesMargin));
+    this->tapTempo->setBounds(this->getRowBounds(0.7f,
+        TempoDialog::tapTempoHeight, TempoDialog::tapTempoMargin));
 }
 
-void TrackPropertiesDialog::parentHierarchyChanged()
+void TempoDialog::parentHierarchyChanged()
 {
     this->updatePosition();
 }
 
-void TrackPropertiesDialog::parentSizeChanged()
+void TempoDialog::parentSizeChanged()
 {
     this->updatePosition();
 }
 
-void TrackPropertiesDialog::handleCommandMessage(int commandId)
+void TempoDialog::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
@@ -122,80 +204,20 @@ void TrackPropertiesDialog::handleCommandMessage(int commandId)
     }
 }
 
-void TrackPropertiesDialog::inputAttemptWhenModal()
+void TempoDialog::inputAttemptWhenModal()
 {
     this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
 }
 
-void TrackPropertiesDialog::updateOkButtonState()
+void TempoDialog::updateOkButtonState()
 {
     const bool textIsEmpty = this->textEditor->getText().isEmpty();
     this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
     this->okButton->setEnabled(!textIsEmpty);
+    // todo check range?
 }
 
-void TrackPropertiesDialog::onColourButtonClicked(ColourButton *clickedButton)
-{
-    this->newColour = clickedButton->getColour();
-    this->applyChangesIfAny();
-}
-
-bool TrackPropertiesDialog::hasChanges() const
-{
-    return this->newColour != this->originalColour ||
-        (this->newName != this->originalName && this->newName.isNotEmpty());
-}
-
-void TrackPropertiesDialog::cancelChangesIfAny()
-{
-    if (this->hasChanges())
-    {
-        this->project.getUndoStack()->undoCurrentTransactionOnly();
-    }
-}
-
-void TrackPropertiesDialog::applyChangesIfAny()
-{
-    const auto &trackId = this->track->getTrackId();
-
-    if (this->hasMadeChanges)
-    {
-        this->project.getUndoStack()->undoCurrentTransactionOnly();
-    }
-
-    this->project.getUndoStack()->beginNewTransaction();
-
-    if (this->newName != this->originalName)
-    {
-        this->project.getUndoStack()->perform(new MidiTrackRenameAction(this->project, trackId, this->newName));
-    }
-
-    if (this->newColour != this->originalColour)
-    {
-        this->project.getUndoStack()->perform(new MidiTrackChangeColourAction(this->project, trackId, this->newColour));
-    }
-
-    this->hasMadeChanges = true;
-}
-
-void TrackPropertiesDialog::textEditorTextChanged(TextEditor&)
-{
-    this->updateOkButtonState();
-    this->newName = this->textEditor->getText();
-    this->applyChangesIfAny();
-}
-
-void TrackPropertiesDialog::textEditorReturnKeyPressed(TextEditor &ed)
-{
-    this->textEditorFocusLost(ed);
-}
-
-void TrackPropertiesDialog::textEditorEscapeKeyPressed(TextEditor&)
-{
-    this->doCancel();
-}
-
-void TrackPropertiesDialog::textEditorFocusLost(TextEditor&)
+void TempoDialog::onTextFocusLost()
 {
     this->updateOkButtonState();
 
@@ -212,10 +234,8 @@ void TrackPropertiesDialog::textEditorFocusLost(TextEditor&)
     }
 }
 
-void TrackPropertiesDialog::doCancel()
+void TempoDialog::doCancel()
 {
-    this->cancelChangesIfAny();
-
     if (this->onCancel != nullptr)
     {
         BailOutChecker checker(this);
@@ -232,7 +252,7 @@ void TrackPropertiesDialog::doCancel()
     this->dismiss();
 }
 
-void TrackPropertiesDialog::doOk()
+void TempoDialog::doOk()
 {
     if (textEditor->getText().isNotEmpty())
     {

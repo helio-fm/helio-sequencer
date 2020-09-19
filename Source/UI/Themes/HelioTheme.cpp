@@ -71,7 +71,7 @@ void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMult
     g.fillRect(0, 0, g.getClipBounds().getWidth(), g.getClipBounds().getHeight());
 }
 
-void HelioTheme::drawNoiseWithin(Rectangle<float> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
+void HelioTheme::drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
     g.setTiledImageFill(getCurrentTheme().backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
     g.fillRect(bounds);

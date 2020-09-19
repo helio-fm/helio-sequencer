@@ -17,11 +17,15 @@
 
 #include "Common.h"
 #include "AutomationCurveEventComponent.h"
+
 #include "AutomationCurveClipComponent.h"
 #include "AutomationCurveHelper.h"
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationSequence.h"
 #include "MidiTrack.h"
+
+#include "App.h"
+#include "TempoDialog.h"
 
 AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClipComponent &parent,
     const AutomationEvent &event) :
@@ -197,6 +201,13 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
             // todo:
             // if no dragging was done and this is a tempo track,
             // show the tempo dialog with a proper callback
+            if (this->isTempoCurve())
+            {
+                this->hoveredState = false;
+                this->repaint();
+
+                App::showModalComponent(make<TempoDialog>(this->event.getControllerValueAsBPM()));
+            }
         }
 
         this->repaint();

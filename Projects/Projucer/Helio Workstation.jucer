@@ -771,6 +771,8 @@
           <FILE id="f4aznu" name="RenderDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/RenderDialog.cpp"/>
           <FILE id="ZRs9s2" name="RenderDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/RenderDialog.h"/>
+          <FILE id="YzSlqZ" name="TempoDialog.cpp" compile="1" resource="0" file="../../Source/UI/Dialogs/TempoDialog.cpp"/>
+          <FILE id="BRG4rQ" name="TempoDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/TempoDialog.h"/>
           <FILE id="NbGM0A" name="TimeSignatureDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/TimeSignatureDialog.cpp"/>
           <FILE id="ny7iGn" name="TimeSignatureDialog.h" compile="0" resource="0"

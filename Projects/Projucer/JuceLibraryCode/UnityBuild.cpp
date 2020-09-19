@@ -157,6 +157,7 @@
 #include "../../Source/UI/Dialogs/ModalDialogConfirmation.cpp"
 #include "../../Source/UI/Dialogs/ModalDialogInput.cpp"
 #include "../../Source/UI/Dialogs/RenderDialog.cpp"
+#include "../../Source/UI/Dialogs/TempoDialog.cpp"
 #include "../../Source/UI/Dialogs/TimeSignatureDialog.cpp"
 #include "../../Source/UI/Dialogs/TrackPropertiesDialog.cpp"
 #include "../../Source/UI/Headline/Headline.cpp"

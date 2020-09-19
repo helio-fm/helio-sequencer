@@ -18,28 +18,19 @@
 #pragma once
 
 #include "DialogBase.h"
-#include "ColourButton.h"
-#include "ColourSwatches.h"
-#include "MidiTrack.h"
 
-class ProjectNode;
+class TapTempoComponent;
 
-class TrackPropertiesDialog final : public DialogBase,
-    public TextEditor::Listener,
-    public ColourButton::Listener
+class TempoDialog final : public DialogBase
 {
 public:
 
-    TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track,
-        const String &title = "", const String &confirmation = "");
-
-    ~TrackPropertiesDialog();
+    explicit TempoDialog(int bpmValue);
+    ~TempoDialog() override;
 
     Function<void()> onOk;
     Function<void()> onCancel;
-
-    void onColourButtonClicked(ColourButton *button) override;
-
+    
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -48,38 +39,22 @@ public:
 
 private:
 
-    ProjectNode &project;
-    WeakReference<MidiTrack> track;
+    int originalValue = 0;
+    int newValue = 0;
 
-    String originalName;
-    String newName;
+    static constexpr auto tapTempoHeight = 48;
+    static constexpr auto tapTempoMargin = 8;
 
-    Colour originalColour;
-    Colour newColour;
-
-    bool hasMadeChanges = false;
-
-    static constexpr auto colourSwatchesMargin = 6;
-
-    void textEditorTextChanged(TextEditor&) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
-
-    inline void updateOkButtonState();
-
-    void applyChangesIfAny();
-    void cancelChangesIfAny();
-    bool hasChanges() const;
-
+    void onTextFocusLost();
+    void updateOkButtonState();
     void doCancel();
     void doOk();
 
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;
     UniquePointer<TextButton> okButton;
-    UniquePointer<ColourSwatches> colourSwatches;
+    UniquePointer<TapTempoComponent> tapTempo;
     UniquePointer<TextEditor> textEditor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackPropertiesDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TempoDialog)
 };
