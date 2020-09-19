@@ -22,20 +22,18 @@
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
 
-AutomationEvent::AutomationEvent() noexcept : MidiEvent(nullptr, Type::Auto, 0.f)
-{
-    //jassertfalse;
-}
+AutomationEvent::AutomationEvent() noexcept :
+    MidiEvent(nullptr, Type::Auto, 0.f) {}
 
 AutomationEvent::AutomationEvent(const AutomationEvent &other) noexcept :
     MidiEvent(other),
     controllerValue(other.controllerValue),
     curvature(other.curvature) {}
 
-AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) noexcept :
+AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
+    float beatVal, float cValue) noexcept :
     MidiEvent(owner, Type::Auto, beatVal),
-    controllerValue(cValue),
-    curvature(Globals::Defaults::automationControllerCurve) {}
+    controllerValue(cValue) {}
 
 AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
     const AutomationEvent &parametersToCopy) noexcept :
@@ -198,6 +196,14 @@ AutomationEvent AutomationEvent::withParameters(const SerializedData &parameters
 {
     AutomationEvent ae(*this);
     ae.deserialize(parameters);
+    return ae;
+}
+
+AutomationEvent AutomationEvent::withTempoBpm(int bpm) const noexcept
+{
+    AutomationEvent ae(*this);
+    const auto secondsPerQuarterNote = 60.0 / double(jmax(1, bpm));
+    ae.controllerValue = Transport::getControllerValueByTempo(secondsPerQuarterNote);
     return ae;
 }
 

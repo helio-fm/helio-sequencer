@@ -23,9 +23,9 @@ public:
 
     enum class Mode : int8
     {
-        DragOnlyX,
-        DragOnlyY,
         AutoSelect,
+        DragOnlyX,
+        DragOnlyY
     };
 
     FineTuningComponentDragger() = default;
@@ -46,11 +46,16 @@ public:
         return float(this->valueWhenLastDragged);
     }
 
+    inline bool hadChanges() const noexcept
+    {
+        return this->mousePositionChanged;
+    }
+
 private:
 
     Mode dragMode = Mode::AutoSelect;
 
-    double valueOnMouseDown = 0.0;
+    bool mousePositionChanged = false;
     double valueWhenLastDragged = 0.0;
 
     NormalisableRange<double> range;

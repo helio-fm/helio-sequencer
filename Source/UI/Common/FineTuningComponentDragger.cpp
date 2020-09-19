@@ -32,7 +32,7 @@ void FineTuningComponentDragger::startDraggingComponent(Component *const compone
         this->mouseDownWithinTarget = e.getEventRelativeTo(component).getMouseDownPosition();
         this->mousePosWhenLastDragged = e.position;
         this->valueWhenLastDragged = jlimit(lowerBound, upperBound, currentValue);
-        this->valueOnMouseDown = this->valueWhenLastDragged;
+        this->mousePositionChanged = false;
         this->dragComponent(component, e);
     }
 }
@@ -48,11 +48,15 @@ void FineTuningComponentDragger::dragComponent(Component *const component, const
         const auto mouseDiffY = e.position.y - this->mousePosWhenLastDragged.y;
         const auto absDiffX = double(std::abs(mouseDiffX));
         const auto absDiffY = double(std::abs(mouseDiffY));
+
         auto speedX = jlimit(0.0, FineTuningComponentDragger::dragMaxSpeed, absDiffX);
         auto speedY = jlimit(0.0, FineTuningComponentDragger::dragMaxSpeed, absDiffY);
 
+        this->mousePositionChanged = this->mousePositionChanged ||
+            (absDiffX > 1.5 || absDiffY > 1.5);
+
         // Once we have enough data to guess, try to auto-detect dragging mode:
-        if (this->dragMode == Mode::AutoSelect && (absDiffX > 1.5 || absDiffY > 1.5))
+        if (this->dragMode == Mode::AutoSelect && this->mousePositionChanged)
         {
             this->dragMode = (absDiffX - absDiffY) > 1.0 ? Mode::DragOnlyX : Mode::DragOnlyY;
         }

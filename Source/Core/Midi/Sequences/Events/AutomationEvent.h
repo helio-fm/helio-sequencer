@@ -46,7 +46,9 @@ public:
     AutomationEvent withParameters(float newBeat, float newControllerValue) const noexcept;
     AutomationEvent withCurvature(float newCurvature) const noexcept;
     AutomationEvent withParameters(const SerializedData &parameters) const noexcept;
-    
+    // and a special helper for the tempo track events:
+    AutomationEvent withTempoBpm(int bpm) const noexcept;
+
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
@@ -81,8 +83,8 @@ public:
 
 protected:
 
-    float controllerValue;
-    float curvature;
+    float controllerValue = 0.f;
+    float curvature = Globals::Defaults::automationControllerCurve;
 
 private:
 

@@ -198,15 +198,19 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
             this->dragger.endDraggingComponent(this, e);
             this->endDragging();
 
-            // todo:
-            // if no dragging was done and this is a tempo track,
-            // show the tempo dialog with a proper callback
-            if (this->isTempoCurve())
+            if (!this->dragger.hadChanges() && this->isTempoCurve())
             {
                 this->hoveredState = false;
                 this->repaint();
 
-                App::showModalComponent(make<TempoDialog>(this->event.getControllerValueAsBPM()));
+                auto dialog = make<TempoDialog>(this->event.getControllerValueAsBPM());
+                dialog->onOk = [this](int newBpmValue)
+                {
+                    auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+                    sequence->change(this->event, this->event.withTempoBpm(newBpmValue), true);
+                };
+
+                App::showModalComponent(move(dialog));
             }
         }
 

@@ -254,13 +254,13 @@ void TempoDialog::doCancel()
 
 void TempoDialog::doOk()
 {
-    if (textEditor->getText().isNotEmpty())
+    if (this->textEditor->getText().isNotEmpty())
     {
         if (this->onOk != nullptr)
         {
             BailOutChecker checker(this);
 
-            this->onOk();
+            this->onOk(this->newValue);
 
             if (checker.shouldBailOut())
             {

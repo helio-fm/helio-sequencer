@@ -28,7 +28,7 @@ public:
     explicit TempoDialog(int bpmValue);
     ~TempoDialog() override;
 
-    Function<void()> onOk;
+    Function<void(int newBpmValue)> onOk;
     Function<void()> onCancel;
     
     void resized() override;
