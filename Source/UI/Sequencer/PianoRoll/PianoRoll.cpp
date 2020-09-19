@@ -1039,7 +1039,7 @@ void PianoRoll::handleCommandMessage(int commandId)
 
             this->addTrackInteractively(trackPreset.get(),
                 UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
-                TRANS(I18n::Menu::Selection::notesToTrack), TRANS(I18n::Dialog::addTrackProceed));
+                TRANS(I18n::Menu::Selection::notesToTrack), TRANS(I18n::Dialog::add));
         }
         break;
     case CommandIDs::DuplicateTrack:
@@ -1049,7 +1049,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
         this->addTrackInteractively(trackPreset.get(),
             UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
-            TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::addTrackProceed));
+            TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
     }
     break;
     case CommandIDs::BeatShiftLeft:

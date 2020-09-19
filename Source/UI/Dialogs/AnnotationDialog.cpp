@@ -118,14 +118,14 @@ AnnotationDialog::AnnotationDialog(Component &owner,
         this->originalSequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::annotationAddCaption), dontSendNotification);
-        this->okButton->setButtonText(TRANS(I18n::Dialog::annotationAddProceed));
         this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::add));
     }
     else
     {
         this->messageLabel->setText(TRANS(I18n::Dialog::annotationEditCaption), dontSendNotification);
-        this->okButton->setButtonText(TRANS(I18n::Dialog::annotationEditApply));
-        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::annotationEditDelete));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::delete_));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
     this->colourSwatches->setSelectedColour(this->originalEvent.getTrackColour());

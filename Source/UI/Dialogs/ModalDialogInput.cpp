@@ -218,7 +218,7 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::changeTimeSignature(c
 {
     return make<ModalDialogInput>(name,
         TRANS(I18n::Dialog::timeSignatureEditCaption),
-        TRANS(I18n::Dialog::timeSignatureEditApply),
+        TRANS(I18n::Dialog::apply),
         TRANS(I18n::Dialog::cancel));
 }
 
@@ -234,7 +234,7 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
 {
     return make<ModalDialogInput>(TRANS(I18n::Defaults::midiTrackName),
         TRANS(I18n::Dialog::addTrackCaption),
-        TRANS(I18n::Dialog::addTrackProceed),
+        TRANS(I18n::Dialog::add),
         TRANS(I18n::Dialog::cancel));
 }
 
@@ -242,7 +242,7 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirma
 {
     return make<ModalDialogInput>(String(),
         TRANS(I18n::Dialog::deleteProjectConfirmCaption),
-        TRANS(I18n::Dialog::deleteProjectConfirmProceed),
+        TRANS(I18n::Dialog::delete_),
         TRANS(I18n::Dialog::cancel));
 }
 

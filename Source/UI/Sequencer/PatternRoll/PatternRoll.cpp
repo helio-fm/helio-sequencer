@@ -688,7 +688,7 @@ void PatternRoll::handleCommandMessage(int commandId)
 
                 this->addTrackInteractively(trackPreset.get(),
                     UndoActionIDs::AddNewTrack, false, clonedTrack->getTrackName(),
-                    TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::addTrackProceed));
+                    TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
             }
             // TODO cloning automations here
         }
