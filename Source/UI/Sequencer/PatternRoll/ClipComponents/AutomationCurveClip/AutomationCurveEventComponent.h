@@ -30,11 +30,23 @@ class AutomationCurveEventComponent final : public Component
 {
 public:
 
-    AutomationCurveEventComponent(AutomationCurveClipComponent &parent, const AutomationEvent &targetEvent);
+    AutomationCurveEventComponent(AutomationCurveClipComponent &parent,
+        const AutomationEvent &targetEvent);
 
-    inline float getBeat() const noexcept { return this->event.getBeat(); }
-    inline float getControllerValue() const noexcept { return this->event.getControllerValue(); }
-    inline const AutomationEvent &getEvent() const noexcept { return this->event; };
+    inline float getBeat() const noexcept
+    {
+        return this->event.getBeat();
+    }
+
+    inline float getControllerValue() const noexcept
+    {
+        return this->event.getControllerValue();
+    }
+
+    inline const AutomationEvent &getEvent() const noexcept
+    {
+        return this->event;
+    };
 
     void updateConnector();
     void updateHelper();
@@ -43,11 +55,15 @@ public:
     static int compareElements(const AutomationCurveEventComponent *first,
         const AutomationCurveEventComponent *second);
 
-    void paint (Graphics& g) override;
-    bool hitTest (int x, int y) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
+    void paint(Graphics &g) override;
+    bool hitTest(int x, int y) override;
+
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
+
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
 
@@ -71,7 +87,8 @@ private:
     ComponentFader fader;
 
     Point<int> clickOffset;
-    bool draggingState;
+    bool draggingState = false;
+    bool hoveredState = false;
 
     const int controllerNumber;
     bool isTempoCurve() const noexcept;

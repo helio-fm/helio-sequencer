@@ -19,9 +19,6 @@
 
 #include "MidiEvent.h"
 
-#define CURVE_INTERPOLATION_STEP_BEAT (0.25f)
-#define CURVE_INTERPOLATION_THRESHOLD (0.0025f)
-
 class AutomationEvent final : public MidiEvent
 {
 public:
@@ -38,6 +35,9 @@ public:
         double timeOffset, double timeFactor, int periodSize) const noexcept override;
 
     static float interpolateEvents(float cv1, float cv2, float factor, float easing);
+
+    static constexpr auto curveInterpolationStepBeat = 0.25f;
+    static constexpr auto curveInterpolationThreshold = 0.0025f;
 
     AutomationEvent copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     AutomationEvent withBeat(float newBeat) const noexcept;

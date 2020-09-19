@@ -37,10 +37,6 @@ void FineTuningComponentDragger::startDraggingComponent(Component *const compone
     }
 }
 
-#define DRAG_SPEED_THRESHOLD (1.0)
-#define DRAG_SPEED_SENSIVITY (0.2)
-#define DRAG_MAX_SPEED (200.0)
-
 void FineTuningComponentDragger::dragComponent(Component *const component, const MouseEvent &e)
 {
     jassert(component != nullptr);
@@ -52,29 +48,33 @@ void FineTuningComponentDragger::dragComponent(Component *const component, const
         const auto mouseDiffY = e.position.y - this->mousePosWhenLastDragged.y;
         const auto absDiffX = double(std::abs(mouseDiffX));
         const auto absDiffY = double(std::abs(mouseDiffY));
-        auto speedX = jlimit(0.0, DRAG_MAX_SPEED, absDiffX);
-        auto speedY = jlimit(0.0, DRAG_MAX_SPEED, absDiffY);
+        auto speedX = jlimit(0.0, FineTuningComponentDragger::dragMaxSpeed, absDiffX);
+        auto speedY = jlimit(0.0, FineTuningComponentDragger::dragMaxSpeed, absDiffY);
 
-        // Once having enough data to guess, try to auto-detect dragging mode:
-        if (this->dragMode == AutoSelect && (absDiffX > 1.0 || absDiffY > 1.0))
+        // Once we have enough data to guess, try to auto-detect dragging mode:
+        if (this->dragMode == Mode::AutoSelect && (absDiffX > 1.5 || absDiffY > 1.5))
         {
-            this->dragMode = (absDiffX - absDiffY) > 1.0 ? DragOnlyX : DragOnlyY;
+            this->dragMode = (absDiffX - absDiffY) > 1.0 ? Mode::DragOnlyX : Mode::DragOnlyY;
         }
 
         // Adjust X position (simple linear drag)
-        if ((this->dragMode == DragOnlyX) && speedX != 0.0)
+        if ((this->dragMode == Mode::DragOnlyX) && speedX != 0.0)
         {
             const auto shift = e.getEventRelativeTo(component).getPosition() - this->mouseDownWithinTarget;
             component->setTopLeftPosition(component->getPosition().translated(shift.getX(), 0));
         }
 
         // Adjust Y position (velocity-based drag)
-        if ((this->dragMode == DragOnlyY) && speedY != 0.0)
+        if ((this->dragMode == Mode::DragOnlyY) && speedY != 0.0)
         {
-            speedY = -DRAG_SPEED_SENSIVITY * (1.0 + std::sin(MathConstants<double>::pi *
-                (1.5 + jmin(0.5, jmax(0.0, (speedY - DRAG_SPEED_THRESHOLD)) / DRAG_MAX_SPEED))));
+            speedY = -FineTuningComponentDragger::dragSpeedSensivity *
+                (1.0 + std::sin(MathConstants<double>::pi * (1.5 + jmin(0.5, jmax(0.0,
+                (speedY - FineTuningComponentDragger::dragSpeedThreshold)) / FineTuningComponentDragger::dragMaxSpeed))));
 
-            if (mouseDiffY < 0) { speedY = -speedY; }
+            if (mouseDiffY < 0)
+            {
+                speedY = -speedY;
+            }
 
             const auto currentPos = this->range.convertTo0to1(this->valueWhenLastDragged);
             this->valueWhenLastDragged = this->range.convertFrom0to1(jlimit(0.0, 1.0, currentPos + speedY));

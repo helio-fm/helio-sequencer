@@ -105,7 +105,7 @@ void AutomationCurveEventsConnector::rebuildLinePath()
     const auto &e1 = this->component1->getEvent();
     const auto &e2 = this->component2->getEvent();
     float lastAppliedValue = e1.getControllerValue();
-    float interpolatedBeat = e1.getBeat(); // + CURVE_INTERPOLATION_STEP_BEAT;
+    float interpolatedBeat = e1.getBeat(); // + AutomationEvent::curveInterpolationStepBeat;
     while (interpolatedBeat < e2.getBeat())
     {
         const float factor = (interpolatedBeat - e1.getBeat()) / (e2.getBeat() - e1.getBeat());
@@ -117,12 +117,12 @@ void AutomationCurveEventsConnector::rebuildLinePath()
         const float y = float(this->getParentHeight()) * (1.f - interpolatedValue);
 
         const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
-        if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
+        if (controllerDelta > AutomationEvent::curveInterpolationThreshold)
         {
             this->linePath.add({ x, y });
             lastAppliedValue = interpolatedValue;
         }
 
-        interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
+        interpolatedBeat += AutomationEvent::curveInterpolationStepBeat;
     }
 }

@@ -109,7 +109,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
     if (!isPedalOrSwitchEvent && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
     {
         const auto *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
-        float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
+        float interpolatedBeat = this->beat + AutomationEvent::curveInterpolationStepBeat;
         float lastAppliedValue = this->controllerValue;
 
         while (interpolatedBeat < nextEvent->beat)
@@ -121,7 +121,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                     nextEvent->controllerValue, factor, this->curvature);
 
             const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
-            if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
+            if (controllerDelta > AutomationEvent::curveInterpolationThreshold)
             {
                 const double interpolatedTs = (interpolatedBeat + clip.getBeat()) * timeFactor;
                 if (isTempoTrack)
@@ -141,7 +141,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                 lastAppliedValue = interpolatedValue;
             }
 
-            interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
+            interpolatedBeat += AutomationEvent::curveInterpolationStepBeat;
         }
     }
 }
