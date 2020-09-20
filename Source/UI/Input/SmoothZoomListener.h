@@ -23,8 +23,8 @@ public:
 
     virtual ~SmoothZoomListener() {}
 
-    virtual void zoomAbsolute(const Point<float> &zoom) = 0;
-    virtual void zoomRelative(const Point<float> &origin, const Point<float> &factor) = 0;
+    virtual void zoomRelative(const Point<float> &origin,
+        const Point<float> &factor) = 0;
 
     virtual float getZoomFactorX() const = 0;
     virtual float getZoomFactorY() const = 0;

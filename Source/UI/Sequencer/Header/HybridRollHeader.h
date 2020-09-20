@@ -75,7 +75,7 @@ protected:
     void updateColours();
 
     UniquePointer<ClipRangeIndicator> clipRangeIndicator;
-    UniquePointer<SoundProbeIndicator> playingIndicator;
+    UniquePointer<SoundProbeIndicator> probeIndicator;
     UniquePointer<SoundProbeIndicator> pointingIndicator;
     UniquePointer<TimeDistanceIndicator> timeDistanceIndicator;
     UniquePointer<HeaderSelectionIndicator> selectionIndicator;

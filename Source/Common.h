@@ -216,6 +216,9 @@ namespace Globals
 
         static constexpr auto projectMapHeight = 80;
         static constexpr auto levelsMapHeight = 128;
+
+        static constexpr auto rollHeaderHeight = 40;
+        static constexpr auto rollHeaderShadowSize = 16;
     }
 }
 

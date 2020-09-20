@@ -83,6 +83,5 @@ void ProjectMapScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Compone
         Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-    this->scroller.resizeByUser();
     this->scroller.xyMoveByUser();
 }

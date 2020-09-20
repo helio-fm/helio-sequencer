@@ -102,10 +102,6 @@ public:
     void insertAnnotationWithinScreen(const String &annotation);
     void insertTimeSignatureWithinScreen(int numerator, int denominator);
     
-    static constexpr auto maxBeatWidth = 48;
-    static constexpr auto headerHeight = 40;
-    static constexpr auto headerShadowSize = 16;
-
     //===------------------------------------------------------------------===//
     // Custom maps
     //===------------------------------------------------------------------===//
@@ -176,10 +172,10 @@ public:
     // SmoothZoomListener
     //===------------------------------------------------------------------===//
 
-    void zoomAbsolute(const Point<float> &zoom) override;
-    void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
     float getZoomFactorX() const noexcept override;
     float getZoomFactorY() const noexcept override;
+    void zoomRelative(const Point<float> &origin,
+        const Point<float> &factor) override;
 
     void zoomInImpulse(float factor = 1.f);
     void zoomOutImpulse(float factor = 1.f);
