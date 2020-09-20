@@ -52,7 +52,11 @@ public:
             this->currentPlayer = this->findNextFreePlayer();
         }
 
-        const auto playbackContext = this->transport.fillPlaybackContextAt(startBeat);
+        auto playbackContext = this->transport.fillPlaybackContextAt(startBeat);
+        playbackContext->endBeat = endBeat;
+        playbackContext->rewindBeat = rewindBeat;
+        playbackContext->playbackLoopMode = loopMode;
+        playbackContext->playbackSilentMode = silentMode;
 
         // let listeners know about the tempo before the playback starts
         this->transport.broadcastTempoChanged(playbackContext->startBeatTempo);
