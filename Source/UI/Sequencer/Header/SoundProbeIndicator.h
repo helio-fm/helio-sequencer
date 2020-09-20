@@ -17,11 +17,18 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class SoundProbeIndicator final : public Component
 {
 public:
 
-    SoundProbeIndicator()
+    SoundProbeIndicator() :
+        colour(Colours::white
+            .interpolatedWith(Colours::yellow, 0.05f)
+            .withAlpha(0.4f)),
+        shadowColour(findDefaultColour(ColourIDs::Common::borderLineDark)
+            .withMultipliedAlpha(0.5f))
     {
         this->setInterceptsMouseClicks(false, false);
         this->setPaintingIsUnclipped(true);
@@ -48,8 +55,11 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colour(0x2dffffff));
+        g.setColour(this->shadowColour);
         g.fillRect(this->getLocalBounds());
+
+        g.setColour(this->colour);
+        g.fillRect(1, 1, 1, this->getHeight());
     }
 
     void parentHierarchyChanged() override
@@ -64,11 +74,16 @@ public:
 
 private:
 
+    const Colour colour;
+    const Colour shadowColour;
+
     double absPosition = 0.0;
 
     void updateBounds()
     {
-        const int x = int(double(this->getParentWidth()) * this->absPosition - double(this->getWidth()) / 2.0);
+        const int x = int(double(this->getParentWidth()) * this->absPosition -
+            double(this->getWidth()) / 2.0 + 0.5);
+
         this->setBounds(x, 0, this->getWidth(), this->getParentHeight());
     }
 

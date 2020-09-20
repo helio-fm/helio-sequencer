@@ -55,6 +55,8 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->selectionIndicator->setTopLeftPosition(0, this->getHeight() - this->selectionIndicator->getHeight());
 }
 
+HybridRollHeader::~HybridRollHeader() {}
+
 void HybridRollHeader::updateColours()
 {
     // Painting is the very bottleneck of this app,

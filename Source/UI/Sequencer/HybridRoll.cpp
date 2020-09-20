@@ -18,10 +18,6 @@
 #include "Common.h"
 #include "HybridRoll.h"
 #include "HybridRollHeader.h"
-#include "SoundProbeIndicator.h"
-#include "TimeDistanceIndicator.h"
-#include "HeaderSelectionIndicator.h"
-#include "ClipRangeIndicator.h"
 
 #include "HybridRollExpandMark.h"
 #include "MidiEvent.h"
