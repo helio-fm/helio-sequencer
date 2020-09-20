@@ -68,18 +68,15 @@ void DialogBase::paint(Graphics &g)
     g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 4);
 
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    g.fillRect(1, 0, this->getWidth() - 2, 2);
-    g.fillRect(1, this->getHeight() - 2, this->getWidth() - 2, 2);
-    g.fillRect(0, 1, 2, this->getHeight() - 2);
-    g.fillRect(this->getWidth() - 2, 1, 2, this->getHeight() - 2);
+    static constexpr auto lightAlpha = 2.f;
 
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(2.f));
+    HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), lightAlpha);
+
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).
+        withMultipliedAlpha(lightAlpha));
+
     g.fillRect(2, 1, this->getWidth() - 4, 5);
-    g.fillRect(2, 1, this->getWidth() - 4, 1);
-    g.fillRect(2, this->getHeight() - 2, this->getWidth() - 4, 1);
-    g.fillRect(1, 2, 1, this->getHeight() - 4);
-    g.fillRect(this->getWidth() - 2, 2, 1, this->getHeight() - 4);
+
 }
 
 void DialogBase::parentHierarchyChanged()

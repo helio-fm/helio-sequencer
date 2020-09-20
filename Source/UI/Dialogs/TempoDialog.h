@@ -39,9 +39,6 @@ public:
 
 private:
 
-    int originalValue = 0;
-    int newValue = 0;
-
     static constexpr auto tapTempoHeight = 48;
     static constexpr auto tapTempoMargin = 8;
 

@@ -26,7 +26,7 @@ class TapTempoComponent final : public Component, private Timer
 public:
 
     TapTempoComponent() :
-        targetColour(Colours::white.withAlpha(0.01f)),
+        targetColour(Colours::white.withAlpha(0.015f)),
         highlightColour(Colours::white.withAlpha(0.05f))
     {
         this->setWantsKeyboardFocus(false);
@@ -37,8 +37,9 @@ public:
         this->label = make<Label>();
         this->addAndMakeVisible(this->label.get());
         this->label->setInterceptsMouseClicks(false, false);
+        this->label->setJustificationType(Justification::centred);
         this->label->setText(TRANS(I18n::Dialog::setTempoTapLabel), dontSendNotification);
-        this->label->setFont({ 21.f });
+        this->label->setFont({ 16.f });
     }
 
     Function<void(int newTempoBpm)> onTempoChanged;
@@ -50,12 +51,10 @@ public:
 
     void paint(Graphics &g) override
     {
-        // todo frame
-
         g.setColour(this->currentFillColour);
         g.fillRect(this->getLocalBounds());
-
-        HelioTheme::drawNoiseWithin(this->getLocalBounds().reduced(1), g, 10.f);
+        HelioTheme::drawNoiseWithin(this->getLocalBounds().reduced(2), g, 7.5f);
+        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 0.75f);
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -143,9 +142,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TapTempoComponent)
 };
 
-TempoDialog::TempoDialog(int bpmValue) :
-    originalValue(bpmValue),
-    newValue(bpmValue)
+TempoDialog::TempoDialog(int bpmValue)
 {
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
@@ -171,8 +168,7 @@ TempoDialog::TempoDialog(int bpmValue) :
     this->tapTempo->onTempoChanged = [this](int newTempoBpm)
     {
         // todo clamp value (15 .. 240)?
-        this->newValue = newTempoBpm;
-        this->textEditor->setText(String(this->newValue), dontSendNotification);
+        this->textEditor->setText(String(newTempoBpm), dontSendNotification);
     };
 
     this->textEditor = make<TextEditor>();
@@ -188,8 +184,6 @@ TempoDialog::TempoDialog(int bpmValue) :
     this->textEditor->onTextChange = [this]()
     {
         this->updateOkButtonState();
-        this->newValue = this->textEditor->getText().getIntValue();
-        // reset tap-tempo? or is that not necessary?
     };
 
     this->textEditor->onFocusLost = [this]()
@@ -207,7 +201,7 @@ TempoDialog::TempoDialog(int bpmValue) :
         this->doCancel();
     };
 
-    this->textEditor->setText(String(this->originalValue), dontSendNotification);
+    this->textEditor->setText(String(bpmValue), dontSendNotification);
 
     this->messageLabel->setText(TRANS(I18n::Dialog::setTempoCaption), dontSendNotification);
     this->messageLabel->setInterceptsMouseClicks(false, false);
@@ -215,7 +209,7 @@ TempoDialog::TempoDialog(int bpmValue) :
     this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
-    this->setSize(450, 250);
+    this->setSize(450, 230);
     this->updatePosition();
     this->updateOkButtonState();
 }
@@ -234,8 +228,8 @@ void TempoDialog::resized()
     this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
     this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
-    this->tapTempo->setBounds(this->getRowBounds(0.7f,
+    this->textEditor->setBounds(this->getRowBounds(0.275f, DialogBase::textEditorHeight));
+    this->tapTempo->setBounds(this->getRowBounds(0.725f,
         TempoDialog::tapTempoHeight, TempoDialog::tapTempoMargin));
 }
 
@@ -313,7 +307,10 @@ void TempoDialog::doOk()
         {
             BailOutChecker checker(this);
 
-            this->onOk(this->newValue);
+            const auto newValue =
+                this->textEditor->getText().getIntValue();
+
+            this->onOk(newValue);
 
             if (checker.shouldBailOut())
             {

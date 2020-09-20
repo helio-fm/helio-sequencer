@@ -44,6 +44,9 @@ public:
             int /*w*/, int /*h*/, bool /*isVerticalBar*/,
             bool isMouseOver, bool isMouseDragging) override;
 
+    static void drawFrame(Graphics &g, int width, int height,
+        float lightAlphaMultiplier = 1.f, float darkAlphaMultiplier = 1.f);
+
     //===------------------------------------------------------------------===//
     // Text Editor
     //===------------------------------------------------------------------===//
