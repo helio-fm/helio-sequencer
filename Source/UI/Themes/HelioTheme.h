@@ -87,7 +87,8 @@ public:
     bool areScrollbarButtonsVisible() override { return false; }
     void drawScrollbarButton(Graphics &g, ScrollBar &bar,
         int width, int height, int buttonDirection,
-        bool isScrollbarVertical, bool isMouseOverButton, bool isButtonDown) override {}
+        bool isScrollbarVertical, bool isMouseOverButton,
+        bool isButtonDown) override {}
     void drawScrollbar(Graphics &g, ScrollBar &bar,
         int x, int y, int width, int height,
         bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
@@ -108,12 +109,14 @@ public:
     void drawCornerResizer(Graphics& g, int w, int h,
         bool /*isMouseOver*/, bool /*isMouseDragging*/) override;
 
-    void drawResizableFrame(Graphics &g, int w, int h, const BorderSize<int> &border) override;
+    void drawResizableFrame(Graphics &g, int w, int h,
+        const BorderSize<int> &border) override;
+
     void drawDocumentWindowTitleBar(DocumentWindow &window,
-                                            Graphics &g, int w, int h,
-                                            int titleSpaceX, int titleSpaceW,
-                                            const Image *icon,
-                                            bool drawTitleTextOnLeft) override;
+        Graphics &g, int w, int h,
+        int titleSpaceX, int titleSpaceW,
+        const Image *icon,
+        bool drawTitleTextOnLeft) override;
 
     Button *createDocumentWindowButton(int buttonType) override;
     void positionDocumentWindowButtons(DocumentWindow &window,

@@ -29,10 +29,24 @@ public:
         targetColour(Colours::white.withAlpha(0.01f)),
         highlightColour(Colours::white.withAlpha(0.05f))
     {
+        this->setWantsKeyboardFocus(false);
+        this->setPaintingIsUnclipped(true);
+
         this->currentFillColour = this->targetColour;
+
+        this->label = make<Label>();
+        this->addAndMakeVisible(this->label.get());
+        this->label->setInterceptsMouseClicks(false, false);
+        this->label->setText(TRANS(I18n::Dialog::setTempoTapLabel), dontSendNotification);
+        this->label->setFont({ 21.f });
     }
 
     Function<void(int newTempoBpm)> onTempoChanged;
+
+    void resized() override
+    {
+        this->label->setBounds(this->getLocalBounds());
+    }
 
     void paint(Graphics &g) override
     {
@@ -55,14 +69,50 @@ private:
 
     void detectAndSendTapTempo()
     {
-        // todo
+        if (this->onTempoChanged == nullptr)
+        {
+            return;
+        }
+
         const auto now = Time::getMillisecondCounterHiRes();
 
-
-        if (this->onTempoChanged != nullptr)
+        if (this->lastTapMs == 0.0)
         {
-            // todo
+            this->lastTapMs = now;
+            return; // first tap is kinda useless
         }
+
+        const auto delay = now - this->lastTapMs;
+        this->tapIntervalsMs.add(delay);
+        this->lastTapMs = now;
+
+        if (this->tapIntervalsMs.size() == 1)
+        {
+            return; // second tap is also kinda useless
+        }
+
+        // now check the last 2 delays: if they differ too much,
+        // then everything up to the latest tap delay doesn't seem relevant:
+        const auto d1 = this->tapIntervalsMs[this->tapIntervalsMs.size() - 1];
+        const auto d2 = this->tapIntervalsMs[this->tapIntervalsMs.size() - 2];
+        if (abs(d1 - d2) > 1000) // todo experiment more with this
+        {
+            this->tapIntervalsMs.clearQuick();
+            this->tapIntervalsMs.add(delay);
+            return;
+        }
+
+        // at this point we're pretty sure that all tap intervals are ok,
+        // lets take average and compute BPM from that:
+        double average = 0.0;
+        for (const auto val : this->tapIntervalsMs)
+        {
+            average += val;
+        }
+        average /= double(this->tapIntervalsMs.size());
+
+        const int bpm = int(60000.0 / average);
+        this->onTempoChanged(bpm);
     }
 
     void timerCallback() override
@@ -87,6 +137,8 @@ private:
 
     double lastTapMs = 0.0;
     Array<double> tapIntervalsMs;
+
+    UniquePointer<Label> label;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TapTempoComponent)
 };
@@ -118,8 +170,9 @@ TempoDialog::TempoDialog(int bpmValue) :
     this->addAndMakeVisible(this->tapTempo.get());
     this->tapTempo->onTempoChanged = [this](int newTempoBpm)
     {
+        // todo clamp value (15 .. 240)?
         this->newValue = newTempoBpm;
-        // update text field
+        this->textEditor->setText(String(this->newValue), dontSendNotification);
     };
 
     this->textEditor = make<TextEditor>();

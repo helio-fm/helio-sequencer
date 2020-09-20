@@ -82,16 +82,18 @@ namespace I18n
         static const Identifier vcsResetProceed = "dialog::vcs::reset::proceed";
         static const Identifier workspaceCreateProjectCaption = "dialog::workspace::createproject::caption";
         static const Identifier setTempoCaption = "dialog::tempo::caption";
+        static const Identifier setTempoTapLabel = "dialog::tempo::tap";
     }
 
     namespace Menu
     {
+        static const Identifier back = "menu::back";
+        static const Identifier cancel = "menu::cancel";
+
         static const Identifier annotationAdd = "menu::annotation::add";
         static const Identifier annotationDelete = "menu::annotation::delete";
         static const Identifier annotationRename = "menu::annotation::rename";
         static const Identifier arpeggiatorsCreate = "menu::arpeggiators::create";
-        static const Identifier back = "menu::back";
-        static const Identifier cancel = "menu::cancel";
         static const Identifier groupByColour = "menu::groupby::colour";
         static const Identifier groupByInstrument = "menu::groupby::instrument";
         static const Identifier groupByName = "menu::groupby::name";
@@ -206,6 +208,7 @@ namespace I18n
         static const Identifier solo = "menu::solo";
         static const Identifier unmute = "menu::unmute";
         static const Identifier unsolo = "menu::unsolo";
+        static const Identifier setOneTempo = "menu::onetempo";
 
         static const Identifier vcsChangesHide = "menu::vcs::changes::hide";
         static const Identifier vcsChangesShow = "menu::vcs::changes::show";
