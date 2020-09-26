@@ -17,21 +17,24 @@
 
 #include "Common.h"
 #include "PatternRollSelectionMenu.h"
-#include "PatternOperations.h"
+
 #include "ClipComponent.h"
 #include "MidiTrack.h"
 #include "Pattern.h"
 #include "Clip.h"
 #include "Lasso.h"
 
+#include "PatternOperations.h"
+#include "SequencerOperations.h"
+
 #include "ProjectNode.h"
 #include "UndoStack.h"
 #include "MidiTrackNode.h"
 #include "MidiTrackActions.h"
 
+#include "TempoDialog.h"
 #include "Workspace.h"
 #include "AudioCore.h"
-
 #include "CommandIDs.h"
 #include "Icons.h"
 
@@ -65,11 +68,38 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         TRANS(I18n::Menu::Selection::clipsEdit))->
         disabledIf(lasso->getNumSelected() == 0)->closesMenu());
 
-    menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
-        TRANS(I18n::Menu::Selection::clipsTransposeUp)));
+    if (this->lasso->getNumSelected() == 1)
+    {
+        auto *track = this->lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->getTrack();
+        if (track->isTempoTrack())
+        {
+            // sets one tempo for the selected track, not for the entire project
+            const auto firstBeat = track->getSequence()->getFirstBeat();
+            const auto lastBeat = jmax(track->getSequence()->getLastBeat(),
+                firstBeat + Globals::Defaults::emptyClipLength);
 
-    menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
-        TRANS(I18n::Menu::Selection::clipsTransposeDown)));
+            menu.add(MenuItem::item(Icons::automationTrack, TRANS(I18n::Menu::setOneTempo))->
+                closesMenu()->withAction([firstBeat, lastBeat, track]()
+            {
+                auto dialog = make<TempoDialog>(Globals::Defaults::tempoBpm);
+                dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue)
+                {
+                    SequencerOperations::setOneTempoForTrack(track, firstBeat, lastBeat, newBpmValue);
+                };
+
+                App::showModalComponent(move(dialog));
+            }));
+        }
+    }
+    else
+    {
+        // todo: be more smart about automation tracks
+        menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
+            TRANS(I18n::Menu::Selection::clipsTransposeUp)));
+
+        menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
+            TRANS(I18n::Menu::Selection::clipsTransposeDown)));
+    }
 
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->
