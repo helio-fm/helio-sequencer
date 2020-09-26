@@ -170,6 +170,13 @@ AutomationEvent AutomationEvent::withDeltaBeat(float deltaBeat) const noexcept
     return ae;
 }
 
+AutomationEvent AutomationEvent::withControllerValue(float cv) const noexcept
+{
+    AutomationEvent ae(*this);
+    ae.controllerValue = jlimit(0.f, 1.f, cv);
+    return ae;
+}
+
 AutomationEvent AutomationEvent::withInvertedControllerValue() const noexcept
 {
     AutomationEvent ae(*this);
@@ -188,7 +195,7 @@ AutomationEvent AutomationEvent::withParameters(float newBeat, float newControll
 AutomationEvent AutomationEvent::withCurvature(float newCurvature) const noexcept
 {
     AutomationEvent ae(*this);
-    ae.curvature = jmin(1.f, jmax(0.f, newCurvature));
+    ae.curvature = jlimit(0.f, 1.f, newCurvature);
     return ae;
 }
 

@@ -180,6 +180,7 @@ namespace Globals
     {
         // Milliseconds per quarter note, default 120 BPM
         static constexpr auto msPerBeat = 500;
+        static constexpr auto tempoBpm = 60000 / msPerBeat;
 
         // Any length here is in beats
         static constexpr auto projectLength = static_cast<float>(beatsPerBar * 8);

@@ -352,6 +352,9 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
 
     //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS(I18n::Menu::Project::cleanup)));
 
+    menu.add(MenuItem::item(Icons::automationTrack, CommandIDs::ProjectSetOneTempo,
+        TRANS(I18n::Menu::setOneTempo))->closesMenu());
+
     const auto &tracks = this->project.findChildrenOfType<MidiTrackNode>();
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     if (instruments.size() > 1 && tracks.size() > 0)

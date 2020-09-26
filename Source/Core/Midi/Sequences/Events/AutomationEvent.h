@@ -42,6 +42,7 @@ public:
     AutomationEvent copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     AutomationEvent withBeat(float newBeat) const noexcept;
     AutomationEvent withDeltaBeat(float deltaBeat) const noexcept;
+    AutomationEvent withControllerValue(float cv) const noexcept;
     AutomationEvent withInvertedControllerValue() const noexcept;
     AutomationEvent withParameters(float newBeat, float newControllerValue) const noexcept;
     AutomationEvent withCurvature(float newCurvature) const noexcept;

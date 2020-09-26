@@ -59,6 +59,7 @@
 #include "TimeSignatureDialog.h"
 #include "KeySignatureDialog.h"
 #include "TrackPropertiesDialog.h"
+#include "TempoDialog.h"
 
 #include "MainLayout.h"
 #include "Workspace.h"
@@ -1284,6 +1285,17 @@ void HybridRoll::handleCommandMessage(int commandId)
                 sequence, targetBeat));
         }
         break;
+    case CommandIDs::ProjectSetOneTempo:
+    {
+        auto dialog = make<TempoDialog>(Globals::Defaults::tempoBpm);
+        dialog->onOk = [this](int newBpmValue)
+        {
+            SequencerOperations::setOneTempoForProject(this->getProject(), newBpmValue);
+        };
+
+        App::showModalComponent(move(dialog));
+        break;
+    }
     default:
         break;
     }

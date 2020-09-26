@@ -109,6 +109,7 @@ struct SequencerOperations final
     static Array<Note> cutEvents(const Array<Note> &notes,
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);
 
+    static bool setOneTempoForProject(ProjectNode &project, int bpmValue, bool shouldCheckpoint = true);
     // Creates new tracks from events of existing tracks
     static UniquePointer<MidiTrackNode> createPianoTrack(const Lasso &selection);
     static UniquePointer<MidiTrackNode> createPianoTrack(const PianoSequence *source, const Clip &clip);
