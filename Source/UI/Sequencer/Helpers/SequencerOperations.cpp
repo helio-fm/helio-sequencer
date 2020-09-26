@@ -17,27 +17,39 @@
 
 #include "Common.h"
 #include "SequencerOperations.h"
+
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
+
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
 #include "KeySignatureEvent.h"
+
 #include "NoteComponent.h"
 #include "ClipComponent.h"
 #include "PianoRoll.h"
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
+
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
+
 #include "MidiTrack.h"
 #include "Pattern.h"
-#include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "Transport.h"
+
+#include "UndoStack.h"
+#include "AutomationTrackActions.h"
+#include "PatternActions.h"
+
+#include "SerializationKeys.h"
 #include "UndoActionIDs.h"
+#include "ColourIDs.h"
+
 
 // a big FIXME:
 // most of this code assumes every track has its own undo stack;
@@ -1996,6 +2008,188 @@ Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,
     return newEventsToTheRight;
 }
 
+//===----------------------------------------------------------------------===//
+// Tempo helpers
+//===----------------------------------------------------------------------===//
+
+bool SequencerOperations::setOneTempoForTrack(WeakReference<MidiTrack> track,
+    float startBeat, float endBeat, int bpmValue, bool shouldCheckpoint)
+{
+    bool didCheckpoint = !shouldCheckpoint;
+
+    if (!dynamic_cast<AutomationTrackNode *>(track.get()) || !track->isTempoTrack())
+    {
+        jassertfalse;
+        return false;
+    }
+
+    // first, make sure we have exactly 2 events in the sequence
+    auto *sequence = static_cast<AutomationSequence *>(track->getSequence());
+
+    if (sequence->size() > 2)
+    {
+        if (!didCheckpoint)
+        {
+            sequence->checkpoint();
+            didCheckpoint = true;
+        }
+
+        Array<AutomationEvent> redundantEvents;
+        for (int i = 1; i < sequence->size() - 1; ++i)
+        {
+            auto *event = static_cast<AutomationEvent *>(sequence->getUnchecked(i));
+            redundantEvents.add(*event);
+        }
+        sequence->removeGroup(redundantEvents, true);
+    }
+
+    while (sequence->size() < 2)
+    {
+        if (!didCheckpoint)
+        {
+            sequence->checkpoint();
+            didCheckpoint = true;
+        }
+
+        sequence->insert(AutomationEvent(sequence, startBeat, 0.5f), true);
+    }
+
+    // update events if needed
+    auto *event1 = static_cast<AutomationEvent *>(sequence->getUnchecked(0));
+    auto *event2 = static_cast<AutomationEvent *>(sequence->getUnchecked(1));
+
+    if (event1->getControllerValueAsBPM() != bpmValue || event1->getBeat() != startBeat)
+    {
+        if (!didCheckpoint)
+        {
+            sequence->checkpoint();
+            didCheckpoint = true;
+        }
+
+        sequence->change(*event1, event1->withBeat(startBeat).withTempoBpm(bpmValue), true);
+    }
+
+    if (event2->getControllerValueAsBPM() != bpmValue || event2->getBeat() != endBeat)
+    {
+        if (!didCheckpoint)
+        {
+            sequence->checkpoint();
+            didCheckpoint = true;
+        }
+
+        sequence->change(*event2, event2->withBeat(endBeat).withTempoBpm(bpmValue), true);
+    }
+
+
+    return didCheckpoint;
+}
+
+bool SequencerOperations::setOneTempoForProject(ProjectNode &project,
+    int bpmValue, bool shouldCheckpoint)
+{
+    bool didCheckpoint = !shouldCheckpoint;
+
+    // make sure there's only one tempo track with exactly one clip:
+
+    const auto automations = project.findChildrenOfType<AutomationTrackNode>();
+
+    AutomationTrackNode *tempoTrackOne = nullptr;
+    Array<AutomationTrackNode *> tracksToDelete;
+    for (auto *track : automations)
+    {
+        if (track->isTempoTrack())
+        {
+            if (tempoTrackOne == nullptr)
+            {
+                tempoTrackOne = track;
+            }
+            else
+            {
+                tracksToDelete.add(track);
+            }
+        }
+    }
+
+    auto *undoStack = project.getUndoStack();
+
+    if (!tracksToDelete.isEmpty())
+    {
+        if (!didCheckpoint)
+        {
+            undoStack->beginNewTransaction();
+            didCheckpoint = true;
+        }
+
+        for (const auto *trackToDelete : tracksToDelete)
+        {
+            undoStack->perform(new AutomationTrackRemoveAction(project,
+                &project, trackToDelete->getTrackId()));
+        }
+    }
+
+    // no tempo tracks found, create one
+    if (tempoTrackOne == nullptr)
+    {
+        if (!didCheckpoint)
+        {
+            undoStack->beginNewTransaction();
+            didCheckpoint = true;
+        }
+
+        String outTrackId;
+        String instrumentId; // the instrument id doesn't matter for the tempo track, it'll be empty
+        const auto preset =
+            SequencerOperations::createAutoTrackTempate(project,
+                TRANS(I18n::Defaults::tempoTrackName),
+                MidiTrack::tempoController, instrumentId, outTrackId);
+
+        undoStack->perform(new AutomationTrackInsertAction(project,
+            &project, preset, TRANS(I18n::Defaults::tempoTrackName)));
+
+        tempoTrackOne = project.findTrackById<AutomationTrackNode>(outTrackId);
+        jassert(tempoTrackOne != nullptr);
+    }
+    else if (tempoTrackOne->getPattern()->size() > 1)
+    {
+        if (!didCheckpoint)
+        {
+            undoStack->beginNewTransaction();
+            didCheckpoint = true;
+        }
+
+        Array<Clip> redundantClips;
+        for (int i = 1; i < tempoTrackOne->getPattern()->size(); ++i)
+        {
+            redundantClips.add(*tempoTrackOne->getPattern()->getUnchecked(i));
+        }
+
+        tempoTrackOne->getPattern()->removeGroup(redundantClips, true);
+    }
+
+    jassert(tempoTrackOne->getPattern()->size() == 1);
+
+    // place the clip correctly, if needed
+    if (tempoTrackOne->getPattern()->getFirstBeat() != 0.f)
+    {
+        if (!didCheckpoint)
+        {
+            undoStack->beginNewTransaction();
+            didCheckpoint = true;
+        }
+
+        auto *clip = tempoTrackOne->getPattern()->getUnchecked(0);
+        tempoTrackOne->getPattern()->change(*clip, clip->withBeat(0.f), true);
+    }
+
+    // finally:
+    const auto range = project.getProjectRangeInBeats();
+    return setOneTempoForTrack(tempoTrackOne, range.x, range.y, bpmValue, !didCheckpoint);
+}
+
+//===----------------------------------------------------------------------===//
+// Templates
+//===----------------------------------------------------------------------===//
+
 UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0) { return {}; }
@@ -2142,6 +2336,63 @@ String SequencerOperations::generateNextNameForNewTrack(const String &name, cons
 
     return newName;
 }
+
+SerializedData SequencerOperations::createPianoTrackTempate(ProjectNode &project,
+    const String &name, const String &instrumentId, String &outTrackId)
+{
+    auto newNode = make<PianoTrackNode>(name);
+
+    // We need to have at least one clip on a pattern:
+    const Clip clip(newNode->getPattern());
+    newNode->getPattern()->insert(clip, false);
+
+    Random r;
+    const auto colours = ColourIDs::getColoursList();
+    newNode->setTrackColour(colours[r.nextInt(colours.size())], dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false);
+
+    // insert a single note just so there is a visual anchor in the piano roll:
+    const float firstBeat = project.getProjectRangeInBeats().getX();
+    const int middleC = project.getProjectInfo()->getTemperament()->getMiddleC();
+    auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
+    pianoSequence->insert(Note(pianoSequence, middleC, firstBeat,
+        float(Globals::beatsPerBar), 0.5f), false);
+
+    outTrackId = newNode->getTrackId();
+    return newNode->serialize();
+}
+
+SerializedData SequencerOperations::createAutoTrackTempate(ProjectNode &project,
+    const String &name, int controllerNumber, const String &instrumentId, String &outTrackId)
+{
+    auto newNode = make<AutomationTrackNode>(name);
+
+    // We need to have at least one clip on a pattern:
+    const Clip clip(newNode->getPattern());
+    newNode->getPattern()->insert(clip, false);
+
+    auto *autoSequence = static_cast<AutomationSequence *>(newNode->getSequence());
+
+    newNode->setTrackControllerNumber(controllerNumber, false);
+    newNode->setTrackInstrumentId(instrumentId, false);
+    newNode->setTrackColour(Colours::royalblue, false);
+
+    // init with a couple of events
+    const float cv1 = newNode->isOnOffAutomationTrack() ? 1.f : 0.5f;
+    const float cv2 = newNode->isOnOffAutomationTrack() ? 0.f : 0.5f;
+
+    const auto beatRange = project.getProjectRangeInBeats();
+    const float firstBeat = beatRange.getX();
+    const float lastBeat = beatRange.getY();
+
+    autoSequence->insert(AutomationEvent(autoSequence, firstBeat, cv1), false);
+    // second event is placed at the end of the track for convenience:
+    autoSequence->insert(AutomationEvent(autoSequence, lastBeat, cv2), false);
+
+    outTrackId = newNode->getTrackId();
+    return newNode->serialize();
+}
+
 
 //===----------------------------------------------------------------------===//
 // Tests
