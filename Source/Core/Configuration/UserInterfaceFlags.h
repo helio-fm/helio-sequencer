@@ -67,6 +67,8 @@ public:
     void setVelocityMapVisible(bool visible);
     void toggleVelocityMapVisibility();
 
+    bool areExperimentalFeaturesEnabled() const noexcept;
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -103,6 +105,8 @@ private:
     bool useNativeTitleBar = false;
     bool useOpenGLRenderer = false;
 #endif
+
+    bool experimentalFeaturesOn = false;
 
 private:
 

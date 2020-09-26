@@ -120,6 +120,11 @@ void UserInterfaceFlags::toggleVelocityMapVisibility()
     this->setVelocityMapVisible(!this->velocityMapVisible);
 }
 
+bool UserInterfaceFlags::areExperimentalFeaturesEnabled() const noexcept
+{
+    return this->experimentalFeaturesOn;
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -134,6 +139,7 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
+    // skips experimentalFeaturesOn, it's read only
 
     return tree;
 }
@@ -155,6 +161,8 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->velocityMapVisible = false; // not serializing that
+
+    this->experimentalFeaturesOn = root.getProperty(UI::Flags::experimentalFeaturesOn, this->experimentalFeaturesOn);
 }
 
 void UserInterfaceFlags::reset() {}

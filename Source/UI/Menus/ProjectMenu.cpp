@@ -374,21 +374,21 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
                 this->showSetInstrumentMenu();
             }));
     }
-    
-    //const auto currentPeriodSize = this->project.getProjectInfo()->getTemperament()->getPeriodSize();
-    //const auto canRemap = currentPeriodSize == Globals::twelveTonePeriodSize; // and experimental features flag is enabled?
-    //if (canRemap)
-    menu.add(MenuItem::item(Icons::refactor,
-        TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
-    {
-        this->showTemperamentsMenu(false);
-    }));
 
-    menu.add(MenuItem::item(Icons::refactor,
-        TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
+    if (App::Config().getUiFlags()->areExperimentalFeaturesEnabled())
     {
-        this->showTemperamentsMenu(true);
-    }));
+        menu.add(MenuItem::item(Icons::refactor,
+            TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
+        {
+            this->showTemperamentsMenu(false);
+        }));
+
+        menu.add(MenuItem::item(Icons::refactor,
+            TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
+        {
+            this->showTemperamentsMenu(true);
+        }));
+    }
 
     this->updateContent(menu, animationType);
 }
