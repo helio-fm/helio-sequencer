@@ -168,7 +168,7 @@ TempoDialog::TempoDialog(int bpmValue)
     this->tapTempo->onTempoChanged = [this](int newTempoBpm)
     {
         // todo clamp value (15 .. 240)?
-        this->textEditor->setText(String(newTempoBpm), dontSendNotification);
+        this->textEditor->setText(String(newTempoBpm), sendNotification);
     };
 
     this->textEditor = make<TextEditor>();
@@ -259,9 +259,19 @@ void TempoDialog::inputAttemptWhenModal()
 void TempoDialog::updateOkButtonState()
 {
     const bool textIsEmpty = this->textEditor->getText().isEmpty();
+    const auto newTempoBpm = this->textEditor->getText().getIntValue();
     this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
-    this->okButton->setEnabled(!textIsEmpty);
-    // todo check range?
+    this->okButton->setEnabled(!textIsEmpty && newTempoBpm != 0);
+
+    if (!textIsEmpty && (newTempoBpm > 300 || newTempoBpm <= 0))
+    {
+        static const auto fletcherMsg = "Not quite my tempo!"; // intentionally untranslated
+        this->messageLabel->setText(fletcherMsg, dontSendNotification);
+    }
+    else
+    {
+        this->messageLabel->setText(TRANS(I18n::Dialog::setTempoCaption), dontSendNotification);
+    }
 }
 
 void TempoDialog::onTextFocusLost()
