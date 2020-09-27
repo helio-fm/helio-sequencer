@@ -63,7 +63,6 @@ public:
     
     void xyMoveByUser();
     void xMoveByUser();
-    void resizeByUser();
     void toggleStretchingMapAlaSublime();
     
     //===------------------------------------------------------------------===//

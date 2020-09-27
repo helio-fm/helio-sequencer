@@ -109,6 +109,16 @@ struct SequencerOperations final
     static Array<Note> cutEvents(const Array<Note> &notes,
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);
 
+    static bool setOneTempoForProject(ProjectNode &project, int bpmValue, bool shouldCheckpoint = true);
+    static bool setOneTempoForTrack(WeakReference<MidiTrack> track,
+        float startBeat, float endBeat, int bpmValue, bool shouldCheckpoint = true);
+
+
+    static SerializedData createPianoTrackTempate(ProjectNode &project,
+        const String &name, const String &instrumentId, String &outTrackId);
+    static SerializedData createAutoTrackTempate(ProjectNode &project,
+        const String &name, int controllerNumber, const String &instrumentId, String &outTrackId);
+
     // Creates new tracks from events of existing tracks
     static UniquePointer<MidiTrackNode> createPianoTrack(const Lasso &selection);
     static UniquePointer<MidiTrackNode> createPianoTrack(const PianoSequence *source, const Clip &clip);

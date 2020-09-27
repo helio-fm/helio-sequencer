@@ -22,6 +22,7 @@
 #include "ColourIDs.h"
 #include "MainLayout.h"
 #include "Workspace.h"
+#include "HelioTheme.h"
 #include "App.h"
 
 class ContextMenuComponent final : public Component
@@ -84,18 +85,10 @@ public:
         g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).brighter(0.035f));
         g.fillRect(1, 1, this->getWidth() - 2, this->getHeight() - 2);
 
+        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.5f, 1.f);
+
         g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
         g.fillRect(1, 1, this->getWidth() - 2, 3);
-        g.drawHorizontalLine(1, 1.f, float(this->getWidth() - 2));
-        g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-        g.drawVerticalLine(1, 1.f, float(this->getHeight() - 2));
-        g.drawVerticalLine(this->getWidth() - 2, 1.f, float(this->getHeight() - 2));
-
-        g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-        g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
-        g.drawVerticalLine(0, 0.f, float(this->getHeight()));
-        g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
 
         g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).darker(0.015f));
         constexpr float dashLength = 8.f;

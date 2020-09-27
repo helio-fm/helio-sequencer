@@ -190,7 +190,8 @@ void PianoRoll::setRowHeight(int newRowHeight)
 
 void PianoRoll::updateSize()
 {
-    this->setSize(this->getWidth(), HybridRoll::headerHeight + this->getNumKeys() * this->rowHeight);
+    this->setSize(this->getWidth(),
+        Globals::UI::rollHeaderHeight + this->getNumKeys() * this->rowHeight);
 }
 
 //===----------------------------------------------------------------------===//
@@ -305,18 +306,6 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
     HybridRoll::zoomRelative(origin, factor);
 }
 
-void PianoRoll::zoomAbsolute(const Point<float> &zoom)
-{
-    const float newHeight = (this->getNumKeys() * PianoRoll::maxRowHeight) * zoom.getY();
-    const float rowsOnNewScreen = float(newHeight / PianoRoll::maxRowHeight);
-    const float viewHeight = float(this->viewport.getViewHeight());
-    const float newRowHeight = floorf(viewHeight / rowsOnNewScreen + .5f);
-
-    this->setRowHeight(int(newRowHeight));
-
-    HybridRoll::zoomAbsolute(zoom);
-}
-
 float PianoRoll::getZoomFactorY() const noexcept
 {
     return float(this->viewport.getViewHeight()) / float(this->getHeight());
@@ -333,7 +322,8 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     this->setRowHeight(int(heightToFit / numKeysToFit));
 
     const int maxKeyY = this->getRowHeight() * (this->getNumKeys() - maxKey - margin);
-    this->viewport.setViewPosition(this->viewport.getViewPositionY() - HybridRoll::headerHeight, maxKeyY);
+    this->viewport.setViewPosition(this->viewport.getViewPositionY() -
+        Globals::UI::rollHeaderHeight, maxKeyY);
 
     HybridRoll::zoomToArea(minBeat, maxBeat);
 }
@@ -1039,7 +1029,7 @@ void PianoRoll::handleCommandMessage(int commandId)
 
             this->addTrackInteractively(trackPreset.get(),
                 UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
-                TRANS(I18n::Menu::Selection::notesToTrack), TRANS(I18n::Dialog::addTrackProceed));
+                TRANS(I18n::Menu::Selection::notesToTrack), TRANS(I18n::Dialog::add));
         }
         break;
     case CommandIDs::DuplicateTrack:
@@ -1049,7 +1039,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
         this->addTrackInteractively(trackPreset.get(),
             UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
-            TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::addTrackProceed));
+            TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
     }
     break;
     case CommandIDs::BeatShiftLeft:
@@ -1293,7 +1283,7 @@ void PianoRoll::paint(Graphics &g)
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = paintStartX + this->viewport.getViewWidth();
 
-    static constexpr auto paintOffsetY = HybridRoll::headerHeight;
+    static constexpr auto paintOffsetY = Globals::UI::rollHeaderHeight;
 
     int prevBeatX = paintStartX;
     const HighlightingScheme *prevScheme = nullptr;

@@ -60,7 +60,6 @@ public:
     {
         g.setColour(this->fillColour);
         g.fillRect(this->getLocalBounds());
-        //HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), g, 1.5f);
     }
 
     void visibilityChanged() override

@@ -21,36 +21,50 @@ class FineTuningComponentDragger final
 {
 public:
 
-    enum Mode
+    enum class Mode : int8
     {
-        DragOnlyX,
-        DragOnlyY,
         AutoSelect,
+        DragOnlyX,
+        DragOnlyY
     };
 
     FineTuningComponentDragger() = default;
 
     void startDraggingComponent(Component *const component, const MouseEvent &e,
         float currentValue, float lowerBound = 0.f, float upperBound = 1.f,
-        float interval = 0.01f, Mode dragMode = AutoSelect);
+        float interval = 0.01f, Mode dragMode = Mode::AutoSelect);
     void dragComponent(Component *const component, const MouseEvent &e);
     void endDraggingComponent(Component *const component, const MouseEvent &e);
 
-    float getValue() const noexcept
+    inline Mode getMode() const noexcept
+    {
+        return this->dragMode;
+    }
+
+    inline float getValue() const noexcept
     {
         return float(this->valueWhenLastDragged);
     }
 
+    inline bool hadChanges() const noexcept
+    {
+        return this->mousePositionChanged;
+    }
+
 private:
 
-    Mode dragMode = AutoSelect;
+    Mode dragMode = Mode::AutoSelect;
 
-    double valueOnMouseDown = 0.0;
+    bool mousePositionChanged = false;
     double valueWhenLastDragged = 0.0;
 
     NormalisableRange<double> range;
     Point<int> mouseDownWithinTarget;
     Point<float> mousePosWhenLastDragged;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FineTuningComponentDragger)
+    static constexpr auto dragSpeedThreshold = 1.0;
+    static constexpr auto dragSpeedSensivity = 0.2;
+    static constexpr auto dragMaxSpeed = 200.0;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FineTuningComponentDragger)
 };

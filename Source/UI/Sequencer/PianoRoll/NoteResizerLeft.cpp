@@ -224,7 +224,7 @@ void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
                                   SequencerOperations::findStartBeat(selection);
 
     const int xAnchor = this->roll.getXPositionByBeat(groupStartBeat);
-    const int yAnchor = this->roll.getViewport().getViewPositionY() + HybridRoll::headerHeight;
+    const int yAnchor = this->roll.getViewport().getViewPositionY() + Globals::UI::rollHeaderHeight;
     const int h = this->roll.getViewport().getViewHeight();
     this->setBounds(xAnchor - this->getWidth(), yAnchor, this->getWidth(), h);
 
@@ -236,7 +236,7 @@ void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
 
 void NoteResizerLeft::updateTopPosition()
 {
-    const int yAnchor = this->roll.getViewport().getViewPositionY() + HybridRoll::headerHeight;
+    const int yAnchor = this->roll.getViewport().getViewPositionY() + Globals::UI::rollHeaderHeight;
     this->setTopLeftPosition(this->getX(), yAnchor);
 }
 

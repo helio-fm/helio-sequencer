@@ -22,20 +22,18 @@
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
 
-AutomationEvent::AutomationEvent() noexcept : MidiEvent(nullptr, Type::Auto, 0.f)
-{
-    //jassertfalse;
-}
+AutomationEvent::AutomationEvent() noexcept :
+    MidiEvent(nullptr, Type::Auto, 0.f) {}
 
 AutomationEvent::AutomationEvent(const AutomationEvent &other) noexcept :
     MidiEvent(other),
     controllerValue(other.controllerValue),
     curvature(other.curvature) {}
 
-AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) noexcept :
+AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
+    float beatVal, float cValue) noexcept :
     MidiEvent(owner, Type::Auto, beatVal),
-    controllerValue(cValue),
-    curvature(Globals::Defaults::automationControllerCurve) {}
+    controllerValue(cValue) {}
 
 AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
     const AutomationEvent &parametersToCopy) noexcept :
@@ -109,7 +107,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
     if (!isPedalOrSwitchEvent && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
     {
         const auto *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
-        float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
+        float interpolatedBeat = this->beat + AutomationEvent::curveInterpolationStepBeat;
         float lastAppliedValue = this->controllerValue;
 
         while (interpolatedBeat < nextEvent->beat)
@@ -121,7 +119,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                     nextEvent->controllerValue, factor, this->curvature);
 
             const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
-            if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
+            if (controllerDelta > AutomationEvent::curveInterpolationThreshold)
             {
                 const double interpolatedTs = (interpolatedBeat + clip.getBeat()) * timeFactor;
                 if (isTempoTrack)
@@ -141,7 +139,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                 lastAppliedValue = interpolatedValue;
             }
 
-            interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
+            interpolatedBeat += AutomationEvent::curveInterpolationStepBeat;
         }
     }
 }
@@ -172,6 +170,13 @@ AutomationEvent AutomationEvent::withDeltaBeat(float deltaBeat) const noexcept
     return ae;
 }
 
+AutomationEvent AutomationEvent::withControllerValue(float cv) const noexcept
+{
+    AutomationEvent ae(*this);
+    ae.controllerValue = jlimit(0.f, 1.f, cv);
+    return ae;
+}
+
 AutomationEvent AutomationEvent::withInvertedControllerValue() const noexcept
 {
     AutomationEvent ae(*this);
@@ -190,7 +195,7 @@ AutomationEvent AutomationEvent::withParameters(float newBeat, float newControll
 AutomationEvent AutomationEvent::withCurvature(float newCurvature) const noexcept
 {
     AutomationEvent ae(*this);
-    ae.curvature = jmin(1.f, jmax(0.f, newCurvature));
+    ae.curvature = jlimit(0.f, 1.f, newCurvature);
     return ae;
 }
 
@@ -198,6 +203,14 @@ AutomationEvent AutomationEvent::withParameters(const SerializedData &parameters
 {
     AutomationEvent ae(*this);
     ae.deserialize(parameters);
+    return ae;
+}
+
+AutomationEvent AutomationEvent::withTempoBpm(int bpm) const noexcept
+{
+    AutomationEvent ae(*this);
+    const auto secondsPerQuarterNote = 60.0 / double(jmax(1, bpm));
+    ae.controllerValue = Transport::getControllerValueByTempo(secondsPerQuarterNote);
     return ae;
 }
 

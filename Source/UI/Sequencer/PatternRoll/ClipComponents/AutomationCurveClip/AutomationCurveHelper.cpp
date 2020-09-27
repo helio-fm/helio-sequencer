@@ -42,7 +42,7 @@ void AutomationCurveHelper::paint(Graphics &g)
 
     if (this->draggingState)
     {
-        g.fillEllipse (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0));
+        g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
 }
 
@@ -69,7 +69,9 @@ void AutomationCurveHelper::mouseDown(const MouseEvent &e)
     {
         this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e, this->getCurvature(),
-            0.f, 1.f, CURVE_INTERPOLATION_THRESHOLD, FineTuningComponentDragger::DragOnlyY);
+            0.f, 1.f, AutomationEvent::curveInterpolationThreshold,
+            FineTuningComponentDragger::Mode::DragOnlyY);
+
         this->anchor = this->getBounds().getCentre();
         this->curveAnchor = this->getCurvature();
         this->draggingState = true;
@@ -94,7 +96,7 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
             {
                 if (this->tuningIndicator == nullptr)
                 {
-                    this->tuningIndicator.reset(new FineTuningValueIndicator(this->event.getCurvature(), ""));
+                    this->tuningIndicator = make<FineTuningValueIndicator>(this->event.getCurvature(), "");
                     this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator.get());
                     this->fader.fadeIn(this->tuningIndicator.get(), 200);
                 }
@@ -130,7 +132,6 @@ void AutomationCurveHelper::mouseUp(const MouseEvent &e)
     {
         if (this->draggingState)
         {
-            //this->constrainPosition();
             this->draggingState = false;
         }
 

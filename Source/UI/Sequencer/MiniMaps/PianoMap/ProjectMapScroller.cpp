@@ -118,7 +118,7 @@ void ProjectMapScroller::xyMoveByUser()
     const float propY = screenRangeBounds.getTopLeft().getY() / mh;
 
     // fixes for header height delta
-    const float hh = float(HybridRoll::headerHeight);
+    const float hh = float(Globals::UI::rollHeaderHeight);
     const float rollHeight = float(this->roll->getHeight());
     const float propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
     this->roll->panProportionally(propX, propY2);
@@ -146,33 +146,6 @@ void ProjectMapScroller::xMoveByUser()
         float(this->roll->getHeight() - this->roll->getViewport().getViewHeight());
 
     this->roll->panProportionally(propX, propY);
-
-    const auto p = this->getIndicatorBounds();
-    const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
-    this->screenRange->setRealBounds(p);
-
-    for (int i = 0; i < this->trackMaps.size(); ++i)
-    {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
-    }
-}
-
-void ProjectMapScroller::resizeByUser()
-{
-    jassert(this->roll != nullptr);
-
-    const float w = float(this->screenRange->getWidth());
-    const float h = float(this->screenRange->getHeight());
-
-    const float mw = float(this->getWidth());
-    const float propX = (w / mw);
-
-    const float mh = float(this->getHeight());
-    const float propY = (h / mh);
-
-    const Point<float> proportional(propX, propY);
-    this->roll->zoomAbsolute(proportional);
 
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
@@ -374,7 +347,7 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
 
     const float zoomFactorY = this->roll->getZoomFactorY();
-    const float rollHeaderHeight = float(HybridRoll::headerHeight);
+    const float rollHeaderHeight = float(Globals::UI::rollHeaderHeight);
     const float rollHeight = float(this->roll->getHeight() - rollHeaderHeight);
     const float viewY = float(this->roll->getViewport().getViewPositionY() + rollHeaderHeight);
     const float trackHeight = float(this->getHeight());

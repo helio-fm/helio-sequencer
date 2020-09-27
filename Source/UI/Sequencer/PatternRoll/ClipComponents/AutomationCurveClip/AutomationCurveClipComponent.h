@@ -77,9 +77,15 @@ protected:
     Rectangle<int> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
 
     void getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const;
-    float getEventDiameter() const;
-    float getHelperDiameter() const;
     int getAvailableHeight() const;
+
+#if HELIO_DESKTOP
+    static constexpr auto eventComponentDiameter = 16.f;
+    static constexpr auto helperComponentDiameter = 8.f;
+#elif HELIO_MOBILE
+    static constexpr auto eventComponentDiameter = 24.f;
+    static constexpr auto helperComponentDiameter = 20.f;
+#endif
 
     AutomationCurveEventComponent *getPreviousEventComponent(int indexOfSorted) const;
     AutomationCurveEventComponent *getNextEventComponent(int indexOfSorted) const;

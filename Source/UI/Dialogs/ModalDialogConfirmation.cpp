@@ -144,7 +144,7 @@ UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteP
 {
     return make<ModalDialogConfirmation>(
         TRANS(I18n::Dialog::deleteProjectCaption),
-        TRANS(I18n::Dialog::deleteProjectProceed),
+        TRANS(I18n::Dialog::delete_),
         TRANS(I18n::Dialog::cancel));
 }
 

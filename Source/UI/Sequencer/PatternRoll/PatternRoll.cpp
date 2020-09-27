@@ -266,7 +266,8 @@ void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor curso
 void PatternRoll::updateRollSize()
 {
     const int addTrackHelper = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
-    const int h = HybridRoll::headerHeight + this->getNumRows() * rowHeight() + addTrackHelper;
+    const int h = Globals::UI::rollHeaderHeight +
+        this->getNumRows() * rowHeight() + addTrackHelper;
     this->setSize(this->getWidth(), jmax(h, this->viewport.getHeight()));
 }
 
@@ -337,7 +338,7 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const float y = float(trackIndex * rowHeight());
 
     return Rectangle<float>(x,
-        HybridRoll::headerHeight + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
+        Globals::UI::rollHeaderHeight + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
         w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
 }
 
@@ -688,7 +689,7 @@ void PatternRoll::handleCommandMessage(int commandId)
 
                 this->addTrackInteractively(trackPreset.get(),
                     UndoActionIDs::AddNewTrack, false, clonedTrack->getTrackName(),
-                    TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::addTrackProceed));
+                    TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
             }
             // TODO cloning automations here
         }
@@ -832,7 +833,7 @@ void PatternRoll::resized()
 
 void PatternRoll::paint(Graphics &g)
 {
-    g.setTiledImageFill(this->rowPattern, 0, HybridRoll::headerHeight, 1.f);
+    g.setTiledImageFill(this->rowPattern, 0, Globals::UI::rollHeaderHeight, 1.f);
     g.fillRect(this->viewport.getViewArea());
     HybridRoll::paint(g);
 }
@@ -905,7 +906,7 @@ float PatternRoll::findPreviousAnchorBeat(float beat) const
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
     const int rowNumber = jlimit(0, this->getNumRows() - 1,
-        (e.y - HybridRoll::headerHeight) / rowHeight());
+        (e.y - Globals::UI::rollHeaderHeight) / rowHeight());
     const auto &rowKey = this->rows.getReference(rowNumber);
 
     float nearestClipdistance = FLT_MAX;

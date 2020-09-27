@@ -35,7 +35,7 @@ public:
 
     static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
-    static void drawNoiseWithin(Rectangle<float> bounds, Graphics &g, float alphaMultiply = 1.f);
+    static void drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply = 1.f);
     static void drawDashedRectangle(Graphics &g,
         const Rectangle<float> &rectangle, const Colour &colour,
         float dashLength = 5.f, float spaceLength = 7.5,
@@ -43,6 +43,9 @@ public:
     void drawStretchableLayoutResizerBar(Graphics &g,
             int /*w*/, int /*h*/, bool /*isVerticalBar*/,
             bool isMouseOver, bool isMouseDragging) override;
+
+    static void drawFrame(Graphics &g, int width, int height,
+        float lightAlphaMultiplier = 1.f, float darkAlphaMultiplier = 1.f);
 
     //===------------------------------------------------------------------===//
     // Text Editor
@@ -87,7 +90,8 @@ public:
     bool areScrollbarButtonsVisible() override { return false; }
     void drawScrollbarButton(Graphics &g, ScrollBar &bar,
         int width, int height, int buttonDirection,
-        bool isScrollbarVertical, bool isMouseOverButton, bool isButtonDown) override {}
+        bool isScrollbarVertical, bool isMouseOverButton,
+        bool isButtonDown) override {}
     void drawScrollbar(Graphics &g, ScrollBar &bar,
         int x, int y, int width, int height,
         bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
@@ -108,12 +112,14 @@ public:
     void drawCornerResizer(Graphics& g, int w, int h,
         bool /*isMouseOver*/, bool /*isMouseDragging*/) override;
 
-    void drawResizableFrame(Graphics &g, int w, int h, const BorderSize<int> &border) override;
+    void drawResizableFrame(Graphics &g, int w, int h,
+        const BorderSize<int> &border) override;
+
     void drawDocumentWindowTitleBar(DocumentWindow &window,
-                                            Graphics &g, int w, int h,
-                                            int titleSpaceX, int titleSpaceW,
-                                            const Image *icon,
-                                            bool drawTitleTextOnLeft) override;
+        Graphics &g, int w, int h,
+        int titleSpaceX, int titleSpaceW,
+        const Image *icon,
+        bool drawTitleTextOnLeft) override;
 
     Button *createDocumentWindowButton(int buttonType) override;
     void positionDocumentWindowButtons(DocumentWindow &window,

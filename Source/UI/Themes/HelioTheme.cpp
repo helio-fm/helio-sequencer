@@ -71,7 +71,7 @@ void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMult
     g.fillRect(0, 0, g.getClipBounds().getWidth(), g.getClipBounds().getHeight());
 }
 
-void HelioTheme::drawNoiseWithin(Rectangle<float> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
+void HelioTheme::drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
     g.setTiledImageFill(getCurrentTheme().backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
     g.fillRect(bounds);
@@ -96,6 +96,28 @@ void HelioTheme::drawDashedRectangle(Graphics &g, const Rectangle<float> &r, con
     
     g.strokePath(path, PathStrokeType(dashThickness));
 }
+
+void HelioTheme::drawFrame(Graphics &g, int width, int height,
+    float lightAlphaMultiplier, float darkAlphaMultiplier)
+{
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark).
+        withMultipliedAlpha(darkAlphaMultiplier));
+
+    g.fillRect(1, 0, width - 2, 2);
+    g.fillRect(1, height - 2, width - 2, 2);
+    g.fillRect(0, 1, 2, height - 2);
+    g.fillRect(width - 2, 1, 2, height - 2);
+
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).
+        withMultipliedAlpha(lightAlphaMultiplier));
+
+    g.fillRect(2, 1, width - 4, 1);
+    g.fillRect(2, height - 2, width - 4, 1);
+    g.fillRect(1, 2, 1, height - 4);
+    g.fillRect(width - 2, 2, 1, height - 4);
+}
+
+
 
 Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
 {

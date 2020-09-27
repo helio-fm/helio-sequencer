@@ -17,18 +17,21 @@
 
 #include "Common.h"
 #include "AutomationCurveEventComponent.h"
+
 #include "AutomationCurveClipComponent.h"
 #include "AutomationCurveHelper.h"
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationSequence.h"
 #include "MidiTrack.h"
 
+#include "App.h"
+#include "TempoDialog.h"
+
 AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClipComponent &parent,
     const AutomationEvent &event) :
     event(event),
     anchor(event),
     editor(parent),
-    draggingState(false),
     controllerNumber(event.getTrackControllerNumber())
 {
     this->setFocusContainer(false);
@@ -48,14 +51,45 @@ bool AutomationCurveEventComponent::isTempoCurve() const noexcept
 
 void AutomationCurveEventComponent::paint(Graphics &g)
 {
-    g.fillEllipse (0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
+    static constexpr auto circleMargin = 2.f;
     const auto centre = this->getLocalBounds().getCentre();
-    g.fillEllipse(centre.getX() - 2.f, centre.getY() - 2.f, 4.f, 4.f);
 
     if (this->draggingState)
     {
-        g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
+        // indicate dragging direction:
+        if (this->dragger.getMode() == FineTuningComponentDragger::Mode::DragOnlyX)
+        {
+            // top/down dots
+            g.fillRect(0.f, centre.y - 1.f, 1.f, 2.f);
+            g.fillRect(float(this->getWidth() - 1), centre.y - 1.f, 1.f, 2.f);
+        }
+        else if (this->dragger.getMode() == FineTuningComponentDragger::Mode::DragOnlyY)
+        {
+            // left/right dots
+            g.fillRect(centre.x - 1.f, 0.f, 2.f, 1.f);
+            g.fillRect(centre.x - 1.f, float(this->getHeight() - 1), 2.f, 1.f);
+        }
+        else
+        {
+            g.fillEllipse(circleMargin, circleMargin,
+                float(this->getWidth()) - circleMargin * 2.f,
+                float(this->getHeight()) - circleMargin * 2.f);
+        }
     }
+    else if (this->hoveredState)
+    {
+        // top/down dots
+        g.fillRect(0.f, centre.y - 1.f, 1.f, 2.f);
+        g.fillRect(float(this->getWidth() - 1), centre.y - 1.f, 1.f, 2.f);
+        // left/right dots
+        g.fillRect(centre.x - 1.f, 0.f, 2.f, 1.f);
+        g.fillRect(centre.x - 1.f, float(this->getHeight() - 1), 2.f, 1.f);
+    }
+
+    g.fillEllipse(centre.x - 2.f, centre.y - 2.f, 4.f, 4.f);
+    g.fillEllipse(circleMargin, circleMargin,
+        float(this->getWidth()) - circleMargin * 2.f,
+        float(this->getHeight()) - circleMargin * 2.f);
 }
 
 bool AutomationCurveEventComponent::hitTest(int x, int y)
@@ -70,16 +104,29 @@ bool AutomationCurveEventComponent::hitTest(int x, int y)
     return (dx * dx) + (dy * dy) < (r * r);
 }
 
+void AutomationCurveEventComponent::mouseEnter(const MouseEvent &e)
+{
+    this->hoveredState = true;
+    this->repaint();
+}
+
+void AutomationCurveEventComponent::mouseExit(const MouseEvent &e)
+{
+    this->hoveredState = false;
+    this->repaint();
+}
+
 void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
 
-       this->dragger.startDraggingComponent(this, e, this->event.getControllerValue(),
-            0.f, 1.f, CURVE_INTERPOLATION_THRESHOLD);
+        this->dragger.startDraggingComponent(this, e, this->event.getControllerValue(),
+            0.f, 1.f, AutomationEvent::curveInterpolationThreshold);
 
         this->startDragging();
+        this->repaint();
     }
 }
 
@@ -98,7 +145,7 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
             if (valueChanged && this->tuningIndicator == nullptr)
             {
                 const float cv = this->event.getControllerValue();
-                this->tuningIndicator.reset(new FineTuningValueIndicator(cv, this->isTempoCurve() ? " bpm" : ""));
+                this->tuningIndicator = make<FineTuningValueIndicator>(cv, this->isTempoCurve() ? " bpm" : "");
                 this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator.get());
                 this->fader.fadeIn(this->tuningIndicator.get(), 200);
             }
@@ -106,8 +153,8 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
             if (beatChanged || valueChanged)
             {
                 this->setMouseCursor(MouseCursor::DraggingHandCursor);
-                AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getSequence());
-                autoLayer->change(this->event, this->continueDragging(deltaBeat, deltaValue), true);
+                auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+                sequence->change(this->event, this->continueDragging(deltaBeat, deltaValue), true);
             }
             else
             {
@@ -127,6 +174,8 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
                 }
                 this->tuningIndicator->repositionToTargetAt(this, this->editor.getPosition());
             }
+
+            this->repaint();
         }
     }
 }
@@ -148,6 +197,21 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
             this->dragger.endDraggingComponent(this, e);
             this->endDragging();
+
+            if (!this->dragger.hadChanges() && this->isTempoCurve())
+            {
+                this->hoveredState = false;
+                this->repaint();
+
+                auto dialog = make<TempoDialog>(this->event.getControllerValueAsBPM());
+                dialog->onOk = [this](int newBpmValue)
+                {
+                    auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+                    sequence->change(this->event, this->event.withTempoBpm(newBpmValue), true);
+                };
+
+                App::showModalComponent(move(dialog));
+            }
         }
 
         this->repaint();
@@ -160,14 +224,14 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
 void AutomationCurveEventComponent::recreateConnector()
 {
-    this->connector.reset(new AutomationCurveEventsConnector(this, this->nextEventHolder));
+    this->connector = make<AutomationCurveEventsConnector>(this, this->nextEventHolder);
     this->editor.addAndMakeVisible(this->connector.get());
     this->updateConnector();
 }
 
 void AutomationCurveEventComponent::recreateHelper()
 {
-    this->helper.reset(new AutomationCurveHelper(this->event, this->editor, this, this->nextEventHolder));
+    this->helper = make<AutomationCurveHelper>(this->event, this->editor, this, this->nextEventHolder);
     this->editor.addAndMakeVisible(this->helper.get());
     this->updateHelper();
 }
@@ -181,7 +245,7 @@ void AutomationCurveEventComponent::updateHelper()
 {
     if (this->helper && this->nextEventHolder)
     {
-        const float d = this->editor.getHelperDiameter();
+        const float d = AutomationCurveClipComponent::helperComponentDiameter;
         const Point<int> linePos(this->connector->getPosition());
         const Point<float> lineCentre(this->connector->getCentrePoint());
         Rectangle<int> bounds(linePos.getX() + int(lineCentre.getX()) - int(d / 2),

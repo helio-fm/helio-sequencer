@@ -29,6 +29,7 @@ class HybridRollHeader final : public Component
 public:
 
     HybridRollHeader(Transport &transport, HybridRoll &roll, Viewport &viewport);
+    ~HybridRollHeader() override;
     
     void setSoundProbeMode(bool shouldProbeOnClick);
 
@@ -75,7 +76,7 @@ protected:
     void updateColours();
 
     UniquePointer<ClipRangeIndicator> clipRangeIndicator;
-    UniquePointer<SoundProbeIndicator> playingIndicator;
+    UniquePointer<SoundProbeIndicator> probeIndicator;
     UniquePointer<SoundProbeIndicator> pointingIndicator;
     UniquePointer<TimeDistanceIndicator> timeDistanceIndicator;
     UniquePointer<HeaderSelectionIndicator> selectionIndicator;

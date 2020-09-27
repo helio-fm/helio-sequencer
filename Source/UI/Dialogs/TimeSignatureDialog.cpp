@@ -107,14 +107,14 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         this->originalSequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureAddCaption), dontSendNotification);
-        this->okButton->setButtonText(TRANS(I18n::Dialog::timeSignatureAddProceed));
         this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::add));
     }
     else
     {
         this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureEditCaption), dontSendNotification);
-        this->okButton->setButtonText(TRANS(I18n::Dialog::timeSignatureEditApply));
-        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::timeSignatureEditDelete));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::delete_));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
     this->textEditor->addListener(this);

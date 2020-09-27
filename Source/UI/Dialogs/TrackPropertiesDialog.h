@@ -23,7 +23,6 @@
 #include "MidiTrack.h"
 
 class ProjectNode;
-class AnnotationsSequence;
 
 class TrackPropertiesDialog final : public DialogBase,
     public TextEditor::Listener,

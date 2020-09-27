@@ -407,12 +407,14 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
 
     this->scrollerShadow = make<ShadowUpwards>(ShadowType::Normal);
 
-    this->pianoRoll->setBeatWidth(float(HybridRoll::maxBeatWidth));
+    constexpr auto defaultBeatWidth = 48.f;
+
+    this->pianoRoll->setBeatWidth(defaultBeatWidth);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
     this->pianoRoll->addRollListener(this->mapScroller.get());
     this->pianoRoll->addRollListener(this->levelsScroller.get());
 
-    this->patternRoll->setBeatWidth(float(HybridRoll::maxBeatWidth));
+    this->patternRoll->setBeatWidth(defaultBeatWidth);
     this->patternViewport->setViewedComponent(this->patternRoll.get(), false);
     this->patternRoll->addRollListener(this->mapScroller.get());
     

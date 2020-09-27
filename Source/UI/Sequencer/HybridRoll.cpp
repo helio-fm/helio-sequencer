@@ -18,10 +18,6 @@
 #include "Common.h"
 #include "HybridRoll.h"
 #include "HybridRollHeader.h"
-#include "SoundProbeIndicator.h"
-#include "TimeDistanceIndicator.h"
-#include "HeaderSelectionIndicator.h"
-#include "ClipRangeIndicator.h"
 
 #include "HybridRollExpandMark.h"
 #include "MidiEvent.h"
@@ -63,6 +59,7 @@
 #include "TimeSignatureDialog.h"
 #include "KeySignatureDialog.h"
 #include "TrackPropertiesDialog.h"
+#include "TempoDialog.h"
 
 #include "MainLayout.h"
 #include "Workspace.h"
@@ -529,18 +526,6 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
     this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
 
     this->updateChildrenPositions();
-}
-
-void HybridRoll::zoomAbsolute(const Point<float> &zoom)
-{
-    this->stopFollowingPlayhead();
-
-    const float newWidth = this->getNumBeats() * HybridRoll::maxBeatWidth * zoom.getX();
-    const float beatsOnNewScreen = float(newWidth / HybridRoll::maxBeatWidth);
-    const float viewWidth = float(this->viewport.getViewWidth());
-    const float newBeatWidth = floorf(viewWidth / beatsOnNewScreen + .5f);
-
-    this->setBeatWidth(newBeatWidth);
 }
 
 void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
@@ -1300,6 +1285,17 @@ void HybridRoll::handleCommandMessage(int commandId)
                 sequence, targetBeat));
         }
         break;
+    case CommandIDs::ProjectSetOneTempo:
+    {
+        auto dialog = make<TempoDialog>(Globals::Defaults::tempoBpm);
+        dialog->onOk = [this](int newBpmValue)
+        {
+            SequencerOperations::setOneTempoForProject(this->getProject(), newBpmValue);
+        };
+
+        App::showModalComponent(move(dialog));
+        break;
+    }
     default:
         break;
     }
@@ -1728,26 +1724,26 @@ void HybridRoll::updateChildrenBounds()
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();
 
-    this->header->setBounds(0, viewY, this->getWidth(), HybridRoll::headerHeight);
-    this->headerShadow->setBounds(viewX,
-        viewY + HybridRoll::headerHeight, viewWidth, HybridRoll::headerShadowSize);
+    this->header->setBounds(0, viewY, this->getWidth(), Globals::UI::rollHeaderHeight);
+    this->headerShadow->setBounds(viewX, viewY + Globals::UI::rollHeaderHeight,
+        viewWidth, Globals::UI::rollHeaderShadowSize);
 
     if (this->annotationsMap != nullptr)
     {
-        this->annotationsMap->setBounds(0,
-            viewY + HybridRoll::headerHeight, this->getWidth(), HybridRoll::headerHeight);
+        this->annotationsMap->setBounds(0, viewY + Globals::UI::rollHeaderHeight,
+            this->getWidth(), Globals::UI::rollHeaderHeight);
     }
 
     if (this->keySignaturesMap != nullptr)
     {
-        this->keySignaturesMap->setBounds(0,
-            viewY + HybridRoll::headerHeight, this->getWidth(), HybridRoll::headerHeight);
+        this->keySignaturesMap->setBounds(0, viewY + Globals::UI::rollHeaderHeight,
+            this->getWidth(), Globals::UI::rollHeaderHeight);
     }
 
     if (this->timeSignaturesMap != nullptr)
     {
         this->timeSignaturesMap->setBounds(0,
-            viewY, this->getWidth(), HybridRoll::headerHeight - 1);
+            viewY, this->getWidth(), Globals::UI::rollHeaderHeight - 1);
     }
 
     for (int i = 0; i < this->trackMaps.size(); ++i)
@@ -1776,16 +1772,19 @@ void HybridRoll::updateChildrenPositions()
     const int &viewY = this->viewport.getViewPositionY();
 
     this->header->setTopLeftPosition(0, viewY);
-    this->headerShadow->setTopLeftPosition(viewX, viewY + HybridRoll::headerHeight);
+    this->headerShadow->setTopLeftPosition(viewX,
+        viewY + Globals::UI::rollHeaderHeight);
 
     if (this->annotationsMap != nullptr)
     {
-        this->annotationsMap->setTopLeftPosition(0, viewY + HybridRoll::headerHeight);
+        this->annotationsMap->setTopLeftPosition(0,
+            viewY + Globals::UI::rollHeaderHeight);
     }
 
     if (this->keySignaturesMap != nullptr)
     {
-        this->keySignaturesMap->setTopLeftPosition(0, viewY + HybridRoll::headerHeight);
+        this->keySignaturesMap->setTopLeftPosition(0,
+            viewY + Globals::UI::rollHeaderHeight);
     }
 
     if (this->timeSignaturesMap != nullptr)

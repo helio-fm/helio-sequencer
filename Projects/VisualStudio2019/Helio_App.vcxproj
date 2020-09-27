@@ -593,6 +593,9 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\RenderDialog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Dialogs\TempoDialog.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3075,6 +3078,7 @@
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogInput.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\RenderDialog.h"/>
+    <ClInclude Include="..\..\Source\UI\Dialogs\TempoDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\TrackPropertiesDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\Headline.h"/>

@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "HeadlineDropdown.h"
 
-//[MiscUserDefs]
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineItemDataSource.h"
@@ -32,28 +28,17 @@
 #include "ColourIDs.h"
 #include "TreeNode.h"
 
-//[/MiscUserDefs]
-
 HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position)
     : item(targetItem)
 {
-    this->content.reset(new Component());
-    this->addAndMakeVisible(content.get());
+    this->header = make<HeadlineItemHighlighter>(targetItem);
+    this->addAndMakeVisible(this->header.get());
 
-    this->header.reset(new HeadlineItemHighlighter(targetItem));
-    this->addAndMakeVisible(header.get());
-
-    //[UserPreSize]
     this->setAlpha(0.f);
     this->setTopLeftPosition(position);
-
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
-    //[/UserPreSize]
 
-    //this->setSize(150, 34);
-
-    //[Constructor]
     if (this->item != nullptr)
     {
         this->content = this->item->createMenu();
@@ -65,28 +50,15 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
     }
 
     this->startTimer(150);
-    //[/Constructor]
 }
 
 HeadlineDropdown::~HeadlineDropdown()
 {
-    //[Destructor_pre]
     this->stopTimer();
-    //[/Destructor_pre]
-
-    content = nullptr;
-    header = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
 }
 
-void HeadlineDropdown::paint (Graphics& g)
+void HeadlineDropdown::paint(Graphics &g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).brighter(0.035f));
     g.fillRect(1, Globals::UI::headlineHeight - 3, this->getWidth() - 3, this->getHeight() - Globals::UI::headlineHeight + 2);
     g.fillPath(this->internalPath1);
@@ -104,21 +76,10 @@ void HeadlineDropdown::paint (Graphics& g)
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
     g.fillRect(1.f, 1.f, 3.f, float(this->getHeight() - 3));
     g.drawVerticalLine(this->getWidth() - 3, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
-
-    //[/UserPaint]
 }
 
 void HeadlineDropdown::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-#if 0
-    //[/UserPreResize]
-
-    content->setBounds(2, getHeight() - 1 - (getHeight() - 34), getWidth() - 4, getHeight() - 34);
-    header->setBounds(0, 0, getWidth() - 0, 32);
-    //[UserResized] Add your own custom resize handling here..
-#endif
-
     this->content->setBounds(HeadlineDropdown::padding / 2 + 1,
         Globals::UI::headlineHeight - 1,
         this->getWidth() - HeadlineDropdown::padding,
@@ -132,32 +93,23 @@ void HeadlineDropdown::resized()
     this->internalPath1.lineTo(float(this->getWidth() - 2), float(Globals::UI::headlineHeight - 2));
     this->internalPath1.lineTo(1.f, float(Globals::UI::headlineHeight - 1));
     this->internalPath1.closeSubPath();
-
-    //[/UserResized]
 }
 
-void HeadlineDropdown::mouseDown (const MouseEvent& e)
+void HeadlineDropdown::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     if (this->item != nullptr)
     {
         this->item->onSelectedAsMenuItem();
     }
-    //[/UserCode_mouseDown]
 }
 
 void HeadlineDropdown::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->stopTimer();
     Desktop::getInstance().getAnimator().cancelAllAnimations(false);
     this->exitModalState(0);
     delete this;
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 template<typename T>
 T *findParent(Component *target)
@@ -210,34 +162,3 @@ void HeadlineDropdown::syncWidthWithContent()
         this->setSize(w, this->content->getHeight() + Globals::UI::headlineHeight);
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="HeadlineDropdown" template="../../Template"
-                 componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; targetItem, const Point&lt;int&gt; &amp;position"
-                 variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
-                 initialHeight="34">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="inputAttemptWhenModal()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="b986fd50e3b5b1c5" memberName="content" virtualName=""
-                    explicitFocusOrder="0" pos="2 1Rr 4M 34M" class="Component" params=""/>
-  <JUCERCOMP name="" id="3d892173c3bdab59" memberName="header" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 32" sourceFile="HeadlineItemHighlighter.cpp"
-             constructorParams="targetItem"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

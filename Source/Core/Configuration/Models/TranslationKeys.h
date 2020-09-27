@@ -38,24 +38,22 @@ namespace I18n
 
     namespace Dialog
     {
+        static const Identifier cancel = "dialog::common::cancel";
+        static const Identifier apply = "dialog::common::apply";
+        static const Identifier delete_ = "dialog::common::delete";
+        static const Identifier add = "dialog::common::add";
+
         static const Identifier addArpCaption = "dialog::addarp::caption";
         static const Identifier addArpProceed = "dialog::addarp::proceed";
         static const Identifier addTrackCaption = "dialog::addtrack::caption";
-        static const Identifier addTrackProceed = "dialog::addtrack::proceed";
         static const Identifier annotationAddCaption = "dialog::annotation::add::caption";
-        static const Identifier annotationAddProceed = "dialog::annotation::add::proceed";
-        static const Identifier annotationEditApply = "dialog::annotation::edit::apply";
         static const Identifier annotationEditCaption = "dialog::annotation::edit::caption";
-        static const Identifier annotationEditDelete = "dialog::annotation::edit::delete";
         static const Identifier annotationRenameCancel = "dialog::annotation::rename::cancel";
         static const Identifier annotationRenameCaption = "dialog::annotation::rename::caption";
         static const Identifier annotationRenameProceed = "dialog::annotation::rename::proceed";
         static const Identifier authGithub = "dialog::auth::github";
-        static const Identifier cancel = "dialog::common::cancel";
         static const Identifier deleteProjectCaption = "dialog::deleteproject::caption";
         static const Identifier deleteProjectConfirmCaption = "dialog::deleteproject::confirm::caption";
-        static const Identifier deleteProjectConfirmProceed = "dialog::deleteproject::confirm::proceed";
-        static const Identifier deleteProjectProceed = "dialog::deleteproject::proceed";
         static const Identifier documentExport = "dialog::document::export";
         static const Identifier documentExportDone = "dialog::document::export::done";
         static const Identifier documentImport = "dialog::document::import";
@@ -64,10 +62,7 @@ namespace I18n
         static const Identifier instrumentRenameCaption = "dialog::instrument::rename::caption";
         static const Identifier instrumentRenameProceed = "dialog::instrument::rename::proceed";
         static const Identifier keySignatureAddCaption = "dialog::keysignature::add::caption";
-        static const Identifier keySignatureAddProceed = "dialog::keysignature::add::proceed";
-        static const Identifier keySignatureEditApply = "dialog::keysignature::edit::apply";
         static const Identifier keySignatureEditCaption = "dialog::keysignature::edit::caption";
-        static const Identifier keySignatureEditDelete = "dialog::keysignature::edit::delete";
         static const Identifier openglCaption = "dialog::opengl::caption";
         static const Identifier openglProceed = "dialog::opengl::proceed";
         static const Identifier renameTrackCaption = "dialog::renametrack::caption";
@@ -78,10 +73,7 @@ namespace I18n
         static const Identifier renderSelectFile = "dialog::render::selectfile";
         static const Identifier scanFolderCaption = "dialog::scanfolder::caption";
         static const Identifier timeSignatureAddCaption = "dialog::timesignature::add::caption";
-        static const Identifier timeSignatureAddProceed = "dialog::timesignature::add::proceed";
-        static const Identifier timeSignatureEditApply = "dialog::timesignature::edit::apply";
         static const Identifier timeSignatureEditCaption = "dialog::timesignature::edit::caption";
-        static const Identifier timeSignatureEditDelete = "dialog::timesignature::edit::delete";
         static const Identifier vcsCheckoutProceed = "dialog::vcs::checkout::proceed";
         static const Identifier vcsCheckoutWarning = "dialog::vcs::checkout::warning";
         static const Identifier vcsCommitCaption = "dialog::vcs::commit::caption";
@@ -89,16 +81,19 @@ namespace I18n
         static const Identifier vcsResetCaption = "dialog::vcs::reset::caption";
         static const Identifier vcsResetProceed = "dialog::vcs::reset::proceed";
         static const Identifier workspaceCreateProjectCaption = "dialog::workspace::createproject::caption";
+        static const Identifier setTempoCaption = "dialog::tempo::caption";
+        static const Identifier setTempoTapLabel = "dialog::tempo::tap";
     }
 
     namespace Menu
     {
+        static const Identifier back = "menu::back";
+        static const Identifier cancel = "menu::cancel";
+
         static const Identifier annotationAdd = "menu::annotation::add";
         static const Identifier annotationDelete = "menu::annotation::delete";
         static const Identifier annotationRename = "menu::annotation::rename";
         static const Identifier arpeggiatorsCreate = "menu::arpeggiators::create";
-        static const Identifier back = "menu::back";
-        static const Identifier cancel = "menu::cancel";
         static const Identifier groupByColour = "menu::groupby::colour";
         static const Identifier groupByInstrument = "menu::groupby::instrument";
         static const Identifier groupByName = "menu::groupby::name";
@@ -213,6 +208,7 @@ namespace I18n
         static const Identifier solo = "menu::solo";
         static const Identifier unmute = "menu::unmute";
         static const Identifier unsolo = "menu::unsolo";
+        static const Identifier setOneTempo = "menu::onetempo";
 
         static const Identifier vcsChangesHide = "menu::vcs::changes::hide";
         static const Identifier vcsChangesShow = "menu::vcs::changes::show";

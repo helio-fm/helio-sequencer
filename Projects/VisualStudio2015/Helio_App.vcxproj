@@ -420,6 +420,7 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\ModalDialogInput.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\RenderDialog.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Dialogs\TempoDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\TrackPropertiesDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Headline\Headline.cpp"/>
@@ -2646,6 +2647,7 @@
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogInput.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\RenderDialog.h"/>
+    <ClInclude Include="..\..\Source\UI\Dialogs\TempoDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\TimeSignatureDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\TrackPropertiesDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\Headline.h"/>

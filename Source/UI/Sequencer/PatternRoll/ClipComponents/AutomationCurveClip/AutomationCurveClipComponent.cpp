@@ -27,14 +27,6 @@
 #include "HybridRoll.h"
 #include "MidiTrack.h"
 
-#if HELIO_DESKTOP
-#   define TRACKMAP_TEMPO_EVENT_DIAMETER (12.f)
-#   define TRACKMAP_TEMPO_HELPER_DIAMETER (8.f)
-#elif HELIO_MOBILE
-#   define TRACKMAP_TEMPO_EVENT_DIAMETER (24.f)
-#   define TRACKMAP_TEMPO_HELPER_DIAMETER (20.f)
-#endif
-
 AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectNode &project,
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
@@ -119,7 +111,7 @@ void AutomationCurveClipComponent::resized()
     // во избежание глюков - сначала обновляем позиции
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        AutomationCurveEventComponent *const c = this->eventComponents.getUnchecked(i);
+        auto *c = this->eventComponents.getUnchecked(i);
         c->setBounds(this->getEventBounds(c));
     }
     
@@ -147,9 +139,10 @@ void AutomationCurveClipComponent::insertNewEventAt(const MouseEvent &e)
 {
     float draggingValue = 0;
     float draggingBeat = 0.f;
-    this->getRowsColsByMousePosition(e.x - int(this->getEventDiameter() / 2),
-                                     e.y - int(this->getEventDiameter() / 2),
-                                     draggingValue, draggingBeat);
+    this->getRowsColsByMousePosition(
+        e.x - int(AutomationCurveClipComponent::eventComponentDiameter / 2),
+        e.y - int(AutomationCurveClipComponent::eventComponentDiameter / 2),
+        draggingValue, draggingBeat);
     
     auto *autoSequence = static_cast<AutomationSequence *>(this->sequence.get());
     this->addNewEventMode = true;
@@ -169,16 +162,6 @@ void AutomationCurveClipComponent::removeEventIfPossible(const AutomationEvent &
     }
 }
 
-float AutomationCurveClipComponent::getEventDiameter() const
-{
-    return TRACKMAP_TEMPO_EVENT_DIAMETER;
-}
-
-float AutomationCurveClipComponent::getHelperDiameter() const
-{
-    return TRACKMAP_TEMPO_HELPER_DIAMETER;
-}
-
 int AutomationCurveClipComponent::getAvailableHeight() const
 {
     return this->getHeight();
@@ -195,7 +178,7 @@ Rectangle<int> AutomationCurveClipComponent::getEventBounds(AutomationCurveEvent
 Rectangle<int> AutomationCurveClipComponent::getEventBounds(float beat,
     float sequenceLength, double controllerValue) const
 {
-    const int diameter = int(this->getEventDiameter());
+    const int diameter = int(AutomationCurveClipComponent::eventComponentDiameter);
     const int x = int(float(this->getWidth()) * (beat / sequenceLength));
     const int fullh = this->getAvailableHeight();
     int y = int((1.0 - controllerValue) * fullh); // upside down flip
@@ -204,7 +187,7 @@ Rectangle<int> AutomationCurveClipComponent::getEventBounds(float beat,
 
 void AutomationCurveClipComponent::getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const
 {
-    const int radius = int(this->getEventDiameter() / 2.f);
+    const int radius = int(AutomationCurveClipComponent::eventComponentDiameter / 2.f);
     const int xRoll = this->getX() + x + radius;
 
     targetBeat = this->roll.getRoundBeatSnapByXPosition(xRoll) - this->clip.getBeat();

@@ -114,7 +114,7 @@ void TrackPropertiesDialog::parentSizeChanged()
     this->updatePosition();
 }
 
-void TrackPropertiesDialog::handleCommandMessage (int commandId)
+void TrackPropertiesDialog::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {

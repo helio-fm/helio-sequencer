@@ -32,7 +32,6 @@
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
-#define HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
 #define MIN_TIME_DISTANCE_INDICATOR_SIZE (40)
 
 HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef, Viewport &viewportRef) :
@@ -49,17 +48,19 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->setMouseClickGrabsKeyboardFocus(false);
 
     this->updateColours();
-    this->setSize(this->getParentWidth(), HybridRoll::headerHeight);
+    this->setSize(this->getParentWidth(), Globals::UI::rollHeaderHeight);
 
     this->selectionIndicator = make<HeaderSelectionIndicator>();
     this->addChildComponent(this->selectionIndicator.get());
     this->selectionIndicator->setTopLeftPosition(0, this->getHeight() - this->selectionIndicator->getHeight());
 }
 
+HybridRollHeader::~HybridRollHeader() {}
+
 void HybridRollHeader::updateColours()
 {
     // Painting is the very bottleneck of this app,
-    // so make sure we no lookups/computations inside paint method
+    // so make sure we have no lookups inside paint method
     this->backColour = findDefaultColour(ColourIDs::Roll::headerFill);
     this->barShadeColour = this->backColour.darker(0.1f);
     this->recordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
@@ -68,8 +69,9 @@ void HybridRollHeader::updateColours()
         findDefaultColour(ColourIDs::Roll::headerSnaps);
     this->beatColour = this->barColour.withMultipliedAlpha(0.8f);
     this->snapColour = this->barColour.withMultipliedAlpha(0.6f);
-    this->bevelLightColour = findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.5f);
     this->bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
+    this->bevelLightColour = findDefaultColour(ColourIDs::Common::borderLineLight)
+        .withMultipliedAlpha(0.5f);
 }
 
 void HybridRollHeader::showRecordingMode(bool showRecordingMarker)
@@ -145,17 +147,17 @@ double HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
 void HybridRollHeader::updateTimeDistanceIndicator()
 {
     if (this->pointingIndicator == nullptr ||
-        this->playingIndicator == nullptr ||
+        this->probeIndicator == nullptr ||
         this->timeDistanceIndicator == nullptr)
     {
         return;
     }
     
     const double anchor1 = this->pointingIndicator->getAnchor();
-    const double anchor2 = this->playingIndicator->getAnchor();
+    const double anchor2 = this->probeIndicator->getAnchor();
     
     const auto seek1 = this->roll.getBeatByXPosition(float(this->pointingIndicator->getX()));
-    const auto seek2 = this->roll.getBeatByXPosition(float(this->playingIndicator->getX()));
+    const auto seek2 = this->roll.getBeatByXPosition(float(this->probeIndicator->getX()));
 
     this->timeDistanceIndicator->setAnchoredBetween(anchor1, anchor2);
 
@@ -183,14 +185,12 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
 {
     if (this->soundProbeMode.get())
     {
-        // todo if playing, dont probe anything?
-        
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x);
         this->transport.probeSoundAtBeat(roundBeat, nullptr);
         
-        this->playingIndicator = make<SoundProbeIndicator>();
-        this->roll.addAndMakeVisible(this->playingIndicator.get());
-        this->updateIndicatorPosition(this->playingIndicator.get(), e);
+        this->probeIndicator = make<SoundProbeIndicator>();
+        this->roll.addAndMakeVisible(this->probeIndicator.get());
+        this->updateIndicatorPosition(this->probeIndicator.get(), e);
     }
     else
     {
@@ -205,23 +205,10 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         
         if (shouldStartSelection)
         {
-#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
-            const float roundBeat = this->roll.getRoundBeatSnapByXPosition(parentEvent.x);
-            const int roundX = this->roll.getXPositionByBeat(roundBeat);
-            const float newX = float(roundX + 1);
-#else
             const float newX = parentEvent.position.x;
-#endif
-            
             this->roll.getSelectionComponent()->beginLasso({ newX, 0.f }, &this->roll);
-            
             this->selectionIndicator->fadeIn();
-
-#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
-            this->selectionIndicator->setStartAnchor(this->getAlignedAnchorForEvent(e));
-#else
             this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
-#endif
         }
         else
         {
@@ -258,9 +245,9 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
         {
             this->updateIndicatorPosition(this->pointingIndicator.get(), e);
 
-            if (this->playingIndicator != nullptr)
+            if (this->probeIndicator != nullptr)
             {
-                const int distance = abs(this->pointingIndicator->getX() - this->playingIndicator->getX());
+                const int distance = abs(this->pointingIndicator->getX() - this->probeIndicator->getX());
 
                 if (this->timeDistanceIndicator == nullptr)
                 {
@@ -295,22 +282,9 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
         if (this->roll.getSelectionComponent()->isDragging())
         {
             const auto parentEvent = e.getEventRelativeTo(&this->roll);
-            
-#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
-            const float roundBeat = this->roll.getRoundBeatSnapByXPosition(parentEvent.x);
-            const int roundX = this->roll.getXPositionByBeat(roundBeat);
-            const auto parentGlobalSelection = parentEvent.withNewPosition(Point<int>(roundX - 1, this->roll.getHeight()));
-#else
             const auto parentGlobalSelection = parentEvent.withNewPosition(Point<int>(parentEvent.x, this->roll.getHeight()));
-#endif
-            
             this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
-            
-#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
-            this->selectionIndicator->setEndAnchor(this->getAlignedAnchorForEvent(e));
-#else
             this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
-#endif
         }
         else
         {
@@ -327,7 +301,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
 
 void HybridRollHeader::mouseUp(const MouseEvent &e)
 {
-    this->playingIndicator = nullptr;
+    this->probeIndicator = nullptr;
     this->timeDistanceIndicator = nullptr;
 
     this->selectionIndicator->fadeOut();
@@ -411,7 +385,7 @@ void HybridRollHeader::paint(Graphics &g)
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
     g.setColour(this->backColour);
-    g.fillRect(paintStartX, 0, paintEndX - paintStartX, HybridRoll::headerHeight);
+    g.fillRect(paintStartX, 0, paintEndX - paintStartX, Globals::UI::rollHeaderHeight);
 
     g.setColour(this->barColour);
     for (const auto f : this->roll.getVisibleBars())

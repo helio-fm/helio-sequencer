@@ -103,8 +103,7 @@ AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source
     WeakReference<TreeNode> parentTreeItem, const String &trackId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
-    trackId(trackId),
-    numEvents(0) {}
+    trackId(trackId) {}
 
 bool AutomationTrackRemoveAction::perform()
 {

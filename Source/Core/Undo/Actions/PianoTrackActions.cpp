@@ -106,8 +106,7 @@ PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
     const String &trackId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
-    trackId(trackId),
-    numEvents(0) {}
+    trackId(trackId) {}
 
 bool PianoTrackRemoveAction::perform()
 {

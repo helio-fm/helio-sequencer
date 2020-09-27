@@ -210,7 +210,10 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
             {
                 auto &project = this->project;
                 String outTrackId;
-                const auto trackTemplate = this->createPianoTrackTempate("", instrumentId, outTrackId);
+                const auto trackTemplate =
+                    SequencerOperations::createPianoTrackTempate(this->project,
+                        "", instrumentId, outTrackId);
+
                 auto inputDialog = ModalDialogInput::Presets::newTrack();
                 inputDialog->onOk = [trackTemplate, outTrackId, &project](const String &input)
                 {
@@ -247,10 +250,13 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
         closesMenu()->
         withAction([this]()
         {
+            String outTrackId;
+            String instrumentId; // empty, it doesn't matter for master tempo track
             const auto autoTracks = this->project.findChildrenOfType<AutomationTrackNode>();
             const auto autoTrackParams =
-                this->createAutoTrackTempate(TRANS(I18n::Defaults::tempoTrackName),
-                    MidiTrack::tempoController);
+                SequencerOperations::createAutoTrackTempate(this->project,
+                    TRANS(I18n::Defaults::tempoTrackName), MidiTrack::tempoController,
+                    instrumentId, outTrackId);
 
             this->project.getUndoStack()->beginNewTransaction();
             this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
@@ -290,9 +296,12 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
                 closesMenu()->
                 withAction([this, controllerNumber, instrument]()
                 {
+                    String outTrackId;
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
                     const String trackName = TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));
-                    const auto autoTrackParams = this->createAutoTrackTempate(trackName, controllerNumber, instrumentId);
+                    const auto autoTrackParams =
+                        SequencerOperations::createAutoTrackTempate(this->project,
+                            trackName, controllerNumber, instrumentId, outTrackId);
 
                     this->project.getUndoStack()->beginNewTransaction();
                     this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
@@ -352,6 +361,9 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
 
     //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS(I18n::Menu::Project::cleanup)));
 
+    menu.add(MenuItem::item(Icons::automationTrack, CommandIDs::ProjectSetOneTempo,
+        TRANS(I18n::Menu::setOneTempo))->closesMenu());
+
     const auto &tracks = this->project.findChildrenOfType<MidiTrackNode>();
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     if (instruments.size() > 1 && tracks.size() > 0)
@@ -362,21 +374,21 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
                 this->showSetInstrumentMenu();
             }));
     }
-    
-    //const auto currentPeriodSize = this->project.getProjectInfo()->getTemperament()->getPeriodSize();
-    //const auto canRemap = currentPeriodSize == Globals::twelveTonePeriodSize; // and experimental features flag is enabled?
-    //if (canRemap)
-    menu.add(MenuItem::item(Icons::refactor,
-        TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
-    {
-        this->showTemperamentsMenu(false);
-    }));
 
-    menu.add(MenuItem::item(Icons::refactor,
-        TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
+    if (App::Config().getUiFlags()->areExperimentalFeaturesEnabled())
     {
-        this->showTemperamentsMenu(true);
-    }));
+        menu.add(MenuItem::item(Icons::refactor,
+            TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
+        {
+            this->showTemperamentsMenu(false);
+        }));
+
+        menu.add(MenuItem::item(Icons::refactor,
+            TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
+        {
+            this->showTemperamentsMenu(true);
+        }));
+    }
 
     this->updateContent(menu, animationType);
 }
@@ -486,59 +498,4 @@ void ProjectMenu::showSetInstrumentMenu()
     }
     
     this->updateContent(menu, MenuPanel::SlideLeft);
-}
-
-SerializedData ProjectMenu::createPianoTrackTempate(const String &name,
-    const String &instrumentId, String &outTrackId) const
-{
-    auto newNode = make<PianoTrackNode>(name);
-
-    // We need to have at least one clip on a pattern:
-    const Clip clip(newNode->getPattern());
-    newNode->getPattern()->insert(clip, false);
-
-    Random r;
-    const auto colours = ColourIDs::getColoursList();
-    newNode->setTrackColour(colours[r.nextInt(colours.size())], dontSendNotification);
-    newNode->setTrackInstrumentId(instrumentId, false);
-
-    // insert a single note just so there is a visual anchor in the piano roll:
-    const float firstBeat = this->project.getProjectRangeInBeats().getX();
-    const int middleC = this->project.getProjectInfo()->getTemperament()->getMiddleC();
-    auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
-    pianoSequence->insert(Note(pianoSequence, middleC, firstBeat,
-        float(Globals::beatsPerBar), 0.5f), false);
-
-    outTrackId = newNode->getTrackId();
-    return newNode->serialize();
-}
-
-SerializedData ProjectMenu::createAutoTrackTempate(const String &name,
-    int controllerNumber, const String &instrumentId) const
-{
-    auto newNode = make<AutomationTrackNode>(name);
-
-    // We need to have at least one clip on a pattern:
-    const Clip clip(newNode->getPattern());
-    newNode->getPattern()->insert(clip, false);
-
-    auto *autoSequence = static_cast<AutomationSequence *>(newNode->getSequence());
-
-    newNode->setTrackControllerNumber(controllerNumber, false);
-    newNode->setTrackInstrumentId(instrumentId, false);
-    newNode->setTrackColour(Colours::royalblue, false);
-
-    // init with a couple of events
-    const float cv1 = newNode->isOnOffAutomationTrack() ? 1.f : 0.5f;
-    const float cv2 = newNode->isOnOffAutomationTrack() ? 0.f : 0.5f;
-
-    const auto beatRange = this->project.getProjectRangeInBeats();
-    const float firstBeat = beatRange.getX();
-    const float lastBeat = beatRange.getY();
-
-    autoSequence->insert(AutomationEvent(autoSequence, firstBeat, cv1), false);
-    // second event is placed at the end of the track for convenience:
-    autoSequence->insert(AutomationEvent(autoSequence, lastBeat, cv2), false);
-
-    return newNode->serialize();
 }

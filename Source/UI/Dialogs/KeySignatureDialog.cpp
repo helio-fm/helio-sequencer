@@ -125,7 +125,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
         this->originalSequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::keySignatureAddCaption), dontSendNotification);
-        this->okButton->setButtonText(TRANS(I18n::Dialog::keySignatureAddProceed));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::add));
         this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
     }
     else
@@ -137,8 +137,8 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
         this->scaleNameEditor->setText(this->scale->getLocalizedName(), dontSendNotification);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::keySignatureEditCaption), dontSendNotification);
-        this->okButton->setButtonText(TRANS(I18n::Dialog::keySignatureEditApply));
-        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::keySignatureEditDelete));
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::delete_));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
     this->messageLabel->setInterceptsMouseClicks(false, false);

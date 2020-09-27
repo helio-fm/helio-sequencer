@@ -84,18 +84,19 @@ String Transport::getTimeString(const RelativeTime &relTime, bool includeMillise
     return res;
 }
 
-static const float kMaxMsPerQuarter = 250.f; // is 240 bpm (=250 ms-per-quarter) enough?
+static constexpr auto kMaxMsPerQuarter = 250.0; // 240 bpm (== 250 ms per beat)
 
 int Transport::getTempoByControllerValue(float controllerValue) noexcept
 {
-    const float safeCV = jlimit(0.00005f, 0.99999f, controllerValue);
-    return int((1.f - AudioCore::fastLog2(safeCV)) * kMaxMsPerQuarter * 1000);
+    const double safeCV = jlimit(0.00005, 0.99999, double(controllerValue));
+    return int((1.0 - log2(safeCV)) * kMaxMsPerQuarter * 1000);
 }
 
 float Transport::getControllerValueByTempo(double secondsPerQuarterNote) noexcept
 {
     const double cv = 1.0 - secondsPerQuarterNote / double(kMaxMsPerQuarter) * 1000.0;
-    return jlimit(0.f, 1.f, powf(2.f, float(cv)));
+    const double value = pow(2.0, cv);
+    return jlimit(0.f, 1.f, float(value));
 }
 
 //===----------------------------------------------------------------------===//

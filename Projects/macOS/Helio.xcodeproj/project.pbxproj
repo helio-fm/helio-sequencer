@@ -2553,6 +2553,13 @@
 			path = ../../Resources/Icons/cursorTool.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		6A595361D0F8263DEACF8A56 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TempoDialog.h;
+			path = ../../Source/UI/Dialogs/TempoDialog.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		6B2627203925C88760E0EE40 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5493,6 +5500,13 @@
 			path = ../../Resources/Icons/revision.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		F19461CD7E5FB4A3D42B67E1 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = TempoDialog.cpp;
+			path = ../../Source/UI/Dialogs/TempoDialog.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		F1ADC5CF4F81520D2447C1F2 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -6517,6 +6531,8 @@
 				931C9A10356EBEF33EC9B8B2,
 				404CD58330AA86F78CCC0E23,
 				9BCD653A822231B2ACDE833F,
+				F19461CD7E5FB4A3D42B67E1,
+				6A595361D0F8263DEACF8A56,
 				705E5C79C9A9AE72248B71E9,
 				A3DDC9CF37C94393EF6E8063,
 				2BBC7BF4112C3BFF7F841C3D,
