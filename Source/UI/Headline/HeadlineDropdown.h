@@ -17,36 +17,27 @@
 
 #pragma once
 
-//[Headers]
-#include "HighlightedComponent.h"
 #include "TreeNode.h"
-
-class HeadlineItemDataSource;
-//[/Headers]
-
+#include "HighlightedComponent.h"
 #include "HeadlineItemHighlighter.h"
 
-class HeadlineDropdown final : public Component,
-                               private Timer
+class HeadlineItemDataSource;
+
+class HeadlineDropdown final : public Component, private Timer
 {
 public:
 
     HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position);
     ~HeadlineDropdown();
 
-    //[UserMethods]
     void childBoundsChanged(Component *) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
+    void mouseDown(const MouseEvent &e) override;
     void inputAttemptWhenModal() override;
 
-
 private:
-
-    //[UserVariables]
 
     static constexpr auto padding = 15;
 
@@ -57,10 +48,8 @@ private:
 
     Path internalPath1;
 
-    //[/UserVariables]
-
     UniquePointer<Component> content;
     UniquePointer<HeadlineItemHighlighter> header;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineDropdown)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineDropdown)
 };
