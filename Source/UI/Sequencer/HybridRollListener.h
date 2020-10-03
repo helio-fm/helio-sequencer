@@ -23,12 +23,9 @@ class HybridRollListener
 {
 public:
     
-    HybridRollListener() {}
-    
-    virtual ~HybridRollListener() {}
+    virtual ~HybridRollListener() = default;
     
     virtual void onMidiRollMoved(HybridRoll *targetRoll) = 0;
-    
     virtual void onMidiRollResized(HybridRoll *targetRoll) = 0;
     
 };

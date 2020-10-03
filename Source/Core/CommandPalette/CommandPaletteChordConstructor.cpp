@@ -87,7 +87,7 @@ struct Token
 
     Token() = delete;
     explicit Token(Type type) : type(type) {}
-    virtual ~Token() {}
+    virtual ~Token() = default;
 
     const Type type;
 };
@@ -412,7 +412,7 @@ struct Expression
 
     Expression() = delete;
     explicit Expression(Type type) : type(type) {}
-    virtual ~Expression() {}
+    virtual ~Expression() = default;
 
     virtual bool isValid() const = 0;
     virtual void fillDescription(String &out) const = 0;

@@ -125,8 +125,9 @@ public:
 
     inline int indexOfSorted(const MidiEvent *const event) const noexcept
     {
-        jassert(this->midiEvents[this->midiEvents.indexOfSorted(*event, event)] == event);
-        return this->midiEvents.indexOfSorted(*event, event);
+        const auto index = this->midiEvents.indexOfSorted(*event, event);
+        jassert(this->midiEvents[index] == event);
+        return index;
     }
 
     //===------------------------------------------------------------------===//

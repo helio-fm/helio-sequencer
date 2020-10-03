@@ -29,7 +29,7 @@ public:
 
     struct Listener
     {
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
         virtual void onColourButtonClicked(ColourButton *button) = 0;
     };
 

@@ -29,7 +29,7 @@ public:
 
     struct Listener
     {
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
         virtual void onScaleChanged(const Scale::Ptr scale) = 0;
         virtual void onScaleNotePreview(int key) = 0;
     };

@@ -30,7 +30,7 @@ class ProjectEventDispatcher
 {
 public:
 
-    virtual ~ProjectEventDispatcher() {}
+    virtual ~ProjectEventDispatcher() = default;
 
     // Notes/events and sequences 
     virtual void dispatchAddEvent(const MidiEvent &event) = 0;

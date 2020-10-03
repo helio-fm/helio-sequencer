@@ -29,7 +29,7 @@ class ProjectListener
 public:
 
     ProjectListener() {}
-    virtual ~ProjectListener() {}
+    virtual ~ProjectListener() = default;
 
     virtual void onAddMidiEvent(const MidiEvent &event) = 0;
     virtual void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;

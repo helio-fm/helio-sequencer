@@ -31,7 +31,7 @@ public:
     {
     public:
         Listener() {}
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
         virtual void onScalesHighlightingFlagChanged(bool enabled) {}
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}

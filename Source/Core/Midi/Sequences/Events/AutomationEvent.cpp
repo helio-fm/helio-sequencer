@@ -25,11 +25,6 @@
 AutomationEvent::AutomationEvent() noexcept :
     MidiEvent(nullptr, Type::Auto, 0.f) {}
 
-AutomationEvent::AutomationEvent(const AutomationEvent &other) noexcept :
-    MidiEvent(other),
-    controllerValue(other.controllerValue),
-    curvature(other.curvature) {}
-
 AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
     float beatVal, float cValue) noexcept :
     MidiEvent(owner, Type::Auto, beatVal),
@@ -294,4 +289,20 @@ void AutomationEvent::applyChanges(const AutomationEvent &parameters) noexcept
     this->beat = parameters.beat;
     this->controllerValue = parameters.controllerValue;
     this->curvature = parameters.curvature;
+}
+
+int AutomationEvent::compareElements(const AutomationEvent *const first,
+    const AutomationEvent *const second) noexcept
+{
+    if (first == second) { return 0; }
+
+    const float beatDiff = first->beat - second->beat;
+    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
+    if (beatResult != 0) { return beatResult; }
+
+    const auto cvDiff = first->controllerValue - second->controllerValue;
+    const int cvResult = (cvDiff > 0) - (cvDiff < 0);
+    if (cvResult != 0) { return cvResult; }
+
+    return first->getId() - second->getId();
 }

@@ -23,7 +23,7 @@ class PopupButtonOwner
 {
 public:
 
-    virtual ~PopupButtonOwner() {}
+    virtual ~PopupButtonOwner() = default;
 
     virtual void onPopupsResetState(PopupButton *button) = 0;
 

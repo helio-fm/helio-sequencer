@@ -26,7 +26,7 @@ public:
 
     struct Listener
     {
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
         virtual void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) = 0;
     };
 

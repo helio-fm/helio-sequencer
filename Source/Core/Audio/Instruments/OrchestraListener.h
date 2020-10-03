@@ -23,12 +23,10 @@ class OrchestraListener
 {
 public:
 
-    virtual ~OrchestraListener() {}
+    virtual ~OrchestraListener() = default;
 
     virtual void instrumentAdded(Instrument *instrument) = 0;
-
     virtual void instrumentRemoved(Instrument *instrument) = 0;
-
     virtual void instrumentRemovedPostAction() = 0;
 
 };

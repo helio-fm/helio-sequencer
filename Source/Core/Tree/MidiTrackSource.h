@@ -25,7 +25,7 @@ class MidiTrackSource
 {
 public:
 
-    virtual ~MidiTrackSource() {}
+    virtual ~MidiTrackSource() = default;
 
     inline Pattern *findPatternByTrackId(const String &trackId)
     {

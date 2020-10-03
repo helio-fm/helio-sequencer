@@ -21,7 +21,7 @@ class TransportListener
 {
 public:
     
-    virtual ~TransportListener() {}
+    virtual ~TransportListener() = default;
 
     // expect that any data in these three methods could come
     // from a separate thread (PlayerThread most likely)

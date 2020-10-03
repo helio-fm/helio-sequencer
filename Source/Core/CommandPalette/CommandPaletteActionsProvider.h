@@ -72,7 +72,7 @@ class CommandPaletteActionsProvider
 public:
 
     CommandPaletteActionsProvider() = default;
-    virtual ~CommandPaletteActionsProvider() {};
+    virtual ~CommandPaletteActionsProvider() = default;
 
     using Prefix = juce_wchar;
     virtual bool usesPrefix(const Prefix prefix) const = 0;

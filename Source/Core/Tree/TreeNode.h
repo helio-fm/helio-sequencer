@@ -24,7 +24,7 @@ class TreeNodeBase
 public:
 
     TreeNodeBase() = default;
-    virtual ~TreeNodeBase() {}
+    virtual ~TreeNodeBase() = default;
 
     int getNumChildren() const noexcept;
     TreeNodeBase *getChild(int index) const noexcept;

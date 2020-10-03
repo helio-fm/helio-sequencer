@@ -27,8 +27,8 @@ namespace VCS
     {
     public:
 
-        TrackedItem() {}
-        virtual ~TrackedItem() {}
+        TrackedItem() = default;
+        virtual ~TrackedItem() = default;
 
         const Uuid &getUuid() const { return this->vcsUuid; }
         void setVCSUuid(Uuid value) { this->vcsUuid = value; }

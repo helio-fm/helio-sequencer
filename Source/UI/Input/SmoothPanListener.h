@@ -21,12 +21,10 @@ class SmoothPanListener
 {
 public:
 
-    virtual ~SmoothPanListener() {}
+    virtual ~SmoothPanListener() = default;
 
     virtual void panByOffset(int offsetX, int offsetY) = 0;
-
     virtual void panProportionally(float absX, float absY) = 0;
-
     virtual Point<int> getPanOffset() const = 0;
 
 };

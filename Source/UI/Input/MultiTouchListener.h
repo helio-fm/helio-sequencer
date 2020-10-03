@@ -21,16 +21,12 @@ class MultiTouchListener
 {
 public:
     
-    virtual ~MultiTouchListener() {}
+    virtual ~MultiTouchListener() = default;
 
     virtual void multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom) = 0;
-    
     virtual void multiTouchPanEvent(const Point<float> &offset) = 0;
-    
     virtual void multiTouchCancelZoom() = 0;
-
     virtual void multiTouchCancelPan() = 0;
-
     virtual Point<float> getMultiTouchOrigin(const Point<float> &from) = 0;
     
 };

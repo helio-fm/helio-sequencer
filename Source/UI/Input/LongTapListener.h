@@ -20,7 +20,7 @@
 class LongTapListener
 {
 public:
-    virtual ~LongTapListener() {}
+    virtual ~LongTapListener() = default;
     
     // When controller is subscribed as addMouseListener(this->longTapController, true)),
     // listener may want to check for (target == this) before any action

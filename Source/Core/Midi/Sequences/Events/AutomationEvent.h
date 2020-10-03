@@ -24,9 +24,16 @@ class AutomationEvent final : public MidiEvent
 public:
 
     AutomationEvent() noexcept;
-    AutomationEvent(const AutomationEvent &other) noexcept;
+
+    AutomationEvent(const AutomationEvent &other) noexcept = default;
+    AutomationEvent &operator= (const AutomationEvent &other) = default;
+
+    AutomationEvent(AutomationEvent &&other) noexcept = default;
+    AutomationEvent &operator= (AutomationEvent &&other) noexcept = default;
+
     AutomationEvent(WeakReference<MidiSequence> owner,
         const AutomationEvent &parametersToCopy) noexcept;
+
     explicit AutomationEvent(WeakReference<MidiSequence> owner,
         float beatVal = 0.f,
         float controllerValue = 0.f) noexcept;
@@ -81,6 +88,21 @@ public:
     //===------------------------------------------------------------------===//
 
     void applyChanges(const AutomationEvent &parameters) noexcept;
+
+    static inline int compareElements(const MidiEvent *const first,
+        const MidiEvent *const second) noexcept
+    {
+        return MidiEvent::compareElements(first, second);
+    }
+
+    static inline int compareElements(const AutomationEvent &first,
+        const AutomationEvent &second) noexcept
+    {
+        return AutomationEvent::compareElements(&first, &second);
+    }
+
+    static int compareElements(const AutomationEvent *const first,
+        const AutomationEvent *const second) noexcept;
 
 protected:
 

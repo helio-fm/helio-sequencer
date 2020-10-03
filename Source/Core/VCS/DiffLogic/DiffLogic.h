@@ -30,7 +30,7 @@ namespace VCS
         static DiffLogic *createLogicFor(TrackedItem &targetItem, const Identifier &type);
 
         explicit DiffLogic(TrackedItem &targetItem) : target(targetItem) {}
-        virtual ~DiffLogic() {}
+        virtual ~DiffLogic() = default;
 
         virtual const Identifier getType() const = 0;
 

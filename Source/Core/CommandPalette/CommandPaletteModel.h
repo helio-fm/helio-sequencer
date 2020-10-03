@@ -24,7 +24,8 @@ class CommandPaletteModel
 public:
 
     CommandPaletteModel() = default;
-    virtual ~CommandPaletteModel() {}
+    virtual ~CommandPaletteModel() = default;
 
-    virtual Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const = 0;
+    virtual Array<CommandPaletteActionsProvider *>
+        getCommandPaletteActionProviders() const = 0;
 };

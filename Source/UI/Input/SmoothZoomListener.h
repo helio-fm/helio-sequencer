@@ -21,7 +21,7 @@ class SmoothZoomListener
 {
 public:
 
-    virtual ~SmoothZoomListener() {}
+    virtual ~SmoothZoomListener() = default;
 
     virtual void zoomRelative(const Point<float> &origin,
         const Point<float> &factor) = 0;

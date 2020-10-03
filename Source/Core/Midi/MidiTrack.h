@@ -31,7 +31,7 @@ class MidiTrack
 public:
 
     MidiTrack() = default;
-    virtual ~MidiTrack() {};
+    virtual ~MidiTrack() = default;
 
     //===------------------------------------------------------------------===//
     // Properties

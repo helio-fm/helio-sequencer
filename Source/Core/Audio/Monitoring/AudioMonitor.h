@@ -41,7 +41,7 @@ public:
     class ClippingListener
     {
     public:
-        virtual ~ClippingListener() {}
+        virtual ~ClippingListener() = default;
         virtual void onClippingWarning() = 0;
         virtual void onOversaturationWarning() = 0;
     };

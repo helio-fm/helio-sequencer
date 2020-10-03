@@ -28,7 +28,7 @@ public:
 
     struct Listener
     {
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
         virtual void onKeyChanged(int key) = 0;
         virtual void onRootKeyPreview(int key) = 0;
     };

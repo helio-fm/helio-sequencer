@@ -24,7 +24,7 @@ class Serializer
 {
 public:
 
-    virtual ~Serializer() {}
+    virtual ~Serializer() = default;
 
     virtual Result saveToFile(File file, const SerializedData &tree) const = 0;
     virtual SerializedData loadFromFile(const File &file) const = 0;
