@@ -3195,13 +3195,6 @@
 			path = ../../Source/UI/Themes/ComponentFader.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		84D6B93259310854EE179D85 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = LoginButton.cpp;
-			path = ../../Source/UI/Pages/Dashboard/Menu/LoginButton.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		854C892A5FA83B5FE48AA92B = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4243,13 +4236,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PopupButtonOwner.h;
 			path = ../../Source/UI/Popups/PopupButtonOwner.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		B2DB7EC0BA0AAAE5CFD9A74F = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = UserProfileComponent.cpp;
-			path = ../../Source/UI/Pages/Dashboard/UserProfileComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		B2F0A32313689360FE3E778C = {
@@ -6669,7 +6655,6 @@
 				C493EEFD00CF86CA3512ABEC,
 				F1B9FBCE638637CFCD01B65A,
 				05893E09D724205647BBB7E6,
-				84D6B93259310854EE179D85,
 				854C892A5FA83B5FE48AA92B,
 				41F2BB6B0C24E0F8D3707F25,
 				4FC1C50745D9F647F28D21C2,
@@ -6687,7 +6672,6 @@
 				9191B3672D45F496945F1E94,
 				F825FBB8667FE30F1276F2E0,
 				24C8D03FB11796FEF000E4BF,
-				B2DB7EC0BA0AAAE5CFD9A74F,
 				D01EC542ECDDCF62D3E615A3,
 			);
 			name = Dashboard;

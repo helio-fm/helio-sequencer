@@ -907,7 +907,6 @@
                     file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.cpp"/>
               <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h"/>
-              <FILE id="lu3gMO" name="LoginButton.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.cpp"/>
               <FILE id="jHQguA" name="LoginButton.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.h"/>
               <FILE id="VvVVMm" name="CreateProjectButton.cpp" compile="1" resource="0"
                     file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.cpp"/>
@@ -924,8 +923,6 @@
                   file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.cpp"/>
             <FILE id="qpT5aF" name="UpdatesInfoComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.h"/>
-            <FILE id="wmerFw" name="UserProfileComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.cpp"/>
             <FILE id="LAXjb0" name="UserProfileComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Dashboard/UserProfileComponent.h"/>
           </GROUP>

@@ -683,9 +683,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\LoginButton.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -696,9 +693,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp">

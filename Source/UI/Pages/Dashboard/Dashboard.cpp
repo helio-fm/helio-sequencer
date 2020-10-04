@@ -23,38 +23,49 @@
 #include "Dashboard.h"
 
 //[MiscUserDefs]
-#include "RootNode.h"
-#include "SettingsNode.h"
 #include "MainLayout.h"
 #include "SerializationKeys.h"
 #include "DashboardMenu.h"
 #include "SpectralLogo.h"
 #include "Workspace.h"
-#include "SessionService.h"
 #include "IconComponent.h"
-#include "TemperamentsManager.h"
 #include "UserProfile.h"
+#include "UserProfileComponent.h"
+#include "LoginButton.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
 Dashboard::Dashboard(MainLayout &workspaceRef)
     : workspace(workspaceRef)
 {
+    this->backgroundA.reset(new PanelBackgroundA());
+    this->addAndMakeVisible(backgroundA.get());
+    this->patreonLabel.reset(new Label(String(),
+                                              String()));
+    this->addAndMakeVisible(patreonLabel.get());
+    this->patreonLabel->setFont(Font (16.00f, Font::plain));
+    patreonLabel->setJustificationType(Justification::centred);
+    patreonLabel->setEditable(false, false, false);
+
+    this->userProfile.reset(new UserProfileComponent());
+    this->addAndMakeVisible(userProfile.get());
+
+    this->loginButton.reset(new LoginButton());
+    this->addAndMakeVisible(loginButton.get());
+
     this->backgroundB.reset(new PanelBackgroundB());
     this->addAndMakeVisible(backgroundB.get());
     this->openProjectButton.reset(new OpenProjectButton());
     this->addAndMakeVisible(openProjectButton.get());
-    openProjectButton->setBounds(400, 88, 271, 32);
+    openProjectButton->setBounds(400, 16, 271, 32);
 
     this->createProjectComboSource.reset(new MobileComboBox::Primer());
     this->addAndMakeVisible(createProjectComboSource.get());
 
-    createProjectComboSource->setBounds(400, 124, 271, 140);
+    createProjectComboSource->setBounds(400, 52, 271, 140);
 
     this->skew.reset(new SeparatorVerticalSkew());
     this->addAndMakeVisible(skew.get());
-    this->backgroundA.reset(new PanelBackgroundA());
-    this->addAndMakeVisible(backgroundA.get());
     this->logo.reset(new SpectralLogo());
     this->addAndMakeVisible(logo.get());
 
@@ -62,25 +73,19 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
 
     this->projectsList.reset(new DashboardMenu(&App::Workspace()));
     this->addAndMakeVisible(projectsList.get());
+
     this->createProjectButton.reset(new CreateProjectButton());
     this->addAndMakeVisible(createProjectButton.get());
-    createProjectButton->setBounds(400, 124, 271, 32);
+    createProjectButton->setBounds(400, 52, 271, 32);
 
     this->separator2.reset(new SeparatorHorizontalFadingReversed());
     this->addAndMakeVisible(separator2.get());
-    separator2->setBounds(264, 80, 488, 3);
-
-    this->loginButton.reset(new LoginButton());
-    this->addAndMakeVisible(loginButton.get());
-    loginButton->setBounds(400, 40, 272, 32);
-
-    this->userProfile.reset(new UserProfileComponent());
-    this->addAndMakeVisible(userProfile.get());
-    userProfile->setBounds(400, 40, 272, 32);
-
     this->updatesInfo.reset(new UpdatesInfoComponent());
     this->addAndMakeVisible(updatesInfo.get());
     updatesInfo->setBounds(78, 352, 204, 172);
+
+    this->patreonButton.reset(new OverlayButton());
+    this->addAndMakeVisible(patreonButton.get());
 
 
     //[UserPreSize]
@@ -88,11 +93,15 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
 
-    this->patreonButton = make<HyperlinkButton>(TRANS(I18n::Common::supportProject),
-        URL("https://www.patreon.com/peterrudenko"));
-    this->patreonButton->setColour(HyperlinkButton::textColourId,
+    this->patreonLabel->setText(TRANS(I18n::Common::supportProject), dontSendNotification);
+    this->patreonLabel->setColour(Label::textColourId,
         findDefaultColour(Label::textColourId).withMultipliedAlpha(0.25f));
-    this->addAndMakeVisible(this->patreonButton.get());
+
+    this->patreonButton->onClick = []()
+    {
+        URL url("https://www.patreon.com/peterrudenko");
+        url.launchInDefaultBrowser();
+    };
     //[/UserPreSize]
 
     this->setSize(600, 400);
@@ -109,24 +118,26 @@ Dashboard::~Dashboard()
     App::Workspace().getUserProfile().removeChangeListener(this);
     //[/Destructor_pre]
 
+    backgroundA = nullptr;
+    patreonLabel = nullptr;
+    userProfile = nullptr;
+    loginButton = nullptr;
     backgroundB = nullptr;
     openProjectButton = nullptr;
     createProjectComboSource = nullptr;
     skew = nullptr;
-    backgroundA = nullptr;
     logo = nullptr;
     projectsList = nullptr;
     createProjectButton = nullptr;
     separator2 = nullptr;
-    loginButton = nullptr;
-    userProfile = nullptr;
     updatesInfo = nullptr;
+    patreonButton = nullptr;
 
     //[Destructor]
     //[/Destructor]
 }
 
-void Dashboard::paint (juce::Graphics& g)
+void Dashboard::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -138,13 +149,17 @@ void Dashboard::paint (juce::Graphics& g)
 void Dashboard::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    this->patreonButton->setBounds(88, getHeight() - 33, 184, 21);
     //[/UserPreResize]
 
+    backgroundA->setBounds(0, 0, 320, getHeight() - 0);
+    patreonLabel->setBounds(48, getHeight() - 9 - 32, 264, 32);
+    userProfile->setBounds(48, getHeight() - 51 - 56, 264, 56);
+    loginButton->setBounds(48, getHeight() - 51 - 56, 264, 56);
     backgroundB->setBounds(getWidth() - (getWidth() - 384), 0, getWidth() - 384, getHeight() - 0);
     skew->setBounds(0 + 320, 0, 64, getHeight() - 0);
-    backgroundA->setBounds(0, 0, 320, getHeight() - 0);
     projectsList->setBounds(getWidth() - 10 - 376, getHeight() - 10 - (getHeight() - 20), 376, getHeight() - 20);
+    separator2->setBounds(48, getHeight() - 44 - 3, 264, 3);
+    patreonButton->setBounds(48, getHeight() - 9 - 32, 264, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -184,42 +199,49 @@ BEGIN_JUCER_METADATA
           fontname="Georgia" fontsize="55.0" kerning="0.0" bold="1" italic="0"
           justification="36" typefaceStyle="Bold"/>
   </BACKGROUND>
+  <JUCERCOMP name="" id="981ceff5817d7b34" memberName="backgroundA" virtualName=""
+             explicitFocusOrder="0" pos="0 0 320 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
+             constructorParams=""/>
+  <LABEL name="" id="979d32499fd207d" memberName="patreonLabel" virtualName=""
+         explicitFocusOrder="0" pos="48 9Rr 264 32" labelText="" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="16.0" kerning="0.0" bold="0" italic="0" justification="36"/>
+  <GENERICCOMPONENT name="" id="f5d48eba3545f546" memberName="userProfile" virtualName=""
+                    explicitFocusOrder="0" pos="48 51Rr 264 56" class="UserProfileComponent"
+                    params=""/>
+  <GENERICCOMPONENT name="" id="2ed6285515243e89" memberName="loginButton" virtualName=""
+                    explicitFocusOrder="0" pos="48 51Rr 264 56" class="LoginButton"
+                    params=""/>
   <JUCERCOMP name="" id="9e61167b79cef28c" memberName="backgroundB" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 384M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="13e51011dd762205" memberName="openProjectButton"
-             virtualName="" explicitFocusOrder="0" pos="400 88 271 32" sourceFile="Menu/OpenProjectButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="400 16 271 32" sourceFile="Menu/OpenProjectButton.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="createProjectComboSource"
-                    virtualName="" explicitFocusOrder="0" pos="400 124 271 140" class="MobileComboBox::Primer"
+                    virtualName="" explicitFocusOrder="0" pos="400 52 271 140" class="MobileComboBox::Primer"
                     params=""/>
   <JUCERCOMP name="" id="9bde1b4dd587d5fb" memberName="skew" virtualName=""
              explicitFocusOrder="0" pos="0R 0 64 0M" posRelativeX="981ceff5817d7b34"
              sourceFile="../../Themes/SeparatorVerticalSkew.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="981ceff5817d7b34" memberName="backgroundA" virtualName=""
-             explicitFocusOrder="0" pos="0 0 320 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logo" virtualName=""
                     explicitFocusOrder="0" pos="40 32 280 280" class="SpectralLogo"
                     params=""/>
-  <JUCERCOMP name="" id="25591a755b533290" memberName="projectsList" virtualName=""
-             explicitFocusOrder="0" pos="10Rr 10Rr 376 20M" sourceFile="Menu/DashboardMenu.cpp"
-             constructorParams="&amp;App::Workspace()"/>
+  <GENERICCOMPONENT name="" id="25591a755b533290" memberName="projectsList" virtualName=""
+                    explicitFocusOrder="0" pos="10Rr 10Rr 376 20M" class="DashboardMenu"
+                    params="&amp;App::Workspace()"/>
   <JUCERCOMP name="" id="c748db515539334" memberName="createProjectButton"
-             virtualName="" explicitFocusOrder="0" pos="400 124 271 32" sourceFile="Menu/CreateProjectButton.cpp"
+             virtualName="" explicitFocusOrder="0" pos="400 52 271 32" sourceFile="Menu/CreateProjectButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="26985c577d404f94" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="264 80 488 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="2ed6285515243e89" memberName="loginButton" virtualName=""
-             explicitFocusOrder="0" pos="400 40 272 32" sourceFile="Menu/LoginButton.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="f5d48eba3545f546" memberName="userProfile" virtualName=""
-             explicitFocusOrder="0" pos="400 40 272 32" sourceFile="UserProfileComponent.cpp"
+             explicitFocusOrder="0" pos="48 44Rr 264 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2558009f569f191b" memberName="updatesInfo" virtualName=""
              explicitFocusOrder="0" pos="78 352 204 172" sourceFile="UpdatesInfoComponent.cpp"
              constructorParams=""/>
+  <GENERICCOMPONENT name="" id="80c9e93105d4044" memberName="patreonButton" virtualName=""
+                    explicitFocusOrder="0" pos="48 9Rr 264 32" class="OverlayButton"
+                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

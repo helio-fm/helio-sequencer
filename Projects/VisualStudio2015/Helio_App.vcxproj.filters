@@ -1156,9 +1156,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\LoginButton.cpp">
-      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
     </ClCompile>
@@ -1169,9 +1166,6 @@
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp">
-      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp">

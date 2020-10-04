@@ -17,37 +17,52 @@
 
 #pragma once
 
-//[Headers]
 #include "IconComponent.h"
 #include "OverlayButton.h"
-//[/Headers]
-
-#include "../../../Themes/SeparatorVertical.h"
+#include "Network.h"
+#include "SessionService.h"
 
 class LoginButton final : public Component
 {
 public:
 
-    LoginButton();
-    ~LoginButton();
+    LoginButton()
+    {
+        this->avatar = make<IconComponent>(Icons::github);
+        this->addAndMakeVisible(this->avatar.get());
 
-    //[UserMethods]
-    //[/UserMethods]
+        this->ctaLabel = make<Label>(String(), TRANS(I18n::Dialog::authGithub));
+        this->addAndMakeVisible(this->ctaLabel.get());
+        this->ctaLabel->setFont({ 16.f });
+        this->ctaLabel->setJustificationType(Justification::centred);
+        this->ctaLabel->setColour(Label::textColourId,
+            findDefaultColour(Label::textColourId).withMultipliedAlpha(0.35f));
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        this->clickHandler = make<OverlayButton>();
+        this->addAndMakeVisible(this->clickHandler.get());
 
+        this->clickHandler->onClick = []() {
+            App::Network().getSessionService()->signIn("Github");
+        };
+    }
+
+    void resized() override
+    {
+        static constexpr auto imageSize = 20;
+        static Rectangle<int> imageBounds(0, 0, imageSize, imageSize);
+        this->clickHandler->setBounds(this->getLocalBounds());
+        this->ctaLabel->setBounds(this->getLocalBounds()
+            .withTrimmedTop(imageSize));
+        this->avatar->setBounds(imageBounds
+            .withCentre(this->getLocalBounds().getCentre())
+            .withY(4));
+    }
 
 private:
 
-    //[UserVariables]
-    void switchToUserProfile();
-    //[/UserVariables]
-
     UniquePointer<IconComponent> avatar;
-    UniquePointer<SeparatorVertical> separator;
     UniquePointer<Label> ctaLabel;
     UniquePointer<OverlayButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LoginButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LoginButton)
 };

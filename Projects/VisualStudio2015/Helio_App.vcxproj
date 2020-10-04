@@ -450,12 +450,10 @@
     <ClCompile Include="..\..\Source\UI\Menus\WorkspaceMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\DashboardMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\LoginButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Dashboard.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.cpp"/>

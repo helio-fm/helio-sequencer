@@ -17,21 +17,14 @@
 
 #pragma once
 
-//[Headers]
 class Workspace;
 #include "UserProfile.h"
-//[/Headers]
 
-
-class DashboardMenu final : public Component,
-                            public ListBoxModel
+class DashboardMenu final : public Component, public ListBoxModel
 {
 public:
 
-    DashboardMenu(Workspace *parentWorkspace);
-    ~DashboardMenu();
-
-    //[UserMethods]
+    explicit DashboardMenu(Workspace *parentWorkspace);
 
     void updateListContent();
     void loadFile(RecentProjectInfo::Ptr fileDescription);
@@ -41,26 +34,19 @@ public:
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
-    Component *refreshComponentForRow(int, bool, Component *) override;
-    void listBoxItemClicked(int row, const MouseEvent &e) override;
     int getNumRows() override;
-    void paintListBoxItem(int, Graphics &, int, int, bool) override;
+    Component *refreshComponentForRow(int, bool, Component *) override;
+    void listBoxItemClicked(int row, const MouseEvent &e) override {}
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
-
 
 private:
 
-    //[UserVariables]
     Workspace *workspace;
     FlatHashSet<String, StringHash> loadedProjectIds;
-    //[/UserVariables]
 
     UniquePointer<ListBox> listBox;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DashboardMenu)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DashboardMenu)
 };

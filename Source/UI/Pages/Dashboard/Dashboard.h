@@ -19,26 +19,18 @@
 
 //[Headers]
 class IconComponent;
-class RecentFilesComponent;
-class RootNode;
 class MainLayout;
-class ComponentsList;
 class SpectralLogo;
-class AudioSettings;
-class ThemeSettings;
-class OpenGLSettings;
-class Log;
+class UserProfileComponent;
+class LoginButton;
 //[/Headers]
 
+#include "../../Themes/PanelBackgroundA.h"
 #include "../../Themes/PanelBackgroundB.h"
 #include "Menu/OpenProjectButton.h"
 #include "../../Themes/SeparatorVerticalSkew.h"
-#include "../../Themes/PanelBackgroundA.h"
-#include "Menu/DashboardMenu.h"
 #include "Menu/CreateProjectButton.h"
 #include "../../Themes/SeparatorHorizontalFadingReversed.h"
-#include "Menu/LoginButton.h"
-#include "UserProfileComponent.h"
 #include "UpdatesInfoComponent.h"
 
 class Dashboard final : public Component,
@@ -52,7 +44,7 @@ public:
     //[UserMethods]
     //[/UserMethods]
 
-    void paint (juce::Graphics& g) override;
+    void paint (Graphics& g) override;
     void resized() override;
 
 
@@ -65,22 +57,22 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void updateProfileViews();
 
-    UniquePointer<Component> patreonButton;
-
     //[/UserVariables]
 
+    UniquePointer<PanelBackgroundA> backgroundA;
+    UniquePointer<Label> patreonLabel;
+    UniquePointer<UserProfileComponent> userProfile;
+    UniquePointer<LoginButton> loginButton;
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<OpenProjectButton> openProjectButton;
     UniquePointer<MobileComboBox::Primer> createProjectComboSource;
     UniquePointer<SeparatorVerticalSkew> skew;
-    UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<SpectralLogo> logo;
     UniquePointer<DashboardMenu> projectsList;
     UniquePointer<CreateProjectButton> createProjectButton;
     UniquePointer<SeparatorHorizontalFadingReversed> separator2;
-    UniquePointer<LoginButton> loginButton;
-    UniquePointer<UserProfileComponent> userProfile;
     UniquePointer<UpdatesInfoComponent> updatesInfo;
+    UniquePointer<OverlayButton> patreonButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
 };

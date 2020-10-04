@@ -17,37 +17,72 @@
 
 #pragma once
 
-//[Headers]
-#include "IconComponent.h"
+#include "Workspace.h"
+#include "UserProfile.h"
 #include "OverlayButton.h"
-//[/Headers]
-
-#include "../../Themes/SeparatorVertical.h"
 
 class UserProfileComponent final : public Component
 {
 public:
 
-    UserProfileComponent();
-    ~UserProfileComponent();
+    UserProfileComponent()
+    {
+        this->nameLabel = make<Label>();
+        this->addAndMakeVisible(this->nameLabel.get());
+        this->nameLabel->setFont({ 16.f });
+        this->nameLabel->setJustificationType(Justification::centred);
+        this->nameLabel->setColour(Label::textColourId,
+            findDefaultColour(Label::textColourId).withMultipliedAlpha(0.35f));
 
-    //[UserMethods]
-    void updateProfileInfo();
-    //[/UserMethods]
+        this->avatar = make<IconComponent>(Icons::github);
+        this->addAndMakeVisible(this->avatar.get());
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        this->clickHandler = make<OverlayButton>();
+        this->addAndMakeVisible(this->clickHandler.get());
+        // hidden at the moment, the user page is not implemented
+        this->clickHandler->setVisible(false);
+    }
 
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colours::black.withAlpha(0.35f));
+        g.fillRect(this->avatar->getBounds().expanded(2, -1));
+        g.fillRect(this->avatar->getBounds().expanded(-1, 2));
+        g.setColour(Colours::white.withAlpha(0.25f));
+        g.fillRect(this->avatar->getBounds().expanded(1, 0));
+        g.fillRect(this->avatar->getBounds().expanded(0, 1));
+    }
+
+    void resized() override
+    {
+        static constexpr auto imageSize = 16;
+        static Rectangle<int> imageBounds(0, 0, imageSize, imageSize);
+        this->clickHandler->setBounds(this->getLocalBounds());
+        this->nameLabel->setBounds(this->getLocalBounds()
+            .withTrimmedTop(imageSize));
+        this->avatar->setBounds(imageBounds
+            .withCentre(this->getLocalBounds().getCentre())
+            .withY(4));
+    }
+
+    void updateProfileInfo()
+    {
+        const auto &userProfile = App::Workspace().getUserProfile();
+        if (userProfile.isLoggedIn())
+        {
+            this->avatar->setIconImage(userProfile.getAvatar());
+            this->nameLabel->setText("/" + userProfile.getLogin(), dontSendNotification);
+            //this->clickHandler->onClick = []() {
+            //    URL(App::Workspace().getUserProfile().getProfileUrl()).launchInDefaultBrowser();
+            //};
+        }
+    }
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
-
     UniquePointer<Label> nameLabel;
     UniquePointer<IconComponent> avatar;
-    UniquePointer<SeparatorVertical> separator;
     UniquePointer<OverlayButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserProfileComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserProfileComponent)
 };
