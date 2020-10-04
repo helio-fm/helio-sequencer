@@ -4,6 +4,15 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.2
+ - Added tempo dialog with "tap tempo" control, invoked either by clicking at tempo track nodes, or by hitting "Set one tempo" menu item in project->refactor menu or tempo track context menu
+ - Fixed the old and super annoying rows tiling bug in OpenGL mode
+ - Context menus in the sequencer are now only available via long right-click: instant rclick menu often gets in the way when misclicking / trying to switch to another track
+ - Playback: will compute states of all present CC automations at the playhead position and apply them when playback starts, which helps a lot if you use pedal tracks or similar automations
+ - Orchestra pit: if some instrument hasn't loaded properly (e.g. plugin file missing), then the last valid instrument settings will be preserved in hope that it can be loaded correctly in the next launches; invalid instruments are shown as greyed out in the orchestra pit page, they also can be deleted, or made valid by adding a plugin node
+ - Key signature dialog: right-click on any key will play the key
+ - Lots of UI updates: tidied up the project info page and the dashboard, updated the colours list and the breadcrumbs control
+
 ## Version 3.1
  - Added right-click context menus in the sequencer, version control and orchestra pit pages: the menu content is always the same as in the breadcrumbs control tail menu
  - Added a command to bring up the current instrument's window, hotkey F4
