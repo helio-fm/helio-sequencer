@@ -49,6 +49,12 @@ public:
         this->repaint();
     }
 
+    void setIconAlphaMultiplier(float alpha)
+    {
+        this->alpha = alpha;
+        this->repaint();
+    }
+
     void resized() override
     {
         this->repaint();

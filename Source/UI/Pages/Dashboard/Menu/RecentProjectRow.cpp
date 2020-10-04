@@ -150,14 +150,27 @@ void RecentProjectRow::updateDescription(const RecentProjectInfo::Ptr file, bool
 
     this->titleLabel->setText(this->targetFile->getTitle(), dontSendNotification);
     this->dateLabel->setText(App::getHumanReadableDate(this->targetFile->getUpdatedAt()), dontSendNotification);
-    this->remoteIndicatorImage->setAlpha(this->targetFile->hasRemoteCopy() ? 1.f : 0.3f);
-    this->localIndicatorImage->setAlpha(this->targetFile->hasLocalCopy() ? 1.f : 0.3f);
 
-    this->activenessImage->setAlpha(this->isFileLoaded ? 1.f : 0.7f);
-    //this->titleLabel->setAlpha(this->targetFile->isLoaded ? 1.f : 0.6f);
-    //this->dateLabel->setAlpha(this->targetFile->isLoaded ? 1.f : 0.5f);
+    const float totalAlpha = this->isFileLoaded ? 1.f : 0.5f;
 
-    this->setAlpha(this->isFileLoaded ? 1.f : 0.5f);
+    const float remoteIndicatorAlpha = totalAlpha *
+        (this->targetFile->hasRemoteCopy() ? 1.f : 0.3f);
+
+    const float localIndicatorAlpha = totalAlpha *
+        (this->targetFile->hasLocalCopy() ? 1.f : 0.3f);
+
+    const float loadIndicatorAlpha = totalAlpha *
+        (this->isFileLoaded ? 1.f : 0.7f);
+
+    this->remoteIndicatorImage->setIconAlphaMultiplier(remoteIndicatorAlpha);
+    this->localIndicatorImage->setIconAlphaMultiplier(localIndicatorAlpha);
+    this->activenessImage->setIconAlphaMultiplier(loadIndicatorAlpha);
+
+    this->titleLabel->setColour(Label::textColourId,
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(totalAlpha));
+
+    this->dateLabel->setColour(Label::textColourId,
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(totalAlpha));
 }
 
 Component *RecentProjectRow::createHighlighterComponent()

@@ -40,7 +40,7 @@ NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)
 
     //[UserPreSize]
     this->setAlpha(0.f);
-    this->resizeIcon->setAlpha(0.5f);
+    this->resizeIcon->setIconAlphaMultiplier(0.5f);
     this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
     this->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
@@ -113,14 +113,14 @@ bool NoteResizerRight::hitTest (int x, int y)
 void NoteResizerRight::mouseEnter (const MouseEvent& e)
 {
     //[UserCode_mouseEnter] -- Add your code here...
-    this->resizeIcon->setAlpha(1.f);
+    this->resizeIcon->setIconAlphaMultiplier(1.f);
     //[/UserCode_mouseEnter]
 }
 
 void NoteResizerRight::mouseExit (const MouseEvent& e)
 {
     //[UserCode_mouseExit] -- Add your code here...
-    this->resizeIcon->setAlpha(0.5f);
+    this->resizeIcon->setIconAlphaMultiplier(0.5f);
     //[/UserCode_mouseExit]
 }
 

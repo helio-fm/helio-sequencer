@@ -87,10 +87,10 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
     switch (this->viewState)
     {
     case VCS::Revision::NoSync:
-        this->remoteIndicatorImage->setAlpha(0.15f);
+        this->remoteIndicatorImage->setIconAlphaMultiplier(0.15f);
         break;
     case VCS::Revision::ShallowCopy:
-        this->localIndicatorImage->setAlpha(0.15f);
+        this->localIndicatorImage->setIconAlphaMultiplier(0.15f);
         break;
     case VCS::Revision::FullSync:
     default:
