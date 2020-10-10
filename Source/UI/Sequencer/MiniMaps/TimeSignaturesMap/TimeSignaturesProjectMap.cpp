@@ -260,11 +260,10 @@ void TimeSignaturesProjectMap::onChangeProjectBeatRange(float firstBeat, float l
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
 
-    if (this->rollFirstBeat > firstBeat ||
-        this->rollLastBeat < lastBeat)
+    if (this->rollFirstBeat > firstBeat || this->rollLastBeat < lastBeat)
     {
-        this->rollFirstBeat = firstBeat;
-        this->rollLastBeat = lastBeat;
+        this->rollFirstBeat = jmin(firstBeat, this->rollFirstBeat);
+        this->rollLastBeat = jmax(lastBeat, this->rollLastBeat);
         this->resized();
     }
     else
@@ -275,11 +274,13 @@ void TimeSignaturesProjectMap::onChangeProjectBeatRange(float firstBeat, float l
 
 void TimeSignaturesProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-    this->rollFirstBeat = firstBeat;
-    this->rollLastBeat = lastBeat;
-    this->resized();
+    if (this->rollFirstBeat != firstBeat || this->rollLastBeat != lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Private

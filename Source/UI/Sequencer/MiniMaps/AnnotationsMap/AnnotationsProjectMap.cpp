@@ -227,20 +227,22 @@ void AnnotationsProjectMap::onChangeProjectBeatRange(float firstBeat, float last
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
 
-    if (this->rollFirstBeat > firstBeat ||
-        this->rollLastBeat < lastBeat)
+    if (this->rollFirstBeat > firstBeat || this->rollLastBeat < lastBeat)
     {
-        this->rollFirstBeat = firstBeat;
-        this->rollLastBeat = lastBeat;
+        this->rollFirstBeat = jmin(firstBeat, this->rollFirstBeat);
+        this->rollLastBeat = jmax(lastBeat, this->rollLastBeat);
         this->resized();
     }
 }
 
 void AnnotationsProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-    this->rollFirstBeat = firstBeat;
-    this->rollLastBeat = lastBeat;
-    this->resized();
+    if (this->rollFirstBeat != firstBeat || this->rollLastBeat != lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
 }
 
 void AnnotationsProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)

@@ -617,20 +617,20 @@ void VelocityProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBea
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
 
-    if (this->rollFirstBeat > firstBeat ||
-        this->rollLastBeat < lastBeat)
+    if (this->rollFirstBeat > firstBeat || this->rollLastBeat < lastBeat)
     {
-        this->rollFirstBeat = firstBeat;
-        this->rollLastBeat = lastBeat;
-        //this->resized(); // seems to cause glitches sometimes?
+        this->rollFirstBeat = jmin(firstBeat, this->rollFirstBeat);
+        this->rollLastBeat = jmax(lastBeat, this->rollLastBeat);
     }
 }
 
 void VelocityProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-    this->rollFirstBeat = firstBeat;
-    this->rollLastBeat = lastBeat;
-    //this->resized(); // seems to cause glitches sometimes?
+    if (this->rollFirstBeat != firstBeat || this->rollLastBeat != lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+    }
 }
 
 void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
