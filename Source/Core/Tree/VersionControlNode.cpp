@@ -166,7 +166,7 @@ void VersionControlNode::toggleQuickStash()
 // Tree
 //===----------------------------------------------------------------------===//
 
-void VersionControlNode::onNodeAddedToTree(bool sendNotifications)
+void VersionControlNode::onNodeAddToTree(bool sendNotifications)
 {
     // Could be still uninitialized at this moment
     if (this->vcs == nullptr)
@@ -176,7 +176,7 @@ void VersionControlNode::onNodeAddedToTree(bool sendNotifications)
     }
 }
 
-void VersionControlNode::onNodeDeletedFromTree(bool sendNotifications)
+void VersionControlNode::onNodeRemoveFromTree(bool sendNotifications)
 {
     this->shutdownEditor();
     this->shutdownVCS();

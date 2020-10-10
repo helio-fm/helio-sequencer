@@ -184,34 +184,39 @@ void TreeNode::nodeSelectionChanged(bool isNowSelected)
 
 bool TreeNode::deleteNode(TreeNode *nodeToDelete, bool sendNotifications)
 {
-    if (!nodeToDelete) { return false; }
-    if (nodeToDelete->getRootNode() == nodeToDelete) { return false; }
+    if (nodeToDelete == nullptr ||
+        nodeToDelete->getRootNode() == nodeToDelete)
+    {
+        return false;
+    }
+
     const bool shouldRefocus = nodeToDelete->isSelected();
     
     WeakReference<TreeNode> root = nodeToDelete->getRootNode();
-    WeakReference<TreeNode> parent = nodeToDelete->findParentOfType<ProjectNode>();
+    WeakReference<TreeNode> parentProject = nodeToDelete->findParentOfType<ProjectNode>();
 
-    nodeToDelete->onNodeDeletedFromTree(sendNotifications);
+    nodeToDelete->onNodeRemoveFromTree(sendNotifications);
     delete nodeToDelete;
 
-    if (parent != nullptr)
+    if (parentProject != nullptr)
     {
-        parent->sendChangeMessage();
+        parentProject->onNodeChildPostRemove(sendNotifications);
     }
 
-    const auto notificationType = sendNotifications ? sendNotification : dontSendNotification;
+    const auto notificationType = sendNotifications ?
+        sendNotification : dontSendNotification;
 
     if (shouldRefocus)
     {
-        if (parent != nullptr)
+        if (parentProject != nullptr)
         {
-            if (auto *sibling = parent->findChildOfType<MidiTrackNode>())
+            if (auto *sibling = parentProject->findChildOfType<MidiTrackNode>())
             {
                 sibling->setSelected(notificationType);
             }
             else
             {
-                parent->setSelected(notificationType);
+                parentProject->setSelected(notificationType);
             }
         }
         else if (root != nullptr)
@@ -250,7 +255,7 @@ void TreeNode::removeNodeFromParent()
 
 static void notifySubtreeParentChanged(TreeNode *node, bool sendNotifications)
 {
-    node->onNodeAddedToTree(sendNotifications);
+    node->onNodeAddToTree(sendNotifications);
 
     for (int i = 0; i < node->getNumChildren(); ++i)
     {

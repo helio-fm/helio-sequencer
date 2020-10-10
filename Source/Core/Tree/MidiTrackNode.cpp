@@ -437,7 +437,7 @@ ProjectNode *MidiTrackNode::getProject() const noexcept
 // Add to tree and remove from tree callbacks
 //===----------------------------------------------------------------------===//
 
-void MidiTrackNode::onNodeAddedToTree(bool sendNotifications)
+void MidiTrackNode::onNodeAddToTree(bool sendNotifications)
 {
     auto *newParent = this->findParentOfType<ProjectNode>();
     jassert(newParent != nullptr);
@@ -453,7 +453,7 @@ void MidiTrackNode::onNodeAddedToTree(bool sendNotifications)
     }
 }
 
-void MidiTrackNode::onNodeDeletedFromTree(bool sendNotifications)
+void MidiTrackNode::onNodeRemoveFromTree(bool sendNotifications)
 {
     this->lastFoundParent = this->findParentOfType<ProjectNode>();
     if (this->lastFoundParent != nullptr)

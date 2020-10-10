@@ -228,6 +228,7 @@ bool Pattern::change(const Clip &oldParams, const Clip &newParams, bool undoable
             this->clips.remove(index, false);
             this->clips.addSorted(*changedClip, changedClip);
             this->notifyClipChanged(oldParams, *changedClip);
+            this->updateBeatRange(true);
             return true;
         }
 

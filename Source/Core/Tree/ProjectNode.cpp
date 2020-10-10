@@ -335,6 +335,21 @@ UniquePointer<Component> ProjectNode::createMenu()
 }
 
 //===----------------------------------------------------------------------===//
+// Tree
+//===----------------------------------------------------------------------===//
+
+void ProjectNode::onNodeChildPostRemove(bool sendNotifications)
+{
+    // a track have removed, the range might have changed:
+    if (sendNotifications)
+    {
+        this->broadcastChangeProjectBeatRange();
+    }
+
+    TreeNode::onNodeChildPostRemove(sendNotifications);
+}
+
+//===----------------------------------------------------------------------===//
 // Undos
 //===----------------------------------------------------------------------===//
 

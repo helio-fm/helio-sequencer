@@ -167,10 +167,17 @@ public:
     //===------------------------------------------------------------------===//
 
     void addChildNode(TreeNode *child, int insertIndex = -1, bool sendNotifications = true);
-    virtual void onNodeAddedToTree(bool sendNotifications) {}
+    virtual void onNodeAddToTree(bool sendNotifications) {}
 
     static bool deleteNode(TreeNode *nodeToDelete, bool sendNotifications);
-    virtual void onNodeDeletedFromTree(bool sendNotifications) {}
+    virtual void onNodeRemoveFromTree(bool sendNotifications) {}
+
+    virtual void onNodeChildPostRemove(bool sendNotifications)
+    {
+        // TreeNode is also HeadlineItemDataSource,
+        // let's notify headline so it can rebuild itself:
+        this->sendChangeMessage();
+    }
 
     //===------------------------------------------------------------------===//
     // Serializable

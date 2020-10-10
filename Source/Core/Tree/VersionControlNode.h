@@ -44,8 +44,8 @@ public:
     // Tree
     //===------------------------------------------------------------------===//
 
-    void onNodeAddedToTree(bool sendNotifications) override;
-    void onNodeDeletedFromTree(bool sendNotifications) override;
+    void onNodeAddToTree(bool sendNotifications) override;
+    void onNodeRemoveFromTree(bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
     // Network
