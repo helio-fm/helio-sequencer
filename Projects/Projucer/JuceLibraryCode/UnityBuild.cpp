@@ -61,6 +61,7 @@
 #include "../../Source/Core/Midi/Sequences/MidiSequence.cpp"
 #include "../../Source/Core/Midi/Sequences/PianoSequence.cpp"
 #include "../../Source/Core/Midi/Sequences/TimeSignaturesSequence.cpp"
+#include "../../Source/Core/Midi/KeyboardMapping.cpp"
 #include "../../Source/Core/Midi/MidiTrack.cpp"
 #include "../../Source/Core/Network/Requests/BackendRequest.cpp"
 #include "../../Source/Core/Network/Requests/UserConfigSyncThread.cpp"

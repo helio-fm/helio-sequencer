@@ -359,6 +359,10 @@
             <FILE id="czxRrv" name="TimeSignaturesSequence.h" compile="0" resource="0"
                   file="../../Source/Core/Midi/Sequences/TimeSignaturesSequence.h"/>
           </GROUP>
+          <FILE id="nVu55t" name="KeyboardMapping.cpp" compile="1" resource="0"
+                file="../../Source/Core/Midi/KeyboardMapping.cpp"/>
+          <FILE id="nBc4qJ" name="KeyboardMapping.h" compile="0" resource="0"
+                file="../../Source/Core/Midi/KeyboardMapping.h"/>
           <FILE id="MrLUNm" name="MidiTrack.cpp" compile="1" resource="0" file="../../Source/Core/Midi/MidiTrack.cpp"/>
           <FILE id="BA8BhP" name="MidiTrack.h" compile="0" resource="0" file="../../Source/Core/Midi/MidiTrack.h"/>
         </GROUP>

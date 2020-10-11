@@ -305,6 +305,9 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\KeyboardMapping.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2942,6 +2945,7 @@
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\MidiSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\PianoSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h"/>
+    <ClInclude Include="..\..\Source\Core\Midi\KeyboardMapping.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\ApiModel.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\AppInfoDto.h"/>

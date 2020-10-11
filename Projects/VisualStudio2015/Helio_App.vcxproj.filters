@@ -778,6 +778,9 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\KeyboardMapping.cpp">
+      <Filter>Helio\Source\Core\Midi</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <Filter>Helio\Source\Core\Midi</Filter>
     </ClCompile>
@@ -3659,6 +3662,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\KeyboardMapping.h">
+      <Filter>Helio\Source\Core\Midi</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h">
       <Filter>Helio\Source\Core\Midi</Filter>

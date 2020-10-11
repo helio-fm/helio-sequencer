@@ -1004,6 +1004,13 @@
 			path = ../../Source/UI/Menus/SelectionMenus/VersionControlHistorySelectionMenu.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		22CC4D06D27C283E6D1B6EAB = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = KeyboardMapping.cpp;
+			path = ../../Source/Core/Midi/KeyboardMapping.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		2308032CB837C17B8FC90E20 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1590,6 +1597,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = SettingsNode.h;
 			path = ../../Source/Core/Tree/SettingsNode.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		3D0030FE9BAAFF68121AAE78 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = KeyboardMapping.h;
+			path = ../../Source/Core/Midi/KeyboardMapping.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		3D44010B9B71C7D67121D6C9 = {
@@ -6185,6 +6199,8 @@
 			children = (
 				2FCDEC922FFB91C90E0B8040,
 				1AC3B665D3DD3C0D868C4C72,
+				22CC4D06D27C283E6D1B6EAB,
+				3D0030FE9BAAFF68121AAE78,
 				F2FCCDE78737C5ADD5E74958,
 				C52FDE16CA6513A17EE2595F,
 			);

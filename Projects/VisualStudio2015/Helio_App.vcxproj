@@ -324,6 +324,7 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\MidiSequence.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\PianoSequence.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Midi\KeyboardMapping.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\BackendRequest.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\UserConfigSyncThread.cpp"/>
@@ -2515,6 +2516,7 @@
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\MidiSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\PianoSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h"/>
+    <ClInclude Include="..\..\Source\Core\Midi\KeyboardMapping.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\ApiModel.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\AppInfoDto.h"/>
