@@ -20,7 +20,7 @@
 #include "Serializable.h"
 #include "Note.h"
 
-class KeyboardMapping
+class KeyboardMapping : public Serializable
 {
 public:
 
@@ -28,6 +28,7 @@ public:
 
     virtual void map(Note::Key &key, int &channel) = 0;
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE(KeyboardMapping)
 };
 
 class SimpleKeyboardMapping final : public KeyboardMapping
@@ -37,27 +38,25 @@ public:
     void map(Note::Key &key, int &channel) noexcept override
     {
         key = key % Globals::twelveToneKeyboardSize;
-        channel += (key / Globals::twelveToneKeyboardSize);
+        channel = key / Globals::twelveToneKeyboardSize;
     }
+
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
+    void reset() override;
 };
 
-class ScalaKeyboardMapping final : public KeyboardMapping, public Serializable
+class CustomKeyboardMapping final : public KeyboardMapping
 {
 public:
 
-    ScalaKeyboardMapping();
+    CustomKeyboardMapping();
 
     void map(Note::Key &key, int &channel) noexcept override
     {
-        const auto keyIndex = key % Globals::twelveToneKeyboardSize;
-        const auto channelIndex = (key / Globals::twelveToneKeyboardSize);
-        key = this->map[keyIndex][channelIndex];
-        channel += channelIndex; // or just = ?
+        channel = this->index[key].channel;
+        key = this->index[key].key;
     }
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
 
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
@@ -67,6 +66,18 @@ public:
 
 private:
 
-    Note::Key map[Globals::twelveToneKeyboardSize][Globals::numChannels];
+    static constexpr auto maxMappedKeys = 1024;
+
+    struct MidiKeyAndChannel final
+    {
+        MidiKeyAndChannel() = default;
+        MidiKeyAndChannel(int8 key, int8 channel) :
+            key(key), channel(channel) {}
+
+        int8 key = 0;
+        int8 channel = 0;
+    };
+
+    MidiKeyAndChannel index[maxMappedKeys];
 
 };

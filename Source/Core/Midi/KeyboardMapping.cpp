@@ -18,28 +18,34 @@
 #include "Common.h"
 #include "KeyboardMapping.h"
 
-ScalaKeyboardMapping::ScalaKeyboardMapping()
+CustomKeyboardMapping::CustomKeyboardMapping()
 {
-    // todo some default mapping instead?
     this->reset();
 }
 
-SerializedData ScalaKeyboardMapping::serialize() const
+SerializedData CustomKeyboardMapping::serialize() const
+{
+    SerializedData root;
+    // todo
+    return root;
+}
+
+void CustomKeyboardMapping::deserialize(const SerializedData &data)
 {
     // todo
 }
 
-void ScalaKeyboardMapping::deserialize(const SerializedData &data)
+void CustomKeyboardMapping::reset()
 {
-    // todo
+    for (int key = 0; key < CustomKeyboardMapping::maxMappedKeys; ++key)
+    {
+        this->index[key] = {
+            int8(key % Globals::twelveToneKeyboardSize),
+            int8(key / Globals::twelveToneKeyboardSize) };
+    }
 }
 
-void ScalaKeyboardMapping::reset()
-{
-    memset(this->map, 0, sizeof(this->map));
-}
-
-void ScalaKeyboardMapping::loadScalaKbm(const Array<File> &files)
+void CustomKeyboardMapping::loadScalaKbm(const Array<File> &files)
 {
     this->reset();
 
@@ -69,13 +75,13 @@ void ScalaKeyboardMapping::loadScalaKbm(const Array<File> &files)
         // assert the name is either empty or the same (which it should be)
 
         auto kbmStream = file.createInputStream();
-        const auto lastMIDIKey = Globals::twelveToneKeyboardSize - 1;
+        const auto lastMappedKey = CustomKeyboardMapping::maxMappedKeys - 1;
 
         // read parameters
 
         int sizeOfMapPattern = Globals::twelveTonePeriodSize; // the pattern repeats every so many keys
         int firstNoteToRetune = 0;
-        int lastNoteToRetune = lastMIDIKey;
+        int lastNoteToRetune = lastMappedKey;
         int middleNote = 0; // where scale degree 0 is mapped to
         //int _referenceNote = 0; // not used
         //float _frequency = 0.f; // not used
@@ -94,27 +100,27 @@ void ScalaKeyboardMapping::loadScalaKbm(const Array<File> &files)
             switch (paramNumber++)
             {
             case 0:
-                sizeOfMapPattern = jlimit(1, lastMIDIKey, line.getIntValue());
+                sizeOfMapPattern = jlimit(1, 127, line.getIntValue());
                 break;
             case 1:
-                firstNoteToRetune = jlimit(0, lastMIDIKey, line.getIntValue());
+                firstNoteToRetune = jlimit(0, lastMappedKey, line.getIntValue());
                 break;
             case 2:
-                lastNoteToRetune = jlimit(0, lastMIDIKey, line.getIntValue());
+                lastNoteToRetune = jlimit(0, lastMappedKey, line.getIntValue());
                 jassert(firstNoteToRetune < lastNoteToRetune);
                 break;
             case 3:
-                middleNote = jlimit(0, lastMIDIKey, line.getIntValue());
-                jassert(middleNote + sizeOfMapPattern <= lastMIDIKey);
+                middleNote = jlimit(0, lastMappedKey, line.getIntValue());
+                jassert(middleNote + sizeOfMapPattern <= lastMappedKey);
                 break;
             //case 4:
-            //    _referenceNote = jlimit(0, lastMIDIKey, line.getIntValue());
+            //    _referenceNote = jlimit(0, lastMappedKey, line.getIntValue());
             //    break;
             //case 5:
             //    _frequency = jlimit(0.001f, 100000.f, line.getFloatValue());
             //    break;
             case 6:
-                periodSize = jlimit(0, lastMIDIKey, line.getIntValue());
+                periodSize = jlimit(0, 127, line.getIntValue());
                 break;
             default:
                 break;
@@ -148,7 +154,7 @@ void ScalaKeyboardMapping::loadScalaKbm(const Array<File> &files)
 
             if (!line.startsWithChar('x'))
             {
-                kbmMapping.set(i, jlimit(0, lastMIDIKey, line.getIntValue()));
+                kbmMapping.set(i, jlimit(0, lastMappedKey, line.getIntValue()));
             }
         }
 
@@ -174,12 +180,10 @@ void ScalaKeyboardMapping::loadScalaKbm(const Array<File> &files)
                     continue; // not re-tuned
                 }
 
-                this->map[key][channelNumber] = kbmMapping[keyInPeriod] +
+                const auto mappedKey = kbmMapping[keyInPeriod] +
                     (middleNote + periodNumber * periodSize);
-            }
-            else
-            {
-                this->map[key][channelNumber] = key; // default tuning
+
+                this->index[mappedKey] = { int8(key), int8(channelNumber) };
             }
         }
     }
