@@ -29,7 +29,7 @@ public:
     {
         if (component != nullptr)
         {
-            this->animateComponent(component, component->getBounds(), 0.0f, millisecondsToTake, true, 1.f, 1.f);
+            this->animateComponent(component, component->getBounds(), 0.0f, millisecondsToTake, true, 1.0, 1.0);
             component->setVisible(false);
         }
     }
@@ -40,7 +40,7 @@ public:
         {
             component->setAlpha(0.0f);
             component->setVisible(true);
-            this->animateComponent(component, component->getBounds(), 1.0f, millisecondsToTake, false, 1.f, 1.f);
+            this->animateComponent(component, component->getBounds(), 1.0f, millisecondsToTake, false, 1.0, 1.0);
         }
     }
 

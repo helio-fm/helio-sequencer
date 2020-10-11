@@ -155,7 +155,8 @@ void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
         this->keySignaturesHash[keySignature] = component;
 
         component->setAlpha(0.f);
-        this->animator.animateComponent(component, component->getBounds(), 1.f, 150, false, 0.0, 0.0);
+        this->animator.animateComponent(component,
+            component->getBounds(), 1.f, Globals::UI::fadeInLong, false, 0.0, 0.0);
     }
 }
 
@@ -168,8 +169,7 @@ void KeySignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
         if (auto *component = this->keySignaturesHash[keySignature])
         {
             this->animator.animateComponent(component,
-                                            component->getBounds(),
-                                            0.f, 150, true, 0.0, 0.0);
+                component->getBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
             this->keySignaturesHash.erase(keySignature);

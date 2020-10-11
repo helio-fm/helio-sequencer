@@ -122,7 +122,7 @@ void MobileComboBox::handleCommandMessage(int commandId)
 
         this->animator.animateComponent(this,
             this->isSimpleDropdown() ? this->getBounds() : this->editor->getBounds(),
-            0.f, 150, true, 0.0, 1.0);
+            0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
 
         this->getParentComponent()->removeChildComponent(this);
     }
@@ -256,7 +256,8 @@ void MobileComboBox::Primer::handleCommandMessage(int commandId)
 
         this->combo->setAlpha(1.f);
         this->combo->setBounds(this->textEditor->getBounds());
-        this->animator.animateComponent(this->combo.get(), this->getBounds(), 1.f, 150, false, 1.0, 0.0);
+        this->animator.animateComponent(this->combo.get(),
+            this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
     }
 }
 

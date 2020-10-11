@@ -369,15 +369,16 @@ void CommandPalette::dismiss()
 
 void CommandPalette::fadeOut()
 {
-    const int fadeoutTime = 200;
     auto &animator = Desktop::getInstance().getAnimator();
     if (App::isOpenGLRendererEnabled())
     {
-        animator.animateComponent(this, this->getBounds().reduced(30).translated(0, -30), 0.f, fadeoutTime, true, 0.0, 0.0);
+        animator.animateComponent(this, this->getBounds().reduced(20).translated(0, -20),
+            0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
     }
     else
     {
-        animator.animateComponent(this, this->getBounds(), 0.f, fadeoutTime, true, 0.0, 0.0);
+        animator.animateComponent(this, this->getBounds(),
+            0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
     }
 }
 

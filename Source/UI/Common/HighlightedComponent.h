@@ -97,7 +97,7 @@ protected:
             {
                 this->highlighter->setAlpha(0.f);
                 this->highlightAnimator.animateComponent(this->highlighter.get(),
-                    this->highlighter->getBounds(), 1.f, 100, false, 1.0, 0.0);
+                    this->highlighter->getBounds(), 1.f, Globals::UI::fadeInShort, false, 1.0, 0.0);
             }
         }
         else
@@ -105,7 +105,7 @@ protected:
             if (this->highlighter != nullptr)
             {
                 this->highlightAnimator.animateComponent(this->highlighter.get(),
-                    this->highlighter->getBounds(), 0.f, 200, true, 1.0, 0.0);
+                    this->highlighter->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
 
                 this->removeChildComponent(this->highlighter.get());
             }

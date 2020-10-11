@@ -175,7 +175,8 @@ void TimeSignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
 
         component->setAlpha(0.f);
         const Rectangle<int> bounds(component->getBounds());
-        this->animator.animateComponent(component, bounds, 1.f, 150, false, 0.0, 0.0);
+        this->animator.animateComponent(component,
+            bounds, 1.f, Globals::UI::fadeInLong, false, 0.0, 0.0);
     }
 }
 
@@ -189,8 +190,7 @@ void TimeSignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
         if (auto *component = this->timeSignaturesHash[timeSignature])
         {
             this->animator.animateComponent(component,
-                                            component->getBounds(),
-                                            0.f, 150, true, 0.0, 0.0);
+                component->getBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
             this->timeSignaturesHash.erase(timeSignature);

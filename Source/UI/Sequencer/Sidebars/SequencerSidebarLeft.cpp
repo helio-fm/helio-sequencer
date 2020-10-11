@@ -197,14 +197,17 @@ void SequencerSidebarLeft::handleChangeMode()
 
 void SequencerSidebarLeft::switchMonitorsAnimated(Component *oldOne, Component *newOne)
 {
+    auto slideTime = Globals::UI::fadeOutLong;
     const int w = this->getWidth();
     const int y = this->getHeight() - getAudioMonitorHeight();
-    this->animator.animateComponent(oldOne, oldOne->getBounds().translated(-w, 0), 0.f, 200, true, 0.f, 1.f);
+    this->animator.animateComponent(oldOne,
+        oldOne->getBounds().translated(-w, 0), 0.f, slideTime, true, 0.0, 1.0);
     oldOne->setVisible(false);
     newOne->setAlpha(0.f);
     newOne->setVisible(true);
     newOne->setTopLeftPosition(w, y);
-    this->animator.animateComponent(newOne, newOne->getBounds().translated(-w, 0), 1.f, 200, false, 1.f, 0.f);
+    this->animator.animateComponent(newOne,
+        newOne->getBounds().translated(-w, 0), 1.f, slideTime, false, 1.0, 0.0);
 }
 
 void SequencerSidebarLeft::setLinearMode()

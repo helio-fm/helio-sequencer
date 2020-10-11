@@ -125,21 +125,19 @@ void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedIm
 
 void HelioCallout::fadeIn()
 {
-    const int fadeinTime = 150;
-    Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 1.f, fadeinTime, false, 0.0, 0.0);
+    Desktop::getInstance().getAnimator().animateComponent(this,
+        this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 0.0, 0.0);
 }
 
 void HelioCallout::fadeOut()
 {
     const int reduceBy = 20;
-    const int fadeoutTime = 200;
     const Point<float> offset(this->targetPoint - this->getBounds().getCentre().toFloat());
     const Point<int> offsetNormalized = (offset / offset.getDistanceFromOrigin() * reduceBy).toInt();
     
-    Desktop::getInstance().getAnimator().
-    animateComponent(this,
-                     this->getBounds().reduced(reduceBy).translated(offsetNormalized.getX(), offsetNormalized.getY()),
-                     0.f, fadeoutTime, true, 0.0, 0.0);
+    Desktop::getInstance().getAnimator().animateComponent(this,
+        this->getBounds().reduced(reduceBy).translated(offsetNormalized.getX(), offsetNormalized.getY()),
+        0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 }
 
 

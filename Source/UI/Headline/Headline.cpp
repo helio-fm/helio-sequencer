@@ -149,7 +149,7 @@ void Headline::handleAsyncUpdate()
         if (boundsBefore != boundsAfter)
         {
             child->setBounds(boundsBefore);
-            this->animator.animateComponent(child, boundsAfter, 1.f, 250, false, 1.f, 0.f);
+            this->animator.animateComponent(child, boundsAfter, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
         }
 
         posX += boundsAfter.getWidth() - Headline::itemsOverlapOffset;
@@ -159,7 +159,7 @@ void Headline::handleAsyncUpdate()
     {
         const auto finalPos = this->selectionItem->getBounds().withX(posX - Headline::itemsOverlapOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
-        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, 250, false, 1.f, 0.f);
+        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
         this->selectionItem->toBack();
         this->navPanel->toFront(false);
     }
@@ -218,7 +218,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         const auto child = this->chain[i];
         const auto finalPos = child->getBounds().withX(fadePositionX - child->getWidth());
         this->animator.cancelAnimation(child, false);
-        this->animator.animateComponent(child, finalPos, startingAlpha, 100, true, 0.f, 1.f);
+        this->animator.animateComponent(child, finalPos, startingAlpha, Globals::UI::fadeOutShort, true, 0.0, 1.0);
         this->chain.remove(i, true);
     }
 
@@ -235,7 +235,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         child->toBack();
         const auto finalPos = child->getBounds().withX(lastPosX - Headline::itemsOverlapOffset);
         lastPosX += child->getWidth() - Headline::itemsOverlapOffset;
-        this->animator.animateComponent(child, finalPos, 1.f, 150, false, 1.f, 0.f);
+        this->animator.animateComponent(child, finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
     }
 
     this->navPanel->toFront(false);
@@ -269,7 +269,8 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->selectionItem->setAlpha(this->getAlphaForAnimation());
     this->selectionItem->toBack();
     const auto finalPos = this->selectionItem->getBounds().withX(x);
-    this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, 150, false, 1.f, 0.f);
+    this->animator.animateComponent(this->selectionItem.get(), finalPos,
+        1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
 
     this->navPanel->toFront(false);
 }
@@ -282,7 +283,8 @@ void Headline::hideSelectionMenu()
         //const auto finalPos = this->selectionItem->getBounds().translated(-w, 0);
         const auto finalPos = this->selectionItem->getBounds().withX(Headline::rootNodeOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
-        this->animator.animateComponent(this->selectionItem.get(), finalPos, this->getAlphaForAnimation(), 150, true, 0.f, 1.f);
+        this->animator.animateComponent(this->selectionItem.get(), finalPos,
+            this->getAlphaForAnimation(), Globals::UI::fadeOutShort, true, 0.0, 1.0);
         this->selectionItem = nullptr;
     }
 }

@@ -106,17 +106,16 @@ void DialogBase::dismiss()
 
 void DialogBase::fadeOut()
 {
-    static constexpr auto fadeoutTime = 150;
     auto &animator = Desktop::getInstance().getAnimator();
     if (App::isOpenGLRendererEnabled())
     {
-        animator.animateComponent(this,
-            this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 1.0);
+        animator.animateComponent(this, this->getBounds().reduced(20),
+            0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
     }
     else
     {
-        animator.animateComponent(this,
-            this->getBounds(), 0.f, fadeoutTime, true, 0.0, 1.0);
+        animator.animateComponent(this, this->getBounds(),
+            0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
     }
 }
 

@@ -40,8 +40,8 @@ public:
 
     ~TimeDistanceIndicator() override
     {
-        Desktop::getInstance().getAnimator().
-            animateComponent(this, this->getBounds(), 0.f, 100, true, 0.0, 0.0);
+        Desktop::getInstance().getAnimator().animateComponent(this,
+            this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
     }
 
     Label *getTimeLabel() const

@@ -39,7 +39,8 @@ CutPointMark::~CutPointMark()
     rootAnimator().cancelAnimation(this, false);
     if (this->initialized)
     {
-        rootAnimator().animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 0.f);
+        rootAnimator().animateComponent(this,
+            this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
     }
 }
 
@@ -74,7 +75,8 @@ void CutPointMark::paint(Graphics &g)
 
 void CutPointMark::fadeIn()
 {
-    rootAnimator().animateComponent(this, this->getBounds(), 1.f, 150, false, 0.f, 0.f);
+    rootAnimator().animateComponent(this,
+        this->getBounds(), 1.f, Globals::UI::fadeOutShort, false, 0.0, 0.0);
 }
 
 void CutPointMark::updateBounds(bool forceNoAnimation)
@@ -105,7 +107,8 @@ void CutPointMark::updateBounds(bool forceNoAnimation)
         }
         else
         {
-            rootAnimator().animateComponent(this, newBounds, 1.f, 50, false, 1.f, .5f);
+            rootAnimator().animateComponent(this,
+                newBounds, 1.f, Globals::UI::fadeInShort, false, 1.0, .5);
         }
     }
 }

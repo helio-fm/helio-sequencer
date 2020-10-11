@@ -436,7 +436,7 @@ void App::showModalComponent(UniquePointer<Component> target)
 
     target->setAlpha(0.f);
     Desktop::getInstance().getAnimator().animateComponent(target.get(),
-        target->getBounds(), 1.f, 100, false, 0.0, 1.0);
+        target->getBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 1.0);
 
     target->toFront(false);
     target->enterModalState(true, nullptr, true);

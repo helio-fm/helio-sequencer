@@ -34,8 +34,8 @@ KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) :
 
 KnifeToolHelper::~KnifeToolHelper()
 {
-    Desktop::getInstance().getAnimator()
-        .animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 0.f);
+    Desktop::getInstance().getAnimator().animateComponent(this,
+        this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
 }
 
 Line<float> KnifeToolHelper::getLine() const noexcept
@@ -87,8 +87,8 @@ void KnifeToolHelper::updateCutMarks()
 
 void KnifeToolHelper::fadeIn()
 {
-    Desktop::getInstance().getAnimator()
-        .animateComponent(this, this->getBounds(), 1.f, 150, false, 0.f, 0.f);
+    Desktop::getInstance().getAnimator().animateComponent(this,
+        this->getBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
 }
 
 void KnifeToolHelper::setStartPosition(const Point<float> &mousePos)

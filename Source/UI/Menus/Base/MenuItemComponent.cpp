@@ -318,7 +318,8 @@ void MenuItemComponent::resized()
         if (this->checkMarker->getLocalBounds() != this->getLocalBounds() &&
             this->animator.isAnimating(this->checkMarker.get()))
         {
-            this->animator.animateComponent(this->checkMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
+            this->animator.animateComponent(this->checkMarker.get(),
+                this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
         }
 
         this->checkMarker->setBounds(this->getLocalBounds());
@@ -357,7 +358,7 @@ void MenuItemComponent::mouseDown (const MouseEvent& e)
     {
         if (!this->description->flags.isDisabled)
         {
-            this->clickMarker.reset(new CommandDragHighlighter());
+            this->clickMarker = make<CommandDragHighlighter>();
             this->addChildComponent(this->clickMarker.get());
             this->clickMarker->setBounds(this->getLocalBounds());
             this->clickMarker->toBack();
@@ -365,7 +366,8 @@ void MenuItemComponent::mouseDown (const MouseEvent& e)
 #if HAS_OPENGL_BUG
             this->clickMarker->setVisible(true);
 #else
-            this->animator.animateComponent(this->clickMarker.get(), this->getLocalBounds(), 1.f, 150, true, 0.0, 0.0);
+            this->animator.animateComponent(this->clickMarker.get(),
+                this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, true, 0.0, 0.0);
 #endif
         }
 
@@ -396,7 +398,8 @@ void MenuItemComponent::mouseUp (const MouseEvent& e)
         if (this->clickMarker)
         {
 #if ! HAS_OPENGL_BUG
-            this->animator.animateComponent(this->clickMarker.get(), this->getLocalBounds(), 0.f, 100, true, 0.0, 0.0);
+            this->animator.animateComponent(this->clickMarker.get(),
+                this->getLocalBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
 #endif
 
             this->removeChildComponent(this->clickMarker.get());
@@ -431,10 +434,11 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
         {
 #if ! HAS_OPENGL_BUG
             // possible glDeleteTexture bug here?
-            UniquePointer<CommandItemSelector> highlighter(new CommandItemSelector());
+            auto highlighter = make<CommandItemSelector>();
             this->addAndMakeVisible(highlighter.get());
             highlighter->setBounds(this->getLocalBounds());
-            this->animator.animateComponent(highlighter.get(), this->getLocalBounds(), 0.f, 200, true, 0.0, 0.0);
+            this->animator.animateComponent(highlighter.get(),
+                this->getLocalBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
             this->removeChildComponent(highlighter.get());
 #endif
         }
@@ -574,7 +578,8 @@ void MenuItemComponent::showCheckMark()
 
 #if ! HAS_OPENGL_BUG
     this->checkMarker->setAlpha(0.f);
-    this->animator.animateComponent(this->checkMarker.get(), this->getLocalBounds(), 1.f, 100, false, 0.0, 0.0);
+    this->animator.animateComponent(this->checkMarker.get(),
+        this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
 #endif
 
     this->addAndMakeVisible(this->checkMarker.get());
