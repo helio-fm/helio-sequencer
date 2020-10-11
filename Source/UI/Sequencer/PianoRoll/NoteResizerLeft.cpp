@@ -230,7 +230,7 @@ void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
 
     if (this->getAlpha() == 0.f && !this->fader.isAnimating())
     {
-        this->fader.fadeIn(this, 100);
+        this->fader.fadeIn(this, Globals::UI::fadeInShort);
     }
 }
 

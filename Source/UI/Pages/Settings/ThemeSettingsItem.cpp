@@ -315,11 +315,11 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
 {
     if (isCurrentTheme)
     {
-        this->selectionAnimator.fadeIn(this->selectionComponent.get(), 150);
+        this->selectionAnimator.fadeIn(this->selectionComponent.get(), Globals::UI::fadeInShort);
     }
     else
     {
-        this->selectionAnimator.fadeOut(this->selectionComponent.get(), 50);
+        this->selectionAnimator.fadeOut(this->selectionComponent.get(), Globals::UI::fadeOutShort);
     }
 
     if (this->colours != nullptr &&

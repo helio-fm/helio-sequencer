@@ -210,8 +210,8 @@ void SequencerSidebarLeft::switchMonitorsAnimated(Component *oldOne, Component *
 void SequencerSidebarLeft::setLinearMode()
 {
     this->buttonFader.cancelAllAnimations(false);
-    this->buttonFader.fadeIn(this->switchPatternModeButton.get(), 200);
-    this->buttonFader.fadeOut(this->switchLinearModeButton.get(), 200);
+    this->buttonFader.fadeIn(this->switchPatternModeButton.get(), Globals::UI::fadeInLong);
+    this->buttonFader.fadeOut(this->switchLinearModeButton.get(), Globals::UI::fadeOutLong);
 
     if (this->menuMode != MenuMode::PianoRollTools)
     {
@@ -224,8 +224,8 @@ void SequencerSidebarLeft::setLinearMode()
 void SequencerSidebarLeft::setPatternMode()
 {
     this->buttonFader.cancelAllAnimations(false);
-    this->buttonFader.fadeIn(this->switchLinearModeButton.get(), 200);
-    this->buttonFader.fadeOut(this->switchPatternModeButton.get(), 200);
+    this->buttonFader.fadeIn(this->switchLinearModeButton.get(), Globals::UI::fadeInLong);
+    this->buttonFader.fadeOut(this->switchPatternModeButton.get(), Globals::UI::fadeOutLong);
 
     if (this->menuMode != MenuMode::PatternRollTools)
     {

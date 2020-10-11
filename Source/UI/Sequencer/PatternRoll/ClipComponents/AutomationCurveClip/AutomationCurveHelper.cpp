@@ -98,7 +98,7 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
                 {
                     this->tuningIndicator = make<FineTuningValueIndicator>(this->event.getCurvature(), "");
                     this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator.get());
-                    this->fader.fadeIn(this->tuningIndicator.get(), 200);
+                    this->fader.fadeIn(this->tuningIndicator.get(), Globals::UI::fadeInLong);
                 }
 
                 auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
@@ -124,7 +124,7 @@ void AutomationCurveHelper::mouseUp(const MouseEvent &e)
 
     if (this->tuningIndicator != nullptr)
     {
-        this->fader.fadeOut(this->tuningIndicator.get(), 200);
+        this->fader.fadeOut(this->tuningIndicator.get(), Globals::UI::fadeOutLong);
         this->tuningIndicator = nullptr;
     }
 

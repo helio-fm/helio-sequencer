@@ -209,7 +209,7 @@ void RenderDialog::startTrackingProgress()
 {
     this->startTimer(RenderDialog::renderProgressTimer, 17);
     this->indicator->startAnimating();
-    this->animator.fadeIn(this->indicator.get(), 250);
+    this->animator.fadeIn(this->indicator.get(), Globals::UI::fadeInLong);
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderAbort));
 }
 
@@ -221,7 +221,7 @@ void RenderDialog::stopTrackingProgress()
     const float percentsDone = transport.getRenderingPercentsComplete();
     this->slider->setValue(percentsDone, dontSendNotification);
 
-    this->animator.fadeOut(this->indicator.get(), 250);
+    this->animator.fadeOut(this->indicator.get(), Globals::UI::fadeOutLong);
     this->indicator->stopAnimating();
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
 }

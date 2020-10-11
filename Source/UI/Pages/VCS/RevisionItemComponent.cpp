@@ -237,11 +237,11 @@ void RevisionItemComponent::invertSelection() const
 
     if (this->selectionComponent->isVisible() && !rowWillBeSelected)
     {
-        this->selectionAnimator.fadeOut(this->selectionComponent.get(), 150);
+        this->selectionAnimator.fadeOut(this->selectionComponent.get(), Globals::UI::fadeOutShort);
     }
     else if (!this->selectionComponent->isVisible() && rowWillBeSelected)
     {
-        this->selectionAnimator.fadeIn(this->selectionComponent.get(), 75);
+        this->selectionAnimator.fadeIn(this->selectionComponent.get(), Globals::UI::fadeInShort);
     }
 
     this->list.flipRowSelection(this->row);

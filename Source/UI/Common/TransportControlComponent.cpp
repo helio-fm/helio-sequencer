@@ -362,14 +362,14 @@ void TransportControlComponent::showPlayingMode(bool isPlaying)
     if (this->isPlaying.get())
     {
         MessageManagerLock lock;
-        this->animator.fadeIn(this->stopIcon.get(), 100);
-        this->animator.fadeOut(this->playIcon.get(), 100);
+        this->animator.fadeIn(this->stopIcon.get(), Globals::UI::fadeInShort);
+        this->animator.fadeOut(this->playIcon.get(), Globals::UI::fadeOutShort);
     }
     else
     {
         MessageManagerLock lock;
-        this->animator.fadeIn(this->playIcon.get(), 150);
-        this->animator.fadeOut(this->stopIcon.get(), 150);
+        this->animator.fadeIn(this->playIcon.get(), Globals::UI::fadeInLong);
+        this->animator.fadeOut(this->stopIcon.get(), Globals::UI::fadeOutLong);
     }
 
     if (isPlaying)

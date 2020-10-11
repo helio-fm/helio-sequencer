@@ -188,7 +188,7 @@ void PopupButton::resized()
     }
 }
 
-bool PopupButton::hitTest (int x, int y)
+bool PopupButton::hitTest(int x, int y)
 {
     const int cX = (this->getWidth() / 2) - x;
     const int cY = (this->getHeight() / 2) - y;
@@ -196,9 +196,9 @@ bool PopupButton::hitTest (int x, int y)
     return (cX * cX + cY * cY) <= (r * r);
 }
 
-void PopupButton::mouseEnter (const MouseEvent& e)
+void PopupButton::mouseEnter(const MouseEvent& e)
 {
-    this->fader.fadeIn(this->mouseOverHighlighter.get(), 100);
+    this->fader.fadeIn(this->mouseOverHighlighter.get(), Globals::UI::fadeInShort);
 
 #if ! CONFIRMATION_MODE
 
@@ -215,18 +215,18 @@ void PopupButton::mouseEnter (const MouseEvent& e)
 #endif
 }
 
-void PopupButton::mouseExit (const MouseEvent& e)
+void PopupButton::mouseExit(const MouseEvent& e)
 {
-    this->fader.fadeOut(this->mouseOverHighlighter.get(), 100);
+    this->fader.fadeOut(this->mouseOverHighlighter.get(), Globals::UI::fadeOutShort);
 }
 
-void PopupButton::mouseDown (const MouseEvent& e)
+void PopupButton::mouseDown(const MouseEvent& e)
 {
     this->anchor = this->getPosition();
     this->dragger.startDraggingComponent(this, e);
 
     this->mouseDownHighlighter->repaint();
-    this->fader.fadeIn(this->mouseDownHighlighter.get(), 100);
+    this->fader.fadeIn(this->mouseDownHighlighter.get(), Globals::UI::fadeInShort);
 
     if (PopupButtonOwner *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
@@ -279,7 +279,7 @@ void PopupButton::mouseUp (const MouseEvent& e)
     }
 
     this->updateChildren();
-    this->fader.fadeOut(this->mouseDownHighlighter.get(), 100);
+    this->fader.fadeOut(this->mouseDownHighlighter.get(), Globals::UI::fadeOutShort);
 }
 
 void PopupButton::timerCallback()
@@ -308,23 +308,23 @@ void PopupButton::setState(bool clicked)
         {
             if (clicked)
             {
-                this->fader.fadeOut(this->getChildComponent(i), 100);
+                this->fader.fadeOut(this->getChildComponent(i), Globals::UI::fadeOutShort);
             }
             else
             {
-                this->fader.fadeIn(this->getChildComponent(i), 100);
+                this->fader.fadeIn(this->getChildComponent(i), Globals::UI::fadeInShort);
             }
         }
     }
 
     if (this->showConfirmImage && !this->firstClickDone)
     {
-        this->fader.fadeOut(this->confirmationMark.get(), 100);
+        this->fader.fadeOut(this->confirmationMark.get(), Globals::UI::fadeOutShort);
     }
 
     if (this->showConfirmImage && this->firstClickDone)
     {
-        this->fader.fadeIn(this->confirmationMark.get(), 100);
+        this->fader.fadeIn(this->confirmationMark.get(), Globals::UI::fadeInShort);
     }
 
 #endif

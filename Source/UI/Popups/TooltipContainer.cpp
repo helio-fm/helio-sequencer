@@ -186,8 +186,8 @@ void TooltipContainer::hide()
     this->stopTimer();
     if (this->isVisible())
     {
-        this->animator.fadeOut(this, 250);
-        this->tooltipComponent.reset(new Component()); // empty, but not nullptr
+        this->animator.fadeOut(this, Globals::UI::fadeOutLong);
+        this->tooltipComponent = make<Component>(); // empty, but not nullptr
         this->setVisible(false);
     }
 }

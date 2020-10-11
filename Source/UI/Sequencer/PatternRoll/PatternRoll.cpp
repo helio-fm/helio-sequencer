@@ -292,7 +292,7 @@ void PatternRoll::hideAllGhostClips()
 {
     for (int i = 0; i < this->ghostClips.size(); ++i)
     {
-        this->fader.fadeOut(this->ghostClips.getUnchecked(i), 100);
+        this->fader.fadeOut(this->ghostClips.getUnchecked(i), Globals::UI::fadeOutShort);
     }
 
     this->ghostClips.clear();
@@ -456,7 +456,7 @@ void PatternRoll::onAddClip(const Clip &clip)
         this->addAndMakeVisible(clipComponent);
         clipComponent->toFront(false);
 
-        this->fader.fadeIn(clipComponent, 150);
+        this->fader.fadeIn(clipComponent, Globals::UI::fadeInLong);
 
         this->batchRepaintList.add(clipComponent);
         this->triggerAsyncUpdate();
@@ -488,7 +488,7 @@ void PatternRoll::onRemoveClip(const Clip &clip)
     {
         this->hideAllGhostClips();
 
-        this->fader.fadeOut(deletedComponent, 150);
+        this->fader.fadeOut(deletedComponent, Globals::UI::fadeOutLong);
         this->selection.deselect(deletedComponent);
         this->clipComponents.erase(clip);
     }

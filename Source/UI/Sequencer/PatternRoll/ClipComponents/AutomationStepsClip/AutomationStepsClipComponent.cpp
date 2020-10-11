@@ -287,7 +287,7 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         
         if (auto *component = this->eventsHash[autoEvent])
         {
-            //this->eventAnimator.fadeOut(component, 150);
+            //this->eventAnimator.fadeOut(component, Globals::UI::fadeOutShort);
             this->removeChildComponent(component);
             this->eventsHash.erase(autoEvent);
             

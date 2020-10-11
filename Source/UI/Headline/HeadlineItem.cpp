@@ -271,13 +271,13 @@ void HeadlineItem::showMenuIfAny()
 
 void HeadlineItem::showContextMenuMarker()
 {
-    this->animator.fadeIn(this->menuMarker.get(), 150);
+    this->animator.fadeIn(this->menuMarker.get(), Globals::UI::fadeInLong);
     //this->menuMarker->setVisible(true);
 }
 
 void HeadlineItem::hideContextMenuMarker()
 {
-    this->animator.fadeOut(this->menuMarker.get(), 150);
+    this->animator.fadeOut(this->menuMarker.get(), Globals::UI::fadeOutLong);
     //this->menuMarker->setVisible(false);
 }
 //[/MiscUserCode]

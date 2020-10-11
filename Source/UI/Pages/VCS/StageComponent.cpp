@@ -283,14 +283,14 @@ void StageComponent::startProgressAnimation()
 {
     this->fader.cancelAllAnimations(false);
     this->indicator->startAnimating();
-    this->fader.fadeIn(this->indicator.get(), 200);
+    this->fader.fadeIn(this->indicator.get(), Globals::UI::fadeInLong);
 }
 
 void StageComponent::stopProgressAnimation()
 {
     this->fader.cancelAllAnimations(false);
     this->indicator->stopAnimating();
-    this->fader.fadeOut(this->indicator.get(), 200);
+    this->fader.fadeOut(this->indicator.get(), Globals::UI::fadeOutLong);
 }
 
 //===----------------------------------------------------------------------===//

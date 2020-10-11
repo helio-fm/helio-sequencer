@@ -134,7 +134,7 @@ void ModeIndicatorOwnerComponent::showModeIndicator()
 {
     if (auto *i = this->findChildWithID(ComponentIDs::modeIndicatorComponentId))
     {
-        this->modeIndicatorFader.fadeIn(i, 200);
+        this->modeIndicatorFader.fadeIn(i, Globals::UI::fadeInLong);
     }
 }
 
@@ -142,7 +142,7 @@ void ModeIndicatorOwnerComponent::hideModeIndicator()
 {
     if (auto *i = this->findChildWithID(ComponentIDs::modeIndicatorComponentId))
     {
-        this->modeIndicatorFader.fadeOut(i, 150);
+        this->modeIndicatorFader.fadeOut(i, Globals::UI::fadeOutLong);
     }
 }
 

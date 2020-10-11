@@ -39,7 +39,7 @@ void TimelineWarningMarker::paint (Graphics& g)
 
 void TimelineWarningMarker::parentHierarchyChanged()
 {
-    this->fader.fadeIn(this, 300);
+    this->fader.fadeIn(this, Globals::UI::fadeInLong);
     this->updatePosition();
     this->toBack();
 }

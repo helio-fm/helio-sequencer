@@ -242,7 +242,7 @@ void PianoRoll::hideAllGhostNotes()
 {
     for (int i = 0; i < this->ghostNotes.size(); ++i)
     {
-        this->fader.fadeOut(this->ghostNotes.getUnchecked(i), 100);
+        this->fader.fadeOut(this->ghostNotes.getUnchecked(i), Globals::UI::fadeOutShort);
     }
 
     this->ghostNotes.clear();
@@ -403,7 +403,7 @@ void PianoRoll::hideDragHelpers()
 {
     if (this->draggingHelper->isVisible())
     {
-        this->fader.fadeOut(this->draggingHelper.get(), 150);
+        this->fader.fadeOut(this->draggingHelper.get(), Globals::UI::fadeOutShort);
     }
 }
 
@@ -492,7 +492,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             sequenceMap[note] = UniquePointer<NoteComponent>(component);
             this->addAndMakeVisible(component);
 
-            this->fader.fadeIn(component, 150);
+            this->fader.fadeIn(component, Globals::UI::fadeInLong);
 
             // TODO check this in a more elegant way
             // (needed not to break shift+drag note copying)
@@ -544,7 +544,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
             if (sequenceMap.contains(note))
             {
                 NoteComponent *deletedComponent = sequenceMap[note].get();
-                this->fader.fadeOut(deletedComponent, 150);
+                this->fader.fadeOut(deletedComponent, Globals::UI::fadeOutLong);
                 this->selection.deselect(deletedComponent);
                 sequenceMap.erase(note);
             }

@@ -120,7 +120,7 @@ void ColourButton::select()
     if (!this->isSelected())
     {
         this->selected = true;
-        this->fader.fadeIn(this->checkMark.get(), 100);
+        this->fader.fadeIn(this->checkMark.get(), Globals::UI::fadeInShort);
     }
 }
 
@@ -129,7 +129,7 @@ void ColourButton::deselect()
     if (this->isSelected())
     {
         this->selected = false;
-        this->fader.fadeOut(this->checkMark.get(), 200);
+        this->fader.fadeOut(this->checkMark.get(), Globals::UI::fadeOutLong);
     }
 }
 

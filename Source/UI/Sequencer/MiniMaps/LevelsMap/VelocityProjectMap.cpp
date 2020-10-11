@@ -708,11 +708,11 @@ void VelocityProjectMap::updateVolumeBlendingIndicator(const Point<int> &pos)
 {
     if (this->volumeBlendingAmount == 1.f && this->volumeBlendingIndicator->isVisible())
     {
-        this->fader.fadeOut(this->volumeBlendingIndicator.get(), 200);
+        this->fader.fadeOut(this->volumeBlendingIndicator.get(), Globals::UI::fadeOutLong);
     }
     else if (this->volumeBlendingAmount < 1.f && !this->volumeBlendingIndicator->isVisible())
     {
-        this->fader.fadeIn(this->volumeBlendingIndicator.get(), 200);
+        this->fader.fadeIn(this->volumeBlendingIndicator.get(), Globals::UI::fadeInLong);
     }
 
     //this->volumeBlendingIndicator->setVisible(this->volumeBlendingAmount != 1.f);

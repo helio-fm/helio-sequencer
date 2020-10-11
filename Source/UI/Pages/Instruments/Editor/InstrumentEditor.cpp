@@ -327,7 +327,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
     auto dstNode = c.destination.nodeID;
     auto dstChannel = c.destination.channelIndex;
     
-    this->fader.fadeOut(this->draggingConnector.get(), 250);
+    this->fader.fadeOut(this->draggingConnector.get(), Globals::UI::fadeOutLong);
     this->draggingConnector = nullptr;
     
     if (auto pin = findPinAt(e2.x, e2.y))

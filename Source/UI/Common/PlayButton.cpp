@@ -140,14 +140,14 @@ void PlayButton::setPlaying(bool isPlaying)
     if (this->playing)
     {
         MessageManagerLock lock;
-        this->animator.fadeIn(this->pauseIcon.get(), 100);
-        this->animator.fadeOut(this->playIcon.get(), 100);
+        this->animator.fadeIn(this->pauseIcon.get(), Globals::UI::fadeInShort);
+        this->animator.fadeOut(this->playIcon.get(), Globals::UI::fadeOutShort);
     }
     else
     {
         MessageManagerLock lock;
-        this->animator.fadeIn(this->playIcon.get(), 150);
-        this->animator.fadeOut(this->pauseIcon.get(), 150);
+        this->animator.fadeIn(this->playIcon.get(), Globals::UI::fadeInLong);
+        this->animator.fadeOut(this->pauseIcon.get(), Globals::UI::fadeOutLong);
     }
 }
 

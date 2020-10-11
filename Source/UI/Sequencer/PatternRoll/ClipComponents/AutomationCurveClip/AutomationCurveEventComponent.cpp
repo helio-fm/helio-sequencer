@@ -147,7 +147,7 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
                 const float cv = this->event.getControllerValue();
                 this->tuningIndicator = make<FineTuningValueIndicator>(cv, this->isTempoCurve() ? " bpm" : "");
                 this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator.get());
-                this->fader.fadeIn(this->tuningIndicator.get(), 200);
+                this->fader.fadeIn(this->tuningIndicator.get(), Globals::UI::fadeInLong);
             }
 
             if (beatChanged || valueChanged)
@@ -191,7 +191,7 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
             if (this->tuningIndicator != nullptr)
             {
-                this->fader.fadeOut(this->tuningIndicator.get(), 200);
+                this->fader.fadeOut(this->tuningIndicator.get(), Globals::UI::fadeOutLong);
                 this->tuningIndicator = nullptr;
             }
 

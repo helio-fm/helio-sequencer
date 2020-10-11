@@ -267,14 +267,6 @@ void HybridRoll::addOwnedMap(Component *newTrackMap)
 {
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
-
-    // fade-in if not the first child
-    if (this->trackMaps.size() > 1)
-    {
-        newTrackMap->setVisible(false);
-        this->fader.fadeIn(newTrackMap, 200);
-    }
-
     newTrackMap->toFront(false);
     this->playhead->toFront(false);
     this->resized();
@@ -284,7 +276,6 @@ void HybridRoll::removeOwnedMap(Component *existingTrackMap)
 {
     if (this->trackMaps.contains(existingTrackMap))
     {
-        this->fader.fadeOut(existingTrackMap, 150);
         this->removeChildComponent(existingTrackMap);
         this->trackMaps.removeObject(existingTrackMap);
         this->resized();
