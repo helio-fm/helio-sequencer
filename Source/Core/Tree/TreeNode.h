@@ -154,6 +154,14 @@ public:
 
     bool isSelectedOrHasSelectedChild() const;
 
+    template<typename T>
+    bool hasSelectedChildOfType() const
+    {
+        Array<TreeNode *> children;
+        TreeNode::collectChildrenOfType<T, Array<TreeNode *>>(this, children, true);
+        return !children.isEmpty();
+    }
+
     //===------------------------------------------------------------------===//
     // Page stuff
     //===------------------------------------------------------------------===//

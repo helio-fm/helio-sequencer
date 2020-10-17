@@ -362,9 +362,6 @@
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\AudioPluginNode.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackNode.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -711,6 +708,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\KeyboardMappingPage.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.cpp">
@@ -2986,7 +2986,6 @@
     <ClInclude Include="..\..\Source\Core\Serialization\BinarySerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\AudioPluginNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\MidiTrackNode.h"/>
@@ -3128,6 +3127,7 @@
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\KeyboardMappingPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.h"/>

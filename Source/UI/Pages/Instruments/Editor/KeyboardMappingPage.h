@@ -17,28 +17,21 @@
 
 #pragma once
 
-class AudioPlugin;
-class AudioPluginEditor;
-
-#include "TreeNode.h"
-
-class AudioPluginNode final : public TreeNode
+class KeyboardMappingPage final : public Component
 {
 public:
 
-    AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name);
+    explicit KeyboardMappingPage();
 
-    Image getIcon() const noexcept override;
-    AudioProcessorGraph::NodeID getNodeId() const noexcept;
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
 
-    bool hasMenu() const noexcept override;
-    UniquePointer<Component> createMenu() override;
+    void resized() override;
 
-    void showPage() override;
-    
 private:
 
-    UniquePointer<Component> audioPluginEditor;
-    const AudioProcessorGraph::NodeID nodeId;
+    UniquePointer<Component> background;
+    UniquePointer<Component> panel;
 
 };

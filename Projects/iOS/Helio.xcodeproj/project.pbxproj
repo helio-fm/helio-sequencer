@@ -1711,13 +1711,6 @@
 			path = ../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		41378EF8AED553979DF2DC6C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = AudioPluginNode.h;
-			path = ../../Source/Core/Tree/AudioPluginNode.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		41B23BF18F28325AC94E7E55 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1975,6 +1968,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = CutPointMark.h;
 			path = ../../Source/UI/Sequencer/Helpers/CutPointMark.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		4C02F76A73325377363BB96B = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = KeyboardMappingPage.h;
+			path = ../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		4C9D91B54D2117EF95AF9F9B = {
@@ -3195,6 +3195,13 @@
 			path = ../../Source/Core/Audio/Transport/Transport.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		838290D5373D0512F75F212E = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = KeyboardMappingPage.cpp;
+			path = ../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		83AAFD7BBED5043E459B1A41 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4194,13 +4201,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = Delta.h;
 			path = ../../Source/Core/VCS/Delta.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		B03C2F60C997B27811330070 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = AudioPluginNode.cpp;
-			path = ../../Source/Core/Tree/AudioPluginNode.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		B03D55A203855EADA068B640 = {
@@ -6304,8 +6304,6 @@
 		4534D2D57E1CA784690E4F98 = {
 			isa = PBXGroup;
 			children = (
-				B03C2F60C997B27811330070,
-				41378EF8AED553979DF2DC6C,
 				4DD951F564C4D351C9E114C7,
 				C157AEEB5675221B9310B4A0,
 				B43751BD8D411C11613C2DE6,
@@ -6706,6 +6704,8 @@
 				1D0A187F1823D6D4D1BAE220,
 				20F688409E591413D72D8F6B,
 				C12CE47F3888AFF2D684E4B7,
+				838290D5373D0512F75F212E,
+				4C02F76A73325377363BB96B,
 			);
 			name = Editor;
 			sourceTree = "<group>";

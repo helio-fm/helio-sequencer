@@ -835,9 +835,6 @@
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\AudioPluginNode.cpp">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackNode.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
@@ -1184,6 +1181,9 @@
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\KeyboardMappingPage.cpp">
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.cpp">
@@ -3786,9 +3786,6 @@
     <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\AudioPluginNode.h">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackNode.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
@@ -4210,6 +4207,9 @@
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.h">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\KeyboardMappingPage.h">
       <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.h">

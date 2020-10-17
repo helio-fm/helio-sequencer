@@ -15,30 +15,25 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "Common.h"
+#include "KeyboardMappingPage.h"
+#include "PanelBackgroundB.h"
+#include "FramePanel.h"
 
-class AudioPluginEditorPage final : public Component
+KeyboardMappingPage::KeyboardMappingPage()
 {
-public:
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainer(false);
 
-    explicit AudioPluginEditorPage(Component *contentOwned);
+    this->background = make<PanelBackgroundB>();
+    this->addAndMakeVisible(this->background.get());
 
-    ~AudioPluginEditorPage() override;
+    this->panel = make<FramePanel>();
+    this->addAndMakeVisible(this->panel.get());
+}
 
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-
-    void resized() override;
-
-private:
-
-    UniquePointer<Component> background;
-
-    UniquePointer<Component> panel;
-
-    UniquePointer<Viewport> viewport;
-
-    UniquePointer<DocumentWindow> ownedWindow;
-
-};
+void KeyboardMappingPage::resized()
+{
+    this->background->setBounds(0, 0, this->getWidth(), this->getHeight());
+    this->panel->setBounds(20, 20, (this->getWidth() - 40), (this->getHeight() - 40));
+}

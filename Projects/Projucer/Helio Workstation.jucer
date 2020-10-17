@@ -473,10 +473,6 @@
           <FILE id="cf5hpo" name="XmlSerializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/XmlSerializer.h"/>
         </GROUP>
         <GROUP id="{979A75EC-73DC-C02F-D56E-866D72FF00D2}" name="Tree">
-          <FILE id="CE6G1K" name="AudioPluginNode.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/AudioPluginNode.cpp"/>
-          <FILE id="RL4cbn" name="AudioPluginNode.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/AudioPluginNode.h"/>
           <FILE id="UVWEdm" name="AutomationTrackNode.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/AutomationTrackNode.cpp"/>
           <FILE id="K82RYP" name="AutomationTrackNode.h" compile="0" resource="0"
@@ -952,6 +948,10 @@
                     file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.cpp"/>
               <FILE id="NK73De" name="InstrumentEditorPin.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.h"/>
+              <FILE id="t2gf2B" name="KeyboardMappingPage.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.cpp"/>
+              <FILE id="Kvqz9i" name="KeyboardMappingPage.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.h"/>
             </GROUP>
             <FILE id="cSjeY5" name="AudioPluginsListComponent.cpp" compile="1"
                   resource="0" file="../../Source/UI/Pages/Instruments/AudioPluginsListComponent.cpp"/>

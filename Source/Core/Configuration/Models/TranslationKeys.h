@@ -98,6 +98,7 @@ namespace I18n
         static const Identifier groupByInstrument = "menu::groupby::instrument";
         static const Identifier groupByName = "menu::groupby::name";
         static const Identifier groupByNone = "menu::groupby::none";
+
         static const Identifier instrumentAddEffect = "menu::instrument::addeffect";
         static const Identifier instrumentAdd = "menu::instrument::addinstrument";
         static const Identifier instrumentDelete = "menu::instrument::delete";
@@ -105,9 +106,13 @@ namespace I18n
         static const Identifier instrumentSetColour = "menu::instrument::setcolour";
         static const Identifier instrumentSetIcon = "menu::instrument::seticon";
         static const Identifier instrumentShowEditor = "menu::instrument::showeditor";
+        static const Identifier instrumentShowKeyboardMapping = "menu::instrument::showkbm";
+        static const Identifier instrumentLoadKeyboardMapping = "menu::instrument::loadkbm";
+        static const Identifier instrumentResetKeyboardMapping = "menu::instrument::resetkbm";
         static const Identifier instrumentShowWindow = "menu::instrument::showui";
         static const Identifier instrumentsReload = "menu::instruments::reload";
         static const Identifier instrumentsScanFolder = "menu::instruments::scanfolder";
+        
         static const Identifier keySignatureAdd = "menu::keysignature::add";
 
         static const Identifier refactoringInverseDown = "menu::refactoring::inversedown";

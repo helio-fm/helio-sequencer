@@ -25,7 +25,6 @@
 #include "Workspace.h"
 #include "RootNode.h"
 #include "InstrumentNode.h"
-#include "AudioPluginNode.h"
 
 #if HELIO_DESKTOP
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 1
@@ -42,10 +41,7 @@ InstrumentComponent::InstrumentComponent(WeakReference<Instrument> instrument,
     instrument(instrument),
     nodeId(nodeId),
     pinSize(PIN_SIZE),
-    isSelected(false),
-    font(21.f),
-    numInputs(0),
-    numOutputs(0)
+    font(21.f)
 {
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
@@ -115,7 +111,7 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
             {
                 if (instrumentTreeItem->getInstrument() == this->instrument.get())
                 {
-                    instrumentTreeItem->updateChildrenEditors();
+                    instrumentTreeItem->recreateChildrenEditors();
                     if (auto *audioPluginTreeItem = instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
                     {
                         audioPluginTreeItem->setSelected();

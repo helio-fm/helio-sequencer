@@ -343,7 +343,6 @@
     <ClCompile Include="..\..\Source\Core\Serialization\BinarySerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\JsonSerializer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\AudioPluginNode.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackNode.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\InstrumentNode.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\MidiTrackNode.cpp"/>
@@ -460,6 +459,7 @@
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\KeyboardMappingPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.cpp"/>
@@ -2557,7 +2557,6 @@
     <ClInclude Include="..\..\Source\Core\Serialization\BinarySerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\AudioPluginNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentNode.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\MidiTrackNode.h"/>
@@ -2699,6 +2698,7 @@
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\KeyboardMappingPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.h"/>
