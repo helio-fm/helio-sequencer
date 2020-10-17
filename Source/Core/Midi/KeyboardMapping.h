@@ -20,64 +20,70 @@
 #include "Serializable.h"
 #include "Note.h"
 
-class KeyboardMapping : public Serializable
+class KeyboardMapping final : public Serializable
 {
 public:
 
-    virtual ~KeyboardMapping() = default;
+    KeyboardMapping();
 
     static constexpr auto maxMappedKeys = 1024;
 
-    virtual void map(Note::Key &key, int &channel) const = 0;
-
-    JUCE_DECLARE_WEAK_REFERENCEABLE(KeyboardMapping)
-};
-
-class SimpleKeyboardMapping final : public KeyboardMapping
-{
-public:
-
-    void map(Note::Key &key, int &channel) const noexcept override
-    {
-        key = key % Globals::twelveToneKeyboardSize;
-        channel = key / Globals::twelveToneKeyboardSize;
-    }
-
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
-};
-
-class CustomKeyboardMapping final : public KeyboardMapping
-{
-public:
-
-    CustomKeyboardMapping();
-
-    void map(Note::Key &key, int &channel) const noexcept override
+    void map(Note::Key &key, int &channel) const noexcept
     {
         channel = this->index[key].channel;
         key = this->index[key].key;
     }
 
+    // this method will not reset before loading a mapping,
+    // because there can be a number of files for multiple channels,
+    // so don't forget to reset() before calling this
+    void loadScalaKbmFile(InputStream &fileContentStream,
+        const String &fileNameWithoutExtension);
+
+    void updateKey(int key, int8 targetKey, int8 targetChannel);
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
 
-    void loadScalaKbm(const Array<File> &files);
-
 private:
 
-    struct MidiKeyAndChannel final
+    struct KeyChannel final
     {
-        MidiKeyAndChannel() = default;
-        MidiKeyAndChannel(int8 key, int8 channel) :
+        KeyChannel() = default;
+        KeyChannel(int8 key, int8 channel) :
             key(key), channel(channel) {}
+
+        friend inline bool operator==(const KeyChannel &l, const KeyChannel &r)
+        {
+            return l.key == r.key && l.channel == r.channel;
+        }
+
+        friend inline bool operator!=(const KeyChannel &l, const KeyChannel &r)
+        {
+            return !(l == r);
+        }
+
+        inline KeyChannel getNextDefault() const noexcept
+        {
+            int k = this->key + 1;
+            int8 c = this->channel;
+            if (k >= Globals::twelveToneKeyboardSize)
+            {
+                k = 0;
+                c++;
+            }
+
+            return { int8(k), c };
+        }
 
         int8 key = 0;
         int8 channel = 0;
     };
 
-    MidiKeyAndChannel index[maxMappedKeys];
+    static KeyChannel getDefaultMappingFor(int key) noexcept;
 
+    KeyChannel index[maxMappedKeys];
+
+    JUCE_DECLARE_WEAK_REFERENCEABLE(KeyboardMapping)
 };
