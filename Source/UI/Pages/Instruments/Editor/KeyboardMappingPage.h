@@ -17,21 +17,35 @@
 
 #pragma once
 
+#include "Instrument.h"
+
 class KeyboardMappingPage final : public Component
 {
 public:
 
-    explicit KeyboardMappingPage();
+    explicit KeyboardMappingPage(WeakReference<Instrument> instrument);
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void resized() override;
+    void handleCommandMessage(int commandId) override;
 
 private:
 
+    WeakReference<Instrument> instrument;
+
+    void syncWithRange(int base);
+    int currentPageBase = 0;
+
     UniquePointer<Component> background;
-    UniquePointer<Component> panel;
+
+    UniquePointer<Component> leftArrow;
+    UniquePointer<Component> rightArrow;
+    UniquePointer<Label> rangeLabel;
+
+    OwnedArray<Label> keyButtons;
+    OwnedArray<Label> mappingLabels;
 
 };

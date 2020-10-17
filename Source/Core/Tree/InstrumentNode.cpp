@@ -412,7 +412,7 @@ void KeyboardMappingNode::showPage()
 
     if (this->keyboardMappingPage == nullptr)
     {
-        this->keyboardMappingPage = make<KeyboardMappingPage>();
+        this->keyboardMappingPage = make<KeyboardMappingPage>(this->instrument);
     }
 
     App::Layout().showPage(this->keyboardMappingPage.get(), this);

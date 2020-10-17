@@ -37,7 +37,7 @@ void CustomKeyboardMapping::deserialize(const SerializedData &data)
 
 void CustomKeyboardMapping::reset()
 {
-    for (int key = 0; key < CustomKeyboardMapping::maxMappedKeys; ++key)
+    for (int key = 0; key < KeyboardMapping::maxMappedKeys; ++key)
     {
         this->index[key] = {
             int8(key % Globals::twelveToneKeyboardSize),
@@ -75,7 +75,7 @@ void CustomKeyboardMapping::loadScalaKbm(const Array<File> &files)
         // assert the name is either empty or the same (which it should be)
 
         auto kbmStream = file.createInputStream();
-        const auto lastMappedKey = CustomKeyboardMapping::maxMappedKeys - 1;
+        const auto lastMappedKey = KeyboardMapping::maxMappedKeys - 1;
 
         // read parameters
 

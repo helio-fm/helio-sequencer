@@ -21,6 +21,7 @@
 #include "InternalPluginFormat.h"
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
+#include "KeyboardMapping.h"
 
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
     formatManager(formatManager),
@@ -28,6 +29,7 @@ Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &na
     instrumentId()
 {
     this->processorGraph = make<AudioProcessorGraph>();
+    this->keyboardMapping = make<CustomKeyboardMapping>();
     this->audioCallback.setProcessor(this->processorGraph.get());
 }
 

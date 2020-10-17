@@ -26,7 +26,9 @@ public:
 
     virtual ~KeyboardMapping() = default;
 
-    virtual void map(Note::Key &key, int &channel) = 0;
+    static constexpr auto maxMappedKeys = 1024;
+
+    virtual void map(Note::Key &key, int &channel) const = 0;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(KeyboardMapping)
 };
@@ -35,7 +37,7 @@ class SimpleKeyboardMapping final : public KeyboardMapping
 {
 public:
 
-    void map(Note::Key &key, int &channel) noexcept override
+    void map(Note::Key &key, int &channel) const noexcept override
     {
         key = key % Globals::twelveToneKeyboardSize;
         channel = key / Globals::twelveToneKeyboardSize;
@@ -52,7 +54,7 @@ public:
 
     CustomKeyboardMapping();
 
-    void map(Note::Key &key, int &channel) noexcept override
+    void map(Note::Key &key, int &channel) const noexcept override
     {
         channel = this->index[key].channel;
         key = this->index[key].key;
@@ -65,8 +67,6 @@ public:
     void loadScalaKbm(const Array<File> &files);
 
 private:
-
-    static constexpr auto maxMappedKeys = 1024;
 
     struct MidiKeyAndChannel final
     {

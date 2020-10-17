@@ -17,23 +17,135 @@
 
 #include "Common.h"
 #include "KeyboardMappingPage.h"
+#include "KeyboardMapping.h"
 #include "PanelBackgroundB.h"
+#include "IconButton.h"
 #include "FramePanel.h"
 
-KeyboardMappingPage::KeyboardMappingPage()
+KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
+    instrument(instrument)
 {
-    this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
 
     this->background = make<PanelBackgroundB>();
     this->addAndMakeVisible(this->background.get());
 
-    this->panel = make<FramePanel>();
-    this->addAndMakeVisible(this->panel.get());
+    this->rangeLabel = make<Label>();
+    this->rangeLabel->setFont({ 28.f });
+    this->rangeLabel->setJustificationType(Justification::centred);
+    this->addAndMakeVisible(this->rangeLabel.get());
+
+    this->leftArrow = make<IconButton>(Icons::stretchLeft, CommandIDs::ShowPreviousPage);
+    this->addAndMakeVisible(this->leftArrow.get());
+
+    this->rightArrow = make<IconButton>(Icons::stretchRight, CommandIDs::ShowNextPage);
+    this->addAndMakeVisible(this->rightArrow.get());
+
+    for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
+    {
+        auto keyButton = make<Label>();
+        keyButton->setFont({ 18.f });
+        keyButton->setJustificationType(Justification::centredRight);
+        this->addAndMakeVisible(keyButton.get());
+        this->keyButtons.add(keyButton.release());
+
+        auto mappingLabel = make<Label>();
+        mappingLabel->setFont({ 18.f });
+        mappingLabel->setEditable(true);
+        mappingLabel->setJustificationType(Justification::centredLeft);
+        this->addAndMakeVisible(mappingLabel.get());
+        this->mappingLabels.add(mappingLabel.release());
+    }
+
+    this->syncWithRange(0);
 }
 
 void KeyboardMappingPage::resized()
 {
-    this->background->setBounds(0, 0, this->getWidth(), this->getHeight());
-    this->panel->setBounds(20, 20, (this->getWidth() - 40), (this->getHeight() - 40));
+    this->background->setBounds(this->getLocalBounds());
+
+    const auto centre = this->getLocalBounds().getCentre();
+
+    auto rangeControlsBounds =
+        Rectangle<int>(0, 0, 256, 40).withCentre(centre.withY(96));
+
+    const auto mappingsBounds =
+        this->getLocalBounds().reduced(96, 48).withTrimmedTop(128);
+
+    this->leftArrow->setBounds(rangeControlsBounds.removeFromLeft(64));
+    this->rightArrow->setBounds(rangeControlsBounds.removeFromRight(64));
+    this->rangeLabel->setBounds(rangeControlsBounds);
+    
+    static constexpr auto numRows = 16;
+    static constexpr auto numColumns = Globals::twelveToneKeyboardSize / numRows;
+    static constexpr auto editorHeight = 22;
+
+    for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
+    {
+        const int row = i % numRows;
+        const int column = i / numRows;
+
+        const auto rowWidth = mappingsBounds.getWidth() / numColumns;
+        const auto rowHeight = mappingsBounds.getHeight() / numRows;
+
+        auto rowBounds =
+            Rectangle<int>(mappingsBounds.getX() + rowWidth * column,
+                mappingsBounds.getY() + rowHeight * row, rowWidth, rowHeight);
+
+        this->keyButtons.getUnchecked(i)->setBounds(rowBounds.removeFromLeft(48));
+        this->mappingLabels.getUnchecked(i)->setBounds(rowBounds
+            .withHeight(editorHeight).withCentre(rowBounds.getCentre()));
+    }
+}
+
+void KeyboardMappingPage::syncWithRange(int base)
+{
+    this->currentPageBase = base;
+
+    const auto *keyMap = this->instrument->getKeyboardMapping();
+
+    this->rangeLabel->setText(String(base) + " - " + 
+        String(base + Globals::twelveToneKeyboardSize - 1), dontSendNotification);
+
+    const auto canShowPreiousPave = base > 0;
+    const auto canShowNextPage =
+        base + Globals::twelveToneKeyboardSize < KeyboardMapping::maxMappedKeys;
+
+    this->leftArrow->setInterceptsMouseClicks(canShowPreiousPave, false);
+    this->leftArrow->setAlpha(canShowPreiousPave ? 1.f : 0.25f);
+
+    this->rightArrow->setInterceptsMouseClicks(canShowNextPage, false);
+    this->rightArrow->setAlpha(canShowNextPage ? 1.f : 0.25f);
+
+    for (int i = base; i < base + Globals::twelveToneKeyboardSize; ++i)
+    {
+        int key = i;
+        int channel = 0;
+        keyMap->map(key, channel);
+
+        const int buttonIndex = i % Globals::twelveToneKeyboardSize;
+
+        this->keyButtons.getUnchecked(buttonIndex)->
+            setText(String(i) + ":", dontSendNotification);
+
+        this->mappingLabels.getUnchecked(buttonIndex)->
+            setText(String(key) + "/" + String(channel), dontSendNotification);
+    }
+}
+
+void KeyboardMappingPage::handleCommandMessage(int commandId)
+{
+    switch (commandId)
+    {
+    case CommandIDs::ShowPreviousPage:
+        this->syncWithRange(this->currentPageBase - Globals::twelveToneKeyboardSize);
+        break;
+    case CommandIDs::ShowNextPage:
+        this->syncWithRange(this->currentPageBase + Globals::twelveToneKeyboardSize);
+        break;
+    default:
+        break;
+    }
 }
