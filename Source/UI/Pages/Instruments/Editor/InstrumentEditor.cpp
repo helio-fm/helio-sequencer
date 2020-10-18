@@ -57,7 +57,7 @@ InstrumentEditor::~InstrumentEditor()
 {
     this->audioCore->getDevice().removeChangeListener(this);
 
-    if (this->instrument)
+    if (this->instrument != nullptr)
     {
         this->instrument->removeChangeListener(this);
     }

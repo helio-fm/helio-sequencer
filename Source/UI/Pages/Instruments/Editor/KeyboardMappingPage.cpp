@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "KeyboardMappingPage.h"
 #include "KeyboardMapping.h"
+#include "HeadlineContextMenuController.h"
 #include "PanelBackgroundB.h"
 #include "IconButton.h"
 #include "FramePanel.h"
@@ -28,6 +29,8 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+
+    this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->background = make<PanelBackgroundB>();
     this->addAndMakeVisible(this->background.get());
@@ -45,6 +48,8 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
 
     for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
     {
+        // todo key preview buttons
+
         auto keyButton = make<Label>();
         keyButton->setFont({ 18.f });
         keyButton->setJustificationType(Justification::centredRight);
@@ -55,11 +60,26 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
         mappingLabel->setFont({ 18.f });
         mappingLabel->setEditable(true);
         mappingLabel->setJustificationType(Justification::centredLeft);
+        mappingLabel->onTextChange = [this, i]()
+        {
+            this->onKeyMappingUpdated(i);
+        };
+
         this->addAndMakeVisible(mappingLabel.get());
         this->mappingLabels.add(mappingLabel.release());
     }
 
     this->syncWithRange(0);
+
+    this->instrument->getKeyboardMapping()->addChangeListener(this);
+}
+
+KeyboardMappingPage::~KeyboardMappingPage()
+{
+    if (this->instrument != nullptr)
+    {
+        this->instrument->getKeyboardMapping()->removeChangeListener(this);
+    }
 }
 
 void KeyboardMappingPage::resized()
@@ -110,8 +130,8 @@ void KeyboardMappingPage::syncWithRange(int base)
         String(base + Globals::twelveToneKeyboardSize - 1), dontSendNotification);
 
     const auto canShowPreiousPave = base > 0;
-    const auto canShowNextPage =
-        base + Globals::twelveToneKeyboardSize < KeyboardMapping::maxMappedKeys;
+    const auto canShowNextPage = base +
+        Globals::twelveToneKeyboardSize < KeyboardMapping::maxMappedKeys;
 
     this->leftArrow->setInterceptsMouseClicks(canShowPreiousPave, false);
     this->leftArrow->setAlpha(canShowPreiousPave ? 1.f : 0.25f);
@@ -121,17 +141,14 @@ void KeyboardMappingPage::syncWithRange(int base)
 
     for (int i = base; i < base + Globals::twelveToneKeyboardSize; ++i)
     {
-        int key = i;
-        int channel = 0;
-        keyMap->map(key, channel);
-
+        const auto mapped = keyMap->map(i);
         const int buttonIndex = i % Globals::twelveToneKeyboardSize;
 
         this->keyButtons.getUnchecked(buttonIndex)->
             setText(String(i) + ":", dontSendNotification);
 
         this->mappingLabels.getUnchecked(buttonIndex)->
-            setText(String(key) + "/" + String(channel), dontSendNotification);
+            setText(mapped.toString(), dontSendNotification);
     }
 }
 
@@ -147,5 +164,36 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
         break;
     default:
         break;
+    }
+}
+
+void KeyboardMappingPage::mouseDown(const MouseEvent &e)
+{
+    if (e.mods.isRightButtonDown())
+    {
+        this->contextMenuController->showMenu(e);
+    }
+}
+
+void KeyboardMappingPage::changeListenerCallback(ChangeBroadcaster *source)
+{
+    this->syncWithRange(this->currentPageBase);
+}
+
+void KeyboardMappingPage::onKeyMappingUpdated(int i)
+{
+    const int key = this->currentPageBase + i;
+    auto *editor = this->mappingLabels.getUnchecked(i);
+    auto *keyMap = this->instrument->getKeyboardMapping();
+    
+    const auto mapped = KeyboardMapping::KeyChannel::fromString(editor->getText());
+
+    if (mapped.isValid())
+    {
+        keyMap->updateKey(key, mapped);
+    }
+    else
+    {
+        editor->setText(keyMap->map(key).toString(), dontSendNotification);
     }
 }

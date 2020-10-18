@@ -19,18 +19,32 @@
 
 #include "Instrument.h"
 
-class KeyboardMappingPage final : public Component
+class HeadlineContextMenuController;
+
+class KeyboardMappingPage final :
+    public Component,
+    public ChangeListener
 {
 public:
 
     explicit KeyboardMappingPage(WeakReference<Instrument> instrument);
+    ~KeyboardMappingPage() override;
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void resized() override;
+    void mouseDown(const MouseEvent &e) override;
     void handleCommandMessage(int commandId) override;
+
+private:
+
+    //===------------------------------------------------------------------===//
+    // ChangeListener
+    //===------------------------------------------------------------------===//
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
 private:
 
@@ -38,6 +52,10 @@ private:
 
     void syncWithRange(int base);
     int currentPageBase = 0;
+
+    void onKeyMappingUpdated(int i);
+
+    UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     UniquePointer<Component> background;
 

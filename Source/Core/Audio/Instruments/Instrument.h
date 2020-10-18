@@ -21,7 +21,7 @@ class KeyboardMapping;
 
 class Instrument final :
     public Serializable,
-    public ChangeBroadcaster // notifies InstrumentEditorPanel
+    public ChangeBroadcaster // notifies InstrumentEditor
 {
 public:
 

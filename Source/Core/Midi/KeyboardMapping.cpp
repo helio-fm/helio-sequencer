@@ -180,6 +180,8 @@ void KeyboardMapping::deserialize(const SerializedData &data)
             break;
         }
     } while (c != 0);
+
+    this->sendChangeMessage();
 }
 
 KeyboardMapping::KeyChannel KeyboardMapping::getDefaultMappingFor(int key) noexcept
@@ -195,6 +197,8 @@ void KeyboardMapping::reset()
     {
         this->index[key] = KeyboardMapping::getDefaultMappingFor(key);
     }
+
+    this->sendChangeMessage();
 }
 
 void KeyboardMapping::loadScalaKbmFile(InputStream &fileContentStream,
@@ -333,6 +337,13 @@ void KeyboardMapping::loadScalaKbmFile(InputStream &fileContentStream,
             this->index[key] = { int8(mappedKey), int8(channelNumber) };
         }
     }
+
+    this->sendChangeMessage();
+}
+
+void KeyboardMapping::updateKey(int key, const KeyChannel &keyChannel)
+{
+    this->updateKey(key, keyChannel.key, keyChannel.channel);
 }
 
 void KeyboardMapping::updateKey(int key, int8 targetKey, int8 targetChannel)
@@ -341,6 +352,69 @@ void KeyboardMapping::updateKey(int key, int8 targetKey, int8 targetChannel)
     jassert(targetKey >= 0);
     jassert(targetChannel > 0);
     this->index[key] = { targetKey, targetChannel };
+    this->sendChangeMessage();
+}
+
+//===----------------------------------------------------------------------===//
+// KeyboardMapping::KeyChannel
+//===----------------------------------------------------------------------===//
+
+KeyboardMapping::KeyChannel KeyboardMapping::KeyChannel::getNextDefault() const noexcept
+{
+    int k = this->key + 1;
+    int8 c = this->channel;
+    if (k >= Globals::twelveToneKeyboardSize)
+    {
+        k = 0;
+        c++;
+    }
+
+    return { int8(k), c };
+}
+
+KeyboardMapping::KeyChannel KeyboardMapping::KeyChannel::fromString(const String &str)
+{
+    KeyChannel result;
+
+    int a = 0;
+    juce_wchar c = 0;
+    auto ptr = str.getCharPointer();
+    do
+    {
+        c = ptr.getAndAdvance();
+        switch (c)
+        {
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+            a = a * 10 + ((int)c) - '0';
+            break;
+        case '/':
+            jassert(a < 128);
+            result.key = int8(a);
+            a = 0;
+            break;
+        case 0:
+            jassert(a > 0 && a < 128);
+            result.channel = int8(a);
+            a = 0;
+            break;
+        default:
+            break;
+        }
+    } while (c != 0);
+
+    return result;
+}
+
+String KeyboardMapping::KeyChannel::toString() const noexcept
+{
+    return String(this->key) + "/" + String(this->channel);
+}
+
+bool KeyboardMapping::KeyChannel::isValid() const noexcept
+{
+    return this->key >= 0 &&
+        this->channel > 0 && this->channel <= 16;
 }
 
 //===----------------------------------------------------------------------===//
@@ -370,7 +444,7 @@ public:
 
         // test the simple setter
         map.updateKey(500, 64, 5);
-        map.updateKey(600, 64, 6);
+        map.updateKey(600, { 64, 6 });
         expectEquals(channel1(map.serialize()), String("500:64/5 600:64/6"));
 
         // test RLE
