@@ -170,6 +170,12 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(PatternsGroupById)
         CASE_FOR(CommandPalette)
         CASE_FOR(CommandPaletteWithMode)
+        CASE_FOR(KeyMapReset)
+        CASE_FOR(KeyMapLoadScala)
+        CASE_FOR(KeyMapNextPage)
+        CASE_FOR(KeyMapPreviousPage)
+        CASE_FOR(KeyMapCopyToClipboard)
+        CASE_FOR(KeyMapPasteFromClipboard)
         default: return None;
     };
 }
@@ -336,6 +342,12 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_KEY(PatternsGroupById, Menu::groupByNone)
         TRANS_NONE(CommandPalette)
         TRANS_NONE(CommandPaletteWithMode)
+        TRANS_KEY(KeyMapReset, Menu::keyboardMappingLoadScala)
+        TRANS_KEY(KeyMapLoadScala, Menu::keyboardMappingReset)
+        TRANS_NONE(KeyMapNextPage)
+        TRANS_NONE(KeyMapPreviousPage)
+        TRANS_KEY(KeyMapCopyToClipboard, Menu::copy)
+        TRANS_KEY(KeyMapPasteFromClipboard, Menu::paste)
         default: return {};
     };
 }

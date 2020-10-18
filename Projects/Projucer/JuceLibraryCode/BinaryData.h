@@ -330,7 +330,7 @@ namespace BinaryData
     const int            colourSchemes_jsonSize = 3279;
 
     extern const char*   hotkeySchemes_json;
-    const int            hotkeySchemes_jsonSize = 13627;
+    const int            hotkeySchemes_jsonSize = 14624;
 
     extern const char*   scales_json;
     const int            scales_jsonSize = 8354;

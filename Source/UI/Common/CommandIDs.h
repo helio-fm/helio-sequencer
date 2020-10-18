@@ -199,6 +199,13 @@ namespace CommandIDs
         CommandPalette                  = 0x4200,
         CommandPaletteWithMode          = 0x4201,
 
+        KeyMapReset                     = 0x4210,
+        KeyMapLoadScala                 = 0x4211,
+        KeyMapNextPage                  = 0x4212,
+        KeyMapPreviousPage              = 0x4213,
+        KeyMapCopyToClipboard           = 0x4214,
+        KeyMapPasteFromClipboard        = 0x4215,
+
         YourNextCommandId               = 0x4300
     };
 

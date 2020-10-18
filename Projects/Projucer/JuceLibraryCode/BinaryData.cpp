@@ -12193,6 +12193,28 @@ static const unsigned char temp_binary_data_107[] =
 "      { \"command\": \"VersionControlPullSelected\", \"key\": \"?\" },\n"
 "    ]\n"
 "  },*/\n"
+"  {  // ANCHOR: KeyboardMapping\n"
+"    \"receiver\": \"KeyboardMapping\",\n"
+"    \"keyPress\": [\n"
+"\n"
+"      { \"command\": \"KeyMapPreviousPage\", \"key\": \"Cursor Left\" },\n"
+"      { \"command\": \"KeyMapNextPage\", \"key\": \"Cursor Right\" },\n"
+"\n"
+"      { \"command\": \"KeyMapReset\", \"key\": \"Command + R\" },\n"
+"      { \"command\": \"KeyMapReset\", \"key\": \"Control + R\" },\n"
+"      { \"command\": \"KeyMapLoadScala\", \"key\": \"Command + O\" },\n"
+"      { \"command\": \"KeyMapLoadScala\", \"key\": \"Control + O\" },\n"
+"\n"
+"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Command + C\" },\n"
+"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Control + C\" },\n"
+"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Command + Insert\" },\n"
+"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Control + Insert\" },\n"
+"\n"
+"      { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Command + V\" },\n"
+"      { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Control + V\" },\n"
+"      { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Shift + Insert\" }\n"
+"    ]\n"
+"  }, // ANCHOR_END: KeyboardMapping  \n"
 "  {  // ANCHOR: PianoRoll\n"
 "    \"receiver\": \"PianoRoll\",\n"
 "    \"keyPress\": [\n"
@@ -14642,7 +14664,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 712; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 13627; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 14624; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 8354; return scales_json;
         case 0x77719112:  numBytes = 839; return temperaments_json;
         case 0xf8655f25:  numBytes = 134310; return translations_json;

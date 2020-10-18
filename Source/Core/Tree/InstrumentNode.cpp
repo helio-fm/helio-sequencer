@@ -363,23 +363,17 @@ public:
     {
         MenuPanel::Menu menu;
 
-        // todo make these hotkey-able commands available in the command palette?
+        menu.add(MenuItem::item(Icons::browse, CommandIDs::KeyMapLoadScala,
+            TRANS(I18n::Menu::keyboardMappingLoadScala))->closesMenu());
 
-        // Load Scala mapping
-        menu.add(MenuItem::item(Icons::browse,
-            TRANS(I18n::Menu::keyboardMappingLoadScala))->withAction([this]()
-        {
-            // tell instrument's kbm to load scala
-            // sync/update views
-        }));
+        menu.add(MenuItem::item(Icons::reset, CommandIDs::KeyMapReset,
+            TRANS(I18n::Menu::keyboardMappingReset))->closesMenu());
 
-        // Reset keyboard mapping
-        menu.add(MenuItem::item(Icons::reset,
-            TRANS(I18n::Menu::keyboardMappingReset))->withAction([this]()
-        {
-            // tell instrument's kbm to load scala
-            // sync/update views
-        }));
+        menu.add(MenuItem::item(Icons::copy, CommandIDs::KeyMapCopyToClipboard,
+            TRANS(I18n::Menu::copy))->closesMenu());
+
+        menu.add(MenuItem::item(Icons::paste, CommandIDs::KeyMapPasteFromClipboard,
+            TRANS(I18n::Menu::paste))->closesMenu());
 
         this->updateContent(menu, MenuPanel::SlideRight);
     }

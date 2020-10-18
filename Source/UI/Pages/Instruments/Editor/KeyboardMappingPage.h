@@ -55,6 +55,9 @@ private:
 
     void onKeyMappingUpdated(int i);
 
+    bool canShowPreviousPage() const noexcept;
+    bool canShowNextPage() const noexcept;
+
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     UniquePointer<Component> background;

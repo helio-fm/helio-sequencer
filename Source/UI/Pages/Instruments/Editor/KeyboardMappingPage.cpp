@@ -21,7 +21,7 @@
 #include "HeadlineContextMenuController.h"
 #include "PanelBackgroundB.h"
 #include "IconButton.h"
-#include "FramePanel.h"
+#include "ComponentIDs.h"
 
 KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     instrument(instrument)
@@ -29,6 +29,8 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+
+    this->setComponentID(ComponentIDs::keyboardMapping);
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
@@ -40,10 +42,10 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     this->rangeLabel->setJustificationType(Justification::centred);
     this->addAndMakeVisible(this->rangeLabel.get());
 
-    this->leftArrow = make<IconButton>(Icons::stretchLeft, CommandIDs::ShowPreviousPage);
+    this->leftArrow = make<IconButton>(Icons::stretchLeft, CommandIDs::KeyMapPreviousPage);
     this->addAndMakeVisible(this->leftArrow.get());
 
-    this->rightArrow = make<IconButton>(Icons::stretchRight, CommandIDs::ShowNextPage);
+    this->rightArrow = make<IconButton>(Icons::stretchRight, CommandIDs::KeyMapNextPage);
     this->addAndMakeVisible(this->rightArrow.get());
 
     for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
@@ -129,9 +131,8 @@ void KeyboardMappingPage::syncWithRange(int base)
     this->rangeLabel->setText(String(base) + " - " + 
         String(base + Globals::twelveToneKeyboardSize - 1), dontSendNotification);
 
-    const auto canShowPreiousPave = base > 0;
-    const auto canShowNextPage = base +
-        Globals::twelveToneKeyboardSize < KeyboardMapping::maxMappedKeys;
+    const auto canShowPreiousPave = this->canShowPreviousPage();
+    const auto canShowNextPage = this->canShowNextPage();
 
     this->leftArrow->setInterceptsMouseClicks(canShowPreiousPave, false);
     this->leftArrow->setAlpha(canShowPreiousPave ? 1.f : 0.25f);
@@ -156,11 +157,29 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-    case CommandIDs::ShowPreviousPage:
-        this->syncWithRange(this->currentPageBase - Globals::twelveToneKeyboardSize);
+    case CommandIDs::KeyMapPreviousPage:
+        if (this->canShowPreviousPage())
+        {
+            this->syncWithRange(this->currentPageBase - Globals::twelveToneKeyboardSize);
+        }
         break;
-    case CommandIDs::ShowNextPage:
-        this->syncWithRange(this->currentPageBase + Globals::twelveToneKeyboardSize);
+    case CommandIDs::KeyMapNextPage:
+        if (this->canShowNextPage())
+        {
+            this->syncWithRange(this->currentPageBase + Globals::twelveToneKeyboardSize);
+        }
+        break;
+    case CommandIDs::KeyMapLoadScala:
+         // todo
+        break;
+    case CommandIDs::KeyMapReset:
+        // todo
+        break;
+    case CommandIDs::KeyMapCopyToClipboard:
+        // todo
+        break;
+    case CommandIDs::KeyMapPasteFromClipboard:
+        // todo
         break;
     default:
         break;
@@ -196,4 +215,15 @@ void KeyboardMappingPage::onKeyMappingUpdated(int i)
     {
         editor->setText(keyMap->map(key).toString(), dontSendNotification);
     }
+}
+
+bool KeyboardMappingPage::canShowPreviousPage() const noexcept
+{
+    return this->currentPageBase > 0;
+}
+
+bool KeyboardMappingPage::canShowNextPage() const noexcept
+{
+    return this->currentPageBase +
+        Globals::twelveToneKeyboardSize < KeyboardMapping::maxMappedKeys;
 }
