@@ -120,7 +120,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         TRANS(I18n::Menu::trackDuplicate))->disabledIf(!canDuplicate)->closesMenu());
 
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
-        TRANS(I18n::Menu::Selection::clipsDelete))->closesMenu());
+        TRANS(I18n::Menu::delete_))->closesMenu());
 
     menu.add(MenuItem::item(Icons::reprise,
         CommandIDs::ToggleLoopOverSelection,

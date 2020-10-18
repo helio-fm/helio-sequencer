@@ -363,9 +363,11 @@ public:
     {
         MenuPanel::Menu menu;
 
+        // todo make these hotkey-able commands available in the command palette?
+
         // Load Scala mapping
         menu.add(MenuItem::item(Icons::browse,
-            TRANS(I18n::Menu::instrumentLoadKeyboardMapping))->withAction([this]()
+            TRANS(I18n::Menu::keyboardMappingLoadScala))->withAction([this]()
         {
             // tell instrument's kbm to load scala
             // sync/update views
@@ -373,7 +375,7 @@ public:
 
         // Reset keyboard mapping
         menu.add(MenuItem::item(Icons::reset,
-            TRANS(I18n::Menu::instrumentResetKeyboardMapping))->withAction([this]()
+            TRANS(I18n::Menu::keyboardMappingReset))->withAction([this]()
         {
             // tell instrument's kbm to load scala
             // sync/update views
@@ -386,6 +388,11 @@ public:
 KeyboardMappingNode::KeyboardMappingNode(WeakReference<Instrument> instrument) :
     TreeNode({}, Serialization::Midi::keyboardMapping),
     instrument(instrument) {}
+
+String KeyboardMappingNode::getName() const noexcept
+{
+    return TRANS(I18n::Tree::keyboardMapping);
+}
 
 Image KeyboardMappingNode::getIcon() const noexcept
 {

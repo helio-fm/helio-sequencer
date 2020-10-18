@@ -43,13 +43,13 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
-        TRANS(I18n::Menu::Selection::notesCopy))->closesMenu());
+        TRANS(I18n::Menu::copy))->closesMenu());
 
     menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS(I18n::Menu::Selection::notesCut))->closesMenu());
+        TRANS(I18n::Menu::cut))->closesMenu());
 
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents,
-        TRANS(I18n::Menu::Selection::notesDelete))->closesMenu());
+        TRANS(I18n::Menu::delete_))->closesMenu());
 
     menu.add(MenuItem::item(Icons::reprise,
         CommandIDs::ToggleLoopOverSelection,

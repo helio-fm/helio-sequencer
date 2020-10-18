@@ -52,7 +52,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     if (!this->instrumentNode.hasSelectedChildOfType<KeyboardMappingNode>())
     {
         menu.add(MenuItem::item(Icons::piano,
-            TRANS(I18n::Menu::instrumentShowKeyboardMapping))->
+            TRANS(I18n::Menu::keyboardMappingEdit))->
             disabledIf(!instrument->isValid())->
             closesMenu()->
             withAction([this]()

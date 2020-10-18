@@ -91,6 +91,7 @@ public:
 
     explicit KeyboardMappingNode(WeakReference<Instrument> instrument);
 
+    String getName() const noexcept override;
     Image getIcon() const noexcept override;
     bool hasMenu() const noexcept override;
     UniquePointer<Component> createMenu() override;
