@@ -38,7 +38,7 @@ SerializedData KeyboardMapping::serialize() const
     KeyChannel lastKey;
     bool hasNewChunk = true;
     int rleSeriesInChunk = 0;
-    for (int i = 0; i < KeyboardMapping::maxMappedKeys; ++i)
+    for (int i = 0; i < KeyboardMapping::numMappedKeys; ++i)
     {
         const auto key = this->index[i];
         const auto defaultKey = KeyboardMapping::getDefaultMappingFor(i);
@@ -193,7 +193,7 @@ KeyboardMapping::KeyChannel KeyboardMapping::getDefaultMappingFor(int key) noexc
 
 void KeyboardMapping::reset()
 {
-    for (int key = 0; key < KeyboardMapping::maxMappedKeys; ++key)
+    for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
     {
         this->index[key] = KeyboardMapping::getDefaultMappingFor(key);
     }
@@ -226,7 +226,7 @@ void KeyboardMapping::loadScalaKbmFile(InputStream &fileContentStream,
 
     // todo assign name?
 
-    const auto lastMappedKey = KeyboardMapping::maxMappedKeys - 1;
+    const auto lastMappedKey = KeyboardMapping::numMappedKeys - 1;
 
     // read parameters
 
@@ -311,7 +311,7 @@ void KeyboardMapping::loadScalaKbmFile(InputStream &fileContentStream,
 
     // apply mapping
 
-    for (int key = 0; key < KeyboardMapping::maxMappedKeys; ++key)
+    for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
     {
         if (key >= firstNoteToRetune && key <= lastNoteToRetune)
         {
@@ -348,7 +348,7 @@ void KeyboardMapping::updateKey(int key, const KeyChannel &keyChannel)
 
 void KeyboardMapping::updateKey(int key, int8 targetKey, int8 targetChannel)
 {
-    jassert(key < KeyboardMapping::maxMappedKeys);
+    jassert(key < KeyboardMapping::numMappedKeys);
     jassert(targetKey >= 0);
     jassert(targetChannel > 0);
     this->index[key] = { targetKey, targetChannel };

@@ -173,7 +173,7 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
          // todo
         break;
     case CommandIDs::KeyMapReset:
-        // todo
+        this->instrument->getKeyboardMapping()->reset();
         break;
     case CommandIDs::KeyMapCopyToClipboard:
         // todo
@@ -225,5 +225,5 @@ bool KeyboardMappingPage::canShowPreviousPage() const noexcept
 bool KeyboardMappingPage::canShowNextPage() const noexcept
 {
     return this->currentPageBase +
-        Globals::twelveToneKeyboardSize < KeyboardMapping::maxMappedKeys;
+        Globals::twelveToneKeyboardSize < KeyboardMapping::numMappedKeys;
 }

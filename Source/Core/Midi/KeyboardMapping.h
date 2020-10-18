@@ -28,7 +28,8 @@ public:
 
     KeyboardMapping();
 
-    static constexpr auto maxMappedKeys = 1024;
+    static constexpr auto numMappedKeys = 
+        Globals::numChannels * Globals::twelveToneKeyboardSize;
 
     struct KeyChannel final
     {
@@ -87,7 +88,7 @@ private:
 
     static KeyChannel getDefaultMappingFor(int key) noexcept;
 
-    KeyChannel index[maxMappedKeys];
+    KeyChannel index[numMappedKeys];
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(KeyboardMapping)
 };
