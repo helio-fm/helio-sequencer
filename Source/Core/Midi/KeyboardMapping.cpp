@@ -29,8 +29,29 @@ SerializedData KeyboardMapping::serialize() const
     using namespace Serialization;
     SerializedData data(Midi::keyboardMapping);
 
-    // someday we will have all channels in the sequencer
-    String channel1;
+    // someday tracks might be able to have any custom channel
+    data.setProperty(Midi::channel1, this->toString());
+    return data;
+}
+
+void KeyboardMapping::deserialize(const SerializedData &data)
+{
+    using namespace Serialization;
+
+    const auto root = data.hasType(Midi::keyboardMapping) ?
+        data : data.getChildWithName(Midi::keyboardMapping);
+
+    if (!root.isValid())
+    {
+        return;
+    }
+
+    this->loadFromString(root.getProperty(Midi::channel1));
+}
+
+String KeyboardMapping::toString() const
+{
+    String result;
 
     // this will apply RLE-ish encoding and output a string like this:
     // "128:16/2,32/2,33/2,34/2,40/4 300:127/4,0/5,1/5,2/5 512:1/5"
@@ -47,12 +68,12 @@ SerializedData KeyboardMapping::serialize() const
         {
             if (hasNewChunk)
             {
-                if (channel1.isNotEmpty())
+                if (result.isNotEmpty())
                 {
-                    channel1 << " ";
+                    result << " ";
                 }
 
-                channel1 << i << ":" << int(key.key) << "/" << int(key.channel);
+                result << i << ":" << int(key.key) << "/" << int(key.channel);
                 hasNewChunk = false;
             }
             else
@@ -66,11 +87,11 @@ SerializedData KeyboardMapping::serialize() const
                 {
                     if (rleSeriesInChunk > 0)
                     {
-                        channel1 << "," << rleSeriesInChunk << "+";
+                        result << "," << rleSeriesInChunk << "+";
                         rleSeriesInChunk = 0;
                     }
 
-                    channel1 << "," << int(key.key) << "/" << int(key.channel);
+                    result << "," << int(key.key) << "/" << int(key.channel);
                 }
             }
         }
@@ -78,7 +99,7 @@ SerializedData KeyboardMapping::serialize() const
         {
             if (rleSeriesInChunk > 0)
             {
-                channel1 << "," << rleSeriesInChunk << "+";
+                result << "," << rleSeriesInChunk << "+";
                 rleSeriesInChunk = 0;
             }
 
@@ -88,27 +109,17 @@ SerializedData KeyboardMapping::serialize() const
         lastKey = key;
     }
 
-    data.setProperty(Midi::channel1, channel1);
-
-    return data;
+    return result;
 }
 
-void KeyboardMapping::deserialize(const SerializedData &data)
+void KeyboardMapping::loadFromString(const String &str)
 {
-    this->reset();
-    using namespace Serialization;
-
-    const auto root = data.hasType(Midi::keyboardMapping) ?
-        data : data.getChildWithName(Midi::keyboardMapping);
-
-    if (!root.isValid()) { return; }
-
-    const String channel1 = root.getProperty(Midi::channel1);
-
-    if (channel1.isEmpty())
+    if (str.isEmpty())
     {
         return;
     }
+
+    this->reset();
 
     int a = 0; // accumulator
     int keyOffset = 0;
@@ -128,7 +139,6 @@ void KeyboardMapping::deserialize(const SerializedData &data)
                 keyIterator = keyIterator.getNextDefault();
                 this->index[keyOffset + chunkOffset + i] = keyIterator;
             }
-            numStepsSkipped = 0;
         }
         else
         {
@@ -141,7 +151,7 @@ void KeyboardMapping::deserialize(const SerializedData &data)
         }
     };
 
-    auto ptr = channel1.getCharPointer();
+    auto ptr = str.getCharPointer();
     do
     {
         c = ptr.getAndAdvance();
@@ -167,13 +177,15 @@ void KeyboardMapping::deserialize(const SerializedData &data)
             break;
         case ',':
             updateIndex();
-            chunkOffset++;
+            chunkOffset += jmax(numStepsSkipped, 1);
+            numStepsSkipped = 0;
             a = 0;
             break;
         case 0:
         case ' ':
             updateIndex();
             chunkOffset = 0;
+            numStepsSkipped = 0;
             a = 0;
             break;
         default:
@@ -455,6 +467,14 @@ public:
         map.deserialize(rleTest);
         expectEquals(channel1(map.serialize()),
             String("128:16/2,32/2,2+,40/4 300:127/4,3+ 512:1/5"));
+
+        // from string / to string
+        const String long31("0:0/15,30+ 31:0/16,30+ 62:0/1,30+ 93:0/2,30+ 124:0/3,30+ 155:0/4,30+ 186:0/5,30+ 217:0/6,30+ 248:0/7,30+ 279:0/8,30+ 310:0/9,30+");
+        const String short31("0:0/15,30+,0/16,30+,0/1,30+,0/2,30+,0/3,30+,0/4,30+,0/5,30+,0/6,30+,0/7,30+,0/8,30+,0/9,30+");
+        map.loadFromString(long31);
+        expectEquals(map.toString(), short31);
+        map.loadFromString(short31);
+        expectEquals(map.toString(), short31);
 
         // test resetting
         map.reset();

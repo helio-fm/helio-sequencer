@@ -80,6 +80,9 @@ public:
     void loadScalaKbmFile(InputStream &fileContentStream,
         const String &fileNameWithoutExtension);
 
+    String toString() const;
+    void loadFromString(const String &str);
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;

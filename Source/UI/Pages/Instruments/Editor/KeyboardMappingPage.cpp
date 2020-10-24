@@ -176,10 +176,12 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
         this->instrument->getKeyboardMapping()->reset();
         break;
     case CommandIDs::KeyMapCopyToClipboard:
-        // todo
+        SystemClipboard::copyTextToClipboard(
+            this->instrument->getKeyboardMapping()->toString());
         break;
     case CommandIDs::KeyMapPasteFromClipboard:
-        // todo
+        this->instrument->getKeyboardMapping()->
+            loadFromString(SystemClipboard::getTextFromClipboard());
         break;
     default:
         break;
