@@ -25,6 +25,7 @@
 class ProjectNode;
 class MidiTrack;
 class UndoStack;
+class KeyboardMapping;
 
 class MidiSequence : public Serializable
 {
@@ -51,7 +52,8 @@ public:
     static float midiTicksToBeats(double ticks, int timeFormat) noexcept;
     virtual void importMidi(const MidiMessageSequence &sequence, short timeFormat) = 0;
     virtual void exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
-        bool soloPlaybackMode, double timeAdjustment, double timeFactor) const;
+        const KeyboardMapping &keyMap, bool soloPlaybackMode,
+        double timeAdjustment, double timeFactor) const;
 
     //===------------------------------------------------------------------===//
     // Track editing

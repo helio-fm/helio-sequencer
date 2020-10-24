@@ -65,7 +65,8 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFo
 }
 
 void PianoSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
-    bool soloPlaybackMode, double timeAdjustment, double timeFactor) const
+    const KeyboardMapping &keyMap, bool soloPlaybackMode,
+    double timeAdjustment, double timeFactor) const
 {
     // This method pretty much duplicates base method, except for this check:
     if (clip.isMuted() || (soloPlaybackMode && !clip.isSoloed()))
@@ -73,11 +74,9 @@ void PianoSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &cli
         return;
     }
 
-    const auto periodSize = this->getPeriodSize();
-
     for (const auto *event : this->midiEvents)
     {
-        event->exportMessages(outSequence, clip, timeAdjustment, timeFactor, periodSize);
+        event->exportMessages(outSequence, clip, keyMap, timeAdjustment, timeFactor);
     }
 
     outSequence.updateMatchedPairs();

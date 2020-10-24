@@ -30,6 +30,7 @@
 #include "HybridRoll.h"
 #include "SerializationKeys.h"
 #include "PlayerThreadPool.h"
+#include "KeyboardMapping.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 #define SOUND_SLEEP_DELAY_MS (60000)
@@ -834,18 +835,22 @@ void Transport::recacheIfNeeded() const
         for (const auto *track : this->tracksCache)
         {
             const auto instrument = this->linksCache[track->getTrackId()];
+            const auto &keyMap = *instrument->getKeyboardMapping();
+
             auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
 
             if (track->getPattern() != nullptr)
             {
                 for (const auto *clip : track->getPattern()->getClips())
                 {
-                    cached->track->exportMidi(cached->midiMessages, *clip, hasSoloClips, offset, 1.0);
+                    cached->track->exportMidi(cached->midiMessages, *clip,
+                        keyMap, hasSoloClips, offset, 1.0);
                 }
             }
             else
             {
-                cached->track->exportMidi(cached->midiMessages, noTransform, hasSoloClips, offset, 1.0);
+                cached->track->exportMidi(cached->midiMessages, noTransform,
+                    keyMap, hasSoloClips, offset, 1.0);
             }
 
             this->playbackCache.addWrapper(cached);

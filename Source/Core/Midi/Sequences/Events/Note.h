@@ -40,7 +40,7 @@ public:
         float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        double timeOffset, double timeFactor, int periodSize) const noexcept override;
+        const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
     
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     Note withKey(Key newKey) const noexcept;
