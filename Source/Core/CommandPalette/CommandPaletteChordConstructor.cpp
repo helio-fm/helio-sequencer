@@ -1623,12 +1623,8 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                 atLeastOneNoteShowsInViewport = atLeastOneNoteShowsInViewport ||
                     this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat, CHORD_COMPILER_NOTE_LENGTH);
 
-                auto mappedKey = key + clipKey;
-                auto channel = note.getTrackChannel();
-                Note::performMultiChannelMapping(periodSize, channel, mappedKey);
-
-                this->roll.getTransport().previewMidiMessage(pianoSequence->getTrackId(),
-                    MidiMessage::noteOn(channel, mappedKey, CHORD_COMPILER_NOTE_VELOCITY));
+                this->roll.getTransport().previewKey(pianoSequence->getTrackId(),
+                    note.getTrackChannel(), key + clipKey, CHORD_COMPILER_NOTE_VELOCITY);
             }
 
             if (!atLeastOneNoteShowsInViewport)

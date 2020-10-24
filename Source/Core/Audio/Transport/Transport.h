@@ -141,7 +141,7 @@ public:
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void previewMidiMessage(const String &trackId, const MidiMessage &message) const;
+    void previewKey(const String &trackId, int channel, int key, float volume) const;
     void stopSound(const String &trackId = "") const;
 
     void allNotesControllersAndSoundOff() const;

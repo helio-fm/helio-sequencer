@@ -27,29 +27,26 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-#define CHORD_BUILDER_LABEL_SIZE       (32)
-#define CHORD_BUILDER_FONT_SIZE        (16)
-#define CHORD_BUILDER_NOTE_LENGTH      (4)
-#define CHORD_BUILDER_NOTE_VELOCITY    (0.35f)
-
 static Label *createPopupButtonLabel(const String &text)
 {
-    const int size = CHORD_BUILDER_LABEL_SIZE;
+    const int size = 32;
     auto *newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
     newLabel->setName(text + "_outline");
-    newLabel->setFont(CHORD_BUILDER_FONT_SIZE);
+    newLabel->setFont({ 16.f });
     return newLabel;
 }
 
-ChordPreviewTool::ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target, const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext)
-    : PopupMenuComponent(&caller),
-      roll(caller),
-      sequence(target),
-      clip(clip),
-      harmonicContext(harmonicContext),
-      defaultChords(App::Config().getChords()->getAll())
+ChordPreviewTool::ChordPreviewTool(PianoRoll &caller,
+    WeakReference<PianoSequence> target, const Clip &clip,
+    WeakReference<KeySignaturesSequence> harmonicContext) :
+    PopupMenuComponent(&caller),
+    roll(caller),
+    sequence(target),
+    clip(clip),
+    harmonicContext(harmonicContext),
+    defaultChords(App::Config().getChords()->getAll())
 {
     this->newChord = make<PopupCustomButton>(createPopupButtonLabel("+"));
     this->addAndMakeVisible(this->newChord.get());
@@ -238,18 +235,16 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             const int key = jlimit(0, temperament->getNumKeys(), finalRootOffset +
                 this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
 
-            const Note note(this->sequence.get(), key,
-                this->targetBeat, CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
+            const Note note(this->sequence.get(), key, this->targetBeat,
+                ChordPreviewTool::noteLength, ChordPreviewTool::noteVelocity);
 
             this->sequence->insert(note, true);
 
-            // preview:
+            this->roll.getTransport().previewKey(this->sequence->getTrackId(),
+                note.getTrackChannel(),
+                key + this->clip.getKey(),
+                ChordPreviewTool::noteVelocity);
 
-            auto channel = note.getTrackChannel();
-            auto mappedKey = key + this->clip.getKey();
-            Note::performMultiChannelMapping(temperament->getPeriodSize(), channel, mappedKey);
-
-            this->sendMidiMessage(MidiMessage::noteOn(channel, mappedKey, CHORD_BUILDER_NOTE_VELOCITY));
         }
 
         this->hasMadeChanges = true;
@@ -272,17 +267,15 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     
     const int key = jlimit(0, this->roll.getNumKeys(), this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
-        CHORD_BUILDER_NOTE_LENGTH, CHORD_BUILDER_NOTE_VELOCITY);
+        ChordPreviewTool::noteLength, ChordPreviewTool::noteVelocity);
 
     this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
     {
-        auto channel = note.getTrackChannel();
-        auto mappedKey = key + this->clip.getKey();
-        Note::performMultiChannelMapping(this->roll.getPeriodSize(), channel, mappedKey);
-        
-        this->sendMidiMessage(MidiMessage::noteOn(channel,
-            mappedKey, CHORD_BUILDER_NOTE_VELOCITY));
+        this->roll.getTransport().previewKey(this->sequence->getTrackId(),
+            note.getTrackChannel(),
+            key + this->clip.getKey(),
+            ChordPreviewTool::noteVelocity);
     }
 
     this->hasMadeChanges = true;
@@ -351,9 +344,4 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
 void ChordPreviewTool::stopSound()
 {
     this->roll.getTransport().stopSound(this->sequence->getTrackId());
-}
-
-void ChordPreviewTool::sendMidiMessage(const MidiMessage &message)
-{
-    this->roll.getTransport().previewMidiMessage(this->sequence->getTrackId(), message);
 }

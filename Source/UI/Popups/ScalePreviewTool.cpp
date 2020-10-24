@@ -424,13 +424,13 @@ void ScalePreviewTool::buildChord(Array<int> keys)
         for (int offset : keys)
         {
             const int key = jlimit(0, this->roll->getNumKeys(), this->targetKey + offset);
-            Note note(sequence, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
+            Note note(sequence, key, this->targetBeat,
+                Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
+
             sequence->insert(note, true);
 
-            auto mappedKey = key;
-            auto channel = note.getTrackChannel();
-            Note::performMultiChannelMapping(this->roll->getPeriodSize(), channel, mappedKey);
-            this->sendMidiMessage(MidiMessage::noteOn(channel, mappedKey, kScalePreviewDefaultNoteVelocity));
+            this->roll->getTransport().previewKey(this->sequence->getTrackId(),
+                note.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity);
         }
 
         this->hasMadeChanges = true;
@@ -451,16 +451,15 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
         pianoSequence->checkpoint();
 
         const int key = jlimit(0, this->roll->getNumKeys(), this->targetKey);
+        Note note1(pianoSequence, key, this->targetBeat,
+            Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
 
-        Note note1(pianoSequence, key, this->targetBeat, Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
         pianoSequence->insert(note1, true);
 
         if (shouldSendMidiMessage)
         {
-            auto mappedKey = key;
-            auto channel = note1.getTrackChannel();
-            Note::performMultiChannelMapping(this->roll->getPeriodSize(), channel, mappedKey);
-            this->sendMidiMessage(MidiMessage::noteOn(channel, mappedKey, kScalePreviewDefaultNoteVelocity));
+            this->roll->getTransport().previewKey(this->sequence->getTrackId(),
+                note1.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity);
         }
 
         this->hasMadeChanges = true;
@@ -501,11 +500,6 @@ bool ScalePreviewTool::detectKeyAndBeat()
 void ScalePreviewTool::stopSound()
 {
     this->roll->getTransport().stopSound(this->sequence->getTrackId());
-}
-
-void ScalePreviewTool::sendMidiMessage(const MidiMessage &message)
-{
-    this->roll->getTransport().previewMidiMessage(this->sequence->getTrackId(), message);
 }
 
 //[/MiscUserCode]

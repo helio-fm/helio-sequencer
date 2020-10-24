@@ -91,8 +91,6 @@ public:
 
     static int compareElements(const Note *const first, const Note *const second) noexcept;
 
-    static void performMultiChannelMapping(int periodSize, int &channel, Key &key) noexcept;
-
 protected:
 
     Key key = 0;

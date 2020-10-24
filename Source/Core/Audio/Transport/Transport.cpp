@@ -439,7 +439,7 @@ void Transport::MidiMessageDelayedPreview::timerCallback()
     this->instruments.clearQuick();
 }
 
-void Transport::previewMidiMessage(const String &trackId, const MidiMessage &message) const
+void Transport::previewKey(const String &trackId, int channel, int key, float volume) const
 {
     this->sleepTimer.setAwake();
 
@@ -453,7 +453,12 @@ void Transport::previewMidiMessage(const String &trackId, const MidiMessage &mes
 
     jassert(instrument != nullptr);
 
-    this->messagePreviewQueue.previewMessage(message, instrument);
+    const auto *keyMap = instrument->getKeyboardMapping();
+    const auto mapped = keyMap->map(key);
+
+    this->messagePreviewQueue.previewMessage(
+        MidiMessage::noteOn(mapped.channel, mapped.key, volume), instrument);
+
     this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 

@@ -87,7 +87,6 @@ private:
     void cancelChangesIfAny();
 
     void stopSound();
-    void sendMidiMessage(const MidiMessage &message);
 
     //[/UserVariables]
 

@@ -64,6 +64,9 @@ private:
     bool hasMadeChanges = false;
     void undoChangesIfAny();
 
+    static constexpr auto noteLength = float(Globals::beatsPerBar);
+    static constexpr auto noteVelocity = 0.35f;
+
     // detected on the fly as the user drags the tool around:
     int targetKey = 0;
     float targetBeat = 0;
@@ -83,7 +86,6 @@ private:
     void buildNewNote(bool shouldSendMidiMessage);
 
     void stopSound();
-    void sendMidiMessage(const MidiMessage &message);
 
     UniquePointer<PopupCustomButton> newChord;
 
