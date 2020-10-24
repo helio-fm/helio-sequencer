@@ -28,6 +28,56 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
+class ScalePreviewThread final : public Thread
+{
+public:
+
+    ScalePreviewThread(const Transport &transport, Array<int> &&s) :
+        Thread("ScalePreview"),
+        transport(transport),
+        sequence(s) {}
+
+    void run() override
+    {
+        for (const auto key : this->sequence)
+        {
+            if (this->threadShouldExit())
+            {
+                this->transport.stopSound({});
+                return;
+            }
+
+            this->transport.stopSound({});
+            Thread::wait(25);
+            this->transport.previewKey({}, 1, key, 0.5f);
+
+            int c = 400;
+            while (c > 0)
+            {
+                const auto a = Time::getMillisecondCounter();
+                Thread::wait(25);
+                const auto b = Time::getMillisecondCounter();
+                c -= (b - a);
+
+                if (this->threadShouldExit())
+                {
+                    this->transport.stopSound({});
+                    return;
+                }
+            }
+        }
+
+        this->transport.stopSound({});
+    }
+
+private:
+
+    const Transport &transport;
+    const Array<int> sequence;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalePreviewThread)
+};
+
 static inline const Temperament::Period &getPeriod(ProjectNode &project)
 {
     return project.getProjectInfo()->getTemperament()->getPeriod();
@@ -160,6 +210,11 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
 
 KeySignatureDialog::~KeySignatureDialog()
 {
+    if (this->scalePreviewThread != nullptr)
+    {
+        this->scalePreviewThread->stopThread(500);
+    }
+
     this->comboPrimer->cleanup();
     this->transport.stopPlayback();
     this->scaleNameEditor->removeListener(this);
@@ -204,39 +259,35 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
     }
     else if (commandId == CommandIDs::TransportPlaybackStart)
     {
+        const auto temperament =
+            this->project.getProjectInfo()->getTemperament();
+
         // scale preview: simply play it forward and backward
         auto scaleKeys = this->scale->getUpScale();
         scaleKeys.addArray(this->scale->getDownScale());
-        const double timeFactor = 0.75; // playback speed
-
-        const auto temperament = this->project.getProjectInfo()->getTemperament();
-
-        MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)
         {
-            auto channel = 1;
-            int key = temperament->getMiddleC() + this->rootKey + scaleKeys.getUnchecked(i);
-            Note::performMultiChannelMapping(temperament->getPeriodSize(), channel, key);
-
-            MidiMessage eventNoteOn(MidiMessage::noteOn(channel, key, 0.5f));
-            const double startTime = double(i) * timeFactor;
-            eventNoteOn.setTimeStamp(startTime);
-
-            MidiMessage eventNoteOff(MidiMessage::noteOff(channel, key));
-            const double endTime = (double(i) + timeFactor * 0.95) * timeFactor;
-            eventNoteOff.setTimeStamp(endTime);
-
-            s.addEvent(eventNoteOn);
-            s.addEvent(eventNoteOff);
+            const auto key = scaleKeys.getUnchecked(i);
+            scaleKeys.getReference(i) = temperament->getMiddleC() + this->rootKey + key;
+        }
+        
+        if (this->scalePreviewThread != nullptr)
+        {
+            this->scalePreviewThread->stopThread(500);
         }
 
-        s.updateMatchedPairs();
-        this->transport.probeSequence(s);
+        this->scalePreviewThread = make<ScalePreviewThread>(this->transport, move(scaleKeys));
+        this->scalePreviewThread->startThread(5);
+
         this->playButton->setPlaying(true);
     }
     else if (commandId == CommandIDs::TransportStop)
     {
-        this->transport.stopPlayback();
+        if (this->scalePreviewThread != nullptr)
+        {
+            this->scalePreviewThread->stopThread(500);
+        }
+
         this->playButton->setPlaying(false);
     }
     else
@@ -342,13 +393,12 @@ void KeySignatureDialog::cancelAndDisappear()
     this->dismiss();
 }
 
-void KeySignatureDialog::previewNote(int keyToPreview) const
+void KeySignatureDialog::previewNote(int keyRelative) const
 {
-    auto channel = 1;
     const auto temperament = this->project.getProjectInfo()->getTemperament();
-    int key = temperament->getMiddleC() + keyToPreview;
-    Note::performMultiChannelMapping(temperament->getPeriodSize(), channel, key);
-    this->transport.previewMidiMessage({}, MidiMessage::noteOn(channel, key, 0.5f));
+    const int key = temperament->getMiddleC() + keyRelative;
+    this->transport.stopSound({});
+    this->transport.previewKey({}, 1, key, 0.5f);
 }
 
 //===----------------------------------------------------------------------===//

@@ -55,8 +55,6 @@ public:
     
     void probeSoundAtBeat(float beatPosition,
         const MidiSequence *limitToLayer = nullptr);
-    
-    void probeSequence(const MidiMessageSequence &sequence);
 
     void startPlayback();
     void startPlayback(float startBeatOverride);
@@ -111,7 +109,6 @@ public:
         int numOutputChannels = 0;
 
         bool playbackLoopMode = false;
-        bool playbackSilentMode = false;
 
         // computed CC values: -1 if not found in any track,
         // otherwise, the controller value at the time of playback start;

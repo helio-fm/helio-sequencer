@@ -43,8 +43,7 @@ public:
         }
     }
 
-    void startPlayback(float startBeat,
-        float rewindBeat, float endBeat, bool loopMode, bool silentMode)
+    void startPlayback(float startBeat, float rewindBeat, float endBeat, bool loopMode)
     {
         if (this->currentPlayer->isThreadRunning())
         {
@@ -56,7 +55,6 @@ public:
         playbackContext->endBeat = endBeat;
         playbackContext->rewindBeat = rewindBeat;
         playbackContext->playbackLoopMode = loopMode;
-        playbackContext->playbackSilentMode = silentMode;
 
         // let listeners know about the tempo before the playback starts
         this->transport.broadcastTempoChanged(playbackContext->startBeatTempo);

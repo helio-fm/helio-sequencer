@@ -168,29 +168,6 @@ void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitTo
     this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 
-// Only used in a key signature dialog to test how scales sound
-void Transport::probeSequence(const MidiMessageSequence &sequence)
-{
-    this->playbackCache.clear();
-    this->playbackCacheIsOutdated = false; // temporary
-
-    // using the last instrument (TODO something more clever in the future)
-    auto *instrument = this->orchestra.getInstruments().getLast();
-    auto cached = CachedMidiSequence::createFrom(instrument);
-    cached->midiMessages = MidiMessageSequence(sequence);
-    cached->midiMessages.addTimeToMessages(this->getSeekBeat());
-
-    this->playbackCache.addWrapper(cached);
-
-    this->stopPlaybackAndRecording();
-
-    this->player->startPlayback(this->getSeekBeat(),
-        this->getSeekBeat(), this->getProjectLastBeat(),
-        false, true);
-
-    this->playbackCacheIsOutdated = true; // will update on the next playback
-}
-
 //===----------------------------------------------------------------------===//
 // Playback control
 //===----------------------------------------------------------------------===//
@@ -213,13 +190,12 @@ void Transport::startPlayback(float start)
         const auto end = this->loopEndBeat.get();
 
         this->player->startPlayback((start >= end) ? loopStart : start,
-            loopStart, end, true, false);
+            loopStart, end, true);
     }
     else
     {
         this->player->startPlayback(start,
-            this->getSeekBeat(), this->getProjectLastBeat(),
-            false, false);
+            this->getSeekBeat(), this->getProjectLastBeat(), false);
     }
 
     this->broadcastPlay();
@@ -232,7 +208,7 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
     
     this->stopPlayback();
 
-    this->player->startPlayback(startBeat, startBeat, endBeat, looped, false);
+    this->player->startPlayback(startBeat, startBeat, endBeat, looped);
     this->broadcastPlay();
 }
 
