@@ -37,7 +37,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 
     const auto instrument = this->instrumentNode.getInstrument();
 
-    if (!this->instrumentNode.isSelected())
+    if (!this->instrumentNode.isSelected()) // isSelectedOrHasSelectedChild() ?
     {
         menu.add(MenuItem::item(Icons::routing,
             TRANS(I18n::Menu::instrumentShowEditor))->
@@ -45,8 +45,23 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
             closesMenu()->
             withAction([this]()
             {
-                instrumentNode.setSelected();
+                this->instrumentNode.setSelected();
             }));
+    }
+
+    if (!this->instrumentNode.hasSelectedChildOfType<KeyboardMappingNode>())
+    {
+        menu.add(MenuItem::item(Icons::piano,
+            TRANS(I18n::Menu::keyboardMappingEdit))->
+            disabledIf(!instrument->isValid())->
+            closesMenu()->
+            withAction([this]()
+        {
+            this->instrumentNode.recreateChildrenEditors();
+            auto *kbmNode = this->instrumentNode.findChildOfType<KeyboardMappingNode>();
+            jassert(kbmNode != nullptr);
+            kbmNode->setSelected();
+        }));
     }
 
     menu.add(MenuItem::item(Icons::ellipsis,
@@ -112,7 +127,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
                 {
                     this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
                     {
-                        this->instrumentNode.updateChildrenEditors();
+                        this->instrumentNode.recreateChildrenEditors();
                         this->instrumentNode.setSelected();
                     });
                 }));
@@ -142,7 +157,7 @@ MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
                 {
                     this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
                     {
-                        this->instrumentNode.updateChildrenEditors();
+                        this->instrumentNode.recreateChildrenEditors();
                         this->instrumentNode.setSelected();
                     });
                 }));

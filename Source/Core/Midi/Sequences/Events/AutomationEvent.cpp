@@ -77,7 +77,7 @@ float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, flo
 }
 
 void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
-    const Clip &clip, double timeOffset, double timeFactor, int periodSize) const noexcept
+    const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
 {
     MidiMessage cc;
     const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();

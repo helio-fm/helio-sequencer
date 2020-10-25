@@ -17,13 +17,11 @@
 
 #pragma once
 
-class AudioCore;
-class FilterInGraph;
-class Instrument;
+class KeyboardMapping;
 
 class Instrument final :
     public Serializable,
-    public ChangeBroadcaster // notifies InstrumentEditorPanel
+    public ChangeBroadcaster // notifies InstrumentEditor
 {
 public:
 
@@ -83,6 +81,11 @@ public:
     AudioProcessorGraph *getProcessorGraph() const noexcept
     {
         return this->processorGraph.get();
+    }
+
+    KeyboardMapping *getKeyboardMapping() const noexcept
+    {
+        return this->keyboardMapping.get();
     }
 
     //===------------------------------------------------------------------===//
@@ -174,6 +177,10 @@ private:
     void deserializeNodesAsync(Array<SerializedData> nodesToDeserialize, DeserializeNodesCallback f);
 
     SerializedData lastValidStateFallback;
+
+private:
+
+    UniquePointer<KeyboardMapping> keyboardMapping;
 
 private:
 

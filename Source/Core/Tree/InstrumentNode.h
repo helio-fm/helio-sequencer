@@ -19,7 +19,9 @@
 
 class Instrument;
 class InstrumentEditor;
-class AudioCore;
+
+class AudioPlugin;
+class AudioPluginEditor;
 
 #include "TreeNode.h"
 
@@ -30,7 +32,7 @@ public:
     explicit InstrumentNode(Instrument *targetInstrument = nullptr);
     ~InstrumentNode() override;
 
-    void updateChildrenEditors();
+    void recreateChildrenEditors();
     void notifyOrchestraChanged();
 
     void removeFromOrchestraAndDelete();
@@ -75,7 +77,50 @@ private:
 
     UniquePointer<InstrumentEditor> instrumentEditor;
     WeakReference<Instrument> instrument;
-    WeakReference<AudioCore> audioCore;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(InstrumentNode)
+};
+
+//===----------------------------------------------------------------------===//
+// Children editor nodes
+//===----------------------------------------------------------------------===//
+
+class KeyboardMappingNode final : public TreeNode
+{
+public:
+
+    explicit KeyboardMappingNode(WeakReference<Instrument> instrument);
+
+    String getName() const noexcept override;
+    Image getIcon() const noexcept override;
+    bool hasMenu() const noexcept override;
+    UniquePointer<Component> createMenu() override;
+    void showPage() override;
+
+private:
+
+    WeakReference<Instrument> instrument;
+    UniquePointer<Component> keyboardMappingPage;
+
+};
+
+class AudioPluginNode final : public TreeNode
+{
+public:
+
+    AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name);
+
+    Image getIcon() const noexcept override;
+    AudioProcessorGraph::NodeID getNodeId() const noexcept;
+
+    bool hasMenu() const noexcept override;
+    UniquePointer<Component> createMenu() override;
+
+    void showPage() override;
+
+private:
+
+    UniquePointer<Component> audioPluginEditor;
+    const AudioProcessorGraph::NodeID nodeId;
+
 };

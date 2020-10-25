@@ -18,26 +18,29 @@
 #include "Common.h"
 #include "InstrumentNode.h"
 #include "TreeNodeSerializer.h"
-#include "MainLayout.h"
-#include "Icons.h"
-#include "SerializationKeys.h"
 
 #include "Instrument.h"
 #include "InstrumentEditor.h"
 #include "InstrumentMenu.h"
+
 #include "OrchestraPit.h"
 #include "OrchestraPitNode.h"
-#include "AudioPluginNode.h"
+
+#include "KeyboardMappingPage.h"
+#include "AudioPluginEditorPage.h"
+#include "PluginWindow.h"
+
+#include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"
+#include "SerializationKeys.h"
+#include "Icons.h"
 
 InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
     TreeNode({}, Serialization::Core::instrumentRoot),
     instrument(targetInstrument),
     instrumentEditor(nullptr)
 {
-    this->audioCore = &App::Workspace().getAudioCore();
-    
     if (this->instrument != nullptr)
     {
         this->name = this->instrument->getName();
@@ -53,7 +56,7 @@ InstrumentNode::~InstrumentNode()
 
     if (!this->instrument.wasObjectDeleted())
     {
-        this->audioCore->removeInstrument(this->instrument);
+        App::Workspace().getAudioCore().removeInstrument(this->instrument);
     }
 }
 
@@ -132,7 +135,7 @@ UniquePointer<Component> InstrumentNode::createMenu()
     return make<InstrumentMenu>(*this, App::Workspace().getPluginManager());
 }
 
-void InstrumentNode::updateChildrenEditors()
+void InstrumentNode::recreateChildrenEditors()
 {
     this->deleteAllChildren();
 
@@ -142,13 +145,15 @@ void InstrumentNode::updateChildrenEditors()
 
         if (auto *io = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(node->getProcessor()))
         {
-            continue; // для девайсов ввода-вывода показывать нечего, пропускаем
+            continue; // no editors available for the standard io nodes
         }
 
-        // неюзабельно, используем только на мобилках
-        auto *ap = new AudioPluginNode(node->nodeID, node->getProcessor()->getName());
-        this->addChildNode(ap);
+        // a node for the plugin UI page (only used on mobiles):
+        this->addChildNode(new AudioPluginNode(node->nodeID, node->getProcessor()->getName()));
     }
+
+    // a node for the keyboard mapping editor page
+    this->addChildNode(new KeyboardMappingNode(this->instrument));
 }
 
 //===----------------------------------------------------------------------===//
@@ -176,6 +181,7 @@ SerializedData InstrumentNode::serialize() const
     tree.setProperty(Serialization::Core::treeNodeType, this->type);
     tree.setProperty(Serialization::Core::treeNodeName, this->name);
     tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash());
+    // not serializing the children editor nodes: they are all temporary
     return tree;
 }
 
@@ -184,7 +190,8 @@ void InstrumentNode::deserialize(const SerializedData &data)
     this->reset();
 
     const String id = data.getProperty(Serialization::Audio::instrumentId);
-    this->instrument = this->audioCore->findInstrumentById(id);
+
+    this->instrument = App::Workspace().getAudioCore().findInstrumentById(id);
 
     if (this->instrument == nullptr)
     {
@@ -197,14 +204,15 @@ void InstrumentNode::deserialize(const SerializedData &data)
     // Proceed with basic properties and children
     TreeNode::deserialize(data);
 
-    this->updateChildrenEditors();
+    this->recreateChildrenEditors();
 }
 
 void InstrumentNode::initInstrumentEditor()
 {
     if (this->instrumentEditor == nullptr)
     {
-        this->instrumentEditor = make<InstrumentEditor>(this->instrument, this->audioCore);
+        auto *audioCore = &App::Workspace().getAudioCore();
+        this->instrumentEditor = make<InstrumentEditor>(this->instrument, audioCore);
         this->instrumentEditor->updateComponents();
     }
 }
@@ -231,4 +239,184 @@ void InstrumentNode::removeFromOrchestraAndDelete()
     {
         parent->removeInstrumentNode(this);
     }
+}
+
+
+//===----------------------------------------------------------------------===//
+// Audio plugin UI editor node
+//===----------------------------------------------------------------------===//
+
+class HelioAudioProcessorEditor final : public GenericAudioProcessorEditor
+{
+public:
+
+    explicit HelioAudioProcessorEditor(AudioProcessor &p) :
+        GenericAudioProcessorEditor(p)
+    {
+        this->setFocusContainer(true);
+
+        // установим ему масимальную высоту
+        for (int i = 0; i < this->getNumChildComponents(); ++i)
+        {
+            if (auto *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))
+            {
+                this->setSize(this->getWidth(), panel->getTotalContentHeight());
+            }
+        }
+    }
+};
+
+AudioPluginNode::AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name) :
+    TreeNode(name, Serialization::Audio::audioPlugin),
+    audioPluginEditor(nullptr),
+    nodeId(pluginID) {}
+
+bool AudioPluginNode::hasMenu() const noexcept
+{
+    return false;
+}
+
+UniquePointer<Component> AudioPluginNode::createMenu()
+{
+    return nullptr;
+}
+
+Image AudioPluginNode::getIcon() const noexcept
+{
+    return Icons::findByName(Icons::audioPlugin, Globals::UI::headlineIconSize);
+}
+
+AudioProcessorGraph::NodeID AudioPluginNode::getNodeId() const noexcept
+{
+    return this->nodeId;
+}
+
+void AudioPluginNode::showPage()
+{
+    const auto instrument =
+        this->findParentOfType<InstrumentNode>()->getInstrument();
+
+    if (instrument == nullptr)
+    {
+        delete this;
+        return;
+    }
+
+    const AudioProcessorGraph::Node::Ptr f(instrument->getNodeForId(this->nodeId));
+
+    if (f == nullptr)
+    {
+        delete this;
+        return;
+    }
+
+    if (!this->audioPluginEditor)
+    {
+        const bool forceGenericEditor = false;
+
+        if (!forceGenericEditor && f->getProcessor()->hasEditor())
+        {
+            // Some plugins (including Kontakt 3!) misbehavior messes up all the controls
+            // Turns out they attach themselves to the parent window :(
+            // So we cannot add them as a child component like that:
+            // ui = f->getProcessor()->createEditorIfNeeded();
+            // so we try to mimic that by creating a plugin window
+            // while its size and position that is managed by audioPluginEditor
+            if (auto *window = PluginWindow::getWindowFor(f, true))
+            {
+                this->audioPluginEditor = make<AudioPluginEditorPage>(window);
+            }
+        }
+        else
+        {
+            auto *ui = new HelioAudioProcessorEditor(*f->getProcessor());
+            auto *plugin = dynamic_cast<AudioPluginInstance *>(f->getProcessor());
+
+            if (plugin != nullptr)
+            {
+                ui->setName(plugin->getName());
+            }
+
+            this->audioPluginEditor = make<AudioPluginEditorPage>(ui);
+        }
+
+        // Something went wrong
+        if (!this->audioPluginEditor)
+        {
+            delete this;
+            return;
+        }
+    }
+
+    App::Layout().showPage(this->audioPluginEditor.get(), this);
+}
+
+//===----------------------------------------------------------------------===//
+// Keyboard mapping menu & editor node
+//===----------------------------------------------------------------------===//
+
+class KeyboardMappingMenu final : public MenuPanel
+{
+public:
+
+    KeyboardMappingMenu()
+    {
+        MenuPanel::Menu menu;
+
+#if HELIO_DESKTOP
+        menu.add(MenuItem::item(Icons::browse, CommandIDs::KeyMapLoadScala,
+            TRANS(I18n::Menu::keyboardMappingLoadScala))); // closes menu only after the file dialog is gone
+#endif
+
+        menu.add(MenuItem::item(Icons::reset, CommandIDs::KeyMapReset,
+            TRANS(I18n::Menu::keyboardMappingReset))->closesMenu());
+
+        menu.add(MenuItem::item(Icons::copy, CommandIDs::KeyMapCopyToClipboard,
+            TRANS(I18n::Menu::copy))->closesMenu());
+
+        menu.add(MenuItem::item(Icons::paste, CommandIDs::KeyMapPasteFromClipboard,
+            TRANS(I18n::Menu::paste))->closesMenu());
+
+        this->updateContent(menu, MenuPanel::SlideRight);
+    }
+};
+
+KeyboardMappingNode::KeyboardMappingNode(WeakReference<Instrument> instrument) :
+    TreeNode({}, Serialization::Midi::keyboardMapping),
+    instrument(instrument) {}
+
+String KeyboardMappingNode::getName() const noexcept
+{
+    return TRANS(I18n::Tree::keyboardMapping);
+}
+
+Image KeyboardMappingNode::getIcon() const noexcept
+{
+    return Icons::findByName(Icons::piano, Globals::UI::headlineIconSize);
+}
+
+bool KeyboardMappingNode::hasMenu() const noexcept
+{
+    return true;
+}
+
+UniquePointer<Component> KeyboardMappingNode::createMenu()
+{
+    return make<KeyboardMappingMenu>();
+}
+
+void KeyboardMappingNode::showPage()
+{
+    if (this->instrument.wasObjectDeleted())
+    {
+        delete this;
+        return;
+    }
+
+    if (this->keyboardMappingPage == nullptr)
+    {
+        this->keyboardMappingPage = make<KeyboardMappingPage>(this->instrument);
+    }
+
+    App::Layout().showPage(this->keyboardMappingPage.get(), this);
 }

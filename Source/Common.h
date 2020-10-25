@@ -176,6 +176,8 @@ namespace Globals
         static_cast<float>(twelveToneKeyboardSize) /
         static_cast<float>(twelveTonePeriodSize);
 
+    static constexpr auto numChannels = 16;
+
     namespace Defaults
     {
         // Milliseconds per quarter note, default 120 BPM

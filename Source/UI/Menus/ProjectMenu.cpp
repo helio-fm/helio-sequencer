@@ -375,20 +375,17 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
             }));
     }
 
-    if (App::Config().getUiFlags()->areExperimentalFeaturesEnabled())
+    menu.add(MenuItem::item(Icons::refactor,
+        TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
     {
-        menu.add(MenuItem::item(Icons::refactor,
-            TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
-        {
-            this->showTemperamentsMenu(false);
-        }));
+        this->showTemperamentsMenu(false);
+    }));
 
-        menu.add(MenuItem::item(Icons::refactor,
-            TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
-        {
-            this->showTemperamentsMenu(true);
-        }));
-    }
+    menu.add(MenuItem::item(Icons::refactor,
+        TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
+    {
+        this->showTemperamentsMenu(true);
+    }));
 
     this->updateContent(menu, animationType);
 }

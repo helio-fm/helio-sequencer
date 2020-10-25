@@ -312,9 +312,7 @@ bool TreeNode::isSelectedOrHasSelectedChild() const
         return true;
     }
 
-    Array<TreeNode *> children;
-    TreeNode::collectChildrenOfType<TreeNode, Array<TreeNode *>>(this, children, true);
-    return !children.isEmpty();
+    return this->hasSelectedChildOfType<TreeNode>();
 }
 
 void TreeNode::recreateSubtreePages()

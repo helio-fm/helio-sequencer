@@ -18,15 +18,16 @@
 #pragma once
 
 class InstrumentEditor;
-class PluginWindow;
 
 #include "Instrument.h"
 
-class InstrumentComponent : public Component
+class InstrumentComponent final : public Component
 {
 public:
 
-    InstrumentComponent(WeakReference<Instrument> instrument, AudioProcessorGraph::NodeID nodeId);
+    InstrumentComponent(WeakReference<Instrument> instrument,
+        AudioProcessorGraph::NodeID nodeId);
+    
     ~InstrumentComponent() override;
 
     //===------------------------------------------------------------------===//
@@ -50,12 +51,12 @@ private:
     WeakReference<Instrument> instrument;
 
     Font font;
-    int pinSize;
-    int isSelected;
+    int pinSize = 0;
+    bool isSelected = false;
     Point<int> originalPos;
 
-    int numInputs;
-    int numOutputs;
+    int numInputs = 0;
+    int numOutputs = 0;
 
     bool hitTest(int x, int y) override;
 

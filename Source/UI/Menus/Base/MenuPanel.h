@@ -72,7 +72,7 @@ public:
     void applyFilter(const String &text);
 
     void resized() override;
-    void handleCommandMessage (int commandId) override;
+    void handleCommandMessage(int commandId) override;
 
 private:
 

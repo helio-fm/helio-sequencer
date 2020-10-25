@@ -25,7 +25,6 @@
 #include "PatternEditorNode.h"
 #include "VersionControlNode.h"
 #include "VersionControl.h"
-
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
 
@@ -44,6 +43,7 @@
 #include "HybridRoll.h"
 #include "UndoStack.h"
 #include "MidiRecorder.h"
+#include "KeyboardMapping.h"
 
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
@@ -897,7 +897,9 @@ void ProjectNode::exportMidi(File &file) const
     MidiFile tempFile;
     static const double midiClock = 960.0;
     tempFile.setTicksPerQuarterNote(int(midiClock));
+
     static Clip noTransform;
+    static KeyboardMapping simpleMapping;
 
     // Solo flags won't be taken into account
     // in midi export, as I believe they shouldn't:
@@ -913,12 +915,14 @@ void ProjectNode::exportMidi(File &file) const
         {
             for (const auto *clip : track->getPattern()->getClips())
             {
-                track->getSequence()->exportMidi(sequence, *clip, soloFlag, 0.0, midiClock);
+                track->getSequence()->exportMidi(sequence, *clip,
+                    simpleMapping, soloFlag, 0.0, midiClock);
             }
         }
         else
         {
-            track->getSequence()->exportMidi(sequence, noTransform, soloFlag, 0.0, midiClock);
+            track->getSequence()->exportMidi(sequence, noTransform,
+                simpleMapping, soloFlag, 0.0, midiClock);
         }
 
         tempFile.addTrack(sequence);

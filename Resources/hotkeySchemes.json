@@ -84,6 +84,28 @@
       { "command": "VersionControlPullSelected", "key": "?" },
     ]
   },*/
+  {  // ANCHOR: KeyboardMapping
+    "receiver": "KeyboardMapping",
+    "keyPress": [
+
+      { "command": "KeyMapPreviousPage", "key": "Cursor Left" },
+      { "command": "KeyMapNextPage", "key": "Cursor Right" },
+
+      { "command": "KeyMapReset", "key": "Command + R" },
+      { "command": "KeyMapReset", "key": "Control + R" },
+      { "command": "KeyMapLoadScala", "key": "Command + O" },
+      { "command": "KeyMapLoadScala", "key": "Control + O" },
+
+      { "command": "KeyMapCopyToClipboard", "key": "Command + C" },
+      { "command": "KeyMapCopyToClipboard", "key": "Control + C" },
+      { "command": "KeyMapCopyToClipboard", "key": "Command + Insert" },
+      { "command": "KeyMapCopyToClipboard", "key": "Control + Insert" },
+
+      { "command": "KeyMapPasteFromClipboard", "key": "Command + V" },
+      { "command": "KeyMapPasteFromClipboard", "key": "Control + V" },
+      { "command": "KeyMapPasteFromClipboard", "key": "Shift + Insert" }
+    ]
+  }, // ANCHOR_END: KeyboardMapping  
   {  // ANCHOR: PianoRoll
     "receiver": "PianoRoll",
     "keyPress": [

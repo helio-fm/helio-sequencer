@@ -90,6 +90,11 @@ namespace I18n
         static const Identifier back = "menu::back";
         static const Identifier cancel = "menu::cancel";
 
+        static const Identifier copy = "menu::copy";
+        static const Identifier cut = "menu::cut";
+        static const Identifier delete_ = "menu::delete";
+        static const Identifier paste = "menu::paste";
+
         static const Identifier annotationAdd = "menu::annotation::add";
         static const Identifier annotationDelete = "menu::annotation::delete";
         static const Identifier annotationRename = "menu::annotation::rename";
@@ -98,6 +103,7 @@ namespace I18n
         static const Identifier groupByInstrument = "menu::groupby::instrument";
         static const Identifier groupByName = "menu::groupby::name";
         static const Identifier groupByNone = "menu::groupby::none";
+
         static const Identifier instrumentAddEffect = "menu::instrument::addeffect";
         static const Identifier instrumentAdd = "menu::instrument::addinstrument";
         static const Identifier instrumentDelete = "menu::instrument::delete";
@@ -108,6 +114,11 @@ namespace I18n
         static const Identifier instrumentShowWindow = "menu::instrument::showui";
         static const Identifier instrumentsReload = "menu::instruments::reload";
         static const Identifier instrumentsScanFolder = "menu::instruments::scanfolder";
+
+        static const Identifier keyboardMappingEdit = "menu::kbm::edit";
+        static const Identifier keyboardMappingLoadScala = "menu::kbm::load";
+        static const Identifier keyboardMappingReset = "menu::kbm::reset";
+
         static const Identifier keySignatureAdd = "menu::keysignature::add";
 
         static const Identifier refactoringInverseDown = "menu::refactoring::inversedown";
@@ -144,17 +155,11 @@ namespace I18n
 
         namespace Selection
         {
-            static const Identifier clipsCopy = "menu::selection::clips::copy";
-            static const Identifier clipsCut = "menu::selection::clips::cut";
-            static const Identifier clipsDelete = "menu::selection::clips::delete";
             static const Identifier clipsEdit = "menu::selection::clips::edit";
             static const Identifier clipsTransposeDown = "menu::selection::clips::transpose::down";
             static const Identifier clipsTransposeUp = "menu::selection::clips::transpose::up";
             static const Identifier notes = "menu::selection::notes";
             static const Identifier notesArpeggiate = "menu::selection::notes::arpeggiate";
-            static const Identifier notesCopy = "menu::selection::notes::copy";
-            static const Identifier notesCut = "menu::selection::notes::cut";
-            static const Identifier notesDelete = "menu::selection::notes::delete";
             static const Identifier notesDivisions = "menu::selection::notes::divisions";
             static const Identifier notesQuantizeTo = "menu::selection::notes::quantize";
             static const Identifier notesRefactor = "menu::selection::notes::refactor";
@@ -287,6 +292,7 @@ namespace I18n
         static const Identifier root = "tree::root";
         static const Identifier settings = "tree::settings";
         static const Identifier vcs = "tree::vcs";
+        static const Identifier keyboardMapping = "tree::keyMap";
     }
 
     namespace VCS

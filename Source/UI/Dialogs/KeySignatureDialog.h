@@ -85,6 +85,8 @@ private:
     int rootKey = 0;
     Scale::Ptr scale;
 
+    UniquePointer<Thread> scalePreviewThread;
+
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> removeEventButton;

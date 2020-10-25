@@ -89,7 +89,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
             instrumentNode->getInstrument()->addNodeToFreeSpace(this->pluginDescription,
                 [this, instrumentNode](Instrument *instrument)
                 {
-                    instrumentNode->updateChildrenEditors();
+                    instrumentNode->recreateChildrenEditors();
                     instrumentNode->notifyOrchestraChanged(); // will update the pit page
                 });
         }));

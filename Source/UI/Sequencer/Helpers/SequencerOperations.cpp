@@ -1271,13 +1271,10 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             
             if (transport != nullptr && numSelected < 8)
             {
-                auto channel = newNote.getTrackChannel();
-                auto mappedKey = newNote.getKey() + nc->getClip().getKey();
-                const auto periodSize = nc->getRoll().getPeriodSize();
-                Note::performMultiChannelMapping(periodSize, channel, mappedKey);
-
-                transport->previewMidiMessage(pianoSequence->getTrackId(),
-                    MidiMessage::noteOn(channel, mappedKey, newNote.getVelocity()));
+                transport->previewKey(pianoSequence->getTrackId(),
+                    newNote.getTrackChannel(),
+                    newNote.getKey() + nc->getClip().getKey(),
+                    newNote.getVelocity());
             }
         }
         
@@ -1462,14 +1459,10 @@ void SequencerOperations::invertChord(Lasso &selection,
             for (int i = 0; i < numSelected; ++i)
             {
                 auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
-
-                auto channel = nc->getNote().getTrackChannel();
-                auto mappedKey = nc->getNote().getKey() + nc->getClip().getKey();
-                const auto periodSize = nc->getRoll().getPeriodSize();
-                Note::performMultiChannelMapping(periodSize, channel, mappedKey);
-
-                transport->previewMidiMessage(pianoSequence->getTrackId(),
-                    MidiMessage::noteOn(channel, mappedKey, nc->getVelocity()));
+                transport->previewKey(pianoSequence->getTrackId(),
+                    nc->getNote().getTrackChannel(),
+                    nc->getNote().getKey() + nc->getClip().getKey(),
+                    nc->getVelocity());
             }
         }
     }

@@ -21,12 +21,14 @@
 #include "InternalPluginFormat.h"
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
+#include "KeyboardMapping.h"
 
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
     formatManager(formatManager),
     instrumentName(name),
     instrumentId()
 {
+    this->keyboardMapping = make<KeyboardMapping>();
     this->processorGraph = make<AudioProcessorGraph>();
     this->audioCallback.setProcessor(this->processorGraph.get());
 }
@@ -465,6 +467,8 @@ SerializedData Instrument::serialize() const
     tree.setProperty(Audio::instrumentId, this->instrumentId.toString());
     tree.setProperty(Audio::instrumentName, this->instrumentName);
 
+    tree.appendChild(this->keyboardMapping->serialize());
+
     const int numNodes = this->processorGraph->getNumNodes();
     for (int i = 0; i < numNodes; ++i)
     {
@@ -526,8 +530,9 @@ void Instrument::deserialize(const SerializedData &data)
     this->instrumentId = root.getProperty(Audio::instrumentId, this->instrumentId.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);
 
-    // Well this hack of an incredible ugliness
-    // is here to handle loading of async-loaded AUv3 plugins
+    this->keyboardMapping->deserialize(root);
+
+    // Now handle loading of async-loaded AUv3 plugins:
     
     // Fill up the connections info for further processing
     struct ConnectionDescription final

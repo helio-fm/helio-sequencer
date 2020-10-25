@@ -19,6 +19,7 @@
 
 class Clip;
 class MidiSequence;
+class KeyboardMapping;
 
 class MidiEvent : public Serializable
 {
@@ -53,7 +54,7 @@ public:
     MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) noexcept;
 
     virtual void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        double timeOffset, double timeFactor, int periodSize) const noexcept = 0;
+        const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept = 0;
 
     //===------------------------------------------------------------------===//
     // Accessors

@@ -30,6 +30,7 @@
 #include "HybridRoll.h"
 #include "SerializationKeys.h"
 #include "PlayerThreadPool.h"
+#include "KeyboardMapping.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 #define SOUND_SLEEP_DELAY_MS (60000)
@@ -167,29 +168,6 @@ void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitTo
     this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 
-// Only used in a key signature dialog to test how scales sound
-void Transport::probeSequence(const MidiMessageSequence &sequence)
-{
-    this->playbackCache.clear();
-    this->playbackCacheIsOutdated = false; // temporary
-
-    // using the last instrument (TODO something more clever in the future)
-    auto *instrument = this->orchestra.getInstruments().getLast();
-    auto cached = CachedMidiSequence::createFrom(instrument);
-    cached->midiMessages = MidiMessageSequence(sequence);
-    cached->midiMessages.addTimeToMessages(this->getSeekBeat());
-
-    this->playbackCache.addWrapper(cached);
-
-    this->stopPlaybackAndRecording();
-
-    this->player->startPlayback(this->getSeekBeat(),
-        this->getSeekBeat(), this->getProjectLastBeat(),
-        false, true);
-
-    this->playbackCacheIsOutdated = true; // will update on the next playback
-}
-
 //===----------------------------------------------------------------------===//
 // Playback control
 //===----------------------------------------------------------------------===//
@@ -212,13 +190,12 @@ void Transport::startPlayback(float start)
         const auto end = this->loopEndBeat.get();
 
         this->player->startPlayback((start >= end) ? loopStart : start,
-            loopStart, end, true, false);
+            loopStart, end, true);
     }
     else
     {
         this->player->startPlayback(start,
-            this->getSeekBeat(), this->getProjectLastBeat(),
-            false, false);
+            this->getSeekBeat(), this->getProjectLastBeat(), false);
     }
 
     this->broadcastPlay();
@@ -231,7 +208,7 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
     
     this->stopPlayback();
 
-    this->player->startPlayback(startBeat, startBeat, endBeat, looped, false);
+    this->player->startPlayback(startBeat, startBeat, endBeat, looped);
     this->broadcastPlay();
 }
 
@@ -438,7 +415,7 @@ void Transport::MidiMessageDelayedPreview::timerCallback()
     this->instruments.clearQuick();
 }
 
-void Transport::previewMidiMessage(const String &trackId, const MidiMessage &message) const
+void Transport::previewKey(const String &trackId, int channel, int key, float volume) const
 {
     this->sleepTimer.setAwake();
 
@@ -452,7 +429,12 @@ void Transport::previewMidiMessage(const String &trackId, const MidiMessage &mes
 
     jassert(instrument != nullptr);
 
-    this->messagePreviewQueue.previewMessage(message, instrument);
+    const auto *keyMap = instrument->getKeyboardMapping();
+    const auto mapped = keyMap->map(key);
+
+    this->messagePreviewQueue.previewMessage(
+        MidiMessage::noteOn(mapped.channel, mapped.key, volume), instrument);
+
     this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
 }
 
@@ -834,18 +816,22 @@ void Transport::recacheIfNeeded() const
         for (const auto *track : this->tracksCache)
         {
             const auto instrument = this->linksCache[track->getTrackId()];
+            const auto &keyMap = *instrument->getKeyboardMapping();
+
             auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
 
             if (track->getPattern() != nullptr)
             {
                 for (const auto *clip : track->getPattern()->getClips())
                 {
-                    cached->track->exportMidi(cached->midiMessages, *clip, hasSoloClips, offset, 1.0);
+                    cached->track->exportMidi(cached->midiMessages, *clip,
+                        keyMap, hasSoloClips, offset, 1.0);
                 }
             }
             else
             {
-                cached->track->exportMidi(cached->midiMessages, noTransform, hasSoloClips, offset, 1.0);
+                cached->track->exportMidi(cached->midiMessages, noTransform,
+                    keyMap, hasSoloClips, offset, 1.0);
             }
 
             this->playbackCache.addWrapper(cached);

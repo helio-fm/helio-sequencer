@@ -56,17 +56,12 @@ void PlayerThread::run()
     };
 
     const bool isLooped = this->context->playbackLoopMode;
-    const bool isSilent = this->context->playbackSilentMode;
 
     const auto seek = this->context->startBeat - this->context->projectFirstBeat;
     this->sequences.seekToTime(seek);
 
     Atomic<float> previousEventBeat = this->context->startBeat;
-
-    if (!isSilent)
-    {
-        broadcastSeek(previousEventBeat);
-    }
+    broadcastSeek(previousEventBeat);
 
     // This hack is here to keep track of still playing events
     // to be able to send noteOff's when playback interrupts.
@@ -183,10 +178,7 @@ void PlayerThread::run()
             {
                 this->sequences.seekToTime(this->context->rewindBeat - this->context->projectFirstBeat);
                 previousEventBeat = this->context->rewindBeat;
-                if (!isSilent)
-                {
-                    broadcastSeek(previousEventBeat);
-                }
+                broadcastSeek(previousEventBeat);
                 continue;
             }
             else
@@ -204,13 +196,8 @@ void PlayerThread::run()
                 }
 
                 this->transport.allNotesControllersAndSoundOff();
-
-                if (!isSilent)
-                {
-                    this->transport.stopRecording();
-                    this->transport.stopPlayback();
-                }
-
+                this->transport.stopRecording();
+                this->transport.stopPlayback();
                 return;
             }
         }
@@ -252,11 +239,8 @@ void PlayerThread::run()
                 sendHoldingNotesOffAndMidiStop();
                 return;
             }
-            
-            if (!isSilent)
-            {
-                broadcastSeek(previousEventBeat);
-            }
+
+            broadcastSeek(previousEventBeat);
         }
         
         if (shouldRewind)
@@ -264,10 +248,7 @@ void PlayerThread::run()
             this->sequences.seekToTime(this->context->rewindBeat - this->context->projectFirstBeat);
 
             previousEventBeat = this->context->rewindBeat;
-            if (!isSilent)
-            {
-                broadcastSeek(previousEventBeat);
-            }
+            broadcastSeek(previousEventBeat);
         }
         else
         {
@@ -279,11 +260,7 @@ void PlayerThread::run()
             if (wrapper.message.isTempoMetaEvent())
             {
                 currentTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
-
-                if (!isSilent)
-                {
-                    this->transport.broadcastTempoChanged(currentTempo.get());
-                }
+                this->transport.broadcastTempoChanged(currentTempo.get());
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 sendTempoChangeToEverybody(wrapper.message);

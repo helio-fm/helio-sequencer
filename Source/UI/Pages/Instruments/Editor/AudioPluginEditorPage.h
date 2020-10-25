@@ -17,7 +17,7 @@
 
 #pragma once
 
-class AudioPluginEditorPage : public Component
+class AudioPluginEditorPage final : public Component
 {
 public:
 

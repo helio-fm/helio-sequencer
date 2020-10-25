@@ -41,10 +41,6 @@
 			isa = PBXBuildFile;
 			fileRef = 3F1E62A9CF59246B3DC7D662;
 		};
-		2E49499F5D28572A229B8B9E = {
-			isa = PBXBuildFile;
-			fileRef = 172C18C45C86E3766D6FEAB8;
-		};
 		6FA24B24D71972AB3A2ACE0C = {
 			isa = PBXBuildFile;
 			fileRef = AD444D3F0B05DCE69E45CD2A;
@@ -52,6 +48,10 @@
 		8A4CE3041AEEA59B6D1A0BF8 = {
 			isa = PBXBuildFile;
 			fileRef = 157AC67C9E595A004217F3C2;
+		};
+		E1423E7780778A0A99CFB934 = {
+			isa = PBXBuildFile;
+			fileRef = 91526B14404F3EE676B7D868;
 		};
 		75A30DBEF0059770B4565AE5 = {
 			isa = PBXBuildFile;
@@ -661,13 +661,6 @@
 			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynthAudioPlugin.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		172C18C45C86E3766D6FEAB8 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = CoreServices.framework;
-			path = System/Library/Frameworks/CoreServices.framework;
-			sourceTree = SDKROOT;
-		};
 		177897A2F8B5F4D967676B74 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -1002,6 +995,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = VersionControlHistorySelectionMenu.h;
 			path = ../../Source/UI/Menus/SelectionMenus/VersionControlHistorySelectionMenu.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		22CC4D06D27C283E6D1B6EAB = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = KeyboardMapping.cpp;
+			path = ../../Source/Core/Midi/KeyboardMapping.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		2308032CB837C17B8FC90E20 = {
@@ -1592,6 +1592,13 @@
 			path = ../../Source/Core/Tree/SettingsNode.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		3D0030FE9BAAFF68121AAE78 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = KeyboardMapping.h;
+			path = ../../Source/Core/Midi/KeyboardMapping.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		3D44010B9B71C7D67121D6C9 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
@@ -1695,13 +1702,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = VersionControlStageSelectionMenu.h;
 			path = ../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		41378EF8AED553979DF2DC6C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = AudioPluginNode.h;
-			path = ../../Source/Core/Tree/AudioPluginNode.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		41B23BF18F28325AC94E7E55 = {
@@ -1961,6 +1961,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = CutPointMark.h;
 			path = ../../Source/UI/Sequencer/Helpers/CutPointMark.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		4C02F76A73325377363BB96B = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = KeyboardMappingPage.h;
+			path = ../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		4C9D91B54D2117EF95AF9F9B = {
@@ -3181,6 +3188,13 @@
 			path = ../../Source/Core/Audio/Transport/Transport.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		838290D5373D0512F75F212E = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = KeyboardMappingPage.cpp;
+			path = ../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		83AAFD7BBED5043E459B1A41 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3488,6 +3502,13 @@
 			name = RemoteCache.cpp;
 			path = ../../Source/Core/VCS/RemoteCache.cpp;
 			sourceTree = "SOURCE_ROOT";
+		};
+		91526B14404F3EE676B7D868 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = MobileCoreServices.framework;
+			path = System/Library/Frameworks/MobileCoreServices.framework;
+			sourceTree = SDKROOT;
 		};
 		9191B3672D45F496945F1E94 = {
 			isa = PBXFileReference;
@@ -4180,13 +4201,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = Delta.h;
 			path = ../../Source/Core/VCS/Delta.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		B03C2F60C997B27811330070 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = AudioPluginNode.cpp;
-			path = ../../Source/Core/Tree/AudioPluginNode.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		B03D55A203855EADA068B640 = {
@@ -6185,6 +6199,8 @@
 			children = (
 				2FCDEC922FFB91C90E0B8040,
 				1AC3B665D3DD3C0D868C4C72,
+				22CC4D06D27C283E6D1B6EAB,
+				3D0030FE9BAAFF68121AAE78,
 				F2FCCDE78737C5ADD5E74958,
 				C52FDE16CA6513A17EE2595F,
 			);
@@ -6288,8 +6304,6 @@
 		4534D2D57E1CA784690E4F98 = {
 			isa = PBXGroup;
 			children = (
-				B03C2F60C997B27811330070,
-				41378EF8AED553979DF2DC6C,
 				4DD951F564C4D351C9E114C7,
 				C157AEEB5675221B9310B4A0,
 				B43751BD8D411C11613C2DE6,
@@ -6690,6 +6704,8 @@
 				1D0A187F1823D6D4D1BAE220,
 				20F688409E591413D72D8F6B,
 				C12CE47F3888AFF2D684E4B7,
+				838290D5373D0512F75F212E,
+				4C02F76A73325377363BB96B,
 			);
 			name = Editor;
 			sourceTree = "<group>";
@@ -7200,9 +7216,9 @@
 				A1BD73B89A3FA29D88EE93A9,
 				BB6BF7B68B7FEEFC673EF166,
 				3F1E62A9CF59246B3DC7D662,
-				172C18C45C86E3766D6FEAB8,
 				AD444D3F0B05DCE69E45CD2A,
 				157AC67C9E595A004217F3C2,
+				91526B14404F3EE676B7D868,
 				1BEFBF01B2FC602C107F0317,
 				3D44010B9B71C7D67121D6C9,
 				A786517ECDC3A3DD0DCF6F95,
@@ -7769,9 +7785,9 @@
 				CB960CCA38C16AC998A1A267,
 				94B0BD55D6053A2446BF94C1,
 				6896459C435EA33C854C25E6,
-				2E49499F5D28572A229B8B9E,
 				6FA24B24D71972AB3A2ACE0C,
 				8A4CE3041AEEA59B6D1A0BF8,
+				E1423E7780778A0A99CFB934,
 				75A30DBEF0059770B4565AE5,
 				7ECCDACF6651F48C9F6935F9,
 				B2F87FE87391EB37BB7133A4,

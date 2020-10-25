@@ -125,6 +125,9 @@ namespace Serialization
 
         static const Identifier numerator = "numerator";
         static const Identifier denominator = "denominator";
+
+        static const Identifier keyboardMapping = "keyMap";
+        static const Identifier channel1 = "channel1";
     } // namespace Events
 
     namespace Audio
