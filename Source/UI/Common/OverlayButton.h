@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "HighlightedComponent.h"
-
 class OverlayButton final : public Button
 {
 public:

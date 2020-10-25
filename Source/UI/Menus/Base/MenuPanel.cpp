@@ -52,7 +52,7 @@ void MenuPanel::resized()
     }
 }
 
-void MenuPanel::handleCommandMessage (int commandId)
+void MenuPanel::handleCommandMessage(int commandId)
 {
     if (this->getParentComponent() != nullptr)
     {

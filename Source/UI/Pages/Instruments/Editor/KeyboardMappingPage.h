@@ -53,6 +53,7 @@ private:
     void syncWithRange(int base);
     int currentPageBase = 0;
 
+    void onKeyPreview(int i);
     void onKeyMappingUpdated(int i);
 
     bool canShowPreviousPage() const noexcept;
@@ -68,7 +69,9 @@ private:
     UniquePointer<Component> rightArrow;
     UniquePointer<Label> rangeLabel;
 
-    OwnedArray<Label> keyButtons;
+    OwnedArray<Button> keyButtons;
+    OwnedArray<Label> keyLabels;
     OwnedArray<Label> mappingLabels;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyboardMappingPage)
 };

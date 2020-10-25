@@ -19,6 +19,7 @@
 #include "KeyboardMappingPage.h"
 #include "KeyboardMapping.h"
 #include "HeadlineContextMenuController.h"
+#include "OverlayButton.h"
 #include "PanelBackgroundB.h"
 #include "IconButton.h"
 #include "ComponentIDs.h"
@@ -50,11 +51,18 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
 
     for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
     {
-        // todo key preview buttons
+        auto keyLabel = make<Label>();
+        keyLabel->setFont({ 18.f });
+        keyLabel->setJustificationType(Justification::centredRight);
+        keyLabel->setInterceptsMouseClicks(false, false);
+        this->addAndMakeVisible(keyLabel.get());
+        this->keyLabels.add(keyLabel.release());
 
-        auto keyButton = make<Label>();
-        keyButton->setFont({ 18.f });
-        keyButton->setJustificationType(Justification::centredRight);
+        auto keyButton = make<OverlayButton>();
+        keyButton->onClick = [this, i]()
+        {
+            this->onKeyPreview(i);
+        };
         this->addAndMakeVisible(keyButton.get());
         this->keyButtons.add(keyButton.release());
 
@@ -116,7 +124,10 @@ void KeyboardMappingPage::resized()
             Rectangle<int>(mappingsBounds.getX() + rowWidth * column,
                 mappingsBounds.getY() + rowHeight * row, rowWidth, rowHeight);
 
-        this->keyButtons.getUnchecked(i)->setBounds(rowBounds.removeFromLeft(48));
+        const auto keyBounds = rowBounds.removeFromLeft(48);
+        this->keyLabels.getUnchecked(i)->setBounds(keyBounds);
+        this->keyButtons.getUnchecked(i)->setBounds(keyBounds);
+
         this->mappingLabels.getUnchecked(i)->setBounds(rowBounds
             .withHeight(editorHeight).withCentre(rowBounds.getCentre()));
     }
@@ -145,7 +156,7 @@ void KeyboardMappingPage::syncWithRange(int base)
         const auto mapped = keyMap->map(i);
         const int buttonIndex = i % Globals::twelveToneKeyboardSize;
 
-        this->keyButtons.getUnchecked(buttonIndex)->
+        this->keyLabels.getUnchecked(buttonIndex)->
             setText(String(i) + ":", dontSendNotification);
 
         this->mappingLabels.getUnchecked(buttonIndex)->
@@ -199,6 +210,24 @@ void KeyboardMappingPage::mouseDown(const MouseEvent &e)
 void KeyboardMappingPage::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->syncWithRange(this->currentPageBase);
+}
+
+void KeyboardMappingPage::onKeyPreview(int i)
+{
+    const int key = this->currentPageBase + i;
+    auto *keyMap = this->instrument->getKeyboardMapping();
+    const auto mapped = keyMap->map(key);
+
+    const auto time = Time::getMillisecondCounterHiRes() * 0.001;
+    auto &midiCollector = instrument->getProcessorPlayer().getMidiMessageCollector();
+
+    auto notesOff = MidiMessage::allNotesOff(mapped.channel);
+    notesOff.setTimeStamp(time);
+    midiCollector.addMessageToQueue(notesOff);
+
+    auto message = MidiMessage::noteOn(mapped.channel, mapped.key, 0.5f);
+    message.setTimeStamp(time + 0.01);
+    midiCollector.addMessageToQueue(message);
 }
 
 void KeyboardMappingPage::onKeyMappingUpdated(int i)
