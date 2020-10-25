@@ -365,7 +365,7 @@ public:
 
 #if HELIO_DESKTOP
         menu.add(MenuItem::item(Icons::browse, CommandIDs::KeyMapLoadScala,
-            TRANS(I18n::Menu::keyboardMappingLoadScala))->closesMenu());
+            TRANS(I18n::Menu::keyboardMappingLoadScala))); // closes menu only after the file dialog is gone
 #endif
 
         menu.add(MenuItem::item(Icons::reset, CommandIDs::KeyMapReset,

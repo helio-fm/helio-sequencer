@@ -58,6 +58,8 @@ private:
     bool canShowPreviousPage() const noexcept;
     bool canShowNextPage() const noexcept;
 
+    void loadScalaMappings() const;
+
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     UniquePointer<Component> background;

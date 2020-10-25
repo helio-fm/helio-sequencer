@@ -170,7 +170,7 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::KeyMapLoadScala:
-         // todo
+        this->loadScalaMappings();
         break;
     case CommandIDs::KeyMapReset:
         this->instrument->getKeyboardMapping()->reset();
@@ -228,4 +228,54 @@ bool KeyboardMappingPage::canShowNextPage() const noexcept
 {
     return this->currentPageBase +
         Globals::twelveToneKeyboardSize < KeyboardMapping::numMappedKeys;
+}
+
+void KeyboardMappingPage::loadScalaMappings() const
+{
+    FileChooser fc(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
+        File::getSpecialLocation(File::userDocumentsDirectory), "*.kbm", true);
+    
+    if (fc.browseForFileToOpen())
+    {
+        const auto result = fc.getResult();
+        const auto nameWithoutExtension = result.getFileNameWithoutExtension();
+        
+        Array<File> allFilesToImport;
+
+        StringArray nameComponents;
+        nameComponents.addTokens(nameWithoutExtension, "_", "");
+        if (nameComponents.size() > 1 &&
+            nameComponents[nameComponents.size() - 1].getIntValue() > 0)
+        {
+            const auto nameTemplate = 
+                nameComponents.joinIntoString("_", 0, nameComponents.size() - 1);
+
+            // search for "same_name_*.kbm" files for other channels' mappings
+            allFilesToImport = result.getParentDirectory()
+                .findChildFiles(File::TypesOfFileToFind::findFiles, false,
+                    nameTemplate + "_*.kbm");
+        }
+        else
+        {
+            // import a single file
+            allFilesToImport.add(result);
+        }
+
+        auto *keyMap = this->instrument->getKeyboardMapping();
+        keyMap->reset();
+
+        for (const auto &i : allFilesToImport)
+        {
+            const auto readStream = i.createInputStream();
+            keyMap->loadScalaKbmFile(*readStream.get(),
+                i.getFileNameWithoutExtension());
+        }
+    }
+
+    // a nasty fix for OpenGL issues I have no time to investigate;
+    // works fine when hiding the menu, if any, *after* the dialog is gone:
+    if (auto *popup = Component::getCurrentlyModalComponent())
+    {
+        popup->exitModalState(0);
+    }
 }
