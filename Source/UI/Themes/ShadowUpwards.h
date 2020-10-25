@@ -31,7 +31,7 @@ public:
         g.fillRect(this->getLocalBounds());
     }
 
-    void resized()
+    void resized() override
     {
         if (this->cachedImage.getHeight() != this->getHeight())
         {

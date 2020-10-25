@@ -53,14 +53,14 @@ private:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onTempoChanged(double) noexcept;
-    void onTotalTimeChanged(double) noexcept {}
+    void onTempoChanged(double) noexcept override;
+    void onTotalTimeChanged(double) noexcept override {}
     void onLoopModeChanged(bool, float, float) override {}
 
-    void onSeek(float, double, double) noexcept;
-    void onPlay() noexcept;
-    void onRecord();
-    void onStop();
+    void onSeek(float, double, double) noexcept override;
+    void onPlay() noexcept override;
+    void onRecord() override;
+    void onStop() override;
 
     //===------------------------------------------------------------------===//
     // AsyncUpdater

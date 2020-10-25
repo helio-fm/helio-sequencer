@@ -50,7 +50,7 @@ const Scale::Ptr TemperamentsManager::findHighlightingFor(Temperament::Ptr tempe
 
     // play safe: if the temperament doesn't describe highlighting
     // for whatever reason, try to find it among other resources
-    for (const auto t : this->getAll())
+    for (const auto &t : this->getAll())
     {
         if (t->getResourceId() == temperament->getResourceId())
         {

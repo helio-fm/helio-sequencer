@@ -220,7 +220,7 @@ public:
         g.drawLine(0.f, this->getTiltStart(), float(this->getWidth()), this->getTiltEnd());
     }
 
-    void mouseDown(const MouseEvent &e)
+    void mouseDown(const MouseEvent &e) override
     {
         TransportControlButton::mouseDown(e);
         this->owner.playButtonPressed();

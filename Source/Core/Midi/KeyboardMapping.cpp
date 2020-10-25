@@ -200,7 +200,7 @@ KeyboardMapping::KeyChannel KeyboardMapping::getDefaultMappingFor(int key) noexc
 {
     return {
         int8(key % Globals::twelveToneKeyboardSize),
-        int8(key / Globals::twelveToneKeyboardSize) + 1 };
+        int8(key / Globals::twelveToneKeyboardSize + 1) };
 }
 
 void KeyboardMapping::reset()

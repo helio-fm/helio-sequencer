@@ -124,7 +124,6 @@ void RendererThread::run()
     const int numInChannels = sequences.getNumInputChannels();
     const double sampleRate = sequences.getSampleRate();
     const double totalTimeMs = this->context->totalTimeMs;
-    const double startTimeMs = this->context->startBeatTimeMs; // at project first beat
     const double msPerQuarter = this->context->startBeatTempo;
     double secPerQuarter = msPerQuarter / 1000.0;
 

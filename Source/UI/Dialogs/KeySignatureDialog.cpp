@@ -147,7 +147,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
 
     const auto periodSize = getPeriod(project).size();
     const auto allScales = App::Config().getScales()->getAll();
-    for (const auto scale : allScales)
+    for (const auto &scale : allScales)
     {
         if (scale->getBasePeriod() == periodSize)
         {
