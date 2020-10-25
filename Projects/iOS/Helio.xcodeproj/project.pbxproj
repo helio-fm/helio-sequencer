@@ -41,10 +41,6 @@
 			isa = PBXBuildFile;
 			fileRef = 3F1E62A9CF59246B3DC7D662;
 		};
-		2E49499F5D28572A229B8B9E = {
-			isa = PBXBuildFile;
-			fileRef = 172C18C45C86E3766D6FEAB8;
-		};
 		6FA24B24D71972AB3A2ACE0C = {
 			isa = PBXBuildFile;
 			fileRef = AD444D3F0B05DCE69E45CD2A;
@@ -52,6 +48,10 @@
 		8A4CE3041AEEA59B6D1A0BF8 = {
 			isa = PBXBuildFile;
 			fileRef = 157AC67C9E595A004217F3C2;
+		};
+		E1423E7780778A0A99CFB934 = {
+			isa = PBXBuildFile;
+			fileRef = 91526B14404F3EE676B7D868;
 		};
 		75A30DBEF0059770B4565AE5 = {
 			isa = PBXBuildFile;
@@ -660,13 +660,6 @@
 			name = BuiltInSynthAudioPlugin.cpp;
 			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynthAudioPlugin.cpp;
 			sourceTree = "SOURCE_ROOT";
-		};
-		172C18C45C86E3766D6FEAB8 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = CoreServices.framework;
-			path = System/Library/Frameworks/CoreServices.framework;
-			sourceTree = SDKROOT;
 		};
 		177897A2F8B5F4D967676B74 = {
 			isa = PBXFileReference;
@@ -3509,6 +3502,13 @@
 			name = RemoteCache.cpp;
 			path = ../../Source/Core/VCS/RemoteCache.cpp;
 			sourceTree = "SOURCE_ROOT";
+		};
+		91526B14404F3EE676B7D868 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = MobileCoreServices.framework;
+			path = System/Library/Frameworks/MobileCoreServices.framework;
+			sourceTree = SDKROOT;
 		};
 		9191B3672D45F496945F1E94 = {
 			isa = PBXFileReference;
@@ -7216,9 +7216,9 @@
 				A1BD73B89A3FA29D88EE93A9,
 				BB6BF7B68B7FEEFC673EF166,
 				3F1E62A9CF59246B3DC7D662,
-				172C18C45C86E3766D6FEAB8,
 				AD444D3F0B05DCE69E45CD2A,
 				157AC67C9E595A004217F3C2,
+				91526B14404F3EE676B7D868,
 				1BEFBF01B2FC602C107F0317,
 				3D44010B9B71C7D67121D6C9,
 				A786517ECDC3A3DD0DCF6F95,
@@ -7785,9 +7785,9 @@
 				CB960CCA38C16AC998A1A267,
 				94B0BD55D6053A2446BF94C1,
 				6896459C435EA33C854C25E6,
-				2E49499F5D28572A229B8B9E,
 				6FA24B24D71972AB3A2ACE0C,
 				8A4CE3041AEEA59B6D1A0BF8,
+				E1423E7780778A0A99CFB934,
 				75A30DBEF0059770B4565AE5,
 				7ECCDACF6651F48C9F6935F9,
 				B2F87FE87391EB37BB7133A4,
