@@ -352,7 +352,7 @@ void PatternOperations::duplicateSelection(const Lasso &selection, bool shouldCh
 
     for (int i = 0; i < changesByPattern.size(); ++i)
     {
-        auto *pattern = static_cast<Pattern *>(changesByPattern.getUnchecked(i)->getUnchecked(0).getPattern());
+        auto *pattern = changesByPattern.getUnchecked(i)->getUnchecked(0).getPattern();
 
         if (!didCheckpoint)
         {

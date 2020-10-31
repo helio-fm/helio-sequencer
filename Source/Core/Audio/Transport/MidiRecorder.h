@@ -81,7 +81,7 @@ private:
 
     const Clip *activeClip = nullptr;
     WeakReference<MidiTrack> activeTrack;
-    String lastValidInsrtumentId;
+    String lastValidInstrumentId;
 
     PianoSequence *getPianoSequence() const;
 

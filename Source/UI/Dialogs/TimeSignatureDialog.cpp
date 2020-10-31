@@ -39,11 +39,11 @@ static StringPairArray getDefaultMeters()
 
 TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent,
-    bool shouldAddNewEvent, float targetBeat) : 
+    bool shouldAddNewEvent, float targetBeat) :
     originalEvent(editedEvent),
     originalSequence(timeSequence),
     ownerComponent(owner),
-    defailtMeters(getDefaultMeters()),
+    defaultMeters(getDefaultMeters()),
     addsNewEvent(shouldAddNewEvent)
 {
     this->comboPrimer = make<MobileComboBox::Primer>();
@@ -91,13 +91,13 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
-    const auto &meterNames = this->defailtMeters.getAllKeys();
-    const auto &meterValues = this->defailtMeters.getAllValues();
+    const auto &meterNames = this->defaultMeters.getAllKeys();
+    const auto &meterValues = this->defaultMeters.getAllValues();
 
     if (this->addsNewEvent)
     {
         Random r;
-        const String meter(meterValues[r.nextInt(this->defailtMeters.size())]);
+        const String meter(meterValues[r.nextInt(this->defaultMeters.size())]);
         int numerator;
         int denominator;
         TimeSignatureEvent::parseString(meter, numerator, denominator);
@@ -124,7 +124,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
     MenuPanel::Menu menu;
-    for (int i = 0; i < this->defailtMeters.size(); ++i)
+    for (int i = 0; i < this->defaultMeters.size(); ++i)
     {
         const auto &s = meterNames[i];
         menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectTimeSignature + i, s));
@@ -174,10 +174,10 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
     else
     {
         const int targetIndex = commandId - CommandIDs::SelectTimeSignature;
-        if (targetIndex >= 0 && targetIndex < this->defailtMeters.size())
+        if (targetIndex >= 0 && targetIndex < this->defaultMeters.size())
         {
-            const String title = this->defailtMeters.getAllKeys()[targetIndex];
-            const String time(this->defailtMeters[title]);
+            const String title = this->defaultMeters.getAllKeys()[targetIndex];
+            const String time(this->defaultMeters[title]);
 
             this->textEditor->grabKeyboardFocus();
             this->textEditor->setText(time, true);

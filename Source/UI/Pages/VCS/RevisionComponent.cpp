@@ -25,25 +25,14 @@
 #include "VersionControl.h"
 #include "RevisionTreeComponent.h"
 #include "HeadlineContextMenuController.h"
-#include "SerializationKeys.h"
 #include "ColourIDs.h"
 //[/MiscUserDefs]
 
 RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead)
     : vcs(owner),
       revision(revision),
-      isSelected(false),
       isHeadRevision(isHead),
-      viewState(viewState),
-      x(0.f),
-      y(0.f),
-      mod(0.f),
-      shift(0.f),
-      change(0.f),
-      number(0),
-      parent(nullptr),
-      wired(nullptr),
-      leftmostSibling(nullptr)
+      viewState(viewState)
 {
     this->revisionDescription.reset(new Label(String(),
                                                String()));

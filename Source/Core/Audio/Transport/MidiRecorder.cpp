@@ -59,7 +59,7 @@ void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track,
 {
     if (instrumentId.isNotEmpty())
     {
-        this->lastValidInsrtumentId = instrumentId;
+        this->lastValidInstrumentId = instrumentId;
     }
 
     if (this->activeTrack != track || this->activeClip != clip)
@@ -154,7 +154,7 @@ void MidiRecorder::onStop()
     this->msPerQuarterNote = Globals::Defaults::msPerBeat;
 }
 
-static SerializedData createPianoTrackTempate(const String &name,
+static SerializedData createPianoTrackTemplate(const String &name,
     float startBeat, const String &instrumentId, String &outTrackId)
 {
     auto newNode = make<PianoTrackNode>(name);
@@ -202,7 +202,7 @@ void MidiRecorder::handleAsyncUpdate()
     // we'll checkpoint every time the active track changes:
     if (this->shouldCheckpoint.get())
     {
-        jassert(this->holdingNotes.size() == 0);
+        jassert(this->holdingNotes.empty());
         this->project.checkpoint();
         this->shouldCheckpoint = false;
     }
@@ -216,19 +216,19 @@ void MidiRecorder::handleAsyncUpdate()
             SequencerOperations::generateNextNameForNewTrack("Recording",
                 this->project.getAllTrackNames());
 
-        // lastValidInsrtumentId may be empty at this point:
-        if (this->lastValidInsrtumentId.isEmpty())
+        // lastValidInstrumentId may be empty at this point:
+        if (this->lastValidInstrumentId.isEmpty())
         {
             auto instruments = App::Workspace().getAudioCore().getInstruments();
             if (!instruments.isEmpty())
             {
-                this->lastValidInsrtumentId = instruments.getFirst()->getIdAndHash();
+                this->lastValidInstrumentId = instruments.getFirst()->getIdAndHash();
             }
         }
 
         String outTrackId;
-        const auto trackTemplate = createPianoTrackTempate(newName,
-            this->lastCorrectPosition.get(), this->lastValidInsrtumentId, outTrackId);
+        const auto trackTemplate = createPianoTrackTemplate(newName,
+                                                            this->lastCorrectPosition.get(), this->lastValidInstrumentId, outTrackId);
 
         this->project.getUndoStack()->perform(
             new PianoTrackInsertAction(this->project,
@@ -339,7 +339,7 @@ void MidiRecorder::startHoldingNote(MidiMessage message)
         key - this->activeClip->getKey(),
         roundBeat(float(message.getTimeStamp()) - this->activeClip->getBeat()),
         Globals::minNoteLength,
-        message.getVelocity() / 128.f);
+        float(message.getVelocity()) / 128.f);
 
     this->getPianoSequence()->insert(noteParams, true);
     this->holdingNotes[key] = noteParams;
@@ -350,7 +350,7 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
     jassert(this->activeClip != nullptr);
     jassert(this->activeTrack != nullptr);
 
-    if (this->holdingNotes.size() == 0)
+    if (this->holdingNotes.empty())
     {
         //DBG("Skip 1");
         return;

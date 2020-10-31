@@ -48,7 +48,7 @@ private:
     TimeSignaturesSequence *const originalSequence;
     Component &ownerComponent;
 
-    const StringPairArray defailtMeters;
+    const StringPairArray defaultMeters;
 
     void textEditorTextChanged(TextEditor&) override;
     void textEditorReturnKeyPressed(TextEditor&) override;

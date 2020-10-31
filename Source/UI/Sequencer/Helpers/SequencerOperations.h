@@ -114,9 +114,9 @@ struct SequencerOperations final
         float startBeat, float endBeat, int bpmValue, bool shouldCheckpoint = true);
 
 
-    static SerializedData createPianoTrackTempate(ProjectNode &project,
-        const String &name, const String &instrumentId, String &outTrackId);
-    static SerializedData createAutoTrackTempate(ProjectNode &project,
+    static SerializedData createPianoTrackTemplate(ProjectNode &project,
+       const String &name, const String &instrumentId, String &outTrackId);
+    static SerializedData createAutoTrackTemplate(ProjectNode &project,
         const String &name, int controllerNumber, const String &instrumentId, String &outTrackId);
 
     // Creates new tracks from events of existing tracks

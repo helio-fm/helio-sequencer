@@ -19,7 +19,7 @@
 
 #include "Origami.h"
 
-class OrigamiVertical : public Origami
+class OrigamiVertical final : public Origami
 {
 public:
 

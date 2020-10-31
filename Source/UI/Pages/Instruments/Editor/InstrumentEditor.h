@@ -27,7 +27,7 @@ class InstrumentEditorConnector;
 class InstrumentEditorPin;
 class AudioCore;
 
-class InstrumentEditor :
+class InstrumentEditor final :
     public Component,
     public ChangeListener,
     public HeadlineItemDataSource

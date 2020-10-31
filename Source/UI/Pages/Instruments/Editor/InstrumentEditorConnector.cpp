@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "InstrumentEditorConnector.h"
-#include "Instrument.h"
 #include "InstrumentEditor.h"
 #include "InstrumentComponent.h"
 #include "ColourIDs.h"
@@ -205,17 +204,19 @@ void InstrumentEditorConnector::resized()
     linePath.clear();
     linePath.startNewSubPath(x1, y1);
 
-    const float curvinessX = (this->getParentWidth() == 0) ? 0.f : (1.f - (fabs(dx) / float(this->getParentWidth()))) * 1.5f;
-    const float curvinessY = (this->getParentHeight() == 0) ? 0.f : (fabs(dy) / float(this->getParentHeight())) * 1.5f;
-    const float curviness = (curvinessX + curvinessY) / 2.f;
+    const float curveX = (this->getParentWidth() == 0) ? 0.f :
+            (1.f - (fabsf(dx) / float(this->getParentWidth()))) * 1.5f;
+    const float curveY = (this->getParentHeight() == 0) ? 0.f :
+            (fabsf(dy) / float(this->getParentHeight())) * 1.5f;
+    const float curve = (curveX + curveY) / 2.f;
 
     float gravity = dy / (float(this->getParentHeight()) / 3.f);
     gravity = jmax(-1.f, gravity);
     gravity = jmin(1.f, gravity);
     gravity = (gravity / 3.f) + 0.45f;
 
-    linePath.cubicTo(x1 + dx * (curviness * (1.f - gravity)), y1,
-                     x1 + dx * (1.f - (curviness * gravity)), y2,
+    linePath.cubicTo(x1 + dx * (curve * (1.f - gravity)), y1,
+                     x1 + dx * (1.f - (curve * gravity)), y2,
                      x2, y2);
 
     PathStrokeType wideStroke(8.0f);

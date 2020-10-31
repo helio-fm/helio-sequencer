@@ -238,8 +238,8 @@ void ProjectPage::resized()
     const auto statisticsY = this->proportionOfHeight(0.6f);
 
     static constexpr auto padding = 12;
-    static constexpr auto metadataLineHieght = 64;
-    static constexpr auto statsLineHieght = 34;
+    static constexpr auto metadataLineHeight = 64;
+    static constexpr auto statsLineHeight = 34;
 
     const auto getSkewX = [this](int y)
     {
@@ -272,11 +272,11 @@ void ProjectPage::resized()
         }
     };
 
-    layoutLeftSide(this->metadataCaptions, metadataY, metadataLineHieght);
-    layoutLeftSide(this->statisticsCaptions, statisticsY, statsLineHieght);
+    layoutLeftSide(this->metadataCaptions, metadataY, metadataLineHeight);
+    layoutLeftSide(this->statisticsCaptions, statisticsY, statsLineHeight);
 
-    layoutRightSide(this->metadataEditors, metadataY, metadataLineHieght);
-    layoutRightSide(this->statisticsLabels, statisticsY, statsLineHieght);
+    layoutRightSide(this->metadataEditors, metadataY, metadataLineHeight);
+    layoutRightSide(this->statisticsLabels, statisticsY, statsLineHeight);
 
     this->revealLocationButton->setBounds(this->locationText->getBounds());
 }
@@ -312,9 +312,9 @@ void ProjectPage::updateContent()
     this->contentStatsText->setText(this->project.getStats(), dontSendNotification);
     this->temperamentText->setText(temperamentName, dontSendNotification);
 
-    if (auto *vcti = this->project.findChildOfType<VersionControlNode>())
+    if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
     {
-        this->vcsStatsText->setText(vcti->getStatsString(), dontSendNotification);
+        this->vcsStatsText->setText(vcs->getStatsString(), dontSendNotification);
     }
 }
 

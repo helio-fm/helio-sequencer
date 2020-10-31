@@ -18,32 +18,31 @@
 #include "Common.h"
 #include "VersionControlStageSelectionMenu.h"
 #include "CommandIDs.h"
-#include "Icons.h"
 
 VersionControlStageSelectionMenu::VersionControlStageSelectionMenu()
 {
-    MenuPanel::Menu cmds;
+    MenuPanel::Menu menu;
 
-    cmds.add(MenuItem::item(Icons::commit,
+    menu.add(MenuItem::item(Icons::commit,
         CommandIDs::VersionControlCommitSelected,
         TRANS(I18n::Menu::Selection::vcsCommit))->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::reset,
+    menu.add(MenuItem::item(Icons::reset,
         CommandIDs::VersionControlResetSelected,
         TRANS(I18n::Menu::Selection::vcsReset))->closesMenu());
 
     // TODO add named stashes in addition to the default one
-    //cmds.add(MenuItem::item(Icons::stash,
+    //menu.add(MenuItem::item(Icons::stash,
     //    CommandIDs::VersionControlStashSelected,
     //    TRANS(I18n::Menu::Selection::vcsStash))->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::selectAll,
+    menu.add(MenuItem::item(Icons::selectAll,
         CommandIDs::VersionControlSelectAll,
         TRANS(I18n::Menu::Selection::vcsSelectAll)));
 
-    cmds.add(MenuItem::item(Icons::selectNone,
+    menu.add(MenuItem::item(Icons::selectNone,
         CommandIDs::VersionControlSelectNone,
         TRANS(I18n::Menu::Selection::vcsSelectNone))->closesMenu());
 
-    this->updateContent(cmds, MenuPanel::SlideRight);
+    this->updateContent(menu, MenuPanel::SlideRight);
 }

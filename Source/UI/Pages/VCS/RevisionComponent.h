@@ -39,18 +39,18 @@ public:
 
     // Helpers for tree traverse:
 
-    float x;
-    float y;
-    float mod;
-    float shift;
-    float change;
-    int number;
+    float x = 0.f;
+    float y = 0.f;
+    float mod = 0.f;
+    float shift = 0.f;
+    float change = 0.f;
+    int number = 0;
 
     const VCS::Revision::Ptr revision;
 
-    RevisionComponent *parent;
-    RevisionComponent *ancestor;
-    RevisionComponent *wired;
+    RevisionComponent *parent = nullptr;
+    RevisionComponent *ancestor = nullptr;
+    RevisionComponent *wired = nullptr;
 
     Array<RevisionComponent *> children;
 
@@ -59,7 +59,7 @@ public:
     RevisionComponent *right() const;
     RevisionComponent *left() const;
 
-    mutable RevisionComponent *leftmostSibling;
+    mutable RevisionComponent *leftmostSibling = nullptr;
 
     // View details
 
@@ -80,8 +80,8 @@ private:
 
     VersionControl &vcs;
 
-    bool isSelected;
-    bool isHeadRevision;
+    bool isSelected = false;
+    bool isHeadRevision = false;
     VCS::Revision::SyncState viewState;
 
     UniquePointer<HeadlineContextMenuController> contextMenuController;

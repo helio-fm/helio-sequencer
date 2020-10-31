@@ -33,7 +33,7 @@ AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
 
     if (auto *w = dynamic_cast<DocumentWindow *>(contentOwned))
     {
-        // posess the target window
+        // own the target window
         this->ownedWindow.reset(w);
         this->ownedWindow->setVisible(true);
     }

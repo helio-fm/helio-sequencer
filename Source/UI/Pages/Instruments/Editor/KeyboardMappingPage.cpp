@@ -142,11 +142,11 @@ void KeyboardMappingPage::syncWithRange(int base)
     this->rangeLabel->setText(String(base) + " - " + 
         String(base + Globals::twelveToneKeyboardSize - 1), dontSendNotification);
 
-    const auto canShowPreiousPave = this->canShowPreviousPage();
+    const auto canShowPreviousPave = this->canShowPreviousPage();
     const auto canShowNextPage = this->canShowNextPage();
 
-    this->leftArrow->setInterceptsMouseClicks(canShowPreiousPave, false);
-    this->leftArrow->setAlpha(canShowPreiousPave ? 1.f : 0.25f);
+    this->leftArrow->setInterceptsMouseClicks(canShowPreviousPave, false);
+    this->leftArrow->setAlpha(canShowPreviousPave ? 1.f : 0.25f);
 
     this->rightArrow->setInterceptsMouseClicks(canShowNextPage, false);
     this->rightArrow->setAlpha(canShowNextPage ? 1.f : 0.25f);

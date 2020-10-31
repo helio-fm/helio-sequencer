@@ -106,7 +106,7 @@ private:
 
     UniquePointer<Component> background;
     UniquePointer<MenuPanel> menu;
-    UniquePointer<MobileComboBox::Trigger> triggerButtton;
+    UniquePointer<MobileComboBox::Trigger> triggerButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MobileComboBox)
 };

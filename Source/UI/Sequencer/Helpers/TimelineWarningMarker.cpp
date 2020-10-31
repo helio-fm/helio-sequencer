@@ -19,11 +19,11 @@
 #include "TimelineWarningMarker.h"
 #include "HybridRoll.h"
 
-TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel, HybridRoll &parentRoll, float inititalBeatPosition)
+TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel, HybridRoll &parentRoll, float initialBeatPosition)
     : roll(parentRoll),
       colour((warningLevel == Red) ? Colour(0x33ff0000) : Colour(0x27ffff00)),
-      startBeat(inititalBeatPosition),
-      endBeat(inititalBeatPosition + CLIPPING_MARKER_MIN_SIZE_IN_BEATS)
+      startBeat(initialBeatPosition),
+      endBeat(initialBeatPosition + CLIPPING_MARKER_MIN_SIZE_IN_BEATS)
 {
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);

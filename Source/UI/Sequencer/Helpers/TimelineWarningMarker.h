@@ -35,7 +35,7 @@ public:
     
     TimelineWarningMarker(WarningLevel warningLevel,
                           HybridRoll &parentRoll,
-                          float inititalBeatPosition);
+                          float initialBeatPosition);
 
     float getStartBeat() const noexcept;
     void setStartBeat(float startBeat);

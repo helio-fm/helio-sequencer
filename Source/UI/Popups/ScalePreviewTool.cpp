@@ -57,14 +57,14 @@ public:
 
     ScalesCommandPanel(const Array<Scale::Ptr> scales) : scales(scales)
     {
-        MenuPanel::Menu cmds;
+        MenuPanel::Menu menu;
         for (int i = 0; i < scales.size(); ++i)
         {
-            cmds.add(MenuItem::item(Icons::empty,
+            menu.add(MenuItem::item(Icons::empty,
                 CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->
                 withAlignment(MenuItem::Alignment::Right));
         }
-        this->updateContent(cmds, MenuPanel::SlideLeft, false);
+        this->updateContent(menu, MenuPanel::SlideLeft, false);
     }
 
     void handleCommandMessage(int commandId) override

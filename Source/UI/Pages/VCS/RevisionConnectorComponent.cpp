@@ -82,12 +82,12 @@ void RevisionConnectorComponent::resized()
     this->linePath.clear();
     this->linePath.startNewSubPath(x1, y1);
 
-    const float curvinessX = (1.f - (fabs(dx) / float(this->getParentWidth()))) * 1.5f;
-    const float curvinessY = (fabs(dy) / float(this->getParentHeight())) * 1.5f;
-    const float curviness = (curvinessX + curvinessY) / 2.f;
+    const float curveX = (1.f - (fabsf(dx) / float(this->getParentWidth()))) * 1.5f;
+    const float curveY = (fabsf(dy) / float(this->getParentHeight())) * 1.5f;
+    const float curve = (curveX + curveY) / 2.f;
 
-    this->linePath.cubicTo(x1, y1 + dy * (curviness),
-        x2, y1 + dy * (1.f - curviness),
+    this->linePath.cubicTo(x1, y1 + dy * (curve),
+        x2, y1 + dy * (1.f - curve),
         x2, y2);
 
     PathStrokeType stroke(1.0f, PathStrokeType::beveled, PathStrokeType::butt);

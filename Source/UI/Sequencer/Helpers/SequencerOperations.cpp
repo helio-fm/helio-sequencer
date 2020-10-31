@@ -2132,7 +2132,7 @@ bool SequencerOperations::setOneTempoForProject(ProjectNode &project,
         String outTrackId;
         String instrumentId; // the instrument id doesn't matter for the tempo track, it'll be empty
         const auto preset =
-            SequencerOperations::createAutoTrackTempate(project,
+            SequencerOperations::createAutoTrackTemplate(project,
                 TRANS(I18n::Defaults::tempoTrackName),
                 MidiTrack::tempoController, instrumentId, outTrackId);
 
@@ -2330,7 +2330,7 @@ String SequencerOperations::generateNextNameForNewTrack(const String &name, cons
     return newName;
 }
 
-SerializedData SequencerOperations::createPianoTrackTempate(ProjectNode &project,
+SerializedData SequencerOperations::createPianoTrackTemplate(ProjectNode &project,
     const String &name, const String &instrumentId, String &outTrackId)
 {
     auto newNode = make<PianoTrackNode>(name);
@@ -2355,7 +2355,7 @@ SerializedData SequencerOperations::createPianoTrackTempate(ProjectNode &project
     return newNode->serialize();
 }
 
-SerializedData SequencerOperations::createAutoTrackTempate(ProjectNode &project,
+SerializedData SequencerOperations::createAutoTrackTemplate(ProjectNode &project,
     const String &name, int controllerNumber, const String &instrumentId, String &outTrackId)
 {
     auto newNode = make<AutomationTrackNode>(name);

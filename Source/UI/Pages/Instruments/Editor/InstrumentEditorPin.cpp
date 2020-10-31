@@ -33,8 +33,8 @@ void InstrumentEditorPin::paint(Graphics &g)
 {
     using namespace ColourIDs::Instrument;
 
-    const float w = float(this->getWidth());
-    const float h = float(this->getHeight());
+    const auto w = float(this->getWidth());
+    const auto h = float(this->getHeight());
     const bool isMidiChannel = (this->index == Instrument::midiChannelNumber);
 
     g.setColour(findDefaultColour(shadowPin));

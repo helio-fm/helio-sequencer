@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "MobileComboBox.h"
-#include "MenuPanel.h"
 #include "PanelBackgroundC.h"
 
 MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Component> primer) :
@@ -34,8 +33,8 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->menu = make<MenuPanel>();
     this->addAndMakeVisible(this->menu.get());
 
-    this->triggerButtton = make<MobileComboBox::Trigger>();
-    this->addAndMakeVisible(this->triggerButtton.get());
+    this->triggerButton = make<MobileComboBox::Trigger>();
+    this->addAndMakeVisible(this->triggerButton.get());
 
     this->separator = make<SeparatorHorizontalReversed>();
     this->addAndMakeVisible(this->separator.get());

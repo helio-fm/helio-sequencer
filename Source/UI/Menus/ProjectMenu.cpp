@@ -211,7 +211,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
                 auto &project = this->project;
                 String outTrackId;
                 const auto trackTemplate =
-                    SequencerOperations::createPianoTrackTempate(this->project,
+                    SequencerOperations::createPianoTrackTemplate(this->project,
                         "", instrumentId, outTrackId);
 
                 auto inputDialog = ModalDialogInput::Presets::newTrack();
@@ -254,7 +254,7 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
             String instrumentId; // empty, it doesn't matter for master tempo track
             const auto autoTracks = this->project.findChildrenOfType<AutomationTrackNode>();
             const auto autoTrackParams =
-                SequencerOperations::createAutoTrackTempate(this->project,
+                SequencerOperations::createAutoTrackTemplate(this->project,
                     TRANS(I18n::Defaults::tempoTrackName), MidiTrack::tempoController,
                     instrumentId, outTrackId);
 
@@ -300,7 +300,7 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
                     const String trackName = TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));
                     const auto autoTrackParams =
-                        SequencerOperations::createAutoTrackTempate(this->project,
+                        SequencerOperations::createAutoTrackTemplate(this->project,
                             trackName, controllerNumber, instrumentId, outTrackId);
 
                     this->project.getUndoStack()->beginNewTransaction();
