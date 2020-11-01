@@ -496,9 +496,10 @@ void PatternRoll::onRemoveClip(const Clip &clip)
 
 void PatternRoll::onPostRemoveClip(Pattern *const pattern) {}
 
-void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
-    HybridRoll::onReloadProjectContent(tracks); // updates temperament ref
+    HybridRoll::onReloadProjectContent(tracks, meta); // updates temperament ref
     this->reloadRollContent();
 }
 

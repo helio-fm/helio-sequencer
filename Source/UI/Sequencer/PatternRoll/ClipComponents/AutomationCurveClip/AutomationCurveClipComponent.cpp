@@ -329,7 +329,8 @@ void AutomationCurveClipComponent::onChangeTrackProperties(MidiTrack *const trac
     }
 }
 
-void AutomationCurveClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void AutomationCurveClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     if (this->sequence != nullptr)
     {

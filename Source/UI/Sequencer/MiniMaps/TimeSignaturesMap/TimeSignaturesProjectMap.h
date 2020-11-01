@@ -65,7 +65,8 @@ public:
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
-    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks,
+        const ProjectMetadata *meta) override;
 
     //===------------------------------------------------------------------===//
     // Stuff for children

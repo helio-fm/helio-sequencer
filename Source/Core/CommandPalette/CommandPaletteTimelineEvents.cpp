@@ -273,7 +273,8 @@ void CommandPaletteTimelineEvents::onChangeTrackBeatRange(MidiTrack *const track
     this->clipActionsOutdated = true;
 }
 
-void CommandPaletteTimelineEvents::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void CommandPaletteTimelineEvents::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     this->annotationActionsOutdated = true;
     this->keySignatureActionsOutdated = true;

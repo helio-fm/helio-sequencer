@@ -131,7 +131,8 @@ void PianoClipComponent::onChangeTrackProperties(MidiTrack *const track)
     this->roll.triggerBatchRepaintFor(this);
 }
 
-void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     if (this->sequence != nullptr)
     {

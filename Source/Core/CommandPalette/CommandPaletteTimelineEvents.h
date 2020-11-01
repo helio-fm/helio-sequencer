@@ -51,9 +51,10 @@ public:
     void onChangeTrackProperties(MidiTrack *const track) override;
     void onChangeTrackBeatRange(MidiTrack *const track) override;
 
-    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks,
+        const ProjectMetadata *meta) override;
 
 protected:
 

@@ -723,9 +723,9 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
     }
 }
 
-void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks, const ProjectMetadata *meta)
 {
-    HybridRoll::onReloadProjectContent(tracks); // updates temperament
+    HybridRoll::onReloadProjectContent(tracks, meta); // updates temperament
     this->noteNameGuides->syncWithTemperament(this->temperament);
     this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
     this->updateSize(); // might have changed by due to different temperament

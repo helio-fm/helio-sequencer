@@ -318,7 +318,8 @@ void AutomationStepsClipComponent::onChangeTrackProperties(MidiTrack *const trac
     }
 }
 
-void AutomationStepsClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void AutomationStepsClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     if (this->sequence != nullptr)
     {

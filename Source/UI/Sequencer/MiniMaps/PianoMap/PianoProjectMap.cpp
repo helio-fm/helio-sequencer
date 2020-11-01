@@ -225,9 +225,10 @@ void PianoProjectMap::onChangeTrackProperties(MidiTrack *const track)
     this->triggerAsyncUpdate();
 }
 
-void PianoProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void PianoProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
-    this->keyboardSize = this->project.getProjectInfo()->getKeyboardSize();
+    this->keyboardSize = meta->getKeyboardSize();
     this->reloadTrackMap();
 }
 

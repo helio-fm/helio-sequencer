@@ -245,7 +245,8 @@ void AnnotationsProjectMap::onChangeViewBeatRange(float firstBeat, float lastBea
     }
 }
 
-void AnnotationsProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void AnnotationsProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     this->reloadTrackMap();
 }

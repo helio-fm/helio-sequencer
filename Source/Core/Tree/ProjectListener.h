@@ -59,12 +59,14 @@ public:
     // I've never implemented the ability to edit multiple clips at once (where it can be possible);
     // so far, all the code that works with the selection, assumes that selected notes are unique,
     // and there are no multiple instances of the same note within different clips selected.
-    virtual void onChangeViewEditableScope(MidiTrack *const track, const Clip &clip, bool shouldFocus) {}
+    virtual void onChangeViewEditableScope(MidiTrack *const track,
+        const Clip &clip, bool shouldFocus) {}
 
     virtual void onChangeViewBeatRange(float firstBeat, float lastBeat) = 0;
 
     // Sent on midi import, reload or reset by VCS
     virtual void onBeforeReloadProjectContent() {};
-    virtual void onReloadProjectContent(const Array<MidiTrack *> &tracks) = 0;
+    virtual void onReloadProjectContent(const Array<MidiTrack *> &tracks,
+        const ProjectMetadata *meta) = 0;
 
 };

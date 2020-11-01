@@ -977,9 +977,10 @@ void HybridRoll::onChangeProjectInfo(const ProjectMetadata *info)
     }
 }
 
-void HybridRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void HybridRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
-    this->temperament = this->project.getProjectInfo()->getTemperament();
+    this->temperament = meta->getTemperament();
 }
 
 void HybridRoll::onBeforeReloadProjectContent()

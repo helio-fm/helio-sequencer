@@ -116,7 +116,9 @@ public:
     void onChangeTrackProperties(MidiTrack *const track) override;
 
     void onChangeProjectInfo(const ProjectMetadata *info) override;
-    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks,
+        const ProjectMetadata *meta) override;
+
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewEditableScope(MidiTrack *const track,
         const Clip &clip, bool shouldFocus) override;

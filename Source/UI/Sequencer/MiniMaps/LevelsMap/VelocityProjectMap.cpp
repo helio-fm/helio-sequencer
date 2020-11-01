@@ -584,7 +584,8 @@ void VelocityProjectMap::onChangeTrackProperties(MidiTrack *const track)
     this->repaint();
 }
 
-void VelocityProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void VelocityProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     this->reloadTrackMap();
 }

@@ -625,7 +625,8 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     this->playbackCacheIsOutdated = true;
 

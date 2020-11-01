@@ -218,7 +218,8 @@ void TimeSignaturesProjectMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void TimeSignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void TimeSignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     this->reloadTrackMap();
 }

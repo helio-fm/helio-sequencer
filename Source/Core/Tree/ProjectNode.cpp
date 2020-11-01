@@ -828,7 +828,9 @@ void ProjectNode::broadcastBeforeReloadProjectContent()
 
 void ProjectNode::broadcastReloadProjectContent()
 {
-    this->changeListeners.call(&ProjectListener::onReloadProjectContent, this->getTracks());
+    this->changeListeners.call(&ProjectListener::onReloadProjectContent,
+        this->getTracks(), this->metadata.get());
+
     this->sendChangeMessage();
 }
 

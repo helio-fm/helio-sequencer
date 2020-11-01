@@ -195,7 +195,8 @@ void KeySignaturesProjectMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void KeySignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void KeySignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
 {
     this->reloadTrackMap();
 }
