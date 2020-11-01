@@ -8,36 +8,6 @@
 
 namespace BinaryData
 {
-    extern const char*   C2v9_flac;
-    const int            C2v9_flacSize = 102140;
-
-    extern const char*   C3v9_flac;
-    const int            C3v9_flacSize = 93682;
-
-    extern const char*   C4v9_flac;
-    const int            C4v9_flacSize = 88206;
-
-    extern const char*   C5v9_flac;
-    const int            C5v9_flacSize = 69974;
-
-    extern const char*   C6v9_flac;
-    const int            C6v9_flacSize = 58336;
-
-    extern const char*   F2v9_flac;
-    const int            F2v9_flacSize = 103770;
-
-    extern const char*   F3v9_flac;
-    const int            F3v9_flacSize = 95525;
-
-    extern const char*   F4v9_flac;
-    const int            F4v9_flacSize = 82474;
-
-    extern const char*   F5v9_flac;
-    const int            F5v9_flacSize = 64773;
-
-    extern const char*   F6v9_flac;
-    const int            F6v9_flacSize = 57122;
-
     extern const char*   annotation_svg;
     const int            annotation_svgSize = 309;
 
@@ -342,7 +312,7 @@ namespace BinaryData
     const int            translations_jsonSize = 136297;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 111;
+    const int namedResourceListSize = 101;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

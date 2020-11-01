@@ -19,11 +19,10 @@
 #include "Common.h"
 #include "BuiltInSynthFormat.h"
 #include "BuiltInSynthAudioPlugin.h"
-#include "BuiltInSynthPiano.h"
 
 BuiltInSynthFormat::BuiltInSynthFormat()
 {
-    BuiltInSynthPiano piano;
+    BuiltInSynth piano;
     piano.fillInPluginDescription(this->pianoDescription);
 }
 
@@ -34,7 +33,7 @@ String BuiltInSynthFormat::getName() const
 
 void BuiltInSynthFormat::findAllTypesForFile(OwnedArray <PluginDescription> &description, const String &id)
 {
-    if (id == BuiltInSynth::pianoId)
+    if (id == BuiltInSynth::instrumentId)
     {
         description.add(new PluginDescription(this->pianoDescription));
     }
@@ -53,7 +52,7 @@ void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc,
 {
     if (desc.name == this->pianoDescription.name)
     {
-        callback(make<BuiltInSynthPiano>(), {});
+        callback(make<BuiltInSynth>(), {});
         return;
     }
     

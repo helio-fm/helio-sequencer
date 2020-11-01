@@ -18,14 +18,10 @@
 #pragma once
 
 #include "Instrument.h"
+#include "BuiltInSynth.h"
 
 #define HELIO_BUILT_IN_PLUGIN_FORMAT_NAME "BuiltIn"
 #define HELIO_BUILT_IN_PLUGIN_IDENTIFIER "BuiltIn"
-
-namespace BuiltInSynth
-{
-    static const String pianoId = "<piano>";
-} // namespace BuiltInSynth
 
 class BuiltInSynthFormat final : public AudioPluginFormat
 {

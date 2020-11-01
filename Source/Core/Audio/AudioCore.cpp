@@ -231,7 +231,7 @@ void AudioCore::initDefaultInstrument()
     OwnedArray<PluginDescription> descriptions;
 
     BuiltInSynthFormat format;
-    format.findAllTypesForFile(descriptions, BuiltInSynth::pianoId);
+    format.findAllTypesForFile(descriptions, BuiltInSynth::instrumentId);
 
     PluginDescription desc(*descriptions[0]);
     this->addInstrument(desc, "Helio Piano", [](Instrument *) {});

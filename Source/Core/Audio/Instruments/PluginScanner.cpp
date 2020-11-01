@@ -119,7 +119,7 @@ void PluginScanner::runInitialScan()
     this->searchPath = this->getTypicalFolders();
 
     // built-in synths to be add at the first place:
-    this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::pianoId);
+    this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::instrumentId);
 
     // known synths to be re-checked first as well:
     for (const auto &it : this->getPlugins())

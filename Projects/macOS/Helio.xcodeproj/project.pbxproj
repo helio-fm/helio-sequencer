@@ -628,13 +628,6 @@
 			path = ../../Source/UI/Popups/FailTooltip.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		16D8AC6610DD9397A9C06191 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = C6v9.flac;
-			path = ../../Resources/Samples/C6v9.flac;
-			sourceTree = "SOURCE_ROOT";
-		};
 		16F42662E2DD2A42E1A5830B = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1881,13 +1874,6 @@
 			path = ../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		49987B78C41C676C03668DA5 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = "F#3v9.flac";
-			path = "../../Resources/Samples/F#3v9.flac";
-			sourceTree = "SOURCE_ROOT";
-		};
 		499F37C4491EFD4B89BCED25 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -2140,13 +2126,6 @@
 			path = ../../Source/Core/Audio/Instruments/PluginScanner.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		547727E79D86A3E082D413A2 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = C4v9.flac;
-			path = ../../Resources/Samples/C4v9.flac;
-			sourceTree = "SOURCE_ROOT";
-		};
 		54DFBC5F9A390D72598FB531 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.svg;
@@ -2264,13 +2243,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = MainLayout.h;
 			path = ../../Source/UI/MainLayout.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		5B11A1020CF1B67D9FA54374 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = "F#4v9.flac";
-			path = "../../Resources/Samples/F#4v9.flac";
 			sourceTree = "SOURCE_ROOT";
 		};
 		5B5EBA3FCAB3CCE8E852A47D = {
@@ -4863,13 +4835,6 @@
 			path = ../../Resources/Icons/unmute.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
-		D51E9FD813E49C4C973FDB2F = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = C5v9.flac;
-			path = ../../Resources/Samples/C5v9.flac;
-			sourceTree = "SOURCE_ROOT";
-		};
 		D5302D7E72B0EA7D7F483EF2 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5164,13 +5129,6 @@
 			path = ../../Source/UI/Pages/Settings/ComponentsList.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		E15F327CCCE30D478109DA03 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = "F#5v9.flac";
-			path = "../../Resources/Samples/F#5v9.flac";
-			sourceTree = "SOURCE_ROOT";
-		};
 		E169862EBB0C6A84072C657B = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5226,13 +5184,6 @@
 			includeInIndex = 0;
 			path = Helio.app;
 			sourceTree = "BUILT_PRODUCTS_DIR";
-		};
-		E332A690DEEEC3886434EC25 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = "F#6v9.flac";
-			path = "../../Resources/Samples/F#6v9.flac";
-			sourceTree = "SOURCE_ROOT";
 		};
 		E340C02D7364B18D5678BC32 = {
 			isa = PBXFileReference;
@@ -5395,13 +5346,6 @@
 			path = ../../Source/UI/Dialogs/TrackPropertiesDialog.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		EB6D379742D31759FB986F01 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = C3v9.flac;
-			path = ../../Resources/Samples/C3v9.flac;
-			sourceTree = "SOURCE_ROOT";
-		};
 		EBE35675A8B46A4D14D39ACC = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5442,13 +5386,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = PlayButton.h;
 			path = ../../Source/UI/Common/PlayButton.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		EE89855DB94E767E40A23BFF = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = C2v9.flac;
-			path = ../../Resources/Samples/C2v9.flac;
 			sourceTree = "SOURCE_ROOT";
 		};
 		EE8C8FBD4E25BF0F9FE05609 = {
@@ -5668,13 +5605,6 @@
 			path = ../../Source/UI/Headline/HeadlineNavigationPanel.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		F7ED95BA5E79E6146856917F = {
-			isa = PBXFileReference;
-			lastKnownFileType = file.flac;
-			name = "F#2v9.flac";
-			path = "../../Resources/Samples/F#2v9.flac";
-			sourceTree = "SOURCE_ROOT";
-		};
 		F824386C24E0394EF09006B0 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5822,23 +5752,6 @@
 			path = ../../Source/UI/Pages/Instruments/Editor/InstrumentEditor.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		13E54480CE9573457EA9FE0E = {
-			isa = PBXGroup;
-			children = (
-				EE89855DB94E767E40A23BFF,
-				EB6D379742D31759FB986F01,
-				547727E79D86A3E082D413A2,
-				D51E9FD813E49C4C973FDB2F,
-				16D8AC6610DD9397A9C06191,
-				F7ED95BA5E79E6146856917F,
-				49987B78C41C676C03668DA5,
-				5B11A1020CF1B67D9FA54374,
-				E15F327CCCE30D478109DA03,
-				E332A690DEEEC3886434EC25,
-			);
-			name = Samples;
-			sourceTree = "<group>";
-		};
 		1079DC9C4876F5F7D6DC4C85 = {
 			isa = PBXGroup;
 			children = (
@@ -5949,7 +5862,6 @@
 		4D9753CCE9FBD39CF4A7E451 = {
 			isa = PBXGroup;
 			children = (
-				13E54480CE9573457EA9FE0E,
 				1079DC9C4876F5F7D6DC4C85,
 				1AFEBE80310146EE997D5A01,
 				827AAD5C6900DDCDB38378D9,

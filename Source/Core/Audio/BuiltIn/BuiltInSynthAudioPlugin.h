@@ -35,8 +35,6 @@ public:
     // AudioProcessor
     //===------------------------------------------------------------------===//
 
-    void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
-    void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock) override;
     void releaseResources() override;
     double getTailLengthSeconds() const override;
     bool acceptsMidi() const override;
@@ -65,12 +63,5 @@ public:
 
     void getStateInformation(MemoryBlock &destData) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
-
-protected:
-
-    virtual void initVoices() = 0;
-    virtual void initSampler() = 0;
-
-    Synthesiser synth;
-
+    
 };

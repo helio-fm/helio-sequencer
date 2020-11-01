@@ -10,18 +10,6 @@
               projectLineFeed="&#10;" jucerFormatVersion="1">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
-      <GROUP id="{566A42BA-3539-AB6F-C7F2-BD3408E4047E}" name="Samples">
-        <FILE id="oFLIK5" name="C2v9.flac" compile="0" resource="1" file="../../Resources/Samples/C2v9.flac"/>
-        <FILE id="bR4aWr" name="C3v9.flac" compile="0" resource="1" file="../../Resources/Samples/C3v9.flac"/>
-        <FILE id="DO6Vg4" name="C4v9.flac" compile="0" resource="1" file="../../Resources/Samples/C4v9.flac"/>
-        <FILE id="CgWd6Q" name="C5v9.flac" compile="0" resource="1" file="../../Resources/Samples/C5v9.flac"/>
-        <FILE id="fwuF4A" name="C6v9.flac" compile="0" resource="1" file="../../Resources/Samples/C6v9.flac"/>
-        <FILE id="XohXei" name="F#2v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#2v9.flac"/>
-        <FILE id="PN9TEw" name="F#3v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#3v9.flac"/>
-        <FILE id="QqMxL7" name="F#4v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#4v9.flac"/>
-        <FILE id="opCZld" name="F#5v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#5v9.flac"/>
-        <FILE id="Kr0vYK" name="F#6v9.flac" compile="0" resource="1" file="../../Resources/Samples/F#6v9.flac"/>
-      </GROUP>
       <GROUP id="{0B700B6F-60B4-647B-6D0F-7AD115ECD127}" name="Icons">
         <FILE id="rmCDvP" name="annotation.svg" compile="0" resource="1" file="../../Resources/Icons/annotation.svg"/>
         <FILE id="VFzDxu" name="apply.svg" compile="0" resource="1" file="../../Resources/Icons/apply.svg"/>
@@ -158,10 +146,9 @@
                   file="../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.cpp"/>
             <FILE id="QbQrqy" name="BuiltInSynthFormat.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.h"/>
-            <FILE id="KnatwX" name="BuiltInSynthPiano.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthPiano.cpp"/>
-            <FILE id="ptazaW" name="BuiltInSynthPiano.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthPiano.h"/>
+            <FILE id="KnatwX" name="BuiltInSynth.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynth.cpp"/>
+            <FILE id="ptazaW" name="BuiltInSynth.h" compile="0" resource="0" file="../../Source/Core/Audio/BuiltIn/BuiltInSynth.h"/>
             <FILE id="PYyC8X" name="InternalPluginFormat.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/BuiltIn/InternalPluginFormat.cpp"/>
             <FILE id="LuBc4N" name="InternalPluginFormat.h" compile="0" resource="0"

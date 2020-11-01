@@ -10,7 +10,7 @@
 
 #include "../../Source/Core/Audio/BuiltIn/BuiltInSynthAudioPlugin.cpp"
 #include "../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.cpp"
-#include "../../Source/Core/Audio/BuiltIn/BuiltInSynthPiano.cpp"
+#include "../../Source/Core/Audio/BuiltIn/BuiltInSynth.cpp"
 #include "../../Source/Core/Audio/BuiltIn/InternalPluginFormat.cpp"
 #include "../../Source/Core/Audio/Instruments/Instrument.cpp"
 #include "../../Source/Core/Audio/Instruments/OrchestraPit.cpp"

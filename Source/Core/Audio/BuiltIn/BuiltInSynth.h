@@ -19,25 +19,35 @@
 
 #include "BuiltInSynthAudioPlugin.h"
 
-// A lightweight piano sampler with the only purpose of providing a default instrument
+// A lightweight synth with the only purpose of providing a default instrument
 // that doesn't sound too much crappy when user opens the app at the very first time,
 // and doesn't have any custom instruments added yet.
-// So it's as simple and small as possible.
 
-class BuiltInSynthPiano : public BuiltInSynthAudioPlugin
+class BuiltInSynth final : public BuiltInSynthAudioPlugin
 {
 public:
 
-    explicit BuiltInSynthPiano();
+    BuiltInSynth();
+
+    static const String instrumentId;
+
+    //===------------------------------------------------------------------===//
+    // AudioProcessor
+    //===------------------------------------------------------------------===//
 
     const String getName() const override;
     void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
+    void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock) override;
     void reset() override;
 
 protected:
 
-    void initVoices() override;
-    void initSampler() override;
+    //Reverb reverb;
+    //IIRFilter filter;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynthPiano)
+    void initSynth();
+
+    Synthesiser synth;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynth)
 };
