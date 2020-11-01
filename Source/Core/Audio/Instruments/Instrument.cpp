@@ -525,7 +525,7 @@ void Instrument::deserialize(const SerializedData &data)
 
     if (!root.isValid() || root.getNumChildren() == 0) { return; }
 
-    this->lastValidStateFallback = root;
+    this->lastValidStateFallback = root.createCopy();
 
     this->instrumentId = root.getProperty(Audio::instrumentId, this->instrumentId.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);
