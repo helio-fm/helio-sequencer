@@ -49,7 +49,7 @@ void BuiltInSynthAudioPlugin::releaseResources()
 
 double BuiltInSynthAudioPlugin::getTailLengthSeconds() const
 {
-    return 1.0;
+    return 3.0;
 }
 
 bool BuiltInSynthAudioPlugin::acceptsMidi() const

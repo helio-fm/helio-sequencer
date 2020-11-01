@@ -42,8 +42,7 @@ public:
 
 protected:
 
-    //Reverb reverb;
-    //IIRFilter filter;
+    static constexpr auto numVoices = 32;
 
     void initSynth();
 

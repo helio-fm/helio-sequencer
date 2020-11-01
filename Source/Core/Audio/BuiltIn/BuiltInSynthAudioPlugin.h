@@ -17,8 +17,6 @@
 
 #pragma once
 
-#define BUILTIN_SYNTH_NUM_VOICES 32
-
 class BuiltInSynthAudioPlugin : public AudioPluginInstance
 {
 public:
