@@ -441,9 +441,13 @@ void Transport::previewKey(const String &trackId, int channel, int key, float vo
 static void stopSoundForInstrument(Instrument *instrument)
 {
     auto &collector = instrument->getProcessorPlayer().getMidiMessageCollector();
-    collector.addMessageToQueue(MidiMessage::allControllersOff(1).withTimeStamp(TIME_NOW));
-    collector.addMessageToQueue(MidiMessage::allNotesOff(1).withTimeStamp(TIME_NOW));
-    collector.addMessageToQueue(MidiMessage::allSoundOff(1).withTimeStamp(TIME_NOW));
+
+    for (int i = 1; i < Globals::numChannels; ++i)
+    {
+        collector.addMessageToQueue(MidiMessage::allControllersOff(i).withTimeStamp(TIME_NOW));
+        collector.addMessageToQueue(MidiMessage::allNotesOff(i).withTimeStamp(TIME_NOW));
+        collector.addMessageToQueue(MidiMessage::allSoundOff(i).withTimeStamp(TIME_NOW));
+    }
 }
 
 void Transport::stopSound(const String &trackId) const
@@ -474,12 +478,11 @@ void Transport::allNotesControllersAndSoundOff() const
     this->sleepTimer.setAwake();
     this->messagePreviewQueue.cancelPendingPreview();
 
-    static const int c = 1;
-    //for (int c = 1; c <= 16; ++c)
+    for (int i = 1; i < Globals::numChannels; ++i)
     {
-        const MidiMessage notesOff(MidiMessage::allNotesOff(c).withTimeStamp(TIME_NOW));
-        const MidiMessage soundOff(MidiMessage::allSoundOff(c).withTimeStamp(TIME_NOW));
-        const MidiMessage controllersOff(MidiMessage::allControllersOff(c).withTimeStamp(TIME_NOW));
+        const MidiMessage notesOff(MidiMessage::allNotesOff(i).withTimeStamp(TIME_NOW));
+        const MidiMessage soundOff(MidiMessage::allSoundOff(i).withTimeStamp(TIME_NOW));
+        const MidiMessage controllersOff(MidiMessage::allControllersOff(i).withTimeStamp(TIME_NOW));
         
         Array<const MidiMessageCollector *> duplicateCollectors;
         
