@@ -22,7 +22,6 @@
 
 BuiltInSynthAudioPlugin::BuiltInSynthAudioPlugin()
 {
-    this->synth.initSynth(); // fixme
     this->setPlayConfigDetails(0, 2,
         this->getSampleRate(), this->getBlockSize());
 }
@@ -48,7 +47,7 @@ void BuiltInSynthAudioPlugin::fillInPluginDescription(PluginDescription &descrip
 
 const String BuiltInSynthAudioPlugin::getName() const
 {
-    return "Default"; // any better name?
+    return "Helio Default"; // any better name?
 }
 
 void BuiltInSynthAudioPlugin::processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages)

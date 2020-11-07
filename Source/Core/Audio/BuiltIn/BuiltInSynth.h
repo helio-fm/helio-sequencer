@@ -21,11 +21,19 @@ class BuiltInSynth final : public Synthesiser
 {
 public:
 
-    BuiltInSynth() = default;
+    BuiltInSynth();
 
-    void handleMidiEvent(const MidiMessage& m) override;
-
-    void initSynth();
+    // what we want here is to make all built-in temperaments
+    // work out of the box with the built-in instrument, so that
+    // all features are easily previewed even before the user
+    // sets up any instruments and keyboard mappings;
+    // for that we need to let the instrument know which temperament
+    // the project is currently in, and even simpler - we only need
+    // an octave size, because this is what matters from the sequencer's
+    // perspective, and we will only support EDOs, because all built-in
+    // temperaments and EDO's; hopefully someday I'll come up with
+    // a better approach, or just get rid of this hack;
+    void setPeriodSize(int periodSize);
 
 protected:
 

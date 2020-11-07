@@ -49,6 +49,7 @@ public:
     Temperament::Ptr getTemperament() const noexcept;
     void setTemperament(const Temperament &temperament);
     int getKeyboardSize() const noexcept;
+    int getPeriodSize() const noexcept;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

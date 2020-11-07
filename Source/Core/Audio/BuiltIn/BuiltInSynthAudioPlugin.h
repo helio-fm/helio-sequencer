@@ -27,6 +27,11 @@ public:
 
     static const String instrumentId;
 
+    void setPeriodSize(int periodSize)
+    {
+        this->synth.setPeriodSize(periodSize);
+    }
+
     //===------------------------------------------------------------------===//
     // AudioPluginInstance
     //===------------------------------------------------------------------===//

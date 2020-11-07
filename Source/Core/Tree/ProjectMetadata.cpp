@@ -115,6 +115,11 @@ int ProjectMetadata::getKeyboardSize() const noexcept
     return this->temperament->getNumKeys();
 }
 
+int ProjectMetadata::getPeriodSize() const noexcept
+{
+    return this->temperament->getPeriodSize();
+}
+
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//

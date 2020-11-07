@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "BuiltInSynth.h"
-#include "BinaryData.h"
+#include "Temperament.h"
 
 struct BuiltInSynthSound final : public SynthesiserSound
 {
@@ -65,11 +65,15 @@ public:
 
     void startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int) override
     {
+        const auto channel = this->getCurrentChannel();
+        const int realNoteNumber = midiNoteNumber +
+            Globals::twelveToneKeyboardSize * (channel - 1);
+
         this->currentAngle = 0.0;
         this->level = velocity * 0.15;
 
-        const auto cyclesPerSecond = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-        const auto cyclesPerSample = cyclesPerSecond / getSampleRate();
+        const auto cyclesPerSecond = this->getNoteInHertz(realNoteNumber);
+        const auto cyclesPerSample = cyclesPerSecond / this->getSampleRate();
 
         this->angleDelta = cyclesPerSample * MathConstants<double>::twoPi;
 
@@ -116,21 +120,48 @@ public:
 
     using SynthesiserVoice::renderNextBlock;
 
+    void setPeriodSize(int size) noexcept
+    {
+        this->periodSize = size;
+        this->middleC = Temperament::periodNumForMiddleC * periodSize;
+    }
+
 private:
 
-    double currentAngle = 0.0, angleDelta = 0.0, level = 0.0;
+    double currentAngle = 0.0;
+    double angleDelta = 0.0;
+    double level = 0.0;
+
+    int periodSize = Globals::twelveTonePeriodSize;
+    int middleC = Temperament::periodNumForMiddleC * Globals::twelveTonePeriodSize;
 
     ADSR adsr;
     Reverb reverb;
 
+    double getNoteInHertz(int noteNumber, double frequencyOfA = 440.0) noexcept
+    {
+        return frequencyOfA * std::pow(2.0,
+            (noteNumber - this->middleC) / double(this->periodSize));
+    }
+
+    int getCurrentChannel() const noexcept
+    {
+        // the only way to access channel info in SynthesizerVoice :(
+        for (int i = 1; i < Globals::numChannels; ++i)
+        {
+            if (this->isPlayingChannel(i))
+            {
+                return i;
+            }
+        }
+
+        jassertfalse;
+        return 1;
+    }
 };
 
-// todo set temperament info here
-void BuiltInSynth::initSynth()
+BuiltInSynth::BuiltInSynth()
 {
-    this->clearVoices();
-    this->clearSounds();
-
     for (int i = BuiltInSynth::numVoices; --i >= 0;)
     {
         this->addVoice(new BuiltInSynthVoice());
@@ -139,8 +170,15 @@ void BuiltInSynth::initSynth()
     this->addSound(new BuiltInSynthSound());
 }
 
-void BuiltInSynth::handleMidiEvent(const MidiMessage& m)
+void BuiltInSynth::setPeriodSize(int periodSize)
 {
-    // todo handle sysex
-    Synthesiser::handleMidiEvent(m);
+    DBG("Setting octave size for the default synth: " + String(periodSize));
+
+    for (int i = 0; i < this->getNumVoices(); ++i)
+    {
+        if (auto *voice = dynamic_cast<BuiltInSynthVoice *>(this->getVoice(i)))
+        {
+            voice->setPeriodSize(periodSize);
+        }
+    }
 }

@@ -72,6 +72,9 @@ public:
     
     int hashCode() const noexcept;
 
+    static constexpr auto periodNumForMiddleC = 5;
+    static constexpr auto displayedPeriodNumForMiddleC = 3;
+
 private:
 
     String id;
@@ -83,9 +86,6 @@ private:
 
     Scale::Ptr highlighting;
     Scale::Ptr chromaticMap;
-
-    static constexpr auto periodNumForMiddleC = 5;
-    static constexpr auto displayedPeriodNumForMiddleC = 3;
 
     JUCE_LEAK_DETECTOR(Temperament)
 };

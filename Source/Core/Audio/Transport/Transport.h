@@ -116,8 +116,6 @@ public:
         // reserved for channel mode messages, which we will ignore
         static constexpr auto numCCs = 101;
         int ccStates[numCCs + 1];
-
-        // todo pass temperament info
     };
 
     PlaybackContext::Ptr fillPlaybackContextAt(float beat) const;
@@ -172,9 +170,11 @@ public:
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+    void onChangeProjectInfo(const ProjectMetadata *info) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
 
+    void onActivateProjectSubtree(const ProjectMetadata *meta) override;
     void onDeactivateProjectSubtree(const ProjectMetadata *meta) override;
 
     //===------------------------------------------------------------------===//
@@ -227,10 +227,13 @@ private:
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
     mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> linksCache;
-
+    
     void updateLinkForTrack(const MidiTrack *track);
     void removeLinkForTrack(const MidiTrack *track);
     
+    // a nasty hack, see the description in BuiltInSynth.h:
+    void updateTemperamentInfoForBuiltInSynth(int periodSize) const;
+
 private:
 
     /*

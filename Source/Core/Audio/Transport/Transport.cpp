@@ -31,6 +31,8 @@
 #include "SerializationKeys.h"
 #include "PlayerThreadPool.h"
 #include "KeyboardMapping.h"
+#include "ProjectMetadata.h"
+#include "BuiltInSynthAudioPlugin.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 #define SOUND_SLEEP_DELAY_MS (60000)
@@ -625,11 +627,33 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
+void Transport::updateTemperamentInfoForBuiltInSynth(int periodSize) const
+{
+    const auto *defaultInstrument = this->orchestra.getDefaultInstrument();
+    if (auto mainNode = defaultInstrument->findMainPluginNode())
+    {
+        if (auto *synth = dynamic_cast<BuiltInSynthAudioPlugin *>(mainNode->getProcessor()))
+        {
+            synth->setPeriodSize(periodSize);
+        }
+    }
+}
 
 void Transport::onDeactivateProjectSubtree(const ProjectMetadata *meta)
 {
     this->stopPlaybackAndRecording();
 }
+
+void Transport::onActivateProjectSubtree(const ProjectMetadata *meta)
+{
+    this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize());
+}
+
+void Transport::onChangeProjectInfo(const ProjectMetadata *meta)
+{
+    this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize());
+}
+
 void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
@@ -645,6 +669,8 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     }
 
     this->stopPlaybackAndRecording();
+
+    this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize());
 }
 
 void Transport::onAddTrack(MidiTrack *const track)
@@ -746,7 +772,7 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
 
     context->sampleRate = this->playbackCache.getSampleRate();
     context->numOutputChannels = this->playbackCache.getNumOutputChannels();
-
+    
     const auto targetRelativeBeat = context->startBeat - context->projectFirstBeat;
 
     double prevTimestamp = 0.0;
