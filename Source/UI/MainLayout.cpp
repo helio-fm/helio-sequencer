@@ -210,6 +210,19 @@ bool MainLayout::isShowingPage(Component *page) const noexcept
     return (this->currentContent == page);
 }
 
+static ProjectNode *findProjectForSelectedNode(TreeNode *source)
+{
+    jassert(source != nullptr);
+
+    if (auto *projectNode = dynamic_cast<ProjectNode *>(source))
+    {
+        return projectNode;
+    }
+
+    return source->findParentOfType<ProjectNode>();
+}
+
+
 void MainLayout::showPage(Component *page, TreeNode *source)
 {
     jassert(page != nullptr);
@@ -220,7 +233,25 @@ void MainLayout::showPage(Component *page, TreeNode *source)
     {
         App::Workspace().getNavigationHistory().addItemIfNeeded(source);
         this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
-        App::Config().setProperty(Serialization::Config::lastShownPageId, source->getNodeIdentifier(), false);
+        App::Config().setProperty(Serialization::Config::lastShownPageId,
+            source->getNodeIdentifier(), false);
+
+        // keep track of currently active project
+        auto *newParentProject = findProjectForSelectedNode(source);
+        if (newParentProject != this->currentProject)
+        {
+            if (auto *oldParentProject = dynamic_cast<ProjectNode *>(this->currentProject.get()))
+            {
+                oldParentProject->broadcastDeactivateProjectSubtree();
+            }
+
+            this->currentProject = newParentProject;
+
+            if (newParentProject != nullptr)
+            {
+                newParentProject->broadcastActivateProjectSubtree();
+            }
+        }
     }
 
     if (this->currentContent != nullptr)

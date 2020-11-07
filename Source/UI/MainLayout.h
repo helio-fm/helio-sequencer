@@ -23,11 +23,11 @@ class HeadlineItemDataSource;
 class CommandPaletteCommonActions;
 class TooltipContainer;
 class InitScreen;
-class TreeNode;
 
 #include "CommandPaletteModel.h"
 #include "ComponentFader.h"
 #include "HotkeyScheme.h"
+#include "TreeNode.h"
 
 class MainLayout final : public Component, public CommandPaletteModel
 {
@@ -98,6 +98,7 @@ private:
     UniquePointer<TooltipContainer> tooltipContainer;
     
     SafePointer<Component> currentContent;
+    WeakReference<TreeNode> currentProject;
 
     HotkeyScheme::Ptr hotkeyScheme;
     Array<Component *> visibleCommandReceiversCache;

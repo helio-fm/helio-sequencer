@@ -625,6 +625,11 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
+
+void Transport::onDeactivateProjectSubtree(const ProjectMetadata *meta)
+{
+    this->stopPlaybackAndRecording();
+}
 void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {

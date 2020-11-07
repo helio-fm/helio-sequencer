@@ -175,6 +175,8 @@ public:
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
 
+    void onDeactivateProjectSubtree(const ProjectMetadata *meta) override;
+
     //===------------------------------------------------------------------===//
     // Listeners management
     //===------------------------------------------------------------------===//
