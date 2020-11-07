@@ -160,6 +160,9 @@ public:
     void broadcastBeforeReloadProjectContent();
     void broadcastReloadProjectContent();
 
+    void broadcastActivateProjectSubtree();
+    void broadcastDeactivateProjectSubtree();
+
     //===------------------------------------------------------------------===//
     // VCS::TrackedItemsSource
     //===------------------------------------------------------------------===//

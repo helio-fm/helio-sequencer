@@ -834,6 +834,16 @@ void ProjectNode::broadcastReloadProjectContent()
     this->sendChangeMessage();
 }
 
+void ProjectNode::broadcastActivateProjectSubtree()
+{
+    this->changeListeners.call(&ProjectListener::onActivateProjectSubtree, this->metadata.get());
+}
+
+void ProjectNode::broadcastDeactivateProjectSubtree()
+{
+    this->changeListeners.call(&ProjectListener::onDeactivateProjectSubtree, this->metadata.get());
+}
+
 void ProjectNode::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->changeListeners.call(&ProjectListener::onChangeViewBeatRange, firstBeat, lastBeat);
