@@ -90,7 +90,6 @@ void PlayerThread::run()
         for (int cc = 0; cc < Transport::PlaybackContext::numCCs; ++cc)
         {
             const auto state = this->context->ccStates[cc];
-
             if (state < 0) // not present in any track
             {
                 continue;
@@ -98,10 +97,12 @@ void PlayerThread::run()
 
             for (auto &instrument : uniqueInstruments)
             {
-                const auto channel = 1; // fixme what channel to use?
-                MidiMessage m(MidiMessage::controllerEvent(channel, cc, state));
-                m.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
-                instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(m);
+                for (int channel = 1; channel < Globals::numChannels; ++channel)
+                {
+                    MidiMessage m(MidiMessage::controllerEvent(channel, cc, state));
+                    m.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+                    instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(m);
+                }
             }
         }
     };
