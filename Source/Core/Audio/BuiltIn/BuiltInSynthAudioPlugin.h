@@ -17,17 +17,26 @@
 
 #pragma once
 
+#include "BuiltInSynth.h"
+
 class BuiltInSynthAudioPlugin : public AudioPluginInstance
 {
 public:
 
-    BuiltInSynthAudioPlugin() = default;
+    BuiltInSynthAudioPlugin();
+
+    static const String instrumentId;
 
     //===------------------------------------------------------------------===//
     // AudioPluginInstance
     //===------------------------------------------------------------------===//
 
+    const String getName() const;
     void fillInPluginDescription(PluginDescription &description) const override;
+
+    void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages);
+    void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock);
+    void reset();
 
     //===------------------------------------------------------------------===//
     // AudioProcessor
@@ -62,4 +71,8 @@ public:
     void getStateInformation(MemoryBlock &destData) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
     
+private:
+
+    BuiltInSynth synth;
+
 };

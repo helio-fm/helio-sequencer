@@ -24,7 +24,7 @@
 #include "Config.h"
 #include "MainLayout.h"
 #include "SerializationKeys.h"
-#include "BuiltInSynthFormat.h"
+#include "BuiltInSynthAudioPlugin.h"
 #include "SerializablePluginDescription.h"
 
 #if HELIO_DESKTOP
@@ -119,7 +119,7 @@ void PluginScanner::runInitialScan()
     this->searchPath = this->getTypicalFolders();
 
     // built-in synths to be add at the first place:
-    this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::instrumentId);
+    this->filesToScan.addIfNotAlreadyThere(BuiltInSynthAudioPlugin::instrumentId);
 
     // known synths to be re-checked first as well:
     for (const auto &it : this->getPlugins())

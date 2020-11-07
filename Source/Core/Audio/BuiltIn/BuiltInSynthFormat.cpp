@@ -22,8 +22,8 @@
 
 BuiltInSynthFormat::BuiltInSynthFormat()
 {
-    BuiltInSynth piano;
-    piano.fillInPluginDescription(this->pianoDescription);
+    BuiltInSynthAudioPlugin defaultOne;
+    defaultOne.fillInPluginDescription(this->defaultInstrument);
 }
 
 String BuiltInSynthFormat::getName() const
@@ -33,16 +33,16 @@ String BuiltInSynthFormat::getName() const
 
 void BuiltInSynthFormat::findAllTypesForFile(OwnedArray <PluginDescription> &description, const String &id)
 {
-    if (id == BuiltInSynth::instrumentId)
+    if (id == BuiltInSynthAudioPlugin::instrumentId)
     {
-        description.add(new PluginDescription(this->pianoDescription));
+        description.add(new PluginDescription(this->defaultInstrument));
     }
 }
 
 bool BuiltInSynthFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
     const bool match = (fileOrIdentifier.isEmpty() ||
-                        fileOrIdentifier == HELIO_BUILT_IN_PLUGIN_IDENTIFIER);
+        fileOrIdentifier == HELIO_BUILT_IN_PLUGIN_IDENTIFIER);
     
     return match;
 }
@@ -50,9 +50,10 @@ bool BuiltInSynthFormat::fileMightContainThisPluginType(const String &fileOrIden
 void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc,
     double initialSampleRate, int initialBufferSize, PluginCreationCallback callback)
 {
-    if (desc.name == this->pianoDescription.name)
+    if (desc.uid == this->defaultInstrument.uid ||
+        desc.name == "Helio Piano") // old version support?
     {
-        callback(make<BuiltInSynth>(), {});
+        callback(make<BuiltInSynthAudioPlugin>(), {});
         return;
     }
     

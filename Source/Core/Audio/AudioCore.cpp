@@ -19,6 +19,7 @@
 #include "AudioCore.h"
 #include "InternalPluginFormat.h"
 #include "BuiltInSynthFormat.h"
+#include "BuiltInSynthAudioPlugin.h"
 #include "PluginWindow.h"
 #include "OrchestraPit.h"
 #include "Instrument.h"
@@ -231,7 +232,7 @@ void AudioCore::initDefaultInstrument()
     OwnedArray<PluginDescription> descriptions;
 
     BuiltInSynthFormat format;
-    format.findAllTypesForFile(descriptions, BuiltInSynth::instrumentId);
+    format.findAllTypesForFile(descriptions, BuiltInSynthAudioPlugin::instrumentId);
 
     PluginDescription desc(*descriptions[0]);
     this->addInstrument(desc, "Helio Piano", [](Instrument *) {});

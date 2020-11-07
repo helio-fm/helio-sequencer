@@ -19,10 +19,6 @@
 #include "BuiltInSynth.h"
 #include "BinaryData.h"
 
-#define ATTACK_TIME (0.0)
-#define RELEASE_TIME (0.5)
-#define MAX_PLAY_TIME (4.5)
-
 struct BuiltInSynthSound final : public SynthesiserSound
 {
     bool appliesToNote(int midiNoteNumber) override { return true; }
@@ -129,46 +125,22 @@ private:
 
 };
 
-BuiltInSynth::BuiltInSynth()
-{
-    this->initSynth(); // fixme
-    this->setPlayConfigDetails(0, 2,
-        this->getSampleRate(), this->getBlockSize());
-}
-
-const String BuiltInSynth::getName() const
-{
-    return "Helio Piano";
-}
-
-void BuiltInSynth::processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages)
-{
-    buffer.clear(0, buffer.getNumSamples());
-    this->synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-}
-
-void BuiltInSynth::prepareToPlay(double sampleRate, int estimatedSamplesPerBlock)
-{
-    this->synth.setCurrentPlaybackSampleRate(sampleRate);
-}
-
-void BuiltInSynth::reset()
-{
-    this->synth.allNotesOff(0, true);
-}
-
 // todo set temperament info here
 void BuiltInSynth::initSynth()
 {
-    this->synth.clearVoices();
-    this->synth.clearSounds();
+    this->clearVoices();
+    this->clearSounds();
 
     for (int i = BuiltInSynth::numVoices; --i >= 0;)
     {
-        this->synth.addVoice(new BuiltInSynthVoice());
+        this->addVoice(new BuiltInSynthVoice());
     }
 
-    this->synth.addSound(new BuiltInSynthSound());
+    this->addSound(new BuiltInSynthSound());
 }
 
-const String BuiltInSynth::instrumentId = "<piano>";
+void BuiltInSynth::handleMidiEvent(const MidiMessage& m)
+{
+    // todo handle sysex
+    Synthesiser::handleMidiEvent(m);
+}

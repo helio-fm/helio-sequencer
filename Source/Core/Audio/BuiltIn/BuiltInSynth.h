@@ -17,36 +17,19 @@
 
 #pragma once
 
-#include "BuiltInSynthAudioPlugin.h"
-
-// A lightweight synth with the only purpose of providing a default instrument
-// that doesn't sound too much crappy when user opens the app at the very first time,
-// and doesn't have any custom instruments added yet.
-
-class BuiltInSynth final : public BuiltInSynthAudioPlugin
+class BuiltInSynth final : public Synthesiser
 {
 public:
 
-    BuiltInSynth();
+    BuiltInSynth() = default;
 
-    static const String instrumentId;
+    void handleMidiEvent(const MidiMessage& m) override;
 
-    //===------------------------------------------------------------------===//
-    // AudioProcessor
-    //===------------------------------------------------------------------===//
-
-    const String getName() const override;
-    void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
-    void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock) override;
-    void reset() override;
+    void initSynth();
 
 protected:
 
     static constexpr auto numVoices = 32;
-
-    void initSynth();
-
-    Synthesiser synth;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynth)
 };

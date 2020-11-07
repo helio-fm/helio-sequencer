@@ -18,7 +18,6 @@
 #pragma once
 
 #include "Instrument.h"
-#include "BuiltInSynth.h"
 
 #define HELIO_BUILT_IN_PLUGIN_FORMAT_NAME "BuiltIn"
 #define HELIO_BUILT_IN_PLUGIN_IDENTIFIER "BuiltIn"
@@ -35,8 +34,7 @@ public:
 
     FileSearchPath getDefaultLocationsToSearch() override
     {
-        // app path / scripts
-        return FileSearchPath();
+        return {};
     }
 
     bool canScanForPlugins() const override
@@ -63,7 +61,7 @@ public:
 
     StringArray searchPathsForPlugins(const FileSearchPath &, bool, bool) override
     {
-        return StringArray();
+        return {};
     }
 
     void createPluginInstance(const PluginDescription &, double initialSampleRate,
@@ -81,8 +79,6 @@ public:
 
 private:
 
-    PluginDescription pianoDescription;
-    
-    // TODO more built-in instruments
+    PluginDescription defaultInstrument;
 
 };

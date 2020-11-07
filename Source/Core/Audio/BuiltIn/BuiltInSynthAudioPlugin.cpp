@@ -19,6 +19,14 @@
 #include "BuiltInSynthAudioPlugin.h"
 #include "BuiltInSynthFormat.h"
 
+
+BuiltInSynthAudioPlugin::BuiltInSynthAudioPlugin()
+{
+    this->synth.initSynth(); // fixme
+    this->setPlayConfigDetails(0, 2,
+        this->getSampleRate(), this->getBlockSize());
+}
+
 //===----------------------------------------------------------------------===//
 // AudioPluginInstance
 //===----------------------------------------------------------------------===//
@@ -36,6 +44,27 @@ void BuiltInSynthAudioPlugin::fillInPluginDescription(PluginDescription &descrip
     description.isInstrument = true;
     description.numInputChannels = this->getTotalNumInputChannels();
     description.numOutputChannels = this->getTotalNumOutputChannels();
+}
+
+const String BuiltInSynthAudioPlugin::getName() const
+{
+    return "Default"; // any better name?
+}
+
+void BuiltInSynthAudioPlugin::processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages)
+{
+    buffer.clear(0, buffer.getNumSamples());
+    this->synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+}
+
+void BuiltInSynthAudioPlugin::prepareToPlay(double sampleRate, int estimatedSamplesPerBlock)
+{
+    this->synth.setCurrentPlaybackSampleRate(sampleRate);
+}
+
+void BuiltInSynthAudioPlugin::reset()
+{
+    this->synth.allNotesOff(0, true);
 }
 
 //===----------------------------------------------------------------------===//
@@ -109,3 +138,5 @@ void BuiltInSynthAudioPlugin::changeProgramName(int index, const String &newName
 void BuiltInSynthAudioPlugin::getStateInformation(MemoryBlock &destData) {}
 
 void BuiltInSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes) {}
+
+const String BuiltInSynthAudioPlugin::instrumentId = "<default>";
