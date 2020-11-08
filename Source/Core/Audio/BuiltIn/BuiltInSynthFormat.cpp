@@ -15,10 +15,12 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "Common.h"
 #include "BuiltInSynthFormat.h"
 #include "BuiltInSynthAudioPlugin.h"
+
+const String BuiltInSynthFormat::formatName = "BuiltIn";
+const String BuiltInSynthFormat::formatIdentifier = "BuiltIn";
 
 BuiltInSynthFormat::BuiltInSynthFormat()
 {
@@ -28,7 +30,7 @@ BuiltInSynthFormat::BuiltInSynthFormat()
 
 String BuiltInSynthFormat::getName() const
 {
-    return HELIO_BUILT_IN_PLUGIN_FORMAT_NAME;
+    return BuiltInSynthFormat::formatName;
 }
 
 void BuiltInSynthFormat::findAllTypesForFile(OwnedArray <PluginDescription> &description, const String &id)
@@ -42,7 +44,7 @@ void BuiltInSynthFormat::findAllTypesForFile(OwnedArray <PluginDescription> &des
 bool BuiltInSynthFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
     const bool match = (fileOrIdentifier.isEmpty() ||
-        fileOrIdentifier == HELIO_BUILT_IN_PLUGIN_IDENTIFIER);
+        fileOrIdentifier == BuiltInSynthFormat::formatIdentifier);
     
     return match;
 }
@@ -50,8 +52,7 @@ bool BuiltInSynthFormat::fileMightContainThisPluginType(const String &fileOrIden
 void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc,
     double initialSampleRate, int initialBufferSize, PluginCreationCallback callback)
 {
-    if (desc.uid == this->defaultInstrument.uid ||
-        desc.name == "Helio Piano") // old version support?
+    if (desc.name == this->defaultInstrument.name)
     {
         callback(make<BuiltInSynthAudioPlugin>(), {});
         return;

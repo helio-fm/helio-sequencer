@@ -201,10 +201,14 @@ void InstrumentNode::deserialize(const SerializedData &data)
         return;
     }
 
-    this->initInstrumentEditor();
-
     // Proceed with basic properties and children
     TreeNode::deserialize(data);
+
+    if (this->instrument != nullptr)
+    {
+        this->name = this->instrument->getName();
+        this->initInstrumentEditor();
+    }
 
     this->recreateChildrenEditors();
 }

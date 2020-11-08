@@ -26,6 +26,8 @@ public:
     BuiltInSynthAudioPlugin();
 
     static const String instrumentId;
+    static const String instrumentName;
+    static const String instrumentNameOld;
 
     void setPeriodSize(int periodSize)
     {

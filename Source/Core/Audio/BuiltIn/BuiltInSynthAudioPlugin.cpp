@@ -19,6 +19,9 @@
 #include "BuiltInSynthAudioPlugin.h"
 #include "BuiltInSynthFormat.h"
 
+const String BuiltInSynthAudioPlugin::instrumentId = "<default>";
+const String BuiltInSynthAudioPlugin::instrumentName = "Helio Default";
+const String BuiltInSynthAudioPlugin::instrumentNameOld = "Helio Piano";
 
 BuiltInSynthAudioPlugin::BuiltInSynthAudioPlugin()
 {
@@ -26,18 +29,14 @@ BuiltInSynthAudioPlugin::BuiltInSynthAudioPlugin()
         this->getSampleRate(), this->getBlockSize());
 }
 
-//===----------------------------------------------------------------------===//
-// AudioPluginInstance
-//===----------------------------------------------------------------------===//
-
 void BuiltInSynthAudioPlugin::fillInPluginDescription(PluginDescription &description) const
 {
     description.name = this->getName();
     description.descriptiveName = description.name;
     description.uid = description.name.hashCode();
     description.category = "Synth";
-    description.pluginFormatName = HELIO_BUILT_IN_PLUGIN_FORMAT_NAME;
-    description.fileOrIdentifier = HELIO_BUILT_IN_PLUGIN_IDENTIFIER;
+    description.pluginFormatName = BuiltInSynthFormat::formatName;
+    description.fileOrIdentifier = BuiltInSynthFormat::formatIdentifier;
     description.manufacturerName = "Helio Workstation";
     description.version = "1.0";
     description.isInstrument = true;
@@ -47,7 +46,7 @@ void BuiltInSynthAudioPlugin::fillInPluginDescription(PluginDescription &descrip
 
 const String BuiltInSynthAudioPlugin::getName() const
 {
-    return "Helio Default"; // any better name?
+    return BuiltInSynthAudioPlugin::instrumentName;
 }
 
 void BuiltInSynthAudioPlugin::processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages)
@@ -66,14 +65,7 @@ void BuiltInSynthAudioPlugin::reset()
     this->synth.allNotesOff(0, true);
 }
 
-//===----------------------------------------------------------------------===//
-// AudioProcessor
-//===----------------------------------------------------------------------===//
-
-void BuiltInSynthAudioPlugin::releaseResources()
-{
-    // when playback stops
-}
+void BuiltInSynthAudioPlugin::releaseResources() {}
 
 double BuiltInSynthAudioPlugin::getTailLengthSeconds() const
 {
@@ -90,11 +82,6 @@ bool BuiltInSynthAudioPlugin::producesMidi() const
     return false;
 }
 
-
-//===----------------------------------------------------------------------===//
-// Editor
-//===----------------------------------------------------------------------===//
-
 AudioProcessorEditor *BuiltInSynthAudioPlugin::createEditor()
 {
     return nullptr;
@@ -104,11 +91,6 @@ bool BuiltInSynthAudioPlugin::hasEditor() const
 {
     return false;
 }
-
-
-//===----------------------------------------------------------------------===//
-// Programs
-//===----------------------------------------------------------------------===//
 
 int BuiltInSynthAudioPlugin::getNumPrograms()
 {
@@ -129,13 +111,5 @@ const String BuiltInSynthAudioPlugin::getProgramName(int index)
 
 void BuiltInSynthAudioPlugin::changeProgramName(int index, const String &newName) {}
 
-
-//===----------------------------------------------------------------------===//
-// State
-//===----------------------------------------------------------------------===//
-
 void BuiltInSynthAudioPlugin::getStateInformation(MemoryBlock &destData) {}
-
 void BuiltInSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes) {}
-
-const String BuiltInSynthAudioPlugin::instrumentId = "<default>";

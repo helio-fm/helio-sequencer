@@ -21,6 +21,7 @@
 #include "InternalPluginFormat.h"
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
+#include "BuiltInSynthAudioPlugin.h"
 #include "KeyboardMapping.h"
 
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
@@ -529,6 +530,11 @@ void Instrument::deserialize(const SerializedData &data)
 
     this->instrumentId = root.getProperty(Audio::instrumentId, this->instrumentId.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);
+    if (this->instrumentName == BuiltInSynthAudioPlugin::instrumentNameOld)
+    {
+        // legacy naming workaround for the built-in instrument
+        this->instrumentName = BuiltInSynthAudioPlugin::instrumentName;
+    }
 
     this->keyboardMapping->deserialize(root);
 

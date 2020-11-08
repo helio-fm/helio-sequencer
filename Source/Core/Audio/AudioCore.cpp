@@ -235,7 +235,7 @@ void AudioCore::initDefaultInstrument()
     format.findAllTypesForFile(descriptions, BuiltInSynthAudioPlugin::instrumentId);
 
     PluginDescription desc(*descriptions[0]);
-    this->addInstrument(desc, "Helio Default", [](Instrument *) {});
+    this->addInstrument(desc, BuiltInSynthAudioPlugin::instrumentName, [](Instrument *) {});
 }
 
 //===----------------------------------------------------------------------===//

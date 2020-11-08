@@ -17,16 +17,14 @@
 
 #pragma once
 
-#include "Instrument.h"
-
-#define HELIO_BUILT_IN_PLUGIN_FORMAT_NAME "BuiltIn"
-#define HELIO_BUILT_IN_PLUGIN_IDENTIFIER "BuiltIn"
-
 class BuiltInSynthFormat final : public AudioPluginFormat
 {
 public:
 
     BuiltInSynthFormat();
+
+    static const String formatName;
+    static const String formatIdentifier;
 
     String getName() const override;
 
