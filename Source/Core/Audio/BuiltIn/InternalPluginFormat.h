@@ -25,7 +25,10 @@ public:
 
     InternalPluginFormat();
 
-    enum InternalFilterType
+    static const String formatName;
+    static const String manufacturer;
+
+    enum class InternalFilterType : int
     {
         audioInputFilter = 0,
         audioOutputFilter,

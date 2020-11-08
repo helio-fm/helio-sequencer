@@ -22,6 +22,7 @@
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
 #include "BuiltInSynthAudioPlugin.h"
+#include "BuiltInSynthFormat.h"
 #include "KeyboardMapping.h"
 
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
@@ -94,10 +95,17 @@ void Instrument::initializeFrom(const PluginDescription &pluginDescription, Init
             if (instrument == nullptr) { return; }
 
             InternalPluginFormat f;
-            auto audioIn = this->addNode(*f.getDescriptionFor(InternalPluginFormat::audioInputFilter), 0.1f, 0.15f);
-            auto audioOut = this->addNode(*f.getDescriptionFor(InternalPluginFormat::audioOutputFilter), 0.9f, 0.15f);
-            auto midiIn = this->addNode(*f.getDescriptionFor(InternalPluginFormat::midiInputFilter), 0.1f, 0.85f);
-            auto midiOut = this->addNode(*f.getDescriptionFor(InternalPluginFormat::midiOutputFilter), 0.9f, 0.85f);
+            const auto audioIn = this->addNode(*f.getDescriptionFor(
+                InternalPluginFormat::InternalFilterType::audioInputFilter), 0.1f, 0.15f);
+
+            const auto audioOut = this->addNode(*f.getDescriptionFor(
+                InternalPluginFormat::InternalFilterType::audioOutputFilter), 0.9f, 0.15f);
+
+            const auto midiIn = this->addNode(*f.getDescriptionFor(
+                InternalPluginFormat::InternalFilterType::midiInputFilter), 0.1f, 0.85f);
+
+            const auto midiOut = this->addNode(*f.getDescriptionFor(
+                InternalPluginFormat::InternalFilterType::midiOutputFilter), 0.9f, 0.85f);
 
             for (int i = 0; i < instrument->getProcessor()->getTotalNumInputChannels(); ++i)
             {
@@ -538,8 +546,6 @@ void Instrument::deserialize(const SerializedData &data)
 
     this->keyboardMapping->deserialize(root);
 
-    // Now handle loading of async-loaded AUv3 plugins:
-    
     // Fill up the connections info for further processing
     struct ConnectionDescription final
     {
@@ -563,14 +569,43 @@ void Instrument::deserialize(const SerializedData &data)
         });
     }
 
-    Array<SerializedData> nodesToDeserialize;
-
-    forEachChildWithType(root, e, Serialization::Audio::node)
+    // we'll try to load simple plugins as early as possible, i.e. synchronously;
+    // these are standard i/o nodes and built-in plugins for now, but maybe we'll
+    // add more conditions later, e.g. will only load AUv3 plugins asynchronously?
+    Array<SerializedData> nodesToDeserializeAsync;
+    forEachChildWithType(root, nodeState, Serialization::Audio::node)
     {
-        nodesToDeserialize.add(e);
+        SerializablePluginDescription desc;
+        desc.deserialize(nodeState.getChild(0)); // "node"/"plugin"
+
+        if (desc.pluginFormatName == BuiltInSynthFormat::formatName ||
+            desc.pluginFormatName == InternalPluginFormat::formatName)
+        {
+            String error;
+            auto instance = this->formatManager.createPluginInstance(desc,
+                this->processorGraph->getSampleRate(),
+                this->processorGraph->getBlockSize(),
+                error);
+
+            AudioProcessorGraph::Node::Ptr node = nullptr;
+            if (error.isEmpty())
+            {
+                node = this->addNode(move(instance), nodeState);
+            }
+
+            if (node == nullptr)
+            {
+                // failed for some reason, try non-blocking loading:
+                nodesToDeserializeAsync.add(nodeState);
+            }
+        }
+        else
+        {
+            nodesToDeserializeAsync.add(nodeState);
+        }
     }
 
-    this->deserializeNodesAsync(nodesToDeserialize, [this, connectionDescriptions]()
+    this->deserializeNodesAsync(nodesToDeserializeAsync, [this, connectionDescriptions]()
     {
         for (const auto &connectionInfo : connectionDescriptions)
         {
@@ -616,63 +651,17 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
 
     const auto tree = nodesToDeserialize.removeAndReturn(0);
 
-    SerializablePluginDescription pd;
-    for (const auto &e : tree)
-    {
-        pd.deserialize(e);
-        if (pd.isValid())
-        {
-            break;
-        }
-    }
+    SerializablePluginDescription desc;
+    desc.deserialize(tree.getChild(0)); // "node"/"plugin"
     
     const auto callback = [this, nodesToDeserialize, tree, allDoneCallback]
     (UniquePointer<AudioPluginInstance> instance, const String &error)
     {
-        if (instance == nullptr)
-        {
-            this->deserializeNodesAsync(nodesToDeserialize, allDoneCallback);
-            return;
-        }
-
-        MemoryBlock nodeStateBlock;
-        const String state = tree.getProperty(Audio::pluginState);
-        if (state.isNotEmpty())
-        {
-            nodeStateBlock.fromBase64Encoding(state);
-        }
-
-        const uint32 nodeUid = int(tree.getProperty(Audio::nodeId));
-        const String nodeHash = tree.getProperty(Audio::nodeHash);
-        const double nodeX = tree.getProperty(UI::positionX);
-        const double nodeY = tree.getProperty(UI::positionY);
-
-        AudioProcessorGraph::NodeID nodeId(nodeUid);
-        AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(move(instance), nodeId));
-
-        if (node == nullptr)
-        {
-            this->deserializeNodesAsync(nodesToDeserialize, allDoneCallback);
-            return;
-        }
-
-        if (nodeStateBlock.getSize() > 0)
-        {
-            node->getProcessor()->
-                setStateInformation(nodeStateBlock.getData(),
-                    static_cast<int>(nodeStateBlock.getSize()));
-        }
-
-        Uuid fallbackRandomHash;
-        const auto hash = nodeHash.isNotEmpty() ? nodeHash : fallbackRandomHash.toString();
-        node->properties.set(Audio::nodeHash, hash);
-        node->properties.set(UI::positionX, nodeX);
-        node->properties.set(UI::positionY, nodeY);
-
+        this->addNode(move(instance), tree);
         this->deserializeNodesAsync(nodesToDeserialize, allDoneCallback);
     };
 
-    formatManager.createPluginInstanceAsync(pd,
+    this->formatManager.createPluginInstanceAsync(desc,
         this->processorGraph->getSampleRate(),
         this->processorGraph->getBlockSize(),
         callback);
@@ -681,7 +670,7 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
 AudioProcessorGraph::Node::Ptr Instrument::addNode(const PluginDescription &desc, double x, double y)
 {
     String errorMessage;
-    auto instance = formatManager.createPluginInstance(desc,
+    auto instance = this->formatManager.createPluginInstance(desc,
         this->processorGraph->getSampleRate(),
         this->processorGraph->getBlockSize(),
         errorMessage);
@@ -701,6 +690,52 @@ AudioProcessorGraph::Node::Ptr Instrument::addNode(const PluginDescription &desc
     }
     
     return nullptr;
+}
+
+AudioProcessorGraph::Node::Ptr Instrument::addNode(UniquePointer<AudioPluginInstance> instance,
+    const SerializedData &data)
+{
+    if (instance == nullptr)
+    {
+        return nullptr;
+    }
+
+    using namespace Serialization;
+
+    MemoryBlock nodeStateBlock;
+    const String state = data.getProperty(Audio::pluginState);
+    if (state.isNotEmpty())
+    {
+        nodeStateBlock.fromBase64Encoding(state);
+    }
+
+    const uint32 nodeUid = int(data.getProperty(Audio::nodeId));
+    const String nodeHash = data.getProperty(Audio::nodeHash);
+    const double nodeX = data.getProperty(UI::positionX);
+    const double nodeY = data.getProperty(UI::positionY);
+
+    AudioProcessorGraph::NodeID nodeId(nodeUid);
+    AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(move(instance), nodeId));
+
+    if (node == nullptr)
+    {
+        return nullptr;
+    }
+
+    if (nodeStateBlock.getSize() > 0)
+    {
+        node->getProcessor()->
+            setStateInformation(nodeStateBlock.getData(),
+                static_cast<int>(nodeStateBlock.getSize()));
+    }
+
+    Uuid fallbackRandomHash;
+    const auto hash = nodeHash.isNotEmpty() ? nodeHash : fallbackRandomHash.toString();
+    node->properties.set(Audio::nodeHash, hash);
+    node->properties.set(UI::positionX, nodeX);
+    node->properties.set(UI::positionY, nodeY);
+
+    return node;
 }
 
 void Instrument::configureNode(AudioProcessorGraph::Node::Ptr node,

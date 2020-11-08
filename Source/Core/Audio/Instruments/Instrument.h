@@ -160,6 +160,7 @@ private:
     String getInstrumentHash() const; // should be the same on all platforms
     
     AudioProcessorGraph::Node::Ptr addNode(const PluginDescription &, double x, double y);
+    AudioProcessorGraph::Node::Ptr addNode(UniquePointer<AudioPluginInstance> instance, const SerializedData &data);
     void configureNode(AudioProcessorGraph::Node::Ptr, const PluginDescription &, double x, double y);
 
     friend class Transport;
