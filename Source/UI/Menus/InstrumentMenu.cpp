@@ -21,12 +21,15 @@
 #include "Instrument.h"
 #include "ModalDialogInput.h"
 #include "PluginScanner.h"
+#include "OrchestraPit.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
-InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode, PluginScanner &scanner) :
+InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode,
+    PluginScanner &scanner, OrchestraPit &pit) :
     instrumentNode(instrumentNode),
-    pluginScanner(scanner)
+    pluginScanner(scanner),
+    pit(pit)
 {
     this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
 }
@@ -96,8 +99,12 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
             this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
         }));
 
+    const bool isDefaultInstrument =
+        this->instrumentNode.getInstrument() == this->pit.getDefaultInstrument();
+
     menu.add(MenuItem::item(Icons::remove,
         TRANS(I18n::Menu::instrumentDelete))->
+        disabledIf(isDefaultInstrument)->
         closesMenu()->
         withAction([this]()
         {

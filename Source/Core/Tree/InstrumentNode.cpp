@@ -132,7 +132,9 @@ bool InstrumentNode::hasMenu() const noexcept
 
 UniquePointer<Component> InstrumentNode::createMenu()
 {
-    return make<InstrumentMenu>(*this, App::Workspace().getPluginManager());
+    return make<InstrumentMenu>(*this,
+        App::Workspace().getPluginManager(),
+        App::Workspace().getAudioCore());
 }
 
 void InstrumentNode::recreateChildrenEditors()

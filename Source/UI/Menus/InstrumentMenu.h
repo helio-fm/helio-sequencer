@@ -19,6 +19,7 @@
 
 class PluginScanner;
 class InstrumentNode;
+class OrchestraPit;
 
 #include "MenuPanel.h"
 
@@ -26,12 +27,14 @@ class InstrumentMenu final : public MenuPanel
 {
 public:
     
-    InstrumentMenu(InstrumentNode &parentInstrument, PluginScanner &scanner);
+    InstrumentMenu(InstrumentNode &parentInstrument,
+        PluginScanner &scanner, OrchestraPit &pit);
     
 private:
     
     InstrumentNode &instrumentNode;
     PluginScanner &pluginScanner;
+    OrchestraPit &pit;
     
     MenuPanel::Menu createDefaultMenu();
     MenuPanel::Menu createEffectsMenu();
