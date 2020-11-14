@@ -19,9 +19,9 @@
 
 #include "MenuItemComponent.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define COMMAND_PANEL_BUTTON_HEIGHT (32)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define COMMAND_PANEL_BUTTON_HEIGHT (40)
 #endif
 

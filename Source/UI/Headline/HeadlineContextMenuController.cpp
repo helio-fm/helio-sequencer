@@ -128,7 +128,7 @@ HeadlineContextMenuController::HeadlineContextMenuController(Component &owner) :
 
 void HeadlineContextMenuController::showMenu(const MouseEvent &e, int delay)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     //if (!e.mods.isRightButtonDown())
     //{
     //    return;

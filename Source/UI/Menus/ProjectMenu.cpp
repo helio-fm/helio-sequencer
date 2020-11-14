@@ -172,7 +172,7 @@ void ProjectMenu::showCreateItemsMenu(AnimationType animationType)
             this->showMainMenu(MenuPanel::SlideRight);
         }));
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     menu.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi,
         TRANS(I18n::Menu::Project::importMidi))->closesMenu());
 #endif
@@ -318,7 +318,7 @@ void ProjectMenu::showRenderMenu()
     MenuPanel::Menu menu;
 
     // TODO! save rendered wavs on mobile in the same way as midi export
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     const bool noRender = false;
 #else
     const bool noRender = true;

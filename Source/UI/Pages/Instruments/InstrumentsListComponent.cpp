@@ -175,7 +175,7 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
 // to handle only newly selected rows
 void InstrumentsListComponent::selectedRowsChanged(int lastRowSelected)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     if (this->instrumentsList->getNumSelectedRows() > 0)
     {
         // Hide existing because selection will be always different:
@@ -191,7 +191,7 @@ void InstrumentsListComponent::selectedRowsChanged(int lastRowSelected)
     {
         parent->onStageSelectionChanged();
     }
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     auto instrumentNode = this->instruments[lastRowSelected];
     if (instrumentNode != nullptr)
     {
@@ -202,7 +202,7 @@ void InstrumentsListComponent::selectedRowsChanged(int lastRowSelected)
 
 void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const MouseEvent &e)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     auto instrumentNode = this->instruments[rowNumber];
     if (instrumentNode != nullptr && instrumentNode->getInstrument()->isValid())
     {

@@ -34,9 +34,9 @@
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #    define VCS_STAGE_ROW_HEIGHT (65)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #    define VCS_STAGE_ROW_HEIGHT (90)
 #endif
 //[/MiscUserDefs]

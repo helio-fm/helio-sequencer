@@ -26,10 +26,10 @@
 #include "RevisionItem.h"
 #include "Delta.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #    define REVISION_TOOLTIP_ROWS_ONSCREEN (4.5)
 #    define REVISION_TOOLTIP_ROW_HEIGHT (65)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #    define REVISION_TOOLTIP_ROWS_ONSCREEN (3.5)
 #    define REVISION_TOOLTIP_ROW_HEIGHT (50)
 #endif

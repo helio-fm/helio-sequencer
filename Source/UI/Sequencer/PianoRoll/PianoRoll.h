@@ -259,11 +259,11 @@ private:
 
 private:
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     static constexpr auto minRowHeight = 7;
     static constexpr auto defaultRowHeight = 12;
     static constexpr auto maxRowHeight = 26;
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     static constexpr auto minRowHeight = 10;
     static constexpr auto defaultRowHeight = 15;
     static constexpr auto maxRowHeight = 35;

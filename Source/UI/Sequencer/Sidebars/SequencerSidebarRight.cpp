@@ -150,7 +150,7 @@ void SequencerSidebarRight::recreateMenu()
     const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::knifeMode);
 
     // Selection tool is useless on the desktop
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggled(selectionMode));
 #endif
@@ -159,7 +159,7 @@ void SequencerSidebarRight::recreateMenu()
     this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->toggled(drawMode));
 
     // Drag tool is useless on the mobile
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
     this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->toggled(dragMode));
 #endif
@@ -183,7 +183,7 @@ void SequencerSidebarRight::recreateMenu()
         this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
     }
 
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents));

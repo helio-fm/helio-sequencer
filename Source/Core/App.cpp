@@ -52,7 +52,7 @@ public:
         this->setWantsKeyboardFocus(false);
         this->setOpaque(true);
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 
         //this->setResizeLimits(568, 320, 8192, 8192); // phone size test
         this->setResizeLimits(1024, 650, 8192, 8192); // production
@@ -278,18 +278,18 @@ bool App::isRunningOnPhone()
 
 bool App::isRunningOnTablet()
 {
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     return ! App::isRunningOnPhone();
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
     return false;
 #endif
 }
 
 bool App::isRunningOnDesktop()
 {
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     return false;
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
     return true;
 #endif
 }
@@ -565,7 +565,7 @@ void App::initialise(const String &commandLine)
 
         this->config->getUiFlags()->addListener(this);
         
-#   if HELIO_MOBILE
+#   if PLATFORM_MOBILE
 
         // desktop versions will be initialised by InitScreen component.
         App::Workspace().init();

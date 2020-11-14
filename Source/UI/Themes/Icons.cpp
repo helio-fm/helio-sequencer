@@ -224,7 +224,7 @@ static Image renderVector(Icons::Id id, int maxSize,
     Rectangle<int> area(0, 0, maxSize, maxSize);
     drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
     
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     GlowEffect glow;
     glow.setGlowProperties(1.25, iconShadeColour);
     glow.applyEffect(resultImage, g, 1.f, 1.f);

@@ -37,13 +37,13 @@ TooltipContainer::TooltipContainer()
     this->setPaintingIsUnclipped(true);
     this->setVisible(false);
 
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     //[/UserPreSize]
 
     this->setSize(450, 80);
 
     //[Constructor]
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
     this->setSize(450, 64);
 #endif
 

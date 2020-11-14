@@ -112,9 +112,9 @@ inline float roundf(float x)
 #endif
 
 #if JUCE_ANDROID || JUCE_IOS
-#   define HELIO_MOBILE 1
+#   define PLATFORM_MOBILE 1
 #else
-#   define HELIO_DESKTOP 1
+#   define PLATFORM_DESKTOP 1
 #endif
 
 #define forEachChildWithType(parentElement, child, requiredType) \
@@ -205,12 +205,12 @@ namespace Globals
 
     namespace UI
     {
-        #if HELIO_MOBILE
+        #if PLATFORM_MOBILE
 
         static constexpr auto headlineHeight = 42;
         static constexpr auto headlineIconSize = 24;
 
-        #elif HELIO_DESKTOP
+        #elif PLATFORM_DESKTOP
 
         static constexpr auto headlineHeight = 34;
         static constexpr auto headlineIconSize = 16;

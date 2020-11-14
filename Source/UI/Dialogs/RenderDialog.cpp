@@ -125,7 +125,7 @@ void RenderDialog::handleCommandMessage(int commandId)
     }
     else if (commandId == CommandIDs::Browse)
     {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
         FileChooser fc(TRANS(I18n::Dialog::renderSelectFile),
                        File(this->getFileName()), ("*." + this->extension), true);
 

@@ -567,7 +567,7 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
     const String renderFileName = this->project.getName() + "." + extension.toLowerCase();
     const String safeRenderName = File::createLegalFileName(renderFileName);
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     FileChooser fc(TRANS(I18n::Dialog::renderCaption),
         File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
 

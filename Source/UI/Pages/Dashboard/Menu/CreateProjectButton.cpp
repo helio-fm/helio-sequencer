@@ -76,7 +76,7 @@ void CreateProjectButton::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     // a hack
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..

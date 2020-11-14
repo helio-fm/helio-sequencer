@@ -26,11 +26,11 @@
 #include "RootNode.h"
 #include "InstrumentNode.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 1
 #   define CHANNELS_NUMBER_LIMIT 12
 #   define PIN_SIZE (18)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 0
 #   define CHANNELS_NUMBER_LIMIT 6
 #   define PIN_SIZE (25)

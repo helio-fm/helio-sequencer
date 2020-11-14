@@ -121,9 +121,9 @@ void DialogBase::fadeOut()
 
 void DialogBase::updatePosition()
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     // Place the dialog slightly above the center, so that screen keyboard doesn't mess with it:
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 3.5f);
 #endif

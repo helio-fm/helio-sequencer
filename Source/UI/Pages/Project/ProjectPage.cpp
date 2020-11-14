@@ -211,7 +211,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->project.addChangeListener(this);
     this->project.getTransport().addTransportListener(this);
 
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     // не комильфо на мобильниках показывать расположение файлов
     this->locationLabel->setVisible(false);
     this->locationText->setVisible(false);
@@ -296,9 +296,9 @@ void ProjectPage::updateContent()
     const String &startTime = App::getHumanReadableDate(Time(this->project.getProjectInfo()->getStartTimestamp()));
     const String &temperamentName = this->project.getProjectInfo()->getTemperament()->getName();
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     const String &clickToEdit = TRANS(I18n::Page::projectDefaultValueDesktop);
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     const String &clickToEdit = TRANS(I18n::Page::projectDefaultValueMobile);
 #endif
 

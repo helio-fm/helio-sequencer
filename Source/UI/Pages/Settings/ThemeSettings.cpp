@@ -33,9 +33,9 @@
 #include "Workspace.h"
 #include "MainLayout.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define THEME_SETTINGS_ROW_HEIGHT (46)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define THEME_SETTINGS_ROW_HEIGHT (57)
 #endif
 

@@ -80,10 +80,10 @@ protected:
     void getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const;
     int getAvailableHeight() const;
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     static constexpr auto eventComponentDiameter = 16.f;
     static constexpr auto helperComponentDiameter = 8.f;
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     static constexpr auto eventComponentDiameter = 24.f;
     static constexpr auto helperComponentDiameter = 20.f;
 #endif

@@ -25,9 +25,9 @@ class HeadlineContextMenuController;
 #include "HeadlineItemDataSource.h"
 #include "InstrumentNode.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define INSTRUMENTSLIST_ROW_HEIGHT (48)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define INSTRUMENTSLIST_ROW_HEIGHT (72)
 #endif
 //[/Headers]

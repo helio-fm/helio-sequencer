@@ -156,10 +156,10 @@ void MobileComboBox::initHeader(const String &text, bool hasSearch, bool hasCapt
     this->currentNameLabel->setText(text, dontSendNotification);
 
     // on mobile, just show label: search box is not very convenient
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     this->searchTextBox->setVisible(hasSearch);
     this->currentNameLabel->setVisible(hasCaption);
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     this->searchTextBox->setVisible(false);
     this->currentNameLabel->setVisible(hasSearch || hasCaption);
 #endif

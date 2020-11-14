@@ -420,10 +420,10 @@ void Transport::MidiMessagePreview::previewMessage(WeakReference<Instrument> ins
 
 void Transport::MidiMessagePreview::timerCallback()
 {
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     // iSEM tends to hang >_< if too many messages are send simultaniously
     const auto time = TIME_NOW + float(rand() % 50) * 0.01;
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
     const auto time = TIME_NOW;
 #endif
 

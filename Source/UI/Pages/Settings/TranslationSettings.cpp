@@ -27,9 +27,9 @@
 #include "Network.h"
 #include "Config.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define TRANSLATION_SETTINGS_ROW_HEIGHT (32)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define TRANSLATION_SETTINGS_ROW_HEIGHT (48)
 #endif
 //[/MiscUserDefs]

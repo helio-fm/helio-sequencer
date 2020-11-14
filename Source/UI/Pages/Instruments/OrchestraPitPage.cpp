@@ -114,7 +114,7 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::ScanPluginsFolder)
     {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
         FileChooser fc(TRANS(I18n::Dialog::scanFolderCaption),
             File::getCurrentWorkingDirectory(), ("*.*"), true);
 

@@ -221,7 +221,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
 
             // two presses on mobile will emit the timeline menu,
             // on the desktop it is available via right click
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
             if (this->transport.getSeekBeat() == roundBeat)
             {
                 this->showPopupMenu();
@@ -230,7 +230,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
             {
                 this->transport.seekToBeat(roundBeat);
             }
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
             this->transport.seekToBeat(roundBeat);
 #endif
         }
@@ -371,7 +371,7 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
 
 void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
     this->transport.stopPlaybackAndRecording();
     this->transport.seekToBeat(roundBeat);

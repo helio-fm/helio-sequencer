@@ -23,7 +23,7 @@
 #define RADUIS_END     (1.f)
 #define RADUIS_STEP    (0.075f)
 
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
 #define CONFIRMATION_MODE 1
 #endif
 

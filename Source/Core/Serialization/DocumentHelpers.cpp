@@ -41,7 +41,7 @@ static File getFirstSlot(String location1, String location2, const String &fileN
     File result;
     bool slotExists = false;
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 
     const String helioSubfolder = "Helio";
     File file1(File(location1).getChildFile(helioSubfolder));
@@ -82,7 +82,7 @@ static File getFirstSlot(String location1, String location2, const String &fileN
         }
     }
 
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 
     const File slot1(File(location1).getChildFile(fileName));
     const File slot2(File(location2).getChildFile(fileName));

@@ -43,7 +43,7 @@ void ResourceManager::updateBaseResource(const SerializedData &resource)
 
     serializer.saveToFile(this->getDownloadedResourceFile(), resource);
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     this->reloadResources();
     // Do not send update message here, since resource update should go silently
     //this->sendChangeMessage();

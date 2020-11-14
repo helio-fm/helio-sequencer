@@ -177,7 +177,7 @@ void HeadlineItem::resized()
 void HeadlineItem::mouseEnter (const MouseEvent& e)
 {
     //[UserCode_mouseEnter] -- Add your code here...
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     // A hacky way to prevent re-opening the menu again after the new page is shown.
     // Somehow comparing current mouse screen position to e.getMouseDownScreenPosition()
     // won't work (maybe a JUCE bug), so get it from getMainMouseSource:
@@ -207,7 +207,7 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
 
         // on desktop versions, as quick click on a headline item opens its node's page,
         // on mobile versions, it always opens the menu first
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
         if (this->item->canBeSelectedAsMenuItem())
         {
             this->item->onSelectedAsMenuItem();
@@ -216,7 +216,7 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
         {
             this->showMenuIfAny();
         }
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
         this->showMenuIfAny();
 #endif
     }

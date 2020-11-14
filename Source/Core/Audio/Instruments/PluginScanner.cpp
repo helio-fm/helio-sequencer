@@ -27,7 +27,7 @@
 #include "BuiltInSynthAudioPlugin.h"
 #include "SerializablePluginDescription.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define SAFE_SCAN 1
 #else
 #   define SAFE_SCAN 0

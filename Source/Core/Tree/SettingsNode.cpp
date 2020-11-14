@@ -89,7 +89,7 @@ void SettingsNode::recreatePage()
     this->themeSettingsWrapper.reset(new LabeledSettingsWrapper(this->themeSettings.get(), TRANS(I18n::Settings::ui)));
     this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     this->uiSettings.reset(new UserInterfaceSettings());
     this->uiSettingsWrapper.reset(new SimpleSettingsWrapper(this->uiSettings.get()));
     this->settingsList->addAndMakeVisible(this->uiSettingsWrapper.get());

@@ -156,7 +156,7 @@ void Workspace::createEmptyProject(const String &templateName)
 {
     const String newProjectName = TRANS(I18n::Defaults::newProjectName);
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     const String fileName = newProjectName + ".helio";
     FileChooser fc(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
@@ -354,7 +354,7 @@ void Workspace::failedDeserializationFallback()
 
 void Workspace::importProject(const String &filePattern)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     FileChooser fc(TRANS(I18n::Dialog::documentImport),
         File::getCurrentWorkingDirectory(), filePattern, true);
 

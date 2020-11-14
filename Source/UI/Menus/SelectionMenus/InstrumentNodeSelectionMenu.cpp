@@ -40,7 +40,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
     const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 
     const bool isStdIo = this->instrument.isNodeStandardIOProcessor(this->node);
 

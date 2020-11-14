@@ -148,7 +148,7 @@ MainLayout::MainLayout()
     }
     else
     {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
         this->initScreen = make<InitScreen>();
         this->addAndMakeVisible(this->initScreen.get());
 #endif
@@ -376,9 +376,9 @@ bool MainLayout::keyPressed(const KeyPress &key)
     // under Android, it sends here the ';' key, 
     // when you type a capital letter or a char like @, !, ?
     // a piece of juce.
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     return false;
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
 
     if (Component::getNumCurrentlyModalComponents() > 0)
     {

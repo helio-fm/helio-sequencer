@@ -43,9 +43,9 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     {
         const auto b = parentWorkspace->getScreenBounds();
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
         const auto p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
         const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
 #endif
 

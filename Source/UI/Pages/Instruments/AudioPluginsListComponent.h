@@ -25,10 +25,10 @@ class HeadlineContextMenuController;
 
 #include "HeadlineItemDataSource.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define PLUGINSLIST_ROW_HEIGHT (64)
 #   define PLUGINSLIST_HEADER_HEIGHT (34)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define PLUGINSLIST_ROW_HEIGHT (90)
 #   define PLUGINSLIST_HEADER_HEIGHT (40)
 #endif

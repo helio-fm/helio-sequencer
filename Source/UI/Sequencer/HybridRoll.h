@@ -52,7 +52,7 @@ class TimelineWarningMarker;
 #include "HeadlineContextMenuController.h"
 #include "Temperament.h"
 
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
 #   define HYBRID_ROLL_LISTENS_LONG_TAP 1
 #endif
 

@@ -72,7 +72,7 @@
 
 #include <limits.h>
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define ROLL_VIEW_FOLLOWS_PLAYHEAD 1
 #else
 #   define ROLL_VIEW_FOLLOWS_PLAYHEAD 0
@@ -1073,9 +1073,9 @@ void HybridRoll::mouseUp(const MouseEvent &e)
         this->lassoComponent->endLasso();
     }
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define MIN_PAN_DISTANCE 10
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define MIN_PAN_DISTANCE 20
 #endif
 
@@ -1683,7 +1683,7 @@ Point<int> HybridRoll::getDefaultPositionForPopup() const
 {
     // a point where pop-ups will appear when keypress is hit or toolbar button is clicked
     // on desktop, if mouse position is within a roll, use it, instead, use main layout centre
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     const auto mousePositionWithinApp =
         Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt() -
         App::Layout().getScreenBounds().getPosition();

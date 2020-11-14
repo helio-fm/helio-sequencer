@@ -54,9 +54,9 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     this->textEditor->setPopupMenuEnabled(true);
 
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     this->textEditor->setFont({ 21 });
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     this->textEditor->setFont({ 28 });
 #endif
     this->textEditor->setText(this->input, dontSendNotification);

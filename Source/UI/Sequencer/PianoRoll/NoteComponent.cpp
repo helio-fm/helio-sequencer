@@ -177,9 +177,9 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 
     if (e.mods.isLeftButtonDown())
     {
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
         const bool shouldSendMidi = false;
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
         const bool shouldSendMidi = (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
 #endif
         
@@ -300,9 +300,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         float deltaLength = 0.f;
         const bool eventChanged = this->getDraggingResizingDelta(e, deltaLength, deltaKey);
 
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
         const bool shouldSendMidi = false;
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
         const bool shouldSendMidi = (lastDeltaKey != deltaKey) && (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
 #endif
         lastDeltaKey = deltaKey;
@@ -438,9 +438,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         float deltaBeat = 0.f;
         const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaKey);
         
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
         const bool shouldSendMidi = false;
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
         const bool shouldSendMidi = (lastDeltaKey != deltaKey) && (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
 #endif
         lastDeltaKey = deltaKey;
@@ -532,9 +532,9 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     
     this->getRoll().hideAllGhostNotes();
 
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     const bool shouldSendMidi = false;
-#elif HELIO_DESKTOP
+#elif PLATFORM_DESKTOP
     const bool shouldSendMidi = true;
 #endif
     

@@ -39,7 +39,7 @@ SettingsPage::SettingsPage(Component *settingsList)
     this->setWantsKeyboardFocus(true);
     this->setPaintingIsUnclipped(true);
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     this->viewport->setScrollBarThickness(2);
 #endif
 

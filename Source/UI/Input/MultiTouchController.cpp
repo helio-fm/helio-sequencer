@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "MultiTouchController.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define ZOOM_THRESHOLD 0.5
 #   define DRAG_THRESHOLD 10
 #   define ZOOM_H_SPEED 0.005f

@@ -32,10 +32,10 @@
 #include "MainLayout.h"
 #include "Config.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define ICON_MARGIN (8)
 #   define ICON_SIZE (20)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define ICON_MARGIN (4)
 #   define ICON_SIZE (20)
 #endif
@@ -57,9 +57,9 @@ MenuItem::Ptr MenuItem::empty()
 
 inline static String findHotkeyText(int commandId)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     return App::Config().getHotkeySchemes()->getCurrent()->findHotkeyDescription(commandId);
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     // Don't show any hotkeys on mobile devices
     return {};
 #endif

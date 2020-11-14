@@ -40,10 +40,10 @@
 #include "BinaryData.h"
 #include "ColourScheme.h"
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define SCROLLBAR_WIDTH (17)
 #   define TEXTBUTTON_FONT (21.f)
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define SCROLLBAR_WIDTH (50)
 #   define TEXTBUTTON_FONT (23.f)
 #endif
@@ -121,7 +121,7 @@ void HelioTheme::drawFrame(Graphics &g, int width, int height,
 
 Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     if (font.getTypefaceName() == Font::getDefaultSansSerifFontName() ||
         font.getTypefaceName() == Font::getDefaultSerifFontName())
     {
@@ -157,9 +157,9 @@ void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor 
 
 Font HelioTheme::getLabelFont(Label &label)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     return label.getFont();
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
     // For whatever reason,fonts on the mobiles look way larger
     // than fonts of same height on the desktops:
     auto font = label.getFont();
@@ -173,7 +173,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label)
     this->drawLabel(g, label, 0);
 }
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define SMOOTH_RENDERED_FONT 1
 #endif
 
@@ -585,7 +585,7 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
     const Image *icon,
     bool drawTitleTextOnLeft)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheA(), {} });
     g.fillRect(0, 0, w, h);
@@ -687,7 +687,7 @@ void HelioTheme::initResources()
 {
     Icons::initBuiltInImages();
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 
     if (App::Config().containsProperty(Serialization::Config::lastUsedFont))
     {
@@ -757,7 +757,7 @@ void HelioTheme::initResources()
 
 void HelioTheme::updateFont(const Font &font)
 {
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 
     Typeface::clearTypefaceCache();
     this->textTypefaceCache = Typeface::createSystemTypefaceFor(font);

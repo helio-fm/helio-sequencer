@@ -35,7 +35,7 @@ ViewportFitProxyComponent::ViewportFitProxyComponent(Viewport &parentViewport,
     this->setSize(this->target->getWidth(), this->target->getHeight());
     this->centerTargetToViewport();
     
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
     this->viewport.setScrollBarThickness(2);
 #endif
 }

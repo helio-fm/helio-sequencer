@@ -80,7 +80,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->setSize(600, 400);
 
     //[Constructor]
-#if HELIO_MOBILE
+#if PLATFORM_MOBILE
 
     // on mobile, there's no such thing as `scan folder`:
 

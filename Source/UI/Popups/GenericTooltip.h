@@ -33,9 +33,9 @@ public:
     {
         const Rectangle<int> messageBounds(this->getLocalBounds().reduced(10, 10));
         g.setColour(Colours::white.withAlpha(0.85f));
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
         g.setFont(21.f);
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
         g.setFont(28.f);
 #endif
         g.drawFittedText(this->message,

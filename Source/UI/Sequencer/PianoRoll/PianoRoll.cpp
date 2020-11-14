@@ -77,9 +77,9 @@
     for (const auto &_c : this->patternMap) \
         for (const auto &child : (*_c.second.get()))
 
-#if HELIO_DESKTOP
+#if PLATFORM_DESKTOP
 #   define PIANOROLL_HAS_NOTE_RESIZERS 0
-#elif HELIO_MOBILE
+#elif PLATFORM_MOBILE
 #   define PIANOROLL_HAS_NOTE_RESIZERS 1
 #endif
 
