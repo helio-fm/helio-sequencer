@@ -37,6 +37,7 @@ public:
     void resized() override;
     void mouseDown(const MouseEvent &e) override;
     void handleCommandMessage(int commandId) override;
+    void visibilityChanged() override;
 
 private:
 
@@ -53,6 +54,7 @@ private:
     void syncWithRange(int base);
     int currentPageBase = 0;
 
+    void stopAllSound();
     void onKeyPreview(int i);
     void onKeyMappingUpdated(int i);
 

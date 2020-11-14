@@ -1112,5 +1112,6 @@ void NoteComponent::sendNoteOn(int noteKey, float velocity) const
     this->getRoll().getTransport().previewKey(trackId,
         this->note.getTrackChannel(),
         noteKey + this->clip.getKey(),
-        velocity * this->clip.getVelocity());
+        velocity * this->clip.getVelocity(),
+        this->note.getLength());
 }

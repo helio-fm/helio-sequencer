@@ -49,7 +49,9 @@ public:
 
             this->transport.stopSound({});
             Thread::wait(25);
-            this->transport.previewKey({}, 1, key, 0.5f);
+            this->transport.previewKey({}, 1, key,
+                Globals::Defaults::previewNoteVelocity,
+                Globals::Defaults::previewNoteLength);
 
             int c = 400;
             while (c > 0)
@@ -398,7 +400,9 @@ void KeySignatureDialog::previewNote(int keyRelative) const
     const auto temperament = this->project.getProjectInfo()->getTemperament();
     const int key = temperament->getMiddleC() + keyRelative;
     this->transport.stopSound({});
-    this->transport.previewKey({}, 1, key, 0.5f);
+    this->transport.previewKey({}, 1, key,
+        Globals::Defaults::previewNoteVelocity,
+        Globals::Defaults::previewNoteLength);
 }
 
 //===----------------------------------------------------------------------===//

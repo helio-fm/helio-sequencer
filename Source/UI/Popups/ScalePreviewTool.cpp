@@ -409,8 +409,6 @@ void ScalePreviewTool::applyFunction(Scale::Function function)
     }
 }
 
-static const float kScalePreviewDefaultNoteVelocity = 0.35f;
-
 void ScalePreviewTool::buildChord(Array<int> keys)
 {
     if (keys.size() == 0) { return;  }
@@ -425,12 +423,14 @@ void ScalePreviewTool::buildChord(Array<int> keys)
         {
             const int key = jlimit(0, this->roll->getNumKeys(), this->targetKey + offset);
             Note note(sequence, key, this->targetBeat,
-                Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
+                Globals::Defaults::previewNoteLength,
+                Globals::Defaults::previewNoteVelocity);
 
             sequence->insert(note, true);
 
             this->roll->getTransport().previewKey(this->sequence->getTrackId(),
-                note.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity);
+                note.getTrackChannel(), key,
+                note.getVelocity(), note.getLength());
         }
 
         this->hasMadeChanges = true;
@@ -451,15 +451,17 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
         pianoSequence->checkpoint();
 
         const int key = jlimit(0, this->roll->getNumKeys(), this->targetKey);
-        Note note1(pianoSequence, key, this->targetBeat,
-            Globals::Defaults::chordToolNoteLength, kScalePreviewDefaultNoteVelocity);
+        Note note(pianoSequence, key, this->targetBeat,
+            Globals::Defaults::previewNoteLength,
+            Globals::Defaults::previewNoteVelocity);
 
-        pianoSequence->insert(note1, true);
+        pianoSequence->insert(note, true);
 
         if (shouldSendMidiMessage)
         {
             this->roll->getTransport().previewKey(this->sequence->getTrackId(),
-                note1.getTrackChannel(), key, kScalePreviewDefaultNoteVelocity);
+                note.getTrackChannel(), key,
+                note.getVelocity(), note.getLength());
         }
 
         this->hasMadeChanges = true;

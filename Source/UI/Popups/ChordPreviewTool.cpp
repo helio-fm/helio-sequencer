@@ -236,14 +236,13 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
                 this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
 
             const Note note(this->sequence.get(), key, this->targetBeat,
-                ChordPreviewTool::noteLength, ChordPreviewTool::noteVelocity);
+                Globals::Defaults::previewNoteLength, Globals::Defaults::previewNoteVelocity);
 
             this->sequence->insert(note, true);
 
             this->roll.getTransport().previewKey(this->sequence->getTrackId(),
-                note.getTrackChannel(),
-                key + this->clip.getKey(),
-                ChordPreviewTool::noteVelocity);
+                note.getTrackChannel(), key + this->clip.getKey(),
+                note.getVelocity(), note.getLength());
 
         }
 
@@ -267,15 +266,14 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     
     const int key = jlimit(0, this->roll.getNumKeys(), this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
-        ChordPreviewTool::noteLength, ChordPreviewTool::noteVelocity);
+        Globals::Defaults::previewNoteLength, Globals::Defaults::previewNoteVelocity);
 
     this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
     {
         this->roll.getTransport().previewKey(this->sequence->getTrackId(),
-            note.getTrackChannel(),
-            key + this->clip.getKey(),
-            ChordPreviewTool::noteVelocity);
+            note.getTrackChannel(), key + this->clip.getKey(),
+            note.getVelocity(), note.getLength());
     }
 
     this->hasMadeChanges = true;

@@ -1274,7 +1274,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
                 transport->previewKey(pianoSequence->getTrackId(),
                     newNote.getTrackChannel(),
                     newNote.getKey() + nc->getClip().getKey(),
-                    newNote.getVelocity());
+                    newNote.getVelocity(), newNote.getLength());
             }
         }
         
@@ -1462,7 +1462,7 @@ void SequencerOperations::invertChord(Lasso &selection,
                 transport->previewKey(pianoSequence->getTrackId(),
                     nc->getNote().getTrackChannel(),
                     nc->getNote().getKey() + nc->getClip().getKey(),
-                    nc->getVelocity());
+                    nc->getVelocity(), nc->getLength());
             }
         }
     }

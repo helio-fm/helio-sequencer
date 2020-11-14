@@ -136,9 +136,10 @@ public:
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void previewKey(const String &trackId, int channel, int key, float volume) const;
-    void stopSound(const String &trackId = "") const;
+    void previewKey(const String &trackId, int channel,
+        int key, float volume, float lengthInBeats) const;
 
+    void stopSound(const String &trackId = "") const;
     void allNotesControllersAndSoundOff() const;
     
     //===------------------------------------------------------------------===//
@@ -236,29 +237,37 @@ private:
 
 private:
 
-    /*
-        The purpose of this class is to help with previewing messages on the fly in piano roll.
-        Will simply send messages to queue after a delay, and cancel all pending messages when
-        someone calls allNotesControllersAndSoundOff(); that delay is needed because some plugins
-        (e.g. Kontakt in my case) are often processing play/stop messages out of order, which is weird -
-        note the word `queue` in addMessageToQueue() method name - but it still happens in some cases,
-        for example, when the user drags some notes around quickly. Said that, for whatever reason,
-        JUCE's message collector cannot be relied upon, and this hack is used instead.
-    */
-    class MidiMessageDelayedPreview final : private Timer
+    class MidiMessagePreview final : private Timer
     {
     public:
-        MidiMessageDelayedPreview() = default;
-        ~MidiMessageDelayedPreview();
-        void cancelPendingPreview();
-        void previewMessage(const MidiMessage &message, WeakReference<Instrument> instrument);
+
+        MidiMessagePreview() = default;
+        ~MidiMessagePreview();
+
+        void cancelAllPendingPreviews();
+        void previewMessage(WeakReference<Instrument> instrument,
+            int channel, int key, float volume, int noteOffTimeoutMs);
+
     private:
         void timerCallback() override;
-        Array<WeakReference<Instrument>> instruments;
-        Array<MidiMessage> messages;
+
+        struct KeyPreviewState final
+        {
+            WeakReference<Instrument> instrument;
+            int channel = 0;
+            float volume = 0;
+            int noteOnTimeoutMs = 0;
+            int noteOffTimeoutMs = 0;
+        };
+
+        static constexpr auto timerTickMs = 50;
+        static constexpr auto numPreviewedKeys =
+            Globals::numChannels * Globals::twelveToneKeyboardSize;
+
+        KeyPreviewState previews[numPreviewedKeys];
     };
 
-    mutable MidiMessageDelayedPreview messagePreviewQueue;
+    mutable MidiMessagePreview messagePreviewQueue;
 
 private:
 

@@ -1624,7 +1624,8 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                     this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat, CHORD_COMPILER_NOTE_LENGTH);
 
                 this->roll.getTransport().previewKey(pianoSequence->getTrackId(),
-                    note.getTrackChannel(), key + clipKey, CHORD_COMPILER_NOTE_VELOCITY);
+                    note.getTrackChannel(), key + clipKey,
+                    CHORD_COMPILER_NOTE_VELOCITY, CHORD_COMPILER_NOTE_LENGTH);
             }
 
             if (!atLeastOneNoteShowsInViewport)

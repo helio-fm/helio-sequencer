@@ -59,10 +59,17 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
         this->keyLabels.add(keyLabel.release());
 
         auto keyButton = make<OverlayButton>();
-        keyButton->onClick = [this, i]()
+        keyButton->onStateChange = [this, i]()
         {
-            this->onKeyPreview(i);
+            // when released, just stops all sound
+            this->stopAllSound();
+
+            if (this->keyButtons[i]->getState() == Button::buttonDown)
+            {
+                this->onKeyPreview(i);
+            }
         };
+
         this->addAndMakeVisible(keyButton.get());
         this->keyButtons.add(keyButton.release());
 
@@ -199,6 +206,14 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
     }
 }
 
+void KeyboardMappingPage::visibilityChanged()
+{
+    if (!this->isVisible())
+    {
+        this->stopAllSound();
+    }
+}
+
 void KeyboardMappingPage::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown())
@@ -212,6 +227,17 @@ void KeyboardMappingPage::changeListenerCallback(ChangeBroadcaster *source)
     this->syncWithRange(this->currentPageBase);
 }
 
+void KeyboardMappingPage::stopAllSound()
+{
+    auto &midiCollector = this->instrument->getProcessorPlayer().getMidiMessageCollector();
+    for (int i = 1; i < Globals::numChannels; ++i)
+    {
+        auto notesOff = MidiMessage::allNotesOff(i);
+        notesOff.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+        midiCollector.addMessageToQueue(notesOff);
+    }
+}
+
 void KeyboardMappingPage::onKeyPreview(int i)
 {
     const int key = this->currentPageBase + i;
@@ -219,11 +245,7 @@ void KeyboardMappingPage::onKeyPreview(int i)
     const auto mapped = keyMap->map(key);
 
     const auto time = Time::getMillisecondCounterHiRes() * 0.001;
-    auto &midiCollector = instrument->getProcessorPlayer().getMidiMessageCollector();
-
-    auto notesOff = MidiMessage::allNotesOff(mapped.channel);
-    notesOff.setTimeStamp(time);
-    midiCollector.addMessageToQueue(notesOff);
+    auto &midiCollector = this->instrument->getProcessorPlayer().getMidiMessageCollector();
 
     auto message = MidiMessage::noteOn(mapped.channel, mapped.key, 0.5f);
     message.setTimeStamp(time + 0.01);
