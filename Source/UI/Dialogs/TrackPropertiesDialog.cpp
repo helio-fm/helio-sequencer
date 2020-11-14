@@ -204,7 +204,7 @@ void TrackPropertiesDialog::textEditorFocusLost(TextEditor&)
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->cancelButton.get())
     {
-        this->doOk();
+        this->doOk(); // apply on return key
     }
     else
     {

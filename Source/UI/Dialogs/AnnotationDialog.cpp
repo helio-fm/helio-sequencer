@@ -317,7 +317,8 @@ void AnnotationDialog::textEditorFocusLost(TextEditor&)
 
     auto *focusedComponent = Component::getCurrentlyFocusedComponent();
 
-    if (nullptr != dynamic_cast<TextEditor *>(focusedComponent))
+    if (nullptr != dynamic_cast<TextEditor *>(focusedComponent) &&
+        this->textEditor.get() != focusedComponent)
     {
         return; // other editor is focused
     }
@@ -326,7 +327,7 @@ void AnnotationDialog::textEditorFocusLost(TextEditor&)
         focusedComponent != this->okButton.get() &&
         focusedComponent != this->removeEventButton.get())
     {
-        this->dismiss();
+        this->dismiss(); // apply on return key
     }
     else
     {
