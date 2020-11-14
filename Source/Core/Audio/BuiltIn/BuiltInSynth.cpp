@@ -172,13 +172,20 @@ BuiltInSynth::BuiltInSynth()
 
 void BuiltInSynth::setPeriodSize(int periodSize)
 {
-    DBG("Setting octave size for the default synth: " + String(periodSize));
-
+    //DBG("Setting octave size for the default synth: " + String(periodSize));
     for (int i = 0; i < this->getNumVoices(); ++i)
     {
         if (auto *voice = dynamic_cast<BuiltInSynthVoice *>(this->getVoice(i)))
         {
+            voice->stopNote(1.f, false);
             voice->setPeriodSize(periodSize);
         }
     }
 }
+
+// the built-in synth doesn't have pedals.
+// the built-in synth doesn't need pedals!
+void BuiltInSynth::handleSustainPedal(int midiChannel, bool isDown) {}
+// seriously, just want to make sure that once I send a note-off event,
+// the BuiltInSynthVoice shuts the fuck up regardless of controller states
+void BuiltInSynth::handleSostenutoPedal(int midiChannel, bool isDown) {}

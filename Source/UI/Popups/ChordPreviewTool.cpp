@@ -241,8 +241,9 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             this->sequence->insert(note, true);
 
             this->roll.getTransport().previewKey(this->sequence->getTrackId(),
-                note.getTrackChannel(), key + this->clip.getKey(),
-                note.getVelocity(), note.getLength());
+                key + this->clip.getKey(),
+                note.getVelocity(),
+                note.getLength());
 
         }
 
@@ -272,8 +273,9 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     if (shouldSendMidiMessage)
     {
         this->roll.getTransport().previewKey(this->sequence->getTrackId(),
-            note.getTrackChannel(), key + this->clip.getKey(),
-            note.getVelocity(), note.getLength());
+            key + this->clip.getKey(),
+            note.getVelocity(),
+            note.getLength());
     }
 
     this->hasMadeChanges = true;

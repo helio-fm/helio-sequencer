@@ -379,46 +379,57 @@ float Transport::getRenderingPercentsComplete() const
     for example, when the user drags some notes around quickly.
 */
 
-Transport::MidiMessagePreview::~MidiMessagePreview()
+Transport::NotePreviewTimer::~NotePreviewTimer()
 {
     this->cancelAllPendingPreviews();
 }
 
-void Transport::MidiMessagePreview::cancelAllPendingPreviews()
+void Transport::NotePreviewTimer::cancelAllPendingPreviews()
 {
-    this->stopTimer();
-    memset(this->previews, 0, sizeof(this->previews));
+    if (this->isTimerRunning())
+    {
+        this->stopTimer();
+        for (int key = 0; key < NotePreviewTimer::numPreviewedKeys; ++key)
+        {
+            this->previews[key].instrument = nullptr;
+            this->previews[key].noteOnTimeoutMs = 0;
+            this->previews[key].noteOffTimeoutMs = 0;
+            this->previews[key].volume = 0;
+        }
+    }
 }
 
-void Transport::MidiMessagePreview::previewMessage(WeakReference<Instrument> instrument,
-    int channel, int key, float volume, int noteOffTimeoutMs)
+void Transport::NotePreviewTimer::previewNote(WeakReference<Instrument> instrument,
+    int key, float volume, int16 noteOffTimeoutMs)
 {
-    jassert(key >= 0 && key < MidiMessagePreview::numPreviewedKeys);
+    jassert(key >= 0 && key < NotePreviewTimer::numPreviewedKeys);
 
     auto &preview = this->previews[key];
 
-    if (preview.noteOffTimeoutMs > 0 && preview.instrument != instrument)
+    if (preview.noteOffTimeoutMs > 0 &&
+        preview.instrument != instrument &&
+        preview.instrument != nullptr)
     {
-        //DBG("noteOff " + String(key));
-        MidiMessage message(MidiMessage::noteOff(preview.channel, key));
+        //DBG("! noteOff " + String(key));
+        const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
+        MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
         message.setTimeStamp(TIME_NOW);
         preview.instrument->getProcessorPlayer()
             .getMidiMessageCollector().addMessageToQueue(message);
     }
 
-    preview.channel = channel;
     preview.volume = volume;
-    preview.noteOnTimeoutMs = MidiMessagePreview::timerTickMs;
+    preview.noteOnTimeoutMs = NotePreviewTimer::timerTickMs;
     preview.noteOffTimeoutMs = noteOffTimeoutMs;
     preview.instrument = instrument;
 
     if (!this->isTimerRunning())
     {
-        this->startTimer(MidiMessagePreview::timerTickMs);
+        this->startTimer(NotePreviewTimer::timerTickMs);
     }
 }
 
-void Transport::MidiMessagePreview::timerCallback()
+void Transport::NotePreviewTimer::timerCallback()
 {
 #if PLATFORM_MOBILE
     // iSEM tends to hang >_< if too many messages are send simultaniously
@@ -428,18 +439,19 @@ void Transport::MidiMessagePreview::timerCallback()
 #endif
 
     bool canStop = true;
-    for (int key = 0; key < MidiMessagePreview::numPreviewedKeys; ++key)
+    for (int key = 0; key < NotePreviewTimer::numPreviewedKeys; ++key)
     {
         auto &preview = this->previews[key];
         if (preview.noteOnTimeoutMs > 0)
         {
             canStop = false;
-            preview.noteOnTimeoutMs -= MidiMessagePreview::timerTickMs;
+            preview.noteOnTimeoutMs -= NotePreviewTimer::timerTickMs;
 
             if (preview.noteOnTimeoutMs <= 0 && preview.instrument != nullptr)
             {
                 //DBG("noteOn " + String(key));
-                MidiMessage message(MidiMessage::noteOn(preview.channel, key, preview.volume));
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
+                MidiMessage message(MidiMessage::noteOn(mapped.channel, mapped.key, preview.volume));
                 message.setTimeStamp(time);
                 preview.instrument->getProcessorPlayer()
                     .getMidiMessageCollector().addMessageToQueue(message);
@@ -448,12 +460,13 @@ void Transport::MidiMessagePreview::timerCallback()
         else if (preview.noteOffTimeoutMs > 0)
         {
             canStop = false;
-            preview.noteOffTimeoutMs -= MidiMessagePreview::timerTickMs;
+            preview.noteOffTimeoutMs -= NotePreviewTimer::timerTickMs;
 
             if (preview.noteOffTimeoutMs <= 0 && preview.instrument != nullptr)
             {
                 //DBG("noteOff " + String(key));
-                MidiMessage message(MidiMessage::noteOff(preview.channel, key));
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
+                MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
                 message.setTimeStamp(time);
                 preview.instrument->getProcessorPlayer()
                     .getMidiMessageCollector().addMessageToQueue(message);
@@ -467,8 +480,8 @@ void Transport::MidiMessagePreview::timerCallback()
     }
 }
 
-void Transport::previewKey(const String &trackId, int channel,
-    int key, float volume, float lengthInBeats) const
+void Transport::previewKey(const String &trackId, int key,
+    float volume, float lengthInBeats) const
 {
     this->sleepTimer.setAwake();
 
@@ -482,16 +495,11 @@ void Transport::previewKey(const String &trackId, int channel,
 
     jassert(instrument != nullptr);
 
-    const auto *keyMap = instrument->getKeyboardMapping();
-    const auto mapped = keyMap->map(key);
-
     // to calculate the note-off timeout interval, lets just use
     // the default 120 BPM for simplicity - instead of finding the tempo
     // at the note position, which I think is a bit of an overkill:
-    const auto noteOffTimeoutMs = int(Globals::Defaults::msPerBeat * lengthInBeats);
-
-    this->messagePreviewQueue.previewMessage(instrument,
-        mapped.channel, mapped.key, volume, noteOffTimeoutMs);
+    const auto noteOffTimeoutMs = int16(Globals::Defaults::msPerBeat * lengthInBeats);
+    this->notePreviewTimer.previewNote(instrument, key, volume, noteOffTimeoutMs);
 
     this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS + noteOffTimeoutMs * 2);
 }
@@ -511,7 +519,7 @@ static void stopSoundForInstrument(Instrument *instrument)
 void Transport::stopSound(const String &trackId) const
 {
     this->sleepTimer.setAwake();
-    this->messagePreviewQueue.cancelAllPendingPreviews();
+    this->notePreviewTimer.cancelAllPendingPreviews();
 
     if (Instrument *instrument = this->linksCache[trackId])
     {
@@ -534,7 +542,7 @@ void Transport::stopSound(const String &trackId) const
 void Transport::allNotesControllersAndSoundOff() const
 {
     this->sleepTimer.setAwake();
-    this->messagePreviewQueue.cancelAllPendingPreviews();
+    this->notePreviewTimer.cancelAllPendingPreviews();
 
     for (int i = 1; i < Globals::numChannels; ++i)
     {

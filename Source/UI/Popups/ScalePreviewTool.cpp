@@ -429,8 +429,7 @@ void ScalePreviewTool::buildChord(Array<int> keys)
             sequence->insert(note, true);
 
             this->roll->getTransport().previewKey(this->sequence->getTrackId(),
-                note.getTrackChannel(), key,
-                note.getVelocity(), note.getLength());
+                key, note.getVelocity(), note.getLength());
         }
 
         this->hasMadeChanges = true;
@@ -460,8 +459,7 @@ void ScalePreviewTool::buildNewNote(bool shouldSendMidiMessage)
         if (shouldSendMidiMessage)
         {
             this->roll->getTransport().previewKey(this->sequence->getTrackId(),
-                note.getTrackChannel(), key,
-                note.getVelocity(), note.getLength());
+                key, note.getVelocity(), note.getLength());
         }
 
         this->hasMadeChanges = true;

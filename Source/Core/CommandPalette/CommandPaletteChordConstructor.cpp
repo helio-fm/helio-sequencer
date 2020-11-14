@@ -1623,8 +1623,7 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                 atLeastOneNoteShowsInViewport = atLeastOneNoteShowsInViewport ||
                     this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat, CHORD_COMPILER_NOTE_LENGTH);
 
-                this->roll.getTransport().previewKey(pianoSequence->getTrackId(),
-                    note.getTrackChannel(), key + clipKey,
+                this->roll.getTransport().previewKey(pianoSequence->getTrackId(), key + clipKey,
                     CHORD_COMPILER_NOTE_VELOCITY, CHORD_COMPILER_NOTE_LENGTH);
             }
 

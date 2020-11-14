@@ -136,8 +136,8 @@ public:
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void previewKey(const String &trackId, int channel,
-        int key, float volume, float lengthInBeats) const;
+    void previewKey(const String &trackId, int key,
+        float volume, float lengthInBeats) const;
 
     void stopSound(const String &trackId = "") const;
     void allNotesControllersAndSoundOff() const;
@@ -237,27 +237,27 @@ private:
 
 private:
 
-    class MidiMessagePreview final : private Timer
+    class NotePreviewTimer final : private Timer
     {
     public:
 
-        MidiMessagePreview() = default;
-        ~MidiMessagePreview();
+        NotePreviewTimer() = default;
+        ~NotePreviewTimer();
 
         void cancelAllPendingPreviews();
-        void previewMessage(WeakReference<Instrument> instrument,
-            int channel, int key, float volume, int noteOffTimeoutMs);
+        void previewNote(WeakReference<Instrument> instrument,
+            int key, float volume, int16 noteOffTimeoutMs);
 
     private:
+
         void timerCallback() override;
 
         struct KeyPreviewState final
         {
             WeakReference<Instrument> instrument;
-            int channel = 0;
             float volume = 0;
-            int noteOnTimeoutMs = 0;
-            int noteOffTimeoutMs = 0;
+            int16 noteOnTimeoutMs = 0;
+            int16 noteOffTimeoutMs = 0;
         };
 
         static constexpr auto timerTickMs = 50;
@@ -265,9 +265,11 @@ private:
             Globals::numChannels * Globals::twelveToneKeyboardSize;
 
         KeyPreviewState previews[numPreviewedKeys];
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotePreviewTimer)
     };
 
-    mutable MidiMessagePreview messagePreviewQueue;
+    mutable NotePreviewTimer notePreviewTimer;
 
 private:
 

@@ -37,7 +37,10 @@ public:
 
 protected:
 
-    static constexpr auto numVoices = 32;
+    void handleSustainPedal(int midiChannel, bool isDown) override;
+    void handleSostenutoPedal(int midiChannel, bool isDown) override;
+
+    static constexpr auto numVoices = 16;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynth)
 };
