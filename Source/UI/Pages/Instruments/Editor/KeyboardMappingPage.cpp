@@ -283,6 +283,7 @@ bool KeyboardMappingPage::canShowNextPage() const noexcept
 
 void KeyboardMappingPage::loadScalaMappings() const
 {
+#if PLATFORM_DESKTOP
     FileChooser fc(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         File::getSpecialLocation(File::userDocumentsDirectory), "*.kbm", true);
     
@@ -329,4 +330,5 @@ void KeyboardMappingPage::loadScalaMappings() const
     {
         popup->exitModalState(0);
     }
+#endif
 }
